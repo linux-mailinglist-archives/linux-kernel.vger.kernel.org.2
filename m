@@ -2,172 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954E3402207
+	by mail.lfdr.de (Postfix) with ESMTP id E2E40402208
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhIGBX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhIGBX0 (ORCPT
+        id S232619AbhIGBad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:30:33 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:6300 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229797AbhIGBab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:23:26 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38AEC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 18:22:20 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id k17so4827049pls.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:22:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=1OjYMBfrJ+RbM+HLiCrefAmha0Iu/xAS63cBbRMEl1M=;
-        b=E6VqmzwBI2l4Li7em7hUtZAcpHnRKKypGdOHxr3PFkgYvBhZpRNbakMzm8wOVwSEa2
-         CBRJvT5iAiXPnrTXpaQ+r6MNQwb21v2ibrQbY46AfWL4bflEgVjhBhesB00z3u0dsf2l
-         eXQePF/s7cjWYAZMmUfA1HGWZapIkMa/dtd2awKkrud3zWOMpi/GpBnWU3+Op2q1zYB/
-         pjsQX8bFMv74Dgdrb9TFmHQdqnDQEtADYT2d+6YAB9wlLwYagIniMY6e1UFpPIVK9MMD
-         aUopMGiuWjO6E7eg3SXYoYfCqITbRc/UEzO5Hwo5f4L8UF5mX4qHfRKpFkCQs3Y4WVcB
-         EbsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=1OjYMBfrJ+RbM+HLiCrefAmha0Iu/xAS63cBbRMEl1M=;
-        b=B+rT041rXhSYEK2t+y/h66MQhz4AjbBbwYqVVZf/HmGdBJpEvTpwrMmNyju0sf/aoV
-         vtRqQtvd64alvqAr4oi5Q5oO5xItm4Bu7iL1g+SScbFTqxhvNsqDNJ2+wJ1gaHZOlmXg
-         39r2+efJhO8MJ8wx7QpNVjiKHM7jEvt4F/NOJHCP6APXOIe6QBbtseqywZuGcnmnsd6G
-         5sotIUyS3dNw+dXXRXkU48TM+eEb1cyvy9PEjMK2bO8Qp7h8bHrp9ZkXmR35DVyrzXxY
-         0+kJ095Yv/YbiDKxw9wWoZa4FsG68yG7T6eW8R6QMXtzHY/LLghhNo+i9byZD6mDCth/
-         tqLw==
-X-Gm-Message-State: AOAM533VDs906xUUv6bSnS09HGtTAmwS10EIXRGbuF1WfQ8mRYTqzJ3e
-        fPpAbWbwPtvqZc+z8nXCczMkz7RrSn+87hZImgzSoNQEN+a4
-X-Google-Smtp-Source: ABdhPJyIlqoFe5XHx6pXVzlLm+jy+pqDXUAsvg2ouTX0xgMA/fBzKTEtSQP9cQuXj31+jez/YC4P8XrhtcoUX1PGcqw=
-X-Received: by 2002:a17:90b:124c:: with SMTP id gx12mr181692pjb.106.1630977734621;
- Mon, 06 Sep 2021 18:22:14 -0700 (PDT)
+        Mon, 6 Sep 2021 21:30:31 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1871Pl3i007199;
+        Tue, 7 Sep 2021 01:29:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=PPS06212021;
+ bh=6Sufh9Odvg8lk4FuXU0dHP5GeybGC/SQkr+6ykPz4h0=;
+ b=UMEU/e1F/TInpv0hdbYCNI3qjuwcuAvs3eSTQus0eD09jdiQcyl+nhIYyAkCS8YxdjRp
+ 80sC8n9LxIFyTat550DtPfkmW0j07dDyfJb2ZB/JXpBOxExup4Lh3U4gKSNM8sSyQsUA
+ n2i2HRf+G7zDBKZEyQveQ7LTw5WjJlj06d03bUJ3B4Z0ODCqnktdxrwHYlLPpULtPU64
+ /evL2fZo/QWmOg1JGYY0SmCUsY5u/lUFpV6dv/tQEkdB5Zl09J/8BeOTe34GQ/WhsBcJ
+ 7ZZ2LkOQ4/tNAiR14ArpKi6v4idyffqqx/7h4AdP7vj5OAUWshmYu+wPacZFYGsJusqw ww== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3awsacr4q1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 01:29:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q32DcjQX2iU7evVGsXej/Zd7SfuwYFRz5C1yY+RDS3GH6KNAwpqXj37sHbUf82GL8ASGp4iXkiaspp8e/1yIlGo//oJpLCxdXadU86rSxcTg5LW4NTPT/fPdVfKkKQ5fX7CCp7LNjcDpmqq3JtJD3rYqp1xSQbQvH5mxjBBSaCT0LvA+HZnmSoQQqvxlMjDMY7HPUpXhFrkDh4ux1YzCFpp302jvyZpa/P8yQwKnxteHqEGPUfTyX/PvFk9S86pb6faCDusKmnylpVO8nsKZaDg/DhU76OwJct6QO6sch5Hpcg3ByJR0LqfA5sp+WIkF56o6EZJ/EdITE6ulnUrjUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=6Sufh9Odvg8lk4FuXU0dHP5GeybGC/SQkr+6ykPz4h0=;
+ b=lKTamaAXEVmdaKrLzD1LW23yNEeqJrhgD14D8zZEUmF6GUGXylgcPXrT9qCSz8cXQHFMY11NM3jHNOQYNHGzC1haPiBROZs4BgqMGGO4L5Vl1F4gitEqgpU1TGojFcTJkc2Hk6xDpz2L1DGuZpUYId+xJ4ClX8wWom1PEFJU6VEflbzoLIYgBnWhq1zB9yQlBlCmJNP/6xXLI2kBVF6GiXZYNN/emQW78o53/PyABTwDu4WEa00fxU9dunfQD/Q4wtawra70/da8TuDJOD0TgbwzMPpjXdo5RRux7HIDkDzV/ZsQUWiusKKhEVAkaKuonwodYpID3ec4nPfSMpDEJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12)
+ by MN2PR11MB4677.namprd11.prod.outlook.com (2603:10b6:208:24e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
+ 2021 01:29:03 +0000
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::19db:ee0e:abd0:df6d]) by BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::19db:ee0e:abd0:df6d%8]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
+ 01:29:03 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "bristot@redhat.com" <bristot@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bristot@kernel.org" <bristot@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] trace/osnoise: Fix missed cpus_read_unlock() in
+ start_per_cpu_kthreads()
+Thread-Topic: [PATCH v2] trace/osnoise: Fix missed cpus_read_unlock() in
+ start_per_cpu_kthreads()
+Thread-Index: AQHXng/wEiXsIqQmAkaGQHjRJAFSz6uX0ppJ
+Date:   Tue, 7 Sep 2021 01:29:03 +0000
+Message-ID: <BL1PR11MB54789CFD3274682522619BE0FFD39@BL1PR11MB5478.namprd11.prod.outlook.com>
+References: <20210831022919.27630-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210831022919.27630-1-qiang.zhang@windriver.com>
+Accept-Language: en-001, zh-CN, en-US
+Content-Language: aa
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=windriver.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: debdcfed-70a1-481b-37f4-08d9719ee089
+x-ms-traffictypediagnostic: MN2PR11MB4677:
+x-microsoft-antispam-prvs: <MN2PR11MB46771EB3A69D697E9849AE5BFFD39@MN2PR11MB4677.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8Ehzc299FH1T9+ugMLl95jBhaRZy4l0UCfIjOw8LraM1xKUZGgV11nMg/30tUFjB2IX4JkIoEJ0b6BiD4+wAcCE5Mkd0HMohVyos3iZQiSrTXM4lAxnF2qEwgYCPzypLpyQbOSHGoj5dOyQByi1b9AbxByBCHjsZYwCk8MEKh3Bd+tnr5ahqSKx9t1zu5fReLYq23ycojA+nrukbnAfMygTrbXU/RI5irST3bLbXPtSwTW6UOAiNEaGSczaeDg/v0ZrDjuWz4gIaTQuHvcY891Bww5M0C5esl+3FA/jWKysg63zOcRJM7Vpupa6cHndh8gnK8Ns3boDFAXTHroIVRDNKduKwJJ8usvjyg/DIegldLMVOiLNMK2xdr4rjxGJUQTp5Pr52EPcSjQeCm7pGS60/i0pasJo7YsI/4SN//vhTNPY7kMWJu89trbp17q9PRbX8My4NoepOSqkOrtBjh84/HKSgFWpOV2GFl2NSGELclzk7NnNCUQ5Y+5UZvdDi8OPo1nw+iu56JP2T+XiOT7UZJvAMauQk+QsYy5PqiYAd3g5Ry7i5e4OPzOBzgQlnVY60VWyEC/8qchFl4sNq42dMUFzAUclYlEEzbnhtGQ6XjKh2ncQ95BWvGTTl4WCoER+fDUdQOIbnpDZyGkgTeODipb/Mt9b8mRd+p9jNkuOd6Q46+McJjNZrbzI/QIVLp4bENutvEfEzo7GwTPUwug==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5478.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39850400004)(53546011)(9686003)(55016002)(5660300002)(33656002)(71200400001)(8936002)(6506007)(52536014)(91956017)(76116006)(38100700002)(2906002)(8676002)(7696005)(26005)(38070700005)(186003)(478600001)(83380400001)(66946007)(4326008)(66446008)(122000001)(64756008)(66476007)(66556008)(86362001)(316002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RsWUTGcB3uB6CIx/4fpoGeCAUt/EKcGxtTl+kkqMq9i7vCZmr3g2bG+PV3RX?=
+ =?us-ascii?Q?ap74dvhJQcswbKzK83Um10ymgn1w33T1n46dc0GvClAA5TMdMHLBBvCmw/Dj?=
+ =?us-ascii?Q?1IKSPiaTmtMMCjYCSO9/MTJ1Q2kmfbZm9vHHn0GJo3wNdrpNq28xwqcWRoIs?=
+ =?us-ascii?Q?r0O/IKZBODVRI2CK85XhJfOm1x/XCCqeO4A4+ZmiEkyHqTTmUksfTpQEeGym?=
+ =?us-ascii?Q?gKRNvLuVlVKAeCBwoSR6YNNvCQuKkun5ClhGTEgCQf2pLZXRYAb2eDq0M92q?=
+ =?us-ascii?Q?0TDd4DsJgZdNNPH8zjjHBEvUNL2czzujnvqdoR1mlTjTndaVORkW7xTp8Il5?=
+ =?us-ascii?Q?2SugF4I9zbR4+blWa9/RhAE7cjKm+3/DxxN1plGA/8YrwU32K4Y+PFz3EwsT?=
+ =?us-ascii?Q?TFSNxsxL8+U2qClN0g8SbztlZ71zdL/Edn94GEVOanOvwMS/YJXNE/lSSy2v?=
+ =?us-ascii?Q?zQYA4tMWPQmh5ADqHXphd5V97I2QD11uUmQ6NeckCNNP+3PImUKFx9aLJrP9?=
+ =?us-ascii?Q?+LcV2GAORt7rB8lkHI0B1l1DDOdKj7PHjEgdqRhnq+rRgPdZo3F+tuCuz7sa?=
+ =?us-ascii?Q?tQ79wVnNBd/O2aOtJG2lQGPGgk714uUCMRul8KX+FrDBpp2k2E24fcjscKaT?=
+ =?us-ascii?Q?oQZHJ3g4iFoqAwF2gghSlYII9towGxlH0FMd4dS/6uezNC7dirxwCuLou6zv?=
+ =?us-ascii?Q?+CBQxZLk/7dJGO4jilzHxRRFi5oKs/RE1knpdPRT6ulRWeNWpDJy5mtZzwAr?=
+ =?us-ascii?Q?UW8/N3bjG/dSWq7v6FiI4SjPObvm9qaLNd/sib4F67y35iElTWNXexMrb3za?=
+ =?us-ascii?Q?H/pIeZLjwwx6GHfAJt9C4ecKDsySNnevjjBjWFft+mdqJJ8ygEwNQJs4c1yV?=
+ =?us-ascii?Q?aOKiEU5659k2+6uW80TXYJvCkN1IBUdCdOvzUssssmYtJXH7wvFSPphb5IYq?=
+ =?us-ascii?Q?ltPcgDBsDgxzA5ruVK6xzMeXCrV4frJ3NtQui2/AfcK9sttCqtg13h7o4ZaY?=
+ =?us-ascii?Q?uRlHdBXsKvLqmPfBwuXTGv1SptItGWMJlkd3bGFXILnvcg1GbTlKEW0yGNnD?=
+ =?us-ascii?Q?wLVNQRlc/DPcMzt1eUpGZ0O9+xh4t8JT8kyBq164hIPLqt2GhEvlrJ1S6lIT?=
+ =?us-ascii?Q?heZ1yjVBDDrtxg4nD2u5yvzHHq/3I/saO6dHGicSiwQEObDIxVTSKRtWEhEb?=
+ =?us-ascii?Q?pCblHOW2SYaI9CYwpQ/eJGpSyn7GZZ27Mkky5Td5twRgD1gMFdjQIgzgxpTN?=
+ =?us-ascii?Q?DG9G7pHmOY4ZY++heYrllbrxNhbvFwAPcS8vZ2pD2omxVxGnPGVKKNqn6nBF?=
+ =?us-ascii?Q?ZVU=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 7 Sep 2021 09:22:03 +0800
-Message-ID: <CACkBjsZfAZpOFeYC8mQ03r_JB_eF-dNMEkXf3LNji7_CgOCF2Q@mail.gmail.com>
-Subject: WARNING in __init_work
-To:     tj@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5478.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: debdcfed-70a1-481b-37f4-08d9719ee089
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 01:29:03.3963
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P2s9FuWhMGTI44FqBkG3JLA3UgHgdJy/TdL418QU1uQqf+5AiwEHWrC5s2GQp77OUcDkYYn0wgfHEJcqttUuEEoE0K3Av1APpr/W5EZGpHU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4677
+X-Proofpoint-GUID: DpjnNif-M8MVbjfrbQ33IhCG_L2RLZmY
+X-Proofpoint-ORIG-GUID: DpjnNif-M8MVbjfrbQ33IhCG_L2RLZmY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-06_10,2021-09-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 mlxlogscore=999 adultscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109070006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
-
-HEAD commit: 27151f177827 Merge tag 'perf-tools-for-v5.15-2021-09-04'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1M5oyA_IcWSDB2XpnoX8SDmKJA3JhKltz/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1ZMVJ2vNe0EiIEeWNVyrGb7hBdOG5Uj3e/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/1AtDNXl8XEBfglKXsKsAH2NuXBcrp8Zp9/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1R_XD_cyMNS0Q_SGSqomRy_LIClOrd-gI/view?usp=sharing
-
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-
-ODEBUG: object ffffc9000073cda0 is NOT on stack ffffc90005f34000, but annotated.
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 27648 at lib/debugobjects.c:548
-debug_object_is_on_stack lib/debugobjects.c:545 [inline]
-WARNING: CPU: 2 PID: 27648 at lib/debugobjects.c:548
-__debug_object_init+0x224/0x520 lib/debugobjects.c:607
-Modules linked in:
-CPU: 2 PID: 27648 Comm: syz-executor Not tainted 5.14.0+ #13
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:debug_object_is_on_stack lib/debugobjects.c:545 [inline]
-RIP: 0010:__debug_object_init+0x224/0x520 lib/debugobjects.c:607
-Code: 84 ca fe ff ff 83 c0 01 4c 89 f6 48 c7 c7 f8 b0 3c 85 89 05 7e
-c2 56 06 65 48 8b 04 25 40 70 01 00 48 8b 50 20 e8 05 9b f5 01 <0f> 0b
-e9 9e fe ff ff 89 05 87 4d e3 03 e9 c4 fe ff ff 48 c7 c7 e0
-RSP: 0018:ffffc9000073ccf0 EFLAGS: 00010282
-RAX: 0000000000000050 RBX: ffff88810cf2f398 RCX: 0000000000000100
-RDX: 0000000000000000 RSI: ffffffff812cf85c RDI: 00000000ffffffff
-RBP: ffffffff88868538 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffc9000073cc80 R11: 0000000000000005 R12: 0000000000000203
-R13: 0000000000054450 R14: ffffc9000073cda0 R15: ffff88807dd264f0
-FS:  0000000002ad0940(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000005061ec CR3: 0000000100da5000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <IRQ>
- __init_work+0x3f/0x50 kernel/workqueue.c:519
- synchronize_rcu_expedited+0x26a/0x460 kernel/rcu/tree_exp.h:847
- bdi_remove_from_list mm/backing-dev.c:938 [inline]
- bdi_unregister+0x97/0x270 mm/backing-dev.c:946
- release_bdi+0x4a/0x70 mm/backing-dev.c:968
- kref_put include/linux/kref.h:65 [inline]
- bdi_put+0x47/0x70 mm/backing-dev.c:976
- bdev_free_inode+0x59/0xc0 fs/block_dev.c:819
- i_callback+0x24/0x50 fs/inode.c:224
- rcu_do_batch kernel/rcu/tree.c:2508 [inline]
- rcu_core+0x2d6/0x9f0 kernel/rcu/tree.c:2743
- __do_softirq+0xe9/0x561 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu kernel/softirq.c:636 [inline]
- irq_exit_rcu+0xe2/0x100 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x9e/0xc0 arch/x86/kernel/apic/apic.c:1097
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:__sanitizer_cov_trace_pc+0x37/0x60 kernel/kcov.c:197
-Code: 65 48 8b 14 25 40 70 01 00 81 e1 00 01 00 00 a9 00 01 ff 00 74
-0e 85 c9 74 35 8b 82 34 15 00 00 85 c0 74 2b 8b 82 10 15 00 00 <83> f8
-02 75 20 48 8b 8a 18 15 00 00 8b 92 14 15 00 00 48 8b 01 48
-RSP: 0018:ffffc90005f37b78 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000000
-RDX: ffff888109448000 RSI: ffffffff8212a28c RDI: ffffc90005f37d30
-RBP: 0000000000000006 R08: 0000000000000d40 R09: ffff8880165fc5e0
-R10: ffffc90005f37cd0 R11: 0000000000000003 R12: 0000000000000375
-R13: ffff888107597b40 R14: ffffc90005f37d30 R15: ffff8880174b0ea0
- tomoyo_domain_quota_is_ok+0xac/0x150 security/tomoyo/util.c:1092
- tomoyo_supervisor+0x228/0x7f0 security/tomoyo/common.c:2089
- tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
- tomoyo_path_permission+0xa0/0xf0 security/tomoyo/file.c:587
- tomoyo_path_perm+0x22f/0x2d0 security/tomoyo/file.c:838
- tomoyo_path_symlink+0x43/0x70 security/tomoyo/tomoyo.c:199
- security_path_symlink+0x48/0x80 security/security.c:1164
- do_symlinkat+0x75/0x120 fs/namei.c:4274
- __do_sys_symlink fs/namei.c:4301 [inline]
- __se_sys_symlink fs/namei.c:4299 [inline]
- __x64_sys_symlink+0x3a/0x40 fs/namei.c:4299
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46a597
-Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66
-2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 58 00 00 00 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd09085778 EFLAGS: 00000206 ORIG_RAX: 0000000000000058
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000046a597
-RDX: 0000000000000000 RSI: 00000000004e40f9 RDI: 00007ffd09085810
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000014
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007ffd09085810 R15: 00007ffd090857cc
-----------------
-Code disassembly (best guess):
-   0: 65 48 8b 14 25 40 70 mov    %gs:0x17040,%rdx
-   7: 01 00
-   9: 81 e1 00 01 00 00    and    $0x100,%ecx
-   f: a9 00 01 ff 00        test   $0xff0100,%eax
-  14: 74 0e                je     0x24
-  16: 85 c9                test   %ecx,%ecx
-  18: 74 35                je     0x4f
-  1a: 8b 82 34 15 00 00    mov    0x1534(%rdx),%eax
-  20: 85 c0                test   %eax,%eax
-  22: 74 2b                je     0x4f
-  24: 8b 82 10 15 00 00    mov    0x1510(%rdx),%eax
-* 2a: 83 f8 02              cmp    $0x2,%eax <-- trapping instruction
-  2d: 75 20                jne    0x4f
-  2f: 48 8b 8a 18 15 00 00 mov    0x1518(%rdx),%rcx
-  36: 8b 92 14 15 00 00    mov    0x1514(%rdx),%edx
-  3c: 48 8b 01              mov    (%rcx),%rax
-  3f: 48                    rex.W%
+Hi  Daniel=0A=
+=0A=
+Do you have time to review this modification?=0A=
+=0A=
+Thanks=0A=
+Qiang.zhang =0A=
+=0A=
+________________________________________=0A=
+From: Zhang, Qiang <qiang.zhang@windriver.com>=0A=
+Sent: Tuesday, 31 August 2021 10:28=0A=
+To: bristot@redhat.com; rostedt@goodmis.org; bristot@kernel.org; mingo@redh=
+at.com=0A=
+Cc: linux-kernel@vger.kernel.org=0A=
+Subject: [PATCH v2] trace/osnoise: Fix missed cpus_read_unlock() in start_p=
+er_cpu_kthreads()=0A=
+=0A=
+From: "Qiang.Zhang" <qiang.zhang@windriver.com>=0A=
+=0A=
+When start_kthread() return error, the cpus_read_unlock() need=0A=
+to be called.=0A=
+=0A=
+Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")=0A=
+Cc: <stable@vger.kernel.org> # v5.14+=0A=
+Signed-off-by: Qiang.Zhang <qiang.zhang@windriver.com>=0A=
+---=0A=
+ v1->v2:=0A=
+ Modify submission information and code style, add tags.=0A=
+=0A=
+ kernel/trace/trace_osnoise.c | 6 +++---=0A=
+ 1 file changed, 3 insertions(+), 3 deletions(-)=0A=
+=0A=
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c=0A=
+index 65b08b8e5bf8..ce053619f289 100644=0A=
+--- a/kernel/trace/trace_osnoise.c=0A=
++++ b/kernel/trace/trace_osnoise.c=0A=
+@@ -1548,7 +1548,7 @@ static int start_kthread(unsigned int cpu)=0A=
+ static int start_per_cpu_kthreads(struct trace_array *tr)=0A=
+ {=0A=
+        struct cpumask *current_mask =3D &save_cpumask;=0A=
+-       int retval;=0A=
++       int retval =3D 0;=0A=
+        int cpu;=0A=
+=0A=
+        cpus_read_lock();=0A=
+@@ -1568,13 +1568,13 @@ static int start_per_cpu_kthreads(struct trace_arra=
+y *tr)=0A=
+                retval =3D start_kthread(cpu);=0A=
+                if (retval) {=0A=
+                        stop_per_cpu_kthreads();=0A=
+-                       return retval;=0A=
++                       break;=0A=
+                }=0A=
+        }=0A=
+=0A=
+        cpus_read_unlock();=0A=
+=0A=
+-       return 0;=0A=
++       return retval;=0A=
+ }=0A=
+=0A=
+ #ifdef CONFIG_HOTPLUG_CPU=0A=
+--=0A=
+2.17.1=0A=
+=0A=
