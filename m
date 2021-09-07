@@ -2,119 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4028D402E71
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB25402E76
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345966AbhIGSgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:36:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230354AbhIGSgM (ORCPT
+        id S1345949AbhIGSii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:38:38 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:33552 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhIGSih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:36:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631039705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=39gFd33ByEeHabxlUVexH9bqw8RdJNvKyWEswyYIiZE=;
-        b=TGVhe5PPVYyWX2zdy9Ht/qy+kyjMHAtpDd0BVqLoEWbw0RejQ7j4UT+5ZAXFc102glC3WP
-        MLotvY+RYQBTESc+EfkXl3KGWql6DZkhYqPGR42DeW1Q1BvrG3vemkamhcJ5PclY+tkF22
-        0YnusWlrseynrzew1TBUfr8y40D8CIc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-myDqf5mQPpy7Ly5xvOfCjg-1; Tue, 07 Sep 2021 14:35:02 -0400
-X-MC-Unique: myDqf5mQPpy7Ly5xvOfCjg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AD9F107ACCD;
-        Tue,  7 Sep 2021 18:35:00 +0000 (UTC)
-Received: from localhost (unknown [10.22.8.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BA836A255;
-        Tue,  7 Sep 2021 18:34:58 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 14:34:57 -0400
-From:   Eduardo Habkost <ehabkost@redhat.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 3/6] x86/kvm: introduce per cpu vcpu masks
-Message-ID: <20210907183457.53ws6tqqqpzkeil4@habkost.net>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-4-jgross@suse.com>
+        Tue, 7 Sep 2021 14:38:37 -0400
+Received: by mail-ot1-f48.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso349300otu.0;
+        Tue, 07 Sep 2021 11:37:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VGXBiHd8aGiY42ZI/fI58ICBBOHjaU8L6zf9vtrLjgM=;
+        b=nJBCwNDN55C7kWeIdu3aX3sKoAODbBss6uHoykb3ryTf9DVDSMI9lpSAwvxkW3wcj/
+         XX7K8KaiCuQG++WGG5mFmNgTj3APNFSNRJCxom0T0FXAuUKXxd8xN/E+xuoZoy6kI9Jt
+         sqZjZ+WNF130UffmSqT1k8ejM0o5g+X4bjQGKTW16ZA9UvF+D8tWVWlqCjAnZd2s0bjw
+         ySkdffiJUDb5Xv9gYjY1colsPS1VmJWqwdtk16aY3J96eBYVrv76A3BhQl2r+dTBzq4R
+         +Awtn6kFkSByHWs4xeJGlkmyfEy/crhH1WPxQF23+t1i6AEkWBC6FehBzJb2zwZ3UgJe
+         6NBQ==
+X-Gm-Message-State: AOAM531917abJWTuzS8DuIwNepveItjMgOnZ3/BMWgWCznm1WR8sFMQ6
+        7KEh7hwscH6k5Ufn54PmTA==
+X-Google-Smtp-Source: ABdhPJzpedN7Uv+lz7hd5t31kUf84boXO+DYEziXPnP+k2WKfHCFw4wTNB1/H2gD4Z64yRKl0c0l3w==
+X-Received: by 2002:a05:6830:91:: with SMTP id a17mr17024877oto.189.1631039849985;
+        Tue, 07 Sep 2021 11:37:29 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b11sm2372980ooi.0.2021.09.07.11.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 11:37:29 -0700 (PDT)
+Received: (nullmailer pid 122301 invoked by uid 1000);
+        Tue, 07 Sep 2021 18:37:28 -0000
+Date:   Tue, 7 Sep 2021 13:37:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, dmitry.baryshkov@linaro.org,
+        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/3] dt-bindings: display: msm: Add binding for msm8998
+ dpu
+Message-ID: <YTexaJuQSNazh9sn@robh.at.kernel.org>
+References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
+ <20210901181138.1052653-3-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903130808.30142-4-jgross@suse.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210901181138.1052653-3-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 03:08:04PM +0200, Juergen Gross wrote:
-> In order to support high vcpu numbers per guest don't use on stack
-> vcpu bitmasks. As all those currently used bitmasks are not used in
-> functions subject to recursion it is fairly easy to replace them with
-> percpu bitmasks.
+On Wed, Sep 01, 2021 at 08:11:38PM +0200, AngeloGioacchino Del Regno wrote:
+> Add yaml binding for msm8998 dpu1 support.
 > 
-> Disable preemption while such a bitmask is being used in order to
-> avoid double usage in case we'd switch cpus.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > ---
-> V2:
-> - use local_lock() instead of preempt_disable() (Paolo Bonzini)
-> ---
->  arch/x86/include/asm/kvm_host.h | 10 ++++++++++
->  arch/x86/kvm/hyperv.c           | 25 ++++++++++++++++++-------
->  arch/x86/kvm/irq_comm.c         |  9 +++++++--
->  arch/x86/kvm/x86.c              | 22 +++++++++++++++++++++-
->  4 files changed, 56 insertions(+), 10 deletions(-)
+>  .../bindings/display/msm/dpu-msm8998.yaml     | 220 ++++++++++++++++++
+>  1 file changed, 220 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3513edee8e22..a809a9e4fa5c 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -15,6 +15,7 @@
->  #include <linux/cpumask.h>
->  #include <linux/irq_work.h>
->  #include <linux/irq.h>
-> +#include <linux/local_lock.h>
->  
->  #include <linux/kvm.h>
->  #include <linux/kvm_para.h>
-> @@ -1591,6 +1592,15 @@ extern bool kvm_has_bus_lock_exit;
->  /* maximum vcpu-id */
->  unsigned int kvm_max_vcpu_id(void);
->  
-> +/* per cpu vcpu bitmasks, protected by kvm_pcpu_mask_lock */
-> +DECLARE_PER_CPU(local_lock_t, kvm_pcpu_mask_lock);
-> +extern unsigned long __percpu *kvm_pcpu_vcpu_mask;
-> +#define KVM_VCPU_MASK_SZ	\
-> +	(sizeof(*kvm_pcpu_vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS))
-> +extern u64 __percpu *kvm_hv_vp_bitmap;
-> +#define KVM_HV_MAX_SPARSE_VCPU_SET_BITS DIV_ROUND_UP(KVM_MAX_VCPUS, 64)
-> +#define KVM_HV_VPMAP_SZ		(sizeof(u64) * KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
+> diff --git a/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml b/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
+> new file mode 100644
+> index 000000000000..db435342ecbf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
+> @@ -0,0 +1,220 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dpu-msm8998.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Display DPU dt properties for MSM8998 target
+> +
+> +maintainers:
+> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> +
+> +description: |
+> +  Device tree bindings for MSM Mobile Display Subsystem(MDSS) that encapsulates
+> +  sub-blocks like DPU display controller, DSI and DP interfaces etc. Device tree
+> +  bindings of MDSS and DPU are mentioned for MSM8998 target.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: qcom,msm8998-mdss
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reg-names:
+> +    const: mdss
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Display AHB clock
+> +      - description: Display AXI clock
+> +      - description: Display core clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: iface
+> +      - const: bus
+> +      - const: core
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
+> +
+> +  "#interrupt-cells":
+> +    const: 1
+> +
+> +  iommus:
+> +    items:
+> +      - description: Phandle to apps_smmu node with SID mask for Hard-Fail port0
+> +
+> +  ranges: true
+> +
+> +patternProperties:
+> +  "^display-controller@[0-9a-f]+$":
+> +    type: object
+> +    description: Node containing the properties of DPU.
+> +
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - const: qcom,msm8998-dpu
+> +
+> +      reg:
+> +        items:
+> +          - description: Address offset and size for mdp register set
+> +          - description: Address offset and size for regdma register set
+> +          - description: Address offset and size for vbif register set
+> +          - description: Address offset and size for non-realtime vbif register set
+> +
+> +      reg-names:
+> +        items:
+> +          - const: mdp
+> +          - const: regdma
+> +          - const: vbif
+> +          - const: vbif_nrt
+> +
+> +      clocks:
+> +        items:
+> +          - description: Display ahb clock
+> +          - description: Display axi clock
+> +          - description: Display mem-noc clock
+> +          - description: Display core clock
+> +          - description: Display vsync clock
+> +
+> +      clock-names:
+> +        items:
+> +          - const: iface
+> +          - const: bus
+> +          - const: mnoc
+> +          - const: core
+> +          - const: vsync
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +
+> +      power-domains:
+> +        maxItems: 1
+> +
+> +      operating-points-v2: true
+> +      ports:
+> +        $ref: /schemas/graph.yaml#/properties/ports
+> +        description: |
+> +          Contains the list of output ports from DPU device. These ports
+> +          connect to interfaces that are external to the DPU hardware,
+> +          such as DSI, DP etc. Each output port contains an endpoint that
+> +          describes how it is connected to an external interface.
+> +
+> +        properties:
+> +          port@0:
+> +            $ref: /schemas/graph.yaml#/properties/port
+> +            description: DPU_INTF1 (DSI1)
+> +
+> +          port@1:
+> +            $ref: /schemas/graph.yaml#/properties/port
+> +            description: DPU_INTF2 (DSI2)
+> +
+> +        required:
+> +          - port@0
+> +          - port@1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - reg-names
+> +      - clocks
+> +      - interrupts
+> +      - power-domains
+> +      - operating-points-v2
+> +      - ports
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - power-domains
+> +  - clocks
+> +  - interrupts
+> +  - interrupt-controller
+> +  - iommus
+> +  - ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,mmcc-msm8998.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +    display-subsystem@c900000 {
+> +        compatible = "qcom,msm8998-mdss";
+> +        reg = <0x0c900000 0x1000>;
+> +        reg-names = "mdss";
+> +
+> +        clocks = <&mmcc MDSS_AHB_CLK>,
+> +                 <&mmcc MDSS_AXI_CLK>,
+> +                 <&mmcc MDSS_MDP_CLK>;
+> +        clock-names = "iface", "bus", "core";
+> +
+> +        #address-cells = <1>;
+> +        #interrupt-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> +        interrupt-controller;
+> +        iommus = <&mmss_smmu 0>;
+> +
+> +        power-domains = <&mmcc MDSS_GDSC>;
+> +        ranges;
+> +        status = "disabled";
 
-I have just realized that the Hyper-V sparse bitmap format can
-support only up to 4096 CPUs, and the current implementation of
-sparse_set_to_vcpu_mask() won't even work correctly if
-KVM_MAX_VCPUS is larger than 4096.
+Drop. Why disable an example?
 
-This means vp_bitmap can't and will never be larger than 512
-bytes.  Isn't a per-CPU variable for vp_bitmap overkill in this
-case?
-
-> [...]
-
--- 
-Eduardo
-
+> +
+> +        display-controller@c901000 {
+> +            compatible = "qcom,msm8998-dpu";
+> +            reg = <0x0c901000 0x8f000>,
+> +                  <0x0c9a8e00 0xf0>,
+> +                  <0x0c9b0000 0x2008>,
+> +                  <0x0c9b8000 0x1040>;
+> +            reg-names = "mdp", "regdma", "vbif", "vbif_nrt";
+> +
+> +            clocks = <&mmcc MDSS_AHB_CLK>,
+> +                     <&mmcc MDSS_AXI_CLK>,
+> +                     <&mmcc MNOC_AHB_CLK>,
+> +                     <&mmcc MDSS_MDP_CLK>,
+> +                     <&mmcc MDSS_VSYNC_CLK>;
+> +            clock-names = "iface", "bus", "mnoc", "core", "vsync";
+> +
+> +            interrupt-parent = <&mdss>;
+> +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> +            operating-points-v2 = <&mdp_opp_table>;
+> +            power-domains = <&rpmpd MSM8998_VDDMX>;
+> +
+> +            ports {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                port@0 {
+> +                    reg = <0>;
+> +                    dpu_intf1_out: endpoint {
+> +                        remote-endpoint = <&dsi0_in>;
+> +                    };
+> +                };
+> +
+> +                port@1 {
+> +                    reg = <1>;
+> +                    dpu_intf2_out: endpoint {
+> +                        remote-endpoint = <&dsi1_in>;
+> +                    };
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.32.0
+> 
+> 
