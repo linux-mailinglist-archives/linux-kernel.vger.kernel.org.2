@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B1D402E63
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22003402E66
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345912AbhIGSbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:31:34 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:44763 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236461AbhIGSbd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:31:33 -0400
-Received: by mail-ot1-f53.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so203864otg.11;
-        Tue, 07 Sep 2021 11:30:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RY7t/KtclcMrm1EFQWrDQzShg6OefcMHqjUW+/7wI8k=;
-        b=V1ud0fLlm9ttD8jfEmCaycFQMBV+a0dnOozuLAx1TFT3Jrino+9TfsRUVEQXYzde5r
-         8cjCZgtl4PCQDmoC3G4xe6bEFSnf4n6qooI1bb2aftJ2BORE9pOP2OfgfmqsT9TKyNkc
-         UlYOr2RcaYezZKmVvoz2k2z7XzfMLkqma2s8VNBcmjbzDFUXRe3qJt5VB82cf+t6DKEV
-         9U/rDBkQ4aRODgklvZZfGVbWRwbEtaAKCkBpvra/RgOL132zNxY0rFuVOmphF7x2mS00
-         eRNIMkO+iJSSUWqgFWNU2C9ebKrAKvctiBSYjFfTe2z72EB51urkT/l0Ja8F+HzXW/QA
-         QlAw==
-X-Gm-Message-State: AOAM530BKbhAmJJZrnd9bGLcPvOJgeI2E7aDoLQuc2lfR1Pynxu6BChl
-        uLVM5YravaqbvTOF2BQSOAO0nSwexg==
-X-Google-Smtp-Source: ABdhPJy0rnbbmCqZo6/JDD6kKwVz/6PyHgi9xXqaVz1dF2On7vgXzqe19r+KS/YvEyPjAkIj4CeaUA==
-X-Received: by 2002:a9d:7299:: with SMTP id t25mr16204557otj.272.1631039426239;
-        Tue, 07 Sep 2021 11:30:26 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k1sm2665289otr.43.2021.09.07.11.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 11:30:25 -0700 (PDT)
-Received: (nullmailer pid 110400 invoked by uid 1000);
-        Tue, 07 Sep 2021 18:30:24 -0000
-Date:   Tue, 7 Sep 2021 13:30:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org, robh+dt@kernel.org, sam@ravnborg.org,
-        konrad.dybcio@somainline.org, daniel@ffwll.ch,
-        marijn.suijten@somainline.org, devicetree@vger.kernel.org,
-        thierry.reding@gmail.com, martin.botka@somainline.org
-Subject: Re: [PATCH 2/2] dt-bindings: display: Add bindings for Novatek
- NT35950
-Message-ID: <YTevwDHhSJKIboWl@robh.at.kernel.org>
-References: <20210901173127.998901-1-angelogioacchino.delregno@somainline.org>
- <20210901173127.998901-2-angelogioacchino.delregno@somainline.org>
+        id S1345881AbhIGSeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:34:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19629 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240131AbhIGSeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:34:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631039590; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=8/bTsEPkNHH3mIi6qPwtnnCgaUulSNkP6mv7djVi7LQ=; b=eASXc0F6gfkiKph8/b5UKzYH6w7wyf7n6XLwGeH/ktMK7yymk3zVmssWF5ICkVB/m8CfREPz
+ sr21JKSHD6AldzWANfrNOU2tQy2HNsz6DSknVWSM/IHByGQSzOLInaZC/Es1HhU0uaEKbpb4
+ EUTKT56aWAa0r+isVNlyiZJzBnk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6137b04db52e91333cccd855 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 18:32:45
+ GMT
+Sender: quic_subbaram=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F78CC4360D; Tue,  7 Sep 2021 18:32:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.47.233.232] (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: subbaram)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 409C4C4338F;
+        Tue,  7 Sep 2021 18:32:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 409C4C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH] thermal: Fix a NULL pointer dereference
+To:     David Collins <quic_collinsd@quicinc.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <1630715659-5058-1-git-send-email-quic_subbaram@quicinc.com>
+ <fe7ba5a5-d39a-dd0a-5cd3-f80ff163162a@quicinc.com>
+From:   Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+Message-ID: <fa99e05e-43fd-a737-9fe2-753d9ae70530@quicinc.com>
+Date:   Tue, 7 Sep 2021 11:32:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901173127.998901-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <fe7ba5a5-d39a-dd0a-5cd3-f80ff163162a@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Sep 2021 19:31:27 +0200, AngeloGioacchino Del Regno wrote:
-> The nt35950 IC from Novatek is a Driver IC used to drive MIPI-DSI panels,
-> with Static RAM for content retention in command mode and also supports
-> video mode with VESA Frame Buffer Compression or Display Stream Compression
-> on single, or dual dsi port(s).
-> This DDIC is also capable of upscaling an input image to the panel's native
-> resolution, for example it can upscale a 1920x1080 input to 3840x2160 with
-> either bilinear interpolation or pixel duplication.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  .../display/panel/novatek,nt35950.yaml        | 106 ++++++++++++++++++
->  1 file changed, 106 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/novatek,nt35950.yaml
-> 
+On 9/3/21 6:07 PM, David Collins wrote:
+> On 9/3/21 5:34 PM, Subbaraman Narayanamurthy wrote:
+>> of_parse_thermal_zones() parses the thermal-zones node and registers a
+>> thermal_zone device for each subnode. However, if a thermal zone is
+>> consuming a thermal sensor and that thermal sensor device hasn't probed
+>> yet, an attempt to set trip_point_*_temp for that thermal zone device
+>> can cause a NULL pointer dereference. Fix it.
+>>
+>>   console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
+>>   ...
+>>   Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+>>   ...
+>>   Call trace:
+>>    of_thermal_set_trip_temp+0x40/0xc4
+>>    trip_point_temp_store+0xc0/0x1dc
+>>    dev_attr_store+0x38/0x88
+>>    sysfs_kf_write+0x64/0xc0
+>>    kernfs_fop_write_iter+0x108/0x1d0
+>>    vfs_write+0x2f4/0x368
+>>    ksys_write+0x7c/0xec
+>>    __arm64_sys_write+0x20/0x30
+>>    el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
+>>    do_el0_svc+0x28/0xa0
+>>    el0_svc+0x14/0x24
+>>    el0_sync_handler+0x88/0xec
+>>    el0_sync+0x1c0/0x200
+>>
+>> Cc: stable@vger.kernel.org
+>> Suggested-by: David Collins <quic_collinsd@quicinc.com>
+>> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+>> ---
+>>   drivers/thermal/thermal_of.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+>> index 6379f26..ba53252 100644
+>> --- a/drivers/thermal/thermal_of.c
+>> +++ b/drivers/thermal/thermal_of.c
+>> @@ -301,7 +301,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
+>>       if (trip >= data->ntrips || trip < 0)
+>>           return -EDOM;
+>>   -    if (data->ops->set_trip_temp) {
+>> +    if (data->ops && data->ops->set_trip_temp) {
+>>           int ret;
+>>             ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
+>>
+>
+> It looks like the same kind of data->ops null pointer dereference issue is present in three other functions within this file: of_thermal_get_temp(), of_thermal_set_emul_temp(), and of_thermal_get_trend().  Should those be fixed along with of_thermal_set_trip_temp() in a single patch?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sure, I can make those changes in this patch itself.
+
+>
+> Thanks,
+> David
