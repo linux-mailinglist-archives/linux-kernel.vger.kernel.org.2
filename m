@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7946D402F5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DDD402F5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346283AbhIGUFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
+        id S1346259AbhIGUF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242040AbhIGUFH (ORCPT
+        with ESMTP id S231440AbhIGUF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:05:07 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D33C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:04:00 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so579760otf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=TENBxfXEJrx+qep0klzFIcnjVwFP7TPiqnVMsNGOBug=;
-        b=luEnDOJzvHQwGgL5oD/itSmHJe7C1R8V4a5IViGtADCVgsKgv2TIz5DcHiy+iE4r6u
-         bWh+QkKk+u6tXj1AWln+ED05+Rwx/rmFH/+1Sjo3DIoYMNbGAFlSsH+57UAU2rRcpJOX
-         Epw4H7JiE9KFLKbohz7Mi5DLhuFL0WmF4H0QA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=TENBxfXEJrx+qep0klzFIcnjVwFP7TPiqnVMsNGOBug=;
-        b=smuWGTFMsyzDX+WbbrbNaziR05FdQlSQBgy4RE9JmX3kcr9n97B29xhIlWDVLgGgq6
-         JorajQB2Z0TR6BtjSwmJN1kZsRe6EnGONNkdgWWul3Cg8f8oznXqbuxaPv70fraXtW9C
-         CRKJGaL7k7Ve+Q8uBAz1612qZoiMbbhXFGB+ky+aQG0tBClGisyydISHX/Rux1NTGJbk
-         xlhKvETgqNFZmoh81d6srd6+vGDIHG/NppleDhvK27Te/6ru7oA6oKuFyxboqDxJEKw6
-         C43D6HLfoPJA5GCf7xiwBhcudaw7JmWzMBpb+XRZvsh09WgMxbhjjrp+pTUpmKxhe+ea
-         Hxnw==
-X-Gm-Message-State: AOAM530llRknpvHh34n/b8FGDJEoMUBHlmYdQ/gpQL9NVeqYRHj8mmGg
-        OnDrQjbhmdr4DXD597c/gWUaXFqMVnzVCKPtjL5OXA==
-X-Google-Smtp-Source: ABdhPJy9i/DlZKOQrkekswUoYCNt7EYgkeC4BfnnDRyCvPE/fNG4JvccpBXSKKrzKRlyeS0taETaIPWq8jLCedHjcCA=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr102390otp.159.1631045040100;
- Tue, 07 Sep 2021 13:04:00 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 7 Sep 2021 20:03:59 +0000
+        Tue, 7 Sep 2021 16:05:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCB0C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:04:20 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631045059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=peXi6tK7nOOysDrjgMJPWuGZvpUsbQDcmuVn0mBfqDI=;
+        b=h2xooX7BwFL3t4YtoLJKeU50RSEvklkxMGbbcFQlcnSblT8xSA0ILPZ5YvxufMxbLPqwKa
+        tDt5w8PzAqrXfvgWVpAe8+z7niU9Fccn2FnvPsn0CoPV9+Z3a65dxe/2tmxdgt/GkV5rc3
+        oI7NM5Jyo/nfTzd0R2Sv49LaKHo5z/LkTExxC9dQvPvXaRIgblWAq5CURyhN0Y+50zXW8Q
+        8dEVGzYFC/IObKzMQCFkMdao9HP0I6Ej1Sari+KB1xTHE237qhCEYjNnbkYUlLwy0d0h9y
+        lfTd+sUmpuIsWFKL6G6lk83ant5NNO90G0dvHBog4W9Vri1qr31mrvv6VgGyLQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631045059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=peXi6tK7nOOysDrjgMJPWuGZvpUsbQDcmuVn0mBfqDI=;
+        b=x/WoyI/13t6ccDMjRf/MBg5vZ2504fg1ojm7ZzE+ubPtx0C0uMI6o5Xd1r37fGhLUepbPK
+        JwZKYBb/eZsvRFAA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Ziljstra <peterz@infradead.org>
+Subject: Re: [patch V2 00/20] x86/fpu: Clean up exception fixups and error
+ handling in sigframe related code
+In-Reply-To: <20210907195612.321345EED@xen13.tec.linutronix.de>
+References: <20210907195612.321345EED@xen13.tec.linutronix.de>
+Date:   Tue, 07 Sep 2021 22:04:19 +0200
+Message-ID: <874kaw9mpo.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <1630924867-4663-2-git-send-email-skakit@codeaurora.org>
-References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org> <1630924867-4663-2-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 7 Sep 2021 20:03:59 +0000
-Message-ID: <CAE-0n53RNDAykhFuDN_Qgwv6ktR8cRQOQxXWmDX9+yXeu4aECw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: leds: Add pm8350c pmic support
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        satya priya <skakit@codeaurora.org>
-Cc:     mka@chromium.org, kgunda@codeaurora.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting satya priya (2021-09-06 03:41:05)
-> Add pm8350c pmic pwm support.
->
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
+On Tue, Sep 07 2021 at 21:56, Thomas Gleixner wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Please ignore. My quilt scripts went berserk for some weird reason.
+
+I'll resend with proper threading after I figured it out.
+
+Thanks and sorry for the noise
+
+        tglx
+  
