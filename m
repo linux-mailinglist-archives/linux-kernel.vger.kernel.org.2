@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD530402A5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9945C402A61
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhIGOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
+        id S233195AbhIGOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhIGOFJ (ORCPT
+        with ESMTP id S230297AbhIGOFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:05:09 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55282C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:04:03 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id e20so2098457uam.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:04:03 -0700 (PDT)
+        Tue, 7 Sep 2021 10:05:36 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E6CC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:04:30 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id i21so19946521ejd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VTa4HJUTB1E1dZjIkPVAASLfWDZL+qHUwuV+ayrSHns=;
-        b=inAAuNIv+kI+xZOAB3EPk8wdYMUUsfj7bQDBPvEPuHgsxCGL2nhDmG3LE+HhdOcbOw
-         lPrIDz7iTpgssZaKhgNCT6GVLHco2hYg/6mfEZyi3olJMD+CwWd7XLW4+7mfs5dKEIZE
-         R9VG+5TLBrqOJb5NQyugyhRxUhAmbs9ehI2Y0=
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
+        b=AVfVepjA154vZD6OAoUThZbz/D8U7bMkHMAvZy9bh+Y8qJLfFQYVclrsaaUOifvRuz
+         AeM5TuXdj/ddgHP5Q7w++Ne7VRZ5C4Y/o6aqzsThZ6IQF10UjzOEWWy9Sxsqwhi2L2SL
+         wriMAFQ2xZN4odmJGqT/jkjc4hKt3FCQ1ce+EOP7AD9qZgF20JqcoomOETvkfOe3m+F3
+         SRx1qCoVcMeGH3jSn4JBfjbV6Mfb00rEzU0g5IduJB+sWMwNJPd/mGsgc8SNa42yu8TA
+         S9jtE974BBdSOHR5FYRQX3zr3A8UwdNypfzsLHmc0Vj8l9/LndSgg1gX3aTHOkKFm9ao
+         7lmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VTa4HJUTB1E1dZjIkPVAASLfWDZL+qHUwuV+ayrSHns=;
-        b=Lwrab52HMcHrxmZZyy8VQXlAeHw6/JqAk2A0bHPRWxxmGe5BA4Z0dDDCf+2GWMLRjc
-         50YvJ1hdja4+BM3TaTKPEH0w5t9QBt+PmPVh1vRSe21/xU/+lIuDVMyGHsag4fHUhBRP
-         GkpJvHq40pGN0hasulgcKTOUJjVFL+3S/KPZpCc7lY23NdTPwNR8yVoPF30ZUa1bYhde
-         pMBx3CyKKU9gkqoPDRCs4URsSyneOJwaxiIACxnwtfbo+QJNQ2aYKfCL+hRkICCjNn3d
-         jLegg5P1jD+iwQsy5K+JdGVNJOrVqkjtxqGBdrkq9uPZk8D67TgI/6LtDKNlxxOsVAo1
-         mdZg==
-X-Gm-Message-State: AOAM531PZVidmaO3uZ8Y8ieWnSCLVuQLKst/6wIQ5dTMoemIaiInL7F1
-        TkLuuue1tJZn+JxdkuQwPf4Cuamrd5W0My7EFkhbyQ==
-X-Google-Smtp-Source: ABdhPJzHZPZRuPRuZt20E9scsXEEBlFoT3cMFyw+EIRxLSIpN/j+ITmscvSnHyr2vYNsPuKFUBnq1obCZEM2sWB3bBc=
-X-Received: by 2002:a9f:234a:: with SMTP id 68mr43793uae.13.1631023442512;
- Tue, 07 Sep 2021 07:04:02 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
+        b=Q2C3SQgxUDB1itn0kRsqeBNm+n/AK4xqTfHtrqiTQ/lyGTLJ6zuHHhtY0MKmXSFMhA
+         QS0j8zKRCjIMzMlO0tvr5vFX2DHdSVIWY/TJfAZwZFpyggQH5Ymzk1O74XvXORO9qeyK
+         OXMMzzEVN8Xgf4/U+8B0B8+qdyY+oOl4zHQY6iuJ8btQT4Ef7RJ1D32eL/SOkuntzHqU
+         9T1ogcneIJZRznwGEfioB+Ty1NFHd0iY6mBEGJsYcn/e8janAh2ceo6fheIqmLUeikRR
+         yhvuAFxLFWP3xciZHqQo9lHXxGu9rR2ReF8dAi9CCy0VospZ6++jT8qJh2iG+M0Qi+Mu
+         EeMg==
+X-Gm-Message-State: AOAM530BKNmjrF8gU4e1+OnpWSW5isfLcsVI0ciQB+UmLbBu786dn1AP
+        yUPBOfaPNxDfILU8xb9XTOhJWtP4v6Ns4MbuYDQ=
+X-Google-Smtp-Source: ABdhPJyYEggmIvX/zXu9T8asHpiSe1qcNBtUqH6pY1jiqVsbEwkOjEdoQnXUCZ18YiEbo9m6yDl3EUFrZAj8bL5xYlY=
+X-Received: by 2002:a17:906:d0cd:: with SMTP id bq13mr18885852ejb.66.1631023468368;
+ Tue, 07 Sep 2021 07:04:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000006dd93205cad885e5@google.com>
-In-Reply-To: <0000000000006dd93205cad885e5@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 7 Sep 2021 16:03:49 +0200
-Message-ID: <CAJfpegvOa5cT5eRTsaMtAJ0YfZ1ob_kuW-NNK-emu3ncp2pK7A@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in ovl_create_real
-To:     syzbot <syzbot+75eab84fd0af9e8bf66b@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: multipart/mixed; boundary="000000000000e9785505cb683cfb"
+Sender: belem.m.teju2015@gmail.com
+Received: by 2002:a17:906:ca4a:b0:5c8:7304:7551 with HTTP; Tue, 7 Sep 2021
+ 07:04:27 -0700 (PDT)
+From:   hauck man <hauckpristman@gmail.com>
+Date:   Tue, 7 Sep 2021 07:04:27 -0700
+X-Google-Sender-Auth: NdszRhnZTd_KNqgi2FHHtvgwNOA
+Message-ID: <CAJBJuEXd0pyF=_GYNECbMKMqeSuWWn9qXbt5DUS3YDdZ1kf5Qg@mail.gmail.com>
+Subject: URGENT RESPONSES
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e9785505cb683cfb
-Content-Type: text/plain; charset="UTF-8"
+-- 
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-master
+Sir / Madam,
 
---000000000000e9785505cb683cfb
-Content-Type: text/x-patch; charset="US-ASCII"; name="ovl-test.patch"
-Content-Disposition: attachment; filename="ovl-test.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kta57rjk0>
-X-Attachment-Id: f_kta57rjk0
-
-ZGlmZiAtLWdpdCBhL2ZzL292ZXJsYXlmcy9kaXIuYyBiL2ZzL292ZXJsYXlmcy9kaXIuYwppbmRl
-eCAxZmVmYjJiODk2MGUuLjBmNmMxMGVjNTZjMSAxMDA2NDQKLS0tIGEvZnMvb3ZlcmxheWZzL2Rp
-ci5jCisrKyBiL2ZzL292ZXJsYXlmcy9kaXIuYwpAQCAtMTUwLDYgKzE1MCw5IEBAIHN0YXRpYyBp
-bnQgb3ZsX21rZGlyX3JlYWwoc3RydWN0IGlub2RlICpkaXIsIHN0cnVjdCBkZW50cnkgKipuZXdk
-ZW50cnksCiAJaWYgKGxpa2VseSghZF91bmhhc2hlZChkZW50cnkpKSkKIAkJcmV0dXJuIDA7CiAK
-Kwlwcl9pbmZvKCJ1bmhhc2hlZCBkZW50cnkgYWZ0ZXIgbWtkaXIgKCVzKVxuIiwKKwkJZGVudHJ5
-LT5kX3NiLT5zX3R5cGUtPm5hbWUpOworCiAJLyoKIAkgKiB2ZnNfbWtkaXIoKSBtYXkgc3VjY2Vl
-ZCBhbmQgbGVhdmUgdGhlIGRlbnRyeSBwYXNzZWQKIAkgKiB0byBpdCB1bmhhc2hlZCBhbmQgbmVn
-YXRpdmUuIElmIHRoYXQgaGFwcGVucywgdHJ5IHRvCkBAIC0yMDksNyArMjEyLDEwIEBAIHN0cnVj
-dCBkZW50cnkgKm92bF9jcmVhdGVfcmVhbChzdHJ1Y3QgaW5vZGUgKmRpciwgc3RydWN0IGRlbnRy
-eSAqbmV3ZGVudHJ5LAogCQkJZXJyID0gLUVQRVJNOwogCQl9CiAJfQotCWlmICghZXJyICYmIFdB
-Uk5fT04oIW5ld2RlbnRyeS0+ZF9pbm9kZSkpIHsKKwlpZiAoIWVyciAmJiAhbmV3ZGVudHJ5LT5k
-X2lub2RlKSB7CisJCXByX3dhcm4oIm5lZ2F0aXZlIGRlbnRyeSBhZnRlciBta2RpciAoJXMpXG4i
-LAorCQkJbmV3ZGVudHJ5LT5kX3NiLT5zX3R5cGUtPm5hbWUpOworCQlXQVJOX09OKDEpOwogCQkv
-KgogCQkgKiBOb3QgcXVpdGUgc3VyZSBpZiBub24taW5zdGFudGlhdGVkIGRlbnRyeSBpcyBsZWdh
-bCBvciBub3QuCiAJCSAqIFZGUyBkb2Vzbid0IHNlZW0gdG8gY2FyZSBzbyBjaGVjayBhbmQgd2Fy
-biBoZXJlLgo=
---000000000000e9785505cb683cfb--
+Hi Friend I am the auditing director of the International Finance Bank
+Plc bf I want to transfer an abandoned sum of 10.5 millions USD  to
+your account.50% will be for you.
+No risk involved. Contact me for more details.
+Kindly reply me back to my alternative email address (hauckpristman@gmail.com)
+Thanks
+Mr Huck Pristman.
