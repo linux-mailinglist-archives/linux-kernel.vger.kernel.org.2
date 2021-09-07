@@ -2,200 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBC540318A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999F0403193
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243642AbhIGXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241594AbhIGXaI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:30:08 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F50CC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:29:02 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id w8so518600pgf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=huc226miYakXtQslcOJ5OFd9dcBX+yoxXSmw1/JBDr8=;
-        b=g4QFCzGnJKWqHaVTPchOeRfVnrN2KkPvCP/gI9KbDmC0V7x92NAtrU/9bnOsKqcJv5
-         DBNqQTLuzd/4bv0C4E9Cr28bZNRF0OYpTNgd00YAjWtfjS08ktJsotXMkcW2lnrzTV3q
-         4G9wdJuSLftnVsmdarmsmJ9zUwx4/Gl2ZEbOuhURkRV4CH4A6+fAdexIEeZM13Y4L/au
-         oHk0yxTlw16XOXS/8BNP5gbkx2q3D2WbKCZ0luZtRrY/VRTBVXqM18Kl5cguzhBZvXwn
-         O5a3FOt7R0X+6n/21N+uJfdPD5FIzWWv7NKrpYhbeiWlF0/1snB/CXtefy3SGQoG/JrQ
-         MnTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=huc226miYakXtQslcOJ5OFd9dcBX+yoxXSmw1/JBDr8=;
-        b=Scad2v+kP1lj+4FVC4sxeLNNUnPt7pwUJMPtJgjoz58bQWERRBMzTMEKCPo3mR/G0h
-         ek+oK/7RsAQB2+n93p0U8cDvAL+1P/oFK+49RqKHUSrbeGTw8DnF49ZfRciIiPbjCr2Z
-         dd6yYltoe9DtZ1Sr7xZPMa7moAA6zLp59rvLCVOUaCcVXoFy9AE7KRELDOC3UFFRVtIN
-         TfMVdz5D8iqPleYU1/i8pYpCnDKBmjEKnTmAWHvCIztwWUB27m+eJ+bx9/s6fFvaaj1d
-         YMlneOsviXm5PI3UU0lz9kBJdLZmUMzAIB/GyE3GX+gul0rmeZ3QN+8Xq1M+wKUZ6762
-         UeoQ==
-X-Gm-Message-State: AOAM530gr6qJc7lm0oMSIFXlRFT6XQ8L20a4I1zvuL7ZIxYldVpdyZiy
-        HYz+pbKqWNRQb/ZAU1C8F3TWem3Ew7odpA==
-X-Google-Smtp-Source: ABdhPJxIQ375xdhgXCCw5RZhtV4j3yygstRnelBaCmxFSUWle29yKPlWQoQ44FqgATE53J2mikyPJQ==
-X-Received: by 2002:a63:f050:: with SMTP id s16mr772788pgj.258.1631057340982;
-        Tue, 07 Sep 2021 16:29:00 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:8525:5337:1a6c:f8af])
-        by smtp.gmail.com with ESMTPSA id z9sm163607pfk.28.2021.09.07.16.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 16:28:59 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 16:28:53 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Jack Pham <jackp@codeaurora.org>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-pm@vger.kernel.org, bleung@chromium.org,
-        heikki.krogerus@linux.intel.com, badhri@google.com,
+        id S1346577AbhIGXg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231519AbhIGXgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 19:36:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3286610C8;
+        Tue,  7 Sep 2021 23:35:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631057748;
+        bh=6Z5C24l+Nn5gCus4xIpvDMsQ10y2qd3z5H9hvJwqCAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r7NCcd40KNgY9Hd2had6m7GQMB+MJPGL3oWq6CpYF9pu0B6z50NnEg2HY5M7BbYmw
+         b642w1AcOWtslVleSN/aThpfPEMIXzRZ4vKhk68hY6TXQkGzWI8awZ+sHbzj4lVs9h
+         7l6t16vPSLv5qC1vlpdtIAXPqd8n9DNIRHgSC3Cf49wY3Ro0XVQ5+zNlWezAy9WwE8
+         SKuAaz9nVtuwO+7PV4rUFd1e8eeO8Km4/fsXIt6/dDymn3w74ExvVddfIgwzyn9Qtz
+         kE1bZVVRrWJ39+tGVgCZaHGQZYrGVGW0zqNY1N/GLkre3fX5NDJTfUVrBc99IaV9ug
+         bsTIwMYh29ZDA==
+Date:   Wed, 8 Sep 2021 00:35:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [RFC PATCH 1/3] usb: pd: Increase max PDO objects to 13
-Message-ID: <YTf1tTvfEMzTawwK@google.com>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-2-pmalani@chromium.org>
- <20210903064701.GA3515@jackp-linux.qualcomm.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
+ builds"
+Message-ID: <20210907233512.GA4071@sirena.org.uk>
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+ <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dU2rkRBfuzWCPsob"
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
 Content-Disposition: inline
-In-Reply-To: <20210903064701.GA3515@jackp-linux.qualcomm.com>
+In-Reply-To: <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+X-Cookie: Non-sequiturs make me eat lampshades.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---dU2rkRBfuzWCPsob
+--82I3+IH0IqGh5yIs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jack,
+On Tue, Sep 07, 2021 at 12:16:22PM -0700, Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 11:39 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
 
-On Thu, Sep 02, 2021 at 11:47:01PM -0700, Jack Pham wrote:
-> Hi Prashant,
->=20
-> On Thu, Sep 02, 2021 at 02:34:58PM -0700, Prashant Malani wrote:
-> > Increase the max number of PDO objects to 13, to accommodate the extra
-> > PDOs added as a part of EPR (Extended Power Range) operation introduced
-> > in the USB PD Spec Rev 3.1, v 1.0. See Figure 6-54 for details.
-> >=20
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > ---
-> >  include/linux/usb/pd.h | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-> > index 96b7ff66f074..7e8bdca1ce6e 100644
-> > --- a/include/linux/usb/pd.h
-> > +++ b/include/linux/usb/pd.h
-> > @@ -201,7 +201,13 @@ struct pd_message {
-> >  } __packed;
-> > =20
-> >  /* PDO: Power Data Object */
-> > -#define PDO_MAX_OBJECTS		7
-> > +
-> > +/*
-> > + * The EPR (Extended Power Range) structure is a superset of the SPR (=
-Standard Power Range)
-> > + * capabilities structure, so set the max number of PDOs to 13 instead=
- of 7. On SPR-only systems,
-> > + * objects 8 through 13 will just be empty.
-> > + */
-> > +#define PDO_MAX_OBJECTS		13
->=20
-> Hmm this might break the recent change I made to UCSI in commit
-> 1f4642b72be7 ("usb: typec: ucsi: Retrieve all the PDOs instead of just
-> the first 4").
->=20
->  520 static void ucsi_get_src_pdos(struct ucsi_connector *con, int is_par=
-tner)
->  521 {
->  522         int ret;
->  523
->  524         /* UCSI max payload means only getting at most 4 PDOs at a t=
-ime */
->  525         ret =3D ucsi_get_pdos(con, 1, con->src_pdos, 0, UCSI_MAX_PDO=
-S);
->  526         if (ret < 0)
->  527                 return;
->  528
->  529         con->num_pdos =3D ret / sizeof(u32); /* number of bytes to 3=
-2-bit PDOs */
->  530         if (con->num_pdos < UCSI_MAX_PDOS)
->  531                 return;
->  532
->  533         /* get the remaining PDOs, if any */
->  534         ret =3D ucsi_get_pdos(con, 1, con->src_pdos, UCSI_MAX_PDOS,
->  535                             PDO_MAX_OBJECTS - UCSI_MAX_PDOS);
-> 				 ^^^^^^^^^^^^^^^
-> This routine calls the UCSI GET_PDOS command for up to 4 PDOs at a time
-> since that's the most the return payload can carry.  Currently this
-> assumes that we'd only need to request the PPM at most twice to retrieve
-> all the PDOs for up to a maximum of 7 (first request for 4 then again if
-> needed for the remaining 3).  I'm not sure if any existing UCSI FW would
-> be updatable to support more than 7 PDOs in the future, much less
-> support EPR.  In fact, current UCSI 1.2 spec [1] Table 4-34 mentions PDO
-> offset valid values are 0-7 and anything else "shall not be used", so I
-> don't know how UCSI will eventually cope with EPR without a spec update.
->=20
+> > The above commit seems as though it was merged in response to
+> > https://lore.kernel.org/linux-hardening/CAHk-=wj4EG=kCOaqyPEq5VXa97kyUHsBpBn3DWwE91qcnDytOQ@mail.gmail.com/.
 
-I've had a conversation with Dmitriy Berchanskiy at Intel (the UCSI WG Chai=
-r)
-about this, and it sounds like the UCSI spec is planned on being revved
-(post R2.0) in order to support the additional messages and expanded struct=
-ures
-of USB PD R3.1 around EPR.
+> No. It was merged in response of _years_ of pain, with the last one
+> just being the final drop.
 
-> So if this macro changes to 13 then this call would result in a call to
-> the UCSI GET_PDOS command passing num_pdos =3D=3D 13-4 =3D 9 which would
-> probably result in an error from the PPM FW.  So we might need to retain
-> the maximum value of 7 PDOs at least for UCSI here.  Maybe that means
-> this UCSI driver needs to carry its own definition of
-> UCSI_MAX_TOTAL_PDOS=3D7 instead of using PDO_MAX_OBJECTS?
->=20
+> I'm not going to revert that change. I probably will have to limit it
+> (by making that WERROR option depend on certain expectations), but
+> basically any maintainer who has code that causes warnings should
+> expect that they will have to fix those warnings.
 
-Prashant mentioned this as well, but maybe it makes sense to define a separ=
-ate
-EPR_PDO_MAX_OBJECTS to handle the EPR case, as there are completely separate
-underlying PD messages (EPR_Source_Capabilities) where we expect up to 13
-objects, and the classic SPR Source and Sink capabilities will still have t=
-he
-7 object limit.
+Echoing what others have said about runtime testing having -Werror on by
+default for defconfigs is going to cause issues for bisection and just
+generally noticing promptly when runtime issues are introduced - people
+or systems bisecting boot or testsuite issues will encounter more blocks
+of commits that they skip due to unrelated issues, and it's much more
+likely that we'll just have gaps in coverage when for example the day's
+-next has some random warning on some platforms.  In terms of
+prioritisation it feels like the wrong call to have -Werror on
+everywhere.
 
-Thanks,
-Benson
+The bisection really is helpful, especially when the people looking at
+the problem don't have direct access the systems to be able to run tests
+themselves - it really increases the quality of reports when the
+automation in CI services is able to identify the likely commit, and
+makes it *much* more likely those reports be sent in the first place.
 
-> Jack
-> --=20
-> The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+Of course this isn't insurmountable, the test systems can always add
+config fragments to tweak the configurations they're testing (they
+already need to do this to run lots of kselftest for example) but that's
+something we've generally tried to minimise since everyone working with
+custom configs has generally caused friction in the past.
 
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
+> And it really shouldn't be "Linus cares about warnings, so
+> configurations that Linus doesn't test can continue for years to have
+> them".
 
---dU2rkRBfuzWCPsob
+> My "no warnings" policy isn't exactly new, and people shouldn't be
+> shocked when I then say "time to clean up *YOUR* house too".
+
+IME pushing on this stuff it's not that people don't care, it's that
+they naturally have different test coverage due to their particular
+interests and the resources available to them.  Even people who are very
+dilligent in their own testing and paying a lot of attention to -next
+and the automated test stuff that's out there are going to introduce
+some breakage from time to time, and sometimes there's good reasons for
+processes to get short circuited.
+
+Some of this is also on the people doing the more niche stuff to keep on
+top of reporting issues that come up as they do so, they should be able
+to expect that people will pay attention when they do so but the more
+niche you get the less surprising it is when nobody else notices issues.
+
+--82I3+IH0IqGh5yIs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYTf1tQAKCRBzbaomhzOw
-wlRvAPwPZTx65uU6EEUXq7sH6/pz2lo/Y6+g2Brgeyph8nhZuAD/U0LKYsc1cWoX
-y/jbqXCGXSm7zQBhJ3Xrs0fDV2B2Mw8=
-=gobX
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE39zAACgkQJNaLcl1U
+h9BW7gf/RfYzzbUHixWw/gmzBD7+an9JYWpEsUOJ8Vefg5WDCPaWk/V441rZ0E6j
+/GWZKr2MUF+R+0py96KUjcnwi3QET3tKtheUGUN6zFWGUZ1VhO6ZaWDCKnXjZ+zR
+HvCi7AlhECX9EJRKuENqhrhtjd5AKnrqpaqCzwVDiC37JjlY89yrE1nE307nUClV
+9TGHszSS6+3oSbsmGbq7Y4i4eu90T74Lb2uK+HinZlVEgX/zWw363SPHzvDARO/0
+2O1grc4g2cWLKEd6UxP5yuEEa/5Qtb0L7Tjtbz4a/vW52xTBUYjnelfAikBZxAME
+Xl/Bn8WGsLblpyQLuWS73KjW3zuXLA==
+=XmAd
 -----END PGP SIGNATURE-----
 
---dU2rkRBfuzWCPsob--
+--82I3+IH0IqGh5yIs--
