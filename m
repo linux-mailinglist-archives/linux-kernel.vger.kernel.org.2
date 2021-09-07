@@ -2,345 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363704029A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7414029A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344088AbhIGNXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243087AbhIGNXw (ORCPT
+        id S1344189AbhIGNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:24:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55464 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344594AbhIGNYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:23:52 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09609C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:22:46 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id e23so5397651lfj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVid4RLR9mBPsCablaJpVLMYFBT8U0UGbFLsVaPZfvI=;
-        b=z0te2twI8fZdknRdL5csRNLkiRSYDfCbWSzrhEhHJABCp/ms3nWtN1dslAP/rgu7C4
-         MTAACz1D3OPxe4OBt1Y8Xlt+Ct6qtUjr6EjUsLRwHEZSD3Ga0BRBHe/c8tNwXDkTrKfQ
-         AKhWv/IkwuWmz+FOVOYjrpkG7OMvipfvT6gsPh5J6ssI0o5vKa3ijZ37ZnJpJd+D+Xvv
-         /xkKpQjV5jqSEcFaEgNscS/OPvPrVNd8UnhwuQRupHttXgXCLcsJPKSaytMYeKtj16xf
-         FpUbpOMNcYaoA66QyQWjVedeNkUgbqDEH3ECsY79Hcggp86MYyyerYQXoKXzEasSmwbU
-         8srQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVid4RLR9mBPsCablaJpVLMYFBT8U0UGbFLsVaPZfvI=;
-        b=mcb+xikUduWSmXftr/xp72cH105IfHELmMpdT/BjsXM7iXD9YMHycT06kf8m3K+McZ
-         /H9ZEG6Nbmjo6Q6F/7u0VYjqryUXemw5vizIxJmIl4aYxs+tHNwz9I7XaY8tv/5ViH5s
-         GC10GXnSAABG7UALhaSHA5bMO5e1Vj8dHPp+bYK3zSJvmicDy856BIHzHcNbB7gQq3PM
-         taNgdHqZCEbPVUfw55ro/iXu5jLqUlnc9tKaJjy461eDE7+I8ppWScw8U8Iyfhyi3+yF
-         7hWcUHqF5YwwdtkDSLuP9Y21NJN0pZz33Ch+EGum4jE30DIqUivsa9NKmvBcruTFmyw7
-         eLEw==
-X-Gm-Message-State: AOAM533S8cbzg0hy0pHrosRk4zBFi0Dzi0nDWe2xKmo6GbdEZeIx5szV
-        PUYcVsu/kn9uW/A4NIUYKB+kjB6WhTU+fGNRI+67pg==
-X-Google-Smtp-Source: ABdhPJx756B9prvPWqBSrE0GqvVV8DEOTYNB3Ir/+6PzSUGOkRl5z5DuwSdlPPG+pSkg4g+tCiXtPSmf5XbrvJSstbY=
-X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr12675046lff.184.1631020964203;
- Tue, 07 Sep 2021 06:22:44 -0700 (PDT)
+        Tue, 7 Sep 2021 09:24:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 76AF922039;
+        Tue,  7 Sep 2021 13:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631020984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aojQ+XjeVol79Oj7r5W7LXkmOkN6KiAM0lqjItLMF6o=;
+        b=DC+niSMj425X8PXff7k+rXNLHDMGgE0bmqoQCf7Kt0Gb4PImaIeCN1fU1RAnrbXXGsnoEN
+        UEVH2EO5cBzsiUCJ0Dfx5qzpUKjl/iz2xRX0SHHSXL0iTEBmP6jElG+teNklFWV0MKRjR2
+        I6g2kP3fYzlzGhx71SeHfgmD7zf7M/A=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D059EA3B8F;
+        Tue,  7 Sep 2021 13:23:03 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 15:23:03 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     =?utf-8?B?7J207Jqp7YOd?= <ytk.lee@samsung.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] printk: use kvmalloc instead of kmalloc for devkmsg_user
+Message-ID: <YTdnt8YJJYSHM2k8@alley>
+References: <CGME20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
+ <20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
+ <YS4jqsSlD7UySNRA@alley>
+ <YS608AfYqPgQ3F7R@google.com>
 MIME-Version: 1.0
-References: <20210831102141.624725-1-ulf.hansson@linaro.org>
- <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
- <CAPDyKFq7aD_VXyY6=Kvp3t2Ph1_+CheZWDA6j2AoPK6ExX4h0g@mail.gmail.com> <CAGETcx_NRWYYWxp77d+0LmpVT1F7X1sh3qoS1DuissfRyDWp=w@mail.gmail.com>
-In-Reply-To: <CAGETcx_NRWYYWxp77d+0LmpVT1F7X1sh3qoS1DuissfRyDWp=w@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 7 Sep 2021 15:22:07 +0200
-Message-ID: <CAPDyKFotC5FBPkaTXHEqV_S=9RSsqBuM9U2YgUaSUk4vB0Kc2w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YS608AfYqPgQ3F7R@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sept 2021 at 23:49, Saravana Kannan <saravanak@google.com> wrote:
->
-> On Wed, Sep 1, 2021 at 1:13 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Tue, 31 Aug 2021 at 19:51, Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > The power-domain DT bindings [1] doesn't enforce a compatible string for a
-> > > > provider node, even if this is common to use. In particular, when
-> > > > describing a hierarchy with parent/child power-domains, as the psci DT
-> > > > bindings [2] for example, it's sometimes not applicable to use a compatible
-> > > > string.
-> > >
-> > > Ok, and fw_devlink handles that -- provider not having a compatible
-> > > string is pretty common. In these cases, the parent node is the actual
-> > > device that gets probed and registers the provider. So fw_devlink will
-> > > create a link from the consumer to the parent device node.
-> >
-> > Yes, correct. That is working fine and isn't a problem.
-> >
-> > The first problem (I think) is that fw_devlink creates a fw_devlink
-> > from a child provider node (consumer without compatible string) to a
-> > parent node (supplier with a compatible string). I don't understand
-> > the reason why this is needed, perhaps you can elaborate on why?
->
-> I really should get around to doing a LWN article on this and also
-> putting some of it into Documentation. Btw most of this info would be
-> in one of my earlier commit texts or in the code comments. But it's
-> still handy to have them all in one place I suppose.
->
-> I'll try to answer all your questions with this example. Don't take
-> the actual properties too literally, they are just used to point out
-> dependencies.
->
-> Device-A {
->         compatible="foo";
->
->         Device-B {
->                 compatible="flam";
->                 power-domains = <&Device-C>;
->         }
-> }
->
-> Device-C {
->         compatible="bar";
->
->         Device-D {
->                 compatible="baz";
->                 power-domains = <&Device-A>;
->         }
-> }
->
-> Legend:
-> I'll use X -> Y to indicate links where X is the consumer and Y is the supplier.
-> I'll call out the link types as fwnode or device links.
-> If I don't explicitly state otherwise, when I say device links, I mean
-> stateful/managed device link that is NOT sync-state-only device links.
->
-> I think your first question is asking about fwnode link. So I'll answer that.
->
-> fwnode links are created from the actual nodes that list the
-> dependencies. So in this case from device-B -> device-C and device-D
-> -> device-A. It needs to be done this way for a couple of reasons. But
-> to answer your question on "why do this when Device-B doesn't have a
-> compatible string?":
->
-> 1. Not all devices have compatible strings (in an ideal world this
-> won't be the case). So Device-A would create a struct device for
-> Device-B, set the of_node/fwnode to point to Device-B DT node. Then
-> device-B gets probed, etc. In those cases, we want the device links to
-> be created between device-B -> device-C and NOT from device-A ->
-> device-C. Because if we did follow that logic, we'll get device-A ->
-> device-C and device-C -> device-A. This obviously can't work because
-> it's a cyclic dependency and fw_devlink will have to give up on these.
->
-> 2. When device-C is added (assuming device-A is added already), we
-> need to create a sync-state-only device link from device-A to device-C
-> as a proxy for the future device-B -> device-C device link that'll
-> come up. This is to make sure device-C's sync_state() doesn't fire too
-> early. So the way fw_devlink can tell apart device-A's real dependency
-> (none in this case) vs device-B's dependency it's proxying for is by
-> the fact the fwnode link is from device-B DT -> device-C DT.
->
-> Hope that makes sense.
+On Wed 2021-09-01 08:02:09, Sergey Senozhatsky wrote:
+> On (21/08/31 14:42), Petr Mladek wrote:
+> > On Mon 2021-08-30 16:17:01, 이용택 wrote:
+> > > Size of struct devkmsg_user increased to 16784 by commit 896fbe20b4e2
+> > > ("printk: use the lockless ringbuffer") so order3(32kb) is needed for
+> > > kmalloc. Under stress conditions the kernel may temporary fail to
+> > > allocate 32k with kmalloc. Use kvmalloc instead of kmalloc to aviod
+> > > this issue.
+> > > 
+> > > qseecomd invoked oom-killer: gfp_mask=0x40cc0(GFP_KERNEL|__GFP_COMP), order=3, oom_score_adj=-1000
+> > > Call trace:
+> > >  dump_backtrace+0x0/0x34c
+> > >  dump_stack_lvl+0xd4/0x16c
+> > >  dump_header+0x5c/0x338
+> > >  out_of_memory+0x374/0x4cc
+> > >  __alloc_pages_slowpath+0xbc8/0x1130
+> > >  __alloc_pages_nodemask+0x170/0x1b0
+> > >  kmalloc_order+0x5c/0x24c
+> > >  devkmsg_open+0x1f4/0x558
+> > >  memory_open+0x94/0xf0
+> > >  chrdev_open+0x288/0x3dc
+> > >  do_dentry_open+0x2b4/0x618
+> > >  path_openat+0xce4/0xfa8
+> > >  do_filp_open+0xb0/0x164
+> > >  do_sys_openat2+0xa8/0x264
+> > >  __arm64_sys_openat+0x70/0xa0
+> > >  el0_svc_common+0xc4/0x270
+> > >  el0_svc+0x34/0x9c
+> > >  el0_sync_handler+0x88/0xf0
+> > >  el0_sync+0x1bc/0x200
+> > > 
+> > >  DMA32: 4521*4kB (UMEC) 1377*8kB (UMECH) 73*16kB (UM) 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 30268kB
+> > >  Normal: 2490*4kB (UMEH) 277*8kB (UMH) 27*16kB (UH) 1*32kB (H) 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 12640kB
+> > > 
+> > > Signed-off-by: Yong-Taek Lee <ytk.lee@samsung.com>
+> > 
+> > Reviewed-by: Petr Mladek <pmladek@suse.com>
+> 
+> Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Yes, it does and I understand that it may become complicated in some
-cases. If you get the time to put together an LWN article about
-fw_devlinks, I would certainly read it. :-)
+The patch has been comitted into printk/linux.git, branch for-5.16.
 
-However, at least for power-domains, the DT example you describe above
-is an invalid description of a HW. It doesn't make sense to try to
-support if for fw_devlink, at least in my opinion. Let me elaborate.
-
-So, I assume you have left out the #power-domain-cells property (for
-simplicity) for Device-A and Device-C, as those seem to be the
-power-domain providers.
-
-*) If Device-B is a consumer of Device-C, it also means that Device-A
-must be assigned as the child-power-domain to Device-C's power-domain.
-**) If Device-D is the consumer of Device-A, it also means that
-Device-C must be assigned as the child-power-domain to Device-A's
-power-domain.
-
-This simply can't be right from the HW point of view - and we don't
-support this in the Linux kernel anyway. A power-domain can not be
-both parent and child to another power-domain. In other words, cyclic
-dependencies can't exist for power-domains, as it would be a wrong
-description of the HW.
-
-I wonder if the similar reasoning is applicable for other types of
-resources, like clocks and regulators, for example.
-
->
-> >
-> > I come to the second and follow up problem from this behaviour, see below.
-> >
-> > >
-> > > > Therefore, let's set the 'optional_con_dev' to true to avoid creating
-> > > > incorrect fw_devlinks for power-domains.
-> > >
-> > > This part doesn't make sense or is incomplete. What is being done incorrectly?
-> >
-> > See below.
-> >
-> > >
-> > > >
-> > > > [1] Documentation/devicetree/bindings/power/power-domain.yaml
-> > > > [2] Documentation/devicetree/bindings/arm/psci.yaml
-> > > >
-> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > ---
-> > > >
-> > > > Some more details of what goes on here. I have added a debug print in
-> > > > of_link_to_phandle() to see the fw_devlinks that gets created.
-> > > >
-> > > > This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
-> > > > ...
-> > > > [    0.041274] device: 'psci': device_add
-> > > > [    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
-> > > > [    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
-> > > > [    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
-> > > > [    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
-> > > > [    0.041494] device: 'platform:psci--platform:psci': device_add
-> > > > [    0.041556] platform psci: Linked as a sync state only consumer to psci
-> >
-> > Because we created a fw_devlink for the child provider nodes
-> > (consumer) that lacks compatible properties, we end up creating a sync
-> > state only devlink. I don't think it serves a purpose, but I may be
-> > wrong!?
->
-> sync-state-only device links serve the purpose I explained in point 2 above.
->
-> >
-> > Additionally, the actual devlink that is created, has the same
-> > supplier and consumer device, which indicates that this isn't the
-> > right thing to do.
->
-> THIS is the part that's kinda wrong. But it doesn't really break
-> anything. It would also be very short lived as it would get deleted as
-> soon as the consumer (in this case the same as supplier) ends up
-> probing. But in your case the psci DT node doesn't use driver core for
-> probing because it could be an early boot dependency. In which case
-> you should really set the OF_POPULATED flag so a pointless struct
-> device isn't created for the DT node or at least set
-> FWNODE_FLAG_NOT_DEVICE so that fw_devlink knows not to wait on this
-> supplier. This is good practice for fw_devlink (not just to work
-> around the psci -> psci device link). Can you put up this patch
-> please?
->
-> Also sync-state-only links are explicitly present to allow cyclic
-> dependencies (in the example above sync-state-only links will exist as
-> device-A -> device-C and device-C -> device-A), but it kinda pointless
-> to have a link where the supplier and the consumer are the same.
->
-> With that said, if you want to avoid this short-lived pointless device
-> link, I'd say the fix should be in device_link_add() in the following
-> check:
->
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -705,6 +705,7 @@ struct device_link *device_link_add(struct device *consumer,
->          * because it only affects sync_state() callbacks.
->          */
->         if (!device_pm_initialized(supplier)
-> +           || consumer == supplier
->             || (!(flags & DL_FLAG_SYNC_STATE_ONLY) &&
->                   device_is_dependent(consumer, supplier))) {
->                 link = NULL;
-
-This change seems like the right thing to do, no matter what. I will
-send a formal patch for it, thanks!
-
->
-> >
-> > > > ...
-> > > >
-> > > > This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
-> > > > ...
-> > > > [    0.041179] device: 'psci': device_add
-> > > > [    0.041265] OF: Not linking psci to psci - is descendant
-> > > > [    0.041293] OF: Not linking psci to psci - is descendant
-> > > > [    0.041319] OF: Not linking psci to psci - is descendant
-> > > > [    0.041346] OF: Not linking psci to psci - is descendant
-> > > > ...
-> > >
-> > > Can you please explain what exactly is going on that's wrong here? I
-> > > notice that psci is not probed as a device at all. And when you aren't
-> > > setting this flag the only difference I see is the creating of a sync
-> > > state only link -- which shouldn't matter here because you don't even
-> > > have a driver implemented.
-> >
-> > See above.
-> >
-> > >
-> > > > The relevant dtsi file:
-> > > > arch/arm64/boot/dts/qcom/msm8916.dtsi
-> > > >
-> > > > Kind regards
-> > > > Ulf Hansson
-> > > >
-> > > > ---
-> > > >  drivers/of/property.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > index 2babb1807228..4d607fdbea24 100644
-> > > > --- a/drivers/of/property.c
-> > > > +++ b/drivers/of/property.c
-> > > > @@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
-> > > >         { .parse_prop = parse_io_channels, },
-> > > >         { .parse_prop = parse_interrupt_parent, },
-> > > >         { .parse_prop = parse_dmas, .optional = true, },
-> > > > -       { .parse_prop = parse_power_domains, },
-> > > > +       { .parse_prop = parse_power_domains, .optional_con_dev = true, },
-> > >
-> > > This change is just shooting in dark/completely unrelated to the
-> > > commit text. This is just saying the actual consumer is a level up
-> > > from where the property is listed (eg: remote-endpoint). It just
-> > > happens to fix your case for unrelated reasons.
-> >
-> > Again, see above.
-> >
-> > >
-> > > Definite Nak as this *will* break other cases.
-> >
-> > In what way will this break other cases?
-> >
-> > Would you mind elaborating for my understanding and perhaps point me
-> > to an example where it will break?
->
-> So if you did this, it'll break:
-> (1) the probe of device-A/device-C due to cyclic dependencies. Really
-> no, because fw_devlink will just stop enforcing ordering between
-> device-A and device-C if it detects a cycle. But if there was a real
-> dependency (can me multiple links deep) between device-A -> device-C,
-> that would no longer get enforced.
-
-As I said above, cyclic dependencies don't exist for power-domains.
-
-> (2) It'd break sync_state() correctness for device-B -> device-C dependency.
-
-I don't see that. Again, because power-domain providers can't be
-described in a cyclic way in DT.
-
->
-> Hope that helps.
->
-
-Perhaps, renaming the flag to "non-cyclic" would be an option? As it
-seems like that is what this boils done to, right?
-
-> -Saravana
-
-Thanks a lot for your reply and for taking the time to explain things!
-
-Kind regards
-Uffe
+Best Regards,
+Petr
