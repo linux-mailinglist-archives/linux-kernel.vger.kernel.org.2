@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6B6402388
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B6340238E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhIGGkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbhIGGkR (ORCPT
+        id S233814AbhIGGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:41:00 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:36681 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231779AbhIGGk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:40:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814E3C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 23:39:11 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mNUl5-0003cx-6v; Tue, 07 Sep 2021 08:39:03 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-bd09-20f3-2295-682f.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:bd09:20f3:2295:682f])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id BE641678816;
-        Tue,  7 Sep 2021 06:39:00 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 08:38:59 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Dario Binacchi <dariobin@libero.it>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] can: c_can: fix null-ptr-deref on ioctl()
-Message-ID: <20210907063859.llgedf5wc4n4rc73@pengutronix.de>
-References: <20210906233704.1162666-1-ztong0001@gmail.com>
+        Tue, 7 Sep 2021 02:40:59 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 06 Sep 2021 23:39:53 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Sep 2021 23:39:52 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 07 Sep 2021 12:09:41 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id EC9CD222D3; Tue,  7 Sep 2021 12:09:39 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     miquel.raynal@bootlin.com, mani@kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org, stable@kernel.org
+Subject: [PATCH V5] mtd: rawnand: qcom: Update code word value for raw read
+Date:   Tue,  7 Sep 2021 12:09:31 +0530
+Message-Id: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hbn3bbhn5ny2drbw"
-Content-Disposition: inline
-In-Reply-To: <20210906233704.1162666-1-ztong0001@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From QPIC V2 onwards there is a separate register to read
+last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
 
---hbn3bbhn5ny2drbw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+qcom_nandc_read_cw_raw() is used to read only one code word
+at a time. If we will configure number of code words to 1 in
+in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+its reading the last code word, since from QPIC V2 onwards
+we are having separate register to read the last code word,
+we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+register to fetch data from controller buffer to system
+memory.
 
-On 06.09.2021 16:37:02, Tong Zhang wrote:
-> the pdev maybe not a platform device, e.g. c_can_pci device,
-> in this case, calling to_platform_device() would not make sense.
-> Also, per the comment in drivers/net/can/c_can/c_can_ethtool.c, @bus_info
-> sould match dev_name() string, so I am replacing this with dev_name() to
-  ^^^^^
-  should
+Fixes: 503ee5aad43054a26cfd5cc592a31270c05539cd ("mtd: rawnand: qcom: update last code word register")
+Cc: stable@kernel.org
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+Changes in V5:
 
-Fixed while applying.
+ * Incorporated "hash commit" comment from Mani.
+ * Updated commit hash
 
-> fix this issue.
->=20
-> [    1.458583] BUG: unable to handle page fault for address: 000000010000=
-0000
-> [    1.460921] RIP: 0010:strnlen+0x1a/0x30
-> [    1.466336]  ? c_can_get_drvinfo+0x65/0xb0 [c_can]
-> [    1.466597]  ethtool_get_drvinfo+0xae/0x360
-> [    1.466826]  dev_ethtool+0x10f8/0x2970
-> [    1.467880]  sock_ioctl+0xef/0x300
->=20
-> Fixes: 2722ac986e93 ("can: c_can: add ethtool support")
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Changes in V4:
 
-Applied to linux-can/testing + added stable on Cc.
+ * Incorporated "Change log" comment from Miquèl
+ * Updated change log
 
-regards,
-Marc
+Changes in V3:
+ 
+ * Incorporated "Fixes tags are missing" comment from Miquèl
+ * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last code word register")
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---hbn3bbhn5ny2drbw
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in V2:
 
------BEGIN PGP SIGNATURE-----
+ * Incorporated "stable tags are missing" comment from Miquèl
+ * Added stable tags Cc:stable@kernel.org
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmE3CQAACgkQqclaivrt
-76mPnQf9FlnF0qWsD40bZToqcod8lIoeZbZpp1TIqbe0jiVif3a5s3eohV7/ZyDb
-wyVKfYK3kDsRZrR8ooDXXhjW6KjtX9RPdxt7q26+bq3FnZz1yxb3XYDB2L3tKh/T
-WUY0xS0f+rBM+YprvBorusR/m1/RH1Y8FTVJplHNcyV4GYP3l+8DiYBkdYvDh5Pb
-Ki9DE7h1aPcGatI2GejClZ8graC6PCklIpuvtIw4A907RteARcvwvUZYKClv8KFP
-xgzUIABh60Tvz4BtC4FFB48WtMeaDp2rfxLXap06u+ZvEF2PNXmmCFAMnbP2demE
-Lkpxz5fHT40EmTo7E1g0sdbYG364Dw==
-=NJEs
------END PGP SIGNATURE-----
+  
 
---hbn3bbhn5ny2drbw--
+ drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index ef0bade..04e6f7b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int data_size1, data_size2, oob_size1, oob_size2;
+ 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
++	int raw_cw = cw;
+ 
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	host->use_ecc = false;
+ 
++	if (nandc->props->qpic_v2)
++		raw_cw = ecc->steps - 1;
++
+ 	clear_bam_transaction(nandc);
+ 	set_address(host, host->cw_size * cw, page);
+-	update_rw_regs(host, 1, true, cw);
++	update_rw_regs(host, 1, true, raw_cw);
+ 	config_nand_page_read(chip);
+ 
+ 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+ 	}
+ 
+-	config_nand_cw_read(chip, false, cw);
++	config_nand_cw_read(chip, false, raw_cw);
+ 
+ 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+ 	reg_off += data_size1;
+-- 
+2.7.4
+
