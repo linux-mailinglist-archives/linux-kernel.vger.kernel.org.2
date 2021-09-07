@@ -2,156 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6C1402D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA02402D3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345223AbhIGQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:54:31 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36224 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344220AbhIGQya (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:54:30 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 187GrGH0098537;
-        Tue, 7 Sep 2021 11:53:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631033596;
-        bh=c5t+8bDLCAqYNBhiSbZDQdAS+c79g+DgQp4d1qxOjwM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=EqvAPmZu1gNUICFeILIGJ20ww4rk9I6Zy7SQo8Z0U2eY6jCviW6ZXkG2GGuFwHeSC
-         vswr0fPvHH89QUp6vpZZJu+1NZ22wN2iKXNU6UJnMf5mkvmq97JWeLM8ABiALkoyA+
-         0u/grK3F/OcqrP7GmK8f9cpDYihnk9i68F6Qi6W8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 187GrGVg011847
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 7 Sep 2021 11:53:16 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
- Sep 2021 11:53:16 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 7 Sep 2021 11:53:16 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 187GrGAA119325;
-        Tue, 7 Sep 2021 11:53:16 -0500
-Date:   Tue, 7 Sep 2021 11:53:16 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH 1/3] arm64: dts: ti: iot2050: Flip mmc device ordering on
- Advanced devices
-Message-ID: <20210907165316.4s3jrouctcpc3kvo@pessimism>
-References: <cover.1631024536.git.jan.kiszka@siemens.com>
- <8e2e435ef67868cb98382b44c51ddb5c8d045d66.1631024536.git.jan.kiszka@siemens.com>
- <20210907151301.7fqwmc7hmcyhhybv@carve>
- <35e0cadf-526c-6402-fb8e-8cdb8b7a0bfe@siemens.com>
- <20210907152746.fbddtkktvx6hb5ti@cattishly>
- <c63a5ac2-77ca-e54c-183c-b3274a9698db@siemens.com>
- <20210907153547.53cc2zx23rx72kqf@thyself>
- <482dddc1-b1f8-15db-a0c5-0d6def5d859f@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <482dddc1-b1f8-15db-a0c5-0d6def5d859f@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1345261AbhIGQzF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 12:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345207AbhIGQzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 12:55:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CED8061090;
+        Tue,  7 Sep 2021 16:53:57 +0000 (UTC)
+Received: from 82-132-222-194.dab.02.net ([82.132.222.194] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mNeM7-009RKF-M2; Tue, 07 Sep 2021 17:53:55 +0100
+Date:   Tue, 07 Sep 2021 17:53:54 +0100
+Message-ID: <87czpkconx.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: pci-ftpci100: race condition in masking/unmasking interrupts
+In-Reply-To: <CACRpkdYe-Y-1YstovrJd7b8iNCDeX312mB4gLGcG1y6dE6di=A@mail.gmail.com>
+References: <20210818114743.kksb7tydqjkww67h@pali>
+        <CACRpkdYe-Y-1YstovrJd7b8iNCDeX312mB4gLGcG1y6dE6di=A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 82.132.222.194
+X-SA-Exim-Rcpt-To: linus.walleij@linaro.org, pali@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22:17-20210907, Aswath Govindraju wrote:
-> Hi Nishanth,
+Hi Linus,
+
+On Tue, 07 Sep 2021 12:22:37 +0100,
+Linus Walleij <linus.walleij@linaro.org> wrote:
 > 
-> On 07/09/21 9:05 pm, Nishanth Menon wrote:
-> > On 17:30-20210907, Jan Kiszka wrote:
-> >> On 07.09.21 17:27, Nishanth Menon wrote:
-> >>> On 17:20-20210907, Jan Kiszka wrote:
-> >>>> On 07.09.21 17:13, Nishanth Menon wrote:
-> >>>>> On 16:22-20210907, Jan Kiszka wrote:
-> >>>>>> From: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>>>>
-> >>>>>> This ensures that the SD card will remain mmc0 across Basic and Advanced
-> >>>>>> devices, also avoiding surprises for users coming from the downstream
-> >>>>>> kernels.
-> >>>>>>
-> >>>>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>>>> ---
-> >>>>>>  arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts | 5 +++++
-> >>>>>>  1 file changed, 5 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> >>>>>> index ec9617c13cdb..d1d5278e0b94 100644
-> >>>>>> --- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> >>>>>> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> >>>>>> @@ -18,6 +18,11 @@ / {
-> >>>>>>  	compatible = "siemens,iot2050-advanced", "ti,am654";
-> >>>>>>  	model = "SIMATIC IOT2050 Advanced";
-> >>>>>>  
-> >>>>>> +	aliases {
-> >>>>>> +		mmc0 = &sdhci1;
-> >>>>>> +		mmc1 = &sdhci0;
-> >>>>>> +	};
-> >>>>>
-> >>>>>
-> >>>>> Should we do this at SoC level?
-> >>>>>
-> >>>>
-> >>>> Well, I wouldn't mind - but that would also impact your EVMs. For us,
-> >>>> this is fine as we are coming from that ordering above with our
-> >>>> downstream kernel/dts.
-> >>>>
-> >>>
-> >>> I think it'd probably be a welcome change. overall we've standardized on
-> >>> partuuid.
-> >>>
-> >>
-> >> Yeah, it's more about "dd if=emmc.img of=/dev/mmcblk1 - damn, the wrong
-> >> one again."
-> >>
-> >> Let me know what you prefer, and I'll update my patch.
-> > 
-> > 
-> > Lets do it at SoC level. I will follow it up with a patch for other K3
-> > SoCs as well.
-> > 
-> > 
-> > Unless someone has a strong opinion on this approach - if so, speak up
-> > with reasons.
-> > 
+> On Wed, Aug 18, 2021 at 1:47 PM Pali Rohár <pali@kernel.org> wrote:
 > 
-> Making this change in SoC level for all K3 devices would force changes
-> to be made in U-Boot too, for consistency. In U-Boot, a major change
-> would be required in the environment variables to support this. As I
-> don't see any functional advantage by making this change, I feel that
-> this change would make things more confusing for users already using the
-> K3 devices. At present, the ordering is consistent across all the K3
-> devices, I feel that keeping it the same way would be better.
+> > I do not see any entry in MAINTAINERS file for pci-ftpci100.c driver, so
+> > I'm not sure to whom should I address this issue...
 > 
-> As for making changes only on IoT boards, if it is okay to have the
-> ordering changed between U-Boot and kernel, I don't see any problem
-> making this change in kernel alone.
+> It's me.
+> 
+> > During pci-aardvark review, Marc pointed one issue which is currently
+> > available also in pci-ftpci100.c driver.
+> >
+> > When masking or unmasking interrupts there is read-modify-write sequence
+> > for FARADAY_PCI_CTRL2 register without any locking and is not atomic:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-ftpci100.c?h=v5.13#n270
+> >
+> > So there is race condition when masking/unmasking more interrupts at the
+> > same time.
+> 
+> I thought those operations were called in atomic context.
+> How did you fix it?
 
+They are.
 
-arch/arm64/boot/dts/ti/k3-am65.dtsi has no ordering. u-boot is supposed
-to copy from kernel the dtsi files as is. I think having mmc aliases in
-kernel is a good thing as we do regard kernel as the canonical dts
-source.
+But that doesn't mean that you cannot have two CPUs dealing with two
+different interrupts at the same time (using disable_irq(), for
+example). When that happens, your interrupt masking becomes a bit
+soup. irq_ack() also gets in the way, as it does a RMW of the same
+register. If the underlying HW is strictly UP, you're safe. But even
+in this case, you could have some locking that gets elided at compile
+time.
 
-If you are suggesting we flip things so that mmc0 is sdhci0 and mmc1 is
-sdhci1 -  that might be a valid suggestion - Jan, do you see a problem
-in having consistency here (flip the aliases)?
+I also don't understand why you always clear the interrupt status
+every time you mask/unmask an interrupt.
 
+I came up with the following patchlet, which is completely untested
+(not even compile-tested).
+
+Thanks,
+
+	M.
+
+diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controller/pci-ftpci100.c
+index 88980a44461d..dd1697e61206 100644
+--- a/drivers/pci/controller/pci-ftpci100.c
++++ b/drivers/pci/controller/pci-ftpci100.c
+@@ -120,6 +120,7 @@ struct faraday_pci_variant {
+ };
+ 
+ struct faraday_pci {
++	raw_spinlock_t lock
+ 	struct device *dev;
+ 	void __iomem *base;
+ 	struct irq_domain *irqdomain;
+@@ -270,34 +271,41 @@ static struct pci_ops faraday_pci_ops = {
+ static void faraday_pci_ack_irq(struct irq_data *d)
+ {
+ 	struct faraday_pci *p = irq_data_get_irq_chip_data(d);
++	unsigned long flags;
+ 	unsigned int reg;
+ 
++	raw_spin_lock_irqsave(&p->lock, flags);
+ 	faraday_raw_pci_read_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, &reg);
+ 	reg &= ~(0xF << PCI_CTRL2_INTSTS_SHIFT);
+ 	reg |= BIT(irqd_to_hwirq(d) + PCI_CTRL2_INTSTS_SHIFT);
+ 	faraday_raw_pci_write_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, reg);
++	raw_spin_unlock_irqrestore(&p->lock, flags);
+ }
+ 
+ static void faraday_pci_mask_irq(struct irq_data *d)
+ {
+ 	struct faraday_pci *p = irq_data_get_irq_chip_data(d);
++	unsigned long flags;
+ 	unsigned int reg;
+ 
++	raw_spin_lock_irqsave(&p->lock, flags);
+ 	faraday_raw_pci_read_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, &reg);
+-	reg &= ~((0xF << PCI_CTRL2_INTSTS_SHIFT)
+-		 | BIT(irqd_to_hwirq(d) + PCI_CTRL2_INTMASK_SHIFT));
++	reg &= ~BIT(irqd_to_hwirq(d) + PCI_CTRL2_INTMASK_SHIFT);
+ 	faraday_raw_pci_write_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, reg);
++	raw_spin_unlock_irqrestore(&p->lock, flags);
+ }
+ 
+ static void faraday_pci_unmask_irq(struct irq_data *d)
+ {
+ 	struct faraday_pci *p = irq_data_get_irq_chip_data(d);
++	unsigned long flags;
+ 	unsigned int reg;
+ 
++	raw_spin_lock_irqsave(&p->lock, flags);
+ 	faraday_raw_pci_read_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, &reg);
+-	reg &= ~(0xF << PCI_CTRL2_INTSTS_SHIFT);
+ 	reg |= BIT(irqd_to_hwirq(d) + PCI_CTRL2_INTMASK_SHIFT);
+ 	faraday_raw_pci_write_config(p, 0, 0, FARADAY_PCI_CTRL2, 4, reg);
++	raw_spin_unlock_irqrestore(&p->lock, flags);
+ }
+ 
+ static void faraday_pci_irq_handler(struct irq_desc *desc)
+@@ -441,6 +449,8 @@ static int faraday_pci_probe(struct platform_device *pdev)
+ 	host->sysdata = p;
+ 	p->dev = dev;
+ 
++	raw_spin_lock_init(&p->lock);
++
+ 	/* Retrieve and enable optional clocks */
+ 	clk = devm_clk_get(dev, "PCLK");
+ 	if (IS_ERR(clk))
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Without deviation from the norm, progress is not possible.
