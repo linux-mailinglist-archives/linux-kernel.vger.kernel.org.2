@@ -2,146 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B365402E50
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CB0402E52
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345824AbhIGSZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:25:12 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:33515 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345718AbhIGSZL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:25:11 -0400
-Received: by mail-oi1-f176.google.com with SMTP id n27so130335oij.0;
-        Tue, 07 Sep 2021 11:24:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xOZK9HeA+f0nYZagIgOWI8O/YEDsHND1iSu6Vm2M6zo=;
-        b=OgvJU11awLrdjnveE6Gb7X656kRwpeNZgKrS9kyb7yd7gnmwlbyWpbfUBiTadplzYo
-         cQM7ywDfyKfHzSxrSc9iWmkEe4Q2rtFsaOImtmOremrh+adzOWZ89m5/BQOUryQS0Ok4
-         KoPRj9kPNA95H5WYk4Kj4E5SUsCIvxB/fjhPYkjVrn0s8CQNrF/VPlDsWMnL7VXjRXXo
-         aCobFuT+I9RpSBkG3paxMV2O1lWGBKcHM8UkRI1W700ICdi0kFMaL6D8ltH6CSwinv/U
-         3qqKuKfTjgAffVgaWtcxcx2I9uQLr3Xhvswjlv/1sssj4hyzR5JRV5YsOWizx5R/jImX
-         9n6Q==
-X-Gm-Message-State: AOAM531wekn1ptULlpUzKxhNTSVInEEjGMxo4+ZFuWH/dU6QqIpksmL9
-        2OFTxq7EUyuUjBQSAs4ong==
-X-Google-Smtp-Source: ABdhPJw1Y3//Zx0P1mMOmsULYvzFYUu7GalyTb4h9oIPkCO2x1L/4EQOA9uVJOLSIthZWYgwmeJVpw==
-X-Received: by 2002:aca:f143:: with SMTP id p64mr4047412oih.161.1631039044112;
-        Tue, 07 Sep 2021 11:24:04 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l4sm2513988oth.4.2021.09.07.11.24.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 11:24:03 -0700 (PDT)
-Received: (nullmailer pid 99324 invoked by uid 1000);
-        Tue, 07 Sep 2021 18:24:02 -0000
-Date:   Tue, 7 Sep 2021 13:24:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     will@kernel.org, mark.rutland@arm.com, sgoutham@marvell.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: perf: Add YAML schemas for Marvell
- CN10K LLC-TAD pmu bindings
-Message-ID: <YTeuQvMoFOeY0FeJ@robh.at.kernel.org>
-References: <20210901150105.18863-1-bbudiredla@marvell.com>
- <20210901150105.18863-3-bbudiredla@marvell.com>
+        id S1345832AbhIGS0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:26:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239182AbhIGS0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:26:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7A7361102;
+        Tue,  7 Sep 2021 18:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631039131;
+        bh=T9r99jJy9qqRYuAHlqVi3Yv+TYq9Jj1Ndmmxx0xcMpU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u6KFZPre4Ue+oyeToLjtVODGFvk4+sEATe6832nfhxNBLj6wAxdZEy7DSodRAiWwU
+         V5igKUkiDcwtm6Qbhcu66zoMG9nPfYd6+qcBXIaqcuOpJ9SdVQ06+JrTX4A2/g5dyG
+         SWAx61ad4ypwV7JyNDg+hixd98Pa0E3CBEGIJ8TeO5l6/ruQombNpF5OUmHASmllLj
+         nt6kgwqN7J7N9OfN7c8o8dnvJXUVU3Nz/TsJzBKJrfIFZr9thiTXewe4TDpN2nTMoc
+         2yUxhw+fzh7GTWkl/gGZy89b9yiIBuYvAspdRTWPHwv4WCoTcxrS2JBbZ+x9D5CQkg
+         Y4v0Iwx3PKWHg==
+Received: by mail-ej1-f52.google.com with SMTP id t19so14172ejr.8;
+        Tue, 07 Sep 2021 11:25:31 -0700 (PDT)
+X-Gm-Message-State: AOAM532iWid2ZT1vmYvCzBbQQkG0g0ccfQDcG3/2uURQYaGXrJUQl0Em
+        TwH2iB+FTs0aAJonaeH1+YSChmmLZeP/edS3Dg==
+X-Google-Smtp-Source: ABdhPJzPfjmJuXmhf39xZm6Gb8q2o1mNVGrw3pykfcgYpGNgwRdlSKaVWs0KYTqG+194JBAH+24p39myD4ZB4cjbG2I=
+X-Received: by 2002:a17:906:43d2:: with SMTP id j18mr661253ejn.363.1631039130587;
+ Tue, 07 Sep 2021 11:25:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901150105.18863-3-bbudiredla@marvell.com>
+References: <20210812174209.1970-1-bbudiredla@marvell.com> <20210812174209.1970-3-bbudiredla@marvell.com>
+ <1628856667.648308.3179071.nullmailer@robh.at.kernel.org> <CY4PR1801MB207047A1D761C136C9B18E76DEFE9@CY4PR1801MB2070.namprd18.prod.outlook.com>
+In-Reply-To: <CY4PR1801MB207047A1D761C136C9B18E76DEFE9@CY4PR1801MB2070.namprd18.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 7 Sep 2021 13:25:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ=hNU=XpQgkKtVBEikb2D6MP=vihqThZif76qOuyh_hg@mail.gmail.com>
+Message-ID: <CAL_JsqJ=hNU=XpQgkKtVBEikb2D6MP=vihqThZif76qOuyh_hg@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH 2/2] dt-bindings: perf: Add YAML schemas for
+ Marvell CN10K LLC-TAD pmu bindings
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 08:31:05PM +0530, Bhaskara Budiredla wrote:
-> Add device tree bindings for Last-level-cache Tag-and-data
-> (LLC-TAD) unit PMU for Marvell CN10K SoCs.
-> 
-> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
-> ---
->  .../bindings/perf/marvell-cn10k-tad.yaml      | 60 +++++++++++++++++++
+On Tue, Aug 17, 2021 at 4:11 AM Bhaskara Budiredla
+<bbudiredla@marvell.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for the steps. I seeing minimum version error, though the dtschema is latest.
+>
+> $ make dt_binding_check
+> sort: -:2: disorder: 0
+> ERROR: dtschema minimum version is v2021.2.1
+> Documentation/devicetree/bindings/Makefile:12: recipe for target 'check_dtschema_version' failed
+> make[1]: *** [check_dtschema_version] Error 1
+> Makefile:1418: recipe for target 'dt_binding_check' failed
+> make: *** [dt_binding_check] Error 2
+>
+> $ pip3 show dtschema
+> Name: dtschema
+> Version: 2021.7
+> Summary: DeviceTree validation schema and tools
+> Home-page: https://github.com/devicetree-org/dt-schema
+> Author: Rob Herring
+> Author-email: robh@kernel.org
+> License: BSD
 
-marvell,cn10k-tad-pmu.yaml
+Check your PATH?
 
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
-> new file mode 100644
-> index 000000000000..18e9499f2df8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/perf/marvell-cn10k-tad.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell CN10K LLC-TAD performance monitor
-> +
-> +maintainers:
-> +  - Bhaskara Budiredla <bbudiredla@marvell.com>
-> +
-> +description: |
-> +  The Tag-and-Data units (TADs) maintain coherence and contain CN10K
-> +  shared on-chip last level cache (LLC). The tad pmu measures the
-> +  performance of last-level cache. Each tad pmu supports up to eight
-> +  counters.
-> +
-> +  The DT setup comprises of number of tad blocks, the sizes of pmu
-> +  regions, tad blocks and overall base address of the HW.
-> +
-> +properties:
-> +  compatible:
-> +    const: marvell,cn10k-tad-pmu
-> +
+What does 'dt-doc-validate --version' give you?
 
-> +  tad-cnt:
-> +    maxItems: 1
-> +
-> +  tad-page-size:
-> +    maxItems: 1
-> +
-> +  tad-pmu-page-size:
-> +    maxItems: 1
-
-These all need vendor prefix, a type, description, and any constraints.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - tad-cnt
-> +  - tad-page-size
-> +  - tad-pmu-page-size
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    tad {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        tad_pmu@80000000 {
-
-pmu@...
-
-> +            compatible = "marvell,cn10k-tad-pmu";
-> +            tad-cnt = <1>;
-> +            tad-page-size = <0x1000>;
-> +            tad-pmu-page-size = <0x1000>;
-> +            reg = <0x87e2 0x80000000 0x0 0x1000>;
-> +        };
-> +    };
-> -- 
-> 2.17.1
-> 
-> 
+Rob
