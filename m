@@ -2,89 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BB1402AC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43610402AC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238085AbhIGO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S242313AbhIGOaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235545AbhIGO34 (ORCPT
+        with ESMTP id S240895AbhIGOaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:29:56 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E8C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:28:49 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id n2so10415368lfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:28:49 -0700 (PDT)
+        Tue, 7 Sep 2021 10:30:00 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92916C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:28:53 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id e23so5806820lfj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=75RjxCfLjQSwmyhXcT0XtNjKX6pdVwXCyGclbHCUCpQ=;
-        b=L/5MU7CfkLPnsnEReBQpY0KGqg07whucLQ2iYYbnZNCMZMjtzvDI2RBgb+/EYTpHl/
-         0/wDWw44RncgeG8KrI+sFPq3TwkNgNJ968aKBoi9i2BxAJoZRmQafI7zU2SRalDQH+kb
-         eof3wUnk5ZsJdGlLVFPMpqtqdeijEmx/muk6c6BUzA7/gqJGqL4NkGrTWuzEwHjb6cRl
-         FDZ7Q6TVQpM84ap810C9B/utGA2LX66weKdhi8ZRbn0c//OhNvFJ1RdsZXPQ8NBkTPlA
-         aDvpDBVOCaLpxSJNS4qFDgaSeZOagg4DsHshStOMvkdUz2s2CyYSY+HrE4dS6SXzc0ta
-         pUJw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ap3Ek0dwbDdcBxMpX/E/tBfL9VsP0qgFOKYYOZ32dic=;
+        b=IufpyzN01y9PYsuUlyIhgSFlzS8AUFqBjndA9eLCzRg+aw/aAM2xs7lxlQqgKBgoiJ
+         0QV96F314zGdDlwew8AKyzdr3Y+4Wak8xUSDWYeI9UAkhSdF9vMfW4rfUlh2INQv1zMP
+         wE4m3zZ1SrBTs6jgcluIdiWZu3I5uN7MyhsGvzA6R/M940eA5w15rIZ9g0qi5Xtxe1Do
+         CxcWNHyL4qbpGe+4drQFy9ohyU5QxI/LC99aDJlcBp818yFQYb4PhIavaQWmnew5gbSi
+         YUwqB/HGI/akz/O5tJ2VYKuBc1qGTEOyYpZWUzCf3whlrWr91C1tZAfQHUQLR5DK7h5x
+         QoQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=75RjxCfLjQSwmyhXcT0XtNjKX6pdVwXCyGclbHCUCpQ=;
-        b=i8/GaE6d6GKbAYzCUseEwSiQNpayCawOXnYPizudh4qjEv9AT04retm8e6WSEwWZQY
-         h0d0Vb2lHxmNw1cil2s9dgjalZq/n3Gd9SWdInLkZuhz0SzlKUd7nXl1NGydXfsKT3OG
-         HD02ngGWNcpYK3NUtgw4EHeftOluUYc+bOFyHM3A88/snallWcalBJy3MAA7TpcTyvMG
-         st0HjeEDpBJ6U7puIqvi3TBCWG+VHZtWO0KMaXuLLadvlC//1qxIu6CFG2yJW9pudB95
-         dm1CeSU8eV77RpV86YZC4ZZI6bXf1+RqdZ5NNLSzGFlrXBucwO82T2rVVwJVa93zgbJQ
-         AXoA==
-X-Gm-Message-State: AOAM53067gnh9lmkY7+Rtw3VyB6RbGSayJ2SHmGz0/8M5wL1xQhySk49
-        DdgBJ8iIg05zm+zvSnaRUw4=
-X-Google-Smtp-Source: ABdhPJyG8xBIROa64/VLmk5PgHtuVkqEq6vH2E0Jg9TtS8C0yerJDqL7XRAaK9CQ/XwlNUFqF4K+jg==
-X-Received: by 2002:ac2:41c2:: with SMTP id d2mr6629172lfi.395.1631024927911;
-        Tue, 07 Sep 2021 07:28:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ap3Ek0dwbDdcBxMpX/E/tBfL9VsP0qgFOKYYOZ32dic=;
+        b=LtsDdL4NXfk9HxYGIxAxUHZvXdeXnDeoNqFHswQydwlED2R3/Yi0AH4u5CqEN6JCYM
+         Bb+Yw6hdGnfoFutP7FwT6iKWiR9RbUmAFNDWHm+6QqH3XvKPGQsoMqqoEcEYuxuYRxEn
+         8PlVTxvPcZjQB26cSxfrTW2zb98owoNC/u6PgjLrFs4hiobVNbWAzQhC7tePaL9zdjZR
+         6mmb353oAAN+DIB2nX8rSXk9mQ8r9ny7L9yDj6JnZ3c5dA83YNVsZ8n+NxxwPpFljIYe
+         UEaQDjZ/27+Wxuf5wvScO4wnarHRLUJDfQ7lcjJdQmH/XoC2dO1eDpurD+QyzSWgAsx4
+         wl4A==
+X-Gm-Message-State: AOAM530Grf2qNOjzpTKZZSxjj9Z5z8tfLZr8bb+5UFbof5l5uB/GrQ6/
+        vlhVgOG8UV+zyN1FcbJRSiY=
+X-Google-Smtp-Source: ABdhPJz3GQc60kv01OsUnASO7RJBsl8OLdDeOluwSraJtaoRG+Yrm7PvhBZathPp3d7Yp9G7Q0/ouA==
+X-Received: by 2002:a05:6512:3c8d:: with SMTP id h13mr12777235lfv.657.1631024931942;
+        Tue, 07 Sep 2021 07:28:51 -0700 (PDT)
 Received: from kari-VirtualBox.telewell.oy ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id l11sm1014251lfg.39.2021.09.07.07.28.46
+        by smtp.gmail.com with ESMTPSA id l11sm1014251lfg.39.2021.09.07.07.28.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 07:28:47 -0700 (PDT)
+        Tue, 07 Sep 2021 07:28:51 -0700 (PDT)
 From:   Kari Argillander <kari.argillander@gmail.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         ntfs3@lists.linux.dev
 Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] Fix error path and use kernel macros for min/max/calmp
-Date:   Tue,  7 Sep 2021 17:28:38 +0300
-Message-Id: <20210907142842.133181-1-kari.argillander@gmail.com>
+Subject: [PATCH 1/4] fs/ntfs3: Fix ntfs_look_for_free_space() does only report -ENOSPC
+Date:   Tue,  7 Sep 2021 17:28:39 +0300
+Message-Id: <20210907142842.133181-2-kari.argillander@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210907142842.133181-1-kari.argillander@gmail.com>
+References: <20210907142842.133181-1-kari.argillander@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First fix some error path fault which I found during when I did this.
-It should go to 5.15.
+If ntfs_refresh_zone() returns error it will be changed to -ENOSPC. It
+is not right. Also caller of this functions also check other errors.
 
-For better code readability we can use kernel defined macros. Patch
-2/4 also removes some dead code so that it would be more clear why
-do we do what we do in patch 3/4.
+Fixes: 78ab59fee07f ("fs/ntfs3: Rework file operations")
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+ fs/ntfs3/fsntfs.c | 51 +++++++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 24 deletions(-)
 
-Series is tested with xfs-tests. No recression in my tests.
-
-Kari Argillander (4):
-  fs/ntfs3: Fix ntfs_look_for_free_space() does only report -ENOSPC
-  fs/ntfs3: Remove always false condition check
-  fs/ntfs3: Use clamp/max macros instead of comparisons
-  fs/ntfs3: Use min/max macros instated of ternary operators
-
- fs/ntfs3/attrib.c |  3 ++-
- fs/ntfs3/bitmap.c | 11 ++++----
- fs/ntfs3/fsntfs.c | 68 +++++++++++++++++++++++------------------------
- 3 files changed, 41 insertions(+), 41 deletions(-)
-
-
-base-commit: 2e3a51b59ea26544303e168de8a0479915f09aa3
+diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+index 91e3743e1442..ae7c6435d7bc 100644
+--- a/fs/ntfs3/fsntfs.c
++++ b/fs/ntfs3/fsntfs.c
+@@ -358,7 +358,7 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+ 			     enum ALLOCATE_OPT opt)
+ {
+ 	int err;
+-	CLST alen = 0;
++	CLST alen;
+ 	struct super_block *sb = sbi->sb;
+ 	size_t alcn, zlen, zeroes, zlcn, zlen2, ztrim, new_zlen;
+ 	struct wnd_bitmap *wnd = &sbi->used.bitmap;
+@@ -370,13 +370,15 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+ 		if (!zlen) {
+ 			err = ntfs_refresh_zone(sbi);
+ 			if (err)
+-				goto out;
++				goto up_write;
++
+ 			zlen = wnd_zone_len(wnd);
+ 		}
+ 
+ 		if (!zlen) {
+ 			ntfs_err(sbi->sb, "no free space to extend mft");
+-			goto out;
++			err = -ENOSPC;
++			goto up_write;
+ 		}
+ 
+ 		lcn = wnd_zone_bit(wnd);
+@@ -385,12 +387,11 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+ 		wnd_zone_set(wnd, lcn + alen, zlen - alen);
+ 
+ 		err = wnd_set_used(wnd, lcn, alen);
+-		if (err) {
+-			up_write(&wnd->rw_lock);
+-			return err;
+-		}
++		if (err)
++			goto up_write;
++
+ 		alcn = lcn;
+-		goto out;
++		goto space_found;
+ 	}
+ 	/*
+ 	 * 'Cause cluster 0 is always used this value means that we should use
+@@ -404,15 +405,17 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+ 
+ 	alen = wnd_find(wnd, len, lcn, BITMAP_FIND_MARK_AS_USED, &alcn);
+ 	if (alen)
+-		goto out;
++		goto space_found;
+ 
+ 	/* Try to use clusters from MftZone. */
+ 	zlen = wnd_zone_len(wnd);
+ 	zeroes = wnd_zeroes(wnd);
+ 
+ 	/* Check too big request */
+-	if (len > zeroes + zlen || zlen <= NTFS_MIN_MFT_ZONE)
+-		goto out;
++	if (len > zeroes + zlen || zlen <= NTFS_MIN_MFT_ZONE) {
++		err = -ENOSPC;
++		goto up_write;
++	}
+ 
+ 	/* How many clusters to cat from zone. */
+ 	zlcn = wnd_zone_bit(wnd);
+@@ -431,22 +434,22 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+ 	/* Allocate continues clusters. */
+ 	alen = wnd_find(wnd, len, 0,
+ 			BITMAP_FIND_MARK_AS_USED | BITMAP_FIND_FULL, &alcn);
+-
+-out:
+-	if (alen) {
+-		err = 0;
+-		*new_len = alen;
+-		*new_lcn = alcn;
+-
+-		ntfs_unmap_meta(sb, alcn, alen);
+-
+-		/* Set hint for next requests. */
+-		if (!(opt & ALLOCATE_MFT))
+-			sbi->used.next_free_lcn = alcn + alen;
+-	} else {
++	if (!alen) {
+ 		err = -ENOSPC;
++		goto up_write;
+ 	}
+ 
++space_found:
++	err = 0;
++	*new_len = alen;
++	*new_lcn = alcn;
++
++	ntfs_unmap_meta(sb, alcn, alen);
++
++	/* Set hint for next requests. */
++	if (!(opt & ALLOCATE_MFT))
++		sbi->used.next_free_lcn = alcn + alen;
++up_write:
+ 	up_write(&wnd->rw_lock);
+ 	return err;
+ }
 -- 
 2.25.1
 
