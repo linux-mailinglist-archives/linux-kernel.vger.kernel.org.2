@@ -2,249 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96803402392
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766B1402396
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233577AbhIGGpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhIGGpH (ORCPT
+        id S234338AbhIGGtz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 02:49:55 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:52925 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231429AbhIGGty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:45:07 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EF7C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 23:44:01 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id i21so17658009ejd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+0yV73yugHctKc1JNqIqYe9mfeeNW+P1D/CDrX11Wl0=;
-        b=f2RYl4pIpf0smXekMD5ZlYtxCjbS/DeYjhHevg9IzHBvmV8f4o3lms+du7GQmFmOvf
-         NVgxno8Lb/R/nccaWMoOPpRs+ONw+ftzB13/2ADVcvZLLsUnsiWFillu/nScNe6ZcIxC
-         CZuzTBrDRrsfYS1TrkU9ulm34DnYX+Psjf9A5xooQX7odF8kK9ZudHozV6Ks0NtWj3ln
-         e8DJvmKudtx+NcGSUYhsGpOaJ/eyxx/cCZYOEqPMS0Htn3LIfxBuvHExVwzrNsSGY6x+
-         zOUlYAaECZXnQGYy2pWtnv2XfCofVNXs9gBfQKX6Ac5yvxav/INPpguU222w3DSenFi9
-         9FpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+0yV73yugHctKc1JNqIqYe9mfeeNW+P1D/CDrX11Wl0=;
-        b=ab7k1rk+RaxIkHZPLN2OwanJWWUGeG62jKKd4Y1Wpx4NtcQKk/8scNIRmojFjrf8ji
-         V4DrDiZbGKCoy1mpMZSK9DVP6q4V7e10IgwYxVPMEMH72Z8/NYJ0pVxTLHO1tKKVwN+N
-         CLmkjkwab1ZRlGTRy/3/HsIOCfX+b8aaQYVE5jejG9Rpxb1wDnJUxZ7CXP5bStEHR6Jd
-         3oB5AwAV6v9syoKdN7osxisNlXfmIJDVzgWdQVK4W1lw+jpMEemSdDV2HWr276N4Okqu
-         kdJJKYXmqjieLHTPEpjZqigwl9xYHsKwudYhb/Mrxyr6UJYAuhoFwqT2jCeuWR3bw/SV
-         m3fw==
-X-Gm-Message-State: AOAM530Oh6PuJmecHdeTZ6XBcUXrflNFXy3sMq70vngP69x0GAY3slQZ
-        d47eO/oZMZm61K/oRseu8If94c+1bOfrI+orkFdKcA==
-X-Google-Smtp-Source: ABdhPJzTow8KcEgZWZfSUFNUklXrpg3XO5CLfU20EPKuRc6BggrkrVhmqm9/ZmMrludlHNZFbq4GGZjWmUsG0MYqv0M=
-X-Received: by 2002:a17:906:681:: with SMTP id u1mr16884095ejb.499.1630997039539;
- Mon, 06 Sep 2021 23:43:59 -0700 (PDT)
+        Tue, 7 Sep 2021 02:49:54 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D7FCF60007;
+        Tue,  7 Sep 2021 06:48:45 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 08:48:44 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
+        stable@kernel.org
+Subject: Re: [PATCH V5] mtd: rawnand: qcom: Update code word value for raw
+ read
+Message-ID: <20210907084844.1ad92ef1@xps13>
+In-Reply-To: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
+References: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210906125449.112564040@linuxfoundation.org>
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 7 Sep 2021 12:13:47 +0530
-Message-ID: <CA+G9fYtHN5rMWxEYaacmWp2uw2AX6i6K7_ft807fpH6BKPSfqA@mail.gmail.com>
-Subject: Re: [PATCH 5.13 00/24] 5.13.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sept 2021 at 18:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.13.15 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+mdalam@codeaurora.org wrote on Tue,  7 Sep 2021 12:09:31 +0530:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> From QPIC V2 onwards there is a separate register to read
+> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+> 
+> qcom_nandc_read_cw_raw() is used to read only one code word
+> at a time. If we will configure number of code words to 1 in
+> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+> its reading the last code word, since from QPIC V2 onwards
+> we are having separate register to read the last code word,
+> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+> register to fetch data from controller buffer to system
+> memory.
+> 
+> Fixes: 503ee5aad43054a26cfd5cc592a31270c05539cd ("mtd: rawnand: qcom: update last code word register")
 
-## Build
-* kernel: 5.13.15-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.13.y
-* git commit: 6fcc0c5f7322a449824de7f2641dd0b551ae68f2
-* git describe: v5.13.14-25-g6fcc0c5f7322
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
-.14-25-g6fcc0c5f7322
+Still wrong. It's 12 digits, as reported by Manivannan.
 
-## No regressions (compared to v5.13.14)
+> Cc: stable@kernel.org
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+> Changes in V5:
+> 
+>  * Incorporated "hash commit" comment from Mani.
+>  * Updated commit hash
+> 
+> Changes in V4:
+> 
+>  * Incorporated "Change log" comment from Miquèl
+>  * Updated change log
+> 
+> Changes in V3:
+>  
+>  * Incorporated "Fixes tags are missing" comment from Miquèl
+>  * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last code word register")
+> 
+> 
+> Changes in V2:
+> 
+>  * Incorporated "stable tags are missing" comment from Miquèl
+>  * Added stable tags Cc:stable@kernel.org
+> 
+>   
+> 
+>  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index ef0bade..04e6f7b 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	int data_size1, data_size2, oob_size1, oob_size2;
+>  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
+> +	int raw_cw = cw;
+>  
+>  	nand_read_page_op(chip, page, 0, NULL, 0);
+>  	host->use_ecc = false;
+>  
+> +	if (nandc->props->qpic_v2)
+> +		raw_cw = ecc->steps - 1;
+> +
+>  	clear_bam_transaction(nandc);
+>  	set_address(host, host->cw_size * cw, page);
+> -	update_rw_regs(host, 1, true, cw);
+> +	update_rw_regs(host, 1, true, raw_cw);
+>  	config_nand_page_read(chip);
+>  
+>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+>  	}
+>  
+> -	config_nand_cw_read(chip, false, cw);
+> +	config_nand_cw_read(chip, false, raw_cw);
+>  
+>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>  	reg_off += data_size1;
 
-## No fixes (compared to v5.13.14)
 
-## Test result summary
-total: 89974, pass: 74993, fail: 1122, skip: 12954, xfail: 905
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 51 total, 51 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 35 passed, 1 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 27 total, 27 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-ca[
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Miquèl
