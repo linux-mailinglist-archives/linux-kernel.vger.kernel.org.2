@@ -2,132 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEF7402CB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD43402CBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245587AbhIGQPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:15:41 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35338 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244135AbhIGQPh (ORCPT
+        id S1343586AbhIGQQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234466AbhIGQQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:15:37 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 96512415;
-        Tue,  7 Sep 2021 19:14:27 +0300 (MSK)
+        Tue, 7 Sep 2021 12:16:28 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867B8C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:15:22 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id o124so691vsc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1631031267;
-        bh=/677Cv3P5bvchgyfuP6mrlK0Dsgo2NNOnd1aDEVqAAo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QjktKAFowwn+q8Y00od4uRHxYS8XFM7RFHPLlw9LNKN4Jx3i+SFrwalJqrRLHBrSF
-         B7RO9TQG1kDipw7g2cjd1yirJUzVIqq5vkd8P06f6mrrIqv2FcYXyUCo/N/4MhZpjA
-         FkHVw4lHqOr3TW2ZEXRTYdtQraAO059R4syB/aVI=
-Received: from [192.168.211.115] (192.168.211.115) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 7 Sep 2021 19:14:27 +0300
-Subject: Re: [PATCH v3 0/9] fs/ntfs3: Use new mount api and change some opts
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <20210829095614.50021-1-kari.argillander@gmail.com>
- <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Message-ID: <69c8ab24-9443-59ad-d48d-7765b29f28f9@paragon-software.com>
-Date:   Tue, 7 Sep 2021 19:14:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=53NoctMz48+CeLqiVC5I0V3NFwxWAgsbbnTUAzbd+hE=;
+        b=YNYxpL3byJi9/i1wxvusekdfG85rJg2iAXadc+WxFxywy4oWvjMI3uXNcyWOlxxMrS
+         EdpAOUgFjqpDIS/wwwtVDTmghSnl3ODhrbnz6soZ60h+yizjbAXAkJSf1grM7Teo2r0C
+         vhpt1WVvz11f4Tc2cRbTDwOhKqZuJEOwhTWYAF1wvFhhF0XXyndZ4w25FOcpk2hHjbB5
+         N01VZ0RdH41I+q8ndIQdwd1WcNIxYSM/6oqxKhJIjLE4udbySizWK7QbUakq4v5VKJIG
+         OjyJBm5Vl29e29rFpxmIU8FKwDKc2afSbUPg+H8twGg1Pum+7VMJAOfkHMyxuVefxNlN
+         fl0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=53NoctMz48+CeLqiVC5I0V3NFwxWAgsbbnTUAzbd+hE=;
+        b=EAg8nD/yIWHnM5Us5Cm8cqgg9gebW9EWp8FeTvyu9uurfuW8Q+R9ZA7bVaJVH94QXa
+         ieSB+8RR0UMbFFDM5Wh4fUlwDlFX462cvjuH+86yBxvOyigHrJPMSrD0ChMzeiec8C3e
+         4sm9AmzE9csZNLFP+jFvUT7EfnUlONtLHJIg/PzgG3AMQ0XcSekeaPWHr8kBN3diglpp
+         2siSjUkjby9Bz/6USAfA5sEvEvWHT8X2qNxIU6WJIdiKYoZElzi8rDQ5BdpN5qx1r97v
+         wMO1wjcy3cf1B+nVqC+yn2BvVOyVbGPtIoQ7GbPzHoE/lW0qqTm3U6+ZuXvHmZm8ErQz
+         1qkg==
+X-Gm-Message-State: AOAM531wN0UboNTo4jwX8B2O48iBaS2EvbJQA3ca9oDXeIV+rauYJyMW
+        7kTubdxwaTW3LbNm/MduUsqcUSsTmGQKAiU6DQHxsA==
+X-Google-Smtp-Source: ABdhPJyPH1MEpxcXQlJbdJBRBkP9ThCEHiUxWntffEiOQeHb6NiMZUvRWykC9miCsBLizeK2Q+vVmPB6HEfXvgs4zYY=
+X-Received: by 2002:a67:f74a:: with SMTP id w10mr9939395vso.13.1631031306233;
+ Tue, 07 Sep 2021 09:15:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.115]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-13-rananta@google.com>
+ <20210903110514.22x3txynin5hg46z@gator.home> <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
+ <20210906063900.t6rbykpwyau5u32s@gator.home>
+In-Reply-To: <20210906063900.t6rbykpwyau5u32s@gator.home>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Tue, 7 Sep 2021 09:14:54 -0700
+Message-ID: <CAJHc60xEj3Xw9wcSbxCUXg0GE5+NTadQeO17f6hpa9VqQ1o5tg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU migration
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 5, 2021 at 11:39 PM Andrew Jones <drjones@redhat.com> wrote:
+>
+> On Fri, Sep 03, 2021 at 01:53:27PM -0700, Raghavendra Rao Ananta wrote:
+> > On Fri, Sep 3, 2021 at 4:05 AM Andrew Jones <drjones@redhat.com> wrote:
+> > >
+> > > On Wed, Sep 01, 2021 at 09:14:12PM +0000, Raghavendra Rao Ananta wrote:
+> > > > Since the timer stack (hardware and KVM) is per-CPU, there
+> > > > are potential chances for races to occur when the scheduler
+> > > > decides to migrate a vCPU thread to a different physical CPU.
+> > > > Hence, include an option to stress-test this part as well by
+> > > > forcing the vCPUs to migrate across physical CPUs in the
+> > > > system at a particular rate.
+> > > >
+> > > > Originally, the bug for the fix with commit 3134cc8beb69d0d
+> > > > ("KVM: arm64: vgic: Resample HW pending state on deactivation")
+> > > > was discovered using arch_timer test with vCPU migrations and
+> > > > can be easily reproduced.
+> > > >
+> > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > > ---
+> > > >  .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
+> > > >  1 file changed, 107 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > > index 1383f33850e9..de246c7afab2 100644
+> > > > --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > > +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > > @@ -14,6 +14,8 @@
+> > > >   *
+> > > >   * The test provides command-line options to configure the timer's
+> > > >   * period (-p), number of vCPUs (-n), and iterations per stage (-i).
+> > > > + * To stress-test the timer stack even more, an option to migrate the
+> > > > + * vCPUs across pCPUs (-m), at a particular rate, is also provided.
+> > > >   *
+> > > >   * Copyright (c) 2021, Google LLC.
+> > > >   */
+> > > > @@ -24,6 +26,8 @@
+> > > >  #include <pthread.h>
+> > > >  #include <linux/kvm.h>
+> > > >  #include <linux/sizes.h>
+> > > > +#include <linux/bitmap.h>
+> > > > +#include <sys/sysinfo.h>
+> > > >
+> > > >  #include "kvm_util.h"
+> > > >  #include "processor.h"
+> > > > @@ -41,12 +45,14 @@ struct test_args {
+> > > >       int nr_vcpus;
+> > > >       int nr_iter;
+> > > >       int timer_period_ms;
+> > > > +     int migration_freq_ms;
+> > > >  };
+> > > >
+> > > >  static struct test_args test_args = {
+> > > >       .nr_vcpus = NR_VCPUS_DEF,
+> > > >       .nr_iter = NR_TEST_ITERS_DEF,
+> > > >       .timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
+> > > > +     .migration_freq_ms = 0,         /* Turn off migrations by default */
+> > >
+> > > I'd rather we enable good tests like these by default.
+> > >
+> > Well, that was my original idea, but I was concerned about the ease
+> > for diagnosing
+> > things since it'll become too noisy. And so I let it as a personal
+> > preference. But I can
+> > include it back and see how it goes.
+>
+> Break the tests into two? One run without migration and one with. If
+> neither work, then we can diagnose the one without first, possibly
+> avoiding the need to diagnose the one with.
+>
+Right. I guess that's where the test's migration switch can come in handy.
+Let's turn migration ON by default. If we see a failure, we can turn
+OFF migration
+and run the tests. I'll try to include some verbose printing for diagnosability.
 
-
-On 07.09.2021 10:36, Kari Argillander wrote:
-> On Sun, Aug 29, 2021 at 12:56:05PM +0300, Kari Argillander wrote:
->> See V2 if you want:
->> lore.kernel.org/ntfs3/20210819002633.689831-1-kari.argillander@gmail.com
->>
->> NLS change is now blocked when remounting. Christoph also suggest that
->> we block all other mount options, but I have tested a couple and they
->> seem to work. I wish that we do not block any other than NLS because
->> in theory they should work. Also Konstantin can comment about this.
->>
->> I have not include reviewed/acked to patch "Use new api for mounting"
->> because it change so much. I have also included three new patch to this
->> series:
->> 	- Convert mount options to pointer in sbi
->> 		So that we do not need to initiliaze whole spi in 
->> 		remount.
->> 	- Init spi more in init_fs_context than fill_super
->> 		This is just refactoring. (Series does not depend on this)
->> 	- Show uid/gid always in show_options()
->> 		Christian Brauner kinda ask this. (Series does not depend
->> 		on this)
->>
->> Series is ones again tested with kvm-xfstests. Every commit is build
->> tested.
-> 
-> I will send v4 within couple of days. It will address issues what Pali
-> says in patch 8/9. Everything else should be same at least for now. Is
-> everything else looking ok?
-> 
-
-Yes, everything else seems good. 
-We tested patches locally - no regression was found.
-
->>
->> v3:
->> 	- Add patch "Convert mount options to pointer in sbi"
->> 	- Add patch "Init spi more in init_fs_context than fill_super"
->> 	- Add patch "Show uid/gid always in show_options"
->> 	- Patch "Use new api for mounting" has make over
->> 	- NLS loading is not anymore possible when remounting
->> 	- show_options() iocharset printing is fixed
->> 	- Delete comment that testing should be done with other
->> 	  mount options.
->> 	- Add reviewed/acked-tags to 1,2,6,8 
->> 	- Rewrite this cover
->> v2:
->> 	- Rewrite this cover leter
->> 	- Reorder noatime to first patch
->> 	- NLS loading with string
->> 	- Delete default_options function
->> 	- Remove remount flags
->> 	- Rename no_acl_rules mount option
->> 	- Making code cleaner
->> 	- Add comment that mount options should be tested
->>
->> Kari Argillander (9):
->>   fs/ntfs3: Remove unnecesarry mount option noatime
->>   fs/ntfs3: Remove unnecesarry remount flag handling
->>   fs/ntfs3: Convert mount options to pointer in sbi
->>   fs/ntfs3: Use new api for mounting
->>   fs/ntfs3: Init spi more in init_fs_context than fill_super
->>   fs/ntfs3: Make mount option nohidden more universal
->>   fs/ntfs3: Add iocharset= mount option as alias for nls=
->>   fs/ntfs3: Rename mount option no_acl_rules > (no)acl_rules
->>   fs/ntfs3: Show uid/gid always in show_options()
->>
->>  Documentation/filesystems/ntfs3.rst |  10 +-
->>  fs/ntfs3/attrib.c                   |   2 +-
->>  fs/ntfs3/dir.c                      |   8 +-
->>  fs/ntfs3/file.c                     |   4 +-
->>  fs/ntfs3/inode.c                    |  12 +-
->>  fs/ntfs3/ntfs_fs.h                  |  26 +-
->>  fs/ntfs3/super.c                    | 486 +++++++++++++++-------------
->>  fs/ntfs3/xattr.c                    |   2 +-
->>  8 files changed, 284 insertions(+), 266 deletions(-)
->>
->> -- 
->> 2.25.1
->>
->>
+Regards,
+Raghavendra
+> Thanks,
+> drew
+>
