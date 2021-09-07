@@ -2,124 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D991D4021AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 02:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3474021F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhIGAaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 20:30:22 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48034
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229975AbhIGAaV (ORCPT
+        id S235378AbhIGApr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 20:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhIGApp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 20:30:21 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2CBF640195
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 00:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630974555;
-        bh=vwY0GyREwDxUyu6PmgoJJAbASD5dqYVwYvhZbAA80bQ=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=L6p/QLlYOOavPpe9akzgo06jGYjqUBMdBvzsP0/RMTu59+LG77cjJaPv5wHV2tAy9
-         jgGOGgPL17LQsqAC4nfwTgtuGNt3Rj0DTrz0sqdjJvvq5acjzRFJkOsyiahMmWQwvC
-         VR763VhLfFfhPOMFhJ68OyfICo7fa4zHRlFmpZfSsz55b2tk5C+3IKKnPHiutMoKki
-         dWupeIpu4NwcRq7zWa7b8UzoaZc3qPyseUqX+XYV5hiPO/DIy2law22wz6dinOtLqw
-         cT/tHerxKECQMOqCLLsLZpoLrRYPqo77IZAywlZ8/RgmQSHTaGw0adDXt/5qeamoyE
-         PKB2gh5rLcixw==
-Received: by mail-wm1-f72.google.com with SMTP id m22-20020a7bcb96000000b002f7b840d9dcso492335wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 17:29:15 -0700 (PDT)
+        Mon, 6 Sep 2021 20:45:45 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C93AC061575;
+        Mon,  6 Sep 2021 17:44:40 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id i13so8333993ilm.4;
+        Mon, 06 Sep 2021 17:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=vDxr7MTqqKSUfCFqjA+zNhlH9fpaOeP/gTRYU5+BByc=;
+        b=mtWaSwNow04g6vRuxJL3IYZcg4RrThTXMe2SjTc0NRU0WawPXPqTcFpOHdTNnrPBrw
+         KubpkymSbTRaXwcv5shzhtY0HtC174ucUG+dGRiuwAh6d6Fyjs7RfstFhXlthFmo4+R5
+         +mS/9btLHLAkHEwFUegVBw+3sRD7pMGvsBarC3WB/2yRVOG5l8CSsnflsIYgoCk4cLD4
+         Esb323nR5oK32sEpqPUVXbuJQ9xYNFtCuxiGfS5O3Fyz9WEXsv3bOaQlwFvAhvKEJn9j
+         uZMnlpsBWG3B/Uu/3fVHpYLpCy+R6XfKG6p8Hsv1yxSqxnBP6NvIXoDhlnGv9yORphne
+         0NUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vwY0GyREwDxUyu6PmgoJJAbASD5dqYVwYvhZbAA80bQ=;
-        b=gIEeKkxTcNKSCEaT0x3dTZ34jMq3yFk7vtqMr3ODWovoMAtQFlUT+YKotoka1IrCv8
-         /8YqgD5rBgO74vfZoOSX4mFvO0ScPHnRx7EnE5jwd/dByDZuIusB0Ai7v/9CeEHKbpZO
-         AbSfgrilSJoVewcsrBfmpy3WOQXZzFnuSDuE/jjJnjkc21UTMmBbO6u/dJBVSY5N3anP
-         cFmPxfutRNWbtXE3lV5wOccStlpPnFRNfloz06vg62NR/RyzMuvcXkye2LRk/BTBg2fU
-         OnvS2NDYP9dlkvmeV7uG3o2iTvmxS2vPZL5QkCApyY4jUy4R09M5qq6TcqSPy5GJ77Kp
-         U+AQ==
-X-Gm-Message-State: AOAM533B7FocdODtKvkUGAdj374Rg//yJEYvEpZuhOGvj9Et8tlP6ds5
-        6q2tqwi/iaCC0/0WnBRKoUNtJnkC28j5pVFPMSo67e05aghA5kRC51AAZ5ExG43dVrML36ljXjD
-        BAY1Kzh1fggBchLYvRGHmikfEWCgHt8ED4i9YCODHZQ==
-X-Received: by 2002:a1c:7f83:: with SMTP id a125mr560905wmd.166.1630974554681;
-        Mon, 06 Sep 2021 17:29:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxw5ZhSl97K++iKhqoc8ciIYj2y61O9Fo1Y5YxRxVUXw37B3lEDFeDmUZMsTDBbABmB+MmryA==
-X-Received: by 2002:a1c:7f83:: with SMTP id a125mr560899wmd.166.1630974554402;
-        Mon, 06 Sep 2021 17:29:14 -0700 (PDT)
-Received: from localhost ([2a01:4b00:85fd:d700:3349:7876:92a0:e08a])
-        by smtp.gmail.com with ESMTPSA id l16sm6878608wrh.44.2021.09.06.17.29.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 17:29:13 -0700 (PDT)
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To:     linux-riscv@lists.infradead.org
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: set default pm_power_off to NULL
-Date:   Tue,  7 Sep 2021 01:28:47 +0100
-Message-Id: <20210907002847.111633-1-dimitri.ledkov@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=vDxr7MTqqKSUfCFqjA+zNhlH9fpaOeP/gTRYU5+BByc=;
+        b=ti0I1TLrc+rnzYCLT7X1WDY9jYlIpP4PdyENjL7a4PPNkp0jwnLhCrqhZeaE5cDb92
+         kpZQzOc7FPCCLq96WGchUCkuX99wMXlWDycnUM78YlGYhX1gq9F06Arbm/4aGdqcgnJO
+         Ixs/KJ3IPRJMlVL85FaLb4OjEIazzJ1StKiNWIH195rZfBh4UUNgulSV4thB0w6Tlp8V
+         2C7I3YNtV6uuURbBxqvZxbXx2ui3acVMy10EL8zqK4SEe3sAWIbZINqFRBYvsVK679UY
+         KbnhXBeUmPHbJNUnpjzIq+D4ZwLVuboSGMRm7rPCpP0TwgME5WGhlvG7AhX+FxzYMmd8
+         MPWQ==
+X-Gm-Message-State: AOAM532UIo5jIRUcXhRQWDaCUHHxpYlbTDpFUVk3peC+8orKvY+aLbBZ
+        p4vdMURmTF94wJNNCl6unFELe1MXBkbQlg8y3mlIygNMWgo=
+X-Google-Smtp-Source: ABdhPJy/htOxPBxIiFnZPv0S6mtQPU4yeiZsk+VfBn26t+FduT8dPFuTSpL6xF6PBw8EOSahJ7JNp7D3uGHyw8d7aBk=
+X-Received: by 2002:a92:6a02:: with SMTP id f2mr7976160ilc.19.1630975479973;
+ Mon, 06 Sep 2021 17:44:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+ <20210906122747.GG3379@suse.cz> <CABdVr8Rfd3jXvaa_GYzSqpqUs3Fy7AVHou5z8vHXBhn-YenZfg@mail.gmail.com>
+In-Reply-To: <CABdVr8Rfd3jXvaa_GYzSqpqUs3Fy7AVHou5z8vHXBhn-YenZfg@mail.gmail.com>
+From:   Baptiste Lepers <baptiste.lepers@gmail.com>
+Date:   Tue, 7 Sep 2021 10:44:17 +1000
+Message-ID: <CABdVr8SfdsxmfgBPBbt70Ci8C=a+8__2f5AeZ7KnpQ6-X6dg7w@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in btrfs_record_root_in_trans
+To:     dsterba@suse.cz, Baptiste Lepers <baptiste.lepers@gmail.com>,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set pm_power_off to NULL like on all other architectures, check if it
-is set in machine_halt() and machine_power_off() and fallback to
-default_power_off if no other power driver got registered.
+No, they need to be between the reads to have an effect. See
+https://www.kernel.org/doc/Documentation/memory-barriers.txt =C2=A7SMP
+BARRIER PAIRING ("When dealing with CPU-CPU interactions..."). You
+will see that the barriers are always between the ordered reads and
+not before.
 
-This brings riscv architecture inline with all other architectures,
-and allows to reuse exiting power drivers unmodified.
+I think that Paul, the barrier guru, can confirm that the barrier was
+misplaced in the original code? :)
 
-Kernels without legacy SBI v0.1 extensions (CONFIG_RISCV_SBI_V01 is
-not set), do not set pm_power_off to sbi_shutdown(). There is no
-support for SBI v0.3 system reset extension either. This prevents
-using gpio_poweroff on SiFive HiFive Unmatched.
 
-Tested on SiFive HiFive unmatched, with a dtb specifying gpio-poweroff
-node and kernel complied without CONFIG_RISCV_SBI_V01.
-
-BugLink: https://bugs.launchpad.net/bugs/1942806
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
----
- arch/riscv/kernel/reset.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/arch/riscv/kernel/reset.c b/arch/riscv/kernel/reset.c
-index ee5878d968..9c842c4168 100644
---- a/arch/riscv/kernel/reset.c
-+++ b/arch/riscv/kernel/reset.c
-@@ -12,7 +12,7 @@ static void default_power_off(void)
- 		wait_for_interrupt();
- }
- 
--void (*pm_power_off)(void) = default_power_off;
-+void (*pm_power_off)(void) = NULL;
- EXPORT_SYMBOL(pm_power_off);
- 
- void machine_restart(char *cmd)
-@@ -23,10 +23,16 @@ void machine_restart(char *cmd)
- 
- void machine_halt(void)
- {
--	pm_power_off();
-+	if (pm_power_off != NULL)
-+		pm_power_off();
-+	else
-+		default_power_off();
- }
- 
- void machine_power_off(void)
- {
--	pm_power_off();
-+	if (pm_power_off != NULL)
-+		pm_power_off();
-+	else
-+		default_power_off();
- }
--- 
-2.30.2
-
+On Tue, Sep 7, 2021 at 10:43 AM Baptiste Lepers
+<baptiste.lepers@gmail.com> wrote:
+>
+>
+>
+> On Mon, Sep 6, 2021 at 10:27 PM David Sterba <dsterba@suse.cz> wrote:
+>>
+>> On Mon, Sep 06, 2021 at 11:25:59AM +1000, Baptiste Lepers wrote:
+>> > Per comment, record_root_in_trans orders the writes of the root->state
+>> > and root->last_trans:
+>> >       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
+>> >       smp_wmb();
+>> >       root->last_trans =3D trans->transid;
+>> >
+>> > But the barrier that enforces the order on the read side is misplaced:
+>> >      smp_rmb(); <-- misplaced
+>> >      if (root->last_trans =3D=3D trans->transid &&
+>> >     <-- missing barrier here -->
+>> >             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>> >
+>> > This patches fixes the ordering and wraps the racy accesses with
+>> > READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
+>> >
+>> > Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
+>> > Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+>> > ---
+>> >  fs/btrfs/transaction.c | 7 ++++---
+>> >  1 file changed, 4 insertions(+), 3 deletions(-)
+>> >
+>> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+>> > index 14b9fdc8aaa9..a609222e6704 100644
+>> > --- a/fs/btrfs/transaction.c
+>> > +++ b/fs/btrfs/transaction.c
+>> > @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans=
+_handle *trans,
+>> >                                  (unsigned long)root->root_key.objecti=
+d,
+>> >                                  BTRFS_ROOT_TRANS_TAG);
+>> >               spin_unlock(&fs_info->fs_roots_radix_lock);
+>> > -             root->last_trans =3D trans->transid;
+>> > +             WRITE_ONCE(root->last_trans, trans->transid);
+>> >
+>> >               /* this is pretty tricky.  We don't want to
+>> >                * take the relocation lock in btrfs_record_root_in_tran=
+s
+>> > @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_=
+handle *trans,
+>> >                              struct btrfs_root *root)
+>> >  {
+>> >       struct btrfs_fs_info *fs_info =3D root->fs_info;
+>> > -     int ret;
+>> > +     int ret, last_trans;
+>> >
+>> >       if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+>> >               return 0;
+>> > @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_=
+handle *trans,
+>> >        * see record_root_in_trans for comments about IN_TRANS_SETUP us=
+age
+>> >        * and barriers
+>> >        */
+>> > +     last_trans =3D READ_ONCE(root->last_trans);
+>> >       smp_rmb();
+>> > -     if (root->last_trans =3D=3D trans->transid &&
+>> > +     if (last_trans =3D=3D trans->transid &&
+>> >           !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>>
+>> Aren't the smp_rmb barriers supposed to be used before the condition?
+>
+>
+> No, they need to be between the reads to have an effect. See  https://www=
+.kernel.org/doc/Documentation/memory-barriers.txt =C2=A7SMP BARRIER PAIRING=
+ ("When dealing with CPU-CPU interactions..."). You will see that the barri=
+ers are always between the ordered reads and not before.
+>
+> I think that Paul, the barrier guru, can confirm that the barrier was mis=
+placed in the original code? :)
