@@ -2,267 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102AC40237A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A99402382
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhIGGeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        id S233233AbhIGGiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhIGGeo (ORCPT
+        with ESMTP id S231960AbhIGGiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:34:44 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F4AC061575;
-        Mon,  6 Sep 2021 23:33:39 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id k20-20020a4ad114000000b0029133123994so2621629oor.4;
-        Mon, 06 Sep 2021 23:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/LB2U8NEBFUD3pp0aKX8ymX9XGGu9141PkuAhyzknf4=;
-        b=P/7Qn/LmhaD/Md3GvxZAK492CAEz7cIZvfvT3RaW8nC4oJ7y0480W1oc8ZvkCjxTIY
-         ZKLS8Pl4ZE+CxEIXLzHO46wXKmvFswN81h4o71LhPhMjnRQGAvBZZ6cS3S0pDLB9PngA
-         FZzplllrK4eHX2x0etV0oaDWs0QRsZWRgUl/KO6WF+YfhkTMrpMEg4oV43UAn8/nhoFe
-         cZvNWMUMtXpCRcP/jUkQOmWHwk5PjTvBUY6zPQGUnuSXaBkFxQecEgmB7y3ENBM0yEQp
-         QQccBGvD/W3xUrt76u8r3Q4cDp5gM0dWFpabnfZSUSUkzq50s/RAKahmOJdpm5miroBi
-         e/Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=/LB2U8NEBFUD3pp0aKX8ymX9XGGu9141PkuAhyzknf4=;
-        b=kBpN+1axjq2PKU3nlvCzlCeG7gd+53zJjZNc5c7+B+1Cma7ClzJXYDp+eVOAFDIptL
-         HBY24NBbBga2OsrrXDPe2svhgN2xXfvGjJ8Jmp8BLpyELn/xLpP5xMtqKaKbRdtIBUSO
-         yaiF5S7w6QZuKvpnmzgsB8l+WUllyj6ymWzH8wUCCbuPBbNhb3MNr7Lw4fZjjaWZZ1wE
-         PpVY7+agQkP3ui6sSwU5JN4g7DidrxYYKcP1T1/6HUFD2I0985f1h7LmfwbEojEqy6Db
-         IImYSzGpi/mx51tpUOyDOtlbXAj7jIcfn+Gf+HBinss6upN+cUcqz2IlHmBPWrnAM9Cp
-         fdlg==
-X-Gm-Message-State: AOAM530ENexCvEh70ohXeHrO0jDd7rDFRhVfycKbD642EcHG3PJiVk09
-        lWd73LIEkt2sd6r0b+Vr4a4=
-X-Google-Smtp-Source: ABdhPJzw7uF8GiW9oNcQj3tWdqrgX76SLd9blR0LJDfZe3X01nprjW0cYYlh+Ui3YH4RdRV/Z5qJJQ==
-X-Received: by 2002:a4a:e60e:: with SMTP id f14mr16443219oot.84.1630996418588;
-        Mon, 06 Sep 2021 23:33:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g8sm2262268otk.34.2021.09.06.23.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 23:33:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2] Input: analog: Always use ktime functions
-Date:   Mon,  6 Sep 2021 23:33:35 -0700
-Message-Id: <20210907063335.2837366-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        Tue, 7 Sep 2021 02:38:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7490C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 23:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YQOY8UMKPVMa5zT85FVHWuEJT2tSvdV0m2cYLg8PbJ8=; b=NHKK2aK0sWEg1VGGk06VKOiB81
+        3sU2KDlUBSmz24IigHPbUUc3/yDUdtcdVsCrGD7zGp0a+ui8wsZ4MBccqMP1im9fMn8ylEr4ZBNKt
+        rrf15zZ/3OAZa2WhkvFdRwnQ+FZ9ZIsxKA6X8cXbGXcBrOcCJjLhcb1tSCjIZqZBYAmdyQjPwBX1z
+        VP8nWYgP/sOrWbbFWb8qcfh1f2sbYf43Duw0Kn/r8HGb9M0cFldpe3brXlLUGtq0/SYN3pA/kpA5R
+        hNcHYMfrcr5yXBIhyvZyjpX5Tvz6UMhsx4I3nLETLvmWu7dnFeyAqRgsb8T9u1YOq9uFbUvGU6l32
+        uBcwunCQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNUhZ-007bAp-Dm; Tue, 07 Sep 2021 06:35:55 +0000
+Date:   Tue, 7 Sep 2021 07:35:25 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lukas Prediger <lumip@lumip.de>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change
+ detection
+Message-ID: <YTcILRYw/AKen0X4@infradead.org>
+References: <20210829143735.512146-1-lumip@lumip.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210829143735.512146-1-lumip@lumip.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-m68k, mips, s390, and sparc allmodconfig images fail to build with the
-following error.
+> +static int cdrom_ioctl_timed_media_change(struct cdrom_device_info *cdi,
+> +		unsigned long arg)
+> +{
+> +	int ret;
+> +	struct cdrom_timed_media_change_info __user *info;
+> +	struct cdrom_timed_media_change_info tmp_info;
+> +
+> +	if (!CDROM_CAN(CDC_MEDIA_CHANGED))
+> +		return -ENOSYS;
+> +
+> +	info = (struct cdrom_timed_media_change_info __user *)arg;
+> +	cd_dbg(CD_DO_IOCTL, "entering CDROM_TIMED_MEDIA_CHANGE\n");
+> +
+> +	ret = cdrom_ioctl_media_changed(cdi, CDSL_CURRENT);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (copy_from_user(&tmp_info, info, sizeof(tmp_info)) != 0)
+> +		return -EFAULT;
+> +
+> +	tmp_info.has_changed = ((tmp_info.last_media_change - cdi->last_media_change_ms) < 0);
 
-drivers/input/joystick/analog.c:160:2: error:
-	#warning Precise timer not defined for this architecture.
+Overly long line here, but more importantly this is much cleaner with
+a good old if:
 
-Remove architecture specific time handling code and always use ktime
-functions to determine time deltas. Also remove the now useless use_ktime
-kernel parameter.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Drop helper functions and use ktime_get() and ktime_sub() directly
-    Drop 'speed' variable and use NSEC_PER_MSEC directly
+	if (tmp_info.last_media_change - cdi->last_media_change_ms) < 0)
+		tmp_info.has_changed = 1;
 
- drivers/input/joystick/analog.c | 103 ++++----------------------------
- 1 file changed, 11 insertions(+), 92 deletions(-)
+> +{
+> +	__s64	last_media_change;	/* Timestamp of the last detected media
+> +					 * change in ms. May be set by caller, updated
+> +					 * upon successful return of ioctl.
+> +					 */
+> +	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
 
-diff --git a/drivers/input/joystick/analog.c b/drivers/input/joystick/analog.c
-index f798922a4598..a9ec41f48068 100644
---- a/drivers/input/joystick/analog.c
-+++ b/drivers/input/joystick/analog.c
-@@ -28,10 +28,6 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--static bool use_ktime = true;
--module_param(use_ktime, bool, 0400);
--MODULE_PARM_DESC(use_ktime, "Use ktime for measuring I/O speed");
--
- /*
-  * Option parsing.
-  */
-@@ -110,7 +106,6 @@ struct analog_port {
- 	char cooked;
- 	int bads;
- 	int reads;
--	int speed;
- 	int loop;
- 	int fuzz;
- 	int axes[4];
-@@ -119,66 +114,6 @@ struct analog_port {
- 	int axtime;
- };
- 
--/*
-- * Time macros.
-- */
--
--#ifdef __i386__
--
--#include <linux/i8253.h>
--
--#define GET_TIME(x)	do { if (boot_cpu_has(X86_FEATURE_TSC)) x = (unsigned int)rdtsc(); else x = get_time_pit(); } while (0)
--#define DELTA(x,y)	(boot_cpu_has(X86_FEATURE_TSC) ? ((y) - (x)) : ((x) - (y) + ((x) < (y) ? PIT_TICK_RATE / HZ : 0)))
--#define TIME_NAME	(boot_cpu_has(X86_FEATURE_TSC)?"TSC":"PIT")
--static unsigned int get_time_pit(void)
--{
--        unsigned long flags;
--        unsigned int count;
--
--        raw_spin_lock_irqsave(&i8253_lock, flags);
--        outb_p(0x00, 0x43);
--        count = inb_p(0x40);
--        count |= inb_p(0x40) << 8;
--        raw_spin_unlock_irqrestore(&i8253_lock, flags);
--
--        return count;
--}
--#elif defined(__x86_64__)
--#define GET_TIME(x)	do { x = (unsigned int)rdtsc(); } while (0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"TSC"
--#elif defined(__alpha__) || defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_PPC) || defined(CONFIG_RISCV)
--#define GET_TIME(x)	do { x = get_cycles(); } while (0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"get_cycles"
--#else
--#define FAKE_TIME
--static unsigned long analog_faketime = 0;
--#define GET_TIME(x)     do { x = analog_faketime++; } while(0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"Unreliable"
--#warning Precise timer not defined for this architecture.
--#endif
--
--static inline u64 get_time(void)
--{
--	if (use_ktime) {
--		return ktime_get_ns();
--	} else {
--		unsigned int x;
--		GET_TIME(x);
--		return x;
--	}
--}
--
--static inline unsigned int delta(u64 x, u64 y)
--{
--	if (use_ktime)
--		return y - x;
--	else
--		return DELTA((unsigned int)x, (unsigned int)y);
--}
--
- /*
-  * analog_decode() decodes analog joystick data and reports input events.
-  */
-@@ -241,11 +176,11 @@ static int analog_cooked_read(struct analog_port *port)
- 	int i, j;
- 
- 	loopout = (ANALOG_LOOP_TIME * port->loop) / 1000;
--	timeout = ANALOG_MAX_TIME * port->speed;
-+	timeout = ANALOG_MAX_TIME * NSEC_PER_MSEC;
- 
- 	local_irq_save(flags);
- 	gameport_trigger(gameport);
--	now = get_time();
-+	now = ktime_get();
- 	local_irq_restore(flags);
- 
- 	start = now;
-@@ -258,16 +193,16 @@ static int analog_cooked_read(struct analog_port *port)
- 
- 		local_irq_disable();
- 		this = gameport_read(gameport) & port->mask;
--		now = get_time();
-+		now = ktime_get();
- 		local_irq_restore(flags);
- 
--		if ((last ^ this) && (delta(loop, now) < loopout)) {
-+		if ((last ^ this) && (ktime_sub(now, loop) < loopout)) {
- 			data[i] = last ^ this;
- 			time[i] = now;
- 			i++;
- 		}
- 
--	} while (this && (i < 4) && (delta(start, now) < timeout));
-+	} while (this && (i < 4) && (ktime_sub(now, start) < timeout));
- 
- 	this <<= 4;
- 
-@@ -275,7 +210,7 @@ static int analog_cooked_read(struct analog_port *port)
- 		this |= data[i];
- 		for (j = 0; j < 4; j++)
- 			if (data[i] & (1 << j))
--				port->axes[j] = (delta(start, time[i]) << ANALOG_FUZZ_BITS) / port->loop;
-+				port->axes[j] = (ktime_sub(time[i], start) << ANALOG_FUZZ_BITS) / port->loop;
- 	}
- 
- 	return -(this != port->mask);
-@@ -378,35 +313,19 @@ static void analog_calibrate_timer(struct analog_port *port)
- 	u64 t1, t2, t3;
- 	unsigned long flags;
- 
--	if (use_ktime) {
--		port->speed = 1000000;
--	} else {
--		local_irq_save(flags);
--		t1 = get_time();
--#ifdef FAKE_TIME
--		analog_faketime += 830;
--#endif
--		mdelay(1);
--		t2 = get_time();
--		t3 = get_time();
--		local_irq_restore(flags);
--
--		port->speed = delta(t1, t2) - delta(t2, t3);
--	}
--
- 	tx = ~0;
- 
- 	for (i = 0; i < 50; i++) {
- 		local_irq_save(flags);
--		t1 = get_time();
-+		t1 = ktime_get();
- 		for (t = 0; t < 50; t++) {
- 			gameport_read(gameport);
--			t2 = get_time();
-+			t2 = ktime_get();
- 		}
--		t3 = get_time();
-+		t3 = ktime_get();
- 		local_irq_restore(flags);
- 		udelay(i);
--		t = delta(t1, t2) - delta(t2, t3);
-+		t = ktime_sub(t2, t1) - ktime_sub(t3, t2);
- 		if (t < tx) tx = t;
- 	}
- 
-@@ -611,7 +530,7 @@ static int analog_init_port(struct gameport *gameport, struct gameport_driver *d
- 		t = gameport_read(gameport);
- 		msleep(ANALOG_MAX_TIME);
- 		port->mask = (gameport_read(gameport) ^ t) & t & 0xf;
--		port->fuzz = (port->speed * ANALOG_FUZZ_MAGIC) / port->loop / 1000 + ANALOG_FUZZ_BITS;
-+		port->fuzz = (NSEC_PER_MSEC * ANALOG_FUZZ_MAGIC) / port->loop / 1000 + ANALOG_FUZZ_BITS;
- 
- 		for (i = 0; i < ANALOG_INIT_RETRIES; i++) {
- 			if (!analog_cooked_read(port))
--- 
-2.33.0
-
+More overly long lines.  Also why is has_changed a u64 if it is used as
+a boolean flag?
