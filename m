@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE816402240
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB5B402243
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhIGCYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:24:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42239 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhIGCYI (ORCPT
+        id S232480AbhIGCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhIGCa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:24:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630981382; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=Vf+adD7w2aYCznZWbb7pqeirNPG3QO9k1TYBCSLXyEs=; b=paMfmTc3C0od+0g1cl9aw6wfCTOeo3O/pAr23VNx4h6M//oWcVnmH0Z1H/BZnO+LHJipT3R2
- kgkDRez59lMH4vWl5MfDuipsGTFyy58m1SlMWfrLTnfpD9ymSv3rvRFp0RH4H2xw9L8PteRg
- JA2XUGIf5JcWN/anxiVahSyE8U0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6136cd064d644b7d1cd2e183 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 02:23:02
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D4F6C43460; Tue,  7 Sep 2021 02:23:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 39DFEC4338F;
-        Tue,  7 Sep 2021 02:23:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 39DFEC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Jiapeng Chong'" <jiapeng.chong@linux.alibaba.com>
-Cc:     <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1630920794-81114-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1630920794-81114-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Subject: RE: [PATCH] trap: Fix warning comparing pointer to 0
-Date:   Mon, 6 Sep 2021 21:23:01 -0500
-Message-ID: <0bcb01d7a38f$48dd1c20$da975460$@codeaurora.org>
+        Mon, 6 Sep 2021 22:30:26 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9188CC061575;
+        Mon,  6 Sep 2021 19:29:20 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id r26so11002579oij.2;
+        Mon, 06 Sep 2021 19:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QS7GUVfDcM+Zq+PxXHCnRkp1yuhAzbzUijM6wRDYUU4=;
+        b=FLvjX3pPxPhhEVKMGmdil4bQL0SQHfsRsx94xIWAgHdvhny5fHy1PPUTKhMrbLTGCg
+         K7mrDngGO7KBG1liRCq+YWOH8O0auereuGgCEOvkzX5MXrRTWr/C0MjaYo3wmiNUc+fF
+         xOWSOOg+zJjxdtZw28z6XqHnoTabXRT5JyVPTD+L+YXhIqznaTlVLigWbUhmieGURoiy
+         UwNTbOaWENsgVhGEfyxy5QbzhAyRd+/nlAfNKYNtIZ4b4v2kBFr5EHcGb4YaieVVkive
+         lEVxSx9WSzO3rw2LHT0c5IMm1KMxhzL8hbZ7pNb1MIy752LVW3RDkLGFUZkClkUAfguK
+         0SDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QS7GUVfDcM+Zq+PxXHCnRkp1yuhAzbzUijM6wRDYUU4=;
+        b=PVY2KOi1rq+GJfTJO1Mf14Iuqz+JWZiIVnF0jw9oZxUwuVNhdzGD2nvnwyU92D+TVV
+         Qp2eVbuc5bDS2Nca4nQVFdMDT4LwX6ZHMEmbjgEM22jiUpHF0JI/6Cvc4igqSi4L2DOl
+         8Pv2+5xWHgSENyn4k1uZxCnyotzByp/2eY+pAqbjaWeqHyqoLnZ1Ugyzp5+CTThxALVK
+         MsKRbFfrsIu79w9yThbeH++JKfGLt7hTJzI2WhRXB0rDkZqtmGNiXK/LR0IcRkQGRtz/
+         zM+CSXtpgScvBRxW5nmdBf2JBQU+I2kbodcde7pmaZFuQHNOZnq38Bk8UqH9r4PWGNkC
+         CDQA==
+X-Gm-Message-State: AOAM531UnWQgL5rhkCf5ICLY/8JqEXHk0HIc2OypbHEqTtKkdvxSIqfQ
+        b6RNl4B8q4IiqWaKM8YejzY=
+X-Google-Smtp-Source: ABdhPJy3KvT0zURKa9k7NPooWI+L/ozTIdnO2Po8lBH/H7Tk2Jfgd1t8HuNkOiov5NeFTg4uYHCICQ==
+X-Received: by 2002:a54:4104:: with SMTP id l4mr1439362oic.126.1630981759821;
+        Mon, 06 Sep 2021 19:29:19 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 4sm1810005oil.38.2021.09.06.19.29.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 19:29:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+ <CAHk-=wjvfUpPJLbWz6Jezr4ZNjhC6j2WYi5MHUd9bjK94JC24A@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <4fa776ea-c225-157e-6321-f852393422b9@roeck-us.net>
+Date:   Mon, 6 Sep 2021 19:29:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGJRnG986NR9eU5XtbXbE4uuM19CKw0kYjg
-Content-Language: en-us
+In-Reply-To: <CAHk-=wjvfUpPJLbWz6Jezr4ZNjhC6j2WYi5MHUd9bjK94JC24A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Sent: Monday, September 6, 2021 4:33 AM
-> To: bcain@codeaurora.org
-> Cc: linux-hexagon@vger.kernel.org; linux-kernel@vger.kernel.org;
-> chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> Subject: [PATCH] trap: Fix warning comparing pointer to 0
+On 9/6/21 6:12 PM, Linus Torvalds wrote:
+> On Mon, Sep 6, 2021 at 4:49 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>>> but I'm not seeing why that one happens on sparc64, but not on arm64
+>>> or x86-64. There doesn't seem to be anything architecture-specific
+>>> anywhere in that area.
+>>>
+>>> Funky.
+>>
+>> Not really. That is because de->di_fname is always 16 bytes but size
+>> can be 48 if the node is really a link. The use of de is overloaded
+>> in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
+>> but the actual data is struct qnx4_link_info where the name is 48 bytes
+>> long. A possible fix (compile tested only) is below.
+>>
+>> I think the warning/error is only reported with gcc 11.x. Do you possibly
+>> use an older compiler for x86/arm64 ?
 > 
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> No. Literally the same exact version. All of them are
 > 
-> Fix the following coccicheck warning:
+>      gcc version 11.2.1 20210728
 > 
-> ./arch/hexagon/kernel/traps.c:138:6-7: WARNING comparing pointer to 0.
+> from F34.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> ---
->  arch/hexagon/kernel/traps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I suspect it's something about the config - a sparc64 allmodconfig
+> presumably doesn't end up having some of the things x86-64 has enabled
+> (because of different core config parameters), and then optimizes
+> differently as a result and shows the issue that way.
 > 
-> diff --git a/arch/hexagon/kernel/traps.c b/arch/hexagon/kernel/traps.c
-> index edfc35d..3b6e0de 100644
-> --- a/arch/hexagon/kernel/traps.c
-> +++ b/arch/hexagon/kernel/traps.c
-> @@ -135,7 +135,7 @@ static void do_show_stack(struct task_struct *task,
-> unsigned long *fp,
->  		}
-> 
->  		/* Attempt to continue past exception. */
-> -		if (0 == newfp) {
-> +		if (!newfp) {
->  			struct pt_regs *regs = (struct pt_regs *) (((void
-*)fp)
->  						+ 8);
+> Or something. <wild handwaving>
 > 
 
-Reviewed-by: Brian Cain <bcain@codeaurora.org>
+Looks like Arnd stumbled into the qnx4 problem before:
 
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
 
+He might have an idea how to fix it for good.
+
+Guenter
