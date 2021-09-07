@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324FB402280
+	by mail.lfdr.de (Postfix) with ESMTP id AAA29402281
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 05:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhIGDgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 23:36:43 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:39302 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230133AbhIGDgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 23:36:42 -0400
-Received: from BJHW-Mail-Ex12.internal.baidu.com (unknown [10.127.64.35])
-        by Forcepoint Email with ESMTPS id C0CA7751C5B3C291EAE1;
-        Tue,  7 Sep 2021 11:35:32 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex12.internal.baidu.com (10.127.64.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 7 Sep 2021 11:35:32 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 7 Sep 2021 11:35:32 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Jyri Sarha <jyri.sarha@iki.fi>, Tomi Valkeinen <tomba@kernel.org>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/tidss: Make use of the helper macro SET_RUNTIME_PM_OPS()
-Date:   Tue, 7 Sep 2021 11:35:26 +0800
-Message-ID: <20210907033526.1612-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S233379AbhIGDhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 23:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230133AbhIGDhq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 23:37:46 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3579EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 20:36:40 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d6so11672301wrc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 20:36:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kFELlCxACkPlVqOqccw5bz/5Ef/2jWKLWio/1Ljd534=;
+        b=MNytY5sC4yk+LE2yIrQUn4UbJewA24iX2y7cU4snKj2frfStKGIw9fmt62Wjs6mg0D
+         WsTmOnLKSRFv1bLPiM9WahCcDyjbYW3H6mVYNVOHemm/cGk1SkkMYa/xStEIsawZfICo
+         Ky0aNyy5xAZT3FqYqBIRENMy33XbOOsW5oNZ/GuwjcuALXZqmkBfRoaODP8ps1qb24HO
+         3suPmJ2xTvpkmZVBsqd2hsXA7pEVpJ0ih2oF3SgeO89HdbuMCCKvvpTKIpACrZN6ggt5
+         3R0DPxoE6kVq4ogkouS7oQVGOzejWrltmL46pBmiefuC4xRVf8nEmjVlRgUHVCgTyp+R
+         Df/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kFELlCxACkPlVqOqccw5bz/5Ef/2jWKLWio/1Ljd534=;
+        b=ZQrk4biVg6m0fNHNXUyF/O4vLsL0ZqnknixdwTFDQ3C6DhyMJ5U2BQ6kvD61CHNN9d
+         VciHs1VVF/eOqtk2CB/CyI9uEbVKqyWLilSpcPHbsYWbpf5cp0H9Ep7D8iP7YI+z2UIj
+         PVAkrfvE87hsWGZ9MpXlMlgl2QiszHAFiCHEWkSHhaDzA9Il/lyl2e2wfRIf30OBv+Ww
+         lxDRcVniEbdpNCegOO35khof6r9bZEfG3pxK1Wuq/UMWXPHG+J8zqVjUXeMsxqTnBkgM
+         rI8ac9B/gzBiyfGV7QIMNCaOKwCdYJ18n4j0izD9dfOAJo5Kh9WvLqibFGBOx/yNk+9M
+         ExAg==
+X-Gm-Message-State: AOAM533iwQUjfVDUiteXWREuQh0nnMQqe0BX7YlwKUCRHUR1odGaH9Gq
+        uPQgZRpiEaT4ojZTyTLDLlIPXdGIBRawnF/mCt3LUcXr8N019A==
+X-Google-Smtp-Source: ABdhPJw0jsRQpQYdLTeQEAq/WEySFTHLaluzVK0XmoOQYkXfHBdDEWdGDJSkJJCNVq+B7V2qp0ZSHoMCdHQuIOJCYtI=
+X-Received: by 2002:adf:f984:: with SMTP id f4mr16548430wrr.331.1630985798777;
+ Mon, 06 Sep 2021 20:36:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex05.internal.baidu.com (10.127.64.15) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex12_2021-09-07 11:35:32:812
+References: <20210907002847.111633-1-dimitri.ledkov@canonical.com>
+In-Reply-To: <20210907002847.111633-1-dimitri.ledkov@canonical.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 7 Sep 2021 09:06:27 +0530
+Message-ID: <CAAhSdy0E5x3e4mkYtL0gk6be2hZEF8KbSTP4DpWCkH_ce3AvYg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: set default pm_power_off to NULL
+To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the helper macro SET_RUNTIME_PM_OPS() instead of the verbose
-operators ".runtime_suspend/.runtime_resume", because the
-SET_RUNTIME_PM_OPS() is a nice helper macro that could be brought
-in to make code a little more concise.
+On Tue, Sep 7, 2021 at 5:59 AM Dimitri John Ledkov
+<dimitri.ledkov@canonical.com> wrote:
+>
+> Set pm_power_off to NULL like on all other architectures, check if it
+> is set in machine_halt() and machine_power_off() and fallback to
+> default_power_off if no other power driver got registered.
+>
+> This brings riscv architecture inline with all other architectures,
+> and allows to reuse exiting power drivers unmodified.
+>
+> Kernels without legacy SBI v0.1 extensions (CONFIG_RISCV_SBI_V01 is
+> not set), do not set pm_power_off to sbi_shutdown(). There is no
+> support for SBI v0.3 system reset extension either. This prevents
+> using gpio_poweroff on SiFive HiFive Unmatched.
+>
+> Tested on SiFive HiFive unmatched, with a dtb specifying gpio-poweroff
+> node and kernel complied without CONFIG_RISCV_SBI_V01.
+>
+> BugLink: https://bugs.launchpad.net/bugs/1942806
+> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2:	*Remove "#ifdef CONFIG_PM" around around runtime_suspend|resume().
-	*Make use of pm_ptr() in the assignment in tidss_platform_driver.
+Looks good to me.
 
-v1 comments link:
-	https://www.spinics.net/lists/dri-devel/msg313178.html
- 
-drivers/gpu/drm/tidss/tidss_drv.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-index d620f35688da..4366b5c798e0 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.c
-+++ b/drivers/gpu/drm/tidss/tidss_drv.c
-@@ -88,16 +88,11 @@ static int __maybe_unused tidss_resume(struct device *dev)
- 	return drm_mode_config_helper_resume(&tidss->ddev);
- }
- 
--#ifdef CONFIG_PM
--
- static const struct dev_pm_ops tidss_pm_ops = {
--	.runtime_suspend = tidss_pm_runtime_suspend,
--	.runtime_resume = tidss_pm_runtime_resume,
- 	SET_SYSTEM_SLEEP_PM_OPS(tidss_suspend, tidss_resume)
-+	SET_RUNTIME_PM_OPS(tidss_pm_runtime_suspend, tidss_pm_runtime_resume, NULL)
- };
- 
--#endif /* CONFIG_PM */
--
- /* DRM device Information */
- 
- static void tidss_release(struct drm_device *ddev)
-@@ -250,9 +245,7 @@ static struct platform_driver tidss_platform_driver = {
- 	.shutdown	= tidss_shutdown,
- 	.driver		= {
- 		.name	= "tidss",
--#ifdef CONFIG_PM
--		.pm	= &tidss_pm_ops,
--#endif
-+		.pm	= pm_ptr(&tidss_pm_ops),
- 		.of_match_table = tidss_of_table,
- 		.suppress_bind_attrs = true,
- 	},
--- 
-2.25.1
+BTW, SBI v0.3 system reset patch can be merged any day
+because SBI v0.3 spec is already released.
 
+Regards,
+Anup
+
+> ---
+>  arch/riscv/kernel/reset.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/reset.c b/arch/riscv/kernel/reset.c
+> index ee5878d968..9c842c4168 100644
+> --- a/arch/riscv/kernel/reset.c
+> +++ b/arch/riscv/kernel/reset.c
+> @@ -12,7 +12,7 @@ static void default_power_off(void)
+>                 wait_for_interrupt();
+>  }
+>
+> -void (*pm_power_off)(void) = default_power_off;
+> +void (*pm_power_off)(void) = NULL;
+>  EXPORT_SYMBOL(pm_power_off);
+>
+>  void machine_restart(char *cmd)
+> @@ -23,10 +23,16 @@ void machine_restart(char *cmd)
+>
+>  void machine_halt(void)
+>  {
+> -       pm_power_off();
+> +       if (pm_power_off != NULL)
+> +               pm_power_off();
+> +       else
+> +               default_power_off();
+>  }
+>
+>  void machine_power_off(void)
+>  {
+> -       pm_power_off();
+> +       if (pm_power_off != NULL)
+> +               pm_power_off();
+> +       else
+> +               default_power_off();
+>  }
+> --
+> 2.30.2
+>
