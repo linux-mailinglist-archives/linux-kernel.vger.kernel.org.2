@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E8F402FFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D567C403002
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346032AbhIGUya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S1346082AbhIGU4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhIGUy2 (ORCPT
+        with ESMTP id S229601AbhIGU4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:54:28 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B03C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:53:21 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y34so335752lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:53:21 -0700 (PDT)
+        Tue, 7 Sep 2021 16:56:12 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61EEC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:55:05 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m26so151738pff.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:55:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2nsQAg7kmIjIclpBrhtqlSTKrFIqUX3LxjUhDb/REE=;
-        b=YCsQ08Usmp+NSFE2q8Vqqu+1k2Jxc19NJXOmL6Zp4reeKHQuFtk9hbHHDQ1Xmgd0m6
-         bshPY/6nYk77pyO6ANj4wcbRwCSQa3QJ+vwudNf14BMBAQkxF89NI98nGh+WXthFEtpF
-         5LV1zH69hfTjOdeQXh4bCWiJk6dplQNZp4kzI8t6aC8egWr7xwOHRDBBQEJqzp0P1BDl
-         oHW89Ks9NHvUdtb9B3/rPkLOrYYDG3mpEf6+0nLOinqyHGlamXgbr/mEN/xCcKNiLapd
-         6X+s0483+WA7SUQ5DE6qWrfJjZG3v8EsCt7AyCAnzxOW4A32rKdP6sCZxRm7mCBrh9oj
-         G/ew==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wGaKI/yf6S0oUQYpDmwjH/p4Na2pyd87gFzKo1CWnso=;
+        b=ixdOmrehN/QeCK0jpo5gTlYdtXGq2P900/s6Cbx5hzSs52ePfcKJvzs2fmujYInuVX
+         KXYv6oJXQAPfcHW8pevszF96PSpRXWZjz9h2h7jMkDprO+GQln6e8RhKTPXcXEy6bgZD
+         aB2d2Di7S16LvGa1NKCSPZqlanhrqI+bLfQ3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2nsQAg7kmIjIclpBrhtqlSTKrFIqUX3LxjUhDb/REE=;
-        b=NHSzq7k5FEfMluZBOfS9Yw9naiexhZ9g8XLhQfDzWaRHTTtbrzFrUCwpl6lZrmJWuo
-         wG5HTLsFD0bCLFmurXrhqtwhDdtHrKdG4NrdWvZTfcBmGS6UZr3VU2wMfT5ZBvxcC87M
-         UtlFk67MYZm78esVf71KurEVSLF/ua79jPrsQyjhfRucIj4APWfVq1t7y7sHA5grE6+y
-         1DWn8OBOe1hnzuFXnYY4ALfyGO4WULL6BsXGZBw6s9hLpD0prYHESMCgNJRH9EpqN2lc
-         HXouurkfl/EL7JA3pAuiX9IDHTRmHS54+QDNocfCuRK9kR59oM/s9GLXx7VJr6fpgXz0
-         +0+g==
-X-Gm-Message-State: AOAM532FI4x1axe6oh9yQtGpsN9nfN0txP0vBqlmugNiudo2rWBd//Qh
-        TMMxbv1UkXaU7MM0vSnw5BQJ/hoAvvWHaQWbl68lZQ==
-X-Google-Smtp-Source: ABdhPJzhBFK+nc5T6nsZ3d/UNCMCN4OBLlDwQPAjHtpwLPGtbms1OHE1axqApJ9PGJSVbkInMFi0jFJ5cFAgNd5Hu4M=
-X-Received: by 2002:a05:6512:e89:: with SMTP id bi9mr207568lfb.95.1631047999878;
- Tue, 07 Sep 2021 13:53:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wGaKI/yf6S0oUQYpDmwjH/p4Na2pyd87gFzKo1CWnso=;
+        b=WAPVgENOYVu83Yd0iQavdBhZku79Zo2Hejaolo1uqOECRgo47H61Wp6q0O+AmdyFCI
+         CdFYlavNKHlQwGH/fjCF9hvs2RfgvX5bktGrxTqZYBe+MrkMmgU7mbE7bunUxX85fhjJ
+         /AxkqtsAbchirTATJf6x7ifVR+0SrCfNLF5IUfl90DB/uoYTMzDmT7tuBjdz9tUn5XNA
+         YZ0g9hig6Z+/Ml7gTtTGmWwb/TMoKCiRnGgF01uaKXRuAFTUzhHPki7eMhmCMd1V2kjI
+         e5RIk2gEw7a4bt183XSs1s5qnYphs9eiom4W5oI5io+jkNIieuFp6d1WjoRY/uroMiJ8
+         wm+Q==
+X-Gm-Message-State: AOAM532fT/XQKV9lt2nT1p0KTUUeH7S/LKPdXSWkjjFcRFArSDNXpeuV
+        +vVx/0zcWbOY2Vr4NWHeyxx2VQ==
+X-Google-Smtp-Source: ABdhPJznsxKxiqpSc33nzng/rxyyYCDmutmO65n8y2+nksEV1jNF1GMyekDDc5jtSI0UPYJmupffwQ==
+X-Received: by 2002:a63:ed4a:: with SMTP id m10mr236852pgk.448.1631048105231;
+        Tue, 07 Sep 2021 13:55:05 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
+        by smtp.gmail.com with UTF8SMTPSA id 70sm19201pfu.93.2021.09.07.13.55.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 13:55:04 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 13:55:03 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drivers: thermal: tsens: add timeout to
+ get_tem_tsens_valid
+Message-ID: <YTfRp1pOoQYFRGX+@google.com>
+References: <20210905174708.4605-1-ansuelsmth@gmail.com>
+ <20210905174708.4605-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <1630065205-7618-1-git-send-email-wenbin.mei@mediatek.com> <1630065205-7618-2-git-send-email-wenbin.mei@mediatek.com>
-In-Reply-To: <1630065205-7618-2-git-send-email-wenbin.mei@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Sep 2021 22:53:08 +0200
-Message-ID: <CACRpkdYeE9piO=sfdBdq-Wd9uQpxyAb6xWYJ+9-JMTjrWX9pXw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210905174708.4605-2-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 1:53 PM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+On Sun, Sep 05, 2021 at 07:47:08PM +0200, Ansuel Smith wrote:
+> The function can loop and lock the system if for whatever reason the bit
+> for the target sensor is NEVER valid. This is the case if a sensor is
+> disabled by the factory and the valid bit is never reported as actually
+> valid. Add a timeout check and exit if a timeout occurs. As this is
+> a very rare condition, handle the timeout only if the first read fails.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/thermal/qcom/tsens.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index b1162e566a70..38afde1a599f 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -599,6 +599,7 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>  	int hw_id = s->hw_id;
+>  	u32 temp_idx = LAST_TEMP_0 + hw_id;
+>  	u32 valid_idx = VALID_0 + hw_id;
+> +	unsigned long timeout;
+>  	u32 valid;
+>  	int ret;
+>  
+> @@ -607,13 +608,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>  		ret = regmap_field_read(priv->rf[valid_idx], &valid);
+>  		if (ret)
+>  			return ret;
+> -		while (!valid) {
+> -			/* Valid bit is 0 for 6 AHB clock cycles.
+> -			 * At 19.2MHz, 1 AHB clock is ~60ns.
+> -			 * We should enter this loop very, very rarely.
+> -			 */
+> -			ndelay(400);
+> -			ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> +
+> +		if (!valid) {
+> +			timeout = jiffies + msecs_to_jiffies(20);
+> +
+> +			do {
+> +				/* Valid bit is 0 for 6 AHB clock cycles.
+> +				 * At 19.2MHz, 1 AHB clock is ~60ns.
+> +				 * We should enter this loop very, very rarely.
+> +				 */
+> +				ndelay(400);
+> +				ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> +				if (valid || ret)
+> +					break;
+> +			} while (!(ret = time_after_eq(jiffies, timeout)));
+> +
+>  			if (ret)
+>  				return ret;
 
-> Add hs400 dly3 setting for mtk-sd yaml
->
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-(...)
+With the overloading of 'ret' the return logic is getting a bit more
+convoluted. Also the function should probably return -ETIMEDOUT or
+some other meaningful error if the bit is never valid.
 
-> +  mediatek,hs400-ds-dly3:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      HS400 DS dly3 delay setting.
-> +    minimum: 0
-> +    maximum: 31
+How about keeping the 'while (!valid)' condition, and adding
 
-Which unit is this? Clock cycles? Then please write that in the
-binding description.
+	if (time_after_eq(jiffies, timeout))
+		return -ETIMEDOUT;
 
-Yours,
-Linus Walleij
+inside the loop?
+
