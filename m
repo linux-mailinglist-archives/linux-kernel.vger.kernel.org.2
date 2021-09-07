@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA03402EB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C07402EC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345332AbhIGTFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:05:03 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:39508 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhIGTFC (ORCPT
+        id S1345256AbhIGTKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:10:18 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36854 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhIGTKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:05:02 -0400
-Received: by mail-oi1-f181.google.com with SMTP id v2so193568oie.6;
-        Tue, 07 Sep 2021 12:03:56 -0700 (PDT)
+        Tue, 7 Sep 2021 15:10:17 -0400
+Received: by mail-ot1-f51.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso402519otv.3;
+        Tue, 07 Sep 2021 12:09:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=UdQQQExBHiPR6qIP5oY8gqjMFJjYP3y1rT1TQorSqZY=;
-        b=fm5IarekAL853qff3sJvBVgAWZzAe1s3Yw8xn49xkza06eTPTQvaLCvTuZY75kmIxb
-         7Jq4LyL/BJjN9TByE5AqQyMhJ5ubZoAvRKpUxeI0BsprkxB/ExLww265JKeTEW0MQjkv
-         WnEgVw3IkjgseRXeKTa+WB4OeITC1P0Sk2x6Aot5ND8Zno+fydgCiI+WVn0mvjRUYW6T
-         vtogIlR9lUBKIdfxG/ithSiGhv7er/EYs8T/UNKds73Owf/uh5wy3AO4PaC9ts0M6J9O
-         QiyjoLubQ2K3Nu+sO7V46pn+kF7B69tB9GAszBbuMlKSqMKQzYUGS2T+sfQyDSYt1U7+
-         2d2Q==
-X-Gm-Message-State: AOAM531uIzofrpL0T8QvjTnx/Td4VCDfHR6urD/nnIEsVAYLs3lJ6df/
-        YQ7gwxxJs/Z9+3FnbY8ELg==
-X-Google-Smtp-Source: ABdhPJyuZ8CDEvv85V5xxEoQU6PojBqj9F3XU3VxctkZMnSq2K+26cFrvDhXC+jeh8QmrJJjPBgWSw==
-X-Received: by 2002:aca:be56:: with SMTP id o83mr4090913oif.51.1631041435623;
-        Tue, 07 Sep 2021 12:03:55 -0700 (PDT)
+        bh=y6f0OvD6qMOZIJO8Ax2BSoOx4xel1z8MSZtwDVuqZG4=;
+        b=qOomiu05TQG11lvFX3qWsOEdyZRzXTGmJ9XVcq2spmBOJPnzHME+aEafkr7VW6Yk31
+         oyiPiTMoJBmqQZ7NaVuG0KhFkg5Rj9mGVMTX7e3jwjbFCVu142jrcwzxciK+GyRZFTSP
+         kftDENvCu7Gt0hGJIgQJ2lKm1o3cbkU6+ATKO4a7s/nuvMGNgVxmUbQrGifRab0LGsks
+         XiJwYD5kiw24NfKEr6pVr6ncizP000ED2KtmO+ssVldEmIPZnNYnHznidWmqs0rLSP26
+         CtwHQK9AV25q/nRWYiwGXlYFhmFNG4OooNigSa74zG6ZIYaxUX6eNNtyLU6/3em/E3gc
+         spYA==
+X-Gm-Message-State: AOAM531kQuSvvJLiOeSTVrtiE+ZoZMjAXw2ACSY09sc8dAjfq52v5RFf
+        xW269euPZJTXAxv00ks81A==
+X-Google-Smtp-Source: ABdhPJwyWZEq2w/4Mwc8OOnY+ZM6/dWiGZ2obaXegjgzTgjLf0vQ0Va+W9t3AfsRWmBdCHbeme6CZQ==
+X-Received: by 2002:a9d:5a81:: with SMTP id w1mr13219426oth.307.1631041750386;
+        Tue, 07 Sep 2021 12:09:10 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m16sm2379853oop.3.2021.09.07.12.03.54
+        by smtp.gmail.com with ESMTPSA id u15sm2455443oon.35.2021.09.07.12.09.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 12:03:54 -0700 (PDT)
-Received: (nullmailer pid 165371 invoked by uid 1000);
-        Tue, 07 Sep 2021 19:03:53 -0000
-Date:   Tue, 7 Sep 2021 14:03:53 -0500
+        Tue, 07 Sep 2021 12:09:09 -0700 (PDT)
+Received: (nullmailer pid 174203 invoked by uid 1000);
+        Tue, 07 Sep 2021 19:09:08 -0000
+Date:   Tue, 7 Sep 2021 14:09:08 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v5 6/6] phy: dt-bindings: cdns,dphy: add Rx DPHY
- compatible
-Message-ID: <YTe3mUFPhkI910AG@robh.at.kernel.org>
-References: <20210902185543.18875-1-p.yadav@ti.com>
- <20210902185543.18875-7-p.yadav@ti.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     linux-sunxi@lists.linux.dev, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 2/3] dt-bindings: watchdog: sunxi: Add compatibles for
+ D1
+Message-ID: <YTe41ClZvYS/llHF@robh.at.kernel.org>
+References: <20210902225750.29313-1-samuel@sholland.org>
+ <20210902225750.29313-3-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902185543.18875-7-p.yadav@ti.com>
+In-Reply-To: <20210902225750.29313-3-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Sep 2021 00:25:43 +0530, Pratyush Yadav wrote:
-> The DPHY is treated to be in Tx mode by default. Add a new compatible
-> for Rx mode DPHYs.
+On Thu, 02 Sep 2021 17:57:49 -0500, Samuel Holland wrote:
+> D1 keeps the same register layout and clock sources as the R329, but it
+> adds a key field which must be set to update the watchdog's "CFG" and
+> "MODE" registers. Therefore it is not backward-compatible.
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Similarly to the R329, the D1 has three watchdog instances, and only one
+> of them has the "soft reset" registers. So that instance needs an extra
+> compatible string.
 > 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
+> Changes v2 to v3:
+>  - Add additional allwinner,sun20i-d1-wdt-reset compatible
+> Changes v1 to v2:
+>  - None
 > 
-> Changes in v5:
-> - Use enum instead.
-> - Add Laurent's R-by.
-> 
-> Changes in v4:
-> - New in v4.
-> 
->  Documentation/devicetree/bindings/phy/cdns,dphy.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml          | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
