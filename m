@@ -2,184 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5069040309B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182DE4030A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347282AbhIGWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344772AbhIGWBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:01:17 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF5FC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:00:11 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id g184so286413pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eEjYbhAR02sgc7ovVsHyjAGZLSxtoc/tH2wPYp1Ypy8=;
-        b=elcY35Sre5FRsVc5U7wrWxG59izHA38dFgmaHKIrZXPYnJABcHEWwH4WRekxYV8xTl
-         72KxyD9kGd9FiJUW5mBrfPqmXaB7MxDmL/3NzRhvIoKpdxZaWEf99X1ru0Q/XLHtzFDL
-         sGIZeHs9IHxA7Lee/Gkkoh145uPlhwzHwkNlzNSP5tDnh6igl77FtJr0SzfyTd3PPxSO
-         YFlOudrMPSjcolvyPVOp+QbwxZNIWEzD3MAmIGB89LH6AIs2RV1hpD38ds8V5sh37dUK
-         1vN3GRRPQeLW2fVGN9oQOvTv7wuPTOPJljZI1PXxlA6zhShM74+qRVpdIcijDHAjiD5f
-         WX2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eEjYbhAR02sgc7ovVsHyjAGZLSxtoc/tH2wPYp1Ypy8=;
-        b=bjeyqkI7W2KlyV6YLWh/Rr1RWu8sNfSbcvL2atFNan1+2RN1A19v7Ht2pHDv7jKvXD
-         pYgu59xwzV9MAEXboYvkHrPI5ULlOMbLl7OzBUHCQRM1Y0AwqMJrvCCHKcZ/u5lQ/lww
-         enEhZYsC0Tinu73Hu/PbsKDb9aHYyIAhCEIt201t0qncB6pdkCuJdiyKj8bhGQtadLpl
-         8A5hgP0m/gac7hqrjAPbolh2A0NeHgH8U8pPfpGzfjrwz0Og59fCJ/FKxxLHZEM4WgcH
-         YqGB1JyorC2g12NU9l/ntSBW2DGF7dH6DReYOjWT+x27RfgptRwlMyv/ep3JVH6YELtL
-         KP9Q==
-X-Gm-Message-State: AOAM530OW50cVxDeFLs0ELeXd9AKk91KPDJ1x9SwcEN8nEH5REZrqW+a
-        PwSxAJ+oFfdYZ5HbwJ+A/UP40aK4lflIGG/GCwyuEQ==
-X-Google-Smtp-Source: ABdhPJxx4EjbJvjL93bRoVayl6mm//Jv0BDO7s4EwjYNl8kM2qselsqA630wkktzF+3PhiHaezOvZrqOY7JxvIWmAUs=
-X-Received: by 2002:a63:1e0e:: with SMTP id e14mr452534pge.5.1631052005753;
- Tue, 07 Sep 2021 15:00:05 -0700 (PDT)
+        id S1347456AbhIGWBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:01:54 -0400
+Received: from home.keithp.com ([63.227.221.253]:56072 "EHLO elaine.keithp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344772AbhIGWBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 18:01:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by elaine.keithp.com (Postfix) with ESMTP id 8839D3F30869;
+        Tue,  7 Sep 2021 15:00:19 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at keithp.com
+Received: from elaine.keithp.com ([127.0.0.1])
+        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id D1flVso7MpDe; Tue,  7 Sep 2021 15:00:19 -0700 (PDT)
+Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
+        by elaine.keithp.com (Postfix) with ESMTPSA id D3EF03F30864;
+        Tue,  7 Sep 2021 15:00:18 -0700 (PDT)
+Received: by keithp.com (Postfix, from userid 1000)
+        id CACEA1E6011A; Tue,  7 Sep 2021 15:00:40 -0700 (PDT)
+From:   Keith Packard <keithpac@amazon.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Abbott Liu <liuwenliang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Subject: [PATCH 0/7] ARM: support THREAD_INFO_IN_TASK (v3)
+Date:   Tue,  7 Sep 2021 15:00:31 -0700
+Message-Id: <20210907220038.91021-1-keithpac@amazon.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210904060908.1310204-1-keithp@keithp.com>
+References: <20210904060908.1310204-1-keithp@keithp.com>
 MIME-Version: 1.0
-References: <20210903050914.273525-1-kjain@linux.ibm.com> <20210903050914.273525-2-kjain@linux.ibm.com>
-In-Reply-To: <20210903050914.273525-2-kjain@linux.ibm.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 7 Sep 2021 14:59:55 -0700
-Message-ID: <CAPcyv4jSL2cDxGiXEtyyce3eNEE_QUnnMjuLXb3iCwO8_7a7LQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v4 1/4] drivers/nvdimm: Add nvdimm pmu structure
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        maddy@linux.ibm.com, Santosh Sivaraj <santosh@fossix.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        atrajeev@linux.vnet.ibm.com, Thomas Gleixner <tglx@linutronix.de>,
-        rnsastry@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kajol,
+Placing thread_info in the kernel stack leaves it vulnerable to stack
+overflow attacks. This short series addresses that by using the
+existing THREAD_INFO_IN_TASK infrastructure.
 
-Apologies for the delay in responding to this series, some comments below:
+This is the third version of this series, in this version the changes
+are restricted to hardware which provides the TPIDRPRW register. This
+register is repurposed from holding the per_cpu_offset value to
+holding the 'current' value as that allows fetching this value
+atomically so that it can be used in a preemptable context.
 
-On Thu, Sep 2, 2021 at 10:10 PM Kajol Jain <kjain@linux.ibm.com> wrote:
->
-> A structure is added, called nvdimm_pmu, for performance
-> stats reporting support of nvdimm devices. It can be used to add
-> nvdimm pmu data such as supported events and pmu event functions
-> like event_init/add/read/del with cpu hotplug support.
->
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> ---
->  include/linux/nd.h | 43 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
->
-> diff --git a/include/linux/nd.h b/include/linux/nd.h
-> index ee9ad76afbba..712499cf7335 100644
-> --- a/include/linux/nd.h
-> +++ b/include/linux/nd.h
-> @@ -8,6 +8,8 @@
->  #include <linux/ndctl.h>
->  #include <linux/device.h>
->  #include <linux/badblocks.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/perf_event.h>
->
->  enum nvdimm_event {
->         NVDIMM_REVALIDATE_POISON,
-> @@ -23,6 +25,47 @@ enum nvdimm_claim_class {
->         NVDIMM_CCLASS_UNKNOWN,
->  };
->
-> +/* Event attribute array index */
-> +#define NVDIMM_PMU_FORMAT_ATTR         0
-> +#define NVDIMM_PMU_EVENT_ATTR          1
-> +#define NVDIMM_PMU_CPUMASK_ATTR                2
-> +#define NVDIMM_PMU_NULL_ATTR           3
-> +
-> +/**
-> + * struct nvdimm_pmu - data structure for nvdimm perf driver
-> + *
-> + * @name: name of the nvdimm pmu device.
-> + * @pmu: pmu data structure for nvdimm performance stats.
-> + * @dev: nvdimm device pointer.
-> + * @functions(event_init/add/del/read): platform specific pmu functions.
+The series is broken into seven pieces:
 
-This is not valid kernel-doc:
+ 1) Change the secondary_start_kernel API to receive the cpu
+    number. This avoids needing to be able to find this value independently in
+    future patches.
 
-include/linux/nd.h:67: warning: Function parameter or member
-'event_init' not described in 'nvdimm_pmu'
-include/linux/nd.h:67: warning: Function parameter or member 'add' not
-described in 'nvdimm_pmu'
-include/linux/nd.h:67: warning: Function parameter or member 'del' not
-described in 'nvdimm_pmu'
-include/linux/nd.h:67: warning: Function parameter or member 'read'
-not described in 'nvdimm_pmu'
+ 2) Change the secondary_start_kernel API to also receive the 'task'
+    value. Passing the value to this function also avoids needing to
+    be able to discover it independently.
 
-...but I think rather than fixing those up 'struct nvdimm_pmu' should be pruned.
+ 3) A cleanup which avoids assuming that THREAD_INFO_IN_TASK is not set.
 
-It's not clear to me that it is worth the effort to describe these
-details to the nvdimm core which is just going to turn around and call
-the pmu core. I'd just as soon have the driver call the pmu core
-directly, optionally passing in attributes and callbacks that come
-from the nvdimm core and/or the nvdimm provider.
+ 4) A hack, borrowed from the powerpc arch, which allows locating the 'cpu'
+    field in either thread_info or task_struct, without requiring linux/sched.h
+    to be included in asm/smp.h
 
-Otherwise it's also not clear which of these structure members are
-used at runtime vs purely used as temporary storage to pass parameters
-to the pmu core.
+ 5) Disable the optimization storing per_cpu_offset in TPIDRPRW. This leaves
+    the register free to hold 'current' instead.
 
-> + * @attr_groups: data structure for events, formats and cpumask
-> + * @cpu: designated cpu for counter access.
-> + * @node: node for cpu hotplug notifier link.
-> + * @cpuhp_state: state for cpu hotplug notification.
-> + * @arch_cpumask: cpumask to get designated cpu for counter access.
-> + */
-> +struct nvdimm_pmu {
-> +       const char *name;
-> +       struct pmu pmu;
-> +       struct device *dev;
-> +       int (*event_init)(struct perf_event *event);
-> +       int  (*add)(struct perf_event *event, int flags);
-> +       void (*del)(struct perf_event *event, int flags);
-> +       void (*read)(struct perf_event *event);
-> +       /*
-> +        * Attribute groups for the nvdimm pmu. Index 0 used for
-> +        * format attribute, index 1 used for event attribute,
-> +        * index 2 used for cpusmask attribute and index 3 kept as NULL.
-> +        */
-> +       const struct attribute_group *attr_groups[4];
+ 6) Use TPIDRPRW for 'current'. This is enabled for either CPU_V6K or CPU_V7,
+    but not if CPU_V6 is also enabled.
 
-Following from above, I'd rather this was organized as static
-attributes with an is_visible() helper for the groups for any dynamic
-aspects. That mirrors the behavior of nvdimm_create() and allows for
-device drivers to compose the attribute groups from a core set and /
-or a provider specific set.
+ 7) Enable THREAD_INFO_IN_TASK whenever TPIDRPRW is used to hold 'current'.
 
-> +       int cpu;
-> +       struct hlist_node node;
-> +       enum cpuhp_state cpuhp_state;
-> +
-> +       /* cpumask provided by arch/platform specific code */
-> +       struct cpumask arch_cpumask;
-> +};
-> +
->  struct nd_device_driver {
->         struct device_driver drv;
->         unsigned long type;
-> --
-> 2.26.2
->
+Signed-off-by: Keith Packard <keithpac@amazon.com>
+
+
