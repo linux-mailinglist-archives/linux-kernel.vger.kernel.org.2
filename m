@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C892C402C90
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E465402C91
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243369AbhIGQGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:06:41 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44162
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234430AbhIGQGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:06:40 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AE43C3F329
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631030727;
-        bh=YP2/VludKZxfn7ZssReTEMfvwdfhQuuxVwCMuWtoV0M=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Fs2YRvOcn/BctAwceIZqchGYape29RpADQvv64lARV9w+nDFV24K0PQuruAgoTP7H
-         rvYtOlKCc0bEuz1wrGk8FC/Yi5/NEVmsGeEE5r4pCm3ZyZUnJHipCCtSa+yZrD34BQ
-         H2I9y5WdaX/MZubeUIXrI0cVNPerIIxONZNhwx2QcW0QO+7J+wwIdN82SORV1TC9kQ
-         vZm1LDM1pDxnlnUZk6H9Xt4bkW5k2K6l7tvy+E77tp7nx6yk8z0OKmrTa+auxWMoab
-         EBUKCe3PTmVARbVFWt/HHMGtdm3MENpWv2rCOTnTIDMPxM2Q8YukHl6hIAnG+N7M80
-         JwA9IXlKVkd4Q==
-Received: by mail-wr1-f69.google.com with SMTP id p18-20020a5d4e12000000b0015940dc586aso2274089wrt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:05:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YP2/VludKZxfn7ZssReTEMfvwdfhQuuxVwCMuWtoV0M=;
-        b=IJ4jenLXE1yMqPxkGHtNQV1khB93ygVZJ2N3DGhsc1MVOWLLcNjQ8epJ6D+dQfmsDJ
-         2Erp5OHd6K1BZVwRk/+OXta4x6MIeaRmSVkgGMtCRW+0+5kyvVuiTv+o0WzpZwrzkLjd
-         LqR6iHhFePaAZDH7OEvqx93lds4rTntLbzidFJzSrJezzNV0FKRzDoN2ctfyREQNTg+b
-         G7RRQT4SKV8aPBbPZmvj2662cecbvq7ganJeLvMqgqmfJJx38ssiK9cTzYs0ZOVSuwL7
-         iGIgsMtkdwxwymVwc7OGEA5c5K10sIA5ds3mVtAEvuxJlZPddIMxyYdclovaFWcyD5Np
-         VMww==
-X-Gm-Message-State: AOAM531hq0LpoGRx7faxY2Tfrof5jq/3YXKKajWND95JhITKCokUPceP
-        909d31qgOzmWJT+Sjs3j7Vy/J1izZgl+JapeNmjeXTxFNen8oZyq0p418OR41uD9WARRFSnR9w3
-        4nzG1jAqwN6AcUWg5jkbgVF7nXTxKJyQ9t/m1QUABoQ==
-X-Received: by 2002:adf:e606:: with SMTP id p6mr19733179wrm.231.1631030727412;
-        Tue, 07 Sep 2021 09:05:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2vXes2sOGaOH/wZ20TblF6w1HjcLY8vGDnXm94khUXSoLOVYKf88pEQi2Y8AMLrFkz7eqTg==
-X-Received: by 2002:adf:e606:: with SMTP id p6mr19733161wrm.231.1631030727289;
-        Tue, 07 Sep 2021 09:05:27 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.63])
-        by smtp.gmail.com with ESMTPSA id u25sm2772784wmj.10.2021.09.07.09.05.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 09:05:26 -0700 (PDT)
-Subject: Re: [PATCH 05/15] nfc: pn533: drop unneeded debug prints
-To:     Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-References: <20210907121816.37750-1-krzysztof.kozlowski@canonical.com>
- <20210907121816.37750-6-krzysztof.kozlowski@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <35626061-ff2e-cb01-21ff-87a6f776dc28@canonical.com>
-Date:   Tue, 7 Sep 2021 18:05:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S244356AbhIGQHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:07:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243976AbhIGQHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 12:07:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8529A61106
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631030769;
+        bh=1L/ng3m4NIBOnr8uJkim7/Whttmr/PGC9aOgg/t9Axg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MSYCdzfG4ct3IH+Drqzg4YYE0HMENTgnPq2jUOnU71YIf7AAn2NM6J6yOVqwu7M5a
+         Yss0GwkvIYPpEYuRsUpkW+CdNuehP9jHZbjR21v3cdiLOXBywJHHNDaSw7Fq9UPXZz
+         1ffY4V6cC9A+P079htCwPbMUYslcwzu+dcTUePXMCt3KViNdzxTZa0UE0Mt/daNic5
+         dQ7PClxqvQbAvHTkJIMiY29eNJ8NslH+g1IaKg5ah5QJX2DxRyx96zUP2GWE7D79lM
+         fP2qAhRdnOEY8I+mgP1k0EPz2sTYCpLZAJ7WnxXUC8+FJZsva3h+ZToigTJbD8hbhN
+         Z2CSikksmQjGA==
+Received: by mail-oo1-f50.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so3055627oos.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:06:09 -0700 (PDT)
+X-Gm-Message-State: AOAM530YeAz4/zYCsLMcSZNp7xDgyvUp/YJJVzQI+qxntQdYuCNDAgW1
+        yt7q7LvugxZKSG/pPopz+JRK0DDhG+lTxaPbWWc=
+X-Google-Smtp-Source: ABdhPJzCHK/gFgjxE677WaXrrlZNPfq5Xf3OssXYH00UAECgEt6c16PeLBnUnBaGFDeDwFDWHl8W3OIfmHf2xWev+Hg=
+X-Received: by 2002:a4a:c904:: with SMTP id v4mr537358ooq.26.1631030768782;
+ Tue, 07 Sep 2021 09:06:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210907121816.37750-6-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902155429.3987201-1-keithp@keithp.com> <20210904060908.1310204-1-keithp@keithp.com>
+ <20210904060908.1310204-3-keithp@keithp.com> <CAMj1kXHHb_d4Exg7_5OdB-Ah=EQxVEUgEv1agUQZg-Rz8pLd5Q@mail.gmail.com>
+ <8735qifcy6.fsf@keithp.com> <CAMj1kXFQHX-PDQXaRXGNjyJNn_frf9tYNFND06DAYC095JhDbw@mail.gmail.com>
+ <874kawcssr.fsf@keithp.com>
+In-Reply-To: <874kawcssr.fsf@keithp.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 7 Sep 2021 18:05:47 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHA-GiAj2u4vRbEsnJ6O=cxiNOEgPHWHP+71dB-sp9Nww@mail.gmail.com>
+Message-ID: <CAMj1kXHA-GiAj2u4vRbEsnJ6O=cxiNOEgPHWHP+71dB-sp9Nww@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: Move thread_info into task_struct (v7 only)
+To:     Keith Packard <keithp@keithp.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2021 14:18, Krzysztof Kozlowski wrote:
-> ftrace is a preferred and standard way to debug entering and exiting
-> functions so drop useless debug prints.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/nfc/pn533/i2c.c   | 1 -
->  drivers/nfc/pn533/pn533.c | 2 --
->  2 files changed, 3 deletions(-)
-> 
-> diff --git a/drivers/nfc/pn533/i2c.c b/drivers/nfc/pn533/i2c.c
-> index e6bf8cfe3aa7..91d4a035eb63 100644
-> --- a/drivers/nfc/pn533/i2c.c
-> +++ b/drivers/nfc/pn533/i2c.c
-> @@ -138,7 +138,6 @@ static irqreturn_t pn533_i2c_irq_thread_fn(int irq, void *data)
->  	}
->  
->  	client = phy->i2c_dev;
+On Tue, 7 Sept 2021 at 17:24, Keith Packard <keithp@keithp.com> wrote:
+>
+> Ard Biesheuvel <ardb@kernel.org> writes:
+>
+> > Sure, so it is precisely for that reason that it is better to isolate
+> > changes that can be isolated.
+>
+> I'll go ahead and split this apart then; that is how I did development,
+> after all.
+>
+> > All the time. 'current' essentially never changes value from the POV
+> > of code running in task context, so there is usually no reason to care
+> > about preemption/migration when referring to it. Using per-CPU
+> > variables is what creates the problem here.
+>
+> Thanks for helping me -- I just got the wrong model stuck in my head
+> over the weekend somehow.
+>
+> If I do have this figured out, we should be able to stick the
+> per_cpu_offset value in thread_info and use TPIDRPRW to hold 'current'
+> as code using per_cpu_offset should already be disabling
+> preemption. That should be an easier change than putting a kernel
+> pointer in a user-visible register.
+>
 
-This line should also be removed (reported by kbuild robot).
+That is still a bit tricky, given that you now have to swap out the
+per-CPU offset when you migrate a task, and the generic code is not
+really set up for that.
 
-I will send a v2.
+> > Given that we are already relying on the MP extensions for this
+> > anyway, I personally think that using another thread ID register to
+> > carry 'current' is a reasonable approach as well, since it would also
+> > allow us to get per-task stack protector support into the compiler.
+> > But I would like to hear from some other folks on cc as well.
+>
+> That would be awesome; I assume that doesn't require leaving
+> per_cpu_offset in a thread ID register?
+>
+> In any case, I'll give my plan a try, and then see about trying your
+> plan as well so I can compare the complexity of the two solutions.
+>
 
+I had a stab at this myself today (long boring day with no Internet connection).
 
-Best regards,
-Krzysztof
+https://android-kvm.googlesource.com/linux/+log/refs/heads/ardb/arm32-ti-in-task
+
+It resembles your code in some places - I suppose we went on the same
+journey in a sense :-) We'll fix up the credits before this gets
+resubmitted.
+
+Fixing the per-task stack protector plugin on top of these changes
+should be trivial but I need a coffee first.
