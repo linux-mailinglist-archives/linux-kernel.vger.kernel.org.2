@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C1F402A44
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A209D402A53
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhIGN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
+        id S231925AbhIGOBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhIGN4P (ORCPT
+        with ESMTP id S230094AbhIGOBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:56:15 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C11C061575;
-        Tue,  7 Sep 2021 06:55:08 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mNbYw-0007OY-Kd; Tue, 07 Sep 2021 15:54:58 +0200
-Date:   Tue, 7 Sep 2021 15:54:58 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH net v2] net: netfilter: Fix port selection of FTP for
- NF_NAT_RANGE_PROTO_SPECIFIED
-Message-ID: <20210907135458.GF23554@breakpoint.cc>
-References: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz>
+        Tue, 7 Sep 2021 10:01:32 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51744C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:00:26 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so2933740ooh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SA1mhtpYtWRd9fvfdDUUAhfghCCNO8LibpejZwbq7KY=;
+        b=Abu+rZI3qC8rCRA/sBxBT++VNhG0T4Y68e0Gk8fqRDSxmUvfe7dtCYfNWr3Wvdhr/U
+         gfS5QmShGVNu68yIeA4aikN1wVlnxLd2qB1AuGE05J/jopYhXF6x/8NTqxZbvq14tzyM
+         owRmBKO/LhoBPGI6h8c/IxbfSx3WFwezyyWUrP+2tFUwpZ32inTtl3m2j5WZUjCI0+em
+         +bwqG3joXUpchLSOgLfk5eZnbUAlYgyjLvh8xuUPpLn922rGGB+muel4mo6xt6Z+Was5
+         Q/f2oOx5IwndB2BwV6n6fzTbuvrQJk7CAhsutoM7GwCK9tMssFfFGXWPD5kTNAOAva3a
+         ApxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SA1mhtpYtWRd9fvfdDUUAhfghCCNO8LibpejZwbq7KY=;
+        b=jPVlirWlAykhlIdFXx8durpYQJCgHlessJRv90zT2V2tzhEZE/0igIGgu/aeW9hJzu
+         9WoOoq8FuSdW+rDT7VI++nea3F7lZvr9KcLZC4hHz0JXwuUkUx9lXibCD4v7XOtPWwpY
+         P9oVvYkN4wMdg6g1u9NiQptJielT8+R5Zb9nQPyXRsYnNOFGrnM0oniE6G0h1UCGWtGD
+         c0E9qpAuSb8bYUbQ4LUbkxgYbhLFDsn2YyCNgILTIfh+UfWtpN9H0j2cVsHIbS4hKAwS
+         E5TwOtVuq3pbpHDzIsojATl5wYy/IQEpfvAE5wDmDj4I0NvzJdElUo9LXtu0pUqooa9W
+         DHmQ==
+X-Gm-Message-State: AOAM533gKnBogwHwPPkjAwXCtFUqkJ3WzgL2W+yixWPdz497nJdS+r2C
+        RGljhbVcU75Qw4wmQNlwDHZ1Vw==
+X-Google-Smtp-Source: ABdhPJy4neyb9vQAxOCliffCIuMJP8B2gf3hkbimmCa7xRy3MCJaEkSNgZ0KG91VIEMKvyLwODi4FA==
+X-Received: by 2002:a4a:6f4a:: with SMTP id i10mr18190534oof.64.1631023225076;
+        Tue, 07 Sep 2021 07:00:25 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z7sm1924500ooh.38.2021.09.07.07.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 07:00:24 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Alex Elder <elder@linaro.org>
+Subject: [GIT PULL] remoteproc updates for v5.15
+Date:   Tue,  7 Sep 2021 09:00:23 -0500
+Message-Id: <20210907140023.2399178-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> index aace6768a64e..cf675dc589be 100644
-> --- a/net/netfilter/nf_nat_ftp.c
-> +++ b/net/netfilter/nf_nat_ftp.c
-> @@ -17,6 +17,10 @@
->  #include <net/netfilter/nf_conntrack_helper.h>
->  #include <net/netfilter/nf_conntrack_expect.h>
->  #include <linux/netfilter/nf_conntrack_ftp.h>
-> +void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
-> +				 const struct nf_nat_range2 *range,
-> +				 enum nf_nat_manip_type maniptype,
-> +				 const struct nf_conn *ct);
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Please add this to a header, e.g. include/net/netfilter/nf_nat.h.
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-> -	/* Try to get same port: if not, try to change it. */
-> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
-> -		int ret;
-> +	if (htons(nat->range_info.min_proto.all) == 0 ||
-> +	    htons(nat->range_info.max_proto.all) == 0) {
+are available in the Git repository at:
 
-Either use if (nat->range_info.min_proto.all || ...
+  https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.15
 
-or use ntohs().  I will leave it up to you if you prefer
-ntohs(nat->range_info.min_proto.all) == 0 or
-nat->range_info.min_proto.all == ntohs(0).
+for you to fetch changes up to a0a77028c85ad1f6f36c3ceea21b30dc43721665:
 
-(Use of htons here will trigger endian warnings from sparse tool).
+  remoteproc: q6v5_pas: Add sdm660 ADSP PIL compatible (2021-08-04 12:37:32 -0500)
 
-> -		exp->tuple.dst.u.tcp.port = htons(port);
-> +	/* Try to get same port if it matches NAT rule: if not, try to change it. */
-> +	ret = -1;
-> +	port = ntohs(exp->tuple.dst.u.tcp.port);
-> +	if (port != 0 && ntohs(range.min_proto.all) <= port &&
-> +	    port <= ntohs(range.max_proto.all)) {
->  		ret = nf_ct_expect_related(exp, 0);
-> -		if (ret == 0)
-> -			break;
-> -		else if (ret != -EBUSY) {
-> -			port = 0;
-> -			break;
-> +	}
-> +	if (ret != 0 || port == 0) {
-> +		if (!dir) {
-> +			nf_nat_l4proto_unique_tuple(&exp->tuple, &range,
-> +						    NF_NAT_MANIP_DST,
-> +						    ct);
+----------------------------------------------------------------
+remoteproc updates for v5.15
 
-A small comment that explains why nf_nat_l4proto_unique_tuple() is
-called conditionally would be good.
+This moves the crash recovery worker to the freezable work queue to
+avoid interaction with other drivers during suspend & resume. It fixes a
+couple of typos in comments.
 
-I don't understand this new logic, can you explain?
+It adds support for handling the audio DSP on SDM660 and it fixes a race
+between the Qualcomm wireless subsystem driver and the associated driver
+for the RF chip.
 
-Old:
+----------------------------------------------------------------
+Alex Elder (1):
+      remoteproc: use freezable workqueue for crash notifications
 
-for (port = expr>tuple.port ; port > 0 ;port++)
-    nf_ct_expect_related(exp, 0);
-    if (success || fatal_error)
-	 break;
+Bjorn Andersson (1):
+      remoteproc: qcom: wcnss: Fix race with iris probe
 
-New:
-port = exp->tuple.port;
-if (port && min <= port && port <= max) // in which case is port 0 here?
-	ret = nf_ct_expect_related();
+Dong Aisheng (2):
+      remoteproc: fix an typo in fw_elf_get_class code comments
+      remoteproc: fix kernel doc for struct rproc_ops
 
-if (fatal_error || port == 0)	// how can port be 0?
-    if (!dir) {
-	    nf_nat_l4proto_unique_tuple();
-            ret = nf_ct_expect_related();
-    }
-}
+Konrad Dybcio (2):
+      dt-bindings: remoteproc: qcom: adsp: Add SDM660 ADSP
+      remoteproc: q6v5_pas: Add sdm660 ADSP PIL compatible
 
-How can this work?  This removes the loop and relies on
-nf_nat_l4proto_unique_tuple(), but NF_NAT_MANIP_DST doesn't support
-port rewrite in !NF_NAT_RANGE_PROTO_SPECIFIED case.
-
-Plus, it restricts nf_nat_l4proto_unique_tuple to !dir case, which
-I don't understand either.
-
-> +		port = ntohs(exp->tuple.dst.u.tcp.port);
-> +		ret = nf_ct_expect_related(exp, 0);
->  	}
-> -
-> -	if (port == 0) {
-> +	if (ret != 0 || port == 0) {
-
-How can port be 0?  In the old code, it becomes 0 if all attempts
-to find unused port failed, but after the rewrite I don't see how it can
-happen.
-
-> @@ -188,6 +188,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
->  	range.flags = NF_NAT_RANGE_MAP_IPS;
->  	range.min_addr = range.max_addr
->  		= ct->master->tuplehash[!exp->dir].tuple.dst.u3;
-> +	if (exp->master && !exp->dir) {
-
-AFAIK exp->master can't be NULL.
-
-> +		struct nf_conn_nat *nat = nfct_nat(exp->master);
-> +
-> +		if (nat && nat->range_info.min_proto.all != 0 &&
-> +		    nat->range_info.max_proto.all != 0) {
-> +			range.min_proto = nat->range_info.min_proto;
-> +			range.max_proto = nat->range_info.max_proto;
-> +			range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
-> +		}
-> +	}
-
-!expr->dir means REPLY, i.e. new connection is reversed compared
-to the master connection (from responder back to initiator).
-
-So, why are we munging range in this case?
-
-I would have expected exp->dir == IP_CT_DIR_ORIGINAL for your use case
-(original connection subject to masquerade and source ports mangled to
- fall into special range, so related conntion should also be mangled
- to match said range).
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |   1 +
+ drivers/remoteproc/qcom_q6v5_pas.c                 |   1 +
+ drivers/remoteproc/qcom_wcnss.c                    |  49 +++------
+ drivers/remoteproc/qcom_wcnss.h                    |   4 +-
+ drivers/remoteproc/qcom_wcnss_iris.c               | 120 +++++++++++++--------
+ drivers/remoteproc/remoteproc_core.c               |   4 +-
+ drivers/remoteproc/remoteproc_elf_helpers.h        |   2 +-
+ include/linux/remoteproc.h                         |   5 +-
+ 8 files changed, 96 insertions(+), 90 deletions(-)
