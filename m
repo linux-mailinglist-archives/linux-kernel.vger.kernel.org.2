@@ -2,170 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D626402AF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137F8402B02
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhIGOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235028AbhIGOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D721610F8;
-        Tue,  7 Sep 2021 14:44:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631025897;
-        bh=pb6uQnkJOj7jZan0UZ5W50IT54400yv6W78lHUUCqDA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GuVHmRa9F+YxsE7/VqZYKEPDBHgnctH14+lDJxav5wg4mIWlsd4XSaT0FeBdXyY2E
-         Mqty3aIwOvW9OIjveu64e2UvY3NILsfErPO0daYvljrNmkPls+cmqnm+LzDIUSARCI
-         vz5RS0+z+Rk9fAwc85Q7JzaC+oPYJJ9N5QckUU+HzkGBY3zpFl/UrFcQvkYsQVhZDj
-         KQ7aczAbXcRK8GoMUgmaofQYXHnxTM3YaI95CoxIw+20VV6f/iq/+vtje+rvaKLNS9
-         yYx70IBlL6juOSsJSg/UYadyELkCfKl9pKE93kavxUbf3PSG4KT0WRhKHBnCcHsgbO
-         4cT0Y1d+YXqxw==
-Received: by mail-ed1-f46.google.com with SMTP id z19so14245098edi.9;
-        Tue, 07 Sep 2021 07:44:57 -0700 (PDT)
-X-Gm-Message-State: AOAM53393YKW31UvSuC2XXZCpV6IbRTWCfksOTL8gVaqkYcza7FgOGcu
-        SXwAb9Ua96BusGZYCXAQuKfrsH/nBZ838dmcpg==
-X-Google-Smtp-Source: ABdhPJz35+eT13PtjAMyE1Cn8up0MviN8dZ3s6bQ7mHM7z/iu5075VVR/KfUXFoatJy0IhBX3jK0MFw2F/aL12TBWMA=
-X-Received: by 2002:a50:ed09:: with SMTP id j9mr19082569eds.164.1631025895705;
- Tue, 07 Sep 2021 07:44:55 -0700 (PDT)
+        id S241711AbhIGOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhIGOsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:48:47 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECEEC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:47:40 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so13032755otg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nci4/B41QF+oBe4qv8ng7lSjST0iQqji29tw2osdDUE=;
+        b=h1YB1wsEW0fCLIr9u5LXZ9btrD1/NYZm1fzH7u9cRNdW+a21qPor8apqb5VWBaLWik
+         7tLKe/waXUlPFtVmutNV1M2YTJ8jVZDaApi2b/AKVCot6RVibp+asxzInYstCeMHoImA
+         UmhRRP4A5jEG9PZkh9991Yrx1q2STZW3DWtD8girtJLo3zIZsb67wefr2SUKRAtWvlkC
+         pubQjsTtAYTL0kBkgZeAbYo2dUwV0Xqjayb+VtKUGahfTFRKrHqju8ccIRZFmWsuqwKR
+         sfS4l5HsMWcW7cWe9sWiMLqz9NDoSqls5uH+akXmDkPiHPXkrvWDysiVCjoyA7EWSfFU
+         XteA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=nci4/B41QF+oBe4qv8ng7lSjST0iQqji29tw2osdDUE=;
+        b=aP9C+IyTKoKMPM2XaM/U15dglSfGqzh061hkj/rvF9vuM5XljVpk7SPFsdGPvEYDds
+         Kvg7SKyixngsWSV0FnPJpILLD+5F33v1UjJwTLUSbpAr/U8Hs5H0oJhpM3o/UHd4o4xH
+         BX5Ojkys2C45khxCt5aJerrG9qXY9MCj3N9GQ87hrWvC4T7yHeulPq2WYMpV+YG3Xq2G
+         neoYG+nN0zeUWkflK4Rs6hSgiMiOiYoO7OizO96P4Vk3SHaTY+sF4YqUxIKqa9JYKmo3
+         /8ErCaBg4b73oNwkQUteO0PESZ9GGZ4ASOa2NtDzvSet+7gZd0vonSWtgUJcZWk6RSG9
+         tY+A==
+X-Gm-Message-State: AOAM531t3zlGWm20YYVbwsLnd2MgiRYIPoy/Vu30lYs32HER0lcqHQTU
+        gcz6V7weT9iFFLi7DFr/CliMofGKlJc=
+X-Google-Smtp-Source: ABdhPJzyPvBNhOVWwvtm2OiBhbOqNt8xeGdpW6vU2u5fiMloYNfAY1+MP/eKZuQfQKu8ZiP13bfSuQ==
+X-Received: by 2002:a05:6830:1dac:: with SMTP id z12mr15390372oti.52.1631026060234;
+        Tue, 07 Sep 2021 07:47:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s7sm2244637ook.8.2021.09.07.07.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 07:47:39 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 7 Sep 2021 07:47:37 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: QA: Monitor Linux log messages as port of release (candidate)
+ testing
+Message-ID: <20210907144737.GF4989@roeck-us.net>
+References: <458e0604-1fe9-bed0-d22f-84540b05ffb1@molgen.mpg.de>
+ <20210907125354.GE4989@roeck-us.net>
+ <38ac012a-c16e-1ba0-b386-156bb8ddecc4@molgen.mpg.de>
 MIME-Version: 1.0
-References: <20210901053951.60952-1-samuel@sholland.org> <20210901053951.60952-2-samuel@sholland.org>
- <YTDtelCx5If3J5cM@robh.at.kernel.org> <53d6d018-93bf-9bfc-e296-a232105306de@sholland.org>
-In-Reply-To: <53d6d018-93bf-9bfc-e296-a232105306de@sholland.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 7 Sep 2021 09:44:43 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
-Message-ID: <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] dt-bindings: rtc: sun6i: Add H616 and R329 compatibles
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <38ac012a-c16e-1ba0-b386-156bb8ddecc4@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 10:36 AM Samuel Holland <samuel@sholland.org> wrote:
->
-> On 9/2/21 10:27 AM, Rob Herring wrote:
-> > On Wed, Sep 01, 2021 at 12:39:45AM -0500, Samuel Holland wrote:
-> >> For these new SoCs, start requiring a complete list of input clocks.
-> >>
-> >> For H616, this means bus, hosc, and pll-32k. For R329, this means ahb,
-> >> bus, and hosc; and optionally ext-osc32k.
-> >>
-> >> I'm not sure how to best represent this in the binding...
-> >>
-> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> >> ---
-> >>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 55 +++++++++++++++++--
-> >>  include/dt-bindings/clock/sun50i-rtc.h        | 12 ++++
-> >>  2 files changed, 61 insertions(+), 6 deletions(-)
-> >>  create mode 100644 include/dt-bindings/clock/sun50i-rtc.h
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> >> index beeb90e55727..3e085db1294f 100644
-> >> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> >> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> >> @@ -26,6 +26,8 @@ properties:
-> >>            - const: allwinner,sun50i-a64-rtc
-> >>            - const: allwinner,sun8i-h3-rtc
-> >>        - const: allwinner,sun50i-h6-rtc
-> >> +      - const: allwinner,sun50i-h616-rtc
-> >> +      - const: allwinner,sun50i-r329-rtc
-> >
-> > Can you please make all the single entry cases a single 'enum'.
-> >
-> >>
-> >>    reg:
-> >>      maxItems: 1
-> >> @@ -37,7 +39,24 @@ properties:
-> >>        - description: RTC Alarm 1
-> >>
-> >>    clocks:
-> >> -    maxItems: 1
-> >> +    minItems: 1
-> >> +    maxItems: 4
-> >> +
-> >> +  clock-names:
-> >> +    minItems: 1
-> >> +    maxItems: 4
-> >> +    items:
-> >> +      - anyOf:
-> >
-> > This says the first entry is any of these. What about the rest of them?
->
-> Oh, right. The list below is the list of all possible clocks.
->
-> >> +          - const: ahb
-> >> +            description: AHB parent for SPI bus clock
-> >
-> > The description should go in 'clocks'.
->
-> Will do for v2.
->
-> > The order should be defined as well with the first clock being the
-> > one that existed previously.
->
-> The only way I know how to further refine the list is with
-> minItems/maxItems. My problem is that 1) some clocks are only valid for
-> certain SoCs, and 2) some clocks are optional, depending on how the
-> board is wired. So there is no single order where the "valid"
-> combinations are prefixes of the "possible" combinations of clocks.
->
-> Or in other words, how can I say "clocks #1 and #2 from this list are
-> required, and #4 is optional, but #3 is not allowed"?
+Hi Paul,
 
-This says you have up to 4 clocks, but only defines the 1st 2:
+On Tue, Sep 07, 2021 at 03:50:39PM +0200, Paul Menzel wrote:
+> Dear Guenter,
+> 
+> 
+> Am 07.09.21 um 14:53 schrieb Guenter Roeck:
+> > On Tue, Sep 07, 2021 at 10:40:31AM +0200, Paul Menzel wrote:
+> 
+> > > Thank you for testing release candidates and releases [1]. Is your test
+> > > setup documented somewhere?
+> > > 
+> > Not really, except its source is available at github:
+> > 	https://github.com/groeck/linux-build-test
+> 
+> Thank you.
+> 
+> > > If not happening already, could the Linux messages (at least up to log level
+> > > warning) also be monitored? For example, in Linux 5.14, a new warning snuck
+> > > in by cefc7ca462 (ACPI: PRM: implement OperationRegion handler for the
+> > > PlatformRtMechanism subtype) [2], which could have been caught early on, and
+> > > fixed before the release.
+> > > 
+> > > The test summaries would then also notify about possible behavior change.
+> > 
+> > Logs are available and can be examined at kerneltests.org/builders.
+> 
+> Sorry for being blind. Under *qemu-tests*, looking at build #1831 [1],
+> clicking on *stdio* [2] under *Steps and Logfiles*, I do not see any Linux
+> logs.
+> 
+> > Reports are generated manually, so it would be way too much effort to add
+> > build warnings to those. Besides, logs are way too noisy to be useful in a
+> > summary e-mail.
+> 
+> Just to avoid misunderstandings, it’s about the Linux run-time logs.
+> 
+Run-time logs are only provided if there are errors or runtime issues
+(crashes, warning tracebacks, or test failures).
 
-maxItems: 4
-items:
-  - description: 1st clock
-  - description: 2nd clock
+> > Also, Geert's build reports already provide build warnings and errors.
+> > The same applies to reports sent by 0-day. Indeed, I do see at least
+> > one 0-day report against commit cefc7ca46235.
+> 
+> How can I find that report?
+> 
+I just searched for the SHA.
 
-But I think you will be better off with just defining the range
-(minItems/maxItems) at the top level and then use if/then schemas.
+https://www.spinics.net/lists/linux-acpi/msg101721.html
 
->
-> Some concrete examples, with the always-required clocks moved to the
-> beginning:
->
-> H6:
->  - bus: required
->  - hosc: required
->  - ahb: not allowed
->  - ext-osc32k: optional
->  - pll-32k: not allowed
+> > What would be the point of adding yet another report of build
+> > warnings on top of that ?
+> If the functionality already exists, great. But to be clear, it’s about the
+> runtime logs.
+> 
 
-Is this really 2 different 32k clock inputs to the h/w block? Doesn't
-seem like it given both are never valid.
+If there are (new) runtime issues (crashes, warnings, or other test failures),
+I usually analyze, bisect, and report the problem against the patch introducing
+the problem unless it was already reported elsewhere.
 
->
-> H616:
->  - bus: required
->  - hosc: required
->  - ahb: not allowed
->  - ext-osc32k: not allowed
->  - pll-32k: required
->
-> R329:
->  - bus: required
->  - hosc: required
->  - ahb: required
->  - ext-osc32k: optional
->  - pll-32k: not allowed
->
-> Should I just move the entire clocks/clock-items properties to if/then
-> blocks based on the compatible?
+For example, there is currently a backtrace in arm64 tests:
 
-Probably so.
+BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:163
 
-Rob
+which is due to ACPI code being called from the wrong context.
+Another example is the cirular locking problem reported in various
+mips tests, from mtd code. Both problems have been fixed in -next,
+and the fixes will hopefully be pushed upstream soon.
+
+The qemu tests do not log build warnings. I used to do that, but it
+was way too noisy (some builds used to produce hundreds of build
+warnings). Also, there is no logging data if there are neither
+crashes nor warnings or other test failures, for the same reason.
+If you are looking for complete boot logs, I'd suggest looking at
+test results from kernelci.org.
+
+Thanks,
+Guenter
