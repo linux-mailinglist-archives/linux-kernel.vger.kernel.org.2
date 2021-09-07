@@ -2,132 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E9D4031A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C64A4031A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346475AbhIGXvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhIGXvD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:51:03 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A70C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:49:56 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id d16so402664ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FECPoa1g9+9dsqYv+iSJV+4ByXKkIUfIRQm65q5XJsw=;
-        b=Ao7WGPwitXn5c2MO++qjMMxGjpAW4tTnL7npoHAF64WOVVCHhaM4k6teVfuN4ScyVZ
-         DPFDpWA0mMTLjTVQ5fC0lNRLA0OsawTGUn8vrhyPxXJ4s8mfA40FAyw4QDmZSav7D8UH
-         kba8D7ntoNzi/CZ/5UkXctqbluhNzpNIYeTS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FECPoa1g9+9dsqYv+iSJV+4ByXKkIUfIRQm65q5XJsw=;
-        b=CM9lw6gAEAFAktyMVIt5Iz+V2TODc2m0JXUJl6w+0QrfQYaCH6ZQkWM/BtQDzT20bU
-         nNVXHSOnitXxJZU56qDPBCbc94cTrCVQ5sFUImbSoERz3D3YCQLHuU1vEJGaRhwdltnZ
-         jVXTJC0LjhXBtZdbxvMHA2YttqyY2JoptQlJSKnONB0XaSEXNB+4+YE4VEiAUR+emqpc
-         eS75Lqyswfw7O4QRa4v5y20TBE6TnGBUnkxra14UwAwvjH9m+OA2ve/4pWZYe/SdDDI7
-         p1ayiB2Mo9utNKYfjROE7OPx/wJaX6x+pZgoTM2Hz0OL/UGIC/imNeWpNmAC03no6Qjc
-         Ao8Q==
-X-Gm-Message-State: AOAM533y8+fSbnVcluz8y1MVTgOgVExKx9mUiQe2NyNO6FD+v6mncLwq
-        N2ojA/+heAaqhpCec/htxx4e2hB//09dq3OIaV8=
-X-Google-Smtp-Source: ABdhPJxLDGJYcNL7lnL6Vemr5/Go6GzHB0YY/y0rl6iglQPiSZ1eQm8aPOoDWblTo/S063MJ/Dxdkg==
-X-Received: by 2002:a2e:7005:: with SMTP id l5mr528574ljc.355.1631058594327;
-        Tue, 07 Sep 2021 16:49:54 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id t184sm34353lff.250.2021.09.07.16.49.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 16:49:51 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id t19so619687lfe.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:49:51 -0700 (PDT)
-X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr662435lfb.141.1631058590780;
- Tue, 07 Sep 2021 16:49:50 -0700 (PDT)
+        id S1345293AbhIGXy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:54:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231519AbhIGXyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 19:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D7060E53;
+        Tue,  7 Sep 2021 23:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631058797;
+        bh=jYhS0ZcKTB6Zz+i0/PZUm2K/I0ZZy5tHzLqtXig4PgU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DorsFZIFCMiMbcVg1orT7EPiZAGRvLJR+DRnJ9O0jgSs+1ZLc6yxxUFxNaitLvVEs
+         gdzSBZ+xnpD3F0RWGAvb4krbRuMOMMu273u7j5zc/Tf5yK3T5NXgsqr4ywinAKjzWv
+         3GF5hkhTAS/qjlQhOsoldg76bn2GJzF2aGyBuED4rq7dKYs2wb+i8pi1bLFqHvKQIT
+         6kIw3p2o5yDWPlwA0xeF2qll4Vmcup8UIZfbDmgNSu2Vo9OGXySf+9tPmxeSejR9E1
+         Ct1ziFH+6eHpEyVARrFF2KCboLK+UxwmRpfEa4EByTiC84zB0rasCU3pbEJbEjyPZs
+         YYw+YqqqtR49A==
+From:   Vineet Gupta <vgupta@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Bin Meng <bin.meng@windriver.com>,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH] riscv: config: enable default defconfig to boot Hifive Unmatched
+Date:   Tue,  7 Sep 2021 16:53:15 -0700
+Message-Id: <20210907235315.567614-1-vgupta@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org>
-In-Reply-To: <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 16:49:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
-Message-ID: <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 4:35 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Won't your example only fix the issue with CONFIG_CPUMASK_OFFSTACK=y
+We need just a few options related to NLS when mouting boot partition
+for Unmatched to boot off of mainline kernels.
 
-Yes, but..
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+---
+ arch/riscv/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> or am I misreading the gigantic comment in include/linux/cpumask.h?
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 1f2be234b11c..fc9a4e0a9500 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -108,6 +108,8 @@ CONFIG_NFS_V4_1=y
+ CONFIG_NFS_V4_2=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_9P_FS=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_DEV_VIRTIO=y
+ CONFIG_PRINTK_TIME=y
+-- 
+2.30.2
 
-you're not misreading the comment, but you are missing this important fact:
-
-  config NR_CPUS_RANGE_END
-        int
-        depends on X86_64
-        default 8192 if  SMP && CPUMASK_OFFSTACK
-        default  512 if  SMP && !CPUMASK_OFFSTACK
-        default    1 if !SMP
-
-so basically you can't choose more than 512 CPU's unless
-CPUMASK_OFFSTACK is set.
-
-Of course, we may have some bug in the Kconfig elsewhere, and I didn't
-check other architectures. So maybe there's some way to work around
-it.
-
-But basically the rule is that CPUMASK_OFFSTACK and NR_CPUS are linked.
-
-That linkage is admittedly a bit hidden and much too subtle. I think
-the only real reason why it's done that way is because people wanted
-to do test builds with CPUMASK_OFFSTACK even without having to have
-some ludicrous number of NR_CPUS.
-
-You'll notice that the question "CPUMASK_OFFSTACK" is only enabled if
-DEBUG_PER_CPU_MAPS is true.
-
-That whole "for debugging" reason made more sense a decade ago when
-this was all new and fancy.
-
-It might make more sense to do that very explicitly, and make
-CPUMASK_OFFSTACK be just something like
-
-  config NR_CPUS_RANGE_END
-        def_bool NR_CPUS <= 512
-
-and get rid of the subtlety and choice in the matter.
-
-             Linus
