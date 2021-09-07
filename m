@@ -2,139 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34824024AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770264024B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241312AbhIGHoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233953AbhIGHox (ORCPT
+        id S238784AbhIGHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:50:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4244 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233626AbhIGHuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:44:53 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38F9C061575;
-        Tue,  7 Sep 2021 00:43:46 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id m28so17818208lfj.6;
-        Tue, 07 Sep 2021 00:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iyNh42KG1X76ikOu0ztNW1R3WqqdGf238vySbKfs0uM=;
-        b=m3tVQ/imQU+9vz+sB5ZdKyRBOXFGtpV3u0Fw0zYf8Qb+cUTchLYmE2Yl27Sdsk5BTz
-         czWe7t1tlNFmXYhwbHwWuqUkG1ZrM8S96hPdxNmjgZ2y9SB0JtbiQSSC4/XkM0dOyvdo
-         2BzLI7YlzODKvsrhrIACL/rksn6vzGZPgknOG/jHBtg4e9fn1mX1s9MNLVAb47xyi99R
-         gHSsVQ4lTHIJ4lp0hHB1EV3jnlefO1IujnpXBvwh4as0dvkHkcU4D3psDEqhfcbBYIZC
-         fzyB2589yg5S2mMTNPZeOncIjgG3UtZL5FvTRdx+FfHJyPxJUtEzilEFUQsdxI9kc1BA
-         P9eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iyNh42KG1X76ikOu0ztNW1R3WqqdGf238vySbKfs0uM=;
-        b=STH8wEJF5NU6puVn1l5fID5FIyKWFx5VZMNTfqmCv3iSxO0ucKR56k+izfS9/dRd2Z
-         GByFZT1XViw3V7p9zxwOsmKF9v0LwzEFOkslH0FaWpgBCIaDPvdVXXnaqAlphJd5eU4l
-         96NHhrmo0qtO1ClQiId3IwvkbUmAtzoQt/GzzEAbm++yKk5/Ey9SLLtnT4NrUoAXLo3i
-         7yzitL3vmqZ6l4XK2NpFd64J6rkbmQK+BZkQy+ClDsC8/Gm57HHi7+6UOhh0pfjRV6IJ
-         lRkE0lIn+QUS3+0EMr38KVdFeoTmuhPxF83RfmJ8vIYU/w7RJInQWwJ/2VRu+8BoJJel
-         bNTQ==
-X-Gm-Message-State: AOAM533tP+A80UYUqD9ibQiu+1tpGyRRZrnydfbMKI24QjcxXeHs5Lsc
-        MgC5xXMFgmXv2zv5rrn06ueF8Lo0404=
-X-Google-Smtp-Source: ABdhPJy0t63OLJh901ZHlX+eGK1Vc+jfB9Sys3Cv5A6CrM6RFvqkZ4RY1GIdn+o65wz/wy87YylPmQ==
-X-Received: by 2002:a05:6512:3d8c:: with SMTP id k12mr12244983lfv.545.1631000625004;
-        Tue, 07 Sep 2021 00:43:45 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id a17sm936678lfb.91.2021.09.07.00.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 00:43:44 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 10:43:42 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] docs: fs: Refactor directory-locking.rst for better
- reading
-Message-ID: <20210907074342.ycsuuafn4pjsxbei@kari-VirtualBox>
-References: <20210816222639.73838-1-kari.argillander@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816222639.73838-1-kari.argillander@gmail.com>
+        Tue, 7 Sep 2021 03:50:32 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1877YDaJ150443;
+        Tue, 7 Sep 2021 03:49:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=WJWyf84RAX/0ZkWwXIUGLHrz9cHuR/afqYqiTEBsuKA=;
+ b=cAvh6O1jVkmxvWAt9LNPpQBui1Q1dXL4JRPbVLyUIt3rrT31sZ8BMoi3kBRWvXZnM4Q/
+ jhEdtQTzNm+WvLV1/ewm8kwRii8DZF3oKs/L8p8iXSjThysX0me52Z5Iw3cCRk+Y7jF/
+ T8AKlX3ifTKUv+MjaT7w3nUHTBHCapwN9cgJYxuYNGZAU0ePdqyTj0+5x6DBuTh0chyZ
+ jc1hddbmoF2d6WVy4U2JYvSWguaQRDNp7UF/7PoFQa3U3z3n/X3U3WYoo7AcSc7beUHA
+ SI5MLnT67xY71QkTQz/acDmkvWtuKg16wNEhgmNPtM8nefiWMP10EdsrHZnoAWwneo0u Fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ax3qsrdgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 03:49:15 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1877aw42158665;
+        Tue, 7 Sep 2021 03:49:15 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ax3qsrdg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 03:49:15 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1877ltNG019758;
+        Tue, 7 Sep 2021 07:49:13 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 3av0e9jx2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 07:49:13 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1877nAUV44106174
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Sep 2021 07:49:10 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0143452050;
+        Tue,  7 Sep 2021 07:49:10 +0000 (GMT)
+Received: from sig-9-145-36-222.uk.ibm.com (unknown [9.145.36.222])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 89B9A52059;
+        Tue,  7 Sep 2021 07:49:09 +0000 (GMT)
+Message-ID: <bddf2d1867585427680cb093cb10d5d15d7aa8d3.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     linasvepstas@gmail.com
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        linuxppc-dev@lists.ozlabs.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>
+Date:   Tue, 07 Sep 2021 09:49:09 +0200
+In-Reply-To: <CAHrUA34TK6U4TB34FHejott9TdFvSgAedOpmro-Uj2ZwnvzecQ@mail.gmail.com>
+References: <20210906094927.524106-1-schnelle@linux.ibm.com>
+         <CAHrUA34TK6U4TB34FHejott9TdFvSgAedOpmro-Uj2ZwnvzecQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: C0aRTjjmQNKpk3SN8yudqLi9VZzVvfpX
+X-Proofpoint-ORIG-GUID: pjkFZ4ivwDdWIA9TGUakMx88a4X8WhVD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-07_02:2021-09-03,2021-09-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109070049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 01:26:39AM +0300, Kari Argillander wrote:
-> Reorganize classes so that it is easier to read. Before number 4 was
-> written in one lenghty paragraph. It is as long as number 6 and it is
-> basically same kind of class (rename()). Also old number 5 was list and
-> it is as short as 1, 2, 3 so it can be converted non list.
+On Mon, 2021-09-06 at 21:05 -0500, Linas Vepstas wrote:
+> On Mon, Sep 6, 2021 at 4:49 AM Niklas Schnelle <schnelle@linux.ibm.com>
+> wrote:
 > 
-> This makes file now much readible.
+> >  I believe we might be the first
+> > implementation of PCI device recovery in a virtualized setting requiring
+> > us to
+> > coordinate the device reset with the hypervisor platform by issuing a
+> > disable
+> > and re-enable to the platform as well as starting the recovery following
+> > a platform event.
+> > 
+> 
+> I recall none of the details, but SRIOV is a standardized system for
+> sharing a PCI device across multiple virtual machines. It has detailed info
+> on what the hypervisor must do, and what the local OS instance must do to
+> accomplish this.  
 
-Gently ping for this one.
+Yes and in fact on s390 we make heavy use of SR-IOV.
+
+> It's part of the PCI standard, and its more than a decade
+> old now, maybe two. Being a part of the PCI standard, it was interoperable
+> with error recovery, to the best of my recollection. 
+
+Maybe I worded things with a bit too much sensationalism and it might
+even be that POWER supports error recovery also with virtualization,
+though I'm not sure how far that goes.
+
+I believe you are right in that SR-IOV supports the error recovery,
+after all this patch set also has to work together with SRIOV enabled
+devices. At least on s390 though until this patch set the error
+recovery performed by the hypervisor stopped in the hypervisor.
+
+The missing part added by this patch set is coordinating with device
+drivers in Linux to determine where use of a recovered device can pick
+up after the PCIe level error recovery is done.
+
+As for virtualization this coordination of course needs to cross the
+hypervisor/guest boundary and at least for KVM+QEMU I know for a fact
+that reporting a PCI error to the guest is currently just a stub that
+actually completely stops the guest, so you definitely don't get smooth
+error recovery there yet.
+
+> At the time it was
+> introduced, it got pushed very aggressively.  The x86 hypervisor vendors
+> were aiming at the heart of zseries, and were militant about it.
+
+And yet we're still here, use SR-IOV ourselves and even support Linux +
+KVM as a hypervisor you can use just the same on a mainframe, an x86,
+POWER, or ARM system.
 
 > 
-> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> ---
->  .../filesystems/directory-locking.rst         | 31 +++++++++----------
->  1 file changed, 15 insertions(+), 16 deletions(-)
+> -- Linas
 > 
-> diff --git a/Documentation/filesystems/directory-locking.rst b/Documentation/filesystems/directory-locking.rst
-> index 504ba940c36c..33921dff7af4 100644
-> --- a/Documentation/filesystems/directory-locking.rst
-> +++ b/Documentation/filesystems/directory-locking.rst
-> @@ -11,7 +11,7 @@ When taking the i_rwsem on multiple non-directory objects, we
->  always acquire the locks in order by increasing address.  We'll call
->  that "inode pointer" order in the following.
->  
-> -For our purposes all operations fall in 5 classes:
-> +For our purposes all operations fall in 6 classes:
->  
->  1) read access.  Locking rules: caller locks directory we are accessing.
->  The lock is taken shared.
-> @@ -22,26 +22,25 @@ exclusive.
->  3) object removal.  Locking rules: caller locks parent, finds victim,
->  locks victim and calls the method.  Locks are exclusive.
->  
-> -4) rename() that is _not_ cross-directory.  Locking rules: caller locks
-> -the parent and finds source and target.  In case of exchange (with
-> -RENAME_EXCHANGE in flags argument) lock both.  In any case,
-> -if the target already exists, lock it.  If the source is a non-directory,
-> -lock it.  If we need to lock both, lock them in inode pointer order.
-> -Then call the method.  All locks are exclusive.
-> -NB: we might get away with locking the source (and target in exchange
-> -case) shared.
-> +4) link creation.  Locking rules: lock parent, check that source is not
-> +a directory, lock source and call the method.  Locks are exclusive.
->  
-> -5) link creation.  Locking rules:
-> +5) rename() that is _not_ cross-directory.
-> +Locking rules:
->  
-> -	* lock parent
-> -	* check that source is not a directory
-> -	* lock source
-> -	* call the method.
-> +	* Caller locks the parent and finds source and target.
-> +	* In case of exchange (with RENAME_EXCHANGE in flags argument)
-> +	  lock both the source and the target.
-> +	* If the target exists, lock it,  If the source is a non-directory,
-> +	  lock it. If we need to lock both, do so in inode pointer order.
-> +	* Call the method.
->  
->  All locks are exclusive.
-> +NB: we might get away with locking the source (and target in exchange
-> +case) shared.
->  
-> -6) cross-directory rename.  The trickiest in the whole bunch.  Locking
-> -rules:
-> +6) rename() that _is_ cross-directory.  The trickiest in the whole bunch.
-> +Locking rules:
->  
->  	* lock the filesystem
->  	* lock parents in "ancestors first" order.
-> -- 
-> 2.30.2
-> 
+
