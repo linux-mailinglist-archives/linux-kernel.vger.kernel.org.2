@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360A34021FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDFE402204
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237815AbhIGBDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S230212AbhIGBNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhIGBDT (ORCPT
+        with ESMTP id S229797AbhIGBNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:03:19 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A6CC061575;
-        Mon,  6 Sep 2021 18:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630976529;
-        bh=HtpABVeSZeu1ftNUCNlSIMFtuUwHNeJrMqx/kkq0MN8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=liDqcNxwcuuMkYtF1qtWA3AVuRPcj7VMfWp8vSQWL73SEAFRLu3ylH7r+otiaFl1f
-         pmhvAiYGZzopesOx07B6IE1JzpMJttGJehmtqrL11hkUo8DM/FTiQZAPz1jUJ/Z901
-         ZB4LpkcHfd9CLZ3E7RA5MHFk1fISmcxZxq1fslJy9HQv7TEzU2/dj7DZCwBw+9hHU2
-         4PoTOk7YJneI8D8yijCD6cmvqU/6aU3xORqXZ93ZLgPQV3nd0GCkLdFAtvYDiA/uPc
-         0t+Z751nj271qcHN+Pv8uZo8YPKMkiJAL8DLXJSiuzn128UP5uc6MsyVWZtwZUwKxe
-         hK5+b1+VsOF1g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H3RnD5mRvz9sW4;
-        Tue,  7 Sep 2021 11:02:08 +1000 (AEST)
-Date:   Tue, 7 Sep 2021 11:02:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure in Linus' tree
-Message-ID: <20210907110207.2b718631@canb.auug.org.au>
+        Mon, 6 Sep 2021 21:13:31 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03798C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 18:12:26 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id j12so13830399ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=buovdfuVwAYJ1wdL40xpZvGrNDWI2KNqFgBPmPDh630=;
+        b=fuQfTafv4uneL2AzwltGo4ZWCS3xmlXhvTfaWdXPcpqErjQyMz3g6ew9quCkVeUZdR
+         X0gHcxtFLBJg+SYSmchrwATm1Xb1uxbZjxVz/87MUSvQntnDeHgJkbIMmJCgDwCX/vPJ
+         0YlupHDDkh2Qz5u75srCW2zHTRG5msU6vsIYE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=buovdfuVwAYJ1wdL40xpZvGrNDWI2KNqFgBPmPDh630=;
+        b=ec9+lVBRY3Yxpv7Tfmd0VKFovS81m9J0cKEwDyzjLmxGIX0p8bRNi4JtFecxDthVZG
+         NR4W2LHdWsVqeOPe2nYvnucbL09m3dPgUsVwNSIad5mXgFqLKtXU6C3pdXD2J25teOTI
+         iCehynJHJFA7szCeq6D8cmjzKWQe2sm0hxFUzGoL7R2mlhl6HriibzGwoINHGSLeBHmr
+         FXitWYx+MjonaFeLUW3ePiD4tKUalC76Gag4aGoHu8JAbxH7rT9SiUOiYGHF75DG63pO
+         t+hXRfOpvuGNEaPkCKiO/p3ZApTQNGpTAOhUWrJOe6wG8nd0M64617CWDasz4IEQU5cD
+         rlGA==
+X-Gm-Message-State: AOAM5314CU/AUjZiPeqHQ84GAITcMI8ngJdULL7ns7CdfZs+/yFXEbU/
+        Q5RElhyp4RPrnRZ9I5zpecaZ0I/aIWZHrbpM
+X-Google-Smtp-Source: ABdhPJyRGjOwIiNIHMDFIeRXF58jbO/Fmx3NO5EeMxDmC1PitYkm21K9wRNLQNdTQex9Rw7towthfw==
+X-Received: by 2002:a2e:a54d:: with SMTP id e13mr12878748ljn.267.1630977143467;
+        Mon, 06 Sep 2021 18:12:23 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id l22sm858278lfc.218.2021.09.06.18.12.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 18:12:23 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id p15so13897482ljn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:12:22 -0700 (PDT)
+X-Received: by 2002:a2e:a363:: with SMTP id i3mr12459242ljn.56.1630977142525;
+ Mon, 06 Sep 2021 18:12:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ghcMmdC16VD9cf17Yqdl7zL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+In-Reply-To: <20210906234921.GA1394069@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Sep 2021 18:12:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjvfUpPJLbWz6Jezr4ZNjhC6j2WYi5MHUd9bjK94JC24A@mail.gmail.com>
+Message-ID: <CAHk-=wjvfUpPJLbWz6Jezr4ZNjhC6j2WYi5MHUd9bjK94JC24A@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ghcMmdC16VD9cf17Yqdl7zL
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 6, 2021 at 4:49 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> > but I'm not seeing why that one happens on sparc64, but not on arm64
+> > or x86-64. There doesn't seem to be anything architecture-specific
+> > anywhere in that area.
+> >
+> > Funky.
+>
+> Not really. That is because de->di_fname is always 16 bytes but size
+> can be 48 if the node is really a link. The use of de is overloaded
+> in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
+> but the actual data is struct qnx4_link_info where the name is 48 bytes
+> long. A possible fix (compile tested only) is below.
+>
+> I think the warning/error is only reported with gcc 11.x. Do you possibly
+> use an older compiler for x86/arm64 ?
 
-Hi all,
+No. Literally the same exact version. All of them are
 
-While building Linus' tree, yesterday's linux-next build (mips
-rbtx49xx_defconfig) failed like this:
+    gcc version 11.2.1 20210728
 
-drivers/net/ethernet/8390/ne.c:909:20: error: =E2=80=98ne_add_devices=E2=80=
-=99 defined but not used [-Werror=3Dunused-function]
+from F34.
 
-Introduced by commit
+I suspect it's something about the config - a sparc64 allmodconfig
+presumably doesn't end up having some of the things x86-64 has enabled
+(because of different core config parameters), and then optimizes
+differently as a result and shows the issue that way.
 
-  4228c3942821 ("make legacy ISA probe optional")
+Or something. <wild handwaving>
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ghcMmdC16VD9cf17Yqdl7zL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE2ug8ACgkQAVBC80lX
-0GwoTgf8CYoPYDrsXYCElbwcCTuo+GgUGXEKe9/1Nn4nGTfBkQJOtjqk0OGLzqwV
-r3HY/rhLxMxCiP08zwpDuJVN7/j83gwl4RR9WgJVqzo9IzARDnC6/zHgMqmfBgZ0
-ryOwom17l2CfXQl63FVaUheEBfXXXDXB7ozGD0ZylrBbVjXLiOLk3M/xe2DcyolP
-UhL5gwfPhEYjo+O68G7/JXBehyCmeZW5DvhhM+tQfuFeMEqfXvaTz145o4mzjnob
-O1ufdvnWAEBV4lq4y9BmPJiNEpPTrpzfH2cIAIhq7L3Y2m5MSVI6q0CTBhFKpA4N
-Tfjes+3RwbeQ1QkcXrNL1wmIu3YCJg==
-=JBFw
------END PGP SIGNATURE-----
-
---Sig_/ghcMmdC16VD9cf17Yqdl7zL--
+                Linus
