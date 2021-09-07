@@ -2,317 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A78402715
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EBB40271A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245385AbhIGKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:25:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48850 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232704AbhIGKZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:25:39 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 187A5Ux1139009;
-        Tue, 7 Sep 2021 06:24:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=QQ7fHKswlegI2/x9sDIv7Dbzho/4PLMRu7uZKcGhe6w=;
- b=Atb6bOEsY0Pg4vlGP1mzwGV7Vgth/tbE9AkG/icVasC6b0uXMhvzSUse/fYbFQUhPuP9
- P2+QjaZMAOQY+7luqEhW2pvClzjr23hQLyByM1myLKhYI+PSe6e1ff0bVOvacc+cxDBS
- 7YGg7tVSWO1O3axm+XxLDQaZaPW4+VdTx/GRLTFc++DnufY8XDF/fqCwwWdrzlEDegf4
- gwE0mW60HHpyFXLVNR0Ia8NRwyjCASqBVApDV3Ovx2W+SyJg94TmH9SFyCWfr8nSVB8c
- q8DTpr1mBQOHqRWpu827ANOhaOkamxUhCqcA3EBt0nJsMeZdQbP8g1XG03yx+mVt2QI3 cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3awvb5v1t8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 06:24:33 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 187A5YAU139331;
-        Tue, 7 Sep 2021 06:24:33 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3awvb5v1sk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 06:24:33 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 187AE3nl027716;
-        Tue, 7 Sep 2021 10:24:31 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3av0e9dmke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 10:24:30 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 187AKBfg58458390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Sep 2021 10:20:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 32612AE045;
-        Tue,  7 Sep 2021 10:24:27 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5FBFAE058;
-        Tue,  7 Sep 2021 10:24:26 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.9.165])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Sep 2021 10:24:26 +0000 (GMT)
-Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
- Topology-Change-Report
-To:     David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
- <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
- <d85a6998-0f86-44d9-4eae-3051b65c2b4e@redhat.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <59ff09e8-6975-20c2-78de-282585e2953d@linux.ibm.com>
-Date:   Tue, 7 Sep 2021 12:24:26 +0200
+        id S245423AbhIGK0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:26:06 -0400
+Received: from mail-sn1anam02on2041.outbound.protection.outlook.com ([40.107.96.41]:49177
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232704AbhIGK0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 06:26:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EZJHdLwCql6rTZMNxs4MxmjmEvP8M646rxKf2D46YOEr1oH5PcMN/7XGs1iv/3ZSzNuA/7Lu9OF5cn6wfyHA4rIpUERhsCZgI8O98U+10/bEZiCJdqyJlFsP923l6QzzBGAugK9Vyrb921l+hjNam6Bua/oQWYm2GgOJEeXV1zPqbMeSLCUNFwTfdh22y4esGmyHpJ7JL3Fa1IUiwhfQZTARPSTAXkspMKpPera4x/oTzspltbgZdXfuB04EWbJ0qqJPDtthJA7Pmfvt4sIs4Xt4W/GHEqwBJpAwnLYBP4BCLa1H9zmrU0dE0i75NCA04IquY37S538xxkDNzX2Stw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=5vt1YI7dmXn8HoU9ao1GNa0OIz+EYKgkVJa4432sV7s=;
+ b=jAOy7FQ7GB6Pcysr9Xxa/ep4bBoZ3LskOSlLwbUWSqQiImZKE5cQYloObk8ZYhjKH2qTIwpaSxWs5RCmaqmTUbNGiXPrTpkuimr3CHabTU8vk4ivTP7E+wghdSc03YYuWRapJ27qvg2KbMvcYZreX7H0TROy7HoYgHwhsZ+rmnMefjH82abILuRBnyaQUPZKZBsx89dg4fFCbgtO8VI2gb9WjZWpgWDaozMekSiRTZjcoedoV84Awi7vs7yw/YJWRuZdNAoXHtH3OQyBQinkbYvFBk6tc2PsxYQ1d59cf2jU058Z+wKaz42+8b+6SmSfHrcgiiT6oKpH0EUdSuwyZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5vt1YI7dmXn8HoU9ao1GNa0OIz+EYKgkVJa4432sV7s=;
+ b=l2PHom2yOKDUgCfZxbc245oa/gTCaKLPbR9qPC/YeVjiydHYSdUDzoJdWOEfZSAL9fN3AZfLuwHNC48CU4KfVrcvOfNrIdBy9IuI5xcptYb6V6rce9QNWBxDq9THTv4KJoz8iAxlESsl+vAeAk0S9+CEnZYTWeqWyRwpImzsfxc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4191.namprd12.prod.outlook.com (2603:10b6:208:1d3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Tue, 7 Sep
+ 2021 10:24:58 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
+ 10:24:58 +0000
+Subject: Re: [PATCH] drm/ttm: fix the type mismatch error on sparc64
+To:     Huang Rui <ray.huang@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20210907100302.3684453-1-ray.huang@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5e365947-4ae1-47a0-7565-7f0cdde0bd84@amd.com>
+Date:   Tue, 7 Sep 2021 12:24:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <d85a6998-0f86-44d9-4eae-3051b65c2b4e@redhat.com>
+In-Reply-To: <20210907100302.3684453-1-ray.huang@amd.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ofogf204S8lVADvOZn9It16C-Zkaq7DO
-X-Proofpoint-ORIG-GUID: TWKcuo6aY2yZ6Ccn5K_-55ttUYg8oJ-4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-07_03:2021-09-03,2021-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 mlxscore=0 phishscore=0 adultscore=0 bulkscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109070067
+Content-Language: en-US
+X-ClientProxiedBy: PR0P264CA0154.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1b::22) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+Received: from [192.168.178.21] (91.14.161.181) by PR0P264CA0154.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:24:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a79d7bb0-f73b-460a-f2b3-08d971e9be10
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4191:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB41910A7294F86CB75242AB2B83D39@MN2PR12MB4191.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gsOQJDhGNvKlHAwgidTV0F+o0bmf5fKlW4o59IY7FzCDlyrkQET5e8/FLCm9RO3msPD2OgisSB4e5dXHasVDCN/DyXvCEFF7ldzzVyT6MS1AXH9rg08j4ELPSEihrATgtaE9S/Ker1xYT0p1HLS3zacPp50HSmpSVQCvuVht6+ZI4QCqigNPnoqQdEXV7YO/X2iKdlT7Z+Ta7UbJ02eAuLw2T8kzs3MCQTtHRuzWtJxF6QIID5AGeyB6+BXtjAYhKsVYgCi1FDab2USjtL+zxlEcLvKyTchXcbMtoQ6NjFFEPFi34zOc7Zs3vmejA7M/ioi1YC9tf5WvbAN5bTgXQQ7qXEtUY1KjfdXRP1ucFgJ0rq8H1WWyZWkeXDbNOvsFV8VMADpj1NdgzM7H9HnIuBDf3ULBHN4ICgDxWKEDJz8zeFrCUqYIjlwA4QdYvqMGZoeKGr69JfNeutEYW7DVclJV42GW39NXa0IHxGznsg4n2oY5IomPzHdOa9pTcsVuTA4dDVegwPsbqtlgKhXHN0EmNHX9XT0vg2wEpySDber88WShLi99d4iOZNnn2o7YSa7YcI0lk/4EUBBdeOSa46uAHU7Gn9gsty9izbdW6J42XdWpFSN66qy38UjUj75MplbMHJMD1Fn3zLwrjCVSIjvV2GiKi0V4XuliaR1pKXpLEaoGUUWbWGegbCWAHx+yUkxl4XMtiKML1tvkRf60kGsbpHvqFaAdBpQYlD30Yl0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(186003)(83380400001)(66476007)(6666004)(66946007)(31686004)(66556008)(26005)(110136005)(16576012)(316002)(54906003)(478600001)(36756003)(8676002)(66574015)(8936002)(2906002)(86362001)(4326008)(31696002)(38100700002)(2616005)(5660300002)(6486002)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjI1NkUxOHRaTDAwRHBJYjJicC9hU05FQjlSTFVKRjFWYXdZS3RrWk4zcXBk?=
+ =?utf-8?B?TllPZ2FVSzdzcklKdVBDVkdqNU5DZG9PcUtMMnoxaXBxSnlzbVQvTXBrMWNs?=
+ =?utf-8?B?WWkvQThwTkRIREIrcm5FdEg1YWNYY1IzOStQT09kbGFPMzJGWXNXUEZidUFQ?=
+ =?utf-8?B?dU54RXFtU2tRbWR4RXh3WXRSZU9Fanh2WXI2VGRLYTRkTFZaazBoWTZPSnd5?=
+ =?utf-8?B?NXk1eW42SC90RkN3RWYvSitTZVRkeVJGY2VZL1I3UTVmYkVCVXVIcnhVa0cr?=
+ =?utf-8?B?dXhQTGJWdXVZQ1pFdnpCZFJ0L202bWtQRHZaMys2M2U2NkNzZmJFaCs3M0hT?=
+ =?utf-8?B?eXFhbXhxV0hPWGowb2pqbU5xWUZVWFJuQmYvYnp5Nmc3aG1FcXRZTFF4SjhO?=
+ =?utf-8?B?dGFzNWdwL2cxSmhVZTd4WEVmR2s3NUo4ZWM5Wnhud05OODMxUEhndVNHdDUw?=
+ =?utf-8?B?bFZPbElPSWNXQVR5ekhuUEtveVJiQzNGWUFWZCtSQ2Y1eFZmZEFrYjgyU1lq?=
+ =?utf-8?B?SkNqWXVtM2JQZmU0eUhJc2xpNnVmajJ1SjlKMWhpclBFOC96R0E5a29MbGRz?=
+ =?utf-8?B?MERTQkJGemVWRmxKWjlHQzNVaTFMSW1oTEJaZGEwZ1dXeFE2ZVhPbUtMQ1Rr?=
+ =?utf-8?B?cWNvMWM1enRweFRkZG1oOFJ6S3VFdmx6Y2x6L3MrSEQ4TFdpUFhmTndqL3pQ?=
+ =?utf-8?B?V3ViTjJ1MStDcWk0WUtlNlIyT29zSytaaW9JaFkreE5KY2xlNDV1aFR2dGsw?=
+ =?utf-8?B?MTdhbExPbmJqWG1VUU9rc2kvL0ZYVDhQTmk0WlFhV0hhV0hINTQrdXpEUTZV?=
+ =?utf-8?B?cFNVaHBHV2NLcGpMWDRGVE1TTVJPenBLT0tod3BrNHlkMHVvSUhzSjc1QkUy?=
+ =?utf-8?B?anhYY3JqUGFPZHd0Wll6WGNnenJtWUtxTGJwNUdUa0RTSmoxRG1iYXArMEY5?=
+ =?utf-8?B?NC9NZmhxeXBpNlk5bWFSWlY5SVhUTjJRSk9JNEJ5SVM0UTc5czAvSWNveW54?=
+ =?utf-8?B?Y0lScVBodEh5U3BXR3hiNUg1SllIVE1ZRDdKOEZlUnNDL2pFNURsd3lqRHUx?=
+ =?utf-8?B?S0VZSXBpMndZcHA3OUlQRUs4R1lTT0lZQU41UU5hL2tZeVMyL05KWURNVjVl?=
+ =?utf-8?B?d0ROU1MxS05hNGVTb2tPbGJUOEU5S1VpdU9PVzkzSWtCQi9YR3g2emhRSG5w?=
+ =?utf-8?B?UzQzTFMrZzZ1WUczQnZpeG5kSTlDdzQwbkNFbHM4QlpvbjVCeDZlTkp5T084?=
+ =?utf-8?B?d0ZWSXBrMTFHekVnRm9ia2gwb1VLb3h4Y3VRYnZ5bTdWa2Fxckk5SndpTnJN?=
+ =?utf-8?B?NHVsTUQ5WHlQREF1bm52d211WWZTY2pzZ2RnNk9lamFpTUo0MTNieTV5VmNW?=
+ =?utf-8?B?MjVadG5WWUd3aXlLK1JIYW1xS2ZSNkVjWUt2T3RxUVl3SU1wU2JScXMvS2l0?=
+ =?utf-8?B?ZzFrZERQd0pqTVZpSUY4cnVoZ1dtbmRwZ2VrcExxUTJCckpEV3l0OFFxMExD?=
+ =?utf-8?B?S1prL0xnUDY2R29WMjJ4c2pVMmRYTnNCSC9URnBOQWk1a2tPUDZ2Zk9QaTVI?=
+ =?utf-8?B?ZzFoU01rU3JDcFJYOFhWaE1IdUpLOERyR3dRVjJTbHFvMmlHNVAzSzFxQWJM?=
+ =?utf-8?B?YTNFMVpPZUV0NVJSczdLYlZ3UEp4aUd1UDU0SWkwNWRsV01qRmYzV3E1RUtv?=
+ =?utf-8?B?enpJeXFaa2IzN05CTm1FRlhBNEtYc3hQOERQRHBpNURjOFlvRWh5bVBKeWJM?=
+ =?utf-8?Q?RLd9RZZiTbr/QlkPjmYFoYzTuqJWHZs1j5Hf7yL?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a79d7bb0-f73b-460a-f2b3-08d971e9be10
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:24:58.1515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rs2ScRrqOxV0ntA4jvNAOIk6PEVC0dhBq/iUmKUhsrWWS9bPkWbnKfCHGRzlGnBr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4191
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 07.09.21 um 12:03 schrieb Huang Rui:
+> __fls() on sparc64 return "int", but here it is expected as "unsigned
+> long" (x86). It will cause the build errors because the warning becomes
+> fatal while it is using sparc configuration. As suggested by Linus, it
+> can use min_t instead of min to force the type as "unsigned int".
+>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> Cc: Christian König <christian.koenig@amd.com>
 
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-On 9/6/21 8:37 PM, David Hildenbrand wrote:
-> On 03.08.21 10:26, Pierre Morel wrote:
->> We let the userland hypervisor know if the machine support the CPU
->> topology facility using a new KVM capability: KVM_CAP_S390_CPU_TOPOLOGY.
->>
->> The PTF instruction will report a topology change if there is any change
->> with a previous STSI_15_2 SYSIB.
->> Changes inside a STSI_15_2 SYSIB occur if CPU bits are set or clear
->> inside the CPU Topology List Entry CPU mask field, which happens with
->> changes in CPU polarization, dedication, CPU types and adding or
->> removing CPUs in a socket.
->>
->> The reporting to the guest is done using the Multiprocessor
->> Topology-Change-Report (MTCR) bit of the utility entry of the guest's
->> SCA which will be cleared during the interpretation of PTF.
->>
->> To check if the topology has been modified we use a new field of the
->> arch vCPU to save the previous real CPU ID at the end of a schedule
->> and verify on next schedule that the CPU used is in the same socket.
->>
->> We deliberatly ignore:
->> - polarization: only horizontal polarization is currently used in linux.
->> - CPU Type: only IFL Type are supported in Linux
->> - Dedication: we consider that only a complete dedicated CPU stack can
->>    take benefit of the CPU Topology.
->>
->> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> 
-> 
->> @@ -228,7 +232,7 @@ struct kvm_s390_sie_block {
->>       __u8    icptcode;        /* 0x0050 */
->>       __u8    icptstatus;        /* 0x0051 */
->>       __u16    ihcpu;            /* 0x0052 */
->> -    __u8    reserved54;        /* 0x0054 */
->> +    __u8    mtcr;            /* 0x0054 */
->>   #define IICTL_CODE_NONE         0x00
->>   #define IICTL_CODE_MCHK         0x01
->>   #define IICTL_CODE_EXT         0x02
->> @@ -246,6 +250,7 @@ struct kvm_s390_sie_block {
->>   #define ECB_TE        0x10
->>   #define ECB_SRSI    0x04
->>   #define ECB_HOSTPROTINT    0x02
->> +#define ECB_PTF        0x01
-> 
->  From below I understand, that ECB_PTF can be used with stfl(11) in the 
-> hypervisor.
-> 
-> What is to happen if the hypervisor doesn't support stfl(11) and we 
-> consequently cannot use ECB_PTF? Will QEMU be able to emulate PTF fully?
+> ---
+>   drivers/gpu/drm/ttm/ttm_pool.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+> index af1b41369626..c961a788b519 100644
+> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+> @@ -382,7 +382,8 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
+>   	else
+>   		gfp_flags |= GFP_HIGHUSER;
+>   
+> -	for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
+> +	for (order = min_t(unsigned int, MAX_ORDER - 1, __fls(num_pages));
+> +	     num_pages;
+>   	     order = min_t(unsigned int, order, __fls(num_pages))) {
+>   		bool apply_caching = false;
+>   		struct ttm_pool_type *pt;
 
-Yes.
-
-> 
-> 
->>       __u8    ecb;            /* 0x0061 */
->>   #define ECB2_CMMA    0x80
->>   #define ECB2_IEP    0x20
->> @@ -747,6 +752,7 @@ struct kvm_vcpu_arch {
->>       bool skey_enabled;
->>       struct kvm_s390_pv_vcpu pv;
->>       union diag318_info diag318_info;
->> +    int prev_cpu;
->>   };
->>   struct kvm_vm_stat {
->> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->> index b655a7d82bf0..ff6d8a2b511c 100644
->> --- a/arch/s390/kvm/kvm-s390.c
->> +++ b/arch/s390/kvm/kvm-s390.c
->> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
->> long ext)
->>       case KVM_CAP_S390_VCPU_RESETS:
->>       case KVM_CAP_SET_GUEST_DEBUG:
->>       case KVM_CAP_S390_DIAG318:
->> +    case KVM_CAP_S390_CPU_TOPOLOGY:
-> 
-> I would have expected instead
-> 
-> r = test_facility(11);
-> break
-
-The idea is that QEMU will emulate both PTF and SYSIB_15 in this case.
-
-> 
-> ...
-> 
->>           r = 1;
->>           break;
->>       case KVM_CAP_SET_GUEST_DEBUG2:
->> @@ -819,6 +820,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, 
->> struct kvm_enable_cap *cap)
->>           icpt_operexc_on_all_vcpus(kvm);
->>           r = 0;
->>           break;
->> +    case KVM_CAP_S390_CPU_TOPOLOGY:
->> +        mutex_lock(&kvm->lock);
->> +        if (kvm->created_vcpus) {
->> +            r = -EBUSY;
->> +        } else {
-> 
-> ...
-> } else if (test_facility(11)) {
->      set_kvm_facility(kvm->arch.model.fac_mask, 11);
->      set_kvm_facility(kvm->arch.model.fac_list, 11);
->      r = 0;
-> } else {
->      r = -EINVAL;
-> }
-> 
-> similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
-> 
-> But I assume you want to be able to support hosts without ECB_PTF, correct?
-
-yes, this was the idea.
-
-> 
-> 
->> +            set_kvm_facility(kvm->arch.model.fac_mask, 11);
->> +            set_kvm_facility(kvm->arch.model.fac_list, 11);
->> +            r = 0;
->> +        }
->> +        mutex_unlock(&kvm->lock);
->> +        VM_EVENT(kvm, 3, "ENABLE: CPU TOPOLOGY %s",
->> +             r ? "(not available)" : "(success)");
->> +        break;
->> +
->> +        r = -EINVAL;
->> +        break;
-> 
-> ^ dead code
-> 
-
-:) indeed , sorry.
-
-> [...]
-> 
->>   }
->>   void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
->>   {
->> +    vcpu->arch.prev_cpu = vcpu->cpu;
->>       vcpu->cpu = -1;
->>       if (vcpu->arch.cputm_enabled && !is_vcpu_idle(vcpu))
->>           __stop_cpu_timer_accounting(vcpu);
->> @@ -3198,6 +3239,11 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu 
->> *vcpu)
->>           vcpu->arch.sie_block->ecb |= ECB_HOSTPROTINT;
->>       if (test_kvm_facility(vcpu->kvm, 9))
->>           vcpu->arch.sie_block->ecb |= ECB_SRSI;
->> +
->> +    /* PTF needs both host and guest facilities to enable 
->> interpretation */
->> +    if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
->> +        vcpu->arch.sie_block->ecb |= ECB_PTF;
-> 
-> Here you say we need both ...
-
-Yes because for interpretation we need both.
-But if PTF is not interpreted we will emulate it in QEMU.
-
-> 
->> +
->>       if (test_kvm_facility(vcpu->kvm, 73))
->>           vcpu->arch.sie_block->ecb |= ECB_TE;
->> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
->> index 4002a24bc43a..50d67190bf65 100644
->> --- a/arch/s390/kvm/vsie.c
->> +++ b/arch/s390/kvm/vsie.c
->> @@ -503,6 +503,9 @@ static int shadow_scb(struct kvm_vcpu *vcpu, 
->> struct vsie_page *vsie_page)
->>       /* Host-protection-interruption introduced with ESOP */
->>       if (test_kvm_cpu_feat(vcpu->kvm, KVM_S390_VM_CPU_FEAT_ESOP))
->>           scb_s->ecb |= scb_o->ecb & ECB_HOSTPROTINT;
->> +    /* CPU Topology */
->> +    if (test_kvm_facility(vcpu->kvm, 11))
->> +        scb_s->ecb |= scb_o->ecb & ECB_PTF;
-> 
-> but here you don't check?
-
-Arrrg, yes, this is false, we must check both here too.
-
-> 
->>       /* transactional execution */
->>       if (test_kvm_facility(vcpu->kvm, 73) && wants_tx) {
->>           /* remap the prefix is tx is toggled on */
->> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
->> index d9e4aabcb31a..081ce0cd44b9 100644
->> --- a/include/uapi/linux/kvm.h
->> +++ b/include/uapi/linux/kvm.h
->> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
->>   #define KVM_CAP_BINARY_STATS_FD 203
->>   #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
->>   #define KVM_CAP_ARM_MTE 205
->> +#define KVM_CAP_S390_CPU_TOPOLOGY 206
-> 
-> We'll need a Documentation/virt/kvm/api.rst description.
-> 
-> I'm not completely confident that the way we're handling the 
-> capability+facility is the right approach. It all feels a bit suboptimal.
-> 
-> Except stfl(74) -- STHYI --, we never enable a facility via 
-> set_kvm_facility() that's not available in the host. And STHYI is 
-> special such that it is never implemented in hardware.
-
-Then we can fall back to KVM_facility + in kernel emulation but if for 
-PTF it will be quite simple, for STSI_15 it will be much bigger.
-
-> 
-> I'll think about what might be cleaner once I get some more details 
-> about the interaction with stfl(11) in the hypervisor.
-> 
-
-And I just saw I for an unknown reason forgot two patches in the QEMU 
-series:
-
-s390x: kvm: make topology change report pending
-s390x: kvm: enable CPU Topology Function
-
-So I will publish a new QEMU series this afternoon with the comments 
-from Thomas.
-
-thanks,
-Pierre
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
