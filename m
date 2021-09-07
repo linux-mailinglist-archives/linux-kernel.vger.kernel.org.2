@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7FF40305B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8CB403052
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347265AbhIGVim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:38:42 -0400
-Received: from mother.openwall.net ([195.42.179.200]:47524 "HELO
-        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229875AbhIGVii (ORCPT
+        id S1347252AbhIGVdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243883AbhIGVdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:38:38 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 17:38:38 EDT
-Received: (qmail 8086 invoked from network); 7 Sep 2021 21:30:48 -0000
-Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
-  by localhost with SMTP; 7 Sep 2021 21:30:48 -0000
-Received: by pvt.openwall.com (Postfix, from userid 503)
-        id 58A79AB88C; Tue,  7 Sep 2021 23:30:42 +0200 (CEST)
-Date:   Tue, 7 Sep 2021 23:30:42 +0200
-From:   Solar Designer <solar@openwall.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     CGEL <cgel.zte@gmail.com>, peterz@infradead.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH] set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds
-Message-ID: <20210907213042.GA22626@openwall.com>
-References: <20210728072629.530435-1-ran.xiaokai@zte.com.cn> <20210728115930.2lzs57h4hvnqipue@wittgenstein> <20210730082329.GA544980@www> <20210803100354.GA607722@www> <20210803140702.f3rdnka3e2x6vj4r@wittgenstein>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803140702.f3rdnka3e2x6vj4r@wittgenstein>
-User-Agent: Mutt/1.4.2.3i
+        Tue, 7 Sep 2021 17:33:06 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21846C061575;
+        Tue,  7 Sep 2021 14:31:59 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id g74so122748wmg.5;
+        Tue, 07 Sep 2021 14:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=COYD3Y2szh6y3ZHhT8fAtKXqXu8FfFvWcnTthORBujE=;
+        b=TFAxO5xCZsHjvRS0yp2WjIxYvGrg7uAYl0mOgc3A7X8gNi7Q4TiQDnCdXjnKtfghtv
+         s1MX3b5TRFXc538t+BuwczseNHifwfgZaW9wKBaOfdiNRsAhZmMNvAMwTH5/nHNCpnaK
+         s3YwMRhXp2FN3LlhkDxMhGj0Hf8w4Pw6tnly7FmyzI1+HvUARrVQweVmP6oPrdmSV952
+         jrTGGQICW21Vg4/XSrwKoeqPQ91cF/qtLJ5LoJq74iarEyrIZz0ftqf5bNwib+X31nlO
+         vxo4Des3OE5nTVYos4KsRkEWi14pdo7vl0i0E79+QranFcd8+fNZqloQQC1dyBkK+qSr
+         BSJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=COYD3Y2szh6y3ZHhT8fAtKXqXu8FfFvWcnTthORBujE=;
+        b=JSdY6DazJUpDUlumb/XyIHhPY13HQKRSTfGGPEeMZB0RrSI3wAwPJnhz80ukO4Jt4L
+         dm6Ni5vVTTNhBx9LU/SNx8PCpA/Cwd/JdGA9NiXJYQ3wQfjC/CP1yiHrirmKRcdxCBh7
+         BVYqt8pDOomUyvlNyj2UTpdlJYCp/74D72fEywpmx6K7ugSnTlWpCJNhcIRj4MatmlJo
+         oWwWOuMaN6lixOPGO+S0sgf5I7/wta8qo/JB9BHwVF7miOsLnSTu3FheCau/F90kF9ap
+         momRUZIU+0TRA9X2v2mW42zp15cdFgCK64x+piIg+kQkPmYkHkEwavG9NU4xDfLcBzm0
+         TR6A==
+X-Gm-Message-State: AOAM5301ywfXtvZ6aNSUS6zJC+dLxmQs8OWHfV6wu7bt6CE8CcUd6R6d
+        fIPUN8kSSxVVUFptAhulNajhhmG9GgE=
+X-Google-Smtp-Source: ABdhPJwDqUMv5YBewE9mkew9rVXf7rHEcXPhAUnrfp8Q9uDepKaiTnyy5a0uCnOEfoNpt8ZyW6dVcA==
+X-Received: by 2002:a1c:28b:: with SMTP id 133mr256358wmc.138.1631050317396;
+        Tue, 07 Sep 2021 14:31:57 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.144.232])
+        by smtp.gmail.com with ESMTPSA id s15sm173102wrb.22.2021.09.07.14.31.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 14:31:56 -0700 (PDT)
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Jens Axboe <axboe@kernel.dk>, Hao Sun <sunhao.th@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+Date:   Tue, 7 Sep 2021 22:31:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-Brad Spengler brought this to my attention on Twitter, and Christian
-Brauner agreed I should follow up.  So here goes, below the quote:
-
-On Tue, Aug 03, 2021 at 04:07:02PM +0200, Christian Brauner wrote:
-> On Tue, Aug 03, 2021 at 03:03:54AM -0700, CGEL wrote:
-> > On Fri, Jul 30, 2021 at 01:23:31AM -0700, CGEL wrote:
-> > > On Wed, Jul 28, 2021 at 01:59:30PM +0200, Christian Brauner wrote:
-> > > > [Ccing a few people that did the PF_NPROC_EXCEEDED changes]
-> > > > 
-> > > > 
-> > > > Hey Cgel,
-> > > > Hey Ran,
-> > > > 
-> > > > The gist seems to me that this code wants to make sure that a program
-> > > > can't successfully exec if it has gone through a set*id() transition
-> > > > while exceeding its RLIMIT_NPROC.
-> > > > 
-> > > > But I agree that the semantics here are a bit strange.
-> > > > 
-> > > > Iicu, a capable but non-INIT_USER caller getting PF_NPROC_EXCEEDED set
-> > > > during a set*id() transition wouldn't be able to exec right away if they
-> > > > still exceed their RLIMIT_NPROC at the time of exec. So their exec would
-> > > > fail in fs/exec.c:
-> > > > 
-> > > > 	if ((current->flags & PF_NPROC_EXCEEDED) &&
-> > > > 	    is_ucounts_overlimit(current_ucounts(), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
-> > > > 		retval = -EAGAIN;
-> > > > 		goto out_ret;
-> > > > 	}
-> > > > 
-> > > > However, if the caller were to fork() right after the set*id()
-> > > > transition but before the exec while still exceeding their RLIMIT_NPROC
-> > > > then they would get PF_NPROC_EXCEEDED cleared (while the child would
-> > > > inherit it):
-> > > > 
-> > > > 	retval = -EAGAIN;
-> > > > 	if (is_ucounts_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
-> > > > 		if (p->real_cred->user != INIT_USER &&
-> > > > 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
-> > > > 			goto bad_fork_free;
-> > > > 	}
-> > > > 	current->flags &= ~PF_NPROC_EXCEEDED;
-> > > > 
-> > > > which means a subsequent exec by the capable caller would now succeed
-> > > > even though they could still exceed their RLIMIT_NPROC limit.
-> > > > 
-> > > > So at first glance, it seems that set_user() should probably get the
-> > > > same check as it can be circumvented today unless I misunderstand the
-> > > > original motivation.
-> > > > 
-> > > > Christian
-> > > 
-> > > Hi Christian,
-> > > 
-> > > I think i didn't give enough information in the commit message.
-> > > When switch to a capable but non-INIT_SUER and the RLIMIT_NPROC limit already exceeded,
-> > > and calls these funcs:
-> > > 1. set_xxuid()->exec() 
-> > >              ---> fail
-> > > 2. set_xxuid()->fork()->exec()
-> > >              ---> success
-> > > Kernel should have the same behavior to uer space.
-> > > Also i think non init_user CAN exceed the limit when with proper capability,
-> > > so in the patch, set_user() clear PF_NPROC_EXCEEDED flag if capable()
-> > > returns true.
-> > 
-> > Hi, Christian
-> > 
-> > Do you have any further comments on this patch?
-> > is there anything i did not give enough infomation ?
+On 9/7/21 8:30 PM, Jens Axboe wrote:
+> On 9/7/21 5:50 AM, Hao Sun wrote:
+>> Hello,
+>>
+>> When using Healer to fuzz the latest Linux kernel, the following crash
+>> was triggered.
+>>
+>> HEAD commit: 7d2a07b76933 Linux 5.14
+>> git tree: upstream
+>> console output:
+>> https://drive.google.com/file/d/1c8uRooM0TwJiTIwEviOCB4RC-hhOgGHR/view?usp=sharing
+>> kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
+>> Similar report:
+>> https://groups.google.com/u/1/g/syzkaller-bugs/c/FvdcTiJIGtY/m/PcXkoenUAAAJ
+>>
+>> Sorry, I don't have a reproducer for this crash, hope the symbolized
+>> report can help.
+>> If you fix this issue, please add the following tag to the commit:
+>> Reported-by: Hao Sun <sunhao.th@gmail.com>
 > 
-> Yeah, this is fine and how I understood it too. I don't see anything
-> obviously wrong with it and the weird detour workaround via fork() seems
-> inconsistent. So if I don't here anyone come up with a good reason the
-> current behavior makes sense I'll pick this up.
-> 
-> Christian
+> Would be great with a reproducer for this one, though...
 
-As I understand, the resulting commit:
+And syzbot usually sends an execution log with all syz programs
+it run, which may be helpful. Any chance you have anything similar
+left?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2863643fb8b92291a7e97ba46e342f1163595fa8
-
-broke RLIMIT_NPROC support for Apache httpd suexec and likely similar.
-
-Yes, I can see how having a detour via fork() was inconsistent, but
-since the privileged process can be assumed non-malicious it was no big
-deal.  suexec just doesn't have fork() in there.
-
-Historically, the resetting on fork() appears to have been due to my
-suggestion here:
-
-https://www.openwall.com/lists/kernel-hardening/2011/07/25/4
-
-"Perhaps also reset the flag on fork() because we have an RLIMIT_NPROC
-check on fork() anyway."
-
-Looks like I didn't consider the inconsistency for capable() processes
-(or maybe that exception wasn't yet in there?)
-
-Anyway, now I suggest that 2863643fb8b92291a7e97ba46e342f1163595fa8 be
-reverted, and if there's any reason to make any change (what reason?
-mere consistency or any real issue?) then I suggest that the flag
-resetting on fork() be made conditional.  Something like this:
-
-	if (atomic_read(&p->real_cred->user->processes) >=
-			task_rlimit(p, RLIMIT_NPROC)) {
-		if (p->real_cred->user != INIT_USER &&
-		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
-			goto bad_fork_free;
--	}
--	current->flags &= ~PF_NPROC_EXCEEDED;
-+	} else
-+		current->flags &= ~PF_NPROC_EXCEEDED;
-
-Alexander
+-- 
+Pavel Begunkov
