@@ -2,115 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56699402E11
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C609F402DFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345410AbhIGR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S1344968AbhIGRx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345260AbhIGR7d (ORCPT
+        with ESMTP id S1343928AbhIGRxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:59:33 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD26C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:58:26 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l10so10959504ilh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
+        Tue, 7 Sep 2021 13:53:54 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0853BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:52:48 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r7so15069521edd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Z8pLJ1FpaVzh5FC1pX+Q5BEfmgO/vOO3RyE4cZ7z6Q8=;
-        b=VPu7rS4YBeF7IlroZ7du8K/p1skwdho8pDjKL0Td2afcUesHnTuOM4LNVGIgGDOzwv
-         RF9MnzKjq1wxndB6t0dvlo3/GLpNAbGq6B8gEKIuiFR8+yqReSl0H1w9Dzq1gsGsT3RB
-         7NizSSM77IuqImGQvtk6zuvfv497MYy3UfgMA=
+        bh=KoHEUb0DCP2OkvPMgQlxjC1z05NpkoQ2FGZEXVyLfxo=;
+        b=KibYMWptm8FxE70xjZLMkks5z4mhxTgXord3n8HVvc8ssE6F8+icP4COZI/erePcgP
+         bJntP5M5tJ/uCnjEH0q16uqCFwfzdL+1EJ+dcLwKxZB+bEFI9CcDlhw+cqs+2p7/M5Q6
+         weCOiUsN1wEGcjrIOIiorDSVQb9ThEOoSeVn4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z8pLJ1FpaVzh5FC1pX+Q5BEfmgO/vOO3RyE4cZ7z6Q8=;
-        b=FLIftt1x1BnaknWp7QoNPx3PK8FE7J6GDIR89Q1R89Y+9RXg67/ujOcPz1AwAq+kY0
-         OaxAigxTU7ysD8qnv1OxfG35UuEdPPUXZvH/QQ1rh8w6HMRcHc019V9K0cWkDOlUWuL7
-         luxdCZZ3YsMglBCedYSxC6WvrpmPEfe34oWxsQqrqzYsefAgZpGLQrxBcPt84a9ok6Yq
-         k4NAjKQIpTL9m0DTMlm11azJ62QgFdA96x2YC+Eve4Q0vryuRuqSS1fgwEjbUECaxHKz
-         BBmgZ8qxCAdkg+dDzP1RyxV7OA/0mvhCAXJ9BG2rNhTIhZYfEzJoDE+aQNDWc0D5Qp5f
-         WCqg==
-X-Gm-Message-State: AOAM531IR3nUh+PGiySJkadFXxJZ/vs+QdtApMtwEhGiJOeZDgmw+Cvq
-        HpXT5Ekqp7cVjRLWaLx1bAmveewFHpHdLw==
-X-Google-Smtp-Source: ABdhPJyGzW4zEJ55jih0BgWI7Nx0oJsA+QgQTnJmzT0W56MdVCaASKfjtM0jZ7mE4Y+iXhA5fXfuiA==
-X-Received: by 2002:a05:6e02:1a0a:: with SMTP id s10mr12350488ild.46.1631037506296;
-        Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
-        by smtp.gmail.com with ESMTPSA id m13sm6300371ilh.43.2021.09.07.10.58.26
+        bh=KoHEUb0DCP2OkvPMgQlxjC1z05NpkoQ2FGZEXVyLfxo=;
+        b=Iqfs7V2lOHN0OXcaH6EtaLzi047iYOZJ4CnzhYP19mF3IGlBLCwyUkrZpCv8cMhCHs
+         0TOCL3qOdojIbPW2BF6kGOsOT1ezBZ3z40QptO+HthVqJD92WakSty+nMDHl3VMitVV8
+         6uP2tztGwGb7ErfthggOnum0PeZv8BKcOgbRL5q9TIXlICQPxG0MlbnYYmT76YkG1Yg4
+         ki+svYecFx5xJPJ4st+mYIoGy3hynF4kyL5B+IQ4an3GZ21SwbwCJsMXe+hhWDHXB7LJ
+         T5yiBLDKJO4wTzl7YCPaacMGmlbxO408PHlPe6y4WWZDlSxKX0M/WGuWBW2cRlKm2ut8
+         1DNQ==
+X-Gm-Message-State: AOAM531f/woLzBzCETUfaTxLMkIxtOnn1GQpx8y30beNuGngIeVu0iAy
+        9rsl7mabt7yOX2MYJ9GdNIza3D1YCLMsxhgJeCQ=
+X-Google-Smtp-Source: ABdhPJyd/V4+Tmm4lKUeMuCGYjlwaoSStgfVn8HHvvVwVXd/qlNxNs94ZjGejFPy0FG8g3E6XALPCw==
+X-Received: by 2002:a05:6402:4314:: with SMTP id m20mr758923edc.6.1631037165953;
+        Tue, 07 Sep 2021 10:52:45 -0700 (PDT)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id v13sm5802890ejx.72.2021.09.07.10.52.44
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
-Received: by mail-il1-f169.google.com with SMTP id u7so10999713ilk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
-X-Received: by 2002:a92:cb52:: with SMTP id f18mr12692305ilq.120.1631037124093;
- Tue, 07 Sep 2021 10:52:04 -0700 (PDT)
+        Tue, 07 Sep 2021 10:52:45 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id h9so21303879ejs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:52:44 -0700 (PDT)
+X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr13298472lfg.402.1631037153599;
+ Tue, 07 Sep 2021 10:52:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830172820.2840433-1-jiancai@google.com> <20210906150625.GA1228692@p14s>
-In-Reply-To: <20210906150625.GA1228692@p14s>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 7 Sep 2021 10:51:53 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Ukx_PRpfnLXEBajtts78ays=6+nGb+CRVn76xjyNkn5A@mail.gmail.com>
-Message-ID: <CAD=FV=Ukx_PRpfnLXEBajtts78ays=6+nGb+CRVn76xjyNkn5A@mail.gmail.com>
-Subject: Re: [PATCH v2] coresight: syscfg: fix compiler warnings
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Jian Cai <jiancai@google.com>, Mike Leach <mike.leach@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>, coresight@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+References: <20210907150757.GE17617@xsang-OptiPlex-9020> <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
+ <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com> <CALvZod5Q_K=xLpBWTLgg38X_w23HVSyqW2_Jnz7p=JR+kDD_-w@mail.gmail.com>
+In-Reply-To: <CALvZod5Q_K=xLpBWTLgg38X_w23HVSyqW2_Jnz7p=JR+kDD_-w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 10:52:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgW3dYJyh6S_U5ot_0Q-OU0-vrS=L8Uky4+Y5fZXeLcKw@mail.gmail.com>
+Message-ID: <CAHk-=wgW3dYJyh6S_U5ot_0Q-OU0-vrS=L8Uky4+Y5fZXeLcKw@mail.gmail.com>
+Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6% regression
+To:     Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        kernel test robot <oliver.sang@intel.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Sep 6, 2021 at 8:06 AM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
+On Tue, Sep 7, 2021 at 9:49 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> On Mon, Aug 30, 2021 at 10:28:19AM -0700, Jian Cai wrote:
-> > This fixes warnings with -Wimplicit-function-declaration, e.g.
+> On Tue, Sep 7, 2021 at 9:40 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > drivers/hwtracing/coresight/coresight-syscfg.c:455:15: error:
-> > implicit declaration of function 'kzalloc' [-Werror,
-> > -Wimplicit-function-declaration]
-> >         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev),
-> >                              GFP_KERNEL);
+> > We are worried about them. I'm considering reverting several of them
+> > because I think the problems are
 > >
-> > Fixes: 85e2414c518a ("coresight: syscfg: Initial coresight system configuration")
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Jian Cai <jiancai@google.com>
-> > ---
+> >  (a) big
 > >
-> > Changes v1 -> v2:
-> >   Format the commit message and add Fixes and Reviewed-by tag.
+> >  (b) nontrivial
 > >
-> >  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
+> > and the patches clearly weren't ready and people weren't aware of this issue.
 >
-> I have applied this patch to my local tree.  I will push it to the coresight-next
-> branch when 5.15-rc1 is published next week.
+> Sounds good to me. Please let me know which patches you are planning
+> to revert. I will work on the followup to make those acceptable.
 
-Out of curiosity, does the fact that it'll be in coresight-next mean
-that this will target v5.15 or v5.16? I usually think of "-next"
-branches as targeting one major version later, so I'd assume v5.16?
-...but it would be nice if this warning could get fixed somewhere in
-v5.15.
+The one that looks clear-cut is the one in this thread:
 
-Thanks and sorry if this was obvious and I just didn't know.
+    0f12156dff28 memcg: enable accounting for file lock caches
 
--Doug
+which seems to result in regressions on multiple machines and just be
+very bad for anything that uses file locking. I'm not entirely sure
+how much that would show up in real life, but I can most definitely
+imagine it being a problem on a real load.
+
+There's a few other regression reports I've seen, like
+
+    5387c90490f7 mm/memcg: improve refill_obj_stock() performance
+
+but that one had mixed reports (it improved another benchmark), and it
+looks like Minchan has a fix for the regression already.
+
+And
+
+    aa48e47e3906 memcg: infrastructure to flush memcg stats
+    b65584344415 memcg: enable accounting for pollfd and select bits arrays
+
+were reported as a regression in -mm, but not in mainline yet.
+
+I assume (but didn't check) that aa48e47e3906 is a bigger deal to revert.
+
+So _right_now_ my plan is to revert the two obvious cases:
+
+    0f12156dff28 memcg: enable accounting for file lock caches
+    b65584344415 memcg: enable accounting for pollfd and select bits arrays
+
+on the assumption that the memcg accounting code needs some work to
+make it less of a performance hog.
+
+Does anybody have other commits they want to highlight (or other
+comments) about this?
+
+              Linus
