@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9665F402650
+	by mail.lfdr.de (Postfix) with ESMTP id DFA19402651
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbhIGJoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:44:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:33852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242700AbhIGJoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:44:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 995D131B;
-        Tue,  7 Sep 2021 02:43:12 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B47C3F766;
-        Tue,  7 Sep 2021 02:43:11 -0700 (PDT)
-Subject: Re: [question] Assign multiple devices from different SMMUs to a
- arm_smmu_domain
-To:     Kunkun Jiang <jiangkunkun@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     wanghaibin.wang@huawei.com, Zenghui Yu <yuzenghui@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <bbfcb875-0da1-c303-ed48-fdaa890c89b3@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <202f32cd-8036-563e-028b-781b999766be@arm.com>
-Date:   Tue, 7 Sep 2021 10:43:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242217AbhIGJox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240891AbhIGJov (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:44:51 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D24C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:43:45 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id d5so5955476pjx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LI0SXYREzj4VJhXtyJ/PF21xfObSJ3KLySRI6EJ3Txs=;
+        b=ikD1iRwanMWbaRe4y47WhQhXX3116q1sOggjOm4wSU+1bCCr1x9cPzL0FK3cXJ+3ot
+         /2UO605D23MGsQ7rCmi46haEznAje3SKOnryjODAbjma0v/1v8td8NtGUxKOKPR0EI8+
+         WWq6J3lo3fC0eFsPexIPOvDEoQdT6xzFb4wY0iJJJWe2rgj60AuF6gVXkCzEpxJofyMe
+         +61oPhlXlZewO/O09D/BMVEn2+UBklq61FCKmxfy3/6xBxzT/FthMVianpfImhvOmfLN
+         FDTN2Yq96racl/zlNG0EtQKOuTEB5Bv+0bM7UImtn5NI0jjDpyxkV/4VgHtGpbO+YF+s
+         jUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LI0SXYREzj4VJhXtyJ/PF21xfObSJ3KLySRI6EJ3Txs=;
+        b=VP3IbTlAdwtulE1M70QNXrvbzNXrENFpWThdDWy0pLR/U24yOH3f/Em3IbnYCo0DRW
+         Pite7NxlmQbuCFs53OUQs8FQzN7GWEhzmehqRjUd3eWi3pD8J3BQOB/udzW9L24eeZ+D
+         AC/RNfRn42xYjAZFaaeQHJPmmbGauqgyDG55+ZlvMs1qESTOuXOEXL0sRw3I8K5Nrqg6
+         uTG37ibTl8xubhhMgkix2XEq9E4v0ekrl5nEgwjQXOjctyZxiceCktbMY5WHy6UHdH3j
+         lTyRnmlPN9en+iOkukHqCbVA+3womu3pfgAhB5fHoCDVRY3pYDrSPhXYBjiK9ZkzoEl5
+         2RDA==
+X-Gm-Message-State: AOAM531p87Ruxy8OJsXWmHosRAyDWHXV6DlCnpgQT3MapE3f8apszauy
+        Ytr6LR77BkxLTWoiY96tSszJ76OTdfnhUXbYpMc=
+X-Google-Smtp-Source: ABdhPJwTssI5IKswozFQMyOlZi8Ot3O1S+Rdv0Nmpj0AO+HT9pA4QsvQsCo5bdrhNEQmTlyJNAy6bQ==
+X-Received: by 2002:a17:90a:482:: with SMTP id g2mr3555665pjg.93.1631007824872;
+        Tue, 07 Sep 2021 02:43:44 -0700 (PDT)
+Received: from localhost ([45.76.146.157])
+        by smtp.gmail.com with ESMTPSA id f8sm2007179pju.30.2021.09.07.02.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 02:43:44 -0700 (PDT)
+From:   Kortan <kortanzh@gmail.com>
+To:     nathan@kernel.org, ndesaulniers@google.com
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Kortan <kortanzh@gmail.com>
+Subject: [PATCH] fix missing 'sys' package
+Date:   Tue,  7 Sep 2021 17:43:36 +0800
+Message-Id: <20210907094336.16558-1-kortanzh@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <bbfcb875-0da1-c303-ed48-fdaa890c89b3@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-07 08:41, Kunkun Jiang wrote:
-> Hi all,
-> 
-> I am working on VFIO DMA dirty pages tracking based on ARM SMMU HTTU,
-> and have done a lot of testing.In the test, I found a problem that 
-> greatly affects
-> performance of VFIO DMA dirty pages tracking.
-> 
-> According to the current arm-smmu-v3 driver, multiple VFIO pass-through
-> device comes from different SMMUs will be assigned to different
-> arm_smmu_domain. It will create page table for each arm_smmu_domain,
-> even though these page tables are exactly the same. Bacause dirty pages
-> tracking needs to traverse the page table, multiple page tables will make
-> performance worse.
-> 
-> I learned the ARM SMMUv3 spec and had some exchanges with my colleagues
-> who work on SMMU hardware. I did not find the restriction that multiple
-> SMMUs cannot share the same page table. We migth be able to do this like
-> x86 IOMMU. If I have missed something, please point it out.
+Signed-off-by: Kortan <kortanzh@gmail.com>
+---
+ scripts/clang-tools/gen_compile_commands.py | 1 +
+ 1 file changed, 1 insertion(+)
 
-Sure, it's not impossible, there are just a lot of fiddly 
-considerations, mostly around how to handle SMMU instances with 
-different capabilities. We haven't had a strong need to support this 
-case so far, so we've simply been avoiding all that complexity.
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 0033eedce003..1d1bde1fd45e 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -13,6 +13,7 @@ import logging
+ import os
+ import re
+ import subprocess
++import sys
+ 
+ _DEFAULT_OUTPUT = 'compile_commands.json'
+ _DEFAULT_LOG_LEVEL = 'WARNING'
+-- 
+2.33.0
 
-Robin.
-
-> Looking forward to your suggestions.😁
-> 
-> Thanks,
-> Kunkun Jiang
-> 
