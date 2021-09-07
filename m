@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A897A402B65
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6717402B67
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344977AbhIGPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344964AbhIGPNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:13:10 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0510B610FE;
-        Tue,  7 Sep 2021 15:12:02 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 11:12:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zhongya Yan <yan2228598786@gmail.com>
-Cc:     edumazet@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        hengqi.chen@gmail.com, yhs@fb.com, brendan.d.gregg@gmail.com,
-        2228598786@qq.com
-Subject: Re: [PATCH] net: tcp_drop adds `reason` and SNMP parameters for
- tracing v4
-Message-ID: <20210907111201.783d5ea2@gandalf.local.home>
-In-Reply-To: <20210904064044.125549-1-yan2228598786@gmail.com>
-References: <20210904064044.125549-1-yan2228598786@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1344962AbhIGPNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344964AbhIGPNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:13:20 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D20AC061575;
+        Tue,  7 Sep 2021 08:12:14 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id u9so14957410wrg.8;
+        Tue, 07 Sep 2021 08:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T1CBE93Vd06SdCbwZzdFIujxbJaHFE/SvhzoMX/Juik=;
+        b=c/10kjA20ZiZRyU4FkwyNwUDdWfveoauAKZkrHEKaV+2QhIndjfKuDxtfDfHqSkxC9
+         HEil2zw//WsT1S/FJ4eDzXVXWwqjglxp1SVp/dY2e0gN928NYIKV4w420cYytNQbiIl2
+         kPgyjNNrVj9CsT8+5xgmex5xFlRiKWMH1FtB+ZmbBLgMF2PJa7255zZH4efI9tKkzaNs
+         AR/3QiE+w3RgbzTuY3QfkkAgjYs8e1Ov4Z0848x3iDjT6a/68YmlWc0+bLDiKtqwCUXZ
+         c9KU9aIhbDYLuJIEzt8bWQj5mcm1cweoOWFRUZhlwneRgPMSKaoMvzGSubU8VNVG+9uH
+         cs9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T1CBE93Vd06SdCbwZzdFIujxbJaHFE/SvhzoMX/Juik=;
+        b=ZRJdMe3RAb4juh1RxOK7VIS/Jrv9g3tE58iLJxn0LyflOYkZeqn0o4qpdZCGgB0mZg
+         W2ljAYLYxQIa4l1gvZYGfrQbGQsrjoNj97Q6qol1wPtkfZglsMlf83YXVlq/nPyTa+8q
+         +b+RuMtwWEa2OHbkvtRBVHThtJlFg65w1BX5h9HNNj+fFvEoOWFkXgSMq+AyvrxT1Q5I
+         74BJpi+YkzNvs7weooAxmS6tjYbS2cQKbwfW+BXL39ysWGl8gieZWNgLaYvrAhguIDYA
+         R2mxVuss3Uo+wGrSCUyB2F4hY4j9ET7e4KphVWaVlV4j0pL+SF5WhU6OZnuHsp4aLvj7
+         OObQ==
+X-Gm-Message-State: AOAM532b39eqJmUHzdTOoaCNGIT+03ZQzuje2M/LUSRwBFG5gh0ZWwhN
+        c6wUIsNiGAfD7H4CcKyEpmOZN7BI5iZAfw==
+X-Google-Smtp-Source: ABdhPJwWDzr9QUXRdXoXhQ4kkBgDGCjDzNZ4LfmcaXS8pOoV6tFsAgF0FvmALA/UaIk/XG408S5JUg==
+X-Received: by 2002:adf:9f0d:: with SMTP id l13mr19712463wrf.328.1631027533193;
+        Tue, 07 Sep 2021 08:12:13 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b9a6:8ece:d93e:2093:39d0:bcfd])
+        by smtp.gmail.com with ESMTPSA id h16sm11271138wre.52.2021.09.07.08.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 08:12:12 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        wsa+renesas@sang-engineering.com, linus.walleij@linaro.org,
+        avri.altman@wdc.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     beanhuo@micron.com
+Subject: [PATCH v1 0/2] Two nimor eMMc changes
+Date:   Tue,  7 Sep 2021 17:12:02 +0200
+Message-Id: <20210907151204.118861-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Sep 2021 23:40:44 -0700
-Zhongya Yan <yan2228598786@gmail.com> wrote:
+From: Bean Huo <beanhuo@micron.com>
 
-> @@ -4708,7 +4710,7 @@ static void tcp_ofo_queue(struct sock *sk)
->  		rb_erase(&skb->rbnode, &tp->out_of_order_queue);
->  
->  		if (unlikely(!after(TCP_SKB_CB(skb)->end_seq, tp->rcv_nxt))) {
-> -			tcp_drop(sk, skb);
-> +			tcp_drop(sk, skb, LINUX_MIB_TCPOFOQUEUE, "Tcp queue error");
->  			continue;
->  		}
->  
-> @@ -4764,7 +4766,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
->  	if (unlikely(tcp_try_rmem_schedule(sk, skb, skb->truesize))) {
->  		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPOFODROP);
->  		sk->sk_data_ready(sk);
-> -		tcp_drop(sk, skb);
-> +		tcp_drop(sk, skb, LINUX_MIB_TCPOFODROP, "Tcp rmem failed");
->  		return;
->  	}
->  
-> @@ -4827,7 +4829,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
->  				/* All the bits are present. Drop. */
->  				NET_INC_STATS(sock_net(sk),
->  					      LINUX_MIB_TCPOFOMERGE);
-> -				tcp_drop(sk, skb);
-> +				tcp_drop(sk, skb, LINUX_MIB_TCPOFOMERGE, "Tcp bits are present");
 
-Just curious. Is "Tcp" the normal way to write "TCP" in the kernel? I see
-it in snmp_seq_show_tcp_udp() in net/ipv4/proc.c, but no where else
-(besides doing CamelCase words). Should these be written using "TCP"
-instead of "Tcp". It just looks awkward to me.
+Bean Huo (2):
+  mmc: cqhci: Print out qcnt in case of timeout
+  mmc: core: No need to calculate the timeout value for CQE data
+    transmission
 
-But hey, I'm not one of the networking folks, so what do I know?
+ drivers/mmc/core/core.c       | 8 ++++++++
+ drivers/mmc/host/cqhci-core.c | 4 ++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
--- Steve
+-- 
+2.25.1
+
