@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDD9402DF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56699402E11
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242371AbhIGRuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:50:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234449AbhIGRuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:50:32 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8924161101;
-        Tue,  7 Sep 2021 17:49:24 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 13:49:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        John Reitan <john.reitan@arm.com>,
-        =?UTF-8?B?w5hyamFu?= Eide <orjan.eide@arm.com>,
-        Mark Underwood <mark.underwood@arm.com>,
-        Gary Sweet <gary.sweet@broadcom.com>,
-        Stephen Mansfield <stephen.mansfield@imgtec.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [RESEND v2] tracing/gpu: Add imported size to gpu_mem_imported
- tracepoint
-Message-ID: <20210907134923.2dd41a8a@gandalf.local.home>
-In-Reply-To: <CAC_TJvdv+BSQh0vqWmA220op+b5=8=ZYrhXcmDRE-Fppo0zE0w@mail.gmail.com>
-References: <20210831170233.1409537-1-kaleshsingh@google.com>
-        <20210903163047.20e4f286@gandalf.local.home>
-        <CAC_TJvdv+BSQh0vqWmA220op+b5=8=ZYrhXcmDRE-Fppo0zE0w@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1345410AbhIGR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345260AbhIGR7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 13:59:33 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD26C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:58:26 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l10so10959504ilh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z8pLJ1FpaVzh5FC1pX+Q5BEfmgO/vOO3RyE4cZ7z6Q8=;
+        b=VPu7rS4YBeF7IlroZ7du8K/p1skwdho8pDjKL0Td2afcUesHnTuOM4LNVGIgGDOzwv
+         RF9MnzKjq1wxndB6t0dvlo3/GLpNAbGq6B8gEKIuiFR8+yqReSl0H1w9Dzq1gsGsT3RB
+         7NizSSM77IuqImGQvtk6zuvfv497MYy3UfgMA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z8pLJ1FpaVzh5FC1pX+Q5BEfmgO/vOO3RyE4cZ7z6Q8=;
+        b=FLIftt1x1BnaknWp7QoNPx3PK8FE7J6GDIR89Q1R89Y+9RXg67/ujOcPz1AwAq+kY0
+         OaxAigxTU7ysD8qnv1OxfG35UuEdPPUXZvH/QQ1rh8w6HMRcHc019V9K0cWkDOlUWuL7
+         luxdCZZ3YsMglBCedYSxC6WvrpmPEfe34oWxsQqrqzYsefAgZpGLQrxBcPt84a9ok6Yq
+         k4NAjKQIpTL9m0DTMlm11azJ62QgFdA96x2YC+Eve4Q0vryuRuqSS1fgwEjbUECaxHKz
+         BBmgZ8qxCAdkg+dDzP1RyxV7OA/0mvhCAXJ9BG2rNhTIhZYfEzJoDE+aQNDWc0D5Qp5f
+         WCqg==
+X-Gm-Message-State: AOAM531IR3nUh+PGiySJkadFXxJZ/vs+QdtApMtwEhGiJOeZDgmw+Cvq
+        HpXT5Ekqp7cVjRLWaLx1bAmveewFHpHdLw==
+X-Google-Smtp-Source: ABdhPJyGzW4zEJ55jih0BgWI7Nx0oJsA+QgQTnJmzT0W56MdVCaASKfjtM0jZ7mE4Y+iXhA5fXfuiA==
+X-Received: by 2002:a05:6e02:1a0a:: with SMTP id s10mr12350488ild.46.1631037506296;
+        Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
+        by smtp.gmail.com with ESMTPSA id m13sm6300371ilh.43.2021.09.07.10.58.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
+Received: by mail-il1-f169.google.com with SMTP id u7so10999713ilk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:58:26 -0700 (PDT)
+X-Received: by 2002:a92:cb52:: with SMTP id f18mr12692305ilq.120.1631037124093;
+ Tue, 07 Sep 2021 10:52:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210830172820.2840433-1-jiancai@google.com> <20210906150625.GA1228692@p14s>
+In-Reply-To: <20210906150625.GA1228692@p14s>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 7 Sep 2021 10:51:53 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Ukx_PRpfnLXEBajtts78ays=6+nGb+CRVn76xjyNkn5A@mail.gmail.com>
+Message-ID: <CAD=FV=Ukx_PRpfnLXEBajtts78ays=6+nGb+CRVn76xjyNkn5A@mail.gmail.com>
+Subject: Re: [PATCH v2] coresight: syscfg: fix compiler warnings
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Jian Cai <jiancai@google.com>, Mike Leach <mike.leach@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>, coresight@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sep 2021 15:36:03 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+Hi,
 
-> On Fri, Sep 3, 2021 at 1:30 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Sep 6, 2021 at 8:06 AM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Aug 30, 2021 at 10:28:19AM -0700, Jian Cai wrote:
+> > This fixes warnings with -Wimplicit-function-declaration, e.g.
 > >
-> > On Tue, 31 Aug 2021 17:02:29 +0000
-> > Kalesh Singh <kaleshsingh@google.com> wrote:
-> >  
-> > > The existing gpu_mem_total tracepoint provides GPU drivers a uniform way
-> > > to report the per-process and system-wide GPU memory usage. This
-> > > tracepoint reports a single total of the GPU private allocations and the
-> > > imported memory. [1]
-> > >
-> > > To allow distinguishing GPU private vs imported memory, add an
-> > > imported_size field to the gpu_mem_total tracepoint. GPU drivers can use
-> > > this new field to report the per-process and global GPU-imported memory
-> > > in a uniform way.
-> > >
-> > > User space tools can detect and handle the old vs new gpu_mem_total
-> > > format via the gpu_mem/gpu_mem_total/format file.
-> > >
-> > > [1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
-> > >
-> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > > ---
-> > >  include/trace/events/gpu_mem.h | 17 +++++++++++------
-> > >  1 file changed, 11 insertions(+), 6 deletions(-)
-> > >  
+> > drivers/hwtracing/coresight/coresight-syscfg.c:455:15: error:
+> > implicit declaration of function 'kzalloc' [-Werror,
+> > -Wimplicit-function-declaration]
+> >         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev),
+> >                              GFP_KERNEL);
 > >
-> > This is that trace event that doesn't have any in tree callers, right? I
-> > thought there was going to be some soon.  
-> 
-> The trace event is currently used by the Android GPU drivers, and
-> there is some work ongoing to add this in drm core upstream but it's
-> not yet ready.
-> 
+> > Fixes: 85e2414c518a ("coresight: syscfg: Initial coresight system configuration")
+> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Jian Cai <jiancai@google.com>
+> > ---
 > >
-> > For the updates to the tracing side (besides not having any users), it
-> > looks trivial to me.
+> > Changes v1 -> v2:
+> >   Format the commit message and add Fixes and Reviewed-by tag.
 > >
-> > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> >  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > But this needs to be pulled in by one of the GPU maintainers.  
-> 
-> Thanks for the review Steve. I'll resend adding the GPU maintainers.
+>
+> I have applied this patch to my local tree.  I will push it to the coresight-next
+> branch when 5.15-rc1 is published next week.
 
-OK, so it was Greg that gave me the Ack to accept it.
+Out of curiosity, does the fact that it'll be in coresight-next mean
+that this will target v5.15 or v5.16? I usually think of "-next"
+branches as targeting one major version later, so I'd assume v5.16?
+...but it would be nice if this warning could get fixed somewhere in
+v5.15.
 
-I'll need his Ack again for the update.
+Thanks and sorry if this was obvious and I just didn't know.
 
--- Steve
+-Doug
