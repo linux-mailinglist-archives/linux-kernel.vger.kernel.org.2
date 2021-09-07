@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFF5402288
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 05:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDF2402297
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235581AbhIGDlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 23:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
+        id S229740AbhIGEBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhIGDlr (ORCPT
+        with ESMTP id S229491AbhIGEBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 23:41:47 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379FAC061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 20:40:42 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id n18so8533102pgm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 20:40:42 -0700 (PDT)
+        Tue, 7 Sep 2021 00:01:42 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD0DC061575;
+        Mon,  6 Sep 2021 21:00:37 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id n27so17005534eja.5;
+        Mon, 06 Sep 2021 21:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FLF8sSQwhUS0+086sW1fmjexR33ZrApxSNSkWts8YRM=;
-        b=nzh+u2Y81255wZnH+V4MUL8B8sO+5Od0TvnyoGtBXBxvY3GWkCS05hqcZ1FiPp66Y+
-         H/aLuFSamvMQxn4nX3sCYvr1vDDohLl/5eNT3FtPx/KARSpyx2ftPvZz45NpEUAFAaN3
-         nuqAcYDkZ/HcRrm6WqcyMuKl29Fr4l0lLirCtuq68ivwpbzUOj+5jaU/S74iEUJoxRqV
-         Z/OLrLKs0O9bgfqMMgAsFQe8eBvb5Apzznl+Q3EF6QquxxEgfL1NhqCeEOD/tzrOfVQc
-         j9FiRz3DOiSqILowuXrF1KILiP0Y/bHQvTid/J3SQIpAupZty6vyz4/uTkMkih+VObuO
-         /YRg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zvYVDMQgs67A0xyIISSLD3E0W3ASycTx+U4ytRbx0js=;
+        b=fo9ddkCjC4KeMP2iMIRoV5LjMKTgvwXJiUQ+7vflzMiQUusDNytZ3hTxkB/T5Enri8
+         wPtR5VyZHn7M0cvtFQ0vjmtbAMmB02reH3Cl+qODQ+tVv15Pl3LxNUwcsjc51h9RNIM+
+         KJWBIVjWc90LfxktKgxr7oFvtYENWI8XZfKIhvcvEmLquR3ucznwViS4Pio4m2bxJYXu
+         0kbxsyd7L4lMkzgtB/qQZFn1CLEsYqS66WJQELZpg1qPGV26vyMPg0O0FFkVuP/D3Ald
+         ATrG5UYpY4LtjaMtzrlXEQIbITb0Cy9W6OZvBJBTFoT7gOqiDOiDfMg9Xn3fq82HBe+n
+         giTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FLF8sSQwhUS0+086sW1fmjexR33ZrApxSNSkWts8YRM=;
-        b=auTtPWTsHnYM40Xul58CeAvdq1hXgwlo0f7/XR260ZWwcYvJ9kR6mmMTBT//As8gdZ
-         u4Bpuka9BLiPv+mIqvgtzwSGQMJNn8EL0TEKhQkVzis42ijPqSXHhcGOoLxhCjY29HFb
-         J6bKAH3tRkQ42UmcMt7lylE7sTiLrK644ujeRBunhwYcONNUv7tPRySEHjh0Soxe7jPi
-         RvRyWqLBjHAiXtbrvyAHESLTxTKP3UXyzw9bhBsq8XAbrxugai4tlHKicFjQxv95iRUf
-         ITzvy2Hw6wgjTGipbRWtf+tG+QLnkKR0mE46Qva/b4LJZ0L8yanOzSNGxNb5/lfn8jr6
-         ZLwA==
-X-Gm-Message-State: AOAM530bRKWArnjFs098nvmm5xY0IkcMb1/33VNVjxHpTj1/9NvYM/vy
-        nhGir4DfC6beXQXCNIeBK0axJw==
-X-Google-Smtp-Source: ABdhPJzsv/eia/hjQn1pbmQ2OENxmUodBBxcmYX5Fn6l3uMclKCItBuOiSE4NrFHNe0VdaUoPx8Y0A==
-X-Received: by 2002:a63:3c4d:: with SMTP id i13mr15152019pgn.54.1630986041664;
-        Mon, 06 Sep 2021 20:40:41 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id b16sm8897166pfr.138.2021.09.06.20.40.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 20:40:40 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 09:10:38 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
- callback to genpd
-Message-ID: <20210907034038.ncx5nas6mhrk4u3r@vireshk-i7>
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-4-ulf.hansson@linaro.org>
- <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
- <CAPDyKFr2oQnKOhKhWt_9VyBoe=HQ7Y0uZUMKTcZ05a7G9RaBYA@mail.gmail.com>
- <1124dae5-478f-f0ca-ea91-b6945f7c9254@gmail.com>
- <CAPDyKFqE+thX0pLTg9d-ds7Tj3hsB78EmDB1Cryh26tN3kvQDA@mail.gmail.com>
- <3d92711f-ce30-2c19-c6a4-bb77d32df2dd@gmail.com>
- <CAPDyKFpJU3g2OzJeR9KUdtN-8wJsDckqVAMQMHBV=enu=DfURg@mail.gmail.com>
- <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zvYVDMQgs67A0xyIISSLD3E0W3ASycTx+U4ytRbx0js=;
+        b=NLTeznslUMfk8nFJeDOUEWSSCvnx8fj7dKfIlDk/rpwo50E2rR5ZsBZ7WkJ2et6YMX
+         mgYRQDZB4K2OQ/Dj7l9eobnptKCz6pe64uEx1PPBAkLkNSe388YQGtdF/MUrig5hKOpE
+         N+wuUD0RpeZvzU6MyXxUeuiLQz2aAHQK8bwwMzstI8QdGTpxIpfnBYWDTDdprJeVuGU/
+         j2Edu7bwislXb3QmY1W9bc8W/DfV8/F0woxD6p2HSZ0GQHdpE06WAAni8fDEbZ0m9Kc6
+         xAhcQ9BVG/EQ1hku8KBVD6z6yqDt+0Ht55AzBwOP5tB6MiZkldK0VYtP+9s5a+DI/11/
+         haaA==
+X-Gm-Message-State: AOAM533M274hOa4dRlEdnbHcQX6CDoAbytJd8bEoCKE5ZmbXnanJowNy
+        dcn2bCMtbup387J8QVdf8qzM9C7dSALjGZ9wqGx+55MdipZr7kol
+X-Google-Smtp-Source: ABdhPJzeOhGZ4TzwFWN4c1vdR0UD9qGqA6WlEIHkfokww0GOMrGej8AxSLinFJm4026f66Qk1x9dY6Twe1um1geEpe0=
+X-Received: by 2002:a17:906:7fc4:: with SMTP id r4mr17505347ejs.75.1630987235479;
+ Mon, 06 Sep 2021 21:00:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
+ <CAD-N9QUHfoqOOxDuKniMi8VGLR2j6g50BBy45eAL0kPRrntmgA@mail.gmail.com>
+ <aa2fb8c6-ef6b-a1ca-d598-b0814529a31d@gmail.com> <53fb4217-21b8-ac46-bb39-581a4c9837a4@gmail.com>
+In-Reply-To: <53fb4217-21b8-ac46-bb39-581a4c9837a4@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 7 Sep 2021 12:00:09 +0800
+Message-ID: <CAD-N9QUjd-yNVa2uOac434tgyd2wXEQ6Z=aA9Yu9-_UANv7YjA@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        linux-nilfs@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-09-21, 17:35, Dmitry Osipenko wrote:
-> Viresh, are you okay with going back to the variant with the
-> dev_pm_opp_sync() helper?
+On Tue, Sep 7, 2021 at 12:47 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On 9/6/21 18:56, Pavel Skripkin wrote:
+> > On 9/6/21 08:43, Dongliang Mu wrote:
+> >> On Mon, Sep 6, 2021 at 12:13 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >>>
+> >>> The commit 8fd0c1b0647a ("nilfs2: fix memory leak in
+> >>> nilfs_sysfs_delete_device_group") adds a kobject_put to free the leaking
+> >>> object name. However, it is incomplete to only add kobject_put in the
+> >>> nilfs_sysfs_delete_device_group. The function
+> >>> nilfs_sysfs_create_device_group also needs the kobject_put to
+> >>> free the object name in the error handling part.
+> >>>
+> >>> Fix this by adding kobject_put in the error handling code of
+> >>> nilfs_sysfs_create_device_group.
+> >>
+> >> Even after I add this patch, my local syzkaller still reports this
+> >> memory leak one hour later. Therefore, there are some other paths or
+> >> magics which can trigger the memory leak. I need to dig deeper.
+> >>
+> >> Pavel, do you have any idea about this crash report?
+> >>
+> >> BUG: memory leak
+> >> unreferenced object 0xffff88804a1a8a60 (size 32):
+> >>    comm "syz-executor", pid 14551, jiffies 4294960586 (age 14.780s)
+> >>    hex dump (first 32 bytes):
+> >>      6c 6f 6f 70 35 00 00 00 00 00 00 00 00 00 00 00  loop5...........
+> >>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >>    backtrace:
+> >>      [<ffffffff814750c6>] kstrdup+0x36/0x70
+> >>      [<ffffffff81475153>] kstrdup_const+0x53/0x80
+> >>      [<ffffffff822773a2>] kvasprintf_const+0xc2/0x110
+> >>      [<ffffffff82337c5b>] kobject_set_name_vargs+0x3b/0xe0
+> >>      [<ffffffff823385ed>] kobject_init_and_add+0x6d/0xc0
+> >>      [<ffffffff81d2bd08>] nilfs_sysfs_create_device_group+0x98/0x3a0
+> >>      [<ffffffff81d14fc4>] init_nilfs+0x424/0x580
+> >>      [<ffffffff81d02962>] nilfs_mount+0x532/0x8c0
+> >>      [<ffffffff815c754b>] legacy_get_tree+0x2b/0x90
+> >>      [<ffffffff81565158>] vfs_get_tree+0x28/0x100
+> >>      [<ffffffff815a3a82>] path_mount+0xb92/0xfe0
+> >>      [<ffffffff815a3f71>] do_mount+0xa1/0xc0
+> >>      [<ffffffff815a4584>] __x64_sys_mount+0xf4/0x160
+> >>      [<ffffffff8433fd35>] do_syscall_64+0x35/0xb0
+> >>      [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >>
+> >
+> > Hi, Dongliang!
+> >
+> >
+> > This report says nothing to me... It shows, that there is missing
+> > kobject_put() somewhere. I think, we need a reproducer for this leak,
+> > otherwise only code review can help :(
+> >
+> >
+> >
+>
+> Hm, I guess, I see... We should call kobject_put() in case of
+> kobject_init_and_add() failure:
+>
+> lib/kobject.c:459
+>
+>   * If this function returns an error, kobject_put() must be called to
+>   * properly clean up the memory associated with the object.  This is the
+>
+>
+> so I suggest:
+>
+> diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+> index 68e8d61e28dd..e8717f4ba2a1 100644
+> --- a/fs/nilfs2/sysfs.c
+> +++ b/fs/nilfs2/sysfs.c
+> @@ -1026,6 +1026,7 @@ int nilfs_sysfs_create_device_group(struct
+> super_block *sb)        kobject_del(&nilfs->ns_dev_kobj);
+>
+>   free_dev_subgroups:
+> +       kobject_put(&nilfs->ns_dev_kobj);
+>         kfree(nilfs->ns_dev_subgroups);
+>
+>   failed_create_device_group:
+>
+>
+> This patch should fix 2 memory leaks :)
 
-I have missed a lot of stuff in between and wasn't following this
-carefully as I thought my half was resolved :)
+Yes. We should move kobject_put from the label cleanup_dev_kobject to
+free_dev_subgroups.
 
-Can you describe what to propose to do again ? From what I remember,
-doing this one time from probe() is okay, doing it from
-suspend/resume, not so much.
+However, I tried the syz reproducer just sent to you. The memory leak
+is still there.
 
--- 
-viresh
+>
+>
+>
+>
+> With regards,
+> Pavel Skripkin
