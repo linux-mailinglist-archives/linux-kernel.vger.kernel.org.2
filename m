@@ -2,198 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C0A4026EB
+	by mail.lfdr.de (Postfix) with ESMTP id A5CFF4026ED
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245228AbhIGKMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:12:47 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:56434 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245185AbhIGKMq (ORCPT
+        id S245185AbhIGKM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245216AbhIGKMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:12:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631009499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RRrXpYXcTwwQ057nr8ZyUKJTAVb8uMCfo1R65cMzIyc=;
-        b=Zqfh4NKKZ/TdOyE5seIUSid8v/GFn51H5z+NAjHdeSpT9v7b1Mnmj5ikxJi1JKrSevU4vg
-        UbxVqvXNp7UP0TiDGDCU2KS6xEYxo3AD24Sagzb1C3j5ewYZ6Sb5ndGwqkPPEt7r4dAH7Y
-        eHfgm4TODmS5wEVK2Eve9Rfa4VQyGVk=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2051.outbound.protection.outlook.com [104.47.13.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-1-Y5WVL8bmO0iESB8OdgIVFw-2;
- Tue, 07 Sep 2021 12:11:38 +0200
-X-MC-Unique: Y5WVL8bmO0iESB8OdgIVFw-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NAcFQj8m378SmU1rK/4XO+ZvKIIJDUJ7hqH+UezJQm4UrmFmCcXDws8WZs+N9dh6MyQ01SE3yEwMGGGnHkMTqihik2C+pGk0RUPQpSZP5k/X4KJYMCby3PGyE+Rw8Zd5cdAv3zT3Pf+QfBY7zkmy7yREHNQA+KEuZuhe5GFS6hR31h/wrEUp6nZaVCAooLBBIw614dJ9BabmdoF7RD1WCwS++HxImjrpuL8GauEtBUPMnMpRnZW+V7mUZlbgchMii4Z6SdUvhSEsppq2GGXJU1crEpCto/TjGjoHrYgNHl74nDmRChbQhT2na9Xo/NlhmMTBdNnmdYYn5jO6h1+S7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=RRrXpYXcTwwQ057nr8ZyUKJTAVb8uMCfo1R65cMzIyc=;
- b=DIql3QeGkH+9x2BGcrQqBIPaNPny4Q3YwckzAnQxO1zzO8gYDNoXTUhdfQtuqI/v+mIfBmQKFPCqBvc3m7zq8nV/dzOTuL/BQdEsv4DcgLbAYzxgDN6IhpOFtUCuX4ASt9vHCyO9105GpSGudwLXKNCQeGcg+JoyXGsbHutbITGodHUq+0lc+4y2JLdOAh/1BqMqqW9LlfHAf+zACU/xcnUG3PU2E1D0ecXjdrTpNwNOXdy5N0nY6MbUNaldtG4XNWLdtbz8RbL0jNLvwMR48t0HHPn6Upo25qUOnSK0gp0KSQgVqPdOTOdaMdSC9VZiBkYBR1spiq6/AbmV2bmuUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0401MB2447.eurprd04.prod.outlook.com (2603:10a6:800:53::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
- 2021 10:11:36 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
- 10:11:36 +0000
-Subject: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
-From:   Jan Beulich <jbeulich@suse.com>
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
-Message-ID: <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
-Date:   Tue, 7 Sep 2021 12:11:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0236.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1e::32) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Tue, 7 Sep 2021 06:12:55 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D739BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:11:48 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t18so2828013wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 03:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=M6VI7hu6nrDpy/FRYqSASE+rFeGiqe0QFHElCOeveOo=;
+        b=JoHF+/ZC176lyR574CMp6AL3EzeDLGm5VH0Qs0aWw0+KT4pwFKBxaQXrM1/pbi5c/B
+         eLwTpd6IVqXkfoD1Ex1PQwaMva+jmJvKdHGPpotMoNPUrCcsKiXupsBimWnq7fiB+7lh
+         faCiPPxMe/4Q/0PG9GahTIDyO2E233ngAgK6Z3Vcz6eWCShcBEoRMOPYASEWG5cbx6iy
+         xjDaMzWgj2s5bVVxPvxB/IDvL/iHoQvmky/d2XBxBsLyB4oWodvWK1wPnBDRUDXBReFZ
+         EHI57bHP0nAbqhQ8rvIf/c4mI1VPlGpbfKaTOOp+oTRU/yY17pVkGbp8gN83/sP9JEbb
+         Hs3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M6VI7hu6nrDpy/FRYqSASE+rFeGiqe0QFHElCOeveOo=;
+        b=hFy9GpOqfbN+Y2FFRcYGF9M+Kd9P2EvaYZPm4BxswDRkjCBf3AptdzWQx4cxHEl00d
+         aXWXe2yKxngBYY9C9lbQJV/uqRvLCDPdtVaDXbysZCDT97J4cQJO0wssDzWNN4ZHU7cj
+         J72xMawcELRaniHqA0vVGHn1676pH6H+EflSUhhPxhvj74AqZ3t5TpaM8I5fCfFi6Xxh
+         vAKPbxXI9OW48hr04ZCn+7RPm4CkrwNtkPYE7bnFtIxfGCnL9ABculjzo0SPO6c6QkOZ
+         Lrjw290sDHN3FH7H4e3c1QSoSrxZKgICETYXEWglNe7mRq7FDTkIDj+aSJlzRRKiqXKd
+         Pr0g==
+X-Gm-Message-State: AOAM530R/F2kMvMW5Npmn+iDD5xYajzjqQ1Byh/lcD1bFlH6mKkWoPbJ
+        5Czovf+Na1CjfLJOq5CAcIicSxP5pyxyaQ==
+X-Google-Smtp-Source: ABdhPJw/72hnzp8nPnw3j3a18oHNzb1ZPr7q4elKahn8jbAr0432H+P3Fcpb4Jf48s5E6grM1sr4Qw==
+X-Received: by 2002:adf:c18d:: with SMTP id x13mr18243805wre.380.1631009506860;
+        Tue, 07 Sep 2021 03:11:46 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id l16sm8117637wrh.44.2021.09.07.03.11.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 03:11:46 -0700 (PDT)
+Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data" property
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210810073510.18218-1-qiangqing.zhang@nxp.com>
+ <20210810073510.18218-2-qiangqing.zhang@nxp.com>
+ <6e3f6881-929d-1663-58f1-39bf35069175@linaro.org>
+ <YRwUyLsvoSpFI9X8@robh.at.kernel.org>
+ <DB8PR04MB67951E2312CFD69808B4502BE6FF9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <f572aca2-167a-be26-d89a-810c7023092f@linaro.org>
+ <DB8PR04MB67953613ED725D00027E972BE6D29@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <2ab0b16d-5a22-2abe-e228-c058b5a853ff@linaro.org>
+Date:   Tue, 7 Sep 2021 11:11:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0236.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:11:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5ca94ea6-dec4-4502-a200-08d971e7e046
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2447:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB2447E6ECE13AB2AD88462014B3D39@VI1PR0401MB2447.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:635;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tD+7OUJlsPyQgQWrjEg/VzzGUbE+OtklIEnab7QZzi6SHIjoiuaw6HyBjH9KPMKF2+BepxdfONPto1kdUfqVJrO7T41UKL38HnZf1oAmiQAX/tezGmXS0Q+oEsto7oDXyf5CXDQmDLVi4sztXKPUoreWVRRL/qdtMJATDUFqyP9XAFQugU1FZ1EDIizi3ZPVIsy3Hn+ykACa55inX16DW2zdJe58vUSP79PIjavHn5gwjDr+w6G25fbTH6dtNieIzUDjRQ7gmEKdlYC7s/f0Ki69HzqgTk2LNH0gzYmqQqYmWm0p8IHLQZJEO6fayJNSZ9uSCFTHedFOaEy5IEPWjYL8P4/AgXnNyROhjH2CxebONG0L117ruWSmaohNXxbhYY/9dSfmB9ctyM3myF2z/HWLQgLgPWH4O+xSSgSc+5ZsAFqAXD1kyKwaMq3dRtupYtpFIiO9wlmerkK3IwUMlXDNZer7DExvpAZ/2mRE2IBNVA2j2hO60w6xpmmr043N/WbPXwJ2+UfbV/oTIPYYhgfFDEWdnEXrEYWu+P61JotI+jqPjRUilCTIFBIE+Cdw2ndb8mWlonKFpyrevjKcUGVq6pvzz1ZWdFnHm29MaFGCJn2jUdOYCifV7CINu9/w68sncu/CoSwKe6bkrpIcTeWLJF9sKz1zp50HJ03BFmKlud6JCTrVgLJ8uzwZJO+KrXdGD4WppE9KxG3azkVNREpP+DjUnLt4pweRPPbzcPDj/2m/JmykSud1I1XHY6ChqZGxKX7yS6LGdl78vRHMPcmp12+YtqPS8wDd9vlrlMk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(136003)(396003)(39860400002)(26005)(31686004)(5660300002)(186003)(2616005)(2906002)(31696002)(83380400001)(54906003)(956004)(4326008)(8676002)(86362001)(316002)(38100700002)(110136005)(6486002)(16576012)(478600001)(66476007)(66556008)(8936002)(66946007)(36756003)(52103002)(158003001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVNFSkM0V0I5T1pCRGt2WGdRWit5dmRIdHlmUm80cCtQcTBlY3dZT0hWMkkx?=
- =?utf-8?B?a0xEQ3NlKzM4OWh4VVpyZnFraGhpaUN5UkdTNU5XT2h4Qi8zRm9YQjR2aDBL?=
- =?utf-8?B?ejJ3cGFxM0wzcVZjc0RpeStSY2I3TFRielM1djZzeEhlVit0R09QVnlqUXVF?=
- =?utf-8?B?eXc4TTUxWTRNSWNYSHgzYVZLeGx4ck1wOGtXTGkwb2M3VVJoRjRNT0cvTFNo?=
- =?utf-8?B?MGEyMlcwb2ZrbVRueHJHN1ZqTFZGdUlLa1QwS09sVXJqQWFkZ3dBMVlvQ1dZ?=
- =?utf-8?B?MlpDejNRakdLK3BCZlY0eEVWVzhYeUxZNzI5WkFwWUsxWnJuM29jUVdTRFB5?=
- =?utf-8?B?WDdHR2M4NmVZcnNReU8yS3VSN3ZiZmROY3FMNXRud3ZzU2N5OGtyNE1PM3NM?=
- =?utf-8?B?WnRRZ3ZhV1Y1YWw4RXZZWUZpNU9PWGRpVXJkcFp2Y2syMUJGZENmdmJJVUto?=
- =?utf-8?B?QnpCNGhvUVkvVUxGM3dWbzdLQktRUEVEZTVSb2VXV0V4bVRhK1N0VlBEcS9R?=
- =?utf-8?B?RGYzMFZoazc3eUM3VFdoMEJPeGdIU2lJRGUwYWFoWC82Qk1wQkRUeEQ4TWlP?=
- =?utf-8?B?VmdaK2lIMzFuQTYydnZPOVFnNUdmKzB6VG9XTi81Z1BkcGhybFhvMXlqR3NP?=
- =?utf-8?B?dkNOdkRkMGZLTFh6V1dsQzJUTDZiZGVvM0NvbmlLeWI5NjhtSVdBanR4WVlJ?=
- =?utf-8?B?V2RsWEJoN0FSa2liNDJSVEh5MGNkak5VQm1ieUdoVDFZUU9SNS9zZW9jKy9Q?=
- =?utf-8?B?YU5zWDZQL1FpYlNhanZTT1pKWTZZTG9zZ2dYNFFYRHBjcW85WXQ5STNHVlBZ?=
- =?utf-8?B?bzl1cnRRQ0RMTGtzWngzUkFwZE5hZ1ZPWFFsMjhlSjkzakNXT3NJa0ZWaGRD?=
- =?utf-8?B?a0Y4UkZNRmRYK2pNVXc5L3R3b2xQd0k1T1ZkWCtsejIyWTRSei85dTZWZGNJ?=
- =?utf-8?B?Q3BOWUJxbncyalNRU2JXMU9LbzFYSXZlMDJWbU03ZGlzYm1vQStmWHpVbzZj?=
- =?utf-8?B?NmdmU2lxS2dYekJWVzBlQTVIaDVaaU1pNVV0cUJNOWV0K2xhQ2VrMkZua2x6?=
- =?utf-8?B?NnFuZGZpbVRMOUdMKzlqT1dYbzdZMXNjWkxNcmEwSU5KbG12RytzS3dSMEp4?=
- =?utf-8?B?bnBKYWNOZjBFNTBFTXNPTFNwNVg2SmFWWXpiaVRKdmdvUDJDWWNSYWdGMjNw?=
- =?utf-8?B?dldNL3BteVBLcGJxaU8xL1BxZkhoMTAyWHZzbmpZM0lOZlI4Q0pxdXloK1M5?=
- =?utf-8?B?U29kMVRDb1l5REhhaXhwcStxaGN4YUIxTEJRWVJ0TDdjOEZtYi9mY3VUR082?=
- =?utf-8?B?c1ZmanROV3Q2R0lDYnZqRDIzQ2poN0Z3b2VNYm5kMEF4QlBxaG43T3RjQ1o1?=
- =?utf-8?B?N2FaakVvUVorYWY5cEdWVldsV3FmZ3Q5bmROblpNYmJmbTNyd0oyVnAyWlVt?=
- =?utf-8?B?RXlWVWRub2NnNlMzeVhoNXowb213TEQ1MGMrZithT0s2bWl5bWJzUFgxaHBp?=
- =?utf-8?B?MWdIVG91TElnMnhVV2t4VE8rNHg4TURUVnJYSG1TY3dqZFpYUHlxRGxHVWtk?=
- =?utf-8?B?MkZmRVErYzJvRWJxRDF1UittbjJNNkwvdmpPUjJjV0p2OENIT0V4MFo0NEU0?=
- =?utf-8?B?REhKdHJ1RWRHUCtSNDFZY1RDVU9HanFmQkZXM2JXQndXMFRiTXgrYk5qS1FM?=
- =?utf-8?B?bEJjV3RJMlMxZ0FtS01BYmh6b3N1cXZraldIWWp0WGMvOHlKY25walUzT3pM?=
- =?utf-8?Q?QPh6akzVdk4BshLTZQSsUwys3qi5/0E34/gCsst?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ca94ea6-dec4-4502-a200-08d971e7e046
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:11:36.4774
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2reX+14OiwDhd1vrHhRx3IWOxAa/HEC9FnvM45xTLk3eSIrMKWurl/lKntmqephyKmY9Pb+kz7cXHCp9Z5nLSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2447
+In-Reply-To: <DB8PR04MB67953613ED725D00027E972BE6D29@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was effectively lost while dropping PVHv1 code. Move the function
-and arrange for it to be called the same way as done in PV mode. Clearly
-this then needs re-introducing the XENFEAT_mmu_pt_update_preserve_ad
-check that was recently removed, as that's a PV-only feature.
+Hi Joakim,
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
---- a/arch/x86/xen/enlighten.c
-+++ b/arch/x86/xen/enlighten.c
-@@ -261,6 +261,18 @@ int xen_vcpu_setup(int cpu)
- 	return ((per_cpu(xen_vcpu, cpu) == NULL) ? -ENODEV : 0);
- }
- 
-+void __init xen_banner(void)
-+{
-+	unsigned version = HYPERVISOR_xen_version(XENVER_version, NULL);
-+	struct xen_extraversion extra;
-+	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
-+
-+	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name);
-+	pr_info("Xen version: %u.%u%s%s\n",
-+		version >> 16, version & 0xffff, extra.extraversion,
-+		xen_feature(XENFEAT_mmu_pt_update_preserve_ad) ? " (preserve-AD)" : "");
-+}
-+
- /* Check if running on Xen version (major, minor) or later */
- bool xen_running_on_version_or_later(unsigned int major, unsigned int minor)
- {
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -108,17 +108,6 @@ struct tls_descs {
-  */
- static DEFINE_PER_CPU(struct tls_descs, shadow_tls_desc);
- 
--static void __init xen_banner(void)
--{
--	unsigned version = HYPERVISOR_xen_version(XENVER_version, NULL);
--	struct xen_extraversion extra;
--	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
--
--	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name);
--	pr_info("Xen version: %d.%d%s (preserve-AD)\n",
--		version >> 16, version & 0xffff, extra.extraversion);
--}
--
- static void __init xen_pv_init_platform(void)
- {
- 	populate_extra_pte(fix_to_virt(FIX_PARAVIRT_BOOTMAP));
---- a/arch/x86/xen/enlighten_pvh.c
-+++ b/arch/x86/xen/enlighten_pvh.c
-@@ -38,6 +38,7 @@ void __init xen_pvh_init(struct boot_par
- 
- 	if (xen_initial_domain())
- 		x86_init.oem.arch_setup = xen_add_preferred_consoles;
-+	x86_init.oem.banner = xen_banner;
- 
- 	xen_efi_init(boot_params);
- }
---- a/arch/x86/xen/xen-ops.h
-+++ b/arch/x86/xen/xen-ops.h
-@@ -51,6 +51,7 @@ void __init xen_remap_memory(void);
- phys_addr_t __init xen_find_free_area(phys_addr_t size);
- char * __init xen_memory_setup(void);
- void __init xen_arch_setup(void);
-+void xen_banner(void);
- void xen_enable_sysenter(void);
- void xen_enable_syscall(void);
- void xen_vcpu_restore(void);
+On 06/09/2021 09:58, Joakim Zhang wrote:
+> 
+> Hi Srinivas,
+> 
+>> -----Original Message-----
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Sent: 2021年9月3日 20:38
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; Rob Herring
+>> <robh@kernel.org>
+>> Cc: shawnguo@kernel.org; kernel@pengutronix.de; dl-linux-imx
+>> <linux-imx@nxp.com>; devicetree@vger.kernel.org;
+>> linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
+>> property
+>>
+>> Hi Joakim,
+>>
+>> On 18/08/2021 08:54, Joakim Zhang wrote:
+>>>
+>>>> -----Original Message-----
+>>>> From: Rob Herring <robh@kernel.org>
+>>>> Sent: 2021年8月18日 3:58
+>>>> To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>> Cc: Joakim Zhang <qiangqing.zhang@nxp.com>; shawnguo@kernel.org;
+>>>> kernel@pengutronix.de; dl-linux-imx <linux-imx@nxp.com>;
+>>>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>> Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
+>>>> property
+>>>>
+>>>> On Wed, Aug 11, 2021 at 11:16:49AM +0100, Srinivas Kandagatla wrote:
+>>>>>
+>>>>>
+>>>>> On 10/08/2021 08:35, Joakim Zhang wrote:
+>>>>>> Introduce "reverse-data" property for nvmem provider to reverse buffer.
+>>>>>>
+>>>>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>>>>>> ---
+>>>>>>     Documentation/devicetree/bindings/nvmem/nvmem.yaml | 5 +++++
+>>>>>>     1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>>>>>> b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>>>>>> index b8dc3d2b6e92..bc745083fc64 100644
+>>>>>> --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>>>>>> @@ -61,6 +61,11 @@ patternProperties:
+>>>>>>                   description:
+>>>>>>                     Size in bit within the address range specified by
+>> reg.
+>>>>>> +      reverse-data:
+>>>>>> +        $ref: /schemas/types.yaml#/definitions/flag
+>>>>>> +        description:
+>>>>>> +          Reverse the data that read from the storage device.
+>>>>>> +
+>>>>>
+>>>>> This new property is only going to solve one of the reverse order
+>>>>> issue here.
+>>>>> If I remember correctly we have mac-address stored in various formats ex:
+>>>>> from old thread I can see
+>>>>>
+>>>>> Type 1: Octets in ASCII without delimiters. (Swapped/non-Swapped)
+>>>>> Type
+>>>>> 2: Octets in ASCII with delimiters like (":", ",", ".", "-"... so
+>>>>> on)
+>>>>> (Swapped/non-Swapped)
+>>>>> Type 3: Is the one which stores mac address in Type1/2 but this has
+>>>>> to be incremented to be used on other instances of eth.
+>>>>> Type 4: Octets as bytes/u8, swapped/non-swapped
+>>>>>
+>>>>> I think its right time to consider adding compatibles to nvmem-cells
+>>>>> to be able to specify encoding information and handle post processing.
+>>>>
+>>>> Yes. Trying to handle this with never ending new properties will end
+>>>> up with a mess. At some point, you just need code to parse the data.
+>>>
+>>> Thanks, Rob.
+>>>
+>>> Hi Srinivas,
+>>>
+>> Firstly Sorry for taking so long to reply as I was on vacation.
+>>
+>>> Do you plan to implement it?
+>>
+>> No, Am not planning to do this. But am happy to walk-thru the ideas that I
+>> have.
+>>
+>>>
+>>> Or need me follow up? If yes, please input your insights to point me how to
+>> work for it.
+>>
+>> Do we have some kind of meta data/information in nvmem memory to indicate
+>> the storage encoding?
+> 
+> No, none of these.
+> 
+>> Am I correct to say that this is only issue with mac-address nvmem cell?
+> 
+> I think, yes.
+>   
+>> Irrespective of where this encoding info comes from we have 2 options.
+>>
+>> Option 1: Add callback to handle mac-address post-processing with in the
+>> provider driver.
+> 
+> Sorry, I am not very familiar with nvmem framework, what's this "callback" mean?
+> Do you also want to introduce a common callback for different vendor drivers to
+> work for mac-address post-processing? Extend the " struct nvmem_config"?
+> 
+>> Pros:
+>> - It can deal with vendor specific non-standard encodings, and code is mostly
+>> with-in vendor specific nvmem provider driver and bindings.
+>> - will keep nvmem core simple w.r.t handling data.
+>>
+>> Cons:
+>> - provider driver implement callback and new bindings.
+>> - might need to add a nvmem-cell-type binding to be able differentiate the cell
+>> types and handle post-processing.
+> 
+> Ahhh, I am not quite understand how to implement for it? Could you please give some
+> draft hints?
+> 
+> If we extend the struct nvmem_config, add a callback to handle mac address, how can we
+> determine which is the mac-address device node? There is no device node info from .reg_read
+> callback.
 
+
+I have pushed some nvmem core patches which are just compile tested to 
+https://git.kernel.org/pub/scm/linux/kernel/git/srini/nvmem.git/log/?h=topic/post-processing
+
+This should provide the callback hook I was talking about.
+
+Can you take a look at them and let me know if it works for you.
+
+I have also added some test changes to imx provider driver as well, 
+which you might have to take a closer look to get it working.
+
+You need to look at adding/changing two things:
+
+1. setting reverse_mac_address flag in imx driver.
+	Does IMX always has mac-address reversed? if yes then we do not need 
+any new bindings for imx nvmem provider, if no we might need to add some 
+kind of flag to indicate this.
+
+2. In imx devicetree for mac-address nvmem cell make sure you add
+
+cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+
+
+
+
+> 
+>> Option 2: nvmem core handles the post processing.
+>>
+>> Pros:
+>> - provider driver does not need to implement callbacks
+>>
+>> Cons:
+>> - We have to find a way to define vendor specific non-standard encoding
+>> information in generic bindings which is going to be a challenge and high chance
+>> of ending up in to much of clutter in generic bindings.
+>>
+>> Finally, The way I look at this is that once we start adding post-processing in
+>> nvmem core then we might endup with code that will not be really used for
+>> most of the usecases and might endup with cases that might not be possible to
+>> handle in the core.
+>>
+>>
+>> Does Option 1 work for you?
+> 
+> Yes, I also prefer to implement it in specific driver, as you mention above, these code are for
+> very rarely use cases.
+> 
+> If we chose Option 1, I want to implement it totally in specific driver(imx-ocotp.c), and I have a draft,
+> could it be acdeptable?
+Yes, this is the direction, however we need a proper callback to do 
+this. And offset information is still comes from Device tree.
+
+
+Have a look at the patches pushed into topic/post-processing branch.
+
+--srini
+> 
+> --- a/drivers/nvmem/imx-ocotp.c
+> +++ b/drivers/nvmem/imx-ocotp.c
+> @@ -76,6 +76,8 @@
+>   #define IMX_OCOTP_WR_UNLOCK            0x3E770000
+>   #define IMX_OCOTP_READ_LOCKED_VAL      0xBADABADA
+> 
+> +#define IMX_OCOTP_MAC_MAX              0x2     /* The maximum numbers of MAC instance */
+> +
+>   static DEFINE_MUTEX(ocotp_mutex);
+> 
+>   struct ocotp_priv {
+> @@ -93,11 +95,18 @@ struct ocotp_ctrl_reg {
+>          u32 bm_rel_shadows;
+>   };
+> 
+> +struct mac_config {
+> +       u32 offset;
+> +       u32 size;
+> +       bool reverse_byte;
+> +};
+> +
+>   struct ocotp_params {
+>          unsigned int nregs;
+>          unsigned int bank_address_words;
+>          void (*set_timing)(struct ocotp_priv *priv);
+>          struct ocotp_ctrl_reg ctrl;
+> +       struct mac_config mac[IMX_OCOTP_MAC_MAX];
+>   };
+> 
+>   static int imx_ocotp_wait_for_busy(struct ocotp_priv *priv, u32 flags)
+> @@ -211,6 +220,20 @@ static int imx_ocotp_read(void *context, unsigned int offset,
+>          }
+> 
+>          index = offset % 4;
+> +
+> +       /* Handle MAC address reverse byte if required */
+> +       for (i = 0; i < IMX_OCOTP_MAC_MAX; i++) {
+> +               if (offset == priv->params->mac[i].offset &&
+> +                   bytes == priv->params->mac[i].size &&
+> +                   priv->params->mac[i].reverse_byte) {
+> +                       u8 *org = &p[index];
+> +                       int j;
+> +
+> +                       for (j = 0; j < bytes/2; j++)
+> +                               swap(org[j], org[bytes-j-1]);
+> +               }
+> +       }
+> +
+>          memcpy(val, &p[index], bytes);
+> 
+>   read_end:
+> @@ -556,6 +579,12 @@ static const struct ocotp_params imx8mp_params = {
+>          .bank_address_words = 0,
+>          .set_timing = imx_ocotp_set_imx6_timing,
+>          .ctrl = IMX_OCOTP_BM_CTRL_8MP,
+> +       .mac[0].offset = 0x90,
+> +       .mac[0].size = 6,
+> +       .mac[0].reverse_byte = true,
+> +       .mac[1].offset = 0x96,
+> +       .mac[1].size = 6,
+> +       .mac[1].reverse_byte = true,
+>   };
+> 
+>   static const struct of_device_id imx_ocotp_dt_ids[] = {
+> 
+> 
+> Best Regards,
+> Joakim Zhang
+> 
