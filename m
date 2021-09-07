@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA194027AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4544027AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbhIGLSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:18:18 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39196
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244318AbhIGLSP (ORCPT
+        id S244522AbhIGLUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:20:32 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19015 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239767AbhIGLU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:18:15 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 8ABB03F101;
-        Tue,  7 Sep 2021 11:17:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631013427;
-        bh=RD8ImtiPR0GJEKbytD1cXq/JGVHkX77jtTDQ9RdUdig=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=BTyYN2scPJVZWS/wrFi7/rvxH6QuisHSrmd+mLBL40ED+bhgVPYGkJWZ6huXm2mU4
-         NjJY9Ae5WyptAJT7wBIb6qDKU5fEyOtfrpZLykJAS4VR+eN2INEY5cVbvzs6zi86vs
-         PnLdDOFW0PBn58tiSv0zDA993szwr3YyX3RwqEIM2kicml4+LK8hMmgoAzKrtmOCRk
-         4s5iLz9TFOXT5tE9DWM+6McaV6y1c+FHy5+GjgMPvrdTwwxYmaeUtqXPZo9jB0SKfm
-         WDWF7emCz+cp+Dw1ZfRHzcMTXcTyQqSaiPohu2QZ8UmJwcvA5ALYRLkigP9PFt+ODL
-         5hzssrogdfP0g==
-Subject: NACK: [PATCH] EDAC/device: Remove redundant initialization of pointer
- dev_ctl
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907105913.15077-1-colin.king@canonical.com>
- <YTdI98H5yF55fYsC@zn.tnic>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <14b02aa7-178b-2a03-afeb-a4c7be56d84f@canonical.com>
-Date:   Tue, 7 Sep 2021 12:17:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 7 Sep 2021 07:20:29 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H3jNn6qQJzbmLQ;
+        Tue,  7 Sep 2021 19:15:21 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 19:19:21 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 19:19:21 +0800
+Subject: Re: [PATCH v2 2/4] block, bfq: do not idle if only one cgroup is
+ activated
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210806020826.1407257-1-yukuai3@huawei.com>
+ <20210806020826.1407257-3-yukuai3@huawei.com>
+ <21FA636D-2C21-4ACD-B7DE-180ABB1F3562@linaro.org>
+ <da0e53b4-e947-9c91-832e-36da67037f0f@huawei.com>
+ <F1ADC992-11AE-4511-9033-D233CBCA6F26@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <f7900f33-5f27-a6e3-ee3d-f68ad9d8a6d3@huawei.com>
+Date:   Tue, 7 Sep 2021 19:19:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <YTdI98H5yF55fYsC@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <F1ADC992-11AE-4511-9033-D233CBCA6F26@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2021 12:11, Borislav Petkov wrote:
-> On Tue, Sep 07, 2021 at 11:59:13AM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
+On 2021/09/07 17:10, Paolo Valente wrote:
+> 
+> 
+>> Il giorno 2 set 2021, alle ore 15:31, yukuai (C) <yukuai3@huawei.com> ha scritto:
 >>
->> The variable dev_ctl is being initialized with a value that is never
->> read, it is being updated later on. The assignment is redundant and
->> can be removed.
+>> On 2021/08/27 1:00, Paolo Valente wrote:
+>>> Why do you make these extensive changes, while you can leave all the
+>>> function unchanged and just modify the above condition to something
+>>> like
+>>> || bfqd->num_groups_with_pending_reqs > 1
+>>> || (bfqd->num_groups_with_pending_reqs && bfqd->num_queues_with_pending_reqs_in_root)
 >>
->> Addresses-Coverity: ("Unused value")
-> 
-> I'll never get a public reference to what those things mean, will I?
-> 
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/edac/edac_device.c | 1 -
->>  1 file changed, 1 deletion(-)
+>> Hi, Paolo
 >>
->> diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
->> index 8c4d947fb848..a337f7afc3b9 100644
->> --- a/drivers/edac/edac_device.c
->> +++ b/drivers/edac/edac_device.c
->> @@ -75,7 +75,6 @@ struct edac_device_ctl_info *edac_device_alloc_ctl_info(
->>  	 * provide if we could simply hardcode everything into a single struct.
->>  	 */
->>  	p = NULL;
->> -	dev_ctl = edac_align_ptr(&p, sizeof(*dev_ctl), 1);
+>> I was thinking that if CONFIG_BFQ_GROUP_IOSCHED is enabled, there is no
+>> need to caculate smallest_weight, varied_queue_weights, and
+>> multiple_classes_busy:
+>>
+>> If we count root group into num_groups_with_pending_reqs
+>> - If num_groups_with_pending_reqs <= 1, idle is not needed
 > 
-> Are you absolutely sure this function doesn't have any side-effects,
-> say, to &p and removing the call would break the pointer offsets for the
-> one-shot allocation?
-
-Oops. brown-paper-bag on head. It does alter p. NACK.
-
+> Unfortunately, if active queues have different weights or belong to
+> different classes, then idling is needed to preserve per-queue
+> bandwidths.
 > 
+> Thanks,
+> Paolo
 
+Hi, Paolo
+
+It's right, if num_groups_with_pending_reqs == 1, multiple_classes_busy
+should be checked, while smallest_weight and varied_queue_weights can
+be skipped.
+
+Thanks
+Kuai
+
+> .
+> 
