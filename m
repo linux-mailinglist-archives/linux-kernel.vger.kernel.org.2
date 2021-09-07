@@ -2,195 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE85402CF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E31D402D02
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344315AbhIGQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:39:34 -0400
-Received: from thoth.sbs.de ([192.35.17.2]:41715 "EHLO thoth.sbs.de"
+        id S1344097AbhIGQm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:42:28 -0400
+Received: from mga07.intel.com ([134.134.136.100]:27264 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344014AbhIGQj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:39:26 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 187Gc5bJ012640
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Sep 2021 18:38:05 +0200
-Received: from md1f2u6c.ad001.siemens.net ([167.87.245.242])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 187Gc3Gj021975;
-        Tue, 7 Sep 2021 18:38:05 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH v2 4/4] arm64: dts: ti: iot2050: Add support for product generation 2 boards
-Date:   Tue,  7 Sep 2021 18:38:02 +0200
-Message-Id: <92c62afc6bb34d4704d65d4d0cbc0857d5814dfc.1631032682.git.jan.kiszka@siemens.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631032682.git.jan.kiszka@siemens.com>
-References: <cover.1631032682.git.jan.kiszka@siemens.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231347AbhIGQm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 12:42:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="283959445"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="283959445"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 09:38:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="430979243"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by orsmga003.jf.intel.com with ESMTP; 07 Sep 2021 09:38:36 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/3] perf intel-pt: Add PEBS-via-PT side-band
+Date:   Tue,  7 Sep 2021 19:39:00 +0300
+Message-Id: <20210907163903.11820-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+Hi
 
-This adds the devices trees for IOT2050 Product Generation 2 (PG2)
-boards. We have Basic and an Advanced variants again, differing in
-number of cores, RAM size, availability of eMMC and further details.
-The major difference to PG1 is the used silicon revision (SR2.x on
-PG2).
+PEBS output to Intel Processor Trace was introduced with Atom
+processors based on Tremont.  Currently there is software support
+only for a single PEBS-via-PT event.
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  2 +
- .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
- .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
- .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+Here is support for multiple PEBS-via-PT events.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d56c742f5a10..41a4bc96e6bd 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -8,7 +8,9 @@
- 
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
- 
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-new file mode 100644
-index 000000000000..2323628b0444
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2021
-+ *
-+ * Authors:
-+ *   Chao Zeng <chao.zeng@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * Common bits of the IOT2050 Basic and Advanced variants, PG2
-+ */
-+
-+&main_pmx0 {
-+	cp2102n_reset_pin_default: cp2102n_reset_pin_default {
-+		pinctrl-single,pins = <
-+			/* (AF12) GPIO1_24, used as cp2102 reset */
-+			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
-+		>;
-+	};
-+};
-+
-+&main_gpio1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp2102n_reset_pin_default>;
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "CP2102N-RESET";
-+};
-+
-+&dss {
-+	/* Workaround needed to get DP clock of 154Mhz */
-+	assigned-clocks = <&k3_clks 67 0>;
-+};
-+
-+&serdes0 {
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-+};
-+
-+&dwc3_0 {
-+	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-+				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-+	phys = <&serdes0 PHY_TYPE_USB3 0>;
-+	phy-names = "usb3-phy";
-+};
-+
-+&usb0_phy {
-+	maximum-speed = "super-speed";
-+	snps,dis-u1-entry-quirk;
-+	snps,dis-u2-entry-quirk;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-new file mode 100644
-index 000000000000..c62549a4b436
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
-+ * 1 GB RAM, no eMMC, main_uart0 on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6528-iot2050-basic-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Basic PG2";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-new file mode 100644
-index 000000000000..f00dc86d01b9
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
-+ * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Advanced PG2";
-+};
-+
-+&mcu_r5fss0 {
-+	/* lock-step mode not supported on this board */
-+	ti,cluster-mode = <0>;
-+};
--- 
-2.31.1
+The first patch is the kernel change which adds a new event,
+namely PERF_RECORD_AUX_OUTPUT_HW_ID which contains the counter
+index.  That is output when the PEBS-via-PT event is enabled in hardware.
+There is an optimization, to report the index only when it changes
+for the event.  That will work only so long as all PEBS-via-PT
+events are scheduled together, which they are for a recording
+session because they are in a single group.
 
+Also no attribute bit is used to select the new event, so a new
+kernel is not compatible with older perf tools.  The assumption
+being that PEBS-via-PT is sufficiently esoteric that users will not
+be troubled by this.
+
+The second patch adds the usual boiler plate to perf tools for
+a new event.
+
+The third patch adds support for processing the new event by
+perf tool's Intel PT decoder.
+
+
+Changes in V3:
+    perf/x86: Add new event for AUX output counter index
+	Do not set assign callback unless x86_pmu.intel_cap.pebs_output_pt_available
+
+Changes in V2:
+    perf/x86: Add new event for AUX output counter index
+	Use callback from x86_assign_hw_event
+
+
+Adrian Hunter (3):
+      perf/x86: Add new event for AUX output counter index
+      perf tools: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+      perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+
+ arch/x86/events/core.c                     |  6 +++
+ arch/x86/events/intel/core.c               | 16 ++++++
+ arch/x86/events/perf_event.h               |  1 +
+ include/linux/perf_event.h                 |  1 +
+ include/uapi/linux/perf_event.h            | 15 ++++++
+ kernel/events/core.c                       | 30 +++++++++++
+ tools/include/uapi/linux/perf_event.h      | 15 ++++++
+ tools/lib/perf/include/perf/event.h        |  6 +++
+ tools/perf/Documentation/perf-intel-pt.txt |  7 ++-
+ tools/perf/builtin-inject.c                |  4 +-
+ tools/perf/builtin-record.c                |  2 +-
+ tools/perf/util/event.c                    | 18 +++++++
+ tools/perf/util/event.h                    |  5 ++
+ tools/perf/util/intel-pt.c                 | 85 ++++++++++++++++++++++++++++--
+ tools/perf/util/machine.c                  | 10 ++++
+ tools/perf/util/machine.h                  |  2 +
+ tools/perf/util/session.c                  |  5 ++
+ tools/perf/util/tool.h                     |  1 +
+ 18 files changed, 222 insertions(+), 7 deletions(-)
+
+
+Regards
+Adrian
