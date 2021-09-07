@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1082F402510
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4B740250F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242508AbhIGIZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:25:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240588AbhIGIZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:25:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A3B86108E;
-        Tue,  7 Sep 2021 08:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631003071;
-        bh=tf0hsMvTGyH1kJjWg2WPZff+DOucx8mXURT8WBb/fQg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LH+KsWArqUzs/v9H+FeMx91h00ZkSGRndvcY8Oo/P8GmDYeMFTmQhkkMBr7nK6ylo
-         cxqsdhB9VIXMmh8FCynof29lZZ6ePGuGzytngtNSmwqmnypmogMhreMVgKm75v06k+
-         WTPtVDSIBTJA1ZHJbZ/a4cOXD3KU1r6qVv6ox19TSFVtdr/bxQkkmSATlV5jwKe4Gu
-         tH1t7HzV3yOWMqb9jZeBhqAEXvWEXdjWrcvtGqCAcsr1T26bAzroSr7/RrC5l+Vws8
-         HcOuFQfnLfU3izK6TunDyGY/oPePIeqb+EvxErj+Dsag/UciaEm5xT+gv+xit/aCdD
-         js1pCXktie/6Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mNWOw-00022B-MA; Tue, 07 Sep 2021 10:24:19 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH v2] USB: cdc-acm: fix minor-number release
-Date:   Tue,  7 Sep 2021 10:23:18 +0200
-Message-Id: <20210907082318.7757-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S242355AbhIGIZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:25:38 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33872 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhIGIZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 04:25:36 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 37B0E21F49;
+        Tue,  7 Sep 2021 08:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631003070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ivtjlHm9PGvCOAfWgUOdjroiZ3RBt7Q0P4cX/o/868Y=;
+        b=jZS0iFdgIsAdViWDOfYzzm+0oaqLKQwTQ5/jPYCVb+DekVXTkbClm+CKBs10PQgN2o26ea
+        dbb7WejnWOKwKsXoVkSpfkWB3bpd4D5Ec3dro+8ZwDgP8mHnAl8kHDoua+j1KxyMzloPee
+        cg4bQ816AVmPQWBitH5e1YjGMLaPr7w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631003070;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ivtjlHm9PGvCOAfWgUOdjroiZ3RBt7Q0P4cX/o/868Y=;
+        b=45GZyTbHAHMEzXY1gUyE7AQkgm8s8nF1p3bfWuW1gJDkX/1f5DuuzU4BCyiui+7jHcq0Fn
+        2UYBcDEHaGuUgpBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id EF93C132AB;
+        Tue,  7 Sep 2021 08:24:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 0JwdOL0hN2FJIAAAGKfGzw
+        (envelope-from <jdelvare@suse.de>); Tue, 07 Sep 2021 08:24:29 +0000
+Date:   Tue, 7 Sep 2021 10:24:28 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] dmi fix for v5.15
+Message-ID: <20210907102428.616e5087@endymion>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the driver runs out of minor numbers it would release minor 0 and
-allow another device to claim the minor while still in use.
+Hi Linus,
 
-Fortunately, registering the tty class device of the second device would
-fail (with a stack dump) due to the sysfs name collision so no memory is
-leaked.
+Please pull dmi subsystem fixes for Linux v5.15 from:
 
-Fixes: cae2bc768d17 ("usb: cdc-acm: Decrement tty port's refcount if probe() fail")
-Cc: stable@vger.kernel.org      # 4.19
-Cc: Jaejoong Kim <climbbb.kim@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
+git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
 
-Changes in v2
- - add a dedicated define for the invalid minor number (Oliver)
+ drivers/firmware/dmi-id.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+---------------
 
- drivers/usb/class/cdc-acm.c | 7 +++++--
- drivers/usb/class/cdc-acm.h | 2 ++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Hans de Goede (1):
+      firmware: dmi: Move product_sku info to the end of the modalias
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 4895325b16a4..5b90d0979c60 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -726,7 +726,8 @@ static void acm_port_destruct(struct tty_port *port)
- {
- 	struct acm *acm = container_of(port, struct acm, port);
- 
--	acm_release_minor(acm);
-+	if (acm->minor != ACM_MINOR_INVALID)
-+		acm_release_minor(acm);
- 	usb_put_intf(acm->control);
- 	kfree(acm->country_codes);
- 	kfree(acm);
-@@ -1323,8 +1324,10 @@ static int acm_probe(struct usb_interface *intf,
- 	usb_get_intf(acm->control); /* undone in destruct() */
- 
- 	minor = acm_alloc_minor(acm);
--	if (minor < 0)
-+	if (minor < 0) {
-+		acm->minor = ACM_MINOR_INVALID;
- 		goto err_put_port;
-+	}
- 
- 	acm->minor = minor;
- 	acm->dev = usb_dev;
-diff --git a/drivers/usb/class/cdc-acm.h b/drivers/usb/class/cdc-acm.h
-index 8aef5eb769a0..3aa7f0a3ad71 100644
---- a/drivers/usb/class/cdc-acm.h
-+++ b/drivers/usb/class/cdc-acm.h
-@@ -22,6 +22,8 @@
- #define ACM_TTY_MAJOR		166
- #define ACM_TTY_MINORS		256
- 
-+#define ACM_MINOR_INVALID	ACM_TTY_MINORS
-+
- /*
-  * Requests.
-  */
+Thanks,
 -- 
-2.32.0
-
+Jean Delvare
+SUSE L3 Support
