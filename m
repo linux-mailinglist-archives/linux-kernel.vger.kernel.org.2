@@ -2,143 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F233402696
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E244026A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhIGJ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:57:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56853 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235095AbhIGJ5a (ORCPT
+        id S244110AbhIGJ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244874AbhIGJ73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:57:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631008584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WZix3g89yH38VBI/+aNMJk3dvjLYvV1IblN/1ztVbHc=;
-        b=ShaiAbl4NSGRmZ1qwrKJy5F2bW0Tkzh7C96YClu/bRqDnoyT+rBEnQTmpZGbkb6u8yaFHi
-        ds1mE5CxBUXM/29uw/mRrnFmrIgo3kORCR0nEtZNZWOfy82Dcz85Bbtyqq2tkEa6JIIoyW
-        0RzIIK9qHq6HK8JChcv0UbwiTn332wk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-xHDr36jhOuyVn0zG6X5GOg-1; Tue, 07 Sep 2021 05:56:23 -0400
-X-MC-Unique: xHDr36jhOuyVn0zG6X5GOg-1
-Received: by mail-wr1-f69.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso1924516wrs.20
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:56:23 -0700 (PDT)
+        Tue, 7 Sep 2021 05:59:29 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE56C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:58:22 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id z2so18463732lft.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZTLi4zR4aFY8TcodEJa1buz2G69bROdSrdlPAPmsilY=;
+        b=pTmLd8HTwFi9UhYcOcow/QqB/QxmdZRomDi9kPA2eitbbEkuuPO7EqYtaCT6bO52zZ
+         eOojjflE7OW+XKPfxxMy0QzvmYcWn2KdUy51LRvGc/7tt1TwsdxemUVNIcdVVaqD4BD7
+         Q9boyNkd+irK8EmgrxDS7eaBT7jUrrrYAJF1RCwDAQz1WjjM0vlaTrmgKBl07Lba8M9n
+         8RNGzuNc2W8wuN9eE5ZmGcN+S2kzRsvMNHYqdCf3xZOnN2jOacQV794Z6h6jw+dwgfu3
+         2pehJib8/Fo6dfwW0P5+NQgM8d+7oEeP0/M0AYDj8lyCcjWTQsqlnCKRAp6AL3Df44el
+         /njQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WZix3g89yH38VBI/+aNMJk3dvjLYvV1IblN/1ztVbHc=;
-        b=jOs8S4VbK0uR1YvGR1sKy4tIpCw8xYA7vw81CxXdCLxTUXgq/YGcQXFGtsQ4Z/f3Rf
-         8azwfGoJNQit6s4EX5YdAZmXAMak5Oo5CCP0dqsd54Z4K1f9y9rhcBYYu8tp8EPgpBsy
-         ba5ibN4l/ugiuv4T3vGoWWkJ5BViVHqVK5+ZwxJZR556Fs+boF3ptcpzxNPFOEjShy8n
-         r7c67geNXGWDdweCqUDtiMJcAxmvVtxKPZ/9I3zxmVdYqxSmE7+7+qoiBObK7TH0Z9o8
-         W9NjuP0RTbx1H2pymDNZH4neMpsksUJvfE9HPBzph/W63z5nj+f1UadHRI2LFNQtN8dc
-         xcYw==
-X-Gm-Message-State: AOAM531kqKMFv8tx4kFN52okcKz9kbRWO6dr7lcsEDU44AYMRfglmFW7
-        tgjctjKCm1AHuXQ7k3QUoynTQI5SiqNPzQA8kgNKxD8dMwJNCiJ1v3pms9GEzQv187lDaphPkUy
-        SVF8Vx2ijyDXLUAiLXb0x9wc/ka6m3q9+8Lyh9QMRfMQK24vxjzW7CDBpD2TxOYJT/4FsUroo
-X-Received: by 2002:a05:600c:294:: with SMTP id 20mr3105730wmk.180.1631008582393;
-        Tue, 07 Sep 2021 02:56:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwvf9pfG2k28UQz3mTfSELrqKrfnBOyxpBncA+3AC0xy5VsgXwaFkm8y5VTwZ7gkbGJY19tA==
-X-Received: by 2002:a05:600c:294:: with SMTP id 20mr3105693wmk.180.1631008581995;
-        Tue, 07 Sep 2021 02:56:21 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23fca.dip0.t-ipconnect.de. [79.242.63.202])
-        by smtp.gmail.com with ESMTPSA id v62sm1886533wme.21.2021.09.07.02.56.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 02:56:21 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210904091839.20270-1-linmiaohe@huawei.com>
- <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
- <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
- <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
- <c60dc5e2-6f19-3be8-56be-555033cc9ca4@redhat.com>
- <b4615b3c-8217-9f32-39c7-b91c9ec3cccb@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <80cfffdc-227e-c045-be74-1c08fb62c1e3@redhat.com>
-Date:   Tue, 7 Sep 2021 11:56:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZTLi4zR4aFY8TcodEJa1buz2G69bROdSrdlPAPmsilY=;
+        b=K4UTIS8ZrOs2kbHgXRqUQCblAUeMYUpFXf7bIeLSGV66d+eWDR2TCzBmVLDqX/3h4C
+         jSaLvdj/Y9tRRXRCa2vCwYLRA1VLoidQu3zkkdFeMOnB8lJGchRuBiVWVBaCHcwfgCTd
+         o5to13r7eHfW6fSfWwWORw1VZ6IE2lbMp4arr3VyZg8OAgVJCw9fFxmRQ05EqFZvCMZM
+         t65lwL8QicUPLzVlW9nOtqlYlTttDrLas1MIcnXozT4FDvdW4+YnaxIdHff1FTdc5uTy
+         LcB6rqwk/Rse8sOoKAxuq+cK7nulCRdwvw8xxQxBI2whS4JIU7xL+WGUtoJ8ZNP/1ZVk
+         h0sg==
+X-Gm-Message-State: AOAM531Vsf36fHVdGXLC9KKvf0TDRMJuAS052tV4JOGROF6FtV51gY7i
+        t//TJlxOpEjjuEP03R8iLHZhH1d7VFeq7eSVGX889A==
+X-Google-Smtp-Source: ABdhPJzUvDN7fTUp3Xk2hPeTqLOTCeVyaGIxF/0e8evJX4z6TVXW3S17UGT7jP0M5pefCX6oAHIPDQ6H7zshS5FGRdI=
+X-Received: by 2002:a05:6512:1043:: with SMTP id c3mr11804424lfb.358.1631008700965;
+ Tue, 07 Sep 2021 02:58:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b4615b3c-8217-9f32-39c7-b91c9ec3cccb@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+ <20210902101634.827187-4-ulf.hansson@linaro.org> <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
+ <CAPDyKFr2oQnKOhKhWt_9VyBoe=HQ7Y0uZUMKTcZ05a7G9RaBYA@mail.gmail.com>
+ <1124dae5-478f-f0ca-ea91-b6945f7c9254@gmail.com> <CAPDyKFqE+thX0pLTg9d-ds7Tj3hsB78EmDB1Cryh26tN3kvQDA@mail.gmail.com>
+ <3d92711f-ce30-2c19-c6a4-bb77d32df2dd@gmail.com> <CAPDyKFpJU3g2OzJeR9KUdtN-8wJsDckqVAMQMHBV=enu=DfURg@mail.gmail.com>
+ <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com>
+In-Reply-To: <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 7 Sep 2021 11:57:43 +0200
+Message-ID: <CAPDyKFqw2tp3-J8dW03Kqw9xC_gO7nWfEckMvT3=zB0AbR8jeA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
+ callback to genpd
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.09.21 10:08, Vlastimil Babka wrote:
-> On 9/6/21 14:49, David Hildenbrand wrote:
->> On 06.09.21 14:45, Miaohe Lin wrote:
->>> On 2021/9/6 20:11, David Hildenbrand wrote:
->>>> On 06.09.21 14:02, David Hildenbrand wrote:
->>>>> On 04.09.21 11:18, Miaohe Lin wrote:
->>>>>
->>>>> Thanks!
->>>>>
->>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
->>>>>
->>>>
->>>> To make the confusion perfect (sorry) :D I tripple-checked:
->>>>
->>>> In unset_migratetype_isolate() we check that is_migrate_isolate_page(page) holds, otherwise we return.
->>>>
->>>> We call __isolate_free_page() only for such pages.
->>>>
->>>> __isolate_free_page() won't perform watermark checks on is_migrate_isolate().
->>>>
->>>> Consequently, __isolate_free_page() should never fail when called from unset_migratetype_isolate()
->>>>
->>>> If that's correct then we  could instead maybe add a VM_BUG_ON() and a comment why this can't fail.
->>>>
->>>>
->>>> Makes sense or am I missing something?
->>>
->>> I think you're right. __isolate_free_page() should never fail when called from unset_migratetype_isolate()
->>> as explained by you. But it might be too fragile to reply on the failure conditions of __isolate_free_page().
->>> If that changes, VM_BUG_ON() here might trigger unexpectedly. Or am I just over-worried as failure conditions
->>> of __isolate_free_page() can hardly change?
->>
->> Maybe
->>
->> isolated_page = !!__isolate_free_page(page, order);
->> /*
->>    * Isolating a free page in an isolated pageblock is expected to always
->>    * work as watermarks don't apply here.
->>    */
->> VM_BUG_ON(isolated_page);
->>
->>
->> VM_BUG_ON() allows us to detect any issues when testing. Combined with
->> the comment it tells everybody messing with __isolate_free_page() what
->> we expect in this function.
->>
->> In production system, we would handle it gracefully.
-> 
-> If this can be handled gracefully, then I'd rather go with VM_WARN_ON.
-> Maybe even WARN_ON_ONCE?
-> 
+On Mon, 6 Sept 2021 at 16:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 06.09.2021 13:53, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Sun, 5 Sept 2021 at 11:11, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> 03.09.2021 17:09, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Fri, 3 Sept 2021 at 12:06, Dmitry Osipenko <digetx@gmail.com> wrot=
+e:
+> >>>>
+> >>>> 03.09.2021 11:55, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>>> On Fri, 3 Sept 2021 at 08:00, Dmitry Osipenko <digetx@gmail.com> wr=
+ote:
+> >>>>>>
+> >>>>>> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>>>>> Hardware may be preprogrammed to a specific performance state, wh=
+ich may
+> >>>>>>> not be zero initially during boot. This may lead to that genpd's =
+current
+> >>>>>>> performance state becomes inconsistent with the state of the hard=
+ware. To
+> >>>>>>> deal with this, the driver for a device that is being attached to=
+ its
+> >>>>>>> genpd, need to request an initial performance state vote, which i=
+s
+> >>>>>>> typically done by calling some of the OPP APIs while probing.
+> >>>>>>>
+> >>>>>>> In some cases this would lead to boilerplate code in the drivers.=
+ Let's
+> >>>>>>> make it possible to avoid this, by adding a new optional callback=
+ to genpd
+> >>>>>>> and invoke it per device during the attach process. In this way, =
+the genpd
+> >>>>>>> provider driver can inform genpd about the initial performance st=
+ate that
+> >>>>>>> is needed for the device.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> >>>>>>> ---
+> >>>>>>>  drivers/base/power/domain.c | 8 +++++---
+> >>>>>>>  include/linux/pm_domain.h   | 2 ++
+> >>>>>>>  2 files changed, 7 insertions(+), 3 deletions(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/base/power/domain.c b/drivers/base/power/dom=
+ain.c
+> >>>>>>> index 800adf831cae..1a6f3538af8d 100644
+> >>>>>>> --- a/drivers/base/power/domain.c
+> >>>>>>> +++ b/drivers/base/power/domain.c
+> >>>>>>> @@ -2640,13 +2640,15 @@ static void genpd_dev_pm_sync(struct devi=
+ce *dev)
+> >>>>>>>       genpd_queue_power_off_work(pd);
+> >>>>>>>  }
+> >>>>>>>
+> >>>>>>> -static int genpd_get_default_performance_state(struct device *de=
+v,
+> >>>>>>> +static int genpd_get_default_performance_state(struct generic_pm=
+_domain *genpd,
+> >>>>>>> +                                            struct device *dev,
+> >>>>>>>                                              unsigned int index)
+> >>>>>>>  {
+> >>>>>>>       int pstate =3D of_get_required_opp_performance_state(dev->o=
+f_node, index);
+> >>>>>>>
+> >>>>>>>       if (pstate =3D=3D -ENODEV || pstate =3D=3D -EOPNOTSUPP)
+> >>>>>>> -             return 0;
+> >>>>>>> +             pstate =3D genpd->dev_get_performance_state ?
+> >>>>>>> +                      genpd->dev_get_performance_state(genpd, de=
+v) : 0;
+> >>>>>>>
+> >>>>>>>       return pstate;
+> >>>>>>>  }
+> >>>>>>> @@ -2701,7 +2703,7 @@ static int __genpd_dev_pm_attach(struct dev=
+ice *dev, struct device *base_dev,
+> >>>>>>>       }
+> >>>>>>>
+> >>>>>>>       /* Set the default performance state */
+> >>>>>>> -     pstate =3D genpd_get_default_performance_state(dev, index);
+> >>>>>>> +     pstate =3D genpd_get_default_performance_state(pd, dev, ind=
+ex);
+> >>>>>>
+> >>>>>> If base device is suspended, then its performance state is zero.
+> >>>>>>
+> >>>>>> When device will be rpm-resumed, then its performance should be se=
+t to
+> >>>>>> the default state.
+> >>>>>> You're setting performance state of the wrong device, it should be=
+ the
+> >>>> Are you okay with my variant of handling the suspended device?
+> >>>
+> >>> Not sure if you intended to post this line?
+> >>>
+> >>> In any case, I am happy to help and review to move things forward.
+> >>
+> >> It's not clear to me whether you omitted handling the case of
+> >> rpm-suspended device on purpose or not. I think it should be a part of
+> >> this patch, but sounds like you want to work on it separately, correct=
+?
+> >
+> > I didn't omit the handling, but instead relied solely on the
+> > pm_runtime_suspended() check in dev_pm_genpd_set_performance_state().
+>
+> It doesn't work as expected for Tegra because pm_runtime_suspended()
+> returns false while RPM is disabled and it's normally disabled at the
+> attachment time.
 
-I think either VM_BUG_ON() or VM_WARN_ON() -- compiling the runtime 
-checks out -- should be good enough.
+Runtime PM is in most cases (probably all) not enabled for the device
+when attaching.
 
-I'd just go with VM_BUG_ON(), because anybody messing with 
-__isolate_free_page() should clearly spot that we expect the current 
-handling. But no strong opinion.
+This isn't specific to Tegra, but a common behavior of how it works
+during attach.
 
--- 
-Thanks,
+>
+> >>>>>> base device and not the virtual domain device.
+> >>>>>
+> >>>>> No I am not. :-) Let me elaborate.
+> >>>>>
+> >>>>> For the single PM domain case, 'dev' and 'base_dev' are pointing to
+> >>>>> the same device. So this works fine.
+> >>>>>
+> >>>>> For the multiple PM domain case or when attaching goes via
+> >>>>> genpd_dev_pm_attach_by_id(), 'dev' is the virtual device registered=
+ in
+> >>>>> genpd_dev_pm_attach_by_id(). In this case, it's 'dev' that is becom=
+ing
+> >>>>> attached to genpd and not the 'base_dev'. Note also that, runtime P=
+M
+> >>>>> has not been enabled for 'dev' yet at this point and 'dev' has been
+> >>>>> assigned the same OF node as 'base_dev", to allow OF parsing to wor=
+k
+> >>>>> as is for it.
+> >>>>>
+> >>>>> Moreover, to deal with runtime PM in the multiple PM domain case, t=
+he
+> >>>>> consumer driver should create a device link. Along the lines of thi=
+s:
+> >>>>> device_link_add(base_dev, dev, DL_FLAG_PM_RUNTIME |
+> >>>>> DL_FLAG_STATELESS), thus assigning the virtual device ('dev') as th=
+e
+> >>>>> supplier for its consumer device ('base_dev').
+> >>>>>
+> >>>>>>
+> >>>>>> These all is handled properly by my patch [1]. Hence it's complica=
+ted
+> >>>>>> for the reason.
+> >>>>>
+> >>>>> See above. It shouldn't have to be complicated. If it still is, the=
+re
+> >>>>> is something to fix for the multiple PM domain case.
+> >>>>>> [1]
+> >>>> Alright, it actually works now on Tegra using the dev in the callbac=
+k
+> >>>> for the case of multiple domains, I re-checked it. Previously, when =
+I
+> >>>> tried that, there was a conflict in regards to OPP usage, I don't
+> >>>> remember details anymore. Maybe the recent changes that were suggest=
+ed
+> >>>> by Viresh helped with that. So yes, there is no need to pass the bas=
+e
+> >>>> device anymore.
+> >>>
+> >>> Great! So, it seems like $subject patch should be a way forward for y=
+ou then?
+> >>
+> >> The current behaviour is incorrect for Tegra because it needs to set t=
+he
+> >> rpm_pstate for rpm-suspended device, instead of bumping the state
+> >> immediately.
+> >>
+> >> Power management is defeated without it on Tegra because SoC will star=
+t
+> >> to consume extra power while device that needs this power is suspended=
+.
+> >
+> > Okay, I understand your concern.
+> >
+> > For devices that may remain runtime suspended when their consumer
+> > drivers probes them, the behaviour may be suboptimal. This because it
+> > could lead to having an active performance state vote for a runtime
+> > suspended device, at least until it gets runtime resumed and then
+> > runtime suspended again.
+> >
+> > This all boils down to how the consumer driver deploys support for
+> > runtime PM - and genpd doesn't know nor can control that.
+>
+> Previously, I added the 'dev_suspended' argument to the
+> dev_get_performance_state() callback to allow PD driver to decide
+> whether state should applied immediately or on rpm-resume, but you asked
+> to remove it because it didn't make sense to you [1].
+>
+> [1]
+> https://lore.kernel.org/linux-pm/CAPDyKFo=3DSFpm+uJYH4UDfKWLVnkP2cKkBcbOQ=
+eVhU5hRxHUMCw@mail.gmail
+>
+> Does it make sense now?
 
-David / dhildenb
+Unfortunately, no, it still doesn't. Let me try to elaborate why below.
 
+>
+> > I wonder if we perhaps should just leave this as is then. In other
+> > words, rely on the consumer driver to vote for an initial performance
+> > state of the device during ->probe(). In this way, the consumer driver
+> > can decide what is the best thing to do, rather than letting genpd
+> > make guesses.
+>
+> The point of this series is to remove the boilerplate code from consumer
+> drivers.
+>
+> I already implemented variant with the explicit state syncing done by
+> consumer drivers, but Viresh suggested that it should be done by the PD
+> driver, this is why we're discussing it all over again.
+>
+> We either need to add quirks to consumer drivers or make PD API more
+> flexible. You're not in favor of extending the PD API. To me the variant
+> with the PD API extension is a bit nicer since it removes the
+> boilerplate code, but I also see why you don't like it.
+
+I don't mind extending the genpd API, but it needs to serve a good purpose.
+
+As I said earlier, genpd doesn't know nor can control how the consumer
+driver deploys runtime PM. Unfortunately, that also includes genpd
+providers, as the behavior isn't a platform or PM domain specific
+thing. This means genpd needs to be generic enough so it works for all
+cases.
+
+In the $subject patch, we rely on the pm_runtime_suspended() check in
+dev_pm_genpd_set_performance_state(), which should work for all cases,
+even if it may be sub-optimal for some scenarios.
+
+Note that, in the approach your suggested [1],
+pm_runtime_status_suspended() is used instead. This doesn't work when
+a consumer driver doesn't enable runtime PM - or calls
+pm_runtime_set_active() during ->probe(), because
+genpd_runtime_resume() won't be invoked to restore the gpd->rpm_state.
+
+That said, I wouldn't mind to simply skip adding the
+->dev_get_performance_state() all together, if that is what you
+prefer? In this way, it becomes the responsibility for the consumer
+driver to do right thing, with the cost of some boilerplate code added
+in its ->probe() routine.
+
+>
+> Viresh, are you okay with going back to the variant with the
+> dev_pm_opp_sync() helper?
+
+Rather than trying this again, I would suggest you start by open
+coding these parts, for now. But I leave that to Viresh to decide.
+
+[...]
+
+Kind regards
+Uffe
+
+[1]
+[PATCH v10 4/8] PM: domains: Add dev_get_performance_state() callback
