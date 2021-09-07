@@ -2,205 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAF2402C9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8E9402CB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhIGQJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:09:12 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:39068 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhIGQJG (ORCPT
+        id S242506AbhIGQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233616AbhIGQPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631030880; x=1662566880;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=QAIL1S81CuZ9yBpsaAaSG7R5HOfTLCmzOkoTxYHd+zI=;
-  b=E/ie7SFuzNiqyvdDE420SVt9FFh9frqjcCsCnErO8smVAi+VLuSmIlUd
-   spthRuyR8eRtwaLFWKIAPHyTTgWV0D53pLoyJTLnnlJYplJjZ5u9VVIcR
-   ad2BUr8XjKiFLnee8B2Pjucw2D5zFMcnWt14ldxGSSXcLil2NSL7Vsl1j
-   EumLIAWD0HHO/AxMy/oVVPY1z3raqVMnvrhnjEr8wPWv6Cqu8xrTBdS4b
-   PIUeDaJHy5nZXPe3Y4U08qaq5/Mh48ypydQl1beFrW9oNc/XT6dG+pF8m
-   NF6PTPFLRZAFljfO1VbZfQv192hHKpsk9Vx35CDCHMtOvt9pBYoJHeZux
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,274,1624291200"; 
-   d="scan'208";a="283180879"
-Received: from mail-bn8nam12lp2174.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.174])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Sep 2021 00:07:59 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mYX3K9YiC77pCvFsLi19WGumk0d3m779oXRrxLQeok+nvmr+PADDxFKdJis8kaVIiqKYZqpdR7l1fAMeG8Lajh96CZbV1gn2cOmDkA4g03xKy9tVwboO20vALS6D+efk1UJBRKtSwGblcPHUewoAARZTZMbbj9GEbYeRrdfinz0H+0Y2FOpqIL3fdqBtPwbKuJdaZgn7bORpY0e7bCapT17Vx3P1VniBSHRxkoP9HX/YKqvkYXGo3YHTl334YN7hPcnJf5nc5otMjxneTZxgeFCW75+5wh3VeUP+uRCKuhqMt30GK3SkcuCJj62WQB59xQGGM7R7z/wNieE/XMERvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=fROdlB3pFqL33YVE71n+sa/746B/Qft93v1xH39Bg2U=;
- b=VjihhKmz+mWmcEvf6ll1akIULFY7PrYg5USP+53foa+IZTKt5ar9wS9SucLp2CQzowcYzc5ZwMbIWzNjcs7uMOVrKinCqMEVVQE5EYBPEtlvpAffYhmBz3sWSsU1znv2I2RrMDMN1bZBLzOUKYKmwWwLHqY4s44fpDGIJ+/4AAxHbD6dpigIlUrdZc5io6nFJLLwTS8yr8f43nmnHlE7jWQHUr4SyqhVWjD/jA31GgagbDQhaR5NYR6w2HW15FaV4l+rJ62uSRjR3dwUB9IvQBhltAuTAh6No12YqKrCN4YxD3zF+8xV6Kl9GQYBP+lxr5GqRvmkYaMZWiBreAodSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 7 Sep 2021 12:15:31 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E400C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:14:25 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id a22so5464123iok.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fROdlB3pFqL33YVE71n+sa/746B/Qft93v1xH39Bg2U=;
- b=JtzVuludNASjxlCe2IxFxQnQ+JSehRp+KT09saxu2MoBuS7VC+Rr250TnIo0PcOgrjysBS9nUJ8MgCpXr3O8SZ97/xrdG+ynPFyv0epSL6UM0msAMOGS2cUJJjmtq2t6QID8+EmgcU14w57Tm9ZalpgkAsGEg13dnTxS1jOBcLQ=
-Received: from PH0PR04MB7158.namprd04.prod.outlook.com (2603:10b6:510:8::18)
- by PH0PR04MB7525.namprd04.prod.outlook.com (2603:10b6:510:5f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Tue, 7 Sep
- 2021 16:07:58 +0000
-Received: from PH0PR04MB7158.namprd04.prod.outlook.com
- ([fe80::3d04:c2fb:e69f:27e8]) by PH0PR04MB7158.namprd04.prod.outlook.com
- ([fe80::3d04:c2fb:e69f:27e8%6]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 16:07:57 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] Revert "mq-deadline: Fix request accounting"
-Thread-Topic: [PATCH 2/2] Revert "mq-deadline: Fix request accounting"
-Thread-Index: AQHXo/O2L+LBuS/YJECb1WaT3ju4YKuYqIWAgAAUnIA=
-Date:   Tue, 7 Sep 2021 16:07:57 +0000
-Message-ID: <YTeOW+GoW/Ps2NXq@x1-carbon>
-References: <20210907142145.112096-1-Niklas.Cassel@wdc.com>
- <20210907142145.112096-3-Niklas.Cassel@wdc.com>
- <d544384b-617f-b7a4-f895-72adc900f41b@acm.org>
-In-Reply-To: <d544384b-617f-b7a4-f895-72adc900f41b@acm.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ff834ed0-96df-427d-8a1b-08d97219a8b2
-x-ms-traffictypediagnostic: PH0PR04MB7525:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB7525C69C1793706DB79E47ECF2D39@PH0PR04MB7525.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RmMV1hu39kdvyN85RFIGjDtlHYCqI0MarWJ46ffrDSMb38YdQ4X3pl1nxmh/WhuvsfFDWgHpn6jqdC7EhIQzCEFvochiG5j/Gd0XV2ByylOaBsanxCuusnxTn6EDDyPwNkX2yIEARAXuDkonZQukvA/oz0QgZ0v2XUUQZKCdS8XGuDqfr9C96MtNLyCyKCgs0QsO8pfCCS3hfrE2x6VB71BpjBnGJx9JwoQ/x/V9NjW2on0lqrSg+qAZT+MnfDW0UNk9iQk01y0ojfWs4Lxt+LYLPamAfHf/BPYwM1rd9NkPZ4xE4WtFw/AfOvzZJ/xl7EkkYe6ISkyqLZXaEXqy+X0C+qM1FZR3Enc9YNQDqP0eN/kbn6j+TXnyaNJxV1zzosyKJnxrzhFar7VzhaEhl+3dRBPvWCQKmCHfJOty8ISnuCOeFtj7lAChMez1nQgx9bvBuJ5SytKlnVq2mRsbNkfIVxb3NjzNPgKZJwbLr0SYasVBGP4SDcSfMPnxi2foo3hrRufbvOE87H1x4ftZ1CdqorrXg8i4fj0BH4GoEXr72+K/hZY0/4zkDQVCgDe7D9lGmKAvpTy5r7AeG9Mf9lgiZ7uts2G6MviyHZ6S+SI3X7v3Vr9tzA7PkAup8i7EVniPhdy8h6yDJUwFySwwNHkfJv0yEGt4+lMIycRm3xtyoVLLqMKWBv+eyXRCAdqWjatLtduh653wOahtIVPxXlq1R9eWhZ4lSWN0RzqrGTRh7NhJ0xochbJq9oqdjEJoBnoPp9RGvHHUhsR+W2ZYtBgS7B86d4H3+X+kJ0zjaG4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7158.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(136003)(39860400002)(396003)(346002)(376002)(6512007)(9686003)(38100700002)(33716001)(66446008)(64756008)(91956017)(8676002)(66946007)(53546011)(6506007)(26005)(76116006)(8936002)(6916009)(4326008)(66556008)(54906003)(66476007)(86362001)(71200400001)(966005)(83380400001)(186003)(2906002)(122000001)(38070700005)(6486002)(5660300002)(316002)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uCYm7FXc/LP4CUuxmNCWEzXptW8FEjiIBTJ4TP0gbiUIdHnWO+/4YyQ/g+gs?=
- =?us-ascii?Q?Qysa36zQfzcGki4mD7TeMb2lsHj9Vjnd64loxy92xJrzk8TUx1wgPwl11ozY?=
- =?us-ascii?Q?nHZquei5KrJbXXejfN4TynXBqklKtSslba5VulHekfNfeUpjf5giqB1sxUO4?=
- =?us-ascii?Q?hUNe+vBJevmxrThTwz3c/h0VugTufOrhaUjjVJxQrXqbpf68Jjj+BLaA2NTx?=
- =?us-ascii?Q?QMwGBm5PY45rS2NhKOpOZ4ZFSdZqWyMgiB9YbboCoYSlufKeli3/Y8E6Wly5?=
- =?us-ascii?Q?A/4FokQ99KfX/1tfpsIDoEzn/cjCjQq0Dj0PdU1ZjvK2d6XD/DMLSSC/HsvR?=
- =?us-ascii?Q?HsuUAcuhB+YxqraMJth+HDqQrSzqGkmdDxD2tYkzqJlXuRLfa8xcBHrSVDN7?=
- =?us-ascii?Q?6Ogl3TbH40UUKnwNjKnLo9Urt2VIH4efa2U3cn3e6hmGWa5nwCUsJTxQ/U0a?=
- =?us-ascii?Q?QCaLQyN/7eKUsyLQTiCWAxcZPhEsq8yk3iuEz6We0x1SxK1U6E6HIBC71Phf?=
- =?us-ascii?Q?7VP48ViY3UqEtwO+vWwbYoFEtJqXH9bpJ4eshkx3j5GG2ydXOX4YEGD/BRvk?=
- =?us-ascii?Q?9t4DDnbBBy10jlxRw3fveWLh7CfUS2exQhNQMMIToXn9DcqRwwyCzpKHXkop?=
- =?us-ascii?Q?NIcLSwrG11bA5uYheoAj9tHg5PJQKOG/HbDr522wJQl3cONzo7UyQ2Ia0mMT?=
- =?us-ascii?Q?l5bmr/0Otr0E1PiihME1YCchOdD8mCxofwNWwC7iz1QegjvTKsITnpzm8O/L?=
- =?us-ascii?Q?oSvTJ/mHve/6eAPg94TAbC/U0Nq+3KMhGTIqKeXScId9rDBJ0DOUcHmK8sh/?=
- =?us-ascii?Q?8x7EqmevHDsUj6H0niuTQA4/JpLiAikzKnEztsaltNxo4gLxuwZEYkPL4dkR?=
- =?us-ascii?Q?R+8RE4+Aaa4yhe5THyFiJdT7XgRbuzZPjl7UBAiigVUkaP8HLLMPBbH+5CeV?=
- =?us-ascii?Q?rLpca38oPZYYv8tvUyx+3LIwJGmOAZzYrVlC9PYoAk3vxZpah2sMqHcHZ6L8?=
- =?us-ascii?Q?VMdP7CW0sdpOpJMstbrRBAzMinG8OgNdxQfgbBkVS7hR60Jk55uEoGCqAdyu?=
- =?us-ascii?Q?7ktPS6hH4JndKpv9KzWvzhsgs7+psWSvzNpm9J9TwPwWig+EqQMnn6uc1LYX?=
- =?us-ascii?Q?I18Xndp0TTnigCzdsCpg8JFtB1yXJXYGw86FkEEyfs0yyaGxQYHGa3k0X3sH?=
- =?us-ascii?Q?ET6qWrXqkFzonp/ps5xzsaBinXcdEUrpXydA4BS7Gy/gh2xHQUGXZK5U7vys?=
- =?us-ascii?Q?XLFR4v6g6kBWhN324n72CXUEbnEeLdWRLuO+Vg9qFl00P06f0AEtGh/2Cv9D?=
- =?us-ascii?Q?xOln4df6/9ctuaiBB75EI4NXqB2TmiWkkGSyj16BrmxvYA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E2F03432B74834479D310D66FD0CF990@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ocAbRfkRSVpNHeDLSlcbbOznxT7qGzgjfFfLF+3x3Hw=;
+        b=UHUjSG6V2zAED0y56RYnJWnVU4MGEVDqOXr1KZX/NgYahZ0Duj8Q4aRxF0BE8erBGT
+         cnsbKJ2GfIKKrIM0e0XvY+clw2YQwSxvb7yKRqS8B/Tm2BKKBGX7Zs52l3MB9pi1Axm7
+         3n3KCpODuIjXU4iqwr5mLyXPG5YWtL4O1KTEVBKMX3H1c2HilsAKA1KOKmtzpeD+Lvzt
+         enJNjSYgxz8XIRsLTRblDyEKXozNpYoInjwXWfCZwQ5Rj3AQB45R+eF9wXo7KqueR7eB
+         l5X7o4mJyeUPXq2Uwg21TBJCe4N/5QJ0J/Ue8+2IbgwzSMYM/DCFkHD1ea8X35P802VR
+         lT8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ocAbRfkRSVpNHeDLSlcbbOznxT7qGzgjfFfLF+3x3Hw=;
+        b=uGs6m5uEKj5aXvWXkY92XiPalLVyy+hrTgJTdSHl49oaPBp5EFPhjI1l2M/kWrw4Y2
+         ovU/1lPBlAQxG5PwRLQPDa6JAEeVTd/KpV86+A6TbZ2FIFw5wpl829DlNsNTRivnCNKH
+         pR4QaGk3qWHEgdwXVVmYvAhh6xyA7hdkWgyA3aCBmC0YAnprBlQxlnblv8vAX8i55Cn/
+         Y4je2fy6mzdnU567zQbvTPM/gicHOVUzIUSxLauBzk895aTsesJZt/R9VO/WiNkFZsN5
+         XMRuL85xN6yG0TB3n9oPWH/6mOcFgYDGORozcRIVVHVeJ4bWfWfDsaG4SFwXiy2df2nV
+         HV4g==
+X-Gm-Message-State: AOAM531O95i/DeSNN6dnT/4codJHSsVdftjF88zZngIWLJbCX031bN78
+        +9asN/iO/MwyefxIK1KxkKCpHA==
+X-Google-Smtp-Source: ABdhPJw6pWIkN5gPkz6k/wxAFs5+njd0ac/36v7H1Ca+PZZaHi5X4HGrE0gvgsGBRNFNBbXeVUPEAg==
+X-Received: by 2002:a6b:710f:: with SMTP id q15mr14740308iog.77.1631031264510;
+        Tue, 07 Sep 2021 09:14:24 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id m10sm6495441ilg.20.2021.09.07.09.14.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 09:14:23 -0700 (PDT)
+Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
+ regression
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+References: <20210907150757.GE17617@xsang-OptiPlex-9020>
+ <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
+ <CALvZod6S+NmG8+-ftS-w3t3zJg_kbr3-F9h-n4jwSnqh0jTUGQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <27face50-0e55-ad2b-ebb7-2fe48aee8374@kernel.dk>
+Date:   Tue, 7 Sep 2021 10:14:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7158.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff834ed0-96df-427d-8a1b-08d97219a8b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 16:07:57.7885
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y+XSYRz4dFf/zDARUK/UEpcNlJ07zzANZqJsWDvOrz9pAeNq6QQuw7P/Rh7KfVmNaRW+tEIHq8COBTam9yuCFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7525
+In-Reply-To: <CALvZod6S+NmG8+-ftS-w3t3zJg_kbr3-F9h-n4jwSnqh0jTUGQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 07:54:09AM -0700, Bart Van Assche wrote:
-> On 9/7/21 7:21 AM, Niklas Cassel wrote:
-> > From: Niklas Cassel <niklas.cassel@wdc.com>
-> >=20
-> > This reverts commit b6d2b054e8baaee53fd2d4854c63cbf0f2c6262a.
-> >=20
-> > blk-mq will no longer call the I/O scheduler .finish_request() callback
-> > for requests that were never inserted to the I/O scheduler.
-> >=20
-> > Therefore, we can remove the logic inside mq-deadline that was added to
-> > workaround the (no longer existing) quirky behavior of blk-mq.
-> >=20
-> > Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-> > ---
-> >   block/mq-deadline.c | 16 +++++-----------
-> >   1 file changed, 5 insertions(+), 11 deletions(-)
-> >=20
-> > diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-> > index 7f3c3932b723..b2d1e3adcb39 100644
-> > --- a/block/mq-deadline.c
-> > +++ b/block/mq-deadline.c
-> > @@ -678,7 +678,6 @@ static void dd_insert_request(struct blk_mq_hw_ctx =
-*hctx, struct request *rq,
-> >   	prio =3D ioprio_class_to_prio[ioprio_class];
-> >   	dd_count(dd, inserted, prio);
-> > -	rq->elv.priv[0] =3D (void *)(uintptr_t)1;
-> >   	if (blk_mq_sched_try_insert_merge(q, rq, &free)) {
-> >   		blk_mq_free_requests(&free);
-> > @@ -727,10 +726,12 @@ static void dd_insert_requests(struct blk_mq_hw_c=
-tx *hctx,
-> >   	spin_unlock(&dd->lock);
-> >   }
-> > -/* Callback from inside blk_mq_rq_ctx_init(). */
-> > +/*
-> > + * Nothing to do here. This is defined only to ensure that .finish_req=
-uest
-> > + * method is called upon request completion.
-> > + */
-> >   static void dd_prepare_request(struct request *rq)
-> >   {
-> > -	rq->elv.priv[0] =3D NULL;
-> >   }
->=20
-> Please take a look at
-> https://lore.kernel.org/linux-block/18594aff-4a94-8a48-334c-f21ae32120c6@=
-acm.org/
-> If dd_prepare_request() is removed I will have to reintroduce it.
+On 9/7/21 9:57 AM, Shakeel Butt wrote:
+> On Tue, Sep 7, 2021 at 8:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 9/7/21 9:07 AM, kernel test robot wrote:
+>>>
+>>>
+>>> Greeting,
+>>>
+>>> FYI, we noticed a -33.6% regression of will-it-scale.per_process_ops due to commit:
+>>>
+>>>
+>>> commit: 0f12156dff2862ac54235fc72703f18770769042 ("memcg: enable accounting for file lock caches")
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>
+>> Are we at all worried about these? There's been a number of them
+>> reported, basically for all the accounting enablements that have been
+>> done in this merge window.
+>>
+>> When io_uring was switched to use accounted memory, we did a bunch of
+>> work to ameliorate the inevitable slowdowns that happen if you do
+>> repeated allocs and/or frees and have memcg accounting enabled.
+>>
+> 
+> I think these are important and we should aim to continuously improve
+> performance with memcg accounting. I would like to know more about the
+> io_uring work done to improve memcg accounting. Maybe we can
+> generalize it to others as well.
 
-dd_prepare_request() itself is not removed, just the
-rq->elv.priv[0] =3D NULL; inside dd_prepare_request().
+It's pretty basic and may not be applicable to all cases, we simply hang
+on to our allocations for longer periods and reuse them. Hence instead
+of always going through alloc+free to each "unit", they are recycled and
+reused until no longer needed.
 
-If you need to modify dd_prepare_request() in a future
-commit, that should be fine, no?
+Now this is more efficient in general for us, as we can have a very high
+rate of requests (and hence allocs+frees). I suspect most use cases
+would benefit from simply having a cache in front of memcg slabs, but
+that seems like solving the issue at the wrong layer. IMHO it'd be
+better to have the memcg accounting be done in batches, eg have some
+notion of deferred frees. If someone allocates before the deferred frees
+are accounted, then that would have saved two pieces of accounting.
 
-Without patch 1/2, e->type->ops.requeue_request() can get called
-both for requests that bypassed the I/O scheduler, and for requests
-that were inserted in the I/O scheduler.
+It is of course possible that a lot of these regressions are simply
+accounting the alloc, in which case it seems like accounting in batches
+might help there. All depends on the slack that is acceptable for memcg.
 
-See:
-block/blk-mq-sched.h:blk_mq_sched_requeue_request()
-If the RQF_ELVPRIV flag is not set, e->type->ops.requeue_request()
-will not be called.
+-- 
+Jens Axboe
 
-Perhaps you are having issues with requests that were inserted
-in the scheduler, but later requeued?
-
-If so, shouldn't these fixes help you, since you do not need to
-worry about passthrough requests resulting in spurious calls to
-the I/O scheduler callbacks?
-
-
-Kind regards,
-Niklas=
