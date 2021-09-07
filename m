@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C566F4022F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A28E4022F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhIGFBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 01:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44274 "EHLO mail.kernel.org"
+        id S235800AbhIGFC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 01:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhIGFBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 01:01:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3C160ED8;
-        Tue,  7 Sep 2021 05:00:11 +0000 (UTC)
+        id S233755AbhIGFC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 01:02:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4176960ED8;
+        Tue,  7 Sep 2021 05:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630990812;
-        bh=zUmx2ULy/blbbM0YNdkMyQFOd/Xq8yYfxL9d420jKck=;
+        s=korg; t=1630990882;
+        bh=+DwFL4bVabNWWgQK1ObX9GwAradwBOrI5qsddr1H0FQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WGGaHNBEC3HcfmcE17GghVqNXqh2qmM2mBcpzsiCnw7ThGhwwfqWbARhQz793YM9e
-         u+1WQi9K9PVzCTAAEIDX47yX93RaXHiYveY7mCBVaXGJBsSMDsBr6mVjwmFHabDAUe
-         M3NzEw6Z1QElWVnhcA+BI2u3KJzmQPrX5yn7DnHk=
-Date:   Tue, 7 Sep 2021 07:00:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Michael Straube <straube.linux@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/40] staging: r8188eu: remove function pointers from
- struct hal_ops
-Message-ID: <YTbx0hAC4jmF6WP4@kroah.com>
-References: <20210906190223.11396-1-straube.linux@gmail.com>
- <20210906225713.zbkm6tzghjsv3s2t@kari-VirtualBox>
+        b=W2eVjaaNzftPCY7XxL4jNzAKsRWFFVwWnbe15Kmf2tzVXxToUIVfFI9WQ+lSLqyJh
+         /Bz0q6SWE5VmnymxbRaYrinS3fDCnQKa8NQHqdpCIilFa/jTk4cjoZNpSg9r4effde
+         bPIbtPwZbzYc1g8iKbM9Zz2h3qW/HCnFBZWG+E9Y=
+Date:   Tue, 7 Sep 2021 07:01:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] staging: r8188eu: remove _io_ops structure
+Message-ID: <YTbyFyVe37YTV8VC@kroah.com>
+References: <20210904220048.12822-1-fmdefrancesco@gmail.com>
+ <20210904220048.12822-2-fmdefrancesco@gmail.com>
+ <YTYeGH+5MG5OeEbi@kroah.com>
+ <d9e536d6-1b66-52d5-50a8-0c011b23e018@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210906225713.zbkm6tzghjsv3s2t@kari-VirtualBox>
+In-Reply-To: <d9e536d6-1b66-52d5-50a8-0c011b23e018@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 01:57:13AM +0300, Kari Argillander wrote:
-> On Mon, Sep 06, 2021 at 09:01:43PM +0200, Michael Straube wrote:
-> > In order to get rid of the HAL layer this series removes the next
-> > bunch of function pointers from struct hal_ops.
+On Mon, Sep 06, 2021 at 08:19:05PM +0300, Pavel Skripkin wrote:
+> On 9/6/21 16:56, Greg Kroah-Hartman wrote:
+> > On Sun, Sep 05, 2021 at 12:00:46AM +0200, Fabio M. De Francesco wrote:
+> > > -void _rtw_read_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+> > > -{
+> > > -	void (*_read_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+> > > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > > -	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+> > > -
+> > > -
+> > > -	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+> > > -	     return;
+> > > -	_read_mem = pintfhdl->io_ops._read_mem;
+> > > -	_read_mem(pintfhdl, addr, cnt, pmem);
+> > > -
+> > > -}
 > > 
-> > Also it removes some empty functions and cleans up some minor style
-> > issues I stumbled upon.
+> > This is odd, in that it resolves down to usb_read_mem which does
+> > nothing at all.
 > > 
-> > Tested on x86_64 with Inter-Tech DMG-02.
+> > And then no one calls this at all either?
 > > 
+> > How about removing the io ops that are not used at all first, one at a
+> > time, making it obvious what is happening, and then convert the ones
+> > that are used one at a time, and when all is done, then removing the
+> > structure?
 > > 
-> > v1 -> v2
-> > Fixed typos in commit messages.
-> > 
-> > v2 -> v3
-> > Added this missing patchset version changelog.
 > 
-> Can you please hold on litle bit longer before you send next patch
-> series. This will make quite bit traffic on the lists and it does
-> not add value. Wait for bit for reviewers and after that make new
-> series. You can even post below yours own messages if you found some
-> mistake and point out that you will change it when you send next
-> series. Good hold on time would be 3-7 days with series this big imo.
+> Just have started to cut one big patch to smaller ones and does it make
+> sense to group changes like: one for usb_read*, one for usb_write* and one
+> for usb_port*? I think, it would be cleaner and series won't be too big.
+> 
+> 
+> What do you think?
 
-No need to wait that long, if you know you messed up, sending it again
-is just fine so that maintainers and reviewers do not start looking at
-things that you know is incorrect.
-
-But you can just send a response saying "oops, this is wrong, I will
-resend this in a day".
-
-thanks
-
-greg k-h
+I will not know until I see the patches, so no need to ask :)
