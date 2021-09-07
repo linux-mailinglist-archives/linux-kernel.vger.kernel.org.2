@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACEA402F39
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1381C402F3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346164AbhIGT5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S1346188AbhIGT5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346177AbhIGT53 (ORCPT
+        with ESMTP id S1346218AbhIGT5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:57:29 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C04C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:22 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id f129so357604pgc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cxihqoLbqnx4VeK1GPNb8VICY6vWRDKx/3eO1G8HhuQ=;
-        b=OfBuMoX3fXj5aac6Ia5dRKuG6R3hoaaovU7ZMMs6K6c7hphDl9h/o4sAdqZkeqa3cV
-         e2BQSZC423CLHHDmgIr8j72F+MJ0fYWWyeu1Y2V2ZGJq4JgY51ulvLRxTdR23ODUaILk
-         xpqIX9WyG+3NixLI7eUZlW8iJkFRr93RTK1mg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cxihqoLbqnx4VeK1GPNb8VICY6vWRDKx/3eO1G8HhuQ=;
-        b=hDlLviHluTuZ7UyVTsrYPtfWY2xNqcdRGl58+s2MEgp3iEgdPsdMu17WWnCrWh/cU9
-         sV8830dLDCu2H/GYOnEJekqLG2hRy9n0RWmN5tH77V5wCAmm0B+NkVWvkCSzpO3jrp9r
-         gWkJ2Bzx8y6DwnPx4dbpxdG0TbE6p/ZbGPYDtReCHE4C1GIPs9M7HEHNtllRSvkBccGs
-         Ba4SgOMvG/6lnT2fzKcAGJqfRMD14ewpMh1iDFTp3CTGgbaqp0s8G8aHHUUnuMT/aHiG
-         jfihltgZqZ5M/vAcZ5QIEtsyX71qf+z8PTQ92lu0HuRVu4wIIL1SzcWRzF7v+P58CVLI
-         RBqg==
-X-Gm-Message-State: AOAM531He6gvnHbd2YfOzz3EJWczjRdhxr0Re9o3U8g5d+0VBuYgD+Jj
-        aJapsgc/jtemn6vWNKckGPW6hA==
-X-Google-Smtp-Source: ABdhPJzZy0hCiX2y29DAINhCmDB1pMZdEBCwaoJGXoZ0fdUULgu5tbH3003U953JqOk6W4/iDe+yCA==
-X-Received: by 2002:a65:5686:: with SMTP id v6mr52750pgs.174.1631044582077;
-        Tue, 07 Sep 2021 12:56:22 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
-        by smtp.gmail.com with UTF8SMTPSA id o10sm13570393pgp.68.2021.09.07.12.56.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 12:56:21 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 12:56:20 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "arm64: dts: qcom: sc7280: Fixup the cpufreq node"
-Message-ID: <YTfD5BXkv+AZHISE@google.com>
-References: <20210907121220.1.I08460f490473b70de0d768db45f030a4d5c17828@changeid>
+        Tue, 7 Sep 2021 15:57:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8746C0613D9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:23 -0700 (PDT)
+Message-ID: <20210907195004.104149733@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631044582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sMaDLxrOOHRQpRXrrgdTg8Jdc/QYMZRLIYFiAKksplg=;
+        b=l19bK2ygmPD1Ig2PKSk0OswzqI0ntWxFxMNGhtTrYLhdnfkEsauRzM3Hx7Ag+qc/EDmgkp
+        6ecPa5R9zU96vYJ509siw8ApJk2zkGg3ryC7Moky6l1yAlVtmnCxvmiHKzs1UzBNPO9eGi
+        xN6mmtXaR+MNu3tTnZ2vzpkApRBOIvZa+xCMgSYXbkDskKIsnng7/YafeJ8AdzsTkl3hkV
+        A2NR+9a3jyf3zmWwm8+o1Xolw+Or7axuzgZsC6txrNf0bvRVuI63PPqx5i+XrHVHFcuK3H
+        UHOFNBudjOr/liCSPdqZDkZ3f5NvX/VQttk226q0tWwj1NOAlo0M0zkpQAlLfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631044582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sMaDLxrOOHRQpRXrrgdTg8Jdc/QYMZRLIYFiAKksplg=;
+        b=DbDitmRoFcwaLav5YKnsRA5np2lCix1I0LsBJ4sNyWNR/odQuT9dF5CGfDSTtiy3K9k6sm
+        acUlDWRqAjViOdAg==
+3Message-ID: <20210907193229.370353258@linutronix.de>
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Ziljstra <peterz@infradead.org>
+Subject: [patch V2 06/20] x86/extable: Provide EX_TYPE_DEFAULT_MCE_SAFE and
+ EX_TYPE_FAULT_MCE_SAFE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210907121220.1.I08460f490473b70de0d768db45f030a4d5c17828@changeid>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+Date:   Tue,  7 Sep 2021 21:56:21 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 12:12:25PM -0700, Douglas Anderson wrote:
-> This reverts commit 11e03d692101e484df9322f892a8b6e111a82bfd.
-> 
-> As per discussion [1] the patch shouldn't have landed. Let's revert.
-> 
-> [1] https://lore.kernel.org/r/fde7bac239f796b039b9be58b391fb77@codeaurora.org/
-> 
-> Fixes: 11e03d692101 ("arm64: dts: qcom: sc7280: Fixup the cpufreq node")
-> Reported-by: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Sibi Sankar <sibis@codeaurora.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Provide exception fixup types which can be used to identify fixups which
+allow in kernel #MC recovery and make them invoke the existing handlers.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+These will be used at places where #MC recovery is handled correctly by the
+caller.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V2: New patch
+---
+ arch/x86/include/asm/extable_fixup_types.h |    3 +++
+ arch/x86/kernel/cpu/mce/severity.c         |    2 ++
+ arch/x86/mm/extable.c                      |    2 ++
+ 3 files changed, 7 insertions(+)
+
+--- a/arch/x86/include/asm/extable_fixup_types.h
++++ b/arch/x86/include/asm/extable_fixup_types.h
+@@ -16,4 +16,7 @@
+ #define	EX_TYPE_WRMSR_IN_MCE		10
+ #define	EX_TYPE_RDMSR_IN_MCE		11
+ 
++#define	EX_TYPE_DEFAULT_MCE_SAFE	12
++#define	EX_TYPE_FAULT_MCE_SAFE		13
++
+ #endif
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -278,6 +278,8 @@ static int error_context(struct mce *m,
+ 		m->kflags |= MCE_IN_KERNEL_COPYIN;
+ 		fallthrough;
+ 	case EX_TYPE_FAULT:
++	case EX_TYPE_FAULT_MCE_SAFE:
++	case EX_TYPE_DEFAULT_MCE_SAFE:
+ 		m->kflags |= MCE_IN_KERNEL_RECOV;
+ 		return IN_KERNEL_RECOV;
+ 	default:
+--- a/arch/x86/mm/extable.c
++++ b/arch/x86/mm/extable.c
+@@ -131,8 +131,10 @@ int fixup_exception(struct pt_regs *regs
+ 
+ 	switch (e->type) {
+ 	case EX_TYPE_DEFAULT:
++	case EX_TYPE_DEFAULT_MCE_SAFE:
+ 		return ex_handler_default(e, regs);
+ 	case EX_TYPE_FAULT:
++	case EX_TYPE_FAULT_MCE_SAFE:
+ 		return ex_handler_fault(e, regs, trapnr);
+ 	case EX_TYPE_UACCESS:
+ 		return ex_handler_uaccess(e, regs, trapnr);
+
