@@ -2,231 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947FF4023C6
+	by mail.lfdr.de (Postfix) with ESMTP id E093D4023C7
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhIGHDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbhIGHDD (ORCPT
+        id S236244AbhIGHEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:04:22 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:36663 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236158AbhIGHEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:03:03 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06C8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 00:01:57 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id q70so17841096ybg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 00:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XZ02cCn3jUYwKkL6zF4WdVr12IAXBqByLITg8GOc89U=;
-        b=d93iTWhWZFfJpFHQv7tpLm+6QZsDGz9hKjnedRCRGiLYNluChqhRkJG8SXzFFmOfVW
-         vZm8NbbB/ZNCbEH+OY1q9VJXD0fjaGUX9aQJUUYxnbYUhS2xxPjd7t7qnfh3DD0sXqaq
-         8eJQxMAUhyqHNspp0CCWfg54DzbMP1WEsE3UY2+m4suxCrOVPaUj4MJvy4uN3GFlxLRi
-         v8Jw1aJXLKQ0fVHK5Kmau8Vb9SBrnQ2b+jGFv+MlkS0Adf5MgCxTQmRtLfXtsw91x17g
-         HBgR7RJrjjEX8i8GP6AKVtWt8Cib2/svkcKBa08Ofa57+WUEXEGVam4avffXdOQ34jYX
-         qFRg==
+        Tue, 7 Sep 2021 03:04:11 -0400
+Received: by mail-ua1-f51.google.com with SMTP id x23so5033691uav.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 00:03:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XZ02cCn3jUYwKkL6zF4WdVr12IAXBqByLITg8GOc89U=;
-        b=QIF0bdYHYewAkUFiUaYamoHY4eF7FcuNzLTUtLuesgTOPHVTfcZkXVJY+/lGdkoG8u
-         UoUn+hER33++lhnAQu9iwk0iGAn1cU/9I/VgYQ698f4vMLbssenTu6bi/kSAc5pTsAoX
-         NW+zpBsXivFLPkG+MYGd3f41b8qIeI7pl+jILqrAxMinuD1aHlwgQEgPy8ifNR8a75Ba
-         7PnWbQW38gorFW7+y/+vMONClCCqqK8ukHdk6vM7rWapK8b+0Ko1yaWyriNgSUnYS/fB
-         9jJxnM12BtKbKzd81AGpZp06xNj+0ZhIVZ5cyoeTLwkRohsVXTZvOMTH+YkYua8a65eN
-         ADaA==
-X-Gm-Message-State: AOAM530ViKM3P3OKK+55H7u9nJDCm2cqAAIJMA0J2Num78JiopIH+o7P
-        A3CR5HTFyBPWy5/K17epUCUkpC4F0PDExlJXCV6eDg==
-X-Google-Smtp-Source: ABdhPJyLhKD3oP2+8EJssMw8N+mu4D4/j9ZXZmiK4Fvt3T9csxsUw9BdjSpamoLn9OyWs207aw/T9vOcGmFBkW99uG4=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr19856293ybl.508.1630998116640;
- Tue, 07 Sep 2021 00:01:56 -0700 (PDT)
+        bh=RnzOQ0rKdquIXLN6HTpR8yt5pLvPfBFYXKRIuAB1ab0=;
+        b=cS42rNIpBjIE6tauAlUcYCFXbQpW6TPetA9uWaAqqzZl/0Le72XvWIK338tuivhxod
+         nNbPdcSSUzzi4kzRS/NDcbyc4LuZ8sXkbdtxU/Fabco3kmWHZyUgaljx0VFLulo3w2mF
+         Qi8W+zZyj7saDDI/r7RkX05gq2ywyQKUsNfSOTAZkwbuu2jnAjUnRnGZK9teHY+PDTD1
+         LtkUbTVE+NqFfgsZZUHnr0mAVX3XLD4r+4ZvUeCBCfa48m1yZQSJuc4vqrwZmXFY+BJp
+         DeXLlwCT1eOnYc9n/MAU33/JPRZz/kbIxsTqUiRoHdMdgoVtBjB5qbu+IDAl3g5EUx90
+         ifng==
+X-Gm-Message-State: AOAM5334lCh4N/wGuERHv9xweiNRYT63fbBGKoziSDWe+2WnR1laz3p1
+        Alv4i+C0Vu/MsZru2OWMczUsWodIKxhVv5q796yXukCLJP8=
+X-Google-Smtp-Source: ABdhPJw7bE6+/3En0eoolnWevATWF39/p5nYQ/eGyl8MjEBtehFgXksrlK6Bp+Q+vuDVQFYZfg/6LgZg/grUFjA7IxE=
+X-Received: by 2002:a9f:35aa:: with SMTP id t39mr7415384uad.89.1630998185101;
+ Tue, 07 Sep 2021 00:03:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210904000543.2019010-1-saravanak@google.com>
- <20210904000543.2019010-2-saravanak@google.com> <CAMuHMdUhZy7W_HLtNJ2ECK5uQV5xHV7pDk5BXfNUpW9L68G5Aw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUhZy7W_HLtNJ2ECK5uQV5xHV7pDk5BXfNUpW9L68G5Aw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 7 Sep 2021 00:01:23 -0700
-Message-ID: <CAGETcx_7N3gtaT-YHGaGL+Qtkv=JOhgPcPF1A+kQ4aaDoetvSA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
+References: <20210906194917.376116-1-palmer@dabbelt.com>
+In-Reply-To: <20210906194917.376116-1-palmer@dabbelt.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 09:02:53 +0200
+Message-ID: <CAMuHMdUtg1qA7hx-QGGwd6nfe_vDEzoH95732T736FPH0Jb5dA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume
+ unused warning
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-oxnas@groups.io,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>
+        Android Kernel Team <kernel-team@android.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 12:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Mon, Sep 6, 2021 at 9:58 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
 >
-> Hi Saravana,
+> cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
+> unused function warning is triggered undner !PM_SLEEP.  This
+> conditionally enables the function to avoid the warning.
 >
-> Thanks for your patch!
->
-> CC linux-pm, Lee (mfd)
->
-> On Sat, Sep 4, 2021 at 2:05 AM Saravana Kannan <saravanak@google.com> wrote:
-> > fw_devlink could end up creating device links for bus only devices.
-> > However, bus only devices don't get probed and can block probe() or
-> > sync_state() [1] call backs of other devices. To avoid this, probe these
-> > devices using the simple-pm-bus driver.
-> >
-> > However, there are instances of devices that are not simple buses (they
-> > get probed by their specific drivers) that also list the "simple-bus"
-> > (or other bus only compatible strings) in their compatible property to
-> > automatically populate their child devices. We still want these devices
-> > to get probed by their specific drivers. So, we make sure this driver
-> > only probes devices that are only buses.
->
-> Note that this can also be the case for buses declaring compatibility
-> with "simple-pm-bus".  However, at the moment, none of such device
-> nodes in upstream DTS files have device-specific drivers.
+> Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Not sure about mfd, but I want to make sure we don't confuse busses
-(which are typically added to a class) with these "simple bus" devices
-that are added to platform_bus. Also if these other buses are actually
-causing an issue, then then should implement their own stub driver or
-use try patch[2] if they are added to classes (devices on classes
-don't probe)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[2] - https://lore.kernel.org/lkml/20210831224510.703253-1-saravanak@google.com/
+> ---
+> I sent this one out in January, but it looks like it got lost in the shuffle.
+> I'm getting this on a RISC-V allmodconfig now.
+> ---
+>  drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+> index 8ab3247dbc4a..bee0f2d2a9be 100644
+> --- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
+> +++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+> @@ -1123,6 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
+>         return ret;
+>  }
+>
+> +#ifdef CONFIG_PM_SLEEP
+>  static int cdn_dp_resume(struct device *dev)
 
->
-> > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > Tested-by: Saravana Kannan <saravanak@google.com>
->
-> > --- a/drivers/bus/simple-pm-bus.c
-> > +++ b/drivers/bus/simple-pm-bus.c
-> > @@ -13,11 +13,26 @@
-> >  #include <linux/platform_device.h>
-> >  #include <linux/pm_runtime.h>
-> >
-> > -
-> >  static int simple_pm_bus_probe(struct platform_device *pdev)
-> >  {
-> > -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
-> > -       struct device_node *np = pdev->dev.of_node;
-> > +       const struct device *dev = &pdev->dev;
-> > +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
-> > +       struct device_node *np = dev->of_node;
-> > +       const struct of_device_id *match;
-> > +
-> > +       match = of_match_device(dev->driver->of_match_table, dev);
-> > +
-> > +       /*
-> > +        * These are transparent bus devices (not simple-pm-bus matches) that
-> > +        * have their child nodes populated automatically.  So, don't need to
-> > +        * do anything more.
-> > +        */
-> > +       if (match && match->data) {
-> > +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
->
-> Does this work as expected? Having multiple compatible values in a
-> device node does not guarantee there exist a separate driver for any
-> of the device-specific compatible values.
+An alternative solution would be to tag the function with
+__maybe_unused.
 
-Right, and if they are platform devices that are equivalent to
-simple-bus (meaning, they don't do anything in Linux and just have
-their devices populated) we can add those to this list too.
+>  {
+>         struct cdn_dp_device *dp = dev_get_drvdata(dev);
+> @@ -1135,6 +1136,7 @@ static int cdn_dp_resume(struct device *dev)
+>
+>         return 0;
+>  }
+> +#endif
+>
+>  static int cdn_dp_probe(struct platform_device *pdev)
+>  {
 
->
-> > +                       return 0;
-> > +               else
-> > +                       return -ENODEV;
->
-> So if we get here, as both branches use "return", we skip the
-> pm_runtime_enable() and of_platform_populate() below:
->   - of_platform_populate() is handled for these buses by
->     of_platform_default_populate(), so that's OK,
->   - I'm wondering if any of the simple-mfd sub-devices use Runtime
->     PM, but currently fail to save power because pm_runtime_enable()
->     is never called for the MFD container, just like with simple-bus...
+Gr{oetje,eeting}s,
 
-But this doesn't affect simple-mfd though.
+                        Geert
 
->
-> > +       }
-> >
-> >         dev_dbg(&pdev->dev, "%s\n", __func__);
-> >
-> > @@ -31,14 +46,25 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
-> >
-> >  static int simple_pm_bus_remove(struct platform_device *pdev)
-> >  {
-> > +       const void *data = of_device_get_match_data(&pdev->dev);
-> > +
-> > +       if (data)
-> > +               return 0;
-> > +
-> >         dev_dbg(&pdev->dev, "%s\n", __func__);
-> >
-> >         pm_runtime_disable(&pdev->dev);
-> >         return 0;
-> >  }
-> >
-> > +#define ONLY_BUS       ((void *) 1) /* Match if the device is only a bus. */
-> > +
-> >  static const struct of_device_id simple_pm_bus_of_match[] = {
-> >         { .compatible = "simple-pm-bus", },
-> > +       { .compatible = "simple-bus",   .data = ONLY_BUS },
-> > +       { .compatible = "simple-mfd",   .data = ONLY_BUS },
-> > +       { .compatible = "isa",          .data = ONLY_BUS },
->
-> #ifdef CONFIG_ARM_AMBA ?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Not needed? If CONFIG_ARM_AMBA isn't enabled, the device wouldn't be
-created in the first place.
-
->
-> > +       { .compatible = "arm,amba-bus", .data = ONLY_BUS },
-> >         { /* sentinel */ }
->
-> This is now (almost[*]) the same as of_default_bus_match_table[]
-> in drivers/of/platform.c. Perhaps it can be shared?
-
-I wanted this table to be expandable as needed. That's why I'm
-intentionally not using of_default_bus_match_table[].
-
->
-> [*] Especially if "simple-pm-bus" and "simple-bus" would be treated
->     the same.
-
-They are not treated the same way.
-
--Saravana
-
->
-> >  };
-> >  MODULE_DEVICE_TABLE(of, simple_pm_bus_of_match);
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
