@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01D24022EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771934022F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhIGEzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhIGEzH (ORCPT
+        id S233786AbhIGE7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:59:50 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53086
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229536AbhIGE7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:55:07 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7C4C061575;
-        Mon,  6 Sep 2021 21:54:01 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so11268070otk.9;
-        Mon, 06 Sep 2021 21:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HwvMp5IA0hnYzD/MgD58P5n8j2xNmred2ctzvwoT1CU=;
-        b=cZYwdPnb1b3umP57IStOfOejXuTnIqns8GGgRWhneEd4+B5/jxMyHZJubUZyE72LFw
-         uHkv/zN0F8S3uhGH4GNKleFqIFy56ci7X3xQQ5UoXYGnFy6jsBlwIK9o5AkyTHTe+tmO
-         Sy0NTdA0jIRt23iAdTM7/bELUq/rwxsurybr1xD4EG/kyu6Sxjd+Mx5A6fRtNRxP0Dmj
-         1wLoO3KtCCMC9cKO7smVlqVgzrFFdAcuNbDlcaza89ceWVHqa5jmpapX06F/LCcOSOZx
-         z65qw/LoR0J2rDs+XlxpMvAvr8eQ/L8Rlex6txLMzFJvbRH8zGLWi6CtTYs5zcVYET3/
-         6IoA==
+        Tue, 7 Sep 2021 00:59:49 -0400
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 270E440798
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 04:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630990715;
+        bh=B+j2BVDv9Qq/RPNv/sjl985zDy7vdDYDwWfVfLo5d1k=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=RlCW67FS5e4SYKlp3XWUaV9xCp4njF3uz3zkOrG59xhB6HDhq9JtIHvdS6O1RhOYF
+         MR5xX6mzUzgJ/TNS8X8201fkM4GMCJgjh5+T88Erx89h5IR+C3MN5eSeeIRqWMhvz0
+         n8GuhyT66A3hSzxqh9h6VVuXcTTftIzKL/SwLiZ+Z2K45a/IE/gHAkV7E83/18nOmN
+         N65VcUkMITDChieRvHACmvS3BjQDpW0WoW7jj2BocpuK/O8tJgbSMna/5rpYhfX0xi
+         S+taAvSspwAGsoacu/6fD6XNPgG3CY3jabknJG+f6aX72XwSgBTsjAN3Flo60JBVwN
+         fB+XMQd1ekA3g==
+Received: by mail-oi1-f197.google.com with SMTP id s1-20020a05680810c100b00268d4e0d155so3050824ois.15
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 21:58:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=HwvMp5IA0hnYzD/MgD58P5n8j2xNmred2ctzvwoT1CU=;
-        b=gFTWvdQU7Rz+VGCo3c7vg0ObVG0dA9dr2WS7aGaLugN67Jcpr3vDXMcUQC9VeSs7rE
-         xsVeyagOWmF9KL2rCksnVR0Rs1Ksdmm+1Nswa9rYg9RFBRD5RkUCv1u47jf83xO+o3Tz
-         rmzmjRMJ07mE3Fp5ik/JX7qXGpASOu7SMOuiotq32ic7TnzO1qRrW7CLkabVH5tQg1n2
-         c2+h2AbEsKHDIwsZ42ncoyP9AKM+37gJ0XBLbdtRhYVpNktx+hYsIGN5r7U51TlA03Iy
-         n/Uf3VNgZQVn2gAFuRkC0V2xYDpWtFAmMlQ+ci688fsFzed1GigKHgJWKI+bEBMmVMY2
-         dc2w==
-X-Gm-Message-State: AOAM5323x6e0TBLQciC8x+SMOxFFdX8GN4ZnO9GeTIlbYYenrj/CFJAQ
-        zWCiGXbrj3KPYFZCGIvQuuk1fagK33M=
-X-Google-Smtp-Source: ABdhPJztUXWHe1y/MwgJ82OrG6ipdHUyLDX7LpTXBUndg5E27UkvWxbxdqpuMUdkJgllcIWIZH6siw==
-X-Received: by 2002:a9d:6c19:: with SMTP id f25mr14331759otq.192.1630990440828;
-        Mon, 06 Sep 2021 21:54:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v10sm2230807otp.25.2021.09.06.21.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 21:54:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Laxman Dewangan <ldewangan@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] spi: tegra20-slink: Declare runtime suspend and resume functions conditionally
-Date:   Mon,  6 Sep 2021 21:53:58 -0700
-Message-Id: <20210907045358.2138282-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B+j2BVDv9Qq/RPNv/sjl985zDy7vdDYDwWfVfLo5d1k=;
+        b=MYGEujKlqqaRHLUsnnxdGCs25TTTQdLhy++mULSxprCjE43FhekjCIpxVGSPNf/b9k
+         n4HmGq6+Qozbei4Tu8Hzj5Uic58QblOmKKaueaIoWRKkantG2IQ/opJJKcawcp0XInWS
+         ky+7V4GEArMj1xpOA3D/lGJwCCXluP0F3Y1qZGi9eZYVSjNdmannmyJwT1ZVPMCTPO3c
+         LLAB24cqJEJwB67DHlMKdC3TgKgF5Vrr68vD5Rf2jB/ag0V9z2z+lWql6m8bydlm4O7E
+         6jcop1NUdFuovxynA47fbplywJPfu9A0yL6Z0KPnonHD/Fdhez9qcDMGIACS5lFaj8SQ
+         MD5g==
+X-Gm-Message-State: AOAM531azqWpyQhr0mXioyNGuhrLhWH2tUbJPwAMVa7hNaQUg2T4duDl
+        /4RuAfiiHLyySrx2pUf+0nR7O0evrpx7UEJyKjAm0691oR8kCo12VGxqpQO+xnozr/sS532QAGb
+        1/eCq9smev0Ma0F8rT26Xd71XOYKY9G4kP9Z/TqCOcoC39QmhTxjD1xT0dA==
+X-Received: by 2002:aca:2102:: with SMTP id 2mr1641804oiz.98.1630990713916;
+        Mon, 06 Sep 2021 21:58:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTa3enskGABo1zgybld2TdjokvafafEZXxFHkkFQKDx7ZPXad3iDWl31Cer2M8ks6ePkoN+MUCbl4I8k9+vjo=
+X-Received: by 2002:aca:2102:: with SMTP id 2mr1641788oiz.98.1630990713547;
+ Mon, 06 Sep 2021 21:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210827171452.217123-3-kai.heng.feng@canonical.com>
+ <20210830180940.GA4209@bjorn-Precision-5520> <CAAd53p634-nxEYYDbc69JEVev=cFkqtdCJv5UjAFCDUqdNAk_A@mail.gmail.com>
+ <71aea1f6-749b-e379-70f4-653ac46e7f25@gmail.com> <CAAd53p7XQWJJrVUgGZe0MC1jO+f3+edAmkEVhP40Lwwtq2bU2A@mail.gmail.com>
+ <c39bd0ad-c80a-dbed-3f30-95c2b31434cc@gmail.com>
+In-Reply-To: <c39bd0ad-c80a-dbed-3f30-95c2b31434cc@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 7 Sep 2021 12:58:22 +0800
+Message-ID: <CAAd53p4WJkO2FEjfRdvCgkeQVzYr=JQPKDbPNrRuK8RYKmzC5A@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v4] [PATCH 2/2] r8169: Implement dynamic
+ ASPM mechanism
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following build error is seen with CONFIG_PM=n.
+On Tue, Sep 7, 2021 at 12:11 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 06.09.2021 17:10, Kai-Heng Feng wrote:
+> > On Sat, Sep 4, 2021 at 4:00 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>
+> >> On 03.09.2021 17:56, Kai-Heng Feng wrote:
+> >>> On Tue, Aug 31, 2021 at 2:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >>>>
+> >>>> On Sat, Aug 28, 2021 at 01:14:52AM +0800, Kai-Heng Feng wrote:
+> >>>>> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> >>>>> Same issue can be observed with older vendor drivers.
+> >>>>>
+> >>>>> The issue is however solved by the latest vendor driver. There's a new
+> >>>>> mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> >>>>> more than 10 packets, and vice versa. The possible reason for this is
+> >>>>> likely because the buffer on the chip is too small for its ASPM exit
+> >>>>> latency.
+> >>>>
+> >>>> This sounds like good speculation, but of course, it would be better
+> >>>> to have the supporting data.
+> >>>>
+> >>>> You say above that this problem affects r8169 on "some platforms."  I
+> >>>> infer that ASPM works fine on other platforms.  It would be extremely
+> >>>> interesting to have some data on both classes, e.g., "lspci -vv"
+> >>>> output for the entire system.
+> >>>
+> >>> lspci data collected from working and non-working system can be found here:
+> >>> https://bugzilla.kernel.org/show_bug.cgi?id=214307
+> >>>
+> >>>>
+> >>>> If r8169 ASPM works well on some systems, we *should* be able to make
+> >>>> it work well on *all* systems, because the device can't tell what
+> >>>> system it's in.  All the device can see are the latencies for entry
+> >>>> and exit for link states.
+> >>>
+> >>> That's definitely better if we can make r8169 ASPM work for all platforms.
+> >>>
+> >>>>
+> >>>> IIUC this patch makes the driver wake up every 1000ms.  If the NIC has
+> >>>> sent or received more than 10 packets in the last 1000ms, it disables
+> >>>> ASPM; otherwise it enables ASPM.
+> >>>
+> >>> Yes, that's correct.
+> >>>
+> >>>>
+> >>>> I asked these same questions earlier, but nothing changed, so I won't
+> >>>> raise them again if you don't think they're pertinent.  Some patch
+> >>>> splitting comments below.
+> >>>
+> >>> Sorry about that. The lspci data is attached.
+> >>>
+> >>
+> >> Thanks for the additional details. I see that both systems have the L1
+> >> sub-states active. Do you also face the issue if L1 is enabled but
+> >> L1.2 and L1.2 are not? Setting the ASPM policy from powersupersave
+> >> to powersave should be sufficient to disable them.
+> >> I have a test system Asus PRIME H310I-PLUS, BIOS 2603 10/21/2019 with
+> >> the same RTL8168h chip version. With L1 active and sub-states inactive
+> >> everything is fine. With the sub-states activated I get few missed RX
+> >> errors when running iperf3.
+> >
+> > Once L1.1 and L1.2 are disabled the TX speed can reach 710Mbps and RX
+> > can reach 941 Mbps. So yes it seems to be the same issue.
+>
+> I reach 940-950Mbps in both directions, but this seems to be unrelated
+> to what we discuss here.
 
-drivers/spi/spi-tegra20-slink.c:1188:12: error:
-	'tegra_slink_runtime_suspend' defined but not used
-drivers/spi/spi-tegra20-slink.c:1200:12: error:
-	'tegra_slink_runtime_resume' defined but not used
+OK. Is there anything more I need to address in next iteration?
 
-Declare the functions only if PM is enabled. While at it, remove the
-unnecessary forward declarations.
+Kai-Heng
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/spi/spi-tegra20-slink.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index ebd27f883033..8ce840c7ecc8 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -204,9 +204,6 @@ struct tegra_slink_data {
- 	struct dma_async_tx_descriptor		*tx_dma_desc;
- };
- 
--static int tegra_slink_runtime_suspend(struct device *dev);
--static int tegra_slink_runtime_resume(struct device *dev);
--
- static inline u32 tegra_slink_readl(struct tegra_slink_data *tspi,
- 		unsigned long reg)
- {
-@@ -1185,6 +1182,7 @@ static int tegra_slink_resume(struct device *dev)
- }
- #endif
- 
-+#ifdef CONFIG_PM
- static int tegra_slink_runtime_suspend(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
-@@ -1210,6 +1208,7 @@ static int tegra_slink_runtime_resume(struct device *dev)
- 	}
- 	return 0;
- }
-+#endif /* CONFIG_PM */
- 
- static const struct dev_pm_ops slink_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra_slink_runtime_suspend,
--- 
-2.33.0
-
+>
+> > With dynamic ASPM, TX can reach 750 Mbps while ASPM L1.1 and L1.2 are enabled.
+> >
+> >> One difference between your good and bad logs is the following.
+> >> (My test system shows the same LTR value like your bad system.)
+> >>
+> >> Bad:
+> >>         Capabilities: [170 v1] Latency Tolerance Reporting
+> >>                 Max snoop latency: 3145728ns
+> >>                 Max no snoop latency: 3145728ns
+> >>
+> >> Good:
+> >>         Capabilities: [170 v1] Latency Tolerance Reporting
+> >>                 Max snoop latency: 1048576ns
+> >>                 Max no snoop latency: 1048576ns
+> >>
+> >> I have to admit that I'm not familiar with LTR and don't know whether
+> >> this difference could contribute to the differing behavior.
+> >
+> > I am also unsure what role LTR plays here, so I tried to change the
+> > LTR value to 1048576ns and yield the same result, the TX and RX remain
+> > very slow.
+> >
+> > Kai-Heng
+> >
+>
