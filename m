@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C050402B58
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E28402B96
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344925AbhIGPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:11:04 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:46055 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhIGPLD (ORCPT
+        id S1345136AbhIGPSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345119AbhIGPSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:11:03 -0400
-Received: by mail-vs1-f46.google.com with SMTP id a21so8570155vsp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 08:09:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d8l0cUSrwFCbO6kHbGt2o6pLB11QVwahthUcMbDbq4I=;
-        b=RkKQ1PyiiNUc+5z6+XnLsd+YVPVb0wIVmUEf1BcdRXNi05NQJH3+XPVJxlfsn0cyNs
-         twaH/OgbDzm+/M9wNqt8X8TQelWx5c/gxc3dfo8ruYFMJrJrnV1HaI+Q7IKbCWcpocZT
-         67oOU+PGhHN1xQIFjrSnPgqUwxPDxJz1aY5ePAT3Df0uaAOJbc8jdr6NFYQ1lG3p/+9d
-         VzOncBrR/s93jaaWYaxbwG3FmNvwB0/DySfcmZJGOlVHaRTIu+Afx9Nu3KF/6mEGjIUl
-         aHxAqvspu8s1KjT92EWKO/vijlxO3gcrWXstqSyPj0W2O1UTGVnIZPwlfP4ckg7IQ0Qh
-         CRdA==
-X-Gm-Message-State: AOAM531tnmXlrmAFucXRtLPzrkB52K5vvWQGI79d1JAukngURGOFDtNj
-        ImbV+CHoDpPHhRuqdq6QoyZk+THNv2s6vi+jG2lEpnlV
-X-Google-Smtp-Source: ABdhPJxvEzqt8kM3rANpKJzkjwv6wnV92niqg5dnrdpXihwyC38Sp859mU3XV3hIOfcoL/HA7jerEoZML3s7+lWv4Sk=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr9715503vsl.9.1631027397108;
- Tue, 07 Sep 2021 08:09:57 -0700 (PDT)
+        Tue, 7 Sep 2021 11:18:47 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Sep 2021 08:17:40 PDT
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B5EC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 08:17:40 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 2B9DF59F6BDB2; Tue,  7 Sep 2021 17:11:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 288A36168CF3D;
+        Tue,  7 Sep 2021 17:11:42 +0200 (CEST)
+Date:   Tue, 7 Sep 2021 17:11:42 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Florian Westphal <fw@strlen.de>
+cc:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
+        kuba@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: Re: [PATCH net v2] net: netfilter: Fix port selection of FTP for
+ NF_NAT_RANGE_PROTO_SPECIFIED
+In-Reply-To: <20210907135458.GF23554@breakpoint.cc>
+Message-ID: <r46nn4-n993-rs28-84sr-o1qop429rr9@vanv.qr>
+References: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz> <20210907135458.GF23554@breakpoint.cc>
+User-Agent: Alpine 2.24 (LSU 510 2020-10-10)
 MIME-Version: 1.0
-References: <20210907145652.63362-1-bert@biot.com>
-In-Reply-To: <20210907145652.63362-1-bert@biot.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 17:09:46 +0200
-Message-ID: <CAMuHMdViJU7Na8D0n=-xrF0OOCKMArg4vzjb7q73e4xpS1EtpQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: decompress: Use /memreserve/ DTS nodes when
- validating memory
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 4:57 PM Bert Vermeulen <bert@biot.com> wrote:
-> If the bootloader needs the start of memory to be preserved, for example
-> because it dropped the Trusted Firmware blob there, this chunk of memory
-> shouldn't be used by the kernel.
+
+On Tuesday 2021-09-07 15:54, Florian Westphal wrote:
+>> -	/* Try to get same port: if not, try to change it. */
+>> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
+>> -		int ret;
+>> +	if (htons(nat->range_info.min_proto.all) == 0 ||
+>> +	    htons(nat->range_info.max_proto.all) == 0) {
 >
-> To avoid adding yet another SoC-specific text offset to arch/arm/Makefile,
-> this patch allows for a /memreserve/ entry in the DTS to mark off the
-> memory chunk instead.
+>Either use if (nat->range_info.min_proto.all || ...
 >
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
+>or use ntohs().  I will leave it up to you if you prefer
+>ntohs(nat->range_info.min_proto.all) == 0 or
+>nat->range_info.min_proto.all == ntohs(0).
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+If one has the option, one should always prefer to put htons/htonl on 
+the side with the constant literal;
+Propagation of constants and compile-time evaluation is the target.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+That works for some other functions as well (e.g. 
+strlen("fixedstring")).
