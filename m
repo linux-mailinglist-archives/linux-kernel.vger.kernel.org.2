@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A980402D5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2345D402D5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345426AbhIGRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S1345457AbhIGRBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhIGRBh (ORCPT
+        with ESMTP id S1345465AbhIGRBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:01:37 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D93C061575;
-        Tue,  7 Sep 2021 10:00:30 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so13566735otk.9;
-        Tue, 07 Sep 2021 10:00:30 -0700 (PDT)
+        Tue, 7 Sep 2021 13:01:44 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23368C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:00:38 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so2561337pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tX3dLY3KjaJdK+boJZc/jDVbrXqd0jZWFd+gRGqD1s0=;
-        b=JDQqLN0MwwK5CCpl1DnA4YhnQTWZvr8TH6HVybD0AeeTcxvlEvUwKAO1AVnNz+g5Fl
-         F+VYli6qUA/dz6+QZTxAMfsN3DkNBwjnjP4X4YICQi1JZm2ZqZjXje/Zxd6aPlUTkpgb
-         xCI9iENlZWLA0VcWtac6VIx8hJXRv3+hmwVbPx+1sodHQRpAQjqDIoTMziGMRvlRpG8/
-         QudUgxMk5JoVXuTso95DqKHtS2Aw8+WwY5CSfoSLb7gbNFAIgygP58dAzmBidrDkt7LN
-         u4V+EtJEJdwac6M455A+mc3vWCI8YZSv2INqZz8drbbeGoG5CVhKlBWpqt0/rwgxrd5b
-         pMmQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A0sxVmfddG/iMYR9MPhr5LGq+Hc/rulYoKrv0lmk57k=;
+        b=imvK2NfqcweTnq3DfQ3kxb1hyyCHKaJdKjFFwmOFRNGcCgTtZXib10r3SXVdX1Z5Zt
+         Kt14UJeK58D6y9CsD5v7TZqu2/sd20G9+0vs2OYRr8FGpQQ1FWzWh1ikUF/TG8DDkyp0
+         F0YDBFXr2ZX4jkAZRc3ZlmB3vjDSLMZ+u8QirCOPIIHgiDF+hzptraPt4Akrd159DF7P
+         +b60+gZLISbc5rHbH9LOExA+6YeVK+nFwZOyUw37yjrfvIUq8ljRgh16mCAua3Upkbyd
+         EoMyC4xOdUhiEVTkEOKy8zk5EZ0cDxt4dZet2AYVdDEZTxF/MbZDftoJ8niCrKZDCf9I
+         yRzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tX3dLY3KjaJdK+boJZc/jDVbrXqd0jZWFd+gRGqD1s0=;
-        b=Otv90+FJwAye+7A4CxuPB/GekolIalC7kHm+9Spt9pnVG8xZxdJrfyTFRuSaed2CkL
-         nR1Gv/fUdWvTQpmeLY2jA/Ya8rTHMBWiMYNYHhVQ5asfvb6g644D0+G1J6nXboJ9oydi
-         3moRTZ1ANHtYtxHM0MgSHtWxuKCGZfQ0Q54hm6rgDHegad/mH2WpaL/XH+jhoknD2R3i
-         Q9XV2HQWP4MUE/idR8TRHUeNZdhRI9kto2VXnGv8m6Z6HJXw3epwrhylQB3AQcR0s+FD
-         xQHwxU5dwsKeMxHLiR9xNQXRiZVPS6YGV0svMPkuea1QCh2JZHYVjPVqMZ3YIbSwdD+/
-         UeXw==
-X-Gm-Message-State: AOAM5308I/APPCXkykuSsiiOYu4s+atFDRwbchdJwKYPqzHQahfCaYNt
-        ssybvY7j7MyNnFZB5Oa0gawLKKWSARpzu4GImaAzG9b1
-X-Google-Smtp-Source: ABdhPJzwSR0tEBZdt+IeLRjOaJvXXaOQn4kPRkpLoZWTSbNFLWCZ+U8QwcBpUgbwb+zy7V3LmUG/aj6K0dQ93vW2HLg=
-X-Received: by 2002:a05:6830:25d3:: with SMTP id d19mr16404248otu.357.1631034030040;
- Tue, 07 Sep 2021 10:00:30 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=A0sxVmfddG/iMYR9MPhr5LGq+Hc/rulYoKrv0lmk57k=;
+        b=pQCr9JsWnEhXe00JBfzFHE6vgn5/e9BWpuuUpr5/aYM/yyQ+8abv98E8/3k5P0K3xS
+         HFPjCB82OQ9KthUBdnp+IyeKNKPwuDwOVqcBcZufzWplK9jFwnuBlsE5Jc+itINEmXjv
+         Lab7f45YfmWhYJiWdcGSH0U+eB3fqE2C8AYVcSB496DsUD4EQ4NwkEn9vZjuim2Jamx7
+         MgC3dqTGYpdmGtCNDA518pionhUKfvnxYbM6hq3Hzx0cHHVIC0MoXP0xxcLGnKLKM2S7
+         EQUNOaCKCeFETN/SoT0GYGM/7haa1pncJA1rFJjUEfXzlJoTZAir76fsdEEQg10qBHh1
+         /4bw==
+X-Gm-Message-State: AOAM533qgBmdwXtT2NoIB2UKgySXNBNV+RUyU9riQa4kBbdnnFTJrLA7
+        W7bSPLX78eeWJGlnqKMWpFc=
+X-Google-Smtp-Source: ABdhPJx0GYgkTG9aSzp+VK4h1B583iwbvg8d5XIm7VPSBrTdzAq48wrj6nO/RR1gnckHyHtksmcp2g==
+X-Received: by 2002:a17:90a:55cb:: with SMTP id o11mr5682682pjm.244.1631034037561;
+        Tue, 07 Sep 2021 10:00:37 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:998a:2486:f524:8502])
+        by smtp.gmail.com with ESMTPSA id i8sm11545909pfo.117.2021.09.07.10.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 10:00:37 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 7 Sep 2021 10:00:35 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Jaewon Kim <jaewon31.kim@samsung.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        YongTaek Lee <ytk.lee@samsung.com>,
+        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>
+Subject: Re: (2) [PATCH] zram_drv: allow reclaim on bio_alloc
+Message-ID: <YTeas6sPrvQKmUHG@google.com>
+References: <YTXTe3U8RrvSAynl@infradead.org>
+ <20210906052926.6007-1-jaewon31.kim@samsung.com>
+ <CGME20210906052847epcas1p1f53f1ad04ad785d53f64eef150969c34@epcms1p6>
+ <20210906091448epcms1p6bcc1f11b0da18e215219e6868ed07914@epcms1p6>
 MIME-Version: 1.0
-References: <20210904154106.9550-1-len.baker@gmx.com>
-In-Reply-To: <20210904154106.9550-1-len.baker@gmx.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 7 Sep 2021 13:00:19 -0400
-Message-ID: <CADnq5_P_Vq9Qw+K4-mOf-VYDq20UQJ3k1PE94f9-nqi36qmE3g@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: Prefer kcalloc over open coded arithmetic
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210906091448epcms1p6bcc1f11b0da18e215219e6868ed07914@epcms1p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi Jaewon,
 
-Alex
+On Mon, Sep 06, 2021 at 06:14:48PM +0900, Jaewon Kim wrote:
+> > 
+> > 
+> >--------- Original Message ---------
+> >Sender : Christoph Hellwig <hch@infradead.org>
+> >Date : 2021-09-06 17:39 (GMT+9)
+> >Title : Re: [PATCH] zram_drv: allow reclaim on bio_alloc
+> > 
+> >On Mon, Sep 06, 2021 at 02:29:26PM +0900, Jaewon Kim wrote:
+> >> The read_from_bdev_async is not called on atomic context. So GFP_NOIO is
+> >> available rather than GFP_ATOMIC. If there were reclaimable pages with
+> >> GFP_NOIO, we can avoid allocation failure and page fault failure.
+> >> 
+> >> Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
+> >> Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
 
-On Sat, Sep 4, 2021 at 11:41 AM Len Baker <len.baker@gmx.com> wrote:
->
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
->
-> So, refactor the code a bit to use the purpose specific kcalloc()
-> function instead of the calculated size argument in the kzalloc()
-> function.
->
-> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
->
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-> ---
->  drivers/gpu/drm/radeon/r600_dpm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r600_dpm.c b/drivers/gpu/drm/radeon/r600_dpm.c
-> index 35b77c944701..fd4226b99862 100644
-> --- a/drivers/gpu/drm/radeon/r600_dpm.c
-> +++ b/drivers/gpu/drm/radeon/r600_dpm.c
-> @@ -820,12 +820,12 @@ union fan_info {
->  static int r600_parse_clk_voltage_dep_table(struct radeon_clock_voltage_dependency_table *radeon_table,
->                                             ATOM_PPLIB_Clock_Voltage_Dependency_Table *atom_table)
->  {
-> -       u32 size = atom_table->ucNumEntries *
-> -               sizeof(struct radeon_clock_voltage_dependency_entry);
->         int i;
->         ATOM_PPLIB_Clock_Voltage_Dependency_Record *entry;
->
-> -       radeon_table->entries = kzalloc(size, GFP_KERNEL);
-> +       radeon_table->entries = kcalloc(atom_table->ucNumEntries,
-> +                                       sizeof(struct radeon_clock_voltage_dependency_entry),
-> +                                       GFP_KERNEL);
->         if (!radeon_table->entries)
->                 return -ENOMEM;
->
-> --
-> 2.25.1
->
+Looks reasonable to me.
+Feel free to add after dealing with Christoph's comment.
+
+Acked-by: Minchan Kim <minchan@kernel.org>
+
+Thank you.
+
+> >> ---
+> >>  drivers/block/zram/zram_drv.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >> 
+> >> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> >> index fcaf2750f68f..53be528a39a2 100644
+> >> --- a/drivers/block/zram/zram_drv.c
+> >> +++ b/drivers/block/zram/zram_drv.c
+> >> @@ -587,7 +587,7 @@ static int read_from_bdev_async(struct zram *zram, struct bio_vec *bvec,
+> >>  {
+> >>          struct bio *bio;
+> >>  
+> >> -        bio = bio_alloc(GFP_ATOMIC, 1);
+> >> +        bio = bio_alloc(GFP_NOIO|__GFP_HIGHMEM, 1);
+> > 
+> >Passing __GFP_HIGHMEM to bio_alloc does not make any sense whatsoever.
+> > 
+> Correct, let me remove __GFP_HIGHMEM if I send v2 patch.
+> Thank you
