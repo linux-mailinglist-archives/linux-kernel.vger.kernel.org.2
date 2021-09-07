@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA03402CFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81824402D07
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344409AbhIGQkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S1344470AbhIGQnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbhIGQkT (ORCPT
+        with ESMTP id S238089AbhIGQnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:40:19 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93B7C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:39:12 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id bg1so6156869plb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:39:12 -0700 (PDT)
+        Tue, 7 Sep 2021 12:43:52 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11289C061575;
+        Tue,  7 Sep 2021 09:42:46 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id f65so5038918pfb.10;
+        Tue, 07 Sep 2021 09:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9ggBt1/XcGMk1GgPoYY4NtuKRl2ZcdoZPPws/++QS6M=;
-        b=M/0bt3uVF/S98xnbmyKOSCrfR6OJRZ8a7V0/XeKbliG/m4etlFlvkR5SPf7pHssQ/O
-         61ITWuKkHQGMlzJFK0o4JNaJq8gzXoFNC2UX4d23udONpUN5Y9A/xDS21VQ3FrUzN4c8
-         ZKPHjI9vCVhePAXLiDFf26TGWwdUaiMJlyTEXxdKZ1t1DUylM/RqWIRfgU4rWWzdK2an
-         FpJ7QEj0mVWmOu83p9aDoUG2UXqyT0GF3//x7S25otwLnBqc344OYSvEeU1wVkPdASip
-         WvQESURIGFnvFCQIKwxtv7PFvC79zf4e7RLSNvgJtWAdGBzi7uWe5jafiZ0muLOngPVe
-         gymQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=SZIQY2jeaisbXv5Qb528dcglvGXsiAr6+8cdcczJBv8=;
+        b=PZd51H4/gcCq4PAveHUGRLFYVtCcRrj9TJHCNoU21r/71jPUgi+N4tyPo4eJMw2D40
+         DMa8bO3vXv2nCOKBR4QrmB/LwlepQGaT4o5eon18G73UKxpjwAN1KAe/M2Ez4W47P+kO
+         OG2nVLH69oxGPoRWCAO51fDtrwU6V22vwpMv0g54DxN9HpJA6J9lAYaow0YCX9kfyHxx
+         hl7E7/5RWn6A/SYI6ffOYXRzhVT9YZcwiv5hA0xbqj07cHpQSuDHIVesw596PCEhqYqp
+         DUdIKqWNUoeVQcxdoT6VaRXQA+0xQg5ExfsUMKq9n1zRuvXe7MllH2ZYPV7sZ73wWSBr
+         Sl2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9ggBt1/XcGMk1GgPoYY4NtuKRl2ZcdoZPPws/++QS6M=;
-        b=DPA+Ynt6EekQwrToT+74YxNDZa1UtMcYqyZzs2F4+wkn2WlnDKaA46bjzGJGlpOkc9
-         dSyQlHoQrfZ1eGsybadGg5EWIA4hVBR0IW7D1UfEw+mrTpaaDXIfirUM9CFPDOqNSQz6
-         9ltufTYEWWjVTlxx90dXkxfu6TiyAeIeAE5ndOqhSmcSTDc/QtogT7c7Kcf2Ac3YwZYk
-         HZgwXdQnyld/Rxx9WTU5Y6I/AMapNJ+2pO5p7vxyBPP1829LF/CzwvdGcOT+889384Wf
-         8RPJDfywzsK/vLG0NuXpdNqBttsyGHstCBjypc8YEIHB+Oau3oobCKHBIUTcXiPABelv
-         idSQ==
-X-Gm-Message-State: AOAM532C+wTmbhzGO5r2HJwbPOc1ymJPOD6lqDqcKB51Kv7+QLFl4IMT
-        IZJZWwoF6DM40hsCvMpcogg=
-X-Google-Smtp-Source: ABdhPJzZ1x983+WmHHXiknDxIoG/x56wROgmY8ow7uoOsy/TPLq1jvWmCXTf0c8UMALMcClEc3xjCg==
-X-Received: by 2002:a17:90b:1e4a:: with SMTP id pi10mr4393075pjb.135.1631032752193;
-        Tue, 07 Sep 2021 09:39:12 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id 126sm14850350pgi.86.2021.09.07.09.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 09:39:11 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 7 Sep 2021 06:39:10 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
-Subject: Re: [PATCH 6/6] workqueue, kasan: avoid alloc_pages() when recording
- stack
-Message-ID: <YTeVriit6r82gWGz@slm.duckdns.org>
-References: <20210907141307.1437816-1-elver@google.com>
- <20210907141307.1437816-7-elver@google.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=SZIQY2jeaisbXv5Qb528dcglvGXsiAr6+8cdcczJBv8=;
+        b=FrrbyFe1QMyZyOV47LX3Mh0YL216RuCTeCrv8D9dNIvO92q1ZxZ03uMC13YARP4wsz
+         BMYwFRGdQrZUXdwyzwVROgKh/Q9VhJ+7FQrAQWCfiHe22n+NClI8xBwWXhmYf0mg65YB
+         HWV/IHYo0Kx42mNYMN48bM7YQgZvDLWK6qQ85EvpLifHRtgDeQAb/COmVheQKnvI+Axe
+         e2vTEnLXLFdcdLo0/NK1pL+Kn8d5LyVp/XbPpFTLHFhGFDjtERR/KzlYE80DtHjhRLli
+         +MUx5mWLCwnqo5V6ZoXj/1BIHA9G+y1GuNQaX6QTthOz68MfO9qyECpxeCXcgxXIe6xz
+         oLlQ==
+X-Gm-Message-State: AOAM531qzEa1Qulg1GuHctafqx6dW10+X4QWIX2Hj25yEBdeoyoc0j/4
+        t3csGnrRatphqtNnrrZgEFA=
+X-Google-Smtp-Source: ABdhPJw+3rMrhpMdSPPJXR/0Tif/doZ9t1hA3Y8Bh+lX3/LteJYbxtzYpx22pJs8R1wNcVx617DGXw==
+X-Received: by 2002:a65:6487:: with SMTP id e7mr17592515pgv.27.1631032965467;
+        Tue, 07 Sep 2021 09:42:45 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id l12sm11065456pff.182.2021.09.07.09.42.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 09:42:45 -0700 (PDT)
+Message-ID: <6d9fc76e-319a-3254-4889-c4b0fc60a6d4@gmail.com>
+Date:   Tue, 7 Sep 2021 09:42:37 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210907141307.1437816-7-elver@google.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 5.13 00/24] 5.13.15-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210906125449.112564040@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 04:13:07PM +0200, Marco Elver wrote:
-> Shuah Khan reported:
-> 
->  | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
->  | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
->  | it tries to allocate memory attempting to acquire spinlock in page
->  | allocation code while holding workqueue pool raw_spinlock.
->  |
->  | There are several instances of this problem when block layer tries
->  | to __queue_work(). Call trace from one of these instances is below:
->  |
->  |     kblockd_mod_delayed_work_on()
->  |       mod_delayed_work_on()
->  |         __queue_delayed_work()
->  |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
->  |             insert_work()
->  |               kasan_record_aux_stack()
->  |                 kasan_save_stack()
->  |                   stack_depot_save()
->  |                     alloc_pages()
->  |                       __alloc_pages()
->  |                         get_page_from_freelist()
->  |                           rm_queue()
->  |                             rm_queue_pcplist()
->  |                               local_lock_irqsave(&pagesets.lock, flags);
->  |                               [ BUG: Invalid wait context triggered ]
-> 
-> The default kasan_record_aux_stack() calls stack_depot_save() with
-> GFP_NOWAIT, which in turn can then call alloc_pages(GFP_NOWAIT, ...).
-> In general, however, it is not even possible to use either GFP_ATOMIC
-> nor GFP_NOWAIT in certain non-preemptive contexts, including
-> raw_spin_locks (see gfp.h and ab00db216c9c7).
-> 
-> Fix it by instructing stackdepot to not expand stack storage via
-> alloc_pages() in case it runs out by using kasan_record_aux_stack_noalloc().
-> 
-> While there is an increased risk of failing to insert the stack trace,
-> this is typically unlikely, especially if the same insertion had already
-> succeeded previously (stack depot hit). For frequent calls from the same
-> location, it therefore becomes extremely unlikely that
-> kasan_record_aux_stack_noalloc() fails.
-> 
-> Link: https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
-> Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Marco Elver <elver@google.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
 
-Thanks.
+On 9/6/2021 5:55 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.15 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.15-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-tejun
+Florian
