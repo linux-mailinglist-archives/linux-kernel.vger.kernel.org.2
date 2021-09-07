@@ -2,100 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F88402A41
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C1F402A44
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhIGNz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
+        id S231712AbhIGN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhIGNzz (ORCPT
+        with ESMTP id S229792AbhIGN4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:55:55 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E85C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:54:49 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id i3so6912810wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=7hpkjbgaQVZzEPZcbH8qOgH0WbER07wryFsX/6Acg0E=;
-        b=qeO8T3rQhtcnJGMsGMT51ExH9fK54vgQsOcBqsjsaK4t7L1SVVh9oeWSAENB6JYpT+
-         USOtYcwfxelhh5yZNuWvBkelP2ihXbADzMXLWYp+lomDvCkLPepF3mSynPabuRnaTaPq
-         SAsm77YO8HFJmtEx+r7YA/GFsW2OWfTUwR4NKLIUK/kwg2RVVaedQBeGZE1BqOhrg6Vx
-         NI+btaTPeBrtMRb855daYb1xi4psHe2WksRXSDusbCIdq3D2mWqai4elcJg552BWRrxK
-         BpD4TeiarZGEoIKiNMNaYdYTOr3nc1ktcwKum8HcKQNiuEZPDuRDWha7ziIG+VYSmcYI
-         JtEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=7hpkjbgaQVZzEPZcbH8qOgH0WbER07wryFsX/6Acg0E=;
-        b=OqK72X4JzfHl8UvWWNsN05eMBBXlPVRmE/Qy4sgnIBaEowD1Wsok+3t8aTmEG4zVD+
-         xSfxGKKQOcAJmXI+z74ghdUmXbYpWxjGBIBMhudYqLWiXpQEip5uX0vAXbKGZePgI40y
-         RnPWB0WNvsKeFqQnNV8PMtYcjMIDT7moa7JcsaqYjoqKWJMSc4rDmusrliiYhmu051j/
-         LiFU7YClrO30o14pnJgtITiLniCKEKeceLCaozKAtf3zXUaSlevmUgseJ3PYhN69xXry
-         B/y4aAmXWUIRB0E4vg8JPn14l8X/2R2s4Zel/tf8jF8ps91mQ/fdHjeedOtNPU9Py8KX
-         YqmQ==
-X-Gm-Message-State: AOAM530XObVm0/4UOkefGYW85r/W7daI/LPm+205IDoNNi6+qRHgmMV9
-        6EapfSj2DytrC1U79Y1DjR1TGJhVED8rSg==
-X-Google-Smtp-Source: ABdhPJw9sx8riXQNqBQDdwdAPygBTOxll7ciHfGWan7OxXiImp83Io0PIyI4yVua2c7Ygo/IB3d/ag==
-X-Received: by 2002:a7b:c14d:: with SMTP id z13mr4086561wmi.152.1631022887940;
-        Tue, 07 Sep 2021 06:54:47 -0700 (PDT)
-Received: from google.com ([31.124.24.230])
-        by smtp.gmail.com with ESMTPSA id n1sm10741281wrp.49.2021.09.07.06.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 06:54:47 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 14:54:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Backlight for v5.15
-Message-ID: <YTdvJZ/oLpSKs4mn@google.com>
+        Tue, 7 Sep 2021 09:56:15 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C11C061575;
+        Tue,  7 Sep 2021 06:55:08 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mNbYw-0007OY-Kd; Tue, 07 Sep 2021 15:54:58 +0200
+Date:   Tue, 7 Sep 2021 15:54:58 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: Re: [PATCH net v2] net: netfilter: Fix port selection of FTP for
+ NF_NAT_RANGE_PROTO_SPECIFIED
+Message-ID: <20210907135458.GF23554@breakpoint.cc>
+References: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good afternoon Linus,
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+> index aace6768a64e..cf675dc589be 100644
+> --- a/net/netfilter/nf_nat_ftp.c
+> +++ b/net/netfilter/nf_nat_ftp.c
+> @@ -17,6 +17,10 @@
+>  #include <net/netfilter/nf_conntrack_helper.h>
+>  #include <net/netfilter/nf_conntrack_expect.h>
+>  #include <linux/netfilter/nf_conntrack_ftp.h>
+> +void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+> +				 const struct nf_nat_range2 *range,
+> +				 enum nf_nat_manip_type maniptype,
+> +				 const struct nf_conn *ct);
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+Please add this to a header, e.g. include/net/netfilter/nf_nat.h.
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+> -	/* Try to get same port: if not, try to change it. */
+> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
+> -		int ret;
+> +	if (htons(nat->range_info.min_proto.all) == 0 ||
+> +	    htons(nat->range_info.max_proto.all) == 0) {
 
-are available in the Git repository at:
+Either use if (nat->range_info.min_proto.all || ...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.15
+or use ntohs().  I will leave it up to you if you prefer
+ntohs(nat->range_info.min_proto.all) == 0 or
+nat->range_info.min_proto.all == ntohs(0).
 
-for you to fetch changes up to 79fad92f2e596f5a8dd085788a24f540263ef887:
+(Use of htons here will trigger endian warnings from sparse tool).
 
-  backlight: pwm_bl: Improve bootloader/kernel device handover (2021-08-19 10:59:03 +0100)
+> -		exp->tuple.dst.u.tcp.port = htons(port);
+> +	/* Try to get same port if it matches NAT rule: if not, try to change it. */
+> +	ret = -1;
+> +	port = ntohs(exp->tuple.dst.u.tcp.port);
+> +	if (port != 0 && ntohs(range.min_proto.all) <= port &&
+> +	    port <= ntohs(range.max_proto.all)) {
+>  		ret = nf_ct_expect_related(exp, 0);
+> -		if (ret == 0)
+> -			break;
+> -		else if (ret != -EBUSY) {
+> -			port = 0;
+> -			break;
+> +	}
+> +	if (ret != 0 || port == 0) {
+> +		if (!dir) {
+> +			nf_nat_l4proto_unique_tuple(&exp->tuple, &range,
+> +						    NF_NAT_MANIP_DST,
+> +						    ct);
 
-----------------------------------------------------------------
- - Fix-ups
-   - Improve bootloader/kernel device handover
+A small comment that explains why nf_nat_l4proto_unique_tuple() is
+called conditionally would be good.
 
- - Bug Fixes
-   - Stabilise backlight
+I don't understand this new logic, can you explain?
 
-----------------------------------------------------------------
-Daniel Thompson (1):
-      backlight: pwm_bl: Improve bootloader/kernel device handover
+Old:
 
-Linus Walleij (1):
-      backlight: ktd253: Stabilize backlight
+for (port = expr>tuple.port ; port > 0 ;port++)
+    nf_ct_expect_related(exp, 0);
+    if (success || fatal_error)
+	 break;
 
- drivers/video/backlight/ktd253-backlight.c | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------
- drivers/video/backlight/pwm_bl.c           | 54 ++++++++++++++++++++++++++++--------------------------
- 2 files changed, 83 insertions(+), 46 deletions(-)
+New:
+port = exp->tuple.port;
+if (port && min <= port && port <= max) // in which case is port 0 here?
+	ret = nf_ct_expect_related();
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+if (fatal_error || port == 0)	// how can port be 0?
+    if (!dir) {
+	    nf_nat_l4proto_unique_tuple();
+            ret = nf_ct_expect_related();
+    }
+}
+
+How can this work?  This removes the loop and relies on
+nf_nat_l4proto_unique_tuple(), but NF_NAT_MANIP_DST doesn't support
+port rewrite in !NF_NAT_RANGE_PROTO_SPECIFIED case.
+
+Plus, it restricts nf_nat_l4proto_unique_tuple to !dir case, which
+I don't understand either.
+
+> +		port = ntohs(exp->tuple.dst.u.tcp.port);
+> +		ret = nf_ct_expect_related(exp, 0);
+>  	}
+> -
+> -	if (port == 0) {
+> +	if (ret != 0 || port == 0) {
+
+How can port be 0?  In the old code, it becomes 0 if all attempts
+to find unused port failed, but after the rewrite I don't see how it can
+happen.
+
+> @@ -188,6 +188,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
+>  	range.flags = NF_NAT_RANGE_MAP_IPS;
+>  	range.min_addr = range.max_addr
+>  		= ct->master->tuplehash[!exp->dir].tuple.dst.u3;
+> +	if (exp->master && !exp->dir) {
+
+AFAIK exp->master can't be NULL.
+
+> +		struct nf_conn_nat *nat = nfct_nat(exp->master);
+> +
+> +		if (nat && nat->range_info.min_proto.all != 0 &&
+> +		    nat->range_info.max_proto.all != 0) {
+> +			range.min_proto = nat->range_info.min_proto;
+> +			range.max_proto = nat->range_info.max_proto;
+> +			range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+> +		}
+> +	}
+
+!expr->dir means REPLY, i.e. new connection is reversed compared
+to the master connection (from responder back to initiator).
+
+So, why are we munging range in this case?
+
+I would have expected exp->dir == IP_CT_DIR_ORIGINAL for your use case
+(original connection subject to masquerade and source ports mangled to
+ fall into special range, so related conntion should also be mangled
+ to match said range).
