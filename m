@@ -2,122 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F29403168
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7B8403176
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347536AbhIGXKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        id S1347643AbhIGXVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347336AbhIGXKX (ORCPT
+        with ESMTP id S234094AbhIGXU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:10:23 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95322C061575;
-        Tue,  7 Sep 2021 16:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631056149;
-        bh=Mq9/SPIfXkdMbvy7Q3zqMZ3T8l9+fl8gK7s1l4+fsHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bKT79A5BqnC1eR2Nfmpx2IK15ehTz1mdgdtlIDxAUoUH6u0rVG99CGpPD5pulVjy7
-         WbAzWaFSKtKhLDitjym+e8KPau2xuJRcv0e7ZLqXlN+rzbnvANiduArHffDCsW/zSc
-         w4APvJCfNQor/Rqa55s7jxXhD7zMWBRo/f48cqNjQSMABovZUtOy5YnJRtBh9sWTtp
-         lobNraR+ZD09BInT3OdLgfSSCAv74qVqfYBfTKrJKi7H056pf4DgVFEx16xW6IF+aO
-         /LIMF6xfDeYEo+h2AOXxEHS3gYPq9zvvdUr9sT9PPpkZDbfBqWUDGM/Cx67sYLVF7F
-         pMtkTxcbhQlBw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H41DN50wXz9t56;
-        Wed,  8 Sep 2021 09:09:08 +1000 (AEST)
-Date:   Wed, 8 Sep 2021 09:09:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the origin tree
-Message-ID: <20210908090907.74edb3a4@canb.auug.org.au>
-In-Reply-To: <20210908090720.0748b861@canb.auug.org.au>
-References: <20210908090720.0748b861@canb.auug.org.au>
+        Tue, 7 Sep 2021 19:20:57 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE15C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:19:49 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id g14so307019ljk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qu1CuxnsrjZOSqfDn82IwL4wxf06fWvlZCuvRJG8DNA=;
+        b=hzQgvbQopbro6AglKsBmSTDKv6F+qPyX8TeMb058Rd87Lc3krIRE6cpNxBGVVXV5hv
+         ow698KDv/VdCJ1d5QUePaIv46jMP9hBRJ4ZESDYDaJSOD+o9ncJwozDx3JIOUMeAqk2X
+         js/TMcfWBMGX83+VrnL66WmNMwh8cgbazm+R8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qu1CuxnsrjZOSqfDn82IwL4wxf06fWvlZCuvRJG8DNA=;
+        b=TxftWpM0eyqQuyzrmR4+yUp4Drd/iQP/vuKVQeaprElBrCMG6ADM0aL1+pykONDEFN
+         okuQqqoYBxNOfre7dCnI//KPTW7kLB5uDFoH5CaUDEbQYkoI6etkVU4qhhXElfwtdO5X
+         RZPmqTMmy92OO91ddpX9SUJU7LinAWdpTIhHye635i+hPMK/uMe+XARNF9WV7F18iZfq
+         oIpSPAaUx5gmJ+3NvTv7h8G4TtMZNeSKus/15PrYDZ3WdyeWYaVojyksjMQXGWRRrwxY
+         3Ap444XM3lYWzOxRULXgPSnvi9GBSd7I7H2IKwsC59lOgcEC317xYx5YgfXXvf7yLTX+
+         nf0g==
+X-Gm-Message-State: AOAM531LA98E1tQYCFEN1mCS5FJn1CP3b2Y/fe9Wnq/qwv5GlTvmzov+
+        dM+smjgSU3XgsmeiXmjJugtqe7AZIfgT1iDT/ng=
+X-Google-Smtp-Source: ABdhPJzdxdK8ae6USlyKIREA3rE43AcpDuApMaCDPnE+898fm5YPgPXZwp275TtO+3Uetbx3mhn6nQ==
+X-Received: by 2002:a2e:9b14:: with SMTP id u20mr506661lji.21.1631056787953;
+        Tue, 07 Sep 2021 16:19:47 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id p1sm27392lfo.255.2021.09.07.16.19.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 16:19:47 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id g14so306966ljk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:19:47 -0700 (PDT)
+X-Received: by 2002:a2e:96c7:: with SMTP id d7mr471237ljj.191.1631056480289;
+ Tue, 07 Sep 2021 16:14:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+iy5pNjQfZLanJvd1YoNrgy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+In-Reply-To: <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 16:14:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+Message-ID: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+iy5pNjQfZLanJvd1YoNrgy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[ Added maintainers for various bits and pieces, since I spent the
+time trying to look at why those bits and pieces wasted stack-space
+and caused problems ]
 
-Hi all,
-
-On Wed, 8 Sep 2021 09:07:20 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On Tue, Sep 7, 2021 at 3:16 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Building Linus' tree, today's linux-next build (mips
-> allmodconfig) failed like this:
->=20
-> In file included from /kisskb/src/include/linux/compiler_types.h:65:0,
->                  from <command-line>:0:
-> include/linux/compiler_attributes.h:29:29: error: "__GCC4_has_attribute__=
-_no_sanitize_coverage__" is not defined [-Werror=3Dundef]
->  # define __has_attribute(x) __GCC4_has_attribute_##x
->                              ^
-> include/linux/compiler-gcc.h:125:29: note: in expansion of macro '__has_a=
-ttribute'
->  #if defined(CONFIG_KCOV) && __has_attribute(__no_sanitize_coverage__)
->                              ^
-> cc1: all warnings being treated as errors
->=20
-> Caused by commit
->=20
->   540540d06e9d ("kcov: add __no_sanitize_coverage to fix noinstr for all =
-architectures")
->=20
-> This ia a gcc 4.9 build, so presumably this?
->=20
-> diff -ru a/include/linux/compiler_attributes.h b/include/linux/compiler_a=
-ttributes.h
-> --- a/include/linux/compiler_attributes.h	2021-09-08 09:03:35.169225661 +=
-1000
-> +++ b/include/linux/compiler_attributes.h	2021-09-08 09:05:47.790907780 +=
-1000
-> @@ -36,6 +36,7 @@
->  # define __GCC4_has_attribute___no_profile_instrument_function__ 0
->  # define __GCC4_has_attribute___nonstring__           0
->  # define __GCC4_has_attribute___no_sanitize_address__ 1
-> +# define __GCC4_has_attribute___no_sanitize_coverage__	0
->  # define __GCC4_has_attribute___no_sanitize_undefined__ 1
->  # define __GCC4_has_attribute___fallthrough__         0
->  #endif
+> None of these seem to be new.
 
-Just to be clear, I haven't tested the above in any way.
+That said, all but one of them seem to be (a) very much worth fixing
+and (b) easy to fix.
 
---=20
-Cheers,
-Stephen Rothwell
+The do_tcp_getsockopt() one in tpc.c is a classic case of "lots of
+different case statements, many of them with their own struct
+allocations on stack, and all of them disjoint".
 
---Sig_/+iy5pNjQfZLanJvd1YoNrgy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+So the fix for that would be the traditional one of just making helper
+functions for the cases that aren't entirely trivial. We've done that
+before, and it not only fixes stack usage problems, it results in code
+that is easier to read, and generally actually performs better too
+(exactly because it avoids sparse stacks and extra D$ use)
 
------BEGIN PGP SIGNATURE-----
+The pe_test_uints() one is the same horrendous nasty Kunit pattern
+that I fixed in commit 4b93c544e90e ("thunderbolt: test: split up test
+cases in tb_test_credit_alloc_all") that had an even worse case.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE38RMACgkQAVBC80lX
-0GyQpQf/XWOFr4+uQHNcLr1IWgODsMMXGZy2nUcbLn1NIeNf6agCc5mb1h2kNtvT
-7fI9GZniwF6TBwStfeBUN0Zl55YlXUeWhA9Ilg5VmNdAiRZuFWUTXe2iX/StgQln
-xbDUfbU9hCmfsb+Zy9/l1OGWMwbFJ5E7s9hc9oCRGpDEv/i13gC7330IEk34PqEA
-t1exI4c3QAL++TsozH60aAlkrrMjmXW9mOGrC0mPxNI7C1tlHajUVczHPrFcutnR
-p8plz9BKRvT8PedrnStQB3zTfcT3knTKlwYzO7J/Q/htsvWA/3FpEWREAX4VKFcb
-yUb9rAIgxaT6R1TDv+bg/aXomdYIjQ==
-=SM5C
------END PGP SIGNATURE-----
+The KUNIT macros create all these individually reasonably small
+initialized structures on stack, and when you have more than a small
+handful of them the KUNIT infrastructure just makes the stack space
+explode. Sometimes the compiler will be able to re-use the stack
+slots, but it seems to be an iffy proposition to depend on it - it
+seems to be a combination of luck and various config options.
 
---Sig_/+iy5pNjQfZLanJvd1YoNrgy--
+I detest code that exists for debugging or for testing, and that
+violates fundamental rules and causes more problems in the process.
+
+The mac802.11 one seems to be due to 'struct ieee802_11_elems' being
+big, and allocated on the stack. I think it's probably made worse
+there with inlining, ie
+
+ - ieee80211_sta_rx_queued_mgmt() has one copy
+
+ - ieee80211_rx_mgmt_beacon() is possibly inlined, and has its own copy
+
+but even if it isn't due to that kind of duplication due to inlining,
+that code is dangerous. Exactly because it has two nested stack frames
+with that big structure, and they are active at the same time in the
+callchain whether inlined or not.
+
+And it's *pointlessly* dangerous, because the 'struct ieee802_11_elems
+elems' in ieee80211_sta_rx_queued_mgmt() is only used for the
+IEEE80211_STYPE_ACTION case, so it is entirely disjoint from the
+IEEE80211_STYPE_BEACON case, and those stack allocations simply should
+not nest like that in the first place.
+
+Making the IEEE80211_STYPE_ACTION case be its own function - like the
+other cases - and moving the struct there should fix it. Possibly a
+"noinline" or two necessary to make sure that the compiler doesn't
+then undo the "these two cases are disjoint" thing.
+
+The qede_config_rx_mode() has a fairly big 'struct qed_filter_params'
+structure on stack (it's mainly just a union of two other structures).
+That one is a bit silly, because the very same function *alsu* does a
+temporary allocation for the 'uc_macs[]' array, and I think it could
+have literally made that allocation just do both the params and the
+uc_macs[] array together.
+
+But that "a bit silly" is actually *doubly* silly, because that big
+structure allocated for the stack that is actually a union, uses the
+QED_FILTER_TYPE_RX_MODE type of the union. Which in turn is literally
+*one*single*enum*field*.
+
+So the qede_config_rx_mode() case uses that chunk of kernel stack for
+a big union for no good reason.  It really only wants two words, but
+the way the code is written, it uses a lot, because the union also has
+a 'struct qed_filter_mcast_params' member that has an array of
+[64][ETH_ALEN] bytes in it.
+
+So that's about 400 bytes of stack space entirely wasted if I read the
+code correctly.
+
+The xhci_reserve_bandwidth() one is because it has an array of 31
+'struct xhci_bw_info' on the stack. It's not a huge structure (six
+32-bit words), but when you have 31 of those in an array, it's about
+750 bytes right there. It should likely just be dynamically allocated
+- it doesn't seem to be some super-important critical thing where an
+allocation cannot be done.
+
+The do_sys_poll() thing is a bit sad. The code has been tweaked to
+basically use 1kB of stack space in one configuration. It overflows it
+in a lot of other configs. Using stack space for those kinds of
+top-level functions that are guaranteed to have an empty stack is
+pretty much the best possible situation, but it's one where we don't
+really have a good way to try to have some kind of dynamic feedback
+from the compiler for how much other stack space it  is using.
+
+So that do_sys_poll() case is the only one I see where the stack usage
+is actually fine and explicitly expected. We *aim* for 1kB of stack,
+and then in some - probably quite a few - situations we go over.
+
+There are many more of these cases. I've seen Hyper-V allocate 'struct
+cpumask' on the stack, which is once again an absolute no-no that
+people have apparently just ignored the warning for. When you have
+NR_CPUS being the maximum of 8k, those bits add up, and a single
+cpumask is 1kB in size. Which is why you should never do that on
+stack, and instead use '
+
+       cpumask_var_t mask;
+       alloc_cpumask_var(&mask,..)
+
+which will do a much more reasonable job. But the reason I call out
+hyperv is that as far as I know, hyperv itself doesn't actually
+support 8192 CPU's. So all that apic noise with 'struct cpumask' that
+uses 1kB of data when NR_CPUS is set to 8192 is just wasted. Maybe I'm
+wrong. Adding hyperv people to the cc too.
+
+A lot of the stack frame size warnings are hidden by the fact that our
+default value for warning about stack usage is 2kB for 64-bit builds.
+
+Probably exactly because people did things like that cpumask thing,
+and have these arrays of structures that are often even bigger in the
+64-bit world.
+
+                Linus
