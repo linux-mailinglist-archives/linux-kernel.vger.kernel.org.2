@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64071402231
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA2A402234
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhIGCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhIGCFx (ORCPT
+        id S241740AbhIGCHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:07:03 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:33390 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233217AbhIGCHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:05:53 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93730C061575;
-        Mon,  6 Sep 2021 19:04:47 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id b64so8653605qkg.0;
-        Mon, 06 Sep 2021 19:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cs7mCMI8BIob2gIpwkwVdKulQz4rvKjl/wf+ynJ6z9Y=;
-        b=HDcmens1LBj3rKlpU88n/WQYdnrYpD37I8npnEyNuzee+6ZEblyd/Lr4TAgkqwMK6K
-         R6hWuXJdkfWY9YsSrqKtNMelU45wevTKv4D3KGpqlE4aXcYgE+eBMk06rf9+vIcqvK65
-         f6LIFboepPzZnEyOj08SsrrxZtUVy/RuJ54rs2JpyXwEworSh0cHJry4qFPQItAtFHzO
-         rtp5xbXTmJYDHtaj9OYRWdIR9coIM0wC15tyRm0CcVTue4uH6/8HHgSowpVMJvyWr3Lr
-         PjTTvD2VGBc5WESZaojfSJCRBFe3b6UqaIZJw2x8e/UuHtt//oOeB76EttA7HL2G5olL
-         dyVA==
+        Mon, 6 Sep 2021 22:07:02 -0400
+Received: by mail-lj1-f182.google.com with SMTP id s12so14089102ljg.0;
+        Mon, 06 Sep 2021 19:05:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cs7mCMI8BIob2gIpwkwVdKulQz4rvKjl/wf+ynJ6z9Y=;
-        b=dQWe42En+HA+wENPmqKUviut75OoPmfLSKcL0l1aG+rXD77afMonm8HQOKnJZ4PJ86
-         vrHDmS6XGkPOhTcfwZdSQDl/Wy1lvjLSM7LrlBDbRfPze7Hlr+Fbel4QA6m7BfGZjKGj
-         neWCu4/wWkNSyaEYQOMuAPKCBOXTz6IQ4tua5S90Phhskza7k9YamJHDR4whykZxLZYL
-         DlfgE2uYgUrvvEZmLlxY7ZtKovGKqIyG8Bn+Nx+tyGdM2F3krXrl15crbNrkxngiO91A
-         yNqrfl1UUJizLTOfLGcbj2xxySIDZikaaI4pXEwaCWDZwv9TxE2FAhL4yqVcAs6+affY
-         X1FQ==
-X-Gm-Message-State: AOAM5310CHKrSL3s57ll9YhFQf4BARTxOEpPwpUzso1cyBCPJmn/B7KQ
-        UsRosmHrObOTi1kpw+4xNxf01otvkUJgG9GBpNE=
-X-Google-Smtp-Source: ABdhPJyPg7oCTcfJ+n3qrn/GXcHEf5/fzs+entEJl9L+5Q4TATk2fCWAfQJ24e71W6LlWk7EKphw3XVEKn+yW1Ze+jE=
-X-Received: by 2002:a05:620a:1299:: with SMTP id w25mr13651420qki.391.1630980286653;
- Mon, 06 Sep 2021 19:04:46 -0700 (PDT)
+        bh=Wag34i0mvHaNCgUONRntiQDWweufyQCEE0D3LbDF1CM=;
+        b=f3xVvob51H2RgMzM9D6HraI7VM5O6sj5rUTO4Wh8Yjndw2vQNn0WTe5aWromSPNRar
+         +CkU7D5XEBZPDzj5wSY3kpCawbABoLosfbMBkAOwVY/ggidIsHVt+V3JAlcrkHAlskx3
+         +H/EjGARwjufW4ko3UY7SbVxE2MQ2koABzg0WRz5U5BCZ1mWRZjM5T/FlNVtqyhAsq0X
+         Z1Wvc1cuzieQt6mP4eXZL1gybR7rLxfxL4RxEnUAyjLpx2tTJLY69ho2Yq8PttrYwI4+
+         BDvcgp89GjT49ZWrSqXJZQ70Y8VA/Y0wvbUWxfAW0I8XT3wwo8Jk8X+D8OiysTopB5da
+         9aXg==
+X-Gm-Message-State: AOAM530Zx1RJuln/a3xkZCCkezC8yZGqk/wiDxujz2nchOXTSdPFrjgC
+        qnZAiRjy1QA5h54H5RAkUgOHoEgedeVUIVICMJk=
+X-Google-Smtp-Source: ABdhPJy+CbY2y8CERUjMXXsS7HPCNIesrefPkqW4hMG6MgUbHWAjvbCBBA4uaokAOeINMsByvcEk75LkcmFIyRocXkM=
+X-Received: by 2002:a2e:90d6:: with SMTP id o22mr13297103ljg.366.1630980355363;
+ Mon, 06 Sep 2021 19:05:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210906094927.524106-1-schnelle@linux.ibm.com>
-In-Reply-To: <20210906094927.524106-1-schnelle@linux.ibm.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Tue, 7 Sep 2021 12:04:35 +1000
-Message-ID: <CAOSf1CFyuf9FaeSNparj+7W0mKTPvtcM8vxjHDSFsNDC6k_7xQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>
+References: <20210906160310.54831-1-mailhol.vincent@wanadoo.fr> <20210906160310.54831-2-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20210906160310.54831-2-mailhol.vincent@wanadoo.fr>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 7 Sep 2021 11:05:42 +0900
+Message-ID: <CAMZ6RqK4DFOqpvarZa+ee1h0Z1GCpMMYFLzLQsbBjhKRTkgNdA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] can: netlink: prevent incoherent can configuration
+ in case of early return
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 7:49 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+On Tue. 7 Sep 2021 at 01:03, Vincent Mailhol <mailhol.vincent@wanadoo.fr> wrote:
+> struct can_priv has a set of flags (can_priv::ctrlmode) which are
+> correlated with the other fields of the structure. In
+> can_changelink(), those flags are set first and copied to can_priv. If
+> the function has to return early, for example due to an out of range
+> value provided by the user, then the global configuration might become
+> incoherent.
 >
-> Patch 3 I already sent separately resulting in the discussion below but without
-> a final conclusion.
+> Example: the user provides an out of range dbitrate (e.g. 20
+> Mbps). The command fails (-EINVAL), however the FD flag was already
+> set resulting in a configuration where FD is on but the databittiming
+> parameters are empty.
 >
-> https://lore.kernel.org/lkml/20210720150145.640727-1-schnelle@linux.ibm.com/
+> * Illustration of above example *
 >
-> I believe even though there were some doubts about the use of
-> pci_dev_is_added() by arch code the existing uses as well as the use in the
-> final patch of this series warrant this export.
+> | $ ip link set can0 type can bitrate 500000 dbitrate 20000000 fd on
+> | RTNETLINK answers: Invalid argument
+> | $ ip --details link show can0
+> | 1: can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group default qlen 10
+> |     link/can  promiscuity 0 minmtu 0 maxmtu 0
+> |     can <FD> state STOPPED restart-ms 0
+>            ^^ FD flag is set without any of the databittiming parameters...
+> |         bitrate 500000 sample-point 0.875
+> |         tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
+> |         ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+> |         ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
+> |         clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+>
+> To prevent this from happening, we do a local copy of can_priv, work
+> on it, an copy it at the very end of the function (i.e. only if all
+> previous checks succeeded).
+>
+> Once this done, there is no more need to have a temporary variable for
+> a specific parameter. As such, the bittiming and data bittiming (bt
+> and dbt) are directly written to the temporary priv variable.
+>
+>
+> N.B. The temporary can_priv is too big to be allocated on the stack
+> because, on x86_64 sizeof(struct can_priv) is 448 and:
+>
+> | $ objdump -d drivers/net/can/dev/netlink.o | ./scripts/checkstack.pl
+> | 0x00000000000002100 can_changelink []:            1200
+>
+>
+> Fixes: 9859ccd2c8be ("can: introduce the data bitrate configuration for CAN FD")
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  drivers/net/can/dev/netlink.c | 32 ++++++++++++++++++--------------
+>  1 file changed, 18 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 80425636049d..21b76ca8cb22 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -58,14 +58,19 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                           struct nlattr *data[],
+>                           struct netlink_ext_ack *extack)
+>  {
+> -       struct can_priv *priv = netdev_priv(dev);
+> +       /* Work on a local copy of priv to prevent inconsistent value
+> +        * in case of early return.
+> +        */
+> +       static struct can_priv *priv;
+>         int err;
+>
+>         /* We need synchronization with dev->stop() */
+>         ASSERT_RTNL();
+>
+> +       priv = kmemdup(netdev_priv(dev), sizeof(*priv), GFP_KERNEL);
 
-The use of pci_dev_is_added() in arch/powerpc was because in the past
-pci_bus_add_device() could be called before pci_device_add(). That was
-fixed a while ago so It should be safe to remove those calls now.
+Arg... I forgot to check the return value.
++       if (!priv)
++               return -ENOMEM;
 
-> Patch 4 "PCI: Export pci_dev_lock()" is basically an extension to commit
-> e3a9b1212b9d ("PCI: Export pci_dev_trylock() and pci_dev_unlock()") which
-> already exported pci_dev_trylock(). In the final patch we make use of
-> pci_dev_lock() to wait for any other exclusive uses of the pdev to be finished
-> before starting recovery.
+I will send a v4, sorry for the noise.
 
-Hmm, I noticed the EEH
-(arch/powerpc/kernel/eeh_driver.c:eeh_pe_report_edev())  and the
-generic PCIe error recovery code (see
-drivers/pci/pcie/err.c:report_error_detected()) only call
-device_lock() before entering the driver's error handling callbacks. I
-wonder if they should be using pci_dev_lock() instead. The only real
-difference is that pci_dev_lock() will also block user space from
-accessing the device's config space while error recovery is in
-progress which seems sensible enough.
+
+Yours sincerely,
+Vincent
