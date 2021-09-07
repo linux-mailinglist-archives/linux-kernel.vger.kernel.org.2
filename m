@@ -2,85 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C930E402193
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 02:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9E402198
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 02:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237711AbhIGAJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 20:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236253AbhIGAJM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 20:09:12 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404C4C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 17:08:07 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mj9-20020a17090b368900b001965618d019so372863pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 17:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XqRu0z2Qhjs0mvuVTfdyLCxvW6UnsTdZLsaV7CaJajk=;
-        b=THPVv3KV4fHAZh2jKOoVbmjvS6USvkg8tEoqpY5g9Ay7RDaDs8eVm3CzahyCyXiYCE
-         dmioefCdKHamm8A6OzNKzXS5vWjfQQy+xE7Lwv5raZkRzyamp54HMrPnS0STdGg8bbQU
-         Ucig9U2TvVdoi/I1y+jmnWbqFS1T4gJh6GDL0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XqRu0z2Qhjs0mvuVTfdyLCxvW6UnsTdZLsaV7CaJajk=;
-        b=ewMOrYOG5o8WjG9y1uKNrGyO033PWQBYHx25f1fYxuRRZHdvyv49S+WvOnqR756TME
-         Vv6K9nFbAGf2gPkkrCZ/gsB4HxPpjT0qc+RNrIZxT3r4oal+s5SMGoVXKh88Ds44y6CL
-         MnTof382ei4h6IPRA+C5oEYxIjagWLzaVcFeXERHz9PgAg4fwRrWSex/BbCCb1beQsZk
-         uqOjSxOy3r3hkNMD1QcGYCvzbqOM5CTeZYiWpVhs/H58cdPv+TNhRRylhLTKFaMjI5RZ
-         ZqEyu011LxJDrx1MOC3a19/vo8xR+9SmCjwYlDpIO8UMrLi8nHYV0LIWP4iMod5zVAB5
-         7LCA==
-X-Gm-Message-State: AOAM5332Q8EbdbU5qRtNTn0+HYUZjjpcpNw0sxwTbEObOCHdlji+7aHV
-        Z0CnieGFa70w0vxG5WlWtaAu6A==
-X-Google-Smtp-Source: ABdhPJygBpZDHO0khjmYw+va4z4BztjolHbfaxw2Uf52dv0IQawbfJU1o5SPyVNemqlLGCKhb1LIcg==
-X-Received: by 2002:a17:902:7145:b0:137:2e25:5bf0 with SMTP id u5-20020a170902714500b001372e255bf0mr12564988plm.10.1630973286689;
-        Mon, 06 Sep 2021 17:08:06 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:4040:44a5:1453:e72c])
-        by smtp.gmail.com with ESMTPSA id 141sm11395031pgg.16.2021.09.06.17.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 17:08:06 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 09:08:01 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ksmbd: add missing assignments to ret on
- ndr_read_int64 read calls
-Message-ID: <YTatYScZNOYHxruf@google.com>
-References: <20210906134438.14250-1-colin.king@canonical.com>
+        id S230484AbhIGAMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 20:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230038AbhIGAMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 20:12:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D70A3610A3;
+        Tue,  7 Sep 2021 00:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630973484;
+        bh=ifuFv3gkwVp/7X92auvTBV/kMkrnWgnIGVHcpN8lm0I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AM3AUOWWKR28dFKWdTcf/89GeoJVjrNAtBqiyFOtqiB409ug0JnZmbUcPvJ7xhYUd
+         QZDE4EudShOca7/OYAMpDzIt9lGCn21USSPAPsP6DSvZxIl3C2d4x0AJMDe3+1AZKk
+         Zl7ywAr3Yi89qXKFezX/+6uoKa7btOLQfU0UPeFqmkYo0mXvL3jXb8Csu3lPiHtRjp
+         AcJWCTCqASGDC1KiBIScIbP4jtggGOZaCLPc8t3bHsE5GwttxhYAFzIxT1htE77Ezv
+         lwIUIy7uAjcc2kei2CKz5n2k6zNh0J+ib+kn2U/FTfyVfqYWrLkWZPh9MxAkB2CCBT
+         y3lKhC9ZXZTXQ==
+Received: by mail-ej1-f43.google.com with SMTP id t19so16199307ejr.8;
+        Mon, 06 Sep 2021 17:11:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531hcNKKQpD4as62q2eqIcMk8k7HsAW2lS59PPhrjt4ULphkpBiZ
+        1r9B8IUoHaQK7v9FzF3oDVaNnc1v5vgwOMeSig==
+X-Google-Smtp-Source: ABdhPJxU1SiAb4YPZCljleFW/HiLB8RDcADm34x/la6BDgQKmR7J0vZffdCpPHyLfu1ItECgjPKdWvfhwUZmzYWI37M=
+X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr15571504ejc.511.1630973483408;
+ Mon, 06 Sep 2021 17:11:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906134438.14250-1-colin.king@canonical.com>
+References: <20210824100027.25989-1-moudy.ho@mediatek.com> <20210824100027.25989-4-moudy.ho@mediatek.com>
+In-Reply-To: <20210824100027.25989-4-moudy.ho@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 7 Sep 2021 08:11:12 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8GFP0utAVSw1JY6=y9hsJTbf8mtiKCnUmTcG2e9Zwdxg@mail.gmail.com>
+Message-ID: <CAAOTY_8GFP0utAVSw1JY6=y9hsJTbf8mtiKCnUmTcG2e9Zwdxg@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
+To:     Moudy Ho <moudy.ho@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
+        =?UTF-8?B?U2ogSHVhbmcgKOm7g+S/oeeSiyk=?= <sj.huang@mediatek.com>,
+        ben.lok@mediatek.com, randy.wu@mediatek.com,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/09/06 14:44), Colin King wrote:
-[..]
-> @@ -275,11 +275,11 @@ int ndr_decode_dos_attr(struct ndr *n, struct xattr_dos_attrib *da)
->  		if (ret)
->  			return ret;
->  
-> -		ndr_read_int64(n, NULL);
-> +		ret = ndr_read_int64(n, NULL);
->  		if (ret)
->  			return ret;
->  
-> -		ndr_read_int64(n, NULL);
-> +		ret = ndr_read_int64(n, NULL);
->  		if (ret)
->  			return ret;
+Hi, Moudy:
 
-A pretty nice catch by that static analyzer tool.
+Moudy Ho <moudy.ho@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=8824=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=886:02=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> This patch adds DT binding document for Media Data Path 3 (MDP3)
+> a unit in multimedia system used for scaling and color format convert.
+>
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+>  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  57 +++++
+>  .../bindings/media/mediatek,mdp3-rdma.yaml    | 207 ++++++++++++++++++
+>  .../bindings/media/mediatek,mdp3-rsz.yaml     |  65 ++++++
+>  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
+>  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
+>  5 files changed, 471 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3=
+-ccorr.yaml
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+I've compared ccorr driver in display [1] and ccorr in mdp [2], both
+are similar. So I would like both binding document are placed
+together. In display folder? In mdp folder? In SoC folder? I've no
+idea which one is better. At lease put together.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c?h=3Dv5.14
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/2021082410002=
+7.25989-6-moudy.ho@mediatek.com/
+
+Regards,
+Chun-Kuang.
+
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3=
+-rdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3=
+-rsz.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3=
+-wdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3=
+-wrot.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.=
+yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
+> new file mode 100644
+> index 000000000000..59fd68b46022
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek,mdp3-ccorr.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Media Data Path 3 CCORR Device Tree Bindings
+> +
+> +maintainers:
+> +  - Daoyuan Huang <daoyuan.huang@mediatek.com>
+> +  - Moudy Ho <moudy.ho@mediatek.com>
+> +
+> +description: |
+> +  One of Media Data Path 3 (MDP3) components used to do color correction=
+ with 3X3 matrix.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +        - mediatek,mt8183-mdp3-ccorr
+> +
+> +  mediatek,mdp3-id:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maxItems: 1
+> +    description: |
+> +      HW index to distinguish same functionality modules.
+> +
+> +  reg:
+> +    description: |
+> +      Physical base address and length of the function block
+> +      register space, the number aligns with the component
+> +      and its own subcomponent.
+> +
+> +  mediatek,gce-client-reg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: |
+> +      sub-system id corresponding to the global command engine (GCE)
+> +      register address.
+> +      $ref: /schemas/mailbox/mtk-gce.txt
+> +
+> +  clocks:
+> +    minItems: 1
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8183-clk.h>
+> +    #include <dt-bindings/gce/mt8183-gce.h>
+> +
+> +    mdp3_ccorr: mdp3_ccorr@1401c000 {
+> +      compatible =3D "mediatek,mt8183-mdp3-ccorr";
+> +      mediatek,mdp3-id =3D <0>;
+> +      reg =3D <0x1401c000 0x1000>;
+> +      mediatek,gce-client-reg =3D <&gce SUBSYS_1401XXXX 0xc000 0x1000>;
+> +      clocks =3D <&mmsys CLK_MM_MDP_CCORR>;
+> +    };
