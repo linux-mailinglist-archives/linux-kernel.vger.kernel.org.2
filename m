@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A046E403166
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1E4403161
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347609AbhIGXIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:08:32 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39585 "EHLO ozlabs.org"
+        id S1347365AbhIGXHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:07:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43977 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347536AbhIGXIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:08:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631056043;
-        bh=XVo6xpENuD6dmn0WJoe2yb4P18DghCaRXFxdjCks7U4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ARdhhYkH+haYbnWLbjEKTT5x8jQBsjLbu/dsB51WRhOZ9lWaakDCP4JN0ic4uffta
-         VJY/aONqC69vBIZlCbnsB1beP62MAeiKni+olL3PjWrhnqAD7Z8qzmvW/4IRg3HUKR
-         uE8KBvMvaDe8yY0Z8yaKp1nVGDA9EA4DQk/rsjDXiyHBX3szxMs1wQEV7yygXTUSAM
-         W3i9OWrxLhgqTx2v93v+1ntt2f4hslajjTTPM41JbeKlTWNaDNpiakbW+AqQ62H5xQ
-         AuUQSSrJXKvhXngve1OeYSH3DKm+Vs+YBmhKMnK1117d0tKcGpA5sKM13Ct9rCJ346
-         Ubt4QjHzSI2qw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H41BK3JVhz9t54;
-        Wed,  8 Sep 2021 09:07:21 +1000 (AEST)
-Date:   Wed, 8 Sep 2021 09:07:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the origin tree
-Message-ID: <20210908090720.0748b861@canb.auug.org.au>
+        id S240690AbhIGXHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 19:07:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="207450693"
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="207450693"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 16:06:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="430402285"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga006.jf.intel.com with ESMTP; 07 Sep 2021 16:06:07 -0700
+Date:   Tue, 7 Sep 2021 16:07:38 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Borislav Petkov <bp@alien8.de>,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
+ supported
+Message-ID: <20210907230738.j6j32zvyfpr37qw6@gupta-dev2.localdomain>
+References: <YTXfmRIwWREJgEU9@zn.tnic>
+ <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
+ <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
+ <CAPm50aLiB+O85mgcKcOZwO6J-DXjwK=p+7npBH-qVdkL-77Huw@mail.gmail.com>
+ <77e8d483-4395-0017-300e-0886f75217bb@intel.com>
+ <CAPm50aL_eJm2s5GJD1OMFK3vt_iHLQrBueiz-NWS38H=Zz378w@mail.gmail.com>
+ <cae10a15-1c21-4cf4-dff5-2123613f1b41@intel.com>
+ <CAPm50a+crBuP9wH2zCqcD22+wmsb4pj3A9rT_G+64=EV9KLg5w@mail.gmail.com>
+ <20210907053816.qldtcxkxxv7hkzgv@gupta-dev2.localdomain>
+ <CAPm50aJDC0isfu5gujPjmDn_pvAmQw0mQu_Pv5S67r2TvSgyvg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PMX9wECH8ThNTXGuo86an/r";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPm50aJDC0isfu5gujPjmDn_pvAmQw0mQu_Pv5S67r2TvSgyvg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PMX9wECH8ThNTXGuo86an/r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 07.09.2021 14:56, Hao Peng wrote:
+>On Tue, Sep 7, 2021 at 1:36 PM Pawan Gupta
+><pawan.kumar.gupta@linux.intel.com> wrote:
+>>
+>> On 07.09.2021 12:39, Hao Peng wrote:
+>> >On Tue, Sep 7, 2021 at 12:26 PM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>> >>
+>> >> On 9/7/2021 11:40 AM, Hao Peng wrote:
+>> >> > On Tue, Sep 7, 2021 at 10:56 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>> >> >>
+>> >> >> On 9/7/2021 10:35 AM, Hao Peng wrote:
+>> >> >>> On Tue, Sep 7, 2021 at 10:08 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>> >> >>>>
+>> >> >>>> On 9/7/2021 9:47 AM, Hao Peng wrote:
+>> >> >>>>> On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
+>> >> >>>>>>
+>> >> >>>>>> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
+>> >> >>>>>>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+>> >> >>>>>>> RTM and HLE features, it will affect TAA mitigation.
+>> >> >>>>>>>
+>> >> >>>>>>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+>> >> >>>>>>> ---
+>> >> >>>>>>>     arch/x86/kernel/cpu/tsx.c | 7 +++++++
+>> >> >>>>>>>     1 file changed, 7 insertions(+)
+>> >> >>>>>>>
+>> >> >>>>>>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+>> >> >>>>>>> index 9c7a5f049292..5e852c14fef2 100644
+>> >> >>>>>>> --- a/arch/x86/kernel/cpu/tsx.c
+>> >> >>>>>>> +++ b/arch/x86/kernel/cpu/tsx.c
+>> >> >>>>>>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
+>> >> >>>>>>>
+>> >> >>>>>>>            if (!tsx_ctrl_is_supported()) {
+>> >> >>>>>>>                    tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
+>> >> >>>>>>> +
+>> >> >>>>>>> +               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
+>> >> >>>>>>> +                * but guest supports RTM and HLE features, it will affect TAA
+>> >> >>>>>>> +                * （tsx_async_abort）mitigation.
+>> >> >>>>>>> +                */
+>> >> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
+>> >> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
+>> >> >>>>
+>> >> >>>> anyway, IMHO, we shouldn't do anything here for TAA. It should be in
+>> >> >>>> taa_select_mitigation()
+>> >> >>>>
+>> >> >>>>>>>                    return;
+>> >> >>>>>>>            }
+>> >> >>>>>>
+>> >> >>>>>> How does that even happen - the hypervisor does not support the MSR but
+>> >> >>>>>> "guest supports" TSX features?!
+>> >> >>>>>>
+>> >> >>>>>> I guess the guest is detecting it wrong.
+>> >> >>>>>>
+>> >> >>>>>> What hypervisor, what guest, how do I reproduce?
+>> >> >>>>>>
+>> >> >>>>> hypervisor is kvm, guest is linux too.
+>> >> >>>>>> Please give full details.
+>> >> >>>>>>
+>> >> >>>>> The host I used is kernel-5.4, and guest is kernel-5.13.
+>> >> >>>>> MSR_IA32_TSX_CTRL is exposed
+>> >> >>>>> to guest and guest to support RTM and HLE features, no direct
+>> >> >>>>> dependence. at the qemu I
+>> >> >>>>> started guest with -cpu host-model.
+>> >> >>>>> I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
+>> >> >>>>> exposed to guest.
+>> >> >>>>
+>> >> >>>> Does guest see TAA_NO bit?
+>> >> >>>>
+>> >> >>> Guest can't see taa_no, which requires updating qemu to solve. But I think
+>> >> >>> there is a compatibility process here.
+>> >> >>
+>> >> >> Anyway, there should be some existing code in kernel already to handle
+>> >> >> the case that CPUID reports TRM while MSR_IA32_CORE_CAPABILITIES doesn't
+>> >> >> report MSR_TSX_CTRL nor TAA_NO.
+>> >> >>
+>> >> > Can you point out which patches ? At present, guest is kernel-5.13
+>> >> > still has this problem.
+>> >>
+>> >> What's the output of 'cat
+>> >> /sys/devices/system/cpu/vulnerabilities/tsx_async_abort' on your guest?
+>> >>
+>> >Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown.
+>>
+>> This suggests that the microcode is old. Can you please share the output
+>> of below cmds on host and guest:
+>>
+>>         $ grep . /sys/devices/system/cpu/vulnerabilities/*
+>host : not affected
+>guest: Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host
+>state unknown.
 
-Hi all,
+This would mean TAA_NO is not being exported to guest. Most likely qemu
+needs to be patched for the CPU configuration you are using.
 
-Building Linus' tree, today's linux-next build (mips
-allmodconfig) failed like this:
-
-In file included from /kisskb/src/include/linux/compiler_types.h:65:0,
-                 from <command-line>:0:
-include/linux/compiler_attributes.h:29:29: error: "__GCC4_has_attribute___n=
-o_sanitize_coverage__" is not defined [-Werror=3Dundef]
- # define __has_attribute(x) __GCC4_has_attribute_##x
-                             ^
-include/linux/compiler-gcc.h:125:29: note: in expansion of macro '__has_att=
-ribute'
- #if defined(CONFIG_KCOV) && __has_attribute(__no_sanitize_coverage__)
-                             ^
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  540540d06e9d ("kcov: add __no_sanitize_coverage to fix noinstr for all ar=
-chitectures")
-
-This ia a gcc 4.9 build, so presumably this?
-
-diff -ru a/include/linux/compiler_attributes.h b/include/linux/compiler_att=
-ributes.h
---- a/include/linux/compiler_attributes.h	2021-09-08 09:03:35.169225661 +10=
-00
-+++ b/include/linux/compiler_attributes.h	2021-09-08 09:05:47.790907780 +10=
-00
-@@ -36,6 +36,7 @@
- # define __GCC4_has_attribute___no_profile_instrument_function__ 0
- # define __GCC4_has_attribute___nonstring__           0
- # define __GCC4_has_attribute___no_sanitize_address__ 1
-+# define __GCC4_has_attribute___no_sanitize_coverage__	0
- # define __GCC4_has_attribute___no_sanitize_undefined__ 1
- # define __GCC4_has_attribute___fallthrough__         0
- #endif
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/PMX9wECH8ThNTXGuo86an/r
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE38KgACgkQAVBC80lX
-0GyO5gf+ImLfhQQJv9/bNGZrKSWwuix3UXeToczkl9cZ2IsxhS8XVjmWeZY9nXYk
-LQouQ9eziyn6pF0t1rPW0PyBYkydYhRujoj8YOIIouGflrTd5zhz3dKUNXwQWhVp
-Avse/4oVMJmF32j3tq3PxEYFGoe4usRYAc9PvcVS/H93QZyuy4U7LktlITaaWCck
-EzoMrqRC4J1sN6PtIadoKfkQmDBopUejx7EQoTU6A4ZtiY8KYoi0eMjpQzt6cI3z
-T5rE1ZbHtkga6S1glhk2h0r3Ygq34tzxOAQe5x6i78t+xp8c1+xl8P0De6mHJOAQ
-npfBzuUP1mGcqFP2HnPj2PS7prla4w==
-=f5vo
------END PGP SIGNATURE-----
-
---Sig_/PMX9wECH8ThNTXGuo86an/r--
+Thanks,
+Pawan
