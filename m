@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF93402CE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DCF402CE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbhIGQgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:36:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20868 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245162AbhIGQgm (ORCPT
+        id S245162AbhIGQg5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 12:36:57 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:44485 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231378AbhIGQg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631032536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=d7P/NNV3COGnyOtvU4IPpGxMeqh1NqSkekuXhYHEkos=;
-        b=HCJKpkT+FAn3aHFLh1rb89PxSWhKKRZbiyzNJu2/+qLOQ5fg31X67BwdF16jsrRcpHrfH6
-        o1cyDdHnGzV4uYRhwVipXUTCYapk9ZPsTctcxuxql+X3Tf2DiRcxiKCjj0k3sJEmjTd5PN
-        SM5hl4JbYsPyi9orTChE5en8ayNRO9o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-mWjfO9G3NMaZzJ1frh6-nw-1; Tue, 07 Sep 2021 12:35:34 -0400
-X-MC-Unique: mWjfO9G3NMaZzJ1frh6-nw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B20B835DF0;
-        Tue,  7 Sep 2021 16:35:33 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B328710BD;
-        Tue,  7 Sep 2021 16:35:31 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: nVMX: Filter out all unsupported controls when eVMCS was activated
-Date:   Tue,  7 Sep 2021 18:35:30 +0200
-Message-Id: <20210907163530.110066-1-vkuznets@redhat.com>
+        Tue, 7 Sep 2021 12:36:56 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 93BC560009;
+        Tue,  7 Sep 2021 16:35:46 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 18:35:45 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Roger Quadros <rogerq@kernel.org>, <tony@atomide.com>,
+        <robh+dt@kernel.org>, <nm@ti.com>, <lokeshvutla@ti.com>,
+        <nsekhar@ti.com>, <krzysztof.kozlowski@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+Message-ID: <20210907183545.3e281b7d@xps13>
+In-Reply-To: <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
+References: <20210907113226.31876-1-rogerq@kernel.org>
+        <20210907113226.31876-6-rogerq@kernel.org>
+        <20210907160317.2ec5304a@xps13>
+        <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Windows Server 2022 with Hyper-V role enabled failed to boot on KVM when
-enlightened VMCS is advertised. Debugging revealed there are two exposed
-secondary controls it is not happy with: SECONDARY_EXEC_ENABLE_VMFUNC and
-SECONDARY_EXEC_SHADOW_VMCS. These controls are known to be unsupported,
-as there are no corresponding fields in eVMCSv1 (see the comment above
-EVMCS1_UNSUPPORTED_2NDEXEC definition).
+Hi Grygorii,
 
-Previously, commit 31de3d2500e4 ("x86/kvm/hyper-v: move VMX controls
-sanitization out of nested_enable_evmcs()") introduced the required
-filtering mechanism for VMX MSRs but for some reason put only known
-to be problematic (and not full EVMCS1_UNSUPPORTED_* lists) controls
-there.
+> >   
+> >> +
+> >> +  nand-bus-width:
+> >> +    description:
+> >> +      Bus width to the NAND chip
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    enum: [8, 16]
+> >> +    default: 8  
+> > 
+> > This is part of nand-controller.yaml binding and should not be there.
+> >   
+> >> +
+> >> +allOf:
+> >> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"  
+> > 
+> > Maybe you need to reference the nand controller bindings as well
+> >   
+> 
+> This will not work out of the box :( as nand-controller.yaml defines both
+>   nand controller and nand memory. It potentially might work if it will be possible to split
+> nand memory definition (or nand memory properties) out of and-controller.yaml, similarly to
+> ti,gpmc-child.yaml from this series.
 
-Note, Windows Server 2022 seems to have gained some sanity check for VMX
-MSRs: it doesn't even try to launch a guest when there's something it
-doesn't like, nested_evmcs_check_controls() mechanism can't catch the
-problem.
+What you think would be the issue?
 
-Let's be bold this time and instead of playing whack-a-mole just filter out
-all unsupported controls from VMX MSRs.
+I am not opposed to split nand-controller.yaml into
+nand-controller.yaml and nand-chip.yaml if it simplifies the
+description of controllers but I don't get why it would be needed. In
+particular since we expect all drivers to support the
 
-Fixes: 31de3d2500e4 ("x86/kvm/hyper-v: move VMX controls sanitization out of nested_enable_evmcs()")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/vmx/evmcs.c | 12 +++++++++---
- arch/x86/kvm/vmx/vmx.c   |  9 +++++----
- 2 files changed, 14 insertions(+), 7 deletions(-)
+nand-controller {
+	controller-props;
+	nand-chip {
+		chip-props;
+	}
+}
 
-diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
-index 0dab1b7b529f..ba6f99f584ac 100644
---- a/arch/x86/kvm/vmx/evmcs.c
-+++ b/arch/x86/kvm/vmx/evmcs.c
-@@ -353,14 +353,20 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
- 	switch (msr_index) {
- 	case MSR_IA32_VMX_EXIT_CTLS:
- 	case MSR_IA32_VMX_TRUE_EXIT_CTLS:
--		ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
- 		break;
- 	case MSR_IA32_VMX_ENTRY_CTLS:
- 	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
--		ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
- 		break;
- 	case MSR_IA32_VMX_PROCBASED_CTLS2:
--		ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_2NDEXEC;
-+		break;
-+	case MSR_IA32_VMX_PINBASED_CTLS:
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_PINCTRL;
-+		break;
-+	case MSR_IA32_VMX_VMFUNC:
-+		ctl_low &= ~EVMCS1_UNSUPPORTED_VMFUNC;
- 		break;
- 	}
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index fada1055f325..d7c5257eb5c0 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1837,10 +1837,11 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 				    &msr_info->data))
- 			return 1;
- 		/*
--		 * Enlightened VMCS v1 doesn't have certain fields, but buggy
--		 * Hyper-V versions are still trying to use corresponding
--		 * features when they are exposed. Filter out the essential
--		 * minimum.
-+		 * Enlightened VMCS v1 doesn't have certain VMCS fields but
-+		 * instead of just ignoring the features, different Hyper-V
-+		 * versions are either trying to use them and fail or do some
-+		 * sanity checking and refuse to boot. Filter all unsupported
-+		 * features out.
- 		 */
- 		if (!msr_info->host_initiated &&
- 		    vmx->nested.enlightened_vmcs_enabled)
--- 
-2.31.1
+organization which has been enforced since at least 2018. Having a
+controller vs. chip representation is fundamentally right. But here I
+see how "legacy" are these bindings with so much unneeded specific "ti,"
+properties... On one side it would be good to verify that the driver
+supports this representation (which I believe is true) and on the other
+side maybe it's time to advertise "better" bindings as well.
 
+
+Thanks,
+Miquèl
