@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EEC402500
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580D5402505
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242187AbhIGIUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:20:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236269AbhIGIUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:20:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA3E6108E;
-        Tue,  7 Sep 2021 08:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631002751;
-        bh=W647jj4n/AXY270eoCzaSU0MNI6C5cZZM2tLOwvy4dY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GwrFcHOmtxjGue4i9D6qdqgrvk0OR6iC3tV0naM/bXv9Oj+uGVMuJyYkVRQ+9Oywg
-         sT7ipWMNYjguL8dVntyII+SJfz+C3A0cHmglfMYUQ7/u22AX+oWg6+Pngf7Nwhmj7R
-         BS0XesHF94zOfSJmuARfbxF13M8QurSS4yBX3fvXnhIkhQcQQcLq1TcI9kyREGt6fm
-         GDd/tiImzApHen6zXo+Y/QFgbTir7vMZ5OyAhMZbE9WwqTVv+8zDQig6/ZPceaQqfv
-         3/L9po5mIvfjwtpxfZGYMCzss4JBCGrfUl3ykDVAIJP+YqOGsq26GoWMpqMjvcG3DD
-         Hu/c0YnueZHaQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mNWJn-00013I-Db; Tue, 07 Sep 2021 10:18:59 +0200
-Date:   Tue, 7 Sep 2021 10:18:59 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: Re: [PATCH] USB: cdc-acm: fix minor-number release
-Message-ID: <YTcgc/wMDEpIpJG1@hovoldconsulting.com>
-References: <20210906124339.22264-1-johan@kernel.org>
- <b0af8328-52c4-e5f8-5e11-36f95f32e735@suse.com>
+        id S242445AbhIGIVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:21:24 -0400
+Received: from outbound-smtp62.blacknight.com ([46.22.136.251]:37865 "EHLO
+        outbound-smtp62.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230286AbhIGIVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 04:21:19 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp62.blacknight.com (Postfix) with ESMTPS id 9A655FAF3D
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:20:12 +0100 (IST)
+Received: (qmail 22356 invoked from network); 7 Sep 2021 08:20:12 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Sep 2021 08:20:12 -0000
+Date:   Tue, 7 Sep 2021 09:20:10 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v6 00/33] SLUB: reduce irq disabled scope and make it RT
+ compatible
+Message-ID: <20210907082010.GB3959@techsingularity.net>
+References: <20210904105003.11688-1-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <b0af8328-52c4-e5f8-5e11-36f95f32e735@suse.com>
+In-Reply-To: <20210904105003.11688-1-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 03:02:43PM +0200, Oliver Neukum wrote:
+On Sat, Sep 04, 2021 at 12:49:30PM +0200, Vlastimil Babka wrote:
+> The RFC/v1 version also got basic performance screening by Mel that didn't show
+> major regressions. Mike's testing with hackbench of v2 on !RT reported
+> negligible differences [6]:
 > 
-> On 06.09.21 14:43, Johan Hovold wrote:
-> > @@ -1323,8 +1324,10 @@ static int acm_probe(struct usb_interface *intf,
-> >  	usb_get_intf(acm->control); /* undone in destruct() */
-> >  
-> >  	minor = acm_alloc_minor(acm);
-> > -	if (minor < 0)
-> > +	if (minor < 0) {
-> > +		acm->minor = ACM_TTY_MINORS;
-> >  		goto err_put_port;
 
-> Congratulations for catching that one.
+FWIW, this version didn't show any major differences in terms of
+performance and it didn't functionally fail either.
 
-Heh, thanks.
-
-> May I request to improve understandability of the code that you give
-> the constant a distinct name for this purpose? Something like
-> 
-> ACM_MINOR_POISON or ACM_INVALID_MINOR
-> 
-> so that normal people can understand the fixed code?
-
-Sure, I'll use ACM_MINOR_INVALID.
-
-Johan
+-- 
+Mel Gorman
+SUSE Labs
