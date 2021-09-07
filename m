@@ -2,197 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24933403018
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC7540301A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346891AbhIGVIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:08:06 -0400
-Received: from rosenzweig.io ([138.197.143.207]:46240 "EHLO rosenzweig.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346428AbhIGVIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:08:02 -0400
-Date:   Tue, 7 Sep 2021 17:06:48 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mailbox: apple: Add driver for Apple mailboxes
-Message-ID: <YTfUaER6aq+YjBFs@sunset>
-References: <20210907145501.69161-1-sven@svenpeter.dev>
- <20210907145501.69161-4-sven@svenpeter.dev>
- <YTe1cFs5ERe9LDu8@sunset>
- <39b92560-b236-4abb-9de0-ac3a3fa3a506@www.fastmail.com>
-MIME-Version: 1.0
+        id S1346907AbhIGVIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:08:46 -0400
+Received: from mail-bn7nam10on2070.outbound.protection.outlook.com ([40.107.92.70]:35431
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344670AbhIGVIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 17:08:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GIyyqK4b4EAyNsqksnExa5uoW2TF2NUuIQwlg6CpmPpoStkXmsqcF9zAZZrKY2XjVMWxCY0s45Uggpqa0nJpjOOBT9f/ow1Fh3DPm3xxIIjI4FRUPuhAsym0jNiUx31sOVtYJUQhJavIN/Mv2seAaYttWwxPEcI24LjUAVfGndRcpZ+nbzzNJ4iBR6V9+/x0iWZnVjZZFuqvK8oA2LfPFIQX/FxyhxFoLQDX0vn9gZTvcOUAvrAQr17X8zaDaus86N1d2L2i4t93yJ8zXawdN0cjlEzlnk+9AxxyI92HWcelP/xrxaXtliL1f5Hgkl8RgYu32a87sdPH5aXScp2AGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=IdYsgp+KcjWA+hCk4mqDGdLRpo0uRT4j7Rw5ogIVxuQ=;
+ b=aftuwszMgwB72muQexOA3tQQ/HD9/dQSJI2TTxhZ+g6IgeHMDIxs2/AVBO6ck7uZeFwYMR9y0IjucGLiTKnVjhHVRV4gOLmkcIFZJpvHIGGmgXU/tSJst8/kEWq96akhlGmPrmRxSOJf8MMBYfCxMgbu7iepeeUInpw0YidGrJP70Re7BxORbWUg/eEoNX/AEX6J/YWKQNnzO0JKktjZ8PZmXLEp9d2Xhm3vptfrc1N1Ckt+Eln06OLGbttemp5RCXj4f6JmWjG9OiE4kn3TTJDowG4+yQ0Iz9fCVy3AVoBvrmbYCNEpL2Rfead3aHOQDepqZrf1xyv9p9PhaCTG6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IdYsgp+KcjWA+hCk4mqDGdLRpo0uRT4j7Rw5ogIVxuQ=;
+ b=ROA8SZycfbh9EQGnUOoagbzSuzBzBiCcbr6GLfHk2XumZWRQzWDlsic3LmxCg1XXyuvcg2Jh1h11NWxnI4c3mQuCyucXXunzEyI8yDyRtvkXBngFCTLlGe/cPMC7a9Z/dXuHwpIF8bhzLxvluKf3XnWOqEpFA3en/W1RjJhu2PM=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by CO6PR12MB5394.namprd12.prod.outlook.com (2603:10b6:5:35f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
+ 2021 21:07:35 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::d82f:e8c3:96ac:5465]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::d82f:e8c3:96ac:5465%9]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
+ 21:07:35 +0000
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>, Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx@lists.freedesktop.org
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain>
+ <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+ <CAHk-=wgZkQ+eZ02TaCpAWo_ffiLMwA2tYNHyL+B1dQ4YB0qfmA@mail.gmail.com>
+ <CAHk-=wh37UWTqUzbh5qg_x9pFgqBVwpdq_Kf+hnB5mqEUkrjmg@mail.gmail.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <fb50dc44-fbe4-e6b3-5abc-d90375992292@amd.com>
+Date:   Tue, 7 Sep 2021 17:07:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <CAHk-=wh37UWTqUzbh5qg_x9pFgqBVwpdq_Kf+hnB5mqEUkrjmg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <39b92560-b236-4abb-9de0-ac3a3fa3a506@www.fastmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0050.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:2::22) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
+MIME-Version: 1.0
+Received: from [192.168.50.3] (209.195.106.179) by YQBPR01CA0050.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:2::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 21:07:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5fa19f75-1336-42f9-8d1c-08d972438445
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5394:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR12MB53942D0A2B74BA58357B10758CD39@CO6PR12MB5394.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:51;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I1BL0orZz308dnIEtkkroUDwwgy7ziTujvTKfkGABTOYevV2k5NrimqiYdRVRXZmiV9kyRCDO61wWJw34vpWAfyXInb4rrUPBPHFxgBAfclVgTgBtFHJdLM1/3Ir+catJm1soZmHmEMKK3wHaGyIwRf350p7qdoM2e8sHoPMyOP35gCWqH/kaGpeKQ8BEJnlidIFZ/Urx6HGczvixh3fu1PPElJLq/0zpCZwFtqKkcbWhPUM8Xj/YeHqsjJpwDsC47hy/WlkEjJfdgN72aA/+qycNESjZAayZ4zxO208EpnBwZhi4qzLCEIsn3E/fXsLJK/H7smAPFsZpCFYvjf1dHb/7rNEx/JcY6mEx2rRpsKTpMXfwjaS0uB47CvUI3Rox1fLniirSNyOGsp1S/kQwGSjfiyiu0AD917i3FmEUhHJJ4G0h5zELrytUwT0cQyrZSodKRGxlZd/M45WoKYb6TaeZ5r1dIABJ6GcKnbMnNEuQc1u+lDOAhqDy1VQ14mnW2xcF65DddgBNpZjg23Q0MVGKINA5IXQDHZ7AEv9lw1w4V8qjxKKzWJDO9WPBCOdA4rP4+RcJV1KiddFfm3y5kmD3b8far0GhMLfgDyr8jYmrZ0ayJfRX87O7X+rqE1DmjAuROKSDk9eTWj3yPkkiC+R5svOgfkXyXLeg4q/Gs9cRsSjRkVwfk9Pp0f/EZJZh56oRzTHsQ3/fZtsWrb0u8P2MVWtvWxhVIkufZnuLBI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(366004)(346002)(31696002)(86362001)(53546011)(66946007)(8676002)(66556008)(54906003)(186003)(66476007)(5660300002)(110136005)(2616005)(36756003)(31686004)(956004)(6636002)(8936002)(6486002)(316002)(16576012)(4326008)(478600001)(38100700002)(6666004)(44832011)(2906002)(83380400001)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VU1mUnFVcjRPa3lPdE1uWUFNTUdZZFg2WFVidXhvWjcwelgxZUZxeXhzZnpt?=
+ =?utf-8?B?S0ZvdGlSN0Z6U0xTSmhQY2tYTUNIdWNua2N0dkhIeU96T2dKVTA4YmU0Qy8y?=
+ =?utf-8?B?eDhGemtSaC82ZlJIbGtGQk5yUHR6SnVvMFV6SjZvUFBQTS9DeXBQK3I4Znh4?=
+ =?utf-8?B?YVM3VkloYWhwTDZwblBsMFpMNzBkVFY2UDRGYS9wc0VtVEtUMFNqMXgvZCtC?=
+ =?utf-8?B?MkNEYWZ5VDVDeVd5UWJ6NzdSMzVuM3NFL0ZPMDExcnZpUWFUWDQ0L21vTzZC?=
+ =?utf-8?B?cVRKN1pHVWlMVkJFeE9yeStydnpOd29yQTZoNHRIdFBQbmg4aW1oejRwazcz?=
+ =?utf-8?B?NnJXVWNUdWtRMGNHTHd6VGVGWDdFc2t5NWx2RFMxS2IyNWJkS3ZCaDNtbmpZ?=
+ =?utf-8?B?TkhTdmxDMHoyTTAvWUJiOWgvWGRaWXJlQ1dkeEo1M1BJWUpXOXJtelJWWVd0?=
+ =?utf-8?B?OVFkMVF1b052M2lzUVlqc0REdTdTd285TktYcU9KM3BndzFJSkpQWUpkYW1r?=
+ =?utf-8?B?eGh5a25yRktCeFlGNGlacVN6UkhPUjRjQytYUkdmeGFzaGdsZGlCY3NpVUYy?=
+ =?utf-8?B?UmtmTzU3UkxwNnJQekF1N3NvMXh5eFd2Z3NKU1BzbFM0ZXFsT0FlK05zbngx?=
+ =?utf-8?B?VzRYRm44bU9kWGpsMDEwalNJaldIa0Y2NkZlZTZqc1N5eXBzMG9Ud1NoN2JM?=
+ =?utf-8?B?MkhLZUNuNTJEQlQvYS83d011eFN1MlpUa0dZY0xNck9WbGVEUXcrdGxGaldB?=
+ =?utf-8?B?YUN5NHgxWGpObk1sS2pHRTFmSGl2eGxqQ0JjdTFwbXNnelpxUzRrbm1MVFNI?=
+ =?utf-8?B?dERNeW54Zm8rdmNyM0lKUG5jTFNXRU1WYWtlVk0rcVZzQ1hMOEpvWU5QaEs1?=
+ =?utf-8?B?Q3RNcFRvcmQzR0JzMzBwTUdqSkJkV3ZaRXRoUzNlMkllZTFaRzNxeEVJNkJk?=
+ =?utf-8?B?UmUyeGFURFFyQnFZTnpGZDBlSnRKQTErL05ITkRHVkk5eXF0a0Y5NVNiWWFa?=
+ =?utf-8?B?R3ZiSElMTWlXQSthMjhRME5LaGxhMjR3MTU3RGpjbDVVeW1rOGFPdlBBL1lW?=
+ =?utf-8?B?MkthZ3dRNWphaStCSzE3RmFWUmw0OEo2N3Mxby94aGdyeUxTSkpQS29ONWZ0?=
+ =?utf-8?B?ZWJEZnNHemVDSGRsZVVIZDByQXlma2g4SmgvZmpqemJlUXpBZk1XamJOUC92?=
+ =?utf-8?B?VG1XdzAzdmg1SUxlVDA0VWh4bkQzMEg5NXJHQ0RZZ1lPZExoT0FEWmNoSzVo?=
+ =?utf-8?B?cDhvS2pPZlBmMW5xbkJuQXdyWE1ObE53STA3WnZFVFNTQzBpMkFIWlJxK0ha?=
+ =?utf-8?B?d2QwVTRnK2cwN20xeWtlR3R1cHc3eE01TFdLOXU4V3FWV1VkbXc0SHlIOHpL?=
+ =?utf-8?B?MVByOUtRdEJEQzkwUkZMbmgvdEdPeXRqTklxZXkzbURsWkx4Y2lHTVlxekkv?=
+ =?utf-8?B?cUtUZHhYMDIwV1BOb2VPYlVFdVFpK0NDQ3NIMkFFa1c2YUFUY09qL25mZ3Np?=
+ =?utf-8?B?K0hPbS9TYlVzaW5GRG80TlBMQVRDbWhwaTlpQmFlcHFXb2h1WVNyV0d6T3A2?=
+ =?utf-8?B?OXY1YkVhUTc2UHpQYkRlREpEUytwd2NNdk9Fa0dsZG5URWhDMmZqVnNXM2s3?=
+ =?utf-8?B?LzFRaGVmWDRMR0FuY3hVbjdzSXlJRFZyQVRLK3oxd1dzN0JERUpBWDFEOW9N?=
+ =?utf-8?B?TTF0cVMvemp1UnNOa3pabnJ3cnpjREFqcTc5eDBZazdkTStyR083RXZOVzFD?=
+ =?utf-8?Q?2Jw82inMlOYJib1I7O0jtrQ2gNL7ytUq704tAZ4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fa19f75-1336-42f9-8d1c-08d972438445
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 21:07:35.8585
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gXIHjRN9Z28Fy3tNpz74uOSFhIS3QsDJDFg1DHNwHaojIfqkbfv5XoIb+AKXAdqDOV4s07aJCJMUkzXeGPzF8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5394
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > + * Both the main CPU and the co-processor see the same set of registers but
-> > > + * the first FIFO (A2I) is always used to transfer messages from the application
-> > > + * processor (us) to the I/O processor and the second one (I2A) for the
-> > > + * other direction.
-> > 
-> > Do we actually know what the copro sees? It seems obvious, but *know*?
+
+
+On 2021-09-07 1:33 p.m., Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 10:10 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> Do I know why? No. I do note that that code is disgusting.
+>>
+>> It's passing one of those structs around by value, for example. That's
+>> a 72-byte structure that is copied on the stack due to stupid calling
+>> conventions. Maybe clang generates a few extra temporaries for it as
+>> part of the function call stack setup? Who knows..
 > 
-> Yes, I know. They see the exact same set of registers. I wouldn't have written
-> it like that otherwise.
-
-Ack.
-
-> > > +struct apple_mbox {
-> > > +	void __iomem *regs;
-> > > +	const struct apple_mbox_hw *hw;
-> > > +     ...
-> > > +};
-> > 
-> > This requires a lot of pointer chasing to send/receive messages. Will
-> > this become a perf issue in any case? It'd be good to get ballparks on
-> > how often these mboxes are used. (For DCP, it doesn't matter, only a few
-> > hundred messages per second. Other copros may have different behaviour)
+> Ooh, yes.
 > 
-> If this actually becomes a problem I'm happy to fix it but right now
-> this feels like premature optimization to me. DCP is going to be the
-> worst offender followed by SMC (at most a few per second when it's really
-> busy during boot time) and SEP (I've also never seen more than a few per
-> second here). The rest of them are mostly quiet after they have booted.
-
-Good enough for me -- it won't matter for DCP, so if it doesn't get any
-worse than DCP there's no point in optimizing this.
-
-> > > +static bool apple_mbox_hw_can_send(struct apple_mbox *apple_mbox)
-> > > +{
-> > > +	u32 mbox_ctrl =
-> > > +		readl_relaxed(apple_mbox->regs + apple_mbox->hw->a2i_control);
-> > > +
-> > > +	return !(mbox_ctrl & apple_mbox->hw->control_full);
-> > > +}
-> > 
-> > If you do the pointer chasing, I suspect you want accessor
-> > functions/macros at least to make it less intrusive...
+> This attached patch is crap - it converts the helper functions to use
+> const pointers instead of passing the whole structure, but it then
+> only converts that one file that *uses* them.
 > 
-> There's regmap but that can't easily be used here because I need 32bit
-> and 64bit writes. I also don't really see the advantage of replacing
-> this with some custom functions like e.g.
+> So the end result will not compile in general, but you can do
 > 
-> 	mbox_ctrl = apple_mbox_hw_readl(apple_mbox, apple_mbox->hw->a2i_control);
+>     make drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_rq_dlg_calc_30.o
 > 
-> which is almost as long. And if I introduce a separate function just to read the
-> control reg this just becomes a lot of boilerplate and harder to follow.
+> and it compiles for me.
 > 
-> Or did you have anything else in mind?
-
-I was envisioning a macro:
-
->	#define apple_mbox_readl(mbox, name) \
->		readl_relaxed(mbox->regs + mbox->hw-> ## name)
->
-> 	mbox_ctrl = apple_mbox_readl(apple_mbox, a2i_control);
-
-Now that I've typed it out, however, it seems a bit too magical to
-justify the minor space savings. And given you need both 32b and 64b
-there would be ~4 such macros which is also a lot of boilerplate.
-
-It's not a huge deal either way but I thought I'd raise it.
-
-> > > +	dev_dbg(apple_mbox->dev, "> TX %016llx %08x\n", msg->msg0, msg->msg1);
-> > 
-> > Isn't "TX" redundant here?
+> And while gcc doesn't care that much - it will apparently either
+> generate the argument stack every call - clang cares deeply.
 > 
-> Sure, but it also doesn't hurt in a debug message. I can spot the TX easier
-> but I'm sure there are people who prefer >.
-
-Fair enough.
-
-> > > +	dev_dbg(apple_mbox->dev, "got FIFO empty IRQ\n");
-> > 
-> > I realize it's a dev_dbg but this still seems unnecessarily noisy.
+> The nasty 720-byte stack frame that clang generates turns into just a
+> 320-byte one, and code generation in general looks a *lot* better.
 > 
-> This code path is almost never reached. I've only been able to trigger
-> it by forcing send_message to return EBUSY even when it could still
-> move messages to the FIFO to test this path.
-> This also can't be triggered more often than the TX debug message.
-> If this triggers more often there's a bug somewhere that kept the interrupt
-> enabled and then the whole machine will hang due an interrupt storm anyway. In
-> that case I'd prefer to have this as noisy as possible.
-
-Ah! Sure, makes sense. Is it worth adding a few words to the functions
-comments indicating this rarely occurs in good conditions?
-
-> > > +static irqreturn_t apple_mbox_recv_irq(int irq, void *data)
-> > > +{
-> > > +	struct apple_mbox *apple_mbox = data;
-> > > +	struct apple_mbox_msg msg;
-> > > +
-> > > +	while (apple_mbox_hw_can_recv(apple_mbox)) {
-> > > +		apple_mbox_hw_recv(apple_mbox, &msg);
-> > > +		mbox_chan_received_data(&apple_mbox->chan, (void *)&msg);
-> > > +	}
-> > ```
-> > 
-> > A comment is warranted why this loop is safe and will always terminate,
-> > especially given this is an IRQ context. (Ah... can a malicious
-> > coprocessor DoS the AP by sending messages faster than the AP can
-> > process them? freezing the system since preemption might be disabled
-> > here? I suppose thee's no good way to protect against that level of
-> > goofy.)
+> Now, as mentioned, this patch is broken and incomplete. But I really
+> think the AMD GPU people need to do this. It makes those functions go
+> from practically unusable to not horribly disgusting.
 > 
-> The only way this can't terminate is if the co-processor tries to stall
-> us with messages, but what's your threat model here? If the co-processor wants
-> to be evil it usually has many other ways to annoy us (e.g. ANS could just disable
-> NVMe, SMC could just trigger a shutdown, etc.)
+> So Harry/Leo/Alex/Christian and amd-gfx list - can you look into
+> making this ugly "make one file compile better" patch actually work
+> properly?
 > 
-> I could move this to threaded interrupt context though which would make that a bit
-> harder to pull off at the cost of a bit more latency from incoming messages.
-> Not sure that's worth it though.
 
-Probably not worth it, no.
+Yes, will take a look at this tonight. We definitely shouldn't be passing
+large structs by value.
 
-> > 
-> > > +	 * There's no race if a message comes in between the check in the while
-> > > +	 * loop above and the ack below: If a new messages arrives inbetween
-> > > +	 * those two the interrupt will just fire again immediately after the
-> > > +	 * ack since it's level sensitive.
-> > 
-> > I don't quite understand the reasoning. Why have IRQ controls at all
-> > then on the M3?
+Harry
+
+> It *looks* lto me ike that code was perhaps written for a C++ compiler
+> and the helpers have been written as a "pass by reference", and the
+> arguments used to be
 > 
-> Re-read the two lines just above this one. If the interrupt is not acked here
-> it will keep firing even when there are no new messages.
-> But it's fine to ack it even when there are message available since it will
-> just trigger again immediately.
-
-Got it, thanks.
-
-> > > +	/*
-> > > +	 * Only some variants of this mailbox HW provide interrupt control
-> > > +	 * at the mailbox level. We therefore need to handle enabling/disabling
-> > > +	 * interrupts at the main interrupt controller anyway for hardware that
-> > > +	 * doesn't. Just always keep the interrupts we care about enabled at
-> > > +	 * the mailbox level so that both hardware revisions behave almost
-> > > +	 * the same.
-> > > +	 */
-> > 
-> > Cute. Does macOS do this? Are there any tradeoffs?
+>      const display_data_rq_misc_params_st& rq_misc_param
 > 
-> Not sure if macOS does is and I also don't see a reason to care what it
-> does exactly. I've verified that this works with the M3 mailboxes.
-> I also don't see why there would there be any tradeoffs.
-> Do you have anything specific in mind?
+> and then the compiler will pass the argument as a pointer. And then it
+> was converted to C, and the "pass by reference" in the function
+> declaration was turned into "pass by value", to avoid changing "." to
+> "->" in the use.
 > 
-> I suspect this HW was used in previous SoCs where all four interrupts
-> shared a single line and required this chained interrupt controller
-> at the mailbox level. But since they are all separate on the M1 it's
-> just a nuisance we have to deal with - especially since the ASC
-> variant got rid of the interrupt controls.
+> But a '&arg' thing in C++ really is a '*arg' pointer in C, and should
+> have been done as that.
+> 
+> Of course, it's also possible that that code was simply written by
+> somebody who didn't understand just *how* horrible it is to pass
+> structures bigger than a word or two by value.
+> 
+> Do we have a compiler warning for passing big structures by value?
+> 
+>                    Linus
+> 
 
-Makes sense for a legacy block 👍
