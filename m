@@ -2,269 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A765D40290B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740F540290E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344514AbhIGMis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S1344294AbhIGMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344559AbhIGMio (ORCPT
+        with ESMTP id S245607AbhIGMjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:38:44 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EFAC0617AF;
-        Tue,  7 Sep 2021 05:37:38 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id x10-20020a056830408a00b004f26cead745so12526381ott.10;
-        Tue, 07 Sep 2021 05:37:38 -0700 (PDT)
+        Tue, 7 Sep 2021 08:39:55 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5559DC061575;
+        Tue,  7 Sep 2021 05:38:49 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id v2so12580270oie.6;
+        Tue, 07 Sep 2021 05:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tT0YE0B1OXNsrJCj7Qo0plt0P2hEoe5ZLUJ8RSKEe7w=;
-        b=nsndOhrmHhE9wT7Xa2+bfeVlVPNJCKT8E9BnRWP7guci8ak+CQ9CuPW4K3qLYGUm7p
-         HSmkm5iB4AUVrZCljBppZLDv72RJHV4hOX/31B20QfWEz2vltEg0fBIGN/eyOlq+W4Jf
-         aC/XP9knDQRd4DhtqPaDQsyJ8lYcDR5oYSe04I/kUDePbKnxUGCEmSQZNyIDSggO3mvd
-         dS1qbmYfZuLK9hG0XQfvAv2vy8CzvM9daPlXROfwr0SI8+BalYTE2+hbGRDTmd6tk6d1
-         y5Co2EBJIzzSPppWIdtykMQW7Z27t476PmCetNkYJZCOYKx588O+2effMs60ux/zOxhL
-         bV4Q==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IO4DPoLtWn2M7NjsFY+uOpOIAUUOqfEf7qzY3pNf7wE=;
+        b=emtLAkOoQEJhdar1+Ymd7JtttOJ+JbMQPS5pibqpMlWQuC4MPLBvm5WBwyh9+lfyTb
+         tCdeq7LZxqwVboZRkO1ahNC84nrGEAxsWKvQMhutPzzC5VABSZl1EwmB0bbDxB/Kt2Q1
+         fX2uG0KJrn4wraXCAJGwR2ZF0KTT+wLNFkmV1A6ebHT4e4kGFvHxsvHWWEpHFWOLaLpO
+         Pwc8jv9AmNtHAPWl1ZE2qpkTSnnoQDfhOceLPar02Age1arCJO+pQLjGBz6jLHsrarKr
+         TgnKrmkM72kb2By8KGI8jgl36Y50cTdGScbuGHLt8P9KQM5ub6a6mrFwXrox0orcFsSd
+         U2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=tT0YE0B1OXNsrJCj7Qo0plt0P2hEoe5ZLUJ8RSKEe7w=;
-        b=WSFgsEXZ28ru/LKA2+R232kT11BDCUEM/f+9yUgKf5PUZudz+TEdRwfMCoFoqzSd1Y
-         +37olrF68SS+dzyymT9OGh19XdBaKd35uTkHgBXaEpjwe8tgMwqMegnfSPTwHS4++8uP
-         AtL/FJbA6tSKJKKtK9Qdh16lJM/MgNYN6nkjckYfGQsYWuw2KsWn93/6ToPsd8/tQ4Cn
-         M4ZRaPCNPZqjfOO2KdjY8g0V83ibTgZY/pep2XRfmh8E6PT/3QCLN6ln/K5z0bY0GCv3
-         QjlGzZSkfB3S8VKvpWLLv+tX/wMnhWWlv6Ubib4cYrQXXtWVsf19gHTwgg1bYsqASV7D
-         OSzw==
-X-Gm-Message-State: AOAM533IseTLBt41Kjuqvk0zfjUPgGLnT1rIFWTYL2lq1HyGl1tcVSz6
-        bRWDaeleJ317uZtseT6UpLLSchCMxe4=
-X-Google-Smtp-Source: ABdhPJwrrhQ7AaehKEVhRvoqvYbFgxLwg31nF+0QJ7F4lETL8deJVnr17vqg6ep1TQHvri2eGm1MqQ==
-X-Received: by 2002:a05:6830:22f9:: with SMTP id t25mr14647703otc.344.1631018257495;
-        Tue, 07 Sep 2021 05:37:37 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=IO4DPoLtWn2M7NjsFY+uOpOIAUUOqfEf7qzY3pNf7wE=;
+        b=rn9/fmDnj8Lp7Npxn0Y+B4SGSRkKj8mubMSbjNl0SfHgn8SM/ZjJL8LVsszmGkeO6L
+         oXOT3A5lDW5+CVvTv1CAj+RKLRh/DrKW9CFbMMFQv+VSi8EbsdjkG498hGhSZKRQucQd
+         wccxx6ialxt+Jzuje6f3jdrlMBbBGPueJK4CGL9Yo4v4oDINuhKRCg0i7ZHyHMyMLZNf
+         PhVMRRbqMUGE3FFA9TmfY1TmRxtTkkWIm0ry3phZlxdfhduQXaM615uqxD1KXFlA0kPp
+         f0nXmVLEgAgDyXV1zNNMC3lmUw7Mo0sz4toSN7i7XZeaX/sPUgtzhB9k9nfa9+NMjUPO
+         rqyA==
+X-Gm-Message-State: AOAM5310YaSceT2bzltkaUvyiS8VeOjCMPWfa5fQ/+u9IQ9GfH91ll2n
+        Y4gm7PevZntSUniqdG26aC7YqS05QCg=
+X-Google-Smtp-Source: ABdhPJyI8KMl65HXoPcv3xq/e7uAjIEqAJQwT2oVTCkCyhG4T/P7uLzNvlpAwFZGlKCsz07gDKu+lw==
+X-Received: by 2002:aca:2419:: with SMTP id n25mr2745768oic.90.1631018328745;
+        Tue, 07 Sep 2021 05:38:48 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s8sm2386546otd.76.2021.09.07.05.37.36
+        by smtp.gmail.com with ESMTPSA id s14sm2037256oiw.8.2021.09.07.05.38.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 05:37:36 -0700 (PDT)
+        Tue, 07 Sep 2021 05:38:48 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 7 Sep 2021 05:38:47 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v3] Input: analog: Always use ktime functions
-Date:   Tue,  7 Sep 2021 05:37:34 -0700
-Message-Id: <20210907123734.21520-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: ar7_wdt: Make use of the helper function
+ devm_platform_ioremap_resource_byname()
+Message-ID: <20210907123847.GA4989@roeck-us.net>
+References: <20210907074223.2706-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907074223.2706-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-m68k, mips, s390, and sparc allmodconfig images fail to build with the
-following error.
+On Tue, Sep 07, 2021 at 03:42:22PM +0800, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-drivers/input/joystick/analog.c:160:2: error:
-	#warning Precise timer not defined for this architecture.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Remove architecture specific time handling code and always use ktime
-functions to determine time deltas. Also remove the now useless use_ktime
-kernel parameter.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v3: Avoid 64-bit divide operation
-v2: Drop helper functions and use ktime_get() and ktime_sub() directly
-    Drop 'speed' variable and use NSEC_PER_MSEC directly
-
- drivers/input/joystick/analog.c | 103 ++++----------------------------
- 1 file changed, 11 insertions(+), 92 deletions(-)
-
-diff --git a/drivers/input/joystick/analog.c b/drivers/input/joystick/analog.c
-index f798922a4598..824e77da67bb 100644
---- a/drivers/input/joystick/analog.c
-+++ b/drivers/input/joystick/analog.c
-@@ -28,10 +28,6 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--static bool use_ktime = true;
--module_param(use_ktime, bool, 0400);
--MODULE_PARM_DESC(use_ktime, "Use ktime for measuring I/O speed");
--
- /*
-  * Option parsing.
-  */
-@@ -110,7 +106,6 @@ struct analog_port {
- 	char cooked;
- 	int bads;
- 	int reads;
--	int speed;
- 	int loop;
- 	int fuzz;
- 	int axes[4];
-@@ -119,66 +114,6 @@ struct analog_port {
- 	int axtime;
- };
- 
--/*
-- * Time macros.
-- */
--
--#ifdef __i386__
--
--#include <linux/i8253.h>
--
--#define GET_TIME(x)	do { if (boot_cpu_has(X86_FEATURE_TSC)) x = (unsigned int)rdtsc(); else x = get_time_pit(); } while (0)
--#define DELTA(x,y)	(boot_cpu_has(X86_FEATURE_TSC) ? ((y) - (x)) : ((x) - (y) + ((x) < (y) ? PIT_TICK_RATE / HZ : 0)))
--#define TIME_NAME	(boot_cpu_has(X86_FEATURE_TSC)?"TSC":"PIT")
--static unsigned int get_time_pit(void)
--{
--        unsigned long flags;
--        unsigned int count;
--
--        raw_spin_lock_irqsave(&i8253_lock, flags);
--        outb_p(0x00, 0x43);
--        count = inb_p(0x40);
--        count |= inb_p(0x40) << 8;
--        raw_spin_unlock_irqrestore(&i8253_lock, flags);
--
--        return count;
--}
--#elif defined(__x86_64__)
--#define GET_TIME(x)	do { x = (unsigned int)rdtsc(); } while (0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"TSC"
--#elif defined(__alpha__) || defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_PPC) || defined(CONFIG_RISCV)
--#define GET_TIME(x)	do { x = get_cycles(); } while (0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"get_cycles"
--#else
--#define FAKE_TIME
--static unsigned long analog_faketime = 0;
--#define GET_TIME(x)     do { x = analog_faketime++; } while(0)
--#define DELTA(x,y)	((y)-(x))
--#define TIME_NAME	"Unreliable"
--#warning Precise timer not defined for this architecture.
--#endif
--
--static inline u64 get_time(void)
--{
--	if (use_ktime) {
--		return ktime_get_ns();
--	} else {
--		unsigned int x;
--		GET_TIME(x);
--		return x;
--	}
--}
--
--static inline unsigned int delta(u64 x, u64 y)
--{
--	if (use_ktime)
--		return y - x;
--	else
--		return DELTA((unsigned int)x, (unsigned int)y);
--}
--
- /*
-  * analog_decode() decodes analog joystick data and reports input events.
-  */
-@@ -241,11 +176,11 @@ static int analog_cooked_read(struct analog_port *port)
- 	int i, j;
- 
- 	loopout = (ANALOG_LOOP_TIME * port->loop) / 1000;
--	timeout = ANALOG_MAX_TIME * port->speed;
-+	timeout = ANALOG_MAX_TIME * NSEC_PER_MSEC;
- 
- 	local_irq_save(flags);
- 	gameport_trigger(gameport);
--	now = get_time();
-+	now = ktime_get();
- 	local_irq_restore(flags);
- 
- 	start = now;
-@@ -258,16 +193,16 @@ static int analog_cooked_read(struct analog_port *port)
- 
- 		local_irq_disable();
- 		this = gameport_read(gameport) & port->mask;
--		now = get_time();
-+		now = ktime_get();
- 		local_irq_restore(flags);
- 
--		if ((last ^ this) && (delta(loop, now) < loopout)) {
-+		if ((last ^ this) && (ktime_sub(now, loop) < loopout)) {
- 			data[i] = last ^ this;
- 			time[i] = now;
- 			i++;
- 		}
- 
--	} while (this && (i < 4) && (delta(start, now) < timeout));
-+	} while (this && (i < 4) && (ktime_sub(now, start) < timeout));
- 
- 	this <<= 4;
- 
-@@ -275,7 +210,7 @@ static int analog_cooked_read(struct analog_port *port)
- 		this |= data[i];
- 		for (j = 0; j < 4; j++)
- 			if (data[i] & (1 << j))
--				port->axes[j] = (delta(start, time[i]) << ANALOG_FUZZ_BITS) / port->loop;
-+				port->axes[j] = ((u32)ktime_sub(time[i], start) << ANALOG_FUZZ_BITS) / port->loop;
- 	}
- 
- 	return -(this != port->mask);
-@@ -378,35 +313,19 @@ static void analog_calibrate_timer(struct analog_port *port)
- 	u64 t1, t2, t3;
- 	unsigned long flags;
- 
--	if (use_ktime) {
--		port->speed = 1000000;
--	} else {
--		local_irq_save(flags);
--		t1 = get_time();
--#ifdef FAKE_TIME
--		analog_faketime += 830;
--#endif
--		mdelay(1);
--		t2 = get_time();
--		t3 = get_time();
--		local_irq_restore(flags);
--
--		port->speed = delta(t1, t2) - delta(t2, t3);
--	}
--
- 	tx = ~0;
- 
- 	for (i = 0; i < 50; i++) {
- 		local_irq_save(flags);
--		t1 = get_time();
-+		t1 = ktime_get();
- 		for (t = 0; t < 50; t++) {
- 			gameport_read(gameport);
--			t2 = get_time();
-+			t2 = ktime_get();
- 		}
--		t3 = get_time();
-+		t3 = ktime_get();
- 		local_irq_restore(flags);
- 		udelay(i);
--		t = delta(t1, t2) - delta(t2, t3);
-+		t = ktime_sub(t2, t1) - ktime_sub(t3, t2);
- 		if (t < tx) tx = t;
- 	}
- 
-@@ -611,7 +530,7 @@ static int analog_init_port(struct gameport *gameport, struct gameport_driver *d
- 		t = gameport_read(gameport);
- 		msleep(ANALOG_MAX_TIME);
- 		port->mask = (gameport_read(gameport) ^ t) & t & 0xf;
--		port->fuzz = (port->speed * ANALOG_FUZZ_MAGIC) / port->loop / 1000 + ANALOG_FUZZ_BITS;
-+		port->fuzz = (NSEC_PER_MSEC * ANALOG_FUZZ_MAGIC) / port->loop / 1000 + ANALOG_FUZZ_BITS;
- 
- 		for (i = 0; i < ANALOG_INIT_RETRIES; i++) {
- 			if (!analog_cooked_read(port))
--- 
-2.33.0
-
+> ---
+>  drivers/watchdog/ar7_wdt.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/watchdog/ar7_wdt.c b/drivers/watchdog/ar7_wdt.c
+> index ff37dc91057d..743e171d97a3 100644
+> --- a/drivers/watchdog/ar7_wdt.c
+> +++ b/drivers/watchdog/ar7_wdt.c
+> @@ -63,8 +63,6 @@ static DEFINE_SPINLOCK(wdt_lock);
+>  /* XXX currently fixed, allows max margin ~68.72 secs */
+>  #define prescale_value 0xffff
+>  
+> -/* Resource of the WDT registers */
+> -static struct resource *ar7_regs_wdt;
+>  /* Pointer to the remapped WDT IO space */
+>  static struct ar7_wdt *ar7_wdt;
+>  
+> @@ -265,9 +263,7 @@ static int ar7_wdt_probe(struct platform_device *pdev)
+>  {
+>  	int rc;
+>  
+> -	ar7_regs_wdt =
+> -		platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+> -	ar7_wdt = devm_ioremap_resource(&pdev->dev, ar7_regs_wdt);
+> +	ar7_wdt = devm_platform_ioremap_resource_byname(pdev, "regs");
+>  	if (IS_ERR(ar7_wdt))
+>  		return PTR_ERR(ar7_wdt);
+>  
+> -- 
+> 2.25.1
+> 
