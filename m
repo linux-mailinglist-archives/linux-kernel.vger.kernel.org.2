@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0264402733
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC48402732
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343497AbhIGK3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245759AbhIGK3c (ORCPT
+        id S245705AbhIGK3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:29:23 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:58974
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245750AbhIGK3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:29:32 -0400
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9458C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:28:24 -0700 (PDT)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNYL0-00CH6S-6h
-        for linux-kernel@vger.kernel.org; Tue, 07 Sep 2021 12:28:22 +0200
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNYKM-00CH0W-EL; Tue, 07 Sep 2021 12:27:42 +0200
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNYKL-000CQN-TO; Tue, 07 Sep 2021 12:27:41 +0200
-From:   Bert Vermeulen <bert@biot.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v2 5/5] ARM: multi_v7_defconfig: Add support for Airoha EN7523 SoC
-Date:   Tue,  7 Sep 2021 12:27:22 +0200
-Message-Id: <20210907102722.47543-6-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210907102722.47543-1-bert@biot.com>
-References: <20210907102722.47543-1-bert@biot.com>
+        Tue, 7 Sep 2021 06:29:22 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A17E53F106;
+        Tue,  7 Sep 2021 10:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631010494;
+        bh=0lEHRp9RVZruXFRyj3O2UNGVIAi8zooypFTJKD7Bh+Q=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=qzUbiDogJk/qrbWcv63BZLtFTmBLBI6fqRT3d4wqf9tVB6mxDIUq/qWtVNgcX7dB+
+         TaatYDD1Rw7S8CZL0jxk50ojKSTgZ3VwsYHVk53XgSjA1eLYs9hqZHwTxQfn2C5PLS
+         QGPPm1Loqc9f5fxt6motPj1QsFvsbBLpvdoVkQB5WWHOr96Tb00F+MGp2nc/hD/VBa
+         Yfr7xny09Ikrx3YJuZmX4wOSxgfkqxFzU7N51BNYgqBKBHbzA85LNZboNS9Xr+DeqL
+         8S7ZHTVuRTMkZl7zrV5195QpLUV0IblJhdMo2vwyI0ZZMAesy345OxpjroTc/Cx71o
+         GjPdWj6JOmjpg==
+From:   Colin King <colin.king@canonical.com>
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ieee802154: Remove redundant initialization of variable ret
+Date:   Tue,  7 Sep 2021 11:28:14 +0100
+Message-Id: <20210907102814.14169-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Crispin <john@phrozen.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-This enables basic bootup support for the Airoha EN7523 SoC.
+The variable ret is being initialized with a value that is never read, it
+is being updated later on. The assignment is redundant and can be removed.
 
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Bert Vermeulen <bert@biot.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ net/mac802154/iface.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index d9abaae118dd..a9370a95dc38 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -31,6 +31,7 @@ CONFIG_MACH_BERLIN_BG2=y
- CONFIG_MACH_BERLIN_BG2CD=y
- CONFIG_MACH_BERLIN_BG2Q=y
- CONFIG_ARCH_DIGICOLOR=y
-+CONFIG_ARCH_AIROHA=y
- CONFIG_ARCH_EXYNOS=y
- CONFIG_ARCH_HIGHBANK=y
- CONFIG_ARCH_HISI=y
-@@ -983,6 +984,7 @@ CONFIG_STAGING_BOARD=y
- CONFIG_MFD_CROS_EC_DEV=m
- CONFIG_CROS_EC_I2C=m
- CONFIG_CROS_EC_SPI=m
-+CONFIG_COMMON_CLK_EN7523=y
- CONFIG_COMMON_CLK_MAX77686=y
- CONFIG_COMMON_CLK_RK808=m
- CONFIG_COMMON_CLK_SCMI=y
+diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
+index 1cf5ac09edcb..323d3d2d986f 100644
+--- a/net/mac802154/iface.c
++++ b/net/mac802154/iface.c
+@@ -617,7 +617,7 @@ ieee802154_if_add(struct ieee802154_local *local, const char *name,
+ {
+ 	struct net_device *ndev = NULL;
+ 	struct ieee802154_sub_if_data *sdata = NULL;
+-	int ret = -ENOMEM;
++	int ret;
+ 
+ 	ASSERT_RTNL();
+ 
 -- 
-2.25.1
+2.32.0
 
