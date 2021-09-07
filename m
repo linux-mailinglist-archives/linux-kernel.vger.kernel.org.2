@@ -2,140 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3CF402614
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1716402618
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245159AbhIGJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244611AbhIGJSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:18:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1073C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:17:39 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mNXEW-0006lE-UY; Tue, 07 Sep 2021 11:17:37 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mNXEV-0000Jc-Nq; Tue, 07 Sep 2021 11:17:35 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mNXEV-0007Nv-MV; Tue, 07 Sep 2021 11:17:35 +0200
-Date:   Tue, 7 Sep 2021 11:17:35 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     zhaoxiao <long870912@gmail.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        matthias.bgg@gmail.com, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] pwm: mediatek: Simplify using devm_pwmchip_add()
-Message-ID: <20210907091735.wfuevpu5a6k4pmlj@pengutronix.de>
-References: <20210906093030.459-1-long870912@gmail.com>
+        id S245201AbhIGJUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:20:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:33626 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244918AbhIGJUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:20:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BDB131B;
+        Tue,  7 Sep 2021 02:19:00 -0700 (PDT)
+Received: from [10.57.94.84] (unknown [10.57.94.84])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4C7F3F766;
+        Tue,  7 Sep 2021 02:18:58 -0700 (PDT)
+Subject: Re: [PATCH 08/10] coresight: trbe: Workaround TRBE errat overwrite in
+ FILL mode
+To:     Linu Cherian <linuc.decode@gmail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>, maz@kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        catalin.marinas@arm.com, Coresight ML <coresight@lists.linaro.org>,
+        linux-kernel@vger.kernel.org, james.morse@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-9-suzuki.poulose@arm.com>
+ <CAAHhmWjR6XYo5j_h3jfLsmWzqD9i9L-pHq=zrrdrw9YTXmuCqg@mail.gmail.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <e7241294-d7a3-2286-0bcd-a0cdbec77ffc@arm.com>
+Date:   Tue, 7 Sep 2021 10:18:57 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cicayrwrycvrz3k2"
-Content-Disposition: inline
-In-Reply-To: <20210906093030.459-1-long870912@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAAHhmWjR6XYo5j_h3jfLsmWzqD9i9L-pHq=zrrdrw9YTXmuCqg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linu
 
---cicayrwrycvrz3k2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 06/08/2021 17:09, Linu Cherian wrote:
+> Hi Suzuki,
+> 
+> On Wed, Jul 28, 2021 at 7:23 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>
+>> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
+>> an erratum, which when triggered, might cause the TRBE to overwrite
+>> the trace data already collected in FILL mode, in the event of a WRAP.
+>> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
+>> and could write upto 3 cache line size worth trace. Thus, this could
+>> corrupt the trace at the "BASE" pointer.
+>>
+>> The workaround is to program the write pointer 256bytes from the
+>> base, such that if the erratum is triggered, it doesn't overwrite
+>> the trace data that was captured. This skipped region could be
+>> padded with ignore packets at the end of the session, so that
+>> the decoder sees a continuous buffer with some padding at the
+>> beginning.
+> 
+> Just trying to understand,
+> Is there a possibility that lost data results in partial trace packets
+> towards the end of the buffer ? Or its always guaranteed that
+> trace packet end is always aligned with buffer end/limit ?
+> Thinking of a case when formatting is disabled.
 
-Hello,
+Yes, trace could be partial towards the end with TRBE in the FILL mode.
+The TRBE doesn't add any formatting and is thus raw ETE trace which
+doesn't have any alignment requirements. This the case even without
+the work around.
 
-On Mon, Sep 06, 2021 at 05:30:30PM +0800, zhaoxiao wrote:
-> With devm_pwmchip_add() we can drop pwmchip_remove() from the device
-> remove callback. The latter can then go away, too and as this is the
-> only user of platform_get_drvdata(), the respective call to
-> platform_set_drvdata() can go, too.
->=20
-> Signed-off-by: zhaoxiao <long870912@gmail.com>
-> ---
->  drivers/pwm/pwm-mediatek.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-mediatek.c b/drivers/pwm/pwm-mediatek.c
-> index b4a31060bcd7..0d4dd80e9f07 100644
-> --- a/drivers/pwm/pwm-mediatek.c
-> +++ b/drivers/pwm/pwm-mediatek.c
-> @@ -253,13 +253,11 @@ static int pwm_mediatek_probe(struct platform_devic=
-e *pdev)
->  		}
->  	}
-> =20
-> -	platform_set_drvdata(pdev, pc);
-> -
->  	pc->chip.dev =3D &pdev->dev;
->  	pc->chip.ops =3D &pwm_mediatek_ops;
->  	pc->chip.npwm =3D pc->soc->num_pwms;
-> =20
-> -	ret =3D pwmchip_add(&pc->chip);
-> +	ret =3D devm_pwmchip_add(&pdev->dev, &pc->chip);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
->  		return ret;
-> @@ -268,13 +266,6 @@ static int pwm_mediatek_probe(struct platform_device=
- *pdev)
->  	return 0;
->  }
-> =20
-> -static int pwm_mediatek_remove(struct platform_device *pdev)
-> -{
-> -	struct pwm_mediatek_chip *pc =3D platform_get_drvdata(pdev);
-> -
-> -	return pwmchip_remove(&pc->chip);
-> -}
-> -
->  static const struct pwm_mediatek_of_data mt2712_pwm_data =3D {
->  	.num_pwms =3D 8,
->  	.pwm45_fixup =3D false,
-> @@ -335,7 +326,6 @@ static struct platform_driver pwm_mediatek_driver =3D=
- {
->  		.of_match_table =3D pwm_mediatek_of_match,
->  	},
->  	.probe =3D pwm_mediatek_probe,
-> -	.remove =3D pwm_mediatek_remove,
->  };
->  module_platform_driver(pwm_mediatek_driver);
-
-A patch like this is already in next, see e0150252a6437d12de3db84bb3af12bd5=
-aa5cc70
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cicayrwrycvrz3k2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmE3LikACgkQwfwUeK3K
-7AlE7Qf/Tlhd8lMXs//42d4oe2KisvZ+Hczlcm2gPRICv/V2NfQ2B8PHnsG/I74z
-AZg8qckIiVoO+WfmYbJWT/W3vVFoZVfXsWIUwaLh8K4N5nNGId2rpAjuN+igSUQW
-9PGBVKv69EAZKfjLkZj+IF5ZQWK/bmlIWk7U8btau8/C0c/VAZTRQAbTybLx5ocr
-iYsnzyIKbBlujEq6pJgGIQXvD0WAeKW2uTf4LH1Ua+GUJkbfMnuDgdZ+/Q/BAy6g
-q377k+Z0pLC8hC+lSn4LZA+VnuYTV0TyNIOz5Fo1WeYRhR2zvbCvVsDn4Ki8EIGR
-IEUObIQ5ov52yHmVc8qbpHCY/2nmvQ==
-=lWLd
------END PGP SIGNATURE-----
-
---cicayrwrycvrz3k2--
+Suzuki
