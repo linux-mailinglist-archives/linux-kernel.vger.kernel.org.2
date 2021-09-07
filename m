@@ -2,66 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E485F40239D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD5E4023B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235084AbhIGGwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:52:14 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:34659 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234831AbhIGGwN (ORCPT
+        id S235312AbhIGG4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:56:42 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:58136 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235276AbhIGG4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:52:13 -0400
-Received: by mail-il1-f199.google.com with SMTP id d17-20020a9287510000b0290223c9088c96so5469261ilm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:51:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=bQd9Yn1U78LI0fg5YUZ8e9dnmnC6+HnT8KD9nGnx8JU=;
-        b=TYSrHQyRtafOee2TI9xo49qtxm3T9bhFxGqpekah0+PH8dBaPkO+UqN9WAVcUgl5Ki
-         Dqqqy8HbXIvBNqLVZzG6HwZHpz1DoAvMrLtfRUpFf/9vraVl6k0jR1yBa2AkX/IGFPK0
-         HH8ld+rV2EVAZTr1luGOt0HwoNDvS2ih+kn3+LotE9B4FEl4zsJ6vGHeDhfa6A31xmYV
-         lmotUwT1CyBA3dGdz41CcC6kdXEkkmW8U3Xp+Ni7DNDZa4/AH0wDC9qPMpRH0qykI5kO
-         KziKzEz3+sRiecai1vdfsu72bkNzOYUagtI+yxszOWHaWCno/OxBK8A3u9s30FfBx3/G
-         KmOA==
-X-Gm-Message-State: AOAM530Exe1eXTRzmB2XHcWNYK1PNUrlPEd7N2hAIE4MB+vzia9Vh/r1
-        ymSoKMnblA8HYjEQbok45jb1AOL1c1U/C99MB/CmGw4Tu/lk
-X-Google-Smtp-Source: ABdhPJyeUmZ77BzmFV6pTkT9Wvawnx2OaFZU5c3skKh+qRRWvRHB3C05eZo7fTlP2AYnx5kDHHj5zeGxsKLKjX/w3mvetoc6Vl5/
+        Tue, 7 Sep 2021 02:56:41 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1872qDNW030676;
+        Tue, 7 Sep 2021 08:55:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=pPWWaNwMDzyikRTWDISy5sjjTX8UIPo1qSx4LUPLwxA=;
+ b=mxD6e0fuEA913caHEUABA1NDOa6dqb+EnzE8ByiidNC5kiF0ZcpYnou85R0Y8H1sJbuU
+ oionhz6yi3OMoprhgzrtNW6hzviBPJAhw5UmwUTH7BVNaE+Gh+7OyeKq1Iu4glQf84bI
+ Y58qydwyqegXSDY4mG1O4yeZjzR3sDFzz5AU2eqXjROo3AGkmHNAPChNemk2MNF8+20V
+ 8K1aY+kdrWdwZqHhOhdAm5pyyn7Cx35LcCyDQbArSr99BMzXfFdYbTei0icrtVc6lUJT
+ aG4mMzeXWvIwfyvm6/yChPkPHjJyLtwQRlftfyHRMTW3yfzbt3yqZYxMJdpI2ucKboWK Hg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3awyp0rwwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 08:55:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 97DC910002A;
+        Tue,  7 Sep 2021 08:55:15 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 64CE52122E8;
+        Tue,  7 Sep 2021 08:55:15 +0200 (CEST)
+Received: from lmecxl0951.lme.st.com (10.75.127.45) by SFHDAG1NODE3.st.com
+ (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Sep
+ 2021 08:55:14 +0200
+Subject: Re: [PATCH] drm/stm: ltdc: add layer alpha support
+To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
+        "Philippe CORNU - foss" <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>
+References: <20210903085740.23108-1-raphael.gallais-pou@foss.st.com>
+From:   yannick Fertre <yannick.fertre@foss.st.com>
+Message-ID: <19331273-3464-869e-8e62-a0c3e096ed70@foss.st.com>
+Date:   Tue, 7 Sep 2021 08:55:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fb0b:: with SMTP id h11mr12845176iog.59.1630997467748;
- Mon, 06 Sep 2021 23:51:07 -0700 (PDT)
-Date:   Mon, 06 Sep 2021 23:51:07 -0700
-In-Reply-To: <000000000000bb5f8605c697fd87@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1e03005cb6230b5@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Write in get_ucounts
-From:   syzbot <syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com>
-To:     ebiederm@xmission.com, legion@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210903085740.23108-1-raphael.gallais-pou@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-07_02,2021-09-03_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi Raphael,
+thanks for the patch.
 
-commit 345daff2e994ee844d6a609c37f085695fbb4c4d
-Author: Alexey Gladkov <legion@kernel.org>
-Date:   Tue Jul 27 15:24:18 2021 +0000
+Acked-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick Fertre <yannick.fertre@foss.st.com>
 
-    ucounts: Fix race condition between alloc_ucounts and put_ucounts
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1378d0ed300000
-start commit:   d5ad8ec3cfb5 Merge tag 'media/v5.14-2' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
-dashboard link: https://syzkaller.appspot.com/bug?extid=8c3af233123df0578a5c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fedec6300000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: ucounts: Fix race condition between alloc_ucounts and put_ucounts
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 9/3/21 10:58 AM, Raphael GALLAIS-POU - foss wrote:
+> Android Hardware Composer supports alpha values applied to layers.
+> Enabling non-opaque layers for the STM CRTC could help offload GPU
+> resources for screen composition.
+> 
+> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> ---
+>   drivers/gpu/drm/stm/ltdc.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+> index 195de30eb90c..e0fef8bacfa8 100644
+> --- a/drivers/gpu/drm/stm/ltdc.c
+> +++ b/drivers/gpu/drm/stm/ltdc.c
+> @@ -845,7 +845,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+>   			LXCFBLR_CFBLL | LXCFBLR_CFBP, val);
+>   
+>   	/* Specifies the constant alpha value */
+> -	val = CONSTA_MAX;
+> +	val = newstate->alpha >> 8;
+>   	reg_update_bits(ldev->regs, LTDC_L1CACR + lofs, LXCACR_CONSTA, val);
+>   
+>   	/* Specifies the blending factors */
+> @@ -997,6 +997,8 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+>   
+>   	drm_plane_helper_add(plane, &ltdc_plane_helper_funcs);
+>   
+> +	drm_plane_create_alpha_property(plane);
+> +
+>   	DRM_DEBUG_DRIVER("plane:%d created\n", plane->base.id);
+>   
+>   	return plane;
+> 
