@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED91B402CF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE85402CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344329AbhIGQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:39:31 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:59273 "EHLO gecko.sbs.de"
+        id S1344315AbhIGQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:39:34 -0400
+Received: from thoth.sbs.de ([192.35.17.2]:41715 "EHLO thoth.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343611AbhIGQj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344014AbhIGQj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Sep 2021 12:39:26 -0400
 Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 187Gc4Iu032544
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 187Gc5bJ012640
         (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 7 Sep 2021 18:38:05 +0200
 Received: from md1f2u6c.ad001.siemens.net ([167.87.245.242])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 187Gc3Gi021975;
-        Tue, 7 Sep 2021 18:38:04 +0200
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 187Gc3Gj021975;
+        Tue, 7 Sep 2021 18:38:05 +0200
 From:   Jan Kiszka <jan.kiszka@siemens.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
         Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH v2 3/4] arm64: dts: ti: iot2050: Prepare for adding 2nd-generation boards
-Date:   Tue,  7 Sep 2021 18:38:01 +0200
-Message-Id: <a393599a6466d04c5f7327eb69a2f3f6b0f9cbc5.1631032682.git.jan.kiszka@siemens.com>
+Subject: [PATCH v2 4/4] arm64: dts: ti: iot2050: Add support for product generation 2 boards
+Date:   Tue,  7 Sep 2021 18:38:02 +0200
+Message-Id: <92c62afc6bb34d4704d65d4d0cbc0857d5814dfc.1631032682.git.jan.kiszka@siemens.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631032682.git.jan.kiszka@siemens.com>
 References: <cover.1631032682.git.jan.kiszka@siemens.com>
@@ -38,358 +38,159 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jan Kiszka <jan.kiszka@siemens.com>
 
-The current IOT2050 devices are Product Generation 1 (PG1), using SR1.0
-AM65x silicon. Upcoming PG2 devices will use SR2.x SoCs and will
-therefore need separate device trees. Prepare for that by factoring out
-common bits that will be shared across both generations.
-
-At this chance, drop a link to the product homepage to in the top-level
-dts files.
+This adds the devices trees for IOT2050 Product Generation 2 (PG2)
+boards. We have Basic and an Advanced variants again, differing in
+number of cores, RAM size, availability of eMMC and further details.
+The major difference to PG1 is the used silicon revision (SR2.x on
+PG2).
 
 Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 ---
- .../dts/ti/k3-am65-iot2050-common-pg1.dtsi    | 46 +++++++++++++++
- .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 35 +-----------
- ...ts => k3-am6528-iot2050-basic-common.dtsi} | 12 +---
- .../boot/dts/ti/k3-am6528-iot2050-basic.dts   | 56 +++----------------
- ...=> k3-am6548-iot2050-advanced-common.dtsi} |  8 +--
- .../dts/ti/k3-am6548-iot2050-advanced.dts     | 50 +++--------------
- 6 files changed, 67 insertions(+), 140 deletions(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
- copy arch/arm64/boot/dts/ti/{k3-am6528-iot2050-basic.dts => k3-am6528-iot2050-basic-common.dtsi} (80%)
- copy arch/arm64/boot/dts/ti/{k3-am6548-iot2050-advanced.dts => k3-am6548-iot2050-advanced-common.dtsi} (85%)
+ arch/arm64/boot/dts/ti/Makefile               |  2 +
+ .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
+ .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
+ .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
+ 4 files changed, 106 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index d56c742f5a10..41a4bc96e6bd 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -8,7 +8,9 @@
+ 
+ dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
++dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
++dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
+ 
+ dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
+ 
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
 new file mode 100644
-index 000000000000..51f902fa35a7
+index 000000000000..2323628b0444
 --- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-@@ -0,0 +1,46 @@
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+@@ -0,0 +1,51 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (c) Siemens AG, 2021
 + *
 + * Authors:
++ *   Chao Zeng <chao.zeng@siemens.com>
 + *   Jan Kiszka <jan.kiszka@siemens.com>
 + *
-+ * Common bits of the IOT2050 Basic and Advanced variants, PG1
++ * Common bits of the IOT2050 Basic and Advanced variants, PG2
 + */
 +
++&main_pmx0 {
++	cp2102n_reset_pin_default: cp2102n_reset_pin_default {
++		pinctrl-single,pins = <
++			/* (AF12) GPIO1_24, used as cp2102 reset */
++			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
++		>;
++	};
++};
++
++&main_gpio1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp2102n_reset_pin_default>;
++	gpio-line-names =
++		"", "", "", "", "", "", "", "", "", "",
++		"", "", "", "", "", "", "", "", "", "",
++		"", "", "", "", "CP2102N-RESET";
++};
++
 +&dss {
-+	assigned-clocks = <&k3_clks 67 2>;
-+	assigned-clock-parents = <&k3_clks 67 5>;
++	/* Workaround needed to get DP clock of 154Mhz */
++	assigned-clocks = <&k3_clks 67 0>;
 +};
 +
 +&serdes0 {
-+	status = "disabled";
++	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
++	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
 +};
 +
-+&sdhci1 {
-+	no-1-8-v;
++&dwc3_0 {
++	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
++				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
++	phys = <&serdes0 PHY_TYPE_USB3 0>;
++	phy-names = "usb3-phy";
 +};
 +
-+&tx_pru0_0 {
-+	status = "disabled";
++&usb0_phy {
++	maximum-speed = "super-speed";
++	snps,dis-u1-entry-quirk;
++	snps,dis-u2-entry-quirk;
 +};
-+
-+&tx_pru0_1 {
-+	status = "disabled";
-+};
-+
-+&tx_pru1_0 {
-+	status = "disabled";
-+};
-+
-+&tx_pru1_1 {
-+	status = "disabled";
-+};
-+
-+&tx_pru2_0 {
-+	status = "disabled";
-+};
-+
-+&tx_pru2_1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index 63a28e18a3bf..af1e95f0f0ce 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -4,13 +4,11 @@
-  *
-  * Authors:
-  *   Le Jin <le.jin@siemens.com>
-- *   Jan Kiszka <jan.kiszk@siemens.com>
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+new file mode 100644
+index 000000000000..c62549a4b436
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) Siemens AG, 2018-2021
++ *
++ * Authors:
++ *   Le Jin <le.jin@siemens.com>
 + *   Jan Kiszka <jan.kiszka@siemens.com>
-  *
-- * Common bits of the IOT2050 Basic and Advanced variants
-+ * Common bits of the IOT2050 Basic and Advanced variants, PG1 and PG2
-  */
- 
--/dts-v1/;
--
- #include "k3-am654.dtsi"
- #include <dt-bindings/phy/phy.h>
- 
-@@ -555,7 +553,6 @@ &sdhci1 {
- 	pinctrl-0 = <&main_mmc1_pins_default>;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
--	no-1-8-v;
- };
- 
- &usb0 {
-@@ -629,10 +626,6 @@ dpi_out: endpoint {
- 	};
- };
- 
--&serdes0 {
--	status = "disabled";
--};
--
- &pcie0_rc {
- 	status = "disabled";
- };
-@@ -714,27 +707,3 @@ &icssg1_mdio {
- &icssg2_mdio {
- 	status = "disabled";
- };
--
--&tx_pru0_0 {
--	status = "disabled";
--};
--
--&tx_pru0_1 {
--	status = "disabled";
--};
--
--&tx_pru1_0 {
--	status = "disabled";
--};
--
--&tx_pru1_1 {
--	status = "disabled";
--};
--
--&tx_pru2_0 {
--	status = "disabled";
--};
--
--&tx_pru2_1 {
--	status = "disabled";
--};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-similarity index 80%
-copy from arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
-copy to arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-index 94bb5dd39122..4a9bf7d7c07d 100644
---- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-@@ -4,20 +4,14 @@
-  *
-  * Authors:
-  *   Le Jin <le.jin@siemens.com>
-- *   Jan Kiszka <jan.kiszk@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-  *
-- * AM6528-based (dual-core) IOT2050 Basic variant
-- * 1 GB RAM, no eMMC, main_uart0 on connector X30
-+ * Common bits of the IOT2050 Basic variant, PG1 and PG2
-  */
- 
--/dts-v1/;
--
- #include "k3-am65-iot2050-common.dtsi"
- 
- / {
--	compatible = "siemens,iot2050-basic", "ti,am654";
--	model = "SIMATIC IOT2050 Basic";
--
- 	memory@80000000 {
- 		device_type = "memory";
- 		/* 1G RAM */
-@@ -61,6 +55,6 @@ &main_uart0 {
- };
- 
- &mcu_r5fss0 {
--	/* lock-step mode not supported on this board */
-+	/* lock-step mode not supported on Basic boards */
- 	ti,cluster-mode = <0>;
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
-index 94bb5dd39122..87928ff28214 100644
---- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
-@@ -4,63 +4,21 @@
-  *
-  * Authors:
-  *   Le Jin <le.jin@siemens.com>
-- *   Jan Kiszka <jan.kiszk@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-  *
-- * AM6528-based (dual-core) IOT2050 Basic variant
-+ * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 1
-  * 1 GB RAM, no eMMC, main_uart0 on connector X30
++ *
++ * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
++ * 1 GB RAM, no eMMC, main_uart0 on connector X30
 + *
 + * Product homepage:
 + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-  */
- 
- /dts-v1/;
- 
--#include "k3-am65-iot2050-common.dtsi"
++ */
++
++/dts-v1/;
++
 +#include "k3-am6528-iot2050-basic-common.dtsi"
-+#include "k3-am65-iot2050-common-pg1.dtsi"
- 
- / {
- 	compatible = "siemens,iot2050-basic", "ti,am654";
- 	model = "SIMATIC IOT2050 Basic";
--
--	memory@80000000 {
--		device_type = "memory";
--		/* 1G RAM */
--		reg = <0x00000000 0x80000000 0x00000000 0x40000000>;
--	};
--
--	cpus {
--		cpu-map {
--			/delete-node/ cluster1;
--		};
--		/delete-node/ cpu@100;
--		/delete-node/ cpu@101;
--	};
--
--	/delete-node/ l2-cache1;
--};
--
--/* eMMC */
--&sdhci0 {
--	status = "disabled";
--};
--
--&main_pmx0 {
--	main_uart0_pins_default: main-uart0-pins-default {
--		pinctrl-single,pins = <
--			AM65X_IOPAD(0x01e4, PIN_INPUT,  0)  /* (AF11) UART0_RXD */
--			AM65X_IOPAD(0x01e8, PIN_OUTPUT, 0)  /* (AE11) UART0_TXD */
--			AM65X_IOPAD(0x01ec, PIN_INPUT,  0)  /* (AG11) UART0_CTSn */
--			AM65X_IOPAD(0x01f0, PIN_OUTPUT, 0)  /* (AD11) UART0_RTSn */
--			AM65X_IOPAD(0x0188, PIN_INPUT,  1)  /* (D25) UART0_DCDn */
--			AM65X_IOPAD(0x018c, PIN_INPUT,  1)  /* (B26) UART0_DSRn */
--			AM65X_IOPAD(0x0190, PIN_OUTPUT, 1)  /* (A24) UART0_DTRn */
--			AM65X_IOPAD(0x0194, PIN_INPUT,  1)  /* (E24) UART0_RIN */
--		>;
--	};
--};
--
--&main_uart0 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&main_uart0_pins_default>;
--};
--
--&mcu_r5fss0 {
--	/* lock-step mode not supported on this board */
--	ti,cluster-mode = <0>;
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-similarity index 85%
-copy from arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-copy to arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-index ec9617c13cdb..d25e8b26187f 100644
---- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-@@ -4,10 +4,9 @@
-  *
-  * Authors:
-  *   Le Jin <le.jin@siemens.com>
-- *   Jan Kiszka <jan.kiszk@siemens.com>
++#include "k3-am65-iot2050-common-pg2.dtsi"
++
++/ {
++	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
++	model = "SIMATIC IOT2050 Basic PG2";
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+new file mode 100644
+index 000000000000..f00dc86d01b9
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) Siemens AG, 2018-2021
++ *
++ * Authors:
++ *   Le Jin <le.jin@siemens.com>
 + *   Jan Kiszka <jan.kiszka@siemens.com>
-  *
-- * AM6548-based (quad-core) IOT2050 Advanced variant
-- * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ * Common bits of the IOT2050 Advanced variant, PG1 and PG2
-  */
- 
- /dts-v1/;
-@@ -15,9 +14,6 @@
- #include "k3-am65-iot2050-common.dtsi"
- 
- / {
--	compatible = "siemens,iot2050-advanced", "ti,am654";
--	model = "SIMATIC IOT2050 Advanced";
--
- 	memory@80000000 {
- 		device_type = "memory";
- 		/* 2G RAM */
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-index ec9617c13cdb..077f165bdc68 100644
---- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-@@ -4,57 +4,21 @@
-  *
-  * Authors:
-  *   Le Jin <le.jin@siemens.com>
-- *   Jan Kiszka <jan.kiszk@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-  *
-- * AM6548-based (quad-core) IOT2050 Advanced variant
-+ * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 1
-  * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
++ *
++ * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
++ * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
 + *
 + * Product homepage:
 + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-  */
- 
- /dts-v1/;
- 
--#include "k3-am65-iot2050-common.dtsi"
++ */
++
++/dts-v1/;
++
 +#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg1.dtsi"
- 
- / {
- 	compatible = "siemens,iot2050-advanced", "ti,am654";
- 	model = "SIMATIC IOT2050 Advanced";
--
--	memory@80000000 {
--		device_type = "memory";
--		/* 2G RAM */
--		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
--	};
--};
--
--&main_pmx0 {
--	main_mmc0_pins_default: main-mmc0-pins-default {
--		pinctrl-single,pins = <
--			AM65X_IOPAD(0x01a8, PIN_INPUT_PULLDOWN, 0)  /* (B25) MMC0_CLK */
--			AM65X_IOPAD(0x01ac, PIN_INPUT_PULLUP,   0)  /* (B27) MMC0_CMD */
--			AM65X_IOPAD(0x01a4, PIN_INPUT_PULLUP,   0)  /* (A26) MMC0_DAT0 */
--			AM65X_IOPAD(0x01a0, PIN_INPUT_PULLUP,   0)  /* (E25) MMC0_DAT1 */
--			AM65X_IOPAD(0x019c, PIN_INPUT_PULLUP,   0)  /* (C26) MMC0_DAT2 */
--			AM65X_IOPAD(0x0198, PIN_INPUT_PULLUP,   0)  /* (A25) MMC0_DAT3 */
--			AM65X_IOPAD(0x0194, PIN_INPUT_PULLUP,   0)  /* (E24) MMC0_DAT4 */
--			AM65X_IOPAD(0x0190, PIN_INPUT_PULLUP,   0)  /* (A24) MMC0_DAT5 */
--			AM65X_IOPAD(0x018c, PIN_INPUT_PULLUP,   0)  /* (B26) MMC0_DAT6 */
--			AM65X_IOPAD(0x0188, PIN_INPUT_PULLUP,   0)  /* (D25) MMC0_DAT7 */
--			AM65X_IOPAD(0x01b8, PIN_OUTPUT_PULLUP,  7)  /* (B23) MMC0_SDWP */
--			AM65X_IOPAD(0x01b4, PIN_INPUT_PULLUP,   0)  /* (A23) MMC0_SDCD */
--			AM65X_IOPAD(0x01b0, PIN_INPUT,          0)  /* (C25) MMC0_DS */
--		>;
--	};
--};
--
--/* eMMC */
--&sdhci0 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&main_mmc0_pins_default>;
--	bus-width = <8>;
--	non-removable;
--	ti,driver-strength-ohm = <50>;
--	disable-wp;
--};
--
--&main_uart0 {
--	status = "disabled";
- };
++#include "k3-am65-iot2050-common-pg2.dtsi"
++
++/ {
++	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
++	model = "SIMATIC IOT2050 Advanced PG2";
++};
++
++&mcu_r5fss0 {
++	/* lock-step mode not supported on this board */
++	ti,cluster-mode = <0>;
++};
 -- 
 2.31.1
 
