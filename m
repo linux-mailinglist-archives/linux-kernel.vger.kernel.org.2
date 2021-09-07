@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D02B402F20
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E20402F21
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhIGTtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
+        id S1346084AbhIGTu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345829AbhIGTtT (ORCPT
+        with ESMTP id S243859AbhIGTu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:49:19 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D78CC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:48:13 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso470321ott.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:48:13 -0700 (PDT)
+        Tue, 7 Sep 2021 15:50:28 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184D4C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:49:22 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y34so3244lfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:49:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=w+pEkVJd/h+WI+7Ik9xWqY+Z8oL6sb51sITpdGLwuE0=;
-        b=ZfXkyFLoNLwSCxIt2lcXw2d4jOGw2BhBPBTFYcXhipfSjLsFGRUgNK6ftpTAP5TXWq
-         ruwHEv5trPt3h2I/CyAqcbyOo83YrThS3Kjacjot2cOxAKpRgjgr1lQizsZ7yTchvihV
-         ErsPeqGVBrbrrKzNFlwtX95iDjPuVYP5wRuiI=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ClRGRaZgiBSDmEFkwxJRClT6UcHDrtBvPnX9h2YwL3Y=;
+        b=QdHbVLCDMYlkts4Ts3bynLSBKsUB9gytGgloai+ljEqyKIvsUIRoCK6wPWHikfBT2j
+         GR7Tt8+OiSyaXCTwm0rtwxqEwD/zDLPNBPIpusojOP61TPIhI2mRL9aafidNu/jjkzNR
+         m1B9Uh7/Km01lOI5qVfatpwsOfDwKUxFlKlls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=w+pEkVJd/h+WI+7Ik9xWqY+Z8oL6sb51sITpdGLwuE0=;
-        b=aNbHJ3QuQv2wMGPx1E7kAJ4nH8cvs1pMPmYAF2twAfp/makYelNNmBZ59cfK0m6uAA
-         ko/dAMNacMchlHChQRuBCjcgOEp5mvpkLAccGIwRsJJXoV+yfpipgbkKS8s4bGXS4/hu
-         L8hcU705cjGeAIgcJhBcmI5hELWLDHGcusFfbGvfvXCyreAJJIezKyB21R3mBRyQHoK1
-         wOxKs1+fGsQ6nUNFL6XNWIBMU4gl2N010GnXJczyPKHtCJN8zA/6Z5GHAQIgQz9dHcj8
-         EWjy9LGxGPizcABu6thNbY8GXFguhb7wgh+nNm31YcEwUji7k0AEYpwubD0aYJazr5ko
-         QQkQ==
-X-Gm-Message-State: AOAM530qA1tRCvN/WMVDbDqYa8sDjC4uclgqRBEpkm++0vJjj4+jZfIO
-        ij+knvPjt4JmZR2weIFhBSxTqccNeQSQa6oBymXytw==
-X-Google-Smtp-Source: ABdhPJxksUjTUTa8Exx6uQm/t3KaU/loUjkBf+4L6i+ATrGe4465p6dpfz+D435OVm1pzqfNM6HNZXNRx4Iq1MprmqA=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr58677otp.159.1631044092581;
- Tue, 07 Sep 2021 12:48:12 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 7 Sep 2021 19:48:11 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClRGRaZgiBSDmEFkwxJRClT6UcHDrtBvPnX9h2YwL3Y=;
+        b=rLAWZYRV9zEm1GnsaoGKzhymuS+6VlHbh17iuhlS5Cf2Jrt9C56u4caJt2lmPUkAiv
+         B4vy4hXxsCkqF/Ho9f+38my71235TibcIXXVTpSJ68nyFdNJKwhlZX867m4AfP13hyLA
+         VX0GaJ27SzIn82fOMyhVRFe0iGln4dnp4KbRAuJB1P4Dxp7xZiHSHJUWIZrfbv3/Jkq3
+         oezsOcVaORwtoF1eVdSsjV6Rtls/ApAGJp67fEHA62ONP+J7Z+C3ZTycZmgz5gia9Dx3
+         5iqoGbaY/N+87ra3T6EKGRtpf23dinc3nt0pXHqtA9RLPlpySYIVeNrBaJ5tGmD+D6h7
+         YIkg==
+X-Gm-Message-State: AOAM531BHp8ebzQbg1FUhA/PpKIGV53DRjubh5duNW45aB5ye4fqT142
+        XUD5G5Uy1G2Ts0CJyc1b1dyfRLEw69gJ3OZF7sg=
+X-Google-Smtp-Source: ABdhPJzKt4L/C1ZgisC4e79Yk9ze/aYRvhYJPzzSZTOUIHmUGgY/QUUQYEFWqYrYslGe9RKtLFNfhQ==
+X-Received: by 2002:ac2:4e50:: with SMTP id f16mr49046lfr.229.1631044160163;
+        Tue, 07 Sep 2021 12:49:20 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id q18sm1535145ljm.50.2021.09.07.12.49.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 12:49:19 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id s10so157186lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:49:19 -0700 (PDT)
+X-Received: by 2002:a05:6512:34c3:: with SMTP id w3mr49782lfr.173.1631044159064;
+ Tue, 07 Sep 2021 12:49:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTe+a0Gu7O6MEy2d@google.com>
-References: <20210905210400.1157870-1-swboyd@chromium.org> <YTe+a0Gu7O6MEy2d@google.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 7 Sep 2021 19:48:11 +0000
-Message-ID: <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        Govind Singh <govinds@codeaurora.org>,
-        Youghandhar Chintala <youghand@codeaurora.org>,
-        Abhishek Kumar <kuabhs@chromium.org>
+References: <20210907083613.31268-1-brgl@bgdev.pl> <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+ <163104361220.4526.774832613459764535.pr-tracker-bot@kernel.org>
+In-Reply-To: <163104361220.4526.774832613459764535.pr-tracker-bot@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 12:49:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
+Message-ID: <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
+Subject: Re: Re: [GIT PULL] gpio: updates for v5.15
+To:     pr-tracker-bot@kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-09-07 12:32:59)
-> On Sun, Sep 05, 2021 at 02:04:00PM -0700, Stephen Boyd wrote:
-> > @@ -1740,10 +1805,19 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
-> >               goto err_fw_deinit;
-> >       }
-> >
-> > +     ret = ath10k_modem_init(ar);
-> > +     if (ret) {
-> > +             ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
+On Tue, Sep 7, 2021 at 12:40 PM <pr-tracker-bot@kernel.org> wrote:
 >
-> nit: ath10k_modem_init() encapsulates/hides the setup of the notifier,
-> the error message should be inside the function, as for _deinit()
+> The pull request you sent on Tue, 7 Sep 2021 12:36:25 -0700:
+>
+> > git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl refs/heads/master
+>
+> has been merged into torvalds/linux.git:
+> https://git.kernel.org/torvalds/c/9c23aa51477a37f8b56c3c40192248db0663c196
 
-Sure. I can fix it. I was also wondering if I should drop the debug
-prints for the cases that don't matter in the switch statement but I'll
-just leave that alone unless someone complains about it.
+What what what?
+
+Konstantin, is pr-tracker-bot confused?
+
+I have in fact merged that gpio tree, but I haven't pushed the merge out.
+
+And the thing pr-tracker-bot points to isn't the merge, nor is it the
+commit that the pull request points to, ie that
+
+   for you to fetch changes up to 889a1b3f35db6ba5ba6a0c23a3a55594570b6a17
+
+which doesn't exist in my public tree yet (it does show up in gitweb,
+but with a big
+
+    Notice: this object is not reachable from any branch.
+
+warning because it only shows up due to the object database being shared).
+
+            Linus
