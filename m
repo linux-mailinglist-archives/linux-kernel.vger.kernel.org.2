@@ -2,376 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EF74026BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C794026C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243857AbhIGKG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhIGKGy (ORCPT
+        id S243738AbhIGKIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:08:41 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:47252 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236729AbhIGKIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:06:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE0BC061575;
-        Tue,  7 Sep 2021 03:05:48 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id m21-20020a17090a859500b00197688449c4so1314451pjn.0;
-        Tue, 07 Sep 2021 03:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XsFH+qQagyYhml3ETf2vA7O/cJmrmxQNmknQNQS/89c=;
-        b=EPEtxHQW9yV2reHCWPlSiaCfwvz536XVy6+nVlEmEoHFIqWlNio/chou6bg3zuLD6R
-         DgWF28ZEC8RZbdDFpaMNkGQec2xJH0a5n2nRj4XWPMjwx/Ml29sjudUTFa01/GK7dKL9
-         JhTuUP1500A3CvAAeWxsXWkKJaWyDrb063krX61oHn+tpgWuwTGWcDkt8z6+KZC9/CgF
-         NVsQH5HZlIG/ffOdGblF4sjYArdVxmx9IQsC48kCqWwcGFFodQp9Do7mOs1EROYlWdV6
-         iAJP+W4py/eQ2HqozJwQfQhoND404sHsr7Knr8WYZy02EMz+SzQ3lxZ3W/3TGY7G3iQ4
-         WJ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XsFH+qQagyYhml3ETf2vA7O/cJmrmxQNmknQNQS/89c=;
-        b=i6u8VtPdxIugu5KlYg6Jp8tI6hySnt0SuNq/GvbRnVXd7zXGGxMH5iaQirYHxInKh7
-         kCaTkmvXPqpgJ49rVwfWKjVvfWwyw+Z1tzamH//Eswg0RJjOiuAu23Ms847bzktOqxLA
-         YV65Bv+wobDjYddN+aI7yLZW1lphiMLVfBBhaxDyK0Qc8xwTXA6I2RxedZ8StIPcWV5s
-         xTkgmr9E0Hb+cnJH0N2fQlrQthrIMFhd/ZMyGLZTMREhuOGKzSrCMkyWYCJYH6jsEIWA
-         KRaTT/HnsB3qM7+VpT0yMoroGrNZ97BJ9rA03MdJGf7pXQEGEkW0vd89HJ20C0lyBTTj
-         6cJw==
-X-Gm-Message-State: AOAM530rGvl2HYvyVpPR3+2LJoh0ozpexXauoNe4IcZFb1U62HR9XKVn
-        IiZ7I6GFno4YPlX/KkliEc4=
-X-Google-Smtp-Source: ABdhPJwdxvq27bvyuBdou1sXQrmHEZ7qMV/BvFtlru+2WaV0e5/rX3mk5Mexx9s0y+UJtnE6jpKOlQ==
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr3611354pjs.229.1631009147670;
-        Tue, 07 Sep 2021 03:05:47 -0700 (PDT)
-Received: from ownia.. ([173.248.225.217])
-        by smtp.gmail.com with ESMTPSA id x10sm10599983pfj.174.2021.09.07.03.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 03:05:47 -0700 (PDT)
-From:   Weizhao Ouyang <o451686892@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Weizhao Ouyang <o451686892@gmail.com>
-Subject: [PATCH v3] ftrace: Cleanup ftrace_dyn_arch_init()
-Date:   Tue,  7 Sep 2021 18:05:24 +0800
-Message-Id: <20210907100524.1454928-1-o451686892@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 7 Sep 2021 06:08:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631009253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGr5KaKrPB+ECiV3mI7JH4ZubnK2Jw/FcM9+PIVCR9A=;
+        b=hqRjfrkrRphKiA3n4lLVBEI4pTxvwCvUrlc7+mzk+krKLb60c4bY4mdJS1xathkrVrDikq
+        6NbsCq7Lpk5eewybHy+osieBqobG/PR770sAgXbNzQO4l6osvoBz7aHfQJmL3D2lCFHhOt
+        Fd2mFSwusz3B/UB0O0kgy7WHo7jo+Tw=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2172.outbound.protection.outlook.com [104.47.17.172])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-9-Cy3fR7TTMiqk8fr6zznO7w-2; Tue, 07 Sep 2021 12:07:32 +0200
+X-MC-Unique: Cy3fR7TTMiqk8fr6zznO7w-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E7w8LcHGWrntrIYAkeiSiGk55H9JXGxZWhzHMFppR/cRrQdSZv+/igXsqnHTmP0Db4BWfQ3SykDnf9DCNSlASWI78IYAYrGBxrUsI92qSlLC7WOiPER6Ot6kzhw90XiSweJmrg/Q5/zTEg9NkLFa6ZIskZhmAB/qwoykyhZvyZSNOxmDLzfvGmrTTZejD5lDZ0BpYAh/a1F6AEt6A8zJq/4c7vitO2JvcAZAc3Gei1wZCMmRbdnT6DHFc5xuEKUR1bPBy4EK8xK9Hh7P9qhyl7aFHqdZhmoj/YOkM2xOiHThcXDRxuwrPLlrxD5OwKJ1tzyQWIVkWznrpiCei+EsAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=VGr5KaKrPB+ECiV3mI7JH4ZubnK2Jw/FcM9+PIVCR9A=;
+ b=fkAvpHWiBc9h1bqrhaK5I963N+DD6VmjRJlVSZiYOy6sj/8wPjtRuPllCh0S1I58WDZ+0EamhtXYH4+lgXm6+X8D6Vwk5l2f+bvvJC1eGKvv0hWEvotTrer/ve6ZdCEUkJ4bT2GKn9U47on+ZDsb4zzdSW1dC877irj87ABIrhBOJdGkEfDC2Y6aE9fnFKbDodlk+6qeAPOoB6EiM3IJlCVnwxLP80+C61HtcTkPokC7kkprSxBQ75aR+phEqm/5nIEX3WnyF2Z2cZu1znJVmCmYQx5+VbzY+tKrSrPPmV451fQaCEdRwFQkGnqvz3T+6HFszpEShKMzIeBlGBxtnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB6176.eurprd04.prod.outlook.com (2603:10a6:803:f6::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Tue, 7 Sep
+ 2021 10:07:30 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
+ 10:07:29 +0000
+Subject: [PATCH 1/9] xen/x86: prevent PVH type from getting clobbered
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+Message-ID: <46ec0dab-8b5e-f20f-225b-3f4c57f34a61@suse.com>
+Date:   Tue, 7 Sep 2021 12:07:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P189CA0027.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:102:52::32) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR3P189CA0027.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:52::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21 via Frontend Transport; Tue, 7 Sep 2021 10:07:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f341c0ab-13c6-4607-4725-08d971e74d4e
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6176:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB61761A562A0E0F796CF94FC6B3D39@VI1PR04MB6176.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mSGEp41nFGKSmsQ1+MLYGHCoH7IgpiKvEoU6D4xsANOmdp6UCOt/3I+nOU1vHoWalA6KkS+wA7wqDtHUZIRQBIehvDnx2GlF1+ZewAcb0ozqIt7ieq++7xCeyMIx5pjW55O6XF+fFgqh9bK44aP5DV1P0ntT0AjhQYYnEolvzc1xCQWdv5EmGJ3smF+SPQDZXktIL3GBCrO9Uku3m/OkGizM7S13IW8Tl531sGroXAIWHZRe9TuSm3StKoZBbxglJyHkgfeNrk9vFou7DLmhXlTSksp3e8jo8AMT0+QghHGwEZZf/c8TVBb8lmr4str+sRIYCcnrHKG/7S8TE8zfaP7Hwr45iDEmXBNTO5F+6r2YQ8GgVwnMhEc22HxlMnQV+Ec3cH8yk9Nr/y5q+q/INT4JNLNvpDy0aybhmVZCX0WRM2asjWFG/Gdda4XJf136N8sv1u14ten8vwPTe5Idor9TmvFLOBqv19L4jvEGuzYVLxDIWL32pp2gkfMu77iTTirxGQaV0Rk2EgMa1KmJQhtwEWUshxm/QoJqAdOFj6WiIIdN5amGvyOnZpWrEzPrsxbUSPRrKeihhrcgNv2la0Hi9XYvpK/7RcHrCQUR68EmHJQsVIFdyc0a6gOWCzfXi1o8oVsbP+FUOSNX1EhtFtWXWPhBgMMxhWCDifgVj/bKGAXoOxah13OmLA8enrsR23bHWeay2HdW/YJ5sxh16jGt8PYBFPRy7SnXnmFaSqE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(346002)(396003)(376002)(54906003)(66476007)(66556008)(2616005)(86362001)(8676002)(66946007)(31696002)(956004)(26005)(38100700002)(6486002)(4326008)(8936002)(186003)(31686004)(36756003)(110136005)(316002)(478600001)(16576012)(2906002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N2dzMlRpR3RYckx2TFFiNFhLWUd2OGZraEd0dmJpUExudTV6b0ZOTThkTXNu?=
+ =?utf-8?B?MVZQMzdCMUFCU3hFTnlucTd3aFhvRmkxUW12VnduWkNneWdmSCsxS3lsZXdK?=
+ =?utf-8?B?Ymo0TVBDbWhLZEhPRW42cVk5YlhTRkJDK3orODlSTjhVeExmNlBVSUl1TDhU?=
+ =?utf-8?B?ZEk3Y0hPYnBCNUkwK3VYcVp5MnRVVjZUYUxpOGZpNFdpUlRzYmtJaWlJdkpl?=
+ =?utf-8?B?NFlwZ0pGcmd1b1dKSWd6RlhnRnhMUXVHT2FoOEgxTWZTRzlCRERCR3FVUncv?=
+ =?utf-8?B?NXhWcGZxUFJQMHNJMmlsSzhDdStHcndiRFFyVnluMVdWdTFabDVvN3ViTWNC?=
+ =?utf-8?B?bnZoTXI0SlMydWs0eXE4ajZOcGFnU3RDZ0NoR0hhcjZoMitoVm0zNzRVamNs?=
+ =?utf-8?B?RmVxYUMzUGxwWDNxQzBMdlJOem1IS3dTWXRseWs5RmdMTEFGbnJoQnJWNUhY?=
+ =?utf-8?B?RHQ5WTdmQlV2Tlp2VjBQeUhTMmlJdmY4ZXRRV3VHQ2phdDBzbTFVUzFjQmQ3?=
+ =?utf-8?B?bDBIVkNKMVJoVVpCM3kvT1dhQmgzZDNpbHlNNGN3L2l0OEVxNlBOYzFUTkVL?=
+ =?utf-8?B?MW1HYzNpWDZJb0RYYlBTY0FIaXRoTzNUdHNjWXBnc2ZwSXVpazgvVkxQV2pi?=
+ =?utf-8?B?N1ZmQi9pK3BIWllzREZsd001cWQyLzhwTjhQOCs4cWVnRjlQa1Q3NnJ6RnpF?=
+ =?utf-8?B?a0Z5bEtXdjFCejI2NlpXWWJIckpuRjVPWGdraURZczM0SHBxQmMzelpMdWRQ?=
+ =?utf-8?B?ekJtSUUyOXQ2cjlTM2VlakhGeTBWQkR1bDE0alI0N1BSNnh0aDBUZjNLaExm?=
+ =?utf-8?B?Y1dCa1JOd0J6OXpXVERaa1F0ZFJRTExCUG1TOUZtRFIxL3pwRnBnbnpPdXV3?=
+ =?utf-8?B?SC81cVhKMSt0NXNuVVlsaTg4akd6eXJTbVN1MnVQKzZOMHhEZUljRXlSSExO?=
+ =?utf-8?B?SlQrVnVZYnlFclJid2tVTTRDckhpMjVMN3BKdXI3dEN2YVROc0Nsc01YN05a?=
+ =?utf-8?B?M05QR0Q4eW16aHV0SWlLQ2FtMUdpMTZFTG9IcUUycGJqVkNmMnYzRE9hNFNE?=
+ =?utf-8?B?UmRXSzYrTFphTnJIOGViNEJDd3pZT0E2SGRObVlPVGc2TnlaUEFQU3gyTVA0?=
+ =?utf-8?B?NkZtdkx4dUtES1RUUGdUazJGWVloUFhUWi9BTmlGRGkrSEdNVDlRUktwb2hV?=
+ =?utf-8?B?aCtqQW9NSzFobEdKRUlTMUNvYkZuQk1UbUZkUVo5YlFRMHVDc1RoRkh6eU5D?=
+ =?utf-8?B?bU5QTDRtLzZVV2FjVnpmenUzYk5ZTnlQbTJlWU1OUG1EaWVKUjZmTTVZOVFG?=
+ =?utf-8?B?YkNDYUp6MmVoWDJ6cytiazVtRUtLSlpKRStlSStOM1ZZOW43RmFRcFdRM2ZG?=
+ =?utf-8?B?emswc054N1dpNnp0dFdvNFZCcXU2cE0yTlBZTmtXMEtRcG1lbGNiWEJkeVgv?=
+ =?utf-8?B?WVZJVi91eTlRV2VFMS9XdktNbVFadE1hcXF6T29vU0xqTWIwSUZob0luTGdo?=
+ =?utf-8?B?ckNFTjRVZVpOeU5XMFBJVVZxenc1T096VGpTSkxBWTRCK0V3YzJkM0JZUUlE?=
+ =?utf-8?B?L0dkcUlINUxkYStoYWc1Umc5cFV5Q1pUMjVBRW94bGdzbGliZFJRSCtHV1lq?=
+ =?utf-8?B?czVHalpSWWRDWXdTaHFIUExrdS85dVB6UFJpanFVNG9Sd2N3Y3UvcVZ6cWNO?=
+ =?utf-8?B?QVk2MWhpZjFuMEEyWndoSjNTdHBHODJEWFlIMkVZbFk4K0NTNmpGQUZ0VkJU?=
+ =?utf-8?Q?HDMt7eyMsTxeoDgm20BozDq9gHtYRZ43Ot0vBJe?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f341c0ab-13c6-4607-4725-08d971e74d4e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:07:29.9054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QvS5/u6jIhA5YQ0631sjlbwiEn+yvGE77jAgeJqeSx60mKCJMyT7CZAKFxhZymyjUu4zRhQJG1MeuVMh54jebg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
-ftrace_dyn_arch_init() to cleanup them.
+Like xen_start_flags, xen_domain_type gets set before .bss gets cleared.
+Hence this variable also needs to be prevented from getting put in .bss,
+which is possible because XEN_NATIVE is an enumerator evaluating to
+zero. Any use prior to init_hvm_pv_info() setting the variable again
+would lead to wrong decisions; one such case is xenboot_console_setup()
+when called as a result of "earlyprintk=xen".
 
-Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
-Acked-by: Helge Deller <deller@gmx.de> (parisc)
+Use __ro_after_init as more applicable than either __section(".data") or
+__read_mostly.
 
----
-Changes in v3:
--- fix unrecognized opcode on PowerPC
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-Changes in v2:
--- correct CONFIG_DYNAMIC_FTRACE on PowerPC
--- add Acked-by tag
-
----
- arch/arm/kernel/ftrace.c          | 5 -----
- arch/arm64/kernel/ftrace.c        | 5 -----
- arch/csky/kernel/ftrace.c         | 5 -----
- arch/ia64/kernel/ftrace.c         | 6 ------
- arch/microblaze/kernel/ftrace.c   | 5 -----
- arch/mips/include/asm/ftrace.h    | 2 ++
- arch/nds32/kernel/ftrace.c        | 5 -----
- arch/parisc/kernel/ftrace.c       | 5 -----
- arch/powerpc/include/asm/ftrace.h | 4 ++++
- arch/riscv/kernel/ftrace.c        | 5 -----
- arch/s390/kernel/ftrace.c         | 5 -----
- arch/sh/kernel/ftrace.c           | 5 -----
- arch/sparc/kernel/ftrace.c        | 5 -----
- arch/x86/kernel/ftrace.c          | 5 -----
- include/linux/ftrace.h            | 1 -
- kernel/trace/ftrace.c             | 5 +++++
- 16 files changed, 11 insertions(+), 62 deletions(-)
-
-diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
-index 3c83b5d29697..a006585e1c09 100644
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -193,11 +193,6 @@ int ftrace_make_nop(struct module *mod,
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -52,9 +52,6 @@ DEFINE_PER_CPU(struct vcpu_info, xen_vcp
+ DEFINE_PER_CPU(uint32_t, xen_vcpu_id);
+ EXPORT_PER_CPU_SYMBOL(xen_vcpu_id);
  
- 	return ret;
- }
+-enum xen_domain_type xen_domain_type = XEN_NATIVE;
+-EXPORT_SYMBOL_GPL(xen_domain_type);
 -
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
+ unsigned long *machine_to_phys_mapping = (void *)MACH2PHYS_VIRT_START;
+ EXPORT_SYMBOL(machine_to_phys_mapping);
+ unsigned long  machine_to_phys_nr;
+@@ -69,9 +66,11 @@ __read_mostly int xen_have_vector_callba
+ EXPORT_SYMBOL_GPL(xen_have_vector_callback);
  
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-index 7f467bd9db7a..fc62dfe73f93 100644
---- a/arch/arm64/kernel/ftrace.c
-+++ b/arch/arm64/kernel/ftrace.c
-@@ -236,11 +236,6 @@ void arch_ftrace_update_code(int command)
- 	command |= FTRACE_MAY_SLEEP;
- 	ftrace_modify_all_code(command);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
+ /*
+- * NB: needs to live in .data because it's used by xen_prepare_pvh which runs
+- * before clearing the bss.
++ * NB: These need to live in .data or alike because they're used by
++ * xen_prepare_pvh() which runs before clearing the bss.
+  */
++enum xen_domain_type __ro_after_init xen_domain_type = XEN_NATIVE;
++EXPORT_SYMBOL_GPL(xen_domain_type);
+ uint32_t xen_start_flags __section(".data") = 0;
+ EXPORT_SYMBOL(xen_start_flags);
  
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
-index b4a7ec1517ff..50bfcf129078 100644
---- a/arch/csky/kernel/ftrace.c
-+++ b/arch/csky/kernel/ftrace.c
-@@ -133,11 +133,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 				(unsigned long)func, true, true);
- 	return ret;
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/ia64/kernel/ftrace.c b/arch/ia64/kernel/ftrace.c
-index b2ab2d58fb30..d6360fd404ab 100644
---- a/arch/ia64/kernel/ftrace.c
-+++ b/arch/ia64/kernel/ftrace.c
-@@ -194,9 +194,3 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	flush_icache_range(addr, addr + 16);
- 	return 0;
- }
--
--/* run from kstop_machine */
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
-diff --git a/arch/microblaze/kernel/ftrace.c b/arch/microblaze/kernel/ftrace.c
-index 224eea40e1ee..188749d62709 100644
---- a/arch/microblaze/kernel/ftrace.c
-+++ b/arch/microblaze/kernel/ftrace.c
-@@ -163,11 +163,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 	return ret;
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- int ftrace_update_ftrace_func(ftrace_func_t func)
- {
- 	unsigned long ip = (unsigned long)(&ftrace_call);
-diff --git a/arch/mips/include/asm/ftrace.h b/arch/mips/include/asm/ftrace.h
-index b463f2aa5a61..ed013e767390 100644
---- a/arch/mips/include/asm/ftrace.h
-+++ b/arch/mips/include/asm/ftrace.h
-@@ -76,6 +76,8 @@ do {						\
- 
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
-+int __init ftrace_dyn_arch_init(void);
-+
- static inline unsigned long ftrace_call_adjust(unsigned long addr)
- {
- 	return addr;
-diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
-index 0e23e3a8df6b..f0ef4842d191 100644
---- a/arch/nds32/kernel/ftrace.c
-+++ b/arch/nds32/kernel/ftrace.c
-@@ -84,11 +84,6 @@ void _ftrace_caller(unsigned long parent_ip)
- 	/* restore all state needed by the compiler epilogue */
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- static unsigned long gen_sethi_insn(unsigned long addr)
- {
- 	unsigned long opcode = 0x46000000;
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 0a1e75af5382..01581f715737 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -94,11 +94,6 @@ int ftrace_disable_ftrace_graph_caller(void)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- int ftrace_update_ftrace_func(ftrace_func_t func)
- {
- 	return 0;
-diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-index debe8c4f7062..b05c43f13a4d 100644
---- a/arch/powerpc/include/asm/ftrace.h
-+++ b/arch/powerpc/include/asm/ftrace.h
-@@ -126,6 +126,10 @@ static inline void this_cpu_enable_ftrace(void) { }
- static inline void this_cpu_set_ftrace_enabled(u8 ftrace_enabled) { }
- static inline u8 this_cpu_get_ftrace_enabled(void) { return 1; }
- #endif /* CONFIG_PPC64 */
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+int __init ftrace_dyn_arch_init(void);
-+#endif /* CONFIG_DYNAMIC_FTRACE */
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* _ASM_POWERPC_FTRACE */
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index 7f1e5203de88..4716f4cdc038 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -154,11 +154,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 
- 	return ret;
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-index 0a464d328467..3fd80397ff52 100644
---- a/arch/s390/kernel/ftrace.c
-+++ b/arch/s390/kernel/ftrace.c
-@@ -262,11 +262,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	return 0;
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- void arch_ftrace_update_code(int command)
- {
- 	if (ftrace_shared_hotpatch_trampoline(NULL))
-diff --git a/arch/sh/kernel/ftrace.c b/arch/sh/kernel/ftrace.c
-index 295c43315bbe..930001bb8c6a 100644
---- a/arch/sh/kernel/ftrace.c
-+++ b/arch/sh/kernel/ftrace.c
-@@ -252,11 +252,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 
- 	return ftrace_modify_code(rec->ip, old, new);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/sparc/kernel/ftrace.c b/arch/sparc/kernel/ftrace.c
-index 684b84ce397f..eaead3da8e03 100644
---- a/arch/sparc/kernel/ftrace.c
-+++ b/arch/sparc/kernel/ftrace.c
-@@ -82,11 +82,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	new = ftrace_call_replace(ip, (unsigned long)func);
- 	return ftrace_modify_code(ip, old, new);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 1b3ce3b4a2a2..23d221a9a3cd 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -252,11 +252,6 @@ void arch_ftrace_update_code(int command)
- 	ftrace_modify_all_code(command);
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- /* Currently only x86_64 supports dynamic trampolines */
- #ifdef CONFIG_X86_64
- 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 832e65f06754..f1eca123d89d 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -573,7 +573,6 @@ ftrace_set_early_filter(struct ftrace_ops *ops, char *buf, int enable);
- 
- /* defined in arch */
- extern int ftrace_ip_converted(unsigned long ip);
--extern int ftrace_dyn_arch_init(void);
- extern void ftrace_replace_code(int enable);
- extern int ftrace_update_ftrace_func(ftrace_func_t func);
- extern void ftrace_caller(void);
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 7efbc8aaf7f6..4c090323198d 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6846,6 +6846,11 @@ void __init ftrace_free_init_mem(void)
- 	ftrace_free_mem(NULL, start, end);
- }
- 
-+int __init __weak ftrace_dyn_arch_init(void)
-+{
-+	return 0;
-+}
-+
- void __init ftrace_init(void)
- {
- 	extern unsigned long __start_mcount_loc[];
--- 
-2.30.2
 
