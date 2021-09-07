@@ -2,98 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A984028CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D6E4028CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344602AbhIGM3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:29:52 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34048
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344595AbhIGM3r (ORCPT
+        id S1344182AbhIGMbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343631AbhIGMbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:29:47 -0400
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8FE71401A9
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631017720;
-        bh=1lz5zbXaAC/6Xt9DSvyMvWDrwTMabkYousM6j7peGJE=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=X+paikGBkgHHKn07Xm0GYxpQ5sOKedPgIOXFMsfX6rE5xuMKDkx5U3TObNJhTG4uE
-         FIdWaMdIe0pvBJpLGFln8TNQgbkoTctNb5/RMpYGFcx90v62+llQ1WkkY8tieP68SR
-         HDUQmfRfGHra8V8Z+Mi34D+yVGuSC/gOGfM5R6DyyI4sg1rgpQmqnY0g/RkYI/TT7d
-         jj7Xp8XRIWFgRLo2yHofEQGOcwxwPkfo/EcYZ/SYYirQqHmyMl2nnpr8tkwsN1fLR/
-         6DlUixLpArreZdFwCD72vVwSNEkoV6qdegQDk6rUN6VswyQdUB0NEBtuuX54MMltAT
-         EJjEljP90CuuA==
-Received: by mail-wm1-f71.google.com with SMTP id r125-20020a1c2b830000b0290197a4be97b7so1039549wmr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 05:28:40 -0700 (PDT)
+        Tue, 7 Sep 2021 08:31:12 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C629CC061575;
+        Tue,  7 Sep 2021 05:30:05 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id p2so12574307oif.1;
+        Tue, 07 Sep 2021 05:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FRVGFt9LkOhVd0/r2OGAbLYw270d4m7rZQ9DzIgc5G4=;
+        b=iC9Y113leFqquv36CJBze+lMyDRepJC24eqQbOtRcYpJLa/I4fCDKZBYhXXSfY45uR
+         rYDwM2M1jqQwdChRZ3JGMXgSnmM1A/AXBYTNtz20vS8OIM+7TlyobI+VkTGiYKE3NeJW
+         R/YrriLQot2jMzity0g65Ts6l078G5wNnfwmzEoC4KDk7K907D5Pch6E12RYlSFhUuhd
+         7FPswYgCJBrw/zKYxAamX5ODl2PY26b71NOmpwuAkYn4Tra6AbE5BEuAWL4XNYK8enqU
+         hAkC7CblfuItC2mM9VJlnPZVT95mlNOzRHFxhziI0HTQjfRivGM4fDfLnfLqYrcPJCVc
+         MRqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1lz5zbXaAC/6Xt9DSvyMvWDrwTMabkYousM6j7peGJE=;
-        b=XsG/GYXXealuPqum3IMFuevCivlEUJETKKK8l4HmvFRdlWL/NCOwZoqKM8IvVpL9Xh
-         1aqivZvtU5sNBaCBjVAzosv0LMCvQiSAzCUJ5s6NyS2P2thzrIsbmWeqL1jh/48sUreH
-         TCpDrOq40hLIuq89YsOAUN29WPWaLaIlfaX4ZVZICosHoHAO4Yq5SMuo9awY1tisDP4r
-         G7fW0Wo65v5/qLb38Y3KXODRvAutw3TDrqLatR92eW+sC2NIakZ/lWws5vCsxt3PNU3A
-         608zireLC0qzfrExoHeWaP60a1KSPpVnlW6jtX5C0eY2FZ/TPXMp3L1wXZmacLs5V7QJ
-         HfAA==
-X-Gm-Message-State: AOAM533wsnEwkNvsjR7vlp/rLsSRVJWJYYJh+IsCb6CcFPh2FnGUFl7A
-        E4VHnVH1uq08hwgJn9srTYYHB1IvD/yAQ2JAK+glXB5HTqKX0mksAFHtQwk2P3BmZfT+mKbIfCZ
-        XjZe/n7eJWEWH9xAX+p0X7y+R7Y7/5rLQlyiQZM0Llw==
-X-Received: by 2002:a05:600c:a44:: with SMTP id c4mr3736057wmq.83.1631017720022;
-        Tue, 07 Sep 2021 05:28:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnia4fxnHdJbDEwVsFWre7qSHYc2QGFISEhWQFymiMZBSSOqZlc7sbdrkWnKGP+ygKpVwCvw==
-X-Received: by 2002:a05:600c:a44:: with SMTP id c4mr3736037wmq.83.1631017719840;
-        Tue, 07 Sep 2021 05:28:39 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.90])
-        by smtp.gmail.com with ESMTPSA id f3sm2266751wmj.28.2021.09.07.05.28.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 05:28:39 -0700 (PDT)
-Subject: Re: [PATCH] clk: samsung: s5pv210-audss: Make use of the helper
- function devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210907085122.4305-1-caihuoqing@baidu.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <cb81b1d4-d1de-c41d-3966-ac36f282de1d@canonical.com>
-Date:   Tue, 7 Sep 2021 14:28:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FRVGFt9LkOhVd0/r2OGAbLYw270d4m7rZQ9DzIgc5G4=;
+        b=dCqD/I8Wn6Hg6zCW7F3O9z9MWouUPD5fnzzl32luGuQX82sG9zJNDRE9fNvXwP+x7V
+         Rn3PMZikZ2ftiJLOhnv83sqbEFPUcJN9iIsm3nCc9gvLQm6StVVNqZag3fjOGX3g5P9N
+         71HQ35bBqAVy8CMcDtJ3BIKPWdU7pw4CmyTt/qo2BKAjTq+3q46JbnE73OBJFSW9QZE2
+         p4ALvnMPJY+pLwl3N+ReFOh5bDuMAJSeNdxgteFH73Qc8kjNhbhrbG4NPAbKcCkWWUkK
+         sk1OjwOj1BSbqwVuPsjyy+DQdjrffU4kZhGWPxciyuNDDDH5X5KRsJ2Bf95aMMQAc4Bi
+         krdg==
+X-Gm-Message-State: AOAM530nz9g89ort6kWW2qqvAfgToQ9fpeP/yih+XUwxIkSg6gqPNxoP
+        mAPs3OpwT6qBi99wbABWU7U727kvnkQ=
+X-Google-Smtp-Source: ABdhPJws9SViCqutxsbWcOUAqouQPz/pTDTDw5SYgusytdMNjXEngWoAvhjwUxxX1IZPOiTFS6yy4g==
+X-Received: by 2002:a05:6808:7c2:: with SMTP id f2mr2787184oij.20.1631017805097;
+        Tue, 07 Sep 2021 05:30:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n73sm2070299oig.9.2021.09.07.05.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 05:30:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] usb: ehci: Simplify platform driver registration
+Date:   Tue,  7 Sep 2021 05:30:02 -0700
+Message-Id: <20210907123002.3951446-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210907085122.4305-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2021 10:51, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/clk/samsung/clk-s5pv210-audss.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
+Use platform_register_drivers() and platform_unregister_drivers() to
+register and unregister ehci platform drivers. This simplifies the code
+and prevents the following build errors seen with sparc:allmodconfig.
 
+drivers/usb/host/ehci-hcd.c:1301: error:
+	"PLATFORM_DRIVER" redefined
+drivers/usb/host/ehci-sh.c:173:31: error:
+	'ehci_hcd_sh_driver' defined but not used
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Explicitly include platform_device.h.
+    The ps3 driver is not a platform driver, so we still have
+    to handle it separately.
+    
+ drivers/usb/host/ehci-hcd.c | 75 +++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 48 deletions(-)
 
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index 6bdc6d6bf74d..1776c05d0a48 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -26,6 +26,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/debugfs.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+ #include <asm/byteorder.h>
+@@ -1278,29 +1279,39 @@ MODULE_LICENSE ("GPL");
+ 
+ #ifdef CONFIG_USB_EHCI_SH
+ #include "ehci-sh.c"
+-#define PLATFORM_DRIVER		ehci_hcd_sh_driver
+ #endif
+ 
+ #ifdef CONFIG_PPC_PS3
+ #include "ehci-ps3.c"
+-#define	PS3_SYSTEM_BUS_DRIVER	ps3_ehci_driver
+ #endif
+ 
+ #ifdef CONFIG_USB_EHCI_HCD_PPC_OF
+ #include "ehci-ppc-of.c"
+-#define OF_PLATFORM_DRIVER	ehci_hcd_ppc_of_driver
+ #endif
+ 
+ #ifdef CONFIG_XPS_USB_HCD_XILINX
+ #include "ehci-xilinx-of.c"
+-#define XILINX_OF_PLATFORM_DRIVER	ehci_hcd_xilinx_of_driver
+ #endif
+ 
+ #ifdef CONFIG_SPARC_LEON
+ #include "ehci-grlib.c"
+-#define PLATFORM_DRIVER		ehci_grlib_driver
+ #endif
+ 
++static struct platform_driver * const platform_drivers[] = {
++#ifdef CONFIG_USB_EHCI_SH
++	&ehci_hcd_sh_driver,
++#endif
++#ifdef CONFIG_USB_EHCI_HCD_PPC_OF
++	&ehci_hcd_ppc_of_driver,
++#endif
++#ifdef CONFIG_XPS_USB_HCD_XILINX
++	&ehci_hcd_xilinx_of_driver,
++#endif
++#ifdef CONFIG_SPARC_LEON
++	&ehci_grlib_driver,
++#endif
++};
++
+ static int __init ehci_hcd_init(void)
+ {
+ 	int retval = 0;
+@@ -1324,47 +1335,23 @@ static int __init ehci_hcd_init(void)
+ 	ehci_debug_root = debugfs_create_dir("ehci", usb_debug_root);
+ #endif
+ 
+-#ifdef PLATFORM_DRIVER
+-	retval = platform_driver_register(&PLATFORM_DRIVER);
++	retval = platform_register_drivers(platform_drivers, ARRAY_SIZE(platform_drivers));
+ 	if (retval < 0)
+ 		goto clean0;
+-#endif
+-
+-#ifdef PS3_SYSTEM_BUS_DRIVER
+-	retval = ps3_ehci_driver_register(&PS3_SYSTEM_BUS_DRIVER);
+-	if (retval < 0)
+-		goto clean2;
+-#endif
+ 
+-#ifdef OF_PLATFORM_DRIVER
+-	retval = platform_driver_register(&OF_PLATFORM_DRIVER);
++#ifdef CONFIG_PPC_PS3
++	retval = ps3_ehci_driver_register(&ps3_ehci_driver);
+ 	if (retval < 0)
+-		goto clean3;
++		goto clean1;
+ #endif
+ 
+-#ifdef XILINX_OF_PLATFORM_DRIVER
+-	retval = platform_driver_register(&XILINX_OF_PLATFORM_DRIVER);
+-	if (retval < 0)
+-		goto clean4;
+-#endif
+-	return retval;
++	return 0;
+ 
+-#ifdef XILINX_OF_PLATFORM_DRIVER
+-	/* platform_driver_unregister(&XILINX_OF_PLATFORM_DRIVER); */
+-clean4:
+-#endif
+-#ifdef OF_PLATFORM_DRIVER
+-	platform_driver_unregister(&OF_PLATFORM_DRIVER);
+-clean3:
+-#endif
+-#ifdef PS3_SYSTEM_BUS_DRIVER
+-	ps3_ehci_driver_unregister(&PS3_SYSTEM_BUS_DRIVER);
+-clean2:
++#ifdef CONFIG_PPC_PS3
++clean1:
+ #endif
+-#ifdef PLATFORM_DRIVER
+-	platform_driver_unregister(&PLATFORM_DRIVER);
++	platform_unregister_drivers(platform_drivers, ARRAY_SIZE(platform_drivers));
+ clean0:
+-#endif
+ #ifdef CONFIG_DYNAMIC_DEBUG
+ 	debugfs_remove(ehci_debug_root);
+ 	ehci_debug_root = NULL;
+@@ -1376,18 +1363,10 @@ module_init(ehci_hcd_init);
+ 
+ static void __exit ehci_hcd_cleanup(void)
+ {
+-#ifdef XILINX_OF_PLATFORM_DRIVER
+-	platform_driver_unregister(&XILINX_OF_PLATFORM_DRIVER);
+-#endif
+-#ifdef OF_PLATFORM_DRIVER
+-	platform_driver_unregister(&OF_PLATFORM_DRIVER);
+-#endif
+-#ifdef PLATFORM_DRIVER
+-	platform_driver_unregister(&PLATFORM_DRIVER);
+-#endif
+-#ifdef PS3_SYSTEM_BUS_DRIVER
+-	ps3_ehci_driver_unregister(&PS3_SYSTEM_BUS_DRIVER);
++#ifdef CONFIG_PPC_PS3
++	ps3_ehci_driver_unregister(&ps3_ehci_driver);
+ #endif
++	platform_unregister_drivers(platform_drivers, ARRAY_SIZE(platform_drivers));
+ #ifdef CONFIG_DYNAMIC_DEBUG
+ 	debugfs_remove(ehci_debug_root);
+ #endif
+-- 
+2.33.0
 
-Best regards,
-Krzysztof
