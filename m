@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C3140279F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993904027A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245561AbhIGLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:14:47 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60068
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233977AbhIGLOq (ORCPT
+        id S1343507AbhIGLQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244318AbhIGLQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:14:46 -0400
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8956940199
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 11:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631013219;
-        bh=RJvc8ScJoXUAmgUH0tbWv8RtCVfeoLSflGCfFqP0tbs=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Q4sxVZW/UXotMC4eBAy9vbuYhVCXrgSteLtCg1b++mkFRzcMNWNxV4lkvS/EgzjDD
-         WoXqjmGeNbZrHhW7NjeKMoO7DuKTBMpRPoDKECVTTWdVkY1UTIdpmQisRqw3ZXv5Ht
-         ZYibe5UKDZgWkRWBgTxpDv+wBB58NatAwafWosYRPbR+VNWCDTYSX1bhz545PyVyRU
-         PAmjeSnKmOhyd0bJFSEYJxtfy0L4aLaOIUm0oBN49WbTSEpXtUd6zrFvrEoMASed+W
-         wvl94I9f6bKv2pLzdgjFOwinjOKweW0mlfXXa/hI23ZB4UE4znpldVD5BFyI26fS7y
-         9rvn3KJ1gCVqg==
-Received: by mail-wm1-f69.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso1061521wmx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 04:13:39 -0700 (PDT)
+        Tue, 7 Sep 2021 07:16:36 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03489C061575;
+        Tue,  7 Sep 2021 04:15:31 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id k11so81224pll.2;
+        Tue, 07 Sep 2021 04:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O+vtDM7N1inDWNRtsVWvYj/AupNMjks6EQe94H48eVc=;
+        b=Kyfxu5HI8vnXUTSjiCDuY9veVBodyGT5tnyhaITlJTOMUqLE3P01SdL5IGe9x/fUa9
+         s8dYydvcAcJRMlCFDLfQkpnUo3JzDWOs3z9dQ4ulnw4BQbD/BnHaPXdHb5TLRvGjLgoJ
+         t4dPmcKJLzOf7WO/LPuDbS/8LYLWLiVxeMaduG5i1WZqsIxnmx3KtiULU2jc7h4XeY7P
+         5b4D+0ovVVTEV+cthKqlQlAdbXmuadmNI6DoKcV+9OPnXdE0/3cZyykEzMw43VYzLrQm
+         gNFsz8mtM0wvcb3amGtrfQD241QRLRGH1XiQbhcY4SfC3t0GN96jUbbHBIG/x65msx10
+         wcEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RJvc8ScJoXUAmgUH0tbWv8RtCVfeoLSflGCfFqP0tbs=;
-        b=PUjhfUbRvFY2esKeXydegW76HTDItHzvILd9gmtX36NV3lexf89WrOGkxOA7AZhrxK
-         nlY+obuEHYMUa3LbHlWMJwJ4tij1Ey7qZK0t0faMm7rwX2Okx9cst4UMeQDEnvxmhNCT
-         pdSBWGLOfw+mCFKJt6fuh/LuQ6onExV6dc9oKT63v1JGr3HzVxij9ATbpSj4YoFrSLVq
-         FXzpWGNsUZRMj1nuzJZzef84HlhM/LlX2gwwNhUpAg5u2KzSzUDajsers2MrkF8AGsFn
-         7ouDyWvyEVCFqmtZU+L5Q/7OFS8X8eRoPOl64gfaRWyHsJ6hicfU5Rn4+uOGi6m3kyKc
-         FEbA==
-X-Gm-Message-State: AOAM533o+hzK/dLp2zFkGiIATmpIK/sEmnAeDcv0Iq6AutHlozmJbIRx
-        m7aq5ZbzfXMfAKOZwIDd7Ea9cLHZ860NiGtMsTCeQ9gtuZbds9OF5KMPTBENCu6bu8iiN47ZSKV
-        sIuxrmG+6Ut/cKfxa0VtYjb2/Bv/be0/3nRRli96GFA==
-X-Received: by 2002:a5d:4ccc:: with SMTP id c12mr18002444wrt.59.1631013219310;
-        Tue, 07 Sep 2021 04:13:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxftBSLmRUfX3ZDzPuMqhFuOKzIZppEB07Pr87IaRh51UhP9+7lgmF0BQ8jxmwYCEciJOND6g==
-X-Received: by 2002:a5d:4ccc:: with SMTP id c12mr18002426wrt.59.1631013219162;
-        Tue, 07 Sep 2021 04:13:39 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.172])
-        by smtp.gmail.com with ESMTPSA id b1sm11069471wrh.85.2021.09.07.04.13.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 04:13:38 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] dt-bindings: Add vendor prefix for Airoha
-To:     Bert Vermeulen <bert@biot.com>, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Joel Stanley <joel@jms.id.au>, Daniel Palmer <daniel@0x0f.com>,
-        Max Merchel <Max.Merchel@tq-group.com>,
-        Hao Fang <fanghao11@huawei.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        John Crispin <john@phrozen.org>
-References: <20210907102722.47543-1-bert@biot.com>
- <20210907102722.47543-2-bert@biot.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <393fa904-41a9-0ed3-90c3-c03da1c0dd18@canonical.com>
-Date:   Tue, 7 Sep 2021 13:13:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=O+vtDM7N1inDWNRtsVWvYj/AupNMjks6EQe94H48eVc=;
+        b=MrFlmD4JtxqkKm/79cH8geOa6NcnpQd56v+goFqmfKoRsCs4pYquKKuOkWGukCL8ho
+         adne4AVileHOtBH6UoLK3sbnHdMy8ll3NF2rc9LOXBX6ja3OJtk6BtH8Fy+/4Y2/qn06
+         47P4wgaTJuHHqX/7zQtw9DJxfrT8CPSL2TEzqmaFfab4M/CEYVUpVHzKxen4SMHmYw5I
+         SnM1nHylRATJp/liwMsYj4jpJKBXe0yYP7+FQJ78vNnohLNDcx9UW7cxFs8q7eS8XB0Q
+         FAKG1tVgU36Bo9IKGcjnzzl6ntyOyeKKvjgYomUme6Jn0EZzxgLEuvKz2pUk0YW2636K
+         XiyQ==
+X-Gm-Message-State: AOAM5327UIMgcJhYHHMxI8SUK0DmnkuBqQr14WcPW6d2hbAeeYm/tsyX
+        ftIcdHjFI4hs7ac/tH5gRdI=
+X-Google-Smtp-Source: ABdhPJxiHJqW1MKSP18+tK3uTQHHGX7r1fOPKTXekMh9uclXRUeb07/sVtBUfRG+jYbF3ZSbYUQvbA==
+X-Received: by 2002:a17:902:a604:b029:12c:dda2:30c4 with SMTP id u4-20020a170902a604b029012cdda230c4mr14291652plq.73.1631013330477;
+        Tue, 07 Sep 2021 04:15:30 -0700 (PDT)
+Received: from localhost.localdomain ([124.126.19.250])
+        by smtp.gmail.com with ESMTPSA id u17sm10357123pfh.184.2021.09.07.04.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 04:15:30 -0700 (PDT)
+From:   zhaoxiao <long870912@gmail.com>
+To:     thierry.reding@gmail.com, lee.jones@linaro.org
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhaoxiao <long870912@gmail.com>
+Subject: [PATCH] pwm: twl: Simplify using devm_pwmchip_add()
+Date:   Tue,  7 Sep 2021 19:15:18 +0800
+Message-Id: <20210907111518.15914-1-long870912@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210907102722.47543-2-bert@biot.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2021 12:27, Bert Vermeulen wrote:
-> From: John Crispin <john@phrozen.org>
-> 
-> Add vendor prefix "airoha" for Airoha.
-> 
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 07fb0d25fc15..e9c956535f97 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -333,6 +333,8 @@ patternProperties:
->      description: EBV Elektronik
->    "^eckelmann,.*":
->      description: Eckelmann AG
-> +  "^airoha,.*":
-> +    description: Airoha
+With devm_pwmchip_add() we can drop pwmchip_remove() from the device
+remove callback. The latter can then go away, too and as this is the
+only user of platform_get_drvdata(), the respective call to
+platform_set_drvdata() can go, too.
 
-Wrong ordering.
+Signed-off-by: zhaoxiao <long870912@gmail.com>
+---
+ drivers/pwm/pwm-twl-led.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/pwm/pwm-twl-led.c b/drivers/pwm/pwm-twl-led.c
+index 6c8df5f4e87d..1b4494581274 100644
+--- a/drivers/pwm/pwm-twl-led.c
++++ b/drivers/pwm/pwm-twl-led.c
+@@ -294,22 +294,13 @@ static int twl_pwmled_probe(struct platform_device *pdev)
+ 
+ 	mutex_init(&twl->mutex);
+ 
+-	ret = pwmchip_add(&twl->chip);
++	ret = devm_pwmchip_add(&pdev->dev, &twl->chip);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	platform_set_drvdata(pdev, twl);
+-
+ 	return 0;
+ }
+ 
+-static int twl_pwmled_remove(struct platform_device *pdev)
+-{
+-	struct twl_pwmled_chip *twl = platform_get_drvdata(pdev);
+-
+-	return pwmchip_remove(&twl->chip);
+-}
+-
+ #ifdef CONFIG_OF
+ static const struct of_device_id twl_pwmled_of_match[] = {
+ 	{ .compatible = "ti,twl4030-pwmled" },
+@@ -325,7 +316,6 @@ static struct platform_driver twl_pwmled_driver = {
+ 		.of_match_table = of_match_ptr(twl_pwmled_of_match),
+ 	},
+ 	.probe = twl_pwmled_probe,
+-	.remove = twl_pwmled_remove,
+ };
+ module_platform_driver(twl_pwmled_driver);
+ 
+-- 
+2.20.1
+
