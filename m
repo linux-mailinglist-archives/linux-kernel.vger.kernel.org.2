@@ -2,62 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A812402F72
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E943402F94
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241383AbhIGUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:15:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230474AbhIGUP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:15:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8F73460187;
-        Tue,  7 Sep 2021 20:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631045662;
-        bh=BkQV6zeg2LQkGC46zrw+hhHOEnp7Tv+sYE/Fj0iNkmU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=oVMAhW5tteryp/KM9INUTNwvVRdjz+56sVKQcF6E/gJwt8xqVU+TwLIUvnCvrESg/
-         uVMe+U8vgRNlSWqrHGQhULJ05KRljVMzJ/Zd856tYkFgpQjWYJ4o7q+IeHuBVF430X
-         zR/jCkRwwLXvn+HiwmPC+P9YYhGt6XHUcaWY1nE65POcyMyavd3d9OjUVL0aoGtnWx
-         bQs+h2qBbjfMSSwgkvnnzZcIiD8NzC+BYikLIL6L81x0NbC9mXPqvGZ9rxN/kuJIQF
-         wfqomO0kBetGkU82jq8q5cue3nml9Wk+H+7xpgwMO9SV9rj4yZX9vQxMAlG6qaeSXb
-         aEnKyvb4cuXBw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7ACBE60A38;
-        Tue,  7 Sep 2021 20:14:22 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: updates for v5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210907083613.31268-1-brgl@bgdev.pl>
-References: <20210907083613.31268-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210907083613.31268-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.15
-X-PR-Tracked-Commit-Id: 889a1b3f35db6ba5ba6a0c23a3a55594570b6a17
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5e6a5845dd651b00754a62edec2f0a439182024d
-Message-Id: <163104566243.21240.4845140527007156447.pr-tracker-bot@kernel.org>
-Date:   Tue, 07 Sep 2021 20:14:22 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        id S1346387AbhIGUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:25:05 -0400
+Received: from infomag.iguana.be ([185.87.124.46]:42222 "EHLO
+        infomag.iguana.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhIGUZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:25:04 -0400
+X-Greylist: delayed 565 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 16:25:03 EDT
+Received: by infomag.iguana.be (Postfix, from userid 1001)
+        id 1408D603CACE; Tue,  7 Sep 2021 22:14:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 infomag.iguana.be 1408D603CACE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=iguana.be;
+        s=infomag-20180602; t=1631045669;
+        bh=Wq1Ut3kmDA4Qs1MUa9QhyW5dfF/rigDOl+Eh9VKTXik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=swsLaixR7nTIu8HccvB8qTzPt89gCreJJaG+BOPsOl0p/RPbkRFuB8Z5fPidYJZlt
+         idzkIvBFM5IdATAWY3xfEPBCarsU90heHYzxVQjO7JnzpfRhYU31Vym1OyuTbR9c9S
+         Ska3mtf0sSKvu3JLmlvv0Lr8yMBEw7vH5/3bZc8k=
+Date:   Tue, 7 Sep 2021 22:14:29 +0200
+From:   Wim Van Sebroeck <wim@iguana.be>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Storm <christian.storm@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mantas =?utf-8?Q?Mikul=C4=97nas?= <grawity@gmail.com>
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+Message-ID: <20210907201428.GA1109@infomag.iguana.be>
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+ <1444efd5-b778-949b-34e8-99d2541350e9@siemens.com>
+ <85c2c85e-147c-b54e-e84d-10b989610979@siemens.com>
+ <904ea225-e7de-a11a-419a-0c7ac05e9b6e@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <904ea225-e7de-a11a-419a-0c7ac05e9b6e@roeck-us.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue,  7 Sep 2021 10:36:13 +0200:
+Hi All,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.15
+> On 8/30/21 12:47 PM, Jan Kiszka wrote:
+> >On 20.08.21 15:45, Jan Kiszka wrote:
+> >>On 26.07.21 13:46, Jan Kiszka wrote:
+> >>>From: Jan Kiszka <jan.kiszka@siemens.com>
+> >>>
+> >>>Obviously, the test needs to run against the register content, not its
+> >>>address.
+> >>>
+> >>>Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+> >>>Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+> >>>Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >>>---
+> >>>  drivers/watchdog/iTCO_wdt.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>>diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+> >>>index b3f604669e2c..643c6c2d0b72 100644
+> >>>--- a/drivers/watchdog/iTCO_wdt.c
+> >>>+++ b/drivers/watchdog/iTCO_wdt.c
+> >>>@@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+> >>>  	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+> >>>  	 */
+> >>>  	if (p->smi_res &&
+> >>>-	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+> >>>+	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+> >>>  		tmrval /= 2;
+> >>>  	/* from the specs: */
+> >>>
+> >>
+> >>Ping, this is still missing in master. Stable kernels had the revert,
+> >>but 5.14 will need this.
+> >>
+> >
+> >Second reminder: 5.14 is out and now broken. Is the patch queued
+> >somewhere? I do not see it in the watchdog staging branch.
+> >
+> 
+> I had it in my own watchdog-next branch for about a month.
+> Usually Wim picks it up from there or from the mainling list;
+> he handles all upstreaming. Wim ?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5e6a5845dd651b00754a62edec2f0a439182024d
+This one is in linux-watchdog-next since 22 Aug.
+Working on getting it upstream now.
 
-Thank you!
+Kind regards,
+Wim.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
