@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6FE402573
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3A240257A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243960AbhIGItz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:49:55 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:60214 "EHLO baidu.com"
+        id S243929AbhIGIuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:50:17 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:60366 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243795AbhIGItx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:49:53 -0400
-Received: from BC-Mail-Ex31.internal.baidu.com (unknown [172.31.51.25])
-        by Forcepoint Email with ESMTPS id 33E664A2541EB5C5161A;
-        Tue,  7 Sep 2021 16:48:43 +0800 (CST)
+        id S244039AbhIGIuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 04:50:12 -0400
+Received: from BC-Mail-Ex30.internal.baidu.com (unknown [172.31.51.24])
+        by Forcepoint Email with ESMTPS id D4E26A035D97F9FA35E8;
+        Tue,  7 Sep 2021 16:48:49 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex31.internal.baidu.com (172.31.51.25) with Microsoft SMTP Server
+ BC-Mail-Ex30.internal.baidu.com (172.31.51.24) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 7 Sep 2021 16:48:42 +0800
+ 15.1.2242.12; Tue, 7 Sep 2021 16:48:49 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 7 Sep 2021 16:48:42 +0800
+ 15.1.2308.14; Tue, 7 Sep 2021 16:48:49 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, <linux-clk@vger.kernel.org>,
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH] clk: mvebu: armada-37xx-tbg: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Tue, 7 Sep 2021 16:48:35 +0800
-Message-ID: <20210907084836.3948-1-caihuoqing@baidu.com>
+Subject: [PATCH] clk: qcom: a53-pll: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Tue, 7 Sep 2021 16:48:43 +0800
+Message-ID: <20210907084843.3999-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -46,30 +49,30 @@ separately
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/clk/mvebu/armada-37xx-tbg.c | 4 +---
+ drivers/clk/qcom/a53-pll.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/clk/mvebu/armada-37xx-tbg.c b/drivers/clk/mvebu/armada-37xx-tbg.c
-index 585a02e0b330..5d86912fbb6e 100644
---- a/drivers/clk/mvebu/armada-37xx-tbg.c
-+++ b/drivers/clk/mvebu/armada-37xx-tbg.c
-@@ -84,7 +84,6 @@ static int armada_3700_tbg_clock_probe(struct platform_device *pdev)
- 	struct clk_hw_onecell_data *hw_tbg_data;
+diff --git a/drivers/clk/qcom/a53-pll.c b/drivers/clk/qcom/a53-pll.c
+index 9e6decb9c26f..329d2c5356d8 100644
+--- a/drivers/clk/qcom/a53-pll.c
++++ b/drivers/clk/qcom/a53-pll.c
+@@ -90,7 +90,6 @@ static int qcom_a53pll_probe(struct platform_device *pdev)
  	struct device *dev = &pdev->dev;
- 	const char *parent_name;
+ 	struct device_node *np = dev->of_node;
+ 	struct regmap *regmap;
 -	struct resource *res;
- 	struct clk *parent;
- 	void __iomem *reg;
- 	int i, ret;
-@@ -105,8 +104,7 @@ static int armada_3700_tbg_clock_probe(struct platform_device *pdev)
- 	parent_name = __clk_get_name(parent);
- 	clk_put(parent);
+ 	struct clk_pll *pll;
+ 	void __iomem *base;
+ 	struct clk_init_data init = { };
+@@ -100,8 +99,7 @@ static int qcom_a53pll_probe(struct platform_device *pdev)
+ 	if (!pll)
+ 		return -ENOMEM;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	reg = devm_ioremap_resource(dev, res);
-+	reg = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(reg))
- 		return PTR_ERR(reg);
+-	base = devm_ioremap_resource(dev, res);
++	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
  
 -- 
 2.25.1
