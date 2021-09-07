@@ -2,625 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6D9402BE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988C4402C13
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345359AbhIGPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:35:54 -0400
-Received: from mga06.intel.com ([134.134.136.31]:45145 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345340AbhIGPfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:35:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="281241759"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="281241759"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:34:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="469240156"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
-  by orsmga007.jf.intel.com with ESMTP; 07 Sep 2021 08:34:43 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        Dou Shengnan <shengnanx.dou@intel.com>
-Subject: [PATCH 5/5][RFC] selftests/pfru: add test for Platform Firmware Runtime Update and Telemetry
-Date:   Tue,  7 Sep 2021 23:40:30 +0800
-Message-Id: <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1631025237.git.yu.c.chen@intel.com>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
+        id S1345434AbhIGPnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235162AbhIGPns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:43:48 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65641C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 08:42:42 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so13258580otg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 08:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KNbOLMCwMZ973irBYuo2tAIbXEXO0VYxqZWYBUT5gjk=;
+        b=hiPgsqN677B0jn349F/bP1hBclos5cYp+rAVIXNWRMzpldZ2r3LStiBtPRGQIwuOTg
+         iEKybnoAf01XwCmR1jl5RkIuFxtQUeTjii9ahzhQmMXcLioL7GBlCCGTCP87TOeWBUaV
+         AazpWl0ZcLZc6/y8bMKD9WWVIFmIBEkMEptzN9lJJQ6ODJMntfnWQgZg3KMHBTVoSeTY
+         YEUMFIlVEkj9rBLhbINypoC22CwHqT89fpHxbtLF9isG++SKR3yBR7z1SrKLYJHve136
+         KjAF3WsAakU+aFqdyEem9G9WkzS5UNX2TDtaNRhYHNvMy7nWgWruU6o/iEdzX9K8ZgV6
+         TGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KNbOLMCwMZ973irBYuo2tAIbXEXO0VYxqZWYBUT5gjk=;
+        b=Q2M+vPb0Y8Ns1Btm5qexcOt9JC4YXWs33MI1iYqtV9RKN9zHegIT71tiwyOswB92Ue
+         7q3jTNAXh+k1L24l/NGGD1srkuvRchDBER3wtxpNLSWMMXr+FQJEfXCJy7ufowRXZLeu
+         LIKEOyGoo8tzhf+CTL/GA1JHc7hdal4jezU+9mP4QMVVPh/4aM2FWhQUQd1KX0zG/W5E
+         6yOQTJ9OItq7LrpZg886/wfPD4TL/1KnXf+AAtwoVj4r5VHwHtkocFtEIvNTwul8kn37
+         0gDTSU7pQCdYwlAXbjdu7UIeErVz6oUAa/ENjsUTcG24oeDsmf4MZ4sGsIDa0L5l129H
+         v49A==
+X-Gm-Message-State: AOAM533ZKT2ptzdD/Q884s0FkEBCGf5IY8f4UwtwLDVBVkfVhohfEseV
+        ik0db3PnXBhXGvf1LWgwGTob+A==
+X-Google-Smtp-Source: ABdhPJzMVW1KBhWkZVUABVDwfun7aED2vWIe7+Yk0WvVtTMM8sot8zjfvcaHxJjpViMeLCkwREzMHA==
+X-Received: by 2002:a9d:700c:: with SMTP id k12mr14306040otj.225.1631029361446;
+        Tue, 07 Sep 2021 08:42:41 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y138sm2142431oie.22.2021.09.07.08.42.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 08:42:40 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 08:43:41 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+Message-ID: <YTeIrRwAkItd1xQE@ripper>
+References: <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
+ <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+ <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+ <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org>
+ <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
+ <CAJs_Fx4brw8j8Wk5ethSrhTHC+Kj0=cWga4q69Cv6JA6L8cDxA@mail.gmail.com>
+ <7c354c1a-d528-ed77-586b-881cc3df4563@linaro.org>
+ <CAF6AEGtRHa4udfZMmdozTcXU-SkF8Cr_ASbgWbVDESKQVr=spQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGtRHa4udfZMmdozTcXU-SkF8Cr_ASbgWbVDESKQVr=spQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a simple test for Platform Firmware Runtime Update and Telemetry
-drivers. It is based on ioctl to either update firmware driver or code injection,
-and read corresponding PFRU Telemetry log into user space.
+On Mon 09 Aug 14:08 PDT 2021, Rob Clark wrote:
 
-For example:
+> On Mon, Aug 9, 2021 at 1:35 PM Caleb Connolly <caleb.connolly@linaro.org> wrote:
+> >
+> >
+> >
+> > On 09/08/2021 18:58, Rob Clark wrote:
+> > > On Mon, Aug 9, 2021 at 10:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+> > >>
+> > >> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
+> > >>>
+> > >>>
+> > >>> On 09/08/2021 17:12, Rob Clark wrote:
+> > >>>> On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen <akhilpo@codeaurora.org>
+> > >>>> wrote:
+> > >>>>>
+> > >>>>> On 8/8/2021 10:22 PM, Rob Clark wrote:
+> > >>>>>> On Sun, Aug 8, 2021 at 7:33 AM Caleb Connolly
+> > >>>>>> <caleb.connolly@linaro.org> wrote:
+> > >>>>>>>
+> > >>>>>>>
+> > >>>>>>>
+> > >>>>>>> On 07/08/2021 21:04, Rob Clark wrote:
+> > >>>>>>>> On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
+> > >>>>>>>> <caleb.connolly@linaro.org> wrote:
+> > >>>>>>>>>
+> > >>>>>>>>> Hi Rob, Akhil,
+> > >>>>>>>>>
+> > >>>>>>>>> On 29/07/2021 21:53, Rob Clark wrote:
+> > >>>>>>>>>> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > >>>>>>>>>> <caleb.connolly@linaro.org> wrote:
+> > >>>>>>>>>>>
+> > >>>>>>>>>>>
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> On 29/07/2021 21:24, Rob Clark wrote:
+> > >>>>>>>>>>>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > >>>>>>>>>>>> <caleb.connolly@linaro.org> wrote:
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>> Hi Rob,
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>> I've done some more testing! It looks like before that patch
+> > >>>>>>>>>>>>> ("drm/msm: Devfreq tuning") the GPU would never get above
+> > >>>>>>>>>>>>> the second frequency in the OPP table (342MHz) (at least, not
+> > >>>>>>>>>>>>> in glxgears). With the patch applied it would more
+> > >>>>>>>>>>>>> aggressively jump up to the max frequency which seems to be
+> > >>>>>>>>>>>>> unstable at the default regulator voltages.
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> *ohh*, yeah, ok, that would explain it
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up
+> > >>>>>>>>>>>>> to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > >>>>>>>>>>>>> at the higher frequencies.
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>> Applying this patch reverts the behaviour, and the GPU never
+> > >>>>>>>>>>>>> goes above 342MHz in glxgears, losing ~30% performance in
+> > >>>>>>>>>>>>> glxgear.
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>> I think (?) that enabling CPR support would be the proper
+> > >>>>>>>>>>>>> solution to this - that would ensure that the regulators run
+> > >>>>>>>>>>>>> at the voltage the hardware needs to be stable.
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>> Is hacking the voltage higher (although ideally not quite
+> > >>>>>>>>>>>>> that high) an acceptable short term solution until we have
+> > >>>>>>>>>>>>> CPR? Or would it be safer to just not make use of the higher
+> > >>>>>>>>>>>>> frequencies on a630 for now?
+> > >>>>>>>>>>>>>
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is
+> > >>>>>>>>>>>> already
+> > >>>>>>>>>>>> on CC and I added sboyd, maybe one of them knows better.
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> In the short term, removing the higher problematic OPPs from
+> > >>>>>>>>>>>> dts might
+> > >>>>>>>>>>>> be a better option than this patch (which I'm dropping), since
+> > >>>>>>>>>>>> there
+> > >>>>>>>>>>>> is nothing stopping other workloads from hitting higher OPPs.
+> > >>>>>>>>>>> Oh yeah that sounds like a more sensible workaround than mine .
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> I'm slightly curious why I didn't have problems at higher OPPs
+> > >>>>>>>>>>>> on my
+> > >>>>>>>>>>>> c630 laptop (sdm850)
+> > >>>>>>>>>>> Perhaps you won the sillicon lottery - iirc sdm850 is binned
+> > >>>>>>>>>>> for higher clocks as is out of the factory.
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> Would it be best to drop the OPPs for all devices? Or just
+> > >>>>>>>>>>> those affected? I guess it's possible another c630 might
+> > >>>>>>>>>>> crash where yours doesn't?
+> > >>>>>>>>>>
+> > >>>>>>>>>> I've not heard any reports of similar issues from the handful of
+> > >>>>>>>>>> other
+> > >>>>>>>>>> folks with c630's on #aarch64-laptops.. but I can't really say
+> > >>>>>>>>>> if that
+> > >>>>>>>>>> is luck or not.
+> > >>>>>>>>> It looks like this affects at least the OnePlus 6 and PocoPhone
+> > >>>>>>>>> F1, I've done some more poking and the following diff
+> > >>>>>>>>> seems to fix the stability issues completely, it seems the delay
+> > >>>>>>>>> is required to let the update propagate.
+> > >>>>>>>>>
+> > >>>>>>>>> This doesn't feel like the right fix, but hopefully it's enough
+> > >>>>>>>>> to come up with a better solution than disabling the new
+> > >>>>>>>>> devfreq behaviour on a630.
+> > >>>>>>>>>
+> > >>>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>>>>>>>> index d7cec7f0dde0..69e2a5e84dae 100644
+> > >>>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>>>>>>>> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu,
+> > >>>>>>>>> struct dev_pm_opp *opp)
+> > >>>>>>>>>                      return;
+> > >>>>>>>>>              }
+> > >>>>>>>>>
+> > >>>>>>>>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> > >>>>>>>>> +
+> > >>>>>>>>> +       usleep_range(300, 500);
+> > >>>>>>>>> +
+> > >>>>>>>>
+> > >>>>>
+> > >>>>> I am a bit confused. We don't define a power domain for gpu in dt,
+> > >>>>> correct? Then what exactly set_opp do here? Do you think this usleep is
+> > >>>>> what is helping here somehow to mask the issue?
+> > >>> The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
+> > >>> the GPU DT. For the sake of simplicity I'll refer to the lowest
+> > >>> frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
+> > >>> the "min" state, and the highest frequency (710000000) and OPP level
+> > >>> (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
+> > >>> sdm845.dtsi under the gpu node.
+> > >>>
+> > >>> The new devfreq behaviour unmasks what I think is a driver bug, it
+> > >>> inadvertently puts much more strain on the GPU regulators than they
+> > >>> usually get. With the new behaviour the GPU jumps from it's min state to
+> > >>> the max state and back again extremely rapidly under workloads as small
+> > >>> as refreshing UI. Where previously the GPU would rarely if ever go above
+> > >>> 342MHz when interacting with the device, it now jumps between min and
+> > >>> max many times per second.
+> > >>>
+> > >>> If my understanding is correct, the current implementation of the GMU
+> > >>> set freq is the following:
+> > >>>    - Get OPP for frequency to set
+> > >>>    - Push the frequency to the GMU - immediately updating the core clock
+> > >>>    - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
+> > >>> up somewhere in power management code and causes the gx regulator level
+> > >>> to be updated
+> > >>
+> > >> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else.
+> > >> We were using a different api earlier which got deprecated -
+> > >> dev_pm_opp_set_bw().
+> > Huh ok, thanks for the correction. So it's the GMU writes in this function which cause the regulator to be adjusted?
+> > >
+> > > Hmm, ok, if this is just setting icc vote, the order shouldn't be too important.
+> > >
+> > > I guess GMU then is the one that is controlling the regulator(s) to
+> > > ensure adequate voltage for the requested freq?
+> > >
+> > > But the GMU fw should be the same for a618 and a630, md5sum of what
+> > > I'm using (from linux-firmware):
+> > >
+> > >    ab20135f7adf48e0f344282a37da80e4  a630_gmu.bin
+> > Same here.
+> > >
+> > >>>
+> > >>> The regulator will then take some time to reach it's new voltage level
+> > >>> and stabilise. I believe that rapid transitions between min and max
+> > >>> state - in combination with the increased current load from the GPU core
+> > >>> - lead to the regulator becoming unstable (e.g. when it's requested to
+> > >>> transition from it's lowest to highest levels immediately after
+> > >>> transitioning down), the unstable voltage causes the GPU to crash.
+> > >>>
+> > >>> Sillicon lottery will of course play a role here - this is very much an
+> > >>> edge case and would definitely be different on a per-device and even
+> > >>> per-unit basis.
+> > >>>>
+> > >>>> Hmm, I thought "opp-level = RPMH_REGULATOR_LEVEL_*" did *something*,
+> > >>>> but tbh I'm not sure exactly what..
+> > >>>>
+> > >>>>> I feel we should just leave the new dcvs feature (shall we call it NAP?)
+> > >>>>> disabled for a630 (and 10ms devfreq interval), until this is root
+> > >>>>> caused.
+> > >>> I believe this hacky workaround expresses the root cause of the issue
+> > >>> quite clearly, by setting the OPP first and allowing the gx regulator to
+> > >>> become stable before telling the GPU to change clock speeds, we avoid
+> > >>> the edge case and prevent the crashes.
+> > >>>
+> > >>> I took some rough measurements by adding logging to msm_devfreq_idle and
+> > >>> causing UI updates for ~20 seconds and that function is being called
+> > >>> about 30 times per second, this means the GPU is transitioning between
+> > >>> min (idle) state and max (active / boost) state at that frequency and
+> > >>> causing the issue I described above. It's likely that the usleep is
+> > >>> helping to mask this behaviour.
+> > >>>
+> > >>> I hope this serves as a slightly better explanation of what I perceive
+> > >>> to be the issue, I realise my previous explanations were not very
+> > >>> adequate, I apologise for all the noise.
+> > >>>>
+> > >>>> I suppose "NAP" is a reasonable name.
+> > >>>>
+> > >>>> But I think that reverting to previous behavior would not be enough,
+> > >>>> there is nothing stopping devfreq from jumping from min to max freq,
+> > >>>> which AFAIU should be enough to trigger this.  I guess that there just
+> > >>>> hasn't been enough testing with different game workloads on those
+> > >>>> phones to trigger this.
+> > >>> Ack
+> > >>>>
+> > >>>> That said, I haven't seen similar issues on my sdm850 laptop, where I
+> > >>>> defn have triggered mix->max freq transitions.. I guess it would be
+> > >>>> interesting to know if this issue could be reproduced on db845c, or if
+> > >>>> it really is board specific?
+> > >>> My db845c arrives this week, I'll definitely try and reproduce this.
+> > >>>>
+> > >>>> To workaround, I think we'd need to implement some way to limit that
+> > >>>> maximum frequency jump (and then use delayed work to continue ramping
+> > >>>> up the freq over time until we hit the target).. which seems like a
+> > >>>> lot of work if this is just a board(s) specific workaround and isn't
+> > >>>> needed once CPR is supported
+> > >>> Based on my reasoning above, I came up with the following: reducing
+> > >>> thrashing by preventing rapid idle/active transitions. The minimum
+> > >>> active time of 30ms was just used for testing, I think some number
+> > >>> between 2 and 4 frames would be a sensible choice - the higher the safer.
+> > >>>
+> > >>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>> index d7cec7f0dde0..87f2d1085c3e 100644
+> > >>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> > >>> @@ -139,6 +139,8 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct
+> > >>> dev_pm_opp *opp)
+> > >>>                   return;
+> > >>>           }
+> > >>>
+> > >>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> > >>> +
+> > >>>           gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+> > >>>
+> > >>>           gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
+> > >>> @@ -158,7 +160,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct
+> > >>> dev_pm_opp *opp)
+> > >>>           if (ret)
+> > >>>                   dev_err(gmu->dev, "GMU set GPU frequency error: %d\n",
+> > >>> ret);
+> > >>>
+> > >>> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> > >>>           pm_runtime_put(gmu->dev);
+> > >>>    }
+> > >>>
+> > >>> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> > >>> index 0e4b45bff2e6..0e2293bcb46d 100644
+> > >>> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> > >>> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> > >>> @@ -99,8 +99,8 @@ struct msm_gpu_devfreq {
+> > >>>           /** time: Time of last sampling period. */
+> > >>>           ktime_t time;
+> > >>>
+> > >>> -       /** idle_time: Time of last transition to idle: */
+> > >>> -       ktime_t idle_time;
+> > >>> +       /** transition_time: Time of last transition between
+> > >>> idle/active: */
+> > >>> +       ktime_t transition_time;
+> > >>>
+> > >>>           /**
+> > >>>            * idle_freq:
+> > >>> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> > >>> b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> > >>> index 0a1ee20296a2..774a7be33e7a 100644
+> > >>> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> > >>> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> > >>> @@ -157,7 +157,7 @@ void msm_devfreq_active(struct msm_gpu *gpu)
+> > >>>            */
+> > >>>           mutex_lock(&df->devfreq->lock);
+> > >>>
+> > >>> -       idle_time = ktime_to_ms(ktime_sub(ktime_get(), df->idle_time));
+> > >>> +       idle_time = ktime_to_ms(ktime_sub(ktime_get(),
+> > >>> df->transition_time));
+> > >>>
+> > >>>           /*
+> > >>>            * If we've been idle for a significant fraction of a polling
+> > >>> @@ -168,7 +168,7 @@ void msm_devfreq_active(struct msm_gpu *gpu)
+> > >>>                   target_freq *= 2;
+> > >>>           }
+> > >>>
+> > >>> -       df->idle_freq = 0;
+> > >>> +       df->transition_time = ktime_get();;
+> > >>>
+> > >>>           msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
+> > >>>
+> > >>> @@ -185,6 +185,16 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
+> > >>>    {
+> > >>>           struct msm_gpu_devfreq *df = &gpu->devfreq;
+> > >>>           unsigned long idle_freq, target_freq = 0;
+> > >>> +       unsigned int active_time;
+> > >>> +
+> > >>> +       active_time = ktime_to_ms(ktime_sub(ktime_get(),
+> > >>> df->transition_time));
+> > >>> +       /*
+> > >>> +        * Don't go back to idle unless we've been active for at least 30ms
+> > >>> +        * to avoid thrashing.
+> > >>
+> > >> This basically defeats the purpose of this feature! At least, we should
+> > >> keep this '30' gpu specific. Does a Kconfig makes sense here?? BTW, if
+> > >> 300us was helping you earlier why do you want it to be 30ms now?
+> > Previously I thought that the issue was related to specifically the transition from idle/active, hence sleeping to let
+> > the regulator catch up, whilst that masked the issue it didn't *fix* it, I now think it's actually due to the repeated
+> > transition between idle and active states.
+> >
+> > Enforcing that the GPU stay active for at least two frames should still give the intended goal of reducing latency and
+> > more reliably fixes the issue.
+> >
+> > AFAIU from reading the commit description, the goal of the devfreq tuning is to reduce latency by quickly bursting up
+> > when there's user activity, by telling the GPU to stay active for longer we shouldn't impede this behaviour at all.
+> 
+> Well, there are a couple parts to it.. one thing it was intended to
+> fix was a bad devfreq behavior I was seeing with, for example, games
+> that throttle themselves to 30fps, so rendering one 16ms frame every
+> other vblank cycle.. previously devfreq would ramp up to max just as
+> it was at the end of rendering a frame, and then sit there at fmax
+> while GPU was doing nothing for the next 16ms, and then ramp back down
+> to fmin just as the GPU got some more work to do.  So it was nearly
+> 180deg out of phase with where you'd want it to be
+> increasing/decreasing GPU freq.
+> 
 
-./pfru_test -h
-usage: pfru_test [OPTIONS]
- code injection:
-  -l, --load
-  -s, --stage
-  -a, --activate
-  -u, --update [stage and activate]
-  -q, --query
-  -d, --revid update
- telemetry:
-  -G, --getloginfo
-  -T, --type(0:execution, 1:history)
-  -L, --level(0, 1, 2, 4)
-  -R, --read
-  -D, --revid log
+But afaict you only change the selection of frequency, not the actual
+change. As such this issue isn't related to your change.
 
-./pfru_test -G
- log_level:4
- log_type:0
- log_revid:2
- max_data_size:65536
- chunk1_size:0
- chunk2_size:1401
- rollover_cnt:0
- reset_cnt:4
+> The longer polling interval is meant to smooth that out, with clamping
+> to fmin while GPU is idle to offset the fact that it would take the
+> GPU longer to ramp down (and it otherwise being pointless to keep the
+> GPU at a high freq when it isn't doing anything), and boosting above
+> what freq devfreq would have picked if the gpu had been idle for a
+> while (to offset the longer ramp up on user input).
+> 
+> So the 30ms delay for clamping to fmin would defeat one part of that.
+> 
+> We could perhaps somehow disable the clamping to fmin for certain
+> boards and/or gpus, which would possibly lose a bit of power savings
+> but otherwise be ok.  But I'm not clear whether this is a board
+> specific issue (ie. are these phones using different PMICs compared to
+> sdm850 laptops and db845c?  Or is there some difference in what power
+> rail is powering the GPU?)
+> 
+> I think it was mentioned earlier that CPR should help (AFAIU that is
+> some sort of hw closed loop voltage regulation?) so maybe this is just
+> a short term workaround?
+> 
 
-./pfru_test -q
- code injection image type:794bf8b2-6e7b-454e-885f-3fb9bb185402
- fw_version:0
- code_rt_version:1
- driver update image type:0e5f0b14-f849-7945-ad81-bc7b6d2bb245
- drv_rt_version:0
- drv_svn:0
- platform id:39214663-b1a8-4eaa-9024-f2bb53ea4723
- oem id:a36db54f-ea2a-e14e-b7c4-b5780e51ba3d
+On 845 and onwards, we pick a corner which will be translated to an
+actual voltage by someone else and if CPR is involved is hidden in that
+other entity.
 
-Tested-by: Dou Shengnan <shengnanx.dou@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/testing/selftests/Makefile         |   1 +
- tools/testing/selftests/pfru/Makefile    |   7 +
- tools/testing/selftests/pfru/config      |   2 +
- tools/testing/selftests/pfru/pfru.h      | 152 +++++++++++
- tools/testing/selftests/pfru/pfru_test.c | 324 +++++++++++++++++++++++
- 5 files changed, 486 insertions(+)
- create mode 100644 tools/testing/selftests/pfru/Makefile
- create mode 100644 tools/testing/selftests/pfru/config
- create mode 100644 tools/testing/selftests/pfru/pfru.h
- create mode 100644 tools/testing/selftests/pfru/pfru_test.c
-
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index fb010a35d61a..c8b53a2c4450 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -56,6 +56,7 @@ TARGETS += seccomp
- TARGETS += sgx
- TARGETS += sigaltstack
- TARGETS += size
-+TARGETS += pfru
- TARGETS += sparc64
- TARGETS += splice
- TARGETS += static_keys
-diff --git a/tools/testing/selftests/pfru/Makefile b/tools/testing/selftests/pfru/Makefile
-new file mode 100644
-index 000000000000..c61916ccf637
---- /dev/null
-+++ b/tools/testing/selftests/pfru/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+
-+CFLAGS += -Wall -O2
-+LDLIBS := -luuid
-+
-+TEST_GEN_PROGS := pfru_test
-+include ../lib.mk
-diff --git a/tools/testing/selftests/pfru/config b/tools/testing/selftests/pfru/config
-new file mode 100644
-index 000000000000..37f53609acbd
---- /dev/null
-+++ b/tools/testing/selftests/pfru/config
-@@ -0,0 +1,2 @@
-+CONFIG_ACPI_PFRU=m
-+CONFIG_ACPI_PFRU_TELEMETRY=m
-diff --git a/tools/testing/selftests/pfru/pfru.h b/tools/testing/selftests/pfru/pfru.h
-new file mode 100644
-index 000000000000..8cd4ed80b161
---- /dev/null
-+++ b/tools/testing/selftests/pfru/pfru.h
-@@ -0,0 +1,152 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Platform Firmware Runtime Update header
-+ *
-+ * Copyright(c) 2021 Intel Corporation. All rights reserved.
-+ */
-+#ifndef __PFRU_H__
-+#define __PFRU_H__
-+
-+#include <linux/ioctl.h>
-+#include <uuid/uuid.h>
-+
-+#define PFRU_UUID		"ECF9533B-4A3C-4E89-939E-C77112601C6D"
-+#define PFRU_CODE_INJ_UUID		"B2F84B79-7B6E-4E45-885F-3FB9BB185402"
-+#define PFRU_DRV_UPDATE_UUID		"4569DD8C-75F1-429A-A3D6-24DE8097A0DF"
-+
-+#define FUNC_STANDARD_QUERY	0
-+#define FUNC_QUERY_UPDATE_CAP	1
-+#define FUNC_QUERY_BUF		2
-+#define FUNC_START		3
-+
-+#define CODE_INJECT_TYPE	1
-+#define DRIVER_UPDATE_TYPE	2
-+
-+#define REVID_1		1
-+#define REVID_2		2
-+
-+#define PFRU_MAGIC 0xEE
-+
-+#define PFRU_IOC_SET_REV _IOW(PFRU_MAGIC, 0x01, unsigned int)
-+#define PFRU_IOC_STAGE _IOW(PFRU_MAGIC, 0x02, unsigned int)
-+#define PFRU_IOC_ACTIVATE _IOW(PFRU_MAGIC, 0x03, unsigned int)
-+#define PFRU_IOC_STAGE_ACTIVATE _IOW(PFRU_MAGIC, 0x04, unsigned int)
-+
-+static inline int valid_revid(int id)
-+{
-+	return (id == REVID_1) || (id == REVID_2);
-+}
-+
-+/* Capsule file payload header */
-+struct payload_hdr {
-+	__u32	sig;
-+	__u32	hdr_version;
-+	__u32	hdr_size;
-+	__u32	hw_ver;
-+	__u32	rt_ver;
-+	uuid_t	platform_id;
-+};
-+
-+enum start_action {
-+	START_STAGE,
-+	START_ACTIVATE,
-+	START_STAGE_ACTIVATE,
-+};
-+
-+enum dsm_status {
-+	DSM_SUCCEED,
-+	DSM_FUNC_NOT_SUPPORT,
-+	DSM_INVAL_INPUT,
-+	DSM_HARDWARE_ERR,
-+	DSM_RETRY_SUGGESTED,
-+	DSM_UNKNOWN,
-+	DSM_FUNC_SPEC_ERR,
-+};
-+
-+struct update_cap_info {
-+	enum dsm_status status;
-+	int update_cap;
-+
-+	uuid_t code_type;
-+	int fw_version;
-+	int code_rt_version;
-+
-+	uuid_t drv_type;
-+	int drv_rt_version;
-+	int drv_svn;
-+
-+	uuid_t platform_id;
-+	uuid_t oem_id;
-+
-+	char oem_info[];
-+};
-+
-+struct com_buf_info {
-+	enum dsm_status status;
-+	enum dsm_status ext_status;
-+	unsigned long addr_lo;
-+	unsigned long addr_hi;
-+	int buf_size;
-+};
-+
-+struct capsulate_buf_info {
-+	unsigned long src;
-+	int size;
-+};
-+
-+struct updated_result {
-+	enum dsm_status status;
-+	enum dsm_status ext_status;
-+	unsigned long low_auth_time;
-+	unsigned long high_auth_time;
-+	unsigned long low_exec_time;
-+	unsigned long high_exec_time;
-+};
-+
-+#define PFRU_TELEMETRY_UUID	"75191659-8178-4D9D-B88F-AC5E5E93E8BF"
-+
-+/* Telemetry structures. */
-+struct telem_data_info {
-+	enum dsm_status status;
-+	enum dsm_status ext_status;
-+	/* Maximum supported size of data of
-+	 * all Data Chunks combined.
-+	 */
-+	unsigned long chunk1_addr_lo;
-+	unsigned long chunk1_addr_hi;
-+	unsigned long chunk2_addr_lo;
-+	unsigned long chunk2_addr_hi;
-+	int max_data_size;
-+	int chunk1_size;
-+	int chunk2_size;
-+	int rollover_cnt;
-+	int reset_cnt;
-+};
-+
-+struct telem_info {
-+	int log_level;
-+	int log_type;
-+	int log_revid;
-+};
-+
-+/* Two logs: history and execution log */
-+#define LOG_EXEC_IDX	0
-+#define LOG_HISTORY_IDX	1
-+#define NR_LOG_TYPE	2
-+
-+#define LOG_ERR		0
-+#define LOG_WARN	1
-+#define LOG_INFO	2
-+#define LOG_VERB	4
-+
-+#define FUNC_SET_LEV		1
-+#define FUNC_GET_LEV		2
-+#define FUNC_GET_DATA		3
-+
-+#define LOG_NAME_SIZE		10
-+
-+#define PFRU_LOG_IOC_SET_INFO _IOW(PFRU_MAGIC, 0x05, struct telem_info)
-+#define PFRU_LOG_IOC_GET_INFO _IOR(PFRU_MAGIC, 0x06, struct telem_info)
-+#define PFRU_LOG_IOC_GET_DATA_INFO _IOR(PFRU_MAGIC, 0x07, struct telem_data_info)
-+
-+#endif /* __PFRU_H__ */
-diff --git a/tools/testing/selftests/pfru/pfru_test.c b/tools/testing/selftests/pfru/pfru_test.c
-new file mode 100644
-index 000000000000..d24d79d3836e
---- /dev/null
-+++ b/tools/testing/selftests/pfru/pfru_test.c
-@@ -0,0 +1,324 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Tests Runtime Update/Telemetry (see Documentation/x86/pfru_update.rst)
-+ */
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include "pfru.h"
-+
-+#define MAX_LOG_SIZE 65536
-+
-+struct update_cap_info cap_info;
-+struct com_buf_info buf_info;
-+struct capsulate_buf_info image_info;
-+struct telem_data_info data_info;
-+char *capsule_name;
-+int action, query_cap, log_type, log_level, log_read, log_getinfo,
-+	revid, log_revid;
-+int set_log_level, set_log_type,
-+	set_revid, set_log_revid;
-+
-+char *progname;
-+
-+static int valid_log_level(int level)
-+{
-+	return (level == LOG_ERR) || (level == LOG_WARN) ||
-+		(level == LOG_INFO) || (level == LOG_VERB);
-+}
-+
-+static int valid_log_type(int type)
-+{
-+	return (type == LOG_EXEC_IDX) || (type == LOG_HISTORY_IDX);
-+}
-+
-+static void help(void)
-+{
-+	fprintf(stderr,
-+		"usage: %s [OPTIONS]\n"
-+		" code injection:\n"
-+		"  -l, --load\n"
-+		"  -s, --stage\n"
-+		"  -a, --activate\n"
-+		"  -u, --update [stage and activate]\n"
-+		"  -q, --query\n"
-+		"  -d, --revid update\n"
-+		" telemetry:\n"
-+		"  -G, --getloginfo\n"
-+		"  -T, --type(0:execution, 1:history)\n"
-+		"  -L, --level(0, 1, 2, 4)\n"
-+		"  -R, --read\n"
-+		"  -D, --revid log\n",
-+		progname);
-+}
-+
-+char *option_string = "l:sauqd:GT:L:RD:h";
-+static struct option long_options[] = {
-+	{"load", required_argument, 0, 'l'},
-+	{"stage", no_argument, 0, 's'},
-+	{"activate", no_argument, 0, 'a'},
-+	{"update", no_argument, 0, 'u'},
-+	{"query", no_argument, 0, 'q'},
-+	{"getloginfo", no_argument, 0, 'G'},
-+	{"type", required_argument, 0, 'T'},
-+	{"level", required_argument, 0, 'L'},
-+	{"read", no_argument, 0, 'R'},
-+	{"setrev", required_argument, 0, 'd'},
-+	{"setrevlog", required_argument, 0, 'D'},
-+	{"help", no_argument, 0, 'h'},
-+	{}
-+};
-+
-+static void parse_options(int argc, char **argv)
-+{
-+	char *pathname;
-+	int c;
-+
-+	pathname = strdup(argv[0]);
-+	progname = basename(pathname);
-+
-+	while (1) {
-+		int option_index = 0;
-+
-+		c = getopt_long(argc, argv, option_string,
-+				long_options, &option_index);
-+		if (c == -1)
-+			break;
-+		switch (c) {
-+		case 'l':
-+			capsule_name = optarg;
-+			break;
-+		case 's':
-+			action = 1;
-+			break;
-+		case 'a':
-+			action = 2;
-+			break;
-+		case 'u':
-+			action = 3;
-+			break;
-+		case 'q':
-+			query_cap = 1;
-+			break;
-+		case 'G':
-+			log_getinfo = 1;
-+			break;
-+		case 'T':
-+			log_type = atoi(optarg);
-+			set_log_type = 1;
-+			break;
-+		case 'L':
-+			log_level = atoi(optarg);
-+			set_log_level = 1;
-+			break;
-+		case 'R':
-+			log_read = 1;
-+			break;
-+		case 'd':
-+			revid = atoi(optarg);
-+			set_revid = 1;
-+			break;
-+		case 'D':
-+			log_revid = atoi(optarg);
-+			set_log_revid = 1;
-+			break;
-+		case 'h':
-+			help();
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
-+void print_cap(struct update_cap_info *cap)
-+{
-+	char *uuid = malloc(37);
-+
-+	if (!uuid) {
-+		perror("Can not allocate uuid buffer\n");
-+		exit(1);
-+	}
-+	uuid_unparse(cap->code_type, uuid);
-+	printf("code injection image type:%s\n", uuid);
-+	printf("fw_version:%d\n", cap->fw_version);
-+	printf("code_rt_version:%d\n", cap->code_rt_version);
-+
-+	uuid_unparse(cap->drv_type, uuid);
-+	printf("driver update image type:%s\n", uuid);
-+	printf("drv_rt_version:%d\n", cap->drv_rt_version);
-+	printf("drv_svn:%d\n", cap->drv_svn);
-+
-+	uuid_unparse(cap->platform_id, uuid);
-+	printf("platform id:%s\n", uuid);
-+	uuid_unparse(cap->oem_id, uuid);
-+	printf("oem id:%s\n", uuid);
-+
-+	free(uuid);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd_update, fd_log, fd_capsule;
-+	struct telem_data_info data_info;
-+	struct telem_info info;
-+	struct update_cap_info cap;
-+	void *addr_map_capsule;
-+	struct stat st;
-+	char *log_buf;
-+	int ret = 0;
-+
-+	parse_options(argc, argv);
-+
-+	fd_log = open("/dev/pfru/telemetry", O_RDWR);
-+	if (fd_log < 0) {
-+		perror("Cannot open telemetry device...");
-+		return 1;
-+	}
-+	fd_update = open("/dev/pfru/update", O_RDWR);
-+	if (fd_update < 0) {
-+		perror("Cannot open code injection device...");
-+		return 1;
-+	}
-+
-+	if (query_cap) {
-+		ret = read(fd_update, &cap, sizeof(cap));
-+		if (ret == -1) {
-+			perror("Read error.");
-+			return 1;
-+		}
-+		print_cap(&cap);
-+	}
-+
-+	if (log_getinfo) {
-+		ret = ioctl(fd_log, PFRU_LOG_IOC_GET_DATA_INFO, &data_info);
-+		if (ret) {
-+			perror("Get log data info failed.");
-+			return 1;
-+		}
-+		ret = ioctl(fd_log, PFRU_LOG_IOC_GET_INFO, &info);
-+		if (ret) {
-+			perror("Get log info failed.");
-+			return 1;
-+		}
-+		printf("log_level:%d\n", info.log_level);
-+		printf("log_type:%d\n", info.log_type);
-+		printf("log_revid:%d\n", info.log_revid);
-+		printf("max_data_size:%d\n", data_info.max_data_size);
-+		printf("chunk1_size:%d\n", data_info.chunk1_size);
-+		printf("chunk2_size:%d\n", data_info.chunk2_size);
-+		printf("rollover_cnt:%d\n", data_info.rollover_cnt);
-+		printf("reset_cnt:%d\n", data_info.reset_cnt);
-+
-+		return 0;
-+	}
-+
-+	info.log_level = -1;
-+	info.log_type = -1;
-+	info.log_revid = -1;
-+
-+	if (set_log_level) {
-+		if (!valid_log_level(log_level)) {
-+			printf("Invalid log level %d\n",
-+			       log_level);
-+		} else {
-+			info.log_level = log_level;
-+		}
-+	}
-+	if (set_log_type) {
-+		if (!valid_log_type(log_type)) {
-+			printf("Invalid log type %d\n",
-+			       log_type);
-+		} else {
-+			info.log_type = log_type;
-+		}
-+	}
-+	if (set_log_revid) {
-+		if (!valid_revid(log_revid)) {
-+			printf("Invalid log revid %d\n",
-+			       log_revid);
-+		} else {
-+			info.log_revid = log_revid;
-+		}
-+	}
-+
-+	ret = ioctl(fd_log, PFRU_LOG_IOC_SET_INFO, &info);
-+	if (ret) {
-+		perror("Log information set failed.(log_level, log_type, log_revid)");
-+		return 1;
-+	}
-+
-+	if (set_revid) {
-+		ret = ioctl(fd_update, PFRU_IOC_SET_REV, &revid);
-+		if (ret) {
-+			perror("mru update revid set failed");
-+			return 1;
-+		}
-+		printf("mru update revid set to %d\n", revid);
-+	}
-+
-+	if (capsule_name) {
-+		fd_capsule = open(capsule_name, O_RDONLY);
-+		if (fd_capsule < 0) {
-+			perror("Can not open capsule file...");
-+			return 1;
-+		}
-+		if (fstat(fd_capsule, &st) < 0) {
-+			perror("Can not fstat capsule file...");
-+			return 1;
-+		}
-+		addr_map_capsule = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED,
-+					fd_capsule, 0);
-+		if (addr_map_capsule == MAP_FAILED) {
-+			perror("Failed to mmap capsule file.");
-+			return 1;
-+		}
-+		ret = write(fd_update, (char *)addr_map_capsule, st.st_size);
-+		printf("Load %d bytes of capsule file into the system\n",
-+		       ret);
-+		if (ret == -1) {
-+			perror("Failed to load capsule file");
-+			return 1;
-+		}
-+		munmap(addr_map_capsule, st.st_size);
-+		printf("Load done.\n");
-+	}
-+
-+	if (action) {
-+		if (action == 1)
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE, NULL);
-+		else if (action == 2)
-+			ret = ioctl(fd_update, PFRU_IOC_ACTIVATE, NULL);
-+		else if (action == 3)
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE_ACTIVATE, NULL);
-+		else
-+			return 1;
-+		printf("Update finished, return %d\n", ret);
-+	}
-+
-+	if (log_read) {
-+		log_buf = malloc(MAX_LOG_SIZE + 1);
-+		if (!log_buf) {
-+			perror("log_buf allocate failed.");
-+			return 1;
-+		}
-+		ret = read(fd_log, log_buf, MAX_LOG_SIZE);
-+		if (ret == -1) {
-+			perror("Read error.");
-+			return 1;
-+		}
-+		log_buf[ret] = '\0';
-+		printf("%s\n", log_buf);
-+		free(log_buf);
-+	}
-+
-+	return 0;
-+}
--- 
-2.25.1
-
+Regards,
+Bjorn
