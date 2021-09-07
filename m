@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E990402E7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E88402E80
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345953AbhIGSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:44:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:24451 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240131AbhIGSo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:44:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="207403796"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="207403796"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:43:19 -0700
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="464977752"
-Received: from fdiasmor-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.209.186.104])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:43:17 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Gu Shengxian <gushengxian@yulong.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ASoC: amd: acp: declare and add prefix to 'bt_uart_enable' symbol
-Date:   Tue,  7 Sep 2021 13:42:14 -0500
-Message-Id: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1345996AbhIGSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:46:10 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:40827 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240131AbhIGSqJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:46:09 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso283386oth.7;
+        Tue, 07 Sep 2021 11:45:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ozglVsUKCNW9AOVGz1ChJ1oIECijqYJsLQAW6GlHXA=;
+        b=HHK3qIjiuBhX5XrSrghL3Dpzy91xQD5+CVYWRV13dPUDBr8Pl6rHLLA5LkZkM+s5qc
+         jmajsoaEhWJI0NTlc0Ldcazj9DsYntq0JzpsP0cAtkd0JiMABxPeZVtkexPZWLF0k2Yg
+         XyGzU4hQtD147jRBPUKTNJzVKoPbjo9NyOKwZTaAa/Ev3MAswDsteGHJgV7Or3PeYv+5
+         V+nDwpmvUxH+KBnwpWMpqVgUhHesLdaF5CFind/4cP1+ZB3qDUrpuiHLWpvHPQfmFHjL
+         /AshcV3XGbyidGfVVGFsbPnV/TC2goUPjcaaCZVcjpgT9lGBbhukdxK5fxIj0iM2lqV9
+         8ISA==
+X-Gm-Message-State: AOAM532Rti4dQOjNuYCwHtTWdD7aLJznrFT6fLtsk02l9pDMKBc5RL2O
+        v7+1mT25JrLgZBMgqqWT4A==
+X-Google-Smtp-Source: ABdhPJzYfyQYhTlPJRunicK9T4KLeQ7LacWk2jQ8/+ZtVlzLbmH3PCTii/qTGzUldxiE+8Ob8aXc+A==
+X-Received: by 2002:a9d:74c5:: with SMTP id a5mr16153497otl.205.1631040302219;
+        Tue, 07 Sep 2021 11:45:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id t1sm2555364otp.9.2021.09.07.11.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 11:45:01 -0700 (PDT)
+Received: (nullmailer pid 133935 invoked by uid 1000);
+        Tue, 07 Sep 2021 18:45:00 -0000
+Date:   Tue, 7 Sep 2021 13:45:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: display: renesas,du: Provide bindings
+ for r8a779a0
+Message-ID: <YTezLHrRt/YpOlJZ@robh.at.kernel.org>
+References: <20210901233655.1602308-1-kieran.bingham@ideasonboard.com>
+ <CAMuHMdXHAfg3_VoeXUBT2-QceLR9KQ3pWjz+5=-wK1QRxK14bw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXHAfg3_VoeXUBT2-QceLR9KQ3pWjz+5=-wK1QRxK14bw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse reports the following warning:
+On Mon, Sep 06, 2021 at 10:13:07AM +0200, Geert Uytterhoeven wrote:
+> Hi Kieran,
+> 
+> On Thu, Sep 2, 2021 at 1:39 AM Kieran Bingham
+> <kieran.bingham@ideasonboard.com> wrote:
+> > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >
+> > Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+> >
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > ---
+> > v2:
+> >  - Collected Laurent's tag
+> >  - Remove clock-names requirement
+> >  - Specify only a single clock
+> 
+> Thanks for the update!
+> 
+> > --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > @@ -39,6 +39,7 @@ properties:
+> >        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+> >        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+> >        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> > +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+> >
+> >    reg:
+> >      maxItems: 1
+> > @@ -773,6 +774,55 @@ allOf:
+> >          - reset-names
+> >          - renesas,vsps
+> >
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - renesas,du-r8a779a0
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: Functional clock
+> > +
+> > +        clock-names:
+> > +          maxItems: 1
+> > +          items:
+> > +            - const: du
+> > +
+> > +        interrupts:
+> > +          maxItems: 2
+> > +
+> > +        resets:
+> > +          maxItems: 1
+> > +
+> > +        reset-names:
+> > +          items:
+> > +            - const: du.0
+> 
+> This is now inconsistent with clock-names, which doesn't use a suffix.
 
-sound/soc/amd/acp-pcm-dma.c:39:6: error: symbol 'bt_uart_enable' was
-not declared. Should it be static?
+But it is consistent with all the other cases of 'reset-names'. The 
+problem is 'clock-names' is not consistent and should be 'du.0'.
 
-It's not very good practice to export such symbols that can easily
-conflict, add the acp_ prefix and add declaration in header file.
+Ideally, the if/them schemas should not be defining the names. That 
+should be at the top level and the if/them schema just limits the number 
+of entries. That's not always possible, but I think is for clocks and 
+resets in this case.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
- sound/soc/amd/acp-pcm-dma.c          | 6 +++---
- sound/soc/amd/acp.h                  | 2 ++
- 3 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index b3df98a9f9f3..b2065f3fe42c 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -33,7 +33,7 @@ static struct clk *da7219_dai_wclk;
- static struct clk *da7219_dai_bclk;
- static struct clk *rt5682_dai_wclk;
- static struct clk *rt5682_dai_bclk;
--extern bool bt_uart_enable;
-+
- void *acp_soc_is_rltk_max(struct device *dev);
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
-@@ -760,8 +760,8 @@ static int cz_probe(struct platform_device *pdev)
- 				"devm_snd_soc_register_card(%s) failed\n",
- 				card->name);
- 	}
--	bt_uart_enable = !device_property_read_bool(&pdev->dev,
--						    "bt-pad-enable");
-+	acp_bt_uart_enable = !device_property_read_bool(&pdev->dev,
-+							"bt-pad-enable");
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 11b3c4f39eba..1f322accd9ea 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -36,8 +36,8 @@
- #define ST_MIN_BUFFER ST_MAX_BUFFER
- 
- #define DRV_NAME "acp_audio_dma"
--bool bt_uart_enable = true;
--EXPORT_SYMBOL(bt_uart_enable);
-+bool acp_bt_uart_enable = true;
-+EXPORT_SYMBOL(acp_bt_uart_enable);
- 
- static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
-@@ -596,7 +596,7 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
- 	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
- 
- 	/* For BT instance change pins from UART to BT */
--	if (!bt_uart_enable) {
-+	if (!acp_bt_uart_enable) {
- 		val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
- 		val |= ACP_BT_UART_PAD_SELECT_MASK;
- 		acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index e5ab6c6040a6..85529ed7e5f5 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -204,4 +204,6 @@ typedef struct acp_dma_dscr_transfer {
- 	u32 reserved;
- } acp_dma_dscr_transfer_t;
- 
-+extern bool acp_bt_uart_enable;
-+
- #endif /*__ACP_HW_H */
--- 
-2.25.1
-
+> 
+> > +
+> > +        ports:
+> > +          properties:
+> > +            port@0:
+> > +              description: DSI 0
+> > +            port@1:
+> > +              description: DSI 1
+> > +            port@2: false
+> > +            port@3: false
+> > +
+> > +          required:
+> > +            - port@0
+> > +            - port@1
+> > +
+> > +        renesas,vsps:
+> > +          minItems: 2
+> > +
+> > +      required:
+> > +        - interrupts
+> > +        - resets
+> > +        - reset-names
+> 
+> Same here, as clock-names is not required anymore.
+> 
+> > +        - renesas,vsps
+> > +
+> >  additionalProperties: false
+> >
+> >  examples:
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
