@@ -2,104 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D61D402BAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22535402BB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345096AbhIGPXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:23:44 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:45949 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345019AbhIGPXn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:23:43 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N5mSj-1n2aSF0CeR-017An7; Tue, 07 Sep 2021 17:22:36 +0200
-Received: by mail-wr1-f46.google.com with SMTP id t18so4286991wrb.0;
-        Tue, 07 Sep 2021 08:22:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531Qj5eAw082QSGq2LSDC9NOTCV/5nBOC8L2hA7BCC+/VXXbLwoT
-        gV1hOIvFb2DS2s0HJpRMedZfa6Pph+Nt8m35YC0=
-X-Google-Smtp-Source: ABdhPJy58uScJqBW+UrC1EYruygZaDSlaishAvDFwCVWkwTrM6LrtBlVbOuI4LZO9PhoP1L02EP4ZshmBSt6whgyAaA=
-X-Received: by 2002:adf:c10b:: with SMTP id r11mr19521551wre.336.1631028155500;
- Tue, 07 Sep 2021 08:22:35 -0700 (PDT)
+        id S1345160AbhIGPZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:25:05 -0400
+Received: from ms.lwn.net ([45.79.88.28]:47170 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345168AbhIGPZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:25:00 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id D7D46735;
+        Tue,  7 Sep 2021 15:23:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D7D46735
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1631028234; bh=tceuoqLCbBFi1wF26LSs4mfr8Ji5ZyYIiWgS4g2Nw28=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Y3UwR/UCsHOVfoocFGfI8/D0TdbxHDngUtgeoq/0/QrYbVbUU2MiSF3TVHCcqk0em
+         eJArinU/agJlFsU8Pi/2WQKW+jIgfTbPSWgqif6Na9MoPDL+mdssmr/RD+OpPORljy
+         BIUb5NyGap0D4LghrmCCuj8UnYsufEWADl4YNCV0XJRrbjff+haY0w94KD/znFD6Ce
+         FonzB9IoSYW6KdprtCm2mW5Pd9UifctoAVsS6q1hPoN869X3fllOfYCufIVEpByn8+
+         gVE7wdhzIXnoJvnql360vQRZXSTkFq+pjQrNYNbkd39bfrygVXp9igEg3IOR8hdpTf
+         OWQKkkUHvZKpw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 1/5][RFC] Documentation: Introduce Platform Firmware
+ Runtime Update documentation
+In-Reply-To: <c135a9bf742f3c2181650914f40ce563d7a3dc48.1631025237.git.yu.c.chen@intel.com>
+References: <cover.1631025237.git.yu.c.chen@intel.com>
+ <c135a9bf742f3c2181650914f40ce563d7a3dc48.1631025237.git.yu.c.chen@intel.com>
+Date:   Tue, 07 Sep 2021 09:23:53 -0600
+Message-ID: <87sfygtnna.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210907102722.47543-1-bert@biot.com> <20210907102722.47543-5-bert@biot.com>
- <CAFr9PXmCKPfdHnHU7=ALh=j2SDf71ibd8kEnLTK6aPN1vmQVdg@mail.gmail.com>
- <CAK8P3a21N8khjyV-f=p28ZogoakhLTrkoPBd6PeXrigba=7-TQ@mail.gmail.com>
- <CAFr9PXn4JXGKSCDNeKMJDPgfezktyfBsTcq8GErt+ROuumDgrg@mail.gmail.com>
- <CAK8P3a0y0PhmOdMPnx10zG6s6RfiuC9Ju9s5SMnOk8oZ+cAFMw@mail.gmail.com> <CAFr9PX=Oi-HJYUFBfJn4pHUSk=drf7otyx473hvq1UC5_gaTHQ@mail.gmail.com>
-In-Reply-To: <CAFr9PX=Oi-HJYUFBfJn4pHUSk=drf7otyx473hvq1UC5_gaTHQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 7 Sep 2021 17:22:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3xZjg-SFs-bjtOrWMi5H7Ou4eRGsUEmy4XQUXqej+M9A@mail.gmail.com>
-Message-ID: <CAK8P3a3xZjg-SFs-bjtOrWMi5H7Ou4eRGsUEmy4XQUXqej+M9A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] ARM: Add basic support for Airoha EN7523 SoC
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Bert Vermeulen <bert@biot.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        John Crispin <john@phrozen.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:rQn/ggVZMxa0impJfQu8ANKJ9Dp7zg0dW2eal7JvpWIuEul96Ar
- Xkr3e0hnz1cLDzZGn+sApKVyW1IMpPGEzJq6V5YWxQHyIkkCUtdRSW91FAK//0nFNd1sauu
- 0cZlJFVgQ9DrCUqAj/EIFb09cqN2HOAbM1p04UFUBphWUYZ/QX7MlI7qn1NG1py4UUqNU+L
- Ap67sOktLDWI2IZCcclIw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pyPB3Zm4iTE=:2bqXNR9fPUqGjkg6buYqX4
- VhRN3wA7ve8Fed0iN6H2fdosLHYx2IvCcwFbk1TwB4NigdPVZO9czH1gUfcF2ztr795zOOj8s
- tD9i4ofsEbIiKYTPdQojrf2Z79BLqf4splyTBekMSwJaqZCIUUx5FXpypoGiY3SxaniNW4FY1
- 11LicF6Ke8O26wmCxWmc8q5zEE2LMinz2q9PWjHW+LnsSvtB5os+JiTwxz+odx9J2G2lpH2zl
- gzBWR7UxnCgzBkQQdtTkKTpnAz622rXkBIRit5r3bc6Zvyke8kLPMl3drjlL6VJzjNVyuXq5C
- cRR9MgFnUK7Nzs6dooS5nOvFqTfGfQg9e/vp9Xy1iT2a3Y1ZhW05AaXOzoGUOD+K6j3BgJV/4
- Et7Bymb2rt5LlmVnzpNtDNWY9U4bqVNdn+GLC9EHj7j6hZ4VetT/zKAV6r+zDHruIkrj9Y01+
- +loiYxtD8wZZTZjNQmjbsi8EFRnuMibGI4dLeD8ZGl2qLdpf/kz3xrU4LRvw66Svn/smQoFUo
- QICUuDDiFvlj/npZNit+J8I3B1Xm/R+Jwr7nxiH2S7TjPWryN3WBRwUB1u5FZyOmt1tKFJ/nS
- vSgzbIN6KDPRwCc+0rgqCsWR0DMnsg6qpJTeYISdpvXXSEKiD3i4ILLpAPiAsfgCKqVXCeY14
- uBW9Ca6FL3FVIFISQ72wpyQJoLBnxFYGfUMyEvEsjHK2ZrzY8zZXMlhQzmdbdpsfNJNXd6a/3
- JpcK21ITUoeFyw7L6ZuuJUBnCZvi/j6dz7KYZQ==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 4:32 PM Daniel Palmer <daniel@0x0f.com> wrote:
-> On Tue, 7 Sept 2021 at 23:12, Arnd Bergmann <arnd@arndb.de> wrote:
+Thanks for adding to the documentation.  I have a few nits for you...
+
+Chen Yu <yu.c.chen@intel.com> writes:
+
+> Add the Platform Firmware Runtime Update/Telemetry documentation.
 >
-> > > I think the broken memory controller is still there so somehow I'd
-> > > need to get the heavy barrier to work in arm64. I haven't yet worked
-> > > out if that's even possible.
-> >I think I missed that part of the discussion, or I forgot about it already.
-> >What is the issue you are referring to here?
->
-> Sorry. I should have put a bit more context. This is for the SSD268G
-> not the original target of this series. But a similar situation.
-> The SSD268G (according to the decompiled device tree) is the same
-> hardware as the MSTAR_V7 chips but with a Cortex A53 instead of the
-> Cortex A7.
-> So it probably has the same memory controller as the MSTAR_V7 stuff
-> and that memory controller is not coherent so it needs the kernel to
-> make sure memory requests are flushed out to memory before DMA
-> happens[0]. For arm I fixed that with the heavy mb callback. With
-> arm64 I have no idea how to fix that.
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  Documentation/x86/pfru.rst | 98 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/x86/pfru.rst
 
-Ok, got it. I do remember the Mstar SoCs having this problem. My feeling
-is that this should be possible to implement on arm64 as well using
-an erratum fixup with a configuration option, and possibly dynamic patching
-to avoid the worst effects when the workaround is built into the kernel
-but not needed.
+When you add a new RST file, you also need to find a spot for it in
+index.rst so it becomes part of the docs build.
 
-Whether this is acceptable or not is up to the arm64 architecture maintainers
-of course.
+> diff --git a/Documentation/x86/pfru.rst b/Documentation/x86/pfru.rst
+> new file mode 100644
+> index 000000000000..321729f46737
+> --- /dev/null
+> +++ b/Documentation/x86/pfru.rst
+> @@ -0,0 +1,98 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +========================================================
+> +The Linux Platform Firmware Runtime Update and Telemetry
+> +========================================================
+> +
+> +According to the specification of <Management Mode Firmware Runtime Update>[1],
+> +certain computing systems require high Service Level Agreements (SLAs) where
+> +system reboot fewer firmware updates are required to deploy firmware changes
+> +to address bug fixes, security updates and to debug and root cause issues. This
+> +technology is called Intel Seamless Update. The management mode (MM),
+> +UEFI runtime services and ACPI services handle most of the system runtime
+> +functions. Changing the MM code execution during runtime is called MM Runtime
+> +Update. Since the "MM" acronyms might be misunderstood as "Memory Management",
+> +this driver uses "Platform Firmware Runtime Update"(PFRU)
+> +
+> +PFRU provides the following facilities: Performs a runtime firmware driver update
+> +and activate. Ability to inject firmware code at runtime, for dynamic instrumentation.
+> +PFRU Telemetry is a service which allows Runtime Update handler to produce telemetry
+> +data to upper layer OS consumer at runtime. The OS provides interfaces to let the
+> +users query the telemetry data via read operations. The specification specifies the
+> +interface and recommended policy to extract the data, the format and use are left to
+> +individual OEM's and BIOS implementations on what that data represents.
 
-       Arnd
+Sticking to the 80-column limit is preferable; it keeps the text
+readable. 
+
+> +PFRU interfaces
+> +=====================
+
+Underline lengths should match the title text, or Sphinx will get grumpy
+with you.
+
+> +The user space tool manipulates on /dev/pfru/update for code injection and
+> +driver update. PFRU stands for Platform Firmware Runtime Update, and the /dev/pfru
+> +directory might be reserved for future usage.
+> +
+> + 1. mmap the capsule file
+> +    fd_capsule = open("capsule.cap", O_RDONLY);
+> +    fstat(fd_capsule, &stat);
+> +    addr = mmap(0, stat.st_size, PROT_READ, fd_capsule);
+
+These will not render the way you would like; you'll want to use literal
+blocks for the code samples.
+
+> + 2. Get the capability information(version control, etc) from BIOS via
+> +    read() and do sanity check in user space.
+> +    fd_update = open("/dev/pfru/update", O_RDWR);
+> +    read(fd_update, &cap, sizeof(cap));
+> +    sanity_check(&cap);
+> +
+> + 3. Write the capsule file to runtime update communication buffer
+> +    //kernel might return error if capsule file size is longer than
+> +    //communication buffer
+> +    write(fd_update, addr, stat.st_size);
+> +
+> + 4. Stage the code injection
+> +    ioctl(fd_update, PFRU_IOC_STATGE);
+> +
+> + 5. Activate the code injection
+> +    ioctl(fd_update, PFRU_IOC_ACTIVATE);
+> +
+> + 6. Stage and activate the code injection
+> +    ioctl(fd_update, PFRU_IOC_STAGE_ACTIVATE);
+> +
+> +    PFRU_IOC_STATGE: Stage a capsule image from communication buffer
+> +                    and perform authentication.
+> +    PFRU_IOC_ACTIVATE: Activate a previous staged capsule image.
+> +    PFRU_IOC_STAGE_ACTIVATE: Perform both stage and activation actions.
+> +
+> +PFRU Telemetry
+> +=============
+> +
+> +The user space tool manipulates on /dev/pfru/telemetry for PFRU telemetry log.
+> +Sample code:
+> +
+> + 1. Open telemetry device
+> +    fd_log = open("/dev/pfru/telemetry", O_RDWR);
+> +
+> + 2. Get log level, log type, revision_id via one ioctl invoke
+> +    ioctl(fd_log, PFRU_IOC_GET_LOG_INFO, &info);
+> +
+> + 3. Set log level, log type, revision_id
+> +    ioctl(fd_log, PFRU_IOC_SET_LOG_INFO, &info);
+> +
+> + 4. ioctl(fd_log, PFRU_IOC_GET_DATA_INFO, &data_info);
+> +    Query the information of PFRU telemetry log buffer. The user is
+> +    responsible for parsing the result per the specification.
+> +
+> + 5. Read the telemetry data:
+> +    read(fd_log, buf, data_info.size);
+> +
+> +Please refer to tools/testing/selftests/pfru/pfru_test.c for detail.
+> +
+> +According to <Management Mode Firmware Runtime Update>[1], the telemetry
+> +buffer is a wrap around buffer. If the telemetry buffer gets full, most recent
+> +log data will overwrite old log data. Besides, it is required in the spec that
+> +the read of telemetry should support both full data retrieval and delta telemetry
+> +data retrieval. Since this requirement is more likely a policy we leave this
+> +implementation in user space. That is to say, it is recommended for the user
+> +to double-read the telemetry parameters such as chunk1_size, chunk2_size,
+> +rollover_cnt in data_info structure to make sure that there is no more data appended
+> +while the user is reading the buffer. Besides, only after the runtime update has
+> +been run at least once, the telemetry log would have valid data, otherwise errno code
+> +of EBUSY would be returned.
+> +
+> +[1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
+> -- 
+> 2.25.1
+
+Thanks,
+
+jon
