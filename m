@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8874028A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9504028A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344260AbhIGMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36574 "EHLO mail.kernel.org"
+        id S1344061AbhIGMWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242841AbhIGMV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:21:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B612610FF;
-        Tue,  7 Sep 2021 12:20:21 +0000 (UTC)
+        id S1344515AbhIGMVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 08:21:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01B8060F45;
+        Tue,  7 Sep 2021 12:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631017222;
-        bh=I05oUJO5ooxVMhmHQL/GV/yvfvUjXqZSTxiEdS57Fng=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Lu8FjSSud1pggsDoyIhZlc3iXhPXtC+fcKl7GyPKUi7ogrYmQLhadm35vnISrA2Ct
-         kks11UL4w3ixtWTvIe0Y+PU/x9tSbCMrlv6pbC34bIm7QrR9TONdchp0phtLxbwcoG
-         X6+uGVztesQdYY/1mQls8FOL4BsBVlu4SEud3NArTG2/WXN8MBFd8X4r3pCpaU5kCz
-         TgqiZEvqnrAd68OzLkG6JVPCBZfwYNYyqfknX2xKn7hbPfMjOKjrp1VmYMqgs0y8ON
-         o9myTDmB1WCl4/r7lwMwrnwNK1Pg8Lnoa1/gJ3/XBEMmuZmXfWxmUHZxXYEXTBENWJ
-         Fg50MSZrDg/6A==
-Date:   Tue, 7 Sep 2021 14:20:18 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     chaochao2021666@163.com
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jan.kiszk@siemens.com, 464759471@qq.com,
-        chao zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH 1/3] leds:triggers:Extend the kernel panic LED trigger
-Message-ID: <20210907142018.45b2d114@dellmb>
-In-Reply-To: <20210906135320.23134-1-chaochao2021666@163.com>
-References: <20210906135320.23134-1-chaochao2021666@163.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        s=k20201202; t=1631017248;
+        bh=Y8xoyYNHQT9hL1aC3E66re6pRQOGIaA/FYV2Jm5dkZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dS4YHtbOLThghB2ymsHInAGdLC6u6g2NinLze9FqN/20AQWb3EaYk9gO8pRVAcNc3
+         JfsL30fLR5w32a9n7mtThT0NP5UZcP0aeLGmmkYTkUeoHKvRHLFxrucBxrvd8wJ2MG
+         7h9yeIjC5rkcrqz8lVVMZLb9OsTgzgOGj1fjQb53U1vkeVEVabkjahtRfrf3yjE+sT
+         J02FP9f+FEJ/fMBhGQawS14pv/+0vSTC5fe8HbHKk6hy4TlGI69la3Po5gbgAkha97
+         FKg8PD1sWyqY0asTB+kH9woDXIA9LBKG5k7rMqdZWIedbclC1VKnbQxr1xO6VhbH9t
+         pCln3tQHyCd/w==
+Received: by pali.im (Postfix)
+        id A31D57FB; Tue,  7 Sep 2021 14:20:45 +0200 (CEST)
+Date:   Tue, 7 Sep 2021 14:20:45 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: pci-ftpci100: race condition in masking/unmasking interrupts
+Message-ID: <20210907122045.x6jyanqaf43rasnq@pali>
+References: <20210818114743.kksb7tydqjkww67h@pali>
+ <CACRpkdYe-Y-1YstovrJd7b8iNCDeX312mB4gLGcG1y6dE6di=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdYe-Y-1YstovrJd7b8iNCDeX312mB4gLGcG1y6dE6di=A@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  6 Sep 2021 21:53:18 +0800
-chaochao2021666@163.com wrote:
-
-> From: chao zeng <chao.zeng@siemens.com>
+On Tuesday 07 September 2021 13:22:37 Linus Walleij wrote:
+> On Wed, Aug 18, 2021 at 1:47 PM Pali Rohár <pali@kernel.org> wrote:
 > 
-> This commit extend panic trigger, add two new panic trigger
-> "panic_on" and "panic_off" and keep the "panic" compatible with
-> "panic_blink".
+> > I do not see any entry in MAINTAINERS file for pci-ftpci100.c driver, so
+> > I'm not sure to whom should I address this issue...
 > 
-> All the led on the "panic_on" would light and on
-> the "panic_off" would turn off
+> It's me.
 
-We don't wont gazillion triggers, each for every possible setting.
+Ok! So could you send update for MAINTAINERS file for this driver?
 
-Instead extend the existing panic trigger to have another sysfs setting
-where you can set this behavior.
-  echo panic >trigger
-  echo blink >on_panic
-So the on_panic file can accept "on", "off" or "blink".
+> > During pci-aardvark review, Marc pointed one issue which is currently
+> > available also in pci-ftpci100.c driver.
+> >
+> > When masking or unmasking interrupts there is read-modify-write sequence
+> > for FARADAY_PCI_CTRL2 register without any locking and is not atomic:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-ftpci100.c?h=v5.13#n270
+> >
+> > So there is race condition when masking/unmasking more interrupts at the
+> > same time.
+> 
+> I thought those operations were called in atomic context.
 
-Alternatively a pattern could be set as in the ledtrig-pattern trigger.
+I guess that they cannot be as for performance reasons you could want to
+mask or unmask more interrupts in parallel on more CPUs.
 
-Also your patches do not use correct spacing in commit titles:
-  leds:triggers:Extend the kernel panic LED trigger
-should instead be
-  leds: triggers: Extend the kernel panic LED trigger
+> How did you fix it?
 
-Marek
+Guarding all read-modify-write operations on register by raw spin lock. See:
+https://lore.kernel.org/linux-pci/20210820155020.3000-1-pali@kernel.org/
