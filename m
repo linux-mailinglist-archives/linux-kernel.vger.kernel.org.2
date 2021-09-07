@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0C8402AC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BC0402AD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244782AbhIGOaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:30:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34291 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244330AbhIGOaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:30:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631024950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bwKTd47i7RBa12xeUNR/6CrUBOuGg/JR9ZR1J/Ypibo=;
-        b=bhXIqgjp2K/p/1iv4QVkP5LE21Amo/f8CvaZunEZjcFQ95NDH5Nbszz1kTGvXwhlZhJLdq
-        l9pSgHxZvTqFCzqdqicJHhlQyD42k1PM2ECtI+aQ61PIiItTmcZeTYsNU1wyKDvs2H4jvo
-        RjjUz7lztlL6mE1poZfUPCUyhpWweMA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-IBQW7cj3MASWVxR6N_F0gg-1; Tue, 07 Sep 2021 10:29:09 -0400
-X-MC-Unique: IBQW7cj3MASWVxR6N_F0gg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39976824FAD;
-        Tue,  7 Sep 2021 14:29:08 +0000 (UTC)
-Received: from T590 (ovpn-12-93.pek2.redhat.com [10.72.12.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03BE710013D7;
-        Tue,  7 Sep 2021 14:29:00 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 22:29:01 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] blk-mq: don't call callbacks for requests that
- bypassed the scheduler
-Message-ID: <YTd3LRI8A7K+Ctin@T590>
-References: <20210907142145.112096-1-Niklas.Cassel@wdc.com>
- <20210907142145.112096-2-Niklas.Cassel@wdc.com>
-MIME-Version: 1.0
+        id S231693AbhIGOfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:35:06 -0400
+Received: from gate.crashing.org ([63.228.1.57]:32928 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230054AbhIGOfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:35:05 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187ETeIO006845;
+        Tue, 7 Sep 2021 09:29:40 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187ETeHc006818;
+        Tue, 7 Sep 2021 09:29:40 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 7 Sep 2021 09:29:34 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210907142934.GF1583@gate.crashing.org>
+References: <20210904191531.GS1583@gate.crashing.org> <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210907142145.112096-2-Niklas.Cassel@wdc.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 02:21:55PM +0000, Niklas Cassel wrote:
-> From: Niklas Cassel <niklas.cassel@wdc.com>
+On Mon, Sep 06, 2021 at 02:08:58PM -0700, Linus Torvalds wrote:
+> On Mon, Sep 6, 2021 at 1:14 PM Jakub Jelinek <jakub@redhat.com> wrote:
+> >
+> > the only guaranteed APIs are
+> > those provided by the headers (x86intrin.h/*mmintrin.h etc. on x86,
+> > arm_{neon,sve}.h etc. on arm*, ...)
 > 
-> Currently, __blk_mq_alloc_request() (via blk_mq_rq_ctx_init()) calls the
-> I/O scheduler callback e->type->ops.prepare_request(), which will set
-> RQF_ELVPRIV, even though passthrough (and flush) requests will later
-> bypass the I/O scheduler in blk_mq_submit_bio().
-> 
-> Later, blk_mq_free_request() checks if the RQF_ELVPRIV flag is set,
-> if it is, the e->type->ops.finish_request() I/O scheduler callback
-> will be called.
-> 
-> i.e., the prepare_request and finish_request I/O scheduler callbacks
-> will be called for requests which were never inserted to the I/O
-> scheduler.
-> 
-> Fix this by not calling e->type->ops.prepare_request(), nor setting
-> the RQF_ELVPRIV flag for passthrough requests.
-> Since the RQF_ELVPRIV flag will not get set for passthrough requests,
-> e->type->ops.prepare_request() will no longer get called for
-> passthrough requests which were never inserted to the I/O scheduler.
-> 
-> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-> ---
->  block/blk-mq.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 65d3a63aecc6..0816af125059 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -328,7 +328,12 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
->  	data->ctx->rq_dispatched[op_is_sync(data->cmd_flags)]++;
->  	refcount_set(&rq->ref, 1);
->  
-> -	if (!op_is_flush(data->cmd_flags)) {
-> +	/*
-> +	 * Flush/passthrough requests are special and go directly to the
-> +	 * dispatch list, bypassing the scheduler.
-> +	 */
-> +	if (!op_is_flush(data->cmd_flags) &&
-> +	    !blk_op_is_passthrough(data->cmd_flags)) {
+> You guys realize we don't use those, do you?
 
-Looks fine:
+Linux does use the Arm and Power vector intrinsics (arm_neon.h and
+altivec.h).
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> And you don't seem to realize that you are actively arguing *AGAINST*
+> what you think you argue for.
 
--- 
-Ming
+I have no idea what you think we are arguing for, only what we are.
 
+> That "immintrin.h" file, for example, is simply not usable for the
+> kernel. I just checked.
+
+Yes.  It cannot be used in freestanding environments; it includes a
+header file we don't ship (<mm_malloc.h>, via <xmmintrin.h>).  Or
+perhaps we do ship it, but only on native systems?  Same issue, anyway.
+
+The top comment in the latter says
+  /* Implemented from the specification included in the Intel C++ Compiler
+     User Guide and Reference, version 9.0.  */
+so the shortcoming exists there already probably?
+
+>       27 | #include <stdlib.h>
+>          |          ^~~~~~~~~~
+> 
+> Oops.
+
+Yup, that is not a (freestanding) standard C header.
+
+> Very similar things happens if you try to use that <stdint.h> file
+> that somebody mentioned earlier.
+
+Not at all.  <stdint.h> *is* a standard C header, and we ship it, it
+always works.  If you find problems with it, please report them!
+
+> You also don't seem to realize how hard it is to separate out the
+> user-land crap that we really cannot use, and must not use.
+
+We have worked very hard for many years to make this better.  For the
+freestanding headers only <limits.h> is still problematic, and you do
+not need that one anyway, it is legacy more than anything else.
+
+
+Segher
