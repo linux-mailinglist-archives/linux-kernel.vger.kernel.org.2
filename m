@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B97402A19
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34879402A1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344878AbhIGNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344868AbhIGNsE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:48:04 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E869C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:46:58 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id x10-20020a056830408a00b004f26cead745so12793829ott.10
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TGrDwOa3lQJKnj52Foveo24I3v9X7ezZKxCdSoKyzMI=;
-        b=Oof7E/msGkg9jKBxfsxoq3j861ag/LYr9pcbxR0Y02SC649ijTrosMom2dFlF3upZh
-         jcz4UCy1m1tCx1QuHK2t1G6O1vxyVq1/chNR+ZZJsL2gJxBvnzM0+WHb2CNbMHRKFqW/
-         oWTF38o3RdNVYwpfzM2Ko/CQzqHXCsKdrANPVjVEOhYQFBFpMb58nocWPLVm8rO7ysRL
-         unoxmK5tsVD7Z2fBGFEwWm5FDKJ9WiYk+CUNGXKu12m4FfRcfQHulXuNv1U/DAaqq8FJ
-         HoDWnJ/yBzR3YgtuVN042wokp97r3K/8vgen5ee5n6VbWMd7Yr8hOTxnloQfm21eE2da
-         tN+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TGrDwOa3lQJKnj52Foveo24I3v9X7ezZKxCdSoKyzMI=;
-        b=FKQ5P+ztj60bJ9k5P+vrtCwdXvgW3cv6ADJ5UGK92AyBnnCt8mwMHVz0epy7iPixDl
-         uqbM6yiMM9anSpMHk4gvAuLIWKE3Crz/Cpf2E6HTuZxVgYAFk7zTNNgmdBFDlFQH/lwR
-         pglIgWPr/v7JwyWDnZ6nggC7GKx/CjCd4UcqkAMqhZeH8U8O+5JqJbHKTf1pqq2UdXkn
-         GJ+616FFPKUbsdfeEMAedNtpHCYKFCeJAYlp+No1Ru397o6wdt1sRoWqj3zigewbLdOz
-         edrIv5M/2Kt2GUNhigSyI/2gvdg3GzH2TAtwcJJVVFOMVD9EwgSbrVCiOxQn8GLpOfnJ
-         Actg==
-X-Gm-Message-State: AOAM530CD0LW5Ls+6SOT2SgGx/HRrJgMnhm4fHQ7mL9y6RMIYqi3aCLq
-        TOjTJhPDZpu7vtUbcy6AvphD+UHlAJWJ3w==
-X-Google-Smtp-Source: ABdhPJw5N1+GXS15e/qJDD1egWQgkLsILIiHFb94mbwfsFYnXn+pYTtBfbxiMazO8cgtoU2Fry3IiQ==
-X-Received: by 2002:a9d:5f8e:: with SMTP id g14mr14907728oti.37.1631022417453;
-        Tue, 07 Sep 2021 06:46:57 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j17sm2413677ots.10.2021.09.07.06.46.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 06:46:57 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 06:47:57 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org
-Subject: Re: [PATCH 7/7] arm64: dts: qcom: msm8998-xperia: Add audio clock
- and its pin
-Message-ID: <YTdtjRonJBtJUk9N@ripper>
-References: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
- <20210903180924.1006044-7-angelogioacchino.delregno@somainline.org>
+        id S1344881AbhIGNtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:49:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234990AbhIGNtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 09:49:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28DA161107;
+        Tue,  7 Sep 2021 13:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631022498;
+        bh=ArpxA6KfyIfvsZ8d82ObTY6A8wEvx7a+tmGvpZbu1u4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kjFgQpGggoy8m98tICr9x1g/hjx8Ox1hcrlhLrM57ioC/90iFja0mnBM3BeeeXra7
+         JphW+wIgU5CgTBCD7TCnN2d829H8+hK/9F04EvWUG7EcgiBWoqEX0x/1Cp4BxXbO00
+         g1m9dO0al8adpXdoAQvlQtk2A/X+AWihwQ96o6nGRto6rP0BtE5+5BZv9lBD1b28v3
+         04A3PskMinulB06flbwsREV2MJDtiWNWN9ZAkcLRSCruam2qU+0eUq9wbxclMYk0OP
+         Kwq4TUZaSuQfrMGbUJ3lXBVPDJM8hJndeyPZaB2avbVoEpLx3QWOSIgkcb0aGchnUH
+         7v+Tt6cPGmMTQ==
+Received: by mail-ej1-f41.google.com with SMTP id x11so19893301ejv.0;
+        Tue, 07 Sep 2021 06:48:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531bb2gU7iE8TaGvmexPLocomyScWc2Wo7H5Mlh374VteA4wlxgw
+        gGPS7YjojeAHtffEuuRa2OHpk3yqjmzR6MbFrQ==
+X-Google-Smtp-Source: ABdhPJwiAjWbUjHP2uyVj2Z+vPdtXWFsSipWwKu5pprpfvFabFFsaLXHejznbz/SkeiF6IcWA3068Sgq+uoQxj6jDr4=
+X-Received: by 2002:a17:906:9a4e:: with SMTP id aj14mr18654434ejc.84.1631022496627;
+ Tue, 07 Sep 2021 06:48:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903180924.1006044-7-angelogioacchino.delregno@somainline.org>
+References: <20210830041729.237252-1-anup.patel@wdc.com> <20210830041729.237252-6-anup.patel@wdc.com>
+ <YS7WTPRYJWnPu2ii@robh.at.kernel.org> <CAAhSdy1mttzt3_CnKc=xhpp5CKOEAasQVobTR-2L6Z26rstn+A@mail.gmail.com>
+ <CAL_JsqLT3RgG0MHMWEs8BZPPtOUUcjRw27W+O4z=DNP9M=EKAw@mail.gmail.com> <CAAhSdy1NBNTQ5F=4MjjwLb4k_kGgB9j5iFxJ6qoGSCuGkn=66g@mail.gmail.com>
+In-Reply-To: <CAAhSdy1NBNTQ5F=4MjjwLb4k_kGgB9j5iFxJ6qoGSCuGkn=66g@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 7 Sep 2021 08:48:04 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLXnYAGY5yqVkazeVdUgOtbbOZ2DMCU0_O892suYA4d-w@mail.gmail.com>
+Message-ID: <CAL_JsqLXnYAGY5yqVkazeVdUgOtbbOZ2DMCU0_O892suYA4d-w@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 05/11] dt-bindings: interrupt-controller: Add
+ ACLINT MSWI and SSWI bindings
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, Bin Meng <bmeng.cn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 03 Sep 11:09 PDT 2021, AngeloGioacchino Del Regno wrote:
+On Fri, Sep 3, 2021 at 5:40 AM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Thu, Sep 2, 2021 at 6:04 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Wed, Sep 1, 2021 at 6:56 AM Anup Patel <anup@brainfault.org> wrote:
+> > >
+> > > On Wed, Sep 1, 2021 at 6:54 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Mon, Aug 30, 2021 at 09:47:23AM +0530, Anup Patel wrote:
+> > > > > We add DT bindings documentation for the ACLINT MSWI and SSWI
+> > > > > devices found on RISC-V SOCs.
+> > > > >
+> > > > > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > > > > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> > > > > ---
+> > > > >  .../riscv,aclint-swi.yaml                     | 95 +++++++++++++++++++
+> > > > >  1 file changed, 95 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..68563259ae24
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> > > > > @@ -0,0 +1,95 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: RISC-V ACLINT Software Interrupt Devices
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Anup Patel <anup.patel@wdc.com>
+> > > > > +
+> > > > > +description:
+> > > > > +  RISC-V SOCs include an implementation of the M-level software interrupt
+> > > > > +  (MSWI) device and the S-level software interrupt (SSWI) device defined
+> > > > > +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
+> > > > > +
+> > > > > +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
+> > > > > +  specification located at
+> > > > > +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> > > > > +
+> > > > > +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
+> > > > > +  S-level software interrupt lines of various HARTs (or CPUs) respectively
+> > > > > +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
+> > > > > +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
+> > > > > +
+> > > > > +allOf:
+> > > > > +  - $ref: /schemas/interrupt-controller.yaml#
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    oneOf:
+> > > > > +      - items:
+> > > > > +        - enum:
+> > > > > +          - riscv,aclint-mswi
+> > > > > +
+> > > > > +      - items:
+> > > > > +        - enum:
+> > > > > +          - riscv,aclint-sswi
+> > > >
+> > > > All this can be just:
+> > > >
+> > > > enum:
+> > > >   - riscv,aclint-mswi
+> > > >   - riscv,aclint-sswi
+> > > >
+> > > > However...
+> > > >
+> > > > > +
+> > > > > +    description:
+> > > > > +      For ACLINT MSWI devices, it should be "riscv,aclint-mswi" OR
+> > > > > +      "<vendor>,<chip>-aclint-mswi".
+> > > > > +      For ACLINT SSWI devices, it should be "riscv,aclint-sswi" OR
+> > > > > +      "<vendor>,<chip>-aclint-sswi".
+> > > >
+> > > > s/OR/AND/
+> > > >
+> > > > There must be a compatible for the implementation. Unless RiscV
+> > > > implementations of specs are complete describing all clocks, power
+> > > > domains, resets, etc. and are quirk free.
+> > > >
+> > > > But don't write free form constraints...
+> > >
+> > > It is possible that quite a few implementations (QEMU, FPGAs, and
+> > > other simulators) will not require implementation specific compatible
+> > > strings. Should we still mandate implementation specific compatible
+> > > strings in DTS for such cases?
+> >
+> > No, but the schema says you only have those cases. Are there not any
+> > actual implementations?
+>
+> All existing RISC-V boards have SiFive CLINT and ACLINT is backward
+> compatible with SiFive CLINT so we do have actual implementations.
 
-> All smartphones of this platform are equipped with a WCD9335 audio
-> codec, getting its MCLK from PM8998 gpio13: add this clock to DT.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> ---
->  .../dts/qcom/msm8998-sony-xperia-yoshino.dtsi | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> index 5fbe5abf4133..7aeebd3b2e9e 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> @@ -20,6 +20,19 @@ / {
->  	qcom,msm-id = <0x124 0x20000>, <0x124 0x20001>; /* 8998v2, v2.1 */
->  	qcom,board-id = <8 0>;
->  
-> +	clocks {
-> +		compatible = "simple-bus";
-> +
-> +		div1_mclk: divclk1 {
-> +			compatible = "gpio-gate-clock";
-> +			pinctrl-0 = <&audio_mclk_pin>;
-> +			pinctrl-names = "default";
-> +			clocks = <&rpmcc RPM_SMD_DIV_CLK1>;
+So there's a SiFive compatible you can add here?
 
-What controls the clock rate of divclk1?
+> None of the existing RISC-V boards have special clocks, power domain,
+> resets etc for these devices.
+>
+> >
+> > Minimally make "<vendor>,<chip>-aclint-mswi" into a schema pattern for
+> > the first entry and perhaps a note to replace with actual strings when
+> > there are some. It's ultimately up to the RiscV maintainers to require
+> > SoC specific compatibles here. Allowing a generic one alone makes that
+> > harder because the schema can't enforce it.
+>
+> Can we have a common compatible string for QEMU, FPGAs, etc ?
+>
+> For example,
+> compatible = "riscv,generic-aclint-mswi", "riscv,aclint-mswi";
 
-Regards,
-Bjorn
+This is not any better than just allowing "riscv,aclint-mswi" by
+itself as someone could just use the above strings on their new
+implementation to avoid warnings.
 
-> +			#clock-cells = <0>;
-> +			enable-gpios = <&pm8998_gpio 13 GPIO_ACTIVE_HIGH>;
-> +		};
-> +	};
-> +
->  	board_vbat: vbat-regulator {
->  		compatible = "regulator-fixed";
->  		regulator-name = "VBAT";
-> @@ -313,6 +326,12 @@ cam_snapshot_pin_a: cam-snapshot-btn-active {
->  		input-enable;
->  		qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
->  	};
-> +
-> +	audio_mclk_pin: audio-mclk-pin-active {
-> +		pins = "gpio13";
-> +		function = "func2";
-> +		power-source = <0>;
-> +	};
->  };
->  
->  &pmi8998_gpio {
-> -- 
-> 2.32.0
-> 
+You could just not worry about the QEMU and FPGA cases. FPGAs are
+probably not upstream and if they are, don't they need specific
+compatibles tied to versions of FPGA images? QEMU generating its own
+DT doesn't run schema validation though that could change. I'm looking
+at enabling schema validation at runtime for purposes of firmware
+testing and with that QEMU generated DT may be something we test.
+
+Rob
