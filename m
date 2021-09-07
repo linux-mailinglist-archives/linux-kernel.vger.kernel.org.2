@@ -2,147 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EBB40271A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC05402722
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245423AbhIGK0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:26:06 -0400
-Received: from mail-sn1anam02on2041.outbound.protection.outlook.com ([40.107.96.41]:49177
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232704AbhIGK0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:26:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZJHdLwCql6rTZMNxs4MxmjmEvP8M646rxKf2D46YOEr1oH5PcMN/7XGs1iv/3ZSzNuA/7Lu9OF5cn6wfyHA4rIpUERhsCZgI8O98U+10/bEZiCJdqyJlFsP923l6QzzBGAugK9Vyrb921l+hjNam6Bua/oQWYm2GgOJEeXV1zPqbMeSLCUNFwTfdh22y4esGmyHpJ7JL3Fa1IUiwhfQZTARPSTAXkspMKpPera4x/oTzspltbgZdXfuB04EWbJ0qqJPDtthJA7Pmfvt4sIs4Xt4W/GHEqwBJpAwnLYBP4BCLa1H9zmrU0dE0i75NCA04IquY37S538xxkDNzX2Stw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=5vt1YI7dmXn8HoU9ao1GNa0OIz+EYKgkVJa4432sV7s=;
- b=jAOy7FQ7GB6Pcysr9Xxa/ep4bBoZ3LskOSlLwbUWSqQiImZKE5cQYloObk8ZYhjKH2qTIwpaSxWs5RCmaqmTUbNGiXPrTpkuimr3CHabTU8vk4ivTP7E+wghdSc03YYuWRapJ27qvg2KbMvcYZreX7H0TROy7HoYgHwhsZ+rmnMefjH82abILuRBnyaQUPZKZBsx89dg4fFCbgtO8VI2gb9WjZWpgWDaozMekSiRTZjcoedoV84Awi7vs7yw/YJWRuZdNAoXHtH3OQyBQinkbYvFBk6tc2PsxYQ1d59cf2jU058Z+wKaz42+8b+6SmSfHrcgiiT6oKpH0EUdSuwyZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5vt1YI7dmXn8HoU9ao1GNa0OIz+EYKgkVJa4432sV7s=;
- b=l2PHom2yOKDUgCfZxbc245oa/gTCaKLPbR9qPC/YeVjiydHYSdUDzoJdWOEfZSAL9fN3AZfLuwHNC48CU4KfVrcvOfNrIdBy9IuI5xcptYb6V6rce9QNWBxDq9THTv4KJoz8iAxlESsl+vAeAk0S9+CEnZYTWeqWyRwpImzsfxc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4191.namprd12.prod.outlook.com (2603:10b6:208:1d3::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Tue, 7 Sep
- 2021 10:24:58 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 10:24:58 +0000
-Subject: Re: [PATCH] drm/ttm: fix the type mismatch error on sparc64
-To:     Huang Rui <ray.huang@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20210907100302.3684453-1-ray.huang@amd.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <5e365947-4ae1-47a0-7565-7f0cdde0bd84@amd.com>
-Date:   Tue, 7 Sep 2021 12:24:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210907100302.3684453-1-ray.huang@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: PR0P264CA0154.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1b::22) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S245545AbhIGK2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245240AbhIGK2j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 06:28:39 -0400
+Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DB5C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:27:32 -0700 (PDT)
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mNYKB-00CGws-1t
+        for linux-kernel@vger.kernel.org; Tue, 07 Sep 2021 12:27:31 +0200
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.4
+Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
+        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mNYK7-00CGwd-MI; Tue, 07 Sep 2021 12:27:27 +0200
+Received: from bert by sumner.biot.com with local (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mNYK6-000COX-TH; Tue, 07 Sep 2021 12:27:26 +0200
+From:   Bert Vermeulen <bert@biot.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        John Crispin <john@phrozen.org>, Bert Vermeulen <bert@biot.com>
+Subject: [PATCH v2 0/5] Add support for Airoha EN7523 SoC
+Date:   Tue,  7 Sep 2021 12:27:17 +0200
+Message-Id: <20210907102722.47543-1-bert@biot.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: from [192.168.178.21] (91.14.161.181) by PR0P264CA0154.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:24:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a79d7bb0-f73b-460a-f2b3-08d971e9be10
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4191:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB41910A7294F86CB75242AB2B83D39@MN2PR12MB4191.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gsOQJDhGNvKlHAwgidTV0F+o0bmf5fKlW4o59IY7FzCDlyrkQET5e8/FLCm9RO3msPD2OgisSB4e5dXHasVDCN/DyXvCEFF7ldzzVyT6MS1AXH9rg08j4ELPSEihrATgtaE9S/Ker1xYT0p1HLS3zacPp50HSmpSVQCvuVht6+ZI4QCqigNPnoqQdEXV7YO/X2iKdlT7Z+Ta7UbJ02eAuLw2T8kzs3MCQTtHRuzWtJxF6QIID5AGeyB6+BXtjAYhKsVYgCi1FDab2USjtL+zxlEcLvKyTchXcbMtoQ6NjFFEPFi34zOc7Zs3vmejA7M/ioi1YC9tf5WvbAN5bTgXQQ7qXEtUY1KjfdXRP1ucFgJ0rq8H1WWyZWkeXDbNOvsFV8VMADpj1NdgzM7H9HnIuBDf3ULBHN4ICgDxWKEDJz8zeFrCUqYIjlwA4QdYvqMGZoeKGr69JfNeutEYW7DVclJV42GW39NXa0IHxGznsg4n2oY5IomPzHdOa9pTcsVuTA4dDVegwPsbqtlgKhXHN0EmNHX9XT0vg2wEpySDber88WShLi99d4iOZNnn2o7YSa7YcI0lk/4EUBBdeOSa46uAHU7Gn9gsty9izbdW6J42XdWpFSN66qy38UjUj75MplbMHJMD1Fn3zLwrjCVSIjvV2GiKi0V4XuliaR1pKXpLEaoGUUWbWGegbCWAHx+yUkxl4XMtiKML1tvkRf60kGsbpHvqFaAdBpQYlD30Yl0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(186003)(83380400001)(66476007)(6666004)(66946007)(31686004)(66556008)(26005)(110136005)(16576012)(316002)(54906003)(478600001)(36756003)(8676002)(66574015)(8936002)(2906002)(86362001)(4326008)(31696002)(38100700002)(2616005)(5660300002)(6486002)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjI1NkUxOHRaTDAwRHBJYjJicC9hU05FQjlSTFVKRjFWYXdZS3RrWk4zcXBk?=
- =?utf-8?B?TllPZ2FVSzdzcklKdVBDVkdqNU5DZG9PcUtMMnoxaXBxSnlzbVQvTXBrMWNs?=
- =?utf-8?B?WWkvQThwTkRIREIrcm5FdEg1YWNYY1IzOStQT09kbGFPMzJGWXNXUEZidUFQ?=
- =?utf-8?B?dU54RXFtU2tRbWR4RXh3WXRSZU9Fanh2WXI2VGRLYTRkTFZaazBoWTZPSnd5?=
- =?utf-8?B?NXk1eW42SC90RkN3RWYvSitTZVRkeVJGY2VZL1I3UTVmYkVCVXVIcnhVa0cr?=
- =?utf-8?B?dXhQTGJWdXVZQ1pFdnpCZFJ0L202bWtQRHZaMys2M2U2NkNzZmJFaCs3M0hT?=
- =?utf-8?B?eXFhbXhxV0hPWGowb2pqbU5xWUZVWFJuQmYvYnp5Nmc3aG1FcXRZTFF4SjhO?=
- =?utf-8?B?dGFzNWdwL2cxSmhVZTd4WEVmR2s3NUo4ZWM5Wnhud05OODMxUEhndVNHdDUw?=
- =?utf-8?B?bFZPbElPSWNXQVR5ekhuUEtveVJiQzNGWUFWZCtSQ2Y1eFZmZEFrYjgyU1lq?=
- =?utf-8?B?SkNqWXVtM2JQZmU0eUhJc2xpNnVmajJ1SjlKMWhpclBFOC96R0E5a29MbGRz?=
- =?utf-8?B?MERTQkJGemVWRmxKWjlHQzNVaTFMSW1oTEJaZGEwZ1dXeFE2ZVhPbUtMQ1Rr?=
- =?utf-8?B?cWNvMWM1enRweFRkZG1oOFJ6S3VFdmx6Y2x6L3MrSEQ4TFdpUFhmTndqL3pQ?=
- =?utf-8?B?V3ViTjJ1MStDcWk0WUtlNlIyT29zSytaaW9JaFkreE5KY2xlNDV1aFR2dGsw?=
- =?utf-8?B?MTdhbExPbmJqWG1VUU9rc2kvL0ZYVDhQTmk0WlFhV0hhV0hINTQrdXpEUTZV?=
- =?utf-8?B?cFNVaHBHV2NLcGpMWDRGVE1TTVJPenBLT0tod3BrNHlkMHVvSUhzSjc1QkUy?=
- =?utf-8?B?anhYY3JqUGFPZHd0Wll6WGNnenJtWUtxTGJwNUdUa0RTSmoxRG1iYXArMEY5?=
- =?utf-8?B?NC9NZmhxeXBpNlk5bWFSWlY5SVhUTjJRSk9JNEJ5SVM0UTc5czAvSWNveW54?=
- =?utf-8?B?Y0lScVBodEh5U3BXR3hiNUg1SllIVE1ZRDdKOEZlUnNDL2pFNURsd3lqRHUx?=
- =?utf-8?B?S0VZSXBpMndZcHA3OUlQRUs4R1lTT0lZQU41UU5hL2tZeVMyL05KWURNVjVl?=
- =?utf-8?B?d0ROU1MxS05hNGVTb2tPbGJUOEU5S1VpdU9PVzkzSWtCQi9YR3g2emhRSG5w?=
- =?utf-8?B?UzQzTFMrZzZ1WUczQnZpeG5kSTlDdzQwbkNFbHM4QlpvbjVCeDZlTkp5T084?=
- =?utf-8?B?d0ZWSXBrMTFHekVnRm9ia2gwb1VLb3h4Y3VRYnZ5bTdWa2Fxckk5SndpTnJN?=
- =?utf-8?B?NHVsTUQ5WHlQREF1bm52d211WWZTY2pzZ2RnNk9lamFpTUo0MTNieTV5VmNW?=
- =?utf-8?B?MjVadG5WWUd3aXlLK1JIYW1xS2ZSNkVjWUt2T3RxUVl3SU1wU2JScXMvS2l0?=
- =?utf-8?B?ZzFrZERQd0pqTVZpSUY4cnVoZ1dtbmRwZ2VrcExxUTJCckpEV3l0OFFxMExD?=
- =?utf-8?B?S1prL0xnUDY2R29WMjJ4c2pVMmRYTnNCSC9URnBOQWk1a2tPUDZ2Zk9QaTVI?=
- =?utf-8?B?ZzFoU01rU3JDcFJYOFhWaE1IdUpLOERyR3dRVjJTbHFvMmlHNVAzSzFxQWJM?=
- =?utf-8?B?YTNFMVpPZUV0NVJSczdLYlZ3UEp4aUd1UDU0SWkwNWRsV01qRmYzV3E1RUtv?=
- =?utf-8?B?enpJeXFaa2IzN05CTm1FRlhBNEtYc3hQOERQRHBpNURjOFlvRWh5bVBKeWJM?=
- =?utf-8?Q?RLd9RZZiTbr/QlkPjmYFoYzTuqJWHZs1j5Hf7yL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a79d7bb0-f73b-460a-f2b3-08d971e9be10
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:24:58.1515
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rs2ScRrqOxV0ntA4jvNAOIk6PEVC0dhBq/iUmKUhsrWWS9bPkWbnKfCHGRzlGnBr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4191
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.09.21 um 12:03 schrieb Huang Rui:
-> __fls() on sparc64 return "int", but here it is expected as "unsigned
-> long" (x86). It will cause the build errors because the warning becomes
-> fatal while it is using sparc configuration. As suggested by Linus, it
-> can use min_t instead of min to force the type as "unsigned int".
->
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> Cc: Christian König <christian.koenig@amd.com>
+This patchset adds support for the Airoha EN7523 SoC, intended primarily
+for xPON/xDSL routers.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+v2:
+- The company changed name from EcoNet to Airoha.
+- Removed Makefile text offset in lieu of /memreserve/ DTS node (see
+  https://lists.infradead.org/pipermail/linux-arm-kernel/2021-September/681898.html)
+- DTS: Moved /memory node, fixed CPU compatible, removed GIC_CPU_MASK_SIMPLE
+  from timer interrupts node, changed timer compatible, and minor fixes.
 
-> ---
->   drivers/gpu/drm/ttm/ttm_pool.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-> index af1b41369626..c961a788b519 100644
-> --- a/drivers/gpu/drm/ttm/ttm_pool.c
-> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
-> @@ -382,7 +382,8 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
->   	else
->   		gfp_flags |= GFP_HIGHUSER;
->   
-> -	for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
-> +	for (order = min_t(unsigned int, MAX_ORDER - 1, __fls(num_pages));
-> +	     num_pages;
->   	     order = min_t(unsigned int, order, __fls(num_pages))) {
->   		bool apply_caching = false;
->   		struct ttm_pool_type *pt;
+John Crispin (5):
+  dt-bindings: Add vendor prefix for Airoha
+  dt-bindings: arm: airoha: Add binding for EN7523 SoC and EVB
+  ARM: dts: Add basic support for Airoha EN7523
+  ARM: Add basic support for Airoha EN7523 SoC
+  ARM: multi_v7_defconfig: Add support for Airoha EN7523 SoC
+
+ .../devicetree/bindings/arm/airoha.yaml       |  27 +++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/Kconfig                              |  14 +++
+ arch/arm/boot/dts/Makefile                    |   2 +
+ arch/arm/boot/dts/en7523-evb.dts              |  26 ++++
+ arch/arm/boot/dts/en7523.dtsi                 | 114 ++++++++++++++++++
+ arch/arm/configs/multi_v7_defconfig           |   2 +
+ 7 files changed, 187 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/airoha.yaml
+ create mode 100644 arch/arm/boot/dts/en7523-evb.dts
+ create mode 100644 arch/arm/boot/dts/en7523.dtsi
+
+-- 
+2.25.1
 
