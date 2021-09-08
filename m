@@ -2,184 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A582403DF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DDD403DFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352243AbhIHQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:53:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53344 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350124AbhIHQxd (ORCPT
+        id S1350104AbhIHQzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:55:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44166 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235666AbhIHQzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:53:33 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631119942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/5EPtDVyVzLxT15E52HQdw1eywPvZepjY6+SF1Ogzgk=;
-        b=WcxcTwoxmq9agcrizLqac1Q7keJK6SWp57fGmeZoww4UbvCpmrxsWYuFabmTnQTvbGXObg
-        t4FqAm0Nc+cpw+LR+DzWY3eyVXkhE2Tk7ixphk5KlqUkDAu1AQqoalewrI3HgWLE+0XIbf
-        jei+lZftAL4SpdTpS8MewmZRmCvir6uvUvGIe6t6dUT64Y5+97UcTzkEKiT0LjzCNhoEhv
-        c8H018SrOc2VEs1dTTIblipMsoaSxN8yJNJw/1XC15TEZva3Q8fJBlcyDDCC98nY3Ulc9s
-        ZH2oEnI0gdHbuL4SahZmsJvWuws3eQ17bs0hHj0DA657Vc7Nlpci/FXdaSCcyQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631119942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/5EPtDVyVzLxT15E52HQdw1eywPvZepjY6+SF1Ogzgk=;
-        b=2B6VKByQz39IlDUUv9z+gQtL86BeNWs2/Kih5bpCIwBAbv+6FHdwkG98ljTzogQdWrBG8Q
-        DcC6W3q36IZ2biDQ==
-To:     syzbot <syzbot+89ee54915f0135ac38e0@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- timerqueue_del
-In-Reply-To: <0000000000009b05a305cb511b76@google.com>
-References: <0000000000009b05a305cb511b76@google.com>
-Date:   Wed, 08 Sep 2021 18:52:22 +0200
-Message-ID: <8735qff1rt.ffs@tglx>
+        Wed, 8 Sep 2021 12:55:38 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188GXLCL019212;
+        Wed, 8 Sep 2021 12:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=UFUuMWLVoMZuIsxaszDJEv/XsW5TDiT4te8RaJ+mT0k=;
+ b=OA7N13R/reJICTV2DtIPzYzBQAWWLJIzjDTjvNo6JTPZCT3wT6QPwrcaULaHgeSL1bwi
+ +aRU4nSehRFCrUH674TBgGCHKhhUVlmIa1L+OC7CY1xH3ExYL2EPaIr+qOfQd6I1rusl
+ SngVNUdM3foNGlpW4wJlCc0rRDosfZ2OfydUHnQpbXSvketwLlhMTR1Tu9+azda1e6x8
+ 5k6poRAkd7Pq38MtBlNJHI0S9Q6vHCJc1EEBTiviNc18feoNu4cpOTBzbZ9jM2qBp/5i
+ SWvddobLN7khJZ3Q2W45GbBgTeS23212Vv0UW1VcHnN1HPVdJKjXPsXshduJADVyCSR+ +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axyvc289b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 12:54:27 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 188GYlZa023305;
+        Wed, 8 Sep 2021 12:54:27 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axyvc288h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 12:54:27 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 188Gm4G7022026;
+        Wed, 8 Sep 2021 16:54:25 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 3axcnk3qtj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 16:54:24 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 188GsLVf50790674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 16:54:21 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56D89A406F;
+        Wed,  8 Sep 2021 16:54:21 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D65EBA4055;
+        Wed,  8 Sep 2021 16:54:20 +0000 (GMT)
+Received: from osiris (unknown [9.145.165.20])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  8 Sep 2021 16:54:20 +0000 (GMT)
+Date:   Wed, 8 Sep 2021 18:54:19 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-s390@vger.kernel.org, linux-mm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v1] hugetlbfs: s390 is always 64bit
+Message-ID: <YTjquztIqDE0Ew3A@osiris>
+References: <20210908154506.20764-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908154506.20764-1-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zVAwf6gTfkN1fKu6s0lGD0g_iuDCoh9Q
+X-Proofpoint-GUID: loEvSY1R8qvreNBZGroeBSls14zRCJOj
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 spamscore=0 suspectscore=0 mlxlogscore=791
+ impostorscore=0 phishscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06 2021 at 03:28, syzbot wrote:
-> HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12a993fe300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=210537ff2ddcc232
-> dashboard link: https://syzkaller.appspot.com/bug?extid=89ee54915f0135ac38e0
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+89ee54915f0135ac38e0@syzkaller.appspotmail.com
->
-> BUG: unable to handle page fault for address: ffffc9001bdbfd88
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 10800067 P4D 10800067 PUD 109ba067 PMD 136067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 19707 Comm: syz-executor.1 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->
-> RIP: 0010:__rb_change_child include/linux/rbtree_augmented.h:173 [inline]
-> RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:216 [inline]
-> RIP: 0010:rb_erase+0x5f6/0x1210 lib/rbtree.c:443
+On Wed, Sep 08, 2021 at 05:45:06PM +0200, David Hildenbrand wrote:
+> No need to check for 64BIT. While at it, let's just select
+> ARCH_SUPPORTS_HUGETLBFS from arch/s390x/Kconfig.
+                                    ^^^^^
+s390 :)
 
-So the RB tree is corrupted. In the previous report io_uring clearly was
-using an uninitialized timer and in the console output of this one are
-clearly io uring commands. Obviously I can't tell for sure, but there is
-a pattern here.
-
-> Code: e3 fc 0f 84 0c 01 00 00 48 8d 7b 10 48 89 dd 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 84 0a 00 00 <4c> 3b 6b 10 0f 84 37 02 00 00 48 8d 7b 08 48 b8 00 00 00 00 00 fc
-> RSP: 0018:ffffc90000007d88 EFLAGS: 00010046
-> RAX: dffffc0000000000 RBX: ffffc9001bdbfd78 RCX: 0000000000000000
-> RDX: 1ffff920037b7fb1 RSI: ffff8880b9c424d0 RDI: ffffc9001bdbfd88
-> RBP: ffffc9001bdbfd78 R08: ffffc9001bdbfd79 R09: 0000000000000001
-> R10: ffffffff83f38fdc R11: 0000000000000000 R12: ffffc9001bdbfd79
-> R13: ffffc9000256fd78 R14: ffffc9001aa2fd78 R15: ffff8880b9c424d0
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0063) knlGS:00000000f55b7b40
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: ffffc9001bdbfd88 CR3: 000000008b5d9000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  rb_erase_cached include/linux/rbtree.h:126 [inline]
->  timerqueue_del+0x7f/0x140 lib/timerqueue.c:57
->  __remove_hrtimer+0xa1/0x2a0 kernel/time/hrtimer.c:1116
->  __run_hrtimer kernel/time/hrtimer.c:1665 [inline]
->  __hrtimer_run_queues+0x4ea/0xe50 kernel/time/hrtimer.c:1749
->  hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
->  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
->  __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
->  sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
->  </IRQ>
->  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> RIP: 0010:__sanitizer_cov_trace_const_cmp4+0xc/0x70 kernel/kcov.c:283
-> Code: 00 00 00 48 89 7c 30 e8 48 89 4c 30 f0 4c 89 54 d8 20 48 89 10 5b c3 0f 1f 80 00 00 00 00 41 89 f8 bf 03 00 00 00 4c 8b 14 24 <89> f1 65 48 8b 34 25 40 f0 01 00 e8 54 f0 ff ff 84 c0 74 4b 48 8b
-> RSP: 0018:ffffc90019797440 EFLAGS: 00000246
-> RAX: 0000000000000000 RBX: ffff8880001373e4 RCX: 0000000000000000
-> RDX: 0000000000000003 RSI: 0000000000000004 RDI: 0000000000000003
-> RBP: ffff8881407c547c R08: 0000000000000000 R09: ffffffff840a6804
-> R10: ffffffff840a69c5 R11: 0000000000000008 R12: 0000000000000004
-> R13: 0000000000000047 R14: ffff8880001373e0 R15: dffffc0000000000
->  fast_imageblit drivers/video/fbdev/core/cfbimgblt.c:258 [inline]
->  cfb_imageblit+0x655/0x1240 drivers/video/fbdev/core/cfbimgblt.c:300
->  vga_imageblit_expand drivers/video/fbdev/vga16fb.c:1207 [inline]
->  vga16fb_imageblit+0x681/0x2200 drivers/video/fbdev/vga16fb.c:1260
->  bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
->  bit_putcs+0x6e1/0xd20 drivers/video/fbdev/core/bitblit.c:188
->  fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1296
->  do_update_region+0x399/0x630 drivers/tty/vt/vt.c:676
->  redraw_screen+0x61f/0x740 drivers/tty/vt/vt.c:1035
->  vc_do_resize+0xe6f/0x1100 drivers/tty/vt/vt.c:1325
->  fbcon_modechanged+0x393/0x6d0 drivers/video/fbdev/core/fbcon.c:2640
->  fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:2696
->  do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1108
->  fb_compat_ioctl+0x17e/0x610 drivers/video/fbdev/core/fbmem.c:1307
->  __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:964
->  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->  __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
->  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> RIP: 0023:0xf7fbd549
-> Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-> RSP: 002b:00000000f55b75fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
-> RDX: 0000000020000280 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> Modules linked in:
-> CR2: ffffc9001bdbfd88
-> ---[ end trace 573584e01bd36498 ]---
-> RIP: 0010:__rb_change_child include/linux/rbtree_augmented.h:173 [inline]
-> RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:216 [inline]
-> RIP: 0010:rb_erase+0x5f6/0x1210 lib/rbtree.c:443
-> Code: e3 fc 0f 84 0c 01 00 00 48 8d 7b 10 48 89 dd 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 84 0a 00 00 <4c> 3b 6b 10 0f 84 37 02 00 00 48 8d 7b 08 48 b8 00 00 00 00 00 fc
-> RSP: 0018:ffffc90000007d88 EFLAGS: 00010046
-> RAX: dffffc0000000000 RBX: ffffc9001bdbfd78 RCX: 0000000000000000
-> RDX: 1ffff920037b7fb1 RSI: ffff8880b9c424d0 RDI: ffffc9001bdbfd88
-> RBP: ffffc9001bdbfd78 R08: ffffc9001bdbfd79 R09: 0000000000000001
-> R10: ffffffff83f38fdc R11: 0000000000000000 R12: ffffc9001bdbfd79
-> R13: ffffc9000256fd78 R14: ffffc9001aa2fd78 R15: ffff8880b9c424d0
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0063) knlGS:00000000f55b7b40
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: ffffc9001bdbfd88 CR3: 000000008b5d9000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->    0:	e3 fc                	jrcxz  0xfffffffe
->    2:	0f 84 0c 01 00 00    	je     0x114
->    8:	48 8d 7b 10          	lea    0x10(%rbx),%rdi
->    c:	48 89 dd             	mov    %rbx,%rbp
->    f:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
->   16:	fc ff df
->   19:	48 89 fa             	mov    %rdi,%rdx
->   1c:	48 c1 ea 03          	shr    $0x3,%rdx
->   20:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
->   24:	0f 85 84 0a 00 00    	jne    0xaae
-> * 2a:	4c 3b 6b 10          	cmp    0x10(%rbx),%r13 <-- trapping instruction
->   2e:	0f 84 37 02 00 00    	je     0x26b
->   34:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
->   38:	48                   	rex.W
->   39:	b8 00 00 00 00       	mov    $0x0,%eax
->   3e:	00 fc                	add    %bh,%ah
->
->
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>  arch/s390/Kconfig | 1 +
+>  fs/Kconfig        | 3 +--
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+
+I'll apply this to the s390 tree. Thanks David!
