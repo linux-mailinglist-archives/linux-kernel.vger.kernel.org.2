@@ -2,296 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53C2403EAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5FF403EB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhIHRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:54:53 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37338 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351800AbhIHRyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:54:45 -0400
-Received: from zn.tnic (p200300ec2f0efc00b7f29acf52797616.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:b7f2:9acf:5279:7616])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 883E51EC04E0;
-        Wed,  8 Sep 2021 19:53:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631123611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=gFBT5jisyD5OrPPKazcB1aYXRhJJSDNKlvdqZzQSdQQ=;
-        b=S3VFqKiSqcTs+sO6UecCnNAoJuOHJ5Rs8otpd7OJz937BI0HOTXiPW9XiO7OpLvRIMTW2A
-        reIy8yKyC1m7Wf23muvyO5KZMm6BXPEvUWunssdohr4aG0CiUE2lKXooDcDz6DqYXPrQUK
-        92hDjjGcgEmJmmtuM3khaoSP58GTSf4=
-Date:   Wed, 8 Sep 2021 19:53:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 38/38] virt: sevguest: Add support to get
- extended report
-Message-ID: <YTj4kZCTudDauIn1@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-39-brijesh.singh@amd.com>
+        id S243844AbhIHR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232781AbhIHRzl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:55:41 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC8AC0613D9
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:54:20 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id z19so4023672edi.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w24hLsRl7XZ5LbDSKhuzZ/Cfz4LFXM+tWc1TnSEUUss=;
+        b=gewWGShr7Xr2Qy09YNJ3ZB3EE97D9zs6XnByfQ/9byau67LOFQ7/Pl37j7Ld6KiYMV
+         CZuNmSoK1BnjvwIvkJxM2tTz+SYOqSAeW1Vx55yJcJ8tscSAuulR2d/2GtTTQlIVt9aq
+         Fk4sBJSYv1cp2LvywuuLKQa5IOJdXteV+Sv3c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=w24hLsRl7XZ5LbDSKhuzZ/Cfz4LFXM+tWc1TnSEUUss=;
+        b=erM2TO8Kbrt4GbwMRMpa+jjWQreoFSNtO296LRm3m3x71c3Qt/kqaHAiI2fr26MSxh
+         0nPTeE0wwJwPvZDoB550HpFFKFWgKy6V0nJyR4U8AZDO4k38RV7SclqBqzI5gWrePorB
+         707DjoMV6FLwr8hZzsPOQey+0VsM8yHMdxQ0VDovVplqagFp8iISqLVPgsAzkwNmjvkQ
+         qiZ4lKfqaBNIdWjDC5lMz1NcWVRBwFcUViTZAYRZ2Fq1ZnpeWgIZaa65u9YNMrdfEryy
+         sskUcX4mz12PaaAAqm9UQyW6smRRvOK3Dc6UuYLS9db8TetnYCIjQxlbFJzxAVKjsYC5
+         OmcQ==
+X-Gm-Message-State: AOAM5339dmqBR4UegufOsqEYftbeBAMfgpIRF2xBObng2U7Fi4sxFm+x
+        EuJRKuhGzsrAQHRBv0/r9hswdA==
+X-Google-Smtp-Source: ABdhPJxBIQkBjPF3Gt5WEu386lz3cQM0dwlAunhiFpiwa6VJYwYAF1IbUqPzkfujW1BiIhDKl7lybg==
+X-Received: by 2002:a05:6402:1248:: with SMTP id l8mr4993687edw.94.1631123658998;
+        Wed, 08 Sep 2021 10:54:18 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p8sm1365586ejo.2.2021.09.08.10.54.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 10:54:18 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 19:54:16 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/9] dma-buf/fence-chain: Add fence deadline support
+Message-ID: <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210903184806.1680887-1-robdclark@gmail.com>
+ <20210903184806.1680887-8-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-39-brijesh.singh@amd.com>
+In-Reply-To: <20210903184806.1680887-8-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:33AM -0500, Brijesh Singh wrote:
-> Version 2 of GHCB specification defines NAE to get the extended guest
-
-Resolve "NAE" pls.
-
-> request. It is similar to the SNP_GET_REPORT ioctl. The main difference
-> is related to the additional data that be returned. The additional
-
-"that will be returned"
-
-> data returned is a certificate blob that can be used by the SNP guest
-> user. The certificate blob layout is defined in the GHCB specification.
-> The driver simply treats the blob as a opaque data and copies it to
-> userspace.
+On Fri, Sep 03, 2021 at 11:47:58AM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  Documentation/virt/coco/sevguest.rst  |  22 +++++
->  drivers/virt/coco/sevguest/sevguest.c | 126 ++++++++++++++++++++++++++
->  include/uapi/linux/sev-guest.h        |  13 +++
->  3 files changed, 161 insertions(+)
+>  drivers/dma-buf/dma-fence-chain.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
-> index 25446670d816..7acb8696fca4 100644
-> --- a/Documentation/virt/coco/sevguest.rst
-> +++ b/Documentation/virt/coco/sevguest.rst
-> @@ -85,3 +85,25 @@ on the various fileds passed in the key derivation request.
->  
->  On success, the snp_derived_key_resp.data will contains the derived key
->  value.
-> +
-> +2.2 SNP_GET_EXT_REPORT
-> +----------------------
-> +:Technology: sev-snp
-> +:Type: guest ioctl
-> +:Parameters (in/out): struct snp_ext_report_req
-> +:Returns (out): struct snp_report_resp on success, -negative on error
-> +
-> +The SNP_GET_EXT_REPORT ioctl is similar to the SNP_GET_REPORT. The difference is
-> +related to the additional certificate data that is returned with the report.
-> +The certificate data returned is being provided by the hypervisor through the
-> +SNP_SET_EXT_CONFIG.
-> +
-> +The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command provided by the SEV-SNP
-> +firmware to get the attestation report.
-> +
-> +On success, the snp_ext_report_resp.data will contains the attestation report
-
-"will contain"
-
-> +and snp_ext_report_req.certs_address will contains the certificate blob. If the
-
-ditto.
-
-> +length of the blob is lesser than expected then snp_ext_report_req.certs_len will
-
-"is smaller"
-
-> +be updated with the expected value.
-> +
-> +See GHCB specification for further detail on how to parse the certificate blob.
-> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
-> index 621b1c5a9cfc..d978eb432c4c 100644
-> --- a/drivers/virt/coco/sevguest/sevguest.c
-> +++ b/drivers/virt/coco/sevguest/sevguest.c
-> @@ -39,6 +39,7 @@ struct snp_guest_dev {
->  	struct device *dev;
->  	struct miscdevice misc;
->  
-> +	void *certs_data;
->  	struct snp_guest_crypto *crypto;
->  	struct snp_guest_msg *request, *response;
->  };
-> @@ -347,6 +348,117 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_user_guest_
->  	return rc;
+> diff --git a/drivers/dma-buf/dma-fence-chain.c b/drivers/dma-buf/dma-fence-chain.c
+> index 1b4cb3e5cec9..736a9ad3ea6d 100644
+> --- a/drivers/dma-buf/dma-fence-chain.c
+> +++ b/drivers/dma-buf/dma-fence-chain.c
+> @@ -208,6 +208,18 @@ static void dma_fence_chain_release(struct dma_fence *fence)
+>  	dma_fence_free(fence);
 >  }
 >  
-> +static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_user_guest_request *arg)
+> +
+> +static void dma_fence_chain_set_deadline(struct dma_fence *fence,
+> +					 ktime_t deadline)
 > +{
-> +	struct snp_guest_crypto *crypto = snp_dev->crypto;
-> +	struct snp_guest_request_data input = {};
-> +	struct snp_ext_report_req req;
-> +	int ret, npages = 0, resp_len;
-> +	struct snp_report_resp *resp;
-> +	struct snp_report_req *rreq;
-> +	unsigned long fw_err = 0;
-> +
-> +	if (!arg->req_data || !arg->resp_data)
-> +		return -EINVAL;
-> +
-> +	/* Copy the request payload from the userspace */
+> +	dma_fence_chain_for_each(fence, fence) {
+> +		struct dma_fence_chain *chain = to_dma_fence_chain(fence);
+> +		struct dma_fence *f = chain ? chain->fence : fence;
 
-"from userspace"
+Doesn't this just end up calling set_deadline on a chain, potenetially
+resulting in recursion? Also I don't think this should ever happen, why
+did you add that?
+-Daniel
 
-> +	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
-> +		return -EFAULT;
 > +
-> +	rreq = &req.data;
-> +
-> +	/* Message version must be non-zero */
-> +	if (!rreq->msg_version)
-> +		return -EINVAL;
-> +
-> +	if (req.certs_len) {
-> +		if (req.certs_len > SEV_FW_BLOB_MAX_SIZE ||
-> +		    !IS_ALIGNED(req.certs_len, PAGE_SIZE))
-> +			return -EINVAL;
+> +		dma_fence_set_deadline(f, deadline);
 > +	}
+> +}
 > +
-> +	if (req.certs_address && req.certs_len) {
-> +		if (!access_ok(req.certs_address, req.certs_len))
-> +			return -EFAULT;
-> +
-> +		/*
-> +		 * Initialize the intermediate buffer with all zero's. This buffer
-> +		 * is used in the guest request message to get the certs blob from
-> +		 * the host. If host does not supply any certs in it, then we copy
-
-
-Please use passive voice: no "we" or "I", etc,
-
-> +		 * zeros to indicate that certificate data was not provided.
-> +		 */
-> +		memset(snp_dev->certs_data, 0, req.certs_len);
-> +
-> +		input.data_gpa = __pa(snp_dev->certs_data);
-> +		npages = req.certs_len >> PAGE_SHIFT;
-> +	}
-> +
-> +	/*
-> +	 * The intermediate response buffer is used while decrypting the
-> +	 * response payload. Make sure that it has enough space to cover the
-> +	 * authtag.
-> +	 */
-> +	resp_len = sizeof(resp->data) + crypto->a_len;
-> +	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
-> +	if (!resp)
-> +		return -ENOMEM;
-> +
-> +	if (copy_from_user(resp, (void __user *)arg->resp_data, sizeof(*resp))) {
-> +		ret = -EFAULT;
-> +		goto e_free;
-> +	}
-> +
-> +	/* Encrypt the userspace provided payload */
-> +	ret = enc_payload(snp_dev, rreq->msg_version, SNP_MSG_REPORT_REQ,
-> +			  &rreq->user_data, sizeof(rreq->user_data));
-> +	if (ret)
-> +		goto e_free;
-> +
-> +	/* Call firmware to process the request */
-> +	input.req_gpa = __pa(snp_dev->request);
-> +	input.resp_gpa = __pa(snp_dev->response);
-> +	input.data_npages = npages;
-> +	memset(snp_dev->response, 0, sizeof(*snp_dev->response));
-> +	ret = snp_issue_guest_request(EXT_GUEST_REQUEST, &input, &fw_err);
-> +
-> +	/* Popogate any firmware error to the userspace */
-> +	arg->fw_err = fw_err;
-> +
-> +	/* If certs length is invalid then copy the returned length */
-> +	if (arg->fw_err == SNP_GUEST_REQ_INVALID_LEN) {
-> +		req.certs_len = input.data_npages << PAGE_SHIFT;
-> +
-> +		if (copy_to_user((void __user *)arg->req_data, &req, sizeof(req)))
-> +			ret = -EFAULT;
-> +
-> +		goto e_free;
-> +	}
-> +
-> +	if (ret)
-> +		goto e_free;
-
-This one is really confusing. You assign ret in the if branch
-above but then you test ret outside too, just in case the
-snp_issue_guest_request() call above has failed.
-
-But then if that call has failed, you still go and do some cleanup work
-for invalid certs length...
-
-So that get_ext_report() function is doing too many things at once and
-is crying to be split.
-
-For example, the glue around snp_issue_guest_request() is already carved
-out in handle_guest_request(). Why aren't you calling that function here
-too?
-
-That'll keep the enc, request, dec payload game separate and then the
-rest of the logic can remain in get_ext_report()...
-
-...
-
->  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->  	struct snp_guest_dev *snp_dev = to_snp_dev(file);
-> @@ -368,6 +480,10 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->  		ret = get_derived_key(snp_dev, &input);
->  		break;
->  	}
-> +	case SNP_GET_EXT_REPORT: {
-> +		ret = get_ext_report(snp_dev, &input);
-> +		break;
-> +	}
->  	default:
->  		break;
->  	}
-> @@ -453,6 +569,12 @@ static int __init snp_guest_probe(struct platform_device *pdev)
->  		goto e_free_req;
->  	}
+>  const struct dma_fence_ops dma_fence_chain_ops = {
+>  	.use_64bit_seqno = true,
+>  	.get_driver_name = dma_fence_chain_get_driver_name,
+> @@ -215,6 +227,7 @@ const struct dma_fence_ops dma_fence_chain_ops = {
+>  	.enable_signaling = dma_fence_chain_enable_signaling,
+>  	.signaled = dma_fence_chain_signaled,
+>  	.release = dma_fence_chain_release,
+> +	.set_deadline = dma_fence_chain_set_deadline,
+>  };
+>  EXPORT_SYMBOL(dma_fence_chain_ops);
 >  
-> +	snp_dev->certs_data = alloc_shared_pages(SEV_FW_BLOB_MAX_SIZE);
-> +	if (IS_ERR(snp_dev->certs_data)) {
-> +		ret = PTR_ERR(snp_dev->certs_data);
-> +		goto e_free_resp;
-> +	}
-
-Same comments here as for patch 37.
-
-> +
->  	misc = &snp_dev->misc;
->  	misc->minor = MISC_DYNAMIC_MINOR;
->  	misc->name = DEVICE_NAME;
-
+> -- 
+> 2.31.1
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
