@@ -2,189 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A734403201
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E427403205
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345811AbhIHBBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:01:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43225 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232947AbhIHBBI (ORCPT
+        id S1346264AbhIHBCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345838AbhIHBCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:01:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631062801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o6ZRcfmHu3oLQjavMIlcnpQ5aP7+DMFF/Fbdpa5BTbg=;
-        b=Cntsf8TfPBNDGpNyuCz7CU3qL9faraSCD7VwAkDNi6JzO/6yKBcbLDwu4oGaQmfcFt2Pwb
-        JwhY0jiBdt6RHQWTfE/5kejuYsjnUj7Wr7ykrCVLinObaRBTbNGzz2iT8e9Ct/ltxH/F/J
-        JLXGF3kprKhl3n2YWi1QS1EWYyXlf90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-CSHKauQnOdqrdmjV3itcmA-1; Tue, 07 Sep 2021 21:00:00 -0400
-X-MC-Unique: CSHKauQnOdqrdmjV3itcmA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD46910054F6;
-        Wed,  8 Sep 2021 00:59:58 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 40A2B5D9DC;
-        Wed,  8 Sep 2021 00:59:44 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 20:59:42 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        linux-kernel@vger.kernel.org, Eric Paris <eparis@redhat.com>,
-        linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
-        dm-devel@redhat.com, linux-audit@redhat.com,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v4 0/3] dm: audit event logging
-Message-ID: <20210908005942.GJ490529@madcap2.tricolour.ca>
-References: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de>
+        Tue, 7 Sep 2021 21:02:14 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B851CC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:01:07 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so305015pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=fL7IHHdZ/gzoOTGUPxPDxAU1KAMX+gAeeQ7IEIgS92I=;
+        b=fUGYNrjWnrb3I1eaPcRpBHa5uCveys5QZgedEq6FkqjUD4OZbSwa4C3wVTN3Ea0J1E
+         NEeFEDtPtBpxrAKvOWTnaDwo2B2v/P/5kd5YLX/XwbKcaO8nplHt67j6ZHZVQpMteY+4
+         0eAtp+P3YO9W747F5K61gMUrXOoE1IA72GO8EM4UhZ02fP45WR68o9G/TsFy4xh+tT6j
+         8Gh/i3SW9y/vNeQtT6qSMbCQ9H+zzZF6E2bhHT6OyoUZ3m6dfTL3zikE4O0/Fj8Ue6Rj
+         Bh5cOEbzVLnmPBaFdSs4A1+vikjxpd4fQt9bHyJ402yyWqWjZTTapx4aTi1GtG/PfSRF
+         MbAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fL7IHHdZ/gzoOTGUPxPDxAU1KAMX+gAeeQ7IEIgS92I=;
+        b=AOPhjt+XpxB6KNnkCJ+iBVJzId/dGKGSPS3wZ6DcWZkdVpKtwA89w/s5sd2shk/09q
+         HAEM8eo5LUiA/H58rDObXm8bYhcJifUtKGu0oExRfVzei2q2/U7Wo0Iuyxv4g4wfrtVt
+         TooBPr9JXm3phRZzAhQUPSSrB143JHNqW3ldHxG+0JTqaJX6qfNmePzhsRv0FPYtB2JP
+         DcSedTk5QFKbu56AbTXCfS46eXddu/eu6d97yJqGuWblsqapRV8x86S6L4ifCNBrRlI8
+         iWWy2mmHzjaaGhHDzrFwoaUfNQkRTP6DJJDwcdbTwGNN79yrASufmKhF5asoy4YHNBfZ
+         eiWQ==
+X-Gm-Message-State: AOAM530w5Vs62SVXjq+931s12YbOHz86EmYwqMNWReeTR5vabghfQ47u
+        Y8Z2em3S6u4k7UWU0vthD6lW0w==
+X-Google-Smtp-Source: ABdhPJzn6dDaPFPvD6xD3dX6BMiDBYlT3VapdFvc9aR8lJIc1mWPZRw21Ia813useTb+MqcxrF740A==
+X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr1221312pjb.241.1631062867247;
+        Tue, 07 Sep 2021 18:01:07 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id g2sm239957pfo.154.2021.09.07.18.01.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Sep 2021 18:01:06 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 09:00:58 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Soeren Moch <smoch@web.de>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev
+ as fallback
+Message-ID: <20210908010057.GB25255@dragon>
+References: <20210425110200.3050-1-shawn.guo@linaro.org>
+ <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-04 11:59, Michael Weiß wrote:
-> dm integrity and also stacked dm crypt devices track integrity
-> violations internally. Thus, integrity violations could be polled
-> from user space, e.g., by 'integritysetup status'.
-> 
-> >From an auditing perspective, we only could see that there were
-> a number of integrity violations, but not when and where the
-> violation exactly was taking place. The current error log to
-> the kernel ring buffer, contains those information, time stamp and
-> sector on device. However, for auditing the audit subsystem provides
-> a separate logging mechanism which meets certain criteria for secure
-> audit logging.
-> 
-> With this small series we make use of the kernel audit framework
-> and extend the dm driver to log audit events in case of such
-> integrity violations. Further, we also log construction and
-> destruction of the device mappings.
-> 
-> We focus on dm-integrity and stacked dm-crypt devices for now.
-> However, the helper functions to log audit messages should be
-> applicable to dm-verity too.
-> 
-> The first patch introduce generic audit wrapper functions.
-> The second patch makes use of the audit wrapper functions in the
-> dm-integrity.c.
-> The third patch uses the wrapper functions in dm-crypt.c.
-> 
-> The audit logs look like this if executing the following simple test:
-> 
-> # dd if=/dev/zero of=test.img bs=1M count=1024
-> # losetup -f test.img
-> # integritysetup -vD format --integrity sha256 -t 32 /dev/loop0
-> # integritysetup open -D /dev/loop0 --integrity sha256 integritytest
-> # integritysetup status integritytest
-> # integritysetup close integritytest
-> # integritysetup open -D /dev/loop0 --integrity sha256 integritytest
-> # integritysetup status integritytest
-> # dd if=/dev/urandom of=/dev/loop0 bs=512 count=1 seek=100000
-> # dd if=/dev/mapper/integritytest of=/dev/null
-> 
-> -------------------------
-> audit.log from auditd
-> 
-> type=UNKNOWN[1336] msg=audit(1630425039.363:184): module=integrity op=ctr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> type=UNKNOWN[1336] msg=audit(1630425039.471:185): module=integrity op=dtr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> type=UNKNOWN[1336] msg=audit(1630425039.611:186): module=integrity op=ctr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> type=UNKNOWN[1336] msg=audit(1630425054.475:187): module=integrity op=dtr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> 
-> type=UNKNOWN[1336] msg=audit(1630425073.171:191): module=integrity op=ctr ppid=3807 pid=3883 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> 
-> type=UNKNOWN[1336] msg=audit(1630425087.239:192): module=integrity op=dtr ppid=3807 pid=3902 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> 
-> type=UNKNOWN[1336] msg=audit(1630425093.755:193): module=integrity op=ctr ppid=3807 pid=3906 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup" exe="/sbin/integritysetup" subj==unconfined dev=254:3 error_msg='success' res=1
-> 
-> type=UNKNOWN[1337] msg=audit(1630425112.119:194): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:195): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:196): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:197): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:198): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:199): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:200): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:201): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:202): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
-> type=UNKNOWN[1337] msg=audit(1630425112.119:203): module=integrity op=integrity-checksum dev=254:3 sector=77480 res=0
+Hi Soeren,
 
-Are these isolated records, or are they accompanied by a type=SYSCALL
-record in your logs?
-
-The reason I ask is that audit_log_task_info() is included in three of
-the calling methods (dm_audit_log_{target,ctr,dtr}) which use a
-combination of AUDIT_DM_CTRL/AUDIT_DM_EVENT type while the fourth
-(dm_audit_log_bio) also uses one of the types above but does not include
-audit_log_task_info().  If all these records are accompanied by SYSCALL
-records, then the task info would be redundant (and might even conflict
-if there's a bug).  Another minor oddity is the double "=" for the subj
-field, which doesn't appear to be a bug in your code, but still puzzling.
-
-Are those last 10 records expected to be identical other than event
-serial number?
-
-> v4 Changes:
-> - Added comments on intended use of wrapper functions in dm-audit.h
-> - dm_audit_log_bio(): Fixed missing '=' as spotted by Paul
-> - dm_audit_log_ti(): Handle wrong audit_type as suggested by Paul
+On Tue, Sep 07, 2021 at 09:22:52PM +0200, Soeren Moch wrote:
+> On 25.04.21 13:02, Shawn Guo wrote:
+> > Instead of aborting country code setup in firmware, use ISO3166 country
+> > code and 0 rev as fallback, when country_codes mapping table is not
+> > configured.  This fallback saves the country_codes table setup for recent
+> > brcmfmac chipsets/firmwares, which just use ISO3166 code and require no
+> > revision number.
+> This patch breaks wireless support on RockPro64. At least the access
+> point is not usable, station mode not tested.
 > 
-> v3 Changes:
-> - Use of two audit event types AUDIT_DM_EVENT und AUDIT_DM_CTRL
-> - Additionaly use audit_log_task_info in case of AUDIT_DM_CTRL messages
-> - Provide consistent fields per message type as suggested by Paul
-> - Added sample events to commit message of [1/3] as suggested by Paul
-> - Rebased on v5.14
+> brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4359/9 wl0: Mar  6 2017
+> 10:16:06 version 9.87.51.7 (r686312) FWID 01-4dcc75d9
 > 
-> v2 Changes:
-> - Fixed compile errors if CONFIG_DM_AUDIT is not set
-> - Fixed formatting and typos as suggested by Casey
-> 
-> Michael Weiß (3):
->   dm: introduce audit event module for device mapper
->   dm integrity: log audit events for dm-integrity target
->   dm crypt: log aead integrity violations to audit subsystem
-> 
->  drivers/md/Kconfig         | 10 +++++
->  drivers/md/Makefile        |  4 ++
->  drivers/md/dm-audit.c      | 84 ++++++++++++++++++++++++++++++++++++++
->  drivers/md/dm-audit.h      | 66 ++++++++++++++++++++++++++++++
->  drivers/md/dm-crypt.c      | 22 ++++++++--
->  drivers/md/dm-integrity.c  | 25 ++++++++++--
->  include/uapi/linux/audit.h |  2 +
->  7 files changed, 205 insertions(+), 8 deletions(-)
->  create mode 100644 drivers/md/dm-audit.c
->  create mode 100644 drivers/md/dm-audit.h
-> 
-> -- 
-> 2.20.1
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://listman.redhat.com/mailman/listinfo/linux-audit
+> Reverting this patch makes the access point show up again with linux-5.14 .
 
-- RGB
+Sorry for breaking your device!
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+So it sounds like you do not have country_codes configured for your
+BCM4359/9 device, while it needs particular `rev` setup for the ccode
+you are testing with.  It was "working" likely because you have a static
+`ccode` and `regrev` setting in nvram file.  But roaming to a different
+region will mostly get you a broken WiFi support.  Is it possible to set
+up the country_codes for your device to get it work properly?
 
+Shawn
+
+> 
+> Regards,
+> Soeren
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > ---
+> >  .../broadcom/brcm80211/brcmfmac/cfg80211.c      | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > index f4405d7861b6..6cb09c7c37b6 100644
+> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > @@ -7442,18 +7442,23 @@ static s32 brcmf_translate_country_code(struct brcmf_pub *drvr, char alpha2[2],
+> >  	s32 found_index;
+> >  	int i;
+> >
+> > -	country_codes = drvr->settings->country_codes;
+> > -	if (!country_codes) {
+> > -		brcmf_dbg(TRACE, "No country codes configured for device\n");
+> > -		return -EINVAL;
+> > -	}
+> > -
+> >  	if ((alpha2[0] == ccreq->country_abbrev[0]) &&
+> >  	    (alpha2[1] == ccreq->country_abbrev[1])) {
+> >  		brcmf_dbg(TRACE, "Country code already set\n");
+> >  		return -EAGAIN;
+> >  	}
+> >
+> > +	country_codes = drvr->settings->country_codes;
+> > +	if (!country_codes) {
+> > +		brcmf_dbg(TRACE, "No country codes configured for device, using ISO3166 code and 0 rev\n");
+> > +		memset(ccreq, 0, sizeof(*ccreq));
+> > +		ccreq->country_abbrev[0] = alpha2[0];
+> > +		ccreq->country_abbrev[1] = alpha2[1];
+> > +		ccreq->ccode[0] = alpha2[0];
+> > +		ccreq->ccode[1] = alpha2[1];
+> > +		return 0;
+> > +	}
+> > +
+> >  	found_index = -1;
+> >  	for (i = 0; i < country_codes->table_size; i++) {
+> >  		cc = &country_codes->table[i];
+> 
