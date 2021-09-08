@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26380404116
+	by mail.lfdr.de (Postfix) with ESMTP id 97A13404118
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241902AbhIHWi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 18:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhIHWi1 (ORCPT
+        id S243784AbhIHWin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 18:38:43 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48436 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242689AbhIHWim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:38:27 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46784C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 15:37:19 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b7so5386255iob.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fJ3ihx4At7jgHYb3j4mYdDe9G4uE+v4pbaUUjca10is=;
-        b=Q75NbNDpBphtBp+PKFLy985Z4TTGj4ihZPMVooF8G2q+TppHtpDID51jmQAp5DG4jc
-         ZGHcVuPWy0owAmiNaf/M9z4/2p+UBiaOdW6CiL1yfw3ia3UJiklAankiuBOipM5srSP+
-         bqi5n2KdIRWO/1X+cu2BWHrYtmVBrfhDHGbL0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fJ3ihx4At7jgHYb3j4mYdDe9G4uE+v4pbaUUjca10is=;
-        b=bAd9O+LARiK3we+E4zWkJ+yeMsX/7FRVi8PvGIX2eZHbHwnXxJqHVuYjpyq9ub9axT
-         ICCvv8h3mInDLJlYSUExLfkpwvTiemBALIjaQqbQw1RW0LmQdqQg7ldpRR/T5qVI5eW0
-         QcB8LOKbX3NhffBimYKJhY+kJphUt0IK05UF/92HRTmwndFC/9vMMt+z+42XEyQOfCVI
-         0VDZhL/i5W83X0N1Uq15jKCCehDTeyIwIoaQ/mrDdp5932AW9tify4Cp15S40mlz1Msb
-         g+jl2oI8UdhP7+w++YjQS611VosCw9Awlw3fahatPuN2uIUPCS9B5RPfr5yV9jc4FKI1
-         0sVQ==
-X-Gm-Message-State: AOAM531NP1uthEJz4UmnDXDakSfW3sUDKRdeInWEcoB4DiumzgUDRhtU
-        s0RQxI+Dyd+Ke2WqFBHmsboQWZ66R0KseoixF/c81g==
-X-Google-Smtp-Source: ABdhPJzwDblF0Ih7VdiBmyr77yCQeqfj4l4itTfLgiElnagK5TDnK04rTWAknk1pCDtaGemvtTa13cAdWAvzwWeHTxQ=
-X-Received: by 2002:a05:6602:20ce:: with SMTP id 14mr478898ioz.204.1631140638724;
- Wed, 08 Sep 2021 15:37:18 -0700 (PDT)
+        Wed, 8 Sep 2021 18:38:42 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 33B7E883;
+        Thu,  9 Sep 2021 00:37:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1631140652;
+        bh=1bGvqSulJnZHe9TfBwp2sU+A8oEVgTU8e0GgVdcU/ws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cef2d0qWc8/lv1lki7yGSBS6cZX5fhhyJWDWBDSt4oq6beKouAYBKJzPayLQxOM/9
+         31dAAad6plu2+pKQWCvzlYuR1nhBraJfy7JRu6F2fAajaiLYHoTaqPbXkjYu5HEMQk
+         hNf/pqe830GoTcdoHx7+bjaYR3JlEeSM0ETYTP8E=
+Date:   Thu, 9 Sep 2021 01:37:11 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     slongerbeam@gmail.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: imx: set a media_device bus_info string
+Message-ID: <YTk7F+UTZmpeXzHj@pendragon.ideasonboard.com>
+References: <20210908084746.243359-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-References: <20210905210400.1157870-1-swboyd@chromium.org> <YTe+a0Gu7O6MEy2d@google.com>
- <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com>
-In-Reply-To: <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com>
-From:   Abhishek Kumar <kuabhs@chromium.org>
-Date:   Wed, 8 Sep 2021 15:37:07 -0700
-Message-ID: <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Govind Singh <govinds@codeaurora.org>,
-        Youghandhar Chintala <youghand@codeaurora.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210908084746.243359-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The way I see this, this issue is happening because of a much bigger
-design constraint. On integrated(modem+wifi) solutions, if remote proc
-service is shutdown, it has a trickle down effect. It deinitializes
-the modem processor (which controls wifi as its subsystem) and the
-wifi FW. As the fw de-initializes, we see the Delete server generated
-by the wifi FW. The FW generates delete server qmi event and there is
-no way on the host wifi driver to differentiate between delete event
-generated from a FW crash and de-initialization due to remoteproc and
-so we see the FW crash logs even during shutdown.
+Hi Martin,
 
-I would like to know what are Qualcomm's views on the design
-constraint and any plans to reduce the rigidity. Also, will the FW
-broadcast other qmi events(QRTR_TYPE_BYE for e.g.) during shutdown
-(different from crash) ? If so then we can utilize that event and then
-we don't even have to add dependency on remoteproc.
+Thank you for the patch.
 
-Overall this change should fix the issue, additionally I have one
-comment below and would like other reviewers views.
+On Wed, Sep 08, 2021 at 10:47:46AM +0200, Martin Kepplinger wrote:
+> some tools like v4l2-compliance let users select a media device based
 
->  #include <linux/regulator/consumer.h>
-> +#include <linux/remoteproc/qcom_rproc.h>
->  #include <linux/of_address.h>
-We are adding an external dependency here but since this is added in
-snoc.c (which is for integrated solution only), I can expect if SNOC
-is enabled, remote proc will be enabled as well, so it should be fine.
+s/some/Some/
 
-Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
+I'll fix then when applying the patch to my tree.
 
-On Tue, Sep 7, 2021 at 12:48 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Matthias Kaehlcke (2021-09-07 12:32:59)
-> > On Sun, Sep 05, 2021 at 02:04:00PM -0700, Stephen Boyd wrote:
-> > > @@ -1740,10 +1805,19 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
-> > >               goto err_fw_deinit;
-> > >       }
-> > >
-> > > +     ret = ath10k_modem_init(ar);
-> > > +     if (ret) {
-> > > +             ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
-> >
-> > nit: ath10k_modem_init() encapsulates/hides the setup of the notifier,
-> > the error message should be inside the function, as for _deinit()
->
-> Sure. I can fix it. I was also wondering if I should drop the debug
-> prints for the cases that don't matter in the switch statement but I'll
-> just leave that alone unless someone complains about it.
+> on the bus_info string which can be quite convenient. Use a unique
+> string for that.
+> 
+> This also fixes the following v4l2-compliance warning:
+> warn: v4l2-test-media.cpp(52): empty bus_info
+> 
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/staging/media/imx/imx-media-dev-common.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/media/imx/imx-media-dev-common.c b/drivers/staging/media/imx/imx-media-dev-common.c
+> index d006e961d8f4..80b69a9a752c 100644
+> --- a/drivers/staging/media/imx/imx-media-dev-common.c
+> +++ b/drivers/staging/media/imx/imx-media-dev-common.c
+> @@ -367,6 +367,8 @@ struct imx_media_dev *imx_media_dev_init(struct device *dev,
+>  	imxmd->v4l2_dev.notify = imx_media_notify;
+>  	strscpy(imxmd->v4l2_dev.name, "imx-media",
+>  		sizeof(imxmd->v4l2_dev.name));
+> +	snprintf(imxmd->md.bus_info, sizeof(imxmd->md.bus_info),
+> +		 "platform:%s", dev_name(imxmd->md.dev));
+>  
+>  	media_device_init(&imxmd->md);
+>  
+
+-- 
+Regards,
+
+Laurent Pinchart
