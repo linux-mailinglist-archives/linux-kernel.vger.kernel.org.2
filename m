@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB1A403FB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2DD403FB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350358AbhIHTV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33788 "EHLO mail.kernel.org"
+        id S1350813AbhIHTVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232168AbhIHTVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:21:25 -0400
+        id S1350225AbhIHTV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:21:26 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 791AF61102;
-        Wed,  8 Sep 2021 19:20:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B5E761158;
+        Wed,  8 Sep 2021 19:20:18 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mO36v-0014Xv-RK; Wed, 08 Sep 2021 15:19:53 -0400
-Message-ID: <20210908191953.686120093@goodmis.org>
+        id 1mO36w-0014YS-0y; Wed, 08 Sep 2021 15:19:54 -0400
+Message-ID: <20210908191953.867680714@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Sep 2021 15:18:54 -0400
+Date:   Wed, 08 Sep 2021 15:18:55 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <stable@vger.kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        "Qiang.Zhang" <qiang.zhang@windriver.com>
-Subject: [for-next][PATCH 03/12] tracing/osnoise: Fix missed cpus_read_unlock() in
- start_per_cpu_kthreads()
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-next][PATCH 04/12] init: bootconfig: Remove all bootconfig data when the init memory is
+ removed
 References: <20210908191851.381347939@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,50 +36,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Qiang.Zhang" <qiang.zhang@windriver.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-When start_kthread() return error, the cpus_read_unlock() need
-to be called.
+Since the bootconfig is used only in the init functions,
+it doesn't need to keep the data after boot. Free it when
+the init memory is removed.
 
-Link: https://lkml.kernel.org/r/20210831022919.27630-1-qiang.zhang@windriver.com
+Link: https://lkml.kernel.org/r/163077084958.222577.5924961258513004428.stgit@devnote2
 
-Cc: <stable@vger.kernel.org>
-Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Signed-off-by: Qiang.Zhang <qiang.zhang@windriver.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_osnoise.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ init/main.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 65b08b8e5bf8..ce053619f289 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1548,7 +1548,7 @@ static int start_kthread(unsigned int cpu)
- static int start_per_cpu_kthreads(struct trace_array *tr)
- {
- 	struct cpumask *current_mask = &save_cpumask;
--	int retval;
-+	int retval = 0;
- 	int cpu;
- 
- 	cpus_read_lock();
-@@ -1568,13 +1568,13 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
- 		retval = start_kthread(cpu);
- 		if (retval) {
- 			stop_per_cpu_kthreads();
--			return retval;
-+			break;
- 		}
- 	}
- 
- 	cpus_read_unlock();
- 
--	return 0;
-+	return retval;
+diff --git a/init/main.c b/init/main.c
+index 8d97aba78c3a..d35c4a865adb 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -468,7 +468,12 @@ static void __init setup_boot_config(void)
+ 	return;
  }
  
- #ifdef CONFIG_HOTPLUG_CPU
+-#else
++static void __init exit_boot_config(void)
++{
++	xbc_destroy_all();
++}
++
++#else	/* !CONFIG_BOOT_CONFIG */
+ 
+ static void __init setup_boot_config(void)
+ {
+@@ -481,7 +486,11 @@ static int __init warn_bootconfig(char *str)
+ 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
+ 	return 0;
+ }
+-#endif
++
++#define exit_boot_config()	do {} while (0)
++
++#endif	/* CONFIG_BOOT_CONFIG */
++
+ early_param("bootconfig", warn_bootconfig);
+ 
+ /* Change NUL term back to "=", to make "param" the whole string. */
+@@ -1493,6 +1502,7 @@ static int __ref kernel_init(void *unused)
+ 	kprobe_free_init_mem();
+ 	ftrace_free_init_mem();
+ 	kgdb_free_init_mem();
++	exit_boot_config();
+ 	free_initmem();
+ 	mark_readonly();
+ 
 -- 
 2.32.0
