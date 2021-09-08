@@ -2,160 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8394540407F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EF1404080
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350997AbhIHVXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 17:23:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43523 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231956AbhIHVXT (ORCPT
+        id S1352292AbhIHV0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 17:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhIHV0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 17:23:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631136131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jpdRoOn5BDB05RQA7ROFiVgGX3Km8+6qyEssXip4Qec=;
-        b=QHedviqNmpPdxE/Ggq4l40XDMCnDjYHgfXrwkSCLzxIQZ9qJ0F5rU521izs8y6EWMsNwG/
-        UQAqNlLp1mLa/1+t5I6Dv68UahPQukpX41UMvPav/EcYaSVbfOneGU56fgLFCIg05914XL
-        LFN9gnWOYbxqe5QbfEMQd97hrGdBP1o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-ahF0wDRjMKqE0W3zIef4yw-1; Wed, 08 Sep 2021 17:22:07 -0400
-X-MC-Unique: ahF0wDRjMKqE0W3zIef4yw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE25918D6A2C;
-        Wed,  8 Sep 2021 21:22:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CD6260C04;
-        Wed,  8 Sep 2021 21:22:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix updating of i_blocks on file/dir extension
-From:   David Howells <dhowells@redhat.com>
-To:     markus.suvanto@gmail.com
-Cc:     linux-afs@lists.infradead.org, dhowells@redhat.com,
-        marc.dionne@auristor.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 08 Sep 2021 22:22:04 +0100
-Message-ID: <163113612442.352844.11162345591911691150.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 8 Sep 2021 17:26:10 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B5BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 14:25:02 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f129so3996887pgc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 14:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oIrl1iKEkPhOhEiYAXs9Icej/cMm4caDVRBNE890nMk=;
+        b=TZmdsHFXh0pLbF1Aki2gtLI09dMbe3Ck4iTtyNnvaXyZ/0MyHfj3eTpEmvvWie3oK0
+         cytHyGfWn4YRMdeRykGfsw2GmbCKItYUkNXCjAyqGo7/aybSIK4cB1hK8BHHbDC+Rglm
+         +7sBlWMUqHT0wWp7Rs236+DLRPwub1Ity73wYOkcDPMzPoxx/GAUXmcsqWqXI9YuGuwg
+         RYuca1gvKTUx1K4VHJOnY7D5fJTJaLdL3ilkulhIb+iGIiJVFwU+rdidcNbIWUtm+owb
+         p9mg5VcxFDT4KWJ13LIAknBLMD0rOIdliDjoS+XOmvOKcnXBkz6g3fuawcYn7xjpS/HZ
+         1koQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oIrl1iKEkPhOhEiYAXs9Icej/cMm4caDVRBNE890nMk=;
+        b=uD+y5/dOIIY/7F0NUdtogY1Om7w+Qfhl3V1dgRGFSnygyWVHGQI/blsolY0jVtuNUP
+         noSoTqdK59Hgrcu0QoxrKQKgCU/7YmzqFXjms1xmB+9R+6a3RIuQI9h2xaR6Z/6BzS15
+         vngowhwmawbNl1qn0K/WyMVEtNZEZVQOUhPW9RWpChGXarZtKUW9bmwKfpfHRRulkVmq
+         l/RpJPJMAPD8x/UsDNzYDFZMsOpuj1yjIB/n5zw1yXzh2u+OyT/ChO2s3ng9m60r+dUU
+         eXoGQrXqT6P29CALydgBabVdZYrImvy43xvplCywuXrI8adDaO+imcHLQaQcphVbh61O
+         O00A==
+X-Gm-Message-State: AOAM531Jsjfw8vRnIL4MezM/N4d4jWBDkMGHn9VkoHjf6V69j6VX6rh+
+        KuYwTnzsebRNRlL59ONoSmCnnR0RUROUuELXqrufaQ==
+X-Google-Smtp-Source: ABdhPJyUrdsaj05MhT3SMnsbrzqT90+34gdQiJaQ/ddhshRsBjoS6XuOMJPHdXQfVHjUjKB5Qt1vTuPUMgCizyFpLN8=
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id
+ b140-20020a621b92000000b003eb3f920724mr147019pfb.3.1631136301711; Wed, 08 Sep
+ 2021 14:25:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com> <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+In-Reply-To: <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 8 Sep 2021 14:24:50 -0700
+Message-ID: <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an afs file or directory is modified locally such that the total file
-size is extended, i_blocks needs to be recalculated too.
+On Wed, Sep 8, 2021 at 10:16 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 9/8/21 11:05 AM, Arnd Bergmann wrote:
+> > On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >> On 9/7/21 5:14 PM, Linus Torvalds wrote:
+> >>> The KUNIT macros create all these individually reasonably small
+> >>> initialized structures on stack, and when you have more than a small
+> >>> handful of them the KUNIT infrastructure just makes the stack space
+> >>> explode. Sometimes the compiler will be able to re-use the stack
+> >>> slots, but it seems to be an iffy proposition to depend on it - it
+> >>> seems to be a combination of luck and various config options.
+> >>>
+> >>
+> >> I have been concerned about these macros creeping in for a while.
+> >> I will take a closer look and work with Brendan to come with a plan
+> >> to address it.
+> >
+> > I've previously sent patches to turn off the structleak plugin for
+> > any kunit test file to work around this, but only a few of those patches
+> > got merged and new files have been added since. It would
+> > definitely help to come up with a proper fix, but my structleak-disable
+> > hack should be sufficient as a quick fix.
+> >
+>
+> Looks like these are RFC patches and the discussion went cold. Let's pick
+> this back up and we can make progress.
+>
+> https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
 
-Fix this by making afs_write_end() and afs_edit_dir_add() call
-afs_set_i_size() rather than setting inode->i_size directly as that also
-recalculates inode->i_blocks.
+I can try to get the patch reapplying and send it out (I just figured
+that Arnd or Kees would want to send it out :-)  since it was your
+idea).
 
-This can be tested by creating and writing into directories and files and
-then examining them with du.  Without this change, directories show a 4
-blocks (they start out at 2048 bytes) and files show 0 blocks; with this
-change, they should show a number of blocks proportional to the file size
-rounded up to 1024.
+I definitely agree that in the cases where KUnit is not actually
+contributing to blowing the stack - struct leak just thinks it is,
+this is fine; however, it sounds like Linus' concerns with KUnit's
+macros go deeper than this. Arnd, I think you sketched out a way to
+make the KUNIT_* macros take up less space, but after some
+investigation we found that it was pretty inflexible.
 
-Fixes: 31143d5d515ece617ffccb7df5ff75e4d1dfa120 ("AFS: implement basic file write support")
-Fixes: 63a4681ff39c ("afs: Locally edit directory data for mkdir/create/unlink/...")
-Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
----
+Ideally test cases should never get big enough for KUNIT_* macros to
+be a problem (when they do it is usually an indication that your test
+case is trying to do too many things); nevertheless, we are still in
+this situation.
 
- fs/afs/dir_edit.c |    4 ++--
- fs/afs/inode.c    |   10 ----------
- fs/afs/internal.h |   10 ++++++++++
- fs/afs/write.c    |    2 +-
- 4 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
-index f4600c1353ad..540b9fc96824 100644
---- a/fs/afs/dir_edit.c
-+++ b/fs/afs/dir_edit.c
-@@ -263,7 +263,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- 		if (b == nr_blocks) {
- 			_debug("init %u", b);
- 			afs_edit_init_block(meta, block, b);
--			i_size_write(&vnode->vfs_inode, (b + 1) * AFS_DIR_BLOCK_SIZE);
-+			afs_set_i_size(vnode, (b + 1) * AFS_DIR_BLOCK_SIZE);
- 		}
- 
- 		/* Only lower dir pages have a counter in the header. */
-@@ -296,7 +296,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- new_directory:
- 	afs_edit_init_block(meta, meta, 0);
- 	i_size = AFS_DIR_BLOCK_SIZE;
--	i_size_write(&vnode->vfs_inode, i_size);
-+	afs_set_i_size(vnode, i_size);
- 	slot = AFS_DIR_RESV_BLOCKS0;
- 	page = page0;
- 	block = meta;
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 126daf9969db..8fcffea2daf5 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -53,16 +53,6 @@ static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *paren
- 		dump_stack();
- }
- 
--/*
-- * Set the file size and block count.  Estimate the number of 512 bytes blocks
-- * used, rounded up to nearest 1K for consistency with other AFS clients.
-- */
--static void afs_set_i_size(struct afs_vnode *vnode, u64 size)
--{
--	i_size_write(&vnode->vfs_inode, size);
--	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
--}
--
- /*
-  * Initialise an inode from the vnode status.
-  */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index c97618855b46..12b2bdae6d1a 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1595,6 +1595,16 @@ static inline void afs_update_dentry_version(struct afs_operation *op,
- 			(void *)(unsigned long)dir_vp->scb.status.data_version;
- }
- 
-+/*
-+ * Set the file size and block count.  Estimate the number of 512 bytes blocks
-+ * used, rounded up to nearest 1K for consistency with other AFS clients.
-+ */
-+static inline void afs_set_i_size(struct afs_vnode *vnode, u64 size)
-+{
-+	i_size_write(&vnode->vfs_inode, size);
-+	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
-+}
-+
- /*
-  * Check for a conflicting operation on a directory that we just unlinked from.
-  * If someone managed to sneak a link or an unlink in on the file we just
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 32a764c24284..2dfe3b3a53d6 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -137,7 +137,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		write_seqlock(&vnode->cb_lock);
- 		i_size = i_size_read(&vnode->vfs_inode);
- 		if (maybe_i_size > i_size)
--			i_size_write(&vnode->vfs_inode, maybe_i_size);
-+			afs_set_i_size(vnode, maybe_i_size);
- 		write_sequnlock(&vnode->cb_lock);
- 	}
- 
-
-
+I think I will need to dust off some cobwebs out of my brain to
+remember why I didn't like the idea of making the KUNIT_* macros take
+up less stack space.
