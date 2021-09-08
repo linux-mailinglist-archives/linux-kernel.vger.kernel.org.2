@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9F3403853
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC24E40385A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348914AbhIHK5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:57:30 -0400
-Received: from vps.xff.cz ([195.181.215.36]:38360 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242347AbhIHK51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:57:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1631098575; bh=YY2yCPD5vLXF6o1p4UODyyT1QmHGm6Y/SxZTq/D9uMg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mYaLZngkt2nB4yE41SBYtnk11sdtwCw7txgKGBz2Q/2CJ0HBC+vnJHdMdqkqjJQiM
-         gQYiAehdspatbT9xsNwpwxOThXCXQztBA4qx3XaJn7L5n3/C/tXVPC5dbwh2QY+ulA
-         kJa/bp4QvEvzzF8d4CSUdarF7Ni73Q03Xmt7Iyio=
-From:   Ondrej Jirman <megous@megous.com>
-To:     Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-media@vger.kernel.org (open list:CSI DRIVERS FOR ALLWINNER V3s),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
-        sunXi SoC support),
-        linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Ondrej Jirman <megous@megous.com>
-Subject: [PATCH] media: sun6i-csi: Allow the video device to be open multiple times
-Date:   Wed,  8 Sep 2021 12:56:09 +0200
-Message-Id: <20210908105609.1823449-1-megous@megous.com>
+        id S1349051AbhIHK6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:58:03 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:39838 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348101AbhIHK5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:57:47 -0400
+Received: from BC-Mail-Ex18.internal.baidu.com (unknown [172.31.51.12])
+        by Forcepoint Email with ESMTPS id 52528B5E57767FF86749;
+        Wed,  8 Sep 2021 18:56:30 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex18.internal.baidu.com (172.31.51.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 8 Sep 2021 18:56:29 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 8 Sep 2021 18:56:29 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] firmware: bpmp-tegra210: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Wed, 8 Sep 2021 18:56:23 +0800
+Message-ID: <20210908105624.1423-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously it was possible, but a recent fix for uninitialized
-`ret` variable broke this behavior.
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
+separately
 
-v4l2_fh_is_singular_file() check is there just to determine
-whether the power needs to be enabled, and it's not a failure
-if it returns false.
-
-Fixes: ba9139116bc0538 ("media: sun6i-csi: add a missing return code")
-Signed-off-by: Ondrej Jirman <megous@megous.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/firmware/tegra/bpmp-tegra210.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-index 0129dee798b4..da1f8b2852b7 100644
---- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-+++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-@@ -510,7 +510,7 @@ static const struct v4l2_ioctl_ops sun6i_video_ioctl_ops = {
- static int sun6i_video_open(struct file *file)
+diff --git a/drivers/firmware/tegra/bpmp-tegra210.c b/drivers/firmware/tegra/bpmp-tegra210.c
+index c32754055c60..c9c830f658c3 100644
+--- a/drivers/firmware/tegra/bpmp-tegra210.c
++++ b/drivers/firmware/tegra/bpmp-tegra210.c
+@@ -162,7 +162,6 @@ static int tegra210_bpmp_init(struct tegra_bpmp *bpmp)
  {
- 	struct sun6i_video *video = video_drvdata(file);
--	int ret;
-+	int ret = 0;
+ 	struct platform_device *pdev = to_platform_device(bpmp->dev);
+ 	struct tegra210_bpmp *priv;
+-	struct resource *res;
+ 	unsigned int i;
+ 	int err;
  
- 	if (mutex_lock_interruptible(&video->lock))
- 		return -ERESTARTSYS;
-@@ -524,10 +524,8 @@ static int sun6i_video_open(struct file *file)
- 		goto fh_release;
+@@ -172,13 +171,11 @@ static int tegra210_bpmp_init(struct tegra_bpmp *bpmp)
  
- 	/* check if already powered */
--	if (!v4l2_fh_is_singular_file(file)) {
--		ret = -EBUSY;
-+	if (!v4l2_fh_is_singular_file(file))
- 		goto unlock;
--	}
+ 	bpmp->priv = priv;
  
- 	ret = sun6i_csi_set_power(video->csi, true);
- 	if (ret < 0)
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	priv->atomics = devm_ioremap_resource(&pdev->dev, res);
++	priv->atomics = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(priv->atomics))
+ 		return PTR_ERR(priv->atomics);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	priv->arb_sema = devm_ioremap_resource(&pdev->dev, res);
++	priv->arb_sema = devm_platform_ioremap_resource(pdev, 1);
+ 	if (IS_ERR(priv->arb_sema))
+ 		return PTR_ERR(priv->arb_sema);
+ 
 -- 
-2.33.0
+2.25.1
 
