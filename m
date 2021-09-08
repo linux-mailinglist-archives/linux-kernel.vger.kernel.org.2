@@ -2,286 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A887A403236
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403E40325C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346565AbhIHBdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:33:36 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44880 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1346231AbhIHBde (ORCPT
+        id S1346797AbhIHBol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346153AbhIHBok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:33:34 -0400
-X-UUID: 0679e2b7485b400793db4ac26c94d313-20210908
-X-UUID: 0679e2b7485b400793db4ac26c94d313-20210908
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 128792181; Wed, 08 Sep 2021 09:32:23 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 8 Sep
- 2021 09:32:21 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 8 Sep 2021 09:32:20 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] mmc: mediatek: Add HS400 online tuning support
-Date:   Wed, 8 Sep 2021 09:32:18 +0800
-Message-ID: <20210908013218.29702-3-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210908013218.29702-1-wenbin.mei@mediatek.com>
-References: <20210908013218.29702-1-wenbin.mei@mediatek.com>
+        Tue, 7 Sep 2021 21:44:40 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A1DC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:43:33 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id n11so576139edv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cmtZIOS9Ve5xG2iMzkU1sWtv+qTK9kG1NPN7g5hyzNo=;
+        b=Avp2QNon6oXLwlm91DcxXo2K8Ngk0nif54gPFAF8gSN1i8UGU3RnS5zbBTY4njddzE
+         kRimZCEAjTDErRvXr9NzGnDj9ERJN9NqfNGni7tfa8fg8ZRHueouEt6GdIwj0aLgB6gt
+         6fk+gKUyYscFIVOTodXPJQY4t8lVrFzEU6fng=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cmtZIOS9Ve5xG2iMzkU1sWtv+qTK9kG1NPN7g5hyzNo=;
+        b=oQ86+Zm9t9zs43Lcu967gxToRIBPVBIezsNnrfaqziRQK6DIN0y2RRRFBqrnk+QoTC
+         KTz+xAZPjbf9JHGn6TxQ9eAqfrvdcEWGJdzMpzT29YrZDQM/d7STLDjhIUOXw3WtYb47
+         qUHZdI3nJ7U4jXJLi2W3Hf/Z1n6/lkB1LUIznFQKdcKkOw/5qOhpakFlHmLHQohKhDD1
+         B3j+HgRRDTe8oOfCGZR2Z3jklZN/zbUF20MMss6dZ/NMkRXXOXz/SFRB66aHoh95YzIf
+         JFc7VYGz/HKGCjPROLZE3PvXvqvEmtcpMoYfJ4rsRNYuQRX7NG5TsJQs8wE0UoEYPHx4
+         994Q==
+X-Gm-Message-State: AOAM532fNvthV9/tFoJku4Whkc2zftW1jWUsb6eoAqOkDaEYIRwZ7ne2
+        qEvSXAfVaGlna7jyRbcTz82X6tuYG1i9Z5Wsa9I=
+X-Google-Smtp-Source: ABdhPJyNjOPkFj/C4N7wLrc11B46FcLx8iGc7aJwPY93CtPytcW8oiCGqh0+i34OXpTNIaR/SQ+v8Q==
+X-Received: by 2002:a05:6402:2032:: with SMTP id ay18mr1272345edb.364.1631065411801;
+        Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id r26sm196982ejd.85.2021.09.07.18.43.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id q26so728662wrc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
+X-Received: by 2002:a2e:b53a:: with SMTP id z26mr781467ljm.95.1631064966392;
+ Tue, 07 Sep 2021 18:36:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org> <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
+ <a2c18c6b-ff13-a887-dd52-4f0aeeb25c27@kernel.org>
+In-Reply-To: <a2c18c6b-ff13-a887-dd52-4f0aeeb25c27@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 18:35:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
+Message-ID: <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the influence of the corner IC and vcore voltage, for the stability
-of HS400 mode, we Add HS400 mode online tuning support for mediatek mmc
-host.
+On Tue, Sep 7, 2021 at 5:15 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Ah, okay, that is an x86-only limitation so I missed it. I do not think
+> there is any bug with that Kconfig logic but it is only used on x86.
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Reviewed-by: Chaotian Jing <chaotian.jing@mediatek.com>
----
- drivers/mmc/core/mmc.c    |   8 +++
- drivers/mmc/host/mtk-sd.c | 118 +++++++++++++++++++++++++++++++++++++-
- include/linux/mmc/host.h  |   3 +
- 3 files changed, 127 insertions(+), 2 deletions(-)
+Yeah. I think other architectures are basically just buggy, but nobody
+has ever cared or noticed, because the hardware basically doesn't
+exist.
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 838726b68ff3..0aa72acd8612 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -1222,6 +1222,14 @@ static int mmc_select_hs400(struct mmc_card *card)
- 	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
- 	mmc_set_bus_speed(card);
- 
-+	if (host->ops->execute_hs400_tuning) {
-+		mmc_retune_disable(host);
-+		err = host->ops->execute_hs400_tuning(host, card);
-+		mmc_retune_enable(host);
-+		if (err)
-+			goto out_err;
-+	}
-+
- 	if (host->ops->hs400_complete)
- 		host->ops->hs400_complete(host);
- 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 4dfc246c5f95..484f5c38bfaf 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -258,6 +258,7 @@
- #define MSDC_PAD_TUNE_RD_SEL	  (0x1 << 13)   /* RW */
- #define MSDC_PAD_TUNE_CMD_SEL	  (0x1 << 21)   /* RW */
- 
-+#define PAD_DS_TUNE_DLY_SEL       (0x1 << 0)	/* RW */
- #define PAD_DS_TUNE_DLY1	  (0x1f << 2)   /* RW */
- #define PAD_DS_TUNE_DLY2	  (0x1f << 7)   /* RW */
- #define PAD_DS_TUNE_DLY3	  (0x1f << 12)  /* RW */
-@@ -301,6 +302,11 @@
- #define PAD_CMD_RD_RXDLY_SEL    (0x1 << 11)     /* RW */
- #define PAD_CMD_TX_DLY          (0x1f << 12)    /* RW */
- 
-+/* EMMC50_PAD_DS_TUNE mask */
-+#define PAD_DS_DLY_SEL		(0x1 << 16)	/* RW */
-+#define PAD_DS_DLY1		(0x1f << 10)	/* RW */
-+#define PAD_DS_DLY3		(0x1f << 0)	/* RW */
-+
- #define REQ_CMD_EIO  (0x1 << 0)
- #define REQ_CMD_TMO  (0x1 << 1)
- #define REQ_DAT_ERR  (0x1 << 2)
-@@ -448,11 +454,13 @@ struct msdc_host {
- 	bool vqmmc_enabled;
- 	u32 latch_ck;
- 	u32 hs400_ds_delay;
-+	u32 hs400_ds_dly3;
- 	u32 hs200_cmd_int_delay; /* cmd internal delay for HS200/SDR104 */
- 	u32 hs400_cmd_int_delay; /* cmd internal delay for HS400 */
- 	bool hs400_cmd_resp_sel_rising;
- 				 /* cmd response sample selection for HS400 */
- 	bool hs400_mode;	/* current eMMC will run at hs400 mode */
-+	bool hs400_tuning;	/* hs400 mode online tuning */
- 	bool internal_cd;	/* Use internal card-detect logic */
- 	bool cqhci;		/* support eMMC hw cmdq */
- 	struct msdc_save_para save_para; /* used when gate HCLK */
-@@ -1190,7 +1198,8 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	if (!sbc_error && !(events & MSDC_INT_CMDRDY)) {
- 		if (events & MSDC_INT_CMDTMO ||
- 		    (cmd->opcode != MMC_SEND_TUNING_BLOCK &&
--		     cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200))
-+		     cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200 &&
-+		     !host->hs400_tuning))
- 			/*
- 			 * should not clear fifo/interrupt as the tune data
- 			 * may have alreay come when cmd19/cmd21 gets response
-@@ -1287,7 +1296,8 @@ static void msdc_cmd_next(struct msdc_host *host,
- 	if ((cmd->error &&
- 	    !(cmd->error == -EILSEQ &&
- 	      (cmd->opcode == MMC_SEND_TUNING_BLOCK ||
--	       cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200))) ||
-+	       cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200 ||
-+	       host->hs400_tuning))) ||
- 	    (mrq->sbc && mrq->sbc->error))
- 		msdc_request_done(host, mrq);
- 	else if (cmd == mrq->sbc)
-@@ -2251,6 +2261,106 @@ static int msdc_prepare_hs400_tuning(struct mmc_host *mmc, struct mmc_ios *ios)
- 	return 0;
- }
- 
-+static int msdc_send_cxd_data(struct mmc_card *card, struct mmc_host *host)
-+{
-+	struct mmc_request mrq = {};
-+	struct mmc_command cmd = {};
-+	struct mmc_data data = {};
-+	unsigned int len = 512;
-+	struct scatterlist sg;
-+	u8 *ext_csd;
-+
-+	ext_csd = kzalloc(len, GFP_KERNEL);
-+	if (!ext_csd)
-+		return -ENOMEM;
-+
-+	mrq.cmd = &cmd;
-+	mrq.data = &data;
-+
-+	cmd.opcode = MMC_SEND_EXT_CSD;
-+	cmd.arg = 0;
-+	cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
-+
-+	data.blksz = len;
-+	data.blocks = 1;
-+	data.flags = MMC_DATA_READ;
-+	data.sg = &sg;
-+	data.sg_len = 1;
-+
-+	sg_init_one(&sg, ext_csd, len);
-+	mmc_set_data_timeout(&data, card);
-+	mmc_wait_for_req(host, &mrq);
-+
-+	kfree(ext_csd);
-+
-+	if (cmd.error)
-+		return cmd.error;
-+	if (data.error)
-+		return data.error;
-+
-+	return 0;
-+}
-+
-+static int msdc_execute_hs400_tuning(struct mmc_host *mmc, struct mmc_card *card)
-+{
-+	struct msdc_host *host = mmc_priv(mmc);
-+	struct msdc_delay_phase dly1_delay;
-+	u32 val, result_dly1 = 0;
-+	int i, ret;
-+
-+	if (host->top_base) {
-+		sdr_set_bits(host->top_base + EMMC50_PAD_DS_TUNE,
-+			     PAD_DS_DLY_SEL);
-+		if (host->hs400_ds_dly3)
-+			sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+				      PAD_DS_DLY3, host->hs400_ds_dly3);
-+	} else {
-+		sdr_set_bits(host->base + PAD_DS_TUNE, PAD_DS_TUNE_DLY_SEL);
-+		if (host->hs400_ds_dly3)
-+			sdr_set_field(host->base + PAD_DS_TUNE,
-+				      PAD_DS_TUNE_DLY3, host->hs400_ds_dly3);
-+	}
-+
-+	host->hs400_tuning = true;
-+	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+		if (host->top_base)
-+			sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+				      PAD_DS_DLY1, i);
-+		else
-+			sdr_set_field(host->base + PAD_DS_TUNE,
-+				      PAD_DS_TUNE_DLY1, i);
-+		ret = msdc_send_cxd_data(card, mmc);
-+		if (!ret)
-+			result_dly1 |= (1 << i);
-+	}
-+	host->hs400_tuning = false;
-+
-+	dly1_delay = get_best_delay(host, result_dly1);
-+	if (dly1_delay.maxlen == 0) {
-+		dev_err(host->dev, "Failed to get DLY1 delay!\n");
-+		goto fail;
-+	}
-+	if (host->top_base)
-+		sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+			      PAD_DS_DLY1, dly1_delay.final_phase);
-+	else
-+		sdr_set_field(host->base + PAD_DS_TUNE,
-+			      PAD_DS_TUNE_DLY1, dly1_delay.final_phase);
-+
-+	if (host->top_base)
-+		val = readl(host->top_base + EMMC50_PAD_DS_TUNE);
-+	else
-+		val = readl(host->base + PAD_DS_TUNE);
-+
-+	dev_info(host->dev, "Fianl PAD_DS_TUNE: 0x%x\n", val);
-+
-+	return 0;
-+
-+fail:
-+	dev_err(host->dev, "Failed to tuning DS pin delay!\n");
-+	return -EIO;
-+}
-+
- static void msdc_hw_reset(struct mmc_host *mmc)
- {
- 	struct msdc_host *host = mmc_priv(mmc);
-@@ -2377,6 +2487,7 @@ static const struct mmc_host_ops mt_msdc_ops = {
- 	.card_busy = msdc_card_busy,
- 	.execute_tuning = msdc_execute_tuning,
- 	.prepare_hs400_tuning = msdc_prepare_hs400_tuning,
-+	.execute_hs400_tuning = msdc_execute_hs400_tuning,
- 	.hw_reset = msdc_hw_reset,
- };
- 
-@@ -2396,6 +2507,9 @@ static void msdc_of_property_parse(struct platform_device *pdev,
- 	of_property_read_u32(pdev->dev.of_node, "hs400-ds-delay",
- 			     &host->hs400_ds_delay);
- 
-+	of_property_read_u32(pdev->dev.of_node, "mediatek,hs400-ds-dly3",
-+			     &host->hs400_ds_dly3);
-+
- 	of_property_read_u32(pdev->dev.of_node, "mediatek,hs200-cmd-int-delay",
- 			     &host->hs200_cmd_int_delay);
- 
-diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index ff1a251bb0bc..7552d5eb0074 100644
---- a/include/linux/mmc/host.h
-+++ b/include/linux/mmc/host.h
-@@ -162,6 +162,9 @@ struct mmc_host_ops {
- 	/* Prepare HS400 target operating frequency depending host driver */
- 	int	(*prepare_hs400_tuning)(struct mmc_host *host, struct mmc_ios *ios);
- 
-+	/* Execute HS400 tuning depending host driver */
-+	int	(*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
-+
- 	/* Prepare switch to DDR during the HS400 init sequence */
- 	int	(*hs400_prepare_ddr)(struct mmc_host *host);
- 
--- 
-2.25.1
+People hopefully don't actually configure for the kernel theoretical
+maximum outside of x86. Even there it's a bit ridiculous, but the
+hardware with lots and lots of cores at least _has_ existed.
 
+> Indeed. Grepping around the tree, I see that arc, arm64, ia64, powerpc,
+> and sparc64 all support NR_CPUS up to 4096 (8192 for PPC) but none of
+> them select CPUMASK_OFFSTACK
+
+I think this one says it all:
+
+   arch/arc/Kconfig: range 2 4096
+
+yeah. ARC allows you to configure 4k CPU's.
+
+I think a lot of them have just copied the x86 code (it was 4k long
+ago), without actually understanding all the details.
+
+That is indeed a strong argument for getting rid of the current
+much-too-subtle CPUMASK_OFFSTACK situation.
+
+But as the hyperv code shows, even on x86 the "we never allocate a
+full cpumask on the stack" has gotten lost a bit since the days that
+Rusty and others actually implemented this all.
+
+           Linus
