@@ -2,179 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89222403D43
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516B9403D4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhIHQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:06:50 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:45226 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231143AbhIHQGr (ORCPT
+        id S1347258AbhIHQIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344680AbhIHQI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:06:47 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 188ExKN3023705;
-        Wed, 8 Sep 2021 16:05:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=WOotRj4nQjDKasrtz0snA9uu+YSNII+Jq0+VtpkJHbw=;
- b=Jpo9oY4Q9n1JPkT8Ldflw013e3cOnnPZkyXnY6QLRTmhpV1kafqUw0HFEPFmgQp1OOI+
- 1b0lLnTJp4bseEeXSbr7y7NXok/FELfrR3xdjA0i6xwpPcbadt7ZhP1cDg1JukvRyXQO
- bQWWAwgqiRjv4bqxQ5usU147mvINmNIKCFdOw/viBQ7oNlUmZqpTRcaUquPW0TWW0u9C
- CyDYL70KUt+4BAu+u81/qUj4Eb1+K51mGLITQZ9G3vvDkC+F/SDBWzZO+LZ2Av4f4r5p
- C0wmCpOL7VStwGGNs3mS5jT05JHxAKf7GUZ2Q8vTlhdQb9vPcA0n6tTxojZUg0+uUtAp iw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=WOotRj4nQjDKasrtz0snA9uu+YSNII+Jq0+VtpkJHbw=;
- b=TtF5RrTSGSZ6BWMHeYM1CFI8YmNAwi1QzayBlAkWFi+U0l8r5QYPPgN1PLaAnBmhLsJu
- 1fOScIRwA8ZxiMFCwJT+5EMhMGSDDDhtohy9LTRAr0KZipsuK78AM+0z+Kkbn3q7al7g
- JFBuPQ4LMgaNGX+3LjmeoEu5JdqmvPZtArPCLkWl6Tm0/QUNUkhosJYaEmiE7JQWN/oZ
- Xw1wVQuDbSJU6/jojSTNaFcfuA13ecmqwqmsSn7aVhxHY01IO67w1CDlopFTcuCz24+y
- VVvRjlKk796pv70e5Fam3XaLjUleEf/Lu2dChRMQW9rM9e8KqQG4esDxEwQf/03rXPGg HQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3axd7tb7y0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 16:05:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 188G0LxD057687;
-        Wed, 8 Sep 2021 16:05:31 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
-        by userp3020.oracle.com with ESMTP id 3axst41p1y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 16:05:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eBtMP37QRI4HPrJ/rhg3UCgFtzCCQIaS2fn3vf7IMyokCjw74oYxHhOTxIIulA83HADjFj7GkmZ4M0tC7NXZR9iuwL5c4+JZGCvCFCj1PGaRuETgkLjFKdj5QiiRwGsYlhH5n0DPtCAKUqbxCuudV9ODuwV6biOLsD5ZDYKCyq76NgZ4moB+iOco/khDjxFcVLrDCQ0ETy73t/OW2ry2YVwVevmC4MZ/rhWn0PiA4Mf8wIk7vkh+nm2vn0gAvGZ853E/vZ8WJTaKumNXUzISPGGYugOYxPUjnq+0T1s64GP7Unac2ZE+01qWOVHujv6XDRuq1nVno9CuGoOJG8JABw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=WOotRj4nQjDKasrtz0snA9uu+YSNII+Jq0+VtpkJHbw=;
- b=ct5aYIbohUwIxYkHIesKQPTqfXxKM5LjHSNn8TWV/ggHXUEBNwa8KxEtyoKGm8wdGYdh6Y0cMiQ8jWESLAVY0mbem9nITqmo1hfY43LJjePn+C8xRDBS7YYuPlADH9cPDBHmHPbaP5EC0nST0oy5HLykPKizGcP1gYlBDzRn9mPt8yNgjsIwj9xajxU8kmRoICMvrV4MltyVz3PYcW/RdnGPt//+Ce8yt5GxAKAwMsieA/mDLWHU45siezvx1KhYSxIiZqHBPdkgkekocyahH2BqpRg4n+A2LUaJtC1xGEzLbEjUnw643+PFRSzbWyVh1ebhkURKfRvZlalY9CuJMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 8 Sep 2021 12:08:29 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C63C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:07:21 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id v10so5322649ybm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WOotRj4nQjDKasrtz0snA9uu+YSNII+Jq0+VtpkJHbw=;
- b=QPfRNzHA40Q4NKktFC9zdeRrqopY7XIjVTQAFjlF20/jsFhp3NylDsL23Uga2WO9hQx64/uxhGAU1bUuq68rW7LG/ZbVbKeDYuftHRAm5zaFsBvfnqPWyhJeNL4KFE1axOqDzZq3kqnWrfcfSybWA0hxTXl335nYqAznyndyDoY=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BLAPR10MB5331.namprd10.prod.outlook.com (2603:10b6:208:334::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 16:05:29 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f520:b987:b36e:618f]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f520:b987:b36e:618f%7]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
- 16:05:29 +0000
-Subject: Re: [PATCH] xen/balloon: use a kernel thread instead a workqueue
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>
-References: <20210827123206.15429-1-jgross@suse.com>
- <8b13525b-0075-f4c1-8900-1be151e85e3e@oracle.com>
- <9d1edc4e-b2b5-c620-17c6-31d238c2c417@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <97f394d4-6538-a931-6531-063998c6c5e2@oracle.com>
-Date:   Wed, 8 Sep 2021 12:05:24 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <9d1edc4e-b2b5-c620-17c6-31d238c2c417@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: BYAPR04CA0009.namprd04.prod.outlook.com
- (2603:10b6:a03:40::22) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OlLwloMM1UNziGhSZ73I5whfEToHkI4ZvWhuIcM5G8s=;
+        b=j5bGc2IirxaeHkq6J05nylDjOjhI8/WNnNCH218C+ljUcd3BGM6/pCCcKr7PlgQ9rX
+         mqW/bc2JL6DSp2FiVstvuKUqj+sxSdPA6D3jxap2gRz/Av8srgQrIVRHdc/QBVyOAMzT
+         gnjJFbXHDV1N79Vn4zAP+N9TEfUfDMpKdghWSrb3hKHoDqu8urjueLFJAX/2B0xLei0H
+         kKvHUpnCdwec4gbQbL2VsN9H/6tmlUj7M6kQfhy4Cf2xb7nJqKGB0kLL59QoxiBmxHTO
+         OsVNa+PcYwqBB1wJS9AUKqqv4GEtDXYhPdINQVZ6iU3jI863GfKQsA/GQcKcEoCtxCwm
+         AcSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OlLwloMM1UNziGhSZ73I5whfEToHkI4ZvWhuIcM5G8s=;
+        b=GE2kT3VVlxvIpUf/5exafUDEk9/PImWEy2h5XdbsV29J7GJbLny2+tWCS9dS3RF4yk
+         5Cm8IGPv72tOwD8XIeMnGiKeI62nubTlJ7DJxLQQQE154K6XsAeIMXuNdR+5PaRKyz8o
+         4DWl8NrPjSI9IKLyRmEcKOSQ12wU7XIcSr0cLiF6TdKpcULkVkmfE+AMi2B8X5FzbMp9
+         ZzpvoT4BU+xrl2uk9k6sFct988CS6tZHSAsVNlcBL0y6v484tpEHuts9xIDie5W1mF5t
+         wYyWJ77026gC3Y8VAYWLzJ5tWwsbn3N8os3MN2teXoi3saXECGmJSicbAutFvt9QYEjJ
+         fsnA==
+X-Gm-Message-State: AOAM5301ZOzvO8Ut9lbkbxKhjeu+4//N72c+7CVh/pnSqK2qXusWQjSJ
+        KjK/UfajOHsSebqzly04SdzaGSyzwqIbPOsoe9Hsqw==
+X-Google-Smtp-Source: ABdhPJw4+DDt30fQHD5oYPdoChAnKFa73Ue9B3s9aptNmiCY1/fZWxEuLXm7T7yt4bdUe3JR8cBNfjANw4oHXZpOlhA=
+X-Received: by 2002:a25:abeb:: with SMTP id v98mr4667226ybi.30.1631117240489;
+ Wed, 08 Sep 2021 09:07:20 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [10.74.115.194] (138.3.201.2) by BYAPR04CA0009.namprd04.prod.outlook.com (2603:10b6:a03:40::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 16:05:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0378668d-bfc5-4e46-2c71-08d972e27a53
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5331:
-X-Microsoft-Antispam-PRVS: <BLAPR10MB5331057E2A96DA0C126CE12C8AD49@BLAPR10MB5331.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q5eCZWhkSbC6YHbPM7FC/DDsEs5zlBlgrgn/eRctLc2rRez+PyE6z3HT6+VKXseBUscEuPnADsUW0fURDYm1mYNHNX7v1EM0q6AWHdErt1fJVD1ZlZLJM1j9+Fx/Ot6ZsRShi6al1Jxx7mwIeRHL5rJEvVsuyleZZHt1SlJtdwoFIMe18qn9auJmAhis1MjWfZEXbekUcfggjH/44glZ44gEwHL61xiXecXo0V07ICdnlO1H9Z502xvt2kaxcAv+/dfPz5WDw3KZIxEn2PJxoUgMb1WoVZC6+KdkNy8HoLGPd6S+l18OTw2fF8+jQLR2OBI9puYAxt8mZ6tf8wuQvIu5i7eouo+eiy9mzFERYadBeAQhIOCq66dT3x0iSKX3xN74rJogEucnXz2fgeV+dyx0TLIaj4eTfR5fw8wJx+nu74c9JqTQ3igWkzXnJeI7ASl5XaReXB3AweE+3J8cLvxw8pMlfM7GbLxp/gNRNW1KfwKifsPQ+EXOWBojHx4O2ZY7uJhy3Jbu2kSJ6sr16B2Prf0MA/BLIebLXv/Xe8EAubbH8fQGd/RJMkDB7+W+rIL7v6Cm76labYsp12vhi37LysZDZV4lZ0xUS0rimKV1KA7zhXe0ih8k8uL0/lUDx+upCBLJhDX7t3AiBBwvFI2uXfYLeCOEc3h2SADmG3oVmbpjVyf5VtlTnM/lYB1GXkZxA7T0z1LTzFTpe8+M8cBW470aRk8XCP6o3wz/sQs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(366004)(39860400002)(376002)(5660300002)(956004)(2616005)(4326008)(316002)(16576012)(66946007)(66556008)(54906003)(31696002)(66476007)(44832011)(8676002)(36756003)(86362001)(4744005)(53546011)(186003)(6486002)(478600001)(2906002)(26005)(8936002)(31686004)(6666004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ek1hSnJzU21LMGFoSk0yeHJYNm5peUFzcVF5dytIMHlBWmJMVmdFMGs5OWZa?=
- =?utf-8?B?K00rUXN0ZnNrREh6UEswYWw5a1JPZGYyQmt2bHhwUUpMWWpFMEJnUmFDcmlj?=
- =?utf-8?B?bnc2M05XR2dTSHcvYkthM2NEZzE5MzZjQjRzSnc1aTZLNFBqWlFlcElGTlFT?=
- =?utf-8?B?SE52R2svU1doMHZ2bTlGOW84bjEyNFBvTVhMbzk1d0hpNUovdDJDV2N5N1A5?=
- =?utf-8?B?cGZVMlYvcjI1VHpzZWZNSSs2ekFyS0tNSmVSNkI4RFhPN0NDZ0trOCt6RU1l?=
- =?utf-8?B?WXhOTU9HR1Y2bFBwc1ZTejJHYlJTMmd1cFYvdVFkZk5BeVJmUEJaK0lJc2Fk?=
- =?utf-8?B?THJmK3JSTHFNZXRJajF6TmQ4KzJQd3UyeDBac2dPOXczUWdwSldxa1lSNThS?=
- =?utf-8?B?Ulc0WkFZR1RLMFBCSCtKV2hQelBVTTFmZDJ4OC8vUWpsOStRMjRIajU5N0hE?=
- =?utf-8?B?enpCUHRIdlVQMEZZZEd0di85UUFuQlRmVnF0ZmpWV1ZHS2dIVk80R3JVRHha?=
- =?utf-8?B?RGQvYWU3dlVYNnJPYjZzNHVtNENpTkh0M0dUR3psRlB2VlpJSjYzWk1DS3BX?=
- =?utf-8?B?VlM5VnlCNno4UHFiZzVPRjdNc3BxSXViWTZrbXNIL01mRDl3aitJbnMrbXR0?=
- =?utf-8?B?K3lYSEJDc2ljZllNdWlwdUowM3RLVjhBaG9qVW96ZHJHbGJyY0pqSDZVbVp0?=
- =?utf-8?B?OG4vUXUxMFVQcU1ZdG4vVnlJRzlWanNGOTZkQ3ZPanF4TnQ0akV1STJQbG01?=
- =?utf-8?B?VFZkdHQraWd1ZzYvbVFYM085MEQ1M3poZEIzNUl5YXJ5YlIvVytScm5UNXpL?=
- =?utf-8?B?dVg4YzlwaTR2NnM3aFBrNWdidGpkdmpHTHBkMjNvaEExZk91RDYvbFQyWmpP?=
- =?utf-8?B?alVvZGFaL2Yvd0Y4RElyVVFDN1pmWUY3cWxKTnZmdEJFd1AxZnFULy9OUnNi?=
- =?utf-8?B?TWRvVk05QlVvVS9mcUlYMEc1b0tJSkdPVjFUWGRSdUxidHZ4LzR3dXlBcnRn?=
- =?utf-8?B?akQ5aHBWQStGMkYvMlVzUGJLR1l2WUxJWW5IZ0lIK0d1a1dBS3E0anVYdUdX?=
- =?utf-8?B?WlFpdmx1elZnTlhjMEhJRWRpRThmYmJNaGh1c2NBVVpWK0hrcndlZE5BdU0v?=
- =?utf-8?B?ekdTeWsrSmI3ZTgxdG93clhzZ0VRWlc3clJGRTVtVHFNbXdJRmNxNTZ6MGtI?=
- =?utf-8?B?QktOZVVpT2ZuWWtTdDcydy9CWjNJM2J2cDNvbDY3SVZSUkxKRUhRV0w1dDVm?=
- =?utf-8?B?eDBLMWxva09HQjNUajFHMXlJR2F1VUFTUHg0czdmb25aYUw3cnBKc0VJUlk5?=
- =?utf-8?B?a2dmeklvY3AyRXdQSUtUNjdjdGtOQ2lVbVQrVDVyVVl5citEVTZPVGhmZ3Fp?=
- =?utf-8?B?Z3YrNTYrMEIwUldsbEJ4djh6OUFQWkN2THVMZDRBNFZEdjBxMGk0YmRDa21R?=
- =?utf-8?B?VHRuNjBuTDQzWEI3OC8yc1FBTFNzQTFjKzM3L0xxR3hVN0R3UExBNVdjbzFY?=
- =?utf-8?B?VkFydVYvYnZWTVZ2MDdpYUNvTEhWRXlkdDQ1Vk1DRlVtSGtVeEJqZW1WOHdE?=
- =?utf-8?B?SnlHTU4zRHdvRFhKUk9wSUJOVFc5VTVIK0FUV3NITDJ6M0kvbFVRdjBaeVpJ?=
- =?utf-8?B?SFF3Qzk0YVZHUTg3WDNnclVsdkdsMkVZTnVBaWtVcE5jeG1ZamEzaStVd1k3?=
- =?utf-8?B?SFIxUWhqeDhuVUExRHVSNHZxN21lVVJrUUsrUWpsTGZvWHlnR2NGbGtSZXVl?=
- =?utf-8?Q?UYH570yQo2328mqNq7qGdWS2kNoIlIf11RqSnuq?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0378668d-bfc5-4e46-2c71-08d972e27a53
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 16:05:29.1137
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0yBje2jKz4kx2VE4rwXMeQ1DDsT5NjlruM6Y12QVcctF71VT1NeYodt4FySEq6oWb5AC1Wl8cKsMyX1VTCp1ma7Rm6Wo0c1P3l/83zX5S2Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5331
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10101 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080100
-X-Proofpoint-GUID: LTVQLA2FxSYhyNO8pqma16wmNm95498a
-X-Proofpoint-ORIG-GUID: LTVQLA2FxSYhyNO8pqma16wmNm95498a
+References: <20210830044425.2686755-1-mizhang@google.com> <20210830044425.2686755-3-mizhang@google.com>
+ <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
+ <YS5fxJtX/nYb43ir@google.com> <CAL715WJUmRJmt=u4Gi3ydTpbTGy2M5Wi=CbF9Qs8GNRK8g5FAA@mail.gmail.com>
+In-Reply-To: <CAL715WJUmRJmt=u4Gi3ydTpbTGy2M5Wi=CbF9Qs8GNRK8g5FAA@mail.gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Wed, 8 Sep 2021 09:07:09 -0700
+Message-ID: <CAL715WJYqusqiztS=fYE46jXmHUi9uni_kswt=ALyUx_hxKBFg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if page
+ stats work correctly
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ben Gardon <bgardon@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/8/21 11:11 AM, Juergen Gross wrote:
-> On 08.09.21 16:47, Boris Ostrovsky wrote:
->>
->>
->> Given that wait_event_interruptible_timeout() is a bunch of nested macros do we need to worry here about overly aggressive compiler optimizing out 'credit = current_credit()'?
+On Mon, Sep 6, 2021 at 1:05 PM Mingwei Zhang <mizhang@google.com> wrote:
 >
-> I don't think so. current_credit() is reading from balloon_stats, which
-> is a global variable. So the compiler shouldn't assume the contents
-> won't change.
-
-
-Ah, ok --- good point. Then I guess we should be fine.
-
-
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
-
+> On Tue, Aug 31, 2021 at 9:58 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Mon, Aug 30, 2021, Ben Gardon wrote:
+> > > On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > > > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> > > > index af1031fed97f..07eb6b5c125e 100644
+> > > > --- a/tools/testing/selftests/kvm/lib/test_util.c
+> > > > +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> > > > @@ -15,6 +15,13 @@
+> > > >  #include "linux/kernel.h"
+> > > >
+> > > >  #include "test_util.h"
+> > > > +#include "processor.h"
+> > > > +
+> > > > +static const char * const pagestat_filepaths[] = {
+> > > > +       "/sys/kernel/debug/kvm/pages_4k",
+> > > > +       "/sys/kernel/debug/kvm/pages_2m",
+> > > > +       "/sys/kernel/debug/kvm/pages_1g",
+> > > > +};
+> > >
+> > > I think these should only be defined for x86_64 too. Is this the right
+> > > file for these definitions or is there an arch specific file they
+> > > should go in?
+> >
+> > The stats also need to be pulled from the selftest's VM, not from the overall KVM
+> > stats, otherwise the test will fail if there are any other active VMs on the host,
+> > e.g. I like to run to selftests and kvm-unit-tests in parallel.
 >
-> But I can add a barrier() after 'credit = current_credit()' in case
-> you'd feel uneasy without it.
+> That is correct. But since this selftest is not the 'default' selftest
+> that people normally run, can we make an assumption on running these
+> tests at this moment? I am planning to submit this test and improve it
+> in the next series by using Jing's fd based KVM stats interface to
+> eliminate the assumption of the existence of a single running VM.
+> Right now, this interface still needs some work, so I am taking a
+> shortcut that directly uses the whole-system metricfs based interface.
 >
->
-> Juergen
+> But I can choose to do that and submit the fd-based API together with
+> this series. What do you suggest?
+
+
+I will take my point back, since some of the "TEST_ASSERT" in this
+selftest does assume that there is no other VM running even on
+'default' case (ie., run ./dirty_logging_perf_test without arguments).
+Therefore, this patch will make the test flaky.
+
+I will go back to implement the fd based API and submit the code along
+with this selftest.
+
+Thanks.
+-Mingwei
