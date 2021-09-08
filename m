@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF09403F2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFC0403F32
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350181AbhIHSnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
+        id S1348737AbhIHSqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350029AbhIHSnk (ORCPT
+        with ESMTP id S240231AbhIHSqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:43:40 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA1DC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:42:31 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so1757308pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:42:31 -0700 (PDT)
+        Wed, 8 Sep 2021 14:46:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA25C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:45:31 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 192-20020a1c04c9000000b002f7a4ab0a49so1778410wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:45:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ABvGIs5eX2JcG2RKOXdfPuOSsqXlbFksA1bqMpiHrKg=;
-        b=gggg8QY83kYOHmlQFwrqwpTrxRQ37OKExGKYl+YcDgMR4e8uWIDSoRYCkqZwj+ddht
-         zO23SG38AW+h3fnG5RPY72UcoFxK8l9NEIPJIfKiRfR3MlK7YJSeNR3br+isPCUUcmF9
-         NvUUh8Y6VgCFCFuNiWn2L2OtxHjmecXPgNcqWVTwt8vNbTqo9iN7Oyw4uoOEKXVo8wsY
-         C24bb9xHQJ9d2f1psLLQxW8qq/bcwWnjXjrnsqhRPbMeVP2VOjlzShjL5fDK4rprKmIR
-         BlM6H+e3TxMX7aykAeiOxIPcrU5MTW4PB6oJSYCzVAe6mp8245j2H0vElw0rO1pqB+Yf
-         K+IQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=78b/o4FTri/T8m3ByDrpuRiUFjFJpaUAFqCBQ5K0Pjk=;
+        b=UVeeR/Y3ITAN9om9eB3OxTSyvuFCFCCuxlvXCP4h4QeWb2ADncJOxHdH6S0mbs0j+w
+         t8IsraP+rwZF6KHDPsHBO8WzHf/xPqm8paFKOxlwdjbHWvnJmKGtKeNZXkwlCNWq+enb
+         bm3w7WpDgpKfS4r9cuQ30bRglqnsF7e0ynIxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ABvGIs5eX2JcG2RKOXdfPuOSsqXlbFksA1bqMpiHrKg=;
-        b=KgNw1MqpmcEMK7vzp6Y7VOWo5noiBEHvkfiXiGZKXF5YvkqGEx/a1ob9Alpn+xAXH4
-         3r+XODNE228srYCwjNyVk21gN+5hr7mngoLu/CxHqzWq7IiXcwMuxDfVMweUETWYCdTn
-         q0+l9WrM0WkPGu8eaw5Sio7XuTBS974+dfKZjsHkl/cTf+zP7MSENxNJ9cgJ5AUJw87t
-         8vTTEt6dD2bbUx92fi+K3rczVqdevB0AbugTsNJYAf/aDEXNOg3ziRgJ2Gr4zSp7/4p6
-         g5O0Nfcn9NxYyZC+YzKAqvzZYmWlrCKal8QnwRO37gS7uAXYp5SH+CmiS4/33R7V6GMC
-         dx2Q==
-X-Gm-Message-State: AOAM5316QGjHzDYmY1LdacplOvSA/FHhJmvUFpMeMc4XOf0UCSvjnBTM
-        O1fu1ejgg3H9TCar3ipCaQRk9Q==
-X-Google-Smtp-Source: ABdhPJy4e/vI56FcplVnGf0mW1f0p2XiKwuKf2Umtrz+2M+vgo8laMp7d1jaXTbTS/HdfYOrprWQZw==
-X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr5638781pjb.43.1631126546438;
-        Wed, 08 Sep 2021 11:42:26 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j4sm2924229pjc.46.2021.09.08.11.42.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=78b/o4FTri/T8m3ByDrpuRiUFjFJpaUAFqCBQ5K0Pjk=;
+        b=o4B7QOpJG/9A5dZkkeCp6OCqmxsbkBFugLKXRpyIbdIyjSOHFIbKeg7Ne6/iVf0KJp
+         I/u/JfT4wSHYUDLrsabGafZv6WPPUm2Po1jPOLk4luuxxH/JWOsg/0EAm/BzeA2eVyfJ
+         HJfHXCrdDz0gtwR10t/3skpobUvuJQP0HxzQ4alSR340sY/S2Xs4CkUdYNXdzucr+8jE
+         b1BzMaTc4KH8yaEJIEs7fZaiDuMt1/fZPdEbTzbkwj0zzgL9oMMP9YWUMTIW0VrjFYfZ
+         XC79pvy2kq5e8pMwx91Z85WMOuXffnAdBjWsH8G8qpBXM89i9uyK34F9UXS57H6Wv9Yi
+         SJZg==
+X-Gm-Message-State: AOAM533qfs6/UZTlMmafsFcctuBLHeVG57lsGQ59uqp/EnHH1gAZGjnZ
+        MGia2et3uQ+S5+Mz+DDw1B63Fg==
+X-Google-Smtp-Source: ABdhPJwIEz0ip15hEKr6eUCycgYpJg6anoTgQJjUALCzYl2FdIeNCN0HtocfjTwKahuI2GWk6V0Zlw==
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr4928583wmp.93.1631126730071;
+        Wed, 08 Sep 2021 11:45:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m5sm2789859wmi.1.2021.09.08.11.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 11:42:25 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 18:42:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Jiang Jiasheng <jiasheng@iscas.ac.cn>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        pbonzini@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, jarkko@kernel.org,
-        dave.hansen@linux.intel.com
-Subject: Re: [PATCH 4/4] KVM: X86: Potential 'index out of range' bug
-Message-ID: <YTkEDoe8R5JJ77+B@google.com>
-References: <1630655700-798374-1-git-send-email-jiasheng@iscas.ac.cn>
- <87czppnasv.fsf@vitty.brq.redhat.com>
- <YTI5SYVTJHiMdm+W@google.com>
- <87tuiy3qtc.fsf@vitty.brq.redhat.com>
+        Wed, 08 Sep 2021 11:45:29 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 20:45:27 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 7/9] dma-buf/fence-chain: Add fence deadline support
+Message-ID: <YTkExzW4QWBC6hMa@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210903184806.1680887-1-robdclark@gmail.com>
+ <20210903184806.1680887-8-robdclark@gmail.com>
+ <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
+ <CAF6AEGs3DhSKhDkft58VqkM6GwMMSq87GZkQAaPf_LLavDdacA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tuiy3qtc.fsf@vitty.brq.redhat.com>
+In-Reply-To: <CAF6AEGs3DhSKhDkft58VqkM6GwMMSq87GZkQAaPf_LLavDdacA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
-> > On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
-> >> Jiang Jiasheng <jiasheng@iscas.ac.cn> writes:
-> >> 
-> >> > The kvm_get_vcpu() will call for the array_index_nospec()
-> >> > with the value of atomic_read(&(v->kvm)->online_vcpus) as size,
-> >> > and the value of constant '0' as index.
-> >> > If the size is also '0', it will be unreasonabe
-> >> > that the index is no less than the size.
-> >> >
-> >> 
-> >> Can this really happen?
-> >> 
-> >> 'online_vcpus' is never decreased, it is increased with every
-> >> kvm_vm_ioctl_create_vcpu() call when a new vCPU is created and is set to
-> >> 0 when all vCPUs are destroyed (kvm_free_vcpus()).
-> >> 
-> >> kvm_guest_time_update() takes a vcpu as a parameter, this means that at
-> >> least 1 vCPU is currently present so 'online_vcpus' just can't be zero.
+On Wed, Sep 08, 2021 at 11:19:15AM -0700, Rob Clark wrote:
+> On Wed, Sep 8, 2021 at 10:54 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 > >
-> > Agreed, but doing kvm_get_vcpu() is ugly and overkill.
+> > On Fri, Sep 03, 2021 at 11:47:58AM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >  drivers/dma-buf/dma-fence-chain.c | 13 +++++++++++++
+> > >  1 file changed, 13 insertions(+)
+> > >
+> > > diff --git a/drivers/dma-buf/dma-fence-chain.c b/drivers/dma-buf/dma-fence-chain.c
+> > > index 1b4cb3e5cec9..736a9ad3ea6d 100644
+> > > --- a/drivers/dma-buf/dma-fence-chain.c
+> > > +++ b/drivers/dma-buf/dma-fence-chain.c
+> > > @@ -208,6 +208,18 @@ static void dma_fence_chain_release(struct dma_fence *fence)
+> > >       dma_fence_free(fence);
+> > >  }
+> > >
+> > > +
+> > > +static void dma_fence_chain_set_deadline(struct dma_fence *fence,
+> > > +                                      ktime_t deadline)
+> > > +{
+> > > +     dma_fence_chain_for_each(fence, fence) {
+> > > +             struct dma_fence_chain *chain = to_dma_fence_chain(fence);
+> > > +             struct dma_fence *f = chain ? chain->fence : fence;
 > >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 86539c1686fa..cc1cb9a401cd 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -2969,7 +2969,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
-> >                                        offsetof(struct compat_vcpu_info, time));
-> >         if (vcpu->xen.vcpu_time_info_set)
-> >                 kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
-> > -       if (v == kvm_get_vcpu(v->kvm, 0))
-> > +       if (!kvm_vcpu_get_idx(v))
+> > Doesn't this just end up calling set_deadline on a chain, potenetially
+> > resulting in recursion? Also I don't think this should ever happen, why
+> > did you add that?
 > 
-> Do we really need to keep kvm_vcpu_get_idx() around though? It has only
-> 3 users, all in arch/x86/kvm/hyperv.[ch], and the inline simpy returns
-> 'vcpu->vcpu_idx'.
+> Tbh the fence-chain was the part I was a bit fuzzy about, and the main
+> reason I added igt tests.  The iteration is similar to how, for ex,
+> dma_fence_chain_signaled() work, and according to the igt test it does
+> what was intended
 
-Nope, looks like it's a holdover from before the introduction of vcpu_idx.  I'll
-send a small series to jettison the wrapper and make the above change.
+Huh indeed. Maybe something we should fix, like why does the
+dma_fence_chain_for_each not give you the upcast chain pointer ... I guess
+this also needs more Christian and less me.
+-Daniel
 
-Thanks!
+> 
+> BR,
+> -R
+> 
+> > -Daniel
+> >
+> > > +
+> > > +             dma_fence_set_deadline(f, deadline);
+> > > +     }
+> > > +}
+> > > +
+> > >  const struct dma_fence_ops dma_fence_chain_ops = {
+> > >       .use_64bit_seqno = true,
+> > >       .get_driver_name = dma_fence_chain_get_driver_name,
+> > > @@ -215,6 +227,7 @@ const struct dma_fence_ops dma_fence_chain_ops = {
+> > >       .enable_signaling = dma_fence_chain_enable_signaling,
+> > >       .signaled = dma_fence_chain_signaled,
+> > >       .release = dma_fence_chain_release,
+> > > +     .set_deadline = dma_fence_chain_set_deadline,
+> > >  };
+> > >  EXPORT_SYMBOL(dma_fence_chain_ops);
+> > >
+> > > --
+> > > 2.31.1
+> > >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
