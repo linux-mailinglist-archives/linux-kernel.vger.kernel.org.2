@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD904033D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972A04033DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237737AbhIHFcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhIHFcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:32:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B4761154;
-        Wed,  8 Sep 2021 05:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631079068;
-        bh=PU7VPW7BVHnbqIP/swEyrW6pQgImIHvji2Nqm/ys0rE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m7EVUmyULko/IP8jskMjlOba/tiF9s7yjcnUlIttFzXmTSVHY5oqkTq3Gi6FH6n9y
-         ON5T+BCaB4yno/Ux6eV4uUy+Ao6u3woTWmRqokzrXLXaFKAiuQVkfnsjthj38vXbIq
-         Umz3AZt06mMGQ1x8T369I/MavtdCDswlPXUGnxEs=
-Date:   Wed, 8 Sep 2021 07:30:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     wim <wim@djo.tudelft.nl>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: kernel-4.9.270 crash
-Message-ID: <YThKidnH3d1fb18g@kroah.com>
-References: <20210904235231.GA31607@djo.tudelft.nl>
- <20210905190045.GA10991@djo.tudelft.nl>
- <YTWgKo4idyocDuCD@kroah.com>
- <20210906093611.GA20123@djo.tudelft.nl>
- <YTXy5BmzQpY0SprA@kroah.com>
- <20210908015139.GA26272@djo.tudelft.nl>
+        id S1345480AbhIHFgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:36:43 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:36739 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234655AbhIHFgk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 01:36:40 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 53E722B00211;
+        Wed,  8 Sep 2021 01:35:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 08 Sep 2021 01:35:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=GMMTgRFqoDWXrlsxTrcsveKldCO
+        7Mc0t0dXFf3Rc3U4=; b=O/Db1L6fnLndSCQj7k2aLqShkJ/VlsBKvKJxE6D9aCE
+        cezsm1nPQMCBTUGQDREIXtMAhuZ0ufn6z1zqIVnqwLiJrhXTjvz0QYgbb2Oo4SSa
+        PH4izzLG2Xq0H8OrG+EtTqWuBpEkqCmKFxpEcxwBaZdQ/FaYbwHp4D2TSnu3GRZl
+        VOQ3s2XmQ799fKMwEheIrPFLQyJucR8PCAZ92oje0buBJHVf8PrRnWNuqmyx8Xmn
+        BkT1r3/HFKt/I38kPbupVF4vBNJUsYWr+lU27f0/SkHH/sgCiAiMlYS3UrmCCTtq
+        F8hHYmaaIArEy19IDAsD0Ys+D3GwTiwdaIWEyax1VCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GMMTgR
+        FqoDWXrlsxTrcsveKldCO7Mc0t0dXFf3Rc3U4=; b=Zw0okaIuvQg6L27q0/g0O9
+        4usEwjINfX35xsw6/1YEsLLwkh7DDXmJAiix01Mht849vxaQFyyQW5Tl/q4PR0SD
+        5K7JimbyHzxRYyWK6iffNMZjvVY90ogwIdFQeto3pz1Ou0PnIcxMBSKXgD2zUtKs
+        zLyt/pYr8p7GyetchZwJSCgtzHs/z0M//2JEquHBjtqAwevnU8KacxF2GkVFaRjp
+        jLztHMU5w2Ed+KPnCqVwMeQCXb41w7pkbCuAhZ2QO1tUm5m9MbgHsEmAml83B5EK
+        WK1buTm1KoG5Sgr/pwnEdzJMpOJqThaXoD20UNwVtZK08O2nqFzF4BLj+odgorqw
+        ==
+X-ME-Sender: <xms:oks4YSvI5jmbp7jiaSR06ZOdjWhsytNr6U2hpxqChQfYs61uDTUniA>
+    <xme:oks4YXf4sxiwkmNvjVdSd5zr3oe0InsigaWB-U5-dpBsvwzNDWOAhKdJlnkk9uzuf
+    _7w-BmfBe6Oqop7FV4>
+X-ME-Received: <xmr:oks4YdwM8GyvndKnn0TT7xOIZjR_eMT5NRkhynIdzjV8mZEe2cy9qa5XwaZXXXaURAVoCR1l78FPZ5qtgnWi992OSisZttjutuk8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgleegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:oks4YdONdvU54Byu9PvijwK2-p7IT6kiY1sSaEJCbNQNdMScTWflrw>
+    <xmx:oks4YS-5rfsO0TvWOZVxeTMX6uHV1wa0ou4KrgvnnNej5zEYPIqNXw>
+    <xmx:oks4YVWvkjey5J8TF-dBXjaUH3SQ_tv2fns8fyyf2LqLVihPvlsVkQ>
+    <xmx:oks4YVbJ5sC-PhJd23yCHOIWr1whksTz9nSP9-OyB4EqwFLHXbfJXloRDNU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Sep 2021 01:35:29 -0400 (EDT)
+Date:   Wed, 8 Sep 2021 07:35:27 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: net: sun8i-emac: Add compatible for D1
+Message-ID: <20210908053527.fzoa3b4bfr4uo6tb@gilmour>
+References: <20210908030240.9007-1-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ik7vtjftu7yl4fsr"
 Content-Disposition: inline
-In-Reply-To: <20210908015139.GA26272@djo.tudelft.nl>
+In-Reply-To: <20210908030240.9007-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 03:51:39AM +0200, wim wrote:
-> On Mon, Sep 06, 2021 at 12:52:20PM +0200, Greg KH wrote:
-> > > > > > 
-> > > > > > from kernel-4.9.270 up until now (4.9.282) I experience kernel crashes upon
-> > > > > > loading a GPU module.
-> > > > > > ...
-> > > > 
-> > > > Do you have any kernel log messages when these crashes happen?
-> > > ...
-> > > Aug  1 20:51:24 djo kernel:  [<f8bc4ef7>] ? 0xf8bc4ef7
-> > 
-> > <snip>
-> > 
-> > These aren't going to help us much, can you turn on debugging symbols
-> > for these crashes for us to see the symbol names?
-> 
-> ERROR: not enough memory to load nouveau.ko
 
-That's the only error?  Maybe you don't have enough memory?
+--ik7vtjftu7yl4fsr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> i915.ko is smaller and my laptop is bigger. Identical crash, no symbols.
+On Tue, Sep 07, 2021 at 10:02:40PM -0500, Samuel Holland wrote:
+> The D1 SoC contains EMAC hardware which is compatible with the A64 EMAC.
+> Add the new compatible string, with the A64 as a fallback.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-Odd.
+Acked-by: Maxime Ripard <maxime@cerno.tech>
 
-> > > > Can you use 'git bisect' to track down the offending commit?
-> > > 
-> > > If I would know how to do that
-> > 
-> > 'man git bisect' should provide a tutorial on how to do this.
-> 
-> No, it does not.
-> It would have taken an enormous amount of time and GBs less if I'd found
-> earlier the only pointer on internet that stated:
-> 
->   cd linux
->   git remote add stable git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
->  
-> and that brought me reasonably fast to this:
-> 
->   3bd3a8ca5a7b1530f463b6e1cc811c085e6ffa01 is the first bad commit
->   commit 3bd3a8ca5a7b1530f463b6e1cc811c085e6ffa01
->   Author: Maciej W. Rozycki <macro@orcam.me.uk>
->   Date:   Thu May 13 11:51:50 2021 +0200
->   ...
+Maxime
 
-That is a vt change that handles an issue with a console driver, so this
-feels like a false failure.
+--ik7vtjftu7yl4fsr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If you revert this change on a newer kernel release, does it work?
+-----BEGIN PGP SIGNATURE-----
 
-And what about showing us the symbols of that traceback?
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYThLmgAKCRDj7w1vZxhR
+xTgxAPoCxJsim0qsvjpeCUFgsfq8yKZtsvaz5Y3r3YaCL/RBBAD/RDXUQbq/mjBe
+KZGg3exMO76p7nDt3qWta29TvBYiPwA=
+=gFwk
+-----END PGP SIGNATURE-----
 
-thanks,
-
-greg k-h
+--ik7vtjftu7yl4fsr--
