@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5633403E8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBF6403E90
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352521AbhIHRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        id S1352641AbhIHRsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352654AbhIHRr0 (ORCPT
+        with ESMTP id S1352552AbhIHRr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:47:26 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AD9C0612AD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:46:06 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so1673677pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:46:06 -0700 (PDT)
+        Wed, 8 Sep 2021 13:47:27 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E93C061226
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:46:07 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c6so2237201pjv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=aaBn2iXv53pXLMpiXjb2tRcWKw3T+uDqL/GiUgDTj90=;
-        b=D8NMx+XLy53uY1MXIUeXls4zKXDMKxbddVBrQJWu3xrIJ5jdxzR0mgoJ63iKhkMsqr
-         aOLKAnoQmfPZsOTxtij8B1CZU4ToG4ZYG3YhJXVxCQE2a4DPBMa9S3X0PE2hgKtTmrPI
-         fiqyr0h3bmAVFPhWjTmTKz8CZcLQHyg/s6CCPOEmC41NdjcIueK6M/tjaylhwR62S+Td
-         DvQblqoqk4gLxnngThLTQfx6AaEq6w5q+kgz0A2j19xcfGc3SB94mReerWW8VCrvZZg8
-         cJSN8f1JZWPt7xDbBwggAO4P7dgbUeTxNGeRtZEyLS/TVIwPIlCz2uYfysPefrQsglQ/
-         m4jQ==
+        bh=lvYFnpE+vcL+5OVNgIPvCGE7jHqR7WMR9PRIiy6pwGg=;
+        b=dfZBRHf2wrBry4B+KYNGRzOMYSdhwtCugDbMgPPWb+TUptqwNpbB9cDoPmb3Bj/rfz
+         reRAK7l9gceD5ghZEnr/xwHqGN+iD7PxQHiGdvkTP/HG2TkMChvO89QCo3eBxaYG3p09
+         lLM4KtdDUVIXSvLV1IAyZclec0IG5enKGS3U0RLCT2TzCAaPbSztpqSzrA8l3Xj8BAS0
+         gDOcNuHjACo8RfFHoRi8Kvp8Nb/VZqpyG+hDAkCFNHhfdXOgSuD8FfcyPiKN0twBfA/1
+         q00wQyzYAeYsGE3mUOBcLvNBVVGXJFR1iBXBG/O1cjkOWVYLSkOXnmTO0yk5r7sGWfKn
+         LukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aaBn2iXv53pXLMpiXjb2tRcWKw3T+uDqL/GiUgDTj90=;
-        b=C2xDvc/FS11+wgagcqg7rmseqaBnL8/I+sgDHakPlRikPyMfBAd56v71Ey0ctI5uGx
-         q8x8i+KlIyhUHmxQ8YApcc43PFrgPCBjTtXkUXCdhY0b0MUgDByTirIqOHMeg5iPIq4g
-         pwP+MjH72ibm4Po9y9iLLOo8GzZhIPU/BkuuLe3lhprIXjfXC+ECFQfKe0BbJo4jcynh
-         iu7IDL5FVNRRhPxEtcJInWgM3DvULlNgBZvnO9JtJRT+lkG0HGm6hNrUDSK+Sjym1cEq
-         NDscNXuuPz3hi9ODHawajeJ+plVmSkbjzWLmFki5XcmC1EM19MH9LNjaIu+DEXEvpoDF
-         Rx2Q==
-X-Gm-Message-State: AOAM530ESJ70xIb21vXn9pbfCXwstIjjpsM02XwvQHB93DR+XCX6c/0x
-        AnihgebwoUpg1+QU2R6VY43v1Q==
-X-Google-Smtp-Source: ABdhPJzjfhCk2uyKvxy2K4fTatUNYsz+fdJinoh+ch/Q3oNcaLUf6O7ySpbJTJicDZgHah1nC/wrjQ==
-X-Received: by 2002:a17:90a:460e:: with SMTP id w14mr5457656pjg.0.1631123165618;
-        Wed, 08 Sep 2021 10:46:05 -0700 (PDT)
+        bh=lvYFnpE+vcL+5OVNgIPvCGE7jHqR7WMR9PRIiy6pwGg=;
+        b=4M5hyI+wLtP0ywqfFoljEdt3p9CpVmNVDfGo1zAffVq/qd87KmJjiw498ag9MvkY2y
+         mkxW3aLkHu6m+Qbj5iKdaQZq6866VSARAGc/5K1bPfERxFJjyMOJ/sB5E+3lITwCNAq3
+         Bka3rs2dSfUrvZXulkotL8a7r2caDm+1eI0sZSyUPNzKEljcW3xBMbzJSoK+wvmprPXj
+         lWPgaO0rLQ4LL9QtrRv5r87DbeqxKFfnHxugeLplmWmhrxavr/o+StQaCOjkE74jIPGq
+         +ZEk03KfpUjiRHB520xNZyQl9WLecCh/HptVg4nJaP9BIloHyvyeiq6OU5upFky0ZHqh
+         gorw==
+X-Gm-Message-State: AOAM531eqoy0mUjFs9NwI11zn+aSJxq9cx9FzV8QDHch8dnR5VaQ1Cnz
+        rXNuSPmJ40n7QF0zF8DRkmNSlMFmiILCNw==
+X-Google-Smtp-Source: ABdhPJz7hteQN4ueoz3qvrw7mKi05UEduUmNHaIaV59kjVT3OB9jzRiMBIRJAcu2dSi3Mr41QhgeEg==
+X-Received: by 2002:a17:902:bf43:b0:13a:ae0:9dee with SMTP id u3-20020a170902bf4300b0013a0ae09deemr4063860pls.62.1631123167173;
+        Wed, 08 Sep 2021 10:46:07 -0700 (PDT)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id b5sm3108466pfr.26.2021.09.08.10.46.04
+        by smtp.gmail.com with ESMTPSA id b5sm3108466pfr.26.2021.09.08.10.46.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:46:05 -0700 (PDT)
+        Wed, 08 Sep 2021 10:46:06 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu, palmer@dabbelt.com,
         paul.walmsley@sifive.com, vincent.chen@sifive.com
-Subject: [RFC PATCH v8 19/21] riscv: Allocate space for vector registers in start_thread()
-Date:   Thu,  9 Sep 2021 01:45:31 +0800
-Message-Id: <5d99eab37a683d21e0cec75bfcec96ad8b480d02.1631121222.git.greentime.hu@sifive.com>
+Subject: [RFC PATCH v8 20/21] riscv: Optimize task switch codes of vector
+Date:   Thu,  9 Sep 2021 01:45:32 +0800
+Message-Id: <3b2d4ff556d310ed73a6910b89566a195fc28861.1631121222.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631121222.git.greentime.hu@sifive.com>
 References: <cover.1631121222.git.greentime.hu@sifive.com>
@@ -64,78 +64,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It allocates memory space for vector registers in start_thread() instead of
-allocating in vstate_restore() in this patch. We can allocate memory here
-so that it will be more readable.
+This patch replacees 2 instructions with 1 instruction to do the same thing
+. rs1=x0 with rd != x0 is a special form of the instruction that sets vl to
+MAXVL.
 
+Suggested-by: Andrew Waterman <andrew@sifive.com>
 Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
- arch/riscv/include/asm/switch_to.h |  7 +------
- arch/riscv/kernel/process.c        | 15 +++++++++++++--
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ arch/riscv/kernel/vector.S | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index de0573dad78f..b48c9c974564 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -103,12 +103,6 @@ static inline void vstate_restore(struct task_struct *task,
- {
- 	if ((regs->status & SR_VS) != SR_VS_OFF) {
- 		struct __riscv_v_state *vstate = &(task->thread.vstate);
--
--		/* Allocate space for vector registers. */
--		if (!vstate->datap) {
--			vstate->datap = kzalloc(riscv_vsize, GFP_ATOMIC);
--			vstate->size = riscv_vsize;
--		}
- 		__vstate_restore(vstate, vstate->datap);
- 		__vstate_clean(regs);
- 	}
-@@ -127,6 +121,7 @@ static inline void __switch_to_vector(struct task_struct *prev,
+diff --git a/arch/riscv/kernel/vector.S b/arch/riscv/kernel/vector.S
+index 4f0c5a166e4e..f7223c81b11a 100644
+--- a/arch/riscv/kernel/vector.S
++++ b/arch/riscv/kernel/vector.S
+@@ -27,8 +27,7 @@
+ #define x_vl     t2
+ #define x_vcsr   t3
+ #define incr     t4
+-#define m_one    t5
+-#define status   t6
++#define status   t5
  
- #else
- #define has_vector false
-+#define riscv_vsize (0)
- #define vstate_save(task, regs) do { } while (0)
- #define vstate_restore(task, regs) do { } while (0)
- #define __switch_to_vector(__prev, __next) do { } while (0)
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 0b86e9e531c9..05ff5f934e7e 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -97,7 +97,16 @@ void start_thread(struct pt_regs *regs, unsigned long pc,
- 	}
+ ENTRY(__vstate_save)
+ 	li      status, SR_VS
+@@ -38,8 +37,7 @@ ENTRY(__vstate_save)
+ 	csrr    x_vtype, CSR_VTYPE
+ 	csrr    x_vl, CSR_VL
+ 	csrr    x_vcsr, CSR_VCSR
+-	li      m_one, -1
+-	vsetvli incr, m_one, e8, m8
++	vsetvli incr, x0, e8, m8
+ 	vse8.v   v0, (datap)
+ 	add     datap, datap, incr
+ 	vse8.v   v8, (datap)
+@@ -61,8 +59,7 @@ ENTRY(__vstate_restore)
+ 	li      status, SR_VS
+ 	csrs    CSR_STATUS, status
  
- 	if (has_vector) {
-+		struct __riscv_v_state *vstate = &(current->thread.vstate);
-+
-+		/* Enable vector and allocate memory for vector registers. */
-+		if (!vstate->datap) {
-+			vstate->datap = kzalloc(riscv_vsize, GFP_KERNEL);
-+			if (WARN_ON(!vstate->datap))
-+				return;
-+		}
- 		regs->status |= SR_VS_INITIAL;
-+
- 		/*
- 		 * Restore the initial value to the vector register
- 		 * before starting the user program.
-@@ -121,9 +130,11 @@ void flush_thread(void)
- 	memset(&current->thread.fstate, 0, sizeof(current->thread.fstate));
- #endif
- #ifdef CONFIG_VECTOR
--	/* Reset vector state */
-+	/* Reset vector state and keep datap pointer. */
- 	vstate_off(current, task_pt_regs(current));
--	memset(&current->thread.vstate, 0, sizeof(current->thread.vstate));
-+	memset(&current->thread.vstate, 0, RISCV_V_STATE_DATAP);
-+	if (current->thread.vstate.datap)
-+		memset(current->thread.vstate.datap, 0, riscv_vsize);
- #endif
- }
- 
+-	li      m_one, -1
+-	vsetvli incr, m_one, e8, m8
++	vsetvli incr, x0, e8, m8
+ 	vle8.v   v0, (datap)
+ 	add     datap, datap, incr
+ 	vle8.v   v8, (datap)
 -- 
 2.31.1
 
