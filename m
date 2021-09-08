@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F94F403B0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DCB403AEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351788AbhIHNzu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 09:55:50 -0400
-Received: from lixid.tarent.de ([193.107.123.118]:50120 "EHLO mail.lixid.net"
+        id S1348970AbhIHNuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:50:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhIHNzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:55:49 -0400
-X-Greylist: delayed 361 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Sep 2021 09:55:48 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.lixid.net (MTA) with ESMTP id E3FB2140D67;
-        Wed,  8 Sep 2021 15:48:38 +0200 (CEST)
-Received: from mail.lixid.net ([127.0.0.1])
-        by localhost (mail.lixid.net [127.0.0.1]) (MFA, port 10024) with LMTP
-        id OVX3Fq7qoX0j; Wed,  8 Sep 2021 15:48:33 +0200 (CEST)
-Received: from tglase-nb.lan.tarent.de (vpn-172-34-0-14.dynamic.tarent.de [172.34.0.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.lixid.net (MTA) with ESMTPS id 367EF140724;
-        Wed,  8 Sep 2021 15:48:32 +0200 (CEST)
-Received: by tglase-nb.lan.tarent.de (Postfix, from userid 1000)
-        id CA1985225C8; Wed,  8 Sep 2021 15:48:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by tglase-nb.lan.tarent.de (Postfix) with ESMTP id C5F8E5219F0;
-        Wed,  8 Sep 2021 15:48:31 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 15:48:31 +0200 (CEST)
-From:   Thorsten Glaser <t.glaser@tarent.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-In-Reply-To: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
-Message-ID: <53ce8db-3372-b5e2-cee7-c0ebe9c45a9@tarent.de>
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com> <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com> <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
-Content-Language: de-DE-1901
+        id S230326AbhIHNuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:50:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9B86108D;
+        Wed,  8 Sep 2021 13:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631108949;
+        bh=i95Q+Hu6kRLFQSUX18gJUCooiTYuHehfg9wwXqlSv6g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZB58KX2TquCZCoeKebqqKF3FyArD17ZSbkX02Fn53HR0dpq53GhY0Ohj5/BKxmzwf
+         rOUxk88dfWWrBMloZZ23ZpAzdZl/NId+O/eLQZmjUAUs4eTPskYkI8P+zt/60lD73u
+         MNfNYgUALEPaQG9/01pMz0ss7AtyPd1vUCR2jxEA=
+Date:   Wed, 8 Sep 2021 15:49:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Yu, Lang" <Lang.Yu@amd.com>
+Cc:     Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Message-ID: <YTi/UxFCYKqdT34L@kroah.com>
+References: <20210908120723.3920701-1-lang.yu@amd.com>
+ <YTitRjOZtWPTyRHd@kroah.com>
+ <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTi0xkTVYqUpKXSt@kroah.com>
+ <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sep 2021, Linus Torvalds wrote:
+On Wed, Sep 08, 2021 at 01:21:16PM +0000, Yu, Lang wrote:
+> [AMD Official Use Only]
+> 
+> 
+> 
+> >-----Original Message-----
+> >From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >Sent: Wednesday, September 8, 2021 9:04 PM
+> >To: Yu, Lang <Lang.Yu@amd.com>
+> >Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
+> >linux-kernel@vger.kernel.org
+> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs_emit
+> >and sysfs_emit_at
+> >
+> >A:
+> >https://nam11.safelinks.protection.outlook.com/?url=http%3A%2F%2Fen.wikipe
+> >dia.org%2Fwiki%2FTop_post&amp;data=04%7C01%7CLang.Yu%40amd.com%7C
+> >fed047de547541548fcc08d972c92627%7C3dd8961fe4884e608e11a82d994e183d
+> >%7C0%7C0%7C637667030534349355%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
+> >MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&
+> >amp;sdata=LHujj041jxZjvoYxVYUKtNr7us%2FX4pl%2FdOkFSOP1W8U%3D&amp;r
+> >eserved=0
+> >Q: Were do I find info about this thing called top-posting?
+> >A: Because it messes up the order in which people normally read text.
+> >Q: Why is top-posting such a bad thing?
+> >A: Top-posting.
+> >Q: What is the most annoying thing in e-mail?
+> >
+> >A: No.
+> >Q: Should I include quotations after my reply?
+> >
+> >https://nam11.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdaringfire
+> >ball.net%2F2007%2F07%2Fon_top&amp;data=04%7C01%7CLang.Yu%40amd.co
+> >m%7Cfed047de547541548fcc08d972c92627%7C3dd8961fe4884e608e11a82d99
+> >4e183d%7C0%7C0%7C637667030534349355%7CUnknown%7CTWFpbGZsb3d8ey
+> >JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C
+> >1000&amp;sdata=AOLGBdj01XiEjhmsBSGTNuqejgU%2B6jg416Paz5XdM1A%3D&a
+> >mp;reserved=0
+> >
+> >
+> >On Wed, Sep 08, 2021 at 12:52:43PM +0000, Yu, Lang wrote:
+> >> [AMD Official Use Only]
+> >>
+> >> Thanks for your reply.
+> >> Just curious if we don't put such a limitation, what are the consequences?
+> >> If we remove the limitation, sys_emit/sys_emit_at api will be more flexible.
+> >> Since the comments of  sysfs_emit/ sys_emit_at api are " sysfs_emit -
+> >> scnprintf equivalent, aware of PAGE_SIZE buffer. ", Why not make them
+> >> more equivalent with scnprintf?
+> >
+> >Because this is not a general replacement for scnprintf(), it is only to be used with
+> >sysfs files.
+> >
+> >Where else are you wanting to use these functions that this patch woulud be
+> >required that does not haver to deal with sysfs?
+> >
+> >thanks,
+> >
+> >greg k-h
+> 
+> But some guys think it is a general replacement for scnprintf(),
 
-> The do_tcp_getsockopt() one in tpc.c is a classic case of "lots of
-> different case statements, many of them with their own struct
-> allocations on stack, and all of them disjoint".
+Who thinks that?  Where?  The name should give them a clue that this is
+not true.
 
-Any compiler developers here? AFAIK the compiler knows the lifetime
-of function-local variables, so why not alias the actual memory
-locations and ranges to minimise stack usage?
+> and  recommend that use sysfs_emit() instead of scnprintf(),
 
-bye,
-//mirabilos
--- 
-Infrastrukturexperte • tarent solutions GmbH
-Am Dickobskreuz 10, D-53121 Bonn • http://www.tarent.de/
-Telephon +49 228 54881-393 • Fax: +49 228 54881-235
-HRB AG Bonn 5168 • USt-ID (VAT): DE122264941
-Geschäftsführer: Dr. Stefan Barth, Kai Ebenrett, Boris Esser, Alexander Steeg
+Please no.
 
-                        ****************************************************
-/⁀\ The UTF-8 Ribbon
-╲ ╱ Campaign against      Mit dem tarent-Newsletter nichts mehr verpassen:
- ╳  HTML eMail! Also,     https://www.tarent.de/newsletter
-╱ ╲ header encryption!
-                        ****************************************************
+> and send many patches that replace  scnprintf() with sysfs_emit(),
+> and finally cause some invalid sysfs_emit_at: buf:00000000f19bdfde warnings.
+
+Where were those patches sent?  I will be glad to review those.
+
+> I think we better not put " scnprintf equivalent, aware of PAGE_SIZE buffer " words in comments.
+> It is obviously not. Some  guys are misled by that. Thanks! 
+
+Please feel free to add better documentation for the functions if you
+feel people are getting confused, do not change the existing behavior of
+the code as it rightly caught it being misused.
+
+thanks,
+
+greg k-h
