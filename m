@@ -2,240 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B123D403AC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEF5403AC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349198AbhIHNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:33:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48266 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241128AbhIHNdx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:33:53 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 12AAD1FD84;
-        Wed,  8 Sep 2021 13:32:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631107964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/Ui6vmGrOMpzxKSJA2nBowgoVyDEDRCsNzbizaCewY=;
-        b=sBa2NeLXe//BoVtuNhFB+2kAt6omI0Pss7VxJGa9WMI20GVCH1+KOeu4fa5yiByRaHNHZJ
-        AMBZH99scIdEm9bpFqMT4ZWL6Ky4sx8plPcK7VPL75q0iT56DEaJ+wD1LM4keC0SkCnZsq
-        GH8bu5+yOScwZDK5/5xiQTx6yxzvZOY=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AE3B313A8F;
-        Wed,  8 Sep 2021 13:32:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id s+biKHu7OGF3JgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 08 Sep 2021 13:32:43 +0000
-Subject: Re: [PATCH] xen: fix usage of pmd/pud_poplulate in mremap for pv
- guests
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        Sander Eikelenboom <linux@eikelenboom.it>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210908073640.11299-1-jgross@suse.com>
- <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <34afed98-5072-c563-5d29-97e09a0b4ebd@suse.com>
-Date:   Wed, 8 Sep 2021 15:32:43 +0200
+        id S1348571AbhIHNe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:34:29 -0400
+Received: from mail-dm6nam11on2048.outbound.protection.outlook.com ([40.107.223.48]:64125
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232097AbhIHNe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:34:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sr2zx63dFYh+QdrUGvx/pI5SMaliZuKmF0EkOlA8v7eA0ussM5msdaC6ZxCqKoXnAh/Ck2wEjztPuoA64PgUP07PCQSsTP3kBsha8e9iY9aFHd13JcgazunbW3YlfscpzNQqSc0ZqcyQsHuBvvB0GOHFvPe42OQFPrbvElIRzJea0IKR/PeRs0tWJywhts26EiLUKIqRX1U5KtwvaRp4yCvZpvuxnxbaZevzZF89RRwsRjB0bEQ61h0OZnGysJzSzvbCbRqEenJz0B6xg0SZYhPFxKodxmlUYBhD+NxqftUZo7LNsEYRY8HPjPnSlCnnLJiPClHHsOtSthOIQ/pICQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=SYf0138Lwn1biLy2QZVPCeoTaezWEjG5eiD1lSbF6C0=;
+ b=ShflxvLmyYI+Fp2FWDIHMcu8XwTffYc4fGjW1utT+5WOAOhtUW6cydcjB8zYAdLbTaeA8YelnY5XqF5UkKDCtECHdiylO+fvz2I6XgnZb5XbwE2BQNL1Gi1dk9lVCeK52RSklq27UTKYE5oBXPpgB/iZqadWsydMOwHiMBPVYmGmvjDg6/kYP7tTFrMv74uAkAjDkjjeyvbKUXTM8h9046N7ihjClJIk8N/1A02egIcirxsMioQ4S8e+uXd6aKrEyDJJteLnBhNwMbT5IyvF8POC7CUwMozmPHZs2GTsvwcZ1lHYREhokvYtrg+Of6tPRFKPkyN6RPsY4A9WC+/XlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SYf0138Lwn1biLy2QZVPCeoTaezWEjG5eiD1lSbF6C0=;
+ b=fW4krBvk0oitevQcnxVBmUGc6ag0CBNckqTbJDtHkXIS6+hVQ/sSREicuywMmpabLYU2zpU3edFiZvb7UBhWHk7oP344Hni3zQ6yqgrLNfDwTbH15W3lYHuuw3WIpj0BGQM9RaMogkQca8Emx6YxWDTDSbCuJuPJVsErC+TWXC8=
+Authentication-Results: igel.co.jp; dkim=none (message not signed)
+ header.d=none;igel.co.jp; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4208.namprd12.prod.outlook.com (2603:10b6:208:1d0::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15; Wed, 8 Sep
+ 2021 13:33:18 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4500.015; Wed, 8 Sep 2021
+ 13:33:18 +0000
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma
+ device
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Shunsuke Mie <mie@igel.co.jp>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+References: <20210908061611.69823-1-mie@igel.co.jp>
+ <20210908061611.69823-2-mie@igel.co.jp> <YThXe4WxHErNiwgE@infradead.org>
+ <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org>
+ <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+Date:   Wed, 8 Sep 2021 15:33:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.13.0
+In-Reply-To: <20210908111804.GX1200268@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: PR3P195CA0021.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:102:b6::26) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-In-Reply-To: <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ"
+Received: from [IPv6:2a02:908:1252:fb60:e9d0:54fe:9083:60ce] (2a02:908:1252:fb60:e9d0:54fe:9083:60ce) by PR3P195CA0021.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 13:33:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 640e8a91-f7b3-481c-7b43-08d972cd37f7
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4208:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB42083ABC6E59A70F0F65555783D49@MN2PR12MB4208.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qlip7sdPjmWl6YphKu1zlD5PRkwnQAIbpWL2u0I7TRGV19hmCBHvSfMwArb9Z+FBzfJfXgHtur7bLlo0cjp0/1u7s4Vhw4OrBU4mbt7Hpsk8hftdskB7ZKo7bxGQZ/o7a+hoCp9x+VOXTDqeQVB2otitmB4ogabZNszBQicSJaOMISTE0AFrqDvnvdlBasVk8pNpUelsqerfrtx9mFB469F6af18lGizFafg/m7azVCcSESrGHkyw1udJ095kq0rHMl9xrrkvJNizEA5dg1P3w5ASPsMkKd13D5YYC4XNBXLAWcdM5Vdx+UqqbSRXZ7nynmNEnw9YMHHqIXxrsXoJOmHEZUvFw7Gnrx71XSRBANLV9J+MhVbYbdZPXuZNY+5oe8TkBUkSbC0htZpRSow/YeMSsSvUr7MTN3B/4vO3HGvLDBcHywoomc3G6qY+I8++jXIye8DwLHAEUaVQNwZPVja/XT4tM04ZYwdSI/YS/w9Sxu+qaDXwC9024LKpn08Qmhj56wOjznOV3TbhK2Ocb0+d6G6R+KFTUmfF8Kv+6/m2F3Rt0edlh8nsMaP8qBlDuf69/B88yq0pUuRkFP3eM4m+h5XDJosYrm58QGFri+HyY7dOhHdtOsu8NgMyil7brIGgJ+uOURblLl7DWTigE4JT/JQK4oS8X41THbZUUpwPZLLMlBdIPyIK9t5yTmvPEJ7bGSUmFAC3Az8CE95Ob0GPzGv2M9IpTD+gUu0W/LBNKonBkXMwG6XZBjmI19l1aLe1PdiL8+dMXCVSWDbzeqyxgS77W58lVPqQCj5fy2YqnzGyHK0dHUaJdvAQDA0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(966005)(6486002)(83380400001)(8936002)(86362001)(4326008)(31696002)(508600001)(6666004)(45080400002)(5660300002)(2616005)(36756003)(38100700002)(2906002)(7416002)(110136005)(54906003)(31686004)(316002)(66476007)(66946007)(66556008)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Qzd5YVpmMHFBWkdoWlpGbjBmK0NvK2g0S1dUTThPaGc2MEJQRWZJRlhla05D?=
+ =?utf-8?B?RmdnTXhGdFR3QXlWelU1S2hVRHpTRHJOT3BCRCsrZnBqQjZyVTFkQ3JtV3RD?=
+ =?utf-8?B?NG10ejJEY01wQ3JEdHdSQ3Y4SHQyVzBOMzhCZWN6cm1BcWJieTVHMWsrQ1kw?=
+ =?utf-8?B?TTFPMThiQTFLN2tHRmM2bEdiWHlRSGdxdTNnenZheXczMGpjWldYNDlRUDRC?=
+ =?utf-8?B?UllaZmZvU1VDVnJ2Nkoxd0NvbThoNklVWVVEWG5SNEtEZ1ZBRncyMWUvNnBo?=
+ =?utf-8?B?RXlsYVM0bnl0SXVkdFBPaHNSR21XV0lhbDE1THcwdG9zTGZWRjFSQjB0azNx?=
+ =?utf-8?B?NWhQMDdrMGhkc2VhMlljcFM4bkY2TnR5QzhRRldjT3BJTHZ3V2hQOFE0VElK?=
+ =?utf-8?B?ZGhPaWpiSHk1Q2xvYitRQmJ1WnZVVWhxd2VMRi9BRkJUdGJYQmRVdTg1QjB2?=
+ =?utf-8?B?K2hVb2J3bytUWTVJOHRPT00zYUgzZ1pEMXBJN3VDblZ3eGtlU01SN1pHL0or?=
+ =?utf-8?B?SDdUdWFDaU5HT2tPYy92dHczamxGMlp2NTBzZlJvajJpTWhLRFFQbTcvSi9x?=
+ =?utf-8?B?cjhWNk4yMWJmQkRGd2JIVlc5VWRVMlQzQlFiNGJGTzJEdkc0WlJJeXRzazl3?=
+ =?utf-8?B?RG8yTFhhZ2t6MVJlYlNNNFl4V044TE5VWkVxMCtqNEgrSE54V1dSSkkvRCtC?=
+ =?utf-8?B?NFQwV2JpaWd5NXN6aWcySmtrMWV2TW9iSjkyYlBBdHFJbnhVRnNZUUpDcGcx?=
+ =?utf-8?B?Y2lKQ1lvSGNUbkxiQ3FDNGRZelZ5YUpUTXZRSHg5a1lsZGNXQWNxRll2VGl3?=
+ =?utf-8?B?ODlhSVVMZE55ZFFieTZKQ3hWQmYyRk8rK3ZHQTBEU3hJNHQ0OE5GVTlqV2Vi?=
+ =?utf-8?B?T0ttZDQwdjQrUzZYSXVGblNtQUIvNURQQ2VsM0Z4UkxRdnJ1eStmYWxMbTht?=
+ =?utf-8?B?ekVqallKL0hobVp4cksyOU9NNVZBUlltV2xKRGxuWUhPUDN4ZjVRS0hCSFFQ?=
+ =?utf-8?B?ckdiamZnVit3ZHFVS0pGekFJcm1zQmxGWDlKOStBUjRkNnkwK005M0orTnpT?=
+ =?utf-8?B?eDBEQXg4UDhsZ0k0K1MwUE5jaHdnTUpLbHhVWjQyRlNpb3oyNWw4WjMwbkd1?=
+ =?utf-8?B?NlJHRFVMcmw3dXJSTWFETGtXL1Zla01zZTRhRVVhZS9BWUo5YTVwVm5wNGpY?=
+ =?utf-8?B?Y1JLbjBkMTFTZktzRDNMZkQ0aVFhc2p1Y3pFOGFyYjlMWXdIenBSNUNwb2ZW?=
+ =?utf-8?B?YjBuQUZtSVB2TVFneS9pTXVjVnZTRWZsWUpMSkt4TndqaGRxcDQxdktwNXlL?=
+ =?utf-8?B?QTZ0dkNCblFteWNOMWRhQ1gvckJncVhFeFNxSGcvSHJxekk0VlJiVHFkZzJD?=
+ =?utf-8?B?NEltdElSZzhUODBISTQ5citPTzM3RFI1c1VIQzU5ZWlYMFYxendiQnlacXlR?=
+ =?utf-8?B?b0tHcXZVTUp4RnlNM1VLVWdBd0xFeDNxSDdiMURONEN6NE5DcnJ0WW9VTTN4?=
+ =?utf-8?B?ZmJtTzBFTnJqUU8wK0FieUJZcG1rdHpwQUFzbFhHekdiR2ZhOTBWMjhNZjF5?=
+ =?utf-8?B?eG0zSG5IWTQ1WXo4RlEyY1RYODZNcEdMdExHVy9BZllFQmJITDdjM3VKejhp?=
+ =?utf-8?B?U1VySVhVWkVXYmFKSmF4NVRDZnpQQmloZHNxZ3VNTHU3RmtjSElVd0MzQ2hC?=
+ =?utf-8?B?b1NjaXNENStIMDdTMk1KQS9iMElYNGhGQUtjbGxxYjF6VzZjdlpPcW1oK1lU?=
+ =?utf-8?B?TE5SaENZSEpLbHgxY2Z6YVJkTUc3dnFWWnBNZHFNNXYrUUpyNXE3ZGVEdm10?=
+ =?utf-8?B?RkNTdFFXbEdLeTdWbEJJdWJ5bmlPZEt5T3ZtdnV6MC9FZEpRS3VHYmFGdnlM?=
+ =?utf-8?Q?AvLkcQuqk64JR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 640e8a91-f7b3-481c-7b43-08d972cd37f7
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 13:33:18.4242
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7yrA7eSQLVU62sE0Wp3ij8X7sFHb06/j9BQeaZaLKSJH1NJUlmkFUnbuNDIM4+Tp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ
-Content-Type: multipart/mixed; boundary="oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- stable@vger.kernel.org, Sander Eikelenboom <linux@eikelenboom.it>,
- xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <34afed98-5072-c563-5d29-97e09a0b4ebd@suse.com>
-Subject: Re: [PATCH] xen: fix usage of pmd/pud_poplulate in mremap for pv
- guests
-References: <20210908073640.11299-1-jgross@suse.com>
- <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
-In-Reply-To: <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
+Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
+>> 2021年9月8日(水) 16:20 Christoph Hellwig <hch@infradead.org>:
+>>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
+>>>> Thank you for your comment.
+>>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
+>>>>>> To share memory space using dma-buf, a API of the dma-buf requires dma
+>>>>>> device, but devices such as rxe do not have a dma device. For those case,
+>>>>>> change to specify a device of struct ib instead of the dma device.
+>>>>> So if dma-buf doesn't actually need a device to dma map why do we ever
+>>>>> pass the dma_device here?  Something does not add up.
+>>>> As described in the dma-buf api guide [1], the dma_device is used by dma-buf
+>>>> exporter to know the device buffer constraints of importer.
+>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=ARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=0
+>>> Which means for rxe you'd also have to pass the one for the underlying
+>>> net device.
+>> I thought of that way too. In that case, the memory region is constrained by the
+>> net device, but rxe driver copies data using CPU. To avoid the constraints, I
+>> decided to use the ib device.
+> Well, that is the whole problem.
+>
+> We can't mix the dmabuf stuff people are doing that doesn't fill in
+> the CPU pages in the SGL with RXE - it is simply impossible as things
+> currently are for RXE to acess this non-struct page memory.
 
---oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq
-Content-Type: multipart/mixed;
- boundary="------------9FF5BF531CFAD049E5474674"
-Content-Language: en-US
+Yeah, agree that doesn't make much sense.
 
-This is a multi-part message in MIME format.
---------------9FF5BF531CFAD049E5474674
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+When you want to access the data with the CPU then why do you want to 
+use DMA-buf in the first place?
 
-On 08.09.21 13:07, Jan Beulich wrote:
-> On 08.09.2021 09:36, Juergen Gross wrote:
->> Commit 0881ace292b662 ("mm/mremap: use pmd/pud_poplulate to update pag=
-e
->> table entries") introduced a regression when running as Xen PV guest.
->=20
-> The description of that change starts with "pmd/pud_populate is the
-> right interface to be used to set the respective page table entries."
-> If this is deemed true, I don't think pmd_populate() should call
-> paravirt_alloc_pte(): The latter function, as its name says, is
-> supposed to be called for newly allocated page tables only (aiui).
+Please keep in mind that there is work ongoing to replace the sg table 
+with an DMA address array and so make the underlying struct page 
+inaccessible for importers.
 
-In theory you are correct, but my experience with reality tells me that
-another set of macros for this case will not be appreciated.
+Regards,
+Christian.
 
->=20
->> Today pmd/pud_poplulate() for Xen PV assumes that the PFN inserted is
->> referencing a not yet used page table. In case of move_normal_pmd/pud(=
-)
->> this is not true, resulting in WARN splats like:
->=20
-> I agree for the PMD part, but is including PUD here really correct?
-> While I don't know why that is, xen_alloc_ptpage() pins L1 tables
-> only. Hence a PUD update shouldn't be able to find a pinned L2
-> table.
+>
+> Jason
 
-I agree that I should drop mentioning PUD here.
-
-I will do that change when committing in case no other changes are
-required.
-
-
-Juergen
-
---------------9FF5BF531CFAD049E5474674
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------9FF5BF531CFAD049E5474674--
-
---oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq--
-
---mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE4u3sFAwAAAAAACgkQsN6d1ii/Ey80
-Hgf/f8asQXvDRoEpJZ+a4PWY1tqLCbOIKQQg0umYtg4m+BhRu9vTv/3cRga8vRQaW4Sr2eCccOuS
-yfiX/2GfX0QRtl25kB4javG4Sl0Vt044CtkXW1Cq+OtrLngf+F3VpByoONFaMEk17IDsaAL11jak
-26TGrdjCD5PT3BmXObcYv5wSvr4dv0DTN5FP8x2Mol2OQJEsD8COUZwj7SfnDADDNUsv4l4q0K/o
-M9sDGm7dk42bZwpexON7r9ZUaO9xgCjeUVhXVMDu1sjb8nLCgB969PdUiwFHKW0inXpWGYpV4Gg1
-cdLZGYndrihUI69KGSI61JDdPsp3YOoBCt4s9deFSw==
-=BJw2
------END PGP SIGNATURE-----
-
---mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ--
