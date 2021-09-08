@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3431240387A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F3403853
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348953AbhIHLBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:01:47 -0400
-Received: from mga02.intel.com ([134.134.136.20]:34072 "EHLO mga02.intel.com"
+        id S1348914AbhIHK5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:57:30 -0400
+Received: from vps.xff.cz ([195.181.215.36]:38360 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233694AbhIHLBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:01:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="207682229"
-X-IronPort-AV: E=Sophos;i="5.85,277,1624345200"; 
-   d="scan'208";a="207682229"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 04:00:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,277,1624345200"; 
-   d="scan'208";a="503516328"
-Received: from aubrey-ubuntu.sh.intel.com ([10.239.53.132])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Sep 2021 04:00:35 -0700
-From:   Aubrey Li <aubrey.li@intel.com>
-To:     rjw@rjwysocki.net, pmenzel@molgen.mpg.de
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Subject: [PATCH v2] ACPI/PRM: Find PRMT table before parse it
-Date:   Wed,  8 Sep 2021 18:55:45 +0800
-Message-Id: <1631098545-64372-1-git-send-email-aubrey.li@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S242347AbhIHK51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:57:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1631098575; bh=YY2yCPD5vLXF6o1p4UODyyT1QmHGm6Y/SxZTq/D9uMg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mYaLZngkt2nB4yE41SBYtnk11sdtwCw7txgKGBz2Q/2CJ0HBC+vnJHdMdqkqjJQiM
+         gQYiAehdspatbT9xsNwpwxOThXCXQztBA4qx3XaJn7L5n3/C/tXVPC5dbwh2QY+ulA
+         kJa/bp4QvEvzzF8d4CSUdarF7Ni73Q03Xmt7Iyio=
+From:   Ondrej Jirman <megous@megous.com>
+To:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org (open list:CSI DRIVERS FOR ALLWINNER V3s),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
+        sunXi SoC support),
+        linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Ondrej Jirman <megous@megous.com>
+Subject: [PATCH] media: sun6i-csi: Allow the video device to be open multiple times
+Date:   Wed,  8 Sep 2021 12:56:09 +0200
+Message-Id: <20210908105609.1823449-1-megous@megous.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Find and verify PRMT table before parse it, this eliminates a
-warning on machines without PRMT table.
+Previously it was possible, but a recent fix for uninitialized
+`ret` variable broke this behavior.
 
-	[    7.197173] ACPI: PRMT not present
+v4l2_fh_is_singular_file() check is there just to determine
+whether the power needs to be enabled, and it's not a failure
+if it returns false.
 
-Fixes: cefc7ca46235 ("ACPI: PRM: implement OperationRegion handler for the PlatformRtMechanism subtype")
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Fixes: ba9139116bc0538 ("media: sun6i-csi: add a missing return code")
+Signed-off-by: Ondrej Jirman <megous@megous.com>
 ---
- drivers/acpi/prmt.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
-index 1f6007a..89c22bc 100644
---- a/drivers/acpi/prmt.c
-+++ b/drivers/acpi/prmt.c
-@@ -288,10 +288,18 @@ static acpi_status acpi_platformrt_space_handler(u32 function,
- 
- void __init init_prmt(void)
+diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
+index 0129dee798b4..da1f8b2852b7 100644
+--- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
++++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
+@@ -510,7 +510,7 @@ static const struct v4l2_ioctl_ops sun6i_video_ioctl_ops = {
+ static int sun6i_video_open(struct file *file)
  {
-+	struct acpi_table_header *tbl;
- 	acpi_status status;
--	int mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
-+	int mc;
-+
-+	status = acpi_get_table(ACPI_SIG_PRMT, 0, &tbl);
-+	if (ACPI_FAILURE(status))
-+		return;
-+
-+	mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
- 					  sizeof (struct acpi_table_prmt_header),
- 					  0, acpi_parse_prmt, 0);
-+	acpi_put_table(tbl);
- 	/*
- 	 * Return immediately if PRMT table is not present or no PRM module found.
- 	 */
+ 	struct sun6i_video *video = video_drvdata(file);
+-	int ret;
++	int ret = 0;
+ 
+ 	if (mutex_lock_interruptible(&video->lock))
+ 		return -ERESTARTSYS;
+@@ -524,10 +524,8 @@ static int sun6i_video_open(struct file *file)
+ 		goto fh_release;
+ 
+ 	/* check if already powered */
+-	if (!v4l2_fh_is_singular_file(file)) {
+-		ret = -EBUSY;
++	if (!v4l2_fh_is_singular_file(file))
+ 		goto unlock;
+-	}
+ 
+ 	ret = sun6i_csi_set_power(video->csi, true);
+ 	if (ret < 0)
 -- 
-2.7.4
+2.33.0
 
