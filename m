@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96BC403C02
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A473403C10
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351968AbhIHPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59098 "EHLO mail.kernel.org"
+        id S1352048AbhIHPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233754AbhIHPAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC5E6115C;
+        id S1351940AbhIHPAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A97861167;
         Wed,  8 Sep 2021 14:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631113142;
-        bh=hJAa8hcqeiDM+/Qqlnhml4tyTWniUKhXeti2Cw12wWY=;
+        bh=+z6dw7Tog78+7mQUP8MykHTfS8BskbmMD+pw4Idm0Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bxv+YLVsE/VLimRrKOF3A3mhABtKMOoRJHViJ1cAOCEJ3+dFsQZ8g76HckcjXuyQO
-         WVgJBfobl125+5JML5VDaJhCHnf7JUbIcdKGmffXn0MJ2uH9ldm3eE7E2YeR96ECkX
-         oHBzDkqXVwoaLWf8OpKuEk5JuFgg/EFUZmSA6KMOb1N1wHmenHqTT1KpxvrH1gW+mZ
-         ++2EXRKCpfphiudKlf2lxopnCfRV6Uk4OVHkfwG74XJXVKJ//2h9z3hdxUjeEho6rD
-         M9RbINGN3f1rJYnd3Z7oLmWKnxX108sBHutnC3lM1B/8SQgEmC+zYZFt7A6CoTGGdO
-         AQdpT5BGv6Nkg==
+        b=ZiD+UL6D2AX5gDDXieGaKy++gAWX31k+oKo3z92O9fJ0dZkpb75vRnZ+RHm5MoWp9
+         jsBm1DC06X2poQSX02zaq0lOnqCYm+pq/Pdef3zvpCWe0CdeJLiiU4svNnAwUg8Nd2
+         Y00aBJyOdPQnBSw2P1WdZ2dIPdbz8wN6IsyzF4Gin72nZopxkw8+8xrMEm//EKSmiI
+         Q0EqVkyBNdqL26iMYIHJ6A8x7PmysT3SE4MC3xkRtGkNOsDoVEfxiJ63oYjRiF3YTX
+         a8E4UfMa8lzYIg2Lh59CtiQHSIg598pKEGsankmlCyRqAXZBxPLnm5Zd3Fiqu6U3Dy
+         I836NImj5D7ZA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mNz2S-006r3t-RV; Wed, 08 Sep 2021 16:59:00 +0200
+        id 1mNz2S-006r3x-St; Wed, 08 Sep 2021 16:59:00 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg KH <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/9] ABI: sysfs-module: better document module name parameter
-Date:   Wed,  8 Sep 2021 16:58:52 +0200
-Message-Id: <dc60b13a593ee3f95fa437da7a7f3d066b7b61d3.1631112725.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 6/9] ABI: sysfs-tty: better document module name parameter
+Date:   Wed,  8 Sep 2021 16:58:53 +0200
+Message-Id: <e88a05bcd863bbb5aa48fbde6dd13a0ec37a45c5.1631112725.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631112725.git.mchehab+huawei@kernel.org>
 References: <cover.1631112725.git.mchehab+huawei@kernel.org>
@@ -50,47 +50,157 @@ such wildcards by regexes on a scriptable way.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/stable/sysfs-module | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ Documentation/ABI/testing/sysfs-tty | 32 ++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-index 6272ae5fb366..c60c7a6f5aff 100644
---- a/Documentation/ABI/stable/sysfs-module
-+++ b/Documentation/ABI/stable/sysfs-module
-@@ -2,7 +2,7 @@ What:		/sys/module
+diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+index e157130a6792..820e412d38a8 100644
+--- a/Documentation/ABI/testing/sysfs-tty
++++ b/Documentation/ABI/testing/sysfs-tty
+@@ -9,7 +9,7 @@ Description:
+ 		 The file supports poll() to detect virtual
+ 		 console switches.
+ 
+-What:		/sys/class/tty/tty0/active
++What:		/sys/class/tty/tty<x>/active
+ Date:		Nov 2010
+ Contact:	Kay Sievers <kay.sievers@vrfy.org>
  Description:
- 	The /sys/module tree consists of the following structure:
+@@ -18,7 +18,7 @@ Description:
+ 		 The file supports poll() to detect virtual
+ 		 console switches.
  
--	/sys/module/MODULENAME
-+	/sys/module/<MODULENAME>
- 		The name of the module that is in the kernel.  This
- 		module name will always show up if the module is loaded as a
- 		dynamic module.  If it is built directly into the kernel, it
-@@ -12,7 +12,7 @@ Description:
- 		Note: The conditions of creation in the built-in case are not
- 		by design and may be removed in the future.
+-What:		/sys/class/tty/ttyS0/uartclk
++What:		/sys/class/tty/ttyS<x>/uartclk
+ Date:		Sep 2012
+ Contact:	Tomas Hlavacek <tmshlvck@gmail.com>
+ Description:
+@@ -29,7 +29,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--	/sys/module/MODULENAME/parameters
-+	/sys/module/<MODULENAME>/parameters
- 		This directory contains individual files that are each
- 		individual parameters of the module that are able to be
- 		changed at runtime.  See the individual module
-@@ -25,10 +25,14 @@ Description:
- 		individual driver documentation for details as to the
- 		stability of the different parameters.
+-What:		/sys/class/tty/ttyS0/type
++What:		/sys/class/tty/ttyS<x>/type
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -38,7 +38,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--	/sys/module/MODULENAME/refcnt
-+	/sys/module/<MODULENAME>/refcnt
- 		If the module is able to be unloaded from the kernel, this file
- 		will contain the current reference count of the module.
+-What:		/sys/class/tty/ttyS0/line
++What:		/sys/class/tty/ttyS<x>/line
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -47,7 +47,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
- 		Note: If the module is built into the kernel, or if the
- 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
- 		this file will not be present.
-+
-+	/sys/module/<MODULENAME>/srcversion
-+		If the module source has MODULE_VERSION, this file will contain
-+		the version of the source code.
+-What:		/sys/class/tty/ttyS0/port
++What:		/sys/class/tty/ttyS<x>/port
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -56,7 +56,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/irq
++What:		/sys/class/tty/ttyS<x>/irq
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -65,7 +65,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/flags
++What:		/sys/class/tty/ttyS<x>/flags
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -74,7 +74,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/xmit_fifo_size
++What:		/sys/class/tty/ttyS<x>/xmit_fifo_size
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -83,7 +83,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/close_delay
++What:		/sys/class/tty/ttyS<x>/close_delay
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -92,7 +92,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/closing_wait
++What:		/sys/class/tty/ttyS<x>/closing_wait
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -101,7 +101,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/custom_divisor
++What:		/sys/class/tty/ttyS<x>/custom_divisor
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -110,7 +110,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/io_type
++What:		/sys/class/tty/ttyS<x>/io_type
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -120,7 +120,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/iomem_base
++What:		/sys/class/tty/ttyS<x>/iomem_base
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -129,7 +129,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/iomem_reg_shift
++What:		/sys/class/tty/ttyS<x>/iomem_reg_shift
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -139,7 +139,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/rx_trig_bytes
++What:		/sys/class/tty/ttyS<x>/rx_trig_bytes
+ Date:		May 2014
+ Contact:	Yoshihiro YUNOMAE <yoshihiro.yunomae.ez@hitachi.com>
+ Description:
+@@ -155,7 +155,7 @@ Description:
+ 		 16550A, which has 1/4/8/14 bytes trigger, the RX trigger is
+ 		 automatically changed to 4 bytes.
+ 
+-What:		/sys/class/tty/ttyS0/console
++What:		/sys/class/tty/ttyS<x>/console
+ Date:		February 2020
+ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Description:
 -- 
 2.31.1
 
