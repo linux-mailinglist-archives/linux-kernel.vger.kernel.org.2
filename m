@@ -2,225 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DA1403C60
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB34403C66
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235471AbhIHPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:19:28 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34496 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349494AbhIHPT0 (ORCPT
+        id S1351950AbhIHPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239472AbhIHPTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:19:26 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 331631FD91;
-        Wed,  8 Sep 2021 15:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631114298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G5Zk68YGYcr0HzofW2ihLUNZ50TcUo8lhAlDEbDeNHc=;
-        b=OgxKOrp8tBRVvF91WSKRQmViYjeRK41KBpRkyRFBWM4il6wUKa4R8V9PbM27VSZXBjXGCi
-        oGttmiI/4MBgI8EQOWhMdEaMISRMyG3NC+dH1DddL5xlMQho7ecCd0GBUM6w8ZrmCwkRre
-        O3vNVtzH9Acs8lGqVg3oYqHL5x7w4G8=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id EADAB13A9C;
-        Wed,  8 Sep 2021 15:18:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id h4pwNznUOGGUPgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 08 Sep 2021 15:18:17 +0000
-Subject: Re: [PATCH 00/12] swiotlb-xen: fixes and adjustments
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        iommu@lists.linux-foundation.org
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <5623df3b-b810-6965-2fe3-fd4250998b49@suse.com>
-Date:   Wed, 8 Sep 2021 17:18:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 8 Sep 2021 11:19:43 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A5CC061575;
+        Wed,  8 Sep 2021 08:18:35 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so1840355wms.2;
+        Wed, 08 Sep 2021 08:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TXNpwq2ZA19YDxcovVdDZYV04t8wKrTS33mAVLEbOHg=;
+        b=T8Oku7rjZb52qcR9974WFcaIs4nucE+UBffZCsKTMWeaWMtqE8knTD7jb2Ka7Pg1VY
+         pvlUyFmmtdWcd4BK1/EVnQsZT2RS8FLjBrFkPY3Ffv2/Us2Ni+L9H1ZBMK7+tGEmRHKz
+         GdLrWpMX/PPLPD40cBDFjvKePDvGz5l9eta4M+72EaCwjzH5qk6qN3Pfny6a7DzCSCWl
+         O9PFfzNzNBKCmjSOHb6SVzXuoZzeiZQX3TsTo/jzKSBw/dlUQwabEcBcAjNCggUVrZSl
+         iRFyLK9dGpLu354UUU/pn20VNjrTXCa6djQMGXvWYC+AnEajqqxnGwRehveZYfp0+1XI
+         chWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TXNpwq2ZA19YDxcovVdDZYV04t8wKrTS33mAVLEbOHg=;
+        b=ELUxMRTzaYy/QnMBAsHCqaBXUAesjUoqVJDc4xzCSmXzsAzYB9Igf0RBPNMQGPOCEA
+         c8UVso+AaSaR5sSZQbOrJ0kMQBH6ObWzH43D0UbVhzZBwB7XvYWt/2wIri3KwzKh3LMH
+         VbRnB4G91fbE17IzvbxDFITYKCNt4854t4azanTFSRcaTrixoD2R7MK6RsmEMeu7QpMB
+         jcuNODQrfGLKEMZubF/P6D4RHkMlbBlNrAi/fglfCY4KESX5ioQWe7dzWB71JgljiD74
+         AfGREQs1sBUWXve/vabst4+O7dsukYFS38wSmM7J7El6Tnpydw1M9YyuAKNlN4VYULy+
+         N22A==
+X-Gm-Message-State: AOAM53132Iv8IC5u6eMCcAHaZ8jL9Y52gi5KKSl9frpJlMpS56O2REAR
+        Pv5HHtEyLSPR0zg8keD8GrUiNZtaVCA0fnZvtlc=
+X-Google-Smtp-Source: ABdhPJxlyqz6Yhj+IV6BkpimYRd6LGuEgWGRILRagDBtzzWe4GX0CcKnFN86Cd1IcVNzCnBtVCI1IL8xb/SzWYeqYSY=
+X-Received: by 2002:a05:600c:2256:: with SMTP id a22mr4073124wmm.16.1631114313657;
+ Wed, 08 Sep 2021 08:18:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="kiBXlrHUO2vcijL3q3ORdzz0LLTT33OUG"
+References: <20210903165448.26545-1-rpimentel.silva@gmail.com> <YTMPYJK44lujITCk@google.com>
+In-Reply-To: <YTMPYJK44lujITCk@google.com>
+From:   Rogerio Pimentel <rpimentel.silva@gmail.com>
+Date:   Wed, 8 Sep 2021 12:18:22 -0300
+Message-ID: <CAOkaPuW9dkRztRxG4MQdQ_SCfQcjd8_mmMa_3=0vO9x7cqju5A@mail.gmail.com>
+Subject: Re: [PATCH v2] Input: ili210x - Set the device name according to the
+ device model
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     hansemro@outlook.com, =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kiBXlrHUO2vcijL3q3ORdzz0LLTT33OUG
-Content-Type: multipart/mixed; boundary="E0GLwH60fzdpZMY3XoyJe2hrn4wyGCoe0";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- iommu@lists.linux-foundation.org
-Message-ID: <5623df3b-b810-6965-2fe3-fd4250998b49@suse.com>
-Subject: Re: [PATCH 00/12] swiotlb-xen: fixes and adjustments
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
-In-Reply-To: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
+On Sat, Sep 4, 2021 at 3:17 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> Hi Rogerio,
+>
+> On Fri, Sep 03, 2021 at 01:54:48PM -0300, Rogerio Pimentel wrote:
+> > Adding the device model into the device name is useful when
+> > applications need to set different parameters according to the
+> > touchscreen being used, e.g. X11 calibration points.
+>
+> Typically model would go into input->id.product and optionally
+> input->id.version.
+>
+> >
+> > Signed-off-by: Rogerio Pimentel <rpimentel.silva@gmail.com>
+> > ---
+> >
+> > Changes since v1: Get the device ID from touchscreen controller
+> > instead of driver's device list.
+> >
+> >  drivers/input/touchscreen/ili210x.c | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
+> > index 199cf3daec10..7a897a03ed70 100644
+> > --- a/drivers/input/touchscreen/ili210x.c
+> > +++ b/drivers/input/touchscreen/ili210x.c
+> > @@ -19,10 +19,14 @@
+> >  #define ILI251X_DATA_SIZE1   31
+> >  #define ILI251X_DATA_SIZE2   20
+> >
+> > +#define ILI_NAME_LEN         27
+> > +#define ILITEK_TS_NAME "Ilitek ILI%x%x Touchscreen"
+> > +
+> >  /* Touchscreen commands */
+> >  #define REG_TOUCHDATA                0x10
+> >  #define REG_PANEL_INFO               0x20
+> >  #define REG_CALIBRATE                0xcc
+> > +#define REG_TS_MODEL         0x61
+> >
+> >  struct ili2xxx_chip {
+> >       int (*read_reg)(struct i2c_client *client, u8 reg,
+> > @@ -384,6 +388,8 @@ static int ili210x_i2c_probe(struct i2c_client *client,
+> >       struct input_dev *input;
+> >       int error;
+> >       unsigned int max_xy;
+> > +     unsigned char buf[2];
+> > +     char *model_name;
+> >
+> >       dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
+> >
+> > @@ -430,7 +436,10 @@ static int ili210x_i2c_probe(struct i2c_client *client,
+> >       i2c_set_clientdata(client, priv);
+> >
+> >       /* Setup input device */
+> > -     input->name = "ILI210x Touchscreen";
+> > +     input->name = ILITEK_TS_NAME;
+> > +     model_name = (char *)input->name;
+>
+> Umm, no. Smashing RO data is not nice.
+>
+> > +     priv->chip->read_reg(priv->client, REG_TS_MODEL, buf, 2);
+> > +     snprintf(model_name, ILI_NAME_LEN, input->name, buf[1], buf[0]);
+> >       input->id.bustype = BUS_I2C;
+> >
+> >       /* Multi touch */
+> > --
+> > 2.17.1
+> >
+>
+> Thanks.
+>
+I agree with the comments.
+Please, discard this patch.
 
---E0GLwH60fzdpZMY3XoyJe2hrn4wyGCoe0
-Content-Type: multipart/mixed;
- boundary="------------2F25B44C78E3383CE5184EBE"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------2F25B44C78E3383CE5184EBE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 07.09.21 14:03, Jan Beulich wrote:
-> The primary intention really was the last patch, there you go ...
->=20
-> 01: swiotlb-xen: avoid double free
-> 02: swiotlb-xen: fix late init retry
-> 03: swiotlb-xen: maintain slab count properly
-> 04: swiotlb-xen: ensure to issue well-formed XENMEM_exchange requests
-> 05: swiotlb-xen: suppress certain init retries
-> 06: swiotlb-xen: limit init retries
-> 07: swiotlb-xen: drop leftover __ref
-> 08: swiotlb-xen: arrange to have buffer info logged
-> 09: swiotlb-xen: drop DEFAULT_NSLABS
-> 10: xen-pcifront: this module is PV-only
-> 11: xen/pci-swiotlb: reduce visibility of symbols
-> 12: swiotlb-xen: this is PV-only on x86
->=20
-> Jan
->=20
-
-You should have Cc-ed Konrad being the maintainer and=20
-iommu@lists.linux-foundation.org. Doing so now.
-
-
-Juergen
-
---------------2F25B44C78E3383CE5184EBE
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------2F25B44C78E3383CE5184EBE--
-
---E0GLwH60fzdpZMY3XoyJe2hrn4wyGCoe0--
-
---kiBXlrHUO2vcijL3q3ORdzz0LLTT33OUG
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE41DkFAwAAAAAACgkQsN6d1ii/Ey9i
-6Af/XUtL8n34y7NXXB4YvyjbovHeyY1G1M0np4qTnOj/58mDCf4JhggM5cO78YnFGF+0juIvBonE
-Fbs3k6V0s+szi/SCPVome8Gt/N9vNiJUBnmBy5loxO7EFiGNrd0mAhNW8kQ6dDGD/OZMhUQFQSZw
-6R5dNamDm54KXtdVwT5eN+aCPzhMSDm2wJAxMpFzwQQ83GwlYw6HXgq21w3LZSOruqIh/68sNbUz
-kQgQWwQ6mBI34ZJdmGSAdc0AuvJQXeYzh3iLo8/b2CAk8e/mYgtm2TFk1pw9Je7Eeqd9zIm5TMQC
-DgcLRFSPQhbV/uhWpyzkBjrFW9lXtsaLK4aQdgCNfQ==
-=6aie
------END PGP SIGNATURE-----
-
---kiBXlrHUO2vcijL3q3ORdzz0LLTT33OUG--
+Rogerio
+> --
+> Dmitry
