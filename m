@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1000403246
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180D5403247
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346639AbhIHBkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:40:37 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:38025 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235180AbhIHBkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:40:36 -0400
-Received: from hanvin-mobl2.amr.corp.intel.com ([192.55.54.55])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 1881csTI3985246
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 7 Sep 2021 18:38:54 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 1881csTI3985246
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021083001; t=1631065136;
-        bh=SWU8siwqoXV59+HvsvFd3sZ1A9vEq4Keh/dISQ/R4sE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UYz377kBdi+iTpQ/uskG4QQlDadzlRcb5tBpdkiqrubEQJ8kOCySO//ZdCXCiKr49
-         IJ+++jmNwGPkaVw3V13yS68CevLqQ1rLPGtjr8wjE7WW8j+fQ1ZcriGheRCI43g8ow
-         QKc6lGF0Xg3cZOfbS7riwAzrUowHW9upH2YNQuuuRNtqKlRTflD9TCVJTFpeLawi1Y
-         4qjsjLCnaG0gT94JQKgBNMkvSWRyF7gYOIKPjOzU6TnNXuzFJ6U8qzsAg2TrZjba9g
-         Wjmc7VMWTDxQPEzby2MlEHLrD7KEpLu3Xe+PNulszt65xtTeDew6eR/n/AJDLYgzDI
-         /pkTkYEk3sCjw==
-Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210902105052.2842-1-jiangshanlai@gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
-Date:   Tue, 7 Sep 2021 18:38:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S1346646AbhIHBl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:41:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235180AbhIHBl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:41:56 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B0CC60EE6;
+        Wed,  8 Sep 2021 01:40:49 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 21:40:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Carles Pey <carles.pey@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ftrace: add unit test for removing trace function
+Message-ID: <20210907214047.04ef5ac8@rorschach.local.home>
+In-Reply-To: <20210904180248.1886220-2-carles.pey@gmail.com>
+References: <20210904180248.1886220-1-carles.pey@gmail.com>
+        <20210904180248.1886220-2-carles.pey@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210902105052.2842-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 3:50 AM, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Sat,  4 Sep 2021 22:02:48 +0400
+Carles Pey <carles.pey@gmail.com> wrote:
+
+
+Two errors here.
+
+-ENOCHANGELOG
+-ENOSIG
+
+No matter how trivial the patch, you need a change log. The subject is
+"what" the patch does, the change log is "why" it is done. What was the
+motivation for this patch.
+
+And more critical, I can't even take this patch because there's no
+"Signed-off-by".
+
+-- Steve
+
+
+> ---
+>  kernel/trace/trace_selftest.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
 > 
-> There is no constrain/limition to force native_load_gs_index() to be in
-> ASM code.
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index adf7ef194005..875b4f1a0476 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -287,6 +287,40 @@ static int trace_selftest_ops(struct trace_array *tr, int cnt)
+>  	if (trace_selftest_test_probe3_cnt != 4)
+>  		goto out_free;
+>  
+> +	/* Remove trace function from probe 3 */
+> +	func1_name = "!" __stringify(DYN_FTRACE_TEST_NAME);
+> +	len1 = strlen(func1_name);
+> +
+> +	ftrace_set_filter(&test_probe3, func1_name, len1, 0);
+> +
+> +	DYN_FTRACE_TEST_NAME();
+> +
+> +	print_counts();
+> +
+> +	if (trace_selftest_test_probe1_cnt != 3)
+> +		goto out_free;
+> +	if (trace_selftest_test_probe2_cnt != 2)
+> +		goto out_free;
+> +	if (trace_selftest_test_probe3_cnt != 4)
+> +		goto out_free;
+> +	if (cnt > 1) {
+> +		if (trace_selftest_test_global_cnt == 0)
+> +			goto out_free;
+> +	}
+> +	if (trace_selftest_test_dyn_cnt == 0)
+> +		goto out_free;
+> +
+> +	DYN_FTRACE_TEST_NAME2();
+> +
+> +	print_counts();
+> +
+> +	if (trace_selftest_test_probe1_cnt != 3)
+> +		goto out_free;
+> +	if (trace_selftest_test_probe2_cnt != 3)
+> +		goto out_free;
+> +	if (trace_selftest_test_probe3_cnt != 5)
+> +		goto out_free;
+> +
+>  	ret = 0;
+>   out_free:
+>  	unregister_ftrace_function(dyn_ops);
 
-Hi,
-
-First of all, let me say I really like your patchset, and I will try to
-review it in detail ASAP (most of the initial read pass looks very sane
-to me.
-
-However, I would like to object in part this specific patch. It adds a
-fair bit of extra code to the exception path, and adds jumps between
-files which makes the code much harder to read.
-
-You end up doing one swapgs in assembly and one in C, which would seem
-to be a very good indication that really isn't an improvement.
-
-Note that this entire sequence is scheduled to be obsoleted by a single
-atomic hardware instruction, LKGS, which will replace ALL of
-native_load_gs_index(); it will no longer be necessary even to disable
-interrupts as there is no non-atomic state. In that sense, doing this as
-an out-of-line C function (with some inline assembly) is great, because
-it makes it far easier to use LKGS as an alternative; the only (small)
-disadvantage is that it ends up clobbering a lot of registers
-unnecessarily (in assembly it can be implemented clobbering only two
-registers; one if one uses pushf/popf to save the interrupt flag.)
-
-noinstr void native_load_gs_index(unsigned int selector)
-{
-	unsigned long flags;
-
-	local_irq_save(flags);
-	native_swapgs();
-redo:
-	asm goto("1: movl %0,%%gs\n",
-		   "2:\n"
-		   _ASM_EXTABLE(%1)
-		   : : "r" (selector) : "i" (&&bad_seg);
-	alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
-	native_swapgs();
-	local_irq_restore(flags);
-	return;
-
-bad_seg:
-	/* Exception entry will have restored kernel GS */
-	native_swapgs();
-	
-	if (static_cpu_has(X86_BUG_NULL_SEG)) {
-		asm volatile("movl %0,%%gs"
-			: : "r" (__USER_DS));
-	}
-	selector = 0;
-	goto redo;
-}
-
-	-hpa
