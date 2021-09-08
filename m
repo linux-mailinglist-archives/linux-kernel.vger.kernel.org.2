@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A1403393
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD2D403396
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhIHFB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:01:57 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:42139 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhIHFB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:01:56 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18850VV94012233
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 7 Sep 2021 22:00:31 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18850VV94012233
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021083001; t=1631077232;
-        bh=TEs3G7nTU1z36GboNC8t0vkl4iSss29X6AB2yu1p5II=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=UF/Dk5w0mSCCb8QzKPqv0NFOx5wqNldHZgZBvbPZqF3VpK/UoMcYyNpj+Dgr5jqqP
-         lNA4EUkvyfCmGMWcNWmCZOQe9Qsr70hC7L/QcMO0vA+yEcDJO+bjD6NAKzMIddAmRZ
-         hMtZOVqD9VQjS++LW7EYDleLq6emhCOkJhBzBsj/5SY0nyRctZaI/nQiWp0IYyM+YY
-         ixg3+SoxH/TgwkzV4awZEN92vqfkFyDcIWGZm+KSH6j0yXwUpgEZ7tcXB4v7UDVONl
-         4kqIbvj2jlnHYy6qPfXI8rz+0tpX2AlgSs+1SghbhO9m7SH/zqQFA/f63mX/zv+Bft
-         forpGVg9xouUQ==
-Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210902105052.2842-1-jiangshanlai@gmail.com>
- <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
- <f84c2b3c-a880-502f-4f51-4624b3800a05@zytor.com>
-Message-ID: <638f3b2b-aff9-72e5-3a5d-fff5ef6b88fc@zytor.com>
-Date:   Tue, 7 Sep 2021 22:00:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232109AbhIHFCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231867AbhIHFCN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 01:02:13 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F75C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 22:01:05 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id j12so1342922ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 22:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=59SJITlNj+Ou6NpeOcti6W+PeG703q0PmtIG/+riV2I=;
+        b=ewqoX5GR0GQDQStexYRcZ8xnE1vXQfU8hhosIS3fUSkXLkIpSJm68doabddqprhh6s
+         2un8bUilB5SbvudD8sEsLBDLuXPA6oKuScLLAFTn6dZQfGgeyvqp3aOEbzmMo4G8F9if
+         l6bgH2wRzBpW2pgxKleFAF0tQY07wiPiIZkTM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=59SJITlNj+Ou6NpeOcti6W+PeG703q0PmtIG/+riV2I=;
+        b=l34zNXn4U1hn+dhp0E9LHdGHdoiYptD7RsEbVF42ii0D8Rd78dprA4lLwZKFqttQIz
+         8enIzM8zQGiT8cBh078Dni1jauIk19Q7O3wm4CXFNk6Oi7getaL6if21mUb/hLjotH+W
+         0aIVIoVqUEVU+bhCUDLAHq+17/8UdZqEzEGNHk416uU441EBVUqcrD1rqzTGoidK2dx2
+         e2RavtahGeyOEuoBie+/tbuQ4V2KuixiRd8EWLgGFnDfeECPbvOd2dEfkBRFCWLR5MTE
+         Nj+/IPFYMExORlJQSXUTuP1IcLxk8W1cKBflMopcx19lNepeNgF1LqBXrxmzefs3UD19
+         1CSA==
+X-Gm-Message-State: AOAM533XnNniCuZU1rPDQuJ19YEme9XktiDeyGUl5XqsoqCZqpMUnLcf
+        Z1ACP0Ph0oiwxvSzwki7Dr679UTucEELajzhN8Pvvw==
+X-Google-Smtp-Source: ABdhPJx2VlFdtpsSPoyhBFFN0IDcYDzg5MRbDu1Cbvp0StYf9spI1uDQnWfI7uro2VByekXzT80q+7ymVwXak9jRAMw=
+X-Received: by 2002:a2e:7d17:: with SMTP id y23mr1314834ljc.392.1631077263834;
+ Tue, 07 Sep 2021 22:01:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f84c2b3c-a880-502f-4f51-4624b3800a05@zytor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+In-Reply-To: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 8 Sep 2021 13:00:52 +0800
+Message-ID: <CAGXv+5E1Kk3PYK1GBatfBVnaEVfGCLvb5P-dN9S05LawAfimjw@mail.gmail.com>
+Subject: Re: [RESEND PATCH 1/2] clk: rockchip: rk3399: expose PCLK_COREDBG_{B,L}
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:42 PM, H. Peter Anvin wrote:
-> 
-> 
-> On 9/7/21 6:38 PM, H. Peter Anvin wrote:
->> On 9/2/21 3:50 AM, Lai Jiangshan wrote:
->>> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>>
->>> There is no constrain/limition to force native_load_gs_index() to be in
->>> ASM code.
->>
->> Hi,
->>
->> First of all, let me say I really like your patchset, and I will try to
->> review it in detail ASAP (most of the initial read pass looks very sane
->> to me.
->>
->> However, I would like to object in part this specific patch. It adds a
->> fair bit of extra code to the exception path, and adds jumps between
->> files which makes the code much harder to read.
->>
->> You end up doing one swapgs in assembly and one in C, which would seem
->> to be a very good indication that really isn't an improvement.
->>
->> Note that this entire sequence is scheduled to be obsoleted by a single
->> atomic hardware instruction, LKGS, which will replace ALL of
->> native_load_gs_index(); it will no longer be necessary even to disable
->> interrupts as there is no non-atomic state. In that sense, doing this as
->> an out-of-line C function (with some inline assembly) is great, because
->> it makes it far easier to use LKGS as an alternative; the only (small)
->> disadvantage is that it ends up clobbering a lot of registers
->> unnecessarily (in assembly it can be implemented clobbering only two
->> registers; one if one uses pushf/popf to save the interrupt flag.)
->>
-> 
-> OK, here is a version which actually compiles:
-> 
+On Wed, Sep 8, 2021 at 12:46 AM Brian Norris <briannorris@chromium.org> wrote:
+>
+> We have DT IDs for PCLK_COREDBG_L and PCLK_COREDBG_B, but we don't
+> actually expose them.
+>
+> In exposing these clocks (and attaching them to the coresight debug
+> driver), the AMBA bus may start to disable them. Because no CPU driver
+> owns these clocks (e.g., cpufreq-dt doesn't enable() them -- and even if
+> it did, it's not early enough -- nor does arch/arm64/kernel/smp.c), the
+> common clock framework then feels the need to disable the parents
+> (including the CPU PLLs) -- which is no fun for anyone.
+>
+> Thus, mark the CPU clocks as critical as well.
 
-... slightly shorter and minimally better compiled code ...
+I think this part should be done regardless, and could be a separate patch
+added before exposing the COREDBG clks.
 
-noinstr void native_load_gs_index(unsigned int selector)
-{
-	unsigned long flags;
+Either way,
 
-	local_irq_save(flags);
-	native_swapgs();
-do_mov_gs:
-	asm_volatile_goto("1: mov %[seg],%%gs\n"
-			  "2:\n"
-			  _ASM_EXTABLE(1b,%l[bad_seg])
-			  : : [seg] "r" (selector) : : bad_seg);
-	alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
-	native_swapgs();
-	local_irq_restore(flags);
-	return;
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
-bad_seg:
-	/* The exception dispatch will have restored kernel GS */
-	native_swapgs();
-	alternative_input("", "mov %[seg],%%gs",
-			  X86_BUG_NULL_SEG, [seg] "r" (__USER_DS));
-	selector = 0;
-	goto do_mov_gs;
-}
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+> Resending, because I missed the mailing lists on the first version.
+>
+>  drivers/clk/rockchip/clk-rk3399.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
+> index 62a4f2543960..53ed5cca335b 100644
+> --- a/drivers/clk/rockchip/clk-rk3399.c
+> +++ b/drivers/clk/rockchip/clk-rk3399.c
+> @@ -481,7 +481,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
+>         COMPOSITE_NOMUX(0, "atclk_core_l", "armclkl", CLK_IGNORE_UNUSED,
+>                         RK3399_CLKSEL_CON(1), 0, 5, DFLAGS | CLK_DIVIDER_READ_ONLY,
+>                         RK3399_CLKGATE_CON(0), 5, GFLAGS),
+> -       COMPOSITE_NOMUX(0, "pclk_dbg_core_l", "armclkl", CLK_IGNORE_UNUSED,
+> +       COMPOSITE_NOMUX(PCLK_COREDBG_L, "pclk_dbg_core_l", "armclkl", CLK_IGNORE_UNUSED,
+>                         RK3399_CLKSEL_CON(1), 8, 5, DFLAGS | CLK_DIVIDER_READ_ONLY,
+>                         RK3399_CLKGATE_CON(0), 6, GFLAGS),
+>
+> @@ -531,7 +531,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
+>         GATE(ACLK_GIC_ADB400_CORE_B_2_GIC, "aclk_core_adb400_core_b_2_gic", "armclkb", CLK_IGNORE_UNUSED,
+>                         RK3399_CLKGATE_CON(14), 4, GFLAGS),
+>
+> -       DIV(0, "pclken_dbg_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
+> +       DIV(PCLK_COREDBG_B, "pclken_dbg_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
+>                         RK3399_CLKSEL_CON(3), 13, 2, DFLAGS | CLK_DIVIDER_READ_ONLY),
+>
+>         GATE(0, "pclk_dbg_cxcs_pd_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
+> @@ -1514,7 +1514,10 @@ static const char *const rk3399_cru_critical_clocks[] __initconst = {
+>         "aclk_vio_noc",
+>
+>         /* ddrc */
+> -       "sclk_ddrc"
+> +       "sclk_ddrc",
+> +
+> +       "armclkl",
+> +       "armclkb",
+>  };
+>
+>  static const char *const rk3399_pmucru_critical_clocks[] __initconst = {
+> @@ -1549,9 +1552,6 @@ static void __init rk3399_clk_init(struct device_node *np)
+>         rockchip_clk_register_branches(ctx, rk3399_clk_branches,
+>                                   ARRAY_SIZE(rk3399_clk_branches));
+>
+> -       rockchip_clk_protect_critical(rk3399_cru_critical_clocks,
+> -                                     ARRAY_SIZE(rk3399_cru_critical_clocks));
+> -
+>         rockchip_clk_register_armclk(ctx, ARMCLKL, "armclkl",
+>                         mux_armclkl_p, ARRAY_SIZE(mux_armclkl_p),
+>                         &rk3399_cpuclkl_data, rk3399_cpuclkl_rates,
+> @@ -1562,6 +1562,9 @@ static void __init rk3399_clk_init(struct device_node *np)
+>                         &rk3399_cpuclkb_data, rk3399_cpuclkb_rates,
+>                         ARRAY_SIZE(rk3399_cpuclkb_rates));
+>
+> +       rockchip_clk_protect_critical(rk3399_cru_critical_clocks,
+> +                                     ARRAY_SIZE(rk3399_cru_critical_clocks));
+> +
 
+Looking at the bigger picture, maybe it's time to convert CLK_IGNORE_UNUSED
+and rockchip_clk_protect_critical() to CLK_IS_CRITICAL?
+
+ChenYu
+
+>         rockchip_register_softrst(np, 21, reg_base + RK3399_SOFTRST_CON(0),
+>                                   ROCKCHIP_SOFTRST_HIWORD_MASK);
+>
+> --
+> 2.33.0.153.gba50c8fa24-goog
+>
