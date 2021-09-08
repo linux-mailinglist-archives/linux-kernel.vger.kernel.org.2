@@ -2,139 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB34403C66
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D652403C65
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351950AbhIHPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239472AbhIHPTn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:19:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A5CC061575;
-        Wed,  8 Sep 2021 08:18:35 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so1840355wms.2;
-        Wed, 08 Sep 2021 08:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TXNpwq2ZA19YDxcovVdDZYV04t8wKrTS33mAVLEbOHg=;
-        b=T8Oku7rjZb52qcR9974WFcaIs4nucE+UBffZCsKTMWeaWMtqE8knTD7jb2Ka7Pg1VY
-         pvlUyFmmtdWcd4BK1/EVnQsZT2RS8FLjBrFkPY3Ffv2/Us2Ni+L9H1ZBMK7+tGEmRHKz
-         GdLrWpMX/PPLPD40cBDFjvKePDvGz5l9eta4M+72EaCwjzH5qk6qN3Pfny6a7DzCSCWl
-         O9PFfzNzNBKCmjSOHb6SVzXuoZzeiZQX3TsTo/jzKSBw/dlUQwabEcBcAjNCggUVrZSl
-         iRFyLK9dGpLu354UUU/pn20VNjrTXCa6djQMGXvWYC+AnEajqqxnGwRehveZYfp0+1XI
-         chWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TXNpwq2ZA19YDxcovVdDZYV04t8wKrTS33mAVLEbOHg=;
-        b=ELUxMRTzaYy/QnMBAsHCqaBXUAesjUoqVJDc4xzCSmXzsAzYB9Igf0RBPNMQGPOCEA
-         c8UVso+AaSaR5sSZQbOrJ0kMQBH6ObWzH43D0UbVhzZBwB7XvYWt/2wIri3KwzKh3LMH
-         VbRnB4G91fbE17IzvbxDFITYKCNt4854t4azanTFSRcaTrixoD2R7MK6RsmEMeu7QpMB
-         jcuNODQrfGLKEMZubF/P6D4RHkMlbBlNrAi/fglfCY4KESX5ioQWe7dzWB71JgljiD74
-         AfGREQs1sBUWXve/vabst4+O7dsukYFS38wSmM7J7El6Tnpydw1M9YyuAKNlN4VYULy+
-         N22A==
-X-Gm-Message-State: AOAM53132Iv8IC5u6eMCcAHaZ8jL9Y52gi5KKSl9frpJlMpS56O2REAR
-        Pv5HHtEyLSPR0zg8keD8GrUiNZtaVCA0fnZvtlc=
-X-Google-Smtp-Source: ABdhPJxlyqz6Yhj+IV6BkpimYRd6LGuEgWGRILRagDBtzzWe4GX0CcKnFN86Cd1IcVNzCnBtVCI1IL8xb/SzWYeqYSY=
-X-Received: by 2002:a05:600c:2256:: with SMTP id a22mr4073124wmm.16.1631114313657;
- Wed, 08 Sep 2021 08:18:33 -0700 (PDT)
+        id S1349568AbhIHPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235940AbhIHPTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:19:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED4560F6C;
+        Wed,  8 Sep 2021 15:18:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631114316;
+        bh=QYYCrb5xUdDBqMUZgOy0J9e3LMwjGDvCfYmNV5Vqq1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZN8zXn3QFbidhhCFiQ/x6qjt630vQckN7G45WnmaBd2xpKQrIDUZ8g8eTfBsFfZYr
+         hqOwlLzOOt7wOe1Pr1M8ZQ6svb6imREHq0sRN/MO7dhscORhqh3oJ5Q7L8IJmYE0ha
+         3UvAgG1mu90ni7m5Jbl4iWqeuJWHsFctSeMDEp/a/OiCe9j3uTwXQUZItuD2WS6t23
+         z2z9j58Pu2AM5aRg6eF9AWxxSR/uqqRpayJOADQy2Z44Q6EyfHTwj0qflPBXrH1/gq
+         nxiCIVjBkbm792Ksso0Md6Ersi5CbnC8xeV9KSa7vUgeMLamqx5ceNP6DCn/5duy+Q
+         ljGycoH/U2fNw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EA2D34038F; Wed,  8 Sep 2021 12:18:30 -0300 (-03)
+Date:   Wed, 8 Sep 2021 12:18:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf dlfilter: Add dlfilter-show-cycles
+Message-ID: <YTjURgpxXEFGMn2Y@kernel.org>
+References: <20210906160850.22716-1-adrian.hunter@intel.com>
+ <7bee95a7-fa31-a801-8068-80c63ba6ccfe@linux.intel.com>
+ <b8b1d870-9db2-4b0f-7138-c139e1ef878b@intel.com>
 MIME-Version: 1.0
-References: <20210903165448.26545-1-rpimentel.silva@gmail.com> <YTMPYJK44lujITCk@google.com>
-In-Reply-To: <YTMPYJK44lujITCk@google.com>
-From:   Rogerio Pimentel <rpimentel.silva@gmail.com>
-Date:   Wed, 8 Sep 2021 12:18:22 -0300
-Message-ID: <CAOkaPuW9dkRztRxG4MQdQ_SCfQcjd8_mmMa_3=0vO9x7cqju5A@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: ili210x - Set the device name according to the
- device model
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     hansemro@outlook.com, =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8b1d870-9db2-4b0f-7138-c139e1ef878b@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 4, 2021 at 3:17 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Rogerio,
->
-> On Fri, Sep 03, 2021 at 01:54:48PM -0300, Rogerio Pimentel wrote:
-> > Adding the device model into the device name is useful when
-> > applications need to set different parameters according to the
-> > touchscreen being used, e.g. X11 calibration points.
->
-> Typically model would go into input->id.product and optionally
-> input->id.version.
->
-> >
-> > Signed-off-by: Rogerio Pimentel <rpimentel.silva@gmail.com>
-> > ---
-> >
-> > Changes since v1: Get the device ID from touchscreen controller
-> > instead of driver's device list.
-> >
-> >  drivers/input/touchscreen/ili210x.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-> > index 199cf3daec10..7a897a03ed70 100644
-> > --- a/drivers/input/touchscreen/ili210x.c
-> > +++ b/drivers/input/touchscreen/ili210x.c
-> > @@ -19,10 +19,14 @@
-> >  #define ILI251X_DATA_SIZE1   31
-> >  #define ILI251X_DATA_SIZE2   20
-> >
-> > +#define ILI_NAME_LEN         27
-> > +#define ILITEK_TS_NAME "Ilitek ILI%x%x Touchscreen"
-> > +
-> >  /* Touchscreen commands */
-> >  #define REG_TOUCHDATA                0x10
-> >  #define REG_PANEL_INFO               0x20
-> >  #define REG_CALIBRATE                0xcc
-> > +#define REG_TS_MODEL         0x61
-> >
-> >  struct ili2xxx_chip {
-> >       int (*read_reg)(struct i2c_client *client, u8 reg,
-> > @@ -384,6 +388,8 @@ static int ili210x_i2c_probe(struct i2c_client *client,
-> >       struct input_dev *input;
-> >       int error;
-> >       unsigned int max_xy;
-> > +     unsigned char buf[2];
-> > +     char *model_name;
-> >
-> >       dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
-> >
-> > @@ -430,7 +436,10 @@ static int ili210x_i2c_probe(struct i2c_client *client,
-> >       i2c_set_clientdata(client, priv);
-> >
-> >       /* Setup input device */
-> > -     input->name = "ILI210x Touchscreen";
-> > +     input->name = ILITEK_TS_NAME;
-> > +     model_name = (char *)input->name;
->
-> Umm, no. Smashing RO data is not nice.
->
-> > +     priv->chip->read_reg(priv->client, REG_TS_MODEL, buf, 2);
-> > +     snprintf(model_name, ILI_NAME_LEN, input->name, buf[1], buf[0]);
-> >       input->id.bustype = BUS_I2C;
-> >
-> >       /* Multi touch */
-> > --
-> > 2.17.1
-> >
->
-> Thanks.
->
-I agree with the comments.
-Please, discard this patch.
+Em Tue, Sep 07, 2021 at 10:06:03AM +0300, Adrian Hunter escreveu:
+> On 7/09/21 5:54 am, Andi Kleen wrote:
+> > On 9/6/2021 9:08 AM, Adrian Hunter wrote:
+> >> Add a new dlfilter to show cycles.
 
-Rogerio
-> --
-> Dmitry
+> >> Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
+> >> from IPC information, and printed together with the change since the last
+> >> print, at the start of each line.
+
+> > Thanks! An example how to use it would be nice 
+ 
+> I started looking at making an example and noticed that this approach
+> does not work very well because the IPC cycle count only increases when
+> the IPC is output which (for CYC accurate mode) is only happens when a
+> CYC packet is output that corresponds to the current sample.  Seems like
+> this needs a re-think, sorry.
+
+Ok, will wait then. And this shows part of the value of this, checking
+if it works as expected :-)
+
+- Arnaldo
