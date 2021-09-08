@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D835F4031DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D90F4031DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238049AbhIHAgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 20:36:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230315AbhIHAgU (ORCPT
+        id S240674AbhIHAk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 20:40:29 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:49403 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229946AbhIHAk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 20:36:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631061313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fZWZZr44GH/3iutnQw+25r6IM2aag3PM2R58Hrhuans=;
-        b=PVtKmcHKOOyQgHNrqq3nWVDXeZjeUiMh0utWLgz+H6DdpYRlJXwZC0VohTBgShvJCTeOUR
-        hKaUiqRFaBR2jS/0glKMvFHjNvB9ss5QsX3JLghhn2xc/RTU6ghbJxG6RzTyyA1atKs80b
-        UaaglcSNE2n54n9srkBnu06JDK6w7Cg=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-bkf-B_VHOxOgi8Rs3aB5yQ-1; Tue, 07 Sep 2021 20:35:12 -0400
-X-MC-Unique: bkf-B_VHOxOgi8Rs3aB5yQ-1
-Received: by mail-qt1-f199.google.com with SMTP id l22-20020a05622a175600b0029d63a970f6so819706qtk.23
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 17:35:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fZWZZr44GH/3iutnQw+25r6IM2aag3PM2R58Hrhuans=;
-        b=ObxJ3wTrGGkL2G0E3NlZSHLsRmpf2adB+2N9LOR7EOPFzj6jP8kbvBneWyTsMFttPF
-         lSp7Zw4604+OJeh8dvpo5+EZPucWUi9eGiNx9dlN6+WNxzCy+UeTXgz3GZNvF3enBm+n
-         lkbsqkgA88LMj1wVM6BkTZPcCIUW9udA8yRvzCl1EwvPZ+gxRcqeReSpjdZlSKZuQd1P
-         DesaCcN5ry3Qk7E1NHtkE8OdvtA85ceDTYu+8aqB0D7Eje886z20RFJmbP140/EQChRd
-         l1CyJDEOaAsGZiS/HSrD9Xr1pZssuXCzpb/uswSY2eXWkhG+57uoQ1Vk3MgC6/mL5t2z
-         0aew==
-X-Gm-Message-State: AOAM5302zlNW1wVxGsRHG7ZqZDUhtkSk1uepqCrVN2L9QHeE1JHCw6fu
-        skxZ49A047FutmU/4KHr5/cToyLlxH0wvCnTAVk9y8plmB6Z8FDqeWD/P0OaBYOBLwIDAilLSlT
-        dTR50d5uzz1r42rnQuS3ekOYG4ncE8bTXge3O6xr4Fpkz9Fw1mAih6ZVoUzPZ1gkyQVWPIoIlNw
+        Tue, 7 Sep 2021 20:40:28 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id C6D05320039A;
+        Tue,  7 Sep 2021 20:39:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 07 Sep 2021 20:39:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ufRYoz
+        2yVgifzFCVqXXScN8SZHhn8AKyavF52/GWzZk=; b=my40rX8YEk4InKqnX58Prr
+        w/GUcvRDjwmOSGHG4C1TDYfbjBQtAF8M0JOKQqfja/+VCwYcAKGB5HItJOpvjGFF
+        LLWQOuGWp3rbZAQ42cFxrxoU6Hu4Bdi6TCs08kjK4KQrb385Zf4vqEIcKv4BcKht
+        V9YANa8ZMRmKPyJ5UlDrr22c2hi7szMYuqZhs8eR5/qi51A2AYyff2HEXUtbveOh
+        l+R3Z/qIaRci6Q82YDEqmzND6RIPSdlpQg44ZvWdYj1lThHOG+Y/R+5nk1GGm6H/
+        H5hTNPfi4QjxdeDgS0Pm4B9r457PvcKTmhJMuoam9/GyP5YDQmyzrml9IJB+zwyw
         ==
-X-Received: by 2002:ac8:7194:: with SMTP id w20mr1173290qto.217.1631061311558;
-        Tue, 07 Sep 2021 17:35:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxK7EAe+v1xcoVx0IGHKJI1Q/uNSOUvI9M0WpH70+Y9fErFaqUKyfL5O/cUYs2gyf92dD7LyA==
-X-Received: by 2002:ac8:7194:: with SMTP id w20mr1173257qto.217.1631061311219;
-        Tue, 07 Sep 2021 17:35:11 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id d9sm489713qkn.124.2021.09.07.17.35.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 17:35:10 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 20:35:08 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH v2 0/5] mm: A few cleanup patches around zap, shmem and
- uffd
-Message-ID: <YTgFPC4qGFflDES+@t490s>
-References: <20210902201721.52796-1-peterx@redhat.com>
+X-ME-Sender: <xms:NgY4YSdYg_f6UNp5_DDyvKm3NxEDY_cEdqdWZ29I7xb3hWO18O2JWg>
+    <xme:NgY4YcOuCcLlyCgBPyZGuctsJIl-7IKMY8LD30NvwITIl80YOpNsZ_YhyOj0ZlaiK
+    gWvjtmx5nImyyNMIYA>
+X-ME-Received: <xmr:NgY4YTjzRn5Ap1yztHPgmWcuc9oRMbuzljVvZW1wNG_cqiJ0vumj3RcT8RPDW98YpONEkauW6OWsmoB-q4XZr_9kdYAm0UfI4VRGYw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:NgY4Yf9KPY-C_Qmd-uFSR3zz5yXMIdLe6aZta_3CdDCxva1HeA_HOg>
+    <xmx:NgY4YevM0Y-V89BcwgQX8NhUSaT7RF80O2I1yL_SJ5F80_SozhsrvA>
+    <xmx:NgY4YWH--e23TLlcczqUf4hogjQyfx3A3Hdo3HCq5BkDtFotuV3mOQ>
+    <xmx:OAY4YSgVIxwsjYdS0wfOaIctzfRaIyUzglxO2x04XJr6akZCv2iBKA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Sep 2021 20:39:16 -0400 (EDT)
+Date:   Wed, 8 Sep 2021 10:39:10 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Tong Zhang <ztong0001@gmail.com>
+cc:     Oliver Neukum <oliver@neukum.org>, Ali Akcaagac <aliakc@web.de>,
+        Jamie Lenehan <lenehan@twibble.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        dc395x@twibble.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] scsi: dc395: fix error case unwinding
+In-Reply-To: <20210907040702.1846409-1-ztong0001@gmail.com>
+Message-ID: <eb4f2f15-dab8-16da-4fe6-ae90638018e1@linux-m68k.org>
+References: <20210907040702.1846409-1-ztong0001@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210902201721.52796-1-peterx@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 04:17:16PM -0400, Peter Xu wrote:
-> [Based on tag v5.14, but it should still apply to -mm too.  If not, I can
->  repost anytime]
-> 
-> Hugh,
-> 
-> So I found one thing that I feel like a bug of commit 22061a1ffabdb9c3, but I'm
-> not sure.  If that's the case, patch 5 of this series may be the fix for it.
-> 
-> The problem is unmap_mapping_page() in current tree is calling
-> unmap_mapping_range_tree() with a details pointer, while by default when detail
-> pointer is specified, it means "we want to skip zapping swap entries".
-> 
-> I didn't mention this in v1 simply because I thought it was fine, e.g., swap
-> entry won't be kept in shmem ptes so skipped is okay (it is never okay with
-> shmem uffd-wp but uffd-wp code is not landed yet).  However I just remembered
-> there could also be e.g. shmem migration entries if I'm not wrong.  From that
-> pov, skipping swap entries for unmap_mapping_page() seems wrong.  Would you
-> please help check?
 
-I figured this seems to have no problem: firstly commit 22061a1ffabdb9c3 didn't
-really change the behavior of the code because previously it was using
-unmap_mapping_range(), which will always pass in a "details" pointer anyway.
-
-Meanwhile there won't be migration entry for this page because the new helper
-unmap_mapping_page() has page lock held, while migration requires that too
-during moving the pages.
-
-Anyway, sorry for the noise. I'll respin but drop these paragraphs, also in the
-last patch's commit message.
-
--- 
-Peter Xu
-
+According to Documentation/process/submitting-patches.rst
+it would be appropriate to put "RESEND" in the subject line.
