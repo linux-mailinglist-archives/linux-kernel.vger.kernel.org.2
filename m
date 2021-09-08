@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346504031F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166DD4031FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343958AbhIHAqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 20:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52318 "EHLO mail.kernel.org"
+        id S1343725AbhIHAud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 20:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhIHAqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 20:46:11 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19D0C61130;
-        Wed,  8 Sep 2021 00:45:04 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 20:45:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Punit Agrawal <punitagrawal@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] tools/bootconfig: Fix a compilation issue with
- missing variable
-Message-ID: <20210907204502.26f0e833@rorschach.local.home>
-In-Reply-To: <20210908094145.babedcd252d8e8caf0e2f2ad@kernel.org>
-References: <20210907230710.1189193-1-punitagrawal@gmail.com>
-        <20210907202400.330f4ea4@rorschach.local.home>
-        <20210908094145.babedcd252d8e8caf0e2f2ad@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S243920AbhIHAua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 20:50:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8EFC60F92;
+        Wed,  8 Sep 2021 00:49:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631062163;
+        bh=7Wrz7jbq4ZQpZbwmyQgxeFbh9DIedMdFxmZ4tupnR8g=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=loxhqFx2E6wvRf5U+77Vgq/G4KD4QYGjNxv/XXwguJR7h+SGcMNdeCalOVlWBVmlv
+         XpxOnyIjCYt9iNy/57iu/a55l7C51KbUdnvtZqrf8owUP8ymQHDG5/8v6I9y/iqKNY
+         2Rf/pUzL1rOqvX0AVjQX0rz4UvQ4jlhnBPXO5zEVnwSZezdW8uLbTh9tv9pXTXtqam
+         5CbGn/QNfcrdITpjLzz71QHXWDUfIXt98Ln6hHjz9PJdrlzA8yokvcxNB1M37+gZzx
+         YdyMRfDizU/B1oCc1Vg/7S3x3J97fGgH9rBTDpNXNERBLNINInx5C4/DFrzXpKGjTK
+         yMstLYGXAQWIA==
+Date:   Tue, 7 Sep 2021 17:49:21 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Jan Beulich <jbeulich@suse.com>
+cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH] xen/pvcalls: backend can be a module
+In-Reply-To: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
+Message-ID: <alpine.DEB.2.21.2109071745270.14059@sstabellini-ThinkPad-T480s>
+References: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021 09:41:45 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Tue, 7 Sep 2021, Jan Beulich wrote:
+> It's not clear to me why only the frontend has been tristate. Switch the
+> backend to be, too.
+> 
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-> Hi Steve,
-> 
-> I've investigated that why this happens here.
-> 
-> https://lore.kernel.org/all/20210831033256.5973-1-jcfaracco@gmail.com/T/#m52f43f6deb874ee726b10ce25ba53e44697a275a
-> 
-> This seems a timing issue. I acked a "simplify" patch April, and
-> the I wrongly worked on the linus tree for "mixing a value and subkeys"
-> and send it to you June. At last, those 2 conflicted on your branch and
-> your merge script might just merge it.
-> Actually, what Punit and Julio did is reverting 
-> 
-> commit 30d103f2d460 ("tools/bootconfig: Simplify expression")
+Actually although the frontend is a tristate, it cannot really work as a
+module. Specifically see pvcalls_stream_ops in the enabling patch (still
+not upstream):
 
-Yep, I came up with the same conclusion ;-)
+https://github.com/lf-edge/runx/blob/master/kernel/patches/0001-patch-pvcalls_enable.patch
 
--- Steve
+
+So I had to change tristate to bool for XEN_PVCALLS_FRONTEND in our
+internal kernel tree.
+
+That said, the PVCalls backend could very well be a module and
+technically I don't see any reasons why not. So:
+
+
+Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+
+
+
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -214,7 +214,7 @@ config XEN_PVCALLS_FRONTEND
+>  	  implements them.
+>  
+>  config XEN_PVCALLS_BACKEND
+> -	bool "XEN PV Calls backend driver"
+> +	tristate "XEN PV Calls backend driver"
+>  	depends on INET && XEN && XEN_BACKEND
+>  	help
+>  	  Experimental backend for the Xen PV Calls protocol
+> 
