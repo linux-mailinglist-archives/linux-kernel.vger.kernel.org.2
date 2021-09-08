@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464CB403DA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AF9403DA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349457AbhIHQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343833AbhIHQgV (ORCPT
+        id S1343833AbhIHQgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:36:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50308 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349554AbhIHQge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:36:21 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80493C061575;
-        Wed,  8 Sep 2021 09:35:13 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pi15-20020a17090b1e4f00b00197449fc059so1591888pjb.0;
-        Wed, 08 Sep 2021 09:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
-        b=cEO/E0Ry4JDv4NAoZWlVwP4k205lyAd9w0Jc/1E0rCsSXw3qxpjooAnEo5b0LiZ/xh
-         1cmfhhXIkymzyYy74CxqfFRkcGkxEeqgtwbcmUmMOkNEgfNyZNECXRyYhdC3TWU3C1wr
-         RYo72dsDHQjeUlpJ7ZxqIgnRC0i4WwnJja8UvQ7EAgxQKkXrN4eymCpiHcJPG6g0QGA8
-         1fdL5abIwfzLj6FxUwYFP5fiwW7rZUSkCJFGZOaOTXRaWkmRkbrJ+7uEWs7JEQ0dy4ji
-         /jGHumraXj/+ujT5+g4BougNm+Fbf7wvpHnEOR+SoWoel7IC/QoSVu1xTlgMd7VHAL2l
-         7/XA==
+        Wed, 8 Sep 2021 12:36:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631118926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v0jOEqk3duu/S7ny3QESOOgnrnVwgkDjlQfF0n80v8I=;
+        b=ClYLqRp/iyTbrJUs8cKHucD8ixvfFh6a/np1uEH8uuaSUYZ4E4aiM+20gy6dxAf02Eiaxk
+        96+6wM8SCDyFg/vrSMrctL6JygT5G00951ojMionNTRhZsVRC96ts2fAvhvaUhJEZxhXKw
+        0S7enpQvorzC8xw3T0Y1prKPyTc8MOg=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-Kdp_56THPfaawvc_jNe9RA-1; Wed, 08 Sep 2021 12:35:24 -0400
+X-MC-Unique: Kdp_56THPfaawvc_jNe9RA-1
+Received: by mail-il1-f200.google.com with SMTP id a15-20020a92444f000000b0022473393120so2104101ilm.16
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:35:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
-        b=lEId6/rcLwTgnpWKqEg+WWPDN/ctdwXKdvLofL2WZSubx8jnak5nxV5DU2yO5RQnKO
-         qpmUPT0WLxVQ1EWXbzgn2zuRvtnRQnhOqpyoc7jDreihuHmUeOsQiixAONZC4tCsdXIA
-         5r27ePBJ3T1hWxetihS6Oka+FZUHv71rSEqmBJcWJ1ARES2Ee4XleezTfM1tNbfQXUuR
-         Qj/ERb1x8FZfGHcqRILWq5LTCuFW9wdAIKgqEv7E5y07nsAK6ZpYQLOorYVUMQrurzgR
-         if9QbwVYq2j06DYISF78fr43v7UsnNXUHaky7nBjVT6Ed+GFj60gmQATp4uHZjdmnySm
-         WJdw==
-X-Gm-Message-State: AOAM533xLShQSj71FDIqSQzXtRM6pUGdr6z3maxkAtxzAdzQBVtLXfT2
-        AXGdgmAC5iel5pqDrgGCNohMVqvWAWg=
-X-Google-Smtp-Source: ABdhPJwFoJ0ZNwF7ymnYu6dtcblvKpIG0O6/JViZFf+murQhyKST6yt150dDOceRGyev6kDMMDs6UQ==
-X-Received: by 2002:a17:90a:e009:: with SMTP id u9mr5000361pjy.218.1631118912916;
-        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id q20sm3798099pgu.31.2021.09.08.09.35.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=v0jOEqk3duu/S7ny3QESOOgnrnVwgkDjlQfF0n80v8I=;
+        b=BBBs/svilQP12KQLT9dX8L8Ut8RC2iKXKeghSvTT9xn3ChsA5LFfF5uXz4YVh/s06v
+         ietLCZgLcOCKoiOCu4bOHuois+zGP5fCfPPcJJvdFIwIhEEBSvGezZW4jr+0ckZIkaL0
+         yRJmz+Cd63hgPnArfZP60vfXcAYAofcBWqON0n8PMLDhKgCwmB/r1tiwMtQf88kkBIqg
+         NvM3+5gKvgapuWrbK2G0TXTNPhclwNZAN6GNqiBCr9mIxb0dLdO22k57/lkUJfejNzAr
+         pT4wUNzwf7lH5haaTfzR27HXKplFIQxV79PaAZNaye2EWp6oklSQKtvNBGyxjwXpsfkK
+         dGzA==
+X-Gm-Message-State: AOAM531c46Y3FFEDtFt+0SaE0LjAPBSu2KnYVAtRiG3AfkPone1oxRjS
+        4XC3e6IOkWsk4DsFpT2nfjwU+P5By8IeBfNxvUNJZxzW36z7K+BjnSigyudEEHMZHIOBJHAPR4Q
+        Tnm4F+1e3jMA30HbzHheHZW4sXqQUYefmQqvPBGuiSVVmLqSXYcaTjAJ8GX6iJtVZ2HtnCuaSmg
+        ==
+X-Received: by 2002:a92:c9cd:: with SMTP id k13mr518817ilq.169.1631118921747;
+        Wed, 08 Sep 2021 09:35:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaDhl3W2lZk1HaXU2PU7Ni0ECC9fyLGs82p9dRaw7bfzwNvMEP/+GFrjJV2NjJwJoK0CCEOQ==
+X-Received: by 2002:a92:c9cd:: with SMTP id k13mr518786ilq.169.1631118921445;
+        Wed, 08 Sep 2021 09:35:21 -0700 (PDT)
+Received: from t490s.phub.net.cable.rogers.com ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id b10sm1336961ils.13.2021.09.08.09.35.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 8 Sep 2021 06:35:11 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yi Tao <escape@linux.alibaba.com>
-Cc:     gregkh@linuxfoundation.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-Message-ID: <YTjmP0EGEWGYhroM@slm.duckdns.org>
-References: <cover.1631102579.git.escape@linux.alibaba.com>
+        Wed, 08 Sep 2021 09:35:20 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Yang Shi <shy828301@gmail.com>, Miaohe Lin <linmiaohe@huawei.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: [PATCH v3 1/5] mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
+Date:   Wed,  8 Sep 2021 12:35:12 -0400
+Message-Id: <20210908163516.214441-2-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210908163516.214441-1-peterx@redhat.com>
+References: <20210908163516.214441-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1631102579.git.escape@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+It was conditionally done previously, as there's one shmem special case that we
+use SetPageDirty() instead.  However that's not necessary and it should be
+easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
 
-On Wed, Sep 08, 2021 at 08:15:11PM +0800, Yi Tao wrote:
-> In order to solve this long-tail delay problem, we designed a cgroup
-> pool. The cgroup pool will create a certain number of cgroups in advance.
-> When a user creates a cgroup through the mkdir system call, a clean cgroup
-> can be quickly obtained from the pool. Cgroup pool draws on the idea of
-> cgroup rename. By creating pool and rename in advance, it reduces the
-> critical area of cgroup creation, and uses a spinlock different from
-> cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
-> competition with attaching processes on the other hand.
+The most recent discussion about this is here, where Hugh explained the history
+of SetPageDirty() and why it's possible that it's not required at all:
 
-I'm not sure this is the right way to go about it. There are more
-conventional ways to improve scalability - making locking more granular and
-hunting down specific operations which take long time. I don't think cgroup
-management operations need the level of scalability which requires front
-caching.
+https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
 
-Thanks.
+Currently mfill_atomic_install_pte() has three callers:
 
+        1. shmem_mfill_atomic_pte
+        2. mcopy_atomic_pte
+        3. mcontinue_atomic_pte
+
+After the change: case (1) should have its SetPageDirty replaced by the dirty
+bit on pte (so we unify them together, finally), case (2) should have no
+functional change at all as it has page_in_cache==false, case (3) may add a
+dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
+it's merely 100% sure the page is dirty after all, so should not make a real
+difference either.
+
+This should make it much easier to follow on which case will set dirty for
+uffd, as we'll simply set it all now for all uffd related ioctls.  Meanwhile,
+no special handling of SetPageDirty() if there's no need.
+
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/shmem.c       | 1 -
+ mm/userfaultfd.c | 3 +--
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 88742953532c..96ccf6e941aa 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2424,7 +2424,6 @@ int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+ 	shmem_recalc_inode(inode);
+ 	spin_unlock_irq(&info->lock);
+ 
+-	SetPageDirty(page);
+ 	unlock_page(page);
+ 	return 0;
+ out_delete_from_cache:
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 7a9008415534..caf6dfff2a60 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -69,10 +69,9 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	pgoff_t offset, max_off;
+ 
+ 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
++	_dst_pte = pte_mkdirty(_dst_pte);
+ 	if (page_in_cache && !vm_shared)
+ 		writable = false;
+-	if (writable || !page_in_cache)
+-		_dst_pte = pte_mkdirty(_dst_pte);
+ 	if (writable) {
+ 		if (wp_copy)
+ 			_dst_pte = pte_mkuffd_wp(_dst_pte);
 -- 
-tejun
+2.31.1
+
