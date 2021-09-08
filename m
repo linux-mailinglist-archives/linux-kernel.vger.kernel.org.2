@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC54F40377D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F3A40377E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348775AbhIHKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:05:12 -0400
-Received: from mail-eopbgr80051.outbound.protection.outlook.com ([40.107.8.51]:3824
+        id S1351362AbhIHKFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:05:15 -0400
+Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:14657
         "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348677AbhIHKE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:04:27 -0400
+        id S1348742AbhIHKEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:04:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V4P0IBWzdcAbunQYmwTzsJnwwPIlM3CemoC/rdXvkwcadf9nbwNJzdD3HheswCIGBb4n0yBOEOilyHPDwA43KI5u9BfKW8DxPJU3tmOPy1L6oaS/bYN6E0gJL2u6lKScQLhaLeT600lkjFH0D6xmXggF/VqgyMO3K9ZzU0W8BV8r21g2tjMVdkENVej+dN4oWxXJHdBCex/4e6gjsvQkdtzZM5ppMGOvNoAR6eXB+QEQikBJIYsi00HWvCgIbLu4B89sXdkW6tceDA+HmrB9uyspzHVuSFZ6hHF5I+VeU3jb8vOZtesAScimsT4+H2F9akeRtjkL9j8UR33JIx35dw==
+ b=eYP1teBm+m1j8LMvPsVTwUTdjQNyB6gtu3vIwhSvh7FdtsLuZPaCR4ChvV1F5yZh97pTZmmNdye25tJ+i+gdQs2HXX1nxszO4Umzv2TULyHhw209aDsE37fNOndgiZFIW73AxauNMwl9AEd6TnoUSuimW40dFcFDyPwLy0pWU9PpcIkFyM+62moEu1s1kL3t0KDr7eNDZcSFqWeNZPfV6RZiki2xGpMHo522M1WRTqZ71MTDuTakqS5L6j8BHK/E9rzx9SjhUaMAze9CYg8MBXtfJfQsvFCXrq+c6Pqb9A2Uuc/xB3vmdfg/3WnPJyn7ofdyEyHzTSQo3rjLdKrYEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=L1w6mJgNPv25TAFp33iSL9NrM/o/1JNb8Gl5JeEagkw=;
- b=F2Q4dy/sB8uhKeL5rgR/gM7mYeTNoIn9DfK+Ud5uBsLSFOBdmd7Y9d1qBGvsyZoe5A26gXQQu1Mv/fh/v9n5MhbYGVUGQEYvg9MIh4tUuTdpYQr1+sHSAKloN54uuf0D6/Z0LAJz1yCAcSpn5Kn9HMdv6Y0nf+phyMxY6iBUwDUzqyKqSci9Zn89MfYgtbUVnqcViCM5Qu0dJ6vD6V1gK47h4rDnYbnP845CDPyHTIQJDkj595CneEkwoWR6qcj6pQIkVwa9Z/8DP2uwBMB+YcEymIcO6+wH+zm0rVG1wY24EhAqzx2PcretAixwtuccRgqZBs4WfZf9AaBqRbVdRA==
+ bh=juLkD8D17EkE5aTqndTUEZM1AQBvMSX7Bb8Bx6rJorw=;
+ b=FVeDgfQ0lKzYpmMWlyM1BJaplxiFcmavnW4TltFgUxvfrOYBl7q/fRR2fnH3LRyqmwnoVO6BsobkrmxJ4Dxywnz88uOwSgAszAZ+bxZRxiFujXUt1WOItIXqJNLXVehaNCDY/TiPz5lgFsFoxhDd14C7loSM3R/gUe4L3eoOnYEWR+45ifvMXh9a8jTtAmnCaROpPoEQ6JC3wzQVxcZVylZYNMmvsvHOb9LXo1xX/zRBlA3dxtmgWjQokRcKQTe+KAihTgpDAQFo8/b0RjDMi2Es4a8dbSzRKZhAlNLJgA4mqW2oUQ/w21BtxI+qxdtAB3Lo5hqtMEwNVyV1InjEiA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L1w6mJgNPv25TAFp33iSL9NrM/o/1JNb8Gl5JeEagkw=;
- b=UzEMRSd/3c+BCrhTEt5U5sZVMPc1qgCwjJVeKJ0ofPjECUPfzFUPUKhZjWCEmUzGCv99pS1YZ0KFrZXkCJclaJz1b2R99GeW4+V83xiGTmqZIpaBfQZXNa/W83B+bdHPT0Zsou8ysVPZAgOQLUtT12OXWmNJgxJxq3S+I/DoKY0=
+ bh=juLkD8D17EkE5aTqndTUEZM1AQBvMSX7Bb8Bx6rJorw=;
+ b=L4VZm5WuFhsl3xMFuf3FHhor7Gv22Gp7SRlFf+AvCG5AOExtk8B/B44F5VtpFkfcq2J/vWPRHs2oPMK9yG0WzKhghKMNfdj7wbOynMqG5bj4axBQHrIn5dOAt6jOQsMU26x7fvk15EXWWEfmLtrjOv0uEqL/UbreUiEO8O+PeS4=
 Authentication-Results: linaro.org; dkim=none (message not signed)
  header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
  by DB8PR04MB5786.eurprd04.prod.outlook.com (2603:10a6:10:a8::31) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 10:03:17 +0000
+ 2021 10:03:20 +0000
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
- 10:03:17 +0000
+ 10:03:20 +0000
 From:   Joakim Zhang <qiangqing.zhang@nxp.com>
 To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
         shawnguo@kernel.org
 Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] nvmem: imx-ocotp: add support for post porcessing.
-Date:   Wed,  8 Sep 2021 18:02:55 +0800
-Message-Id: <20210908100257.17833-5-qiangqing.zhang@nxp.com>
+Subject: [PATCH 5/6] arm64: dts: imx8mm: add "cell-type" property for mac-address
+Date:   Wed,  8 Sep 2021 18:02:56 +0800
+Message-Id: <20210908100257.17833-6-qiangqing.zhang@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
 References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
@@ -53,158 +53,162 @@ X-ClientProxiedBy: SG2PR01CA0105.apcprd01.prod.exchangelabs.com
  (2603:10a6:10:fa::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0105.apcprd01.prod.exchangelabs.com (2603:1096:3:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:03:15 +0000
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0105.apcprd01.prod.exchangelabs.com (2603:1096:3:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:03:18 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7e8e6000-02b3-4bf4-7ab8-08d972afe167
+X-MS-Office365-Filtering-Correlation-Id: caba9514-d124-4051-9cfe-08d972afe305
 X-MS-TrafficTypeDiagnostic: DB8PR04MB5786:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB5786DC94340C8186B7244831E6D49@DB8PR04MB5786.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
+X-Microsoft-Antispam-PRVS: <DB8PR04MB5786BDD6C5E78EB1E91422E0E6D49@DB8PR04MB5786.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +xz0Ol29wFZpiPe9ncRUPobTBsZJvHGO4CDgoIiJ0cyIRCTag+NHJJrvoMuxdQs+xEwqGriBbDWDbdpU8/vFJ1PHqEQvwVgrj3Lj7Zc1d1jEJtkFM0FbgyrKWSiE0kL6/gU92mWmfxPldhQNPOUemmDH6zqoMwK5LDryluvUdv3xJNnzjC95ysofD6bnmAWPjlSZ5P6RsjK6XZuKTFgQCwu6Di+UYNfwrpMYSCZyuM+ksTuF4WU/qqLZGV7Wm+aG4OVQkV0EpVuMO0oMgc5SxMMzRnYE4KLpjHy3HrfaziUrlqb15/q3o+M2niLlNoh5oV/DJUnRULiyP2DZir63t9I6IlNw3EhHl3iUBCW0yyUo3mOKNVS6htiXUz0vhLF3RxJ5MtKutr5sXWoS961afx1YuPgv1bpHH9PaKQwy3oboH/2YI1WcKWlsV92AkwqggjyuTvjsuRiYI6wIDw6tXo33fLr95VIGd0LMlRLBNx9zVkMkomxYiNHBaGCQ13VZx2+SA5jIjRI18Rlx6w3Hprp8Mfubj0ONXryjp0SY+wJK4mW6Ey9wmWetKK+XXR690q7itzuTyblbhkUP/wxxO9OVVXlDbJ3sSRkCVhexQz1V4dBm3JvQ/Xv1u5aq1qm/f+9V44rg39R7o9egQhQlOnMjmkkJuWqtm8xVhPw2C+5lnDm2C7z4W5H8Fb3a7K9DIsjRuLsRmK0O4HQQ/IQJHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(86362001)(8936002)(66556008)(6486002)(8676002)(38100700002)(2616005)(66476007)(956004)(478600001)(38350700002)(66946007)(6506007)(316002)(36756003)(52116002)(26005)(5660300002)(83380400001)(1076003)(6512007)(4326008)(6666004)(2906002)(186003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: sVLNkNljb62mWDv5kz0fPYilF9BvQC/y0eEsnuZ7ZpkJ70Fo+fUyxoPAs6ujD1lED8mWPOq3rngtzczBfSF6LfeWRLW9pKxu/sIUSnG+s/2YNybNSty4/56J7n+OwGkD6/5SOZe7Yl03mt3IHQDgbdWjEJFDHTPekvmXEL37xG7vVCpzGa9yp60mME/fk0zcb3yg4YTPoApkYUTQGsx0WtXshxih0K9jyJT51NSWB2EpwgIfOUpSVnCzEZpl606DMcZm/pJrDPTaqoujieRTqLqZkYRay0XZURLi/shuUHU+s5JhgEHUcYOBrZFs82V637oiYTmRulwQPrTi9u1FSMNGWPD+frto4GaiL2V1UOZB10hL31ATnMnB1GgM2sAEIkEto3f4T0oqZYBMieyvLYPZ2OGxzH/e/mVuksDD59D/RVFJ8PITsVcoSraXVteMml2Fb0ucfmpPS37cmtQg5qFg/JhFvs1xNA6XB1jzh6xhH60kqxThUnGOjMyK2fAzdN9KAdFbDPUTQEar/R4aRNGm+hnOmPIHSFVIH0LTUmwi0jG0Q8VLFvHWmLD1f7WiUIj0sDuUXbGK+ZQgH4fdu5pKdLOpuxdG0gZEdbvynsPj0bBGTUlSXZgyrNSRW+V3i25f/nAtTDdEI+J/xQV+erprj2jD7ngIZUjI9Ihbkk7iZI785VamicHeMGKDgbLq0OHUszpX2XngWhxLB3fv/hy7RVRSxiwrdZGkpDAHLAw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(86362001)(8936002)(66556008)(6486002)(8676002)(38100700002)(2616005)(66476007)(956004)(478600001)(38350700002)(66946007)(6506007)(316002)(36756003)(52116002)(26005)(5660300002)(83380400001)(1076003)(6512007)(4326008)(6666004)(2906002)(186003)(32563001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LXg24N+dcf0TUB64rousfe4S3DL/+w9mDh5gGIeHHtE7CUCGXM4kpbU6vZFk?=
- =?us-ascii?Q?No393R9JXfkodg1FCGGDBXQdyFXmnfH0TlGNbRnfYljuSut9UIk5IIFbRdxq?=
- =?us-ascii?Q?bleJJt2iyXPvtVGGrX1fhoRgnaV+UWkbYYye15bFXa1S/yrd+mT5n+VLHMUj?=
- =?us-ascii?Q?JXksB5k82ztmU/GZ88iNSK0L8yrJdjhNv/bPS+dvxoyac9Emv9A9QvldpJrG?=
- =?us-ascii?Q?hbN8H6xfTs3ZOH0WSptXsJkDLQcs0DEG/R0TqJQtNiRt/Bpsx5g2RdqLKsnS?=
- =?us-ascii?Q?FSDRNGpiOIKuLvJVcXKa9I4ITxVLdawltxcntOCtIfy6EdRbMFdb5/Gj4Ao+?=
- =?us-ascii?Q?RoLH0mdlqJaS5hjA89+rWEJI/VW+tdEcaQ7byMflJeuNsVFAQ+7eeEtlGqy4?=
- =?us-ascii?Q?MrhA+NrcLarPzXmGcbkjXb+iXUzdGDdPyp1fEaGXjs8sKeW47vHR2bzIf68/?=
- =?us-ascii?Q?n3d5NIUwHnA3JqBCRnrUf7eKviy8+lNFcArH1XiYml7OFIZw9iVj+Ip1RTlD?=
- =?us-ascii?Q?gJ3Or3wWI7ENy2RDGftYDuXLtVefkRm9E8m4B5GzGwVZotp+KY0+zdfd7Me8?=
- =?us-ascii?Q?NYE9kELDdmw5VGko8X7dq2i+6M4C2MUV1ua4zygYyKmvsEv3E95KUrUc0aE7?=
- =?us-ascii?Q?2nhUZbR1bKPBbQgypLDdZRotx2v/ytH7+qwSCC4kL0gw7QnCaiK5SU/ZC5AF?=
- =?us-ascii?Q?oQ77lpX7DA/ftQrOcz4gz6dr9i2OpaXL3U9yJXeb09sM23B2E1thv9AkNazM?=
- =?us-ascii?Q?ZqFo7+uUVyzLPezJTvUcUNJa6ijqUWUkhJNj/qtR6/4qrWIBiJZI2mhWtdam?=
- =?us-ascii?Q?2XYG+5qgIY30g8EfQT4CSa8W2UYoW+5U0bfEwV3tLDIY0RHvsjb/D17OE5IQ?=
- =?us-ascii?Q?iRPywUjwZy4ZFgdkeuLnMtUce0i1vzAyizQTaWMbgspxdZ2CDoOI1I+wDyYl?=
- =?us-ascii?Q?xU9vSzkahDAIxyS+l2n1nGeVIRf8QT4QFhhi9m4GqjzVTrE+WF4M3fw1k0FD?=
- =?us-ascii?Q?jvME8V2CQCVjN5ErjF4V0IRXy7nKXmkvv/XzsxYBZXRAP0EEdOpOTS24sCgX?=
- =?us-ascii?Q?h5FhF0RxMtaahENB94Ztqj5mMcQy2xVVSRfoy8lq3qotxOdkTTSUBoBSqs9o?=
- =?us-ascii?Q?UiaZepPWGjwrEmz4HA2X07TyQNCS8wvJLJ1vAwSNLEglyVEgUDw2diyQxbwL?=
- =?us-ascii?Q?xAf9RMGQE9Nwf2L5TPwdvzfsE9EETJq38Udok9qbnV/fBF4Ki1Usl/+EZaIz?=
- =?us-ascii?Q?uOkwAMo8kIfijWrsfRrf+SvmRXITWqH6mIL9YsU4HyHXwM9nZtXLVHH5gBz+?=
- =?us-ascii?Q?XOjbSrT85GfsPIUfpVUzYn7b?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cd2OdqUzHJd1cHgv1TGIvEpXAS40be/2rAObiy/hdE2POjLcE3xTtnRRDSbh?=
+ =?us-ascii?Q?HEwWOpJuUyy/IhpqZy1r8TYHkb0H6mv671biItiIyNzetRrwAi0ycM/hkO85?=
+ =?us-ascii?Q?RearrSG0JsSrMq+fDxAR184RobrZYnOlaxav5wjFwWi+NAqCwen75IRZ5PeP?=
+ =?us-ascii?Q?AckQctcLHb8422fh66kpXGK7YNpjBVJStqFJyRtXL1JOtZp6hGjS2pr0miA5?=
+ =?us-ascii?Q?2y2s8Fiy6DDkHwcznQiaX6gplCefyKmeSl8SG3gvQlzP8TRoJwgR3eWFjbg9?=
+ =?us-ascii?Q?97Dp8iZ/Nax84vdCbfgEkUXQk52DCeJ7awCJSW1TYutvfBg8F2W+4sxDIK7m?=
+ =?us-ascii?Q?I1GLs3F8ATMgN01OUuvZi10P8Fx4ZFzqWnLtXmFV+vfIXFAe5JfNNkqhWHdv?=
+ =?us-ascii?Q?REjamnD0+KIa9yPjC/4QuwhBb0ruR53agKMh5lpeuH4XJEc8HqtN/PVsngWj?=
+ =?us-ascii?Q?Qm4hCFioWg8ln945wPWr/czvO4crQy7MiAsLVMfAt3alIdrZD/zH2culM7zy?=
+ =?us-ascii?Q?u9f3xFZ+PJr2x/Qqu8ssABMYEHtkU+Vu7q7RjHLPJormx/upqDY1+8DfZa0f?=
+ =?us-ascii?Q?zkL4OLyzRBukzAKbIlQwjijP+/Yc6MBH0EF5inWsXQxu+z6xDXJB5jCkfvex?=
+ =?us-ascii?Q?XJr7r2az5M6WawPt2zUt3h4hpBTSJW5kDF0YUCof22J+hO3Xh/oKxPEz1RdV?=
+ =?us-ascii?Q?TN0K3sx2zFfj/mtKXIH0soO+kC0WNe2LVtAe9jJaif/8qDxSDaLzfWpRr/1F?=
+ =?us-ascii?Q?OE5M24ErDObW3IFZasa3RNI6nd0EDe+y9SUIJboe2YoIKY8dK9ZRTuCjGEaA?=
+ =?us-ascii?Q?K0ZB9UmCFsUoupKefm+pEhSN4DEndLnJZIbDecq37bcgvH4vLbzV3JBn0MQ4?=
+ =?us-ascii?Q?j+I3WZEwYYfyZO/UCR+HnuSZ5gaJdF2qGdtFeZwIoxbo7QcmhgN4t+1q91uB?=
+ =?us-ascii?Q?pMGulKaLTG8taj8bDoIrltYhCUb55vIm8gGqKhZLiXsYZbrXlGbd3LVuJEFM?=
+ =?us-ascii?Q?papCuMjprKjs+wZvg3otiA+Lsc9sXEsURYYqXZDqQjfMXP6swxA4eltkRlOe?=
+ =?us-ascii?Q?Zx8dQdCrjICP4Iw50hkFOYQDavX7Zx6s6Z9aVLwtWqBdiqLOUjrFgOtL0Oi9?=
+ =?us-ascii?Q?1lPqE4KOSwz2rMZ0ytlYp3LokjGGsX2qN0JQjj2XhX086oaDYPmwBJx6i/+W?=
+ =?us-ascii?Q?Ut89Lp3ftYQAXqITkM9IJ7wDXuAbMJrj/ED1NNKMZ4anEVjF/D+JV1JKYQmp?=
+ =?us-ascii?Q?Okny2pTcG8SkB4v4e2EtqJFWVKA6P4Q0n5OAV57V2QnZiiepxvxbldiglQj4?=
+ =?us-ascii?Q?l5ptMbjtm+m4Z7AZIwXo/GMY?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e8e6000-02b3-4bf4-7ab8-08d972afe167
+X-MS-Exchange-CrossTenant-Network-Message-Id: caba9514-d124-4051-9cfe-08d972afe305
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:03:17.7677
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:03:20.5276
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LcriNTMv1n1tKWXCOiz9Z05r+rw4AHp39ns36wxiAQwTed3Yh214ax4sJ8XHwFLq4U0Usf1IBy1Wy2LDwIB8HA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: MVuKB8pwWNqaupFvTJsUnmwUl0zOYKiCXGvQtXU1fIdhoGB/AlRf+Gu/lG9VktXxDk9fbiiCt9uB72b3hYDpwg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5786
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Add "cell-type" property for mac-address nvmem cell to supporting mac
+address reverse byte.
 
-Add .cell_post_process callback for imx-ocotp to deal with MAC address,
-since MAC address need to be reversed byte for some i.MX SoCs.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- drivers/nvmem/imx-ocotp.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 ++
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 ++
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 9 +++++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 ++
+ 4 files changed, 15 insertions(+)
 
-diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-index 08f41328cc71..0b5a092ebcd2 100644
---- a/drivers/nvmem/imx-ocotp.c
-+++ b/drivers/nvmem/imx-ocotp.c
-@@ -19,6 +19,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index e7648c3b8390..fb14be932386 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
 +#include <dt-bindings/nvmem/nvmem.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-@@ -97,6 +98,7 @@ struct ocotp_params {
- 	unsigned int bank_address_words;
- 	void (*set_timing)(struct ocotp_priv *priv);
- 	struct ocotp_ctrl_reg ctrl;
-+	bool reverse_mac_address;
- };
+ #include <dt-bindings/thermal/thermal.h>
  
- static int imx_ocotp_wait_for_busy(struct ocotp_priv *priv, u32 flags)
-@@ -221,6 +223,29 @@ static int imx_ocotp_read(void *context, unsigned int offset,
- 	return ret;
- }
+ #include "imx8mm-pinfunc.h"
+@@ -539,6 +540,7 @@
  
-+static int imx_ocotp_cell_pp(void *context, int type, unsigned int offset,
-+			     void *data, size_t bytes)
-+{
-+	struct ocotp_priv *priv = context;
+ 				fec_mac_address: mac-address@90 {
+ 					reg = <0x90 6>;
++					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+ 				};
+ 			};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index d4231e061403..0a994e6edc0b 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/nvmem/nvmem.h>
+ #include <dt-bindings/thermal/thermal.h>
+ 
+ #include "imx8mn-pinfunc.h"
+@@ -544,6 +545,7 @@
+ 
+ 				fec_mac_address: mac-address@90 {
+ 					reg = <0x90 6>;
++					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+ 				};
+ 			};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 9f7c7f587d38..37188ff07f21 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/nvmem/nvmem.h>
+ #include <dt-bindings/thermal/thermal.h>
+ 
+ #include "imx8mp-pinfunc.h"
+@@ -358,6 +359,12 @@
+ 
+ 				eth_mac1: mac-address@90 {
+ 					reg = <0x90 6>;
++					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
++				};
 +
-+	/* Deal with some post processing of nvmem cell data */
-+	switch (type) {
-+	case NVMEM_CELL_TYPE_MAC_ADDRESS:
-+		if (priv->params->reverse_mac_address) {
-+			u8 *buf = data;
-+			int i;
-+
-+			for (i = 0; i < bytes/2; i++)
-+				swap(buf[i], buf[bytes - i - 1]);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static void imx_ocotp_set_imx6_timing(struct ocotp_priv *priv)
- {
- 	unsigned long clk_rate;
-@@ -468,6 +493,7 @@ static struct nvmem_config imx_ocotp_nvmem_config = {
- 	.stride = 1,
- 	.reg_read = imx_ocotp_read,
- 	.reg_write = imx_ocotp_write,
-+	.cell_post_process = imx_ocotp_cell_pp,
- };
++				eth_mac2: mac-address@96 {
++					reg = <0x96 6>;
++					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+ 				};
+ 			};
  
- static const struct ocotp_params imx6q_params = {
-@@ -530,6 +556,7 @@ static const struct ocotp_params imx8mq_params = {
- 	.bank_address_words = 0,
- 	.set_timing = imx_ocotp_set_imx6_timing,
- 	.ctrl = IMX_OCOTP_BM_CTRL_DEFAULT,
-+	.reverse_mac_address = true,
- };
+@@ -836,6 +843,8 @@
+ 							 <&clk IMX8MP_SYS_PLL2_100M>,
+ 							 <&clk IMX8MP_SYS_PLL2_125M>;
+ 				assigned-clock-rates = <0>, <100000000>, <125000000>;
++				nvmem-cells = <&eth_mac2>;
++				nvmem-cell-names = "mac-address";
+ 				intf_mode = <&gpr 0x4>;
+ 				status = "disabled";
+ 			};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 91df9c5350ae..1cb211e470ae 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -10,6 +10,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include "dt-bindings/input/input.h"
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/nvmem/nvmem.h>
+ #include <dt-bindings/thermal/thermal.h>
+ #include <dt-bindings/interconnect/imx8mq.h>
+ #include "imx8mq-pinfunc.h"
+@@ -570,6 +571,7 @@
  
- static const struct ocotp_params imx8mm_params = {
-@@ -537,6 +564,7 @@ static const struct ocotp_params imx8mm_params = {
- 	.bank_address_words = 0,
- 	.set_timing = imx_ocotp_set_imx6_timing,
- 	.ctrl = IMX_OCOTP_BM_CTRL_DEFAULT,
-+	.reverse_mac_address = true,
- };
+ 				fec_mac_address: mac-address@90 {
+ 					reg = <0x90 6>;
++					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+ 				};
+ 			};
  
- static const struct ocotp_params imx8mn_params = {
-@@ -544,6 +572,7 @@ static const struct ocotp_params imx8mn_params = {
- 	.bank_address_words = 0,
- 	.set_timing = imx_ocotp_set_imx6_timing,
- 	.ctrl = IMX_OCOTP_BM_CTRL_DEFAULT,
-+	.reverse_mac_address = true,
- };
- 
- static const struct ocotp_params imx8mp_params = {
-@@ -551,6 +580,7 @@ static const struct ocotp_params imx8mp_params = {
- 	.bank_address_words = 0,
- 	.set_timing = imx_ocotp_set_imx6_timing,
- 	.ctrl = IMX_OCOTP_BM_CTRL_8MP,
-+	.reverse_mac_address = true,
- };
- 
- static const struct of_device_id imx_ocotp_dt_ids[] = {
 -- 
 2.17.1
 
