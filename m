@@ -2,195 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD8B404053
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1597B404056
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351341AbhIHUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 16:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbhIHUwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 16:52:13 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8305C061575;
-        Wed,  8 Sep 2021 13:51:04 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 473C669C3; Wed,  8 Sep 2021 16:51:03 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 473C669C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1631134263;
-        bh=Rsr8yhVwiPXAd+PHqS4Ee2gc2en0YgpekPyCT9JDLz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AG6HtQGpBu/qrIDH/pa46CTseZpfnQxz9iVFCVtOKplxZXjIHf5VVXNVgp/IxAvya
-         B3aMND26lRgQDI/J4DAtJhD/yTlUrYEmShEzvggkn6ITF+TZs/ftLiq3yChyH8vg7Z
-         vSTWKeer7FWRoJFLlwsm1OuzVJKPsyrpP9djQprM=
-Date:   Wed, 8 Sep 2021 16:51:03 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     "wanghai (M)" <wanghai38@huawei.com>
-Cc:     Wenbin Zeng <wenbin.zeng@gmail.com>, viro@zeniv.linux.org.uk,
-        davem@davemloft.net, jlayton@kernel.org,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        wenbinzeng@tencent.com, dsahern@gmail.com,
-        nicolas.dichtel@6wind.com, willy@infradead.org,
-        edumazet@google.com, jakub.kicinski@netronome.com,
-        tyhicks@canonical.com, chuck.lever@oracle.com, neilb@suse.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] auth_gss: netns refcount leaks when
- use-gss-proxy==1
-Message-ID: <20210908205103.GE23978@fieldses.org>
-References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
- <1557470163-30071-1-git-send-email-wenbinzeng@tencent.com>
- <20190515010331.GA3232@fieldses.org>
- <20190612083755.GA27776@bridge.tencent.com>
- <20190612155224.GF16331@fieldses.org>
- <2c9e3d91-f4b3-6f6a-0dc0-21cef4fab3bb@huawei.com>
+        id S1352015AbhIHUyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 16:54:31 -0400
+Received: from mout.gmx.net ([212.227.15.18]:39899 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235437AbhIHUy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 16:54:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631134383;
+        bh=gGyssjxabohIjDxtvSkR6S2G+R/GgD+Ug3BlWj57mTc=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=dKSxVQGr07tIiKKuYkeXWuzl2m58yq5rK/mQgVxPpQdZSlMAj8Fz9oDyFBc4vWEFM
+         knRlLZiz322q2yvQF1WWQ3AFQ5eGw4VO8kZ2EaXi6lXaGXhD//5oV5NK+kSg5zvRSR
+         FX1cY78/HoHb9/tdqjdZHpCy9ZRvSTbvcof4ZiU4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.85.61] ([80.187.121.129]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mulm5-1nFLhs0hff-00rm9Y; Wed, 08
+ Sep 2021 22:53:03 +0200
+Subject: Re: [PATCH] parisc: Move pci_dev_is_behind_card_dino to where it is
+ used
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210908153041.643069-1-linux@roeck-us.net>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <8392d93e-73d8-0a9e-15e2-db139086fdf0@gmx.de>
+Date:   Wed, 8 Sep 2021 22:51:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2c9e3d91-f4b3-6f6a-0dc0-21cef4fab3bb@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20210908153041.643069-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nRdMm2osOOu780aITU30zP7UhFvqrvZ4Jxcf6m9DZMSQ+ySiG4R
+ 2DG0uW6rccx/EyMiAz/ykE/kNd133z2Hkg3g26znlPbgzOVJMrSS3VkP+g97uTa3yaQ60zF
+ hKVaMdNbRlZVQErBVp4wGGzNWogTS2cLt4fKBnIJ32MOO+OyXnl3wSjOvLNdogUqpX9XDJQ
+ 7Emd7jkM+XEydhYTyeI6Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sxTCNEFc818=:rm7ecPnH9AuqDOoYbOHT8a
+ MIKB2Hc0oEnZiDF3Fztn6/xGkaV+DwcDylgtiQBs8FzsjKioNogDJyd6xGcgTYzH/pyo9FENz
+ bx8YjeQBxRXvzKj0f44Za8bXeC7vD8abFfsWQuJdU++2aiGTRvLOfLduG6wkRRgcbtRSIZpEt
+ CoGrfHGmC7XSZ4MgCM300deuvnl0Ae/PzrAzsn83Y2J53t15mhZBX+9ur++GoAvh1YrNUzWXR
+ c99xyvHnTxgClndLsmeb/x/RTzXcRpoh0nT4Phrt2Uq+dbeRT3M3H/7Xxg0HcQCU731OWHDhM
+ GcjBJs57nz/+7vVE5zXultcSwX1jzN5uHaVRliOWq8jGHYxAGrRPYMS415vzXpHfWjtg7PDlL
+ xu8i53ifid7QGKbHFezCsA0uOyvOTbmam5kM4Mg2yQ3aczfBRXL4IXQ8TZf1gGWsLbyG92K3q
+ BuIvWCh8vNCbgExD02zDT1P3mziRYTo63EJ8XhKOOeE82CibBFOCqgdKywm3QE61bXKKit3bL
+ yz8hjYEXzlXLm6bH7TGC1KqGN48sQKlHSf4WyQFdG+ofr7bhtovNc8tr59EvzrYjug7pc6+EJ
+ +uYqjlcexttmnbOxAtJxBmL1VTbQCCsHUCXZU+uCNpSxYJ5txmosqgGElH7HSS/a4+6Z6WEfN
+ 6PW7dtLT+jDg1tYFkchLM52mOhbjZS+oMLcce798Nd55HvPESLkfrEHqJKvsPZ+1b7b0yxn9r
+ yOY0dRjbF7rkrShJxFyfCJGrMgdxRyciKYyzzPYwB30XBA+tk8mks26j51kg6w7T1zVLQZ+tK
+ qv5Dea2eEcj/LA5LgNDezxMPOw/fy5LkxcOzP2U37XJTL6BK4gYA7JI00yGT0adE8q84pG+ad
+ ByXc7lEm0hXys/qCyUdQkYT/nzriFF5O/PZE44e6fW0YpfEoX5uNudyWBma5zFyGLVkNE2Nl/
+ nOiLMUC7Wlezg0qkv9bWWOG85K0+XBMGiZNbezpLkuSg1VQ0fZdDdnkSp/5BMJxnkZMMYIHAT
+ DaodUmv6V2ZLRp27VIo9mVQdZopWwr+XSQFIQ55a8pmcgOBPNlvwI9vYyBodDdvgql1bpNLiB
+ oj9vBOm/Jy3cik=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 10:48:52PM +0800, wanghai (M) wrote:
-> 
-> 在 2019/6/12 23:52, J. Bruce Fields 写道:
-> >On Wed, Jun 12, 2019 at 04:37:55PM +0800, Wenbin Zeng wrote:
-> >>On Tue, May 14, 2019 at 09:03:31PM -0400, J. Bruce Fields wrote:
-> >>>Whoops, I was slow to test these.  I'm getting failuring krb5 nfs
-> >>>mounts, and the following the server's logs.  Dropping the three patches
-> >>>for now.
-> >>My bad, I should have found it earlier. Thank you for testing it, Bruce.
-> >>
-> >>I figured it out, the problem that you saw is due to the following code:
-> >>the if-condition is incorrect here because sn->gssp_clnt==NULL doesn't mean
-> >>inexistence of 'use-gss-proxy':
-> >Thanks, but with the new patches I see the following.  I haven't tried
-> >to investigate.
-> This patchset adds the nsfs_evict()->netns_evict() code for breaking
-> deadlock bugs that exist, but this may cause double free because
-> nsfs_evict()->netns_evict() may be called multiple times.
-> 
-> for example:
-> 
-> int main()
-> {
->     int fd = open("/proc/self/ns/net", O_RDONLY);
->     close(fd);
-> 
->     fd = open("/proc/self/ns/net", O_RDONLY);
->     close(fd);
-> }
-> 
-> Therefore, the nsfs evict cannot be used to break the deadlock.
+On 9/8/21 5:30 PM, Guenter Roeck wrote:
+> parisc build test images fail to compile with the following error.
+>
+> drivers/parisc/dino.c:160:12: error:
+> 	'pci_dev_is_behind_card_dino' defined but not used
+>
+> Move the function just ahead of its only caller to avoid the error.
+>
+> Fixes: 5fa1659105fa ("parisc: Disable HP HSC-PCI Cards to prevent kernel=
+ crash")
+> Cc: Helge Deller <deller@gmx.de>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-Sorry, I haven't really been following this, but I though this problem
-was fixed by your checking for gssp_clnt (instead of just relying on the
-use_gssp_proc check) in v3 of your patches?
+applied to the parisc tree.
 
---b.
+Thanks!
+Helge
 
-> 
-> A large number of netns leaks may cause OOM problems, currently I
-> can't find a good solution to fix it, does anyone have a good idea?
-> >--b.
-> >
-> >[ 2908.134813] ------------[ cut here ]------------
-> >[ 2908.135732] name 'use-gss-proxy'
-> >[ 2908.136276] WARNING: CPU: 2 PID: 15032 at fs/proc/generic.c:673 remove_proc_entry+0x124/0x190
-> >[ 2908.138144] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
-> >[ 2908.140183] CPU: 2 PID: 15032 Comm: (coredump) Not tainted 5.2.0-rc2-00441-gaef575f54640 #2257
-> >[ 2908.142062] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
-> >[ 2908.143756] RIP: 0010:remove_proc_entry+0x124/0x190
-> >[ 2908.144519] Code: c3 48 c7 c7 60 24 8b 82 e8 29 16 a5 00 eb d5 48 c7 c7 60 24 8b 82 e8 1b 16 a5 00 4c 89 e6 48 c7 c7 ec 4c 52 82 e8 50 fd db ff <0f> 0b eb b6 48 8b 04 24 83 a8 90 00 00 00 01 e9 78 ff ff ff 4c 89
-> >[ 2908.148138] RSP: 0018:ffffc900047bbdb0 EFLAGS: 00010282
-> >[ 2908.148945] RAX: 0000000000000000 RBX: ffff888036060580 RCX: 0000000000000000
-> >[ 2908.150139] RDX: ffff88807fd24e80 RSI: ffff88807fd165b8 RDI: 00000000ffffffff
-> >[ 2908.151334] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> >[ 2908.152564] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffa00adb1b
-> >[ 2908.153816] R13: 00007ffc8bda5d30 R14: 0000000000000000 R15: ffff88805e2873a8
-> >[ 2908.155007] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
-> >[ 2908.156421] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >[ 2908.157333] CR2: 0000562b07764c58 CR3: 000000005e8ea001 CR4: 00000000001606e0
-> >[ 2908.158529] Call Trace:
-> >[ 2908.158796]  destroy_use_gss_proxy_proc_entry+0xb7/0x150 [auth_rpcgss]
-> >[ 2908.159966]  gss_svc_shutdown_net+0x11/0x170 [auth_rpcgss]
-> >[ 2908.160830]  netns_evict+0x2f/0x40
-> >[ 2908.161266]  nsfs_evict+0x27/0x40
-> >[ 2908.161685]  evict+0xd0/0x1a0
-> >[ 2908.162035]  __dentry_kill+0xdf/0x180
-> >[ 2908.162520]  dentry_kill+0x50/0x1c0
-> >[ 2908.163005]  ? dput+0x1c/0x2b0
-> >[ 2908.163369]  dput+0x260/0x2b0
-> >[ 2908.163739]  path_put+0x12/0x20
-> >[ 2908.164155]  do_faccessat+0x17c/0x240
-> >[ 2908.164643]  do_syscall_64+0x50/0x1c0
-> >[ 2908.165170]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >[ 2908.165959] RIP: 0033:0x7f47098e2157
-> >[ 2908.166445] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
-> >[ 2908.169994] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-> >[ 2908.171315] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
-> >[ 2908.172563] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
-> >[ 2908.173753] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
-> >[ 2908.174943] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
-> >[ 2908.176163] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
-> >[ 2908.177395] irq event stamp: 4256
-> >[ 2908.177835] hardirqs last  enabled at (4255): [<ffffffff811221ee>] console_unlock+0x41e/0x590
-> >[ 2908.179378] hardirqs last disabled at (4256): [<ffffffff81001b2f>] trace_hardirqs_off_thunk+0x1a/0x1c
-> >[ 2908.181031] softirqs last  enabled at (4252): [<ffffffff820002be>] __do_softirq+0x2be/0x4aa
-> >[ 2908.182458] softirqs last disabled at (4233): [<ffffffff810bf8e0>] irq_exit+0x80/0x90
-> >[ 2908.183869] ---[ end trace d88132b63efc09d8 ]---
-> >[ 2908.184620] BUG: kernel NULL pointer dereference, address: 0000000000000030
-> >[ 2908.185829] #PF: supervisor read access in kernel mode
-> >[ 2908.186924] #PF: error_code(0x0000) - not-present page
-> >[ 2908.187887] PGD 0 P4D 0
-> >[ 2908.188318] Oops: 0000 [#1] PREEMPT SMP PTI
-> >[ 2908.189254] CPU: 2 PID: 15032 Comm: (coredump) Tainted: G        W         5.2.0-rc2-00441-gaef575f54640 #2257
-> >[ 2908.192506] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
-> >[ 2908.195137] RIP: 0010:__lock_acquire+0x3d2/0x1d90
-> >[ 2908.196414] Code: db 48 8b 84 24 88 00 00 00 65 48 33 04 25 28 00 00 00 0f 85 be 10 00 00 48 8d 65 d8 44 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <48> 81 3f 60 0d 01 83 41 bb 00 00 00 00 45 0f 45 d8 83 fe 01 0f 87
-> >[ 2908.202720] RSP: 0018:ffffc900047bbc80 EFLAGS: 00010002
-> >[ 2908.204165] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-> >[ 2908.206125] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000030
-> >[ 2908.208203] RBP: ffffc900047bbd40 R08: 0000000000000001 R09: 0000000000000000
-> >[ 2908.210219] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807ad91500
-> >[ 2908.211386] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000282
-> >[ 2908.212532] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
-> >[ 2908.213647] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >[ 2908.214400] CR2: 0000000000000030 CR3: 000000005e8ea001 CR4: 00000000001606e0
-> >[ 2908.215393] Call Trace:
-> >[ 2908.215589]  ? __lock_acquire+0x255/0x1d90
-> >[ 2908.216071]  ? clear_gssp_clnt+0x1b/0x50 [auth_rpcgss]
-> >[ 2908.216720]  ? __mutex_lock+0x99/0x920
-> >[ 2908.217114]  lock_acquire+0x95/0x1b0
-> >[ 2908.217484]  ? cache_purge+0x1c/0x110 [sunrpc]
-> >[ 2908.218000]  _raw_spin_lock+0x2f/0x40
-> >[ 2908.218370]  ? cache_purge+0x1c/0x110 [sunrpc]
-> >[ 2908.218882]  cache_purge+0x1c/0x110 [sunrpc]
-> >[ 2908.219346]  gss_svc_shutdown_net+0xb8/0x170 [auth_rpcgss]
-> >[ 2908.220104]  netns_evict+0x2f/0x40
-> >[ 2908.220439]  nsfs_evict+0x27/0x40
-> >[ 2908.220786]  evict+0xd0/0x1a0
-> >[ 2908.221050]  __dentry_kill+0xdf/0x180
-> >[ 2908.221458]  dentry_kill+0x50/0x1c0
-> >[ 2908.221842]  ? dput+0x1c/0x2b0
-> >[ 2908.222126]  dput+0x260/0x2b0
-> >[ 2908.222384]  path_put+0x12/0x20
-> >[ 2908.222753]  do_faccessat+0x17c/0x240
-> >[ 2908.223125]  do_syscall_64+0x50/0x1c0
-> >[ 2908.223479]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >[ 2908.224152] RIP: 0033:0x7f47098e2157
-> >[ 2908.224566] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
-> >[ 2908.228198] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-> >[ 2908.229496] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
-> >[ 2908.230938] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
-> >[ 2908.232182] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
-> >[ 2908.233481] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
-> >[ 2908.234750] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
-> >[ 2908.236068] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
-> >[ 2908.237861] CR2: 0000000000000030
-> >[ 2908.238277] ---[ end trace d88132b63efc09d9 ]---
+
+> ---
+>   drivers/parisc/dino.c | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+> index 889d7ce282eb..952a92504df6 100644
+> --- a/drivers/parisc/dino.c
+> +++ b/drivers/parisc/dino.c
+> @@ -156,15 +156,6 @@ static inline struct dino_device *DINO_DEV(struct p=
+ci_hba_data *hba)
+>   	return container_of(hba, struct dino_device, hba);
+>   }
+>
+> -/* Check if PCI device is behind a Card-mode Dino. */
+> -static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
+> -{
+> -	struct dino_device *dino_dev;
+> -
+> -	dino_dev =3D DINO_DEV(parisc_walk_tree(dev->bus->bridge));
+> -	return is_card_dino(&dino_dev->hba.dev->id);
+> -}
+> -
+>   /*
+>    * Dino Configuration Space Accessor Functions
+>    */
+> @@ -447,6 +438,15 @@ static void quirk_cirrus_cardbus(struct pci_dev *de=
+v)
+>   DECLARE_PCI_FIXUP_ENABLE(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_68=
+32, quirk_cirrus_cardbus );
+>
+>   #ifdef CONFIG_TULIP
+> +/* Check if PCI device is behind a Card-mode Dino. */
+> +static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
+> +{
+> +	struct dino_device *dino_dev;
+> +
+> +	dino_dev =3D DINO_DEV(parisc_walk_tree(dev->bus->bridge));
+> +	return is_card_dino(&dino_dev->hba.dev->id);
+> +}
+> +
+>   static void pci_fixup_tulip(struct pci_dev *dev)
+>   {
+>   	if (!pci_dev_is_behind_card_dino(dev))
+>
+
