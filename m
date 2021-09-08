@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C5C403FC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81ABF403FD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350369AbhIHTYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240049AbhIHTX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:23:57 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3172C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 12:22:49 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id bd1so4457198oib.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 12:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=61wtExygeBHNU8JF1VKoq8GwGXMXla9fnLJNWz4U874=;
-        b=Qkoyhe9Z1+0BPnng/Vdy7xf4dQsH7MUTBdaZI9INIgnp8jPW8UvHsIV+/SLr1kumRx
-         RWELex1z74aqpLUB/5ap0BCWYE7chvPYDFixzzTLhO1/caJZVbqPV/Cr4ScDuKdBaYJR
-         p9T25XKOTz/tFO5XYp6qAa8sIqTdSRnSz0prs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=61wtExygeBHNU8JF1VKoq8GwGXMXla9fnLJNWz4U874=;
-        b=3Z8iXnri8Tg9LCIv9QjTk43IZrqswj6G6mAEOzMsUf7QcqEpE8Z7DgoSF0tQsQOUZV
-         IFTPZA/V0iuP/qJue1pNcPbcD+mxvRXogQnHkhbyBWEX7oaF6DurjnLnVrh6OcK9ez9u
-         7bFn68ELMFoOHK4EAagKofOJearf+Sd7RIi2TjR+E4Bc5R9hGfEoiCPC2GYefRb+uZH8
-         Iy3tf1flsann1aC4ru0Tj3vbqWWK7YWLKgllxwGj7aOdEIYqGMuOzcV2uNmMdPeKPK6i
-         sp6tNvwChZ5ViAogTIx543/ipngf3T5ZWT1q2gHestnw9CMAQtznEFyybAt1jKHQbvj6
-         /oqA==
-X-Gm-Message-State: AOAM530cGmVgC4VhT9POWVLawpa64tunYdKf9C/rkpIzVjnG4kTmYnRT
-        GhSUPhTvjZAh8r1spe1A7FScWa1Q54VOeKR90g0a/g==
-X-Google-Smtp-Source: ABdhPJyMVPWZq+0eN5wIDIK73pjGaAgZfNF+FmxkWJEtyh6JhBRuT7h/4z4PCJffVzSDmSs53y0p5S0M6Urst1ZzTQc=
-X-Received: by 2002:aca:3954:: with SMTP id g81mr3572533oia.101.1631128969002;
- Wed, 08 Sep 2021 12:22:49 -0700 (PDT)
+        id S1350363AbhIHT3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:29:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230323AbhIHT3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:29:40 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38BE361104;
+        Wed,  8 Sep 2021 19:28:32 +0000 (UTC)
+Date:   Wed, 8 Sep 2021 15:28:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Julio Faracco <jcfaracco@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [for-next][PATCH 08/12] bootconfig: Fix missing return check of
+ xbc_node_compose_key function
+Message-ID: <20210908152825.1a07d8b2@oasis.local.home>
+In-Reply-To: <20210908191954.608550008@goodmis.org>
+References: <20210908191851.381347939@goodmis.org>
+        <20210908191954.608550008@goodmis.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
-In-Reply-To: <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 8 Sep 2021 21:22:37 +0200
-Message-ID: <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Shunsuke Mie <mie@igel.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
-> Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hellwig <=
-hch@infradead.org>:
-> >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> >>>> Thank you for your comment.
-> >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> >>>>>> To share memory space using dma-buf, a API of the dma-buf requires=
- dma
-> >>>>>> device, but devices such as rxe do not have a dma device. For thos=
-e case,
-> >>>>>> change to specify a device of struct ib instead of the dma device.
-> >>>>> So if dma-buf doesn't actually need a device to dma map why do we e=
-ver
-> >>>>> pass the dma_device here?  Something does not add up.
-> >>>> As described in the dma-buf api guide [1], the dma_device is used by=
- dma-buf
-> >>>> exporter to know the device buffer constraints of importer.
-> >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
-F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian.koenig%40=
-amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d994e18=
-3d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDA=
-iLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3DARwQyo%2=
-BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
-> >>> Which means for rxe you'd also have to pass the one for the underlyin=
-g
-> >>> net device.
-> >> I thought of that way too. In that case, the memory region is constrai=
-ned by the
-> >> net device, but rxe driver copies data using CPU. To avoid the constra=
-ints, I
-> >> decided to use the ib device.
-> > Well, that is the whole problem.
-> >
-> > We can't mix the dmabuf stuff people are doing that doesn't fill in
-> > the CPU pages in the SGL with RXE - it is simply impossible as things
-> > currently are for RXE to acess this non-struct page memory.
->
-> Yeah, agree that doesn't make much sense.
->
-> When you want to access the data with the CPU then why do you want to
-> use DMA-buf in the first place?
->
-> Please keep in mind that there is work ongoing to replace the sg table
-> with an DMA address array and so make the underlying struct page
-> inaccessible for importers.
+On Wed, 08 Sep 2021 15:18:59 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
-for cpu access. Which intentionally does not require any device. No
-idea why there's a dma_buf_attach involved. Now not all exporters
-support this, but that's fixable, and you must call
-dma_buf_begin/end_cpu_access for cache management if the allocation
-isn't cpu coherent. But it's all there, no need to apply hacks of
-allowing a wrong device or other fun things.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> From: Julio Faracco <jcfaracco@gmail.com>
+> 
+> The function `xbc_show_list should` handle the keys during the
+> composition. Even the errors returned by the compose function. Instead
+> of removing the `ret` variable, it should save the value and show the
+> exact error. This missing variable is causing a compilation issue also.
+> 
+> Link: https://lkml.kernel.org/r/163077087861.222577.12884543474750968146.stgit@devnote2
+> 
+> Fixes: e5efaeb8a8f5 ("bootconfig: Support mixing a value and subkeys under a key")
+> Signed-off-by: Julio Faracco <jcfaracco@gmail.com>
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+> Cc: stable@vgar.kernel.org
+
+Oops, a typo. That should be: stable@vger.kernel.org or
+stable@kernel.org. There is no "vgar" ;-)
+
+I'll fix this up.
+
+-- Steve
+
+
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
