@@ -2,118 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0952E403B0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563C1403B12
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237933AbhIHNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhIHNzH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:55:07 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C33EC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:54:00 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a13so3319966iol.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H6uJL7KGmuDRj2+K9SKxii9PESLgjU7iPSWeZSupfsM=;
-        b=E78Z0mACMvqVx9d/nDZSIbyo6MypL5fiKNc+eg2oyohrc2HOvlZ4R9cqxpX3m5LS9p
-         eiqoM4KyKsC93LoFigtSeqwLOT7zLrMTiQz8n5EyHhzXHblyP8sCigY+C0VTcSSeLUjx
-         k+HzzEGH5Tal06dK38SoSd8oPvvJbyTAlmq202E1DtR1laUJIVajuPUQJgS8wzlZUCD0
-         QVxLbvfPpI6/CGoDbboc8gxksPx1sS80/Qp7JF9kUa4vjGpb8KWsYhzkYHk4MgxAfsOq
-         YwzUMBND+4d626pTysmKpS/t3rAHPHpfW0crrT+PauaKIpmOc2JxsJIcuChWf/FZOGcO
-         kiEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H6uJL7KGmuDRj2+K9SKxii9PESLgjU7iPSWeZSupfsM=;
-        b=4Avyy9BfztkdEs6Ous94mdXaGrqjRjiKKwNCuafZsQlE+frRBeYyjp3jZ6QquEfzOi
-         DFZ6qqwbYOjvTCPg19MYn8pJLiI03Azd5/+kjEhUiCD4ZV+lch+5wBH+t4pRpmUe+oku
-         4HcyuNguno1S4wFuBN7hZrbJvwXfSOsOOKHzOwDcoz4m0ucgVWr3bM1eU5XaBm/gXuzM
-         Sr/e546IxU7yHKYCR/CTI2wW19cexYr76vD4Kk92dPL9ywpblzvFhGSX9Q5xu9TSQm7m
-         bS7x9mzd4G3z6RYVYAVR4CNd6yBv46hdLemJS5tAQELWMPd6kBDlzcN7YyVKMs/xyqy2
-         yS7w==
-X-Gm-Message-State: AOAM5329YCbifaH3jNLUIO/o5FvvsOvisJbU6w7fPi3SuNqSNmd+yuu0
-        teBg4ILikYakYBpXkLCEQTx9iRVhT0HkUg==
-X-Google-Smtp-Source: ABdhPJz5nHJRsVwTeSBdURkaN0zw22/f2GRsD5sM0vyNeGc9bxwUlb2BHQL/iQNMoY4MVtsbYSYpxw==
-X-Received: by 2002:a02:5d42:: with SMTP id w63mr3795653jaa.20.1631109239398;
-        Wed, 08 Sep 2021 06:53:59 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id i20sm1040796ila.62.2021.09.08.06.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 06:53:59 -0700 (PDT)
-Subject: Re: [PATCH] /dev/mem: nowait zero/null ops
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     io-uring@vger.kernel.org
-References: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
- <ed21a6b0-be32-e00a-98c3-f25759a44071@kernel.dk>
- <654d5c75-72fa-bfab-dc14-fa923a2a815a@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e1142f64-906e-a75e-dd89-501102093761@kernel.dk>
-Date:   Wed, 8 Sep 2021 07:53:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1351759AbhIHN4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:56:32 -0400
+Received: from ixit.cz ([94.230.151.217]:34730 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231304AbhIHN4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:56:31 -0400
+Received: from newone.lan (ixit.cz [94.230.151.217])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 749C324A25;
+        Wed,  8 Sep 2021 15:55:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1631109321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=I0acloQnTQGjEElBrRVwhD3k1ePNYT9gjmoa3R81RgE=;
+        b=efixGqHkdly5hegWhB1EF7FMZAiS7ZoA/q8jpoRB0LcSXvqPgWMPyxe3B9S1sEmY+Ol6Tp
+        0kxzhqfmx7qZv5bifN/NsYpierqldpZx8yP7DP0j5Hcj03iV90q27mtYlj6IUO3IlMzfHW
+        TUzAL1Tzg+zHRELWf1EW80xzsAx54/0=
+From:   David Heidelberg <david@ixit.cz>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: arm: qcom, add missing devices
+Date:   Wed,  8 Sep 2021 15:54:09 +0200
+Message-Id: <20210908135409.5896-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <654d5c75-72fa-bfab-dc14-fa923a2a815a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 7:07 AM, Pavel Begunkov wrote:
-> On 9/8/21 1:57 PM, Jens Axboe wrote:
->> On 9/8/21 4:06 AM, Pavel Begunkov wrote:
->>> Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
->>> advertised as FMODE_NOWAIT. This helps subsystems like io_uring to use
->>> it more effectively. Set FMODE_NOWAIT for /dev/null as well, it never
->>> waits and therefore trivially meets the criteria.
->>>
->>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->>> ---
->>>  drivers/char/mem.c | 6 ++++--
->>>  1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
->>> index 1c596b5cdb27..531f144d7132 100644
->>> --- a/drivers/char/mem.c
->>> +++ b/drivers/char/mem.c
->>> @@ -495,6 +495,8 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
->>>  		written += n;
->>>  		if (signal_pending(current))
->>>  			return written ? written : -ERESTARTSYS;
->>> +		if (iocb->ki_flags & IOCB_NOWAIT)
->>> +			return written ? written : -EAGAIN;
->>>  		cond_resched();
->>>  	}
->>
->> I don't think this part is needed.
-> 
-> It can be clearing gigabytes in one go. Won't it be too much of a
-> delay when nowait is expected?
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I guess it can't hurt, but then it should be changed to:
-
-if (!need_resched())
-	continue;
-if (iocb->ki_flags & IOCB_NOWAIT)
-	return written ? written : -EAGAIN;
-cond_resched();
-
-to avoid doing -EAGAIN just because there's more than one segment in the
-buffer. Even that may be excessive though, but definitely a lot better.
-
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 9aeb500630e0..5169ebb97946 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -95,6 +95,9 @@ properties:
+ 
+       - items:
+           - enum:
++              - asus,nexus4-mako
++              - asus,nexus7-flo
++              - sony,xperia-yuga
+               - qcom,apq8064-cm-qs600
+               - qcom,apq8064-ifc6410
+           - const: qcom,apq8064
+@@ -130,6 +133,7 @@ properties:
+           - enum:
+               - fairphone,fp2
+               - lge,hammerhead
++              - samsung,klte
+               - sony,xperia-amami
+               - sony,xperia-castor
+               - sony,xperia-honami
 -- 
-Jens Axboe
+2.33.0
 
