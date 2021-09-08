@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9168D403D5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B985403D60
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345355AbhIHQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
+        id S1347390AbhIHQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhIHQKI (ORCPT
+        with ESMTP id S244084AbhIHQK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:10:08 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F491C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:09:00 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id m4so4382214ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F5ZeFAknLDpJj0gufvdFHOmCevevfl6tESN6kJ6gAYQ=;
-        b=K7yBmZ5ODUwzJy0G0jcYOAQOAvzjZ2K4Y7BSVXC/PKjsSnt1W/esVP6NG0CrPEqZLv
-         vl4EG3Oho6nNuiO8w8cWwRpynP/MON/EPcKbZHzGYWwDVVwQZqCDcHY5KbbkKxwnRGzQ
-         FQmC6QIVNuaqe/2ky5dtaOZcTd7jTkqvfEY6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5ZeFAknLDpJj0gufvdFHOmCevevfl6tESN6kJ6gAYQ=;
-        b=RDTLA/BF8E7FqLf9nTX3d0n5ZiCHNUCFBYrskC/zA5Y72OAoxtryf7B6tF/LLew/jB
-         SB3NMvKdiCEgVenVmL7BDDY6XKUHWGvPECsrFzh/ZnJ4AUN3XvwppUDi3ypmey2X5sVV
-         GWN9SilDrce5c8y58Pr04TG68dGACRa4Gcd42xcO3LaBeXEokitYtrg8jRTMWTS74BZy
-         LUE+gLzHtE+GukqzKzxBs2wtnAsrFYX01P3yVfTzEsRjrNA67+4dMOoQlwZmXxKOGhao
-         xp3Ov+83v4wYLl3ED59UzJ4cq8hpjWl/R0UFThAOpEjMBSuzbS1bBhPx1RkpF0vRCAnH
-         84Pw==
-X-Gm-Message-State: AOAM532FTwBUhvQAmdXCYZyOsIZujNUDVw48CZ69o+ukp6WkwDRl8K0+
-        ikWPACx4fz+B1WgAdQFq1qyO4cfBjdD1cCb+nCw=
-X-Google-Smtp-Source: ABdhPJx9KJbZ0+NecyAisOYvOC47If0Pcs/vkuFwREOz3TT0mu6rqjeufnW+bkcHAQtUs87ZrDZE7w==
-X-Received: by 2002:a05:651c:385:: with SMTP id e5mr3351151ljp.35.1631117335494;
-        Wed, 08 Sep 2021 09:08:55 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id z1sm227129lfu.222.2021.09.08.09.08.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 09:08:51 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id g14so4389525ljk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:08:50 -0700 (PDT)
-X-Received: by 2002:a2e:8107:: with SMTP id d7mr3580653ljg.68.1631117329470;
- Wed, 08 Sep 2021 09:08:49 -0700 (PDT)
+        Wed, 8 Sep 2021 12:10:29 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0C8C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=SrlxeFyg4nF0sdqGq5eyJXwhHLLH7AV+8KFmLDCTE4w=; b=kfDAkF+xPH+xZSCKvQ7l4UeHgi
+        mBBshVxoYBj8sfj0wjlQjOSP6bgioLhHDlgA7gy8CYVTnppI+c5fJLqH83itDewHLx7uSi6aevcQ4
+        qUrpGW3FQ9GXeYSeGJGDwYRQ+fX2Csm8zhG+zqT0/iG5NvZ5/kkja6BIf6TYgyuWyKlv/2gzGWgGs
+        cd34c5nrCXZvVRMJcWDa3Xt+YB6f7XgkQYxej22rgZD3wiN6MhbH/8sv7dzg0xb+T5Mo9GkgyrIzy
+        1M4IuRI5J0NrdE6urkrFXfHF6c3Da1ypkpf0gPvr6m062u9d+LIDvwA35cKXe5opYgIYgVcNPbo5J
+        WYfJITUw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mO08W-007BL5-9H; Wed, 08 Sep 2021 16:09:20 +0000
+Subject: Re: [PATCH] trace/osnoise: Do not use 'main' as variable name
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210908151407.217052-1-linux@roeck-us.net>
+ <20210908115350.555941ba@oasis.local.home>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b1e0f3f1-2679-9dcc-bbcd-3c35f8b5c260@infradead.org>
+Date:   Wed, 8 Sep 2021 09:09:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20180926182920.27644-2-paulmck@linux.ibm.com> <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net> <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu>
-In-Reply-To: <20210908144217.GA603644@rowland.harvard.edu>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 8 Sep 2021 09:08:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
-Message-ID: <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Will Deacon <will@kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210908115350.555941ba@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 7:42 AM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> there is no reason _in theory_ why a CPU shouldn't reorder and interleave
-> the operations to get:
+On 9/8/21 8:53 AM, Steven Rostedt wrote:
+> On Wed,  8 Sep 2021 08:14:07 -0700
+> Guenter Roeck <linux@roeck-us.net> wrote:
+> 
+>> gcc 11.x may get a hiccup when encountering 'main' as variable name.
+>>
+>> kernel/trace/trace_osnoise.c: In function 'start_kthread':
+>> kernel/trace/trace_osnoise.c:1515:8: error: 'main' is usually a function
+>>
+>> Use a different variable name to silence it.
+> 
+> Egad, no. NACK! Double NACK. Linus already NACK'd this.
+> 
+> (although it's ironic that he also added -Werror as the default :-/ )
+> 
+> The bug in is in gcc, go send them a patch.
+> 
+> THERE IS NO ISSUE WITH HAVING A LOCAL VARIABLE NAMED "main"!!!!
+> 
+> This has already been discussed:
+> 
+>    https://lore.kernel.org/all/CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com/
+> 
+> For now, the workaround is this patch:
+> 
+>     https://lore.kernel.org/all/20210813224131.25803-1-rdunlap@infradead.org/
+> 
+> 
+> -- Steve
+> 
+> 
+>>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>   kernel/trace/trace_osnoise.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+>> index 65b08b8e5bf8..7a4c73b4fdcf 100644
+>> --- a/kernel/trace/trace_osnoise.c
+>> +++ b/kernel/trace/trace_osnoise.c
+>> @@ -1512,20 +1512,20 @@ static void stop_per_cpu_kthreads(void)
+>>   static int start_kthread(unsigned int cpu)
+>>   {
+>>   	struct task_struct *kthread;
+>> -	void *main = osnoise_main;
+>> +	void *func = osnoise_main;
+>>   	char comm[24];
+>>   
+>>   #ifdef CONFIG_TIMERLAT_TRACER
+>>   	if (osnoise_data.timerlat_tracer) {
+>>   		snprintf(comm, 24, "timerlat/%d", cpu);
+>> -		main = timerlat_main;
+>> +		func = timerlat_main;
+>>   	} else {
+>>   		snprintf(comm, 24, "osnoise/%d", cpu);
+>>   	}
+>>   #else
+>>   	snprintf(comm, 24, "osnoise/%d", cpu);
+>>   #endif
+>> -	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
+>> +	kthread = kthread_create_on_cpu(func, NULL, cpu, comm);
+>>   
+>>   	if (IS_ERR(kthread)) {
+>>   		pr_err(BANNER "could not start sampling thread\n");
+> 
 
-I agree about the theory part.
+Preferably Linus's version:
 
-But I think the LKMM should be the strongest ordering that is reasonable.
+https://lore.kernel.org/all/73ee98a4-c4a5-04f3-6280-dcd67507d889@infradead.org/
 
-And it should take common architecture behavior into account.
 
-IOW, if there is some rare architecture where the above can happen,
-but no common sane one allows it in practice, we should strive to make
-the LKMM the _stronger_ one.
+-- 
+~Randy
 
-We sure as hell shouldn't say "RISC-V is potentially very weakly
-ordered, so we'll allow that weak ordering".
-
-Because overly weak ordering only causes problems for others. And the
-performance arguments for it have historically been garbage anyway.
-See the pain powerpc goes through because of bad ordering (and even
-more so alpha), and see how arm actually strengthened their ordering
-to make everybody happier.
-
-So if this is purely a RISC-V thing, then I think it's entirely reasonable to
-
-        spin_unlock(&r);
-        spin_lock(&s);
-
-cannot be reordered.
-
-Strict specifications are not a bad thing, and weak memory ordering is
-not inherently good.
-
-             Linus
