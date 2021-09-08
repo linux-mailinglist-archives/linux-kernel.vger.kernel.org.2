@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3E7403754
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C0D403764
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351407AbhIHJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:54:42 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57490 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351393AbhIHJyj (ORCPT
+        id S1349664AbhIHJ5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:57:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30195 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343745AbhIHJ5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:54:39 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1889rR6O001016;
-        Wed, 8 Sep 2021 04:53:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631094807;
-        bh=UPLBJBjpDV9YcG77Py1APlFvPEf164At/6lGLF5HjU8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZfWH1yNJMNit3shcTvDmJrurLjXne62eOSjyWJONbkkgertbDVf1bP3MHNfu6Yo7J
-         kwAe5TnITmSwrSq4aRwFW1TgMY6cm60F9Szn60faaWTzK5HvTErG/ZoFG8GaXw08jQ
-         RHV9bLsrrQhzOXHFLo29ND0itst9hC401F7qTEvM=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1889rR8c030298
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Sep 2021 04:53:27 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
- Sep 2021 04:53:27 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 8 Sep 2021 04:53:27 -0500
-Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1889rC4E019690;
-        Wed, 8 Sep 2021 04:53:24 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chris.chiu@canonical.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        <lokeshvutla@ti.com>
-Subject: [PATCH v3 3/3] usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
-Date:   Wed, 8 Sep 2021 15:23:12 +0530
-Message-ID: <20210908095312.985-4-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210908095312.985-1-kishon@ti.com>
-References: <20210908095312.985-1-kishon@ti.com>
+        Wed, 8 Sep 2021 05:57:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631094964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vmB/xp1x9/sfeWgC15NH+4JC6OPYB0ruQ9Xmgxc57EE=;
+        b=C82aFO289YBPJBPku4f3hVYHdB3dKPbgCRshpX7hSYWX8DxaQY/43EoUsJb7yA63Axox2o
+        tvZ+LkteyEqWiZyNlZLf2Za3dmRBkpU2h/7a9ZNLyK3l6ckQRAh9k1fYcy/5xN/qefX6iV
+        77zyTlxM3NOdE/WHTAMbVW/NwoJnzcs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-GEyWcoRlM1yOOtvSy77Mqw-1; Wed, 08 Sep 2021 05:56:03 -0400
+X-MC-Unique: GEyWcoRlM1yOOtvSy77Mqw-1
+Received: by mail-wm1-f71.google.com with SMTP id n16-20020a1c7210000000b002ea2ed60dc6so485509wmc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 02:56:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vmB/xp1x9/sfeWgC15NH+4JC6OPYB0ruQ9Xmgxc57EE=;
+        b=K7tXTvoX5lu0A4dF8ERFAWuIrIdl3a98oR6UpG6l+G13GnrQRxzA391sq8em5ky9le
+         RT/UUE71/mNDIzj0NK/QiI0cDiV2qJ/b1EWeOpU3ufrg7ip7M8bfITf7T1Q5HhsP20w2
+         /SdCHcR/ydy/A4JsE7YCGgU8xfTFgsZgkB8ftabHpc+WfxZIYmH6Gpbj9C7i7vs8Jmiq
+         6A7zUOvK616d/yF4jXzWiqCIz6VRngFdChjQRMa4QlHMoY5pbbAMUKQ+1xAU0K0xA89v
+         djj4NfNG5sRBTMweCglijoEXYCAVItXLbkCG2fxrKgpT/3W8hGq+wAKj32Gosyd8I059
+         JkmA==
+X-Gm-Message-State: AOAM533yquKSjbHcM5PsXA3Qhaa/FO5AtcWOWusg1aQHGpprIZ1qMauB
+        ARSbPBEuAucBisRI8Pqm1tSTrjOhS6VNSG6QvV9SRJhCaPg3tcfahHvMA0oIdo7Vwqt7nDatvqV
+        L/j4HRuktNZdCZQt2ToX6zSSI
+X-Received: by 2002:a7b:c7d4:: with SMTP id z20mr2617417wmk.172.1631094961814;
+        Wed, 08 Sep 2021 02:56:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfAQD8R1/Xqad+26X2yoemUkBoNqNssE2eq3Zh0ZmvkXO8rSMX/fkbbd5nlh7vGjMyNNMBzQ==
+X-Received: by 2002:a7b:c7d4:: with SMTP id z20mr2617402wmk.172.1631094961611;
+        Wed, 08 Sep 2021 02:56:01 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id v9sm1534759wml.46.2021.09.08.02.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 02:56:01 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com,
+        pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
+Subject: Re: [PATCH] KVM: nVMX: fix comments of handle_vmon()
+In-Reply-To: <20210908171731.18885-1-yu.c.zhang@linux.intel.com>
+References: <20210908171731.18885-1-yu.c.zhang@linux.intel.com>
+Date:   Wed, 08 Sep 2021 11:55:59 +0200
+Message-ID: <87lf474ci8.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change. Since configuration to stop HCD is invoked from
-multiple places, group all of them in usb_stop_hcd().
+Yu Zhang <yu.c.zhang@linux.intel.com> writes:
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Tested-by: Chris Chiu <chris.chiu@canonical.com>
----
- drivers/usb/core/hcd.c | 39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+> "VMXON pointer" is saved in vmx->nested.vmxon_ptr since
+> commit 3573e22cfeca ("KVM: nVMX: additional checks on
+> vmxon region"). Also, handle_vmptrld() & handle_vmclear()
+> now have logic to check the VMCS pointer against the VMXON
+> pointer.
+>
+> So just remove the obsolete comments of handle_vmon().
+>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index bc6327950657..90f34f12f883 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -4862,14 +4862,7 @@ static int enter_vmx_operation(struct kvm_vcpu *vcpu)
+>  	return -ENOMEM;
+>  }
+>  
+> -/*
+> - * Emulate the VMXON instruction.
+> - * Currently, we just remember that VMX is active, and do not save or even
+> - * inspect the argument to VMXON (the so-called "VMXON pointer") because we
+> - * do not currently need to store anything in that guest-allocated memory
+> - * region. Consequently, VMCLEAR and VMPTRLD also do not verify that the their
+> - * argument is different from the VMXON pointer (which the spec says they do).
+> - */
+> +/* Emulate the VMXON instruction. */
+>  static int handle_vmon(struct kvm_vcpu *vcpu)
+>  {
+>  	int ret;
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 30bbf4ac4284..6f72da245f69 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -2760,6 +2760,26 @@ static void usb_put_invalidate_rhdev(struct usb_hcd *hcd)
- 	usb_put_dev(rhdev);
- }
+Indeed,
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+On a slightly related note: we don't seem to reset
+'vmx->nested.vmxon_ptr' upon VMXOFF emulation; this is not a problem per
+se as we never access it when !vmx->nested.vmxon but I'd still suggest
+we do something like
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index bc6327950657..8beb41d02d21 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -290,6 +290,7 @@ static void free_nested(struct kvm_vcpu *vcpu)
  
-+/**
-+ * usb_stop_hcd - Halt the HCD
-+ * @hcd: the usb_hcd that has to be halted
-+ *
-+ * Stop the root-hub polling timer and invoke the HCD's ->stop callback.
-+ */
-+static void usb_stop_hcd(struct usb_hcd *hcd)
-+{
-+	hcd->rh_pollable = 0;
-+	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
-+	del_timer_sync(&hcd->rh_timer);
-+
-+	hcd->driver->stop(hcd);
-+	hcd->state = HC_STATE_HALT;
-+
-+	/* In case the HCD restarted the timer, stop it again. */
-+	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
-+	del_timer_sync(&hcd->rh_timer);
-+}
-+
- /**
-  * usb_add_hcd - finish generic HCD structure initialization and register
-  * @hcd: the usb_hcd structure to initialize
-@@ -2960,13 +2980,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
- 	return retval;
+        vmx->nested.vmxon = false;
+        vmx->nested.smm.vmxon = false;
++       vmx->nested.vmxon_ptr = -1ull;
+        free_vpid(vmx->nested.vpid02);
+        vmx->nested.posted_intr_nv = -1;
+        vmx->nested.current_vmptr = -1ull;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index d7c5257eb5c0..2214e6bd4713 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6884,6 +6884,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
  
- err_register_root_hub:
--	hcd->rh_pollable = 0;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
--	hcd->driver->stop(hcd);
--	hcd->state = HC_STATE_HALT;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
-+	usb_stop_hcd(hcd);
- err_hcd_driver_start:
- 	if (usb_hcd_is_primary_hcd(hcd) && hcd->irq > 0)
- 		free_irq(irqnum, hcd);
-@@ -3040,16 +3054,7 @@ void usb_remove_hcd(struct usb_hcd *hcd)
- 	 * interrupt occurs), but usb_hcd_poll_rh_status() won't invoke
- 	 * the hub_status_data() callback.
- 	 */
--	hcd->rh_pollable = 0;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
--
--	hcd->driver->stop(hcd);
--	hcd->state = HC_STATE_HALT;
--
--	/* In case the HCD restarted the timer, stop it again. */
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
-+	usb_stop_hcd(hcd);
+        vcpu_setup_sgx_lepubkeyhash(vcpu);
  
- 	if (usb_hcd_is_primary_hcd(hcd)) {
- 		if (hcd->irq > 0)
++       vmx->nested.vmxon_ptr = -1ull;
+        vmx->nested.posted_intr_nv = -1;
+        vmx->nested.current_vmptr = -1ull;
+        vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
+
+to avoid issues in the future.
+
 -- 
-2.17.1
+Vitaly
 
