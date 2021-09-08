@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF3B403E14
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACB0403E19
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352368AbhIHREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbhIHREa (ORCPT
+        id S1352395AbhIHRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:06:37 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:41119 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235666AbhIHRGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:04:30 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A797BC061575;
-        Wed,  8 Sep 2021 10:03:22 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id me10so5543565ejb.11;
-        Wed, 08 Sep 2021 10:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pFZQZP6SBUQcSO4Xl8lHY2eIg5EWdq+cWHjbXAwPeek=;
-        b=K9Nt38iL9uqIB/blizmHJoFPGhRn6fduNNr0fKn3SJPJLtTc15CaVCN/mMV+bCJsr8
-         2UhhujJO7g/jIPFyE/ksVBtnF64pT3jkjL6cL8dQF0BLTdA4LqUfm+mx0DUNRtHAUm3/
-         8uD7D+As9Ls0CTCXmZ3qbJHa7SF+TClTScI/2DZFwudjMKjTpfyvZ7b7J+9i+e0dKG2O
-         XGfAPn+o/cMnMnPVbiEaq/juYKX9MSIL52w22DJgSul9sEtUWM9q9NByVIjtTMDD56+2
-         a/YeO549Dv/TLXvAZoPgSL7Q/omvHtkuBPOo88RXqWZLKB/l0bWWu8CwCwCBX4ejKbvP
-         UN2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pFZQZP6SBUQcSO4Xl8lHY2eIg5EWdq+cWHjbXAwPeek=;
-        b=tLlu8UZBg5i4X8mTF3KwhzUjBiaRMHL33bqzRW0ehAO59H8rWvOwlhHKeIB/oiG8Q9
-         oiUuqeIoLyBVJYtbwr588oIXpxmmf6i9rPUPXXbSKVwkIHgV7PXOlXS8dTb+g/xtQbuI
-         pJ2GqKSGu1Iaaed1Osy18mZfcGnXeDGdewchS56T7M7tWR9emctdvZMUUst70KAX/2LL
-         TsOjxXfd+EVJkMcs9Rz4sZY6fqR7+WD5XJKhbNWQS11H+hrhWUG+A0l9GlK1mCVL/ntl
-         zFIvsjdFySVedA+h15zWyLVtyhlnw76S1rpOe0ZGg2+QV0X8g31wuukXkwRzeoQ1e0yJ
-         rXCA==
-X-Gm-Message-State: AOAM532FXNyBLAT9qcGR8hivzCWLz1PoTyry67Zv95x7HfStQifZUTM7
-        rGUdtll2JnbQY+0j6l6M7yw=
-X-Google-Smtp-Source: ABdhPJzN2N4LNWd+P/4FKysGkFbBUKYeltUmWMptS3lVHukXEHx4CFZZCMbH6h0UaEDXposS6YzK9w==
-X-Received: by 2002:a17:906:c416:: with SMTP id u22mr843426ejz.543.1631120601141;
-        Wed, 08 Sep 2021 10:03:21 -0700 (PDT)
-Received: from kwango.redhat.com (ip-94-112-171-183.net.upcbroadband.cz. [94.112.171.183])
-        by smtp.gmail.com with ESMTPSA id w9sm1034950edr.20.2021.09.08.10.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:03:20 -0700 (PDT)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph updates for 5.15-rc1
-Date:   Wed,  8 Sep 2021 19:02:57 +0200
-Message-Id: <20210908170257.18646-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.19.2
+        Wed, 8 Sep 2021 13:06:36 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MTRhS-1mVbBL0h7E-00Thux; Wed, 08 Sep 2021 19:05:27 +0200
+Received: by mail-wr1-f51.google.com with SMTP id v10so4350633wrd.4;
+        Wed, 08 Sep 2021 10:05:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533pasDslRMzbtCw2nyHeiYYVu/vud7oIWn3KApxhwmjIfYPNkga
+        9HS1qC/TZfwBTC025q5bOZr4qeEsOq5F4j7IHVA=
+X-Google-Smtp-Source: ABdhPJzOUrSEiIv0q10uICqQrwOldGJmWwcvW1SLF5a8/urhNzDqKM4vL1/vvxLsqhtkj4EVD+XB1lj3zMjCDiekuuc=
+X-Received: by 2002:a5d:528b:: with SMTP id c11mr5105672wrv.369.1631120726753;
+ Wed, 08 Sep 2021 10:05:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+In-Reply-To: <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 8 Sep 2021 19:05:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+Message-ID: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:KH+Kxt+CxavGn9c2xFpOOUmelKCATtvt/4S0bYSXXPjVou+2tC5
+ NxJSyIV8u09ba1J5Ik8WStxnWkH8HZfaHtNJOgW7Mw5LFW+6dHDV4xL6sdqDp2bW/pCN7Rd
+ ggfjYkFTpadfC+HA9nT5XkgHk/+gnlvvI20PxmNzYp3J3dvwkga8+2IyH7HWmxjIv//N6GR
+ OHGUEtAJAdJd+3XtZdDsw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UH8s4HJ8+3Y=:Jt2B6PVkZNHyYKm1twCnYl
+ A5QIQEvwPJrI9L50mm1pS31gRjdFtMueLJ1PGBbzqw/Q0YLql3yY3mmrOKfwzgpdbhloGoo5G
+ 9J4UQLwjjNWXegDzDpcsxtkt8FdyIGs9aluH3xD6qp14EtNkE7ZLKH7wciIwmalxCLCHXviU8
+ f0LY+qCK+b2t5Fmb9BnZq65l1wkcF0r5KD2ys96zqcrHYP7/bIAaRpq9D4CXS1LMDxajh4U5z
+ H7p+wr4vz0qc5medE6owG1PkjQPXNlraSS1s/XJ1CtYXK3qE8hBKzEL6zjLV/Q01tUn7KFvKo
+ twAhQT6Dj5rS9T9PSPi2NXXxUYGOZo4tv4jwV+kJsQFfs+r5TYnKqY3IHn8PEeu6qwdEsp+6W
+ 31BkAia5oQu9Htl1tnD5H+d8gkQoWpv95tf5acu4CJKRdUT29vUkbqTGDuUnITD/WV1s9bfhA
+ GCbbNwq9eGXqTJyXvgmOsM7UjewftcTFs/Wl9WSVBqn7GFvGE05lALQ31WXXhM07rxOORWZ+z
+ Ab+mGz8xzHgBN8DshZlewKyzIeWejEZXOJWvZoV27II1GQZ7gkxMeUscpKNwf9/lwu6EubWep
+ 7k0rS+3T58wjfJ191Xy9g6BNYOfxhicL6RkgW6I3kR7du87eFJuYmRIRzBlslMz+XVwRQnOCJ
+ A1NPWYXPu83qNQXGnvGPtHJbZBSZdMG2MOVBV6+e/F9cBAEfJNWR+t9nPeYQ3C+fLtQKzkx38
+ NtNKkV6B03zD42tnuYeW/5EYjxR/cjpQpTQB6HOSC6FxQ5+sEU86ONUK2Cf/vQBXTbTktbd50
+ ClQkxsJ8XopRQwPM8O7y+xL46ELbg0SyCP08+CoOGFg7FN1BeC9rECrA7UhCmYj++QOdU14+K
+ JGVqFlFFOhhMMOnuGz6Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> On 9/7/21 5:14 PM, Linus Torvalds wrote:
+> > The KUNIT macros create all these individually reasonably small
+> > initialized structures on stack, and when you have more than a small
+> > handful of them the KUNIT infrastructure just makes the stack space
+> > explode. Sometimes the compiler will be able to re-use the stack
+> > slots, but it seems to be an iffy proposition to depend on it - it
+> > seems to be a combination of luck and various config options.
+> >
+>
+> I have been concerned about these macros creeping in for a while.
+> I will take a closer look and work with Brendan to come with a plan
+> to address it.
 
-The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
+I've previously sent patches to turn off the structleak plugin for
+any kunit test file to work around this, but only a few of those patches
+got merged and new files have been added since. It would
+definitely help to come up with a proper fix, but my structleak-disable
+hack should be sufficient as a quick fix.
 
-  Linux 5.14 (2021-08-29 15:04:50 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/ceph/ceph-client.git tags/ceph-for-5.15-rc1
-
-for you to fetch changes up to 05a444d3f90a3c3e6362e88a1bf13e1a60f8cace:
-
-  ceph: fix dereference of null pointer cf (2021-09-03 10:55:51 +0200)
-
-----------------------------------------------------------------
-We have:
-
-- a set of patches to address fsync stalls caused by depending on
-  periodic rather than triggered MDS journal flushes in some cases
-  (Xiubo Li)
-
-- a fix for mtime effectively not getting updated in case of competing
-  writers (Jeff Layton)
-
-- a couple of fixes for inode reference leaks and various WARNs after
-  "umount -f" (Xiubo Li)
-
-- a new ceph.auth_mds extended attribute (Jeff Layton)
-
-- a smattering of fixups and cleanups from Jeff, Xiubo and Colin.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      ceph: fix dereference of null pointer cf
-
-Jeff Layton (11):
-      ceph: fix memory leak on decode error in ceph_handle_caps
-      ceph: fix comment about short copies in ceph_write_end
-      ceph: remove some defunct forward declarations
-      ceph: add a new vxattr to return auth mds for an inode
-      ceph: cancel delayed work instead of flushing on mdsc teardown
-      ceph: remove redundant initializations from mdsc and session
-      ceph: add ceph_change_snap_realm() helper
-      ceph: print more information when we can't find snaprealm
-      ceph: request Fw caps before updating the mtime in ceph_write_iter
-      ceph: lockdep annotations for try_nonblocking_invalidate
-      ceph: drop the mdsc_get_session/put_session dout messages
-
-Xiubo Li (8):
-      ceph: make ceph_create_session_msg a global symbol
-      ceph: make iterate_sessions a global symbol
-      ceph: flush mdlog before umounting
-      ceph: flush the mdlog before waiting on unsafe reqs
-      ceph: reconnect to the export targets on new mdsmaps
-      ceph: remove the capsnaps when removing caps
-      ceph: don't WARN if we're force umounting
-      ceph: don't WARN if we're forcibly removing the session caps
-
- fs/ceph/addr.c               |   2 +-
- fs/ceph/cache.h              |   6 -
- fs/ceph/caps.c               | 266 ++++++++++++++++++++++++++++---------------
- fs/ceph/file.c               |  32 +++---
- fs/ceph/inode.c              |  11 +-
- fs/ceph/mds_client.c         | 218 +++++++++++++++++++++++++----------
- fs/ceph/mds_client.h         |   5 +
- fs/ceph/mdsmap.c             |  12 +-
- fs/ceph/metric.c             |   4 +-
- fs/ceph/snap.c               |  59 ++++++----
- fs/ceph/strings.c            |   1 +
- fs/ceph/super.h              |   9 +-
- fs/ceph/xattr.c              |  19 ++++
- include/linux/ceph/ceph_fs.h |   1 +
- 14 files changed, 438 insertions(+), 207 deletions(-)
+       Arnd
