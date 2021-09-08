@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8134403C4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6273D403C42
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350054AbhIHPMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhIHPMO (ORCPT
+        id S1348802AbhIHPHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:07:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230427AbhIHPHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:12:14 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81A6BC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:11:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=0C3YBGnfpbG9UOTagLlfTYYKY8tokMJAvI
-        Ql9p4G3lI=; b=gT8DVp8CbcFATMUBS9fwOB0WS36+q/qdnpW8Hy5wjuZJZ/lTuM
-        TPNZ/tUrqqulOn9moSy17+wIG+I5hJKVxIoeEqI9KMf9UWu6OMtZ/p/dGH7b91lr
-        9DFaPbVSbmqGqCNXsGByk514vPeG7aHtAJEMBdsBixqxj7rRL5H8Q5jLs=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL0t+0jhh3cACAA--.2155S2;
-        Wed, 08 Sep 2021 23:10:54 +0800 (CST)
-Date:   Wed, 8 Sep 2021 23:04:27 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: enable GENERIC_FIND_FIRST_BIT
-Message-ID: <20210908230427.3a92fb87@xhacker>
-In-Reply-To: <20210718001423.6b8e1d23@xhacker>
-References: <20210718001423.6b8e1d23@xhacker>
+        Wed, 8 Sep 2021 11:07:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631113558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=Ad9DFQSsq3fHXyiG5m3BVq+9Z/Oihbev+MnnMwC4Pg8=;
+        b=Simn35SbkWzGoPZRlYrvFADlDELIHegvvJ2GOlYvy9BjtmXOuMM1UYhm0B0z7yTSZNzyVb
+        LTyqJruDAcxDrIEnuf6iwhjuCVYS10EfN0i/YXT8wNiBDv860a8ouyCqxN2gb/MixiM0X3
+        LMfQnvJi46biPzSvzu7k2hWPvfGjcqI=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-d2VToXkcPz64spuMtcdOWQ-1; Wed, 08 Sep 2021 11:05:56 -0400
+X-MC-Unique: d2VToXkcPz64spuMtcdOWQ-1
+Received: by mail-ot1-f70.google.com with SMTP id n42-20020a9d202d0000b02904fc72900a74so1425956ota.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:05:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Ad9DFQSsq3fHXyiG5m3BVq+9Z/Oihbev+MnnMwC4Pg8=;
+        b=T2GxZEQyx2e9gWiOxErMcFxbjE1XOCaS7GA3canXTf3Yywdi/H1yH3dLkbhXiVTvzY
+         lfHKcVnh9zxH271a5keLulg/KTRn959oXthrqdKnm/nKDxVV6+f7zO7rBN9JvwlqmtPh
+         OgwXbl6gGyUpF+6ZP6VthNZ21jMAeBhFzvPk9LWWq3MuNdjtUZKD9lXl/ROoGd2BagU1
+         YtIQpy0nFHnei3p+Jh/4cQz9pc4gYxOkOSWnadMv5mVfdsKvraNN7SWP/6tXuj6MCDP0
+         ESYVj8A20YNfpOPb3FXQv2/iBmyOPRkMh+NnRdZ2jcNACXEzXkNHojLbEQGR9GHWNFRu
+         gqEg==
+X-Gm-Message-State: AOAM530QPhGpp6QPmnknrv267lqyIOwSAVCJvm1j+W2kJu0kkS2DvkI4
+        qPtJjfWeObQ6U00aeoIaKt4gHMF5ESIJ62nM7SaAQyBZB34VkORdLbH8wjaBsi+1i6MMzb1BSh1
+        gUIgAZlb/v0RcTGijHEh/DcyzX7gSzSNh7ECAcyw0
+X-Received: by 2002:a9d:410:: with SMTP id 16mr3508959otc.83.1631113554198;
+        Wed, 08 Sep 2021 08:05:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyNwhfrPjYz0TBvXz2yBE0Vw4Bvf2XX2PefwsBRuoCSOINCSphhqDxJejdQnNjxD8gCHVJz+22J4TiL+hTiCEg=
+X-Received: by 2002:a9d:410:: with SMTP id 16mr3508819otc.83.1631113552492;
+ Wed, 08 Sep 2021 08:05:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAnL0t+0jhh3cACAA--.2155S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrKrW8Zr1UXF15ur17XrWxCrg_yoW8JrWfpr
-        45CF1Fgr45JFyrWF1fKFy7u34xWa1fG393Kr95t3W5Xry3urZ5urn3Kr13W34UCrs5Wryf
-        JFyfC34UAayYyrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
-        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8v_M3UUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+From:   Ulrich Drepper <drepper@redhat.com>
+Date:   Wed, 8 Sep 2021 17:05:41 +0200
+Message-ID: <CAP3s5k_QNQqjMqLP68KvtchpmUGc9dnfSfmsz2OXh6opFpKW+w@mail.gmail.com>
+Subject: implicit dependency in x86/page_64.h:task_size_max
+To:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+I don't have a 5.14 kernel installed, yet, but from the looks of it
+this problem still persists.
 
-On Sun, 18 Jul 2021 00:14:23 +0800
-Jisheng Zhang wrote:
+Out-of-tree modules were broken by commit
+025768a966a3dde8455de46d1f121a51bacb6a77 which introduced a dependency
+on a CPU feature macro in the task_size_max implementation
+(X86_FEATURE_LA57) without making sure the macro is defined.  The
+result is that the compiler generates an object file with an reference
+to a symbol with this name.  The resulting modpost invocation catches
+this.
 
-> From: Jisheng Zhang <jszhang@kernel.org>
-> 
-> riscv doesn't implement architecture-optimized bitsearching functions
-> such as find_first_{zero}_bit() etc.
-> 
-> When GENERIC_FIND_FIRST_BIT=n, find_first_bit() is implemented with
-> find_next_bit() which is less efficient. Enable GENERIC_FIND_FIRST_BIT
-> for riscv to get more optimized find_first_bit() implementation, an
-> initial test(lib/find_bit_benchmark) shows find_first_bit() performance
-> is improved by nearly 32%.
+An example for the problem exists with the blackmagic-io module. I
+name it here so people can perhaps find this post.
 
-It seems this patch is missed. Is it possible to pick it up for 2nd 5.15-rc1 PR?
+The "solution" so far is to include <asm/cpufeatures.h> before
+task_size_max is defined.
 
-Thanks
+In userlevel headers we had the convention that any header should
+#include all the other headers to satisfy its dependencies.  If
+arch/x86/asm/page_64.h would include <asm/cpufeatures.h> first there
+would be no problem with the module above but I haven't checked
+whether this creates other problems.  And as I mentioned, I don't know
+what the convention is.
 
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 8fcceb8eda07..7ebc54c5c245 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -47,6 +47,7 @@ config RISCV
->  	select GENERIC_ATOMIC64 if !64BIT
->  	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
->  	select GENERIC_EARLY_IOREMAP
-> +	select GENERIC_FIND_FIRST_BIT
->  	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
->  	select GENERIC_IOREMAP
->  	select GENERIC_IRQ_MULTI_HANDLER
+Someone will know and perhaps we could get a patch installed with
+either the missing #include added or
 
+#ifndef X86_FEATURE_LA57
+# error "you need to include <asm/cpufeatures.h> first"
+#endif
+
+
+Thanks.
 
