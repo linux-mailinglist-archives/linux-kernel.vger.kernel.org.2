@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FF04038C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266204038C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348427AbhIHLdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:33:23 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15394 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhIHLdQ (ORCPT
+        id S1349161AbhIHLdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:33:25 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35164 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233694AbhIHLdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:33:16 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H4Kd20KKczQmXZ;
-        Wed,  8 Sep 2021 19:28:06 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 8 Sep 2021 19:32:06 +0800
-Received: from [10.67.101.251] (10.67.101.251) by
- dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 8 Sep 2021 19:32:06 +0800
-Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
- sched_task_group
-To:     Tejun Heo <tj@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <juri.lelli@redhat.com>,
-        <mingo@redhat.com>, <peterz@infradead.org>,
-        <vincent.guittot@linaro.org>
-References: <20210826112635.7404-1-zhangqiao22@huawei.com>
- <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
- <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
- <1f0cd867-9c6d-4e22-cadd-06af9f852f7a@huawei.com>
- <YS60T2bfLpxb6SUY@slm.duckdns.org>
- <128d52ab-b4ee-65f8-e0a3-2796ef43a98b@huawei.com>
- <YS+uEmQRmQqAbkmG@slm.duckdns.org>
- <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
- <YTea0kK9yL5+GoKt@slm.duckdns.org>
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-In-Reply-To: <YTea0kK9yL5+GoKt@slm.duckdns.org>
-Message-ID: <be0bdf5a-479c-51bb-6d51-42739c11710d@huawei.com>
-Date:   Wed, 8 Sep 2021 19:32:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 8 Sep 2021 07:33:21 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 188BWBN8008178;
+        Wed, 8 Sep 2021 06:32:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631100731;
+        bh=AZVddGgyrMeNCeMAdzzk6hAXy8GcpJUdmlIjzPJCxT0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=kto+A+tye33ToZTbvTZtwDalC974GvHFFU7GfUy+d1ggAkYK/mJJKdo6c8kbgmtIl
+         PTbFqYJohfMl0PS9E1m64cksp+0rRF7vs9NjiMq3uDfqZA11y60wjLOZrRVrUvT9oa
+         oUe1f9EugMLKxv3y40lV13qUHqw3lv3oKIqKuSJc=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 188BWBwA026093
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 8 Sep 2021 06:32:11 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
+ Sep 2021 06:32:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 8 Sep 2021 06:32:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 188BWAgw044553;
+        Wed, 8 Sep 2021 06:32:11 -0500
+Date:   Wed, 8 Sep 2021 17:02:09 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Milind Parab <mparab@cadence.com>,
+        Konrad Kociolek <konrad@cadence.com>
+Subject: Re: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
+ Cadence XSPI controller
+Message-ID: <20210908113207.6y6h6l23htngrea2@ti.com>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499829-20059-1-git-send-email-pthombar@cadence.com>
+ <20210903181722.ukarfanyew2b7yoz@ti.com>
+ <CY4PR07MB2757DF7EFD862D67FBF648CBC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.101.251]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CY4PR07MB2757DF7EFD862D67FBF648CBC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/8 1:01, Tejun Heo wrote:
-> Hello,
+On 08/09/21 06:52AM, Parshuram Raju Thombare wrote:
+> >This needs to be a "subclass" of the spi-controller.yaml binding.
+> >
+> >allOf:
+> >  - $ref: spi-controller.yaml#
 > 
-> On Thu, Sep 02, 2021 at 03:42:15PM +0800, Zhang Qiao wrote:
->> I checked the code again.
->> I don't quite understand what you said, if the child be moved between
->> cgroup_post_fork() and sched_post_sched(), what problems might it cause?
-> 
-> cgroup_post_fork() is where the child's creation is committed from cgroup's
-> POV, so it'd be migrating cgroups before the initial creation is finished.
->>From glancing, looks like it'll break css_set task counts to begin with.
-> This violates the basic assumptions and can cause critical failures in
-> subtle ways. The would replace one subtle race with a possibly worse one.
+> Isn't stating that validation need against spi-controller.yaml as well as
+> this schema sufficient ? Can you please point an example how to make
+> controller binding a "subclass" of spi-controller.yaml binding ?
 
-Hello,
+I just showed you. You need to add the below lines:
 
-I will update this patch by following the steps below:
-1)rename cgroup_subsys->fork() to cgroup_subsys->post_fork();
-2)add cgroup_subsys->fork() and the cpu_cgroup_fork() callback like this:
+allOf:
+  - $ref: spi-controller.yaml#
 
-void cpu_cgroup_fork(struct task_struct *task) {
-....
-	p->sched_task_group = task_group(current);
-	__set_task_cpu(p, smp_processor_id());
-	if (p->sched_class->task_fork)
-		p->sched_class->task_fork(p);
-....
+See cdns,qspi-nor.yaml or nvidia,tegra210-quad.yaml or any of the 
+multiple controller bindings we already have.
 
-
-3)call cgroup_subsys->fork() after cgroup_can_fork().
-
-Do you have any suggestion?
-thanks.
-
-Zhang Qiao
+By "subclass" I did not mean a programming construct, I just meant it 
+should logically be a subclass of the spi-controller.yaml binding, which 
+can be done by the allOf.
 
 > 
-> Thanks.
+> >Node name should be flash@0.
 > 
+> I think spi-controller.yaml uses wildcard for the name of a device node,
+> so anything in string@hexvalue: should work.
+
+Sure, but mtd.yaml (which the SPI NOR binding depends on) requires it.
+
+> 
+> >> +            compatible = "spi-nor", "micron,mt35xu512";
+> >
+> >These compatibles are arbitrary and undocumented. You probably just need
+> >"jedec,spi-nor". If you need anything else, you need to justify why.
+> 
+> Although just "spi-nor" also works, I agree to use "jedec, spi-nor" and drop
+> device name.
+
+Does it? I see "jedec,spi-nor" compatible documented, but not just 
+"spi-nor". And I don't see "micron,mt35xu512" compatible documented 
+anywhere either.
+
+Anyway, please just use "jedec,spi-nor".
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
