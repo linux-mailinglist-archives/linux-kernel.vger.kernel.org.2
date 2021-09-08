@@ -2,103 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE8840363A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8FF40363C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348349AbhIHInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 04:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbhIHInA (ORCPT
+        id S1350049AbhIHInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 04:43:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34294 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348283AbhIHInF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 04:43:00 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F485C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:41:52 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id h16so3380900lfk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QA5c6ee/4LdX9O/lJ4+gekDunPk9QmR1WF15kyKxf30=;
-        b=s5iU/UvCaZBwiUWMfEvWaSDiTOKnXPbBahiZH9wRhygyMPY/h/V/x7OnzNzYQbMfAq
-         tZWNRIzwkd4ka8cRkpCPkTBMpo6gI55CQ/0+dELgOMGyg+E61drtbDbhTnBivikcAoqd
-         90skABsYsq2PNuAqc8sBBUk0sYxwRr128cf8yERIqx4p6Tn4EHp0pPiYNprX8uT0QBse
-         6b2XsW/YLAGKsORXRdw9Q5pt+/DMzI//VZRrwB0SRcXYpn4SAGphXKpJeDKRIgrep1qS
-         CLaE0YHxQbyUara2Qn5f7z8y06uoAi90ayLi2YDCbL+IrIW5gswQvS2diI/o3vvv0HL/
-         8ZdQ==
+        Wed, 8 Sep 2021 04:43:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631090515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hw7rjfopecKiPNs1gj6jXPb/jNV8mw5l8UNJZ/rvSQk=;
+        b=dw2e9b0KXhXQkqRVexvy9ukFBVGCMd97chDLUmjRepulHS4AW0g7vImj2oujubIj5Od468
+        68VkB6phlVYrlDPCKIm9VmkG6cWTQWSswNFrMn3hTrccso9BPHYfKOWlq+kTyub+J7UPEj
+        E5SXQTs+BlQKScxVJRtSxNwH5B3an00=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-hvRtez6YO6ODSZbIxb-7kQ-1; Wed, 08 Sep 2021 04:41:54 -0400
+X-MC-Unique: hvRtez6YO6ODSZbIxb-7kQ-1
+Received: by mail-wr1-f69.google.com with SMTP id h15-20020adff18f000000b001574654fbc2so288481wro.10
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:41:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QA5c6ee/4LdX9O/lJ4+gekDunPk9QmR1WF15kyKxf30=;
-        b=c0Ih5mQA57SsyitslDaLyxA0VorWEE44C/heFoiVb8RTt/zwavy/fgJ6TSVlw+8zY0
-         Wnrzjh+IvBi0feALQf/zpgXYnGncK5IF5rOiXoJ/UuBQB8Q7aUC5QWAyKbmodquTwkg6
-         Q/woAKcQkxv2Povmq/v9bpNcKfxYE8KMHgy9Api9j07cf3eGV8nDrTx48POYkhIL+T4E
-         g0V9N3GHhmAM1Uql3My+puBK/76YevCuM90THcpgV8u1GAlgP3xshWL7BMvxojZISj9c
-         Dd0ENNF8UmOZdl/LQkB3X45Xpw4Mb7fJIKyDV1kKwGq2YF+LY76ntXfrF5NWaEzhpfRI
-         4d4Q==
-X-Gm-Message-State: AOAM5306JXdVdIcFDP8xCn6sKlFX3J8uSRvm0jg/PfcWnCOXtkP+YxU5
-        Zriz4sO4yzaxxuNBaDQ2GUFw/6IpCdc2IqQ3kXQRyg==
-X-Google-Smtp-Source: ABdhPJzZRmxIrk//zVeZ/ot2fC6Lo1eKuRKTimvFi2nw/srhwtt/fiI0HrNqOSC+d5/ZJwfD0c4xhzeSMw0Oqu7a22s=
-X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr1806408lfa.523.1631090510774;
- Wed, 08 Sep 2021 01:41:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Hw7rjfopecKiPNs1gj6jXPb/jNV8mw5l8UNJZ/rvSQk=;
+        b=oIiz9womUDzBb1yPfUNDJ3hOhDrocGdblCpoaCksZvW4WnFHdo4LFGOCnP65hjDYk9
+         m0nDEPZehGEl/rzsVCQxqEyEujWYnYFWF1+OGP5lPDgCdGkSnonSjK1lrjAREiiTepQt
+         nx39GhrkDCS2LQuCWkaJACJDb6q7u5OcOO/J56DjVJHlgoIELFPoz0Jyv+QPGbzqL3/5
+         YUQ9mRc9Pco4P40q2APHp+YdlKOIcxjppJmmWicy6gFF1FFbMC4qc6wmKwiZ0lVr4Y7s
+         oqe7i917F6YtZEXQ94+oPzkAEG/58RF3NE7SPUGDkGjxbRxaDmuW54PIfcIkDyQmIwke
+         i4Bg==
+X-Gm-Message-State: AOAM530v87IO4ZAUdwJiGaGMJjyl5jvCWYt8OaCoRo31jDngUnd45hgQ
+        8kiyJc9GsaGwaajOg9tObRnWe4EwBNjMW1llBrNnfbxqmYikqdamMaVTPZ9bd6cp7zn2dHV4088
+        rIJM2VQajVjGU0mSJJdMpC1/J
+X-Received: by 2002:a1c:43c5:: with SMTP id q188mr2212837wma.175.1631090513623;
+        Wed, 08 Sep 2021 01:41:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweE3MmeKl7/39WLjEVkd4I7ue217226XV3Qw+7onVSrj0Q82ajVjxJjneUuSkC8YrR/KLarg==
+X-Received: by 2002:a1c:43c5:: with SMTP id q188mr2212819wma.175.1631090513449;
+        Wed, 08 Sep 2021 01:41:53 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u25sm1414388wmj.10.2021.09.08.01.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 01:41:52 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Eduardo Habkost <ehabkost@redhat.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 3/6] x86/kvm: introduce per cpu vcpu masks
+In-Reply-To: <20210907183457.53ws6tqqqpzkeil4@habkost.net>
+References: <20210903130808.30142-1-jgross@suse.com>
+ <20210903130808.30142-4-jgross@suse.com>
+ <20210907183457.53ws6tqqqpzkeil4@habkost.net>
+Date:   Wed, 08 Sep 2021 10:41:51 +0200
+Message-ID: <87r1dz4fxs.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org>
-In-Reply-To: <YThj70ByPvZNQjgU@infradead.org>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Wed, 8 Sep 2021 17:41:39 +0900
-Message-ID: <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "Christian K??nig" <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hellwig <hch@i=
-nfradead.org>:
->
-> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> > Thank you for your comment.
-> > >
-> > > On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > > > To share memory space using dma-buf, a API of the dma-buf requires =
-dma
-> > > > device, but devices such as rxe do not have a dma device. For those=
- case,
-> > > > change to specify a device of struct ib instead of the dma device.
-> > >
-> > > So if dma-buf doesn't actually need a device to dma map why do we eve=
-r
-> > > pass the dma_device here?  Something does not add up.
-> > As described in the dma-buf api guide [1], the dma_device is used by dm=
-a-buf
-> > exporter to know the device buffer constraints of importer.
-> > [1] https://lwn.net/Articles/489703/
->
-> Which means for rxe you'd also have to pass the one for the underlying
-> net device.
-I thought of that way too. In that case, the memory region is constrained b=
-y the
-net device, but rxe driver copies data using CPU. To avoid the constraints,=
- I
-decided to use the ib device.
+Eduardo Habkost <ehabkost@redhat.com> writes:
 
-Thanks,
+> On Fri, Sep 03, 2021 at 03:08:04PM +0200, Juergen Gross wrote:
+>> In order to support high vcpu numbers per guest don't use on stack
+>> vcpu bitmasks. As all those currently used bitmasks are not used in
+>> functions subject to recursion it is fairly easy to replace them with
+>> percpu bitmasks.
+>> 
+>> Disable preemption while such a bitmask is being used in order to
+>> avoid double usage in case we'd switch cpus.
+>> 
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>> V2:
+>> - use local_lock() instead of preempt_disable() (Paolo Bonzini)
+>> ---
+>>  arch/x86/include/asm/kvm_host.h | 10 ++++++++++
+>>  arch/x86/kvm/hyperv.c           | 25 ++++++++++++++++++-------
+>>  arch/x86/kvm/irq_comm.c         |  9 +++++++--
+>>  arch/x86/kvm/x86.c              | 22 +++++++++++++++++++++-
+>>  4 files changed, 56 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index 3513edee8e22..a809a9e4fa5c 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -15,6 +15,7 @@
+>>  #include <linux/cpumask.h>
+>>  #include <linux/irq_work.h>
+>>  #include <linux/irq.h>
+>> +#include <linux/local_lock.h>
+>>  
+>>  #include <linux/kvm.h>
+>>  #include <linux/kvm_para.h>
+>> @@ -1591,6 +1592,15 @@ extern bool kvm_has_bus_lock_exit;
+>>  /* maximum vcpu-id */
+>>  unsigned int kvm_max_vcpu_id(void);
+>>  
+>> +/* per cpu vcpu bitmasks, protected by kvm_pcpu_mask_lock */
+>> +DECLARE_PER_CPU(local_lock_t, kvm_pcpu_mask_lock);
+>> +extern unsigned long __percpu *kvm_pcpu_vcpu_mask;
+>> +#define KVM_VCPU_MASK_SZ	\
+>> +	(sizeof(*kvm_pcpu_vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS))
+>> +extern u64 __percpu *kvm_hv_vp_bitmap;
+>> +#define KVM_HV_MAX_SPARSE_VCPU_SET_BITS DIV_ROUND_UP(KVM_MAX_VCPUS, 64)
+>> +#define KVM_HV_VPMAP_SZ		(sizeof(u64) * KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
+>
+> I have just realized that the Hyper-V sparse bitmap format can
+> support only up to 4096 CPUs, and the current implementation of
+> sparse_set_to_vcpu_mask() won't even work correctly if
+> KVM_MAX_VCPUS is larger than 4096.
+
+Nice catch! Indeed, we can only encode 64 'banks' with 64 vCPUs each. We
+need to enforce the limit somehow. As a big hammer, I can suggest to
+fail kvm_hv_vcpu_init() and write to HV_X64_MSR_VP_INDEX for vCPUs above
+4095 for now (I seriously doubt there's real need to run such big
+Windows guests anywhere but who knows).
+
+>
+> This means vp_bitmap can't and will never be larger than 512
+> bytes.  Isn't a per-CPU variable for vp_bitmap overkill in this
+> case?
+
+Yes, it's OK to allocate 512 bytes on stack.
+
+-- 
+Vitaly
+
