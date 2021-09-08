@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1597B404056
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B83540405C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352015AbhIHUyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 16:54:31 -0400
-Received: from mout.gmx.net ([212.227.15.18]:39899 "EHLO mout.gmx.net"
+        id S1352312AbhIHU4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 16:56:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235437AbhIHUy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 16:54:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631134383;
-        bh=gGyssjxabohIjDxtvSkR6S2G+R/GgD+Ug3BlWj57mTc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=dKSxVQGr07tIiKKuYkeXWuzl2m58yq5rK/mQgVxPpQdZSlMAj8Fz9oDyFBc4vWEFM
-         knRlLZiz322q2yvQF1WWQ3AFQ5eGw4VO8kZ2EaXi6lXaGXhD//5oV5NK+kSg5zvRSR
-         FX1cY78/HoHb9/tdqjdZHpCy9ZRvSTbvcof4ZiU4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.85.61] ([80.187.121.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mulm5-1nFLhs0hff-00rm9Y; Wed, 08
- Sep 2021 22:53:03 +0200
-Subject: Re: [PATCH] parisc: Move pci_dev_is_behind_card_dino to where it is
- used
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210908153041.643069-1-linux@roeck-us.net>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <8392d93e-73d8-0a9e-15e2-db139086fdf0@gmx.de>
-Date:   Wed, 8 Sep 2021 22:51:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235437AbhIHU4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 16:56:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9036F61158;
+        Wed,  8 Sep 2021 20:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631134506;
+        bh=qOW+3a3Dux7smy1XbXVLU/2hKyGfpH9x0I1DZ65HpVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GxBnw5yjqB4WfqYxEYLloni2ogPLLAwqUOSEl8oPgGQ1uEdOPEXLKyZFtEGu2BXvN
+         RUDvnIa2W1610J/TBRdKY4JTHOTvC7oHRulXeMud+pAkQGBGOQyG8nD2pQcNfGxh7L
+         7+WWBHJ1Qs/Q1sKb/G/RJHyfmagLTHpevpJ4b/L56MGWkKln4C+e8B09eUQ6QmAVOK
+         JGF/HlSaakxxxQAbQw5gHUcelXX/GfGQt1GJ2N/DgZ1syxtzpICNloVfVhzvSeGUkn
+         enSQ6QhBEV7uD/UvVU1hSMErO764GNSs74xWxPJcG0DpC2NORcW9V+1KgQRYdV5s7v
+         qCMrqpBziSF5w==
+Date:   Wed, 8 Sep 2021 13:55:00 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <YTkjJPCdR1VGaaVm@archlinux-ax161>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain>
+ <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210908153041.643069-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nRdMm2osOOu780aITU30zP7UhFvqrvZ4Jxcf6m9DZMSQ+ySiG4R
- 2DG0uW6rccx/EyMiAz/ykE/kNd133z2Hkg3g26znlPbgzOVJMrSS3VkP+g97uTa3yaQ60zF
- hKVaMdNbRlZVQErBVp4wGGzNWogTS2cLt4fKBnIJ32MOO+OyXnl3wSjOvLNdogUqpX9XDJQ
- 7Emd7jkM+XEydhYTyeI6Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sxTCNEFc818=:rm7ecPnH9AuqDOoYbOHT8a
- MIKB2Hc0oEnZiDF3Fztn6/xGkaV+DwcDylgtiQBs8FzsjKioNogDJyd6xGcgTYzH/pyo9FENz
- bx8YjeQBxRXvzKj0f44Za8bXeC7vD8abFfsWQuJdU++2aiGTRvLOfLduG6wkRRgcbtRSIZpEt
- CoGrfHGmC7XSZ4MgCM300deuvnl0Ae/PzrAzsn83Y2J53t15mhZBX+9ur++GoAvh1YrNUzWXR
- c99xyvHnTxgClndLsmeb/x/RTzXcRpoh0nT4Phrt2Uq+dbeRT3M3H/7Xxg0HcQCU731OWHDhM
- GcjBJs57nz/+7vVE5zXultcSwX1jzN5uHaVRliOWq8jGHYxAGrRPYMS415vzXpHfWjtg7PDlL
- xu8i53ifid7QGKbHFezCsA0uOyvOTbmam5kM4Mg2yQ3aczfBRXL4IXQ8TZf1gGWsLbyG92K3q
- BuIvWCh8vNCbgExD02zDT1P3mziRYTo63EJ8XhKOOeE82CibBFOCqgdKywm3QE61bXKKit3bL
- yz8hjYEXzlXLm6bH7TGC1KqGN48sQKlHSf4WyQFdG+ofr7bhtovNc8tr59EvzrYjug7pc6+EJ
- +uYqjlcexttmnbOxAtJxBmL1VTbQCCsHUCXZU+uCNpSxYJ5txmosqgGElH7HSS/a4+6Z6WEfN
- 6PW7dtLT+jDg1tYFkchLM52mOhbjZS+oMLcce798Nd55HvPESLkfrEHqJKvsPZ+1b7b0yxn9r
- yOY0dRjbF7rkrShJxFyfCJGrMgdxRyciKYyzzPYwB30XBA+tk8mks26j51kg6w7T1zVLQZ+tK
- qv5Dea2eEcj/LA5LgNDezxMPOw/fy5LkxcOzP2U37XJTL6BK4gYA7JI00yGT0adE8q84pG+ad
- ByXc7lEm0hXys/qCyUdQkYT/nzriFF5O/PZE44e6fW0YpfEoX5uNudyWBma5zFyGLVkNE2Nl/
- nOiLMUC7Wlezg0qkv9bWWOG85K0+XBMGiZNbezpLkuSg1VQ0fZdDdnkSp/5BMJxnkZMMYIHAT
- DaodUmv6V2ZLRp27VIo9mVQdZopWwr+XSQFIQ55a8pmcgOBPNlvwI9vYyBodDdvgql1bpNLiB
- oj9vBOm/Jy3cik=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 5:30 PM, Guenter Roeck wrote:
-> parisc build test images fail to compile with the following error.
->
-> drivers/parisc/dino.c:160:12: error:
-> 	'pci_dev_is_behind_card_dino' defined but not used
->
-> Move the function just ahead of its only caller to avoid the error.
->
-> Fixes: 5fa1659105fa ("parisc: Disable HP HSC-PCI Cards to prevent kernel=
- crash")
-> Cc: Helge Deller <deller@gmx.de>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Hi Arnd,
 
-applied to the parisc tree.
+On Tue, Sep 07, 2021 at 11:11:17AM +0200, Arnd Bergmann wrote:
+> On Tue, Sep 7, 2021 at 4:32 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > arm32-allmodconfig.log: crypto/wp512.c:782:13: error: stack frame size (1176) exceeds limit (1024) in function 'wp512_process_buffer' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:294:12: error: stack frame size (1256) exceeds limit (1024) in function 'bpmp_debug_show' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:357:16: error: stack frame size (1264) exceeds limit (1024) in function 'bpmp_debug_store' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1384) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5560) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/mtd/chips/cfi_cmdset_0001.c:1872:12: error: stack frame size (1064) exceeds limit (1024) in function 'cfi_intelext_writev' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/ntb/hw/idt/ntb_hw_idt.c:1041:27: error: stack frame size (1032) exceeds limit (1024) in function 'idt_scan_mws' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:902:12: error: stack frame size (1072) exceeds limit (1024) in function 'fbtft_init_display_from_property' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:992:5: error: stack frame size (1064) exceeds limit (1024) in function 'fbtft_init_display' [-Werror,-Wframe-larger-than]
+> > arm32-allmodconfig.log: drivers/staging/rtl8723bs/core/rtw_security.c:1288:5: error: stack frame size (1040) exceeds limit (1024) in function 'rtw_aes_decrypt' [-Werror,-Wframe-larger-than]
+> > arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1376) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
+> > arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5384) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
+> >
+> > Aside from the dce_calcs.c warnings, these do not seem too bad. I
+> > believe allmodconfig turns on UBSAN but it could also be aggressive
+> > inlining by clang. I intend to look at all -Wframe-large-than warnings
+> > closely later.
+> 
+> I've had them close to zero in the past, but a couple of new ones came in.
+> 
+> The amdgpu ones are probably not fixable unless they stop using 64-bit
+> floats in the kernel for
+> random calculations. The crypto/* ones tend to be compiler bugs, but hard to fix
 
-Thanks!
-Helge
+I have started taking a look at these. Most of the allmodconfig ones
+appear to be related to CONFIG_KASAN, which is now supported for
+CONFIG_ARM.
 
+The two in bpmp-debugfs.c appear regardless of CONFIG_KASAN and it turns
+out that you actually submitted a patch for these:
 
-> ---
->   drivers/parisc/dino.c | 18 +++++++++---------
->   1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-> index 889d7ce282eb..952a92504df6 100644
-> --- a/drivers/parisc/dino.c
-> +++ b/drivers/parisc/dino.c
-> @@ -156,15 +156,6 @@ static inline struct dino_device *DINO_DEV(struct p=
-ci_hba_data *hba)
->   	return container_of(hba, struct dino_device, hba);
->   }
->
-> -/* Check if PCI device is behind a Card-mode Dino. */
-> -static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
-> -{
-> -	struct dino_device *dino_dev;
-> -
-> -	dino_dev =3D DINO_DEV(parisc_walk_tree(dev->bus->bridge));
-> -	return is_card_dino(&dino_dev->hba.dev->id);
-> -}
-> -
->   /*
->    * Dino Configuration Space Accessor Functions
->    */
-> @@ -447,6 +438,15 @@ static void quirk_cirrus_cardbus(struct pci_dev *de=
-v)
->   DECLARE_PCI_FIXUP_ENABLE(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_68=
-32, quirk_cirrus_cardbus );
->
->   #ifdef CONFIG_TULIP
-> +/* Check if PCI device is behind a Card-mode Dino. */
-> +static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
-> +{
-> +	struct dino_device *dino_dev;
-> +
-> +	dino_dev =3D DINO_DEV(parisc_walk_tree(dev->bus->bridge));
-> +	return is_card_dino(&dino_dev->hba.dev->id);
-> +}
-> +
->   static void pci_fixup_tulip(struct pci_dev *dev)
->   {
->   	if (!pci_dev_is_behind_card_dino(dev))
->
+https://lore.kernel.org/r/20201204193714.3134651-1-arnd@kernel.org/
 
+Is it worth resending or pinging that?
+
+The dce_calcs.c ones also appear without CONFIG_KASAN, which you noted
+is probably unavoidable.
+
+The other ones only appear with CONFIG_KASAN. I have not investigated
+each instance to see exactly how much KASAN makes the stack blow up.
+Perhaps it is worth setting the default of CONFIG_FRAME_WARN to a higher
+value with clang+COMPILE_TEST+KASAN?
+
+> > It appears that both Arch Linux and Fedora define CONFIG_FRAME_WARN
+> > as 1024, below its default of 2048. I am not sure these look particurly
+> > scary (although there are some that are rather large that need to be
+> > looked at).
+> 
+> For 64-bit, you usually need 1280 bytes stack space to get a
+> reasonably clean build,
+> anything that uses more than that tends to be a bug in the code but we
+> never warned
+> about those by default as the default warning limit in defconfig is 2048.
+> 
+> I think the distros using 1024 did that because they use a common base config
+> for 32-bit and 64-bit targets.
+
+That is a fair explanation.
+
+> > I suspect this is a backend problem because these do not really appear
+> > in any other configurations (might also be something with a sanitizer?)
+> 
+> Agreed. Someone needs to bisect the .config or the compiler flags to see what
+> triggers them.
+
+For other people following along, there were a lot of
+-Wframe-larger-than instances from RISC-V allmodconfig.
+
+Turns out this is because CONFIG_KASAN_STACK is not respected with
+RISC-V. They do not set CONFIG_KASAN_SHADOW_OFFSET so following along in
+scripts/Makefile.kasan, CFLAGS_KASAN_SHADOW does not get set to
+anything, which means that only '-fsanitize=kernel-address' gets added
+to the command line, with none of the other parameters.
+
+I guess there are a couple of ways to tackle this:
+
+1. RISC-V could implement CONFIG_KASAN_SHADOW_OFFSET. They mention that
+   the logic of KASAN_SHADOW_OFFSET was taken from arm64 but they did
+   not borrow the Kconfig logic it seems.
+
+2. asan-stack could be hoisted out of the else branch so that it is
+   always enabled/disabled regardless of KASAN_SHADOW_OFFSET being
+   defined, which resolved all of these warnings for me in my testing.
+
+I am adding the KASAN and RISC-V folks to CC for this reason.
+
+Cheers,
+Nathan
