@@ -2,100 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B646403F78
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E095D403F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347939AbhIHTJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhIHTJ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:09:29 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AB6C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 12:08:21 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id bi4so4380392oib.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 12:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bw+JG+aQMrwPzIAhtsSSwIELKeZ1QyarX3T49Luud4c=;
-        b=TbXlV3D9n7GMa1t1MJOGjHEwWpRdK7WxXe/JR06eo5TUDQYhiXt0NZpizFDnpJDQhZ
-         4OaPfdJfCFEOtUdnhdH4O9DbKAxNnrIT7MiDfXdWYDJFrSW4YolXKDKnDwh0HkbjP6zD
-         uoF4wqd49GJl9rA+GVBV6vbEd1CpVG9XxrjLb+2nZJI63KzMVpq1yWSiLjPHIZpPWbiY
-         BtuFVFW4Ly6JdO42eRKB3VHvXVE8p4/M6CHeb7AyF/ZU+1wGPPp7tmpN2nZlzg8bhgXw
-         2yWjaP5/icauhrhgp1eiD3BElRoFrWuSPQVKBfL0oSuJkiT4apceWJKzwRZZ5DajEiyQ
-         Bb4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=bw+JG+aQMrwPzIAhtsSSwIELKeZ1QyarX3T49Luud4c=;
-        b=EUF9r51ZJZnnzVpPG/zCyH1HODYnhHgc/L0mtNcVueNO/RKcoBjDYVDj2IKMK6CFlV
-         QSHv6x+jmFW8CVEJSiR6gi2R4mTXf4Ivji2Z3INmvXLB4k0JZcqWn/w/xxgSr527uHS8
-         TI8UCEPuwgn1+Re/1iFRKzlkV8zSjIF+YCH59gEFs/Kxkf3AluYB+zZum3Q+5Ld2PW2F
-         LKoJXfi1CkF+0q220f4q29FjfFidzpIkHjN5pq+diqkXxy7pbUzwge67jQSzITp01L7t
-         YpXwB15FI/2JDa2dDkM3k3YxlDDVlrp/lyyUrchS6ISwExigMd5i2Mfmf4jE1W3NeY8B
-         j6pw==
-X-Gm-Message-State: AOAM533lAaTDbOo11ytH29aZjSJAPT9sIMElueVwJKVMd8vWnS8blS6e
-        lgqmn54e/sVMVm6XelDH1Ho=
-X-Google-Smtp-Source: ABdhPJx5bURId7fRLqo29FhLyipAcn4Q2zfAltA/3QWnCbeeW+Tdz8wJYdLDdGu8vIjxCvPSnGob9Q==
-X-Received: by 2002:aca:5f04:: with SMTP id t4mr3563120oib.53.1631128100985;
-        Wed, 08 Sep 2021 12:08:20 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r7sm591936oog.48.2021.09.08.12.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 12:08:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
-Date:   Wed,  8 Sep 2021 12:08:17 -0700
-Message-Id: <20210908190817.1213486-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        id S240432AbhIHTKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230161AbhIHTKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:10:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A67E6610A3;
+        Wed,  8 Sep 2021 19:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631128180;
+        bh=grsSqRTlqcdIPecLJPirMjurWF4OgYDPGV92xQiPrnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oikWF4LYR1Hj8tD/J90kBZ0MUYEL+dM4DjCAPnHq0VxByMYqh2a5+ibmdFuTlMflX
+         D9H/1AZ2GQgiElfBAJ/suDgrcQ3MJBfGa1ApVf3G8MboNCak4aVR8orbqZPSmkErgf
+         IO2lP8Hcq4YOKXEBAjYkcgvQq9spG1VL867ZMAaiQ2+IXmTT5ySsRqTsFtFs+EBl7o
+         Pp03GTlF2w99M9+vzMS/TweVLggGr0xHxZ3RG/OQleFImWuF1l+KOer23pFJqGB+6Y
+         uD1pvERD1B5HuIuTMwnEHLd5o+yKuiLfi/hYdyHPi4onn7EXMECNZBoSaXGEMU9jkq
+         XGKLLosOG7ibQ==
+Received: by pali.im (Postfix)
+        id 4A2D9708; Wed,  8 Sep 2021 21:09:38 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 21:09:38 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v4 7/9] fs/ntfs3: Add iocharset= mount option as alias
+ for nls=
+Message-ID: <20210908190938.l32kihefvtfw5tjp@pali>
+References: <20210907153557.144391-1-kari.argillander@gmail.com>
+ <20210907153557.144391-8-kari.argillander@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210907153557.144391-8-kari.argillander@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nvkm test builds fail with the following error.
+On Tuesday 07 September 2021 18:35:55 Kari Argillander wrote:
+> Other fs drivers are using iocharset= mount option for specifying charset.
+> So add it also for ntfs3 and mark old nls= mount option as deprecated.
+> 
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 
-drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c:
-	In function 'nvkm_control_mthd_pstate_info':
-drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c:60:35: error:
-	overflow in conversion from 'int' to '__s8' {aka 'signed char'}
-		changes value from '-251' to '5'
+Reviewed-by: Pali Rohár <pali@kernel.org>
 
-The code builds on most architectures, but fails on parisc where ENOSYS
-is defined as 251. Replace the error code with -ENODEV (-19). The actual
-error code does not really matter and is not passed to userspace - it
-just has to be negative.
-
-Fixes: 7238eca4cf18 ("drm/nouveau: expose pstate selection per-power source in sysfs")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c b/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-index b0ece71aefde..ce774579c89d 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-@@ -57,7 +57,7 @@ nvkm_control_mthd_pstate_info(struct nvkm_control *ctrl, void *data, u32 size)
- 		args->v0.count = 0;
- 		args->v0.ustate_ac = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
- 		args->v0.ustate_dc = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
--		args->v0.pwrsrc = -ENOSYS;
-+		args->v0.pwrsrc = -ENODEV;
- 		args->v0.pstate = NVIF_CONTROL_PSTATE_INFO_V0_PSTATE_UNKNOWN;
- 	}
- 
--- 
-2.33.0
-
+> ---
+>  Documentation/filesystems/ntfs3.rst |  4 ++--
+>  fs/ntfs3/super.c                    | 18 +++++++++++-------
+>  2 files changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+> index af7158de6fde..ded706474825 100644
+> --- a/Documentation/filesystems/ntfs3.rst
+> +++ b/Documentation/filesystems/ntfs3.rst
+> @@ -32,12 +32,12 @@ generic ones.
+>  
+>  ===============================================================================
+>  
+> -nls=name		This option informs the driver how to interpret path
+> +iocharset=name		This option informs the driver how to interpret path
+>  			strings and translate them to Unicode and back. If
+>  			this option is not set, the default codepage will be
+>  			used (CONFIG_NLS_DEFAULT).
+>  			Examples:
+> -				'nls=utf8'
+> +				'iocharset=utf8'
+>  
+>  uid=
+>  gid=
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 729ead6f2fac..503e2e23f711 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -226,7 +226,7 @@ enum Opt {
+>  	Opt_nohidden,
+>  	Opt_showmeta,
+>  	Opt_acl,
+> -	Opt_nls,
+> +	Opt_iocharset,
+>  	Opt_prealloc,
+>  	Opt_no_acs_rules,
+>  	Opt_err,
+> @@ -245,9 +245,13 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
+>  	fsparam_flag_no("hidden",		Opt_nohidden),
+>  	fsparam_flag_no("acl",			Opt_acl),
+>  	fsparam_flag_no("showmeta",		Opt_showmeta),
+> -	fsparam_string("nls",			Opt_nls),
+>  	fsparam_flag_no("prealloc",		Opt_prealloc),
+>  	fsparam_flag("no_acs_rules",		Opt_no_acs_rules),
+> +	fsparam_string("iocharset",		Opt_iocharset),
+> +
+> +	__fsparam(fs_param_is_string,
+> +		  "nls", Opt_iocharset,
+> +		  fs_param_deprecated, NULL),
+>  	{}
+>  };
+>  
+> @@ -346,7 +350,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
+>  	case Opt_showmeta:
+>  		opts->showmeta = result.negated ? 0 : 1;
+>  		break;
+> -	case Opt_nls:
+> +	case Opt_iocharset:
+>  		kfree(opts->nls_name);
+>  		opts->nls_name = param->string;
+>  		param->string = NULL;
+> @@ -380,11 +384,11 @@ static int ntfs_fs_reconfigure(struct fs_context *fc)
+>  	new_opts->nls = ntfs_load_nls(new_opts->nls_name);
+>  	if (IS_ERR(new_opts->nls)) {
+>  		new_opts->nls = NULL;
+> -		errorf(fc, "ntfs3: Cannot load nls %s", new_opts->nls_name);
+> +		errorf(fc, "ntfs3: Cannot load iocharset %s", new_opts->nls_name);
+>  		return -EINVAL;
+>  	}
+>  	if (new_opts->nls != sbi->options->nls)
+> -		return invalf(fc, "ntfs3: Cannot use different nls when remounting!");
+> +		return invalf(fc, "ntfs3: Cannot use different iocharset when remounting!");
+>  
+>  	sync_filesystem(sb);
+>  
+> @@ -528,9 +532,9 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
+>  	if (opts->dmask)
+>  		seq_printf(m, ",dmask=%04o", ~opts->fs_dmask_inv);
+>  	if (opts->nls)
+> -		seq_printf(m, ",nls=%s", opts->nls->charset);
+> +		seq_printf(m, ",iocharset=%s", opts->nls->charset);
+>  	else
+> -		seq_puts(m, ",nls=utf8");
+> +		seq_puts(m, ",iocharset=utf8");
+>  	if (opts->sys_immutable)
+>  		seq_puts(m, ",sys_immutable");
+>  	if (opts->discard)
+> -- 
+> 2.25.1
+> 
