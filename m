@@ -2,144 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8FF40363C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590E340363E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350049AbhIHInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 04:43:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348283AbhIHInF (ORCPT
+        id S1350281AbhIHInX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 04:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348382AbhIHInW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 04:43:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631090515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hw7rjfopecKiPNs1gj6jXPb/jNV8mw5l8UNJZ/rvSQk=;
-        b=dw2e9b0KXhXQkqRVexvy9ukFBVGCMd97chDLUmjRepulHS4AW0g7vImj2oujubIj5Od468
-        68VkB6phlVYrlDPCKIm9VmkG6cWTQWSswNFrMn3hTrccso9BPHYfKOWlq+kTyub+J7UPEj
-        E5SXQTs+BlQKScxVJRtSxNwH5B3an00=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-hvRtez6YO6ODSZbIxb-7kQ-1; Wed, 08 Sep 2021 04:41:54 -0400
-X-MC-Unique: hvRtez6YO6ODSZbIxb-7kQ-1
-Received: by mail-wr1-f69.google.com with SMTP id h15-20020adff18f000000b001574654fbc2so288481wro.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:41:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Hw7rjfopecKiPNs1gj6jXPb/jNV8mw5l8UNJZ/rvSQk=;
-        b=oIiz9womUDzBb1yPfUNDJ3hOhDrocGdblCpoaCksZvW4WnFHdo4LFGOCnP65hjDYk9
-         m0nDEPZehGEl/rzsVCQxqEyEujWYnYFWF1+OGP5lPDgCdGkSnonSjK1lrjAREiiTepQt
-         nx39GhrkDCS2LQuCWkaJACJDb6q7u5OcOO/J56DjVJHlgoIELFPoz0Jyv+QPGbzqL3/5
-         YUQ9mRc9Pco4P40q2APHp+YdlKOIcxjppJmmWicy6gFF1FFbMC4qc6wmKwiZ0lVr4Y7s
-         oqe7i917F6YtZEXQ94+oPzkAEG/58RF3NE7SPUGDkGjxbRxaDmuW54PIfcIkDyQmIwke
-         i4Bg==
-X-Gm-Message-State: AOAM530v87IO4ZAUdwJiGaGMJjyl5jvCWYt8OaCoRo31jDngUnd45hgQ
-        8kiyJc9GsaGwaajOg9tObRnWe4EwBNjMW1llBrNnfbxqmYikqdamMaVTPZ9bd6cp7zn2dHV4088
-        rIJM2VQajVjGU0mSJJdMpC1/J
-X-Received: by 2002:a1c:43c5:: with SMTP id q188mr2212837wma.175.1631090513623;
-        Wed, 08 Sep 2021 01:41:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweE3MmeKl7/39WLjEVkd4I7ue217226XV3Qw+7onVSrj0Q82ajVjxJjneUuSkC8YrR/KLarg==
-X-Received: by 2002:a1c:43c5:: with SMTP id q188mr2212819wma.175.1631090513449;
-        Wed, 08 Sep 2021 01:41:53 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id u25sm1414388wmj.10.2021.09.08.01.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 01:41:52 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Eduardo Habkost <ehabkost@redhat.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 3/6] x86/kvm: introduce per cpu vcpu masks
-In-Reply-To: <20210907183457.53ws6tqqqpzkeil4@habkost.net>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-4-jgross@suse.com>
- <20210907183457.53ws6tqqqpzkeil4@habkost.net>
-Date:   Wed, 08 Sep 2021 10:41:51 +0200
-Message-ID: <87r1dz4fxs.fsf@vitty.brq.redhat.com>
+        Wed, 8 Sep 2021 04:43:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AA7C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:42:14 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mNt9k-0006us-96; Wed, 08 Sep 2021 10:42:08 +0200
+Message-ID: <7ef982040749983045dd51cbd03c760293a56efe.camel@pengutronix.de>
+Subject: Re: [PATCH 2/3] PCI: imx: add err check to host init and fix
+ regulator dump
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Wed, 08 Sep 2021 10:42:07 +0200
+In-Reply-To: <1631084366-24785-2-git-send-email-hongxing.zhu@nxp.com>
+References: <1631084366-24785-1-git-send-email-hongxing.zhu@nxp.com>
+         <1631084366-24785-2-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eduardo Habkost <ehabkost@redhat.com> writes:
+Am Mittwoch, dem 08.09.2021 um 14:59 +0800 schrieb Richard Zhu:
+> Since there is error return check of the host_init callback, add error
+> check to imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+> function.
+> 
+> Because that i.MX PCIe doesn't support the hot-plug feature. To save
+> power consumption as much as possible, turn off the clocks and power
+> supplies when the PCIe PHY link is never came up in probe procedure.
+> 
+> When PCIe link is never came up and vpcie regulator is present, there
+> would be following dump when try to put the regulator.
+> Disable this regulator to fix this dump when link is never came up.
+> 
+> [    2.335880] imx6q-pcie 33800000.pcie: Phy link never came up
+> [    2.341642] imx6q-pcie: probe of 33800000.pcie failed with error -110
+> [    2.348160] ------------[ cut here ]------------
+> [    2.352778] WARNING: CPU: 3 PID: 119 at drivers/regulator/core.c:2256 _regulator_put.part.0+0x14c/0x158
+> [    2.362184] Modules linked in:
+> [    2.365243] CPU: 3 PID: 119 Comm: kworker/u8:2 Not tainted 5.13.0-rc7-next-20210625-94710-ge4e92b2588a3 #10
+> [    2.374987] Hardware name: FSL i.MX8MM EVK board (DT)
+> [    2.380040] Workqueue: events_unbound async_run_entry_fn
+> [    2.385359] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> [    2.391369] pc : _regulator_put.part.0+0x14c/0x158
+> [    2.396163] lr : regulator_put+0x34/0x48
+> [    2.400088] sp : ffff8000122ebb30
+> [    2.403400] x29: ffff8000122ebb30 x28: ffff800011be7000 x27: 0000000000000000
+> [    2.410546] x26: 0000000000000000 x25: 0000000000000000 x24: ffff00000025f2bc
+> [    2.417689] x23: ffff00000025f2c0 x22: ffff00000025f010 x21: ffff8000122ebc18
+> [    2.424834] x20: ffff800011e3fa60 x19: ffff00000375fd80 x18: 0000000000000010
+> [    2.431979] x17: 000000040044ffff x16: 00400032b5503510 x15: 0000000000000108
+> [    2.439124] x14: ffff0000003cc938 x13: 00000000ffffffea x12: 0000000000000000
+> [    2.446267] x11: 0000000000000000 x10: ffff80001076ba88 x9 : ffff80001076a540
+> [    2.453411] x8 : ffff00000025f2c0 x7 : ffff0000001f4450 x6 : ffff000000176cd8
+> [    2.460556] x5 : ffff000003857880 x4 : 0000000000000000 x3 : ffff800011e3fe30
+> [    2.467700] x2 : ffff0000003cc4c0 x1 : 0000000000000000 x0 : 0000000000000001
+> [    2.474847] Call trace:
+> [    2.477295]  _regulator_put.part.0+0x14c/0x158
+> [    2.481742]  regulator_put+0x34/0x48
+> [    2.485322]  devm_regulator_release+0x10/0x18
+> [    2.489681]  release_nodes+0x38/0x60
+> [    2.493262]  devres_release_all+0x88/0xd0
+> [    2.497276]  really_probe+0xd0/0x2e8
+> [    2.500858]  __driver_probe_device+0x74/0xd8
+> [    2.505137]  driver_probe_device+0x7c/0x108
+> [    2.509325]  __device_attach_driver+0x8c/0xd0
+> [    2.513685]  bus_for_each_drv+0x74/0xc0
+> [    2.517531]  __device_attach_async_helper+0xb4/0xd8
+> [    2.522419]  async_run_entry_fn+0x30/0x100
+> [    2.526521]  process_one_work+0x19c/0x320
+> [    2.530532]  worker_thread+0x48/0x418
+> [    2.534199]  kthread+0x14c/0x158
+> [    2.537432]  ret_from_fork+0x10/0x18
+> [    2.541013] ---[ end trace 3664ca4a50ce849b ]---
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 28 +++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 0264432e4c4a..129928e42f84 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -144,6 +144,7 @@ struct imx6_pcie {
+>  #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
+>  
+>  static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie);
+> +static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie);
+>  
+>  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+>  {
+> @@ -485,24 +486,24 @@ static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+>  		dev_err(dev, "PCIe PLL lock timeout\n");
+>  }
+>  
+> -static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+> +static int imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  {
+>  	struct dw_pcie *pci = imx6_pcie->pci;
+>  	struct device *dev = pci->dev;
+> -	int ret;
+> +	int ret, err;
 
-> On Fri, Sep 03, 2021 at 03:08:04PM +0200, Juergen Gross wrote:
->> In order to support high vcpu numbers per guest don't use on stack
->> vcpu bitmasks. As all those currently used bitmasks are not used in
->> functions subject to recursion it is fairly easy to replace them with
->> percpu bitmasks.
->> 
->> Disable preemption while such a bitmask is being used in order to
->> avoid double usage in case we'd switch cpus.
->> 
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> ---
->> V2:
->> - use local_lock() instead of preempt_disable() (Paolo Bonzini)
->> ---
->>  arch/x86/include/asm/kvm_host.h | 10 ++++++++++
->>  arch/x86/kvm/hyperv.c           | 25 ++++++++++++++++++-------
->>  arch/x86/kvm/irq_comm.c         |  9 +++++++--
->>  arch/x86/kvm/x86.c              | 22 +++++++++++++++++++++-
->>  4 files changed, 56 insertions(+), 10 deletions(-)
->> 
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 3513edee8e22..a809a9e4fa5c 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -15,6 +15,7 @@
->>  #include <linux/cpumask.h>
->>  #include <linux/irq_work.h>
->>  #include <linux/irq.h>
->> +#include <linux/local_lock.h>
->>  
->>  #include <linux/kvm.h>
->>  #include <linux/kvm_para.h>
->> @@ -1591,6 +1592,15 @@ extern bool kvm_has_bus_lock_exit;
->>  /* maximum vcpu-id */
->>  unsigned int kvm_max_vcpu_id(void);
->>  
->> +/* per cpu vcpu bitmasks, protected by kvm_pcpu_mask_lock */
->> +DECLARE_PER_CPU(local_lock_t, kvm_pcpu_mask_lock);
->> +extern unsigned long __percpu *kvm_pcpu_vcpu_mask;
->> +#define KVM_VCPU_MASK_SZ	\
->> +	(sizeof(*kvm_pcpu_vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS))
->> +extern u64 __percpu *kvm_hv_vp_bitmap;
->> +#define KVM_HV_MAX_SPARSE_VCPU_SET_BITS DIV_ROUND_UP(KVM_MAX_VCPUS, 64)
->> +#define KVM_HV_VPMAP_SZ		(sizeof(u64) * KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
->
-> I have just realized that the Hyper-V sparse bitmap format can
-> support only up to 4096 CPUs, and the current implementation of
-> sparse_set_to_vcpu_mask() won't even work correctly if
-> KVM_MAX_VCPUS is larger than 4096.
+Why do we need a separate variable for the error code here? Why not
+just use the existing ret?
 
-Nice catch! Indeed, we can only encode 64 'banks' with 64 vCPUs each. We
-need to enforce the limit somehow. As a big hammer, I can suggest to
-fail kvm_hv_vcpu_init() and write to HV_X64_MSR_VP_INDEX for vCPUs above
-4095 for now (I seriously doubt there's real need to run such big
-Windows guests anywhere but who knows).
+>  
+>  	if (imx6_pcie->vpcie && !regulator_is_enabled(imx6_pcie->vpcie)) {
+>  		ret = regulator_enable(imx6_pcie->vpcie);
+>  		if (ret) {
+>  			dev_err(dev, "failed to enable vpcie regulator: %d\n",
+>  				ret);
+> -			return;
+> +			return ret;
+>  		}
+>  	}
+>  
+> -	ret = imx6_pcie_clk_enable(imx6_pcie);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie clocks\n");
+> +	err = imx6_pcie_clk_enable(imx6_pcie);
+> +	if (err) {
+> +		dev_err(dev, "unable to enable pcie clocks: %d\n", err);
+>  		goto err_clks;
+>  	}
+>  
+> @@ -557,7 +558,7 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  		break;
+>  	}
+>  
+> -	return;
+> +	return 0;
+>  
+>  err_clks:
+>  	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0) {
+> @@ -566,6 +567,7 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  			dev_err(dev, "failed to disable vpcie regulator: %d\n",
+>  				ret);
+>  	}
+> +	return err;
+>  }
+>  
+>  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
+> @@ -810,17 +812,27 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
+>  	imx6_pcie_reset_phy(imx6_pcie);
+> +	imx6_pcie_clk_disable(imx6_pcie);
 
->
-> This means vp_bitmap can't and will never be larger than 512
-> bytes.  Isn't a per-CPU variable for vp_bitmap overkill in this
-> case?
+This is a separate fix for the clock enable counts, that isn't
+mentioned in the commit message.
 
-Yes, it's OK to allocate 512 bytes on stack.
+It seems like this patch fixes in fact 3 issues: error propagation from
+host_init, fix regulator reference handling, fix clk reference
+handling. Either split up the patch along those changes (if possible)
+or improve the commit message to explain those changes.
 
--- 
-Vitaly
+Regards,
+Lucas
+
+> +	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
+> +		regulator_disable(imx6_pcie->vpcie);
+>  	return ret;
+>  }
+>  
+>  static int imx6_pcie_host_init(struct pcie_port *pp)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct device *dev = pci->dev;
+>  	struct imx6_pcie *imx6_pcie = to_imx6_pcie(pci);
+> +	int ret;
+>  
+>  	imx6_pcie_assert_core_reset(imx6_pcie);
+>  	imx6_pcie_init_phy(imx6_pcie);
+> -	imx6_pcie_deassert_core_reset(imx6_pcie);
+> +	ret = imx6_pcie_deassert_core_reset(imx6_pcie);
+> +	if (ret < 0) {
+> +		dev_err(dev, "pcie host init failed: %d.\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	imx6_setup_phy_mpll(imx6_pcie);
+>  
+>  	return 0;
+
 
