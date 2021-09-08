@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904BC403223
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE215403225
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345403AbhIHBVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S1345915AbhIHBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbhIHBVg (ORCPT
+        with ESMTP id S229946AbhIHBXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:21:36 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73232C061575;
-        Tue,  7 Sep 2021 18:20:29 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id q39so934987oiw.12;
-        Tue, 07 Sep 2021 18:20:29 -0700 (PDT)
+        Tue, 7 Sep 2021 21:23:02 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465FAC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:21:55 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id d16so685387ljq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/rZ4nnKkZgCgbDc43Bio1ZW69ZAqGdUK21F+/D3NTzU=;
-        b=AIJdkr0oicrGkTGXphy/Ng7FXpM1QptqZJ9bc/kQnsu4YLBh5hs62LugISSBJYoqKm
-         rd8q1kUSw1rO0DCjULP4BtJodJUYxyfD2xCopA5p1PjRg0fBrbylUIadMQc1BovPqKh/
-         cxFT8BynG1Ix5bcLl9yKTEFfct4cLbEUEsQrBauDAf3jBl8Je7eEOx2satSWONDbAAEa
-         1F98rPIZymxuwRlhxDYgolBe/TbnmEiFRsxVlLjqaE6AoUiX7LhYF6kc64kU21Hv/Wb3
-         IwT/RM9v7gJzo+uYY1CcNI0YJB2m0NMjVo0lt6V0QMwiD4+lW2Aas6Bnwf4WYTGCrm+b
-         IOtw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KeNC+xKtdDu6RTTBHmLc6/GMNcuVkbNM9xz7wbPcFt0=;
+        b=C6PQPdgaqWvNpRQJzk5mjGikGCmfGfZG6rs53tEoPAr3c11GXY1RIpPL0qf6HG9P/q
+         buUN59vo7ouy1QSmlby8yYm1wVmLwMwpc1iVPBhRRbnPvV0yJw5yxAIE+y3FaQUUj6m6
+         jtnD2rlG0gohDBQoliNzFByxIk8SASTAWndDbDhzyqVcVMaVS1fcQEeSrQQ+On5tk+t7
+         TFzlKpyVYDZg+krdIr/p9gjuQ56GYB8DyajIIcfPrdBMQhQaM7srg46y+/qN5qzhBxLW
+         l3X5zWdH3fOA4/uIid1YC0k13YVW7Ce5EwvKIDLzcGWvocmo7GGtO4/R2Nqi2DAYHUn8
+         PfIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/rZ4nnKkZgCgbDc43Bio1ZW69ZAqGdUK21F+/D3NTzU=;
-        b=Vwny4RLs3K+KENdkSEE5qEXzQ9B6ojI+kaxhnx4WQI61mQxx5kBIUmp5KThfGeBcjV
-         dgazNSW8r3QX5rH0b2lvGnJ7J8f1zweeMHYKw5OP1VyYw0vu2K+2a/3GxzDAnNnchRa7
-         O6Gsog6s0A8qQ3o1gjJifZp6+orz+t0dDWkIX5pUmtBCmDhg8Ne6OZIOhCTQmK6tmBc9
-         5fbQf4xiRPVSeyJmMN0AKRCy5X8Dfw/pULUGPRmteuLMMJJ/N92vfCNtF6XmKuLU/DuZ
-         4/bVnDcarkxgMaL/u6h8ljq3o4mmzD4AOt3GIuQYyeZa3OVIcrYvuLmFiBwqt66Hwcqk
-         VdkQ==
-X-Gm-Message-State: AOAM532v6u+2NUVQAC9LRPowOGQRjfyBPjxZ0jIfMYV0Y3f12NQtI0un
-        dGYvBakTsLtCM9jidGo9rRM=
-X-Google-Smtp-Source: ABdhPJw3rSZDWP/XfPAYFabefoET+kkfq/KaX16JVB+AAoFr6mVS9ocNWDeYRercW5tS5WVcV1ljqA==
-X-Received: by 2002:a05:6808:cf:: with SMTP id t15mr739636oic.108.1631064028825;
-        Tue, 07 Sep 2021 18:20:28 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s198sm162745oie.47.2021.09.07.18.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 18:20:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 7 Sep 2021 18:20:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 00/14] 5.14.2-rc1 review
-Message-ID: <20210908012027.GC2310006@roeck-us.net>
-References: <20210906125448.160263393@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KeNC+xKtdDu6RTTBHmLc6/GMNcuVkbNM9xz7wbPcFt0=;
+        b=hbBJJhv30oEAhc4CG2rTc+loHLj/1QV3lRKkT9bpCXgrYtT+6cW2xMIuglSPT60KQY
+         +pAIQM6+axIlC97NBcpHrdQ3Io9j0Y5rnfzXid04bWq5UWibu5Asyz5sln2Ots4UUD34
+         27435zqQllSu0ZS/F+TK8KL35nLWkXVAcsntvCBbSRZKEjn97E/jeZdM6w9Wcpl0jUZO
+         KPm9lcHBfSCowLPedSon9Q2lVKAorb4n7+k5a8SLCiTmQHRprac05i25jjNPgqkyXQBs
+         boSRgJrHfG3+PnkrXVKMJzdJ1yea2JF6dYfZUseZzqBQ0o5OMR5Rek+oatDztVrGNmhK
+         6QTg==
+X-Gm-Message-State: AOAM533Bi6iEzJznfNoJ5r1S7kL3Jsc20HjlyyfekxA7Hu+ZD/UHJcC7
+        COrc88H//R+F1+UAEmeB+caUoWQJGt25+YdWfjks8w==
+X-Google-Smtp-Source: ABdhPJxmk5JpnPt/l3GLD8X4Z8zmvHTEhjebR5aPXNGM2ng2gIkRYC0aVcx89Tzi5a7HpVOXBJqnUniHbq1Mb2Oqxyc=
+X-Received: by 2002:a2e:a0c8:: with SMTP id f8mr790291ljm.170.1631064112393;
+ Tue, 07 Sep 2021 18:21:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
+References: <20210907123112.10232-1-justin.he@arm.com> <20210907123112.10232-2-justin.he@arm.com>
+In-Reply-To: <20210907123112.10232-2-justin.he@arm.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Tue, 7 Sep 2021 20:21:40 -0500
+Message-ID: <CAOQ_QshwO2AtzKTNZJ1FXWTuvdvnxnLQxej1UpLAqVrJC_oCgw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] KVM: arm64: vgic: Add memcg accounting to vgic allocations
+To:     Jia He <justin.he@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Liu Shixin <liushixin2@huawei.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:55:46PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.2 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, Sep 7, 2021 at 7:33 AM Jia He <justin.he@arm.com> wrote:
+>
+> Inspired by commit 254272ce6505 ("kvm: x86: Add memcg accounting to KVM
+> allocations"), it would be better to make arm64 vgic consistent with
+> common kvm codes.
+>
+> The memory allocations of VM scope should be charged into VM process
+> cgroup, hence change GFP_KERNEL to GFP_KERNEL_ACCOUNT.
+>
+> There remain a few cases since these allocations are global, not in VM
+> scope.
+>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-init.c    |  2 +-
+>  arch/arm64/kvm/vgic/vgic-irqfd.c   |  2 +-
+>  arch/arm64/kvm/vgic/vgic-its.c     | 14 +++++++-------
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c |  2 +-
+>  arch/arm64/kvm/vgic/vgic-v4.c      |  2 +-
+>  5 files changed, 11 insertions(+), 11 deletions(-)
+>
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 479 pass: 479 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Reviewed-by: Oliver Upton <oupton@google.com>
