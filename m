@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652D4403C69
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4D1403C6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349584AbhIHPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhIHPVg (ORCPT
+        id S1351996AbhIHPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:25:03 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:37486 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhIHPZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:21:36 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20581C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:20:29 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso3428697ots.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OZ2P9mw3evJ0P/P4xOie79/DsuG4DubNBUve1ewYQ78=;
-        b=iHH0KMk+8RMxSZ9tk2OCzj07ySk6EOxzZLq1IU/f8ptYk4eWvbW5lL1rco4I+WLD6Z
-         llGmb0VyUwqJRCQZq6y1AxvYW6i/RqNx96pDOYCHXCro4R6GssOj5m5ELxQTLqfbnul7
-         2BhPFjP1yYykUEojCKqtPk2e4VEzwuxytb//SuMxCCfiOdIwkivLdmCJ4PeIra02Woe3
-         Z6Hw8YjSgVF371GmFia0IMMAzseDloXzERhqveZSS6AvVH+Jqkn+taLdzFJ5aOVu1ADh
-         p1/AUYyXCa6MiVPG6UhcyOpA/5rgeoTlcio4iyKppypq0ji/4ed9l3mWpv8aDw5SaUXz
-         x94w==
+        Wed, 8 Sep 2021 11:25:02 -0400
+Received: by mail-wr1-f42.google.com with SMTP id v10so3898866wrd.4;
+        Wed, 08 Sep 2021 08:23:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OZ2P9mw3evJ0P/P4xOie79/DsuG4DubNBUve1ewYQ78=;
-        b=1z6Csbcptogy1izwGdaohKOB5zrFHNJrNxYW/m0gFPNCfxvwnGuAd9LPogU7vMSaWS
-         viUHAffNsRB2vyQlk9d4JfNhr15O+qeO3/xXA/mxJtmz9iD9lMOZdtEYMnL6N/FMrd5O
-         w88eqy4F8Y5hv5QhGbauuP3TPOQ6hTO8yyvVNTzQJrq5HRmulOX090uimlUrmQfV+s3h
-         cHu/bdxnWwXkVmv+bS8xPvnppfMWbzfm5T7ItwoZSdrunoYwsRFs4CWamZTvTP3JZnYM
-         51uBrv7UuR/3/LMHU3jnZkrsQXOCditx/ooYPbgeH0se3wckVi0/BQskx1Q11xhb8/aw
-         7UwQ==
-X-Gm-Message-State: AOAM530n6Rt8hFnfet1yQz3e/J7uuLerTtrdasc1zUHkbDUZbqaAjrs2
-        w6SjUMNjUCYimjRlPgwmS7w=
-X-Google-Smtp-Source: ABdhPJykU+BnKFSX2H2eEnY5PXaRYHIodrFLISD1QZbpXa9HVxp9M4KhIjMn/qQWqR66X/w4qbACPA==
-X-Received: by 2002:a9d:4605:: with SMTP id y5mr3465775ote.171.1631114428478;
-        Wed, 08 Sep 2021 08:20:28 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l3sm489631otd.79.2021.09.08.08.20.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1t5LYToXMKzmQGZhhdsl+wcVGB4mGa+92qwlh2R7WK8=;
+        b=fokVFnFlZTnk+C8IcO5UcufX3C0IssE6sFF2S9CBMAQE1CAWiUWorclsLi/NDW5I59
+         xSW+ALYgg+/Uj5x7Rl+dsj/2xzkQKFMAvsD7CWIyv4RXBPnoQQM3G3QOvzEdgV8ap/8n
+         49cbFnDgx8CcI6dYc2b8hVg2Qa+eI5eA34DFsfjErCqJFa6uYJkOQeymY81ypSJXhWQX
+         es3mkebSiCmgec1srXpMKa/9jvdUGDbBgd6ZjaccQs4VqtmvJaDfrJrwD4D7TwbFhP25
+         VRYNCtwJtYUfNguhKK1DMUGpxQ3RWNUTdwGQC9lSoZhEyC6Sqw8spaDX2Z2uNR4KFens
+         hdMg==
+X-Gm-Message-State: AOAM531uDev/QXBAufE+NeL/mdNk6wUgTU+gX3wGBYY9iF4Qp7oItO8Y
+        34xUQKc+Vv8swtzAI8pZu0Q=
+X-Google-Smtp-Source: ABdhPJwtCnniMnv2FH4hW32bnl4MIBdEAEuQG84WcjPSOttEQvakqMUDFeH6Cxa9SmN1PRBTYeInfw==
+X-Received: by 2002:adf:9e4d:: with SMTP id v13mr4758076wre.26.1631114633660;
+        Wed, 08 Sep 2021 08:23:53 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id j17sm2367696wrh.67.2021.09.08.08.23.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 08:20:27 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 8 Sep 2021 08:20:26 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] nds32/setup: remove unused memblock_region variable in
- setup_memory()
-Message-ID: <20210908152026.GA389642@roeck-us.net>
-References: <20210712125218.28951-1-rppt@kernel.org>
+        Wed, 08 Sep 2021 08:23:53 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 15:23:51 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Wei Liu' <wei.liu@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+Message-ID: <20210908152351.asln63jxk43xffib@liuwe-devbox-debian-v2>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <20210908100304.oknxj4v436sbg3nb@liuwe-devbox-debian-v2>
+ <46be667d057f413aac7871ebe784e274@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712125218.28951-1-rppt@kernel.org>
+In-Reply-To: <46be667d057f413aac7871ebe784e274@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 03:52:18PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Sep 08, 2021 at 02:51:21PM +0000, David Laight wrote:
+> From: Wei Liu
+> > Sent: 08 September 2021 11:03
+> ...
+> > However calling into the allocator from that IPI path seems very heavy
+> > weight. I will discuss with fellow engineers on how to fix it properly.
 > 
-> kernel test robot reports unused variable warning:
+> Isn't the IPI code something that is likely to get called
+> when a lot of stack has already been used?
 > 
-> cppcheck possible warnings: (new ones prefixed by >>, may not real
-> problems)
-> 
-> >> arch/nds32/kernel/setup.c:247:26: warning: Unused variable: region
-> >> [unusedVariable]
->     struct memblock_region *region;
->                             ^
-> 
-> Remove the unused variable.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> So you really shouldn't be using much stack at all??
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+I don't follow your questions. I don't dispute there is a problem. I
+just think calling into the allocator is not a good idea in that
+particular piece of code we need to fix.
 
-This is now fatal.
+Hopefully we can come up with a solution to remove need for a cpumask in
+that code -- discussion is on-going.
 
-arch/nds32/kernel/setup.c: In function 'setup_memory':
-arch/nds32/kernel/setup.c:247:26: error: unused variable 'region'
+Wei.
 
-Anyone care to apply it ?
-
-Guenter
-
-> ---
->  arch/nds32/kernel/setup.c | 1 -
->  1 file changed, 1 deletion(-)
 > 
-> diff --git a/arch/nds32/kernel/setup.c b/arch/nds32/kernel/setup.c
-> index 41725eaf8bac..b3d34d646652 100644
-> --- a/arch/nds32/kernel/setup.c
-> +++ b/arch/nds32/kernel/setup.c
-> @@ -244,7 +244,6 @@ static void __init setup_memory(void)
->  	unsigned long ram_start_pfn;
->  	unsigned long free_ram_start_pfn;
->  	phys_addr_t memory_start, memory_end;
-> -	struct memblock_region *region;
->  
->  	memory_end = memory_start = 0;
->  
+> 	David
 > 
-> base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
-> -- 
-> 2.28.0
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
 > 
