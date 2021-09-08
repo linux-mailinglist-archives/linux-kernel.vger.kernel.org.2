@@ -2,443 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1465340409B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068E840409E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbhIHVnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 17:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S235137AbhIHVni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 17:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbhIHVnK (ORCPT
+        with ESMTP id S235107AbhIHVnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 17:43:10 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEA9C061575;
-        Wed,  8 Sep 2021 14:42:02 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id s3so5819633ljp.11;
-        Wed, 08 Sep 2021 14:42:02 -0700 (PDT)
+        Wed, 8 Sep 2021 17:43:37 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78E7C061575;
+        Wed,  8 Sep 2021 14:42:28 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id s10so7189268lfr.11;
+        Wed, 08 Sep 2021 14:42:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=b3SPb96sJ5zSBCc/zhKIXMywpd9Rw2IKYPacw2Mlp38=;
-        b=I5EMYBwQvssRGRQoRO+Ydt4DHIoVSjBsLJX31m6N9TocK5C2MbeAzcyu4ZpuYDZEIJ
-         1bR0JPqfYDhoiCUeVSndWjT5ZQaA/ihGzqH2weZ2sDwsATF8BAynu8ERNHHVfiBey0rQ
-         SFLZ9GJN75wZoUSibuGbC29RcZzdVwe8M7C7f/yrJyKJv1nVicsEnDLSCN1adTYHINv6
-         7ncqMqEu/DgyJv99CL9MJ6XjdkmM5jlDG9if8jyvU1DJIh8vey4XerDGwXErDcB9E8/6
-         j10icxQQ/XsXe/AjzSBWg9jkeAyHN/XFEK9+mECgtdeOaQFa98YF/VgVX/rqhGASLHF0
-         tPkg==
+        bh=bRhm1ZiGHVO5gyc36MQmgUDnJn6Ccm9AChX1kc544pk=;
+        b=dI49xUqxD4iWaex9UMQ5ZSOP4YZBf4e7ghXK86pNP8HhRy7/I1AVc8HrV1Mka44cLp
+         E3oQV+Wr85+xLwr3CtzLSzef8vYT9c4RyS0a9TLzdj9zsIpFdkkz6z0wKHGLYEXpysSX
+         VBSGObsyzoU1MWgufYLph/WTpuDqmYDmxJ4QHyQQqiPMqI79GHUPBhcgeQbAJ4t/u9du
+         Me6zq5n5wlPOAyBD1Aw9rMuLiWlJR2NQAfCelCuvJWiJvo8gYDyrvOOvHXZBzPKFw7Zz
+         FZ2vNWow3xoM+VAXob89HENnZPjpkD9HdtjaZv2DJYm7H+WBz5+BjrunDYQw+ikOLas5
+         3ebw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=b3SPb96sJ5zSBCc/zhKIXMywpd9Rw2IKYPacw2Mlp38=;
-        b=Tg9ESX9su6H35ndwrl1GD1XXH/6bEpYl+cxbOkI0EwRsuAkQM0wzFGjhrFbVxpkvC0
-         rMDSXyXgXF8C8MLk9KyfwQ0atPBgdLXoxR6xeoTiOo6unZtl9VqEUQYKd30C5Cq5B5ow
-         yc6SO0dUjmQMudJbGdJ9aEQRy3Wu5KyXILYNoYkenIwWWni/Utyrf+m9Om/Z7kyYkhae
-         hlCJ9GWs3fHam5o4C/bUYzTEp8bMl0gAgw0YZJO3gkGHvrbGdzQ9IR3gvgv3sOTdQ+RO
-         5vUIQFYn1Y6l6BpIO5QZO/bq8Y7yppFp4iA1a3RNa8b7l9W1U974oIci+ZU2msVmMCKH
-         rvJg==
-X-Gm-Message-State: AOAM532v/tnbiV4Ik7lqbPkGvAp6stKP4oEzvVui7pjNNIr4/tJ9miKx
-        aW56jsMnpUu15zDwCTeBn9I=
-X-Google-Smtp-Source: ABdhPJwsLihBeVQ0hghYI+aijbKi0eJAHEKUIzyxWmkwo3LCv3C66TSOPLQDZxAPEC9nmY8QE39BUQ==
-X-Received: by 2002:a2e:912:: with SMTP id 18mr335629ljj.290.1631137320611;
-        Wed, 08 Sep 2021 14:42:00 -0700 (PDT)
+        bh=bRhm1ZiGHVO5gyc36MQmgUDnJn6Ccm9AChX1kc544pk=;
+        b=lQVcsNBqem8uN99A/RH9l6cwRDnVAAsjwB3eUfc/A5vk7piA2UkmyYGpCRIn0ZjhbC
+         2RdrbKszPT7SeRqTC5bYYXdM/K8OPvlD8SWs9D0UCjbdjBziDsNprHBLfaY9s93Wgwwm
+         PjYSxqatVWY7lkwOl7qgPE+pyvImIV22bn4UK9fDSQZzPD6UGdsCeheJiNCQHsWHfc+z
+         G3pU3RT7Amw3a9gDPVJBQtNszhw2s8k2lBaAK6Fqthxrsdn0YFdNgSfaZyuFWxMjhpYm
+         3+RW/U6KGfOXjF4Cb0fGE9opZtsG4xnmHtEfBSLGZVHOH5lRsdDZnxGcgt56grnHjbgd
+         GeAw==
+X-Gm-Message-State: AOAM530smgmDR0xZq6W2FTDHhilrC50cvXcDo4vLiQdLZbyGYo4mGASQ
+        vtiQGXm817MLs6EpdTtJRv4=
+X-Google-Smtp-Source: ABdhPJyh+uDW1rltU68Ouqi4FXYLLrmAwjVKerj/vmzBT07CkBOx4fF2dH3BlcvS4qnHMquF3t7byw==
+X-Received: by 2002:a05:6512:ca:: with SMTP id c10mr125040lfp.615.1631137346915;
+        Wed, 08 Sep 2021 14:42:26 -0700 (PDT)
 Received: from localhost.localdomain ([178.94.31.92])
-        by smtp.gmail.com with ESMTPSA id d12sm25105lfj.78.2021.09.08.14.41.59
+        by smtp.gmail.com with ESMTPSA id d12sm25105lfj.78.2021.09.08.14.42.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 14:42:00 -0700 (PDT)
+        Wed, 08 Sep 2021 14:42:25 -0700 (PDT)
 From:   Denis Pauk <pauk.denis@gmail.com>
 To:     pauk.denis@gmail.com
-Cc:     Guenter Roeck <linux@roeck-us.net>,
+Cc:     Bernhard Seibold <mail@bernhard-seibold.de>,
+        =?UTF-8?q?P=C3=A4r=20Ekholm?= <pehlm@pekholm.org>,
+        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
+        Vittorio Roberto Alfieri <me@rebtoor.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] hwmon: (nct6775) Use superio function pointers (v2)
-Date:   Thu,  9 Sep 2021 00:36:03 +0300
-Message-Id: <20210908213605.9929-2-pauk.denis@gmail.com>
+Subject: [PATCH 3/3] hwmon: (nct6775) Support access via Asus WMI (v2)
+Date:   Thu,  9 Sep 2021 00:36:04 +0300
+Message-Id: <20210908213605.9929-3-pauk.denis@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210908213605.9929-1-pauk.denis@gmail.com>
 References: <08262b12-4345-76a9-87be-66d630af3a59@roeck-us.net>
  <20210908213605.9929-1-pauk.denis@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use superio function pointers in nct6775_sio_data instead direct calls.
+Support accessing the NCT677x via Asus WMI functions.
+
+On mainboards that support this way of accessing the chip,
+the driver will usually not work without this option since
+in these mainboards, ACPI will mark the I/O port as used.
 
 v2: split changes to separate patches
+    limit WMI usage by DMI_BOARD_NAME in checked ASUS motherboards
 
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+Signed-off-by: Bernhard Seibold <mail@bernhard-seibold.de>
 Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Tested-by: Pär Ekholm <pehlm@pekholm.org>
+Tested-by: <to.eivind@gmail.com>
+Tested-by: Artem S. Tashkinov <aros@gmx.com>
+Tested-by: Vittorio Roberto Alfieri <me@rebtoor.com>
 ---
- drivers/hwmon/nct6775.c | 141 ++++++++++++++++++++++------------------
- 1 file changed, 76 insertions(+), 65 deletions(-)
+ drivers/hwmon/nct6775.c | 219 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 198 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 3390de4c00f4..908521ce2ee8 100644
+index 908521ce2ee8..ae0344811821 100644
 --- a/drivers/hwmon/nct6775.c
 +++ b/drivers/hwmon/nct6775.c
-@@ -136,9 +136,14 @@ enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
+@@ -55,6 +55,7 @@
+ #include <linux/dmi.h>
+ #include <linux/io.h>
+ #include <linux/nospec.h>
++#include <linux/wmi.h>
+ #include "lm75.h"
+ 
+ #define USE_ALTERNATE
+@@ -132,10 +133,13 @@ MODULE_PARM_DESC(fan_debounce, "Enable debouncing for fan RPM signal");
+ #define SIO_ID_MASK		0xFFF8
+ 
+ enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
++enum sensor_access { access_direct, access_asuswmi };
+ 
  struct nct6775_sio_data {
  	int sioreg;
++	int ld;
  	enum kinds kind;
-+	void (*outb)(struct nct6775_sio_data *sio_data, int reg, int val);
-+	int (*inb)(struct nct6775_sio_data *sio_data, int reg);
-+	void (*select)(struct nct6775_sio_data *sio_data, int ld);
-+	int (*enter)(struct nct6775_sio_data *sio_data);
-+	void (*exit)(struct nct6775_sio_data *sio_data);
++	enum sensor_access access;
+ 	void (*outb)(struct nct6775_sio_data *sio_data, int reg, int val);
+ 	int (*inb)(struct nct6775_sio_data *sio_data, int reg);
+ 	void (*select)(struct nct6775_sio_data *sio_data, int ld);
+@@ -143,6 +147,92 @@ struct nct6775_sio_data {
+ 	void (*exit)(struct nct6775_sio_data *sio_data);
  };
  
--static inline void
++#define ASUSWMI_MGMT2_GUID		"466747A0-70EC-11DE-8A39-0800200C9A66"
++#define ASUSWMI_METHODID_RSIO		0x5253494F
++#define ASUSWMI_METHODID_WSIO		0x5753494F
++#define ASUSWMI_METHODID_RHWM		0x5248574D
++#define ASUSWMI_METHODID_WHWM		0x5748574D
++#define ASUSWMI_UNSUPPORTED_METHOD	0xFFFFFFFE
++
++static int asuswmi_evaluate_method(u32 method_id,
++		u8 bank, u8 reg, u8 val, u32 *retval)
++{
++	u32 args = bank | (reg << 8) | (val << 16);
++	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
++	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
++	acpi_status status;
++	union acpi_object *obj;
++	u32 tmp = 0;
++
++	status = wmi_evaluate_method(ASUSWMI_MGMT2_GUID, 0, method_id,
++				     &input, &output);
++
++	if (ACPI_FAILURE(status))
++		return -EIO;
++
++	obj = (union acpi_object *)output.pointer;
++	if (obj && obj->type == ACPI_TYPE_INTEGER)
++		tmp = (u32) obj->integer.value;
++
++	if (retval)
++		*retval = tmp;
++
++	kfree(obj);
++
++	if (tmp == ASUSWMI_UNSUPPORTED_METHOD)
++		return -ENODEV;
++	return 0;
++}
++
++static inline int
++nct6775_asuswmi_write(u8 bank, u8 reg, u8 val)
++{
++	return asuswmi_evaluate_method(ASUSWMI_METHODID_WHWM, bank, reg, val, 0);
++}
++
++static inline int
++nct6775_asuswmi_read(u8 bank, u8 reg, u8 *val)
++{
++	u32 tmp;
++	int ret = asuswmi_evaluate_method(ASUSWMI_METHODID_RHWM, bank, reg, 0, &tmp);
++	*val = tmp & 0xff;
++	return ret;
++}
++
++static int
++superio_wmi_inb(struct nct6775_sio_data *sio_data, int reg)
++{
++	int tmp;
++
++	asuswmi_evaluate_method(ASUSWMI_METHODID_RSIO,
++			sio_data->ld, reg, 0, &tmp);
++	return tmp;
++}
++
 +static void
++superio_wmi_outb(struct nct6775_sio_data *sio_data, int reg, int val)
++{
++	asuswmi_evaluate_method(ASUSWMI_METHODID_WSIO,
++			sio_data->ld, reg, val, 0);
++}
++
++static void
++superio_wmi_select(struct nct6775_sio_data *sio_data, int ld)
++{
++	sio_data->ld = ld;
++}
++
++static int
++superio_wmi_enter(struct nct6775_sio_data *sio_data)
++{
++	return 0;
++}
++
++static void
++superio_wmi_exit(struct nct6775_sio_data *sio_data)
++{
++}
++
+ static void
  superio_outb(struct nct6775_sio_data *sio_data, int reg, int val)
  {
- 	int ioreg = sio_data->sioreg;
-@@ -147,7 +152,7 @@ superio_outb(struct nct6775_sio_data *sio_data, int reg, int val)
- 	outb(val, ioreg + 1);
- }
+@@ -1090,6 +1180,7 @@ struct nct6775_data {
+ 	int addr;	/* IO base of hw monitor block */
+ 	int sioreg;	/* SIO register address */
+ 	enum kinds kind;
++	enum sensor_access access;
+ 	const char *name;
  
--static inline int
-+static int
- superio_inb(struct nct6775_sio_data *sio_data, int reg)
+ 	const struct attribute_group *groups[6];
+@@ -1432,6 +1523,11 @@ static inline void nct6775_set_bank(struct nct6775_data *data, u16 reg)
  {
- 	int ioreg = sio_data->sioreg;
-@@ -156,7 +161,7 @@ superio_inb(struct nct6775_sio_data *sio_data, int reg)
- 	return inb(ioreg + 1);
- }
+ 	u8 bank = reg >> 8;
  
--static inline void
-+static void
- superio_select(struct nct6775_sio_data *sio_data, int ld)
++	if (data->access == access_asuswmi) {
++		data->bank = bank;
++		return;
++	}
++
+ 	if (data->bank != bank) {
+ 		outb_p(NCT6775_REG_BANK, data->addr + ADDR_REG_OFFSET);
+ 		outb_p(bank, data->addr + DATA_REG_OFFSET);
+@@ -1442,8 +1538,21 @@ static inline void nct6775_set_bank(struct nct6775_data *data, u16 reg)
+ static u16 nct6775_read_value(struct nct6775_data *data, u16 reg)
  {
- 	int ioreg = sio_data->sioreg;
-@@ -165,7 +170,7 @@ superio_select(struct nct6775_sio_data *sio_data, int ld)
- 	outb(ld, ioreg + 1);
- }
+ 	int res, word_sized = is_word_sized(data, reg);
++	u8 tmp;
  
--static inline int
-+static int
- superio_enter(struct nct6775_sio_data *sio_data)
- {
- 	int ioreg = sio_data->sioreg;
-@@ -182,7 +187,7 @@ superio_enter(struct nct6775_sio_data *sio_data)
- 	return 0;
- }
+ 	nct6775_set_bank(data, reg);
++
++	if (data->access == access_asuswmi) {
++		nct6775_asuswmi_read(data->bank, reg, &tmp);
++		res = (tmp & 0xff);
++		if (word_sized) {
++			nct6775_asuswmi_read(data->bank,
++					(reg & 0xff) + 1, &tmp);
++			res = (res << 8) + (tmp & 0xff);
++		}
++		return res;
++	}
++
+ 	outb_p(reg & 0xff, data->addr + ADDR_REG_OFFSET);
+ 	res = inb_p(data->addr + DATA_REG_OFFSET);
+ 	if (word_sized) {
+@@ -1459,6 +1568,21 @@ static int nct6775_write_value(struct nct6775_data *data, u16 reg, u16 value)
+ 	int word_sized = is_word_sized(data, reg);
  
--static inline void
-+static void
- superio_exit(struct nct6775_sio_data *sio_data)
- {
- 	int ioreg = sio_data->sioreg;
-@@ -3436,19 +3441,19 @@ clear_caseopen(struct device *dev, struct device_attribute *attr,
- 	 * The CR registers are the same for all chips, and not all chips
- 	 * support clearing the caseopen status through "regular" registers.
- 	 */
--	ret = superio_enter(sio_data);
-+	ret = sio_data->enter(sio_data);
- 	if (ret) {
- 		count = ret;
- 		goto error;
- 	}
+ 	nct6775_set_bank(data, reg);
++
++	if (data->access == access_asuswmi) {
++		if (word_sized) {
++			nct6775_asuswmi_write(data->bank, (reg & 0xff),
++					(value >> 8) & 0xff);
++			nct6775_asuswmi_write(data->bank, (reg & 0xff) + 1,
++					value & 0xff);
++		} else {
++			nct6775_asuswmi_write(data->bank, (reg & 0xff),
++					value);
++		}
++
++		return 0;
++	}
++
+ 	outb_p(reg & 0xff, data->addr + ADDR_REG_OFFSET);
+ 	if (word_sized) {
+ 		outb_p(value >> 8, data->addr + DATA_REG_OFFSET);
+@@ -3821,13 +3945,15 @@ static int nct6775_probe(struct platform_device *pdev)
+ 	struct device *hwmon_dev;
+ 	int num_attr_groups = 0;
  
--	superio_select(sio_data, NCT6775_LD_ACPI);
--	reg = superio_inb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr]);
-+	sio_data->select(sio_data, NCT6775_LD_ACPI);
-+	reg = sio_data->inb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr]);
- 	reg |= NCT6775_CR_CASEOPEN_CLR_MASK[nr];
--	superio_outb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr], reg);
-+	sio_data->outb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr], reg);
- 	reg &= ~NCT6775_CR_CASEOPEN_CLR_MASK[nr];
--	superio_outb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr], reg);
--	superio_exit(sio_data);
-+	sio_data->outb(sio_data, NCT6775_REG_CR_CASEOPEN_CLR[nr], reg);
-+	sio_data->exit(sio_data);
+-	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+-	if (!res)
+-		return -EBUSY;
++	if (sio_data->access == access_direct) {
++		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
++		if (!res)
++			return -EBUSY;
  
- 	data->valid = false;	/* Force cache refresh */
- error:
-@@ -3562,20 +3567,20 @@ nct6775_check_fan_inputs(struct nct6775_data *data,
- 	bool pwm6pin = false, pwm7pin = false;
+-	if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
+-				 DRVNAME))
+-		return -EBUSY;
++		if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
++					 DRVNAME))
++			return -EBUSY;
++	}
  
- 	/* Store SIO_REG_ENABLE for use during resume */
--	superio_select(sio_data, NCT6775_LD_HWM);
--	data->sio_reg_enable = superio_inb(sio_data, SIO_REG_ENABLE);
-+	sio_data->select(sio_data, NCT6775_LD_HWM);
-+	data->sio_reg_enable = sio_data->inb(sio_data, SIO_REG_ENABLE);
+ 	data = devm_kzalloc(&pdev->dev, sizeof(struct nct6775_data),
+ 			    GFP_KERNEL);
+@@ -3836,7 +3962,11 @@ static int nct6775_probe(struct platform_device *pdev)
  
- 	/* fan4 and fan5 share some pins with the GPIO and serial flash */
- 	if (data->kind == nct6775) {
--		int cr2c = superio_inb(sio_data, 0x2c);
-+		int cr2c = sio_data->inb(sio_data, 0x2c);
- 
- 		fan3pin = cr2c & BIT(6);
- 		pwm3pin = cr2c & BIT(7);
- 
- 		/* On NCT6775, fan4 shares pins with the fdc interface */
--		fan4pin = !(superio_inb(sio_data, 0x2A) & 0x80);
-+		fan4pin = !(sio_data->inb(sio_data, 0x2A) & 0x80);
- 	} else if (data->kind == nct6776) {
--		bool gpok = superio_inb(sio_data, 0x27) & 0x80;
-+		bool gpok = sio_data->inb(sio_data, 0x27) & 0x80;
- 		const char *board_vendor, *board_name;
- 
- 		board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-@@ -3591,7 +3596,7 @@ nct6775_check_fan_inputs(struct nct6775_data *data,
- 			if (!strcmp(board_name, "Z77 Pro4-M")) {
- 				if ((data->sio_reg_enable & 0xe0) != 0xe0) {
- 					data->sio_reg_enable |= 0xe0;
--					superio_outb(sio_data, SIO_REG_ENABLE,
-+					sio_data->outb(sio_data, SIO_REG_ENABLE,
- 						     data->sio_reg_enable);
- 				}
- 			}
-@@ -3600,32 +3605,32 @@ nct6775_check_fan_inputs(struct nct6775_data *data,
- 		if (data->sio_reg_enable & 0x80)
- 			fan3pin = gpok;
- 		else
--			fan3pin = !(superio_inb(sio_data, 0x24) & 0x40);
-+			fan3pin = !(sio_data->inb(sio_data, 0x24) & 0x40);
- 
- 		if (data->sio_reg_enable & 0x40)
- 			fan4pin = gpok;
- 		else
--			fan4pin = superio_inb(sio_data, 0x1C) & 0x01;
-+			fan4pin = sio_data->inb(sio_data, 0x1C) & 0x01;
- 
- 		if (data->sio_reg_enable & 0x20)
- 			fan5pin = gpok;
- 		else
--			fan5pin = superio_inb(sio_data, 0x1C) & 0x02;
-+			fan5pin = sio_data->inb(sio_data, 0x1C) & 0x02;
- 
- 		fan4min = fan4pin;
- 		pwm3pin = fan3pin;
- 	} else if (data->kind == nct6106) {
--		int cr24 = superio_inb(sio_data, 0x24);
-+		int cr24 = sio_data->inb(sio_data, 0x24);
- 
- 		fan3pin = !(cr24 & 0x80);
- 		pwm3pin = cr24 & 0x08;
- 	} else if (data->kind == nct6116) {
--		int cr1a = superio_inb(sio_data, 0x1a);
--		int cr1b = superio_inb(sio_data, 0x1b);
--		int cr24 = superio_inb(sio_data, 0x24);
--		int cr2a = superio_inb(sio_data, 0x2a);
--		int cr2b = superio_inb(sio_data, 0x2b);
--		int cr2f = superio_inb(sio_data, 0x2f);
-+		int cr1a = sio_data->inb(sio_data, 0x1a);
-+		int cr1b = sio_data->inb(sio_data, 0x1b);
-+		int cr24 = sio_data->inb(sio_data, 0x24);
-+		int cr2a = sio_data->inb(sio_data, 0x2a);
-+		int cr2b = sio_data->inb(sio_data, 0x2b);
-+		int cr2f = sio_data->inb(sio_data, 0x2f);
- 
- 		fan3pin = !(cr2b & 0x10);
- 		fan4pin = (cr2b & 0x80) ||			// pin 1(2)
-@@ -3641,24 +3646,24 @@ nct6775_check_fan_inputs(struct nct6775_data *data,
- 		 * NCT6779D, NCT6791D, NCT6792D, NCT6793D, NCT6795D, NCT6796D,
- 		 * NCT6797D, NCT6798D
- 		 */
--		int cr1a = superio_inb(sio_data, 0x1a);
--		int cr1b = superio_inb(sio_data, 0x1b);
--		int cr1c = superio_inb(sio_data, 0x1c);
--		int cr1d = superio_inb(sio_data, 0x1d);
--		int cr2a = superio_inb(sio_data, 0x2a);
--		int cr2b = superio_inb(sio_data, 0x2b);
--		int cr2d = superio_inb(sio_data, 0x2d);
--		int cr2f = superio_inb(sio_data, 0x2f);
-+		int cr1a = sio_data->inb(sio_data, 0x1a);
-+		int cr1b = sio_data->inb(sio_data, 0x1b);
-+		int cr1c = sio_data->inb(sio_data, 0x1c);
-+		int cr1d = sio_data->inb(sio_data, 0x1d);
-+		int cr2a = sio_data->inb(sio_data, 0x2a);
-+		int cr2b = sio_data->inb(sio_data, 0x2b);
-+		int cr2d = sio_data->inb(sio_data, 0x2d);
-+		int cr2f = sio_data->inb(sio_data, 0x2f);
- 		bool dsw_en = cr2f & BIT(3);
- 		bool ddr4_en = cr2f & BIT(4);
- 		int cre0;
- 		int creb;
- 		int cred;
- 
--		superio_select(sio_data, NCT6775_LD_12);
--		cre0 = superio_inb(sio_data, 0xe0);
--		creb = superio_inb(sio_data, 0xeb);
--		cred = superio_inb(sio_data, 0xed);
-+		sio_data->select(sio_data, NCT6775_LD_12);
-+		cre0 = sio_data->inb(sio_data, 0xe0);
-+		creb = sio_data->inb(sio_data, 0xeb);
-+		cred = sio_data->inb(sio_data, 0xed);
- 
- 		fan3pin = !(cr1c & BIT(5));
- 		fan4pin = !(cr1c & BIT(6));
-@@ -4516,11 +4521,11 @@ static int nct6775_probe(struct platform_device *pdev)
- 	/* Initialize the chip */
- 	nct6775_init_device(data);
- 
--	err = superio_enter(sio_data);
-+	err = sio_data->enter(sio_data);
- 	if (err)
- 		return err;
- 
--	cr2a = superio_inb(sio_data, 0x2a);
-+	cr2a = sio_data->inb(sio_data, 0x2a);
- 	switch (data->kind) {
- 	case nct6775:
- 		data->have_vid = (cr2a & 0x40);
-@@ -4546,16 +4551,16 @@ static int nct6775_probe(struct platform_device *pdev)
- 	 * We can get the VID input values directly at logical device D 0xe3.
- 	 */
- 	if (data->have_vid) {
--		superio_select(sio_data, NCT6775_LD_VID);
--		data->vid = superio_inb(sio_data, 0xe3);
-+		sio_data->select(sio_data, NCT6775_LD_VID);
-+		data->vid = sio_data->inb(sio_data, 0xe3);
- 		data->vrm = vid_which_vrm();
- 	}
- 
- 	if (fan_debounce) {
- 		u8 tmp;
- 
--		superio_select(sio_data, NCT6775_LD_HWM);
--		tmp = superio_inb(sio_data,
-+		sio_data->select(sio_data, NCT6775_LD_HWM);
-+		tmp = sio_data->inb(sio_data,
- 				  NCT6775_REG_CR_FAN_DEBOUNCE);
- 		switch (data->kind) {
- 		case nct6106:
-@@ -4579,7 +4584,7 @@ static int nct6775_probe(struct platform_device *pdev)
- 			tmp |= 0x7e;
- 			break;
- 		}
--		superio_outb(sio_data, NCT6775_REG_CR_FAN_DEBOUNCE,
-+		sio_data->outb(sio_data, NCT6775_REG_CR_FAN_DEBOUNCE,
- 			     tmp);
- 		dev_info(&pdev->dev, "Enabled fan debounce for chip %s\n",
- 			 data->name);
-@@ -4587,7 +4592,7 @@ static int nct6775_probe(struct platform_device *pdev)
- 
- 	nct6775_check_fan_inputs(data, sio_data);
- 
--	superio_exit(sio_data);
-+	sio_data->exit(sio_data);
- 
- 	/* Read fan clock dividers immediately */
- 	nct6775_init_fan_common(dev, data);
-@@ -4631,10 +4636,10 @@ static void nct6791_enable_io_mapping(struct nct6775_sio_data *sio_data)
- {
- 	int val;
- 
--	val = superio_inb(sio_data, NCT6791_REG_HM_IO_SPACE_LOCK_ENABLE);
-+	val = sio_data->inb(sio_data, NCT6791_REG_HM_IO_SPACE_LOCK_ENABLE);
- 	if (val & 0x10) {
- 		pr_info("Enabling hardware monitor logical device mappings.\n");
--		superio_outb(sio_data, NCT6791_REG_HM_IO_SPACE_LOCK_ENABLE,
-+		sio_data->outb(sio_data, NCT6791_REG_HM_IO_SPACE_LOCK_ENABLE,
- 			     val & ~0x10);
- 	}
- }
-@@ -4664,14 +4669,14 @@ static int __maybe_unused nct6775_resume(struct device *dev)
- 	mutex_lock(&data->update_lock);
+ 	data->kind = sio_data->kind;
+ 	data->sioreg = sio_data->sioreg;
+-	data->addr = res->start;
++	data->access = sio_data->access;
++	if (sio_data->access == access_direct)
++		data->addr = res->start;
++	else
++		data->addr = 0;
+ 	mutex_init(&data->update_lock);
+ 	data->name = nct6775_device_names[data->kind];
  	data->bank = 0xff;		/* Force initial bank selection */
+@@ -4747,6 +4877,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+ 	int err;
+ 	int addr;
  
--	err = superio_enter(sio_data);
-+	err = sio_data->enter(sio_data);
- 	if (err)
- 		goto abort;
- 
--	superio_select(sio_data, NCT6775_LD_HWM);
--	reg = superio_inb(sio_data, SIO_REG_ENABLE);
-+	sio_data->select(sio_data, NCT6775_LD_HWM);
-+	reg = sio_data->inb(sio_data, SIO_REG_ENABLE);
- 	if (reg != data->sio_reg_enable)
--		superio_outb(sio_data, SIO_REG_ENABLE, data->sio_reg_enable);
-+		sio_data->outb(sio_data, SIO_REG_ENABLE, data->sio_reg_enable);
- 
- 	if (data->kind == nct6791 || data->kind == nct6792 ||
- 	    data->kind == nct6793 || data->kind == nct6795 ||
-@@ -4679,7 +4684,7 @@ static int __maybe_unused nct6775_resume(struct device *dev)
- 	    data->kind == nct6798)
- 		nct6791_enable_io_mapping(sio_data);
- 
--	superio_exit(sio_data);
-+	sio_data->exit(sio_data);
- 
- 	/* Restore limits */
- 	for (i = 0; i < data->in_num; i++) {
-@@ -4744,12 +4749,12 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
- 
++	sio_data->access = access_direct;
  	sio_data->sioreg = sioaddr;
  
--	err = superio_enter(sio_data);
-+	err = sio_data->enter(sio_data);
+ 	err = sio_data->enter(sio_data);
+@@ -4841,6 +4972,21 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+  */
+ static struct platform_device *pdev[2];
+ 
++#define NCT6775_REG_CHIPID 0x58
++
++static const char * const asus_wmi_boards[] = {
++	"PRIME B460-PLUS",
++	"ROG CROSSHAIR VIII IMPACT",
++	"ROG STRIX B550-E GAMING",
++	"ROG STRIX B550-F GAMING (WI-FI)",
++	"ROG STRIX Z490-I GAMING",
++	"TUF GAMING B550M-PLUS",
++	"TUF GAMING B550M-PLUS (WI-FI)",
++	"TUF GAMING B550-PLUS",
++	"TUF GAMING X570-PLUS",
++	"TUF GAMING X570-PRO (WI-FI)"
++};
++
+ static int __init sensors_nct6775_init(void)
+ {
+ 	int i, err;
+@@ -4849,11 +4995,29 @@ static int __init sensors_nct6775_init(void)
+ 	struct resource res;
+ 	struct nct6775_sio_data sio_data;
+ 	int sioaddr[2] = { 0x2e, 0x4e };
++	const char *board_vendor, *board_name;
++	enum sensor_access access = access_direct;
++	u8 tmp;
+ 
+ 	err = platform_driver_register(&nct6775_driver);
  	if (err)
  		return err;
  
--	val = (superio_inb(sio_data, SIO_REG_DEVID) << 8) |
--		superio_inb(sio_data, SIO_REG_DEVID + 1);
-+	val = (sio_data->inb(sio_data, SIO_REG_DEVID) << 8) |
-+		sio_data->inb(sio_data, SIO_REG_DEVID + 1);
- 	if (force_id && val != 0xffff)
- 		val = force_id;
- 
-@@ -4793,26 +4798,26 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
- 	default:
- 		if (val != 0xffff)
- 			pr_debug("unsupported chip ID: 0x%04x\n", val);
--		superio_exit(sio_data);
-+		sio_data->exit(sio_data);
- 		return -ENODEV;
- 	}
- 
- 	/* We have a known chip, find the HWM I/O address */
--	superio_select(sio_data, NCT6775_LD_HWM);
--	val = (superio_inb(sio_data, SIO_REG_ADDR) << 8)
--	    | superio_inb(sio_data, SIO_REG_ADDR + 1);
-+	sio_data->select(sio_data, NCT6775_LD_HWM);
-+	val = (sio_data->inb(sio_data, SIO_REG_ADDR) << 8)
-+	    | sio_data->inb(sio_data, SIO_REG_ADDR + 1);
- 	addr = val & IOREGION_ALIGNMENT;
- 	if (addr == 0) {
- 		pr_err("Refusing to enable a Super-I/O device with a base I/O port 0\n");
--		superio_exit(sio_data);
-+		sio_data->exit(sio_data);
- 		return -ENODEV;
- 	}
- 
- 	/* Activate logical device if needed */
--	val = superio_inb(sio_data, SIO_REG_ENABLE);
-+	val = sio_data->inb(sio_data, SIO_REG_ENABLE);
- 	if (!(val & 0x01)) {
- 		pr_warn("Forcibly enabling Super-I/O. Sensor is probably unusable.\n");
--		superio_outb(sio_data, SIO_REG_ENABLE, val | 0x01);
-+		sio_data->outb(sio_data, SIO_REG_ENABLE, val | 0x01);
- 	}
- 
- 	if (sio_data->kind == nct6791 || sio_data->kind == nct6792 ||
-@@ -4821,7 +4826,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
- 	    sio_data->kind == nct6798)
- 		nct6791_enable_io_mapping(sio_data);
- 
--	superio_exit(sio_data);
-+	sio_data->exit(sio_data);
- 	pr_info("Found %s or compatible chip at %#x:%#x\n",
- 		nct6775_sio_names[sio_data->kind], sioaddr, addr);
- 
-@@ -4857,6 +4862,12 @@ static int __init sensors_nct6775_init(void)
- 	 * nct6775 hardware monitor, and call probe()
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(pdev); i++) {
-+		sio_data.outb = superio_outb;
-+		sio_data.inb = superio_inb;
-+		sio_data.select = superio_select;
-+		sio_data.enter = superio_enter;
-+		sio_data.exit = superio_exit;
++	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
++	board_name = dmi_get_system_info(DMI_BOARD_NAME);
 +
- 		address = nct6775_find(sioaddr[i], &sio_data);
- 		if (address <= 0)
- 			continue;
++	if (board_name && board_vendor &&
++	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
++		if (match_string(asus_wmi_boards,
++				ARRAY_SIZE(asus_wmi_boards), board_name) != -EINVAL) {
++			/* if reading chip id via WMI succeeds, use WMI */
++			if (!nct6775_asuswmi_read(0, NCT6775_REG_CHIPID, &tmp)) {
++				pr_info("Using Asus WMI to access chip\n");
++				access = access_asuswmi;
++			}
++		}
++	}
++
+ 	/*
+ 	 * initialize sio_data->kind and sio_data->sioreg.
+ 	 *
+@@ -4874,6 +5038,17 @@ static int __init sensors_nct6775_init(void)
+ 
+ 		found = true;
+ 
++		/* Update access method */
++		sio_data.access = access;
++
++		if (access == access_asuswmi) {
++			sio_data.outb = superio_wmi_outb;
++			sio_data.inb = superio_wmi_inb;
++			sio_data.select = superio_wmi_select;
++			sio_data.enter = superio_wmi_enter;
++			sio_data.exit = superio_wmi_exit;
++		}
++
+ 		pdev[i] = platform_device_alloc(DRVNAME, address);
+ 		if (!pdev[i]) {
+ 			err = -ENOMEM;
+@@ -4885,23 +5060,25 @@ static int __init sensors_nct6775_init(void)
+ 		if (err)
+ 			goto exit_device_put;
+ 
+-		memset(&res, 0, sizeof(res));
+-		res.name = DRVNAME;
+-		res.start = address + IOREGION_OFFSET;
+-		res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
+-		res.flags = IORESOURCE_IO;
++		if (sio_data.access == access_direct) {
++			memset(&res, 0, sizeof(res));
++			res.name = DRVNAME;
++			res.start = address + IOREGION_OFFSET;
++			res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
++			res.flags = IORESOURCE_IO;
++
++			err = acpi_check_resource_conflict(&res);
++			if (err) {
++				platform_device_put(pdev[i]);
++				pdev[i] = NULL;
++				continue;
++			}
+ 
+-		err = acpi_check_resource_conflict(&res);
+-		if (err) {
+-			platform_device_put(pdev[i]);
+-			pdev[i] = NULL;
+-			continue;
++			err = platform_device_add_resources(pdev[i], &res, 1);
++			if (err)
++				goto exit_device_put;
+ 		}
+ 
+-		err = platform_device_add_resources(pdev[i], &res, 1);
+-		if (err)
+-			goto exit_device_put;
+-
+ 		/* platform_device_add calls probe() */
+ 		err = platform_device_add(pdev[i]);
+ 		if (err)
 -- 
 2.33.0
 
