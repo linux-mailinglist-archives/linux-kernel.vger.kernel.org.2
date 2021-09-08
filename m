@@ -2,134 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9DE4041D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9B74041DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhIHXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S236793AbhIHXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhIHXhL (ORCPT
+        with ESMTP id S235595AbhIHXkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:37:11 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474D8C061575;
-        Wed,  8 Sep 2021 16:36:03 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso73144pjq.4;
-        Wed, 08 Sep 2021 16:36:03 -0700 (PDT)
+        Wed, 8 Sep 2021 19:40:12 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BABC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:39:03 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id m4so6251783ljq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=l2Gws221qWRp8GCtH3z2XvKK7KCKX8k0E4WtkqiUUvY=;
-        b=GQ0n88KuQUumpL0kdESA5BvuwQZQYtaU0FFxv0gjFTY/MZZCjibwekKqa8+cYHeae3
-         pk6jH+7tfeiP8HQVFDwoTLX6HZmPPvG2jffefq6QtiEFbq4X/Jghh6CAs6t/nRgBnrll
-         IUXRASWqV+DT4WzNsAO1XNbq9ssW0Tg3IBILGMpdIf4i3BtpCWdxtWk1qnt1GDNgy1Ka
-         kuAuijIib/AqI4QE1aHh0rmf5wq2PiNjvlGRfCnfDBjfdKDRkqahRSNfg3jND1DKJMis
-         VYmYSGwRPdtZgC/wjM/Vxh6epAAtwHx72M2MD+5GyGVA/eQCP8mWmdfocrB1z4iETrh3
-         e7Xg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2WeuCmhWaFYpyNVf9oP+KeCDcHhyaae5mJ9onxwaPPE=;
+        b=O327Ig1XKpBHQ67egGdBzzNalweEv/MWYcnITSM7fnWIU/fovblbPA6fub7vzhTICf
+         t1mrkpbOHL1yZG3Z4O15FZjB5kurpXglhwpFjfCJb8FlFHEhEViQ3z6eSwg4Gs2VfqrO
+         X2eIhKuW0oJFOqDX6IsJdGwGiUhNsJQc4YCagRpvAdPYELZhvLcFwzlp76ly6RWTO073
+         as5yXv7qnnohr1vENmrujf/uq3bzf8rUTitkMubz/a0iW12HQY4cbEJ1JK9fO6VY3Sk2
+         SGkSqPrQSRFyjzziW5sNLfWzbMBlQkqpqJssiSO9pNHU+K664T23PKfJ6yxaCi6Q+9Il
+         /JxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=l2Gws221qWRp8GCtH3z2XvKK7KCKX8k0E4WtkqiUUvY=;
-        b=8PWiAi7oDXx3IIekm9J3aeO7alLIVZejKKXSY7sadFxtoFiIWSMqvO3B+Qn8ccTGg5
-         ePDYWmJhXMJF6tNLiTrvYjtp8zzocnsgzHM1sAJTdI/tzcETvKJc6GQHjOhJ4r7zr/Fe
-         KHtJi5fjCCb9Kp8t873WSH9QjrgLrL7spaRMZQ9+QFoWRM/wIogaN9UG3/2to14jUio1
-         3Bn3DnbmGvkclXZUI6fEtVZeKVo+Vtm8DS2E7FEESzMK7qqLiXPA2AbgK8co+iaNBpyR
-         7p0eV2joDItqz8lBYQipDb2HW4gOVeoLj2zoQD8nlArW81YKuNA1VigBocSCruIV1+Fi
-         S8UA==
-X-Gm-Message-State: AOAM530nZB9EBt78WFemSeq1I+InDhZftonGzO9ObuZFALUZvGrpuxUU
-        Xkn391B9aSkCqke1/s/1Edc=
-X-Google-Smtp-Source: ABdhPJzwH2OO72zGiMsrctXktiHD437JjHl1GPJ8ULCSf3k2VV29xo2YXuyLfNtRG/GZ6I36WVes8g==
-X-Received: by 2002:a17:902:bcc6:b0:138:d3ca:c356 with SMTP id o6-20020a170902bcc600b00138d3cac356mr179988pls.6.1631144162577;
-        Wed, 08 Sep 2021 16:36:02 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id v66sm10112pfc.91.2021.09.08.16.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 16:36:02 -0700 (PDT)
-Message-ID: <0ce35724-336d-572e-4ba3-e5a014d035fc@gmail.com>
-Date:   Wed, 8 Sep 2021 16:36:00 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2WeuCmhWaFYpyNVf9oP+KeCDcHhyaae5mJ9onxwaPPE=;
+        b=SG7e1Xu4qOnvrnmdqJNoZujWWat1wCZ9MVE6aUtZIYR9/+psIZWSYfdcDEs3uxWKk/
+         o5u7fJ6wFIaR01q8q3j34nX3zkBIw3KAHx03K/tpyC2yz3+6zZeF7OLgeLKY8DvaXaHm
+         O7VcMBZJc0JaNaFcFEBE/wH3ytbozp7O5+Ex4fJmnqcA6Mk/iCrp7aHHyIm3rc5xoUhB
+         xz9L3K7JsU5ultnIBCDahI00mFPEZGiuK1d8KG2VG9OMDDcD3sCPWbQljRL5QNpzS73d
+         GlJ2WMrei9T8oFzop3h6wXnIoaHpdhanBH8TUPRdL4mwztcDjVd74ipF1z7PArd7wKPm
+         +pcA==
+X-Gm-Message-State: AOAM531ilg5IRE5OWssYFgi7DkYtWCMql+d4pY+lkZR6RotVEtTrkY39
+        DqR1pnh1zcgwoFNIIJiAtRwiz+4INvtoF/DGVbMqCy1Id8M=
+X-Google-Smtp-Source: ABdhPJxRRvoxjXIq8Em7uYSGE5Tb5mF9KiWDuLBGRpZkPuXv4fwzD5lhuEMZ8zYSTSx+gJdWc1urdbx4Q+79JGBiXhY=
+X-Received: by 2002:a05:651c:118f:: with SMTP id w15mr631194ljo.47.1631144341124;
+ Wed, 08 Sep 2021 16:39:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Circular dependency between DSA switch driver and tagging
- protocol driver
-Content-Language: en-US
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210908220834.d7gmtnwrorhharna@skbuf>
- <e0567cfe-d8b6-ed92-02c6-e45dd108d7d7@gmail.com>
- <20210908221958.cjwuag6oz2fmnd2n@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210908221958.cjwuag6oz2fmnd2n@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
+In-Reply-To: <20210908184905.163787-3-posk@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 9 Sep 2021 01:38:34 +0200
+Message-ID: <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
+Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 8, 2021 at 8:49 PM Peter Oskolkov <posk@posk.io> wrote:
+> Add helper functions to work atomically with userspace 32/64 bit values -
+> there are some .*futex.* named helpers, but they are not exactly
+> what is needed for UMCG; I haven't found what else I could use, so I
+> rolled these.
+[...]
+> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault)
+> +{
+> +       struct mm_struct *mm = current->mm;
+> +       int ret;
+> +
+> +       mmap_read_lock(mm);
+
+A minor note: mmap_read_lock() can potentially block for extended
+amounts of time, so *if* you have a way to safely bail out, it's nice
+to use mmap_read_lock_killable() to ensure that if the task gets
+killed, it'll go away quickly instead of continuing to potentially
+wait on the lock. (But of course, there are situations where you just
+can't do that, so there you have to use the unconditional
+mmap_read_lock().)
+
+So here, since you need a bailout path anyway in this function, I'd write:
+
+if (mmap_read_lock_killable(mm))
+        return -EINTR;
+
+> +       ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
+> +                       NULL);
+> +       mmap_read_unlock(mm);
+> +
+> +       return ret < 0 ? ret : 0;
+> +}
+[...]
+> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
+> +{
+> +       u64 oldval = 0;
+> +       int ret = 0;
+> +
+> +       asm volatile("\n"
+> +               "1:\txchgq %0, %2\n"
+> +               "2:\n"
+> +               "\t.section .fixup, \"ax\"\n"
+> +               "3:\tmov     %3, %0\n"
+> +               "\tjmp     2b\n"
+> +               "\t.previous\n"
+> +               _ASM_EXTABLE_UA(1b, 3b)
+> +               : "=r" (oldval), "=r" (ret), "+m" (*uaddr)
+> +               : "i" (-EFAULT), "0" (newval), "1" (0)
+> +       );
+> +
+> +       if (ret)
+> +               return ret;
+> +
+> +       *oval = oldval;
+> +       return 0;
+> +}
+[...]
+> +/**
+> + * xchg_64_user - atomically exchange 64-bit values
+> + *
+> + * Return:
+> + * 0 - OK
+> + * -EFAULT: memory access error
+> + */
+> +static inline int xchg_user_64(u64 __user *uaddr, u64 *val)
+> +{
+> +       int ret = -EFAULT;
+> +
+> +       if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +               return -EFAULT;
+
+For these atomic xchg operations, I think you should probably also
+check for proper alignment (something like "(unsigned long)uaddr %
+sizeof(*uaddr) == 0", I guess)?
+Otherwise the __try_xchg_user_64() call could hit Split Lock Detection
+(see <https://lore.kernel.org/all/1555536851-17462-1-git-send-email-fenghua.yu@intel.com/>)
+on newer hardware, meaning the XCHGQ instruction would throw a #AC
+exception, which would get caught by the kernel because it happened
+during user access, so then you land on the fixup path that returns
+-EFAULT, and then this function would assume that it was caused by a
+pagefault, invoke pagefault handling, the pagefault handling would say
+"the page is present, try again now", and you'd end up in an infinite
+loop...
+
+(Yes, the futex version doesn't have that - the futex code instead
+does that check further up, in get_futex_key() and
+handle_futex_death().)
+
+> +       pagefault_disable();
+> +
+> +       while (true) {
+> +               __uaccess_begin_nospec();
+> +               ret = __try_xchg_user_64(val, uaddr, *val);
+> +               user_access_end();
+> +
+> +               if (!ret)
+> +                       break;
+> +
+> +               if (fix_pagefault((unsigned long)uaddr, true) < 0)
+> +                       break;
+> +       }
+> +
+> +       pagefault_enable();
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * get_user_nosleep - get user value with inline fixup without sleeping.
+> + *
+> + * get_user() might sleep and therefore cannot be used in preempt-disabled
+> + * regions.
+> + */
+
+If this function is not allowed to sleep, as the comment says...
+
+> +#define get_user_nosleep(out, uaddr)                                   \
+> +({                                                                     \
+> +       int ret = -EFAULT;                                              \
+> +                                                                       \
+> +       if (access_ok((uaddr), sizeof(*(uaddr)))) {                     \
+> +               pagefault_disable();                                    \
+> +                                                                       \
+> +               while (true) {                                          \
+> +                       if (!__get_user((out), (uaddr))) {              \
+> +                               ret = 0;                                \
+> +                               break;                                  \
+> +                       }                                               \
+> +                                                                       \
+> +                       if (fix_pagefault((unsigned long)(uaddr), false) < 0) \
+> +                               break;                                  \
+
+... then I'm pretty sure you can't call fix_pagefault() here, which
+acquires the mmap semaphore (which may involve sleeping) and then goes
+through the pagefault handling path (which can also sleep for various
+reasons, like allocating memory for pagetables, loading pages from
+disk / NFS / FUSE, and so on).
+
+If you're in some kind of non-sleepable context, and you want to
+access a userspace address that isn't currently paged in, you have to
+get out of whatever non-sleepable context you're in before going
+through the fault-handling path and back into the context you were in.
+
+Alternatively, if sleeping isn't possible and getting back out of the
+sleepable context temporarily is also too hard, you could try to look
+up the userspace page ahead of time (e.g. during umcg_ctl()) with
+pin_user_pages_unlocked() and kmap() it into the kernel. That's
+probably a lot slower than a direct userspace access, but if you only
+have to do it during umcg_ctl(), that might not be a problem. It also
+more or less requires that the userspace struct doesn't cross a page
+boundary (otherwise you'd have to either vmap it or use helpers for
+accessing the pages), and it means you have 4KiB of extra unswappable
+memory per thread, and it might worsen memory fragmentation (because
+pinned pages can't be migrated anymore even though the kernel thought
+they'd probably be migratable at page allocation time).
+
+Since it looks like you want to access userspace memory during
+sched_submit_work() (e.g. for storing the UMCG_TF_PREEMPTED flag), I
+think the pin_user_pages_unlocked() approach is what you'll have to
+use there. There you can then essentially access the userspace
+structure through its kernel mapping, basically like normal kernel
+memory (except of course that you have to keep in mind that userspace
+can concurrently read and write that memory, so instead of plain
+loads/stores you have to use at least READ_ONCE()/WRITE_ONCE()).
+
+You of course won't be able to simply traverse userspace pointers in
+such a situation, only access the specific userspace object that
+you've prepared beforehand, but luckily it looks like:
+
+ * idle_server_tid_ptr is only accessed in get_idle_server()
+   -> which is used from process_waking_worker()
+     -> which runs in sleepable context
+ * idle_workers_ptr is accessed from:
+   -> enqueue_idle_worker
+     -> which is also used from process_waking_worker()
+
+so I guess that's not a problem?
 
 
-On 9/8/2021 3:19 PM, Vladimir Oltean wrote:
-> On Wed, Sep 08, 2021 at 03:14:51PM -0700, Florian Fainelli wrote:
->> On 9/8/2021 3:08 PM, Vladimir Oltean wrote:
->>> Hi,
->>>
->>> Since commits 566b18c8b752 ("net: dsa: sja1105: implement TX
->>> timestamping for SJA1110") and 994d2cbb08ca ("net: dsa: tag_sja1105: be
->>> dsa_loop-safe"), net/dsa/tag_sja1105.ko has gained a build and insmod
->>> time dependency on drivers/net/dsa/sja1105.ko, due to several symbols
->>> exported by the latter and used by the former.
->>>
->>> So first one needs to insmod sja1105.ko, then insmod tag_sja1105.ko.
->>>
->>> But dsa_port_parse_cpu returns -EPROBE_DEFER when dsa_tag_protocol_get
->>> returns -ENOPROTOOPT. It means, there is no DSA_TAG_PROTO_SJA1105 in the
->>> list of tagging protocols known by DSA, try again later. There is a
->>> runtime dependency for DSA to have the tagging protocol loaded. Combined
->>> with the symbol dependency, this is a de facto circular dependency.
->>>
->>> So when we first insmod sja1105.ko, nothing happens, probing is deferred.
->>>
->>> Then when we insmod tag_sja1105.ko, we expect the DSA probing to kick
->>> off where it left from, and probe the switch too.
->>>
->>> However this does not happen because the deferred probing list in the
->>> device core is reconsidered for a new attempt only if a driver is bound
->>> to a new device. But DSA tagging protocols are drivers with no struct
->>> device.
->>>
->>> One can of course manually kick the driver after the two insmods:
->>>
->>> echo spi0.1 > /sys/bus/spi/drivers/sja1105/bind
->>>
->>> and this works, but automatic module loading based on modaliases will be
->>> broken if both tag_sja1105.ko and sja1105.ko are modules, and sja1105 is
->>> the last device to get a driver bound to it.
->>>
->>> Where is the problem?
->>
->> I'd say with 994d2cbb08ca, since the tagger now requires visibility into
->> sja1105_switch_ops which is not great, to say the least. You could solve
->> this by:
->>
->> - splitting up the sja1150 between a library that contains
->> sja1105_switch_ops and does not contain the driver registration code
->>
->> - finding a different way to do a dsa_switch_ops pointer comparison, by
->> e.g.: maintaining a boolean in dsa_port that tracks whether a particular
->> driver is backing that port
-> 
-> What about 566b18c8b752 ("net: dsa: sja1105: implement TX timestamping for SJA1110")?
-> It is essentially the same problem from a symbol usage perspective, plus
-> the fact that an skb queue belonging to the driver is accessed.
 
-I believe we will have to accept that another indirect function call 
-must be made in order to avoid creating a direct symbol dependency with 
-sja1110_rcv_meta() would that be acceptable performance wise?
--- 
-Florian
+
+
+> +               }                                                       \
+> +                                                                       \
+> +               pagefault_enable();                                     \
+> +       }                                                               \
+> +       ret;                                                            \
+> +})
