@@ -2,266 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9BD40371D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AC7403726
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348414AbhIHJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:42:39 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50075 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348009AbhIHJmd (ORCPT
+        id S1348545AbhIHJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347717AbhIHJoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:42:33 -0400
-Received: by mail-il1-f198.google.com with SMTP id a15-20020a92444f000000b0022473393120so1170480ilm.16
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 02:41:26 -0700 (PDT)
+        Wed, 8 Sep 2021 05:44:04 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F0BC061575;
+        Wed,  8 Sep 2021 02:42:56 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x27so3715918lfu.5;
+        Wed, 08 Sep 2021 02:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tcxDxLsWHGr7j1cvxMG2JLruNGk37pPqhVGSTiHNRTI=;
+        b=geGIKAXuwrxvpukyugOKBZCm3v64zHneGc4gUrxldK2pKi2rdjMNXnfj8dgx8K58uf
+         ogvILTSHxVVBAyqLgjYHreu0k52T++uJp9lOvpiKnpIQ8Bjyz2BIX7YxHlOjn1gortwr
+         QOkCGYy9DhxEIO6grVDNeIYuzaEpDIKRHkrvbnADXd+UfND9vaLyUaIZYjH3EbSwN7zu
+         hs5MGlB4oIUF1M2DKo6NAAxX4oQmhFNJxeIdmT7c6S72Ui3a+eZ0yvPXJLtQ+owtPjvi
+         S8dDAis6RFUobhVc7tVIRcEpEso4uMkcIqQrszZhhuu47/TXi4vZaBTUqGSAjOO/A+Pr
+         mauA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Z8I1vY5pt7WQ1k3fpskyKT/+buflsqqcXMb5Y4ZXMMA=;
-        b=dzwjV8Hoxc7F10yv+OfwB20Fq1iu2x9q1DsgvlQ4ddnAcc3MQ33vmNFjaAtjLoeZ6t
-         Jc4sfa8Wjg2R+uk2flpB6sosMt07jHW3c7UnHq99U72ftyy5zgvj1Nr2DZbL4J3vt2jN
-         jDoXF8ep+6nrRqgb+VgQggoDyoZ2IEDPwU52ykyzwJtDUYIAXm5cnCDlololwToWhxEC
-         aDtguGvKeRy2tOcRI1FWwuXtrPdtGjA8GcuwTmSZcWFRwjYd4MJN6MA7ViO77dcHXt+Y
-         5VzsR8XGlv7bEiQeqWrzNJslz64wP9XJKeFLPGSkNhvWBQ6t4SQARTj0Pb+zZ76LzOmo
-         lv+g==
-X-Gm-Message-State: AOAM533UL9aL7GrVhN77P2V0IU3Iagjtp7xVLq0t0zuupAnoCnhR17aL
-        68p0Rf8zsMGrCNpufck4nxscxf/iok6HwQkfc+Y5G/+agCl7
-X-Google-Smtp-Source: ABdhPJziMAcqJprhzHNe6Himpl903jKdSUAp7zHuOwXYXFH/KG8tQVMIcAr3X8An6yHvhBYRnhmUHzs3OtZxgLF+wzdJHYpLUu4b
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tcxDxLsWHGr7j1cvxMG2JLruNGk37pPqhVGSTiHNRTI=;
+        b=sejXb2knxRiBfHkL5IFAG5/MeeSFZWuJgc5FY3VajtYf5Yo9n4iSJ8CgtRYsPEhB0n
+         gKXVDWQjBCBSda4bhTvoMA884m0tK89UcbuXS0fOIzqMm4wUACjMenu8UgykUFWBbnwT
+         7gnrJ0x2ymlyTZIxQhwsEHUruz1fS88Cah6sQIvtizbvl6mm72AR+DD95O/Sfuq9ycyQ
+         DugQ+45mnDds2mXnob6ZxnhVWfkTxYXzdZecejbqREc1YxLpIXrsul2cwjGJLjaEIEbS
+         YTnAhboqOk8D3zWNOWmKPwJOwryMoYB1SucCYC8PGiJBAQuDe6aegFWshwqgxJc75iGT
+         TKZg==
+X-Gm-Message-State: AOAM531wMXNHE3DkG/EpEO0xPPBkOR8Ttsh960QIWFx2gwkT2SZHWGTr
+        lm6QwX+RHu0dW82awYCyKL0=
+X-Google-Smtp-Source: ABdhPJxrOHq4d4XwI1TCtF/j7UjWh+chOlUNydbJM4p4e9w/eyyWqy8UuaUlIgCkRr7/6Fru0VeUQg==
+X-Received: by 2002:ac2:4185:: with SMTP id z5mr2080264lfh.391.1631094175380;
+        Wed, 08 Sep 2021 02:42:55 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id o8sm142625lfr.265.2021.09.08.02.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 02:42:54 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 1889gpxA015666;
+        Wed, 8 Sep 2021 12:42:52 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 1889gnns015665;
+        Wed, 8 Sep 2021 12:42:49 +0300
+Date:   Wed, 8 Sep 2021 12:42:49 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+Cc:     robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        lee.jones@linaro.org, osk@google.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org,
+        Konstantin Klubnichkin <kitsok@yandex-team.ru>
+Subject: Re: [PATCH v2 0/3] arm: aspeed: Add UART routing support
+Message-ID: <20210908094248.GZ23326@home.paul.comp>
+References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c8c7:: with SMTP id y190mr2467146iof.210.1631094085869;
- Wed, 08 Sep 2021 02:41:25 -0700 (PDT)
-Date:   Wed, 08 Sep 2021 02:41:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000095640f05cb78af37@google.com>
-Subject: [syzbot] possible deadlock in j1939_sk_queue_drop_all
-From:   syzbot <syzbot+3bd970a1887812621b4c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-syzbot found the following issue on:
+On Thu, Sep 02, 2021 at 10:18:13AM +0800, Chia-Wei Wang wrote:
+> Add UART routing driver and the device tree nodes.
 
-HEAD commit:    29ce8f970107 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1549d3f5300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f9d4c9ff8c5ae7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3bd970a1887812621b4c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3bd970a1887812621b4c@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-rc7-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.2/24182 is trying to acquire lock:
-ffff88802d66f578 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
-ffff88802d66f578 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: j1939_sk_queue_drop_all+0x40/0x2f0 net/can/j1939/socket.c:139
-
-but task is already holding lock:
-ffff88807b54d0d0 (&priv->j1939_socks_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
-ffff88807b54d0d0 (&priv->j1939_socks_lock){+.-.}-{2:2}, at: j1939_sk_netdev_event_netdown+0x28/0x160 net/can/j1939/socket.c:1266
-
-which lock already depends on the new lock.
+Thank you for working on exposing this functionality in upstreamable
+way, that's so much better than all the register-level hacks in U-Boot
+and similar approaches!
 
 
-the existing dependency chain (in reverse order) is:
+One (somewhat) related question that I hope you do not mind answering:
+is there anything special regarding the routing or other configuration
+that needs to be done for VUART to work with IRQs?
 
--> #2 (&priv->j1939_socks_lock){+.-.}-{2:2}:
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
-       spin_lock_bh include/linux/spinlock.h:359 [inline]
-       j1939_sk_errqueue+0x9f/0x1a0 net/can/j1939/socket.c:1078
-       __j1939_session_cancel+0x3b9/0x460 net/can/j1939/transport.c:1124
-       j1939_tp_rxtimer+0x2a8/0x36b net/can/j1939/transport.c:1250
-       __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-       __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
-       hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-       __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-       invoke_softirq kernel/softirq.c:432 [inline]
-       __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
-       irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
-       sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
-       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-       lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5593
-       __might_fault mm/memory.c:5261 [inline]
-       __might_fault+0x106/0x180 mm/memory.c:5246
-       _copy_from_user+0x27/0x180 lib/usercopy.c:13
-       copy_from_user include/linux/uaccess.h:192 [inline]
-       __copy_msghdr_from_user+0x91/0x4b0 net/socket.c:2288
-       copy_msghdr_from_user net/socket.c:2339 [inline]
-       sendmsg_copy_msghdr+0xa1/0x160 net/socket.c:2437
-       ___sys_sendmsg+0xc6/0x170 net/socket.c:2456
-       __sys_sendmmsg+0x195/0x470 net/socket.c:2546
-       __do_sys_sendmmsg net/socket.c:2575 [inline]
-       __se_sys_sendmmsg net/socket.c:2572 [inline]
-       __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2572
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+The reason I ask is that I have tried hard (and I know several other
+developers who have too) to use VUART functionality but somehow as
+soon as Linux was booting on host and starting to use the IRQ-based
+16550 driver the communication was halted both ways. Basically, the
+BMC firmware was enabling VUART in DTS, then setting LPC address to
+0x3F8 and LPC IRQ to 4 and reading/writing using the corresponding
+/dev/ttyS* node. The datasheet is not clearly telling what other
+actions need to be performed for this to work. Not using VUART and
+instead routing UART1 lines with exactly the same pinctrl/pinmux
+worked just fine. One detail is that with VUART the host wasn't seeing
+new interrupts but when they were simulated by exporting the LPC
+interrupt pin via /sys/class/gpio and toggling it manually the data
+was getting through.
 
--> #1 (&priv->active_session_list_lock){+.-.}-{2:2}:
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
-       spin_lock_bh include/linux/spinlock.h:359 [inline]
-       j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
-       j1939_session_activate+0x43/0x4b0 net/can/j1939/transport.c:1554
-       j1939_sk_queue_activate_next_locked net/can/j1939/socket.c:181 [inline]
-       j1939_sk_queue_activate_next+0x29b/0x460 net/can/j1939/socket.c:205
-       j1939_session_deactivate_activate_next+0x2e/0x35 net/can/j1939/transport.c:1101
-       j1939_xtp_rx_abort_one.cold+0x20b/0x33c net/can/j1939/transport.c:1341
-       j1939_xtp_rx_abort net/can/j1939/transport.c:1352 [inline]
-       j1939_tp_cmd_recv net/can/j1939/transport.c:2085 [inline]
-       j1939_tp_recv+0x8f4/0xb40 net/can/j1939/transport.c:2118
-       j1939_can_recv+0x6d7/0x930 net/can/j1939/main.c:101
-       deliver net/can/af_can.c:574 [inline]
-       can_rcv_filter+0x5d4/0x8d0 net/can/af_can.c:608
-       can_receive+0x31d/0x580 net/can/af_can.c:665
-       can_rcv+0x120/0x1c0 net/can/af_can.c:696
-       __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5436
-       __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5550
-       process_backlog+0x2a5/0x6c0 net/core/dev.c:6427
-       __napi_poll+0xaf/0x440 net/core/dev.c:6982
-       napi_poll net/core/dev.c:7049 [inline]
-       net_rx_action+0x801/0xb40 net/core/dev.c:7136
-       __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-       run_ksoftirqd kernel/softirq.c:920 [inline]
-       run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-       smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
-       kthread+0x3e5/0x4d0 kernel/kthread.c:319
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Does UART1 need some explicit disabling for VUART IRQs to work? It
+looks like setting LPC address and IRQ number in VUART is enough to
+override the register part but probably not for the interrupt?
 
--> #0 (&jsk->sk_session_queue_lock){+.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
-       spin_lock_bh include/linux/spinlock.h:359 [inline]
-       j1939_sk_queue_drop_all+0x40/0x2f0 net/can/j1939/socket.c:139
-       j1939_sk_netdev_event_netdown+0x7b/0x160 net/can/j1939/socket.c:1272
-       j1939_netdev_notify+0x199/0x1d0 net/can/j1939/main.c:362
-       notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-       call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
-       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
-       call_netdevice_notifiers net/core/dev.c:2022 [inline]
-       dev_close_many+0x2ff/0x620 net/core/dev.c:1597
-       dev_close net/core/dev.c:1619 [inline]
-       dev_close net/core/dev.c:1613 [inline]
-       __dev_change_net_namespace+0xd4a/0x1360 net/core/dev.c:11164
-       do_setlink+0x275/0x3970 net/core/rtnetlink.c:2624
-       __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
-       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
-       rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-       netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2406
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2460
-       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2489
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &jsk->sk_session_queue_lock --> &priv->active_session_list_lock --> &priv->j1939_socks_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&priv->j1939_socks_lock);
-                               lock(&priv->active_session_list_lock);
-                               lock(&priv->j1939_socks_lock);
-  lock(&jsk->sk_session_queue_lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.2/24182:
- #0: ffffffff8d0cd7a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0cd7a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- #1: ffff88807b54d0d0 (&priv->j1939_socks_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
- #1: ffff88807b54d0d0 (&priv->j1939_socks_lock){+.-.}-{2:2}, at: j1939_sk_netdev_event_netdown+0x28/0x160 net/can/j1939/socket.c:1266
-
-stack backtrace:
-CPU: 1 PID: 24182 Comm: syz-executor.2 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- j1939_sk_queue_drop_all+0x40/0x2f0 net/can/j1939/socket.c:139
- j1939_sk_netdev_event_netdown+0x7b/0x160 net/can/j1939/socket.c:1272
- j1939_netdev_notify+0x199/0x1d0 net/can/j1939/main.c:362
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
- call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
- call_netdevice_notifiers net/core/dev.c:2022 [inline]
- dev_close_many+0x2ff/0x620 net/core/dev.c:1597
- dev_close net/core/dev.c:1619 [inline]
- dev_close net/core/dev.c:1613 [inline]
- __dev_change_net_namespace+0xd4a/0x1360 net/core/dev.c:11164
- do_setlink+0x275/0x3970 net/core/rtnetlink.c:2624
- __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2406
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2460
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2489
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7926a42188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffcf598798f R14: 00007f7926a42300 R15: 0000000000022000
-device vcan0 entered promiscuous mode
-IPv6: ADDRCONF(NETDEV_CHANGE): vcan0: link becomes ready
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
