@@ -2,138 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3BC40358B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5547403591
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350125AbhIHHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:37:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48344 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345900AbhIHHhv (ORCPT
+        id S1347611AbhIHHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:38:33 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19017 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349925AbhIHHiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:37:51 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C5C420002;
-        Wed,  8 Sep 2021 07:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631086603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Z+WndBSU3C8fZ88DpLGMyx1R2eYI/u6zm2djOHlAuhI=;
-        b=Gxv+cR175RWwcar+tgco/LV9K7gZvM79EFqyhBr+f3UXoCEbLE/QUAkRS6fNiZ7lBQkSJu
-        zF92+gHGNw1F6qIchk8eh/7NlH3reksuw4VWG2W/5DQu0IkjV76wlvPNl12TKkDJUr4LqG
-        HjIAEFm6aGO7BCxqzOKpy69FZalwFK8=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C194613721;
-        Wed,  8 Sep 2021 07:36:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id OfMuLQpoOGElRgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 08 Sep 2021 07:36:42 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        Sander Eikelenboom <linux@eikelenboom.it>
-Subject: [PATCH] xen: fix usage of pmd/pud_poplulate in mremap for pv guests
-Date:   Wed,  8 Sep 2021 09:36:40 +0200
-Message-Id: <20210908073640.11299-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 8 Sep 2021 03:38:24 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H4DPz3nV5zbmMy;
+        Wed,  8 Sep 2021 15:33:11 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 8 Sep 2021 15:37:07 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 8 Sep 2021 15:37:06 +0800
+Subject: Re: [PATCH v4 2/6] nbd: convert to use blk_mq_find_and_get_req()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nbd@other.debian.org>, <yi.zhang@huawei.com>
+References: <20210907140154.2134091-1-yukuai3@huawei.com>
+ <20210907140154.2134091-3-yukuai3@huawei.com> <YThmhhI1/fZd29b1@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <e295605c-bc8e-cbb9-ca51-1355fdfc0264@huawei.com>
+Date:   Wed, 8 Sep 2021 15:37:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YThmhhI1/fZd29b1@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0881ace292b662 ("mm/mremap: use pmd/pud_poplulate to update page
-table entries") introduced a regression when running as Xen PV guest.
+On 2021/09/08 15:30, Ming Lei wrote:
 
-Today pmd/pud_poplulate() for Xen PV assumes that the PFN inserted is
-referencing a not yet used page table. In case of move_normal_pmd/pud()
-this is not true, resulting in WARN splats like:
+>> +put_req:
+>> +	if (req)
+>> +		blk_mq_put_rq_ref(req);
+>>   	return ret ? ERR_PTR(ret) : cmd;
+> 
+> After the request's refcnt is dropped, it can be freed immediately, then
+> one stale command is returned to caller.
 
-[34321.304270] ------------[ cut here ]------------
-[34321.304277] WARNING: CPU: 0 PID: 23628 at arch/x86/xen/multicalls.c:102 xen_mc_flush+0x176/0x1a0
-[34321.304288] Modules linked in:
-[34321.304291] CPU: 0 PID: 23628 Comm: apt-get Not tainted 5.14.1-20210906-doflr-mac80211debug+ #1
-[34321.304294] Hardware name: MSI MS-7640/890FXA-GD70 (MS-7640)  , BIOS V1.8B1 09/13/2010
-[34321.304296] RIP: e030:xen_mc_flush+0x176/0x1a0
-[34321.304300] Code: 89 45 18 48 c1 e9 3f 48 89 ce e9 20 ff ff ff e8 60 03 00 00 66 90 5b 5d 41 5c 41 5d c3 48 c7 45 18 ea ff ff ff be 01 00 00 00 <0f> 0b 8b 55 00 48 c7 c7 10 97 aa 82 31 db 49 c7 c5 38 97 aa 82 65
-[34321.304303] RSP: e02b:ffffc90000a97c90 EFLAGS: 00010002
-[34321.304305] RAX: ffff88807d416398 RBX: ffff88807d416350 RCX: ffff88807d416398
-[34321.304306] RDX: 0000000000000001 RSI: 0000000000000001 RDI: deadbeefdeadf00d
-[34321.304308] RBP: ffff88807d416300 R08: aaaaaaaaaaaaaaaa R09: ffff888006160cc0
-[34321.304309] R10: deadbeefdeadf00d R11: ffffea000026a600 R12: 0000000000000000
-[34321.304310] R13: ffff888012f6b000 R14: 0000000012f6b000 R15: 0000000000000001
-[34321.304320] FS:  00007f5071177800(0000) GS:ffff88807d400000(0000) knlGS:0000000000000000
-[34321.304322] CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
-[34321.304323] CR2: 00007f506f542000 CR3: 00000000160cc000 CR4: 0000000000000660
-[34321.304326] Call Trace:
-[34321.304331]  xen_alloc_pte+0x294/0x320
-[34321.304334]  move_pgt_entry+0x165/0x4b0
-[34321.304339]  move_page_tables+0x6fa/0x8d0
-[34321.304342]  move_vma.isra.44+0x138/0x500
-[34321.304345]  __x64_sys_mremap+0x296/0x410
-[34321.304348]  do_syscall_64+0x3a/0x80
-[34321.304352]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[34321.304355] RIP: 0033:0x7f507196301a
-[34321.304358] Code: 73 01 c3 48 8b 0d 76 0e 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 19 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 46 0e 0c 00 f7 d8 64 89 01 48
-[34321.304360] RSP: 002b:00007ffda1eecd38 EFLAGS: 00000246 ORIG_RAX: 0000000000000019
-[34321.304362] RAX: ffffffffffffffda RBX: 000056205f950f30 RCX: 00007f507196301a
-[34321.304363] RDX: 0000000001a00000 RSI: 0000000001900000 RDI: 00007f506dc56000
-[34321.304364] RBP: 0000000001a00000 R08: 0000000000000010 R09: 0000000000000004
-[34321.304365] R10: 0000000000000001 R11: 0000000000000246 R12: 00007f506dc56060
-[34321.304367] R13: 00007f506dc56000 R14: 00007f506dc56060 R15: 000056205f950f30
-[34321.304368] ---[ end trace a19885b78fe8f33e ]---
-[34321.304370] 1 of 2 multicall(s) failed: cpu 0
-[34321.304371]   call  2: op=12297829382473034410 arg=[aaaaaaaaaaaaaaaa] result=-22
+Hi, Ming
 
-Fix that by modifying xen_alloc_ptpage() to only pin the page table in
-case it wasn't pinned already.
+It's right this patch leave this problem. Please take a look at patch 3
+and patch 4, the problem should be fixed with these patches.
 
-Fixes: 0881ace292b662 ("mm/mremap: use pmd/pud_poplulate to update page table entries")
-Cc: <stable@vger.kernel.org>
-Reported-by: Sander Eikelenboom <linux@eikelenboom.it>
-Tested-by: Sander Eikelenboom <linux@eikelenboom.it>
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- arch/x86/xen/mmu_pv.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-index 1df5f01529e5..8d751939c6f3 100644
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -1518,14 +1518,17 @@ static inline void xen_alloc_ptpage(struct mm_struct *mm, unsigned long pfn,
- 	if (pinned) {
- 		struct page *page = pfn_to_page(pfn);
- 
--		if (static_branch_likely(&xen_struct_pages_ready))
-+		pinned = false;
-+		if (static_branch_likely(&xen_struct_pages_ready)) {
-+			pinned = PagePinned(page);
- 			SetPagePinned(page);
-+		}
- 
- 		xen_mc_batch();
- 
- 		__set_pfn_prot(pfn, PAGE_KERNEL_RO);
- 
--		if (level == PT_PTE && USE_SPLIT_PTE_PTLOCKS)
-+		if (level == PT_PTE && USE_SPLIT_PTE_PTLOCKS && !pinned)
- 			__pin_pagetable_pfn(MMUEXT_PIN_L1_TABLE, pfn);
- 
- 		xen_mc_issue(PARAVIRT_LAZY_MMU);
--- 
-2.26.2
-
+Thanks,
+Kuai
+> 
+> Thanks,
+> Ming
+> 
+> .
+> 
