@@ -2,138 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8CA40328B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C022403290
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347059AbhIHCS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
+        id S1347174AbhIHCVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345390AbhIHCS4 (ORCPT
+        with ESMTP id S235450AbhIHCVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:18:56 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B606C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:17:49 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l10so705647ilh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:17:49 -0700 (PDT)
+        Tue, 7 Sep 2021 22:21:33 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4C7C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:20:26 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id m11-20020a056820034b00b0028bb60b551fso280141ooe.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/IWD3lWqW7tmqbqU75hG73Bk2K0WFfHswfg8FlrHrKs=;
-        b=aRywNGsz1D5A5EQCd5dUY6KTH/NjucGkz/bThRPkUpc21zAxA3wkr+t1y1in97qv1k
-         4qjF9i5D/Ik559COUXRjheIpveh7ca7K+vNZBfUmxBpDCB8Cb2r8sfWFFoGzaIewuzdQ
-         kAbiG/nenGMKQSgdHX9peYBr3TYBo2CozOdmg+KEK2b5rxV8T58QWld4MNeC/fvCuMhZ
-         TEICtnQERFaBQt9Vfab6YZVFoVQSHr1m42p2BU1QCdtuMmwtF95sX4kryerYeFK42xSi
-         NMuuuDYVDWKb7STNK723isP6sJ99USU16Sv/WApUMdTWuwrzWhc52rPRlSIyk1XoN2jR
-         Gw4Q==
+        bh=d7N2sG5KH7lGAgEggC9zCBdx01DXAMxZT+wV9lrlBZo=;
+        b=d1E5oZrpcIsuWWUnDrUU47njxjPHb/BblH3zYvHGr+MCBfMhW4jULBFqddvrjoGij4
+         Esn56yeCeCihAXL3SPlDeop4KwnLgw2Zth1cO7tEg6EEGYPT84FDGoOsdf9wHBXly+xK
+         n7z7rJ5rZm8UPwA0Tzz7Z4X84paxUv5bcSBgUKCRUWG6XD+nPkOQ4wUxx6Qg6551i1so
+         535pxB4UK+7PUCkjW1dAkhL30cKrtgRPpGi97tbJCwuBw2YfazhVrdRKb0Ebqdx93rPR
+         tWy8F7nj55XsSYGCz6R6F1sFVet2HvE4zEBNZbceFbgcsVHvZ84nzucACI8hCFsj98sy
+         G5kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=/IWD3lWqW7tmqbqU75hG73Bk2K0WFfHswfg8FlrHrKs=;
-        b=JFnhTWU/xWtclzTb3nojYrDqtWHttwuOk03Tgc4lvoxaOo4WUf048mwd6Jm8YrJw1h
-         SreWMk1LcgBuKzOACmqHbvN33Rfy18BFvEklcCKVAarrjaVRPod2wd2200gqweyL36u1
-         Albqd5v/YIuc+LkPurDgypFV9Us1Of1NCiB+69QcCY8pgjX6vqJpdNZH6u1TQyHFjwY2
-         AAcWPjqmIRGxTerX00Q71yMH/T1fAiLFerXDI/E1t7DRm/9udxOYNZolWuqcIPlgXHYU
-         6TSA6PGMtdPFKd81WRWk/ujnk4XIpDBTPgKoee6m7nXxRs0ipbnDum2/FKEtGwebO7Tw
-         y0eg==
-X-Gm-Message-State: AOAM533eOxLxu9l6+7rSXho+czSWV1iQgDP+2XltGaWXXTZQS5SNJ0D8
-        TILSwA3z3V2AWhJ9QfdjdDw=
-X-Google-Smtp-Source: ABdhPJwTcSU8v+IGyKTgJLPCuX9DDd79BxO2Zus3jcyRBygcvgzSppfNCqcR2JM8668xAj1epnqHcg==
-X-Received: by 2002:a05:6e02:10c2:: with SMTP id s2mr1119683ilj.148.1631067468616;
-        Tue, 07 Sep 2021 19:17:48 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id g13sm425340ile.68.2021.09.07.19.17.47
+        bh=d7N2sG5KH7lGAgEggC9zCBdx01DXAMxZT+wV9lrlBZo=;
+        b=CL4Y/lrwgKMYCzsztwl71gZ4BoDm+tkkJC+vuAy9Dpe31nWqFQ1X/ddX1kwONvGACb
+         0fuaWrsLawzV1jJjIwzoYTLtUhPnXAyhYgfcqM9Qs+fq5FnwoR6+LODUC0ZcmrmEij8y
+         uQjLb4Day2zHQMQc6oJkKriwQbzXFEqZ8aHpX39gV3FByHgbIVXSd7yC6bCxV8gx7dsn
+         6pANhF609yuvkZTvvMO1viov9VZv45+pQAsO+aSY871zYdmwOrzEObLFnI1fEi+YuQJT
+         BuPysQQVWjSJu5ux1hmZqrJ1VW5HyeA6NAyG/VOptuJLlsjPG8BC6O/eJPnr9SuEnrzX
+         RAmQ==
+X-Gm-Message-State: AOAM5328Udrgoef6IG2A/G5meiA67IB19I/iQw/KIK5XkvvvPLZ5UXp3
+        NcjcDUcwqB6xqqffbYdEeQDzFA==
+X-Google-Smtp-Source: ABdhPJy4e+NyBQqTI3ph3rpEZzw5lV6yuX5+1N+QnhylAh1cGWwXQGa2BONNTDVnj2G+++dfD0QPJg==
+X-Received: by 2002:a4a:de90:: with SMTP id v16mr1072428oou.42.1631067624003;
+        Tue, 07 Sep 2021 19:20:24 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d10sm159139ooj.24.2021.09.07.19.20.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 19:17:48 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8EB9227C0054;
-        Tue,  7 Sep 2021 22:17:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 07 Sep 2021 22:17:47 -0400
-X-ME-Sender: <xms:Sx04YUE3hRlPNzpqI6mU2myQnErzB103JbkytV78PLjHG1OTPBwUPQ>
-    <xme:Sx04YdUIPyNXY-luKEV5eFaQ7cfD8Mlh32KXb1RoPWVYXV0PO1pihfChvx6PCi8MH
-    PKSJ34a5rVGkObUlg>
-X-ME-Received: <xmr:Sx04YeJ4gnWuF5riBJw0gz96vAZyiMT9UY29LJI75D3dCN8PpY7VlRZzxjE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpedvvdekhfeltedujeeuheevtdefueefheehfeeukedthedufeffleetueej
-    vdejueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Sx04YWHwY_JVlXAm9x7YB_4sLgtfX147nLXMRMTKIlKSomPBm5pHhA>
-    <xmx:Sx04YaVDNPJIKjDoAxMHflLu2jx88VjLlcXg0HdjwYIIgFpnMuQq7A>
-    <xmx:Sx04YZOnCQjO_2PrU9WOVEbABgiE_rwUqRVRnEMtRjxEq-rTEZAUwg>
-    <xmx:Sx04YcLuIprrmak3nQIzlxR6hwU-VJRa_RJykPz_sEPRXgWfyULulQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Sep 2021 22:17:46 -0400 (EDT)
-Date:   Wed, 8 Sep 2021 10:16:19 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Waiman Long <llong@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2] lockdep: Let lock_is_held_type() detect recursive
- read as read
-Message-ID: <YTgc8xXuVlpOhoUT@boqun-archlinux>
-References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
- <9af2b074-9fcf-5aea-f37d-9b2482146489@redhat.com>
- <20210903084001.lblecrvz4esl4mrr@linutronix.de>
+        Tue, 07 Sep 2021 19:20:23 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 19:21:22 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+Message-ID: <YTgeIuwumPoR9ZTE@ripper>
+References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+ <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+ <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
+ <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+ <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+ <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org>
+ <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210903084001.lblecrvz4esl4mrr@linutronix.de>
+In-Reply-To: <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 10:40:01AM +0200, Sebastian Andrzej Siewior wrote:
-> lock_is_held_type(, 1) detects acquired read locks. It only recognized
-> locks acquired with lock_acquire_shared(). Read locks acquired with
-> lock_acquire_shared_recursive() are not recognized because a `2' is
-> stored as the read value.
-> 
-> Rework the check to additionally recognise lock's read value one and two
-> as a read held lock.
-> 
-> Fixes: e918188611f07 ("locking: More accurate annotations for read_lock()")
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> v1â€¦v2:
->   - simplify the read check to !!read as suggested by Waiman Long.
-> 
->  kernel/locking/lockdep.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_
->  		struct held_lock *hlock = curr->held_locks + i;
->  
->  		if (match_held_lock(hlock, lock)) {
-> -			if (read == -1 || hlock->read == read)
-> +			if (read == -1 || hlock->read == !!read)
+On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
 
-I think this should be:
+> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
+> > 
+> > 
+> > On 09/08/2021 17:12, Rob Clark wrote:
+> > > On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
+> > > <akhilpo@codeaurora.org> wrote:
+[..]
+> > > > I am a bit confused. We don't define a power domain for gpu in dt,
+> > > > correct? Then what exactly set_opp do here? Do you think this usleep is
+> > > > what is helping here somehow to mask the issue?
+> > The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
+> > the GPU DT. For the sake of simplicity I'll refer to the lowest
+> > frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
+> > the "min" state, and the highest frequency (710000000) and OPP level
+> > (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
+> > sdm845.dtsi under the gpu node.
+> > 
+> > The new devfreq behaviour unmasks what I think is a driver bug, it
+> > inadvertently puts much more strain on the GPU regulators than they
+> > usually get. With the new behaviour the GPU jumps from it's min state to
+> > the max state and back again extremely rapidly under workloads as small
+> > as refreshing UI. Where previously the GPU would rarely if ever go above
+> > 342MHz when interacting with the device, it now jumps between min and
+> > max many times per second.
+> > 
+> > If my understanding is correct, the current implementation of the GMU
+> > set freq is the following:
+> >   - Get OPP for frequency to set
+> >   - Push the frequency to the GMU - immediately updating the core clock
+> >   - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
+> > up somewhere in power management code and causes the gx regulator level
+> > to be updated
+> 
+> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
+> were using a different api earlier which got deprecated -
+> dev_pm_opp_set_bw().
+> 
 
-	!!hlock->read == read
+On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
+I'm lucky I managed to hit a few keys before it crashes, so I spent a
+few hours looking into this as well...
 
-With that,
+As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
+The opp-level is just there for show and isn't used by anything, at
+least not on 845.
 
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
+Further more, I'm missing something in my tree, so the interconnect
+doesn't hit sync_state, and as such we're not actually scaling the
+buses. So the problem is not that Linux doesn't turn on the buses in
+time.
+
+So I suspect that the "AHB bus error" isn't saying that we turned off
+the bus, but rather that the GPU becomes unstable or something of that
+sort.
+
+
+Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
+Aquarium for 20 minutes without a problem. I then switched the gpu
+devfreq governor to "userspace" and ran the following:
+
+while true; do
+  echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+  echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+done
+
+It took 19 iterations of this loop to crash the GPU.
+
+So the problem doesn't seem to be Rob's change, it's just that prior to
+it the chance to hitting it is way lower. Question is still what it is
+that we're triggering.
 
 Regards,
-Boqun
-
->  				return LOCK_STATE_HELD;
->  
->  			return LOCK_STATE_NOT_HELD;
+Bjorn
