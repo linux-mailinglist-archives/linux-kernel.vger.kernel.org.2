@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A120403571
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10454403577
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350296AbhIHHbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:31:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350154AbhIHHbc (ORCPT
+        id S1350285AbhIHHbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:31:45 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:48461 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350504AbhIHHbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:31:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631086224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vkqGjkxzxSPrvDa6nFo8JJGNfAA6j1Mj5Wob9D9BFCs=;
-        b=W0aGrFkTaQ0VreQmOPtxNzKwYe1fjOOQoq1GHfoIq3rjdy2yH/7Ia81jAx5gy6yz6GeTRk
-        yHV5P++KZaItVxvWUd9hPFnLn2rR9bzyCr6AJfVAh5mIp9eC6MbmhRK706B00IEAeYrTW1
-        xuOFLL7yf4vde5RjthqqqwytSxy2+o4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-e8Mtu1L4NlapVx1NWYf7Pg-1; Wed, 08 Sep 2021 03:30:23 -0400
-X-MC-Unique: e8Mtu1L4NlapVx1NWYf7Pg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A66E6801A92;
-        Wed,  8 Sep 2021 07:30:21 +0000 (UTC)
-Received: from T590 (ovpn-12-207.pek2.redhat.com [10.72.12.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7842D5D9F4;
-        Wed,  8 Sep 2021 07:30:12 +0000 (UTC)
-Date:   Wed, 8 Sep 2021 15:30:14 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH v4 2/6] nbd: convert to use blk_mq_find_and_get_req()
-Message-ID: <YThmhhI1/fZd29b1@T590>
-References: <20210907140154.2134091-1-yukuai3@huawei.com>
- <20210907140154.2134091-3-yukuai3@huawei.com>
+        Wed, 8 Sep 2021 03:31:35 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 23E335C0167;
+        Wed,  8 Sep 2021 03:30:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 08 Sep 2021 03:30:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=yGCXYbluQX/ON2P4qhCwIlRzQxV
+        TSV/kB/bvO/GkOhg=; b=DnN6W5YfyId1zyJRpjFG+qd90Y/FLEyrBYhS39fa47J
+        ACIvW8HuiOhbn7XTq/KD/Ah9FK2GqAvyOAtgnubOXCL5BtHsj8COonTs60CKo2ru
+        KeucrNoFCfKVsK3Ly89tblXvX1ie/5DQ0qqWffEfnLvll04qiYWWxABv153gITPc
+        y2Z2NfJhqEDuGflc28a+h00kZXAjzpxoFTrUCS+2M95nNyIAQqce94F9UmzkLl+u
+        FpjRDLbRJ8X8GCyWaN4MaN3MgwZ3qNw79BbKd+IHx2YdBIWxKBIIUmFCwrtKQhIK
+        xBjTfg1476kgQBr1c3T8o/TngctRYCWn/pNGvtsYEAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yGCXYb
+        luQX/ON2P4qhCwIlRzQxVTSV/kB/bvO/GkOhg=; b=T0L4OEJIuv0hwFq4wsD0Pn
+        pbglvEOYfLTzhgBOXXWvapdXomYc9fFwD00aFX6aOmdaB2Yx1CvQk48joFRTJ/2w
+        hr5rmIfT96Bl3c/c+P94AfPiX0Xuu27UjfWFcSZWNqJdzgRY4S7y7BPv2eap3bxz
+        WlJ2uN85kE3fEt5jKIjMx7jwNLsF+sAZpMLt/LMoiDZp7HVbp8DkUcRAB9ieUX5P
+        Q5Js18JuUbPt6I2Z+VB+l4PXs1YH8lx4SUplCSwxxT6y41zdAW1O0MMBMfSYO4f2
+        G9/vJgDmCXJXE0dO9XHfda+NMAGbkjHDH3fKoPCbABnaSaTqXJV7UAL6hvD6JGRw
+        ==
+X-ME-Sender: <xms:kmY4YZy2ALfOPzMfs0OjRZOb15wgTZI9D-LcYKZvPqLBiIQnbmV2rA>
+    <xme:kmY4YZQEJHeq81BgJJ3H-rzJwu2vP3p4Byf-RKwBYYy6uXnNRVFZ5G4eRtgvw1Byc
+    L-A0jeM_WUVq4b2j4o>
+X-ME-Received: <xmr:kmY4YTVDQ55D_4mHS5OdcEyCWzzRaCQF1QOD8PZgzFkmWlchoeiq54fVeWEq0u3EeMaAcj_nalt4rEEWkWyeJsV6Jr_bpN1vxKjO>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:kmY4YbinxAAXDjh-dp8NgddaUufxzmCRk2GzFem4TLmQL36w4BNsSw>
+    <xmx:kmY4YbB9Tmxmdzl79j0rRFxIqukO0NMZxQZXWTuFmt0d6Aln3wHscA>
+    <xmx:kmY4YUJAfqGoelmFE5GtXKxQ6NbXVJMhwy2p3SIdTwXEJhjAgCbaPg>
+    <xmx:lGY4YdDbpw0VlQ_X4X8w6x3ZRIJOx8SzgamLvDx3Gr90H3kh3i4PKg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Sep 2021 03:30:26 -0400 (EDT)
+Date:   Wed, 8 Sep 2021 09:30:25 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: sunxi-ng: ccu-sun8i-a83t: Make use of the helper
+ function devm_platform_ioremap_resource()
+Message-ID: <20210908073025.eug3vu77rgm3l6fl@gilmour>
+References: <20210907085213.4662-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iec32v7lqakop55a"
 Content-Disposition: inline
-In-Reply-To: <20210907140154.2134091-3-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210907085213.4662-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 10:01:50PM +0800, Yu Kuai wrote:
-> blk_mq_tag_to_rq() can only ensure to return valid request in
-> following situation:
-> 
-> 1) client send request message to server first
-> submit_bio
-> ...
->  blk_mq_get_tag
->  ...
->  blk_mq_get_driver_tag
->  ...
->  nbd_queue_rq
->   nbd_handle_cmd
->    nbd_send_cmd
-> 
-> 2) client receive respond message from server
-> recv_work
->  nbd_read_stat
->   blk_mq_tag_to_rq
-> 
-> If step 1) is missing, blk_mq_tag_to_rq() will return a stale
-> request, which might be freed. Thus convert to use
-> blk_mq_find_and_get_req() to make sure the returned request is not
-> freed. However, there are still some problems if the request is
-> started, and this will be fixed in next patch.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/block/nbd.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 5170a630778d..920da390635c 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -718,12 +718,13 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->  	tag = nbd_handle_to_tag(handle);
->  	hwq = blk_mq_unique_tag_to_hwq(tag);
->  	if (hwq < nbd->tag_set.nr_hw_queues)
-> -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
-> -				       blk_mq_unique_tag_to_tag(tag));
-> +		req = blk_mq_find_and_get_req(nbd->tag_set.tags[hwq],
-> +					      blk_mq_unique_tag_to_tag(tag));
->  	if (!req || !blk_mq_request_started(req)) {
->  		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
->  			tag, req);
-> -		return ERR_PTR(-ENOENT);
-> +		ret = -ENOENT;
-> +		goto put_req;
->  	}
->  	trace_nbd_header_received(req, handle);
->  	cmd = blk_mq_rq_to_pdu(req);
-> @@ -785,6 +786,9 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->  out:
->  	trace_nbd_payload_received(req, handle);
->  	mutex_unlock(&cmd->lock);
-> +put_req:
-> +	if (req)
-> +		blk_mq_put_rq_ref(req);
->  	return ret ? ERR_PTR(ret) : cmd;
 
-After the request's refcnt is dropped, it can be freed immediately, then
-one stale command is returned to caller.
+--iec32v7lqakop55a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Ming
+On Tue, Sep 07, 2021 at 04:52:12PM +0800, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
+Applied, thanks
+Maxime
+
+--iec32v7lqakop55a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYThmkQAKCRDj7w1vZxhR
+xaK6AP4oxCW46ajZao1g7PXC2f9tUD9Y5GLLa068wAOvGhK62gEA5ozGL9W3IFy8
+Oum2Rm1Ihx6z6wnbfRBUwqkmU0xSiQk=
+=NNtO
+-----END PGP SIGNATURE-----
+
+--iec32v7lqakop55a--
