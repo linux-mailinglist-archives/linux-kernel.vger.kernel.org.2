@@ -2,164 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F2A404106
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D2A404111
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhIHWcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 18:32:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229997AbhIHWcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CABE460F23;
-        Wed,  8 Sep 2021 22:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631140273;
-        bh=CEZnMdCaJnqR1gLr3Yht5YBKu/wGwx/F6NVjNDH3qqw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ABfCMef81Sh+tKw7PbfptrK/4w9DzKITy06nLfdUmKdpTr7psAsykceCwUbPYQm70
-         b64AuBLaPkg6y0JZad1R2xUIGIkgdCkN2dxIqmW6XsbbSS4l06GGFd/1OVMtOZMiTS
-         Q5IaU7PqWOlTf6SnEY7IeHt7MoAkwcTeB8EXdaTeRhdQmEJXewOVa4W1Wz+uBGbk1+
-         tvjUpDNsAcXfpSRs+HekwnQ2RaUsX0VAA0xG6KKeRjklLSAO+zaJjSEeDhbbegROPX
-         rliN2YKc3UBRttKem1Sc+U9pOE17AyFK/F8hRzS0MVzNKUuA0XPXuhYtcE6V3LS8j1
-         Y+yvh37GMWQIg==
-Received: by mail-ed1-f49.google.com with SMTP id s25so5093104edw.0;
-        Wed, 08 Sep 2021 15:31:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533Y0IFEFj6Jxn67OKFCqcOJAKoqfh+5Gfsbmd1avhGGYFArbY6u
-        bExyHMqTHDwby/o2w/U1NmZXMMHitYTJzMVdag==
-X-Google-Smtp-Source: ABdhPJx0UCjjskaqV1A5cfxvMrUdRuzgUcj94Xm4J1nuDTk7RXMpw22lOl8EgUrxXZKtaFANPXHgdtHPKaF0Vg77wkk=
-X-Received: by 2002:aa7:d645:: with SMTP id v5mr552075edr.145.1631140272407;
- Wed, 08 Sep 2021 15:31:12 -0700 (PDT)
+        id S237347AbhIHWhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 18:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhIHWhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 18:37:36 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5404C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 15:36:27 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id g9so5361110ioq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M/dueucM0XzOy1jPT/PQdcqnijwVro2s2Bw0YSR2geg=;
+        b=LkipFzU3cjINN/t5kFqm8if/dRpeVPe5N3h3SK1jKCbuJYBNkdOKO1Q1BlRDgpJwkF
+         uecfJZnqLEqB4ptN4xZ93fVt8PEUJA6HkO2/CTlBx2dJELQY0APPZr34AZSYfiKYYUzh
+         uH+J7IHDcQ+Gf9T4yeyACeE7nz4Tz7it+F8Ok=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M/dueucM0XzOy1jPT/PQdcqnijwVro2s2Bw0YSR2geg=;
+        b=mS6TR/DfwhwGgIebCCNNAmp8HqxRDUaOOlGBwe0xRvGABQAsAREoNIAkox+wkBb2fq
+         8AvWOO+w2yFXThLwUIBYBJzBnHncIDOv0kczstytrw6VDtys1yHd62U6yFUvIUlm+XZB
+         cwOTRXx+bmZm0MsZeP7dWJ6twZCH4TzlEscbaqMoccRhdF3kai05t8EzXV2kUDzV+9rF
+         ulZDkUplxGVRar2qfc0zmm4xPh49v2TlcwLaEAWcxPewSafcjTsmDkRgKeJWsLysH9Tg
+         QAGhO0qsuv57ZnrmdzCAtq1bekX3DXWItUz1cxQ6fyBPQYyls+6kH5KWcH9/GekPZCOu
+         LgeQ==
+X-Gm-Message-State: AOAM531GRm1yoNRQbIof4DnUEB9QSnIi3pw1VC3OAAp1tO1ahYK6i0dz
+        jGNhU3+c6KHagNR4hEeoXHN6PJUY3DYqHQ==
+X-Google-Smtp-Source: ABdhPJyK7O3aBPfOyv1a0Gs+D4WWvBUFNW7UjooeOeFxSW4hQ0yy7r6Jl1ITAaPiYUE2Umr0+93JqA==
+X-Received: by 2002:a02:c64a:: with SMTP id k10mr678921jan.112.1631140586890;
+        Wed, 08 Sep 2021 15:36:26 -0700 (PDT)
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com. [209.85.166.54])
+        by smtp.gmail.com with ESMTPSA id p19sm204258ilj.58.2021.09.08.15.36.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 15:36:26 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id b10so5367489ioq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:36:25 -0700 (PDT)
+X-Received: by 2002:a5d:8458:: with SMTP id w24mr489939ior.168.1631140574432;
+ Wed, 08 Sep 2021 15:36:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de> <CAGETcx9eFg7jR=ibBLhU3q+VnpqJXQCVmQcEyMpozddRiCXFLQ@mail.gmail.com>
- <97044cb9-b7a9-d8af-93e7-d33a81a1cfe2@web.de> <CAGETcx9NpKou1jOEksX4tayRuEVYcy-T4H6QhQU-AUz3Zg1NaQ@mail.gmail.com>
-In-Reply-To: <CAGETcx9NpKou1jOEksX4tayRuEVYcy-T4H6QhQU-AUz3Zg1NaQ@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 8 Sep 2021 17:31:01 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL8sGc7sA7q+SFcMKF02NWpqOUUEWew1qOY+vdpKVFJ6w@mail.gmail.com>
-Message-ID: <CAL_JsqL8sGc7sA7q+SFcMKF02NWpqOUUEWew1qOY+vdpKVFJ6w@mail.gmail.com>
-Subject: Re: [Bisected Regression] OLPC XO-1.5: Internal drive and SD card
- (mmcblk*) gone since commit ea718c699055
-To:     Saravana Kannan <saravanak@google.com>,
-        Andre Muller <andre.muller@web.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
+References: <20210901201934.1084250-1-dianders@chromium.org>
+ <20210901131531.v3.6.I02250cd7d4799661b068bcc65849a456ed411734@changeid>
+ <CAOesGMjp4pscuxciHZo7br-acgbkZSdRA_mUWNpcz0OfF7zOSA@mail.gmail.com>
+ <CAD=FV=WPXAUyuAHb1jKx9F_aw+JGX4MWB3or=Eq5rXoKY=OQMw@mail.gmail.com> <163070152582.405991.9480635890491684680@swboyd.mtv.corp.google.com>
+In-Reply-To: <163070152582.405991.9480635890491684680@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 8 Sep 2021 15:36:02 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XzPVda==+hkJ8ZJNXz3sT=V+8y4gbsbUik4k3Om_cGvQ@mail.gmail.com>
+Message-ID: <CAD=FV=XzPVda==+hkJ8ZJNXz3sT=V+8y4gbsbUik4k3Om_cGvQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/16] ARM: configs: Everyone who had PANEL_SIMPLE now
+ gets PANEL_SIMPLE_EDP
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Olof Johansson <olof@lixom.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DTML <devicetree@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Core ntin Labbe <clabbe@baylibre.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?Q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Otavio Salvador <otavio@ossystems.com.br>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>, linux-sunxi@lists.linux.dev,
+        =?UTF-8?Q?open_list=3ATEGRA_ARCHITECTURE_SUPPORT_=3Clinux=2D_tegra=40vger=2Ekern?=
+         =?UTF-8?Q?el=2Eorg=3E=2C_=C5=81ukasz_Stelmach?= 
+        <l.stelmach@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 10:15 PM Saravana Kannan <saravanak@google.com> wrote:
+Hi,
+
+On Fri, Sep 3, 2021 at 1:38 PM Stephen Boyd <sboyd@kernel.org> wrote:
 >
-> On Tue, Sep 7, 2021 at 7:12 PM Andre Muller <andre.muller@web.de> wrote:
+> Quoting Doug Anderson (2021-09-01 16:10:15)
+> > Hi,
 > >
-> > On 08/09/2021 00.05, Saravana Kannan wrote:
-> > > On Sun, Sep 5, 2021 at 1:15 AM Andre Muller <andre.muller@web.de> wrote:
-> > >>
-> > >> With linux-5.13 and linux-5.14, the internal drive and SD card reader are gone from the XO-1.5. I bisected the issue to come up with ea718c699055:
-> > >>
-> > >> # first bad commit: [ea718c699055c8566eb64432388a04974c43b2ea] Revert "Revert "driver core: Set fw_devlink=on by default""
-> > >>
-> > >> The /dev/mmcblk* nodes are not generated since this patch.
-> > >>
-> > >> Please find the output of lspsi -vv and lshw below.
-> > >>
-> > >> I will be happy to provide more info and/or test patches.
+> > On Wed, Sep 1, 2021 at 2:12 PM Olof Johansson <olof@lixom.net> wrote:
 > > >
-> > > Hi Andre,
+> > > On Wed, Sep 1, 2021 at 1:20 PM Douglas Anderson <dianders@chromium.org> wrote:
+> > > >
+> > > > In the patch ("drm/panel-simple-edp: Split eDP panels out of
+> > > > panel-simple") we split the PANEL_SIMPLE driver in 2. By default let's
+> > > > give everyone who had the old driver enabled the new driver too. If
+> > > > folks want to opt-out of one or the other they always can later.
+> > > >
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > > >
-> > > Can you point me to the dts file in upstream that corresponds to this system?
-> > >
-> > > Also, if you can give the output of:
-> > > cat /sys/kernel/debug/devices_deferred
+> > > Isn't this a case where the new option should just have had the old
+> > > option as the default value to avoid this kind of churn and possibly
+> > > broken platforms?
 > >
-> > Hi Saravana,
+> > I'm happy to go either way. I guess I didn't do that originally
+> > because logically there's not any reason to link the two drivers going
+> > forward. Said another way, someone enabling the "simple panel" driver
+> > for non-eDP panels wouldn't expect that the "simple panel" driver for
+> > DP panels would also get enabled by default. They really have nothing
+> > to do with one another. Enabling by default for something like this
+> > also seems like it would lead to bloat. I could have sworn that
+> > periodically people get yelled at for marking drivers on by default
+> > when it doesn't make sense.
 > >
-> >
-> > /sys/kernel/debug/devices_deferred is empty.
-> > I used the last good commit b6f617.
+> > ...that being said, I'm happy to change the default as you suggest.
+> > Just let me know.
 >
-> Sorry, I wanted that with the bad commit.
+> Having the default will help olddefconfig users seamlessly migrate to
+> the new Kconfig. Sadly they don't notice that they should probably
+> disable the previous Kconfig symbol, but oh well. At least with the
+> default they don't go on a hunt/bisect to figure out that some Kconfig
+> needed to be enabled now that they're using a new kernel version.
 >
-> >
-> > The XO-1.5 has an x86 compatible VIA C7 processor.
-> > It uses the VX855 chip for about all I/O tasks, including SDIO.
-> > I am not aware of a device tree file for it.
-> >
-> > It is a bit of a strange beast, it uses OFW to initialize the hardware and provide a FORTH shell.
-> > Which also is the boot manager, configured via FORTH scripts.
-> >
-> >  From the linux side of the fence, dmesg's line 2 is:
-> >
-> > "OFW detected in memory, cif @ 0xff83ae68 (reserving top 8MB)"
-> >
-> > AIUI, this mechanism is used in lieu of a device tree file, like UEFI on most x86 hardware.
-> > But my understanding of device trees is severely limited, I might be allwrong.
->
-> Uhh... I'm so confused. If Linux doesn't use OF, then none of the code
-> enabled by fw_devlink=on should be executed.
+> Maybe the default should have a TODO comment next to it indicating we
+> should remove the default in a year or two.
 
-Linux does, but maybe not for memory (like UEFI on arm64).
+OK, so I'm trying to figure out how to do this without just "kicking
+the can" down the road. I guess your idea is that for the next year
+this will be the default and that anyone who really wants
+"CONFIG_DRM_PANEL_EDP" will "opt-in" to keep it by adding
+"CONFIG_DRM_PANEL_EDP=y" to their config? ...and then after a year
+passes we remove the default? ...but that won't work, will it? Since
+"CONFIG_DRM_PANEL_EDP" will be the default for the next year then you
+really can't add it to the "defconfig", at least if you ever
+"normalize" it. The "defconfig" by definition has everything stripped
+from it that's already the "default", so for the next year anyone who
+tries to opt-in will get their preference stripped.
 
-> The only thing that might remotely even execute is:
-> efifb_add_links() in drivers/firmware/efi/efi-init.c
->
-> If you want you can just do an early return 0; in that to see if it
-> makes a difference (unlikely).
->
-> Rob, Do you know what's going on with OLPC and DT?
+Hrm, so let me explain options as I see them. Maybe someone can point
+out something that I missed. I'll assume that we'll change the config
+option from CONFIG_DRM_PANEL_SIMPLE_EDP to CONFIG_DRM_PANEL_EDP
+(remove the "SIMPLE" part).
 
-Not really. I have an XO-1 DT dump[1]. It's probably a similar looking
-DT though. It's pretty ancient lacking anything we've invented for DT
-in the last 10 years. There's not really much to it as about the only
-phandle I see is for interrupts.
+==
 
-> > Anyway, the firmware source is here:
-> > http://dev.laptop.org/git/users/quozl/openfirmware/
-> >
-> > This file is the closest dt-analogous thing for the XO-1.5 I can find therein:
-> > cpu/x86/pc/olpc/via/devices.fth
->
-> That file is all gibberish to me.
+Where we were before my series:
 
-Running this on a booted system would help:
+* One config "CONFIG_DRM_PANEL_SIMPLE" and it enables simple non-eDP
+and eDP drivers.
 
-dtc -f -I fs -O dts /proc/device-tree > dump.dts
+==
 
-If you don't have dtc on the system, then you'll have to zip up
-/proc/device-tree contents and run dtc elsewhere (or just post that).
+Option 1: update everyone's configs (this patch)
 
-> > My machine runs the latest version:
-> > http://wiki.laptop.org/go/OLPC_Firmware_q3c17
-> >
-> > The XO-1.5 hardware specs are here:
-> > http://wiki.laptop.org/images/f/f0/CL1B_Hdwe_Design_Spec.pdf
-> > http://wiki.laptop.org/go/Hardware_specification_1.5
-> >
-> > Would the .config or dmesg help?
->
-> At this point, why not? When you do send them, please send them as
-> attachments and not inline.
->
-> Also, when you collect the dmesg logs, the following could help:
-> Enable the existing dev_dbg logs in these functions:
-> device_link_add()
-> device_links_check_suppliers()
->
-> And add the following log to fwnode_link_add():
-> +++ b/drivers/base/core.c
-> @@ -87,6 +87,8 @@ int fwnode_link_add(struct fwnode_handle *con,
-> struct fwnode_handle *sup)
->                 goto out;
->         }
->
-> +       pr_info("Link fwnode %pfwP as a consumer of fwnode %pfwP\n", con, sup);
-> +
+* Keep old config "CONFIG_DRM_PANEL_SIMPLE" but it now only means
+enable the panel-simple (non-eDP) driver.
+* Anyone who wants eDP panels must opt-in to "CONFIG_DRM_PANEL_EDP"
+* Update all configs in mainline; any out-of mainline configs must
+figure this out themselves.
 
-Please add something like this that can be enabled easily with dynamic debug.
+Pros:
+* no long term baggage
 
-Rob
+Cons:
+* patch upstream is a bit of "churn"
+* anyone with downstream config will have to figure out what happened.
 
-[1] https://pastebin.com/um0kAZym
+==
+
+Option 2: kick the can down the road + accept cruft
+
+* Keep old config "CONFIG_DRM_PANEL_SIMPLE" and it means enable the
+panel-simple (non-eDP) driver.
+* Anyone with "CONFIG_DRM_PANEL_SIMPLE" is opted in by default to
+"CONFIG_DRM_PANEL_EDP"
+
+AKA:
+config DRM_PANEL_EDP
+  default DRM_PANEL_SIMPLE
+
+Pros:
+* no config patches needed upstream at all and everything just works!
+
+Cons:
+* people are opted in to extra cruft by default and need to know to turn it off.
+* unclear if we can change the default without the same problems.
+
+==
+
+Option 3: try to be clever
+
+* Add _two_ new configs. CONFIG_DRM_PANEL_SIMPLE_V2 and CONFIG_DRM_PANEL_EDP.
+* Old config "CONFIG_DRM_PANEL_SIMPLE" gets marked as "deprecated".
+* Both new configs have "default CONFIG_DRM_PANEL_SIMPLE"
+
+Now anyone old will magically get both the new config options by
+default. Anyone looking at this in the future _won't_ set the
+deprecated CONFIG_DRM_PANEL_SIMPLE but will instead choose if they
+want either the eDP or "simple" driver.
+
+Pros:
+* No long term baggage.
+* Everyone is transitioned automatically by default with no cruft patches.
+
+Cons:
+* I can't think of a better name than "CONFIG_DRM_PANEL_SIMPLE_V2" and
+that name is ugly.
+
+==
+
+Option 4: shave a yak
+
+When thinking about this I came up with a clever idea of stashing the
+kernel version in a defconfig when it's generated. Then you could do
+something like:
+
+config DRM_PANEL_EDP
+  default DRM_PANEL_SIMPLE if DEFCONFIG_GENERATED_AT <= 0x00050f00
+
+That feels like a good idea to me but who knows what others would
+think. In general I think this series already shaves enough yaks. This
+isn't a new problem we're trying to solve so it seems like we should
+pick one of the options above.
+
+==
+
+Unless I get an explicit NAK from someone like Olof or Arnd or I hear
+that everyone loves Option #3 I'll probably just stick with the
+existing approach since:
+
+* Olof's wording didn't make it sound like a strong objection.
+
+* From git history it looks as if config patches don't necessarily
+land through the SoC tree and thus I'd by default follow the
+suggestions of the DRM folks. Andrzej suggested going with the
+existing approach as long as I changed the symbol names and re-ordered
+the patches.
+
+
+Please yell if anything above sounds wrong! I'll probably try to send
+out a new version tomorrow or the next day, but I won't land it right
+away to give people time to yell.
+
+
+-Doug
