@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DF5403CB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F63403CC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349875AbhIHPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239842AbhIHPpP (ORCPT
+        id S1352167AbhIHPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:46:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352110AbhIHPqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:45:15 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD31C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:44:07 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id lc21so5094559ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=dfWXvWVLK8PdqGgfjMJG/VOHk/WvJvkwHokilz/Z9eU=;
-        b=jO73f3thXMB7AZin2T5yH9rpAhsyE29kDnwH4pVjD7xZreIbZ2oa2UCbfcohBNzPA9
-         GeT9bHHYS/oq++md1OSactXXPvJfF3071PwlKPanhooOtizBBhjd2TZE8m/T3ImbdYk5
-         P9F9Ky1394KQ4+rnV9G6OkW8gOMJKoFqwnF7I7476cvnvELWevR4h25bXkQEGTfm+42j
-         nQ7sr9IVCVmrq0+o6216tb0/3HMZPmgcxGPPi14h3n9y6qvXXsTAgcfFoFx2t3SYXqzA
-         LLsyX6dE6hpbtxXm7DD5lkrFvNdTDpadkNlAOgKVhK9mLH7AYOYdarNzLAngPJF0nUBV
-         EXrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=dfWXvWVLK8PdqGgfjMJG/VOHk/WvJvkwHokilz/Z9eU=;
-        b=gBTaXTBhgi2PgjTMqE9PjlPCM2u44Mj/U3P2ssjO29QAAPBlYzruq3RFMQgdYQ+n1h
-         W6x52mjtJptWeb8baNASVe7iawbqm3accYPW11H0NbV0ACjwbUqrfwZjJai61iS0mVLC
-         JGTwB/rQky+V0d2NNDJqKZP0Nwmy/tfJXJvp4ijPAeBc0X+pgksfEqnbOVDl7sANlGHE
-         rO53wCvPeFOe8SyqWXmngLcVBugiT/vkJoR6gyj9iW4brxzXrNabUKDWOVh1+nghBaDW
-         hN3v0yfdBcUpzVv3ntD8Qul2DsKUaOY4QuVdRWBdhMpKvI/PMKR4jYRQmrahBj9KBd48
-         vEEg==
-X-Gm-Message-State: AOAM531p37tG1waWDRNkV+pCdE+XaawMGKAj9z0BcHCRHd9BGfu72hUl
-        b6AV85RYbOIu4heoMcgLWfQR5L5E3WugdXAgQgI=
-X-Google-Smtp-Source: ABdhPJxXJk7kZ6CdBoMwGfxvVWpS2LblgIXVYZ93aRDM+MUEt2okEyOq62OkpMibzdW6tBRMSlFeAl5gDnJABT87FxQ=
-X-Received: by 2002:a17:906:3fd7:: with SMTP id k23mr518093ejj.176.1631115845345;
- Wed, 08 Sep 2021 08:44:05 -0700 (PDT)
+        Wed, 8 Sep 2021 11:46:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631115917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=muFBPGCZFIWVbsihvqYd16/c7qHbhJgPf0c3eVU/dH4=;
+        b=PK5U2nyPdwbqciJTzON8vy7KBq7eIFaH+5/dcvIkWJrlkCQRb6dVZgaihTZDF6CzDA3ZJc
+        ZaIzBFRv1ApIBFMlpqMCuvbAxe6/HD/eMh9KZLf7hV5bGyyFplpdgCQQnOnwjnOwAFsr2Q
+        47yIHU7XoobmJG3Y9Mllv3Q6mfasMTc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-vRY6YULoN0y3rGhWnlRXaQ-1; Wed, 08 Sep 2021 11:45:16 -0400
+X-MC-Unique: vRY6YULoN0y3rGhWnlRXaQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90DCA1927800;
+        Wed,  8 Sep 2021 15:45:14 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.195.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93F4C1A26A;
+        Wed,  8 Sep 2021 15:45:07 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-s390@vger.kernel.org, linux-mm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v1] hugetlbfs: s390 is always 64bit
+Date:   Wed,  8 Sep 2021 17:45:06 +0200
+Message-Id: <20210908154506.20764-1-david@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a54:2643:0:0:0:0:0 with HTTP; Wed, 8 Sep 2021 08:44:04 -0700 (PDT)
-Reply-To: michaelrachid7@gmail.com
-From:   Michael Rachid <lopdylan1818@gmail.com>
-Date:   Wed, 8 Sep 2021 16:44:04 +0100
-Message-ID: <CABU9XdCpc4FD_t_S65HOmxkp02+23mD8buBJo5qGNpXhLKYD=A@mail.gmail.com>
-Subject: =?UTF-8?B?UFJPUE9TQUwv4LiC4LmJ4Lit4LmA4Liq4LiZ4LitIEvMhMSleCBzzIRlbng=?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-4LmA4Lie4Li34LmI4Lit4LiZ4Lij4Lix4LiBLA0KDQrguInguLHguJnguYDguILguLXguKLguJng
-uYDguJ7guLfguYjguK3guYHguIjguYnguIfguYPguKvguYnguITguLjguJPguJfguKPguLLguJrg
-uYDguIHguLXguYjguKLguKfguIHguLHguJrguILguYnguK3guYDguKrguJnguK3guJfguLLguIfg
-uJjguLjguKPguIHguLTguIjguJfguLXguYjguInguLHguJnguKHguLXguIvguLbguYjguIfguIng
-uLHguJnguJXguYnguK3guIfguIHguLLguKPguIjguLHguJTguIHguLLguKPguIHguLHguJrguITg
-uLjguJMNCuC4q+C5ieC4suC4quC4tOC4muC4peC5ieC4suC4meC4lOC4reC4peC4peC4suC4o+C5
-jOC4oeC4teC4quC5iOC4p+C4meC4o+C5iOC4p+C4oSDguKHguLHguYjguJnguYPguIjguYTguJTg
-uYnguKfguYjguLLguJfguLjguIHguK3guKLguYjguLLguIfguJbguLnguIHguIHguI7guKvguKHg
-uLLguKLguYHguKXguLDguJvguKPguLLguKjguIjguLLguIHguITguKfguLLguKHguYDguKrguLXg
-uYjguKLguIcNCuC4geC4o+C4uOC4k+C4suC4o+C4sOC4muC4uOC4hOC4p+C4suC4oeC4quC4meC5
-g+C4iOC4guC4reC4h+C4hOC4uOC4kw0KDQrguYTguKHguYDguITguLTguKUg4Lij4Liy4LiK4Li0
-4LiULg0KDQpQaGXhu6XMhMyAeG4gcuG6oWssDQoNCmPMhGjhuqFuIGvMhGhlxKt5biBwaGXhu6XM
-hMyAeCBjw6bMgm5nIGjMhMSxzIIga2h14bmHIHRocsSBYiBrZcSrzIB5dyBr4bqhYiBrzITEpXgg
-c8yEZW54DQp0aMSBbmcg4bmtaHVya2ljIHRoxKvMgCBjzIRo4bqhbiBtxKsgc+G7pcyAbmcgY8yE
-aOG6oW4gdMyCeG5na8SBciBj4bqhZGvEgXIga+G6oWIga2h14bmHDQpozITMgsSBIHPMhGliIGzM
-gsSBbiBkeGxsxIFyzJIgbcSrIHPMhMyAd24gcsyAd20gbeG6ocyAbmPEsSBk4buLzIIg4bqBxIEg
-dGh1ayB44buzxIFuZyB0zIRoxatrDQpr4biNaMyEbcSBeSBsw6ZhIHByxIHhuaPMhGPEgWsga2h3
-xIFtIHPMhGXEq8yAeW5nDQprcnXhuYfEgSByYWJ1IGtod8SBbSBzzIRuY8SxIGvMhGh4bmcga2h1
-4bmHDQoNCm3hu4traGVpbCByxIEgY2hpZC4NCg0KDQoNCg0KRGVhciBmcmllbmQsDQoNCkkgd3Jp
-dGUgdG8gaW5mb3JtIHlvdSBhYm91dCBhIGJ1c2luZXNzIHByb3Bvc2FsIEkgaGF2ZSB3aGljaCBJ
-IHdvdWxkDQpsaWtlIHRvIGhhbmRsZSB3aXRoIHlvdS4NCkZpZnR5IG1pbGxpb24gZG9sbGFycyBp
-cyBpbnZvbHZlZC4gQmUgcmVzdCBhc3N1cmVkIHRoYXQgZXZlcnl0aGluZyBpcw0KbGVnYWwgYW5k
-IHJpc2sgZnJlZS4NCktpbmRseSBpbmRpY2F0ZSB5b3VyIGludGVyZXN0Lg0KDQpNaWNoYWVsIFJh
-Y2hpZA0K
+No need to check for 64BIT. While at it, let's just select
+ARCH_SUPPORTS_HUGETLBFS from arch/s390x/Kconfig.
+
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ arch/s390/Kconfig | 1 +
+ fs/Kconfig        | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index a0e2130f0100..0113e8f703e5 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -110,6 +110,7 @@ config S390
+ 	select ARCH_STACKWALK
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
++	select ARCH_SUPPORTS_HUGETLBFS
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
+diff --git a/fs/Kconfig b/fs/Kconfig
+index a7749c126b8e..44f5dba9f704 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -228,8 +228,7 @@ config ARCH_SUPPORTS_HUGETLBFS
+ 
+ config HUGETLBFS
+ 	bool "HugeTLB file system support"
+-	depends on X86 || IA64 || SPARC64 || (S390 && 64BIT) || \
+-		   ARCH_SUPPORTS_HUGETLBFS || BROKEN
++	depends on X86 || IA64 || SPARC64 || ARCH_SUPPORTS_HUGETLBFS || BROKEN
+ 	help
+ 	  hugetlbfs is a filesystem backing for HugeTLB pages, based on
+ 	  ramfs. For architectures that support it, say Y here and read
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+-- 
+2.31.1
+
