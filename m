@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EC9403E41
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B3D403E43
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352429AbhIHRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhIHRRz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:17:55 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9C9C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:16:46 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id n24so4230737ion.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wXplQMubjcd6fCTPFQofW1bbtwJw+knTkqPSzTUItas=;
-        b=E/8T+sVaLCWx1hbAmMySx72lTe77R2eEaA5yZQMBxdWe+SS5W9ydqZ4BBpH4BqpJ1g
-         5G8lncyz+I+uiGoXEcLL6IFbYIaSPzeHJDwxV4VH5CS1WqDoiemXe+95Vi+LwXeZNzUP
-         xG7p+SZJeQ2la/u7TPBbqtdlAW5PNv2mJd+qg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wXplQMubjcd6fCTPFQofW1bbtwJw+knTkqPSzTUItas=;
-        b=SOU3iB7BJriIi2NkkReJU6UfgHTWgVeGlhSFu4ybbvdZitQ5SajKHRnSxO0BYCojXE
-         NunULUg7ofA3X0JE1svMiJWTjyx++islroKGHnBXHWng88NdetdNX8yJbxjwAKQFzwxB
-         PB9l77MqEuMcptI4ztiyJgfazbEkKkKvioQT6ofd1v3bwzdsbmYbKrQNQr1s9AwdrMnK
-         4fzCOPy1BZXQwlhu4jjUPYTrXw5bSDxDVkIhgtwddHPJukFy8Lx82MZd9/rggE400HMQ
-         LuhM0kGEXgoSSGGRR6/aBpvUmAJB9R0CLV+5aN5+/8+9aXd0fbSbleC0R3axFEPCzI+u
-         3Mmw==
-X-Gm-Message-State: AOAM532JXeeP99iCvTe7da49CuBNviD/Vh49gUn3Xu0MhJ3uj0QWISQ4
-        YDeEq2qWcu0id2Qxqs8Ik6M/lQ==
-X-Google-Smtp-Source: ABdhPJw+fLIAgN6eXO/bn5p+o6ATA+ketYOj97BdB6Xy/+hUTMbGPzl+dajyYMJrnyELyJoR7Ov9Ng==
-X-Received: by 2002:a6b:be02:: with SMTP id o2mr756764iof.103.1631121406277;
-        Wed, 08 Sep 2021 10:16:46 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m13sm1314633ilh.43.2021.09.08.10.16.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 10:16:45 -0700 (PDT)
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
- <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
-Date:   Wed, 8 Sep 2021 11:16:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1352442AbhIHRS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:18:58 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:59317 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhIHRS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:18:57 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 188HHQGV4133488
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Wed, 8 Sep 2021 10:17:37 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 188HHQGV4133488
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631121457;
+        bh=+c97iHdGu2Ow8GnHPTGKXxAd8Rj1up2lNHoffmQQRHg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Kh9NjNB5WYTcSaV/cpFT7ZNRJfYHo2m1z2AoLCJbHfiLWZAAfAhwJKeghyIbXSpwC
+         JvPjrrUkNc7q6BUd3YNLgCSU8dmQWuVnTpL4sRDf+2FWbf1ENHdFRCQWRwc16d5Jz2
+         Fn+YcDF1MnaJKL7qbzdTbhJTyOzY26zL2cxDK4U+r/xFwzC0OAdHAF2Tour8NKSR1k
+         U04KjQ8Nunc6gep2LLU5N/nDOB2AwziuwgvbqmtoD5G1Mupn/yOwpKu+C67PM/1sAi
+         qKqj7Y2a8sbXVyXKZMt/JoqCoBLe/XpELqOC5g5CWjlKyRgz5QYjelrgLaWF21yS78
+         kPlsWN1jplZoQ==
+From:   "H. Peter Anvin (Intel)" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Subject: [PATCH] x86/asm: pessimize the pre-initialization case in static_cpu_has()
+Date:   Wed,  8 Sep 2021 10:17:16 -0700
+Message-Id: <20210908171716.3340120-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 11:05 AM, Arnd Bergmann wrote:
-> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->> On 9/7/21 5:14 PM, Linus Torvalds wrote:
->>> The KUNIT macros create all these individually reasonably small
->>> initialized structures on stack, and when you have more than a small
->>> handful of them the KUNIT infrastructure just makes the stack space
->>> explode. Sometimes the compiler will be able to re-use the stack
->>> slots, but it seems to be an iffy proposition to depend on it - it
->>> seems to be a combination of luck and various config options.
->>>
->>
->> I have been concerned about these macros creeping in for a while.
->> I will take a closer look and work with Brendan to come with a plan
->> to address it.
-> 
-> I've previously sent patches to turn off the structleak plugin for
-> any kunit test file to work around this, but only a few of those patches
-> got merged and new files have been added since. It would
-> definitely help to come up with a proper fix, but my structleak-disable
-> hack should be sufficient as a quick fix.
-> 
+gcc will sometimes manifest the address of boot_cpu_data in a register
+as part of constant propagation. When multiple static_cpu_has() are
+used this may foul the mainline code with a register load which will
+only be used on the fallback path, which is unused after
+initialization.
 
-Looks like these are RFC patches and the discussion went cold. Let's pick
-this back up and we can make progress.
+Explicitly force gcc to use immediate (rip-relative) addressing for
+the fallback path, thus removing any possible register use from
+static_cpu_has().
 
-https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+---
+ arch/x86/include/asm/cpufeature.h | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-thanks,
--- Shuah
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 16a51e7288d5..ff18906b60d8 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -173,20 +173,25 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
+  * means that the boot_cpu_has() variant is already fast enough for the
+  * majority of cases and you should stick to using it as it is generally
+  * only two instructions: a RIP-relative MOV and a TEST.
++ *
++ * Do not use an "m" constraint for [cap_byte] here: gcc doesn't know
++ * that this is only used on a fallback path and will sometimes cause
++ * it to manifest the address of boot_cpu_data in a register, fouling
++ * the mainline (post-initialization) code.
+  */
+ static __always_inline bool _static_cpu_has(u16 bit)
+ {
+ 	asm_volatile_goto(
+ 		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
+-		".section .altinstr_aux,\"ax\"\n"
++		".pushsection .altinstr_aux,\"ax\"\n"
+ 		"6:\n"
+-		" testb %[bitnum],%[cap_byte]\n"
++		" testb %[bitnum],%P[cap_byte]\n"
+ 		" jnz %l[t_yes]\n"
+ 		" jmp %l[t_no]\n"
+-		".previous\n"
++		".popsection\n"
+ 		 : : [feature]  "i" (bit),
+ 		     [bitnum]   "i" (1 << (bit & 7)),
+-		     [cap_byte] "m" (((const char *)boot_cpu_data.x86_capability)[bit >> 3])
++		     [cap_byte] "i" (&((const char *)boot_cpu_data.x86_capability)[bit >> 3])
+ 		 : : t_yes, t_no);
+ t_yes:
+ 	return true;
+-- 
+2.31.1
 
