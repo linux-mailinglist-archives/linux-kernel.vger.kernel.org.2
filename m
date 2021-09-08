@@ -2,78 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CCB403A06
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D13403A11
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244507AbhIHMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351767AbhIHMjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3F4661155;
-        Wed,  8 Sep 2021 12:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631104691;
-        bh=HKHLhO5DiFefsqPRea4B33ydG4yRpWbGcqAZx8DdXWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lyv4qUrXLCQpsimKFyd1TDSY9J+Wa5o10PbRnS+YvkgUWwWmKzdArrPnHrVdu72Dl
-         36vvOLYz5M5Lcmr2jotP4r4HuBYRSl83ydTK+1S6X3Ay6QVJYCZezcLxGt/pN015VK
-         1O201zSXdUrydzbb24kYaWrAjSIeWzzqhMdNgfMJoAQ33SXanylHMyrJMS3TIjZ1pi
-         BRELMK6//aPmCZivp3oShQyHnN1mdSU6HEgy5lkRYYlVEhYU5+IGWr824VbLCnH5oT
-         HVBGzRi459iP/sEQxvsrByTmnMtMUYEU0/cRf88GpXqZBt4cfGGe4OG5Iaug2iZEVV
-         zCJEHSiggbLwg==
-Date:   Wed, 8 Sep 2021 13:37:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 03/10] spi: Add flag for no TX after a RX in the same
- Chip Select
-Message-ID: <20210908123734.GF4112@sirena.org.uk>
-References: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
- <20210908113450.788452-4-tanureal@opensource.cirrus.com>
+        id S1344955AbhIHMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234005AbhIHMnl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 08:43:41 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E862CC061575;
+        Wed,  8 Sep 2021 05:42:33 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i3-20020a056830210300b0051af5666070so2757157otc.4;
+        Wed, 08 Sep 2021 05:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=v3tm0ULGt1MLK9wjIrtCbRkaasSMHbIa3xYVDcCKc4g=;
+        b=DDn6Ldv2rEO//8YdRF+nEg4zSXuj/3qhUGw+UYAW+VPxQdERfT921hOkCGUhepN2Zz
+         XuOriVj5nVbM0seJa++BtfRuEdujt/U9WqIC8i1G5usKQImpVLW15t2/AJeDUx7WZx0W
+         OgJ0j+P+b6rjNLxq9QZRBrET6HJ2XnB2bYyZizWCOw4vVBHuhS5xawbdE0zqtjqiyypu
+         YieurUNJtPx1uP4TiYj7QDmQ1mEywY3MZNhLBscvvQ2qyQlLbViMXuu9iMXgZq4b0tvc
+         qAAdEVu/+IuiiN8dhuj1S+z//9JJgmCoz2lnMOBvmtK48lBWXlG5ZVlr0RfLB+xXV4lu
+         tWqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v3tm0ULGt1MLK9wjIrtCbRkaasSMHbIa3xYVDcCKc4g=;
+        b=qkxFFttqG0qIDqmhyn3IWZ5eBazeUTTlcsaQP+GhEAqhRpxL3nULiI4entfF2+NVZi
+         J2JE7Qy9EcVxP4YdkgmFCVxYZYraeY13CQ95tjIc6n+NidBf+9WNziHvV4ygONloPE7s
+         hRhwH0ryYe4ofWNc7+bOqgJjH4hILs2P1gLjdha7C7V4pAznVjmvDdNSrvZ4YbAMVzn0
+         gSN/IoPfN+LHRvAfP0ihsViOSvRt1cSoITxcv+uoNiVmOCCNQt24XriNMKTvcF6DtOGc
+         IsGl5ua/K853BK44BbmYRGdo5Rl/5MeR1xYKdQXYaIwMYkWv2iLbUVQcplWaIQ3osbzM
+         q6sQ==
+X-Gm-Message-State: AOAM5312ovT8bZe5zeq/E5k80Ndl9XLU5U1cUbeqqWonA04XJpSCILZL
+        QTeRqXBqEBXrrbnUojz2z3LCFvbuTAY=
+X-Google-Smtp-Source: ABdhPJwx+37c/LXJFD/2Tw0Og5RHHbHSsUm9rLiJxlWFdm/IxOBaDB8jcNA9ZreyV1KhVzC45Ut65w==
+X-Received: by 2002:a9d:527:: with SMTP id 36mr2890059otw.363.1631104953315;
+        Wed, 08 Sep 2021 05:42:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l4sm414519oth.4.2021.09.08.05.42.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 05:42:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+ <20210908042838.GA2585993@roeck-us.net>
+ <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
+ <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
+ <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com>
+ <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <23b3a9ab-7205-9f4e-9425-17506aec3170@roeck-us.net>
+Date:   Wed, 8 Sep 2021 05:42:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gMR3gsNFwZpnI/Ts"
-Content-Disposition: inline
-In-Reply-To: <20210908113450.788452-4-tanureal@opensource.cirrus.com>
-X-Cookie: Should I do my BOBBIE VINTON medley?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/8/21 2:50 AM, Arnd Bergmann wrote:
+> On Wed, Sep 8, 2021 at 9:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>>> On 9/7/21 9:48 PM, Al Viro wrote:
+>>>> On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
+>>>>>       memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
+>>>>>
+>>>>> but that just seems weird. Is there a better solution ?
+>>>>
+>>>> (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
+>>>> ioremap(), rather than casting explicit constants?
+>>>
+>>> Typecasts or even assigning the address to a variable does not help.
+>>> The sanitizer function can not be static either.
+>>
+>> So it can only be fixed by obfuscating the constant address in a
+>> chain of out-of-line functions...
+>> How is this compiler to be used for bare-metal programming?
+> 
+> I reported this as a gcc bug when I first saw it back in March:
+> 
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
+> 
+> Martin Sebor suggested marking the pointer as 'volatile' as a workaround,
+> which is probably fine for bare-metal programming, but I would consider
+> that bad style for the kernel boot arguments. The RELOC_HIDE trick is probably
+> fine here, as there are only a couple of instances, and for the network
+> driver, using volatile is probably appropriate as well.
+> 
+> I still hope this can be fixed in a future gcc-11.x release. Maybe we should
+> add further instances of the problem on the gcc bug to boost the priority?
+> 
+>>> I don't know the hardware, so I can not answer the ioremap() question.
+>>
+>> Yes it should.  But this driver dates back to 2.1.110, when only
+>> half of the architectures already had ioremap().
+> 
+> How does  mvme16x even create the mapping? Is this a virtual address
+> that is hardwired to the bus or do you have a static mapping somewhere?
+> I see two other drivers accessing the nvram here
+> 
+> arch/m68k/mvme16x/config.c:static MK48T08ptr_t volatile rtc =
+> (MK48T08ptr_t)MVME_RTC_BASE;
 
---gMR3gsNFwZpnI/Ts
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Is that even correct ? I am always shaky with qualifiers, but doesn't
+that mean that the pointer is volatile, not the object it points to ?
 
-On Wed, Sep 08, 2021 at 12:34:44PM +0100, Lucas Tanure wrote:
-> Some controllers can't write to the bus after a read without
-> releasing the chip select, so add flag and a check in spi core
+> arch/m68k/mvme16x/rtc.c:        volatile MK48T08ptr_t rtc =
+> (MK48T08ptr_t)MVME_RTC_BASE;
+> 
+> The same trick should work here, just create a local variable with a
+> volatile pointer and read from that.
+> 
 
-Nothing you've added ever reads this flag and I'm not sure what anything
-would be able to constructively do with it so why add the flag?  I don't
-understand what the use case is.
+I had tried that; it doesn't work because then the compiler complains
+that the 'volatile' qualifier is discarded when passing the argument.
 
---gMR3gsNFwZpnI/Ts
-Content-Type: application/pgp-signature; name="signature.asc"
+drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+drivers/net/ethernet/i825xx/82596.c:1147:34: error:
+	passing argument 2 of '__builtin_memcpy' discards 'volatile' qualifier from pointer target type
 
------BEGIN PGP SIGNATURE-----
+Oddly enough, a memcpy on the 'rtc' variable doesn't fail,
+neither with nor without volatile. Something else is going on.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE4ro0ACgkQJNaLcl1U
-h9DOvQf/clMHHKqPoQr5y7MSb07txZsOnUjbvRf5oUZMsxb6Q3P2g3/fAz4thzpE
-L2w+B9OD3BMO4gW63I1iUI2GmN4gF0EpDv2zSPeGy28FHkTP/Ygo/lQFUxbVVlhw
-ep0pN/syPsQ9DoHGIxxv90usLPhq0bFxsSvG6IzFOjPT9NzO8PsyWi4PLHs6+Dw0
-ktPSzH3mICPDui45wRw/jWxpLOJu+DU4UGiD+G7tXOcSl2D1MOZ3OFmKen3yAEw9
-rIgC6AzUbtQPi5aH1ccCnnIt3k4H2KDLyXdTHsV+I71z/3vGZKGr9jab2z644Dkj
-nno3DG+ygyAgIHEUcMs8nYCYoc8r4Q==
-=Bkgx
------END PGP SIGNATURE-----
-
---gMR3gsNFwZpnI/Ts--
+Guenter
