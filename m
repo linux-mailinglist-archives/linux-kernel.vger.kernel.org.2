@@ -2,87 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D774037CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D98B4037D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348845AbhIHKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:25:22 -0400
-Received: from mother.openwall.net ([195.42.179.200]:45538 "HELO
-        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1348771AbhIHKZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:25:21 -0400
-Received: (qmail 19587 invoked from network); 8 Sep 2021 10:24:11 -0000
-Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
-  by localhost with SMTP; 8 Sep 2021 10:24:11 -0000
-Received: by pvt.openwall.com (Postfix, from userid 503)
-        id 9905AAB88C; Wed,  8 Sep 2021 12:24:00 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 12:24:00 +0200
-From:   Solar Designer <solar@openwall.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     CGEL <cgel.zte@gmail.com>, peterz@infradead.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH] set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds
-Message-ID: <20210908102400.GA22799@openwall.com>
-References: <20210728072629.530435-1-ran.xiaokai@zte.com.cn> <20210728115930.2lzs57h4hvnqipue@wittgenstein> <20210730082329.GA544980@www> <20210803100354.GA607722@www> <20210803140702.f3rdnka3e2x6vj4r@wittgenstein> <20210907213042.GA22626@openwall.com>
-Mime-Version: 1.0
+        id S1348855AbhIHK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234958AbhIHK0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:26:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5BE56113A;
+        Wed,  8 Sep 2021 10:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631096739;
+        bh=NiCfI13R4LrvaT+owBE7g+4UJWIO/e9R5b5MoX02Png=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gas+Gt4RivH1IpU96+UkUeQZJJ74+BIM5F6tA36+SvsipUXg44ungmeVaSPR0N37d
+         WHog008RdrlsReaMXEyNzOUhjPEUew0gFSLtz6EsR/p8sv6g5kzRD3Tmm2S85M+WGz
+         gRbT1y/EmznblAlZN9EAYaX6UW8vsBOtEEZGp4H0=
+Date:   Wed, 8 Sep 2021 12:25:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Subject: Re: [PATCH] /dev/mem: nowait zero/null ops
+Message-ID: <YTiPoKc9GiG52DNd@kroah.com>
+References: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210907213042.GA22626@openwall.com>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's a further observation:
+On Wed, Sep 08, 2021 at 11:06:51AM +0100, Pavel Begunkov wrote:
+> Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
+> advertised as FMODE_NOWAIT. This helps subsystems like io_uring to use
+> it more effectively. Set FMODE_NOWAIT for /dev/null as well, it never
+> waits and therefore trivially meets the criteria.
 
-On Tue, Sep 07, 2021 at 11:30:42PM +0200, Solar Designer wrote:
-> As I understand, the resulting commit:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2863643fb8b92291a7e97ba46e342f1163595fa8
-> 
-> broke RLIMIT_NPROC support for Apache httpd suexec and likely similar.
+I do not understand, why would io_uring need to use /dev/zero and how is
+this going to help anything?
 
-The commit above tries to make things consistent by duplicating the
-check from copy_process() also in set_user().  However, the check isn't
-actually the same because set_user(new) is called _before_
-security_task_fix_setuid(new, ...), whereas in the described detour via
-fork() its check would be reached already as the new user.  So those
-capable() calls just look the same, but are actually very different, and
-that's the problem.  My current understanding is the commit actually
-increases inconsistency.
+What workload does this help with?
 
-The commit message starts with:
+thanks,
 
-"in copy_process(): non root users but with capability CAP_SYS_RESOURCE
-or CAP_SYS_ADMIN will clean PF_NPROC_EXCEEDED flag even
-rlimit(RLIMIT_NPROC) exceeds. Add the same capability check logic here."
-
-It talks about the obscure case of "non root users but with capability".
-However, the capable() calls added by the commit actually also apply to
-root, such as in suexec.
-
-> Anyway, now I suggest that 2863643fb8b92291a7e97ba46e342f1163595fa8 be
-> reverted, and if there's any reason to make any change (what reason?
-> mere consistency or any real issue?) then I suggest that the flag
-> resetting on fork() be made conditional.  Something like this:
-> 
-> 	if (atomic_read(&p->real_cred->user->processes) >=
-> 			task_rlimit(p, RLIMIT_NPROC)) {
-> 		if (p->real_cred->user != INIT_USER &&
-> 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
-> 			goto bad_fork_free;
-> -	}
-> -	current->flags &= ~PF_NPROC_EXCEEDED;
-> +	} else
-> +		current->flags &= ~PF_NPROC_EXCEEDED;
-
-Alternatively, we could postpone the set_user() calls until we're
-running with the new user's capabilities, but that's an invasive change
-that's likely to create its own issues.  So my suggestion above holds.
-
-Alexander
+greg k-h
