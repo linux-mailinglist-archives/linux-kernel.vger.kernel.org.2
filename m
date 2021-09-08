@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160244032EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FB44032F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239994AbhIHDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        id S1344423AbhIHDf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhIHDbl (ORCPT
+        with ESMTP id S233940AbhIHDf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:31:41 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3377C061575;
-        Tue,  7 Sep 2021 20:30:33 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id oc9so655955pjb.4;
-        Tue, 07 Sep 2021 20:30:33 -0700 (PDT)
+        Tue, 7 Sep 2021 23:35:57 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8C9C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:34:50 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id x10-20020a056830408a00b004f26cead745so1141100ott.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YCmgiIqK/f2uj+2FIB5ZoM8EM/HSqIdCmUJnhQwVgP4=;
-        b=dc9bzny1WKO1FGe6huTtpTsHefn+LffqFdPXd+y+4gPjwBzud1kpZ5EhiyAEpYrN/H
-         QhI4DSxGtfB7pncHLAAHSOveW8GqDwwrhhHu4VAOdyznAyKYfG84FLJ5mI9xCXY2UBmx
-         lg169RpruRjntuPFhDy/PF7n0qZmtEcuoUWQCYSgh1a9d1sh4Sjl7tdv16M9Hft2CMmV
-         mR/Q9u9ERoCuTNyN8fhVC++xgTt0aGbaSGbC0aD9xcxmFKa0N9fAnPpARPH5U3WQ5AjH
-         xbeXqzLxh18Zup4wtDo2V+i/gTx5S1LTGhSMXSHeWZO4O+4ng75XAINJvMXT6RpQfz28
-         qXpw==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=L3P6E94KgYTggNi34VPrDx8IIAdEhyLCWWiN3zBY9Js=;
+        b=JlNtynvnkpQ9cbDenz1tsa/nlyMA0maw6rFk81Gw0aVDGffXlQTTa+6b7htWTRdSK+
+         NEVM+wK8g5PbVzZzPOq81FZZ98qHdAbLYXSFQBwE3yxL0ns2D4V+OZwja1z77ctRXV/u
+         gpPA05WutWMCzrtTk6LL0g8uHqZ9KAJG7Ghv8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YCmgiIqK/f2uj+2FIB5ZoM8EM/HSqIdCmUJnhQwVgP4=;
-        b=jLlUD/Hqixw7LkV+2GHQaDK8e47+QbuJTNDssKCXaeHUVi1JDXJmM3+NfPT+MaIU7r
-         IQHnnxVMc9U5OHGBX2VryevvV2a/ui9N4VtofK7ZdnX1K/NlpPMSow/E/q8CebyaIeag
-         nLYgJbryRvtX4hFvuFsT5D67qosvtA5tCFmCt8NRCDnZX+K4YhaLV6P/fdOQdIdUEl+M
-         UkYeoTHqBefLxmtZSy90vj4+LblZ6NBLIFdznAZP9tZlMEu2d5QiJAAN1n0uc38TeNJk
-         Lg4tBLqKuEVFBLPIW8BznO07xcIwgv7Nb3wjBEnGGRm8TMAsygvELmcxQS9yGv6fBCxe
-         xnQQ==
-X-Gm-Message-State: AOAM5313kBPcff8WsR4em9KF7ct1IeZKKiPYrBBkZWkG+gFnRjORVyZb
-        Uhirmbz3R5MixDv+gWdvVvw=
-X-Google-Smtp-Source: ABdhPJzDt5UczW+E462e0Rsta+z7TRVsEMOa46W64QdwzX81nyylrn7uzqChkR1kefHPcLE507Bn3w==
-X-Received: by 2002:a17:90a:b785:: with SMTP id m5mr1823388pjr.213.1631071833256;
-        Tue, 07 Sep 2021 20:30:33 -0700 (PDT)
-Received: from localhost ([45.76.146.157])
-        by smtp.gmail.com with ESMTPSA id t15sm595283pgi.80.2021.09.07.20.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 20:30:31 -0700 (PDT)
-From:   Kortan <kortanzh@gmail.com>
-To:     nathan@kernel.org, ndesaulniers@google.com
-Cc:     masahiroy@kernel.org, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, Kortan <kortanzh@gmail.com>
-Subject: [PATCH v2] gen_compile_commands: fix missing 'sys' package
-Date:   Wed,  8 Sep 2021 11:28:48 +0800
-Message-Id: <20210908032847.18683-1-kortanzh@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=L3P6E94KgYTggNi34VPrDx8IIAdEhyLCWWiN3zBY9Js=;
+        b=bibzLai5/aF3t1TdTUTO492qjTwGHKc+MCO1azDwKjLgQk0VN0TapeARannZbYvjkU
+         OAESGJHTLtLlrr2qRhxH5DO8N7tlarut/qZUiM5UB3VNf30YNbI4UnH9XkuQCHrXn1dv
+         RjeYTTVytmqWyzLPVPVdKwKZDUmsdTda4YNiFChfqTOu6ZLWpxukn2Oed/mQdtkB5ajS
+         5zB5DHxEziMYVSGTqh92Nj/Zxpj0Jn6ynzD6adwZt24RKD/J8A1PRpIdMrCr02N1odIg
+         khauU9rGkchj/Yp8yT+7rw8YfZ6Ir+7FnKPkA3WPVQpZzgEzDzkTzIJc1vrM6ayH75Lt
+         m7Jg==
+X-Gm-Message-State: AOAM530O1KZ+mqXDRJ6MLhWfkUfE83D58G53MLhxUesBqP503XTAL9WR
+        mnVTX0UJojZeQkc4KiUAPXjRpcHq5LgOp7xq17NulQ==
+X-Google-Smtp-Source: ABdhPJyg6igS7IIqsGysq/0S3geeIlQjSOmbIIyrAPs2dYADUam233q3f/f5Bbz2/xP4NNavIoeMzXqtJhdu5C4/8ws=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr1328000otp.159.1631072089755;
+ Tue, 07 Sep 2021 20:34:49 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 8 Sep 2021 03:34:49 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org> <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 8 Sep 2021 03:34:49 +0000
+Message-ID: <CAE-0n51CCqrbKr9NCkzaK3JxCtJgRKdXTeR4kxnnOK_wNKpP6A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        satya priya <skakit@codeaurora.org>
+Cc:     mka@chromium.org, kgunda@codeaurora.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to import the 'sys' package since the script has called
-sys.exit() method.
+Quoting satya priya (2021-09-06 03:41:07)
+> Add pwm support for PM8350C pmic.
+>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> index e1b75ae..ecdae55 100644
+> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> @@ -29,6 +29,12 @@
+>                         interrupt-controller;
+>                         #interrupt-cells = <2>;
+>                 };
+> +
+> +               pm8350c_pwm4: pwm {
+> +                       compatible = "qcom,pm8350c-pwm";
 
-Signed-off-by: Kortan <kortanzh@gmail.com>
----
-Changes v1 -> v2:
-* Fix commit title.
-* Improve commit message. 
+Shouldn't there be a reg property?
 
- scripts/clang-tools/gen_compile_commands.py | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 0033eedce003..1d1bde1fd45e 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -13,6 +13,7 @@ import logging
- import os
- import re
- import subprocess
-+import sys
- 
- _DEFAULT_OUTPUT = 'compile_commands.json'
- _DEFAULT_LOG_LEVEL = 'WARNING'
--- 
-2.33.0
-
+> +                       #pwm-cells = <2>;
+> +                       status = "okay";
+> +               };
+>         };
+>  };
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
