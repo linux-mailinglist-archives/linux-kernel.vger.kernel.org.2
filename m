@@ -2,196 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3488C403EFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D661D403EF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349996AbhIHSTb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 14:19:31 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:50106 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349587AbhIHSTU (ORCPT
+        id S236549AbhIHSTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349914AbhIHST3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:19:20 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:36066)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mO299-00646x-0B; Wed, 08 Sep 2021 12:18:07 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51806 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mO297-006PT4-LO; Wed, 08 Sep 2021 12:18:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
-        <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
-        <87mtoux1hi.fsf@disp2133>
-        <2715792c-eb10-eeb8-3d49-24486abe953b@csgroup.eu>
-Date:   Wed, 08 Sep 2021 13:17:39 -0500
-In-Reply-To: <2715792c-eb10-eeb8-3d49-24486abe953b@csgroup.eu> (Christophe
-        Leroy's message of "Fri, 3 Sep 2021 10:56:14 +0200")
-Message-ID: <877dfrrkxo.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 8 Sep 2021 14:19:29 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCF9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:18:21 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id t1so3511132pgv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dc8bU3FuTk4waaTc7T6xBFFGAsFlK1NcO7ssuYFs6YY=;
+        b=EQQ8GS8AroJXzU87ZB9buYPTkkZ3DYI19V3O+HgIBO0Upm0ZmVX5XSMZBcP9RRGY4P
+         kB2r+GNl4JIWhqDY6slQyIT9D28hVzvwv20BZPWEZueHRAy8gN1St0EKkH2AQWrEheph
+         mg2v8g2FC1rXz00O+BhgjHw5yBHdyPA7F6uGY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dc8bU3FuTk4waaTc7T6xBFFGAsFlK1NcO7ssuYFs6YY=;
+        b=o2GWQ6ZBdccAnTNalZqDLKjJfZGfhp1j7N8WOT1xPLb+GTal6G8Cdjy4A7OgTfZblQ
+         Zu/P05yIT8NMohoYiQ1bjNaihU5lG6mctS4xBBCZfEEmzD5ty/+sZvBa8bd5LvaUEvhv
+         ivtbfgFnu0H+6ORsxXP4ZEuvvfVrD3zxxf2Zf6VKYjkqkuD67m/kMCJ7m9wM7K29o6QN
+         SBgviNfTb5nC8B2V0nUOxY41m7ni/yh1QdyE0QHM6jT4GF1w4S8gAMDL4zl369NRmqXn
+         DsrR4Xfs4IZy+N+u49co8dSlFeN0L26wztP4SouyXrdQEQHxx9sYNHHfur2aME+zUBp1
+         OO0A==
+X-Gm-Message-State: AOAM533RNnR1O/iUcbdC+hhNVxYX4lHNuoZXv2Wb2VuJGHt6bbpoyGXp
+        qQZYMcqhUvhuavkzjbl2p99uZ7BR5hJetQ==
+X-Google-Smtp-Source: ABdhPJxUNTQZ1PbbukdNQ4H5YtW6c/pagbiOvhCgyhOQlJ7N+YFrhT9emI9RxtA3hdpDf3k3mMRIBg==
+X-Received: by 2002:a62:60c7:0:b0:40a:4bd7:752c with SMTP id u190-20020a6260c7000000b0040a4bd7752cmr5037144pfb.52.1631125101069;
+        Wed, 08 Sep 2021 11:18:21 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:527e:e80d:8e14:9d07])
+        by smtp.gmail.com with ESMTPSA id mq12sm2917584pjb.38.2021.09.08.11.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 11:18:20 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 1/2] drm/bridge: parade-ps8640: Use regmap APIs
+Date:   Wed,  8 Sep 2021 11:18:05 -0700
+Message-Id: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1mO297-006PT4-LO;;;mid=<877dfrrkxo.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19yL/kIwex/zyiK501Jr7g1bR/ayZ/xJWY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
-        XMSubLong,XM_B_SpammyTLD,XM_B_SpammyWords,XM_B_Unicode,XM_B_Unicode3
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4778]
-        *  0.7 XMSubLong Long Subject
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  1.0 XMGappySubj_02 Gappier still
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 XM_B_Unicode3 BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Christophe Leroy <christophe.leroy@csgroup.eu>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 763 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (1.3%), b_tie_ro: 9 (1.2%), parse: 0.97 (0.1%),
-         extract_message_metadata: 16 (2.0%), get_uri_detail_list: 2.6 (0.3%),
-        tests_pri_-1000: 15 (1.9%), tests_pri_-950: 1.24 (0.2%),
-        tests_pri_-900: 1.00 (0.1%), tests_pri_-90: 313 (41.0%), check_bayes:
-        304 (39.9%), b_tokenize: 10 (1.3%), b_tok_get_all: 9 (1.2%),
-        b_comp_prob: 2.6 (0.3%), b_tok_touch_all: 279 (36.6%), b_finish: 1.12
-        (0.1%), tests_pri_0: 390 (51.2%), check_dkim_signature: 0.66 (0.1%),
-        check_dkim_adsp: 3.3 (0.4%), poll_dns_idle: 0.03 (0.0%), tests_pri_10:
-        3.1 (0.4%), tests_pri_500: 10 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+Replace the direct i2c access (i2c_smbus_* functions) with regmap APIs,
+which will simplify the future update on ps8640 driver.
 
-> Le 02/09/2021 à 20:43, Eric W. Biederman a écrit :
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>
->>> In the same spirit as commit fb05121fd6a2 ("signal: Add
->>> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
->>> copy_siginfo_to_user() in order to use it within user access blocks.
->>>
->>> For that, also add an 'unsafe' version of clear_user().
->>
->> Looking at your use cases you need the 32bit compat version of this
->> as well.
->>
->> The 32bit compat version is too complicated to become a macro, so I
->> don't think you can make this work correctly for the 32bit compat case.
->
-> When looking into patch 5/5 that you nacked, I think you missed the fact that we
-> keep using copy_siginfo_to_user32() as it for the 32 bit compat case.
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
 
-I did.  My mistake.
+ drivers/gpu/drm/bridge/parade-ps8640.c | 66 +++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 27 deletions(-)
 
-However that mistake was so easy I think it mirrors the comments others
-have made that this looks like a maintenance hazard.
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 685e9c38b2db..a16725dbf912 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -9,6 +9,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_graph.h>
++#include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <drm/drm_bridge.h>
+@@ -64,12 +65,29 @@ struct ps8640 {
+ 	struct drm_bridge *panel_bridge;
+ 	struct mipi_dsi_device *dsi;
+ 	struct i2c_client *page[MAX_DEVS];
++	struct regmap	*regmap[MAX_DEVS];
+ 	struct regulator_bulk_data supplies[2];
+ 	struct gpio_desc *gpio_reset;
+ 	struct gpio_desc *gpio_powerdown;
+ 	bool powered;
+ };
+ 
++static const struct regmap_range ps8640_volatile_ranges[] = {
++	{ .range_min = 0, .range_max = 0xff },
++};
++
++static const struct regmap_access_table ps8640_volatile_table = {
++	.yes_ranges = ps8640_volatile_ranges,
++	.n_yes_ranges = ARRAY_SIZE(ps8640_volatile_ranges),
++};
++
++static const struct regmap_config ps8640_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.volatile_table = &ps8640_volatile_table,
++	.cache_type = REGCACHE_NONE,
++};
++
+ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+ {
+ 	return container_of(e, struct ps8640, bridge);
+@@ -78,13 +96,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 				     const enum ps8640_vdo_control ctrl)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
+-	u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
++	struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
++	u8 vdo_ctrl_buf[] = {VDO_CTL_ADD, ctrl};
+ 	int ret;
+ 
+-	ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
+-					     sizeof(vdo_ctrl_buf),
+-					     vdo_ctrl_buf);
++	ret = regmap_bulk_write(map, PAGE3_SET_ADD,
++				vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
++
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed to %sable VDO: %d\n",
+ 			  ctrl == ENABLE ? "en" : "dis", ret);
+@@ -96,8 +114,7 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 
+ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE2_TOP_CNTL];
+-	unsigned long timeout;
++	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+ 	int ret, status;
+ 
+ 	if (ps_bridge->powered)
+@@ -121,18 +138,12 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 */
+ 	msleep(200);
+ 
+-	timeout = jiffies + msecs_to_jiffies(200) + 1;
++	ret = regmap_read_poll_timeout(map, PAGE2_GPIO_H, status,
++			status & PS_GPIO9, 20 * 1000, 200 * 1000);
+ 
+-	while (time_is_after_jiffies(timeout)) {
+-		status = i2c_smbus_read_byte_data(client, PAGE2_GPIO_H);
+-		if (status < 0) {
+-			DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", status);
+-			goto err_regulators_disable;
+-		}
+-		if ((status & PS_GPIO9) == PS_GPIO9)
+-			break;
+-
+-		msleep(20);
++	if (ret < 0) {
++		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
++		goto err_regulators_disable;
+ 	}
+ 
+ 	msleep(50);
+@@ -144,22 +155,15 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 * disabled by the manufacturer. Once disabled, all MCS commands are
+ 	 * ignored by the display interface.
+ 	 */
+-	status = i2c_smbus_read_byte_data(client, PAGE2_MCS_EN);
+-	if (status < 0) {
+-		DRM_ERROR("failed read PAGE2_MCS_EN: %d\n", status);
+-		goto err_regulators_disable;
+-	}
+ 
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_MCS_EN,
+-					status & ~MCS_EN);
++	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
+ 		goto err_regulators_disable;
+ 	}
+ 
+ 	/* Switch access edp panel's edid through i2c */
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_I2C_BYPASS,
+-					I2C_BYPASS_EN);
++	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
+ 		goto err_regulators_disable;
+@@ -361,6 +365,10 @@ static int ps8640_probe(struct i2c_client *client)
+ 	ps_bridge->bridge.type = DRM_MODE_CONNECTOR_eDP;
+ 
+ 	ps_bridge->page[PAGE0_DP_CNTL] = client;
++	ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client,
++						&ps8640_regmap_config);
++	if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]))
++		return PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]);
+ 
+ 	for (i = 1; i < ARRAY_SIZE(ps_bridge->page); i++) {
+ 		ps_bridge->page[i] = devm_i2c_new_dummy_device(&client->dev,
+@@ -371,6 +379,10 @@ static int ps8640_probe(struct i2c_client *client)
+ 				client->addr + i);
+ 			return PTR_ERR(ps_bridge->page[i]);
+ 		}
++		ps_bridge->regmap[i] = devm_regmap_init_i2c(ps_bridge->page[i],
++							&ps8640_regmap_config);
++		if (IS_ERR(ps_bridge->regmap))
++			return PTR_ERR(ps_bridge->regmap[i]);
+ 	}
+ 
+ 	i2c_set_clientdata(client, ps_bridge);
+-- 
+2.33.0.153.gba50c8fa24-goog
 
-Is improving the performance of 32bit kernels interesting?
-Is improving the performance of 32bit compat support interesting?
-
-If performance one or either of those cases is interesting it looks like
-we already have copy_siginfo_to_external32 the factor you would need
-to build unsafe_copy_siginfo_to_user32.
-
-So I am not going to say impossible but please make something
-maintainable.  I unified all of the compat 32bit siginfo logic because
-it simply did not get enough love and attention when it was implemented
-per architecture.
-
-In general I think that concern applies to this case as well.  We really
-need an implementation that shares as much burden as possible with other
-architectures.
-
-Eric
-
-
->> Probably-Not-by: "Eric W. Biederman" <ebiederm@xmission.com>
->>
->> Eric
->>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> ---
->>>   include/linux/signal.h  | 15 +++++++++++++++
->>>   include/linux/uaccess.h |  1 +
->>>   kernel/signal.c         |  5 -----
->>>   3 files changed, 16 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/include/linux/signal.h b/include/linux/signal.h
->>> index 3454c7ff0778..659bd43daf10 100644
->>> --- a/include/linux/signal.h
->>> +++ b/include/linux/signal.h
->>> @@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
->>>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
->>>   int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
->>>   +static __always_inline char __user *si_expansion(const siginfo_t __user
->>> *info)
->>> +{
->>> +	return ((char __user *)info) + sizeof(struct kernel_siginfo);
->>> +}
->>> +
->>> +#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
->>> +	siginfo_t __user *__ucs_to = to;				\
->>> +	const kernel_siginfo_t *__ucs_from = from;			\
->>> +	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
->>> +									\
->>> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
->>> +			    sizeof(struct kernel_siginfo), label);	\
->>> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
->>> +} while (0)
->>> +
->>>   enum siginfo_layout {
->>>   	SIL_KILL,
->>>   	SIL_TIMER,
->>> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
->>> index c05e903cef02..37073caac474 100644
->>> --- a/include/linux/uaccess.h
->>> +++ b/include/linux/uaccess.h
->>> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
->>>   #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
->>>   #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
->>>   #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
->>> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
->>>   static inline unsigned long user_access_save(void) { return 0UL; }
->>>   static inline void user_access_restore(unsigned long flags) { }
->>>   #endif
->>> diff --git a/kernel/signal.c b/kernel/signal.c
->>> index a3229add4455..83b5971e4304 100644
->>> --- a/kernel/signal.c
->>> +++ b/kernel/signal.c
->>> @@ -3261,11 +3261,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
->>>   	return layout;
->>>   }
->>>   -static inline char __user *si_expansion(const siginfo_t __user *info)
->>> -{
->>> -	return ((char __user *)info) + sizeof(struct kernel_siginfo);
->>> -}
->>> -
->>>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
->>>   {
->>>   	char __user *expansion = si_expansion(to);
