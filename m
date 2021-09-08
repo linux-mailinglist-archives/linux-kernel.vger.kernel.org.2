@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06D94038D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7104038D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349220AbhIHLff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:35:35 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39450 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348557AbhIHLfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:35:34 -0400
-Received: from zn.tnic (p200300ec2f0efc002d1ac0b1b41b9169.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:2d1a:c0b1:b41b:9169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 69E191EC036B;
-        Wed,  8 Sep 2021 13:34:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631100865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=m/Frv4i98ljsymrvV0/yhoTmQ0S/VberekuyvlZ3qEw=;
-        b=NfKUxhqk7CQNY9baqIi2HJw9km0ov3Vhu96MRbZd7TFmRoLJn/9d8b11Xk17XDIwl6B1Wg
-        ubT9iwlULRlwmbhdS1woU5AIwJtXvDZL2VpfRLDE9rroVJfb1kI8NRVVH/gFIGNGu7QkLI
-        7I/ZsdGgnHAzL2v1JqKR3QArzp0xr0w=
-Date:   Wed, 8 Sep 2021 13:34:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
- not present entries
-Message-ID: <YTifujf+Qez2hE82@zn.tnic>
-References: <20210819132717.19358-1-rppt@kernel.org>
- <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
- <YTiR6aK6XKJ4z0wH@zn.tnic>
- <YTiV/Sdm/T/jnsHC@zn.tnic>
- <YTic90lqv0HbuYOI@kernel.org>
+        id S1351464AbhIHLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:36:12 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:28200 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348491AbhIHLgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:36:06 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18858Mnt005982;
+        Wed, 8 Sep 2021 06:34:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=hAPStDx+PJM+iDHQ4tV70Q4L3FaC3LMzBL7dtf4/SIs=;
+ b=ovLUmX4R7VT0yFHCglYU3YAbNr176DnQ/s2fPmvxkaWpvuwGS3SLLmm66+1LOR34wc0Y
+ CI035HVgAkHQBcKJQ20u0dUFaYFpAQQ/twBaISQxUWDM5W+Zt6KYQJOWnI2V11Yz4MpM
+ 9EjJZiuqhyMpHUYRYbRhFS5bc0arVAtzzP7sispbOJGMj6O2683YmcWnh9NknheVCxrl
+ mm/xx1Iiq3NbFc93HydugT/ajxRq1/z486hlgqFlnnMvmR9gqev/aGZomc+nu9KuvgIP
+ YPG+hWZRqm3RUvQ5MpRuPjVqvrYfJ9mKAkW7LQ8PBvN4BRLPdlnYXMshgjzvGHMOJg5v JQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3axcp997pf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 08 Sep 2021 06:34:55 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 8 Sep
+ 2021 12:34:53 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Wed, 8 Sep 2021 12:34:53 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.231])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8C81DB13;
+        Wed,  8 Sep 2021 11:34:53 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 00/10] Improve support for AMD SPI controllers
+Date:   Wed, 8 Sep 2021 12:34:41 +0100
+Message-ID: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YTic90lqv0HbuYOI@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: EumUw9N0FWY6HpJ4y3LuNI7JT_dVk7EN
+X-Proofpoint-ORIG-GUID: EumUw9N0FWY6HpJ4y3LuNI7JT_dVk7EN
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 02:22:31PM +0300, Mike Rapoport wrote:
-> kern_addr_valid() wrongly uses pxy_none() rather than pxy_present() because
-> according to 9a14aefc1d28 ("x86: cpa, fix lookup_address") there could be
-> cases when page table entries exist but they are not valid.
-> So a call to kern_addr_valid() for an address in the direct map would oops.
-> 
-> I've stopped digging at 9a14aefc1d28 (which is in v2.6.26) and added the
-> oldest stable we still support (4.4).
-> 
-> I agree that before 4.19 it's more of a theoretical bug, but you know,
-> things happen...
+Add support for AMDI0062 and correctly fill the FIFO buffer with
+the whole message.
 
-Hmmkay, I guess I should add the gist of that to the commit message so
-that it is explained why 4.4.
+With a message of AMD_SPI_FIFO_SIZE bytes or less, copying all
+transfers to the FIFO guarantees that the message is sent over
+one CS. Because the controller has an automatic CS that is only
+activated during the transmission of the FIFO.
 
-I'm assuming the pxy_present() check is more strict than pxy_none() so
-that backporting to all stable kernels should not introduce any risks...
+And the controller is half-duplex in that it cannot read data
+while it is sending data. But the FIFO is full-duplex, the writes
+and reads must be queued and executed together, where it can only
+have one write and one read per FIFO, and the writing part is
+executed first. Therefore transfers can be put together in the
+FIFO unless there is a write after read, which will need to be
+executed in another CS.
 
--- 
-Regards/Gruss,
-    Boris.
+v2 changes:
+Replace flag SPI_CONTROLLER_CS_PER_TRANSFER by checking
+spi_max_message_size
+Add flag for controllers that can't TX after RX in the same
+message
+SPI controller now expects a message that always can fit in
+FIFO
+Add a new patch for configuring the SPI speed
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+Lucas Tanure (9):
+  regmap: spi: Set regmap max raw r/w from max_transfer_size
+  regmap: spi: Check raw_[read|write] against max message size
+  spi: Add flag for no TX after a RX in the same Chip Select
+  spi: amd: Refactor code to use less spi_master_get_devdata
+  spi: amd: Refactor amd_spi_busy_wait
+  spi: amd: Remove unneeded variable
+  spi: amd: Check for idle bus before execute opcode
+  spi: amd: Fill FIFO buffer with the whole message
+  spi: amd: Configure the SPI speed
+
+Nehal Bakulchandra Shah (1):
+  spi: amd: Add support for latest platform
+
+ drivers/base/regmap/regmap-spi.c |  40 ++-
+ drivers/base/regmap/regmap.c     |  15 +
+ drivers/spi/spi-amd.c            | 498 ++++++++++++++++++++++---------
+ drivers/spi/spi.c                |  11 +
+ include/linux/regmap.h           |   3 +
+ include/linux/spi/spi.h          |   1 +
+ 6 files changed, 421 insertions(+), 147 deletions(-)
+
+--
+2.33.0
+
