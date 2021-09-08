@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AF64034D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39124034D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348012AbhIHHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244941AbhIHHK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:10:28 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E0BC061575;
-        Wed,  8 Sep 2021 00:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=wWBrUbCsB4xvV0bZD7qpKnJoKJm0HMR1PnjxZ0LeMKg=;
-        t=1631084960; x=1632294560; b=XtCNST81j44UixELd7x42UUYWChVqZKS63Rh07Htbe5J4MW
-        1pFsFkEFYqMgLPauQNidnwzWbXgzUJSjfCRJS2RRkiNUDkUYilr5At6ctO8Zk0yeWIkWkbKEEvZBa
-        dp0Rda2Tk394wVkKM4wbSqbAT18zN9pNla/gzLBq5KSc+UHiuyfXeMgeeAWyOxGZrJSsIIN/OXHMr
-        ahA7b9ZILu1DTk71MKMxoLWtcgC/sCSedpa+GzTDfJZ70djkq0zaCN+p77SdpuwLtdyFHGu7JDmRY
-        vjBZdeK82BsQo2cWVz1xJ7GBeXw/6v91qh6+iUNc0+SCMWuTcVy35vYw+oa3Q+WA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95-RC2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mNrhi-004EJx-8I;
-        Wed, 08 Sep 2021 09:09:06 +0200
-Message-ID: <4d7ecfd46d327d43466e2821112de867f483bfad.camel@sipsolutions.net>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is
- larger than 1024 bytes [-Werror=frame-larger-than=]
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Date:   Wed, 08 Sep 2021 09:09:04 +0200
-In-Reply-To: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
-         <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
-         <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1347483AbhIHHK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:10:59 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:54880 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236197AbhIHHK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:10:57 -0400
+Received: from BC-Mail-Ex15.internal.baidu.com (unknown [172.31.51.55])
+        by Forcepoint Email with ESMTPS id BAAF05767B602141B94A;
+        Wed,  8 Sep 2021 15:09:38 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex15.internal.baidu.com (172.31.51.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 8 Sep 2021 15:09:38 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 8 Sep 2021 15:09:38 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Niklas Cassel <nks@flawful.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/6] PM: AVS: qcom-cpr: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Wed, 8 Sep 2021 15:09:25 +0800
+Message-ID: <20210908070930.214-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 16:14 -0700, Linus Torvalds wrote:
-> 
-> The mac802.11 one seems to be due to 'struct ieee802_11_elems' being
-> big, and allocated on the stack. I think it's probably made worse
-> there with inlining, ie
-> 
->  - ieee80211_sta_rx_queued_mgmt() has one copy
-> 
->  - ieee80211_rx_mgmt_beacon() is possibly inlined, and has its own copy
-> 
-> but even if it isn't due to that kind of duplication due to inlining,
-> that code is dangerous. Exactly because it has two nested stack frames
-> with that big structure, and they are active at the same time in the
-> callchain whether inlined or not.
-> 
-> And it's *pointlessly* dangerous, because the 'struct ieee802_11_elems
-> elems' in ieee80211_sta_rx_queued_mgmt() is only used for the
-> IEEE80211_STYPE_ACTION case, so it is entirely disjoint from the
-> IEEE80211_STYPE_BEACON case, and those stack allocations simply should
-> not nest like that in the first place.
-> 
-> Making the IEEE80211_STYPE_ACTION case be its own function - like the
-> other cases - and moving the struct there should fix it. Possibly a
-> "noinline" or two necessary to make sure that the compiler doesn't
-> then undo the "these two cases are disjoint" thing.
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
+separately
 
-Yeah, I'm aware, and I agree. We've been looking at it every now and
-then. This got made worse by us actually adding a fair amount of
-pointers to the struct recently (in this merge window).
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/soc/qcom/cpr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Ultimately, every new spec addition ends up needing to add something
-there, so I think ultimately we'll probably want to either dynamically
-allocate it somewhere (perhaps in a data structure used here already),
-or possibly not have this at all and just find a way to return only the
-bits that are interesting. Even parsing a ~1k frame (typical, max ~2k) a
-handful of times is probably not even worse than having this large a
-structure that gets filled data that's probably useless in many cases (I
-think the different cases all just need a subset). But not sure, I'll
-take a look.
-
-johannes
+diff --git a/drivers/soc/qcom/cpr.c b/drivers/soc/qcom/cpr.c
+index 4ce8e816154f..1d818a8ba208 100644
+--- a/drivers/soc/qcom/cpr.c
++++ b/drivers/soc/qcom/cpr.c
+@@ -1614,7 +1614,6 @@ static void cpr_debugfs_init(struct cpr_drv *drv)
+ 
+ static int cpr_probe(struct platform_device *pdev)
+ {
+-	struct resource *res;
+ 	struct device *dev = &pdev->dev;
+ 	struct cpr_drv *drv;
+ 	int irq, ret;
+@@ -1648,8 +1647,7 @@ static int cpr_probe(struct platform_device *pdev)
+ 	if (IS_ERR(drv->tcsr))
+ 		return PTR_ERR(drv->tcsr);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	drv->base = devm_ioremap_resource(dev, res);
++	drv->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(drv->base))
+ 		return PTR_ERR(drv->base);
+ 
+-- 
+2.25.1
 
