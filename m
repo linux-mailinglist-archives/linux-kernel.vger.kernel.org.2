@@ -2,464 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BB1404128
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7045404136
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347561AbhIHWoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 18:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344767AbhIHWn7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:43:59 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CE5C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 15:42:51 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 6so2445oiy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to;
-        bh=VqW5+bekt6QQoJuxceGB6Gpgo1qlpGgrwjlTJ2fvXwI=;
-        b=Hqc3NBf8JTg7GipE1wzXwn/flNwn+MY+VUUhGnKThL3LCKzu4VSfdnz2yAhquXyZbL
-         fbXUWc9mnrAWY4bWGcj424gvueEJhW1/FkTORFr9yjK0zj9i86hTh3GouPwxVCoCmZPk
-         +GIMaN5NsD32W27XGzxpYN1vBdSVe+jpmcrZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to;
-        bh=VqW5+bekt6QQoJuxceGB6Gpgo1qlpGgrwjlTJ2fvXwI=;
-        b=bCLV1wzkobXoz04WVzvaY1JgTukQhjc1EHd5i3bmQXZttaqESoILBUtrtNXu1F5+Gz
-         VeJceBOjnpgvf7JPO18FqHNwAUJnpKqUFMl8XwKEAFR+0TA4jXYORp7ncONEsQSUVDXP
-         4WiQZ9ws8WVXaEI/5JnNW8b1SZgh2yFVHa8Yw+vl9Ge+9g5nPpnfcJe3w8sydqP/t/ro
-         YBqct6GBlNjWGt6cZ8ic2F5A5ii/2gSjk2Ya6HnRk6G5SK/T87TepzXRorHzsMg4ULyo
-         2RyRsmCjClyxht+HU4+KzRF+cddwTgO6sDTmgohY2wEaN8OtEf3QXXYi8a7Pqeh/E7H2
-         j0bg==
-X-Gm-Message-State: AOAM533Kw8o8yuo6gz7mTEjmhrzNUcDW5V+A4xCkn5owRXFaqqTkvmAW
-        xTNrHrR8dtKJiJnZnEXxR7DZSrES10xT/0+zzay/TQ==
-X-Google-Smtp-Source: ABdhPJw5BZv+m1oFwBZVKDWtQ/OmALelhjo35OhxGCLqbEojB3tWU3Kr5bPVDLdWU8HMDQJCcc/Xks3EG2bdLcbXO2c=
-X-Received: by 2002:aca:2310:: with SMTP id e16mr319666oie.64.1631140970485;
- Wed, 08 Sep 2021 15:42:50 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 8 Sep 2021 15:42:50 -0700
+        id S1347052AbhIHXAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:00:07 -0400
+Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:25953
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229997AbhIHXAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:00:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UPu0b+JDkq/ZC0JxyB6BNg3OwZ7ji3o5UjovTzBdWtMzL1SocATjZ2O7Jysh9BJOh8h+djd59LFwqE4Q1uPVGjJQJFLrsbGhzas1PQCJKpYh665ZJtwArqj4zns1Xkho4HsAq9ou6rCIcMJXkcog7XbudBPTWPMOnMj2jbcMod5lHPbpYKQdG0qP8ly7CjcQa8YHLdorPdUDRD//c5tFcaRCy51JKa0lLl4NsC8JILNjxmrhLSNQji5OLVvoNiqLzb3YdtAzEua4c7d6C/yKDWMgAXM2mHeAgwe93KXTwd4rh2OPaZTj0KcNy5t6RLc/Q6bjoB/hLq95kQJXrOhA1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=7Wh2FFXsJRDtCqhHeo4NGZGQQSRx6vJ90yxYFUVmHqY=;
+ b=OFn8JEyWPasNOG1h5TOQMV/whVBs0BWXi472ElAlTTqzfUHBKhLBseEZxniBcKIUc2UtzU2NvjuYA2XPWkcWPSoBnhn4wMqBw8voldmrln3xURmzb6lljCP5OFtKb9SjVxII0vBKmVQbyI+0Wb0vkSBorDZItQu20KgO2iMezmF53/EoLLaPMbMWITonw2WS7iQEPpamKQjsrUgfOoEYlnu1EccdtM3Acxr+FJtUL1CbuJkDCZxcl7qMifCGlE/H8hoyGE0vowHjkzYlVCobnjN5NMycpiuIzLWRFNPReUU7P0mXi8ywuulU0MQojOQihKMNI8CMkHeuZGaq39BKrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Wh2FFXsJRDtCqhHeo4NGZGQQSRx6vJ90yxYFUVmHqY=;
+ b=bU+w2z9vlwNclNtevXBdzfIrg5DLck5syjSbqsD3R50+ARmaTzDju6S2ggOSpaWWkBFRnGG9vyYGrRoWA10v3G36/F/6AZ+trQalpNOCAR2Hu4TTdwNZVqH4fZ2fPFU8v+4WnXOJgAxDk+olxKWLgbDFO6bPFlQPkkl+wwagcwQ=
+Received: from DM5PR18CA0081.namprd18.prod.outlook.com (2603:10b6:3:3::19) by
+ BN9PR12MB5195.namprd12.prod.outlook.com (2603:10b6:408:11c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Wed, 8 Sep
+ 2021 22:58:54 +0000
+Received: from DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:3:cafe::9d) by DM5PR18CA0081.outlook.office365.com
+ (2603:10b6:3:3::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Wed, 8 Sep 2021 22:58:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT028.mail.protection.outlook.com (10.13.173.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 22:58:53 +0000
+Received: from tlendack-t1.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 8 Sep 2021
+ 17:58:51 -0500
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-s390@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
+        <linux-graphics-maintainer@vmware.com>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <kexec@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Baoquan He" <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v3 0/8] Implement generic cc_platform_has() helper function
+Date:   Wed, 8 Sep 2021 17:58:31 -0500
+Message-ID: <cover.1631141919.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <1631124057-17155-3-git-send-email-srivasam@codeaurora.org>
-References: <1631124057-17155-1-git-send-email-srivasam@codeaurora.org> <1631124057-17155-3-git-send-email-srivasam@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 8 Sep 2021 15:42:50 -0700
-Message-ID: <CAE-0n51EESvy0Y5WzcZJDAx+V1OpnaxM4T-BUbuReepJt7ufRA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: qcom: SC7280: Add machine driver
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        judyhsiao@chromium.org, lgirdwood@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
-        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
-        tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8edaccc-5d97-45c7-b500-08d9731c3b44
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5195:
+X-Microsoft-Antispam-PRVS: <BN9PR12MB51955B56FFF2FA3E4078B327ECD49@BN9PR12MB5195.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KPQV3Dld0tKh03daLbVsw8fNE40OpEf6zkH4Hh4z7l/FAYUN/MPv82J4MeHd87eSFtlQ8dRQ5QO+7UZ8ghypbyg1l34pNPEPcVI3RWyRii4bHyLgflt+hmUWSgMSpIkxR4V9+bs36hzwwCdIDa3A5cN252dbn9p3L8xUCpM3c8uCkjL2D70B4NzpTGMqGRowi5LbfviG+v7XzaRQV6nsJr5MpzreseU11nNTcIh8kePueBrzl2QLFLER3V62KEiPALgln4ipFMHqLeekGgR3KXItUimhMnszmnAk8eXUJOW3yjaPRwl/54zrhkoMQDvQPSbMxCbt6Om1ibNsjtR8o5F7K33JEhRDaKSqW5NftdqCeb5teCpBR5xMecmhFenFiYmbHvX3gsaRYNiSRU0DRgqwxBMA8W0kvqdcRAWma8peJ1A8mQlOfKpbDKQyMopWExjcSvXe09Q5L5br9wiOSBQyrShpkvyQNZvEanwBZ75wYYoYsbO0Gfp5nci8o666rmnhxGfNc8ixysJ66NOKYTP5mcITphxkY/rJswvgO+4qvZWbFwKXav+9NDKU1I8Hdky3P6/cjpB290suAG6ib8SCgu8sO6QP4eznN3AngfsaYrqdD7nczfasB2zApCzy2XIZr443JHT08SR6BFZqDBw4EBFc1nRqKMUdGtNmpRdEYzkJlTQlCSRjLKo09VwObdWxFzqECBKKdRHJQoq36HFHkriIhqK+8owFy+4NRo5jziTWZr+STXGQt3CO/l+j9XjB4c0XigDlF9tBvkEcd4t5ycgWWxQy5EfUO5JKd1XQImAeAp1GUKGEzUuqHgFixX4hfsAsMdrwmU2gji+ef0OjBiqaYvrrXQIbTd2fL7tdCgumDFgrxgJcT4+VfDYQhdDqJUyDeGf/9JEymi7Nehxt22yklmAa907ANajbWk8=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(46966006)(36840700001)(4326008)(7416002)(478600001)(7696005)(81166007)(47076005)(8936002)(2616005)(36860700001)(26005)(6666004)(83380400001)(966005)(2906002)(336012)(426003)(186003)(316002)(86362001)(70206006)(70586007)(8676002)(7406005)(5660300002)(16526019)(921005)(36756003)(82740400003)(356005)(82310400003)(110136005)(54906003)(41533002)(2101003)(83996005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 22:58:53.9334
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8edaccc-5d97-45c7-b500-08d9731c3b44
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5195
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2021-09-08 11:00:57)
-> diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
-> new file mode 100644
-> index 0000000..1ab29f6
-> --- /dev/null
-> +++ b/sound/soc/qcom/sc7280.c
-> @@ -0,0 +1,347 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-> +//
-> +// sc7280.c -- ALSA SoC Machine driver for sc7280
-> +
-> +#include <dt-bindings/sound/sc7180-lpass.h>
-> +#include <dt-bindings/sound/qcom,q6afe.h>
+This patch series provides a generic helper function, cc_platform_has(),
+to replace the sme_active(), sev_active(), sev_es_active() and
+mem_encrypt_active() functions.
 
-Can these come after the linux/sound includes?
+It is expected that as new confidential computing technologies are
+added to the kernel, they can all be covered by a single function call
+instead of a collection of specific function calls all called from the
+same locations.
 
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/core.h>
-> +#include <sound/jack.h>
-> +#include <sound/pcm.h>
-> +#include <sound/soc.h>
-> +#include <uapi/linux/input-event-codes.h>
+The powerpc and s390 patches have been compile tested only. Can the
+folks copied on this series verify that nothing breaks for them. Also,
+a new file, arch/powerpc/platforms/pseries/cc_platform.c, has been
+created for powerpc to hold the out of line function.
 
-Is this include used?
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>
 
-> +
-> +#include "../codecs/wcd938x.h"
-> +#include "common.h"
-> +#include "lpass.h"
-> +
-> +#define DRIVER_NAME "SC7280"
+---
 
-Is this useful? Why not just inline it in the one place it is used so we
-don't have to jump to the define to figure out what it is?
+Patches based on:
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+  4b93c544e90e ("thunderbolt: test: split up test cases in tb_test_credit_alloc_all")
 
-> +#define LPASS_MAX_PORTS  (LPASS_CDC_DMA_VA_TX8 + 1)
-> +
-> +
-> +struct sc7280_snd_data {
-> +       bool stream_prepared[LPASS_MAX_PORTS];
-> +       struct snd_soc_card card;
-> +       struct sdw_stream_runtime *sruntime[LPASS_MAX_PORTS];
-> +       struct snd_soc_jack hs_jack;
-> +       struct snd_soc_jack hdmi_jack;
-> +       bool jack_setup;
-> +};
-> +
-> +static void sc7280_jack_free(struct snd_jack *jack)
-> +{
-> +       struct snd_soc_component *component = jack->private_data;
-> +
-> +       snd_soc_component_set_jack(component, NULL, NULL);
-> +}
-> +
-> +static int sc7280_headset_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +       struct snd_soc_component *component = codec_dai->component;
-> +       struct snd_jack *jack;
-> +       int rval, i;
-> +
-> +       if (!pdata->jack_setup) {
-> +               rval = snd_soc_card_jack_new(card, "Headset Jack",
-> +                                                       SND_JACK_HEADSET | SND_JACK_LINEOUT |
-> +                                                       SND_JACK_MECHANICAL |
-> +                                                       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-> +                                                       SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-> +                                                       SND_JACK_BTN_4 | SND_JACK_BTN_5,
-> +                                                       &pdata->hs_jack, NULL, 0);
-> +
-> +               if (rval < 0) {
-> +                       dev_err(card->dev, "Unable to add Headset Jack\n");
-> +                       return rval;
-> +               }
-> +
-> +               jack = pdata->hs_jack.jack;
-> +
-> +               snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> +
-> +               jack->private_data = component;
-> +               jack->private_free = sc7280_jack_free;
-> +               pdata->jack_setup = true;
-> +       }
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_TX3:
-> +               for_each_rtd_codec_dais(rtd, i, codec_dai) {
-> +                       rval = snd_soc_component_set_jack(component, &pdata->hs_jack, NULL);
-> +                       if (rval != 0 && rval != -EOPNOTSUPP) {
-> +                               dev_warn(card->dev, "Failed to set jack: %d\n", rval);
+Changes since v2:
+- Changed the name from prot_guest_has() to cc_platform_has()
+- Took the cc_platform_has() function out of line. Created two new files,
+  cc_platform.c, in both x86 and ppc to implment the function. As a
+  result, also changed the attribute defines into enums.
+- Removed any received Reviewed-by's and Acked-by's given changes in this
+  version.
+- Added removal of new instances of mem_encrypt_active() usage in powerpc
+  arch.
+- Based on latest Linux tree to pick up powerpc changes related to the
+  mem_encrypt_active() function.
 
-Why not dev_err?
+Changes since v1:
+- Moved some arch ioremap functions within #ifdef CONFIG_AMD_MEM_ENCRYPT
+  in prep for use of prot_guest_has() by TDX.
+- Added type includes to the the protected_guest.h header file to prevent
+  build errors outside of x86.
+- Made amd_prot_guest_has() EXPORT_SYMBOL_GPL
+- Used amd_prot_guest_has() in place of checking sme_me_mask in the
+  arch/x86/mm/mem_encrypt.c file.
 
-> +                               return rval;
-> +                       }
-> +               }
-> +
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int sc7280_hdmi_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +       struct snd_soc_component *component = codec_dai->component;
-> +       struct snd_jack *jack;
-> +       int rval;
-> +
-> +       rval = snd_soc_card_jack_new(
-> +                       card, "HDMI Jack",
-> +                       SND_JACK_LINEOUT,
-> +                       &pdata->hdmi_jack, NULL, 0);
-> +
-> +       if (rval < 0) {
-> +               dev_err(card->dev, "Unable to add HDMI Jack\n");
-> +               return rval;
-> +       }
-> +
-> +       jack = pdata->hdmi_jack.jack;
-> +       jack->private_data = component;
-> +       jack->private_free = sc7280_jack_free;
-> +
-> +       return snd_soc_component_set_jack(component, &pdata->hdmi_jack, NULL);
-> +}
-> +
-> +static int sc7280_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_TX3:
-> +               return sc7280_headset_init(rtd);
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_VA_TX0:
-> +       case MI2S_SECONDARY:
-> +               return 0;
-> +       case LPASS_DP_RX:
-> +               return sc7280_hdmi_init(rtd);
-> +       default:
-> +               dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> +               return -EINVAL;
-> +       }
+Tom Lendacky (8):
+  x86/ioremap: Selectively build arch override encryption functions
+  mm: Introduce a function to check for confidential computing features
+  x86/sev: Add an x86 version of cc_platform_has()
+  powerpc/pseries/svm: Add a powerpc version of cc_platform_has()
+  x86/sme: Replace occurrences of sme_active() with cc_platform_has()
+  x86/sev: Replace occurrences of sev_active() with cc_platform_has()
+  x86/sev: Replace occurrences of sev_es_active() with cc_platform_has()
+  treewide: Replace the use of mem_encrypt_active() with
+    cc_platform_has()
 
-Nitpick: Add newline.
+ arch/Kconfig                                 |  3 +
+ arch/powerpc/include/asm/mem_encrypt.h       |  5 --
+ arch/powerpc/platforms/pseries/Kconfig       |  1 +
+ arch/powerpc/platforms/pseries/Makefile      |  2 +
+ arch/powerpc/platforms/pseries/cc_platform.c | 26 ++++++
+ arch/powerpc/platforms/pseries/svm.c         |  5 +-
+ arch/s390/include/asm/mem_encrypt.h          |  2 -
+ arch/x86/Kconfig                             |  1 +
+ arch/x86/include/asm/io.h                    |  8 ++
+ arch/x86/include/asm/kexec.h                 |  2 +-
+ arch/x86/include/asm/mem_encrypt.h           | 14 +---
+ arch/x86/kernel/Makefile                     |  3 +
+ arch/x86/kernel/cc_platform.c                | 21 +++++
+ arch/x86/kernel/crash_dump_64.c              |  4 +-
+ arch/x86/kernel/head64.c                     |  4 +-
+ arch/x86/kernel/kvm.c                        |  3 +-
+ arch/x86/kernel/kvmclock.c                   |  4 +-
+ arch/x86/kernel/machine_kexec_64.c           | 19 +++--
+ arch/x86/kernel/pci-swiotlb.c                |  9 +-
+ arch/x86/kernel/relocate_kernel_64.S         |  2 +-
+ arch/x86/kernel/sev.c                        |  6 +-
+ arch/x86/kvm/svm/svm.c                       |  3 +-
+ arch/x86/mm/ioremap.c                        | 18 ++--
+ arch/x86/mm/mem_encrypt.c                    | 57 +++++++------
+ arch/x86/mm/mem_encrypt_identity.c           |  3 +-
+ arch/x86/mm/pat/set_memory.c                 |  3 +-
+ arch/x86/platform/efi/efi_64.c               |  9 +-
+ arch/x86/realmode/init.c                     |  8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c      |  4 +-
+ drivers/gpu/drm/drm_cache.c                  |  4 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c          |  4 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c          |  6 +-
+ drivers/iommu/amd/init.c                     |  7 +-
+ drivers/iommu/amd/iommu.c                    |  3 +-
+ drivers/iommu/amd/iommu_v2.c                 |  3 +-
+ drivers/iommu/iommu.c                        |  3 +-
+ fs/proc/vmcore.c                             |  6 +-
+ include/linux/cc_platform.h                  | 88 ++++++++++++++++++++
+ include/linux/mem_encrypt.h                  |  4 -
+ kernel/dma/swiotlb.c                         |  4 +-
+ 40 files changed, 267 insertions(+), 114 deletions(-)
+ create mode 100644 arch/powerpc/platforms/pseries/cc_platform.c
+ create mode 100644 arch/x86/kernel/cc_platform.c
+ create mode 100644 include/linux/cc_platform.h
 
-> +       return 0;
 
-Can we even get here? Maybe remove return from default above and make
-this a return -EINVAL.
+base-commit: 4b93c544e90e2b28326182d31ee008eb80e02074
+-- 
+2.33.0
 
-> +}
-> +
-> +static int sc7280_snd_startup(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_TX3:
-> +       case LPASS_CDC_DMA_VA_TX0:
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       case LPASS_DP_RX:
-> +               break;
-> +       default:
-> +               dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-> +               return -EINVAL;
-> +       }
-
-Nitpick: Add newline.
-
-> +       return 0;
-> +}
-> +
-> +static int sc7280_snd_hw_params(struct snd_pcm_substream *substream,
-> +                               struct snd_pcm_hw_params *params)
-> +{
-> +       struct snd_pcm_runtime *runtime = substream->runtime;
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *codec_dai;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-
-const?
-
-> +       struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
-> +       struct sdw_stream_runtime *sruntime;
-> +       int i;
-> +
-> +       snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
-> +       snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE, 48000, 48000);
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_TX3:
-> +       case LPASS_CDC_DMA_RX0:
-> +               for_each_rtd_codec_dais(rtd, i, codec_dai) {
-> +                       sruntime = snd_soc_dai_get_sdw_stream(codec_dai, substream->stream);
-> +                       if (sruntime != ERR_PTR(-EOPNOTSUPP))
-> +                               pdata->sruntime[cpu_dai->id] = sruntime;
-> +               }
-> +               break;
-> +       }
-> +
-> +       return 0;
-> +
-
-Nitpick: Drop newline.
-
-> +}
-> +
-> +static int sc7280_snd_swr_prepare(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-
-const?
-
-> +       struct sc7280_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-> +       struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-> +       int ret;
-> +
-> +       if (!sruntime)
-> +               return 0;
-> +
-> +       if (data->stream_prepared[cpu_dai->id]) {
-> +               sdw_disable_stream(sruntime);
-> +               sdw_deprepare_stream(sruntime);
-> +               data->stream_prepared[cpu_dai->id] = false;
-> +       }
-> +
-> +       ret = sdw_prepare_stream(sruntime);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = sdw_enable_stream(sruntime);
-> +       if (ret) {
-> +               sdw_deprepare_stream(sruntime);
-> +               return ret;
-> +       }
-> +       data->stream_prepared[cpu_dai->id]  = true;
-
-Why two spaces after ]?
-
-> +
-> +       return ret;
-> +}
-> +
-> +
-> +static int sc7280_snd_prepare(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-
-const?
-
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_TX3:
-> +               return sc7280_snd_swr_prepare(substream);
-> +       default:
-> +               break;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int sc7280_snd_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct sc7280_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-
-const?
-
-> +       struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_TX3:
-> +               if (sruntime && data->stream_prepared[cpu_dai->id]) {
-> +                       sdw_disable_stream(sruntime);
-> +                       sdw_deprepare_stream(sruntime);
-> +                       data->stream_prepared[cpu_dai->id] = false;
-> +               }
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +       return 0;
-> +}
-> +
-> +static void sc7280_snd_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +
-> +       switch (cpu_dai->id) {
-> +       case LPASS_CDC_DMA_RX0:
-> +       case LPASS_CDC_DMA_TX3:
-> +       case LPASS_CDC_DMA_VA_TX0:
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       case LPASS_DP_RX:
-> +               break;
-> +       default:
-> +               dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-
-Can use %#x to skip the 0x part.
-
-> +               break;
-> +       }
-> +}
-> +
-> +static const struct snd_soc_ops sc7280_ops = {
-> +       .startup = sc7280_snd_startup,
-> +       .shutdown = sc7280_snd_shutdown,
-> +       .hw_params = sc7280_snd_hw_params,
-> +       .hw_free = sc7280_snd_hw_free,
-> +       .prepare = sc7280_snd_prepare,
-> +};
-> +
-> +static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
-> +       SND_SOC_DAPM_HP("Headphone Jack", NULL),
-> +       SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> +};
-> +
-> +static int sc7280_snd_platform_probe(struct platform_device *pdev)
-> +{
-> +       struct snd_soc_card *card;
-> +       struct sc7280_snd_data *data;
-> +       struct device *dev = &pdev->dev;
-> +       struct snd_soc_dai_link *link;
-> +       int ret, i;
-> +
-> +       /* Allocate the private data */
-> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +       if (!data)
-> +               return -ENOMEM;
-> +
-> +       card = &data->card;
-> +       data->jack_setup = false;
-
-Isn't that implicit via kzalloc above? This can be dropped.
-
-> +       snd_soc_card_set_drvdata(card, data);
-> +
-> +       card->owner = THIS_MODULE;
-> +       card->driver_name = DRIVER_NAME;
-> +       card->dev = dev;
-> +
-> +       ret = qcom_snd_parse_of(card);
-> +       if (ret)
-> +               return ret;
-> +
-> +       for_each_card_prelinks(card, i, link) {
-> +               link->init = sc7280_init;
-> +               link->ops = &sc7280_ops;
-> +       }
-> +       ret = devm_snd_soc_register_card(dev, card);
-> +       return ret;
-
-Nitpick:
-
-return devm_snd_soc_register_card(dev, card)
-
-> +}
-> +
-> +static const struct of_device_id sc7280_snd_device_id[]  = {
-> +       {.compatible = "google,sc7280-herobrine"},
-> +       {},
-
-Nitpick: Drop comma here so nothing can come after without causing a
-compile error.
-
-> +};
-> +MODULE_DEVICE_TABLE(of, sc7280_snd_device_id);
-> +
