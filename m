@@ -2,249 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F94403C50
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9754403C54
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351807AbhIHPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:12:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33360 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhIHPMq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:12:46 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 89C1520166;
-        Wed,  8 Sep 2021 15:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631113897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=svmGTRjN6JH/kF3lOs1T+B7jEWqgdg10jT2MIlW7N3o=;
-        b=t86y6dqiOlOPYgOEgsGOcXk768O/AZM9LSpVbEY9GQwfUHt4mto7AemKgZDJEEEasMxYdY
-        A76WQct/8Zs0WZeLw7uL4rteh5SkcqYwJo8SEMRaBWCrcrgXo0AiU/VFedtQRWk3STGC8P
-        ClKgcTsw0XLv2gP4f86KO6TKcx7aVmQ=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5C43013A9C;
-        Wed,  8 Sep 2021 15:11:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id DhjbFKnSOGHXPAAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 08 Sep 2021 15:11:37 +0000
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>
-References: <20210827123206.15429-1-jgross@suse.com>
- <8b13525b-0075-f4c1-8900-1be151e85e3e@oracle.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH] xen/balloon: use a kernel thread instead a workqueue
-Message-ID: <9d1edc4e-b2b5-c620-17c6-31d238c2c417@suse.com>
-Date:   Wed, 8 Sep 2021 17:11:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1351955AbhIHPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236245AbhIHPNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:13:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8A0B60F6C;
+        Wed,  8 Sep 2021 15:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631113925;
+        bh=o7VuLdGrXHcrpl5bQDSmuUmn5f+AOer4ij4tdURLidU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fCRgu1muZSxoXP4qDdmWGgZ3yFGW/Fe1VQDNg1QG0lHBBBhjRokT75BKgryysnXGb
+         /sR2GGmyk/xvdU9k5SOL3dHcYvCtqbB8H563baPfZ4VWOnvxCfn9+f94Y6FvTHIWas
+         d+8gF5zYn7A1jSsYdFnpxf20/YDvq5Di3YGpF5ZIu2YrrHOhJHTJuaSKoZexJsQAG2
+         zk8nOasZHtRmsZws4d+k867NsT2sbbEyTbMS6TyroxHaIh1YvTS92unzSSlvpoZTC0
+         5+zaOITlJRte2f6v5cIfD+EIUKATvni/ykEvk4SUoNFCRlYa3v363bQ3SMIZFZOWPO
+         Iue3dZhB+LmQQ==
+Date:   Wed, 8 Sep 2021 10:12:03 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 1/3] PCI: imx: encapsulate the clock enable into one
+ standalone function
+Message-ID: <20210908151203.GA866207@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <8b13525b-0075-f4c1-8900-1be151e85e3e@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="jV7W9DT5QK8tnenkioUhL7o7Tsq4LqbAR"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631084366-24785-1-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jV7W9DT5QK8tnenkioUhL7o7Tsq4LqbAR
-Content-Type: multipart/mixed; boundary="UuDL2UNeUp3H7W26SmDKcsotYQMTcxYay";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- Jan Beulich <jbeulich@suse.com>
-Message-ID: <9d1edc4e-b2b5-c620-17c6-31d238c2c417@suse.com>
-Subject: Re: [PATCH] xen/balloon: use a kernel thread instead a workqueue
-References: <20210827123206.15429-1-jgross@suse.com>
- <8b13525b-0075-f4c1-8900-1be151e85e3e@oracle.com>
-In-Reply-To: <8b13525b-0075-f4c1-8900-1be151e85e3e@oracle.com>
+On Wed, Sep 08, 2021 at 02:59:24PM +0800, Richard Zhu wrote:
+> No function changes, just encapsulate the i.MX PCIe clocks enable
+> operations into one standalone function
 
---UuDL2UNeUp3H7W26SmDKcsotYQMTcxYay
-Content-Type: multipart/mixed;
- boundary="------------2BAC314933443E7B316CE07F"
-Content-Language: en-US
+When you update this,
 
-This is a multi-part message in MIME format.
---------------2BAC314933443E7B316CE07F
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+  - it's helpful if you include a cover letter with a multi-patch
+    series, with the patches being replies to the cover letter, and
 
-On 08.09.21 16:47, Boris Ostrovsky wrote:
->=20
-> On 8/27/21 8:32 AM, Juergen Gross wrote:
->> +static bool balloon_thread_cond(enum bp_state state, long credit)
->> +{
->> +	if (state !=3D BP_EAGAIN)
->> +		credit =3D 0;
->> +
->> +	return current_credit() !=3D credit || kthread_should_stop();
->> +}
->> +
->> +/*
->> + * As this is a kthread it is guaranteed to run as a single instance =
-only.
->>    * We may of course race updates of the target counts (which are pro=
-tected
->>    * by the balloon lock), or with changes to the Xen hard limit, but =
-we will
->>    * recover from these in time.
->>    */
->> -static void balloon_process(struct work_struct *work)
->> +static int balloon_thread(void *unused)
->>   {
->>   	enum bp_state state =3D BP_DONE;
->>   	long credit;
->> +	unsigned long timeout;
->> +
->> +	set_freezable();
->> +	for (;;) {
->> +		if (state =3D=3D BP_EAGAIN)
->> +			timeout =3D balloon_stats.schedule_delay * HZ;
->> +		else
->> +			timeout =3D 3600 * HZ;
->> +		credit =3D current_credit();
->>  =20
->> +		wait_event_interruptible_timeout(balloon_thread_wq,
->> +				 balloon_thread_cond(state, credit), timeout);
->=20
->=20
-> Given that wait_event_interruptible_timeout() is a bunch of nested macr=
-os do we need to worry here about overly aggressive compiler optimizing o=
-ut 'credit =3D current_credit()'?
+  - please follow the sentence and formatting conventions for subject
+    lines and commit logs (driver name should match, capitalize
+    subject line, end sentences with periods, blank lines between
+    paragraphs, remove useless information like timestamps from log
+    messages, indent quoted material like logs by two spaces, etc).
 
-I don't think so. current_credit() is reading from balloon_stats, which
-is a global variable. So the compiler shouldn't assume the contents
-won't change.
-
-But I can add a barrier() after 'credit =3D current_credit()' in case
-you'd feel uneasy without it.
-
-
-Juergen
-
---------------2BAC314933443E7B316CE07F
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------2BAC314933443E7B316CE07F--
-
---UuDL2UNeUp3H7W26SmDKcsotYQMTcxYay--
-
---jV7W9DT5QK8tnenkioUhL7o7Tsq4LqbAR
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE40qgFAwAAAAAACgkQsN6d1ii/Ey9I
-mAf/e2A3onHFreFek+dmRlccdjx/ynL2gG2nJMUl0V6fDmDmTSkYX5e0aKnhF0om9yBWYBooKDko
-QM2WJ0N+qO2F1Ej0pS9FoF2ImxrL+sM2/NjsteOXO6S7GJ8HSohqXSWww1vt6i8DkX+ff87diU8e
-Mi/3vnEUcKZ30h6C2LRyUXxxBDLQ+Wox9KdRPHj6J0DYNq3x6DdFW9svwk860ttfAp+YpFzHy94q
-RHBumUpgx3b70kQba8q+kLdj+q6lmqCc5Fp4PeNpOPSZSAtDzd/HuScCAzoBLqnfJ3ozlx9zLS5D
-qSjFM3BRQooWoV+/ZW2vTiLuwAdWS9rrrx/LrClrNg==
-=Pj2e
------END PGP SIGNATURE-----
-
---jV7W9DT5QK8tnenkioUhL7o7Tsq4LqbAR--
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 82 +++++++++++++++++----------
+>  1 file changed, 51 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 80fc98acf097..0264432e4c4a 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -143,6 +143,8 @@ struct imx6_pcie {
+>  #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
+>  #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
+>  
+> +static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie);
+> +
+>  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+>  {
+>  	struct dw_pcie *pci = imx6_pcie->pci;
+> @@ -498,33 +500,12 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  		}
+>  	}
+>  
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_phy clock\n");
+> -		goto err_pcie_phy;
+> -	}
+> -
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
+> +	ret = imx6_pcie_clk_enable(imx6_pcie);
+>  	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_bus clock\n");
+> -		goto err_pcie_bus;
+> +		dev_err(dev, "unable to enable pcie clocks\n");
+> +		goto err_clks;
+>  	}
+>  
+> -	ret = clk_prepare_enable(imx6_pcie->pcie);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie clock\n");
+> -		goto err_pcie;
+> -	}
+> -
+> -	ret = imx6_pcie_enable_ref_clk(imx6_pcie);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie ref clock\n");
+> -		goto err_ref_clk;
+> -	}
+> -
+> -	/* allow the clocks to stabilize */
+> -	usleep_range(200, 500);
+> -
+>  	/* Some boards don't have PCIe reset GPIO. */
+>  	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+>  		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> @@ -578,13 +559,7 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  
+>  	return;
+>  
+> -err_ref_clk:
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -err_pcie:
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -err_pcie_bus:
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> -err_pcie_phy:
+> +err_clks:
+>  	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0) {
+>  		ret = regulator_disable(imx6_pcie->vpcie);
+>  		if (ret)
+> @@ -914,6 +889,51 @@ static void imx6_pcie_pm_turnoff(struct imx6_pcie *imx6_pcie)
+>  	usleep_range(1000, 10000);
+>  }
+>  
+> +static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+> +{
+> +	struct dw_pcie *pci = imx6_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable pcie_phy clock\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable pcie_bus clock\n");
+> +		goto err_pcie_bus;
+> +	}
+> +
+> +	ret = clk_prepare_enable(imx6_pcie->pcie);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable pcie clock\n");
+> +		goto err_pcie;
+> +	}
+> +
+> +	ret = imx6_pcie_enable_ref_clk(imx6_pcie);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable pcie ref clock\n");
+> +		goto err_ref_clk;
+> +	}
+> +
+> +	/* allow the clocks to stabilize */
+> +	usleep_range(200, 500);
+> +	return 0;
+> +
+> +err_ref_clk:
+> +	clk_disable_unprepare(imx6_pcie->pcie);
+> +err_pcie:
+> +	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> +err_pcie_bus:
+> +	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +
+> +	return ret;
+> +
+> +}
+> +
+>  static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+>  {
+>  	clk_disable_unprepare(imx6_pcie->pcie);
+> -- 
+> 2.25.1
+> 
