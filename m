@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A727B4033CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37A24033D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244532AbhIHFab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237726AbhIHFa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:30:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F30C061575;
-        Tue,  7 Sep 2021 22:29:22 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d18so569216pll.11;
-        Tue, 07 Sep 2021 22:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iD9+GT39aksQJ8UeFhirJAMKV3nyN4Kl41ljs81BeAQ=;
-        b=fmHJ9TCvMYR155Ey0xmhEA8+GUH+8RWGwTLNvNo3adb/G+kkdBQt003sNOw0RYlz1T
-         WVueDkaHjh0B1wi+x9HoykljOypMHA1ERQU36MhnKhG4RmAaq7CEi4+qDJm2vREq+dHJ
-         uJFyRsvCzaCMr+HUciciZBZx4imn7nWoLUou9pnFpt6ZllukebteZwuwqGM5zu0ciUM1
-         4hc129eckFug/Kb8i1MtqlFser48H/AYemzCFeSsn0lKxidw8eeFCfabkmLavY0ZIoyq
-         nApqxwo3s2+EAXfdHYKwNN+PkYtJ5Bjmq622ReanNBMFWFt/7yNiIM1++eVn7oPuGPIt
-         vAmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iD9+GT39aksQJ8UeFhirJAMKV3nyN4Kl41ljs81BeAQ=;
-        b=glnO5opFf06e91FlGSXJJd4YdxCkJasA6tkz9SNrGKSXPeGivKU8X7vHjP4WhtsZcx
-         nL34ArP9KIiCaziKfrZ0V2zmSdNlBJoEaeAKfixziSI8NRTWLezlPEmoaez2O7edGw/6
-         PgeiIyaknT1fnMIr3KZHNIPPZvzywuXr3lxTFvCqkAt8LJ6NDQwYjjhAv7yfk9Zf7i1K
-         GUKJ+s9L9gAh9zi6zr0rhpBIBta6txydFoOzHQoo6i+Ja8GPXw58cPcemJkcCiDjOkPg
-         vpFXUfn/Fx5h9l2AHvOYOkNPFi4S71tAXFXUgzLVhayAGGYaVxvTMpaq1/A0FMUOvCid
-         xTyw==
-X-Gm-Message-State: AOAM5334kIhm3K3+a8P6B0A2oX6iKt53GWe55xSXtegZab66OWtFHKoU
-        HU7Ee42G2aBeFlQySF0IlJaVp3tKqATs9w==
-X-Google-Smtp-Source: ABdhPJyRK562CkBY8amUR/oXjhr2ATqe0r+SZL822RSZLKMNrS1f+2X7nHby2skFhGbZWpFlcZmTzg==
-X-Received: by 2002:a17:903:11c5:b0:138:ce68:68b6 with SMTP id q5-20020a17090311c500b00138ce6868b6mr1666609plh.35.1631078961770;
-        Tue, 07 Sep 2021 22:29:21 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id c4sm724463pji.51.2021.09.07.22.29.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 22:29:21 -0700 (PDT)
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, vipinsh@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
- <20210824164423.GA11859@blackbody.suse.cz> <YSVDwc/1sEmXdOK9@slm.duckdns.org>
- <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
- <20210826112954.GD4520@blackbody.suse.cz>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <49057879-92a9-958a-ac30-057ceabd1b7f@gmail.com>
-Date:   Wed, 8 Sep 2021 13:29:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S1345711AbhIHFbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:31:17 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:38347 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhIHFbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 01:31:14 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 1885TrUL014177
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 07:29:54 +0200
+Received: from [167.87.38.78] ([167.87.38.78])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1885TqKL012102;
+        Wed, 8 Sep 2021 07:29:52 +0200
+Subject: Re: [PATCH 1/3] leds:triggers:Extend the kernel panic LED trigger
+To:     chaochao2021666 <chaochao2021666@163.com>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        464759471@qq.com, chao zeng <chao.zeng@siemens.com>
+References: <20210906135320.23134-1-chaochao2021666@163.com>
+ <20210907142018.45b2d114@dellmb>
+ <12734c2f.116c.17bc3147806.Coremail.chaochao2021666@163.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <69207a27-e66f-425b-861f-c2fb1c8ab65d@siemens.com>
+Date:   Wed, 8 Sep 2021 07:29:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210826112954.GD4520@blackbody.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <12734c2f.116c.17bc3147806.Coremail.chaochao2021666@163.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all:
+On 08.09.21 03:45, chaochao2021666 wrote:
+> Dear Marek
+> 
+> 
+> For other types of led could be set at the userspace level. But for the
+> panic,
+> maybe it would trigger at kernel space during the kernel boot up.
+> 
+> And currently only blink to indicate the error. we need more kinds of
+> type to indicate the error.
+> 
+> we have two leds in the panic trigger group, all in the panic only one
+> behavior-- blink.
+> we need different panic led behavior, so extend the led behavior. I
+> think add more types of 
+> LED behavior could be helpful.
+> 
 
-I have sentout misc_cgroup events and events.local related patches.
-I want to make corresponding changes to pids cgroup by the way. Do
-you think it is ok?
+To make it even clearer, there are three issues to solve for us:
 
-Thanks.
+One is that we have two LEDs mixing a color, red and green, and the
+obviously desired panic color it red, not orange.
+
+The other is that the desired state in an error case is non-blinking,
+just on (in line with what our U-Boot will do in case the boot fails).
+
+And as we need that behavior prior to userspace, it should be
+configurable via DT. But that does not exclude extending the sysfs
+interface as well with the new options.
+
+Jan
+
+> BRs
+> Chao
+> 
+> 
+> At 2021-09-07 20:20:18, "Marek Behún" <kabel@kernel.org> wrote:
+>>On Mon,  6 Sep 2021 21:53:18 +0800
+>>chaochao2021666@163.com wrote:
+>>
+>>> From: chao zeng <chao.zeng@siemens.com>
+>>> 
+>>> This commit extend panic trigger, add two new panic trigger
+>>> "panic_on" and "panic_off" and keep the "panic" compatible with
+>>> "panic_blink".
+>>> 
+>>> All the led on the "panic_on" would light and on
+>>> the "panic_off" would turn off
+>>
+>>We don't wont gazillion triggers, each for every possible setting.
+>>
+>>Instead extend the existing panic trigger to have another sysfs setting
+>>where you can set this behavior.
+>>  echo panic >trigger
+>>  echo blink >on_panic
+>>So the on_panic file can accept "on", "off" or "blink".
+>>
+>>Alternatively a pattern could be set as in the ledtrig-pattern trigger.
+>>
+>>Also your patches do not use correct spacing in commit titles:
+>>  leds:triggers:Extend the kernel panic LED trigger
+>>should instead be
+>>  leds: triggers: Extend the kernel panic LED trigger
+>>
+>>Marek
+> 
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
