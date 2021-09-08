@@ -2,153 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9D9403BB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821CD403BB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351923AbhIHOn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:43:28 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:55955 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231164AbhIHOn1 (ORCPT
+        id S1348605AbhIHOqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhIHOqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:43:27 -0400
-Received: (qmail 605270 invoked by uid 1000); 8 Sep 2021 10:42:17 -0400
-Date:   Wed, 8 Sep 2021 10:42:17 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     alexander.shishkin@linux.intel.com, hpa@zytor.com,
-        parri.andrea@gmail.com, mingo@kernel.org, paulmck@kernel.org,
-        vincent.weaver@maine.edu, tglx@linutronix.de, jolsa@redhat.com,
-        acme@redhat.com, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, eranian@google.com, will@kernel.org,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-Message-ID: <20210908144217.GA603644@rowland.harvard.edu>
-References: <20180926182920.27644-2-paulmck@linux.ibm.com>
- <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
- <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+        Wed, 8 Sep 2021 10:46:49 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F9BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:45:41 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id x10so2560484ilm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 07:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5+eW/ZheKXj4ZX5orDoqEWxFt7XRuMsqdbmkjUkkg0Y=;
+        b=fXFb0hn8qw8T9Jg1x1peuRXYSEoCZ7/hzNJMifqcQuxXdfiGk92VPL8zqn7yayp76A
+         HZhgCxmXxcKlmHBHH2QTmQmtJkclTo1P8+XJ+PQyjHCtfu/weWuDpRtzLihXwUkcxstO
+         KX3Kl7eJr8K0xfN0aQTcwn84dD13SedzA45RtIGwHYSvrDpC9H/P5uofXoCdAZrQqmiv
+         HhzjJ2PfoPTMQkXJXjmNcR9WKf0iEFa6qRMuxZmv3lOd3IrfVta/uBQPMqKZMCZgOb8Y
+         TZuf29q7GJr3APg3xdTEjfit52YLo44PHV5/I+tc6EXcy130Dj9URPnw5GEp/qJcw+PH
+         xr/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5+eW/ZheKXj4ZX5orDoqEWxFt7XRuMsqdbmkjUkkg0Y=;
+        b=wdvKY5H5NpX+IzrEom9DtWk432uY8hV83yQ35XyYb8fFsC/eIOsxuYNaZ5G4lLwHif
+         duGhW/O1FQ76ajENmIQjHnlQAURz4hxDAu5xMc/wbFYSJ3a+6opj7E1mQ9N43neRTaDy
+         mg6n4rhxrq53sE5k8ScDIxJCYjA/p67Tagvk+ETSLAc/ZXYdw+bj9MzfVA0cV2IRDTrI
+         x32q0E7OeVBSagr8ooKzP1JO7hnmMXLhJD3tZtGvvFtmOmHM6RzO0foJQkhHod1qubgw
+         qTvr8U2P0dpov6WPxkeB6qiDYc1OM8HXRXCXNES4I9XoJSpdZYzDu9SK5lcRijCc3Utp
+         91ZA==
+X-Gm-Message-State: AOAM531CmFdIEiPkJJH8zMgkNjg6CaColqBzvTnbsvuREcFV3ehOwt0T
+        YO5R65mS3scImOWq8z8xlLKlc7qGlM0JBmpuGKfqgg==
+X-Google-Smtp-Source: ABdhPJz8YaQ9sLyJy0cQgutspDJTH9PZxDifyu0mxyEfhPS/VizaquyGfUh/HKcbYv/hXaNK093SulStSwzhVwCnjWE=
+X-Received: by 2002:a92:6b0a:: with SMTP id g10mr160726ilc.27.1631112341151;
+ Wed, 08 Sep 2021 07:45:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com> <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 8 Sep 2021 07:45:29 -0700
+Message-ID: <CAD=FV=XzUUdh-hTTg_Pv1P8WHwTTXa7F5m6q1xq=XVdPxyDDpw@mail.gmail.com>
+Subject: Re: [v4 4/4] dt-bindngs: display: panel: Add BOE and INX panel bindings
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 01:44:11PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 08, 2021 at 01:00:26PM +0200, Peter Zijlstra wrote:
-> > On Tue, Oct 02, 2018 at 03:11:10AM -0700, tip-bot for Alan Stern wrote:
-> > > Commit-ID:  6e89e831a90172bc3d34ecbba52af5b9c4a447d1
-> > > Gitweb:     https://git.kernel.org/tip/6e89e831a90172bc3d34ecbba52af5b9c4a447d1
-> > > Author:     Alan Stern <stern@rowland.harvard.edu>
-> > > AuthorDate: Wed, 26 Sep 2018 11:29:17 -0700
-> > > Committer:  Ingo Molnar <mingo@kernel.org>
-> > > CommitDate: Tue, 2 Oct 2018 10:28:01 +0200
-> > > 
-> > > tools/memory-model: Add extra ordering for locks and remove it for ordinary release/acquire
-> > > 
-> > > More than one kernel developer has expressed the opinion that the LKMM
-> > > should enforce ordering of writes by locking.  In other words, given
-> > > the following code:
-> > > 
-> > > 	WRITE_ONCE(x, 1);
-> > > 	spin_unlock(&s):
-> > > 	spin_lock(&s);
-> > > 	WRITE_ONCE(y, 1);
-> > > 
-> > > the stores to x and y should be propagated in order to all other CPUs,
-> > > even though those other CPUs might not access the lock s.  In terms of
-> > > the memory model, this means expanding the cumul-fence relation.
-> > 
-> > Let me revive this old thread... recently we ran into the case:
-> > 
-> > 	WRITE_ONCE(x, 1);
-> > 	spin_unlock(&s):
-> > 	spin_lock(&r);
-> > 	WRITE_ONCE(y, 1);
-> > 
-> > which is distinct from the original in that UNLOCK and LOCK are not on
-> > the same variable.
-> > 
-> > I'm arguing this should still be RCtso by reason of:
-> > 
-> >   spin_lock() requires an atomic-acquire which:
-> > 
-> >     TSO-arch)		implies smp_mb()
-> >     ARM64)		is RCsc for any stlr/ldar
-> >     Power)		LWSYNC
-> >     Risc-V)		fence r , rw
-> >     *)			explicitly has smp_mb()
-> > 
-> > 
-> > However, Boqun points out that the memory model disagrees, per:
-> > 
-> >   https://lkml.kernel.org/r/YTI2UjKy+C7LeIf+@boqun-archlinux
-> > 
-> > Is this an error/oversight of the memory model, or did I miss a subtlety
-> > somewhere?
+Hi,
 
-There's the question of what we think the LKMM should do in principle, and 
-the question of how far it should go in mirroring the limitations of the 
-various kernel hardware implementations.  These are obviously separate 
-questions, but they both should influence the design of the memory model.  
-But to what extent?
+On Sun, Aug 29, 2021 at 7:39 PM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Add documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
+>
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Given:
+Not worth re-posting just for this, but when applying we should fix
+s/bindngs/bindings/ in ${SUBJECT}. If you end up posting a v5 for some
+other reason then you should fix it, of course.
 
-	spin_lock(&r);
-	WRITE_ONCE(x, 1);
-	spin_unlock(&r);
-	spin_lock(&s);
-	WRITE_ONCE(y, 1);
-	spin_unlock(&s);
-
-there is no reason _in theory_ why a CPU shouldn't reorder and interleave 
-the operations to get:
-
-	spin_lock(&r);
-	spin_lock(&s);
-	WRITE_ONCE(x, 1);
-	WRITE_ONCE(y, 1);
-	spin_unlock(&r);
-	spin_unlock(&s);
-
-(Of course, this wouldn't happen if some other CPU was holding the s lock 
-while waiting for r to be released.  In that case the spin loop for s above 
-wouldn't be able to end until after the unlock operation on r was complete, 
-so this reordering couldn't occur.  But if there was no such contention then 
-the reordering is possible in theory -- ignoring restrictions imposed by the 
-actual implementations of the operations.)
-
-Given such a reordering, nothing will prevent other CPUs from observing the 
-write to y before the write to x.
-
-> Hmm.. that argument isn't strong enough for Risc-V if I read that FENCE
-> thing right. That's just R->RW ordering, which doesn't constrain the
-> first WRITE_ONCE().
-> 
-> However, that spin_unlock has "fence rw, w" with a subsequent write. So
-> the whole thing then becomes something like:
-> 
-> 
-> 	WRITE_ONCE(x, 1);
-> 	FENCE RW, W
-> 	WRITE_ONCE(s.lock, 0);
-> 	AMOSWAP %0, 1, r.lock
-> 	FENCE R, WR
-> 	WRITE_ONCE(y, 1);
-> 
-> 
-> Which I think is still sufficient, irrespective of the whole s!=r thing.
-
-To me, this argument feels like an artificial, unintended consequence of the 
-individual implementations, not something that should be considered a 
-systematic architectural requirement.  Perhaps one could say the same thing 
-about the case where the two spinlock_t variables are the same, but at least 
-in that case there is a good argument for inherent ordering of atomic 
-accesses to a single variable.
-
-Alan
+-Doug
