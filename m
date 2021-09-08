@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9464032F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC334032FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243962AbhIHDlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbhIHDlA (ORCPT
+        id S1346799AbhIHDlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:41:35 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:52395 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234382AbhIHDl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:41:00 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE484C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:39:52 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id bd1so1359042oib.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=GZ0a+q1qXF7MfrjInrLnr5HFObJ3ogMjBmTjbogeVrw=;
-        b=dX9mbpXkrmh1LTKr1u17bTeswHB33lW+3ok9Bgv+zTTgo6UDGp6SKIJhxNX2bOS042
-         +1ue2wyoNZ9z4Z1lfeJCE3nRIJACi/onP6pdf/H8tGud4qRyk3Mflb3Axqqav7vVAP7B
-         6fPs9wFc6pOED/0ZtVJwISqOuYyc6kwk8eEgc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=GZ0a+q1qXF7MfrjInrLnr5HFObJ3ogMjBmTjbogeVrw=;
-        b=4oB2uvELRs6JGU3Hbx15ULdXZxRQq2IhvroHxfh/mlnWwOvzMvUOlnrwhbbnhfM7kL
-         XksxtAxpPoPbWu3lZC0rAqBD5GIPxtdaY46Wuga9MLUSHccOjD1ST9RmHDcoIIxOWfqx
-         h83CjCYLw3SU8xwQWSckqDa8jm9f6sPuhCFRpETS+m3fYpIVyad3yWav6CK3CvbCEB6d
-         u4E0R4L1DCR/x5251lOO0rQtMOk05zjlY43K0e97i3NUsdXnibQ3MIJCpSFMmraBN2ur
-         kUuc23EaMxckKsuDI6+qsp82nA8KMorZhUaMDwkIW2IBTu9fQrK9IzWwi0iiHjSnq+0l
-         gf+g==
-X-Gm-Message-State: AOAM530D6Tu/fKurTsSHDcFRZ49v/JHuDP9SeLOyEvM8Pc7e2JBpOL4Z
-        0uq1S5pkpDc0XVfexWYhBnK6AiFXnV3qH18qPMYicQ==
-X-Google-Smtp-Source: ABdhPJxdiiGjJ10TgqGvBQ1/7Lm6AUVwtj/VpCWil2bU6pYVcRN9bsCnM/aq8sDCvKEppqWfKKHKcnIE0NCcnfAWF34=
-X-Received: by 2002:a54:4419:: with SMTP id k25mr1090071oiw.32.1631072392333;
- Tue, 07 Sep 2021 20:39:52 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 8 Sep 2021 03:39:51 +0000
-MIME-Version: 1.0
-In-Reply-To: <20210623035039.772660-1-bjorn.andersson@linaro.org>
-References: <20210623035039.772660-1-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 8 Sep 2021 03:39:51 +0000
-Message-ID: <CAE-0n53SLqmXhJBPROeQj2HzShgYoFzDqsi-KCj3dgVHdDWUTA@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Tue, 7 Sep 2021 23:41:27 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 145672B00247;
+        Tue,  7 Sep 2021 23:40:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 07 Sep 2021 23:40:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=5COa0wVVrtdfa0gTBNofmOof6q
+        DfWnoFnqMWJA5jhro=; b=UUzw/24tsi4HOZOj5Jq4a0HIL6Bi1131y+cHyZyjAV
+        /4/SkNY9jZjR65mg2faAFJPxlSmGAIelqzK2iObWTmgCu1hIphPG4lZrzSBpJB/A
+        qS5tNbcki3CxsPP2Fh8LFOdQkYjaLSU/kUA4z3SuryFjrH+LdHGG3vPaN2+aOA75
+        kL83JeOzizFftD9uTItODUNDQZKewWPTD96m+2u0ZDLtXwQQQE7XrePOdAoAom1s
+        OxsrS2psO/IvczGkqJ+hggqX+pxZ5B9KLdkSTvzda1myaEj8LXbeZ7bvdV1QQoh2
+        Do9LEwn/tc2D2zVVkdRTxRItd/S9UnYNx+dbP3fQLLKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5COa0wVVrtdfa0gTB
+        NofmOof6qDfWnoFnqMWJA5jhro=; b=ipBdJ5vDzOY6Ga3yropOJdLFlfKk13Tw6
+        NTa68FhJB48w1GIajZzy42na4J6vXSD51nqeB2MENC2y/RpVcomuN34R7rTjQCRD
+        LOuWqErdruM2MORQLEIctMuD6H6eMX86r9w5kgYzc+oJJkHA9LRLpFh+ksi+dMap
+        RZptotS0wPwxfXhmWRueemjJ2HSPb25PSHYAcOAIpcWANGwGbDDFmQzHuu8CZsDo
+        rcRXuBItIXt5pMXo94eIue44ocqiAsFHQ/WBACRGvQIqu1EAC3wGxbjdlhnnBD+s
+        kSAMp5IH+91SUmj//t4UTnd1EZNMouaiEk/dSVsIpwlOz7h+O2Irg==
+X-ME-Sender: <xms:oTA4YYOfcy30WCQG_Y9IcGcy5bRcPoNYgof7Xt2fUNDE5Tsla3-yCQ>
+    <xme:oTA4Ye-4RCpFyt5W_sfwGH-bGmwDzHjWHhGWPvkjpsdP2_gpEidwu64_Y7G-8oWz9
+    030hGIWg4tI1Ni_jQ>
+X-ME-Received: <xmr:oTA4YfTPHXOkyPhlloxxmxZ9-tM-VyTMlGSdhrnP66sJ-QU7UStLdPjqnGqE4jWMH1bZ0u7p1Yyt39d7VU1FKob3T9bWphbba9FFeg5Hf0kF4IVOSto9nCi_5O6CnF8z_r6mPA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgjedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeekkeffffetgfegfeeffeevgffhleehjefglefhveelkeeggeekgfevgeff
+    hfeiueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:oTA4YQsvWl4MF_Ek8G_1exb0YvsEz-FZM3BufQ6VaL7CsVCwrYW42w>
+    <xmx:oTA4YQeuEVfjPKEUt0lGFTxsMMB1FkNPMI9QXBh1SR12xDNmO9fAlQ>
+    <xmx:oTA4YU3_O_Ys9SQScp5jgBMO6V06xvqWz1W8pNIN63BouSNpkmqKPw>
+    <xmx:ojA4YU1_tMonsNiPpplJbNK64EhwVvFxx27KIAFWr1Nc2xLSZxRwGl5UV6M>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Sep 2021 23:40:17 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/3] Input: sun4i-lradc-keys: R329 and D1 support
+Date:   Tue,  7 Sep 2021 22:40:13 -0500
+Message-Id: <20210908034016.24119-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-06-22 20:50:38)
-> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> new file mode 100644
-> index 000000000000..10aee61a7ffc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> @@ -0,0 +1,164 @@
-[....]
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    lpg {
+This series adds R329 and D1 SoC support to the LRADC driver. These SoCs
+do not change the register interface, only the platform integration.
 
-Should the node name be led or leds?
+I have another series[1] which adds wakeup support to this driver.
+It has been reviewed/acked and is waiting to be merged for several
+months[2]. That series merges cleanly with this one.
 
-> +      compatible = "qcom,pmi8994-lpg";
+[1]: https://patchwork.kernel.org/project/linux-input/cover/20210805051241.47168-1-samuel@sholland.org/
+[2]: https://patchwork.kernel.org/project/linux-input/cover/20210430042003.4591-1-samuel@sholland.org/
 
-Shouldn't there be a reg property? I see the driver has them hardcoded
-but if this is a child of the spmi node then it should have a reg
-property (or many reg properties).
+Samuel Holland (3):
+  dt-bindings: input: sun4i-lradc-keys: Add R329 and D1 compatibles
+  Input: sun4i-lradc-keys: Add optional clock/reset support
+  Input: sun4i-lradc-keys: Add support for R329 and D1
+
+ .../input/allwinner,sun4i-a10-lradc-keys.yaml | 22 +++++++++++++
+ drivers/input/keyboard/sun4i-lradc-keys.c     | 31 +++++++++++++++++++
+ 2 files changed, 53 insertions(+)
+
+-- 
+2.31.1
+
