@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08E6403905
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7527D403910
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351543AbhIHLmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:42:22 -0400
-Received: from mail-oo1-f45.google.com ([209.85.161.45]:35607 "EHLO
-        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235453AbhIHLmV (ORCPT
+        id S1351555AbhIHLpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349176AbhIHLpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:42:21 -0400
-Received: by mail-oo1-f45.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so671168oon.2;
-        Wed, 08 Sep 2021 04:41:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=erJIH1VnYLWtGRKdJRpE5M1/fXJwDp9ceva/bebj1Fk=;
-        b=BCJwqAEVmARfay/VCcFCxqo5xXkwnsyYBhAvH+4yXkHtUkkL6qphzZt+INFn9W8rp6
-         wiK5FzBvgUExH1Rgn3F+5p497QfNtuGaW1QyQ4as74pNQmO7oJBZd7veoaDHuxvoURaj
-         +8hQsQ0TZ98mpUNVIMwF9YoW2yC6wmvRwcsbqmfYpqQiHXdm2n9Y3Ti3S3/IozujUiG3
-         95fvW+IVu0LLr+hX+120AtI4sL4AXnuNc6flTGi1vEXx0k5V0p+bfswBrahas6qbCD9u
-         X8hS2iUNLSU0Ux0Xs6SGhPH+WhnKwe8skhTgB5OIrTek+c2IV8+DMYGjvgrpOnfQMmZB
-         k5lw==
-X-Gm-Message-State: AOAM530v3fsGZznWO0TBsJEolpSmztMLhZM3YhNLqtCsAdIInTSswJdn
-        Yhu6Hvw0myYSDWN+iUNkOg==
-X-Google-Smtp-Source: ABdhPJw5bqv0LPB2yVc0Z6BhoWJRI+LpAkn9SRXecjKrBUTGRFpyYhtgTssW7F1kA4Wzn9mrvApYZA==
-X-Received: by 2002:a4a:ca83:: with SMTP id x3mr2432630ooq.2.1631101273136;
-        Wed, 08 Sep 2021 04:41:13 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m20sm397019oiw.46.2021.09.08.04.41.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 04:41:12 -0700 (PDT)
-Received: (nullmailer pid 1816057 invoked by uid 1000);
-        Wed, 08 Sep 2021 11:41:11 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, maz@kernel.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210908082350.106948-2-claudiu.beznea@microchip.com>
-References: <20210908082350.106948-1-claudiu.beznea@microchip.com> <20210908082350.106948-2-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: microchip,eic: add bindings
-Date:   Wed, 08 Sep 2021 06:41:11 -0500
-Message-Id: <1631101271.425453.1816056.nullmailer@robh.at.kernel.org>
+        Wed, 8 Sep 2021 07:45:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1583EC061575;
+        Wed,  8 Sep 2021 04:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KkbVfC2NQ37cQ9a9pfkaXbYDmV13hjbW4DGEU3FEM8g=; b=cgldSu7jeycIUIEkvccbPhxMpL
+        isZsXa+GOmeyES61HptJTl2+pBZ6PXUcZfiMqXCesR4WlhrFtw8AEFX82Ov3Wx35XGhAIVbxp7Ccb
+        yRz4x0FR81Kou2PY5yryoFvE/vaR+SX+xj3dBQbjcdvkztvqOsFT0QmKCbBJ+hi7yoZVJLAeSWPqp
+        k2a34E2vNIZfi0TKY0Hze1VwJdoxDZC5TFk8kSWiBz6DLezTvrWRE87RQ8MXUrzatj2cfyzUccj+/
+        m4VydFJQuamYB/tglrmSaXfyWu7fd9PMn67+l+mzfK3iP3cvFwXw9Tr4Sn8VhnVgXADicnd4sTs3M
+        zzMUKBEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNvzx-001dJI-53; Wed, 08 Sep 2021 11:44:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91163300362;
+        Wed,  8 Sep 2021 13:44:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6FEA92067E687; Wed,  8 Sep 2021 13:44:11 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 13:44:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     stern@rowland.harvard.edu, alexander.shishkin@linux.intel.com,
+        hpa@zytor.com, parri.andrea@gmail.com, mingo@kernel.org,
+        paulmck@kernel.org, vincent.weaver@maine.edu, tglx@linutronix.de,
+        jolsa@redhat.com, acme@redhat.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, eranian@google.com, will@kernel.org
+Cc:     linux-tip-commits@vger.kernel.org
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Sep 2021 11:23:49 +0300, Claudiu Beznea wrote:
-> Add DT bindings for Microchip External Interrupt Controller.
+On Wed, Sep 08, 2021 at 01:00:26PM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 02, 2018 at 03:11:10AM -0700, tip-bot for Alan Stern wrote:
+> > Commit-ID:  6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> > Gitweb:     https://git.kernel.org/tip/6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> > Author:     Alan Stern <stern@rowland.harvard.edu>
+> > AuthorDate: Wed, 26 Sep 2018 11:29:17 -0700
+> > Committer:  Ingo Molnar <mingo@kernel.org>
+> > CommitDate: Tue, 2 Oct 2018 10:28:01 +0200
+> > 
+> > tools/memory-model: Add extra ordering for locks and remove it for ordinary release/acquire
+> > 
+> > More than one kernel developer has expressed the opinion that the LKMM
+> > should enforce ordering of writes by locking.  In other words, given
+> > the following code:
+> > 
+> > 	WRITE_ONCE(x, 1);
+> > 	spin_unlock(&s):
+> > 	spin_lock(&s);
+> > 	WRITE_ONCE(y, 1);
+> > 
+> > the stores to x and y should be propagated in order to all other CPUs,
+> > even though those other CPUs might not access the lock s.  In terms of
+> > the memory model, this means expanding the cumul-fence relation.
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->  .../interrupt-controller/microchip,eic.yaml   | 73 +++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/microchip,eic.yaml
+> Let me revive this old thread... recently we ran into the case:
 > 
+> 	WRITE_ONCE(x, 1);
+> 	spin_unlock(&s):
+> 	spin_lock(&r);
+> 	WRITE_ONCE(y, 1);
+> 
+> which is distinct from the original in that UNLOCK and LOCK are not on
+> the same variable.
+> 
+> I'm arguing this should still be RCtso by reason of:
+> 
+>   spin_lock() requires an atomic-acquire which:
+> 
+>     TSO-arch)		implies smp_mb()
+>     ARM64)		is RCsc for any stlr/ldar
+>     Power)		LWSYNC
+>     Risc-V)		fence r , rw
+>     *)			explicitly has smp_mb()
+> 
+> 
+> However, Boqun points out that the memory model disagrees, per:
+> 
+>   https://lkml.kernel.org/r/YTI2UjKy+C7LeIf+@boqun-archlinux
+> 
+> Is this an error/oversight of the memory model, or did I miss a subtlety
+> somewhere?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Hmm.. that argument isn't strong enough for Risc-V if I read that FENCE
+thing right. That's just R->RW ordering, which doesn't constrain the
+first WRITE_ONCE().
 
-yamllint warnings/errors:
+However, that spin_unlock has "fence rw, w" with a subsequent write. So
+the whole thing then becomes something like:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/microchip,eic.example.dt.yaml: interrupt-controller@e1628000: #interrupt-cells:0:0: 2 was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/microchip,eic.yaml
 
-doc reference errors (make refcheckdocs):
+	WRITE_ONCE(x, 1);
+	FENCE RW, W
+	WRITE_ONCE(s.lock, 0);
+	AMOSWAP %0, 1, r.lock
+	FENCE R, WR
+	WRITE_ONCE(y, 1);
 
-See https://patchwork.ozlabs.org/patch/1525680
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Which I think is still sufficient, irrespective of the whole s!=r thing.
