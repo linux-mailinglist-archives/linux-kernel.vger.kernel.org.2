@@ -2,157 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824C940382A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3C3403831
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345766AbhIHKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:47:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231440AbhIHKrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:47:33 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188AYM8W007749;
-        Wed, 8 Sep 2021 06:46:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=Bf1jLT0XZ2n0j8yKCerL0h64crrSOksW2ucsLj/LGGg=;
- b=tE8QpkXA80ZTCkAmqrc34c+F5IdNNtZ6n/g/pvPmUIvs4+RBZQJfzNcs7Wj6VtrfwtR4
- SHZEBp9/rWnyVCfiM5FObFIXAz1Euy6tUr5U0YNb3h6nr3T2Wz7tBxzTU8Qtr9NkhR62
- pfQMg/N78GyFtr9FllF9krsGtU/vUysaYhomub3gmPu/bR8+xni1OuSJbifqag7bsevl
- 9P+sGAQj3WCqZa/jbBNWOyCEGmCB3TDGncEjwFO+Cawg9YVvnbXHgdampJIT+DmuASUQ
- wlp7yrqPa13xiMHtOYPlXp6DK0TErKIjKlSoG2ArAk57YE1wneVKzoR+FLKiDTKl6Qce tw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3axhcendy3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Sep 2021 06:46:11 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 188AhPVM025426;
-        Wed, 8 Sep 2021 10:46:09 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3axcnp7gh3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Sep 2021 10:46:09 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 188Ak6Z445023498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Sep 2021 10:46:06 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE942AE05D;
-        Wed,  8 Sep 2021 10:46:05 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D3EAAE051;
-        Wed,  8 Sep 2021 10:46:02 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.43.55.200])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  8 Sep 2021 10:46:02 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Wed, 08 Sep 2021 16:16:01 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Shivaprasad G Bhat <sbhat@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     nvdimm@lists.linux.dev, aneesh.kumar@linux.ibm.com,
-        sbhat@linux.ibm.com, dan.j.williams@intel.com
-Subject: Re: [RFC PATCH v2] powerpc/papr_scm: Move duplicate definitions to
- common header files
-In-Reply-To: <87sfyfmzhh.fsf@mpe.ellerman.id.au>
-References: <163092037510.812.12838160593592476913.stgit@82313cf9f602>
- <87sfyfmzhh.fsf@mpe.ellerman.id.au>
-Date:   Wed, 08 Sep 2021 16:16:00 +0530
-Message-ID: <878s07s5uf.fsf@vajain21.in.ibm.com>
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KhecTvEg0T7ZqrdissAhXJUgmvbPa4ZT
-X-Proofpoint-ORIG-GUID: KhecTvEg0T7ZqrdissAhXJUgmvbPa4ZT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1346277AbhIHKuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231440AbhIHKt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:49:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 006EE61163;
+        Wed,  8 Sep 2021 10:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631098130;
+        bh=dViuyiiozoC/WhPhQRNwqN73Ka18ZJIJwF6nPiWVHhA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dGXUNojfFA2QNJUYlBNAh39aqQDSOUjraHQL0wZfcAn+U8LmU4AdYKz1wnwvaJe/R
+         MHfz2cBL1Iiju/gd/NI9jJ6tVFDVMjeK2MEI9GQmz973DeAbnXUHled6l/QtXjkbW8
+         Fp5TwTh2yc1Y0qQhfn+6zeJYfTB3X+AjBqhw+ByE=
+Date:   Wed, 8 Sep 2021 12:48:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jung Daehwan <dh10.jung@samsung.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        "open list:USB GADGET/PERIPHERAL SUBSYSTEM" 
+        <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: usb: gadget: u_serial: check Null pointer in EP callback
+Message-ID: <YTiVD/py5d6rvSgU@kroah.com>
+References: <CGME20210806080835epcas2p2134b8b635e27d129a9e2f2f400a814fc@epcas2p2.samsung.com>
+ <1628236406-185160-1-git-send-email-dh10.jung@samsung.com>
+ <YQzu+Xy+3wAyXeDK@kroah.com>
+ <000001d7a482$93438b20$b9caa160$@samsung.com>
+ <20210908073235.GA13332@ubuntu>
+ <20210908102129.GB13332@ubuntu>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-08_05:2021-09-07,2021-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 clxscore=1011
- mlxscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080067
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908102129.GB13332@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mpe,
+On Wed, Sep 08, 2021 at 07:21:29PM +0900, Jung Daehwan wrote:
+> On Fri, Aug 06, 2021 at 05:13:34PM +0200, Greg Kroah-Harman wrote:
+> > On Fri, Aug 06, 2021 at 04:53:26PM +0900, Daehwan Jung wrote:
+> > > From: taehyun cho <taehyun.cho@samsung.com>
+> > > 
+> > > Endpoint complete function in u_serial can be executed when 'gs_port' 
+> > > is Null. This situation happens when 'dwc3_gadget_pullup' returns 
+> > > ETIMEDOUT. The reason why ETIMEDOUT is returned is that whole system 
+> > > is out of order including interrupt regardless of USB.
+> > > 
+> > > pc : __lock_acquire+0x54/0x5ec
+> > > lr : lock_acquire+0xe8/0x198
+> > > sp : ffffffc03914b9d0
+> > > x29: ffffffc03914b9d0 x28: ffffff895f13b680
+> > > x27: 0000000000000000 x26: 0000000000000000
+> > > x25: 00000000000003c8 x24: 0000000000000080
+> > > x23: ffffffc010a8f650 x22: 0000000000000000
+> > > x21: 0000000000000000 x20: 0000000000000000
+> > > x19: ffffffc010a8f650 x18: ffffffc02d70a0b0
+> > > x17: 0000000000000000 x16: 00000000000229e0
+> > > x15: 0000000000000004 x14: 00000000000004f2
+> > > x13: ffffffc0120fe178 x12: 0000000000000003
+> > > x11: 00000000ffffffff x10: 0000000100000001
+> > > x9 : 0000000000000001 x8 : 00000000000003c8
+> > > x7 : 0000000000000000 x6 : ffffffc010a8f650
+> > > x5 : 0000000000000000 x4 : 0000000000000080
+> > > x3 : 0000000000000000 x2 : 0000000000000000
+> > > x1 : 0000000000000000 x0 : 00000000000003c8 Call trace:
+> > >  __lock_acquire+0x54/0x5ec
+> > >  lock_acquire+0xe8/0x198
+> > >  _raw_spin_lock+0x70/0x88
+> > >  gs_read_complete+0x48/0xac
+> > >  usb_gadget_giveback_request+0x48/0x80
+> > >  dwc3_gadget_giveback+0xcc/0xe8
+> > >  dwc3_remove_requests+0xa8/0x188
+> > >  __dwc3_gadget_ep_disable+0x98/0x110
+> > >  dwc3_gadget_ep_disable+0x50/0xbc
+> > >  usb_ep_disable+0x44/0x94
+> > >  gserial_disconnect+0xc0/0x250
+> > >  acm_free_func+0x30/0x48
+> > >  usb_put_function+0x34/0x68
+> > >  config_usb_cfg_unlink+0xdc/0xf8
+> > >  configfs_unlink+0x144/0x264
+> > >  vfs_unlink+0x134/0x218
+> > >  do_unlinkat+0x13c/0x2a0
+> > >  __arm64_sys_unlinkat+0x48/0x60
+> > >  el0_svc_common.llvm.10277270529376503802+0xb8/0x1b4
+> > >  do_el0_svc+0x24/0x8c
+> > >  el0_svc+0x10/0x1c
+> > >  el0_sync_handler+0x68/0xac
+> > >  el0_sync+0x18c/0x1c0
+> > > 
+> > > Signed-off-by: taehyun cho <taehyun.cho@samsung.com>
+> > > ---
+> > >  drivers/usb/gadget/function/u_serial.c | 18 ++++++++++++++++++
+> > >  1 file changed, 18 insertions(+)
+> > > 
+> > > diff --git a/drivers/usb/gadget/function/u_serial.c 
+> > > b/drivers/usb/gadget/function/u_serial.c
+> > > index 6f68cbe..af08a18 100644
+> > > --- a/drivers/usb/gadget/function/u_serial.c
+> > > +++ b/drivers/usb/gadget/function/u_serial.c
+> > > @@ -450,6 +450,15 @@ static void gs_read_complete(struct usb_ep *ep, 
+> > > struct usb_request *req)  {
+> > >  	struct gs_port	*port = ep->driver_data;
+> > >  
+> > > +	/*
+> > > +	 * Port became NULL when 'dwc3_gadget_pullup' returns ETIMEDOUT.
+> > > +	 * Return here to avoid panic.
+> > > +	 */
+> > > +	if (!port) {
+> > > +		pr_err("%s, failed to get port\n", __func__);
+> > > +		return;
+> > > +	}
+> > > +
+> > 
+> 	spin_lock(&port->port_lock);
+> 	...
+> 	spin_unlock(&port->port_lock);
+> > What prevents port from being null right after checking this?  Where is the
+> > lock to prevent this?
+> >
+> It tries to get lock first in gs_read_complete/gs_write_complete like above.
+> That's why the panic occured during getting lock but this issue is not related
+> to lock. We just want to prevent doing something after port becomes null.
 
-Thanks for looking into this patch.
+I do not understand, you are not protecting anything here, what happens
+if port becomes NULL right after checking it and before the lock?
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
+Either this needs to be tested like this, or it does not at all.  This
+change does not really fix the issue.
 
-> Shivaprasad G Bhat <sbhat@linux.ibm.com> writes:
->> papr_scm and ndtest share common PDSM payload structs like
->> nd_papr_pdsm_health. Presently these structs are duplicated across papr_pdsm.h
->> and ndtest.h header files. Since 'ndtest' is essentially arch independent and can
->> run on platforms other than PPC64, a way needs to be deviced to avoid redundancy
->> and duplication of PDSM structs in future.
->>
->> So the patch proposes moving the PDSM header from arch/powerpc/include/uapi/ to
->> the generic include/uapi/linux directory. Also, there are some #defines common
->> between papr_scm and ndtest which are not exported to the user space. So, move
->> them to a header file which can be shared across ndtest and papr_scm via newly
->> introduced include/linux/papr_scm.h.
->>
->> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
->> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
->> Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
->> ---
->> Changelog:
->>
->> Since v1:
->> Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/162505488483.72147.12741153746322191381.stgit@56e104a48989/
->> * Removed dependency on this patch for the other patches
->>
->>  MAINTAINERS                               |    2 
->>  arch/powerpc/include/uapi/asm/papr_pdsm.h |  165 -----------------------------
->>  arch/powerpc/platforms/pseries/papr_scm.c |   43 --------
->>  include/linux/papr_scm.h                  |   48 ++++++++
->>  include/uapi/linux/papr_pdsm.h            |  165 +++++++++++++++++++++++++++++
->
-> This doesn't make sense to me.
->
-> Anything with papr (or PAPR) in the name is fundamentally powerpc
-> specific, it doesn't belong in a generic header, or in a generic
-> location.
->
-> What's the actual problem you're trying to solve?
->
-The ndtest module (tools/testing/nvdimm/test/ndtest.c) is implemented in
-an arch independed way to enable testing of PAPR PDSMs on non ppc64
-platforms like x86_64. It uses the same PDSM structs as used by papr_scm
-to communicate with libndctl userspace. 
 
-Since papr_scm is ppc64 arch specific we were so far duplicating the
-PDSM structures between ndtest and papr_scm. The patch tries to solve
-this duplication by moving the shared structs to arch independent common
-include dirs.
+> > >  	/* Queue all received data until the tty layer is ready for it. */
+> > >  	spin_lock(&port->port_lock);
+> > >  	list_add_tail(&req->list, &port->read_queue); @@ -461,6 +470,15 @@ 
+> > > static void gs_write_complete(struct usb_ep *ep, struct usb_request 
+> > > *req)  {
+> > >  	struct gs_port	*port = ep->driver_data;
+> > >  
+> > > +	/*
+> > > +	 * port became NULL when 'dwc3_gadget_pullup' returns ETIMEDOUT.
+> > > +	 * Return here to avoid panic.
+> > > +	 */
+> > > +	if (!port) {
+> > > +		pr_err("%s, failed to get port\n", __func__);
+> > > +		return;
+> > > +	}
+> > 
+> > Same here, where is the lock?
+> > 
+> > And why report an error, what can a user do about it?
+> > 
+> 
+> It could happen to access null pointer and occur whole system panic.
 
-Secondly, PDSMs describes how userspace can use NVDIMM_FAMILY_PAPR to
-interact with NVDIMMs. So potentially a new NVDIMM beyond powerpc arch
-can add its support and would need access to the same structs used by
-papr_scm and ndtest. In that context it would make sense to move PDSM
-headers to generic include dirs.
+Again, what is setting that pointer to NULL and why isn't it caught
+before this?  Shouldn't everything be properly torn down and the
+completions finished _before_ the port is set to NULL?
 
-> If it's just including papr_scm bits into ndtest.c then that should be
-> as simple as:
->
-> #ifdef __powerpc__
-> #include <asm/papr_scm.h>
-> #endif
->
-> Shouldn't it?
->
-No, as ndtest implements support for NVDIMM_FAMILY_PAPR and would need
-access to PDSM related structs which presently are only available for
-powerpc.
+If not, then fix that issue, as this change will not fix the real
+problem here, only delay it.
 
-> cheers
->
+thanks,
 
--- 
-Cheers
-~ Vaibhav
+greg k-h
