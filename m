@@ -2,73 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9182B403A4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9BF403A4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345371AbhIHNFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:05:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344970AbhIHNFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 042FB61139;
-        Wed,  8 Sep 2021 13:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631106249;
-        bh=oLXIl17w04h60xVlOf3Ghf6GaP2acxlPqetjMbrp8Js=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LeDglWeo8ZZdF+LHaRigY1b+mmrpBgr23zsVbL9TPek85LpYHFJJuLBSg+dKjUM9w
-         E9UQ3uS4I7KCrQtXp0Zr+NRpxkpmoa9xFQHMz1xIowe7Y29Rc9f3kUcte0RLdJN4lX
-         7+S+DzFbmRIGEgW8BqLMz61WWzh5ocRbaZ/eqwQE=
-Date:   Wed, 8 Sep 2021 15:04:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Yu, Lang" <Lang.Yu@amd.com>
-Cc:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Message-ID: <YTi0xkTVYqUpKXSt@kroah.com>
-References: <20210908120723.3920701-1-lang.yu@amd.com>
- <YTitRjOZtWPTyRHd@kroah.com>
- <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+        id S238205AbhIHNG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:06:56 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58630 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232870AbhIHNGz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:06:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631106348; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=vw2aL2Cthy/tQZoFWOmfPqpnMlONA1rEbkDkuPgSY3E=; b=aZzSgJMbz36t66ZZyJx5xIK+4+Y27PMEzGBrJipqXm9DosRHJEk6wR14OeJ4gO8dP6Bl+0b9
+ DaMolT6n6hBJeXeI+MlgFQVFH+oS7jhg0/s4Vi0rj3yjxj87kpErNdofg5Ucw0TtrQX88cWj
+ 7+QnofkHSDEFU85jmPTX93CTfTA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6138b50f6fc2cf7ad95c0d57 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 13:05:19
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9FF8CC4360D; Wed,  8 Sep 2021 13:05:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.137.170] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0C46CC43460;
+        Wed,  8 Sep 2021 13:05:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0C46CC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] ASoC: dt-bindings: lpass: add binding headers for digital
+ codecs
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <1630934854-14086-1-git-send-email-srivasam@codeaurora.org>
+ <4a513810-ab33-006d-4bce-5e35702a51e0@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <689316cf-7de7-6702-6e82-ee52d786a602@codeaurora.org>
+Date:   Wed, 8 Sep 2021 18:35:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+In-Reply-To: <4a513810-ab33-006d-4bce-5e35702a51e0@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+Thanks for your time and valuable suggestions Srini!!
 
-A: No.
-Q: Should I include quotations after my reply?
+On 9/8/2021 3:11 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 06/09/2021 14:27, Srinivasa Rao Mandadapu wrote:
+>> +#define LPASS_CDC_DMA_RX0 6
+>
+> You are only adding RX0, what happens to RX1.. RX7
+>
+> TBH, skipping other entries for ex CDC_DMA_RX will end up with sparse 
+> numbering.
+>
+> Please add all the entries for CDC_DMA_RX and other ports as well.
+>
+> Like:
+>
+> #define LPASS_CDC_DMA_RX0    6
+> #define LPASS_CDC_DMA_RX1    7
+> #define LPASS_CDC_DMA_RX2    8
+> #define LPASS_CDC_DMA_RX3    9
+> #define LPASS_CDC_DMA_RX4    10
+> #define LPASS_CDC_DMA_RX5    11
+> #define LPASS_CDC_DMA_RX6    12
+> #define LPASS_CDC_DMA_RX7    13
+>
+>
+Okay. Will add and Share new patch.
+>> +#define LPASS_CDC_DMA_TX3 7
+>> +#define LPASS_CDC_DMA_VA0 8
+> You mean VA_TX0?
+>
+Yes. Will change accordingly.
+>
+>> +#define LPASS_MAX_PORTS 9
+> We really do not need this in bindings.
+> You could add this is some of the driver header files instead.
+>
+Okay Will remove.
+> --srini
+>> +
 
-http://daringfireball.net/2007/07/on_top
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-
-On Wed, Sep 08, 2021 at 12:52:43PM +0000, Yu, Lang wrote:
-> [AMD Official Use Only]
-> 
-> Thanks for your reply.
-> Just curious if we don't put such a limitation, what are the consequences?
-> If we remove the limitation, sys_emit/sys_emit_at api will be more flexible.
-> Since the comments of  sysfs_emit/ sys_emit_at api are  
-> " sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer. ",
-> Why not make them more equivalent with scnprintf?
-
-Because this is not a general replacement for scnprintf(), it is only to
-be used with sysfs files.
-
-Where else are you wanting to use these functions that this patch woulud
-be required that does not haver to deal with sysfs?
-
-thanks,
-
-greg k-h
