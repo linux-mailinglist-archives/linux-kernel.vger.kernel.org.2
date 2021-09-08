@@ -2,145 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8E7403C5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315AF403C58
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352003AbhIHPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        id S1351984AbhIHPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348450AbhIHPP6 (ORCPT
+        with ESMTP id S236245AbhIHPOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:15:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6449C061575;
-        Wed,  8 Sep 2021 08:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LdTCvAteTIAmo7w6m1ecGTY5uPdtHi24nvN2i0a75rI=; b=YUSTFx7+UfC3oU1Xp6HK7G8bc+
-        sGOMbvASiPDft4YZzY+32pPX7CYwyDvANpscYyk9qiZvUR13UPOeQXLN4Wc/eDj0ccQLqrPsUvuml
-        I0dxQXWspMhp5t3w5YQTWwJiuIiHe47Z04iB2DvOqyXFxjoL/WWeo5Ms3jh5Lm8SEqSJPe/bHUWNI
-        KpqcmjR95XyrF7WpZ+FZByaPGyCOARYA/mMxzHW7LTzr0bWuV9rULCqOtPvsLPDeRjGYbbxzEE5OC
-        fvHnWxhktAdbFZrWWkNmfus2FApBkQ+aemYCMdgLx3GsmQphOmSYeLFpH97s6mc1t/Vm1ivEVX5EC
-        bF5LZDaw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNzFJ-008usm-Ed; Wed, 08 Sep 2021 15:12:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F74F300314;
-        Wed,  8 Sep 2021 17:12:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EF7CA20800161; Wed,  8 Sep 2021 17:12:15 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 17:12:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     alexander.shishkin@linux.intel.com, hpa@zytor.com,
-        parri.andrea@gmail.com, mingo@kernel.org, paulmck@kernel.org,
-        vincent.weaver@maine.edu, tglx@linutronix.de, jolsa@redhat.com,
-        acme@redhat.com, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, eranian@google.com, will@kernel.org,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-Message-ID: <YTjSz/dE2g96t8ja@hirez.programming.kicks-ass.net>
-References: <20180926182920.27644-2-paulmck@linux.ibm.com>
- <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
- <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu>
+        Wed, 8 Sep 2021 11:14:03 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A401C061575;
+        Wed,  8 Sep 2021 08:12:55 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id dc3so2487584ejb.10;
+        Wed, 08 Sep 2021 08:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1zuBZfV6vJZPKFQy+aOoidKoUi1hB6Ie2mFXF0yWb9E=;
+        b=XwBfxrfLvJRx1zSmVgSjmjc7MXhXeB/o8oVLu+4GrfwzRSIYleKnvY18cJ3gUtwVGG
+         rWS8akLqmO5IfhsEny85syBcLIOJiXYbdgr5W5XOiRn5jiIuITROmgo5xVC4Z4R3VNKa
+         /rEcXDF6B8YP+LEpkFgf9QEG67/UEA0GncQ5fhttM8KD2GvZ8aSDCPBUeEx2qMy+dsuU
+         RO1kYb2kSvfE597joKJlCE1k2TaUHmv1MlCFzruIAIPVSdJujLWZbIWPyEa3Pt2gN4Ut
+         EolUiJpLt3ZoTo2J775vrjFwECdqysuD/RCcgQ/lLDDWs3Qfuh8FOUyeVUpDIlcyrX/r
+         S5aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1zuBZfV6vJZPKFQy+aOoidKoUi1hB6Ie2mFXF0yWb9E=;
+        b=x8LNAqhiH7Kum9shOOeLh4UA81jp2YsLlwZ515ii+aoJqGdU/HaFwU3ENAS24XUvdS
+         PHkgUBEWn9y9z1j0+2FL+Bf05OIj92y0sVuqn6ZxjD+MCw/My6GJq+H54+stnqvNKJt3
+         m3sMmYxOx1i683nFgTKGmz/TDXLQ+YXWm0ioWyZOXxk3AVa3GK2lfg9dodkCJC/9wQDM
+         EatQNcG+vVloCoBKTm3+7yHiQ4KCzIydzx7Ae5b5hJHgcW6G0liN+MFAlcrQwwBHzOUA
+         vJoIDUbT1lHpwC2W+fD57seCdHMFP0U+Ut0hvAVoBprKUMemKLxE6+T9SfHsZOk93Umx
+         l5Ag==
+X-Gm-Message-State: AOAM531xHYEWerGWPYZcYxYBEIN5CDA4w5GUL8h3YjQl+uIfwfrGQAEH
+        UhAXcoVfocZ7RCJc7VJOKBQ=
+X-Google-Smtp-Source: ABdhPJy7uPhEJ8ZZaTsOcD7JZOytjwzAR96Z2kL/GA1SJmvsqZrRMgnynl20JsdJcuUO8AbXxUFEUg==
+X-Received: by 2002:a17:907:4ce:: with SMTP id vz14mr365602ejb.552.1631113973914;
+        Wed, 08 Sep 2021 08:12:53 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h22sm1171110eji.112.2021.09.08.08.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 08:12:53 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] dt-bindings: pinctrl: convert rockchip,pinctrl.txt to YAML
+Date:   Wed,  8 Sep 2021 17:12:46 +0200
+Message-Id: <20210908151246.8781-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908144217.GA603644@rowland.harvard.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:42:17AM -0400, Alan Stern wrote:
-> On Wed, Sep 08, 2021 at 01:44:11PM +0200, Peter Zijlstra wrote:
+Convert rockchip,pinctrl.txt to YAML
 
-> > > Is this an error/oversight of the memory model, or did I miss a subtlety
-> > > somewhere?
-> 
-> There's the question of what we think the LKMM should do in principle, and 
-> the question of how far it should go in mirroring the limitations of the 
-> various kernel hardware implementations.  These are obviously separate 
-> questions, but they both should influence the design of the memory model.  
-> But to what extent?
-> 
-> Given:
-> 
-> 	spin_lock(&r);
-> 	WRITE_ONCE(x, 1);
-> 	spin_unlock(&r);
-> 	spin_lock(&s);
-> 	WRITE_ONCE(y, 1);
-> 	spin_unlock(&s);
-> 
-> there is no reason _in theory_ why a CPU shouldn't reorder and interleave 
-> the operations to get:
-> 
-> 	spin_lock(&r);
-> 	spin_lock(&s);
-> 	WRITE_ONCE(x, 1);
-> 	WRITE_ONCE(y, 1);
-> 	spin_unlock(&r);
-> 	spin_unlock(&s);
-> 
-> (Of course, this wouldn't happen if some other CPU was holding the s lock 
-> while waiting for r to be released.  In that case the spin loop for s above 
-> wouldn't be able to end until after the unlock operation on r was complete, 
-> so this reordering couldn't occur.  But if there was no such contention then 
-> the reordering is possible in theory -- ignoring restrictions imposed by the 
-> actual implementations of the operations.)
-> 
-> Given such a reordering, nothing will prevent other CPUs from observing the 
-> write to y before the write to x.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
 
-To a very small degree the Risc-V implementation actually does some of
-that. It allows the stores from unlock and lock to be observed out of
-order. But in general we have very weak rules about where the store of
-the lock is visible in any case.
+Note for rob+dt:
 
-(revisit the spin_is_locked() saga for more details there)
+To reduce notifications and to support legacy DT the patternProperties
+regex is:
+"gpio[0-8]?@[0-9a-f]+$"
 
-> > Hmm.. that argument isn't strong enough for Risc-V if I read that FENCE
-> > thing right. That's just R->RW ordering, which doesn't constrain the
-> > first WRITE_ONCE().
-> > 
-> > However, that spin_unlock has "fence rw, w" with a subsequent write. So
-> > the whole thing then becomes something like:
-> > 
-> > 
-> > 	WRITE_ONCE(x, 1);
-> > 	FENCE RW, W
-> > 	WRITE_ONCE(s.lock, 0);
-> > 	AMOSWAP %0, 1, r.lock
-> > 	FENCE R, WR
-> > 	WRITE_ONCE(y, 1);
-> > 
-> > 
-> > Which I think is still sufficient, irrespective of the whole s!=r thing.
-> 
-> To me, this argument feels like an artificial, unintended consequence of the 
-> individual implementations, not something that should be considered a 
-> systematic architectural requirement.  Perhaps one could say the same thing 
-> about the case where the two spinlock_t variables are the same, but at least 
-> in that case there is a good argument for inherent ordering of atomic 
-> accesses to a single variable.
+or should we move to:
+"gpio@[0-9a-f]+$"
+and change all Rockchip pinctrl DT nodes?
+Is the Linux driver / U-boot ready for it now?
+---
+ .../bindings/pinctrl/rockchip,pinctrl.txt     | 114 -----------
+ .../bindings/pinctrl/rockchip,pinctrl.yaml    | 178 ++++++++++++++++++
+ 2 files changed, 178 insertions(+), 114 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
 
-Possibly :-) The way I got here is that my brain seems to have produced
-the rule that UNLOCK+LOCK -> TSO order (an improvement, because for a
-time it said SC), and it completely forgot about this subtlely. And in
-general I feel that less subtlety is more better, but I understand your
-counter argument :/
+diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
+deleted file mode 100644
+index 84c411129..000000000
+--- a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
++++ /dev/null
+@@ -1,114 +0,0 @@
+-* Rockchip Pinmux Controller
+-
+-The Rockchip Pinmux Controller, enables the IC
+-to share one PAD to several functional blocks. The sharing is done by
+-multiplexing the PAD input/output signals. For each PAD there are several
+-muxing options with option 0 being the use as a GPIO.
+-
+-Please refer to pinctrl-bindings.txt in this directory for details of the
+-common pinctrl bindings used by client devices, including the meaning of the
+-phrase "pin configuration node".
+-
+-The Rockchip pin configuration node is a node of a group of pins which can be
+-used for a specific device or function. This node represents both mux and
+-config of the pins in that group. The 'pins' selects the function mode(also
+-named pin mode) this pin can work on and the 'config' configures various pad
+-settings such as pull-up, etc.
+-
+-The pins are grouped into up to 5 individual pin banks which need to be
+-defined as gpio sub-nodes of the pinmux controller.
+-
+-Required properties for iomux controller:
+-  - compatible: should be
+-		"rockchip,px30-pinctrl":    for Rockchip PX30
+-		"rockchip,rv1108-pinctrl":  for Rockchip RV1108
+-		"rockchip,rk2928-pinctrl":  for Rockchip RK2928
+-		"rockchip,rk3066a-pinctrl": for Rockchip RK3066a
+-		"rockchip,rk3066b-pinctrl": for Rockchip RK3066b
+-		"rockchip,rk3128-pinctrl":  for Rockchip RK3128
+-		"rockchip,rk3188-pinctrl":  for Rockchip RK3188
+-		"rockchip,rk3228-pinctrl":  for Rockchip RK3228
+-		"rockchip,rk3288-pinctrl":  for Rockchip RK3288
+-		"rockchip,rk3308-pinctrl":  for Rockchip RK3308
+-		"rockchip,rk3328-pinctrl":  for Rockchip RK3328
+-		"rockchip,rk3368-pinctrl":  for Rockchip RK3368
+-		"rockchip,rk3399-pinctrl":  for Rockchip RK3399
+-		"rockchip,rk3568-pinctrl":  for Rockchip RK3568
+-
+-  - rockchip,grf: phandle referencing a syscon providing the
+-	 "general register files"
+-
+-Optional properties for iomux controller:
+-  - rockchip,pmu: phandle referencing a syscon providing the pmu registers
+-	 as some SoCs carry parts of the iomux controller registers there.
+-	 Required for at least rk3188 and rk3288. On the rk3368 this should
+-	 point to the PMUGRF syscon.
+-
+-Deprecated properties for iomux controller:
+-  - reg: first element is the general register space of the iomux controller
+-	 It should be large enough to contain also separate pull registers.
+-	 second element is the separate pull register space of the rk3188.
+-	 Use rockchip,grf and rockchip,pmu described above instead.
+-
+-Required properties for gpio sub nodes:
+-See rockchip,gpio-bank.yaml
+-
+-Required properties for pin configuration node:
+-  - rockchip,pins: 3 integers array, represents a group of pins mux and config
+-    setting. The format is rockchip,pins = <PIN_BANK PIN_BANK_IDX MUX &phandle>.
+-    The MUX 0 means gpio and MUX 1 to N mean the specific device function.
+-    The phandle of a node containing the generic pinconfig options
+-    to use, as described in pinctrl-bindings.txt in this directory.
+-
+-Examples:
+-
+-#include <dt-bindings/pinctrl/rockchip.h>
+-
+-...
+-
+-pinctrl@20008000 {
+-	compatible = "rockchip,rk3066a-pinctrl";
+-	rockchip,grf = <&grf>;
+-
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-	ranges;
+-
+-	gpio0: gpio0@20034000 {
+-		compatible = "rockchip,gpio-bank";
+-		reg = <0x20034000 0x100>;
+-		interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&clk_gates8 9>;
+-
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		interrupt-controller;
+-		#interrupt-cells = <2>;
+-	};
+-
+-	...
+-
+-	pcfg_pull_default: pcfg_pull_default {
+-		bias-pull-pin-default
+-	};
+-
+-	uart2 {
+-		uart2_xfer: uart2-xfer {
+-			rockchip,pins = <1 RK_PB0 1 &pcfg_pull_default>,
+-					<1 RK_PB1 1 &pcfg_pull_default>;
+-		};
+-	};
+-};
+-
+-uart2: serial@20064000 {
+-	compatible = "snps,dw-apb-uart";
+-	reg = <0x20064000 0x400>;
+-	interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+-	reg-shift = <2>;
+-	reg-io-width = <1>;
+-	clocks = <&mux_uart2>;
+-
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&uart2_xfer>;
+-};
+diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+new file mode 100644
+index 000000000..7c45122d3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+@@ -0,0 +1,178 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/rockchip,pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip Pinmux Controller
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++description:
++  The Rockchip Pinmux Controller enables the IC to share one PAD
++  to several functional blocks. The sharing is done by multiplexing
++  the PAD input/output signals. For each PAD there are several muxing
++  options with option 0 being the use as a GPIO.
++
++  Please refer to pinctrl-bindings.txt in this directory for details of the
++  common pinctrl bindings used by client devices, including the meaning of the
++  phrase "pin configuration node".
++
++  The Rockchip pin configuration node is a node of a group of pins which can be
++  used for a specific device or function. This node represents both mux and
++  config of the pins in that group. The 'pins' selects the function mode(also
++  named pin mode) this pin can work on and the 'config' configures various pad
++  settings such as pull-up, etc.
++
++  The pins are grouped into up to 9 individual pin banks which need to be
++  defined as gpio sub-nodes of the pinmux controller.
++
++properties:
++  compatible:
++    enum:
++      - rockchip,px30-pinctrl
++      - rockchip,rk2928-pinctrl
++      - rockchip,rk3066a-pinctrl
++      - rockchip,rk3066b-pinctrl
++      - rockchip,rk3128-pinctrl
++      - rockchip,rk3188-pinctrl
++      - rockchip,rk3228-pinctrl
++      - rockchip,rk3288-pinctrl
++      - rockchip,rk3308-pinctrl
++      - rockchip,rk3328-pinctrl
++      - rockchip,rk3368-pinctrl
++      - rockchip,rk3399-pinctrl
++      - rockchip,rk3568-pinctrl
++      - rockchip,rv1108-pinctrl
++
++  rockchip,grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      The phandle of the syscon node for the GRF registers.
++
++  rockchip,pmu:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      The phandle of the syscon node for the PMU registers,
++      as some SoCs carry parts of the iomux controller registers there.
++      Required for at least rk3188 and rk3288. On the rk3368 this should
++      point to the PMUGRF syscon.
++
++  "#address-cells":
++    enum: [1, 2]
++
++  "#size-cells":
++    enum: [1, 2]
++
++  ranges: true
++
++patternProperties:
++  "gpio[0-8]?@[0-9a-f]+$":
++    type: object
++
++    $ref: "/schemas/gpio/rockchip,gpio-bank.yaml#"
++
++    unevaluatedProperties: false
++
++  "pcfg-[a-z0-9-]+$":
++    type: object
++    properties:
++      bias-disable: true
++
++      bias-pull-down: true
++
++      bias-pull-pin-default: true
++
++      bias-pull-up: true
++
++      drive-strength:
++        minimum: 0
++        maximum: 20
++
++      input-enable: true
++
++      input-schmitt-enable: true
++
++      output-high: true
++
++      output-low: true
++
++    additionalProperties: false
++
++additionalProperties:
++  type: object
++  additionalProperties:
++    type: object
++    properties:
++      rockchip,pins:
++        type: array
++        minItems: 1
++        items:
++          items:
++            - minimum: 0
++              maximum: 8
++            - minimum: 0
++              maximum: 31
++            - minimum: 0
++              maximum: 6
++            - maximum: 0xffffffff
++        description:
++          A 3 integers array represents a group of pins mux and
++          config setting. The format is
++
++          rockchip,pins = <PIN_BANK PIN_BANK_IDX MUX &phandle>
++
++          The MUX 0 means gpio and MUX 1 to N mean the specific
++          device function. The phandle of a node contains the
++          generic pinconfig options to use, as described in
++          pinctrl-bindings.txt in this directory.
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/pinctrl/rockchip.h>
++
++    pinctrl: pinctrl {
++      compatible = "rockchip,rk3066a-pinctrl";
++      rockchip,grf = <&grf>;
++
++      #address-cells = <1>;
++      #size-cells = <1>;
++      ranges;
++
++      gpio0: gpio@20034000 {
++        compatible = "rockchip,gpio-bank";
++        reg = <0x20034000 0x100>;
++        interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clk_gates8 9>;
++
++        gpio-controller;
++        #gpio-cells = <2>;
++
++        interrupt-controller;
++        #interrupt-cells = <2>;
++      };
++
++      pcfg_pull_default: pcfg-pull-default {
++        bias-pull-pin-default;
++      };
++
++      uart2 {
++        uart2_xfer: uart2-xfer {
++          rockchip,pins = <1 RK_PB0 1 &pcfg_pull_default>,
++                          <1 RK_PB1 1 &pcfg_pull_default>;
++        };
++      };
++    };
++
++    uart2: serial@20064000 {
++      compatible = "snps,dw-apb-uart";
++      reg = <0x20064000 0x400>;
++      interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&mux_uart2>;
++      pinctrl-0 = <&uart2_xfer>;
++      pinctrl-names = "default";
++      reg-io-width = <1>;
++      reg-shift = <2>;
++    };
+-- 
+2.20.1
 
-In any case, it looks like we had to put an smp_mb() in there anyway due
-to other reasons and the whole argument is moot again.
-
-I'll try and remember for next time :-)
