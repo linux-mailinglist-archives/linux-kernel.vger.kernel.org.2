@@ -2,167 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8168A40362C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B066D40362F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348292AbhIHIfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 04:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S1348299AbhIHIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 04:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348153AbhIHIfj (ORCPT
+        with ESMTP id S1348356AbhIHIgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 04:35:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17329C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:34:32 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mNt2H-0005ij-8h; Wed, 08 Sep 2021 10:34:25 +0200
-Message-ID: <bd4ead76c27afbb3d089bc355d8d3f62b4ad269e.camel@pengutronix.de>
-Subject: Re: [PATCH 3/3] PCI: imx: add compliance tests mode to enable
- measure signal quality
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Date:   Wed, 08 Sep 2021 10:34:23 +0200
-In-Reply-To: <1631084366-24785-3-git-send-email-hongxing.zhu@nxp.com>
-References: <1631084366-24785-1-git-send-email-hongxing.zhu@nxp.com>
-         <1631084366-24785-3-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Wed, 8 Sep 2021 04:36:40 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A63C061796
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:35:31 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id q26so1998175wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q+gTvqPkBS/9NQBkBlzTyY1pPZIuXVfqF0gdAjXvmEQ=;
+        b=wDveK5lAB6l1NMxSINMMJExaTElhC1Hadv0ygYAfqTxaaYMv3IySUTUjp8bzuOPdRa
+         bMndFJRdmVlulEHWcXp/LnteEs6vsNeOY8CT4htoyWxrJ74sTlvSEcRcZYgqmPILmOgc
+         A4YtqmDEVblPPqigSHeeg7ICEqSpsHoL+p3C+kiue48QmlrgGL7sE0GJBJTwLjbOXfPl
+         zJv9eJtsccvxTHkrB0VgN6p+n3N0t44AZxg77NZHqqyxv0+iSx2wngp0tllluH8IfgqJ
+         G3WtqLaUK9i4s9Jzl6JIqkwOmtk7byhNg775DAh2t0Kjhwx/p35yVj+EesJNoCQpB2Rw
+         NnoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q+gTvqPkBS/9NQBkBlzTyY1pPZIuXVfqF0gdAjXvmEQ=;
+        b=0cj9erxVya2JOmpEOrx2lKO3ljNW3mmSm/xELkpK28aksQUKtRy0w3mnopFaKwCGbX
+         RrlwZ0zVu++bLd0paKbqjfbJblIQO9hkKCioAJO64ZCeIj/w4xO84SqnTFZ/QTdULYj5
+         tjy7B00nWkQUCHVNOOgL+DbNzlJEoJhmWeT+3nogbtAdSWkJ4f7y9YkZObzHAA47bocf
+         UVyU33xAEb6K3+VrZ7bn5oIaDvKSiEElr34wA4WBO7361h6y58uXncjfgp8XvZ2z2QFy
+         B5U8679SXWrb4Sq8nkUm6upqx96v6mLyZah0H82j4JNlcwq9+0zpFJcNgKZV/I2pTV7C
+         BUFA==
+X-Gm-Message-State: AOAM532/183dlMtbOGkE5ywZdXJZJRPzmTUPTjm9ikUJcEehB+nhpWxX
+        2bVPHX1rXZyDeSo8dcNxCeMYL2OIx5LATutMT1hDvQ==
+X-Google-Smtp-Source: ABdhPJxnmqEbAAXw4ZZscbrlTqRG8a/a1xTdLDZhNeb4FqiNF0dwRr/GBN9JwQCWTsqYDoM7El3dNiZ090+mHhCE49A=
+X-Received: by 2002:adf:d1a8:: with SMTP id w8mr2667202wrc.306.1631090129589;
+ Wed, 08 Sep 2021 01:35:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210907200254.467375-1-vgupta@kernel.org>
+In-Reply-To: <20210907200254.467375-1-vgupta@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 8 Sep 2021 14:05:18 +0530
+Message-ID: <CAAhSdy018QJ2hdqL2BSZXV81-CVbTf_g6chJSHM4UH2EhLUpCA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: mm: don't advertise 1 num_asid for 0 asid bits
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-Am Mittwoch, dem 08.09.2021 um 14:59 +0800 schrieb Richard Zhu:
-> Refer to the system board signal Quality of PCIe archiecture PHY test
-> specification. Signal quality tests can be executed with devices in the
-> polling.compliance state.
-> 
-> To let the device support polling.compliance stat, the clocks and
-> powers shouldn't be turned off during the compliance tests although
-> the PHY link might be down.
-> Add the i.MX PCIe compliance tests mode enable option to keep the and
-> powers on, and finish the driver probe without error return.
-> 
-> Use the "pcie_cmp_enabled=yes" in kernel command line to enable the
-> compliance tests mode.
-
-Adding "random" kernel command line options isn't going to fly. If at
-all, this should be a module_param so it gets properly namespaced. Also
-this needs a more descriptive name, right now this is abbreviating the
-one thing that would tell a user what this is about: compliance
-testing.
-
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+On Wed, Sep 8, 2021 at 1:33 AM Vineet Gupta <vgupta@kernel.org> wrote:
+>
+> Even if mmu doesn't support ASID, current code calculates @num_asids=1
+> which is misleading, so avoid setting any asid related variables in such
+> a case.
+>
+> Also while here, print the number of asid bits discovered even for the
+> disabled case.
+>
+> Verified this on Hifive Unmatched.
+>
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 > ---
->  drivers/pci/controller/dwc/pci-imx6.c | 41 +++++++++++++++++++++------
->  1 file changed, 33 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 129928e42f84..3aef0e86f1c2 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -143,6 +143,7 @@ struct imx6_pcie {
->  #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
->  #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
->  
-> +static int imx6_pcie_cmp_enabled;
->  static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie);
->  static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie);
->  
-> @@ -748,10 +749,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
->  	 * started in Gen2 mode, there is a possibility the devices on the
->  	 * bus will not be detected at all.  This happens with PCIe switches.
->  	 */
-> -	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> -	tmp &= ~PCI_EXP_LNKCAP_SLS;
-> -	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-> -	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-> +	if (!imx6_pcie_cmp_enabled) {
-> +		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> +		tmp &= ~PCI_EXP_LNKCAP_SLS;
-> +		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-> +		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-> +	}
->  
->  	/* Start LTSSM. */
->  	imx6_pcie_ltssm_enable(dev);
-> @@ -812,9 +815,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
->  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
->  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
->  	imx6_pcie_reset_phy(imx6_pcie);
-> -	imx6_pcie_clk_disable(imx6_pcie);
-> -	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-> -		regulator_disable(imx6_pcie->vpcie);
-> +	if (!imx6_pcie_cmp_enabled) {
-> +		imx6_pcie_clk_disable(imx6_pcie);
-> +		if (imx6_pcie->vpcie
-> +		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-> +			regulator_disable(imx6_pcie->vpcie);
-> +	}
->  	return ret;
->  }
->  
-> @@ -1010,6 +1016,17 @@ static const struct dev_pm_ops imx6_pcie_pm_ops = {
->  				      imx6_pcie_resume_noirq)
->  };
->  
-> +static int __init imx6_pcie_compliance_test_enable(char *str)
-> +{
-> +	if (!strcmp(str, "yes")) {
-> +		pr_info("Enable the i.MX PCIe TX/CLK compliance tests mode.\n");
-> +		imx6_pcie_cmp_enabled = 1;
-> +	}
-> +	return 1;
-> +}
-> +
-> +__setup("pcie_cmp_enabled=", imx6_pcie_compliance_test_enable);
-> +
->  static int imx6_pcie_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -1187,8 +1204,16 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  		return ret;
->  
->  	ret = dw_pcie_host_init(&pci->pp);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		if (imx6_pcie_cmp_enabled) {
-> +			/* The PCIE clocks and powers wouldn't be turned off */
-> +			dev_info(dev, "To do the compliance tests.\n");
+>  arch/riscv/mm/context.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+> index ee3459cb6750..c8c6f8831a3b 100644
+> --- a/arch/riscv/mm/context.c
+> +++ b/arch/riscv/mm/context.c
+> @@ -233,8 +233,10 @@ static int __init asids_init(void)
+>         local_flush_tlb_all();
+>
+>         /* Pre-compute ASID details */
+> -       num_asids = 1 << asid_bits;
+> -       asid_mask = num_asids - 1;
+> +       if (asid_bits) {
+> +               num_asids = 1 << asid_bits;
+> +               asid_mask = num_asids - 1;
+> +       }
+>
+>         /*
+>          * Use ASID allocator only if number of HW ASIDs are
+> @@ -255,7 +257,7 @@ static int __init asids_init(void)
+>                 pr_info("ASID allocator using %lu bits (%lu entries)\n",
+>                         asid_bits, num_asids);
+>         } else {
+> -               pr_info("ASID allocator disabled\n");
+> +               pr_info("ASID allocator disabled: %lu bits\n", asid_bits);
 
-This needs a better message, like "Driver loaded with compliance test
-mode enabled" and the message needs to be shown unconditionally, not
-only when the host init fails. We don't want to have the user track
-down weird issues when the compliance test option was specified by
-accident and the link is almost working due to this.
+May be use:
+
+pr_info("ASID allocator disabled (%lu bits)\n", asid_bits);
+
+for consistency with the ASID enabled case.
+
+Otherwise, it looks good to me.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+>         }
+>
+>         return 0;
+> --
+> 2.30.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 Regards,
-Lucas
- 
-> +			ret = 0;
-> +		} else {
-> +			dev_err(dev, "Unable to add pcie port.\n");
-> +		}
->  		return ret;
-> +	}
->  
->  	if (pci_msi_enabled()) {
->  		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
-
-
+Anup
