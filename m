@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180D5403247
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91E940325E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346646AbhIHBl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235180AbhIHBl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:41:56 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B0CC60EE6;
-        Wed,  8 Sep 2021 01:40:49 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 21:40:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Carles Pey <carles.pey@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] ftrace: add unit test for removing trace function
-Message-ID: <20210907214047.04ef5ac8@rorschach.local.home>
-In-Reply-To: <20210904180248.1886220-2-carles.pey@gmail.com>
-References: <20210904180248.1886220-1-carles.pey@gmail.com>
-        <20210904180248.1886220-2-carles.pey@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1346905AbhIHBo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346153AbhIHBo4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:44:56 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9D9C061757;
+        Tue,  7 Sep 2021 18:43:49 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id t20so511547pju.5;
+        Tue, 07 Sep 2021 18:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IUajGtbIkTnMLmvJKDDM5bNk82jKbI6oddFYd20CVM8=;
+        b=V0FW30MvEZTV/igRZjLppoHUoGJTHLMAWRScMq+QK8z1oj6YoDNwWDqWpDUCGvOxSk
+         eze8wWtvhumaRwR670DP8T3p3eFdif2JmB2wqnR1QryWPUGyV8p6IU8dhMcU667+wBOY
+         mdEZwg8pdX8ce8u/x+xchoAVqmnMA6e5tqTVRhK4ze1/zyoe2xFMjMhKNJgNHfs8pQyl
+         PlhWLOGK4MbIJ6mVlJc+mj8pS0JuXcfO4CmfUnpzGdF4tlJ1v5c6Pjlq9DvfusD2f4no
+         z3lWMyAldO2jhBy7WkqnGc5u4cx5/iNWVaRJxGXOLRIogBAys6WUWz++2RjUAv5CYp52
+         DqCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IUajGtbIkTnMLmvJKDDM5bNk82jKbI6oddFYd20CVM8=;
+        b=a3cYFblXPLC4qc4eF/0HBG2XWQsML33SxvCtLdtUpkHuUsJWvGGZrnGifI4FFugHx/
+         lFhuYuC/zmbTb74nSU/Da8oKJHymxVmSlwJR3bBP77U/l+l8WefSJ9XrVBt7qbHFWEal
+         /pMs/JxszbopSuDy2zrQDvPeHbcFRq9wiE/It6IHoUIY8/rXfcE5Nv8tXaLEO5NXKD4k
+         OMRjFVHOU1sqi2wU40dsxUUZQfTTfKjtZO66KABlLHyHMW4d4kb0TDnMPcE/AxwjW2Zw
+         Tkfops7v3dtw+F21XTPgBP+PRPFi9/RVVZDIMjx5SYvsZnvQH+Mo/XTPK/Sn2B96QBp7
+         hn6A==
+X-Gm-Message-State: AOAM532ry/WNEW3g6OMaSyde6G7IP+kSqrgZG+/Z2viewnAiN6G+adre
+        n1ERyicG1W2cZxN2OM+edwznLYJS33U=
+X-Google-Smtp-Source: ABdhPJwrXXm0yXPxI3u3HhPDOQQta9IquAbHV4nqKwMP4comgvSHywK/CP6bxyQWL8xMjgz32CfoZA==
+X-Received: by 2002:a17:90b:4a51:: with SMTP id lb17mr1327070pjb.245.1631065428401;
+        Tue, 07 Sep 2021 18:43:48 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:ded6:ee2d:2354:13b7])
+        by smtp.gmail.com with ESMTPSA id h16sm282254pfn.215.2021.09.07.18.43.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 18:43:47 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 18:43:45 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Input: analog: Always use ktime functions
+Message-ID: <YTgVUWzFSOg/I4C+@google.com>
+References: <20210907123734.21520-1-linux@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907123734.21520-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  4 Sep 2021 22:02:48 +0400
-Carles Pey <carles.pey@gmail.com> wrote:
+Hi Guenter,
 
-
-Two errors here.
-
--ENOCHANGELOG
--ENOSIG
-
-No matter how trivial the patch, you need a change log. The subject is
-"what" the patch does, the change log is "why" it is done. What was the
-motivation for this patch.
-
-And more critical, I can't even take this patch because there's no
-"Signed-off-by".
-
--- Steve
-
-
-> ---
->  kernel/trace/trace_selftest.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-> index adf7ef194005..875b4f1a0476 100644
-> --- a/kernel/trace/trace_selftest.c
-> +++ b/kernel/trace/trace_selftest.c
-> @@ -287,6 +287,40 @@ static int trace_selftest_ops(struct trace_array *tr, int cnt)
->  	if (trace_selftest_test_probe3_cnt != 4)
->  		goto out_free;
+On Tue, Sep 07, 2021 at 05:37:34AM -0700, Guenter Roeck wrote:
+> @@ -241,11 +176,11 @@ static int analog_cooked_read(struct analog_port *port)
+>  	int i, j;
 >  
-> +	/* Remove trace function from probe 3 */
-> +	func1_name = "!" __stringify(DYN_FTRACE_TEST_NAME);
-> +	len1 = strlen(func1_name);
-> +
-> +	ftrace_set_filter(&test_probe3, func1_name, len1, 0);
-> +
-> +	DYN_FTRACE_TEST_NAME();
-> +
-> +	print_counts();
-> +
-> +	if (trace_selftest_test_probe1_cnt != 3)
-> +		goto out_free;
-> +	if (trace_selftest_test_probe2_cnt != 2)
-> +		goto out_free;
-> +	if (trace_selftest_test_probe3_cnt != 4)
-> +		goto out_free;
-> +	if (cnt > 1) {
-> +		if (trace_selftest_test_global_cnt == 0)
-> +			goto out_free;
-> +	}
-> +	if (trace_selftest_test_dyn_cnt == 0)
-> +		goto out_free;
-> +
-> +	DYN_FTRACE_TEST_NAME2();
-> +
-> +	print_counts();
-> +
-> +	if (trace_selftest_test_probe1_cnt != 3)
-> +		goto out_free;
-> +	if (trace_selftest_test_probe2_cnt != 3)
-> +		goto out_free;
-> +	if (trace_selftest_test_probe3_cnt != 5)
-> +		goto out_free;
-> +
->  	ret = 0;
->   out_free:
->  	unregister_ftrace_function(dyn_ops);
+>  	loopout = (ANALOG_LOOP_TIME * port->loop) / 1000;
+> -	timeout = ANALOG_MAX_TIME * port->speed;
+> +	timeout = ANALOG_MAX_TIME * NSEC_PER_MSEC;
+>  
+>  	local_irq_save(flags);
+>  	gameport_trigger(gameport);
+> -	now = get_time();
+> +	now = ktime_get();
 
+There are time[4], now, etc variables above this block that are u64. I
+think they can be make ktime_t. I can do it myself if you agree.
+
+> @@ -378,35 +313,19 @@ static void analog_calibrate_timer(struct analog_port *port)
+>  	u64 t1, t2, t3;
+
+I think these should also be ktime_t.
+
+Thanks.
+
+-- 
+Dmitry
