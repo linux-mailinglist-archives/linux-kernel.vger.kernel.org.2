@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C91403783
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C0F403799
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344728AbhIHKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:08:10 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:56679 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232273AbhIHKIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:08:05 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id B231161E5FE33;
-        Wed,  8 Sep 2021 12:06:54 +0200 (CEST)
-Subject: Re: [PATCH] ACPI/PRM: Find PRMT table before parse it
-To:     Aubrey Li <aubrey.li@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <1631066984-63501-1-git-send-email-aubrey.li@intel.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <79d42839-729e-559b-beda-8f1cdbc1e113@molgen.mpg.de>
-Date:   Wed, 8 Sep 2021 12:06:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1347885AbhIHKMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:12:20 -0400
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:43644 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347877AbhIHKMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:12:16 -0400
+Received: by mail-vs1-f47.google.com with SMTP id u1so1510814vsq.10;
+        Wed, 08 Sep 2021 03:11:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IbTzHHY/WI6T/MMG5snxRp97B/nG4as15XsvK/bKWX4=;
+        b=fBW3TtAosz9IDzfFHHzIYfivloccAdP+HvWiQ9qlFR/eD6A3PLK14QLW3XCckDFXlF
+         WNz9HVVNyOX+vuzJ2LyojJkdbW5euu3WxJ1zk1q7Pg3rwsXUQYcLAYExmMt9z6gpxA0I
+         OkU3lCqMqj1nWFZjksQRbWJQjjApdke4Yo/nRL8BQxtOM+4iZ24OD/7SNhTKy2fG2Zfp
+         kchTBnMKY02j7nRHPxCOpqOARzZTh4OWEq5n9JqZkZ33NWdnxKNylyL75vKDIHAaPytK
+         oze+QeIDquA63AUPP0OuSrQZvkWphVr+f5llLJ+PwZe0Ix7IpGxq6LUZDaC7GgN1Ja59
+         YMGQ==
+X-Gm-Message-State: AOAM533VbkLq61wlEcR1jBp1ACiS4uocyfBYO8GW0SorTMbXetosYlPU
+        R2FX/w24W3IDMTsmTx1dDxh/Shd73fe8+r+HCsw=
+X-Google-Smtp-Source: ABdhPJyphSeifnjOp7oNIUahNJmyU6J5WjkkLDF0tVnZsBz1aPZxxoo6jIFvaLs1SeQPQMM8/visQwCk23wD9oVuNPg=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr1424921vsl.9.1631095868938;
+ Wed, 08 Sep 2021 03:11:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1631066984-63501-1-git-send-email-aubrey.li@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net> <20210908042838.GA2585993@roeck-us.net>
+ <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk> <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
+ <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com> <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
+In-Reply-To: <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 8 Sep 2021 12:10:57 +0200
+Message-ID: <CAMuHMdV51YuBYg6bvoQW9fBXFv8BRtnG9YTZST3AnbFwOsdW9g@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Aubrey,
+Hi Arnd,
 
+On Wed, Sep 8, 2021 at 11:50 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Wed, Sep 8, 2021 at 9:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > On 9/7/21 9:48 PM, Al Viro wrote:
+> > > > On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
+> > > >>      memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
+> > > >>
+> > > >> but that just seems weird. Is there a better solution ?
+> > > >
+> > > > (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
+> > > > ioremap(), rather than casting explicit constants?
+> > >
+> > > Typecasts or even assigning the address to a variable does not help.
+> > > The sanitizer function can not be static either.
+> >
+> > So it can only be fixed by obfuscating the constant address in a
+> > chain of out-of-line functions...
+> > How is this compiler to be used for bare-metal programming?
+>
+> I reported this as a gcc bug when I first saw it back in March:
+>
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
+>
+> Martin Sebor suggested marking the pointer as 'volatile' as a workaround,
+> which is probably fine for bare-metal programming, but I would consider
+> that bad style for the kernel boot arguments. The RELOC_HIDE trick is probably
+> fine here, as there are only a couple of instances, and for the network
+> driver, using volatile is probably appropriate as well.
 
-Am 08.09.21 um 04:09 schrieb Aubrey Li:
-> Find and verify PRMT table before parse it, this eliminates a
-> warning on machines without PRMT table.
-> 
-> 	[    7.197173] ACPI: PRMT not present
+Yeah, volatile should be fine for drivers.
+In fact this is one of the few places where I/O registers are accessed
+without involving volatile.
 
-Please also add:
+> I still hope this can be fixed in a future gcc-11.x release. Maybe we should
+> add further instances of the problem on the gcc bug to boost the priority?
+>
+> > > I don't know the hardware, so I can not answer the ioremap() question.
+> >
+> > Yes it should.  But this driver dates back to 2.1.110, when only
+> > half of the architectures already had ioremap().
+>
+> How does  mvme16x even create the mapping? Is this a virtual address
+> that is hardwired to the bus or do you have a static mapping somewhere?
 
-Fixes: cefc7ca462 ("ACPI: PRM: implement OperationRegion handler for the 
-PlatformRtMechanism subtype")
+It's part of the transparent mapping of the top address space for
+I/O devices in arch/m68k/kernel/head.S.
 
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> ---
->   drivers/acpi/prmt.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
-> index 1f6007a..89c22bc 100644
-> --- a/drivers/acpi/prmt.c
-> +++ b/drivers/acpi/prmt.c
-> @@ -288,10 +288,18 @@ static acpi_status acpi_platformrt_space_handler(u32 function,
->   
->   void __init init_prmt(void)
->   {
-> +	struct acpi_table_header *tbl;
->   	acpi_status status;
-> -	int mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
-> +	int mc;
-> +
-> +	status = acpi_get_table(ACPI_SIG_PRMT, 0, &tbl);
-> +	if (ACPI_FAILURE(status))
-> +		return;
-> +
-> +	mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
->   					  sizeof (struct acpi_table_prmt_header),
->   					  0, acpi_parse_prmt, 0);
-> +	acpi_put_table(tbl);
->   	/*
->   	 * Return immediately if PRMT table is not present or no PRM module found.
->   	 */
+Gr{oetje,eeting}s,
 
-Thank you very much for preparing the patch.
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Kind regards,
-
-Paul
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
