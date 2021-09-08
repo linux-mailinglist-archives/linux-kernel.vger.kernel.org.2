@@ -2,184 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A04403C90
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F05403C9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349644AbhIHPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:35:23 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:38529 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235441AbhIHPfW (ORCPT
+        id S1349765AbhIHPiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:38:02 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:54521 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235441AbhIHPiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:35:22 -0400
-Received: by mail-oi1-f179.google.com with SMTP id bd1so3586457oib.5;
-        Wed, 08 Sep 2021 08:34:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=83jEoiM0ZDoIZ+9YoaEUGK/l0iVM2e6CvU/M4LGLntQ=;
-        b=25YT7HxeLLtY79q0uS4m1A70KfGS5pQPGXSpzRizgQ8Nc72rElabF56zz2a2rEKYO0
-         PnK7mjCLmsF6qndlTHY52mJKiQu3SKUqMnDaPTwkYz3ZtfITLxicLFZcfmgHkHKlx6RB
-         i1xk+GXMM02pKqX5KQxnKq67Uzc7A0SuhY+86lWhM/HYxuMSm/iA9Xg4uXKk5qbYvx1u
-         IqX+vVxqLwn26JW5eOYK7MhnNXhcZ+xXJ9jDscKFBgI0zrpJsCp40to1z384fs6C5Exf
-         R+ufk2Kwz86VEDqz1q4FxrO63g4YnSL7Hbp6FEoyeXsA9qhdKQAM3rrSjgSnt5wi6au2
-         t07A==
-X-Gm-Message-State: AOAM530W1VXwZuB66eQJvSWfm6pmeth/wbNT4sNSmRQDThFc3fOI8/F7
-        5pogQrHVvSohJVHnRuP9mB/eAQmz1L+d0HSAviEYDd9s/GY=
-X-Google-Smtp-Source: ABdhPJzBiNI0BWFQw0ZS7oFvDcl9cR3u7nEplbvg4S83Le5hfLdavZoDzNL0DM/eli/rI3plGXUCUEewVDS5NufunaU=
-X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr2656528ois.69.1631115254083;
- Wed, 08 Sep 2021 08:34:14 -0700 (PDT)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 8 Sep 2021 17:34:03 +0200
-Message-ID: <CAJZ5v0iscRcftKWp-mUo6ennD0iPP=dQsZ1uTueycuT5fxAF=w@mail.gmail.com>
-Subject: [GIT PULL] More power management updates for v5.15-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 8 Sep 2021 11:38:01 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id D92375C00F2;
+        Wed,  8 Sep 2021 11:36:52 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Wed, 08 Sep 2021 11:36:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type:content-transfer-encoding; s=fm2; bh=tz
+        BJ1QB5ptfxnKFM1W/uFX8bdJBVWCl+P6cWXM7+70Y=; b=JPD6xW1xMJZ+NyRAIu
+        1/VrcIMqYTrfDElDhHfT1YyCSYIXTqQrQ1stNW5Ur7+4vOzkjPpFokPU+SNlvuol
+        SCmj3XmTxsGM/MYc8KAiOz184uHVYX/k1+vnLyMT+Poo5xQOotVWjxLXVPqXpK91
+        oIDx1q1HP6o8lq8AylzcWMGE1BOLessJ97cgRAZmP2Euj9lnHK0XzzuuDLThdLFj
+        UHhW063tc60eE/N+GFrKd0R9Ab65xktW8NifzrjRMhkyFRZ3pTFxGLRZUXzkmeVp
+        37wLfPmIxWtm9el3IjsvIckiqOPHXWfmJFOyyTYN9cOtHrY22H2U1mesWGTIpIAB
+        b+sw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=tzBJ1QB5ptfxnKFM1W/uFX8bdJBVWCl+P6cWXM7+7
+        0Y=; b=tHaWkyBPbdlJylGp/Bdz3qGe4vV8ONF5X+VB72WPjXmenx5/N5izLuHXC
+        knRJ00bOEG6CvhdVriwVj+wkey68+wmv5WyIlqjzV9m4/0kFn92k5FKHl6gir6vt
+        2dpJ4IhQDAcdHM8y7arf+R233qPvzcm5W5ejv0zv7kD2/nkwfxPa/SQciW9Yd9St
+        WxQqwCeOr2zsAlpF7yYJWb4LOWTKyv756bZnsjEqDOmgFR6dswNDDjTx2g6ydDeF
+        ksdkCOfVyZYBCumSLcuRQ7PxOIQAL0cVyctwrDeSJzsd8hCFlhf8YKtO46twAGlg
+        i++2VtWaEByo4j5G64EjbWIj7xcQA==
+X-ME-Sender: <xms:k9g4YdNH9JS89AC_1vww-c6DkrXJ3fcZm5IKcgg5o8ZuZYlEv5P_6Q>
+    <xme:k9g4Yf9CBF0mFziKjiGhqsavDpWdSkiR6RyANYvnfEL67v1fwPzCEZG7uTsD6eioN
+    ntC4uaKb-gQcs4FJFE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefjedgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepteeuudelteefueelvdelheehieevvdfhkeehjeejudfhieelffffudfh
+    keeileegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:k9g4YcT4dUs2BKMQTU2BtjuG1K9UbiYbT-2yZxq_sojOynxiDTEXnA>
+    <xmx:k9g4YZtvTrDbMIBMydM2qL8IAxjmF26EqW5mYfkkATb9ghRc-99HnA>
+    <xmx:k9g4YVeL0hJNteRDYG8jdXu36xFAzP8cFagGrBuH1wtpfWAP9A9rrg>
+    <xmx:lNg4YfuKkJQUUXVSQBYZqi6jFpnlXfKt-2M7ikgDUlT0krVUiTNBbw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7E92B51C0060; Wed,  8 Sep 2021 11:36:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1229-g7ca81dfce5-fm-20210908.005-g7ca81dfc
+Mime-Version: 1.0
+Message-Id: <758441b2-9b04-4e6a-8182-741ae1f858ff@www.fastmail.com>
+In-Reply-To: <YTfQGqLv6FLnUfv+@sunset>
+References: <20210907145501.69161-1-sven@svenpeter.dev>
+ <20210907145501.69161-3-sven@svenpeter.dev> <YTe17jGBobarePaK@sunset>
+ <ff66c30d-1b43-43d3-a4b0-02fe7d346118@www.fastmail.com>
+ <YTfQGqLv6FLnUfv+@sunset>
+Date:   Wed, 08 Sep 2021 17:36:30 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: mailbox: Add Apple mailbox bindings
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Please pull from the tag
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.15-rc1-2
+On Tue, Sep 7, 2021, at 22:48, Alyssa Rosenzweig wrote:
+> > > > +      - description:
+> > > > +          M3 mailboxes are an older variant with a slightly dif=
+ferent MMIO
+> > > > +          interface still found on the M1.
+> > > > +        items:
+> > > > +          - const: apple,t8103-m3-mailbox
+> > >=20
+> > > Would be nice to document an example of where an M3 mailbox is fou=
+nd.
+> >=20
+> > Sure, I can add a comment that this is used for the coprocessor cont=
+rolling Thunderbolt.
+>=20
+> That raises another issue ... how do we know the M3 code works at all
+> without TB support yet? It "looks" correct but some of the IRQ handling
+> stuff is nontrivial.
 
-with top-most commit f76c87e8c33766cc6a7bf7461dfac9cebb05b5df
+Enabling the mailbox interface just requires a few clocks to be ungated.
+Then I injected messages manually to verify that the code works.
+In addition I also brought up parts of the Thunderbolt controller which
+then allowed the co-processor on the other end of the mailbox to boot.
+After that I was also able to successfully talk to that processor using
+the same protocol used by most other processors.
 
- Merge branch 'pm-opp'
 
-on top of commit 5cbba60596b1f32f637190ca9ed5b1acdadb852c
-
- Merge tag 'pm-5.15-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive more power management updates for 5.15-rc1.
-
-These are mostly ARM cpufreq driver updates, including one new
-MediaTek driver that has just passed all of the reviews, with the
-addition of a revert of a recent intel_pstate commit, some core
-cpufreq changes and a DT-related update of the operating performance
-points (OPP) support code.
-
-Specifics:
-
- - Add new cpufreq driver for the MediaTek MT6779 platform called
-   mediatek-hw along with corresponding DT bindings (Hector.Yuan).
-
- - Add DCVS interrupt support to the qcom-cpufreq-hw driver (Thara
-   Gopinath).
-
- - Make the qcom-cpufreq-hw driver set the dvfs_possible_from_any_cpu
-   policy flag (Taniya Das).
-
- - Blocklist more Qualcomm platforms in cpufreq-dt-platdev (Bjorn
-   Andersson).
-
- - Make the vexpress cpufreq driver set the CPUFREQ_IS_COOLING_DEV
-   flag (Viresh Kumar).
-
- - Add new cpufreq driver callback to allow drivers to register
-   with the Energy Model in a consistent way and make several
-   drivers use it (Viresh Kumar).
-
- - Change the remaining users of the .ready() cpufreq driver callback
-   to move the code from it elsewhere and drop it from the cpufreq
-   core (Viresh Kumar).
-
- - Revert recent intel_pstate change adding HWP guaranteed performance
-   change notification support to it that led to problems, because
-   the notification in question is triggered prematurely on some
-   systems (Rafael Wysocki).
-
- - Convert the OPP DT bindings to DT schema and clean them up while
-   at it (Rob Herring).
+>=20
+> > > > +  interrupts:
+> > > > +    minItems: 4
+> > > > +    items:
+> > > > +      - description: send fifo is empty interrupt
+> > > > +      - description: send fifo is not empty interrupt
+> > > > +      - description: receive fifo is empty interrupt
+> > > > +      - description: receive fifo is not empty interrupt
+> > > > +
+> > > > +  interrupt-names:
+> > > > +    minItems: 4
+> > > > +    items:
+> > > > +      - const: send-empty
+> > > > +      - const: send-not-empty
+> > > > +      - const: recv-empty
+> > > > +      - const: recv-not-empty
+> > >=20
+> > > If the names became not-constant the asprintf thing goes away, not=
+ sure
+> > > that's better or worse.
+> >=20
+> > I'm not sure I understand your comment here. This property just give=
+s a name
+> > to the interrupts so that they can be referenced by that instead of =
+a magic
+> > number between 0 and 4 in the driver.
+>=20
+> D'oh, right, retracted. (Both this comment and the corresponding comme=
+nt
+> on the driver itself). Sorry about that.
+>=20
+> > > > +  clocks:
+> > > > +    description:
+> > > > +      Reference to the clock gate phandle(s) if required for th=
+is mailbox.
+> > > > +      Optional since not all mailboxes are attached to a clock =
+gate.
+> > >=20
+> > > Do we do anything with the clocks at this point?
+> > >=20
+> >=20
+> > The device tree bindings describe the hardware (as best as we can wi=
+thout proper
+> > documentation) and some of these mailboxes have clock gates which ne=
+ed to be turned
+> > on before accessing their MMIO. This driver already tries to do that=
+ and works fine
+> > with the downstream clock driver(s) we have.
+>=20
+> Good enough for me, thanks for clarifying =F0=9F=91=8D
+>=20
+> Commit r-b, though Rob will surely point out problems and I'll need to
+> rereview =F0=9F=98=89
+>=20
 
 Thanks!
 
 
----------------
 
-Bjorn Andersson (1):
-      cpufreq: blocklist more Qualcomm platforms in cpufreq-dt-platdev
+Sven
 
-Hector.Yuan (3):
-      dt-bindings: cpufreq: add bindings for MediaTek cpufreq HW
-      cpufreq: Add of_perf_domain_get_sharing_cpumask
-      cpufreq: mediatek-hw: Add support for CPUFREQ HW
 
-Rafael J. Wysocki (1):
-      Revert "cpufreq: intel_pstate: Process HWP Guaranteed change notification"
-
-Rob Herring (3):
-      ARM: dts: omap: Drop references to opp.txt
-      dt-bindings: Clean-up OPP binding node names in examples
-      dt-bindings: opp: Convert to DT schema
-
-Taniya Das (1):
-      cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu cpufreq driver flag
-
-Thara Gopinath (1):
-      cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
-
-Viresh Kumar (13):
-      cpufreq: vexpress: Set CPUFREQ_IS_COOLING_DEV flag
-      cpufreq: Add callback to register with energy model
-      cpufreq: dt: Use .register_em() to register with energy model
-      cpufreq: imx6q: Use .register_em() to register with energy model
-      cpufreq: mediatek: Use .register_em() to register with energy model
-      cpufreq: omap: Use .register_em() to register with energy model
-      cpufreq: qcom-cpufreq-hw: Use .register_em() to register with energy model
-      cpufreq: scpi: Use .register_em() to register with energy model
-      cpufreq: vexpress: Use .register_em() to register with energy model
-      cpufreq: scmi: Use .register_em() to register with energy model
-      cpufreq: acpi: Remove acpi_cpufreq_cpu_ready()
-      cpufreq: sh: Remove sh_cpufreq_cpu_ready()
-      cpufreq: Remove ready() callback
-
----------------
-
- Documentation/cpu-freq/cpu-drivers.rst             |   3 -
- .../devicetree/bindings/cpufreq/cpufreq-dt.txt     |   2 +-
- .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  70 +++
- .../bindings/cpufreq/cpufreq-mediatek.txt          |   2 +-
- .../devicetree/bindings/cpufreq/cpufreq-st.txt     |   6 +-
- .../bindings/cpufreq/nvidia,tegra20-cpufreq.txt    |   2 +-
- .../devicetree/bindings/devfreq/rk3399_dmc.txt     |   2 +-
- .../devicetree/bindings/gpu/arm,mali-bifrost.yaml  |   2 +-
- .../devicetree/bindings/gpu/arm,mali-midgard.yaml  |   2 +-
- .../bindings/interconnect/fsl,imx8m-noc.yaml       |   4 +-
- .../opp/allwinner,sun50i-h6-operating-points.yaml  |   4 +
- Documentation/devicetree/bindings/opp/opp-v1.yaml  |  51 ++
- .../devicetree/bindings/opp/opp-v2-base.yaml       | 214 +++++++
- Documentation/devicetree/bindings/opp/opp-v2.yaml  | 475 ++++++++++++++++
- Documentation/devicetree/bindings/opp/opp.txt      | 622 ---------------------
- Documentation/devicetree/bindings/opp/qcom-opp.txt |   2 +-
- .../bindings/opp/ti-omap5-opp-supply.txt           |   2 +-
- .../devicetree/bindings/power/power-domain.yaml    |   2 +-
- .../translations/zh_CN/cpu-freq/cpu-drivers.rst    |   2 -
- arch/arm/boot/dts/omap34xx.dtsi                    |   1 -
- arch/arm/boot/dts/omap36xx.dtsi                    |   1 -
- drivers/base/arch_topology.c                       |   2 +
- drivers/cpufreq/Kconfig.arm                        |  12 +
- drivers/cpufreq/Makefile                           |   1 +
- drivers/cpufreq/acpi-cpufreq.c                     |  14 +-
- drivers/cpufreq/cpufreq-dt-platdev.c               |   4 +
- drivers/cpufreq/cpufreq-dt.c                       |   3 +-
- drivers/cpufreq/cpufreq.c                          |  17 +-
- drivers/cpufreq/imx6q-cpufreq.c                    |   2 +-
- drivers/cpufreq/intel_pstate.c                     |  39 --
- drivers/cpufreq/mediatek-cpufreq-hw.c              | 308 ++++++++++
- drivers/cpufreq/mediatek-cpufreq.c                 |   3 +-
- drivers/cpufreq/omap-cpufreq.c                     |   2 +-
- drivers/cpufreq/qcom-cpufreq-hw.c                  | 151 ++++-
- drivers/cpufreq/scmi-cpufreq.c                     |  65 ++-
- drivers/cpufreq/scpi-cpufreq.c                     |   3 +-
- drivers/cpufreq/sh-cpufreq.c                       |  11 -
- drivers/cpufreq/vexpress-spc-cpufreq.c             |  25 +-
- include/linux/cpufreq.h                            |  75 ++-
- 39 files changed, 1441 insertions(+), 767 deletions(-)
