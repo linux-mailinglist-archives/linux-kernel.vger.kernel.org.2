@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCB5403D96
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D540C403D9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238352AbhIHQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        id S241837AbhIHQfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbhIHQas (ORCPT
+        with ESMTP id S231666AbhIHQfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:30:48 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88C5C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:29:40 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id l11so1646024plk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:29:40 -0700 (PDT)
+        Wed, 8 Sep 2021 12:35:19 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AADDC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:34:12 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso3694988ott.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kNVo0qh9MTWbPC3PadsYf8Y/pn65A10GpuX8pbuQI9k=;
-        b=e35rgEOnpH/s7Tw2/4HppThD6Io0+OFEe71MRzevWCkzjuhA+3gaj1JvmKizwOI6W1
-         9pqr5ge31hytDPPB13wN4mgBJnYU/g514qDuMm4OgbeKC/ZYxN0Owy/aqewpOI9Ngnk3
-         xA/esTa/t1EYpqPpLUizhElL8gHhwqxHRZxvF9LNvv2orvOZrxwh/1u5nHs8/L9omfsV
-         B2wrjm0a5Q9hmdiOW9pzpgtTwbCuNUcqDMF9yEWLNMajiuasGqzHJ7OZIhU/UwFo4UW5
-         7K7GGiEYqw9x6fyUP1CqqqLuhnkLi+3lt/tECT+GH1eeimQBXzp/dT96L+Ehhi0GfnE3
-         sWgA==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PEH8WKYvFMU21oKJ95EnqmpYBea+F8R4xSX9djSHkyM=;
+        b=TSkO9D2L/NC7hTy1z2Kz92K3d0OmmHRmnAz0SL47POwjsrbLhz5giS4VAhgkcr85Ki
+         2kAjXNMIq2WqQYSMboFKhLZxr3Sb1r0HIEN+Zhr/ecIstROrDw664zq5bIdeaLtzLW2b
+         hC15n+nlN7b628N6Us/GxktUuZnW2yie4b8sFQlQzzj63+1ExqeDHDCN948QfGe9yeXH
+         cdgxX+S6TJAp010S962vnrTuxQP5qhOy+skpGgWCPPwFWAuE6eyUfcYijKTAg9/FkxKl
+         IdWSUY2xhBjjwKaBOkJrm2YdM5umz/yH+0CVXyLxPmzWgiBlDz9yjkq494rp0shvuaAJ
+         Qhew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=kNVo0qh9MTWbPC3PadsYf8Y/pn65A10GpuX8pbuQI9k=;
-        b=7EbdgvSq1ksBewkd8swm4DAWhq+5y8Fha2CAaUNam5NAPjTigU2J5v9wA7no9FpCu6
-         0WxLuzGA5z13f1tHSd3kPPTo0rB1IKlNseTrgjn0ytFLU4URoaNnFOPFfJ3jegeETk6C
-         4NcbQnHbY8AsIlHYfMRV/cV7IVb6rtlidwS+kBVXjqD6P7RikBdcf4mFtGDQWWhZO4Z8
-         PZr2EUIUH4Vj5oEOQ60qws+JFrYXIb7Zep95OGgG7N5OItrZk7SiS94FMCf+JsezBQGw
-         xHJxqOKFeK5KkN7h9FkFoqLCEVhMPj3LOOWk0DrUfQSXutcGddAv5IBh2xllsLv/rhy7
-         pl9w==
-X-Gm-Message-State: AOAM532tiolJRJOgM8+OKHNOQ41qozAqb4AgkGSdrYfbkwwul1+F3s6N
-        kHIPmiUKvj5XRg7NpMRVHSc=
-X-Google-Smtp-Source: ABdhPJx/D6pDPbsBLzhOxj3aJzivrrO+yk2FkOYdDOS4G7xN7bwtjcJcyzJwHMJq79tkxcvR9ppTCg==
-X-Received: by 2002:a17:90a:6503:: with SMTP id i3mr5257895pjj.22.1631118580052;
-        Wed, 08 Sep 2021 09:29:40 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id x10sm3105435pfj.174.2021.09.08.09.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 09:29:39 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 8 Sep 2021 06:29:38 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Zhang Qiao <zhangqiao22@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
-Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
- sched_task_group
-Message-ID: <YTjk8oiFa5EfDPn9@slm.duckdns.org>
-References: <20210826112635.7404-1-zhangqiao22@huawei.com>
- <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
- <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
- <1f0cd867-9c6d-4e22-cadd-06af9f852f7a@huawei.com>
- <YS60T2bfLpxb6SUY@slm.duckdns.org>
- <128d52ab-b4ee-65f8-e0a3-2796ef43a98b@huawei.com>
- <YS+uEmQRmQqAbkmG@slm.duckdns.org>
- <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
- <YTea0kK9yL5+GoKt@slm.duckdns.org>
- <be0bdf5a-479c-51bb-6d51-42739c11710d@huawei.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PEH8WKYvFMU21oKJ95EnqmpYBea+F8R4xSX9djSHkyM=;
+        b=Q2o1emnEr48Uql33E/WUcnGdAMrI8dD+XRG1L1BcSHwcNCt7m4XGVOIiDBQ/nLn11Z
+         Ry/0Dr62pRY0/1uM4qqulqeChnM9LR4LNgatVxpJtm2UBXDQhIuG0fVdHznbqd9Skayf
+         4iEqCBgAnMEZT/BmKsEc7QANDaBML6J3KnoxxLUiDJ8tW40YMn8CKt2TAB6bhevtPSk4
+         vpBl1Z/JW8azTd0l3Z7zAZpaup2CunjkZIKCcqRmkPFVoWFy8so9DQJkwQWAxhT7S0k3
+         Dm81byViBNsVovQaAP4EQDETWskAUgN1VdtTVpAbwJODppU5HQIRbkJWXp6N2+Jc81CN
+         v3lg==
+X-Gm-Message-State: AOAM532q05OPtCkVtMg9HvQvNM9riCXqUa62rsvPNkWwEXYbMUUl4mps
+        w+um/f0zpUTlAsXPloTDuimrRo7wTSQ=
+X-Google-Smtp-Source: ABdhPJxsF9+xmq80xFZXfBaOy7W9TErXblki0axlk5IN0LqFEOERF4RHcnUSQEMhCuBrE5fMpE+7xQ==
+X-Received: by 2002:a05:6830:88:: with SMTP id a8mr3813759oto.233.1631118851484;
+        Wed, 08 Sep 2021 09:34:11 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h3sm554652otu.7.2021.09.08.09.34.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 09:34:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] trace/osnoise: Do not use 'main' as variable name
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20210908151407.217052-1-linux@roeck-us.net>
+ <20210908115350.555941ba@oasis.local.home>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <0e88250a-21ac-800b-e6e4-eb7dc459b04e@roeck-us.net>
+Date:   Wed, 8 Sep 2021 09:34:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be0bdf5a-479c-51bb-6d51-42739c11710d@huawei.com>
+In-Reply-To: <20210908115350.555941ba@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Wed, Sep 08, 2021 at 07:32:06PM +0800, Zhang Qiao wrote:
-> I will update this patch by following the steps below:
-> 1)rename cgroup_subsys->fork() to cgroup_subsys->post_fork();
-> 2)add cgroup_subsys->fork() and the cpu_cgroup_fork() callback like this:
+On 9/8/21 8:53 AM, Steven Rostedt wrote:
+> On Wed,  8 Sep 2021 08:14:07 -0700
+> Guenter Roeck <linux@roeck-us.net> wrote:
 > 
-> void cpu_cgroup_fork(struct task_struct *task) {
-> ....
-> 	p->sched_task_group = task_group(current);
-> 	__set_task_cpu(p, smp_processor_id());
-> 	if (p->sched_class->task_fork)
-> 		p->sched_class->task_fork(p);
-> ....
+>> gcc 11.x may get a hiccup when encountering 'main' as variable name.
+>>
+>> kernel/trace/trace_osnoise.c: In function 'start_kthread':
+>> kernel/trace/trace_osnoise.c:1515:8: error: 'main' is usually a function
+>>
+>> Use a different variable name to silence it.
 > 
+> Egad, no. NACK! Double NACK. Linus already NACK'd this.
 > 
-> 3)call cgroup_subsys->fork() after cgroup_can_fork().
+> (although it's ironic that he also added -Werror as the default :-/ )
 > 
-> Do you have any suggestion?
+> The bug in is in gcc, go send them a patch.
+> 
+> THERE IS NO ISSUE WITH HAVING A LOCAL VARIABLE NAMED "main"!!!!
+> 
+> This has already been discussed:
+> 
+>    https://lore.kernel.org/all/CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com/
+> 
+> For now, the workaround is this patch:
+> 
+>     https://lore.kernel.org/all/20210813224131.25803-1-rdunlap@infradead.org/
+> 
 
-I'm not following why it needs to shuffle the callbacks. Can't you just
-relocate the fectching of task_group after can_fork?
+No problem. Sorry, I didn't find the other patch.
 
-Thanks.
+FWIW, it wasn't gcc 11.x, it was gcc 8.1, which is the only gcc version
+that I can get to compile nds32 images (more recent versions either fail
+to compile gcc, or fail to build the kernel with assembler errors).
+I'll just stop build testing nds32:allmodconfig instead.
 
--- 
-tejun
+Guenter
