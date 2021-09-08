@@ -2,187 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B52D403BB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9D9403BB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351943AbhIHOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351932AbhIHOno (ORCPT
+        id S1351923AbhIHOn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:43:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55955 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231164AbhIHOn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:43:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600E3C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=umPny3Ok0/zsN6Nvy2jYnqoJuWfVc2FWJg6UAYNRrPo=; b=g9hpn+iFXn8HwbSWpCypvYf4wO
-        1OHpv4WsFFJrsS1z1BZt93Qbhu7Y46ZHNVfA57Qecf/dV7wT+gvVdoIIUbudm5pjs/J7xNik9h3KI
-        kC3iwxIxC5UaiPy4yqbWXtfb/eMZ25YuNcPAISo/S5VvHw/iZIO5zf4N23ddON+uo1+RQ/t4t6vDH
-        Hw0YOuyH48E0d6SVhi/JrP2ZYt6UgaDoqNMhmoDzqMUJaJhAJOMvlnm2PXpxaVg4AHg+34rx5M7jo
-        sP7K+2hb2bOLDMb8J24soE8jCev6aWo3J0JBddyqmm15vV7bqOl6Wy/klEp62OGL2VgO1nspqGYK2
-        39yMtz0w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNylD-008tSZ-Bf; Wed, 08 Sep 2021 14:41:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BA43300454;
-        Wed,  8 Sep 2021 16:41:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 36FD3201736A5; Wed,  8 Sep 2021 16:41:10 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 16:41:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-Message-ID: <YTjLhnvDxwkE9Kky@hirez.programming.kicks-ass.net>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
- <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
- <YTi15PNcExiJRZoa@boqun-archlinux>
+        Wed, 8 Sep 2021 10:43:27 -0400
+Received: (qmail 605270 invoked by uid 1000); 8 Sep 2021 10:42:17 -0400
+Date:   Wed, 8 Sep 2021 10:42:17 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     alexander.shishkin@linux.intel.com, hpa@zytor.com,
+        parri.andrea@gmail.com, mingo@kernel.org, paulmck@kernel.org,
+        vincent.weaver@maine.edu, tglx@linutronix.de, jolsa@redhat.com,
+        acme@redhat.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, eranian@google.com, will@kernel.org,
+        linux-tip-commits@vger.kernel.org
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <20210908144217.GA603644@rowland.harvard.edu>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTi15PNcExiJRZoa@boqun-archlinux>
+In-Reply-To: <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 09:08:52PM +0800, Boqun Feng wrote:
-> On Wed, Sep 08, 2021 at 01:51:24PM +0200, Peter Zijlstra wrote:
-> [...]
-> > @@ -201,23 +207,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
-> >  {
-> >  	struct rt_mutex_base *rtm = &rwb->rtmutex;
-> >  	unsigned long flags;
-> > +	int readers;
-> >  
-> >  	/* Take the rtmutex as a first step */
-> >  	if (rwbase_rtmutex_lock_state(rtm, state))
-> >  		return -EINTR;
-> >  
-> >  	/* Force readers into slow path */
-> > -	atomic_sub(READER_BIAS, &rwb->readers);
-> > +	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
-> >  
-> > -	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-> >  	/*
-> >  	 * set_current_state() for rw_semaphore
-> >  	 * current_save_and_set_rtlock_wait_state() for rwlock
-> >  	 */
-> >  	rwbase_set_and_save_current_state(state);
+On Wed, Sep 08, 2021 at 01:44:11PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 08, 2021 at 01:00:26PM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 02, 2018 at 03:11:10AM -0700, tip-bot for Alan Stern wrote:
+> > > Commit-ID:  6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> > > Gitweb:     https://git.kernel.org/tip/6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> > > Author:     Alan Stern <stern@rowland.harvard.edu>
+> > > AuthorDate: Wed, 26 Sep 2018 11:29:17 -0700
+> > > Committer:  Ingo Molnar <mingo@kernel.org>
+> > > CommitDate: Tue, 2 Oct 2018 10:28:01 +0200
+> > > 
+> > > tools/memory-model: Add extra ordering for locks and remove it for ordinary release/acquire
+> > > 
+> > > More than one kernel developer has expressed the opinion that the LKMM
+> > > should enforce ordering of writes by locking.  In other words, given
+> > > the following code:
+> > > 
+> > > 	WRITE_ONCE(x, 1);
+> > > 	spin_unlock(&s):
+> > > 	spin_lock(&s);
+> > > 	WRITE_ONCE(y, 1);
+> > > 
+> > > the stores to x and y should be propagated in order to all other CPUs,
+> > > even though those other CPUs might not access the lock s.  In terms of
+> > > the memory model, this means expanding the cumul-fence relation.
+> > 
+> > Let me revive this old thread... recently we ran into the case:
+> > 
+> > 	WRITE_ONCE(x, 1);
+> > 	spin_unlock(&s):
+> > 	spin_lock(&r);
+> > 	WRITE_ONCE(y, 1);
+> > 
+> > which is distinct from the original in that UNLOCK and LOCK are not on
+> > the same variable.
+> > 
+> > I'm arguing this should still be RCtso by reason of:
+> > 
+> >   spin_lock() requires an atomic-acquire which:
+> > 
+> >     TSO-arch)		implies smp_mb()
+> >     ARM64)		is RCsc for any stlr/ldar
+> >     Power)		LWSYNC
+> >     Risc-V)		fence r , rw
+> >     *)			explicitly has smp_mb()
+> > 
+> > 
+> > However, Boqun points out that the memory model disagrees, per:
+> > 
+> >   https://lkml.kernel.org/r/YTI2UjKy+C7LeIf+@boqun-archlinux
+> > 
+> > Is this an error/oversight of the memory model, or did I miss a subtlety
+> > somewhere?
+
+There's the question of what we think the LKMM should do in principle, and 
+the question of how far it should go in mirroring the limitations of the 
+various kernel hardware implementations.  These are obviously separate 
+questions, but they both should influence the design of the memory model.  
+But to what extent?
+
+Given:
+
+	spin_lock(&r);
+	WRITE_ONCE(x, 1);
+	spin_unlock(&r);
+	spin_lock(&s);
+	WRITE_ONCE(y, 1);
+	spin_unlock(&s);
+
+there is no reason _in theory_ why a CPU shouldn't reorder and interleave 
+the operations to get:
+
+	spin_lock(&r);
+	spin_lock(&s);
+	WRITE_ONCE(x, 1);
+	WRITE_ONCE(y, 1);
+	spin_unlock(&r);
+	spin_unlock(&s);
+
+(Of course, this wouldn't happen if some other CPU was holding the s lock 
+while waiting for r to be released.  In that case the spin loop for s above 
+wouldn't be able to end until after the unlock operation on r was complete, 
+so this reordering couldn't occur.  But if there was no such contention then 
+the reordering is possible in theory -- ignoring restrictions imposed by the 
+actual implementations of the operations.)
+
+Given such a reordering, nothing will prevent other CPUs from observing the 
+write to y before the write to x.
+
+> Hmm.. that argument isn't strong enough for Risc-V if I read that FENCE
+> thing right. That's just R->RW ordering, which doesn't constrain the
+> first WRITE_ONCE().
 > 
-> rwbase_set_and_save_current_state() may eventually call
-> current_save_and_set_rtlock_wait_state(), which requires being called
-> with irq-off, while rwbase_write_lock() may be called with irq-on. I
-> guess we can change the raw_spin_lock() to raw_spin_lock_irqsave() in
-> current_save_and_set_rtlock_wait_state() to solve this.
+> However, that spin_unlock has "fence rw, w" with a subsequent write. So
+> the whole thing then becomes something like:
+> 
+> 
+> 	WRITE_ONCE(x, 1);
+> 	FENCE RW, W
+> 	WRITE_ONCE(s.lock, 0);
+> 	AMOSWAP %0, 1, r.lock
+> 	FENCE R, WR
+> 	WRITE_ONCE(y, 1);
+> 
+> 
+> Which I think is still sufficient, irrespective of the whole s!=r thing.
 
-Oh right... that's actually something I pointed out to Thomas during
-review, and I suppose we both forgot about it, or figured it didn't
-matter enough.
+To me, this argument feels like an artificial, unintended consequence of the 
+individual implementations, not something that should be considered a 
+systematic architectural requirement.  Perhaps one could say the same thing 
+about the case where the two spinlock_t variables are the same, but at least 
+in that case there is a good argument for inherent ordering of atomic 
+accesses to a single variable.
 
-Oooh, Thomas added that lockdep_assert.. still lemme change that to
-match set_special_state().
-
-Also,...
-
----
-Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
-
-While looking at current_save_and_set_rtlock_wait_state() I'm thinking
-it really ought to use smp_store_mb(), because something like:
-
-	current_save_and_set_rtlock_wait_state();
-	for (;;) {
-		if (try_lock())
-			break;
-		raw_spin_unlock_irq(&lock->wait_lock);
-		if (!cond)
-			schedule();
-		raw_spin_lock_irq(&lock->wait_lock);
-		set_current_state(TASK_RTLOCK_WAIT);
-	}
-	current_restore_rtlock_saved_state();
-
-which is very close to the advertised usage in the comment, is actually
-broken I think:
-
- - try_lock() doesn't need to provide any ordering on failure;
- - raw_spin_unlock() only needs to provide RELEASE ordering;
-
-which gives that the above turns into something like:
-
-	WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);
-	raw_spin_unlock(&current->pi_lock);
-	raw_spin_unlock(&lock->wait_lock);
-	if (!cond)
-
-and the load of @cond is then allowed to speculate right before the
-__state store, and we've got a missed wakeup -> BAD(tm).
-
-Fixes: 5f220be21418 ("sched/wakeup: Prepare for RT sleeping spin/rwlocks")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 1780260f237b..3d3246d7e87d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -245,7 +245,8 @@ struct task_group;
-  *		if (try_lock())
-  *			break;
-  *		raw_spin_unlock_irq(&lock->wait_lock);
-- *		schedule_rtlock();
-+ *		if (!cond)
-+ *			schedule_rtlock();
-  *		raw_spin_lock_irq(&lock->wait_lock);
-  *		set_current_state(TASK_RTLOCK_WAIT);
-  *	}
-@@ -253,22 +254,24 @@ struct task_group;
-  */
- #define current_save_and_set_rtlock_wait_state()			\
- 	do {								\
--		lockdep_assert_irqs_disabled();				\
--		raw_spin_lock(&current->pi_lock);			\
-+		unsigned long flags; /* may shadow */			\
-+									\
-+		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
- 		current->saved_state = current->__state;		\
- 		debug_rtlock_wait_set_state();				\
--		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
--		raw_spin_unlock(&current->pi_lock);			\
-+		smp_store_mb(current->__state, TASK_RTLOCK_WAIT);	\
-+		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
- 	} while (0);
- 
- #define current_restore_rtlock_saved_state()				\
- 	do {								\
--		lockdep_assert_irqs_disabled();				\
--		raw_spin_lock(&current->pi_lock);			\
-+		unsigned long flags; /* may shadow */			\
-+									\
-+		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
- 		debug_rtlock_wait_restore_state();			\
- 		WRITE_ONCE(current->__state, current->saved_state);	\
- 		current->saved_state = TASK_RUNNING;			\
--		raw_spin_unlock(&current->pi_lock);			\
-+		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
- 	} while (0);
- 
- #define get_current_state()	READ_ONCE(current->__state)
+Alan
