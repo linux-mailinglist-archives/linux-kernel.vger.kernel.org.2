@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061CE403AA1
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6E6403AA2
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351784AbhIHNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:30:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51014 "EHLO
+        id S1351477AbhIHNbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:31:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51038 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349436AbhIHNaY (ORCPT
+        with ESMTP id S1349441AbhIHNaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:30:24 -0400
-Message-ID: <20210908132525.096452100@linutronix.de>
+        Wed, 8 Sep 2021 09:30:25 -0400
+Message-ID: <20210908132525.154428878@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631107755;
+        s=2020; t=1631107757;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=SmSiQ7xCWe8n3tLVAh8SY5hwaLF7QDHxdm1wHtCdRSI=;
-        b=i1F5evhsMnCt4irzaoNcFUaWynE+pDHy7St8rpGZzUeiPQ25hIuudljBO8k/HUS/0wg3Uz
-        3lGztjOKxk2snh1p1oKSocT0SMyCaUpRPwWgG+gxQjWWCZESbIzFmc9jWwLFKSVViBDJ5v
-        yFJk2mzLFdzG7WF7E5kvHdUG7CczOakwkaO80u/DSV756WvysNnioTIwzt7NmSrqIoV6+i
-        j4r1MuNlTk1gLBZySztFFn2Vc9Rb+CdRpSmFwcoIYIKgiHfnKZNjZ4dLlfm3nmpAiCzv+n
-        3dgvVAKKebKK94UWXoZ2l+v014DaZ1wJoY6BSsffaF6RFZckBSihbqJZLczO4Q==
+         references:references; bh=Hh4i3aUe/x3yNILYS1K+Ms5S7OwNVMUJgDTF4ysAfds=;
+        b=ep/xvumdnIVETKqlbalxhkBFG8TKzlg9ySQyJgBlAUuaiJRlZ+TBnLle+RXvbfb3wOetvQ
+        3DyogM2gr6u488LZ79Q99LpHmPkkY7ExBJjCu8/sLgs3cvO2h1cAGUouVRqvHSpI6UWXFw
+        JIjWlb8wauxOQFNS9bvgp7cdtbc56x1eo0B0dwVQoi7oCCURCD3NWCOKJwV/QI5bT5O6Km
+        PaaLpGNnBlja3/mYiAJ1nA/2hC6H/Ds7g/weBrVFERpEIVix1WniNZeSXJ2pJY7lGCOxeb
+        Rk+33V7JLc6p2o101AbUorDzieB5nYZERsx5y+g01NZ9ssEje42V2WepFdponw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631107755;
+        s=2020e; t=1631107757;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=SmSiQ7xCWe8n3tLVAh8SY5hwaLF7QDHxdm1wHtCdRSI=;
-        b=2cS+gj6yRXZ2Op9eC7U2ayabHRY45+3E+4xnQnccYve6paL1BOdSI+evz24S0SvFjanXQr
-        ZLdsN8vLzqwqcnBw==
+         references:references; bh=Hh4i3aUe/x3yNILYS1K+Ms5S7OwNVMUJgDTF4ysAfds=;
+        b=JJVeGU910YJrRY+VUSEw2Ffr2oQVgZzlc3VOBdIW0po3rE06QxJx1BkBy/el86B7zdbfpi
+        QZmwVROCmFHM2MBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
@@ -39,81 +39,42 @@ Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Peter Ziljstra <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: [patch V3 03/20] x86/mce: Deduplicate exception handling
+Subject: [patch V3 04/20] x86/mce: Get rid of stray semicolons
 References: <20210908130922.118265849@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Wed,  8 Sep 2021 15:29:15 +0200 (CEST)
+Date:   Wed,  8 Sep 2021 15:29:16 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preparatory patch for further simplification. No functional change.
+and the random number of tabs.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V2: New patch
 ---
- arch/x86/kernel/cpu/mce/core.c |   34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ arch/x86/kernel/cpu/mce/internal.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -373,13 +373,16 @@ static int msr_to_offset(u32 msr)
- 	return -1;
- }
+--- a/arch/x86/kernel/cpu/mce/internal.h
++++ b/arch/x86/kernel/cpu/mce/internal.h
+@@ -61,7 +61,7 @@ static inline void cmci_disable_bank(int
+ static inline void intel_init_cmci(void) { }
+ static inline void intel_init_lmce(void) { }
+ static inline void intel_clear_lmce(void) { }
+-static inline bool intel_filter_mce(struct mce *m) { return false; };
++static inline bool intel_filter_mce(struct mce *m) { return false; }
+ #endif
  
--__visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
--				      struct pt_regs *regs, int trapnr,
--				      unsigned long error_code,
--				      unsigned long fault_addr)
-+static void ex_handler_msr_mce(struct pt_regs *regs, bool wrmsr)
- {
--	pr_emerg("MSR access error: RDMSR from 0x%x at rIP: 0x%lx (%pS)\n",
--		 (unsigned int)regs->cx, regs->ip, (void *)regs->ip);
-+	if (wrmsr) {
-+		pr_emerg("MSR access error: WRMSR to 0x%x (tried to write 0x%08x%08x) at rIP: 0x%lx (%pS)\n",
-+			 (unsigned int)regs->cx, (unsigned int)regs->dx, (unsigned int)regs->ax,
-+			 regs->ip, (void *)regs->ip);
-+	} else {
-+		pr_emerg("MSR access error: RDMSR from 0x%x at rIP: 0x%lx (%pS)\n",
-+			 (unsigned int)regs->cx, regs->ip, (void *)regs->ip);
-+	}
+ void mce_timer_kick(unsigned long interval);
+@@ -183,7 +183,7 @@ extern bool filter_mce(struct mce *m);
+ #ifdef CONFIG_X86_MCE_AMD
+ extern bool amd_filter_mce(struct mce *m);
+ #else
+-static inline bool amd_filter_mce(struct mce *m)			{ return false; };
++static inline bool amd_filter_mce(struct mce *m) { return false; }
+ #endif
  
- 	show_stack_regs(regs);
- 
-@@ -387,7 +390,14 @@ static int msr_to_offset(u32 msr)
- 
- 	while (true)
- 		cpu_relax();
-+}
- 
-+__visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
-+				      struct pt_regs *regs, int trapnr,
-+				      unsigned long error_code,
-+				      unsigned long fault_addr)
-+{
-+	ex_handler_msr_mce(regs, false);
- 	return true;
- }
- 
-@@ -432,17 +442,7 @@ static noinstr u64 mce_rdmsrl(u32 msr)
- 				      unsigned long error_code,
- 				      unsigned long fault_addr)
- {
--	pr_emerg("MSR access error: WRMSR to 0x%x (tried to write 0x%08x%08x) at rIP: 0x%lx (%pS)\n",
--		 (unsigned int)regs->cx, (unsigned int)regs->dx, (unsigned int)regs->ax,
--		  regs->ip, (void *)regs->ip);
--
--	show_stack_regs(regs);
--
--	panic("MCA architectural violation!\n");
--
--	while (true)
--		cpu_relax();
--
-+	ex_handler_msr_mce(regs, true);
- 	return true;
- }
- 
+ __visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
 
