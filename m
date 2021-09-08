@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2C9403DA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464CB403DA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349647AbhIHQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:36:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343833AbhIHQgb (ORCPT
+        id S1349457AbhIHQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343833AbhIHQgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:36:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631118922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9VEB0mabxX6H0IauzWOmg7fC92taQHzVcX3Un2fABB0=;
-        b=ZTWv2+xvvXB2OFINbjJLgLUGGFnLhJADVeuPuT6OTGFA4BjO+Q7rZNyZ885GzOAvFtExhh
-        nDEq7SVFSVQWybjEHCe3RGGSEGDL6vn6jo0zjRTteHqy3qF2txsq/M41gxlrgp9L9p1Qy0
-        7cNhLRNjrq7+AtxTHv9vrUpBkgQ4268=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-8wOG7SWNM_-vartw87f0Rg-1; Wed, 08 Sep 2021 12:35:22 -0400
-X-MC-Unique: 8wOG7SWNM_-vartw87f0Rg-1
-Received: by mail-io1-f69.google.com with SMTP id e2-20020a056602044200b005c23c701e26so2193169iov.21
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:35:20 -0700 (PDT)
+        Wed, 8 Sep 2021 12:36:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80493C061575;
+        Wed,  8 Sep 2021 09:35:13 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pi15-20020a17090b1e4f00b00197449fc059so1591888pjb.0;
+        Wed, 08 Sep 2021 09:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
+        b=cEO/E0Ry4JDv4NAoZWlVwP4k205lyAd9w0Jc/1E0rCsSXw3qxpjooAnEo5b0LiZ/xh
+         1cmfhhXIkymzyYy74CxqfFRkcGkxEeqgtwbcmUmMOkNEgfNyZNECXRyYhdC3TWU3C1wr
+         RYo72dsDHQjeUlpJ7ZxqIgnRC0i4WwnJja8UvQ7EAgxQKkXrN4eymCpiHcJPG6g0QGA8
+         1fdL5abIwfzLj6FxUwYFP5fiwW7rZUSkCJFGZOaOTXRaWkmRkbrJ+7uEWs7JEQ0dy4ji
+         /jGHumraXj/+ujT5+g4BougNm+Fbf7wvpHnEOR+SoWoel7IC/QoSVu1xTlgMd7VHAL2l
+         7/XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9VEB0mabxX6H0IauzWOmg7fC92taQHzVcX3Un2fABB0=;
-        b=PcFNYxcmiYsxehu+EA47tqHy5j7hjnzA3gxKTYa3SPNWzKydXknh4xh8lHQwGDpwNa
-         WDMSzGCWoq0q5iRfFCOfrexoDuF7jVTERPREXLdEv+f4xQhMt6HrFAM7fMZMOpLh3Ws0
-         F3wgL1GmcQyhMxX2PNi6qbKBhKAPvRU29/EsdsjF74GPOEM+oNIfweSMFCfpcxRSYf9q
-         TNAtCcoN5nKsAsys5hZEoyeIf6GAiVByNW1JRqzFUfu1M2cZJu1KHZbfGFfoWcSP1pno
-         CGSrykX28lpJnWRTrfXz4r18R//82mCfxD9udz0WIaBpNcSOxknRh3r7srgTAomA0rV3
-         F/jQ==
-X-Gm-Message-State: AOAM5338fIJSeiEgPMxjuVUXkBnSLoFCWkjtP15KsvKujerY7D3tndMx
-        zhHwwZiedSKP7azS7tmRUxXhABvDns7mjchZxz7avH4IO8BwY+gPs2A17ujR+GWe1AadU6uKFyo
-        OcS9QbfnHgDR2c3kuLdwniMrIrjBAR+kWXtesZb81IOIVAO6C0A1rBr69qYCXHmSgShSd5TzYbw
-        ==
-X-Received: by 2002:a6b:14f:: with SMTP id 76mr594888iob.211.1631118919527;
-        Wed, 08 Sep 2021 09:35:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0/FEqnBC9+7xMfSY1XzYnMfc5+o2WWR+2kVyCZ7N3zjAkhmv3GEWNQ5jVL7+vq0H9XCy2xQ==
-X-Received: by 2002:a6b:14f:: with SMTP id 76mr594849iob.211.1631118919137;
-        Wed, 08 Sep 2021 09:35:19 -0700 (PDT)
-Received: from t490s.phub.net.cable.rogers.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id b10sm1336961ils.13.2021.09.08.09.35.17
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
+        b=lEId6/rcLwTgnpWKqEg+WWPDN/ctdwXKdvLofL2WZSubx8jnak5nxV5DU2yO5RQnKO
+         qpmUPT0WLxVQ1EWXbzgn2zuRvtnRQnhOqpyoc7jDreihuHmUeOsQiixAONZC4tCsdXIA
+         5r27ePBJ3T1hWxetihS6Oka+FZUHv71rSEqmBJcWJ1ARES2Ee4XleezTfM1tNbfQXUuR
+         Qj/ERb1x8FZfGHcqRILWq5LTCuFW9wdAIKgqEv7E5y07nsAK6ZpYQLOorYVUMQrurzgR
+         if9QbwVYq2j06DYISF78fr43v7UsnNXUHaky7nBjVT6Ed+GFj60gmQATp4uHZjdmnySm
+         WJdw==
+X-Gm-Message-State: AOAM533xLShQSj71FDIqSQzXtRM6pUGdr6z3maxkAtxzAdzQBVtLXfT2
+        AXGdgmAC5iel5pqDrgGCNohMVqvWAWg=
+X-Google-Smtp-Source: ABdhPJwFoJ0ZNwF7ymnYu6dtcblvKpIG0O6/JViZFf+murQhyKST6yt150dDOceRGyev6kDMMDs6UQ==
+X-Received: by 2002:a17:90a:e009:: with SMTP id u9mr5000361pjy.218.1631118912916;
+        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id q20sm3798099pgu.31.2021.09.08.09.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 09:35:18 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Yang Shi <shy828301@gmail.com>, Miaohe Lin <linmiaohe@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com
-Subject: [PATCH v3 0/5] mm: A few cleanup patches around zap, shmem and uffd
-Date:   Wed,  8 Sep 2021 12:35:11 -0400
-Message-Id: <20210908163516.214441-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-Content-Type: text/plain; charset="utf-8"
+        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 8 Sep 2021 06:35:11 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yi Tao <escape@linux.alibaba.com>
+Cc:     gregkh@linuxfoundation.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <YTjmP0EGEWGYhroM@slm.duckdns.org>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1631102579.git.escape@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Based on linus/master, commit ac08b1c68d1b which should contain the recent -mm
- pull, if not applicable, I can repost anytime]
+Hello,
 
-v3:
-- Patch "mm: Add zap_skip_check_mapping() helper"
-  - In zap_skip_check_mapping() check zap_mapping first [Alistair]
-- Patch "mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags":
-  - Fix English errors in commit message [David]
-  - Drop paragraph mentioning commit 22061a1ffabd in commit msg
-  - Set ZAP_FLAG_SKIP_SWAP for unmap_mapping_page() too
-- Pick up r-bs
+On Wed, Sep 08, 2021 at 08:15:11PM +0800, Yi Tao wrote:
+> In order to solve this long-tail delay problem, we designed a cgroup
+> pool. The cgroup pool will create a certain number of cgroups in advance.
+> When a user creates a cgroup through the mkdir system call, a clean cgroup
+> can be quickly obtained from the pool. Cgroup pool draws on the idea of
+> cgroup rename. By creating pool and rename in advance, it reduces the
+> critical area of cgroup creation, and uses a spinlock different from
+> cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
+> competition with attaching processes on the other hand.
 
-v2:
-- Patch "mm: Clear vmf->pte after pte_unmap_same() returns"
-  - Remove one comment [David]
-- Collect r-b for patch 2/3
-- Rewrite the last two patches to drop ZAP_FLAG_CHECK_MAPPING, dropping
-  Alistair's r-b on patch 5 because it changed [David, Matthew]
+I'm not sure this is the right way to go about it. There are more
+conventional ways to improve scalability - making locking more granular and
+hunting down specific operations which take long time. I don't think cgroup
+management operations need the level of scalability which requires front
+caching.
 
-===== v1 cover letter =====
-
-I picked up these patches from uffd-wp v5 series here:
-
-https://lore.kernel.org/lkml/20210715201422.211004-1-peterx@redhat.com/
-
-IMHO all of them are very nice cleanups to existing code already, they're all
-small and self-contained.  They'll be needed by uffd-wp coming series.  I would
-appreciate if they can be accepted earlier, so as to not carry them over always
-with the uffd-wp series.
-
-I removed some CC from the uffd-wp v5 series to reduce the noise, and added a
-few more into it.
-
-Reviews are greatly welcomed, thanks.
-
-Peter Xu (5):
-  mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
-  mm: Clear vmf->pte after pte_unmap_same() returns
-  mm: Drop first_index/last_index in zap_details
-  mm: Add zap_skip_check_mapping() helper
-  mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
-
- include/linux/mm.h | 34 +++++++++++++++++++--
- mm/memory.c        | 76 +++++++++++++++++++---------------------------
- mm/shmem.c         |  1 -
- mm/userfaultfd.c   |  3 +-
- 4 files changed, 63 insertions(+), 51 deletions(-)
+Thanks.
 
 -- 
-2.31.1
-
+tejun
