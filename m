@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F3A40377E
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFAA40377F
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351362AbhIHKFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:05:15 -0400
+        id S1348748AbhIHKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:05:21 -0400
 Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:14657
         "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348742AbhIHKEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:04:30 -0400
+        id S1348771AbhIHKEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:04:32 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eYP1teBm+m1j8LMvPsVTwUTdjQNyB6gtu3vIwhSvh7FdtsLuZPaCR4ChvV1F5yZh97pTZmmNdye25tJ+i+gdQs2HXX1nxszO4Umzv2TULyHhw209aDsE37fNOndgiZFIW73AxauNMwl9AEd6TnoUSuimW40dFcFDyPwLy0pWU9PpcIkFyM+62moEu1s1kL3t0KDr7eNDZcSFqWeNZPfV6RZiki2xGpMHo522M1WRTqZ71MTDuTakqS5L6j8BHK/E9rzx9SjhUaMAze9CYg8MBXtfJfQsvFCXrq+c6Pqb9A2Uuc/xB3vmdfg/3WnPJyn7ofdyEyHzTSQo3rjLdKrYEQ==
+ b=f93go9PkowKK1iIKx/UzTFJi7sQA4cMsH56z2/yppyVAuqOrG6rSYysI0aOW0r/vTUL8W15CrvfmZFnZhMLoJnhhaHUZTGIj4gft5SRScRD6VmCJS5nlFZw9kLDpwDIVw316V28dgvWJawUakm8VKGxjoo+88CwWnv5kMq8Y5zxCkO7BDqTMPegvYid523ffogg35sbDKHz0f7sIuVCFvrVcULfH8JKB31RA4zPQgmgTgBm0E0ZSCxbeNjt8qCULtXrAHIkso3LOJmi9PWLx0EKDv+DQADDGfa/FBssgOkW9pX8vox9x/z8iL3i6uMETsGnnN8FHauDRR4EXWDCKGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=juLkD8D17EkE5aTqndTUEZM1AQBvMSX7Bb8Bx6rJorw=;
- b=FVeDgfQ0lKzYpmMWlyM1BJaplxiFcmavnW4TltFgUxvfrOYBl7q/fRR2fnH3LRyqmwnoVO6BsobkrmxJ4Dxywnz88uOwSgAszAZ+bxZRxiFujXUt1WOItIXqJNLXVehaNCDY/TiPz5lgFsFoxhDd14C7loSM3R/gUe4L3eoOnYEWR+45ifvMXh9a8jTtAmnCaROpPoEQ6JC3wzQVxcZVylZYNMmvsvHOb9LXo1xX/zRBlA3dxtmgWjQokRcKQTe+KAihTgpDAQFo8/b0RjDMi2Es4a8dbSzRKZhAlNLJgA4mqW2oUQ/w21BtxI+qxdtAB3Lo5hqtMEwNVyV1InjEiA==
+ bh=TDgemKq6P1MdA7Kl2m3yyrwqgQfYCGz2XfTrDEpCyG0=;
+ b=b+S1+9aUgQ/DbQz8xlnIB7ER6DnDc3EDIetWzZgqtq1o8I3dOCyaJiQVHtFo00Gie6pNT31PFLB7FTRjT3b4WkoZNF0JjQ086LI4M8Wn8TtuT8Vqim107uEMYhmkXPmxYmbg+PcjvzAiWPuxqo1VsMqWr3wf3SsBnv8vkfgdfm4ICpBP7kwIeo+nMzOX2RxFOfdELD3XTa5a03A5fZPMomNS3yVheJOxv8mkNKuuBT2CsDHxhdg+4KqPuu+ebSv8CHhMf4TbVBjqWKVq1EtPGyJQCQ+G6BLuf15foxb527t5pUc3hG1CtaMJ61M2FXmZ6i/6ee9GrmnI5/ltEXnH/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=juLkD8D17EkE5aTqndTUEZM1AQBvMSX7Bb8Bx6rJorw=;
- b=L4VZm5WuFhsl3xMFuf3FHhor7Gv22Gp7SRlFf+AvCG5AOExtk8B/B44F5VtpFkfcq2J/vWPRHs2oPMK9yG0WzKhghKMNfdj7wbOynMqG5bj4axBQHrIn5dOAt6jOQsMU26x7fvk15EXWWEfmLtrjOv0uEqL/UbreUiEO8O+PeS4=
+ bh=TDgemKq6P1MdA7Kl2m3yyrwqgQfYCGz2XfTrDEpCyG0=;
+ b=XJHWQ2EnOfzyHeAndsDzylpklpiU8+LqEwtMFCctcn914x+2EcE2sH//oQTZoqX24JBRZg5IzBu3dmUuMNuVdRSW17fedMTyVW4Vuu9B9Bm9IlDPWt5EiOrpbrXYb1lR6vebM6M+cdvS1tXmOubIe8pgnG6lgPtt556nUXp8v9Y=
 Authentication-Results: linaro.org; dkim=none (message not signed)
  header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
  by DB8PR04MB5786.eurprd04.prod.outlook.com (2603:10a6:10:a8::31) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 10:03:20 +0000
+ 2021 10:03:23 +0000
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
- 10:03:20 +0000
+ 10:03:23 +0000
 From:   Joakim Zhang <qiangqing.zhang@nxp.com>
 To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
         shawnguo@kernel.org
 Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] arm64: dts: imx8mm: add "cell-type" property for mac-address
-Date:   Wed,  8 Sep 2021 18:02:56 +0800
-Message-Id: <20210908100257.17833-6-qiangqing.zhang@nxp.com>
+Subject: [PATCH 6/6] arm64: dts: imx8m: remove unused "nvmem_macaddr_swap" property for FEC
+Date:   Wed,  8 Sep 2021 18:02:57 +0800
+Message-Id: <20210908100257.17833-7-qiangqing.zhang@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
 References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
@@ -53,162 +53,116 @@ X-ClientProxiedBy: SG2PR01CA0105.apcprd01.prod.exchangelabs.com
  (2603:10a6:10:fa::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0105.apcprd01.prod.exchangelabs.com (2603:1096:3:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:03:18 +0000
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0105.apcprd01.prod.exchangelabs.com (2603:1096:3:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:03:20 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: caba9514-d124-4051-9cfe-08d972afe305
+X-MS-Office365-Filtering-Correlation-Id: 290994af-bf16-405a-069d-08d972afe4a6
 X-MS-TrafficTypeDiagnostic: DB8PR04MB5786:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB5786BDD6C5E78EB1E91422E0E6D49@DB8PR04MB5786.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-Microsoft-Antispam-PRVS: <DB8PR04MB578698471808A005AD85C7D9E6D49@DB8PR04MB5786.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sVLNkNljb62mWDv5kz0fPYilF9BvQC/y0eEsnuZ7ZpkJ70Fo+fUyxoPAs6ujD1lED8mWPOq3rngtzczBfSF6LfeWRLW9pKxu/sIUSnG+s/2YNybNSty4/56J7n+OwGkD6/5SOZe7Yl03mt3IHQDgbdWjEJFDHTPekvmXEL37xG7vVCpzGa9yp60mME/fk0zcb3yg4YTPoApkYUTQGsx0WtXshxih0K9jyJT51NSWB2EpwgIfOUpSVnCzEZpl606DMcZm/pJrDPTaqoujieRTqLqZkYRay0XZURLi/shuUHU+s5JhgEHUcYOBrZFs82V637oiYTmRulwQPrTi9u1FSMNGWPD+frto4GaiL2V1UOZB10hL31ATnMnB1GgM2sAEIkEto3f4T0oqZYBMieyvLYPZ2OGxzH/e/mVuksDD59D/RVFJ8PITsVcoSraXVteMml2Fb0ucfmpPS37cmtQg5qFg/JhFvs1xNA6XB1jzh6xhH60kqxThUnGOjMyK2fAzdN9KAdFbDPUTQEar/R4aRNGm+hnOmPIHSFVIH0LTUmwi0jG0Q8VLFvHWmLD1f7WiUIj0sDuUXbGK+ZQgH4fdu5pKdLOpuxdG0gZEdbvynsPj0bBGTUlSXZgyrNSRW+V3i25f/nAtTDdEI+J/xQV+erprj2jD7ngIZUjI9Ihbkk7iZI785VamicHeMGKDgbLq0OHUszpX2XngWhxLB3fv/hy7RVRSxiwrdZGkpDAHLAw=
+X-Microsoft-Antispam-Message-Info: G5pN+qk+rnuQ2Sk7nA01IOzNwzMzAFuBVMUbYA+2i8ukXR/qxV2e4vPcPCQGNTrDy/kANjQwf0HEfk56sQENMZgluhQiv4r1v2VxgEzNAOt1OqmnHbI8mmI2VAyC02FRlKdhM74Trq8hnFCfZK0sjYGzWuN2jE222mD5q/ygVCYPH1wiC6gEDiXVVxrixs3vfTsoxgfSf5LDNJW55S4nqFWYyswlXKb7VaSmwHS5f1A58BqDCf7ia0IUAv3Jc0+gGVG1qsUDAJR4B2fJEAroftShWxqbyhYiz/9ZU0MtUHBFutsUzx+7+z0hFPiF+g8SCSX5eGZuqijMNYuu5+wHDPm5+ZetQC9LrPyTpKutgKjkhhnK76ijAPQ7MBxHEm0lKH+cQhWHhLXKkqKsY7lvIR/5u1irlkSiY4ozKjwp5U3oSu7Jvry7pJyjwkrlZw8MIEHrGqIbM/FDlIRAp2rROFseQFTQvcZ7oLmNy0seWbLR/996d+ug7I5SQ6kkEDdxtrUNk1SgEWak2V6NKlxFzvyurNFoWsNn1Ff43595EBHBjRkS+tTtp5fBGTeJO4ffDOoc3H4Yfn2kO3JT4JDR+4IQNF+vwYigW4qJQ0pq7SogjNbdJt5RwK6rbPo3kqstBj5k9Gwh8ONOJ/eX/S2l0I8b9yTnGEQXr0SDydkYFwCzT1gshsHwgHJOG06N/1YuNEaqSz3Q1YCmOfqmF2aKRXv3hSEOJyXoSmW7TbwshnA=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(86362001)(8936002)(66556008)(6486002)(8676002)(38100700002)(2616005)(66476007)(956004)(478600001)(38350700002)(66946007)(6506007)(316002)(36756003)(52116002)(26005)(5660300002)(83380400001)(1076003)(6512007)(4326008)(6666004)(2906002)(186003)(32563001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cd2OdqUzHJd1cHgv1TGIvEpXAS40be/2rAObiy/hdE2POjLcE3xTtnRRDSbh?=
- =?us-ascii?Q?HEwWOpJuUyy/IhpqZy1r8TYHkb0H6mv671biItiIyNzetRrwAi0ycM/hkO85?=
- =?us-ascii?Q?RearrSG0JsSrMq+fDxAR184RobrZYnOlaxav5wjFwWi+NAqCwen75IRZ5PeP?=
- =?us-ascii?Q?AckQctcLHb8422fh66kpXGK7YNpjBVJStqFJyRtXL1JOtZp6hGjS2pr0miA5?=
- =?us-ascii?Q?2y2s8Fiy6DDkHwcznQiaX6gplCefyKmeSl8SG3gvQlzP8TRoJwgR3eWFjbg9?=
- =?us-ascii?Q?97Dp8iZ/Nax84vdCbfgEkUXQk52DCeJ7awCJSW1TYutvfBg8F2W+4sxDIK7m?=
- =?us-ascii?Q?I1GLs3F8ATMgN01OUuvZi10P8Fx4ZFzqWnLtXmFV+vfIXFAe5JfNNkqhWHdv?=
- =?us-ascii?Q?REjamnD0+KIa9yPjC/4QuwhBb0ruR53agKMh5lpeuH4XJEc8HqtN/PVsngWj?=
- =?us-ascii?Q?Qm4hCFioWg8ln945wPWr/czvO4crQy7MiAsLVMfAt3alIdrZD/zH2culM7zy?=
- =?us-ascii?Q?u9f3xFZ+PJr2x/Qqu8ssABMYEHtkU+Vu7q7RjHLPJormx/upqDY1+8DfZa0f?=
- =?us-ascii?Q?zkL4OLyzRBukzAKbIlQwjijP+/Yc6MBH0EF5inWsXQxu+z6xDXJB5jCkfvex?=
- =?us-ascii?Q?XJr7r2az5M6WawPt2zUt3h4hpBTSJW5kDF0YUCof22J+hO3Xh/oKxPEz1RdV?=
- =?us-ascii?Q?TN0K3sx2zFfj/mtKXIH0soO+kC0WNe2LVtAe9jJaif/8qDxSDaLzfWpRr/1F?=
- =?us-ascii?Q?OE5M24ErDObW3IFZasa3RNI6nd0EDe+y9SUIJboe2YoIKY8dK9ZRTuCjGEaA?=
- =?us-ascii?Q?K0ZB9UmCFsUoupKefm+pEhSN4DEndLnJZIbDecq37bcgvH4vLbzV3JBn0MQ4?=
- =?us-ascii?Q?j+I3WZEwYYfyZO/UCR+HnuSZ5gaJdF2qGdtFeZwIoxbo7QcmhgN4t+1q91uB?=
- =?us-ascii?Q?pMGulKaLTG8taj8bDoIrltYhCUb55vIm8gGqKhZLiXsYZbrXlGbd3LVuJEFM?=
- =?us-ascii?Q?papCuMjprKjs+wZvg3otiA+Lsc9sXEsURYYqXZDqQjfMXP6swxA4eltkRlOe?=
- =?us-ascii?Q?Zx8dQdCrjICP4Iw50hkFOYQDavX7Zx6s6Z9aVLwtWqBdiqLOUjrFgOtL0Oi9?=
- =?us-ascii?Q?1lPqE4KOSwz2rMZ0ytlYp3LokjGGsX2qN0JQjj2XhX086oaDYPmwBJx6i/+W?=
- =?us-ascii?Q?Ut89Lp3ftYQAXqITkM9IJ7wDXuAbMJrj/ED1NNKMZ4anEVjF/D+JV1JKYQmp?=
- =?us-ascii?Q?Okny2pTcG8SkB4v4e2EtqJFWVKA6P4Q0n5OAV57V2QnZiiepxvxbldiglQj4?=
- =?us-ascii?Q?l5ptMbjtm+m4Z7AZIwXo/GMY?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FJs+f6X7831aP0MlKbbIsWhDr0TSmWCFbA0RNpkZccJCGf0X3k3fZDTAW2e6?=
+ =?us-ascii?Q?uQlHBeU2uCk0sXqB3lbhdfJT7cdtZnRenQuA1HmOUQgMvvSSNNwTt2kmtD/B?=
+ =?us-ascii?Q?1H8tUaGUxTQuhdBQHExWwAP7eTe1NUsyMe8V8wf8nrzigHOXGusR3iOyE1Mm?=
+ =?us-ascii?Q?+0V+SKpGkPs9+l9oXkaN0NsbYGkf+FieyBHUbLhzJ3pUGfAPrMyuCxCMXgW8?=
+ =?us-ascii?Q?CgJhZJFA4NElHzPd+fw259QoedXTPMT6VYoPgUY0FvXxaJpvU9xvfSP/zi2l?=
+ =?us-ascii?Q?tH/dj6gefxYjwUmIJjwm545c42k3dgLXth6AFu/x6YnZhUxXBIA4AtJnUzpa?=
+ =?us-ascii?Q?H/wxHJKX4LOYFjBXD6LsftRKv4dpwFFiGfIxc/sRMYzG6j9hlZ2LTqgvKkHM?=
+ =?us-ascii?Q?7UnCAchhy8bveiHXBrIfwYOtpuVk0HePQG/gA6eOcPpkgh287ZcEZJYXr2r0?=
+ =?us-ascii?Q?WJBABfBUtalWee/D6W21Bo884eE9mLlgXJcduh8z4AYAHdqQU9iFKsHfNryk?=
+ =?us-ascii?Q?XLrZiJdn6qXDjWY/MvsqPZc3Ah6bvppBDBDIbeXnTGTab6+OCrsoiTAizAJq?=
+ =?us-ascii?Q?fYdZkCVEUGSOi4hQxdcnINaSe9vSmUvKAUftSnqNlbHXM0Y3OYGu+FI/LMtK?=
+ =?us-ascii?Q?HuHIPnwAwjtsUA9+9wzXDIKnbj/K5d6DQtq+1l+Esh11fWio75oTLnJmXt4w?=
+ =?us-ascii?Q?N7xiDQPNup15k70vEp8ITvTw5PzulaZfcQsjtpggAjEHkdWkpNIayT6rXQR5?=
+ =?us-ascii?Q?YWMrFTFz86dNk1W4S/7Xl1EfI8k1ViGV7E/so+F74BY06vvCKd7WNIQ/TmKS?=
+ =?us-ascii?Q?tqcieCF1iijhpbPTs4+V7N9pOip+FctRr7dvDmrF44CSTi9UkUDOUQaOmqyY?=
+ =?us-ascii?Q?14RZ54v8KhVyr28JrrLUU/SBoz/3aumA/LwuBFAl5suj0IocISnZaqPDjg0J?=
+ =?us-ascii?Q?Y8fyjuj2Pc0hDHpYeQuaFDXAeWe+islPVN27lXBSPKgMNnfzJpVI32VxeAJv?=
+ =?us-ascii?Q?3M3JwUSRKaY0rShZ9Yb5FIpWCEtERUxQPo6/hSaXnld+bBOZcjMYA4MRfy/3?=
+ =?us-ascii?Q?p67COBiwrfiXdbp7uT+25NwQn4dmRM8O6dh6u0bONIFJxQez3UxNARSLCnI3?=
+ =?us-ascii?Q?KJ4Y3mfz7ouemf69lL8qjo22bLY0dc9b1MHHbaCAAB9yLXsJ8XF+E2klIvVf?=
+ =?us-ascii?Q?V/rdK0w+UDptxenqsNjlOWAXkgknKo2gBFZBuSyut3G+P8q1qtuZLtWcuaXT?=
+ =?us-ascii?Q?W4PtFn0hQ2qeR9fo/xjqpVaLcPIYUWxK7QtVNxW3BSkZqvYQ4ZzvKQAfHWX5?=
+ =?us-ascii?Q?5U7PjuE58fGUbcjw4090gfl+?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: caba9514-d124-4051-9cfe-08d972afe305
+X-MS-Exchange-CrossTenant-Network-Message-Id: 290994af-bf16-405a-069d-08d972afe4a6
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:03:20.5276
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:03:23.2098
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MVuKB8pwWNqaupFvTJsUnmwUl0zOYKiCXGvQtXU1fIdhoGB/AlRf+Gu/lG9VktXxDk9fbiiCt9uB72b3hYDpwg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: DVsQwHAmp/kw0tMW7LMnl5wNHPKAHvFJtyxkTaWkjrEq6JOq8D3Fkp2dfS1GDmtL3vKvHyYapDx/YEa02C6hww==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5786
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "cell-type" property for mac-address nvmem cell to supporting mac
-address reverse byte.
+Remove unused "nvmem_macaddr_swap" property for FEC, there is no info in both
+dt-binding and driver, so it's safe to remove it.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 ++
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 ++
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 9 +++++++++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 ++
- 4 files changed, 15 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 1 -
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 1 -
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 1 -
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 -
+ 4 files changed, 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index e7648c3b8390..fb14be932386 100644
+index fb14be932386..2210cfda4e60 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -7,6 +7,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/nvmem/nvmem.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- #include "imx8mm-pinfunc.h"
-@@ -539,6 +540,7 @@
- 
- 				fec_mac_address: mac-address@90 {
- 					reg = <0x90 6>;
-+					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
- 				};
- 			};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index d4231e061403..0a994e6edc0b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -7,6 +7,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/nvmem/nvmem.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- #include "imx8mn-pinfunc.h"
-@@ -544,6 +545,7 @@
- 
- 				fec_mac_address: mac-address@90 {
- 					reg = <0x90 6>;
-+					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
- 				};
- 			};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 9f7c7f587d38..37188ff07f21 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -7,6 +7,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/nvmem/nvmem.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- #include "imx8mp-pinfunc.h"
-@@ -358,6 +359,12 @@
- 
- 				eth_mac1: mac-address@90 {
- 					reg = <0x90 6>;
-+					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
-+				};
-+
-+				eth_mac2: mac-address@96 {
-+					reg = <0x96 6>;
-+					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
- 				};
- 			};
- 
-@@ -836,6 +843,8 @@
- 							 <&clk IMX8MP_SYS_PLL2_100M>,
- 							 <&clk IMX8MP_SYS_PLL2_125M>;
- 				assigned-clock-rates = <0>, <100000000>, <125000000>;
-+				nvmem-cells = <&eth_mac2>;
-+				nvmem-cell-names = "mac-address";
- 				intf_mode = <&gpr 0x4>;
+@@ -948,7 +948,6 @@
+ 				fsl,num-rx-queues = <3>;
+ 				nvmem-cells = <&fec_mac_address>;
+ 				nvmem-cell-names = "mac-address";
+-				nvmem_macaddr_swap;
+ 				fsl,stop-mode = <&gpr 0x10 3>;
  				status = "disabled";
  			};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 91df9c5350ae..1cb211e470ae 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -10,6 +10,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include "dt-bindings/input/input.h"
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/nvmem/nvmem.h>
- #include <dt-bindings/thermal/thermal.h>
- #include <dt-bindings/interconnect/imx8mq.h>
- #include "imx8mq-pinfunc.h"
-@@ -570,6 +571,7 @@
- 
- 				fec_mac_address: mac-address@90 {
- 					reg = <0x90 6>;
-+					cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
- 				};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 0a994e6edc0b..408024426315 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -951,7 +951,6 @@
+ 				fsl,num-rx-queues = <3>;
+ 				nvmem-cells = <&fec_mac_address>;
+ 				nvmem-cell-names = "mac-address";
+-				nvmem_macaddr_swap;
+ 				fsl,stop-mode = <&gpr 0x10 3>;
+ 				status = "disabled";
+ 			};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 37188ff07f21..cb7867791d05 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -821,7 +821,6 @@
+ 				nvmem-cells = <&eth_mac1>;
+ 				nvmem-cell-names = "mac-address";
+ 				fsl,stop-mode = <&gpr 0x10 3>;
+-				nvmem_macaddr_swap;
+ 				status = "disabled";
  			};
  
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 1cb211e470ae..dc4e39ef9d39 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -1191,7 +1191,6 @@
+ 				fsl,num-rx-queues = <3>;
+ 				nvmem-cells = <&fec_mac_address>;
+ 				nvmem-cell-names = "mac-address";
+-				nvmem_macaddr_swap;
+ 				fsl,stop-mode = <&iomuxc_gpr 0x10 3>;
+ 				status = "disabled";
+ 			};
 -- 
 2.17.1
 
