@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DC0403F27
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BC9403F29
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350180AbhIHSh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
+        id S1350200AbhIHShl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235730AbhIHSh1 (ORCPT
+        with ESMTP id S1345805AbhIHShk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:37:27 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEECC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:36:18 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id y13so6182917ybi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:36:18 -0700 (PDT)
+        Wed, 8 Sep 2021 14:37:40 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D504C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:36:32 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z5so6219756ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HjX7K+TpcsYd5c/+i/WbHHjSxL38J99SoKGPyzKH+qw=;
-        b=CYBWB5q7jmOjcODURqsEnS5W5yx2Qi6I07YkUlnIctAeoRJ8biEygroEnwpp0PDJ6U
-         ze0b1h8LMgTHCC0GhPo7kEJwcMqGeyNuVfTlSGTHT52D+jPtlCpMun2plXeYb79OrxCu
-         vnvXypySx/umpFMQc2pjnisaNxF24BXtfkIqcc2MqlfKaxgOiSX/lILCmeEmDs2NMdkk
-         ZGKNbTQLa6RW9jmCYjVh3M0JvoIa3AOBQHSblCxS3t72mLmAIunEooTILzdLP2D0S/3B
-         TDaUmYA1VfWvhRWgGNIrmsOd0+2kfykDZwRVTmv8AH9aPF4adoNPkTtfvKkM1XzxemQx
-         4inA==
+        bh=czFKAT4Di1kKVjpRX4ncrD9kt4xU5KfWJk/P6TiXJug=;
+        b=sKebpZ0GYa3NUpk7ZZpc/alL6MeFz4PBjPfL4/wsce1NbcpH1MU5OR7O+C6x3RtRjo
+         BzKPQWBGzZzvaHPw7iuhNoGbeI4ajWAER/D275f3+FTubd0wmhXBc6Zon/LGiRLrSVq+
+         j3fPelIbmY5vZ4nf4GVG/7cTQ0oKIjzZ98PsVjUuMPA2iu/vcuDOQwQeJ4bDqqnhMTVh
+         2MobHNH+jk4u8wySdQQziE2U2KYMWQDqV4wTEuHRWCsgOrxbTujbnQOMOnqaqeL1FOA2
+         4OG3bkxxD14pOm3GPrbxNxeQC1njAgBbCVXs77w+pNRYZ/z90u7tgoJmMiBz8HchZzbh
+         /Vbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HjX7K+TpcsYd5c/+i/WbHHjSxL38J99SoKGPyzKH+qw=;
-        b=4DCCEmGlpBcK4UOmMjcwSlmSaU/H+0EtCF5yMijLbNJxfkoNsMJDBDDBtBbGLmvu8y
-         nNLQhluV+gKiRAuFkvR9sRP5tagN1yAUDzhr8dds5STA9Rg8EEcbCXME5xim9WmY4mOM
-         C0eBV6i0lKH8bNjwgnoj5eLUv/Qw80TE6/ePu3zYQMS10wsCcAOn3Mf/0SK88sSmCfEm
-         06zWB4aU+JAUnGqSPYin3d4ytgFLSrjcLHtvOICjn4VKgtTg2SPRsls+8wGaHYZANlda
-         nOCaTJAKLm+9d6ItG/xModeklGUbFWi+RmbRak4t6bF2tnymn3u/YyHXlQ4dnouhZm+J
-         3rkw==
-X-Gm-Message-State: AOAM5336IKd5utaHJ1zQYdzFohXnYbqrcaS4Gg1ObLvKeep1pZ9Fk9J8
-        sqVQRYvJKpgLWY7EaSGRYKm2u3M7tg/9ff64l1dmpA==
-X-Google-Smtp-Source: ABdhPJzBtuBmf8CUZA8q8DjeeQMm7Fxlgthk077R1iNzqYe+bpT075CwGt89gtqpajwh7YnIq5OiO03iBkciQ03ShwY=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr6705534ybb.476.1631126178008;
- Wed, 08 Sep 2021 11:36:18 -0700 (PDT)
+        bh=czFKAT4Di1kKVjpRX4ncrD9kt4xU5KfWJk/P6TiXJug=;
+        b=hZfJaj6Djs9hN54IFK71VUwASFgCqZy6WjtnYPpDqvLrW03PFPfaJu0xKXqoqC0Bkf
+         GNmZKhHAAB7yYsVN/Mu/9tCAGTCKCMH9IzkwRGpyRUXuhWraN+y8xilLIixKDS6xYiSL
+         bJelZ4ABLy4/1W9NYUm7tcgTxqcZDG/m3yPfiQJDQjiZexiZjyIs8ad23FFTYmqUzuq0
+         RzpVJe/sp3cXTUl7+oX/ATNGJnOuEisOFX1NvjdIFYmu4Wat1aXisfN21Tsxeds6lT9o
+         xylK3SccNohyFry5BZZTwnGSHjFGs5NurlJZISgsiRnY/kEuru0P6U2fU3gkjnYM6Bek
+         NaeQ==
+X-Gm-Message-State: AOAM530sONtWJpKPGZy7Ic+CHpVVDv0N8lykiRTQdWCPs3AHQBsfhi+m
+        58/foOLtC0GFct7yPNfSXrKLkHxXZjMgdNqxZEVZ1Q==
+X-Google-Smtp-Source: ABdhPJxy0oyG+ekT7mLiHekU3i/rcWyHMbvArduGQfW0N/JWPo/TuXMlOdlBdCQDM5F3yl7mpvVCZ3QwNirtNPsKCEA=
+X-Received: by 2002:a25:ad45:: with SMTP id l5mr7750425ybe.228.1631126191516;
+ Wed, 08 Sep 2021 11:36:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch> <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch> <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
-In-Reply-To: <YS4rw7NQcpRmkO/K@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 8 Sep 2021 11:35:41 -0700
-Message-ID: <CAGETcx8haSe5Hx0ywfTS+htST=FoH5=+u=v0KMPvtMeeJ_BB3w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
+References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-2-joshdon@google.com>
+In-Reply-To: <20210820010403.946838-2-joshdon@google.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Wed, 8 Sep 2021 11:36:20 -0700
+Message-ID: <CABk29NtMdwYACJ4k5R=tz66_GFeFf8uTOK000baz6PCbdJAcrg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] sched: cgroup SCHED_IDLE support
+To:     alexs@kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 6:16 AM Andrew Lunn <andrew@lunn.ch> wrote:
+On Mon, Sep 6, 2021 at 5:47 AM <alexs@kernel.org> wrote:
 >
-> > > I must admit, my main problem at the moment is -rc1 in two weeks
-> > > time. It seems like a number of board with Ethernet switches will be
-> > > broken, that worked before. phy-handle is not limited to switch
-> > > drivers, it is also used for Ethernet drivers. So it could be, a
-> > > number of Ethernet drivers are also going to be broken in -rc1?
+> ...
+>
+> > For now, we maintain the existing SCHED_IDLE semantics. Future patches
+> > may make improvements that extend how we treat SCHED_IDLE entities.
 > >
-> > Again, in those cases, based on your FEC example, fw_devlink=on
-> > actually improves things.
+> > The per-task_group idle field is an integer that currently only holds
+> > either a 0 or a 1. This is explicitly typed as an integer to allow for
+> > further extensions to this API. For example, a negative value may
+> > indicate a highly latency-sensitive cgroup that should be preferred for
+> > preemption/placement/etc.
 >
-> Debatable. I did some testing. As expected some boards with Ethernet
-> switches are now broken. Without fw_devlink=on, some boards are not
-> optimal, but they actually work. With it, they are broken.
+> Hi Josh,
 >
-> I did a bisect, and they have been broken since:
+> Sounds there is a ready solutions for colocation problem, isn't there?
+> I'd like to evaluate its effects if it could be sent out.
 >
-> ea718c699055c8566eb64432388a04974c43b2ea is the first bad commit
-> commit ea718c699055c8566eb64432388a04974c43b2ea
-> Author: Saravana Kannan <saravanak@google.com>
-> Date:   Tue Mar 2 13:11:32 2021 -0800
->
->     Revert "Revert "driver core: Set fw_devlink=on by default""
->
->     This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
->
->     Since all reported issues due to fw_devlink=on should be addressed by
->     this series, revert the revert. fw_devlink=on Take II.
->
->     Signed-off-by: Saravana Kannan <saravanak@google.com>
->     Link: https://lore.kernel.org/r/20210302211133.2244281-4-saravanak@google.com
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
->  drivers/base/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> So however it is fixed, it needs to go into stable, not just -rc1.
->
-> > Again, it's not a widespread problem as I explained before.
-> > fw_devlink=on has been the default for 2 kernel versions now. With no
-> > unfixed reported issues.
->
-> Given that some Ethernet switches have been broken all that time, i
-> wonder what else has been broken? Normally, the kernel which is
-> release in December becomes the next LTS. It then gets picked up by
-> the distros and more wide spread tested. So it could be, you get a
-> flood of reports in January and February about things which are
-> broken. This is why i don't think you should be relying on bug
-> reports, you should be taking a more proactive stance and trying to
-> analyse the DTB blobs.
->
-> I will spend some time trying out your proposed fix. See if they are a
-> quick fix for stable.
+> Thanks
+> Alex
+> >
 
-Hi Andrew,
+Hi Alex,
 
-Did you have a chance to try it out? I can fix up the commit text and
-send out vN+1 of the patch if it works for you.
+I don't have a patch written just yet. The basic idea is to utilize
+the (negative) idle values to make relative decisions about task
+preemption and wakeup vruntime placement.
 
--Saravana
+Could you describe your use case?
+
+Best,
+Josh
