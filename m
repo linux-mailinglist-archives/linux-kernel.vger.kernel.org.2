@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FB14037F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0C0403804
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbhIHKgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:36:41 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59040 "EHLO mail.skyhub.de"
+        id S1346412AbhIHKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhIHKgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:36:39 -0400
-Received: from zn.tnic (p200300ec2f0efc002d1ac0b1b41b9169.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:2d1a:c0b1:b41b:9169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B73C1EC036B;
-        Wed,  8 Sep 2021 12:35:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631097330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vNZo46xtdLfPCSghubjAQ0AbiTd/3e4sJ5wQ5kYrsZk=;
-        b=aRJSgvRLCoKkTWzIqFJm5RepVqZxbasjqfKuU8UvRw9DGDOAjYyqQXl+jgGN/P0Y/4qyYf
-        qAH2j4creMyuTF+DO2WKIckrrNg72u000ui50+YNIeysEGcVatNjDcL5w3Cn9Mn6Lk34qF
-        VS3GawEjtGqtDyAYGL8tP62fy0OfuDI=
-Date:   Wed, 8 Sep 2021 12:35:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
- not present entries
-Message-ID: <YTiR6aK6XKJ4z0wH@zn.tnic>
-References: <20210819132717.19358-1-rppt@kernel.org>
- <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
+        id S233077AbhIHKlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:41:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1BDE561163;
+        Wed,  8 Sep 2021 10:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631097608;
+        bh=JpJ+KCAjqsJnD4fAHueRPorRkCtY3n+wxVMuMO4+jbQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=RphSLjLguBg1w6ajGcSR2Sweq+bCZDIvv4v5V7snqH5CyRn+RGsElV1A5E0UyDNF/
+         x/3wDC3dDL1HiANbEVGYvX3oc+M6v3WCttsrWtByTt8RGK1nW9O24Kn3tGC52DDN2n
+         vqPdzwMAAi7jt/tEnA3e5Gn5B1RmBChu3/YXGOptzYYhkVmaRU5pKbmmz1kE2UEO16
+         Grm+PtfgbXWIHwSGCcI9udbNhcZC+L3W2j8N7NvAdQl6y2+f+t6fcPLXDp31d9fZJe
+         Ya17SA3+WsuQFKAXTGpCp+ixwQL2hTy1SsSF20MUGvMMXtqqRQH1Xw/jmVtVXtG19F
+         QBFfYctLRtH0Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1105F60A24;
+        Wed,  8 Sep 2021 10:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] dccp: don't duplicate ccid when cloning dccp sock
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163109760806.16056.10288524962758514205.git-patchwork-notify@kernel.org>
+Date:   Wed, 08 Sep 2021 10:40:08 +0000
+References: <F3E0B9C9-14F1-43F5-AC6C-E5DB346A8090@psu.edu>
+In-Reply-To: <F3E0B9C9-14F1-43F5-AC6C-E5DB346A8090@psu.edu>
+To:     Lin@ci.codeaurora.org, Zhenpeng <zplin@psu.edu>
+Cc:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        alexey.kodanev@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 11:47:10AM -0700, Dave Hansen wrote:
-> On 8/19/21 6:27 AM, Mike Rapoport wrote:
-> > Such PMDs are created when free_kernel_image_pages() frees regions larger
-> > than 2Mb. In this case a part of the freed memory is mapped with PMDs and
-> > the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-> > mark the PMD as not present rather than wipe it completely.
-> > 
-> > Make kern_addr_valid() to check whether higher level page table entries are
-> > present before trying to dereference them to fix this issue and to avoid
-> > similar issues in the future.
-> > 
-> > Reported-by: Jiri Olsa <jolsa@redhat.com>
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Cc: <stable@vger.kernel.org>	# 4.4...
-> >  	pmd = pmd_offset(pud, addr);
-> > -	if (pmd_none(*pmd))
-> > +	if (!pmd_present(*pmd))
-> >  		return 0;
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed, 8 Sep 2021 03:40:59 +0000 you wrote:
+> Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
+> a UAF but reintroduced CVE-2017-6074.
 > 
-> Yeah, that seems like the right fix.  The one kern_addr_valid() user is
-> going to touch the memory so it *better* be present.  p*d_none() was
-> definitely the wrong check.
+> When the sock is cloned, two dccps_hc_tx_ccid will reference to the
+> same ccid. So one can free the ccid object twice from two socks after
+> cloning.
 > 
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
+> [...]
 
-So I did stare at this for a while, trying to make sense of it and David
-Hildenbrand asked for a Fixes: tag in v1 review and from doing a bit of
-git archeology I think it should be:
+Here is the summary with links:
+  - dccp: don't duplicate ccid when cloning dccp sock
+    https://git.kernel.org/netdev/net/c/d9ea761fdd19
 
-c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-because that thing added the clearing of the Present bit for the high
-kernel image mapping of those areas.
 
-Right?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
