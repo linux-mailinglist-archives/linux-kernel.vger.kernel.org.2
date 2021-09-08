@@ -2,137 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C744041E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A4E4041E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhIHXoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236059AbhIHXoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:44:02 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A64C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:42:53 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id z1so5542991ioh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ojab.ru; s=ojab;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=up2XsrnvlIFzj8+jd7lbSzWI6A4vHwt4fG2fDS+P6QI=;
-        b=HpWJLAYbhN3lnywIcBJmKBR2fyhxhEkc/yleJGUo6GUunFhNL8Oie2lyK3RWHm2fsB
-         jbaApLygjDbQkzs3WZgYWLHj8JbHwvLhbY31V7B8uMm0hO6I4MVvkTZMiFr0y72iWCEQ
-         bX1fSIDqrl2OBrWEiZ5qTknR1tf7YjWdvLPu2Y8AzE/5gwVdUUy8YwL+jI02oVf+HZJZ
-         zl1zBBWecpp0lWZD/R8aiowpzqyEMk1mfdkmrEhtCTMLyu6SlosFobt5OYNrdZmhVrTQ
-         xpccguLy6X+j8EP6nKO8d3xZ1pt0XxbdA2klEMhABQvtSw26+POjoiKUdGECeA2MRO8e
-         yP8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=up2XsrnvlIFzj8+jd7lbSzWI6A4vHwt4fG2fDS+P6QI=;
-        b=thHBT5hTMOV3vQDtFeXgNmO05dxZDx08NvubExyBF2Jn+o6e1ifpfK7YeHA9jmmpRH
-         C7tGU08ywy7ctYB7pBCK9BdE5FluhQxSWFuwsKJ3FChoVDTZ+DWGn4qkIP1bCJKDfqL7
-         OVACgNV+VIAFxaJ+BYdyngwrX0e+jtgHemMnJYYmLfuOcLkbR/vMNPV5Y+SOe51g+MOF
-         GdarjIM4NGut9Ts75h/vBBSF3kPJ/lCubsRzaXedIEtB8qibXjLP1QDyzB1AAd146rf3
-         db9yLMbeYkYXoC+4tgkLhLP/yhtIpOw2in4OdnZx7zpHF3EUgKGxMOChpKq8Me5yXeHj
-         n+jw==
-X-Gm-Message-State: AOAM533dyO7qUmWYoRW321bdyMJADvyAoI3I0+s4OsdbnplkWbIbkusa
-        lY5oVA4+qUpJd0uJcjmIouCS31e2dQgC1i9e3TwPVw==
-X-Google-Smtp-Source: ABdhPJyGEuoLSQC3YF3kxRyp4VjkbJsVtFOCMq06PZzRQb1nx4K/uFtuO/48yF5x8mjoPX1l1CEy+zh9Q/Dz0Y3oMmw=
-X-Received: by 2002:a6b:f007:: with SMTP id w7mr106755ioc.112.1631144572943;
- Wed, 08 Sep 2021 16:42:52 -0700 (PDT)
+        id S244560AbhIHXuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233834AbhIHXug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:50:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E264B61157;
+        Wed,  8 Sep 2021 23:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631144968;
+        bh=qFd6rM3whVeSqofp8QV4rz4l/SwmbW/WN77ENeeorfA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pvxmqgKcqZI8Qw9fghMDM+n1GrfZpnGAMKShq0QEA/xuL5OcE9dHtn6yXodyNCvFV
+         q21elM9KzDaF1HzpBNRJvv6KAxF1bPkLE8+EpfD+yP4z5pwlxNH1qnjqbrW97lpDW8
+         26alWZ1UXI+KhZKbq9zh54vBoHvUHCjjcwq5/nnid9ahYclLXSnA5BcgNW3R3zWypq
+         t2wMPYiEpiZVrHLGy743E9wvo75otPMfdR9uuqrBUGwySK/MtRACBsATZlT9JYvRi/
+         gFiasq3Y5YFiC8nH1iLsY28MukzkgQ7/6PdDZY6Kn3grDDFkGiU9Y2jK4sddn0Z4WD
+         Ktk9YVIvcmd/w==
+Date:   Thu, 9 Sep 2021 01:49:14 +0200
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Compiler Attributes for v5.15-rc1
+Message-ID: <20210908234751.GA8052@kernel.org>
 MIME-Version: 1.0
-References: <20210722193459.7474-1-ojab@ojab.ru> <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-In-Reply-To: <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-From:   "ojab //" <ojab@ojab.ru>
-Date:   Thu, 9 Sep 2021 02:42:42 +0300
-Message-ID: <CAKzrAgQgsN6=Cu4SvjSSFoJOqAkU2t8cjt7sgEsJdNhvM8f7jg@mail.gmail.com>
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     ath10k@lists.infradead.org,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: elm/2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping.
+Hi Linus,
 
-//wbr ojab
+Please pick up the following fix for GCC 4.
 
-On Wed, 25 Aug 2021 at 19:15, ojab // <ojab@ojab.ru> wrote:
->
-> Can I haz it merged?
->
-> //wbr ojab
->
-> On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
-> >
-> > After reboot with kernel & firmware updates I found `failed to copy
-> > target iram contents:` in dmesg and missing wlan interfaces for both
-> > of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> > it, so while I have no idea what's actually happening, I don't see why
-> > we should fail in this case, looks like some optional firmware ability
-> > that could be skipped.
-> >
-> > Also with additional logging there is
-> > ```
-> > [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> > [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> > [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> > [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> > ```
-> > so exact branch could be seen.
-> >
-> > Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> > ---
-> >  Of course I forgot to sing off, since I don't use it by default because I
-> >  hate my real name and kernel requires it
-> >
-> >  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> > index 2f9be182fbfb..d9fd5294e142 100644
-> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >         u32 len, remaining_len;
-> >
-> >         hw_mem = ath10k_coredump_get_mem_layout(ar);
-> > -       if (!hw_mem)
-> > +       if (!hw_mem) {
-> > +               ath10k_warn(ar, "No hardware memory");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < hw_mem->region_table.size; i++) {
-> >                 tmp = &hw_mem->region_table.regions[i];
-> > @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >                 }
-> >         }
-> >
-> > -       if (!mem_region)
-> > +       if (!mem_region) {
-> > +               ath10k_warn(ar, "No memory region");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-> >                 if (ar->wmi.mem_chunks[i].req_id ==
-> > @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
-> >                 if (status) {
-> >                         ath10k_warn(ar, "failed to copy target iram contents: %d",
-> >                                     status);
-> > -                       goto err_hif_stop;
-> >                 }
-> >         }
-> >
-> > --
-> > 2.32.0
+I have had this in my tree for a while... you will find an easy conflict.
+
+Cheers,
+Miguel
+
+The following changes since commit 62fb9874f5da54fdb243003b386128037319b219:
+
+  Linux 5.13 (2021-06-27 15:21:11 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.15-rc1
+
+for you to fetch changes up to 7ed012969bbcdbd7aef5778a061681e6cbc4b402:
+
+  Compiler Attributes: fix __has_attribute(__no_sanitize_coverage__) for GCC 4 (2021-07-16 01:06:44 +0200)
+
+----------------------------------------------------------------
+A Compiler Attributes fix:
+
+  - Fix __has_attribute(__no_sanitize_coverage__) for GCC 4 (Marco Elver)
+
+----------------------------------------------------------------
+Marco Elver (1):
+      Compiler Attributes: fix __has_attribute(__no_sanitize_coverage__) for GCC 4
+
+ include/linux/compiler_attributes.h | 1 +
+ 1 file changed, 1 insertion(+)
