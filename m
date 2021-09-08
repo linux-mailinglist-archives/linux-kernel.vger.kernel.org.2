@@ -2,184 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD38403EFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C362403F08
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349587AbhIHSUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S1349718AbhIHSZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235630AbhIHSUe (ORCPT
+        with ESMTP id S235768AbhIHSZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:20:34 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74C5C061575;
-        Wed,  8 Sep 2021 11:19:25 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x6so4585071wrv.13;
-        Wed, 08 Sep 2021 11:19:25 -0700 (PDT)
+        Wed, 8 Sep 2021 14:25:09 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E746EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:24:00 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id t26so1867093uao.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iXWXn5/EqjKqsUkXyCynCYfIWkuXt5M/pVohhlcjXgE=;
-        b=Svz+R+W0FLfICEgyXgsfpvWiAydhkXbdEnCtdDBGeRwL7XzZpfZkgVQWTIjAhZp0IE
-         3/1nG3DHajwsIvAmpPiYzNG11XP6mOvXWB9RVu1ukwntjswu1nHME+wrjJOIOzLj9L6l
-         jp771nsPTQNVGpek4R02PKlTYXqiQAu/oGXDfXsV+bzjS+lh+S69knuqVNCqietJUu82
-         FROkKlqNhOO+/iRJXc8nobntNMmpco7Xd7PBMewftPVyWKSpIYeeQAGjIGBIl/rorIT7
-         1ktP1Yr9psprxcIV4N1ciRoxNTQjaBzktuaGVfMyAdJ0HpU4Qn30TG1S1BPDrafABQk4
-         8Biw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zg9SIKBAn9y4QkDFQZM1xH/JoxGqKi4pT4YDjZN4Piw=;
+        b=WQHbb84JlgXKfwH7sQnR/aoGf+ckXaxjTIaYQAmnQ5z7Y64cl9FZW/DFRdfEYCBsGo
+         suFOE4K2mf+U07/PW69LCfJFPhyssMoNPq5r2BXz9EshpsukG9UFHHI9pcnbSmjob64H
+         Gcp++yDBKbWL8wQC84oAMxjLIug6TS+50xk+vr0EThU2X70YBrdNyyuRPptO75h2hwR/
+         QmIYMheZvOllbkRQtgPdKVcPeSMcIIH3OhR54GyePZcuUtP03u2y4eaJL175ItfwHa55
+         nStsqxAjH/1kpPsI7vBjod4Gm6X3nfd5f1ZULOLC6HiK9QCNo/jaVZa48yLJM4AH4PNx
+         h9TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXWXn5/EqjKqsUkXyCynCYfIWkuXt5M/pVohhlcjXgE=;
-        b=wvreZlUhG9Wjn3l4oW5LtSSD5IiWbbV0/g6JQILSqzAXER4RdLiB3syEvZMJrKmzmq
-         Bes3Ea5xokpUW6fd8EUNtsx5wE6yg4Yfql1YESbCI0WAXjpsDRCVYmDyMxj3JfX3KcQe
-         NHUyTaMkdVEjjomVhoCrfGAkaSWnbFdZ+TOo7AvOvBDr6D0b6JLXWgWYtZGxklS+7/A/
-         gqsf66ofQK/fyBCbGvp+pZ/Yg/CSLsrxBF2iJsQDI8OE7hRTjvcEWaQb51NeCZsCaFIt
-         dhjHEfOTZpQ7koyUEnFZYa3ny41pDW7lrwmdENk/ixzCTiXXe0EnMuP1nQGrCCNaekk0
-         erTA==
-X-Gm-Message-State: AOAM532zwpHEK1qqSlYV0PTtZArVAon7B6u9gfQ5964/ZJOAu6Ab4YtB
-        NZOHVdJ3dwl4sWarvffIzjB2yjuyaNn0X7KUGlc=
-X-Google-Smtp-Source: ABdhPJwQ5AsT4txkrgjZ6JJAtbh67NxBAfD3WXyCFZPIaMwYnA0mrUaPvbdi3dta/paPYMKnHC45d3U45+fYwUqjrbE=
-X-Received: by 2002:adf:e5c2:: with SMTP id a2mr5578824wrn.251.1631125164315;
- Wed, 08 Sep 2021 11:19:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zg9SIKBAn9y4QkDFQZM1xH/JoxGqKi4pT4YDjZN4Piw=;
+        b=4njrnQ/3rkRrZ7OF+OURQEKrBqNN5XV0sdXEdOHL0MpMrwgrl8IwlPIdPJQVSEf9Qr
+         xAa/P/r1BZauDOHFgfK9s0/ZKvTc/gDdKXxbQ7wafvt57CfCdfuGvPufkLwhd4892imV
+         xaT0+pNMEAsvMUfgayZNjqHtp7dgbOzaS/+N4iHKU6/vfA39TBsMJZGijvQFdL9PoceL
+         5SGtcsrpFp713rWBw7eEJOqA88hrjUREKdplatCaP9VmTdPTZTYrcTY7G1ZXZ4gTohM2
+         +A+bLj27hxS1wJvcXjas6+7IAhzu+nSYd8LPV/77o4cC4/3EgRkR2gJMeOA4c5AB4ggj
+         C+mg==
+X-Gm-Message-State: AOAM533tQNjIVK8s0GIeiTH0C8v5VZQCRHhHMmVrJsUdOMujWYDB9+4h
+        1od97g+9KoTowF8yBjbg3GkXgGAPCm9oRdnd0lk=
+X-Google-Smtp-Source: ABdhPJyYdu6j4++txPRpFbBpuTODtEoxyqjt1ACaJFnBM2kkdvQtIwnc5JgNTy+n9Nu+7pYeb6tfISD90M1MjhGQUWI=
+X-Received: by 2002:a9f:3210:: with SMTP id x16mr3316782uad.135.1631125439676;
+ Wed, 08 Sep 2021 11:23:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-9-robdclark@gmail.com>
- <YTj36NbUNxnn6uBU@phenom.ffwll.local>
-In-Reply-To: <YTj36NbUNxnn6uBU@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 8 Sep 2021 11:23:42 -0700
-Message-ID: <CAF6AEGuVkHOvOkVHo69fOy71qiBh=12Nd=yMXm36p_bjzfFe9A@mail.gmail.com>
-Subject: Re: [PATCH v3 8/9] dma-buf/sync_file: Add SET_DEADLINE ioctl
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
+Received: by 2002:a1f:a797:0:0:0:0:0 with HTTP; Wed, 8 Sep 2021 11:23:58 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uchenna <okeyyoyopa7@gmail.com>
+Date:   Wed, 8 Sep 2021 11:23:58 -0700
+Message-ID: <CAH8nkva=_KNihbTayuQ7EehHt6UnanYrxtNX=BndrmbxFn7ZsA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:50 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Sep 03, 2021 at 11:47:59AM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > The initial purpose is for igt tests, but this would also be useful for
-> > compositors that wait until close to vblank deadline to make decisions
-> > about which frame to show.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
->
-> Needs userspace and I think ideally also some igts to make sure it works
-> and doesn't go boom.
-
-See cover-letter.. there are igt tests, although currently that is the
-only user.
-
-I'd be ok to otherwise initially restrict this and the sw_sync UABI
-(CAP_SYS_ADMIN?  Or??) until there is a non-igt user, but they are
-both needed by the igt tests
-
-BR,
--R
-
-> -Daniel
->
-> > ---
-> >  drivers/dma-buf/sync_file.c    | 19 +++++++++++++++++++
-> >  include/uapi/linux/sync_file.h | 20 ++++++++++++++++++++
-> >  2 files changed, 39 insertions(+)
-> >
-> > diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-> > index 394e6e1e9686..f295772d5169 100644
-> > --- a/drivers/dma-buf/sync_file.c
-> > +++ b/drivers/dma-buf/sync_file.c
-> > @@ -459,6 +459,22 @@ static long sync_file_ioctl_fence_info(struct sync_file *sync_file,
-> >       return ret;
-> >  }
-> >
-> > +static int sync_file_ioctl_set_deadline(struct sync_file *sync_file,
-> > +                                     unsigned long arg)
-> > +{
-> > +     struct sync_set_deadline ts;
-> > +
-> > +     if (copy_from_user(&ts, (void __user *)arg, sizeof(ts)))
-> > +             return -EFAULT;
-> > +
-> > +     if (ts.pad)
-> > +             return -EINVAL;
-> > +
-> > +     dma_fence_set_deadline(sync_file->fence, ktime_set(ts.tv_sec, ts.tv_nsec));
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static long sync_file_ioctl(struct file *file, unsigned int cmd,
-> >                           unsigned long arg)
-> >  {
-> > @@ -471,6 +487,9 @@ static long sync_file_ioctl(struct file *file, unsigned int cmd,
-> >       case SYNC_IOC_FILE_INFO:
-> >               return sync_file_ioctl_fence_info(sync_file, arg);
-> >
-> > +     case SYNC_IOC_SET_DEADLINE:
-> > +             return sync_file_ioctl_set_deadline(sync_file, arg);
-> > +
-> >       default:
-> >               return -ENOTTY;
-> >       }
-> > diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-> > index ee2dcfb3d660..f67d4ffe7566 100644
-> > --- a/include/uapi/linux/sync_file.h
-> > +++ b/include/uapi/linux/sync_file.h
-> > @@ -67,6 +67,18 @@ struct sync_file_info {
-> >       __u64   sync_fence_info;
-> >  };
-> >
-> > +/**
-> > + * struct sync_set_deadline - set a deadline on a fence
-> > + * @tv_sec:  seconds elapsed since epoch
-> > + * @tv_nsec: nanoseconds elapsed since the time given by the tv_sec
-> > + * @pad:     must be zero
-> > + */
-> > +struct sync_set_deadline {
-> > +     __s64   tv_sec;
-> > +     __s32   tv_nsec;
-> > +     __u32   pad;
-> > +};
-> > +
-> >  #define SYNC_IOC_MAGIC               '>'
-> >
-> >  /**
-> > @@ -95,4 +107,12 @@ struct sync_file_info {
-> >   */
-> >  #define SYNC_IOC_FILE_INFO   _IOWR(SYNC_IOC_MAGIC, 4, struct sync_file_info)
-> >
-> > +
-> > +/**
-> > + * DOC: SYNC_IOC_SET_DEADLINE - set a deadline on a fence
-> > + *
-> > + * Allows userspace to set a deadline on a fence, see dma_fence_set_deadline()
-> > + */
-> > +#define SYNC_IOC_SET_DEADLINE        _IOW(SYNC_IOC_MAGIC, 5, struct sync_set_deadline)
-> > +
-> >  #endif /* _UAPI_LINUX_SYNC_H */
-> > --
-> > 2.31.1
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
+ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
+stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
+stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGC0YDQsNC9
+0LfQsNC60YbQuNGOINGBINC/0L7QvNC+0YnRjNGOINC90L7QstC+0LPQvg0K0L/QsNGA0YLQvdC1
+0YDQsCDQuNC3INCS0LXQvdC10YHRg9GN0LvRiywg0Lgg0YLQtdC/0LXRgNGMINGB0YDQtdC00YHR
+gtCy0LAg0LHRi9C70Lgg0L/QtdGA0LXQstC10LTQtdC90Ysg0LIg0JLQtdC90LXRgdGD0Y3Qu9GD
+DQrQvdCwINCx0LDQvdC60L7QstGB0LrQuNC5INGB0YfQtdGCINC90L7QstC+0LPQviDQv9Cw0YDR
+gtC90LXRgNCwLg0KDQrQotC10Lwg0LLRgNC10LzQtdC90LXQvCDRjyDRgNC10YjQuNC7INC60L7Q
+vNC/0LXQvdGB0LjRgNC+0LLQsNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIgMzUwIDAwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkA0KKNGC0YDQuCDRgdC+0YLQvdC4INC/0Y/RgtGM0LTQtdGB0Y/R
+giDRgtGL0YHRj9GHINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQKSDQuNC3LdC30LAg0LLQsNGI0LjR
+hSDQv9GA0L7RiNC70YvRhSDRg9GB0LjQu9C40LksDQrRhdC+0YLRjyDQstGLINC80LXQvdGPINGA
+0LDQt9C+0YfQsNGA0L7QstCw0LvQuC4g0J3Qviwg0YLQtdC8INC90LUg0LzQtdC90LXQtSwg0Y8g
+0L7Rh9C10L3RjCDRgNCw0LQg0YPRgdC/0LXRiNC90L7QvNGDDQrQt9Cw0LLQtdGA0YjQtdC90LjR
+jiDRgtGA0LDQvdC30LDQutGG0LjQuCDQsdC10Lcg0LrQsNC60LjRhS3Qu9C40LHQviDQv9GA0L7Q
+sdC70LXQvCwg0Lgg0L/QvtGN0YLQvtC80YMg0Y8g0YDQtdGI0LjQuw0K0LrQvtC80L/QtdC90YHQ
+uNGA0L7QstCw0YLRjCDQstCw0Lwg0YHRg9C80LzRgyDQsiDRgNCw0LfQvNC10YDQtSAzNTAgMDAw
+LDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDRh9GC0L7QsdGLINCy0YsNCtGA0LDQt9C00LXQ
+u9C40LvQuCDRgdC+INC80L3QvtC5INGA0LDQtNC+0YHRgtGMLg0KDQrQryDRgdC+0LLQtdGC0YPR
+jiDQstCw0Lwg0L7QsdGA0LDRgtC40YLRjNGB0Y8g0Log0LzQvtC10LzRgyDRgdC10LrRgNC10YLQ
+sNGA0Y4g0LfQsCDQsdCw0L3QutC+0LzQsNGC0L3QvtC5INC60LDRgNGC0L7QuSDQvdCwDQozNTAg
+MDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDQutC+0YLQvtGA0YPRjiDRjyDQvtGB0YLQsNCy
+0LjQuyDQtNC70Y8g0LLQsNGBLiDQodCy0Y/QttC40YLQtdGB0Ywg0YEg0L3QuNC8DQrRgdC10LnR
+h9Cw0YEg0LHQtdC3INC/0YDQvtC80LXQtNC70LXQvdC40Y8uDQoNCtCd0LDQt9Cy0LDQvdC40LU6
+INCx0YDQtdC90LTQuCDRgdC+0LvQvtC80L7QvQ0KDQrQn9C+0YfRgtCwOiBzb2xvbW9uYnJhbmR5
+Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3QviDQv9C+0LTRgtCy0LXR
+gNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y46
+DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19fX19fX19fX19fX19fX19f
+DQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtGP
+INGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K0KLQstC+0Lkg0LLQvtC3
+0YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDRgNC+0LQg0LfQ
+sNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDQvdC+0LzQtdGAINC8
+0L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19fX19fX19fX19fX19fX19f
+Xw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC10YHQu9C4INCy0Ysg0L3Q
+tSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQuNC90YTQvtGA0LzQsNGG
+0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQ
+vtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC70LbQtdC9INCx0YvRgtGM
+INGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/0YDQvtGB0LjRgtC1INC1
+0LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw0L3QutC+0LzQsNGC0LAg
+0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Qu9C70LDRgNC+0LIg0KHQ
+qNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQu9GPINCy0LDRgS4NCg0K
+0KEg0L3QsNC40LvRg9GH0YjQuNC80Lgg0L/QvtC20LXQu9Cw0L3QuNGP0LzQuCwNCg0K0JMt0L0g
+0YPRh9C10L3QvdCwINC40LvQvtCx0LgNCg==
