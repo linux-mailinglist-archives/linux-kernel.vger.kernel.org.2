@@ -2,166 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7936403ABE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B123D403AC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238232AbhIHNdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhIHNds (ORCPT
+        id S1349198AbhIHNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:33:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48266 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241128AbhIHNdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:33:48 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB105C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:32:40 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id i13so2323013ilm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=RdtzwNEFqLqA3tpIdS51MoWtiiUaFHn6z50ywUjaYAI=;
-        b=KgC13npi+zwcXid32lVaYsQ1vd3Jl6q7wyBIRD7SyD0k4FvGDHQkzENbsI4+f0YGYp
-         SufQXj+/B5q4fdS3YtotpnLoKCpBQilv3cigQWEBuctprs5qNVQTxHIPMw4odKIcKxjv
-         GpXeiF13AcZdvAUsHGqKnCWL77EkRZW1KLoH1Rd4O0927dLM+YwLXBPtBu4N8ZFAGd7j
-         I+6m2D+5nTVYVdoCduudOJYPKIEobqjuN0rP8buOX9EW54MkdUBKuXctVUvAc0N4Q089
-         X1gJwwrpzP9+kLtVtBrSiKUMxeZajw4i42aP4QAKmBGyRbq6JA8HNukzcj3vWYiv0wX8
-         Ny1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=RdtzwNEFqLqA3tpIdS51MoWtiiUaFHn6z50ywUjaYAI=;
-        b=QO1rcc5RFD7ymJJqDtIUOkTySDO4PI/q4X8xq57huFn/norr+Cy0fBMuLYOce+fvi1
-         F7Wx92YmX6MT5V/0bPbtRNoFC51PpB5z7aUYXE38hV0d6PqKGKEVXu8NHeRyNUwMiHCE
-         4MNEMzsMZ6scl174qokM26dgo3fOqsFLclqpjdZxB9aFRVuNfU7595+frmZzOedcjJdw
-         8nT/TvL9HC0l1Lk459rgb2y3xGUPSeP9nwttZFkUAC6QzHlje5EwEP3Ti1bog43DXBSP
-         vrgl3gx38VGxCjFDinInNbXTTssa8V1XoOgSCLdnwHULQG3S+u6uVHI/bcdSH27qSdoW
-         Ryxg==
-X-Gm-Message-State: AOAM531MbfnL1mCR9mht8yhSfID36GYbkZJUf9awvOyVx+0QP67hBgRb
-        GtvtuhUdIQHIAH8K3fIpB37CAA==
-X-Google-Smtp-Source: ABdhPJypjj0Fuf0YV+dNeiT3WvoCwsJ6BXbv+eL/GK8pGmGiwddvFk8jnVNo6gydzyj4IVms5ylF+A==
-X-Received: by 2002:a92:bf0b:: with SMTP id z11mr2704894ilh.117.1631107960320;
-        Wed, 08 Sep 2021 06:32:40 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id u13sm1093530iot.29.2021.09.08.06.32.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 06:32:39 -0700 (PDT)
-Message-ID: <fffd24d3374ecb2fbfafa9b85fa0ef8012fc7efa.camel@ndufresne.ca>
-Subject: Re: [PATCH v8 04/15] media:Add v4l2 event codec_error and skip
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Wed, 08 Sep 2021 09:32:38 -0400
-In-Reply-To: <647f84c1e7c2a48d6492d38fa4f06586235500b8.1631002447.git.ming.qian@nxp.com>
-References: <cover.1631002447.git.ming.qian@nxp.com>
-         <647f84c1e7c2a48d6492d38fa4f06586235500b8.1631002447.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Wed, 8 Sep 2021 09:33:53 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 12AAD1FD84;
+        Wed,  8 Sep 2021 13:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631107964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F/Ui6vmGrOMpzxKSJA2nBowgoVyDEDRCsNzbizaCewY=;
+        b=sBa2NeLXe//BoVtuNhFB+2kAt6omI0Pss7VxJGa9WMI20GVCH1+KOeu4fa5yiByRaHNHZJ
+        AMBZH99scIdEm9bpFqMT4ZWL6Ky4sx8plPcK7VPL75q0iT56DEaJ+wD1LM4keC0SkCnZsq
+        GH8bu5+yOScwZDK5/5xiQTx6yxzvZOY=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AE3B313A8F;
+        Wed,  8 Sep 2021 13:32:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id s+biKHu7OGF3JgAAGKfGzw
+        (envelope-from <jgross@suse.com>); Wed, 08 Sep 2021 13:32:43 +0000
+Subject: Re: [PATCH] xen: fix usage of pmd/pud_poplulate in mremap for pv
+ guests
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
+        Sander Eikelenboom <linux@eikelenboom.it>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210908073640.11299-1-jgross@suse.com>
+ <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <34afed98-5072-c563-5d29-97e09a0b4ebd@suse.com>
+Date:   Wed, 8 Sep 2021 15:32:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ming,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ
+Content-Type: multipart/mixed; boundary="oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ stable@vger.kernel.org, Sander Eikelenboom <linux@eikelenboom.it>,
+ xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <34afed98-5072-c563-5d29-97e09a0b4ebd@suse.com>
+Subject: Re: [PATCH] xen: fix usage of pmd/pud_poplulate in mremap for pv
+ guests
+References: <20210908073640.11299-1-jgross@suse.com>
+ <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
+In-Reply-To: <5a4859db-d173-88dd-5ea9-dd5fd893d934@suse.com>
 
-more API only review.
+--oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq
+Content-Type: multipart/mixed;
+ boundary="------------9FF5BF531CFAD049E5474674"
+Content-Language: en-US
 
-Le mardi 07 septembre 2021 à 17:49 +0800, Ming Qian a écrit :
-> The codec_error event can tell client that
-> there are some error occurs in the decoder engine.
-> 
-> The skip event can tell the client that
-> there are a frame has been decoded,
-> but it won't be outputed.
-> 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
-> ---
->  .../userspace-api/media/v4l/vidioc-dqevent.rst       | 12 ++++++++++++
->  include/uapi/linux/videodev2.h                       |  2 ++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> index 6eb40073c906..87d40ad25604 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> @@ -182,6 +182,18 @@ call.
->  	the regions changes. This event has a struct
->  	:c:type:`v4l2_event_motion_det`
->  	associated with it.
-> +    * - ``V4L2_EVENT_CODEC_ERROR``
-> +      - 7
-> +      - This event is triggered when some error occurs inside the codec engine,
-> +	usually it can be replaced by a POLLERR event, but in some cases, the POLLERR
-> +	may cause the application to exit, but this event can allow the application to
-> +	handle the codec error without exiting.
+This is a multi-part message in MIME format.
+--------------9FF5BF531CFAD049E5474674
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Events are sent to userspace in a separate queue from the VB2 queue. Which means
-it's impossible for userspace to know where this error actually took place.
-Userspace may endup discarding valid frames from the VB queue, as it does not
-know which one are good, and which one are bad.
+On 08.09.21 13:07, Jan Beulich wrote:
+> On 08.09.2021 09:36, Juergen Gross wrote:
+>> Commit 0881ace292b662 ("mm/mremap: use pmd/pud_poplulate to update pag=
+e
+>> table entries") introduced a regression when running as Xen PV guest.
+>=20
+> The description of that change starts with "pmd/pud_populate is the
+> right interface to be used to set the respective page table entries."
+> If this is deemed true, I don't think pmd_populate() should call
+> paravirt_alloc_pte(): The latter function, as its name says, is
+> supposed to be called for newly allocated page tables only (aiui).
 
-There is likely a bit of spec work to be done here for non-fatal decode errors,
-but I think the right approach is to use V4L2_BUF_FLAG_ERROR. What we expect
-from decoders is that for each frame, a CAPTURE buffer is assigned. If decoding
-that frame was not possible but the error is recoverable (corrupted bitstream,
-missing reference, etc.), then the failing frame get marked with FLAG_ERROR and
-decoding continues as usual.
+In theory you are correct, but my experience with reality tells me that
+another set of macros for this case will not be appreciated.
 
-What isn't documented is that you can set bytesused to 0, meaning there is
-nothing useful in that frame, or a valid bytesused when you know only some
-blocks are broken (e.g. missing 1 ref). Though, GStreamer might be the only
-implementation of that, and byteused 0 may confuse some existing userspace.
+>=20
+>> Today pmd/pud_poplulate() for Xen PV assumes that the PFN inserted is
+>> referencing a not yet used page table. In case of move_normal_pmd/pud(=
+)
+>> this is not true, resulting in WARN splats like:
+>=20
+> I agree for the PMD part, but is including PUD here really correct?
+> While I don't know why that is, xen_alloc_ptpage() pins L1 tables
+> only. Hence a PUD update shouldn't be able to find a pinned L2
+> table.
 
-> +    * - ``V4L2_EVENT_SKIP``
-> +      - 8
-> +      - This event is triggered when one frame is decoded, but it won't be outputed
-> +	to the display. So the application can't get this frame, and the input frame count
-> +	is dismatch with the output frame count. And this evevt is telling the client to
-> +	handle this case.
+I agree that I should drop mentioning PUD here.
 
-Similar to my previous comment, this event is flawed, since userspace cannot
-know were the skip is located in the queued buffers. Currently, all decoders are
-mandated to support V4L2_BUF_FLAG_TIMESTAMP_COPY. The timestamp must NOT be
-interpreted by the driver and must be reproduce as-is in the associated CAPTURE
-buffer. It is possible to "garbage" collect skipped frames with this method,
-though tedious.
-
-An alternative, and I think it would be much nicer then this, would be to use
-the v4l2_buffer.sequence counter, and just make it skip 1 on skips. Though, the
-down side is that userspace must also know how to reorder frames (a driver job
-for stateless codecs) in order to identify which frame was skipped. So this is
-perhaps not that useful, other then knowing something was skipped in the past.
-
-A third option would be to introduce V4L2_BUF_FLAG_SKIPPED. This way the driver
-could return an empty payload (bytesused = 0) buffer with this flag set, and the
-proper timestamp properly copied. This would let the driver communicate skipped
-frames in real-time. Note that this could break with existing userspace, so it
-would need to be opted-in somehow (a control or some flags).
-
->      * - ``V4L2_EVENT_PRIVATE_START``
->        - 0x08000000
->        - Base event number for driver-private events.
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 5bb0682b4a23..c56640d42dc5 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -2369,6 +2369,8 @@ struct v4l2_streamparm {
->  #define V4L2_EVENT_FRAME_SYNC			4
->  #define V4L2_EVENT_SOURCE_CHANGE		5
->  #define V4L2_EVENT_MOTION_DET			6
-> +#define V4L2_EVENT_CODEC_ERROR			7
-> +#define V4L2_EVENT_SKIP				8
->  #define V4L2_EVENT_PRIVATE_START		0x08000000
->  
->  /* Payload for V4L2_EVENT_VSYNC */
+I will do that change when committing in case no other changes are
+required.
 
 
+Juergen
+
+--------------9FF5BF531CFAD049E5474674
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------9FF5BF531CFAD049E5474674--
+
+--oMRl6C4CSjiTQpTvwN6zP8AdTyooWJhjq--
+
+--mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE4u3sFAwAAAAAACgkQsN6d1ii/Ey80
+Hgf/f8asQXvDRoEpJZ+a4PWY1tqLCbOIKQQg0umYtg4m+BhRu9vTv/3cRga8vRQaW4Sr2eCccOuS
+yfiX/2GfX0QRtl25kB4javG4Sl0Vt044CtkXW1Cq+OtrLngf+F3VpByoONFaMEk17IDsaAL11jak
+26TGrdjCD5PT3BmXObcYv5wSvr4dv0DTN5FP8x2Mol2OQJEsD8COUZwj7SfnDADDNUsv4l4q0K/o
+M9sDGm7dk42bZwpexON7r9ZUaO9xgCjeUVhXVMDu1sjb8nLCgB969PdUiwFHKW0inXpWGYpV4Gg1
+cdLZGYndrihUI69KGSI61JDdPsp3YOoBCt4s9deFSw==
+=BJw2
+-----END PGP SIGNATURE-----
+
+--mhQytEXpU9tCTCQw6oBk6yPm459sptWLZ--
