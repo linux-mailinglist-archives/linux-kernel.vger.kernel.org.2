@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA0D40336A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 06:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE9D40336B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 06:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhIHEmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 00:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhIHEmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 00:42:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76A4C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 21:41:45 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id k13so2297232lfv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 21:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SXLeBiUyDbIxM6wAYybRH9JPurCTPQJNt9i7c78CL8c=;
-        b=Rbgf8Y1OXI0IcL3zhk0dAWwKjW7yFbGTWIW0f6eAu/jbsLFDiOi4j9Td9AclL2N+NR
-         +6bSqPxyyq+5Nb0LgFDGqMsCdDLmUjwHSxBgvgFvSdLMsvikGXFKbJroSSWKznRdQ5wl
-         7Cdl6ZMEU4XV5qDZwE4sZ4/k/6rM9tLNlbWD8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SXLeBiUyDbIxM6wAYybRH9JPurCTPQJNt9i7c78CL8c=;
-        b=Liks71m3OzjEi5R0lJmlmFQlpsgSpbrGn/CvwadO/AYGOKXE9Xne8kG3WL624CJe3P
-         pUS8mL+W0WMAQQqcc/GEB5Wo8i4TjP+6yFcDKw8jt4CEdk2fLLdOab/rlgN9oQnPwoBV
-         EKZN2WSiXKc8n2yT4i0xUWcxyAFWkpmzqqdd37Y2ABc0FlOGyh813LQjfmTxXH4fvMVd
-         PJ5Pq7H0WcpAmoyaZ8JCXCciukqUHb74FgYinwGZqIuPWkCHXzxLvmjIrFRXga8SZmI9
-         PefHGXO7ONq7w2fCx9XPPoF89RmhqAvvwou84GFt3PBfHx3leSbu5zxP/RpB0ruRFsYA
-         h+nQ==
-X-Gm-Message-State: AOAM531Psh+5+bOzJS/SaVQWoN0VxY8ouT/Epc5f69Gai6hEZ3Ln9GYX
-        h5RJagqTqL6iOBS6Yi8jwO1oGofHFewCk9NtRII=
-X-Google-Smtp-Source: ABdhPJwY9tSrJ1OgBCSB1yShTnR/AfKjl49b5Q58qb02qXGFxCoZbb+7PA0K3seZaDJHg7W2ILMbEQ==
-X-Received: by 2002:ac2:5c11:: with SMTP id r17mr1271314lfp.416.1631076103728;
-        Tue, 07 Sep 2021 21:41:43 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id z1sm79059lfu.222.2021.09.07.21.41.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 21:41:42 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id k13so2297052lfv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 21:41:42 -0700 (PDT)
-X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr1285247lfg.402.1631076101854;
- Tue, 07 Sep 2021 21:41:41 -0700 (PDT)
+        id S231493AbhIHEoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 00:44:24 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:51857 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229988AbhIHEoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 00:44:22 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 1884gmMC4009948
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 7 Sep 2021 21:42:49 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 1884gmMC4009948
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631076170;
+        bh=DnirN5yaca29dOLsh4n68jgYNnFGlrSSGZfm3YYegs0=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=dqSY2N0Q/8vJvbsnX0Yj8YIcg68vKIE2atnp7dU++urrugHLoq+EJt2Dwiqs/oLu0
+         O6qVPRkdxLd2Hf+ncBpvXsw3E8ion33RdFiLF5YVFu8gvWNx2BXMJmn02WzqySmxY0
+         k+/VdnhEa7jMqT135Fvcwhhon/BVkrnBioUGAbFXzIk1+7gaQVcQyZrjlJJ3xSxp0t
+         MXrbWtBLbxe9y1SD02YduZIRukR8wjKj/J30OEN3MsFABLKrT/nBzZwAxMUWZQq/PC
+         XuInz6eI5u2rpJCp7oM1zv9M7OHKBcXSc60ecHryni4PmTwSR9/KG3xH+gtiUtyXm1
+         osfH0g8eQ/n5A==
+Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210902105052.2842-1-jiangshanlai@gmail.com>
+ <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
+Message-ID: <f84c2b3c-a880-502f-4f51-4624b3800a05@zytor.com>
+Date:   Tue, 7 Sep 2021 21:42:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
- <CAHk-=wgZkQ+eZ02TaCpAWo_ffiLMwA2tYNHyL+B1dQ4YB0qfmA@mail.gmail.com>
- <CAHk-=wh37UWTqUzbh5qg_x9pFgqBVwpdq_Kf+hnB5mqEUkrjmg@mail.gmail.com>
- <fb50dc44-fbe4-e6b3-5abc-d90375992292@amd.com> <5263c3bc-b741-5fdf-92d9-42a726076e76@amd.com>
-In-Reply-To: <5263c3bc-b741-5fdf-92d9-42a726076e76@amd.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 21:41:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjgi9jGiFHs7S2BPrGXKKOaVDqQsVPUsLWxkvZFAQ_WqQ@mail.gmail.com>
-Message-ID: <CAHk-=wjgi9jGiFHs7S2BPrGXKKOaVDqQsVPUsLWxkvZFAQ_WqQ@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
-        amd-gfx@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:52 PM Harry Wentland <harry.wentland@amd.com> wrote:
->
-> Attached patches fix these x86_64 ones reported by Nick:
 
-Hmm.
 
-You didn't seem to fix up the calling convention for print__xyz(),
-which still take those xyz structs as pass-by-value.
+On 9/7/21 6:38 PM, H. Peter Anvin wrote:
+> On 9/2/21 3:50 AM, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>
+>> There is no constrain/limition to force native_load_gs_index() to be in
+>> ASM code.
+> 
+> Hi,
+> 
+> First of all, let me say I really like your patchset, and I will try to
+> review it in detail ASAP (most of the initial read pass looks very sane
+> to me.
+> 
+> However, I would like to object in part this specific patch. It adds a
+> fair bit of extra code to the exception path, and adds jumps between
+> files which makes the code much harder to read.
+> 
+> You end up doing one swapgs in assembly and one in C, which would seem
+> to be a very good indication that really isn't an improvement.
+> 
+> Note that this entire sequence is scheduled to be obsoleted by a single
+> atomic hardware instruction, LKGS, which will replace ALL of
+> native_load_gs_index(); it will no longer be necessary even to disable
+> interrupts as there is no non-atomic state. In that sense, doing this as
+> an out-of-line C function (with some inline assembly) is great, because
+> it makes it far easier to use LKGS as an alternative; the only (small)
+> disadvantage is that it ends up clobbering a lot of registers
+> unnecessarily (in assembly it can be implemented clobbering only two
+> registers; one if one uses pushf/popf to save the interrupt flag.)
+> 
 
-Obviously it would be good to do things incrementally, so if that
-attached patch was just [1/N] I won't complain..
+OK, here is a version which actually compiles:
 
-> I'm also seeing one more that might be more challenging to fix but is nearly at 1024:
->
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:3397:6: error: stack frame size of 1064 bytes in function 'dml21_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than=]
+(It makes me wonder if it would be useful to have an _ASM_EXTABLE_GOTO() 
+macro to highlight the use of an asm goto C label.)
 
-Oh Gods, that function is truly something else..
+noinstr void native_load_gs_index(unsigned int selector)
+{
+	unsigned long flags;
 
-Is there some reason why it's one humongous function, with the
-occasional single-line comment?
+	local_irq_save(flags);
+	native_swapgs();
 
-Because it really looks to me like pretty much everywhere I see one of
-those rare comments, I would go "this part should be a function of its
-own", and then there would be one caller fuynction that just calls
-each of those sub-functions one after the other.
+do_mov_gs:
+	asm_volatile_goto("1: mov %[seg],%%gs\n"
+			  "2:\n"
+			  _ASM_EXTABLE(1b,%l[bad_seg])
+			  : : [seg] "r" (selector) : : bad_seg);
 
-That would - I think - make the code easier to read, and then it would
-also make it very obvious where it magically uses a lot of stack.
+	alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
+	native_swapgs();
+	local_irq_restore(flags);
+	return;
 
-My suspicion is actually "nowhere". The stack use is just hugely
-spread out, and the compiler has just kept accumulating more spill
-variables on the frame with no single big reason.
+bad_seg:
+	selector = 0;
 
-Yes, I see a couple of local structures:
+	/* The exception dispatch will have restored kernel GS */
+	native_swapgs();
 
-                Pipe myPipe;
-                HostVM myHostVM;
+	if (static_cpu_has_bug(X86_BUG_NULL_SEG))
+		asm volatile("mov %[seg],%%gs"
+			     : : [seg] "r" (__USER_DS));
+	goto do_mov_gs;
+}
 
-but more than that I see several function calls that have basically 62
-arguments. And I wish I was making that number up. I'm not. That
-"CalculatePrefetchSchedule()" call literally has 62 arguments.
-
-But *all* of the top-level loops in that function literally look like
-they could - and should - be functions in their own right. Some of
-them would be fairly complex even so (ie that code under the comment
-
-        //Prefetch Check
-
-would be quite the big function all of its own.
-
-We have a coding style thing:
-
-    Documentation/process/coding-style.rst
-
-that says that you should strive to have functions that are "short and
-sweet" and fit on one or two screenfuls of text.
-
-That one function from hell is 1832 lines of code.
-
-It really could be improved upon.
-
-               Linus
