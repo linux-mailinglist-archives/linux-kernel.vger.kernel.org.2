@@ -2,116 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21BD403F02
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC57403F04
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349640AbhIHSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:22:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47054 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347196AbhIHSWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:22:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631125254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Odli6n5utx6iQ2PGhXktTIOLzBm1o5C6yHyZID46228=;
-        b=F/9eI3jynW60VU50pwr7HQTB7XJfiHiLnUDtj5e6mEs8vHw2CkHWube8qHIaswxD+XrZj5
-        hG1AqUutx6std+7Af2Q1HDHCcBPsVacfktNTw+Uq3iZJ7R8Jkp9IWvzaalDYhp8LQIpj+I
-        qp1Ip4mzB9UFd58L4+UrAmuGpwheREI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-rr0CD_CoOhS1QMyd-CwEew-1; Wed, 08 Sep 2021 14:20:53 -0400
-X-MC-Unique: rr0CD_CoOhS1QMyd-CwEew-1
-Received: by mail-qv1-f69.google.com with SMTP id a10-20020ad45c4a000000b0037774ba4e8bso5494024qva.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:20:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Odli6n5utx6iQ2PGhXktTIOLzBm1o5C6yHyZID46228=;
-        b=pIjFvEaqY1Xh/WCMWTX8VgVUcSUHHp5hf5PahhDyerruFsbWWvIry6bmZpEIIdWr1k
-         HWuoKvQ8JrfDL8Kji+vscyKxZxNfgXoeZ7ImPwvGEPgjIzWY4Scx+F1ZLdf+rQMVIDM1
-         gdvyFV8+Kv2u1gs3A07M4NLwPtCGzvOcgmiFpFUad9XyJOxs1rT3EKIEXoqxCwXStOQt
-         x6H5DJ+Q8kFZmUgBu0p+dkoynnhrjocmt/Vu1EHD2TsoUO+KR9c5aAiZoHuK0GHI1WWP
-         53/ib6QdASJQAa1dYudQxU7idqkVLoz4WRTwMWXEZVtj60tJC9TkhJttWPra4L8Cr4Sz
-         E/4A==
-X-Gm-Message-State: AOAM531mmjTCvxEQxKQ38mXQEJgUPLydXy4b15JoAehVq/ogr2PzcI2Q
-        CMKd0G8ETrKujipIjGImpwGvIDclUQM0nBIEOex2Y2WNfRBeXN7eDbjP2llF4sBtHlkpF4A9IE2
-        EznEifPsibzjPr/1GwC2Az13t
-X-Received: by 2002:a05:622a:5d4:: with SMTP id d20mr5060605qtb.376.1631125252895;
-        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPaeAvoUaD+xtpB8KwHR40y9qXCvGLUPqMAf4ghrKiqlK0Iu9Fa98T3Ot5hCZoS0vnTrw1Vw==
-X-Received: by 2002:a05:622a:5d4:: with SMTP id d20mr5060576qtb.376.1631125252608;
-        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id r4sm2069337qtw.5.2021.09.08.11.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 11:20:47 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     "Moger, Babu" <bmoger@amd.com>, bp@alien8.de, bsd@redhat.com,
-        corbet@lwn.net, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
-Message-ID: <20210908182047.lcor52bjzrt35gsq@treble>
-References: <20210812234440.tcssf2iqs435bgdo@treble>
- <20210902181637.244879-1-babu.moger@amd.com>
- <20210903000706.fb43tzhjanyg64cx@treble>
- <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
- <20210904172334.lfjyqi4qfzvbxef7@treble>
- <35a32225-25d3-88eb-f427-14c93c38c97b@amd.com>
-MIME-Version: 1.0
+        id S1349764AbhIHSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:22:13 -0400
+Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:64545
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347196AbhIHSWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 14:22:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XxvISMoPa/yDJtJE0Bl5SbUw2ND+y/UaNzcEdONGMIDXgT9mFlEwV7hO8eY1JoKMTHVDVi2CWxTYM1AW8ExAhcWdc+rqdtzGGG/LmtiaSzjVPTfxlaBydiCQrKfNyuoW6aG6cCfJpZo7Rl0rqrFOgs6Gnipy/0Ht/h3Ov0K0bkdnUcLiAQbxP9/Z7j3Rk9exVpw7u5h1JFO2M81JfCWdY+le1XO1QfHPHZzM0BKlmPbylQ9/Df9P62b0E6By/8ardxrIew/rr89u6rF22ZN9wQcyv6UInks6INxXezmWBkaXxvapBtUxnHMrb0N2sHNRjMWa/EJlRmgQiTR5iPJHOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ZcJaBEYfCPIioKJYKEYgkbuC6LkyPjeI8YzhvRS79F8=;
+ b=dj/IqescgZeRBuHe9YhtiWh2dON5acrCaWE2aWOwxfMrdx0rjamo8to6vOR6ZzL13MqSoso9+fFtqElogS11Dt4RPYGctBpaUTH472GUK9O0OblyFNRlI7TW5uKdzUSrZCrMsA8jLR1/bbcAsB/Job/IdhoDsMXuTiHXByIZDw91ciqebp7FbyLfct3eu+1XSTEPiKD/gLgOO6NjdGr1Qjik2+Hpo3/FO4mXTVO0aLV4x8IEdrvXU2KWaknW1SmCdnHWczr30VyVHkmF48nqRmkU+zmUcg9nDVB9uGdb1ooUgGPUODrE+eiBDjcAaAwwWTEDD+kcjn1FGpdPvJg5gQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZcJaBEYfCPIioKJYKEYgkbuC6LkyPjeI8YzhvRS79F8=;
+ b=E0gzwHS3v84bhT0EF1fH1BLvc2PY72g3Bfvb9hFnlgdIpPeW1DmTBQqC/X4jiUuSy68XIja5wifulGetXfBciNJ1wlbyi32jY5FW2sJ5Lhyqj+bwdAzPSgpF+5j4EqtzapsmBQ8BbYffdUEKiwR9us+QaARJfoev94NfrRXOBAI=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB4720.namprd12.prod.outlook.com (2603:10b6:805:e6::31)
+ by SA0PR12MB4576.namprd12.prod.outlook.com (2603:10b6:806:93::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
+ 2021 18:21:02 +0000
+Received: from SN6PR12MB4720.namprd12.prod.outlook.com
+ ([fe80::e134:658f:3a82:f750]) by SN6PR12MB4720.namprd12.prod.outlook.com
+ ([fe80::e134:658f:3a82:f750%4]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
+ 18:21:02 +0000
+Subject: Re: [PATCH 11/19] cpufreq: amd: add amd-pstate performance attributes
+To:     Huang Rui <ray.huang@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        linux-pm@vger.kernel.org
+Cc:     Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-12-ray.huang@amd.com>
+From:   "Fontenot, Nathan" <Nathan.Fontenot@amd.com>
+Message-ID: <a03268e4-f6c6-93ed-d977-94efbd6f923e@amd.com>
+Date:   Wed, 8 Sep 2021 13:20:58 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210908150001.3702552-12-ray.huang@amd.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <35a32225-25d3-88eb-f427-14c93c38c97b@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0501CA0067.namprd05.prod.outlook.com
+ (2603:10b6:803:41::44) To SN6PR12MB4720.namprd12.prod.outlook.com
+ (2603:10b6:805:e6::31)
+MIME-Version: 1.0
+Received: from [172.31.130.72] (165.204.78.25) by SN4PR0501CA0067.namprd05.prod.outlook.com (2603:10b6:803:41::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.6 via Frontend Transport; Wed, 8 Sep 2021 18:20:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 63df8c71-fc92-44a5-58ef-08d972f569ca
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4576:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB457605BA48344B395E9C58C9ECD49@SA0PR12MB4576.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qBj21znrXWYaHIpy1A76994b/MImoUtUwxCzx4TO+e+7+AvWH2WmRO9vWlJ5yRzFA2NaehyTb14zGJ+OgRqzl1j9EphNMaeVeT71sNBTKmHciriB8sDJLgK93Pa8Km1JLc3EeNAXh43U+/dw+3oHlXd2n5qV+HOnEVELRLr/S1G+e2FT4uJGVzaKf6CgiSLiG4bOX26juw7sZIXjMVidmuHchBxcYOP5ZDOmuOX3WQq15S++Wr/jmus6yNtO7LCbCB2noO/ScUQdcQu5678WmvcDZn/WdSxuo3AgQLMSFPSfDDoxyAMC1b4fvU5Kog9Y1A2L33n9KhcOoD8pe7/MhthOHcXqOufYKs/YQFhFtua/RHRrRP4scLuqwcKwi8MqRqu6sxwaf/Ao+WRjRr1cGGPsceiVPl6colzJJosbJ6OOASVL32OLQgKbBkhYzyYHalam/N/IEOMEf/5IcOuvnnqFWdPB2AsPe6IWzjWULiuv5oPKShb2yDf9WWK3vXg0aynxEyHhnQjLDdQ+n/TeT7Juhjtw7+dtbd9tD34emr1vLmiQlrqy6PGVDlsWYAjedD3CJOJsUKMitNnuT3B6HUDzTXOMC5phUM9+u3SWWo8zYQg9RJlh+dhH1dyjjnTevtN75vseAunxa08EYFNZ91cnD1E99jBnLq+w9S4Gua5nn32lfCO6dESo/NJ+GYwfqSZj3OHTp++sC+g0cioAN7Nge0N3xq0VPsZRppoKrc0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB4720.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(346002)(136003)(26005)(4326008)(2616005)(66556008)(66946007)(5660300002)(86362001)(186003)(83380400001)(66476007)(478600001)(2906002)(8936002)(8676002)(110136005)(16576012)(31696002)(54906003)(31686004)(38100700002)(36756003)(6486002)(316002)(956004)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dlFQLzNGVGIvaDNQaUQrT3VZemtUSlhrZEhWVmtQem8xeVdoWTIzS0ZMcGFF?=
+ =?utf-8?B?QmJQME01Q2oxQmRWSmJpbkFyNWxSMGp2MzBobFZmYkNzN0lKM3dZTTN2L3BG?=
+ =?utf-8?B?dCs0ZGZZdjR0TGkyQmpkQ3JEaURXaXZkSkk3aGpLdlhocnpTWDRNNXBaL2xU?=
+ =?utf-8?B?KzNRTlFSMDJpSW1CNE9kczJFaFNOdVJzNlgrOEdySXl2K1UyRkc4VlhQUndX?=
+ =?utf-8?B?ejh0ajlFeUw3TkVOTDlCN1hhYzFLMXRVSXFjZnNtL2dVNEdXeXh0ZGRaQm5y?=
+ =?utf-8?B?UnIwQ1dhaE5Lei9aRmR4WkxYbXlNQ1dKTkdQUkx6L1ZyZ0FjMHZWbFBULzk0?=
+ =?utf-8?B?Y3J5d3BRdHNRZVRvaG5KSnFvMlRyajNSaGcvUUcvV1pzR0JJdHVXTzh0TCtp?=
+ =?utf-8?B?NjlSbVNwU2NjQ2RGTnhPbnNhYnpFcmNBRjB0WnFQVmFLZlZOMmt1MFVVQldE?=
+ =?utf-8?B?a2hJVDJJRjNJWmcxakhCMG9VdFNMQTV1N1BwZVplWDhvclhFbWIza2RrMjFN?=
+ =?utf-8?B?RUxQc002c29QYUJlRnplYUpZUjFxZU5lNXBjWDlkMklEdEhNak5TR2JNQitD?=
+ =?utf-8?B?MGxGZUsycnQzU3dnMXpwdy9LaUVkaWpiNGZkNGR5RkdCSlNubG5Ob2FsMy9E?=
+ =?utf-8?B?MXJoZENWNS90WE1PN0J5dUtxbmRkdzVMUkZublZnRXlHWUpYNXVYVVFlTnZi?=
+ =?utf-8?B?eTVRY041aUd2UmZncUFjczlEVjU0NFYvYkV2a2xyNmdDWUc1cTExR0cvcVdh?=
+ =?utf-8?B?N0l5dFRCRFNqSFJPek1rNFBsTjVZQlo2QktWRTVxckhpb01xTm9zb2QrelVh?=
+ =?utf-8?B?SHZQb0xlV2RuSDNMUy8rem83eTZDSTUxdFRpTlR2ZVFodlIvbThOa25sWU4r?=
+ =?utf-8?B?b2V5T0tqOUlFZ082V2VWeERpdG04YVFtbjdQTXBOZjBsNyttOFJobzk1QUlT?=
+ =?utf-8?B?ZDZFNUtNbUc1NkdHTnhPbTJPbXpib3IrV3hyTTQxM0wrTStZbE1iU050ZlF1?=
+ =?utf-8?B?YkF1ZmVISWptYU1rSmVlazV2ampQWW04S0FZZTlVTWtZcDdSYXlqN0lScjVk?=
+ =?utf-8?B?UlZ4a2pNd3J2cS9WTXFVOGpjVFZpVTl6NlVCY1A3bEhiaWhCQ2VtbHBqZDBw?=
+ =?utf-8?B?VktENnRzUlJkMmI4SEhUZWI4WTF6b3dRMm9Na2lWa2R4bkYwZlcwVE4yb1lK?=
+ =?utf-8?B?YzRFdUp6YmRDNlpvZitsRUlBVDU1OGhnampENXNrWDRvb0lScWYwYTROTlJQ?=
+ =?utf-8?B?ZHAvOGZFeHVpbkkxZUQvMnhMcVdPNTdBMDIydEtsQUdhUThWTEVyaVB4c3ZS?=
+ =?utf-8?B?VTNZVjA2akY5SkJKYnlnWmRHOForcGtPQ1JSZDJwL1M4ZU9LL2dlNUlCYm1L?=
+ =?utf-8?B?bGRuL0YrN29qbFcvb3gvKzJBcFc1V2UvaWRLZ3R5MExmRjhBdlBaMHRmWHBr?=
+ =?utf-8?B?aWhGa212Wk1Hd1dxcWJtUFltcTFRL1pMY3ZRZkljUVdUVUlxaGw2RnlmU1dC?=
+ =?utf-8?B?TEMrY1p5WTIya1Q4aExjbDBad21XR29CRXZER3RMWkJadjFTSnNrM2NGSHcz?=
+ =?utf-8?B?RVhrZjVZYzJJMmYvOVJ0dDZreTQ4clVQREFRNWNKV3R4bFE0RFp4a0FRK1hn?=
+ =?utf-8?B?UDIyb2JXWVdRa2tpamtaRTV3WkNRYWxEVlUzZlRFRWNETGdlZVliVUhDeGFM?=
+ =?utf-8?B?NmtjbGlaNXFNRWxoSHhsTEc5d1dsMEVYblFocGU5ZG9nL3I3OUFMS3NoZnFG?=
+ =?utf-8?Q?+wDwF+ocOyfn2xyDCd3zkEYPZT5o/6v1tOjPqfM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63df8c71-fc92-44a5-58ef-08d972f569ca
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB4720.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 18:21:01.8357
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7GJYAhqsSBy2aGYBLa1+8fxrx6EHMhIlU1wZxLG88ITkeLBlFwfAIUFN12e48nVX7jhewo7t+5jFDHUr34FhQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4576
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 06:15:53PM -0500, Babu Moger wrote:
-> >>> Because trying to give them separate interfaces, when PSF disable is
-> >>> intertwined with SSB disable in hardware, is awkward and confusing.  And
-> >>> the idea of adding another double-negative interface (disable=off!),
-> >>> just because a vulnerability is considered to be a CPU "feature", isn't
-> >>> very appetizing.
-> >>>
-> >>> So instead of adding a new double-negative interface, which only *half*
-> >>> works due to the ssb_disable dependency, and which is guaranteed to
-> >>> further confuse users, and which not even be used in the real world
-> >>> except possibly by confused users...
-> >>>
-> >>> I'm wondering if we can just start out with the simplest possible
-> >>> approach: don't change any code and instead just document the fact that
-> >>> "spec_store_bypass_disable=" also affects PSF.
-> >>>
-> >>> Then, later on, if a real-world need is demonstrated, actual code could
-> >>> be added to support disabling PSF independently (but of course it would
-> >>> never be fully independent since PSF disable is forced by SSB disable).
-> >>
-> >> Do you mean for now keep only 'on' and  'auto' and remove "off"?
-> > 
-> > No, since PSF can already be mitigated with SSBD today, I'm suggesting
-> > that all code be removed from the patch and instead just update the
-> > documentation.
-> > 
+On 9/8/2021 9:59 AM, Huang Rui wrote:
+> Introduce sysfs attributes to get the different level amd-pstate
+> performances.
 > 
-> Hmm Interesting..
-> Just updating the documentation and without giving interface to enable or
-> disable will not be a much of a value add.
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> ---
+>  drivers/cpufreq/amd-pstate.c | 66 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 3c727a22cb69..9c60388d45ed 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -647,6 +647,62 @@ static ssize_t show_amd_pstate_min_freq(struct cpufreq_policy *policy, char *buf
+>  	return ret;
+>  }
+>  
+> +static ssize_t
+> +show_amd_pstate_highest_perf(struct cpufreq_policy *policy, char *buf)
 
-It's also not a value add to create controls and added complexity for a
-feature which nobody needs.  There's no harm in starting out with the
-simplest possible solution, which is no code at all.
+Here (and in the other functions) the function return value and name should
+be on the same line.
 
-Code can always be added later if really needed...
+> +{
+> +	int ret = 0;
+> +	u32 perf;
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+> +
+> +	perf = READ_ONCE(cpudata->highest_perf);
+> +
+> +	ret += sprintf(&buf[ret], "%u\n", perf);
+> +
+> +	return ret;
 
--- 
-Josh
+Same comment as the previous patch here and in the functions below, just do
 
+	return sprintf(&buf[ret], "%u\n", perf);
+
+and get rid of the intermediary 'ret' variable.
+
+-Nathan
+
+> +}
+> +
+> +static ssize_t
+> +show_amd_pstate_nominal_perf(struct cpufreq_policy *policy, char *buf)
+> +{
+> +	int ret = 0;
+> +	u32 perf;
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+> +
+> +	perf = READ_ONCE(cpudata->nominal_perf);
+> +
+> +	ret += sprintf(&buf[ret], "%u\n", perf);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t
+> +show_amd_pstate_lowest_nonlinear_perf(struct cpufreq_policy *policy, char *buf)
+> +{
+> +	int ret = 0;
+> +	u32 perf;
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+> +
+> +	perf = READ_ONCE(cpudata->lowest_nonlinear_perf);
+> +
+> +	ret += sprintf(&buf[ret], "%u\n", perf);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t
+> +show_amd_pstate_lowest_perf(struct cpufreq_policy *policy, char *buf)
+> +{
+> +	int ret = 0;
+> +	u32 perf;
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+> +
+> +	perf = READ_ONCE(cpudata->lowest_perf);
+> +
+> +	ret += sprintf(&buf[ret], "%u\n", perf);
+> +
+> +	return ret;
+> +}
+> +
+>  static ssize_t show_is_amd_pstate_enabled(struct cpufreq_policy *policy,
+>  					  char *buf)
+>  {
+> @@ -654,17 +710,27 @@ static ssize_t show_is_amd_pstate_enabled(struct cpufreq_policy *policy,
+>  }
+>  
+>  cpufreq_freq_attr_ro(is_amd_pstate_enabled);
+> +
+>  cpufreq_freq_attr_ro(amd_pstate_max_freq);
+>  cpufreq_freq_attr_ro(amd_pstate_nominal_freq);
+>  cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_freq);
+>  cpufreq_freq_attr_ro(amd_pstate_min_freq);
+>  
+> +cpufreq_freq_attr_ro(amd_pstate_highest_perf);
+> +cpufreq_freq_attr_ro(amd_pstate_nominal_perf);
+> +cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_perf);
+> +cpufreq_freq_attr_ro(amd_pstate_lowest_perf);
+> +
+>  static struct freq_attr *amd_pstate_attr[] = {
+>  	&is_amd_pstate_enabled,
+>  	&amd_pstate_max_freq,
+>  	&amd_pstate_nominal_freq,
+>  	&amd_pstate_lowest_nonlinear_freq,
+>  	&amd_pstate_min_freq,
+> +	&amd_pstate_highest_perf,
+> +	&amd_pstate_nominal_perf,
+> +	&amd_pstate_lowest_nonlinear_perf,
+> +	&amd_pstate_lowest_perf,
+>  	NULL,
+>  };
+>  
+> -- 
+> 2.25.1
+> 
