@@ -2,85 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B894034C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65AF4034C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347447AbhIHHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:08:26 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:36537
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1347071AbhIHHID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:08:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=9ngNbiGDsxISmmYfAEEQV1JCjxzN4OZTP8qa0hqYH78=; b=V
-        25+5mCt4Jy+WjDnri8g/dHZnmjxZyx/EVgGX7RwE4TtxTqQTKGj6hFem1/MvRhX/
-        mBgnYWMHJaDAu1bVu41NIPCEME8q0y/YkMFTC6nqlR3bAL9GMATClQWfmaodSdyk
-        Ctw5Yz8FbcaJNago61TjGVio++HdiVpGSG4ZjUhNbU=
-Received: from t640 (unknown [10.176.36.8])
-        by app1 (Coremail) with SMTP id XAUFCgDX3V0LYThh3dI1AA--.13518S3;
-        Wed, 08 Sep 2021 15:06:51 +0800 (CST)
-From:   Chenyuan Mi <cymi20@fudan.edu.cn>
-Cc:     yuanxzhang@fudan.edu.cn, Chenyuan Mi <cymi20@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: Fix handle refcount leak in ext4_write_begin()
-Date:   Wed,  8 Sep 2021 15:06:40 +0800
-Message-Id: <20210908070640.7135-1-cymi20@fudan.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: XAUFCgDX3V0LYThh3dI1AA--.13518S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFy3uryDCF4fJrWfZw4Utwb_yoW3ZFg_Ga
-        48WF4rurnYvws29w4rGwsIqw1a9Fn5Ww1rWwn7tr18Xa4jvaykGrZ5Aa47ArWUWr429ry5
-        CFnrWrySk34xXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        Jw0_GFylx4CE04Ijxs4lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-        IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1U
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-        VFxhVjvjDU0xZFpf9x0pRcAw7UUUUU=
-X-CM-SenderInfo: isqsiiisuqikmt6i3vldqovvfxof0/
-To:     unlisted-recipients:; (no To-header on input)
+        id S1347324AbhIHHIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346276AbhIHHH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:07:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79BD760ED8;
+        Wed,  8 Sep 2021 07:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631084810;
+        bh=Ly3EkTEich3eQK1JP3ut9e5gzKql9couVBmppJUEH2c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RXmtHu0QyIxLgvy6NMXEjn/nQtnYQaKO9HitI+NY84bWCqNCGgghycLPcmc5OCQj3
+         L5bNFby2yZdasw3tpfl8dyULMoXC09Zpgq5By1tINKEGFZ2kAK+iVCvca7rTP14alp
+         C7kzUOtPoAe+wdzZD9Uv6jr+ea9qgLoEEIa+hM3w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Linux 5.14.2
+Date:   Wed,  8 Sep 2021 09:06:41 +0200
+Message-Id: <1631084800151162@kroah.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <1631084800230205@kroah.com>
+References: <1631084800230205@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference counting issue happens when ret is zero,
-the function forgets to decrease the refcount of handle
-increased by ext4_journal_start().
-
-Fix this issue by using ext4_journal_stop() to decrease
-the refcount of handle.
-
-Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- fs/ext4/inode.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d18852d6029c..90c57d8e3de1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1249,6 +1249,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 		put_page(page);
- 		return ret;
+diff --git a/Makefile b/Makefile
+index 83d1f7c1fd30..9a2b00ecc6af 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ VERSION = 5
+ PATCHLEVEL = 14
+-SUBLEVEL = 1
++SUBLEVEL = 2
+ EXTRAVERSION =
+ NAME = Opossums on Parade
+ 
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 3878880469d1..b843902ad9fd 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -30,7 +30,7 @@ config XTENSA
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_EXIT_THREAD
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if !MMU
++	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_PCI
+diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+index 06130dc431a0..b234958f883a 100644
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -377,27 +377,27 @@ static int hid_submit_ctrl(struct hid_device *hid)
+ 	len = hid_report_len(report);
+ 	if (dir == USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+-		usbhid->urbctrl->transfer_buffer_length = len;
+ 		if (raw_report) {
+ 			memcpy(usbhid->ctrlbuf, raw_report, len);
+ 			kfree(raw_report);
+ 			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
+ 		}
+ 	} else {
+-		int maxpacket, padlen;
++		int maxpacket;
+ 
+ 		usbhid->urbctrl->pipe = usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
+ 		maxpacket = usb_maxpacket(hid_to_usb_dev(hid),
+ 					  usbhid->urbctrl->pipe, 0);
+ 		if (maxpacket > 0) {
+-			padlen = DIV_ROUND_UP(len, maxpacket);
+-			padlen *= maxpacket;
+-			if (padlen > usbhid->bufsize)
+-				padlen = usbhid->bufsize;
++			len += (len == 0);    /* Don't allow 0-length reports */
++			len = DIV_ROUND_UP(len, maxpacket);
++			len *= maxpacket;
++			if (len > usbhid->bufsize)
++				len = usbhid->bufsize;
+ 		} else
+-			padlen = 0;
+-		usbhid->urbctrl->transfer_buffer_length = padlen;
++			len = 0;
  	}
-+	ext4_journal_stop(handle);
- 	*pagep = page;
- 	return ret;
++	usbhid->urbctrl->transfer_buffer_length = len;
+ 	usbhid->urbctrl->dev = hid_to_usb_dev(hid);
+ 
+ 	usbhid->cr->bRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
+diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
+index a45d464427c4..0e231e576dc3 100644
+--- a/drivers/media/usb/stkwebcam/stk-webcam.c
++++ b/drivers/media/usb/stkwebcam/stk-webcam.c
+@@ -1346,7 +1346,7 @@ static int stk_camera_probe(struct usb_interface *interface,
+ 	if (!dev->isoc_ep) {
+ 		pr_err("Could not find isoc-in endpoint\n");
+ 		err = -ENODEV;
+-		goto error;
++		goto error_put;
+ 	}
+ 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
+ 	dev->vsettings.mode = MODE_VGA;
+@@ -1359,10 +1359,12 @@ static int stk_camera_probe(struct usb_interface *interface,
+ 
+ 	err = stk_register_video_device(dev);
+ 	if (err)
+-		goto error;
++		goto error_put;
+ 
+ 	return 0;
+ 
++error_put:
++	usb_put_intf(interface);
+ error:
+ 	v4l2_ctrl_handler_free(hdl);
+ 	v4l2_device_unregister(&dev->v4l2_dev);
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index 3c80bfbf3bec..d48bed5782a5 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1164,10 +1164,8 @@ static int cp210x_set_chars(struct usb_serial_port *port,
+ 
+ 	kfree(dmabuf);
+ 
+-	if (result < 0) {
+-		dev_err(&port->dev, "failed to set special chars: %d\n", result);
++	if (result < 0)
+ 		return result;
+-	}
+ 
+ 	return 0;
  }
--- 
-2.17.1
-
+@@ -1192,6 +1190,7 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 	struct cp210x_flow_ctl flow_ctl;
+ 	u32 flow_repl;
+ 	u32 ctl_hs;
++	bool crtscts;
+ 	int ret;
+ 
+ 	/*
+@@ -1219,8 +1218,10 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 		chars.bXoffChar = STOP_CHAR(tty);
+ 
+ 		ret = cp210x_set_chars(port, &chars);
+-		if (ret)
+-			return;
++		if (ret) {
++			dev_err(&port->dev, "failed to set special chars: %d\n",
++					ret);
++		}
+ 	}
+ 
+ 	mutex_lock(&port_priv->mutex);
+@@ -1249,14 +1250,14 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = true;
++		crtscts = true;
+ 	} else {
+ 		ctl_hs &= ~CP210X_SERIAL_CTS_HANDSHAKE;
+ 		if (port_priv->rts)
+ 			flow_repl |= CP210X_SERIAL_RTS_ACTIVE;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = false;
++		crtscts = false;
+ 	}
+ 
+ 	if (I_IXOFF(tty)) {
+@@ -1279,8 +1280,12 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 	flow_ctl.ulControlHandshake = cpu_to_le32(ctl_hs);
+ 	flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+ 
+-	cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
++	ret = cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
+ 			sizeof(flow_ctl));
++	if (ret)
++		goto out_unlock;
++
++	port_priv->crtscts = crtscts;
+ out_unlock:
+ 	mutex_unlock(&port_priv->mutex);
+ }
+diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
+index 930b3d50a330..f45ca7ddf78e 100644
+--- a/drivers/usb/serial/pl2303.c
++++ b/drivers/usb/serial/pl2303.c
+@@ -433,6 +433,7 @@ static int pl2303_detect_type(struct usb_serial *serial)
+ 		switch (bcdDevice) {
+ 		case 0x100:
+ 		case 0x305:
++		case 0x405:
+ 			/*
+ 			 * Assume it's an HXN-type if the device doesn't
+ 			 * support the old read request value.
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 70cb64db33f7..24e994e75f5c 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -750,6 +750,12 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+ 	ext4_write_lock_xattr(inode, &no_expand);
+ 	BUG_ON(!ext4_has_inline_data(inode));
+ 
++	/*
++	 * ei->i_inline_off may have changed since ext4_write_begin()
++	 * called ext4_try_to_write_inline_data()
++	 */
++	(void) ext4_find_inline_data_nolock(inode);
++
+ 	kaddr = kmap_atomic(page);
+ 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
+ 	kunmap_atomic(kaddr);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..970013c93d3e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5032,6 +5032,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
+ 					  GFP_KERNEL);
+ 	}
++	/*
++	 * Update the checksum after updating free space/inode
++	 * counters.  Otherwise the superblock can have an incorrect
++	 * checksum in the buffer cache until it is written out and
++	 * e2fsprogs programs trying to open a file system immediately
++	 * after it is mounted can fail.
++	 */
++	ext4_superblock_csum_set(sb);
+ 	if (!err)
+ 		err = percpu_counter_init(&sbi->s_dirs_counter,
+ 					  ext4_count_dirs(sb), GFP_KERNEL);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7d5883432085..a144a3f68e9e 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1746,7 +1746,7 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
+ 		channels = params_channels(params);
+ 		frame_size = snd_pcm_format_size(format, channels);
+ 		if (frame_size > 0)
+-			params->fifo_size /= (unsigned)frame_size;
++			params->fifo_size /= frame_size;
+ 	}
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7ad689f991e7..70516527ebce 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8438,6 +8438,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x87f6, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+ 	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+@@ -9521,6 +9522,16 @@ static int patch_alc269(struct hda_codec *codec)
+ 
+ 	snd_hda_pick_fixup(codec, alc269_fixup_models,
+ 		       alc269_fixup_tbl, alc269_fixups);
++	/* FIXME: both TX300 and ROG Strix G17 have the same SSID, and
++	 * the quirk breaks the latter (bko#214101).
++	 * Clear the wrong entry.
++	 */
++	if (codec->fixup_id == ALC282_FIXUP_ASUS_TX300 &&
++	    codec->core.vendor_id == 0x10ec0294) {
++		codec_dbg(codec, "Clear wrong fixup for ASUS ROG Strix G17\n");
++		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
++	}
++
+ 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
+ 	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
+ 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 6c0a052a28f9..5b19901f305a 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -94,6 +94,7 @@ struct snd_usb_endpoint {
+ 	struct list_head ready_playback_urbs; /* playback URB FIFO for implicit fb */
+ 
+ 	unsigned int nurbs;		/* # urbs */
++	unsigned int nominal_queue_size; /* total buffer sizes in URBs */
+ 	unsigned long active_mask;	/* bitmask of active urbs */
+ 	unsigned long unlink_mask;	/* bitmask of unlinked urbs */
+ 	char *syncbuf;			/* sync buffer for all sync URBs */
+@@ -187,6 +188,7 @@ struct snd_usb_substream {
+ 	} dsd_dop;
+ 
+ 	bool trigger_tstamp_pending_update; /* trigger timestamp being updated from initial estimate */
++	bool early_playback_start;	/* early start needed for playback? */
+ 	struct media_ctl *media_ctl;
+ };
+ 
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 4f856771216b..bf26c04cf471 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1126,6 +1126,10 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
+ 		INIT_LIST_HEAD(&u->ready_list);
+ 	}
+ 
++	/* total buffer bytes of all URBs plus the next queue;
++	 * referred in pcm.c
++	 */
++	ep->nominal_queue_size = maxsize * urb_packs * (ep->nurbs + 1);
+ 	return 0;
+ 
+ out_of_memory:
+@@ -1287,6 +1291,11 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+ 	 * to be set up before parameter setups
+ 	 */
+ 	iface_first = ep->cur_audiofmt->protocol == UAC_VERSION_1;
++	/* Workaround for Sony WALKMAN NW-A45 DAC;
++	 * it requires the interface setup at first like UAC1
++	 */
++	if (chip->usb_id == USB_ID(0x054c, 0x0b8c))
++		iface_first = true;
+ 	if (iface_first) {
+ 		err = endpoint_set_interface(chip, ep, true);
+ 		if (err < 0)
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 4e5031a68064..f5cbf61ac366 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -614,6 +614,14 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	subs->period_elapsed_pending = 0;
+ 	runtime->delay = 0;
+ 
++	/* check whether early start is needed for playback stream */
++	subs->early_playback_start =
++		subs->direction == SNDRV_PCM_STREAM_PLAYBACK &&
++		subs->data_endpoint->nominal_queue_size >= subs->buffer_bytes;
++
++	if (subs->early_playback_start)
++		ret = start_endpoints(subs);
++
+  unlock:
+ 	snd_usb_unlock_shutdown(chip);
+ 	return ret;
+@@ -1394,7 +1402,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		subs->trigger_tstamp_pending_update = false;
+ 	}
+ 
+-	if (period_elapsed && !subs->running) {
++	if (period_elapsed && !subs->running && !subs->early_playback_start) {
+ 		subs->period_elapsed_pending = 1;
+ 		period_elapsed = 0;
+ 	}
+@@ -1448,7 +1456,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 					      prepare_playback_urb,
+ 					      retire_playback_urb,
+ 					      subs);
+-		if (cmd == SNDRV_PCM_TRIGGER_START) {
++		if (!subs->early_playback_start &&
++		    cmd == SNDRV_PCM_TRIGGER_START) {
+ 			err = start_endpoints(subs);
+ 			if (err < 0) {
+ 				snd_usb_endpoint_set_callback(subs->data_endpoint,
