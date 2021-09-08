@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37765403EEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21BD403F02
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349683AbhIHSQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235747AbhIHSQG (ORCPT
+        id S1349640AbhIHSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:22:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47054 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347196AbhIHSWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:16:06 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE5FC061575;
-        Wed,  8 Sep 2021 11:14:58 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d6so4561363wrc.11;
-        Wed, 08 Sep 2021 11:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YRUmRUUCYmjE8wlXNGRCZTbNeHfZjNb6hJUKTvoLMJE=;
-        b=NRxAAd7y72m0T3aSIbndy+HJVgXcePIEbPw7RzYDKSkGDr7OylwuEsyXxLXxC8Wp3Q
-         a2GeUbAOblhD4Kd/GXztAUU3QND2ihaT0zBBFqWoVemp5eU4KoEC6ZLs3i5TPFQRrhP+
-         zyvLA5xf++zEAKTIqnJ+KxtRDJx8aRRN51jsLJG0x0daYyKFFiCxRoVYBj8euPIGg3jf
-         TR4H1ANvax/D2ToiabFBoYc4vkcD0otvfSmW/Ak3Aw3amFvoAR3T1RpnwmYpHIab1GOg
-         cNHMS/aScEaYwuP8E9p6G1sX74a54i59OEjALlYeL7d7LCTTaaip5SpKqk6EHdfIc27q
-         sN8Q==
+        Wed, 8 Sep 2021 14:22:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631125254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Odli6n5utx6iQ2PGhXktTIOLzBm1o5C6yHyZID46228=;
+        b=F/9eI3jynW60VU50pwr7HQTB7XJfiHiLnUDtj5e6mEs8vHw2CkHWube8qHIaswxD+XrZj5
+        hG1AqUutx6std+7Af2Q1HDHCcBPsVacfktNTw+Uq3iZJ7R8Jkp9IWvzaalDYhp8LQIpj+I
+        qp1Ip4mzB9UFd58L4+UrAmuGpwheREI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-rr0CD_CoOhS1QMyd-CwEew-1; Wed, 08 Sep 2021 14:20:53 -0400
+X-MC-Unique: rr0CD_CoOhS1QMyd-CwEew-1
+Received: by mail-qv1-f69.google.com with SMTP id a10-20020ad45c4a000000b0037774ba4e8bso5494024qva.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:20:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YRUmRUUCYmjE8wlXNGRCZTbNeHfZjNb6hJUKTvoLMJE=;
-        b=zFRIzNpRlGJx3uWQFQ1gcaWwnh0mtsXBBobdejooyFlGzx3jDBna6eA1v0OFQ0/qT3
-         uGQ/EuF/70Pj2R3EAvOTjLSZ/gUqXTp+dkyCZBtbKKqpmxgDRXU5KcKtE6VI2zfZDYkG
-         xLh1NE+UEJOOIR6nggsrJKO1eRFDP3y4ZD6WAhLZXUWmGS4meYtlJXQHvbna9NwBlpTd
-         UWClqN4BcsePrxPOppDJ4kjba8mUytuXLW27Qn6tffVcBevs3cZjRXCdXuz55xK7hhA3
-         OBcU0G9LR0dKuVtOCxJkLlN11bt3UrPQPUcBWcbdYxo4bank/gvSkjoUIhiK1eAAOwRY
-         Yfjw==
-X-Gm-Message-State: AOAM533Kmb6QWT+jK8TEG2tHP9oo2V7Ij3EpAKPj1AFHGl5Zm74z9ttv
-        tSY2xHMZK3M4TiAX9pKdYdvSjKWnLLTB/sFZsXo=
-X-Google-Smtp-Source: ABdhPJymRYwAKCqCyQNDewZqZfzSmR+wV89gVCvB1gmqaqDId8Vj6kyBJgUfihNgx2+kZsKBr3HzdEa02e+Y80EVfrE=
-X-Received: by 2002:a5d:4488:: with SMTP id j8mr5580376wrq.260.1631124896977;
- Wed, 08 Sep 2021 11:14:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Odli6n5utx6iQ2PGhXktTIOLzBm1o5C6yHyZID46228=;
+        b=pIjFvEaqY1Xh/WCMWTX8VgVUcSUHHp5hf5PahhDyerruFsbWWvIry6bmZpEIIdWr1k
+         HWuoKvQ8JrfDL8Kji+vscyKxZxNfgXoeZ7ImPwvGEPgjIzWY4Scx+F1ZLdf+rQMVIDM1
+         gdvyFV8+Kv2u1gs3A07M4NLwPtCGzvOcgmiFpFUad9XyJOxs1rT3EKIEXoqxCwXStOQt
+         x6H5DJ+Q8kFZmUgBu0p+dkoynnhrjocmt/Vu1EHD2TsoUO+KR9c5aAiZoHuK0GHI1WWP
+         53/ib6QdASJQAa1dYudQxU7idqkVLoz4WRTwMWXEZVtj60tJC9TkhJttWPra4L8Cr4Sz
+         E/4A==
+X-Gm-Message-State: AOAM531mmjTCvxEQxKQ38mXQEJgUPLydXy4b15JoAehVq/ogr2PzcI2Q
+        CMKd0G8ETrKujipIjGImpwGvIDclUQM0nBIEOex2Y2WNfRBeXN7eDbjP2llF4sBtHlkpF4A9IE2
+        EznEifPsibzjPr/1GwC2Az13t
+X-Received: by 2002:a05:622a:5d4:: with SMTP id d20mr5060605qtb.376.1631125252895;
+        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPaeAvoUaD+xtpB8KwHR40y9qXCvGLUPqMAf4ghrKiqlK0Iu9Fa98T3Ot5hCZoS0vnTrw1Vw==
+X-Received: by 2002:a05:622a:5d4:: with SMTP id d20mr5060576qtb.376.1631125252608;
+        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id r4sm2069337qtw.5.2021.09.08.11.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 11:20:52 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 11:20:47 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     "Moger, Babu" <bmoger@amd.com>, bp@alien8.de, bsd@redhat.com,
+        corbet@lwn.net, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
+Message-ID: <20210908182047.lcor52bjzrt35gsq@treble>
+References: <20210812234440.tcssf2iqs435bgdo@treble>
+ <20210902181637.244879-1-babu.moger@amd.com>
+ <20210903000706.fb43tzhjanyg64cx@treble>
+ <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
+ <20210904172334.lfjyqi4qfzvbxef7@treble>
+ <35a32225-25d3-88eb-f427-14c93c38c97b@amd.com>
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-8-robdclark@gmail.com>
- <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
-In-Reply-To: <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 8 Sep 2021 11:19:15 -0700
-Message-ID: <CAF6AEGs3DhSKhDkft58VqkM6GwMMSq87GZkQAaPf_LLavDdacA@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] dma-buf/fence-chain: Add fence deadline support
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <35a32225-25d3-88eb-f427-14c93c38c97b@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:54 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Sep 03, 2021 at 11:47:58AM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/dma-buf/dma-fence-chain.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/dma-buf/dma-fence-chain.c b/drivers/dma-buf/dma-fence-chain.c
-> > index 1b4cb3e5cec9..736a9ad3ea6d 100644
-> > --- a/drivers/dma-buf/dma-fence-chain.c
-> > +++ b/drivers/dma-buf/dma-fence-chain.c
-> > @@ -208,6 +208,18 @@ static void dma_fence_chain_release(struct dma_fence *fence)
-> >       dma_fence_free(fence);
-> >  }
-> >
-> > +
-> > +static void dma_fence_chain_set_deadline(struct dma_fence *fence,
-> > +                                      ktime_t deadline)
-> > +{
-> > +     dma_fence_chain_for_each(fence, fence) {
-> > +             struct dma_fence_chain *chain = to_dma_fence_chain(fence);
-> > +             struct dma_fence *f = chain ? chain->fence : fence;
->
-> Doesn't this just end up calling set_deadline on a chain, potenetially
-> resulting in recursion? Also I don't think this should ever happen, why
-> did you add that?
+On Tue, Sep 07, 2021 at 06:15:53PM -0500, Babu Moger wrote:
+> >>> Because trying to give them separate interfaces, when PSF disable is
+> >>> intertwined with SSB disable in hardware, is awkward and confusing.  And
+> >>> the idea of adding another double-negative interface (disable=off!),
+> >>> just because a vulnerability is considered to be a CPU "feature", isn't
+> >>> very appetizing.
+> >>>
+> >>> So instead of adding a new double-negative interface, which only *half*
+> >>> works due to the ssb_disable dependency, and which is guaranteed to
+> >>> further confuse users, and which not even be used in the real world
+> >>> except possibly by confused users...
+> >>>
+> >>> I'm wondering if we can just start out with the simplest possible
+> >>> approach: don't change any code and instead just document the fact that
+> >>> "spec_store_bypass_disable=" also affects PSF.
+> >>>
+> >>> Then, later on, if a real-world need is demonstrated, actual code could
+> >>> be added to support disabling PSF independently (but of course it would
+> >>> never be fully independent since PSF disable is forced by SSB disable).
+> >>
+> >> Do you mean for now keep only 'on' and  'auto' and remove "off"?
+> > 
+> > No, since PSF can already be mitigated with SSBD today, I'm suggesting
+> > that all code be removed from the patch and instead just update the
+> > documentation.
+> > 
+> 
+> Hmm Interesting..
+> Just updating the documentation and without giving interface to enable or
+> disable will not be a much of a value add.
 
-Tbh the fence-chain was the part I was a bit fuzzy about, and the main
-reason I added igt tests.  The iteration is similar to how, for ex,
-dma_fence_chain_signaled() work, and according to the igt test it does
-what was intended
+It's also not a value add to create controls and added complexity for a
+feature which nobody needs.  There's no harm in starting out with the
+simplest possible solution, which is no code at all.
 
-BR,
--R
+Code can always be added later if really needed...
 
-> -Daniel
->
-> > +
-> > +             dma_fence_set_deadline(f, deadline);
-> > +     }
-> > +}
-> > +
-> >  const struct dma_fence_ops dma_fence_chain_ops = {
-> >       .use_64bit_seqno = true,
-> >       .get_driver_name = dma_fence_chain_get_driver_name,
-> > @@ -215,6 +227,7 @@ const struct dma_fence_ops dma_fence_chain_ops = {
-> >       .enable_signaling = dma_fence_chain_enable_signaling,
-> >       .signaled = dma_fence_chain_signaled,
-> >       .release = dma_fence_chain_release,
-> > +     .set_deadline = dma_fence_chain_set_deadline,
-> >  };
-> >  EXPORT_SYMBOL(dma_fence_chain_ops);
-> >
-> > --
-> > 2.31.1
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+-- 
+Josh
+
