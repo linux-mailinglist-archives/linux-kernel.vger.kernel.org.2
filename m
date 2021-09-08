@@ -2,534 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AC84037D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CCB4037E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348876AbhIHK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:28:45 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:41238 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhIHK2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:28:43 -0400
-Received: from MTA-06-4.privateemail.com (mta-06-1.privateemail.com [68.65.122.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id C166080C28;
-        Wed,  8 Sep 2021 06:27:34 -0400 (EDT)
-Received: from mta-06.privateemail.com (localhost [127.0.0.1])
-        by mta-06.privateemail.com (Postfix) with ESMTP id 13F041800203;
-        Wed,  8 Sep 2021 06:27:33 -0400 (EDT)
-Received: from [192.168.0.46] (unknown [10.20.151.238])
-        by mta-06.privateemail.com (Postfix) with ESMTPA id 4CC9218000BF;
-        Wed,  8 Sep 2021 06:27:31 -0400 (EDT)
-Date:   Wed, 08 Sep 2021 06:27:24 -0400
-From:   Hamza Mahfooz <someguy@effective-light.com>
-Subject: Re: [PATCH] wireguard: convert index_hashtable and pubkey_hashtable
- into rhashtables
-To:     linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wireguard@lists.zx2c4.com,
-        netdev@vger.kernel.org
-Message-Id: <OD24ZQ.IQOQXX8U0YST@effective-light.com>
-In-Reply-To: <20210806044315.169657-1-someguy@effective-light.com>
-References: <20210806044315.169657-1-someguy@effective-light.com>
-X-Mailer: geary/40.0
+        id S1348849AbhIHKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:33:49 -0400
+Received: from mail-am6eur05hn2220.outbound.protection.outlook.com ([52.100.174.220]:37888
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234958AbhIHKdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:33:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l+AD1OR8xJTvoCytiAzfuUucPYqPrk7WfSyjv2T9f36ohSegtf1JfkyTI3AC/pw895DNpH78Ra5+76QmyUhKs9QBF1SkBXqbBCmsb0cXW8WaEfW0xFarfVaVMB0WKkGDG0U1rcKM9TZjBLgVbT+ub2AtX0km3Ba46fsKtOC1uau7R/5kvHE8sUvtlcfcPS84/7E2KKbcH5TMOh3Ffhzb11OaXJgzwt+H73IzSxqzhF18OfU5MIifQ4K1IssEaGcaKc7GJrbuZpxSYV4nzKovLBkgtr+vnPhTg7fQaPp3zodHeumv8uLQARLeDDDZmaAw/18KYJiO/L4tIwOeJk18sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WK8dBKzeWHwfz/VtibROA0WkNHdq0eM48e+EPp8Yvqo=;
+ b=W4UAqR/kY+BSkyq+HX2cG9WifM5p1sobilnYRSkJxL8y2y2+V9+tvfoj6I0Ol5AcQlPDjzl41lF0zx3yFrTsMJdTU40wkhQtLmH0n20U8s2oOT7Ki+VtoyV4RmXkNxR1kMT+TSQa2mrl3peq7LPsSvjt0iYScLWl856Ia3omozyY4CJahLsZVI3B9FwDaGhiailR/u12XbJFR6vss5W6MT50GZ+/StVKV2H8ZICbIZMOxxf0gckcSWrMQyINdCkbnSq03dYVQqmSNRMbI5O4doqooLPWzS/Jjda3tp9RhF3+kmN2efF8HnVtx44yYdjqF313h45jWwz4EqDCLDJFGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=f-secure.com; dmarc=pass action=none header.from=f-secure.com;
+ dkim=pass header.d=f-secure.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=f-secure.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WK8dBKzeWHwfz/VtibROA0WkNHdq0eM48e+EPp8Yvqo=;
+ b=AyCT4uuKB5bWRWiwLtjPOwxgWiroi2u75A0ArGHq+en3U3UzPoXe+ewXgqAYvHVLQspw0OGF2vaW1AzaLXQpAa827z+rey32C0v2q5ivA5Fwc1H6ZUeGoP7kT1rZzKKisZOCfyR2i8UhgQLjMab2ytC7BFY1DzenTCVhzSTHhrE=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=f-secure.com;
+Received: from DBBPR08MB4507.eurprd08.prod.outlook.com (2603:10a6:10:d1::10)
+ by DBBPR08MB6201.eurprd08.prod.outlook.com (2603:10a6:10:20a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
+ 2021 10:32:36 +0000
+Received: from DBBPR08MB4507.eurprd08.prod.outlook.com
+ ([fe80::154c:39a8:916c:dcb0]) by DBBPR08MB4507.eurprd08.prod.outlook.com
+ ([fe80::154c:39a8:916c:dcb0%7]) with mapi id 15.20.4478.025; Wed, 8 Sep 2021
+ 10:32:36 +0000
+From:   andrej.rosano@f-secure.com
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH] ARM: dts: imx6ulz: add support for USB armory Mk II
+Date:   Wed,  8 Sep 2021 12:32:32 +0200
+Message-Id: <20210908103232.204763-1-andrej.rosano@f-secure.com>
+X-Mailer: git-send-email 2.33.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0078.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:22::11) To DBBPR08MB4507.eurprd08.prod.outlook.com
+ (2603:10a6:10:d1::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (193.110.108.35) by ZR0P278CA0078.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:22::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:32:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c2286a8e-b537-4afa-45a4-08d972b3f9b8
+X-MS-TrafficTypeDiagnostic: DBBPR08MB6201:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBBPR08MB62018F051786F3FE9B92BC23DFD49@DBBPR08MB6201.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?QjgEj/KFuQA6fEXxPRqKpqBc3n5fF7eGqSjPHol+DHYY2uSIrCmpv872Pdlf?=
+ =?us-ascii?Q?xgx6BxsqyFVd8tInABDQmm4hb1XpCCofFY9YNT0cA0hOysAw57Nl9OA668PN?=
+ =?us-ascii?Q?6ezUu4f7ai8hLJYzzo+HgZmvmOEFxUm/v9Yv84K79FqCh2TytwO7C3fHAFdb?=
+ =?us-ascii?Q?h67vl11F3HD6Y+xYI6R050Mr3yuRsUpo4fxRus9gBcsZuOcWZQGil8XAaebc?=
+ =?us-ascii?Q?3QRWam6wne/9PjrSTnjySy0jeQepZ2h1l8KM0guXvnuIblNXoJZ732s3NRV3?=
+ =?us-ascii?Q?ml2blVTOV9aCyTRhGN9mHCy+tcpRcpgYrQnR0/gxPnbvixRo8elc5io5SxUz?=
+ =?us-ascii?Q?uc1ZPhGGPIbonvzdoRRC+w14qm74034DE69CxxMvevWbm39/BcKmYePBJ4PO?=
+ =?us-ascii?Q?Gai+4EgsEqpCj0fyy7apmFOXIgO+9Lik0ZQCXDHAwRoQv/FWaLA3bSZzTKvH?=
+ =?us-ascii?Q?E7RL5+64YXYJL2Fji+o6z3dxY55UZZE70fnVPcl6sfc8YkaQ2z3qBTh+8zuW?=
+ =?us-ascii?Q?mKB294oaL07Gx/pEzkS1Wvtu+RZGuGIhRgjb0kByMisq2OM/K0n7POWii+XW?=
+ =?us-ascii?Q?OvZRfEqCTyYitEsIC25kFVI5gMN8Ne2ddmogA4yAE87f9XwGQfkI+ywy8VTH?=
+ =?us-ascii?Q?Yi14WV23JqvFINKGRu3RMRatj8FlGTPfrQ5J/duIEjfkLk8hTQJG8rWAXJUC?=
+ =?us-ascii?Q?4F7fK9h3yj974MLK+FiR6/KvfQdTG+oP1ik2qpG9vdLpcQtfjVvl84goLn2w?=
+ =?us-ascii?Q?B1pbjbX8iLaexV+Qa8dfCx1zwQp+6Vj4Syty5Y9bEjKriv+WKm9sMGPNqWU3?=
+ =?us-ascii?Q?bTmQ9Svg4KsqdMJ6RG12DFWyWLH4uFvm/ermELFBAdaUK+2KcqPVURigAZjl?=
+ =?us-ascii?Q?AtTBT9bdtgYgba4IgzuYO7oaDJ/3t0ytfGL5CD7eDTGvqHYJDY4x99NGzrtE?=
+ =?us-ascii?Q?zalHAv4sHTkkEZhNHdTRnuVOVK8i9fvPaMfzjuRlGHr0MVnjrHp9AG43QUeC?=
+ =?us-ascii?Q?l1LUccxJt2QvA7wX8auXQrviaVOK/87fZdGRsCJ5XvyrqyDIYvo2LO3Bka+1?=
+ =?us-ascii?Q?H/H46MteVqzOpYjJC0HTJi++HlPlWVBfbdHetarK0mjLakBXE2mgWEQ+LdGB?=
+ =?us-ascii?Q?2ygmT/cYyPWu?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:DBBPR08MB4507.eurprd08.prod.outlook.com;PTR:;CAT:OSPM;SFS:(4636009)(136003)(346002)(396003)(376002)(39850400004)(366004)(478600001)(5660300002)(1076003)(66556008)(66476007)(66946007)(38100700002)(38350700002)(6666004)(52116002)(2906002)(8676002)(6486002)(6916009)(186003)(26005)(83380400001)(6496006)(36756003)(8936002)(2616005)(316002)(956004)(86362001)(966005)(9686003)(4326008)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rUVmzv4R8D9IpvmraIi8FQXn82r+/tcdQmztycMEa4vw4ZDEZVKI9SDdxU0E?=
+ =?us-ascii?Q?0IFdCoJ7KaNPT8H+kD/DTorfjKHMDq+0bsIAIMKqsQehUxPAxcdV5svMoaOP?=
+ =?us-ascii?Q?tIzt+bjCk0Iz/7TfvyrBf6R1HD4nYVcSKzIbB6dSu7hlyiRQD+twJ0ZQ2sbB?=
+ =?us-ascii?Q?O5+yRRACnLVDOVPAtXI/sPVLHk/ZKI/x3jctDI23Unk0UMzw4TEUGwzjTSdy?=
+ =?us-ascii?Q?W5mcj3TR6KpbX1l13VSB9QgJT5bO7GOx/HapnEd5Q6CzSTYDSw2J8BhpdZq2?=
+ =?us-ascii?Q?D/NU0ZznKjoGpL4FIcVVjArU3NSfkg+SmQz1x/feXgHsFC7sKdxRAp9iLeHZ?=
+ =?us-ascii?Q?rvqjVWl6Ns3ipPag+kn9sgHgilWYFOqmnGVWqwaZnVly6Tlsq3m2wpx6rI0e?=
+ =?us-ascii?Q?r/VP7kwMclk08wUyvWiwQZJOBf4Ke1eKLBWFMJFbkY6dJ4UB0ZN7hC1wH2gd?=
+ =?us-ascii?Q?HMpxg0eNPpwygdiZOQW4wY/st3pptkJ/UtHmXwVh7DL8JxBuxWzh/UYW65aQ?=
+ =?us-ascii?Q?XqVTsa3TBlHgqShQXtp6oA/VYdcXq6EtM+eDlQOLQtRWi0yJYp5pfC46HZ7b?=
+ =?us-ascii?Q?pSMWkgfTjYFgR31EF3RY8FmJyC+OGuoWB8ykmMpzeYerAljk/g2bBmEUjfB1?=
+ =?us-ascii?Q?tBQfZ22vDAkA6G1B5ykkER0y7YWF7Ytevssj+1ogQYsAJpHumaXq+zxXs5mw?=
+ =?us-ascii?Q?lDLdnwMkzwar37UUtIc5J+H6ARHiTnuKSIX7nGe3PA7PQXOv4th7q3wlDdmJ?=
+ =?us-ascii?Q?tNWMnN7SyRiS7yneH1GvRxDr4AkFxW14uYvYw46r5IVN4inXu1XGr4PJVI4r?=
+ =?us-ascii?Q?6B/ybtake17QCBYZ7cumCm/b1uEjr3vBvxiIefBXS8aWni1iXrwVM1YEqHM6?=
+ =?us-ascii?Q?lhjHaw40vE7hlmSSjNI3y0OUAVSUx/lcKYQkQFIk0TMBfuNd8PfJdsuS2RNO?=
+ =?us-ascii?Q?l8Z6+r8zlXpJip+u0IuMw/rxHPhbJICs8rybpSu/Dp2sR6rd1VjdYhPKIEgv?=
+ =?us-ascii?Q?5hcSWiU+eu4U0PeQrmYLuO+1rE9TNcfLmjevpSF/iKEdqCYXmbN204FXEYHZ?=
+ =?us-ascii?Q?JV5u+nyf0CytzTY/2sIWT7vQtEjj/jDh0HU+XRVXzVvPEmd8ko/728pxAky0?=
+ =?us-ascii?Q?06ZUU1K4YYaGiVSUnAbzzCd6OpqbJtWxoQPYMWd6dlSXEuPTOSjiT0HvDeNO?=
+ =?us-ascii?Q?2OSRrcYg387ErndA7gJXFOG3DdmkBbO45Og0G1nVO70uPhFRrwqTqWB3xbxy?=
+ =?us-ascii?Q?/Xd8zSsIbqqqg6T7ZNTlGHr+brPZHXRtVHRxP43CMhFAeTEdsC3q6AK9Qefo?=
+ =?us-ascii?Q?S4fL1k32dtUpEMmPKAg6fxg7?=
+X-OriginatorOrg: f-secure.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2286a8e-b537-4afa-45a4-08d972b3f9b8
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4507.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:32:36.4841
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d5bc339e-b691-425e-9d05-4181afc9e065
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SQQ/1L49Z+SZOGZEiaUD4GcVWhuj4rYWXDsWs6y6GE5t58mxsVcbMJzy0miohKlWas0KrMn8+ofaxZOMUkBgSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR08MB6201
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+From: Andrej Rosano <andrej.rosano@f-secure.com>
 
-On Fri, Aug 6 2021 at 12:43:14 AM -0400, Hamza Mahfooz 
-<someguy@effective-light.com> wrote:
-> It is made mention of in commit e7096c131e516 ("net: WireGuard secure
-> network tunnel"), that it is desirable to move away from the 
-> statically
-> sized hash-table implementation.
-> 
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
-> ---
->  drivers/net/wireguard/device.c     |   4 +
->  drivers/net/wireguard/device.h     |   2 +-
->  drivers/net/wireguard/noise.c      |   1 +
->  drivers/net/wireguard/noise.h      |   1 +
->  drivers/net/wireguard/peer.h       |   2 +-
->  drivers/net/wireguard/peerlookup.c | 190 
-> ++++++++++++++---------------
->  drivers/net/wireguard/peerlookup.h |  27 ++--
->  7 files changed, 112 insertions(+), 115 deletions(-)
-> 
-> diff --git a/drivers/net/wireguard/device.c 
-> b/drivers/net/wireguard/device.c
-> index 551ddaaaf540..3bd43c9481ef 100644
-> --- a/drivers/net/wireguard/device.c
-> +++ b/drivers/net/wireguard/device.c
-> @@ -243,7 +243,9 @@ static void wg_destruct(struct net_device *dev)
->  	skb_queue_purge(&wg->incoming_handshakes);
->  	free_percpu(dev->tstats);
->  	free_percpu(wg->incoming_handshakes_worker);
-> +	wg_index_hashtable_destroy(wg->index_hashtable);
->  	kvfree(wg->index_hashtable);
-> +	wg_pubkey_hashtable_destroy(wg->peer_hashtable);
->  	kvfree(wg->peer_hashtable);
->  	mutex_unlock(&wg->device_update_lock);
-> 
-> @@ -382,8 +384,10 @@ static int wg_newlink(struct net *src_net, 
-> struct net_device *dev,
->  err_free_tstats:
->  	free_percpu(dev->tstats);
->  err_free_index_hashtable:
-> +	wg_index_hashtable_destroy(wg->index_hashtable);
->  	kvfree(wg->index_hashtable);
->  err_free_peer_hashtable:
-> +	wg_pubkey_hashtable_destroy(wg->peer_hashtable);
->  	kvfree(wg->peer_hashtable);
->  	return ret;
->  }
-> diff --git a/drivers/net/wireguard/device.h 
-> b/drivers/net/wireguard/device.h
-> index 854bc3d97150..24980eb766af 100644
-> --- a/drivers/net/wireguard/device.h
-> +++ b/drivers/net/wireguard/device.h
-> @@ -50,7 +50,7 @@ struct wg_device {
->  	struct multicore_worker __percpu *incoming_handshakes_worker;
->  	struct cookie_checker cookie_checker;
->  	struct pubkey_hashtable *peer_hashtable;
-> -	struct index_hashtable *index_hashtable;
-> +	struct rhashtable *index_hashtable;
->  	struct allowedips peer_allowedips;
->  	struct mutex device_update_lock, socket_update_lock;
->  	struct list_head device_list, peer_list;
-> diff --git a/drivers/net/wireguard/noise.c 
-> b/drivers/net/wireguard/noise.c
-> index c0cfd9b36c0b..d42a0ff2be5d 100644
-> --- a/drivers/net/wireguard/noise.c
-> +++ b/drivers/net/wireguard/noise.c
-> @@ -797,6 +797,7 @@ bool wg_noise_handshake_begin_session(struct 
-> noise_handshake *handshake,
->  	new_keypair->i_am_the_initiator = handshake->state ==
->  					  HANDSHAKE_CONSUMED_RESPONSE;
->  	new_keypair->remote_index = handshake->remote_index;
-> +	new_keypair->entry.index = handshake->entry.index;
-> 
->  	if (new_keypair->i_am_the_initiator)
->  		derive_keys(&new_keypair->sending, &new_keypair->receiving,
-> diff --git a/drivers/net/wireguard/noise.h 
-> b/drivers/net/wireguard/noise.h
-> index c527253dba80..ea705747e4e4 100644
-> --- a/drivers/net/wireguard/noise.h
-> +++ b/drivers/net/wireguard/noise.h
-> @@ -72,6 +72,7 @@ struct noise_handshake {
-> 
->  	u8 ephemeral_private[NOISE_PUBLIC_KEY_LEN];
->  	u8 remote_static[NOISE_PUBLIC_KEY_LEN];
-> +	siphash_key_t skey;
->  	u8 remote_ephemeral[NOISE_PUBLIC_KEY_LEN];
->  	u8 precomputed_static_static[NOISE_PUBLIC_KEY_LEN];
-> 
-> diff --git a/drivers/net/wireguard/peer.h 
-> b/drivers/net/wireguard/peer.h
-> index 76e4d3128ad4..d5403fb7a6a0 100644
-> --- a/drivers/net/wireguard/peer.h
-> +++ b/drivers/net/wireguard/peer.h
-> @@ -48,7 +48,7 @@ struct wg_peer {
->  	atomic64_t last_sent_handshake;
->  	struct work_struct transmit_handshake_work, clear_peer_work, 
-> transmit_packet_work;
->  	struct cookie latest_cookie;
-> -	struct hlist_node pubkey_hash;
-> +	struct rhash_head pubkey_hash;
->  	u64 rx_bytes, tx_bytes;
->  	struct timer_list timer_retransmit_handshake, timer_send_keepalive;
->  	struct timer_list timer_new_handshake, timer_zero_key_material;
-> diff --git a/drivers/net/wireguard/peerlookup.c 
-> b/drivers/net/wireguard/peerlookup.c
-> index f2783aa7a88f..2ea2ba85a33d 100644
-> --- a/drivers/net/wireguard/peerlookup.c
-> +++ b/drivers/net/wireguard/peerlookup.c
-> @@ -7,18 +7,29 @@
->  #include "peer.h"
->  #include "noise.h"
-> 
-> -static struct hlist_head *pubkey_bucket(struct pubkey_hashtable 
-> *table,
-> -					const u8 pubkey[NOISE_PUBLIC_KEY_LEN])
-> +struct pubkey_pair {
-> +	u8 key[NOISE_PUBLIC_KEY_LEN];
-> +	siphash_key_t skey;
-> +};
-> +
-> +static u32 pubkey_hash(const void *data, u32 len, u32 seed)
->  {
-> +	const struct pubkey_pair *pair = data;
-> +
->  	/* siphash gives us a secure 64bit number based on a random key. 
-> Since
-> -	 * the bits are uniformly distributed, we can then mask off to get 
-> the
-> -	 * bits we need.
-> +	 * the bits are uniformly distributed.
->  	 */
-> -	const u64 hash = siphash(pubkey, NOISE_PUBLIC_KEY_LEN, &table->key);
-> 
-> -	return &table->hashtable[hash & (HASH_SIZE(table->hashtable) - 1)];
-> +	return (u32)siphash(pair->key, len, &pair->skey);
->  }
-> 
-> +static const struct rhashtable_params wg_peer_params = {
-> +	.key_len = NOISE_PUBLIC_KEY_LEN,
-> +	.key_offset = offsetof(struct wg_peer, handshake.remote_static),
-> +	.head_offset = offsetof(struct wg_peer, pubkey_hash),
-> +	.hashfn = pubkey_hash
-> +};
-> +
->  struct pubkey_hashtable *wg_pubkey_hashtable_alloc(void)
->  {
->  	struct pubkey_hashtable *table = kvmalloc(sizeof(*table), 
-> GFP_KERNEL);
-> @@ -27,26 +38,25 @@ struct pubkey_hashtable 
-> *wg_pubkey_hashtable_alloc(void)
->  		return NULL;
-> 
->  	get_random_bytes(&table->key, sizeof(table->key));
-> -	hash_init(table->hashtable);
-> -	mutex_init(&table->lock);
-> +	rhashtable_init(&table->hashtable, &wg_peer_params);
-> +
->  	return table;
->  }
-> 
->  void wg_pubkey_hashtable_add(struct pubkey_hashtable *table,
->  			     struct wg_peer *peer)
->  {
-> -	mutex_lock(&table->lock);
-> -	hlist_add_head_rcu(&peer->pubkey_hash,
-> -			   pubkey_bucket(table, peer->handshake.remote_static));
-> -	mutex_unlock(&table->lock);
-> +	memcpy(&peer->handshake.skey, &table->key, sizeof(table->key));
-> +	WARN_ON(rhashtable_insert_fast(&table->hashtable, 
-> &peer->pubkey_hash,
-> +				       wg_peer_params));
->  }
-> 
->  void wg_pubkey_hashtable_remove(struct pubkey_hashtable *table,
->  				struct wg_peer *peer)
->  {
-> -	mutex_lock(&table->lock);
-> -	hlist_del_init_rcu(&peer->pubkey_hash);
-> -	mutex_unlock(&table->lock);
-> +	memcpy(&peer->handshake.skey, &table->key, sizeof(table->key));
-> +	rhashtable_remove_fast(&table->hashtable, &peer->pubkey_hash,
-> +			       wg_peer_params);
->  }
-> 
->  /* Returns a strong reference to a peer */
-> @@ -54,41 +64,54 @@ struct wg_peer *
->  wg_pubkey_hashtable_lookup(struct pubkey_hashtable *table,
->  			   const u8 pubkey[NOISE_PUBLIC_KEY_LEN])
->  {
-> -	struct wg_peer *iter_peer, *peer = NULL;
-> +	struct wg_peer *peer = NULL;
-> +	struct pubkey_pair pair;
-> +
-> +	memcpy(pair.key, pubkey, NOISE_PUBLIC_KEY_LEN);
-> +	memcpy(&pair.skey, &table->key, sizeof(pair.skey));
-> 
->  	rcu_read_lock_bh();
-> -	hlist_for_each_entry_rcu_bh(iter_peer, pubkey_bucket(table, pubkey),
-> -				    pubkey_hash) {
-> -		if (!memcmp(pubkey, iter_peer->handshake.remote_static,
-> -			    NOISE_PUBLIC_KEY_LEN)) {
-> -			peer = iter_peer;
-> -			break;
-> -		}
-> -	}
-> -	peer = wg_peer_get_maybe_zero(peer);
-> +	peer = 
-> wg_peer_get_maybe_zero(rhashtable_lookup_fast(&table->hashtable,
-> +							     &pair,
-> +							     wg_peer_params));
->  	rcu_read_unlock_bh();
-> +
->  	return peer;
->  }
-> 
-> -static struct hlist_head *index_bucket(struct index_hashtable *table,
-> -				       const __le32 index)
-> +void wg_pubkey_hashtable_destroy(struct pubkey_hashtable *table)
-> +{
-> +	WARN_ON(atomic_read(&table->hashtable.nelems));
-> +	rhashtable_destroy(&table->hashtable);
-> +}
-> +
-> +static u32 index_hash(const void *data, u32 len, u32 seed)
->  {
-> +	const __le32 *index = data;
-> +
->  	/* Since the indices are random and thus all bits are uniformly
-> -	 * distributed, we can find its bucket simply by masking.
-> +	 * distributed, we can use them as the hash value.
->  	 */
-> -	return &table->hashtable[(__force u32)index &
-> -				 (HASH_SIZE(table->hashtable) - 1)];
-> +
-> +	return (__force u32)*index;
->  }
-> 
-> -struct index_hashtable *wg_index_hashtable_alloc(void)
-> +static const struct rhashtable_params index_entry_params = {
-> +	.key_len = sizeof(__le32),
-> +	.key_offset = offsetof(struct index_hashtable_entry, index),
-> +	.head_offset = offsetof(struct index_hashtable_entry, index_hash),
-> +	.hashfn = index_hash
-> +};
-> +
-> +struct rhashtable *wg_index_hashtable_alloc(void)
->  {
-> -	struct index_hashtable *table = kvmalloc(sizeof(*table), 
-> GFP_KERNEL);
-> +	struct rhashtable *table = kvmalloc(sizeof(*table), GFP_KERNEL);
-> 
->  	if (!table)
->  		return NULL;
-> 
-> -	hash_init(table->hashtable);
-> -	spin_lock_init(&table->lock);
-> +	rhashtable_init(table, &index_entry_params);
-> +
->  	return table;
->  }
-> 
-> @@ -116,111 +139,86 @@ struct index_hashtable 
-> *wg_index_hashtable_alloc(void)
->   * is another thing to consider moving forward.
->   */
-> 
-> -__le32 wg_index_hashtable_insert(struct index_hashtable *table,
-> +__le32 wg_index_hashtable_insert(struct rhashtable *table,
->  				 struct index_hashtable_entry *entry)
->  {
->  	struct index_hashtable_entry *existing_entry;
-> 
-> -	spin_lock_bh(&table->lock);
-> -	hlist_del_init_rcu(&entry->index_hash);
-> -	spin_unlock_bh(&table->lock);
-> +	wg_index_hashtable_remove(table, entry);
-> 
->  	rcu_read_lock_bh();
-> 
->  search_unused_slot:
->  	/* First we try to find an unused slot, randomly, while unlocked. */
->  	entry->index = (__force __le32)get_random_u32();
-> -	hlist_for_each_entry_rcu_bh(existing_entry,
-> -				    index_bucket(table, entry->index),
-> -				    index_hash) {
-> -		if (existing_entry->index == entry->index)
-> -			/* If it's already in use, we continue searching. */
-> -			goto search_unused_slot;
-> -	}
-> 
-> -	/* Once we've found an unused slot, we lock it, and then 
-> double-check
-> -	 * that nobody else stole it from us.
-> -	 */
-> -	spin_lock_bh(&table->lock);
-> -	hlist_for_each_entry_rcu_bh(existing_entry,
-> -				    index_bucket(table, entry->index),
-> -				    index_hash) {
-> -		if (existing_entry->index == entry->index) {
-> -			spin_unlock_bh(&table->lock);
-> -			/* If it was stolen, we start over. */
-> -			goto search_unused_slot;
-> -		}
-> +	existing_entry = rhashtable_lookup_get_insert_fast(table,
-> +							   &entry->index_hash,
-> +							   index_entry_params);
-> +
-> +	if (existing_entry) {
-> +		WARN_ON(IS_ERR(existing_entry));
-> +
-> +		/* If it's already in use, we continue searching. */
-> +		goto search_unused_slot;
->  	}
-> -	/* Otherwise, we know we have it exclusively (since we're locked),
-> -	 * so we insert.
-> -	 */
-> -	hlist_add_head_rcu(&entry->index_hash,
-> -			   index_bucket(table, entry->index));
-> -	spin_unlock_bh(&table->lock);
-> 
->  	rcu_read_unlock_bh();
-> 
->  	return entry->index;
->  }
-> 
-> -bool wg_index_hashtable_replace(struct index_hashtable *table,
-> +bool wg_index_hashtable_replace(struct rhashtable *table,
->  				struct index_hashtable_entry *old,
->  				struct index_hashtable_entry *new)
->  {
-> -	bool ret;
-> +	int ret = rhashtable_replace_fast(table, &old->index_hash,
-> +					  &new->index_hash,
-> +					  index_entry_params);
-> 
-> -	spin_lock_bh(&table->lock);
-> -	ret = !hlist_unhashed(&old->index_hash);
-> -	if (unlikely(!ret))
-> -		goto out;
-> +	WARN_ON(ret == -EINVAL);
-> 
-> -	new->index = old->index;
-> -	hlist_replace_rcu(&old->index_hash, &new->index_hash);
-> -
-> -	/* Calling init here NULLs out index_hash, and in fact after this
-> -	 * function returns, it's theoretically possible for this to get
-> -	 * reinserted elsewhere. That means the RCU lookup below might 
-> either
-> -	 * terminate early or jump between buckets, in which case the packet
-> -	 * simply gets dropped, which isn't terrible.
-> -	 */
-> -	INIT_HLIST_NODE(&old->index_hash);
-> -out:
-> -	spin_unlock_bh(&table->lock);
-> -	return ret;
-> +	return ret != -ENOENT;
->  }
-> 
-> -void wg_index_hashtable_remove(struct index_hashtable *table,
-> +void wg_index_hashtable_remove(struct rhashtable *table,
->  			       struct index_hashtable_entry *entry)
->  {
-> -	spin_lock_bh(&table->lock);
-> -	hlist_del_init_rcu(&entry->index_hash);
-> -	spin_unlock_bh(&table->lock);
-> +	rhashtable_remove_fast(table, &entry->index_hash, 
-> index_entry_params);
->  }
-> 
->  /* Returns a strong reference to a entry->peer */
->  struct index_hashtable_entry *
-> -wg_index_hashtable_lookup(struct index_hashtable *table,
-> +wg_index_hashtable_lookup(struct rhashtable *table,
->  			  const enum index_hashtable_type type_mask,
->  			  const __le32 index, struct wg_peer **peer)
->  {
-> -	struct index_hashtable_entry *iter_entry, *entry = NULL;
-> +	struct index_hashtable_entry *entry = NULL;
-> 
->  	rcu_read_lock_bh();
-> -	hlist_for_each_entry_rcu_bh(iter_entry, index_bucket(table, index),
-> -				    index_hash) {
-> -		if (iter_entry->index == index) {
-> -			if (likely(iter_entry->type & type_mask))
-> -				entry = iter_entry;
-> -			break;
-> -		}
-> -	}
-> +	entry = rhashtable_lookup_fast(table, &index, index_entry_params);
-> +
->  	if (likely(entry)) {
-> +		if (unlikely(!(entry->type & type_mask))) {
-> +			entry = NULL;
-> +			goto out;
-> +		}
-> +
->  		entry->peer = wg_peer_get_maybe_zero(entry->peer);
->  		if (likely(entry->peer))
->  			*peer = entry->peer;
->  		else
->  			entry = NULL;
->  	}
-> +
-> +out:
->  	rcu_read_unlock_bh();
-> +
->  	return entry;
->  }
-> +
-> +void wg_index_hashtable_destroy(struct rhashtable *table)
-> +{
-> +	WARN_ON(atomic_read(&table->nelems));
-> +	rhashtable_destroy(table);
-> +}
-> diff --git a/drivers/net/wireguard/peerlookup.h 
-> b/drivers/net/wireguard/peerlookup.h
-> index ced811797680..a3cef26cb733 100644
-> --- a/drivers/net/wireguard/peerlookup.h
-> +++ b/drivers/net/wireguard/peerlookup.h
-> @@ -8,17 +8,14 @@
-> 
->  #include "messages.h"
-> 
-> -#include <linux/hashtable.h>
-> -#include <linux/mutex.h>
-> +#include <linux/rhashtable.h>
->  #include <linux/siphash.h>
-> 
->  struct wg_peer;
-> 
->  struct pubkey_hashtable {
-> -	/* TODO: move to rhashtable */
-> -	DECLARE_HASHTABLE(hashtable, 11);
-> +	struct rhashtable hashtable;
->  	siphash_key_t key;
-> -	struct mutex lock;
->  };
-> 
->  struct pubkey_hashtable *wg_pubkey_hashtable_alloc(void);
-> @@ -29,12 +26,7 @@ void wg_pubkey_hashtable_remove(struct 
-> pubkey_hashtable *table,
->  struct wg_peer *
->  wg_pubkey_hashtable_lookup(struct pubkey_hashtable *table,
->  			   const u8 pubkey[NOISE_PUBLIC_KEY_LEN]);
-> -
-> -struct index_hashtable {
-> -	/* TODO: move to rhashtable */
-> -	DECLARE_HASHTABLE(hashtable, 13);
-> -	spinlock_t lock;
-> -};
-> +void wg_pubkey_hashtable_destroy(struct pubkey_hashtable *table);
-> 
->  enum index_hashtable_type {
->  	INDEX_HASHTABLE_HANDSHAKE = 1U << 0,
-> @@ -43,22 +35,23 @@ enum index_hashtable_type {
-> 
->  struct index_hashtable_entry {
->  	struct wg_peer *peer;
-> -	struct hlist_node index_hash;
-> +	struct rhash_head index_hash;
->  	enum index_hashtable_type type;
->  	__le32 index;
->  };
-> 
-> -struct index_hashtable *wg_index_hashtable_alloc(void);
-> -__le32 wg_index_hashtable_insert(struct index_hashtable *table,
-> +struct rhashtable *wg_index_hashtable_alloc(void);
-> +__le32 wg_index_hashtable_insert(struct rhashtable *table,
->  				 struct index_hashtable_entry *entry);
-> -bool wg_index_hashtable_replace(struct index_hashtable *table,
-> +bool wg_index_hashtable_replace(struct rhashtable *table,
->  				struct index_hashtable_entry *old,
->  				struct index_hashtable_entry *new);
-> -void wg_index_hashtable_remove(struct index_hashtable *table,
-> +void wg_index_hashtable_remove(struct rhashtable *table,
->  			       struct index_hashtable_entry *entry);
->  struct index_hashtable_entry *
-> -wg_index_hashtable_lookup(struct index_hashtable *table,
-> +wg_index_hashtable_lookup(struct rhashtable *table,
->  			  const enum index_hashtable_type type_mask,
->  			  const __le32 index, struct wg_peer **peer);
-> +void wg_index_hashtable_destroy(struct rhashtable *table);
-> 
->  #endif /* _WG_PEERLOOKUP_H */
-> --
-> 2.32.0
-> 
+Add support for F-Secure USB armory Mk II board, an open source
+flash-drive sized computer based on NXP i.MX6ULZ SoC.
 
+https://github.com/f-secure-foundry/usbarmory
+
+Signed-off-by: Andrej Rosano <andrej.rosano@f-secure.com>
+---
+ .../devicetree/bindings/arm/fsl.yaml          |   3 +-
+ arch/arm/boot/dts/Makefile                    |   3 +-
+ arch/arm/boot/dts/imx6ulz-usbarmory.dts       | 238 ++++++++++++++++++
+ 3 files changed, 242 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6ulz-usbarmory.dts
+
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 1c827c1954dc..a11d10a22b64 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -595,7 +595,8 @@ properties:
+       - description: i.MX6ULZ based Boards
+         items:
+           - enum:
+-              - fsl,imx6ulz-14x14-evk     # i.MX6 ULZ 14x14 EVK Board
++              - fsl,imx6ulz-14x14-evk         # i.MX6 ULZ 14x14 EVK Board
++              - inversepath,imx6ulz-usbarmory # F-Secure USB armory Mk II
+           - const: fsl,imx6ull # This seems odd. Should be last?
+           - const: fsl,imx6ulz
+ 
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 863347b6b65e..6fd2b8f55255 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -655,7 +655,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ull-phytec-segin-ff-rdk-nand.dtb \
+ 	imx6ull-phytec-segin-ff-rdk-emmc.dtb \
+ 	imx6ull-phytec-segin-lc-rdk-nand.dtb \
+-	imx6ulz-14x14-evk.dtb
++	imx6ulz-14x14-evk.dtb \
++	imx6ulz-usbarmory.dtb
+ dtb-$(CONFIG_SOC_IMX7D) += \
+ 	imx7d-cl-som-imx7.dtb \
+ 	imx7d-colibri-aster.dtb \
+diff --git a/arch/arm/boot/dts/imx6ulz-usbarmory.dts b/arch/arm/boot/dts/imx6ulz-usbarmory.dts
+new file mode 100644
+index 000000000000..6262d30bcb9c
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ulz-usbarmory.dts
+@@ -0,0 +1,238 @@
++/*
++ * USB armory Mk II device tree file
++ * https://github.com/f-secure-foundry/usbarmory
++ *
++ * Copyright (C) 2020, F-Secure Corporation
++ * Andrej Rosano <andrej.rosano@f-secure.com>
++ *
++ * This file is dual-licensed: you can use it either under the terms
++ * of the GPL or the X11 license, at your option. Note that this dual
++ * licensing only applies to this file, and not this project as a
++ * whole.
++ *
++ *  a) This file is free software; you can redistribute it and/or
++ *     modify it under the terms of the GNU General Public License as
++ *     published by the Free Software Foundation; either version 2 of the
++ *     License, or (at your option) any later version.
++ *
++ *     This file is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ * Or, alternatively,
++ *
++ *  b) Permission is hereby granted, free of charge, to any person
++ *     obtaining a copy of this software and associated documentation
++ *     files (the "Software"), to deal in the Software without
++ *     restriction, including without limitation the rights to use,
++ *     copy, modify, merge, publish, distribute, sublicense, and/or
++ *     sell copies of the Software, and to permit persons to whom the
++ *     Software is furnished to do so, subject to the following
++ *     conditions:
++ *
++ *     The above copyright notice and this permission notice shall be
++ *     included in all copies or substantial portions of the Software.
++ *
++ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
++ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
++ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
++ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ *     OTHER DEALINGS IN THE SOFTWARE.
++ */
++
++/dts-v1/;
++
++#include "imx6ulz.dtsi"
++
++/ {
++	model = "F-Secure USB armory Mk II";
++	compatible = "inversepath,imx6ulz-usbarmory-mkII", "fsl,imx6ull", "fsl,imx6ulz";
++
++	chosen {
++		stdout-path = &uart2;
++	};
++
++	memory {
++		device_type = "memory";
++		reg = <0x80000000 0x20000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_led>;
++
++		led-white {
++			label = "LED_WHITE";
++			gpios = <&gpio4 21 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "heartbeat";
++		};
++
++		led-blue {
++			label = "LED_BLUE";
++			gpios = <&gpio4 22 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	regulators {
++		compatible = "simple-bus";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		reg_sd1_vmmc: sd1_regulator {
++			compatible = "regulator-fixed";
++			regulator-name = "VSD_3V3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++		};
++	};
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_bluetooth>;
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2>;
++	status = "okay";
++};
++
++&usdhc1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	no-1-8-v;
++	keep-power-in-suspend;
++	wakeup-source;
++	status = "okay";
++};
++
++&usdhc2 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc2>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
++&i2c1 {
++	pinctrl-0 = <&pinctrl_i2c1>;
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			MX6UL_PAD_UART2_TX_DATA__UART2_DCE_TX	0x1b0b1
++			MX6UL_PAD_UART2_RX_DATA__UART2_DCE_RX	0x1b0b1
++		>;
++	};
++
++	pinctrl_bluetooth: uart1grp {
++		fsl,pins = <
++			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX	0x1b0b0 /* BT_UART_TX  */
++			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX	0x1b0b0 /* BT_UART_RX  */
++			MX6UL_PAD_UART1_CTS_B__UART1_DCE_CTS	0x1b0b0 /* BT_UART_CTS */
++			MX6UL_PAD_GPIO1_IO07__UART1_DCE_RTS	0x130b0 /* BT_UART_RTS */
++			MX6UL_PAD_UART3_TX_DATA__GPIO1_IO24	0x1f020 /* BT_UART_DSR */
++			MX6UL_PAD_UART3_RX_DATA__GPIO1_IO25	0x10020 /* BT_UART_DTR */
++			MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x1f020 /* BT_SWDCLK   */
++			MX6UL_PAD_GPIO1_IO06__GPIO1_IO06	0x1f020 /* BT_SWDIO    */
++			MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x1f020 /* BT_RESET    */
++			MX6UL_PAD_UART3_RTS_B__GPIO1_IO27	0x1f020 /* BT_SWITCH_1 */
++			MX6UL_PAD_UART3_CTS_B__GPIO1_IO26	0x1f020 /* BT_SWITCH_2 */
++		>;
++	};
++
++	pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX6UL_PAD_GPIO1_IO02__I2C1_SCL	0x4001b8b0
++			MX6UL_PAD_GPIO1_IO03__I2C1_SDA	0x4001b8b0
++		>;
++	};
++
++	pinctrl_led: ledgrp {
++		fsl,pins = <
++			MX6UL_PAD_CSI_DATA00__GPIO4_IO21	0x1f020
++			MX6UL_PAD_CSI_DATA01__GPIO4_IO22	0x1f020
++		>;
++	};
++
++	pinctrl_usdhc1: usdhc1grp {
++		fsl,pins = <
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x1f019
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x1f019
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x1f019
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x1f019
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x1f019
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x1f019
++		>;
++	};
++
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x10069
++			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x17059
++			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x17059
++			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x17059
++			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x17059
++			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x17059
++			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x17059
++			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x17059
++			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x17059
++			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x17059
++		>;
++	};
++
++	pinctrl_usdhc2_100mhz: usdhc2grp_100mhz {
++		fsl,pins = <
++			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x100b9
++			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x170b9
++			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x170b9
++			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x170b9
++			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x170b9
++			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x170b9
++			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x170b9
++			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x170b9
++			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x170b9
++			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x170b9
++		>;
++	};
++
++	pinctrl_usdhc2_200mhz: usdhc2grp_200mhz {
++		fsl,pins = <
++			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x100f9
++			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x170f9
++			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x170f9
++			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x170f9
++			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x170f9
++			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x170f9
++			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x170f9
++			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x170f9
++			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x170f9
++			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x170f9
++		>;
++	};
++};
++
++&usbotg1 {
++	dr_mode = "peripheral";
++	disable-over-current;
++	tpl-support;
++	status = "okay";
++};
++
++&usbotg2 {
++	dr_mode = "host";
++	disable-over-current;
++	tpl-support;
++	status = "okay";
++};
+-- 
+2.33.0
 
