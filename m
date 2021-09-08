@@ -2,228 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785AF403E91
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBB1403E75
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352574AbhIHRsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352557AbhIHRr1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:47:27 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2A5C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:46:09 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id t1so3416174pgv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=maGY6THRp1T65p0hgMojOL1EiKy9jGkK4UEsKBY1Ryw=;
-        b=c8zWOcw6kVX4vOv8/1rp4/9fSdZBgQiJdf4qtqOwd+3sCAijC/eJmsx6k0GO8VPrwv
-         5dQpLrvWlyGrx4YuMm5xwr9wmuwgXZb871YRIyZLYfmbVi3/NYoeUUmHwbZYFqLrjLwH
-         aZ8iJTXXsuIS1/1fF2ZOLcWk2N71a8fC2cmhGPAqYjszycLG0lZCwp3J9sL4HADJtXr3
-         f49YRXZkdN2tvsOxysdnKINjBKSwmSZTXs3VRhPCRsIJjoTmRWxRLMalOuYpFwyfXxQG
-         0wKr8xV/eAJoO00sfqLPU9mCxzan5a08VxuNWDnDfEVF8AQfYoYakCt8ZEqKeijkz4CZ
-         pJzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=maGY6THRp1T65p0hgMojOL1EiKy9jGkK4UEsKBY1Ryw=;
-        b=BGDGFMnWui1feO3zYxVeb0Zh30PrzxNQ3ATzPnwij77rlet7U2nZNyuZWqoy5NlgJ6
-         BLdqU7LVgFlC4cisjvdeXYbZSdhAGp/baD4+qO4GmWQtsfdEg0skKSWUSXpcUc25DqqF
-         W1mY7R7N3R6XUTeDHKNmutkHafxQGSsPgpOblBaIFGd/eo07yqYvHc+8TrmXfpFXamMf
-         Da1DGhjnisXpipmIuSGOEEVgAM4WyzJuXTHOymp3iAreAfyIBX+zBK20w0ifG8OIEcbW
-         4zAlvX22iEkQvwzINAvt1wDgf1RyazmP2Ohv3gRUC1RgTZG8KcOrOtDhIrIo62udpPGK
-         7nbQ==
-X-Gm-Message-State: AOAM533vKN9rEjJF7hYTj6BJ152uGN74pgVmggztotPAUacelN3oa4UP
-        wKUhpJr91UU6+M6Zr04+jARSkQ==
-X-Google-Smtp-Source: ABdhPJx39mwALbCWBwg4LOgrBWcFxVIgln0X2S9qnl1d/SXuIT4BnnFvMuO5riwDoLVVFbmz8kFakA==
-X-Received: by 2002:aa7:86cb:0:b0:412:448c:89c8 with SMTP id h11-20020aa786cb000000b00412448c89c8mr4883991pfo.84.1631123168723;
-        Wed, 08 Sep 2021 10:46:08 -0700 (PDT)
-Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id b5sm3108466pfr.26.2021.09.08.10.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:46:08 -0700 (PDT)
-From:   Greentime Hu <greentime.hu@sifive.com>
-To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aou@eecs.berkeley.edu, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, vincent.chen@sifive.com
-Subject: [RFC PATCH v8 21/21] riscv: Turn has_vector into a static key if VECTOR=y
-Date:   Thu,  9 Sep 2021 01:45:33 +0800
-Message-Id: <56e2328d133045c79b420ecbcaf37cf9d0b2248c.1631121222.git.greentime.hu@sifive.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631121222.git.greentime.hu@sifive.com>
-References: <cover.1631121222.git.greentime.hu@sifive.com>
+        id S244231AbhIHRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229885AbhIHRog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:44:36 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B5B861131;
+        Wed,  8 Sep 2021 17:43:22 +0000 (UTC)
+Date:   Wed, 8 Sep 2021 18:46:48 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v16 04/14] counter: Update counter.h comments to reflect
+ sysfs internalization
+Message-ID: <20210908184648.68aabb9d@jic23-huawei>
+In-Reply-To: <19da8ae0c05381b0967c8a334b67f86b814eb880.1630031207.git.vilhelm.gray@gmail.com>
+References: <cover.1630031207.git.vilhelm.gray@gmail.com>
+        <19da8ae0c05381b0967c8a334b67f86b814eb880.1630031207.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like fpu, we can use static key for has_vector.
-The has_vector check sits at hot code path: switch_to(). Currently,
-has_vector is a bool variable if VECTOR=y, switch_to() checks it each time,
-we can optimize out this check by turning the has_vector into a static key.
+On Fri, 27 Aug 2021 12:47:48 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
----
- arch/riscv/include/asm/switch_to.h     | 10 +++++++---
- arch/riscv/kernel/cpufeature.c         |  4 ++--
- arch/riscv/kernel/kernel_mode_vector.c |  4 ++--
- arch/riscv/kernel/process.c            |  8 ++++----
- arch/riscv/kernel/signal.c             |  6 +++---
- 5 files changed, 18 insertions(+), 14 deletions(-)
+> The Counter subsystem architecture and driver implementations have
+> changed in order to handle Counter sysfs interactions in a more
+> consistent way. This patch updates the Generic Counter interface
+> header file comments to reflect the changes.
+> 
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>f
+Applied
 
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index b48c9c974564..576204217e0f 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -71,7 +71,11 @@ static __always_inline bool has_fpu(void) { return false; }
- #endif
- 
- #ifdef CONFIG_VECTOR
--extern bool has_vector;
-+extern struct static_key_false cpu_hwcap_vector;
-+static __always_inline bool has_vector(void)
-+{
-+	return static_branch_likely(&cpu_hwcap_vector);
-+}
- extern unsigned long riscv_vsize;
- extern void __vstate_save(struct __riscv_v_state *save_to, void *datap);
- extern void __vstate_restore(struct __riscv_v_state *restore_from, void *datap);
-@@ -120,7 +124,7 @@ static inline void __switch_to_vector(struct task_struct *prev,
- }
- 
- #else
--#define has_vector false
-+static __always_inline bool has_vector(void) { return false; }
- #define riscv_vsize (0)
- #define vstate_save(task, regs) do { } while (0)
- #define vstate_restore(task, regs) do { } while (0)
-@@ -136,7 +140,7 @@ do {							\
- 	struct task_struct *__next = (next);		\
- 	if (has_fpu())					\
- 		__switch_to_fpu(__prev, __next);	\
--	if (has_vector)					\
-+	if (has_vector())					\
- 		__switch_to_vector(__prev, __next);	\
- 	((last) = __switch_to(__prev, __next));		\
- } while (0)
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index af984f875f60..0139ec20adce 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -23,7 +23,7 @@ __ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_fpu);
- #endif
- #ifdef CONFIG_VECTOR
- #include <asm/vector.h>
--bool has_vector __read_mostly;
-+__ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_vector);
- unsigned long riscv_vsize __read_mostly;
- #endif
- 
-@@ -157,7 +157,7 @@ void __init riscv_fill_hwcap(void)
- 
- #ifdef CONFIG_VECTOR
- 	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
--		has_vector = true;
-+		static_branch_enable(&cpu_hwcap_vector);
- 		/* There are 32 vector registers with vlenb length. */
- 		rvv_enable();
- 		riscv_vsize = csr_read(CSR_VLENB) * 32;
-diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
-index 0d990bd8b8dd..0d08954c30af 100644
---- a/arch/riscv/kernel/kernel_mode_vector.c
-+++ b/arch/riscv/kernel/kernel_mode_vector.c
-@@ -110,7 +110,7 @@ static void vector_flush_cpu_state(void)
-  */
- void kernel_rvv_begin(void)
- {
--	if (WARN_ON(!has_vector))
-+	if (WARN_ON(!has_vector()))
- 		return;
- 
- 	WARN_ON(!may_use_vector());
-@@ -140,7 +140,7 @@ EXPORT_SYMBOL(kernel_rvv_begin);
-  */
- void kernel_rvv_end(void)
- {
--	if (WARN_ON(!has_vector))
-+	if (WARN_ON(!has_vector()))
- 		return;
- 
- 	/* Invalidate vector regs */
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 05ff5f934e7e..62540815ba1c 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -96,7 +96,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc,
- 		fstate_restore(current, regs);
- 	}
- 
--	if (has_vector) {
-+	if (has_vector()) {
- 		struct __riscv_v_state *vstate = &(current->thread.vstate);
- 
- 		/* Enable vector and allocate memory for vector registers. */
-@@ -141,11 +141,11 @@ void flush_thread(void)
- int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
- {
- 	fstate_save(src, task_pt_regs(src));
--	if (has_vector)
-+	if (has_vector())
- 		/* To make sure every dirty vector context is saved. */
- 		vstate_save(src, task_pt_regs(src));
- 	*dst = *src;
--	if (has_vector) {
-+	if (has_vector()) {
- 		/* Copy vector context to the forked task from parent. */
- 		if ((task_pt_regs(src)->status & SR_VS) != SR_VS_OFF) {
- 			dst->thread.vstate.datap = kzalloc(riscv_vsize, GFP_KERNEL);
-@@ -164,7 +164,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
- void arch_release_task_struct(struct task_struct *tsk)
- {
- 	/* Free the vector context of datap. */
--	if (has_vector)
-+	if (has_vector())
- 		kfree(tsk->thread.vstate.datap);
- }
- 
-diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index d30a3b588156..6a19b4b7b206 100644
---- a/arch/riscv/kernel/signal.c
-+++ b/arch/riscv/kernel/signal.c
-@@ -192,7 +192,7 @@ static long restore_sigcontext(struct pt_regs *regs,
- 				goto invalid;
- 			goto done;
- 		case RVV_MAGIC:
--			if (!has_vector)
-+			if (!has_vector())
- 				goto invalid;
- 			if (size != rvv_sc_size)
- 				goto invalid;
-@@ -221,7 +221,7 @@ static size_t cal_rt_frame_size(void)
- 
- 	frame_size = sizeof(*frame);
- 
--	if (has_vector)
-+	if (has_vector())
- 		total_context_size += rvv_sc_size;
- 	/* Preserved a __riscv_ctx_hdr for END signal context header. */
- 	total_context_size += sizeof(struct __riscv_ctx_hdr);
-@@ -288,7 +288,7 @@ static long setup_sigcontext(struct rt_sigframe __user *frame,
- 	if (has_fpu())
- 		err |= save_fp_state(regs, &sc->sc_fpregs);
- 	/* Save the vector state. */
--	if (has_vector)
-+	if (has_vector())
- 		err |= save_v_state(regs, &sc_reserved_free_ptr);
- 
- 	/* Put END __riscv_ctx_hdr at the end. */
--- 
-2.31.1
+> ---
+>  drivers/counter/counter-core.c |  3 ++
+>  include/linux/counter.h        | 62 ++++++++++++++++------------------
+>  2 files changed, 33 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter-core.c
+> index c533a6ff12cf..3cda2c47bacb 100644
+> --- a/drivers/counter/counter-core.c
+> +++ b/drivers/counter/counter-core.c
+> @@ -38,6 +38,9 @@ static struct bus_type counter_bus_type = {
+>   * This function registers a Counter to the system. A sysfs "counter" directory
+>   * will be created and populated with sysfs attributes correlating with the
+>   * Counter Signals, Synapses, and Counts respectively.
+> + *
+> + * RETURNS:
+> + * 0 on success, negative error number on failure.
+>   */
+>  int counter_register(struct counter_device *const counter)
+>  {
+> diff --git a/include/linux/counter.h b/include/linux/counter.h
+> index b69277f5c4c5..445f22d8bfe2 100644
+> --- a/include/linux/counter.h
+> +++ b/include/linux/counter.h
+> @@ -188,11 +188,10 @@ struct counter_comp {
+>  
+>  /**
+>   * struct counter_signal - Counter Signal node
+> - * @id:		unique ID used to identify signal
+> - * @name:	device-specific Signal name; ideally, this should match the name
+> - *		as it appears in the datasheet documentation
+> - * @ext:	optional array of Counter Signal extensions
+> - * @num_ext:	number of Counter Signal extensions specified in @ext
+> + * @id:		unique ID used to identify the Signal
+> + * @name:	device-specific Signal name
+> + * @ext:	optional array of Signal extensions
+> + * @num_ext:	number of Signal extensions specified in @ext
+>   */
+>  struct counter_signal {
+>  	int id;
+> @@ -206,7 +205,7 @@ struct counter_signal {
+>   * struct counter_synapse - Counter Synapse node
+>   * @actions_list:	array of available action modes
+>   * @num_actions:	number of action modes specified in @actions_list
+> - * @signal:		pointer to associated signal
+> + * @signal:		pointer to the associated Signal
+>   */
+>  struct counter_synapse {
+>  	const enum counter_synapse_action *actions_list;
+> @@ -217,15 +216,14 @@ struct counter_synapse {
+>  
+>  /**
+>   * struct counter_count - Counter Count node
+> - * @id:			unique ID used to identify Count
+> - * @name:		device-specific Count name; ideally, this should match
+> - *			the name as it appears in the datasheet documentation
+> - * @functions_list:	array available function modes
+> + * @id:			unique ID used to identify the Count
+> + * @name:		device-specific Count name
+> + * @functions_list:	array of available function modes
+>   * @num_functions:	number of function modes specified in @functions_list
+> - * @synapses:		array of synapses for initialization
+> - * @num_synapses:	number of synapses specified in @synapses
+> - * @ext:		optional array of Counter Count extensions
+> - * @num_ext:		number of Counter Count extensions specified in @ext
+> + * @synapses:		array of Synapses for initialization
+> + * @num_synapses:	number of Synapses specified in @synapses
+> + * @ext:		optional array of Count extensions
+> + * @num_ext:		number of Count extensions specified in @ext
+>   */
+>  struct counter_count {
+>  	int id;
+> @@ -243,27 +241,27 @@ struct counter_count {
+>  
+>  /**
+>   * struct counter_ops - Callbacks from driver
+> - * @signal_read:	optional read callback for Signal attribute. The read
+> - *			level of the respective Signal should be passed back via
+> - *			the level parameter.
+> - * @count_read:		optional read callback for Count attribute. The read
+> - *			value of the respective Count should be passed back via
+> - *			the val parameter.
+> - * @count_write:	optional write callback for Count attribute. The write
+> - *			value for the respective Count is passed in via the val
+> + * @signal_read:	optional read callback for Signals. The read level of
+> + *			the respective Signal should be passed back via the
+> + *			level parameter.
+> + * @count_read:		read callback for Counts. The read value of the
+> + *			respective Count should be passed back via the value
+> + *			parameter.
+> + * @count_write:	optional write callback for Counts. The write value for
+> + *			the respective Count is passed in via the value
+>   *			parameter.
+>   * @function_read:	read callback the Count function modes. The read
+>   *			function mode of the respective Count should be passed
+>   *			back via the function parameter.
+> - * @function_write:	write callback for Count function modes. The function
+> - *			mode to write for the respective Count is passed in via
+> - *			the function parameter.
+> - * @action_read:	read callback the Synapse action modes. The read action
+> - *			mode of the respective Synapse should be passed back via
+> - *			the action parameter.
+> - * @action_write:	write callback for Synapse action modes. The action mode
+> - *			to write for the respective Synapse is passed in via the
+> - *			action parameter.
+> + * @function_write:	optional write callback for Count function modes. The
+> + *			function mode to write for the respective Count is
+> + *			passed in via the function parameter.
+> + * @action_read:	optional read callback the Synapse action modes. The
+> + *			read action mode of the respective Synapse should be
+> + *			passed back via the action parameter.
+> + * @action_write:	optional write callback for Synapse action modes. The
+> + *			action mode to write for the respective Synapse is
+> + *			passed in via the action parameter.
+>   */
+>  struct counter_ops {
+>  	int (*signal_read)(struct counter_device *counter,
+> @@ -291,7 +289,7 @@ struct counter_ops {
+>  
+>  /**
+>   * struct counter_device - Counter data structure
+> - * @name:		name of the device as it appears in the datasheet
+> + * @name:		name of the device
+>   * @parent:		optional parent device providing the counters
+>   * @ops:		callbacks from driver
+>   * @signals:		array of Signals
 
