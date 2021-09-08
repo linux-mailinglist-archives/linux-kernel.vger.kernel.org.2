@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB007403B08
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0952E403B0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351763AbhIHNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:54:48 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46606 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhIHNyn (ORCPT
+        id S237933AbhIHNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231304AbhIHNzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:54:43 -0400
-Received: by mail-ot1-f49.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso3013631ott.13;
-        Wed, 08 Sep 2021 06:53:35 -0700 (PDT)
+        Wed, 8 Sep 2021 09:55:07 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C33EC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:54:00 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id a13so3319966iol.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H6uJL7KGmuDRj2+K9SKxii9PESLgjU7iPSWeZSupfsM=;
+        b=E78Z0mACMvqVx9d/nDZSIbyo6MypL5fiKNc+eg2oyohrc2HOvlZ4R9cqxpX3m5LS9p
+         eiqoM4KyKsC93LoFigtSeqwLOT7zLrMTiQz8n5EyHhzXHblyP8sCigY+C0VTcSSeLUjx
+         k+HzzEGH5Tal06dK38SoSd8oPvvJbyTAlmq202E1DtR1laUJIVajuPUQJgS8wzlZUCD0
+         QVxLbvfPpI6/CGoDbboc8gxksPx1sS80/Qp7JF9kUa4vjGpb8KWsYhzkYHk4MgxAfsOq
+         YwzUMBND+4d626pTysmKpS/t3rAHPHpfW0crrT+PauaKIpmOc2JxsJIcuChWf/FZOGcO
+         kiEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=7NTl1uWn5/awXs/DGR3BA+sGi0+YNLli0mD4od7vqA8=;
-        b=YmQyE1bjIKuJPiWRNuEwreK20NGw0/wriwFdqvxrGaulvhSnaUST961dpx9UNGzTSq
-         iwsFu3yukepT7JiVaFXLLxxS1L/SOcS4kEt4gJ31+e6OSLGUfiRdLj7Rt0fRaxJ4DDvo
-         skjtHx6KL+3aLSxMx6bogxhVF5Re44dvovJWAmWv5xb2usBUvY5X9ZYdTdUGUPuydGFi
-         m37FQt0bNanjDUxxpH+9Azig4BL8MrdqOTTAuuNlPRtHt3UZZcD0GsqpgzySKv3GLFiD
-         cyOmFOkWeZxkaygsG8CBt47XCqBwsRqN0SJ7LjxiqWOEij6oO/d7tPHZaIndRTwqym2r
-         C92A==
-X-Gm-Message-State: AOAM5301EFPPUMUbQ0VoxlwcCicMUg5h4iZQTkjgnzPTQ3nhDYtfguoc
-        Um1I/Nc2VajAGlro3k0OVA==
-X-Google-Smtp-Source: ABdhPJwpaGH4DkGWSBPtpKhZZlAWlqBgp5WDm3d2MTr483rS75d6QIk2hGWuYvZj6UEBiy/FBjSsVw==
-X-Received: by 2002:a9d:4a84:: with SMTP id i4mr3109923otf.247.1631109214986;
-        Wed, 08 Sep 2021 06:53:34 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a13sm53450ooi.3.2021.09.08.06.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 06:53:34 -0700 (PDT)
-Received: (nullmailer pid 2031708 invoked by uid 1000);
-        Wed, 08 Sep 2021 13:53:33 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Cc:     mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        Eugen.Hristev@microchip.com, UNGLinuxDriver@microchip.com,
-        Kavyasree.Kotagiri@microchip.com, Manohar.Puri@microchip.com,
-        devicetree@vger.kernel.org, sboyd@kernel.org, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org
-In-Reply-To: <20210908114844.22131-4-kavyasree.kotagiri@microchip.com>
-References: <20210908114844.22131-1-kavyasree.kotagiri@microchip.com> <20210908114844.22131-4-kavyasree.kotagiri@microchip.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: clock: lan966x: Add LAN966X Clock Controller
-Date:   Wed, 08 Sep 2021 08:53:33 -0500
-Message-Id: <1631109213.150695.2031707.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H6uJL7KGmuDRj2+K9SKxii9PESLgjU7iPSWeZSupfsM=;
+        b=4Avyy9BfztkdEs6Ous94mdXaGrqjRjiKKwNCuafZsQlE+frRBeYyjp3jZ6QquEfzOi
+         DFZ6qqwbYOjvTCPg19MYn8pJLiI03Azd5/+kjEhUiCD4ZV+lch+5wBH+t4pRpmUe+oku
+         4HcyuNguno1S4wFuBN7hZrbJvwXfSOsOOKHzOwDcoz4m0ucgVWr3bM1eU5XaBm/gXuzM
+         Sr/e546IxU7yHKYCR/CTI2wW19cexYr76vD4Kk92dPL9ywpblzvFhGSX9Q5xu9TSQm7m
+         bS7x9mzd4G3z6RYVYAVR4CNd6yBv46hdLemJS5tAQELWMPd6kBDlzcN7YyVKMs/xyqy2
+         yS7w==
+X-Gm-Message-State: AOAM5329YCbifaH3jNLUIO/o5FvvsOvisJbU6w7fPi3SuNqSNmd+yuu0
+        teBg4ILikYakYBpXkLCEQTx9iRVhT0HkUg==
+X-Google-Smtp-Source: ABdhPJz5nHJRsVwTeSBdURkaN0zw22/f2GRsD5sM0vyNeGc9bxwUlb2BHQL/iQNMoY4MVtsbYSYpxw==
+X-Received: by 2002:a02:5d42:: with SMTP id w63mr3795653jaa.20.1631109239398;
+        Wed, 08 Sep 2021 06:53:59 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id i20sm1040796ila.62.2021.09.08.06.53.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 06:53:59 -0700 (PDT)
+Subject: Re: [PATCH] /dev/mem: nowait zero/null ops
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     io-uring@vger.kernel.org
+References: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
+ <ed21a6b0-be32-e00a-98c3-f25759a44071@kernel.dk>
+ <654d5c75-72fa-bfab-dc14-fa923a2a815a@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e1142f64-906e-a75e-dd89-501102093761@kernel.dk>
+Date:   Wed, 8 Sep 2021 07:53:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <654d5c75-72fa-bfab-dc14-fa923a2a815a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Sep 2021 17:18:44 +0530, Kavyasree Kotagiri wrote:
-> This adds the DT bindings documentation for lan966x SoC
-> generic clock controller.
+On 9/8/21 7:07 AM, Pavel Begunkov wrote:
+> On 9/8/21 1:57 PM, Jens Axboe wrote:
+>> On 9/8/21 4:06 AM, Pavel Begunkov wrote:
+>>> Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
+>>> advertised as FMODE_NOWAIT. This helps subsystems like io_uring to use
+>>> it more effectively. Set FMODE_NOWAIT for /dev/null as well, it never
+>>> waits and therefore trivially meets the criteria.
+>>>
+>>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>>> ---
+>>>  drivers/char/mem.c | 6 ++++--
+>>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+>>> index 1c596b5cdb27..531f144d7132 100644
+>>> --- a/drivers/char/mem.c
+>>> +++ b/drivers/char/mem.c
+>>> @@ -495,6 +495,8 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
+>>>  		written += n;
+>>>  		if (signal_pending(current))
+>>>  			return written ? written : -ERESTARTSYS;
+>>> +		if (iocb->ki_flags & IOCB_NOWAIT)
+>>> +			return written ? written : -EAGAIN;
+>>>  		cond_resched();
+>>>  	}
+>>
+>> I don't think this part is needed.
 > 
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> ---
-> v1 -> v2:
-> - Updated example provided for clk controller DT node.
-> 
->  .../bindings/clock/microchip,lan966x-gck.yaml | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> 
+> It can be clearing gigabytes in one go. Won't it be too much of a
+> delay when nowait is expected?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I guess it can't hurt, but then it should be changed to:
 
-yamllint warnings/errors:
+if (!need_resched())
+	continue;
+if (iocb->ki_flags & IOCB_NOWAIT)
+	return written ? written : -EAGAIN;
+cond_resched();
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.example.dt.yaml: clock-controller@e00c00a8: clocks: [[1], [2], [3]] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+to avoid doing -EAGAIN just because there's more than one segment in the
+buffer. Even that may be excessive though, but definitely a lot better.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1525807
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-- 
+Jens Axboe
 
