@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3235B404034
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD23404036
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349753AbhIHUhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 16:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhIHUhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 16:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40AEB61041;
-        Wed,  8 Sep 2021 20:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631133362;
-        bh=bP3G6bAvac+s/34JTfHdHoXIMUenYwO/ZfeHNQIqd2Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=crEfVpzf2TgqQIBZnI19w3mvuasxNDyd2XG+OWwems3sMPNVbYtUMSe0E4J6NdAlU
-         CalIK/LnF8NwDkEwReWaVqcH/UPQ+lFnwKCqenEcZM1yKA1GQrFA1G6srWkqpjzoAm
-         4roHBemYLq/z4oiOplu0I9cMPCtI+Lo8CWKyyIjvuTzftLu7Vi8xQ9kiF+9UT1P8Uv
-         g0+G+UgQd3Fm2WOVaCuqKd7h2k5xRksquz+i5SKamfsZwN/J5A4s5Anh29tkCYqbTh
-         rHqmj96vpEg+4TktmDpCLOaJJNasdvOJM9Qf+nJ1FTVO2yzsF9QS9DAZXsBg75Ts9m
-         kAMSfBwXOn06w==
-Received: by pali.im (Postfix)
-        id C55D1708; Wed,  8 Sep 2021 22:35:59 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 22:35:59 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Ingmar Klein <ingmar_klein@web.de>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        id S1350050AbhIHUiD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 16:38:03 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:33165 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhIHUiC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 16:38:02 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 46058CED13;
+        Wed,  8 Sep 2021 22:36:52 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v1 1/3] Bluetooth: btandroid: Support Android Bluetooth
+ Quality Report
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210908165017.v1.1.I17f57656757b83a1c0fb4b78525d8aca581725db@changeid>
+Date:   Wed, 8 Sep 2021 22:36:51 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Joseph Hwang <josephsih@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: QCA6174 pcie wifi: Add pci quirks
-Message-ID: <20210908203559.6k5clg3fzf5kctbw@pali>
-References: <20210415195338.icpo5644bo76rzuc@pali>
- <20210525221215.GA1235899@bjorn-Precision-5520>
- <20210721085453.aqd73h22j6clzcfs@pali>
- <20210820232217.vkx6x6dpxf73jjhs@pali>
- <408e5b45-3eaa-fa13-318d-48f7d1ecdacf@web.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <408e5b45-3eaa-fa13-318d-48f7d1ecdacf@web.de>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8BIT
+Message-Id: <223749E3-DF27-425C-A971-411B314E758A@holtmann.org>
+References: <20210908165017.v1.1.I17f57656757b83a1c0fb4b78525d8aca581725db@changeid>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 08 September 2021 21:18:00 Ingmar Klein wrote:
-> Am 21.08.2021 um 01:22 schrieb Pali Rohár:
-> > On Wednesday 21 July 2021 10:54:53 Pali Rohár wrote:
-> > > On Tuesday 25 May 2021 17:12:15 Bjorn Helgaas wrote:
-> > > > On Thu, Apr 15, 2021 at 09:53:38PM +0200, Pali Rohár wrote:
-> > > > > Hello!
-> > > > > 
-> > > > > On Thursday 15 April 2021 13:01:19 Alex Williamson wrote:
-> > > > > > [cc +Pali]
-> > > > > > 
-> > > > > > On Thu, 15 Apr 2021 20:02:23 +0200
-> > > > > > Ingmar Klein <ingmar_klein@web.de> wrote:
-> > > > > > 
-> > > > > > > First thanks to you both, Alex and Bjorn!
-> > > > > > > I am in no way an expert on this topic, so I have to fully rely on your
-> > > > > > > feedback, concerning this issue.
-> > > > > > > 
-> > > > > > > If you should have any other solution approach, in form of patch-set, I
-> > > > > > > would be glad to test it out. Just let me know, what you think might
-> > > > > > > make sense.
-> > > > > > > I will wait for your further feedback on the issue. In the meantime I
-> > > > > > > have my current workaround via quirk entry.
-> > > > > > > 
-> > > > > > > By the way, my layman's question:
-> > > > > > > Do you think, that the following topic might also apply for the QCA6174?
-> > > > > > > https://www.spinics.net/lists/linux-pci/msg106395.html
-> > > > > I have been testing more ath cards and I'm going to send a new version
-> > > > > of this patch with including more PCI ids.
-> > > > Dropping this patch in favor of Pali's new version.
-> > > Hello Bjorn! Seems that it would take much more time to finish my
-> > > version of patch. So could you take Ingmar's patch with cc:stable tag
-> > > for now, which just adds PCI device id into list of problematic devices?
-> > Ping, gentle reminder...
-> 
-> Hi Pali and Bjorn,
-> 
-> here is the original trivial patch again.
-> For the moment, this could do.
-> 
-> Thank you!
-> Best regards,
-> Ingmar
-> 
-> Signed-off-by: Ingmar Klein <ingmar_klein@web.de>
+Hi Joseph,
 
-Reviewed-by: Pali Rohár <pali@kernel.org>
-Cc: stable@vger.kernel.org
+> Add the btandroid.c file to support Android BQR commands.
+> 
+> This module may be referenced by btusb, btrtl, and hci_qca when a
+> Bluetooth controller supports the Android Bluetooth Quality Report.
+> 
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> ---
+> 
+> drivers/bluetooth/Makefile    |   1 +
+> drivers/bluetooth/btandroid.c | 106 ++++++++++++++++++++++++++++++++++
+> drivers/bluetooth/btandroid.h |  10 ++++
+> 3 files changed, 117 insertions(+)
+> create mode 100644 drivers/bluetooth/btandroid.c
+> create mode 100644 drivers/bluetooth/btandroid.h
 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 706f27a86a8e..ecfe80ec5b9c 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3584,6 +3584,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032, quirk_no_bus_reset);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_reset);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
->  
->  /*
->   * Root port on some Cavium CN8xxx chips do not successfully complete a bus
+so please lets not do this. Nothing AOSP specific belongs into drivers/bluetooth/. Doing this multitudes of dependencies for the drivers will cause long term so much pain and complexity that it is not worth it. If more than one manufacturer supports it, it has earned the right to be in net/bluetooth/ as a pseudo standard.
+
+Like with the MSFT extensions, I expect this to be in net/bluetooth/aosp.c and enabled based on hci_set_aosp_capable() being set by a driver or not.
+
+And I choose “aosp” for prefix on purpose and not “android”.
+
+Regards
+
+Marcel
 
