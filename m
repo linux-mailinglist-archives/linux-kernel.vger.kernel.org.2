@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8FD403FB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C5C403FC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351800AbhIHTVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:21:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350394AbhIHTV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:21:27 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C200D61167;
-        Wed,  8 Sep 2021 19:20:19 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mO36x-0014ci-GW; Wed, 08 Sep 2021 15:19:55 -0400
-Message-ID: <20210908191955.344003340@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 08 Sep 2021 15:19:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 12/12] selftests/ftrace: Exclude "(fault)" in testing add/remove eprobe
- events
-References: <20210908191851.381347939@goodmis.org>
+        id S1350369AbhIHTYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240049AbhIHTX5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:23:57 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3172C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 12:22:49 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id bd1so4457198oib.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 12:22:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=61wtExygeBHNU8JF1VKoq8GwGXMXla9fnLJNWz4U874=;
+        b=Qkoyhe9Z1+0BPnng/Vdy7xf4dQsH7MUTBdaZI9INIgnp8jPW8UvHsIV+/SLr1kumRx
+         RWELex1z74aqpLUB/5ap0BCWYE7chvPYDFixzzTLhO1/caJZVbqPV/Cr4ScDuKdBaYJR
+         p9T25XKOTz/tFO5XYp6qAa8sIqTdSRnSz0prs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=61wtExygeBHNU8JF1VKoq8GwGXMXla9fnLJNWz4U874=;
+        b=3Z8iXnri8Tg9LCIv9QjTk43IZrqswj6G6mAEOzMsUf7QcqEpE8Z7DgoSF0tQsQOUZV
+         IFTPZA/V0iuP/qJue1pNcPbcD+mxvRXogQnHkhbyBWEX7oaF6DurjnLnVrh6OcK9ez9u
+         7bFn68ELMFoOHK4EAagKofOJearf+Sd7RIi2TjR+E4Bc5R9hGfEoiCPC2GYefRb+uZH8
+         Iy3tf1flsann1aC4ru0Tj3vbqWWK7YWLKgllxwGj7aOdEIYqGMuOzcV2uNmMdPeKPK6i
+         sp6tNvwChZ5ViAogTIx543/ipngf3T5ZWT1q2gHestnw9CMAQtznEFyybAt1jKHQbvj6
+         /oqA==
+X-Gm-Message-State: AOAM530cGmVgC4VhT9POWVLawpa64tunYdKf9C/rkpIzVjnG4kTmYnRT
+        GhSUPhTvjZAh8r1spe1A7FScWa1Q54VOeKR90g0a/g==
+X-Google-Smtp-Source: ABdhPJyMVPWZq+0eN5wIDIK73pjGaAgZfNF+FmxkWJEtyh6JhBRuT7h/4z4PCJffVzSDmSs53y0p5S0M6Urst1ZzTQc=
+X-Received: by 2002:aca:3954:: with SMTP id g81mr3572533oia.101.1631128969002;
+ Wed, 08 Sep 2021 12:22:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+In-Reply-To: <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 8 Sep 2021 21:22:37 +0200
+Message-ID: <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Shunsuke Mie <mie@igel.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+> Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
+> >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hellwig <=
+hch@infradead.org>:
+> >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
+> >>>> Thank you for your comment.
+> >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
+> >>>>>> To share memory space using dma-buf, a API of the dma-buf requires=
+ dma
+> >>>>>> device, but devices such as rxe do not have a dma device. For thos=
+e case,
+> >>>>>> change to specify a device of struct ib instead of the dma device.
+> >>>>> So if dma-buf doesn't actually need a device to dma map why do we e=
+ver
+> >>>>> pass the dma_device here?  Something does not add up.
+> >>>> As described in the dma-buf api guide [1], the dma_device is used by=
+ dma-buf
+> >>>> exporter to know the device buffer constraints of importer.
+> >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian.koenig%40=
+amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d994e18=
+3d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDA=
+iLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3DARwQyo%2=
+BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> >>> Which means for rxe you'd also have to pass the one for the underlyin=
+g
+> >>> net device.
+> >> I thought of that way too. In that case, the memory region is constrai=
+ned by the
+> >> net device, but rxe driver copies data using CPU. To avoid the constra=
+ints, I
+> >> decided to use the ib device.
+> > Well, that is the whole problem.
+> >
+> > We can't mix the dmabuf stuff people are doing that doesn't fill in
+> > the CPU pages in the SGL with RXE - it is simply impossible as things
+> > currently are for RXE to acess this non-struct page memory.
+>
+> Yeah, agree that doesn't make much sense.
+>
+> When you want to access the data with the CPU then why do you want to
+> use DMA-buf in the first place?
+>
+> Please keep in mind that there is work ongoing to replace the sg table
+> with an DMA address array and so make the underlying struct page
+> inaccessible for importers.
 
-The original test for adding and removing eprobes used synthetic events
-and retrieved the filename from the open system call at the end of the
-system call. This would allow it to always be loaded into the page tables
-when accessed.
-
-Masami suggested that the test was too complex for just testing add and
-remove, so it was changed to test just adding and removing an event probe
-on top of the start of the open system call event. Now it is possible that
-the filename will not be loaded into memory at the time the eprobe is
-triggered, and will result in "(fault)" being displayed in the event. This
-causes the test to fail.
-
-Account for "(fault)" also being one of the values of the filename field
-of the event probe.
-
-Link: https://lkml.kernel.org/r/20210907230429.5783d519@rorschach.local.home
-
-Fixes: 079db70794ec5 ("selftests/ftrace: Add test case to test adding and removing of event probe")
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .../selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc       | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-index 25a3da4eaa44..5f5b2ba3e557 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-@@ -22,7 +22,7 @@ ls
- echo 0 > events/eprobes/$EPROBE/enable
- 
- content=`grep '^ *ls-' trace | grep 'file='`
--nocontent=`grep '^ *ls-' trace | grep 'file=' | grep -v -e '"/' -e '"."'` || true
-+nocontent=`grep '^ *ls-' trace | grep 'file=' | grep -v -e '"/' -e '"."' -e '(fault)' ` || true
- 
- if [ -z "$content" ]; then
- 	exit_fail
--- 
-2.32.0
+Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
+for cpu access. Which intentionally does not require any device. No
+idea why there's a dma_buf_attach involved. Now not all exporters
+support this, but that's fixable, and you must call
+dma_buf_begin/end_cpu_access for cache management if the allocation
+isn't cpu coherent. But it's all there, no need to apply hacks of
+allowing a wrong device or other fun things.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
