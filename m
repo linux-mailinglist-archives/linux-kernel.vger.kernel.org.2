@@ -2,158 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0BF40347B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DDD40346F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347942AbhIHGsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 02:48:24 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:26607 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347809AbhIHGsI (ORCPT
+        id S1347821AbhIHGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 02:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347783AbhIHGrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 02:48:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631083620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R/aOwxCMYQNg63vlZmxMu2+gBNhNNIXKtR5si6qqBFs=;
-        b=kkzgCDWArk6anSzDPjVBpMbM7szchNKhUDWE2ZLIfQBYrKNnQMDnzGWF+3SnrgVir1c2ym
-        wHDLlyzMsl0VzHERXQLXnu7uNNn5dAbxNmj/BNs4n54rd0SVa/KGoGCKqSoyykeQWhUCTC
-        DSXdFBSfi43mbFsUAqagCz4BrjYDJDc=
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05lp2169.outbound.protection.outlook.com [104.47.17.169])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-24-B4XMnQ5mN5acqB5QYIj0WQ-1; Wed, 08 Sep 2021 08:46:59 +0200
-X-MC-Unique: B4XMnQ5mN5acqB5QYIj0WQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G9640QTlY/QdgTU4dwznvoZwd0Nceb2Hi4oKV10kmpgITChTOK3wtddEvZhXJeP6PzgYwLIMz2awlEE/IDuuZqrlyMzq4hEClhnCjl7D2xhCcUKuqTfMCqO9MPa3Xjard3jX9wMxw7mXsyAOYXXqb+0OZY3PuyotSwFrSSQ1bJWdZp/NnGgaBo7xNHDwso1s1Ep4iOVRas8DN7zA3vK0/HSUgf2q4xbNVYidK63IXJ7+NSOPD8exSd11GNoOP0HlPYL1v3MiVJld19S/xAQ5DJMJcrzXbfcCSl4MUGPLGKukt0jXQScu54uB5e5hq2640nX8EUJhjB3E0IxlrrtBjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=9r9uHD+hcfh6e0xf8niimemSUB7qkRcxP/TWmksYsxI=;
- b=HvpB9ei61ENmrYFnEgxa6Ckoi3pvXu2BUeR2cgD3ac+a3a8rHkLHqIJpfDjK8CskJJANefT7dP4c7pFRk1nc2GDeFzm7SedfLB/4Z2g3ujWBdsTonBpB8JbKFVK+8cPhZofhWlrFg8V9GLWImLHRngghwsjEEiLxOsaBSsutVMbjM5AJBBYkwfGzkPOE5LPO6euhUecf7ST5yZnGqbNh6QPhuQsZQCGFfbpWWFTIJqwMajhLdjgKp5lrJ1gm/rRC69DTfa15V15ZYKd/rcK5tkkevl2Mb+AGp1QlnXzBu7kRt4Tq9ULo+2dCNUBEUgquZJvvypo45cJ7rrWYL+KtgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com (2603:10a6:803:4::13)
- by VI1PR04MB4477.eurprd04.prod.outlook.com (2603:10a6:803:6e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Wed, 8 Sep
- 2021 06:46:58 +0000
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::88cc:32fc:2cae:3fde]) by VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::88cc:32fc:2cae:3fde%7]) with mapi id 15.20.4500.015; Wed, 8 Sep 2021
- 06:46:58 +0000
-From:   Chester Lin <clin@suse.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-CC:     s32@nxp.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        Radu Nicolae Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        ghennadi.procopciuc@nxp.com, "Ivan T . Ivanov" <iivanov@suse.de>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Chester Lin <clin@suse.com>
-Subject: [PATCH v2 8/8] MAINTAINERS: add an entry for NXP S32G boards
-Date:   Wed,  8 Sep 2021 14:45:28 +0800
-Message-ID: <20210908064528.922-9-clin@suse.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210908064528.922-1-clin@suse.com>
-References: <20210908064528.922-1-clin@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PR3P195CA0023.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:102:b6::28) To VI1PR0402MB3439.eurprd04.prod.outlook.com
- (2603:10a6:803:4::13)
+        Wed, 8 Sep 2021 02:47:49 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FCEC06175F;
+        Tue,  7 Sep 2021 23:46:41 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id q22so1238556pfu.0;
+        Tue, 07 Sep 2021 23:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=tPcz+2r5QYT3f31sjYhLKhxDJoI3LKZy65DdDOG+sHk=;
+        b=nyBStD7Wwf69j9+s+sK3LvXqYugld0Sb938nk1neIAyHwFMJhTFvZpLwoQMmBZTafJ
+         Alvhw/vrDBzgY7bADgHPCm+YVLVlUKaK/UTI/A9UGyI/zkUGNkkzg0/DxVsHvgAdRzNY
+         5ngmhBuwk44ssVaDNbdz83tdlnG+T9smduh4Gtyeljf7zzL5HDgvIhEfzGHcgFObmiaV
+         xsagqe56/yIMRE9SHPoxqJbClJLEvK5snehSQPsWji2d9RlfpjIWTCcZ4j+ZDGVT/PXE
+         5rC5kdpZq6FBYS+CbxNphXHRlZXEZwEJvntMI+h4Lr6cObdN4Sw2d2af/njN4wjLnZbu
+         l0Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=tPcz+2r5QYT3f31sjYhLKhxDJoI3LKZy65DdDOG+sHk=;
+        b=fgMu0fawHSCmCT+7csLUIGcXrfsM3Ey1s0Z4Pgt9upqoAzuMlb62dD4zIt3dEi+YM1
+         fvOvBzizRJfZ9A75CL3u2y6yyem9J5QonfXwBDu7IRhnKFa2ctDbOwpJiqDdR+LtIqWs
+         pfKFeb4LBIIhG/q0ufLXrTHsFwIjqmr5AKvhKbrFxsTKq5ga7K+bMCsO5kVc6lgYgOUl
+         vM2OOyLDa4JIHOI7ANCmWE2L8sN0he27W7dmBWuayXO5QR8+fu1naY6niPm3hR2X2XU3
+         mr4JSe0VRgkzhYxb42AgpUKPXK5vzzrBiPsL3h+XnYwnlplXqOi7hbYRV+spUtYzmcY6
+         5iRw==
+X-Gm-Message-State: AOAM53249i3Lvtvk+6yJWW2h5PpX1KW4WCX+UMfLtM4xoTaFU9bT98x4
+        tGIYrlPHsDNQlPkzdSmEwGfKRlXStNTKqG9E+g==
+X-Google-Smtp-Source: ABdhPJwLSEKyQN5RxvuSRAMj06wbM008oHE7x9+ai+l4brmJit1iElcOKJ96hGRN9LJjH6CNO1ufXWDOoWqeV4MT5tU=
+X-Received: by 2002:aa7:8747:0:b0:3f2:78f:977d with SMTP id
+ g7-20020aa78747000000b003f2078f977dmr2061064pfo.59.1631083600477; Tue, 07 Sep
+ 2021 23:46:40 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (36.224.129.215) by PR3P195CA0023.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 06:46:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 295740ec-edd5-4ebd-20b9-08d972947413
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4477:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4477488C3675FF361EC76F87ADD49@VI1PR04MB4477.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cfVxm4rvmuodDgSR+uz1jwySG2C3r3DE+l+tupTqLRqU0U8/aJyIAV1AI4djY6UJdqUWvrSp/0OJffAjrpQ9nqxU4AfxGmo7MA9f30E7kA3PYB6Ud8xhSnGo+XKv5dIXkt2Ut7mecsJSUI3ftz9M2RtnUUdZTiPHrf/tfMXl/nA3B5d3xK9Tfs9B0w65n4mzvA3TyDvSLwu1q3NZz17IkDoaik0BKZMY3cAf2+1LUU1cZOR15aoAq5oHfnyc8GkUpVzDXaAQ94wg4i/4a2aYDQ7RpxxWqh6ZEQkd4BYjXcqWfWDnjaoM1wqLDCqj5876cfwtxSCYAQ4/p59y27IBadZLpX3UI81v6LSCKWvyK/nm99wk5oZjT5XrYlsM2ZUDLBZ+OMso5Fp+i8Yy3LdqLDa73Vh/hjxLixRRAPmqRkPHIRQmDgn3oy+PdnQLfV8Qnp8JVGpixn16ThGHz6+eVc7UJWpGHvdUx2fCJ/w7ITLOjjnt4nBaGlqlRJYbrEPqPsAZcGsWZ35WU5AAuaCXHi4xNoMpkaHiE3uDOouhAHFOvXqEuXnjXi4XplMDB3Br+ubXP/3JKUYUXyA+pS5+dgsbLxB06S7oTUA4EodHIXkDGXsz5vHIfM1jSzfFlfc/Yyp3bhkCeqI7mvYsbnI3GA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3439.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6496006)(6666004)(1076003)(316002)(956004)(4326008)(186003)(54906003)(36756003)(110136005)(5660300002)(66556008)(66946007)(6486002)(38100700002)(4744005)(2906002)(7416002)(8676002)(107886003)(66574015)(86362001)(8936002)(66476007)(2616005)(508600001)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MD/MoYlcugtZvR9NqRaZIQJ9Q0d+6lHalDYLu9LF04PZSSopHE1e4r8WY88P?=
- =?us-ascii?Q?Pn5uNigYAc31aQG6NiriqD050/2tg1wmU1eIbAb6qUJObKEAQXqmroG+Q9/x?=
- =?us-ascii?Q?QG5IJouzZorUbjIWm2Yri+YzPff3RHwpJyXBhs6iYE3wdONkKYWDUP9Yi7/7?=
- =?us-ascii?Q?CxbfmK3nC1kDpSqS3Vdt/iGUFGdqOwPcYG2Sw8zzXxzaRGGGsB8CPIXkFxTb?=
- =?us-ascii?Q?AQiTWLIgY3Vo3OeS2TyVtB38Sb5V6oTWCl6RDgXiFx/lQA0+/P1AaF1vvqy4?=
- =?us-ascii?Q?ADXeIjFdYoZDzZjYs/1pWXBzbnKKchLw2q/SgTw4KzvWfoV8kIKQKSxeg590?=
- =?us-ascii?Q?ec9pbK+W/iVGj4wf7byhAAU3cq4VhpOSHloiCgWMQcf3j4CIf8KK23TqFb6L?=
- =?us-ascii?Q?sbvY4EPP4b+BakuzVm9ANCY57PaeqOY3uWCyleoDo3M7r+rBQpHVwSLSpmUm?=
- =?us-ascii?Q?E/zi4bkqECmyUq1GdMfsH8c/3rQrw8qA+ottGSEc+7UclpsSpYuswjwQX3Sr?=
- =?us-ascii?Q?VzeW23oOfPz56YCqASlQ3Jnnjh242Ehsawc4OGUFZdOeR2wewJgeoN4VmTtq?=
- =?us-ascii?Q?kf26GR9psoCzbpN2RA5wJMozAFW4hryCQvUEcQVV/TqV4EpYu52fJcpmnIJP?=
- =?us-ascii?Q?USZU50ccd5ObKILkeXWD/w5sQaYronJ1DnOdksTk3AQWrwedZkE9cIhdQtXO?=
- =?us-ascii?Q?isHyxELlabNXIa/rmuodV6vcBM3BUL5Pm/Fg9JZO0Gd8K8qZrb6+GdklhPw/?=
- =?us-ascii?Q?P4wUTzByojJUZr5qqT6TQxssKkrjgU4zzfk/b6N5Ds3W7zlH9s3zjuzeFyr8?=
- =?us-ascii?Q?22H+DRTQsaJ0oWH2cuY4e9JCKwrb4vchWdEUkRzXJ2xeKP4mUtjkKHbnJ6N7?=
- =?us-ascii?Q?jXt0AwNIRVgeU3inXRk0i6a/0heVGW/qxTA/vW89eYNJGSY4mJ1Vr1PBe3Qx?=
- =?us-ascii?Q?TUxDl+x8XDuWSnIbc1+6CKdlkZC0H1SJAO7UV1+PVz96phqCAVuqN7TC8CDA?=
- =?us-ascii?Q?rFZA0gkxTrGnGWYzJQnThhzKCdNDx400UFTsJi5bQNtdF34pmq+BPdIeAIn7?=
- =?us-ascii?Q?7mdZ2B0cH/mX4qj0N/WF9qIXAMyu2GLuEdUr5kTpISIe2hVJDCgbdsXMtUDg?=
- =?us-ascii?Q?1zZJlRCWLUanYo6FiQnhfH0PRCcM9/mBEELhnjoA2Tnscs+euRGbf8TQB8dG?=
- =?us-ascii?Q?L3Q68arKKISyK8eTEczZON86D0BdqkhSee8zWXvqTv3thci2QZ8sPywxEf8d?=
- =?us-ascii?Q?OAv1w2qiEKwkBUuso/GTj4xq3JV1QcO/0efQJuvSq/6k4o6FqDEHpTRKORfx?=
- =?us-ascii?Q?uZOAKWZTA1Ra3m+hHMS9mQOL?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 295740ec-edd5-4ebd-20b9-08d972947413
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3439.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 06:46:58.0840
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: omdGROYYJjy9yS/oUZLfzuMx3HuwzqJfh1xWe3BA8EX7P1sqRaWdcytEkJpQin1F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4477
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 8 Sep 2021 14:46:29 +0800
+Message-ID: <CACkBjsa=DmomBxEub98ihEu0T37ryz+_4EQgGF1dURtTvdLEtQ@mail.gmail.com>
+Subject: WARNING in io_wq_submit_work
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.co>,
+        io-uring@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new entry for the maintenance of NXP S32G DT files.
+Hello,
 
-Signed-off-by: Chester Lin <clin@suse.com>
----
-Changes in v2:
-- Add information of reviewers.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1RZfBThifWgo2CiwPTeNzYG4P0gkZlINT/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/18LXBclar1FlOngPkayjq8k-vKcw-SR98/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1rUgX8kHPhxiYHIbuhZnDZknDe1DzDmhd/view?usp=sharing
+Similar report:
+https://groups.google.com/u/1/g/syzkaller-bugs/c/siEpifWtNAw/m/IkUK1DmOCgAJ
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5a61cb2d0cd4..6f2a3f8ae88e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2308,6 +2308,14 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
- F:	arch/arm/mach-npcm/wpcm450.c
- F:	drivers/*/*wpcm*
-=20
-+ARM/NXP S32G ARCHITECTURE
-+M:	Chester Lin <clin@suse.com>
-+R:	Andreas F=C3=A4rber <afaerber@suse.de>
-+R:	Matthias Brugger <mbrugger@suse.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm64/boot/dts/freescale/s32g*.dts*
-+
- ARM/OPENMOKO NEO FREERUNNER (GTA02) MACHINE SUPPORT
- L:	openmoko-kernel@lists.openmoko.org (subscribers-only)
- S:	Orphan
---=20
-2.30.0
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 0
+CPU: 2 PID: 11607 Comm: syz-executor Not tainted 5.14.0+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail.cold+0x5/0xa lib/fault-inject.c:146
+ should_failslab+0x5/0x10 mm/slab_common.c:1326
+ slab_pre_alloc_hook mm/slab.h:494 [inline]
+ slab_alloc_node mm/slub.c:2880 [inline]
+ kmem_cache_alloc_node+0x67/0x380 mm/slub.c:2995
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:883 [inline]
+ copy_process+0x5df/0x73d0 kernel/fork.c:2027
+ create_io_thread+0xb6/0xf0 kernel/fork.c:2533
+ create_io_worker+0x25a/0x540 fs/io-wq.c:758
+ io_wqe_create_worker fs/io-wq.c:267 [inline]
+ io_wqe_enqueue+0x68c/0xba0 fs/io-wq.c:866
+ io_queue_async_work+0x28b/0x5d0 fs/io_uring.c:1473
+ __io_queue_sqe+0x6c3/0xc70 fs/io_uring.c:6933
+ io_queue_sqe fs/io_uring.c:6951 [inline]
+ io_submit_state_end fs/io_uring.c:7141 [inline]
+ io_submit_sqes+0x1da4/0x9c00 fs/io_uring.c:7245
+ __do_sys_io_uring_enter fs/io_uring.c:9875 [inline]
+ __se_sys_io_uring_enter fs/io_uring.c:9817 [inline]
+ __x64_sys_io_uring_enter+0x7a9/0xe80 fs/io_uring.c:9817
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4739cd
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007eff5bd9dc58 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
+RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000003
+RBP: 00007eff5bd9dc90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffc1b637edf R14: 00007ffc1b638080 R15: 00007eff5bd9ddc0
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 11607 at fs/io_uring.c:1164 req_ref_get
+fs/io_uring.c:1164 [inline]
+WARNING: CPU: 2 PID: 11607 at fs/io_uring.c:1164
+io_wq_submit_work+0x2b4/0x310 fs/io_uring.c:6731
+Modules linked in:
+CPU: 2 PID: 11607 Comm: syz-executor Not tainted 5.14.0+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:req_ref_get fs/io_uring.c:1164 [inline]
+RIP: 0010:io_wq_submit_work+0x2b4/0x310 fs/io_uring.c:6731
+Code: 49 89 c5 0f 84 5b fe ff ff e8 b8 14 91 ff 4c 89 ef e8 80 f3 ff
+ff e9 49 fe ff ff e8 a6 14 91 ff e9 85 fe ff ff e8 9c 14 91 ff <0f> 0b
+eb a7 4c 89 f7 e8 f0 93 d8 ff e9 79 fd ff ff 4c 89 ef e8 53
+RSP: 0018:ffffc90009e4f868 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 000000000000007f RCX: ffff8881025b8000
+RDX: 0000000000000000 RSI: ffff8881025b8000 RDI: 0000000000000002
+RBP: ffff888025a43238 R08: ffffffff81e50ba4 R09: 000000000000007f
+R10: 0000000000000005 R11: ffffed1004b4863b R12: ffff888025a43180
+R13: ffff888025a431dc R14: ffff888025a431d8 R15: 0000000000100000
+FS:  00007eff5bd9e700(0000) GS:ffff888063f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000330ac48 CR3: 000000002ef85000 CR4: 0000000000350ee0
+Call Trace:
+ io_run_cancel fs/io-wq.c:809 [inline]
+ io_acct_cancel_pending_work.isra.0+0x2c0/0x640 fs/io-wq.c:950
+ io_wqe_cancel_pending_work+0x6c/0x130 fs/io-wq.c:968
+ io_wq_destroy fs/io-wq.c:1185 [inline]
+ io_wq_put_and_exit+0x78c/0xc10 fs/io-wq.c:1198
+ io_uring_clean_tctx fs/io_uring.c:9607 [inline]
+ io_uring_cancel_generic+0x5fe/0x740 fs/io_uring.c:9687
+ io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+ do_exit+0x25c/0x2dd0 kernel/exit.c:780
+ do_group_exit+0x125/0x340 kernel/exit.c:922
+ get_signal+0x4d5/0x25a0 kernel/signal.c:2868
+ arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4739cd
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007eff5bd9dcd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000059c0a0 RCX: 00000000004739cd
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
+RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 00007ffc1b637edf R14: 00007ffc1b638080 R15: 00007eff5bd9ddc0%
