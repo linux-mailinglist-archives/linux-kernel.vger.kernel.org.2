@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FB44032F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B4F4032F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344423AbhIHDf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
+        id S1344596AbhIHDhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbhIHDf5 (ORCPT
+        with ESMTP id S231151AbhIHDhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:35:57 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8C9C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:34:50 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id x10-20020a056830408a00b004f26cead745so1141100ott.10
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:34:50 -0700 (PDT)
+        Tue, 7 Sep 2021 23:37:08 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E676C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:36:01 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id c10so882063qko.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:36:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=L3P6E94KgYTggNi34VPrDx8IIAdEhyLCWWiN3zBY9Js=;
-        b=JlNtynvnkpQ9cbDenz1tsa/nlyMA0maw6rFk81Gw0aVDGffXlQTTa+6b7htWTRdSK+
-         NEVM+wK8g5PbVzZzPOq81FZZ98qHdAbLYXSFQBwE3yxL0ns2D4V+OZwja1z77ctRXV/u
-         gpPA05WutWMCzrtTk6LL0g8uHqZ9KAJG7Ghv8=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=va3qLF49mXwo2qEKOYCT81K5dNv0miga50Xk8uaUMHc=;
+        b=KdFL2XFD5/y5UwVa42KQwzyaksZ6R0j6vfMdoPNDGiqtscT87XuhFWe7Bw2HcANZPJ
+         Kj4h3YGm+qvilaHkb4WiTwOKk1mYH32xrMTe3PLgRqupy3xMKS8uCA22um4n+ZTZtxx6
+         7Bv90uxICb/SeAs/zhLfY4H5x77SD2eNPaqlSCxGGXzmeqbZ8uQsgDpXanJX2LOhpNmO
+         PiiFYAjYlZUfd6hcOM1BJJ7e5l2+6K3NDcj3WVpN8mJNIyGoiQ1SWGtB6QxcbZVaM1if
+         rSgLKVDwk4kK94LG3C+BHpFF4Hz+WoppdBuq7neV82VuzPQQQWG/qutHVAXhPlXQbiOk
+         VxwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=L3P6E94KgYTggNi34VPrDx8IIAdEhyLCWWiN3zBY9Js=;
-        b=bibzLai5/aF3t1TdTUTO492qjTwGHKc+MCO1azDwKjLgQk0VN0TapeARannZbYvjkU
-         OAESGJHTLtLlrr2qRhxH5DO8N7tlarut/qZUiM5UB3VNf30YNbI4UnH9XkuQCHrXn1dv
-         RjeYTTVytmqWyzLPVPVdKwKZDUmsdTda4YNiFChfqTOu6ZLWpxukn2Oed/mQdtkB5ajS
-         5zB5DHxEziMYVSGTqh92Nj/Zxpj0Jn6ynzD6adwZt24RKD/J8A1PRpIdMrCr02N1odIg
-         khauU9rGkchj/Yp8yT+7rw8YfZ6Ir+7FnKPkA3WPVQpZzgEzDzkTzIJc1vrM6ayH75Lt
-         m7Jg==
-X-Gm-Message-State: AOAM530O1KZ+mqXDRJ6MLhWfkUfE83D58G53MLhxUesBqP503XTAL9WR
-        mnVTX0UJojZeQkc4KiUAPXjRpcHq5LgOp7xq17NulQ==
-X-Google-Smtp-Source: ABdhPJyg6igS7IIqsGysq/0S3geeIlQjSOmbIIyrAPs2dYADUam233q3f/f5Bbz2/xP4NNavIoeMzXqtJhdu5C4/8ws=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr1328000otp.159.1631072089755;
- Tue, 07 Sep 2021 20:34:49 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 8 Sep 2021 03:34:49 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=va3qLF49mXwo2qEKOYCT81K5dNv0miga50Xk8uaUMHc=;
+        b=s5EozvYN6OCwoR8FT7AxNKWMmOUxghoR7U/qRPvxE5woaJPc9Lhfv/VreznBWRIGSq
+         GcpCDNwY8Ztl3oiYGBwBI9VCxqJb6gbfYzns8D34h1odmcwdBm5+erp/8rI0w4w2Ln4R
+         eBgL6/OPP4X6g9nni/iHVBiXdh8Ggz9LqlJZHt1F0XZwSfW76R6p6b1nyUVn3yOtKEOg
+         xM3uO5GAh2fCjycM6hv3Xv4iWVzk823psKhI4NKYI0uBKROiAQuIsQRAUlMx3hT0ozWo
+         Xu00CmFY6RQrh2mG/OEosMfrKsbNWzeaZwCuPu3JJcuVSOsjY+ZpO7J6TBqqHeIlq6fR
+         mtHg==
+X-Gm-Message-State: AOAM530QHvaFQ74kP8wfCzp2/8A7k8u+pR0QekJy1ZtDwG8zM9F8wsCo
+        1rRlZ2LJ3C8zm+XpmWoeRIF7eknzKs3465HeqKk=
+X-Google-Smtp-Source: ABdhPJx+sTzc+/ItKGf/oZR9yrZTp57Dj5D+jR/Sbww8bLVl7HyibV2aBVpWdWiaqLxp6myTzkRHi2ezPv6RJisHaFo=
+X-Received: by 2002:ae9:dd43:: with SMTP id r64mr1492829qkf.225.1631072160836;
+ Tue, 07 Sep 2021 20:36:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
-References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org> <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 8 Sep 2021 03:34:49 +0000
-Message-ID: <CAE-0n51CCqrbKr9NCkzaK3JxCtJgRKdXTeR4kxnnOK_wNKpP6A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        satya priya <skakit@codeaurora.org>
-Cc:     mka@chromium.org, kgunda@codeaurora.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <1631015968-9779-1-git-send-email-huangzhaoyang@gmail.com>
+ <79c08d1d-eef5-bc15-8186-7e3367b4ebe7@suse.cz> <CAGWkznHY-iZ0ERbJdX-j4S5qOsUAzV0+x67maprz3W+xbq4hTQ@mail.gmail.com>
+ <YTdoesOHCNoe+rGH@cmpxchg.org>
+In-Reply-To: <YTdoesOHCNoe+rGH@cmpxchg.org>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Wed, 8 Sep 2021 11:35:40 +0800
+Message-ID: <CAGWkznG+m0CgEHUAN4dmeenYYkBFP5JUzyLnzhfTK0Am25xXDA@mail.gmail.com>
+Subject: Re: [PATCH] mm : bail out from psi memstall after submit_bio in swap_readpage
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting satya priya (2021-09-06 03:41:07)
-> Add pwm support for PM8350C pmic.
+On Tue, Sep 7, 2021 at 9:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
+> On Tue, Sep 07, 2021 at 08:15:30PM +0800, Zhaoyang Huang wrote:
+> > On Tue, Sep 7, 2021 at 8:03 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> > >
+> > > On 9/7/21 13:59, Huangzhaoyang wrote:
+> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > >
+> > > > It doesn't make sense to count IO time into psi memstall. Bail out after
+> > > > bio submitted.
+> > >
+> > > Isn't that the point if psi, to observe real stalls, which include IO?
 >
-> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> index e1b75ae..ecdae55 100644
-> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> @@ -29,6 +29,12 @@
->                         interrupt-controller;
->                         #interrupt-cells = <2>;
->                 };
-> +
-> +               pm8350c_pwm4: pwm {
-> +                       compatible = "qcom,pm8350c-pwm";
+> Yes, correct.
+>
+> > IO stalls could be observed within blk_io_schedule. The time cost of
+> > the data from block device to RAM is counted here.
+>
+> Yes, that is on purpose. The time a thread waits for swap read IO is
+> time in which the thread is not productive due to a lack of memory.
+>
+> For async-submitted IO, this happens in lock_page() called from
+> do_swap_page(). If the submitting thread directly waits after the
+> submit_bio(), then that should be accounted too.
+IMO, memstall counting should be terminated by bio submitted. blk
+driver fetching request and the operation on the real device shouldn't
+be counted in. It especially doesn't make sense in a virtualization
+system like XEN etc, where the blk driver is implemented via
+backend-frontend way that introduce  memory irrelevant latency
 
-Shouldn't there be a reg property?
-
-> +                       #pwm-cells = <2>;
-> +                       status = "okay";
-> +               };
->         };
->  };
 >
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
->
+> This patch doesn't make sense to me.
