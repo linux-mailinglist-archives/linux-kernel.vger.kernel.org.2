@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626A04031FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585A04031FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 02:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345140AbhIHAyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 20:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343915AbhIHAyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 20:54:01 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9DAC061575;
-        Tue,  7 Sep 2021 17:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=kAIjmxfZZa/cYhmVo2ffRv+Sadvx5QANbTzlROnRP6Y=; b=0p+83hwSv7f9gOnWZEteq5liHX
-        Wgpxw2KvW98NOPO0Sy+QO2uRqyLGsTurOmyAXNgOHuEO3q6xXl5k8RQcRRgrTDCSJq39ffemiGY3Q
-        afrNVXzr2V+MdF9oWigmM/FzpqgRCpWNdkSkdKTKDR7tNQx44Tup9pOv+Ar7uaAT7ZsZsK0DKrZTU
-        /cUYAkmYx3q24Pz3sjXEQyFBrvPUUXsjDo15tSZ/lREXEip9tMtEWFRy37koGs/fTQUnpifcPH3Jt
-        P9cfImoM0DZ5bCEn2gDWyRdxCOqHfpYmmagKmMNIrXrNmdTjRI2RXkIWdSmV3yyYcmdsxekpqUsjo
-        wK9yVjOA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNlpd-0056Wy-Fz; Wed, 08 Sep 2021 00:52:53 +0000
-Subject: Re: [PATCH v3] Input: analog: Always use ktime functions
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907123734.21520-1-linux@roeck-us.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <15bf8c00-3a38-a1bd-8214-6f45608db3f0@infradead.org>
-Date:   Tue, 7 Sep 2021 17:52:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210907123734.21520-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1344861AbhIHBAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:00:20 -0400
+Received: from mga03.intel.com ([134.134.136.65]:8423 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232947AbhIHBAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:00:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="220408039"
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="220408039"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 17:59:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="503304251"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Sep 2021 17:59:11 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 7 Sep 2021 17:59:11 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 7 Sep 2021 17:59:10 -0700
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.2242.012;
+ Tue, 7 Sep 2021 17:59:10 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+Thread-Topic: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+Thread-Index: AQHXm32N+zFqinyIzkeTnR6PEPyjK6uSU9kAgAAMBgCABQikEIABuSsA//+Z1mCAAHdJgP//tWJAgAB3/pA=
+Date:   Wed, 8 Sep 2021 00:59:10 +0000
+Message-ID: <9ee70d2db97c4f719fd23d68741069db@intel.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+         <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210827195543.1667168-6-tony.luck@intel.com>
+         <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
+         <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
+         <25db682402d14c34af9ba525cffe85c5@intel.com>
+         <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
+         <40da1a9a7d5f41bb9b82ea2cbebce73a@intel.com>
+ <250de8f97efe2458afc39f080c3ef6a55f42623c.camel@kernel.org>
+ <e0280b82cf964a0797293b0c8e302777@intel.com>
+In-Reply-To: <e0280b82cf964a0797293b0c8e302777@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 5:37 AM, Guenter Roeck wrote:
-> m68k, mips, s390, and sparc allmodconfig images fail to build with the
-> following error.
-> 
-> drivers/input/joystick/analog.c:160:2: error:
-> 	#warning Precise timer not defined for this architecture.
-> 
-> Remove architecture specific time handling code and always use ktime
-> functions to determine time deltas. Also remove the now useless use_ktime
-> kernel parameter.
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v3: Avoid 64-bit divide operation
-> v2: Drop helper functions and use ktime_get() and ktime_sub() directly
->      Drop 'speed' variable and use NSEC_PER_MSEC directly
-> 
->   drivers/input/joystick/analog.c | 103 ++++----------------------------
->   1 file changed, 11 insertions(+), 92 deletions(-)
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-thanks.
--- 
-~Randy
+PiBJJ20gZ29pbmcgdG8gZXhwbG9yZSBEYXZlJ3Mgc3VnZ2VzdGlvbiBvZiBjaGFuZ2luZyB0aGUg
+bmFtZXMgdG8gc29tZXRoaW5nIGxlc3Mgc2d4IHNwZWNpZmljLg0KDQpTbyBub3cgSSBoYXZlIHRo
+ZSB0d28gZnVuY3Rpb25zIHJlbmFtZWQgdG8NCg0KCWFyY2hfbWVtb3J5X2ZhaWx1cmUoKSBhbmQg
+YXJjaF9pc19wbGF0Zm9ybV9wYWdlKCkNCg0KaW4gYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvbWFp
+bi5jDQoNCkluIGFyY2gveDg2L2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci5oDQoNCisjaWZkZWYgQ09O
+RklHX1g4Nl9TR1gNCitpbnQgYXJjaF9tZW1vcnlfZmFpbHVyZSh1bnNpZ25lZCBsb25nIHBmbiwg
+aW50IGZsYWdzKTsNCisjZGVmaW5lIGFyY2hfbWVtb3J5X2ZhaWx1cmUgYXJjaF9tZW1vcnlfZmFp
+bHVyZQ0KKw0KK2Jvb2wgYXJjaF9pc19wbGF0Zm9ybV9wYWdlKHU2NCBwYWRkcik7DQorI2RlZmlu
+ZSBhcmNoX2lzX3BsYXRmb3JtX3BhZ2UgYXJjaF9pc19wbGF0Zm9ybV9wYWdlDQorI2VuZGlmDQoN
+CmFuZCBpbiBpbmNsdWRlL2xpbnV4L21tLmgNCg0KKyNpZm5kZWYgYXJjaF9tZW1vcnlfZmFpbHVy
+ZQ0KK3N0YXRpYyBpbmxpbmUgaW50IGFyY2hfbWVtb3J5X2ZhaWx1cmUodW5zaWduZWQgbG9uZyBw
+Zm4sIGludCBmbGFncykNCit7DQorICAgICAgIHJldHVybiAtRU5YSU87DQorfQ0KKyNlbmRpZg0K
+KyNpZm5kZWYgYXJjaF9pc19wbGF0Zm9ybV9wYWdlDQorc3RhdGljIGlubGluZSBib29sIGFyY2hf
+aXNfcGxhdGZvcm1fcGFnZSh1NjQgcGFkZHIpDQorew0KKyAgICAgICByZXR1cm4gZmFsc2U7DQor
+fQ0KKyNlbmRpZg0KDQpEYXZlOiBJcyB0aGF0IHdoYXQgeW91IHdhbnRlZD8gIElmIHNvIEkgY2Fu
+IGZvbGQgdGhlc2UgYml0cyBiYWNrIGludG8gdGhlDQphcHByb3ByaWF0ZSBiaXRzIG9mIHRoZSBz
+ZXJpZXMuIEFkZHJlc3Mgb3RoZXIgY29tbWVudHMuIGFuZCBwb3N0IHY1Lg0KDQpTZWFuOiBJZiB5
+b3UgaGF2ZSBzdHVmZiB0aGF0IG5lZWRzIGF0dGVudGlvbiBpbiB2NCBwbGVhc2UgaG9sbGVyIHNv
+b24uDQoNCi1Ub255DQo=
