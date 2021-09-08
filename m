@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85273403328
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 06:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CD440332A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 06:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhIHEHw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 00:07:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:20103 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhIHEHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 00:07:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="220434118"
-X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
-   d="scan'208";a="220434118"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 21:06:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
-   d="scan'208";a="513105144"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga001.jf.intel.com with ESMTP; 07 Sep 2021 21:06:44 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 7 Sep 2021 21:06:44 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 7 Sep 2021 21:06:43 -0700
-Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
- ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.2242.012;
- Tue, 7 Sep 2021 21:06:43 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Ziljstra <peterz@infradead.org>
-Subject: RE: [patch V2 00/20] x86/fpu: Clean up exception fixups and error
- handling in sigframe related code
-Thread-Topic: [patch V2 00/20] x86/fpu: Clean up exception fixups and error
- handling in sigframe related code
-Thread-Index: AQHXpCJtVbDXYHaEVUKqChRZNl/sYquZdCmA//+LHqCAAHjEgP//mTdQgACCAwCAAAvOgP//5erg
-Date:   Wed, 8 Sep 2021 04:06:43 +0000
-Message-ID: <cf9a841219904c048983fe2aee578761@intel.com>
-References: <20210907195612.321345EED@xen13.tec.linutronix.de>
- <874kaw9mpo.ffs@tglx> <e190b62e3f954cc1804a41149a842641@intel.com>
- <871r609m2i.ffs@tglx> <a883fe85b6b941b9bff44bc4b268bba1@intel.com>
- <87v93c82zn.ffs@tglx> <87sfyg8118.ffs@tglx>
-In-Reply-To: <87sfyg8118.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229833AbhIHEOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 00:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhIHEOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 00:14:12 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9B7C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 21:13:05 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso1216930ott.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 21:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HkIuLVDKn7TgiCzRztoLPo7WO6itaQ7BA8yRHyvqmmo=;
+        b=Ur8IPF1yWy22Q0kJ/WFmntzBviiE2zn/rwKijChNN1Wm+xfBYvALfoYlSH/nLo+5Fa
+         DZ5M0bNGH1eAOziJCp3RiQ5URJKyfRK34JqRBsLFyRi8xYhsA9QxAoVp8bpyzBMYVluu
+         3HGtkrIKzyC+wDzrzJjVWSP6tUIZjFHZo+Bpojuh56NtlRL/zyid3hJQTm1xtJCou7/q
+         7WN3rYKpGAeatm3UQACj38hDs+GaEO7wVh5c/t5d5nXWpMpSoWKrRdwxwQw54FH3cfjH
+         E+C3kvlmn3N33fUrMrAVBuDK5PWqvfGIGH0xKF7d167ywTtksTyi5w/UpGHGacZuJ1TW
+         xZnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=HkIuLVDKn7TgiCzRztoLPo7WO6itaQ7BA8yRHyvqmmo=;
+        b=lxJMok9dlejTfli3T/gZoYL1CXg0jpVcMf7mo8ehBv9ueCqCTe+H3/Ifig6H5syfNh
+         RTv/SQ/VlCiGHEzAbRcKH7YlcTpEezo3id9sdG8Se+q4VYxLfVj+SHQpquNpJdZrZ/dg
+         l78QStgkrQXuisTJW2d2e2+N6TSxTJnMXtKaQGbK/SfzPtn1mzL821wBepkfqgLk/oZo
+         v1vB6IowQKciQwQ6AHPYMmbc5zsY+NJVfooqING3vR/JnoTsyf3ggUoUqR5X2YLNqzF3
+         c+qcV1xydEcHDz0Pz4qKF6h1RbCp8E6es4ZWNscmsSHbeSqlPYwoUEX5H9Pl/z7tfDsy
+         A0ag==
+X-Gm-Message-State: AOAM531d+0MqX5zQ2rV/UqqWhloh3oTphZsPiQyTUutBaeVEe8bTFlgQ
+        lRixLgmautVW2t6U8hNolElonNmTO+s=
+X-Google-Smtp-Source: ABdhPJxPC/ElUQrxDzILrbmOrghUnICdEMQf0kufEGvSFVx5WCxFtQVy+RXq9o6FxgGv6ItwJ8/iqQ==
+X-Received: by 2002:a9d:828:: with SMTP id 37mr1509555oty.0.1631074384551;
+        Tue, 07 Sep 2021 21:13:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c75sm209181oob.47.2021.09.07.21.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 21:13:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 7 Sep 2021 21:13:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: mvme: Remove overdue #warnings in RTC handling
+Message-ID: <20210908041302.GA2585571@roeck-us.net>
+References: <20210907124511.2723414-1-geert@linux-m68k.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907124511.2723414-1-geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Huch? That tree is based on 0bcfe68b876 and it just has those 20 patches
->> on top which should not at all interfere with your root filesystem
->> device. Let me verify.
->
-> I lost connection to my test machines. Will continue tomorrow morning.
+On Tue, Sep 07, 2021 at 02:45:11PM +0200, Geert Uytterhoeven wrote:
+> The warnings were introduced when converting the MVME147 and MVME16x
+> RTC handling from gettod to hwclk.  Replace the #warning by a comment,
+> and return an error to inform the upper layer that writing to the RTC is
+> not yet supported.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-To save you some time I ran a bisect. It says the wheels fall off the bus at
-patch 13/20
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-$ git bisect bad
-43bce826b58940bd3143f110d36f5901d009e527 is the first bad commit
-commit 43bce826b58940bd3143f110d36f5901d009e527
-Author: Thomas Gleixner <tglx@linutronix.de>
-Date:   Mon Aug 30 18:27:25 2021 +0200
-
-    x86/fpu/signal: Move xstate clearing out of copy_fpregs_to_sigframe()
-
-    When the direct saving of the FPU registers to the user space sigframe
-    fails, copy_fpregs_to_sigframe() attempts to clear the user buffer.
-
-    The most likely reason for such a fail is a page fault. As
-    copy_fpregs_to_sigframe() is invoked with pagefaults disabled the chance
-    that __clear_user() succeeds is minuscule.
-
-    Move the clearing out into the caller which replaces the
-    fault_in_pages_writeable() in that error handling path.
-
-    The return value confusion will be cleaned up separately.
-
-    Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-:040000 040000 a7dce9444541186dcc30f21c9d0416d48f215507 71056cf4baa014ca33ab4861b0aca76b154979bf M arch
+> ---
+>  arch/m68k/mvme147/config.c | 4 +++-
+>  arch/m68k/mvme16x/config.c | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+> index e1e90c49a49624cc..dfd6202fd403e92b 100644
+> --- a/arch/m68k/mvme147/config.c
+> +++ b/arch/m68k/mvme147/config.c
+> @@ -171,7 +171,6 @@ static int bcd2int (unsigned char b)
+>  
+>  int mvme147_hwclk(int op, struct rtc_time *t)
+>  {
+> -#warning check me!
+>  	if (!op) {
+>  		m147_rtc->ctrl = RTC_READ;
+>  		t->tm_year = bcd2int (m147_rtc->bcd_year);
+> @@ -183,6 +182,9 @@ int mvme147_hwclk(int op, struct rtc_time *t)
+>  		m147_rtc->ctrl = 0;
+>  		if (t->tm_year < 70)
+>  			t->tm_year += 100;
+> +	} else {
+> +		/* FIXME Setting the time is not yet supported */
+> +		return -EOPNOTSUPP;
+>  	}
+>  	return 0;
+>  }
+> diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+> index b59593c7cfb9dfbf..b4422c2dfbbf4f7c 100644
+> --- a/arch/m68k/mvme16x/config.c
+> +++ b/arch/m68k/mvme16x/config.c
+> @@ -436,7 +436,6 @@ int bcd2int (unsigned char b)
+>  
+>  int mvme16x_hwclk(int op, struct rtc_time *t)
+>  {
+> -#warning check me!
+>  	if (!op) {
+>  		rtc->ctrl = RTC_READ;
+>  		t->tm_year = bcd2int (rtc->bcd_year);
+> @@ -448,6 +447,9 @@ int mvme16x_hwclk(int op, struct rtc_time *t)
+>  		rtc->ctrl = 0;
+>  		if (t->tm_year < 70)
+>  			t->tm_year += 100;
+> +	} else {
+> +		/* FIXME Setting the time is not yet supported */
+> +		return -EOPNOTSUPP;
+>  	}
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
