@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEF7403592
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE91403596
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347843AbhIHHif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:38:35 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39918
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347742AbhIHHia (ORCPT
+        id S1347947AbhIHHio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350520AbhIHHig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:38:30 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9B3763F333
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631086639;
-        bh=Xl/DB/qd7Mt2jtRMD1Jrfz+4cyEFuk2xdMOwq0sPa0o=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=bZTHswkeXNyTDPc3Gu20ebh+AcnBAZsYMsQiK9ETuhXhcqYN2aVxVUPVmgGqcRe0u
-         pamQzRskNyv7oR0zjEEhBxhTJbHem91KkZg63GSVpVWcPFR+/bSUXUAtFNDBgJ3woJ
-         o5FwDJw9VTYkVSdj+t9x1ZBEVK+LyxFBxCyrM+IIwPLemxmV/3GINweabCUAH1FMOZ
-         mhb7VRgQ1ScGTD6N9jNKUrkcFWtdew5uToOaGRnahVZNZWmbD55yImiMgUjv0LGapH
-         dC1Yyu38J3DBcCcZUZHdaddYSmlSpZtlaf9RBFLS0E+OhNadygf4IOfNuILHjroG/7
-         6IRxjH0lSUhlg==
-Received: by mail-wm1-f72.google.com with SMTP id j33-20020a05600c48a100b002e879427915so596603wmp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
+        Wed, 8 Sep 2021 03:38:36 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68225C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:37:29 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id g34so438936vkd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RxByYRg2XXqbg48iaJnwshxIX8ARRbQbbWyTDrsMpDg=;
+        b=JtC8vxGN7eRYHrK74+0gnNKbyBQ6ygwCoAYMm88H5oYJZgf0QTejxJoGm/EWBYMNI2
+         u74hLHaovlTxOuAO53GNWUjTNPZS1gCwm0TDI/ZJUB4HeCswQastk9SHPqMEB61BUjNC
+         DierBZIFFkUSg8nBXL8zZskDsijYbJLqKYVig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xl/DB/qd7Mt2jtRMD1Jrfz+4cyEFuk2xdMOwq0sPa0o=;
-        b=KmAoiqtlb3GnMB79F3G/N1JFJ+hfn1Pk08IuG1RiAkLLhRtXDnPq+RjaY9mXQqFEd2
-         c4VGo9OSr+Bo+tk7YoV9JTgCupX7/TMkVry6S/HhOqE37D54rYnpDan28kLQCm6eMr2P
-         g3viLWBniZlR7Au3y3IYM7m9VuyCVcnDapqrz0fwEQsye872Oitd7AT6D9VP3F8FYmXJ
-         lOqNn9CjOcMnFCmL7fnTFFix+ArB4545oF/MZHzhCLqvAGonsRa89oPAVZoiU6Kx7S/E
-         sXMWDIRsmOlO403FZCGBKOvjSTUmZhOXzzheMfKsJ5mB0EjqtCoYXOOz+e3D+V5pPSPN
-         fnnA==
-X-Gm-Message-State: AOAM530j2fNFeyPmqV0LaeHT/uJfphPYTn06ySZ7mb8KMdhuN592Yi7k
-        vfYfnpwScEn9g7CRn7IeECQMKD3k5e1KUcAXYH3QIZMntKbGeKScjD2qCpbBBU80Ac9XXqIhgkw
-        bMWJQzCmEbLRUpa25FYCKJLor35j954skOXFy03SASA==
-X-Received: by 2002:a7b:c850:: with SMTP id c16mr2134064wml.22.1631086639205;
-        Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxT/gY/L6a1d5mGa18rZxRFI+AF2+c6swdpOKQ0gxBamkjIAd+eDg9BV8WN4geyHZLXCOsag==
-X-Received: by 2002:a7b:c850:: with SMTP id c16mr2134042wml.22.1631086639049;
-        Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.217])
-        by smtp.gmail.com with ESMTPSA id s12sm1285746wru.41.2021.09.08.00.37.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 00:37:18 -0700 (PDT)
-Subject: Re: [PATCH 2/6] dt-bindings: mmc: cdns: match MPFS MMC/SDHCI
- controller
-To:     Conor.Dooley@microchip.com, robh@kernel.org
-Cc:     atish.patra@wdc.com, ulf.hansson@linaro.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, geert+renesas@glider.be,
-        yash.shah@sifive.com, yamada.masahiro@socionext.com,
-        piotrs@cadence.com, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
- <20210819154436.117798-2-krzysztof.kozlowski@canonical.com>
- <YSUDTSuNlsOmu/G+@robh.at.kernel.org>
- <9423ddab-4635-ea15-7a9d-dbcf1bc215dc@canonical.com>
- <CAL_JsqKU4opYerjxXTnAuouLc5-GQQKnPX+qZEMBuzYV-inmJw@mail.gmail.com>
- <b607f187-5eee-6afa-f50a-c6532acf19e5@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <c9855c99-1240-b0a3-4a5c-9f16cee7fe6e@canonical.com>
-Date:   Wed, 8 Sep 2021 09:37:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RxByYRg2XXqbg48iaJnwshxIX8ARRbQbbWyTDrsMpDg=;
+        b=nijm09rUkETjnXG/XPn71D6qPHu5h2Dn62IrISJHfi0OmJ3eOnwCEz714V0fGB5C/T
+         4GNE9g/qBcNDjEiw4Zj/64bKbcy11LKw/O3GfyT6pEyT+RzvTN7t2X5XPMoU9dLSArAD
+         GhMsVMTvzlNORmJsqlSStWbi+ZZPDtKLlrGqEViq2FdQbwSi7cCVIt8TXJQ3jADgC/zZ
+         BWoUvmZXSQafSm/p/hybIjBQHOndUmecq81rzrctHtqz5T6yNeb5dNMAmMnlp391iNkR
+         wM62GVIvJ25k1aef3ZDPCIMV/YsMJ2wWKaaN9+C1nANFtq1ZF8oqhq/vnYB/OQNaNB7G
+         wXFQ==
+X-Gm-Message-State: AOAM533/MRvpxO5EM/yO7I6wBwmZpw0QvvUOIbnzPHE+/TlvgCY50RVs
+        kI0xMaEqpQC2+gt2rrVeEtutm2mZPZFytq4DKT/oMQ==
+X-Google-Smtp-Source: ABdhPJzIbNRikobIOOunmSW5bp+DYjiJjzAzKNlWichoE9SwXSEqDDtjTORr8+/U3/M9/5256zkNoLf4zkFpLQ7XPiI=
+X-Received: by 2002:a1f:a348:: with SMTP id m69mr216744vke.10.1631086648497;
+ Wed, 08 Sep 2021 00:37:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b607f187-5eee-6afa-f50a-c6532acf19e5@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902152228.665959-1-vgoyal@redhat.com> <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
+ <YTYoEDT+YOtCHXW0@work-vm> <CAJfpegvbkmdneMxMjYMuNM4+RmWT8S7gaTiDzaq+TCzb0UrQrw@mail.gmail.com>
+ <YTfcT1JUactPhwSA@redhat.com>
+In-Reply-To: <YTfcT1JUactPhwSA@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 8 Sep 2021 09:37:17 +0200
+Message-ID: <CAJfpegumUMsQ1Zk4MjnSXhrcnX_RJfM5LJ2oL6W3Um_wFNPRFQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Daniel J Walsh <dwalsh@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Casey Schaufler <casey.schaufler@intel.com>,
+        LSM <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        "Fields, Bruce" <bfields@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2021 10:38, Conor.Dooley@microchip.com wrote:
-> On 30/08/2021 16:09, Rob Herring wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On Tue, Aug 24, 2021 at 2:02 PM Krzysztof Kozlowski
->> <krzysztof.kozlowski@canonical.com> wrote:
->>> On 24/08/2021 16:33, Rob Herring wrote:
->>>> On Thu, Aug 19, 2021 at 05:44:32PM +0200, Krzysztof Kozlowski wrote:
->>>>> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
->>>>> without any additional vendor compatible:
->>>> I think the lack of vendor compatible is the error here. Experience has
->>>> shown that vendor specific compatibles are needed for licensed IP.
->>>>
->>> In such case this could be:
->>> 1. a specific "microchip,mpfs250t-sd4hc", which
->>> seems to be on MPFS Icicle Kit:
->>> https://www.digikey.co.uk/en/product-highlight/m/microchip-technology/mpfs-icicle-kit-es--polarfire-soc-fpga-icicle-kit
->>>
->>> 2. or a generic "microchip,mpfs-sd4hc"
->>>
->>> Any hints here?
->> Best for a Microchip person to answer, but sure there's some existing
->> compatible strings for other blocks on this chip to follow the same
->> pattern.
->>
->> Rob
-> 
-> #2 would be ideal since the controller doesn't change across the part 
-> range, the 250t bit in the part name just covers the size/configuration 
-> of the FPGA.
+On Tue, 7 Sept 2021 at 23:40, Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> On Mon, Sep 06, 2021 at 04:56:44PM +0200, Miklos Szeredi wrote:
+> > On Mon, 6 Sept 2021 at 16:39, Dr. David Alan Gilbert
+> > <dgilbert@redhat.com> wrote:
+> >
+> > > IMHO the real problem here is that the user/trusted/system/security
+> > > 'namespaces' are arbitrary hacks rather than a proper namespacing
+> > > mechanism that allows you to create new (nested) namespaces and associate
+> > > permissions with each one.
+> >
+> > Indeed.
+> >
+> > This is what Eric Biederman suggested at some point for supporting
+> > trusted xattrs within a user namespace:
+> >
+> > | For trusted xattrs I think it makes sense in principle.   The namespace
+> > | would probably become something like "trusted<ns-root-uid>.".
+> >
+> > Theory sounds simple enough.  Anyone interested in looking at the details?
+>
+> So this namespaced trusted.* xattr domain will basically avoid the need
+> to have CAP_SYS_ADMIN in init_user_ns, IIUC.  I guess this is better
+> than giving CAP_SYS_ADMIN in init_user_ns.
 
+That's the objective, yes.  I think the trick is getting filesystems
+to store yet another xattr type.
 
-Thanks! I'll go with the microchip,mpfs-sd4hc.
-
-
-Best regards,
-Krzysztof
+Thanks,
+Miklos
