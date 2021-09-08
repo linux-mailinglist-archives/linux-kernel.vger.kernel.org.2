@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1717403870
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FA2403872
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351406AbhIHK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:59:19 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:41506 "EHLO baidu.com"
+        id S1349174AbhIHK7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:59:20 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:41702 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348997AbhIHK7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:59:00 -0400
-Received: from BC-Mail-Ex15.internal.baidu.com (unknown [172.31.51.55])
-        by Forcepoint Email with ESMTPS id 6C437233306795A43B4D;
-        Wed,  8 Sep 2021 18:57:51 +0800 (CST)
+        id S1351469AbhIHK7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:59:10 -0400
+Received: from BC-Mail-Ex16.internal.baidu.com (unknown [172.31.51.56])
+        by Forcepoint Email with ESMTPS id 3505F1B2EC755B1496F8;
+        Wed,  8 Sep 2021 18:58:01 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex15.internal.baidu.com (172.31.51.55) with Microsoft SMTP Server
+ BC-Mail-Ex16.internal.baidu.com (172.31.51.56) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 8 Sep 2021 18:57:51 +0800
+ 15.1.2242.12; Wed, 8 Sep 2021 18:58:01 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 8 Sep 2021 18:57:50 +0800
+ 15.1.2308.14; Wed, 8 Sep 2021 18:57:58 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] regulator: ti-abb: Make use of the helper function devm_ioremap related
-Date:   Wed, 8 Sep 2021 18:57:44 +0800
-Message-ID: <20210908105745.1984-1-caihuoqing@baidu.com>
+CC:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] regulator: vqmmc-ipq4019: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Wed, 8 Sep 2021 18:57:51 +0800
+Message-ID: <20210908105752.2035-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -39,71 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource_byname() helper instead of
-calling platform_get_resource_byname() and devm_ioremap/devm_ioremap_resource()
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
 separately
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/regulator/ti-abb-regulator.c | 31 ++++++----------------------
- 1 file changed, 6 insertions(+), 25 deletions(-)
+ drivers/regulator/vqmmc-ipq4019-regulator.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
-index 9f0a4d50cead..2931a0b89bff 100644
---- a/drivers/regulator/ti-abb-regulator.c
-+++ b/drivers/regulator/ti-abb-regulator.c
-@@ -725,9 +725,7 @@ static int ti_abb_probe(struct platform_device *pdev)
+diff --git a/drivers/regulator/vqmmc-ipq4019-regulator.c b/drivers/regulator/vqmmc-ipq4019-regulator.c
+index 6d5ae25d08d1..c4213f096fe5 100644
+--- a/drivers/regulator/vqmmc-ipq4019-regulator.c
++++ b/drivers/regulator/vqmmc-ipq4019-regulator.c
+@@ -48,7 +48,6 @@ static int ipq4019_regulator_probe(struct platform_device *pdev)
+ 	struct regulator_init_data *init_data;
+ 	struct regulator_config cfg = {};
+ 	struct regulator_dev *rdev;
+-	struct resource *res;
+ 	struct regmap *rmap;
+ 	void __iomem *base;
  
- 	/* Map ABB resources */
- 	if (abb->regs->setup_off || abb->regs->control_off) {
--		pname = "base-address";
--		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, pname);
--		abb->base = devm_ioremap_resource(dev, res);
-+		abb->base = devm_platform_ioremap_resource_byname(pdev, "base-address");
- 		if (IS_ERR(abb->base))
- 			return PTR_ERR(abb->base);
+@@ -57,8 +56,7 @@ static int ipq4019_regulator_probe(struct platform_device *pdev)
+ 	if (!init_data)
+ 		return -EINVAL;
  
-@@ -735,35 +733,18 @@ static int ti_abb_probe(struct platform_device *pdev)
- 		abb->control_reg = abb->base + abb->regs->control_off;
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	base = devm_ioremap_resource(dev, res);
++	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
  
- 	} else {
--		pname = "control-address";
--		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, pname);
--		abb->control_reg = devm_ioremap_resource(dev, res);
-+		abb->control_reg = devm_platform_ioremap_resource_byname(pdev, "control-address");
- 		if (IS_ERR(abb->control_reg))
- 			return PTR_ERR(abb->control_reg);
- 
--		pname = "setup-address";
--		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, pname);
--		abb->setup_reg = devm_ioremap_resource(dev, res);
-+		abb->setup_reg = devm_platform_ioremap_resource_byname(pdev, "setup-address");
- 		if (IS_ERR(abb->setup_reg))
- 			return PTR_ERR(abb->setup_reg);
- 	}
- 
--	pname = "int-address";
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, pname);
--	if (!res) {
--		dev_err(dev, "Missing '%s' IO resource\n", pname);
--		return -ENODEV;
--	}
--	/*
--	 * We may have shared interrupt register offsets which are
--	 * write-1-to-clear between domains ensuring exclusivity.
--	 */
--	abb->int_base = devm_ioremap(dev, res->start,
--					     resource_size(res));
--	if (!abb->int_base) {
--		dev_err(dev, "Unable to map '%s'\n", pname);
--		return -ENOMEM;
--	}
-+	abb->int_base = devm_platform_ioremap_resource_byname(pdev, "int-address");
-+	if (IS_ERR(abb->int_base))
-+		return PTR_ERR(abb->int_base);
- 
- 	/* Map Optional resources */
- 	pname = "efuse-address";
 -- 
 2.25.1
 
