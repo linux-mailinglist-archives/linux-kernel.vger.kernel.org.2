@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D806040353E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A29A40354B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235185AbhIHHYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        id S1347872AbhIHH1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350012AbhIHHYV (ORCPT
+        with ESMTP id S1345425AbhIHH1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:24:21 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38384C061575;
-        Wed,  8 Sep 2021 00:23:14 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id a10so1282909qka.12;
-        Wed, 08 Sep 2021 00:23:14 -0700 (PDT)
+        Wed, 8 Sep 2021 03:27:37 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B396C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:26:29 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id e21so2197623ejz.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QISFurn052uq4hGhwxdYBG/1xRqkANqtCrV2mA2mnzY=;
-        b=jxQw7jUuXTX04PwDbFygUgBjnqpaIQh1c1sDG4oQxr17zdGTZrYdpwCuo+N0c2MbFt
-         zebTrubozmQl7+W0Rj945+iQCJlZVxGMN/brqjodrc5AZJBTXS+AORI84qadUwsv5nl5
-         7o5SmvHcm1l7ibLC/+o9i3pm3Xb2iABOr6BBzxaPyvNlTPPF5xZiSa35dT4tusErZSAJ
-         PuiiNR8i8r23lA3tsDimZLE7kxQ4jVJdLChm3UkIpWlBwlB6V9QDOk9wZOalax0p05ql
-         9g2Yuzw/WECp5k4jq1uj2CWvYKyFHCfEYRjy1sYvuBnNrbMVM0cYd/T/zO/QwjyaBdy+
-         Vesg==
+        bh=Y5oxOfqa+jGQ0fJQGJq3gmhfZxrLYBOPvpDpkldQke0=;
+        b=VRPBDw4QfPjww0fyYwOqFu/b8UuEbcoxYHSj1pdxJocHmI2o5m42MLColTh1dR8D8H
+         bt5CZzTfmwZHU0i7fogiiktK1HVMdH8e/Z0xZYIoZV2uSRftpTI9g1P4TufpwKEkCLJj
+         iABFYRoQ/QqK53LlnzWnR7kGgGUN++dvbN7XW4nays2KyVC+5cQ+XDLaV9ahmZWeefXs
+         gbTmd5eqfBQJeb2fOENiRnjMz2EZAcY/ef1MKwXQwqCPudANuaNquG85Ka+jh6+ZS74g
+         5EA5eLlJS8xi5TfIJCjonp1tnAlbBw3XiBBTg7NN4IR7+oTbKkseJidonOpsZkg4oiw7
+         67Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QISFurn052uq4hGhwxdYBG/1xRqkANqtCrV2mA2mnzY=;
-        b=FyFPngXay53dSltl08QvHeMB2ZyvRtXUNDV/f0CZ3ojRZl6flxVxIGvj8BS1m6Ea0V
-         lfVbs9p3I4KpQj2LGTcRaqhc/tbh5f5WB01/+Sc6eCB65ZqDPZQ7GgMfAfHfjiTFl9MD
-         vDsU4GfUR79Tg1gaJ/Rhrx7smbLZTZXyLYkjCeakTvIqRjHuoVqO0FmUbw7ZqcIe9TOd
-         u5fwJBbTuS6iHPyGOaMllfEEagqCRl2zo1ScxwiJ42beWjg5p/gjOJ+Exva8n0Jp8g5n
-         +KCm8ABCuTohwJpRuP6ts15HY4qfq7N2E7GXc1cFYIUAa37PHHZax2gOHpTMiOmc7kIV
-         5zKA==
-X-Gm-Message-State: AOAM530QMRdatMmOc3zKhZnCUwhTOfTT67iOFv3ihVqLgCZEQ0FlmHYU
-        ChgK7PsHlwiVj+belAi9/RX8NQcQ9U2D/7OwnFU=
-X-Google-Smtp-Source: ABdhPJyQMAVzbMp/vk4N5ubvPQqpMh6HYwn2PFBBNlLkl7/flU3MnlXwycAJFBUNuadVNdkKCWX+l5Gz2WryQ30kObI=
-X-Received: by 2002:a05:620a:1905:: with SMTP id bj5mr2017294qkb.124.1631085793458;
- Wed, 08 Sep 2021 00:23:13 -0700 (PDT)
+        bh=Y5oxOfqa+jGQ0fJQGJq3gmhfZxrLYBOPvpDpkldQke0=;
+        b=gVBreQa0DfhoWUvTDNVdVETmhA2ZGt2E4NebCEucFtS0kk4lbbd0tz65+1/ZcmCWBR
+         +qJ0awYKB389VuecicR/43cZ/U+9rZJy0OaM1LXNAtoeFZuek9LDNtF3FkbtODctFvnG
+         NVMiYcDUdlbn3XNpM+o5Cx4EfTgP3BGz2d5dGFttAEMmye8AaJCc+L5k6OZFDrhJYv5Z
+         Qu26cDp8hKd4NKUvVhwPvLz+QpAcgQ654z50nfAXZDsy5mbLSvyBs6dr6ExMig7qtunB
+         OjbuXjQwDwgkCOjo6p8UjkEWoGDD/7jjolC7Dpz76NWeRDQ/g8KUANLMENJjEWpNL8k/
+         YXIQ==
+X-Gm-Message-State: AOAM531F3ockkGoY/nD9rDiTi01p95SF4jmCHxZpGMgKSZdC0X0XaCPr
+        ZUZHXhduyF+yQ8rooGt66N1zHqvTz5DEmK26tEvqFQ==
+X-Google-Smtp-Source: ABdhPJwhE7rBpdZTJieuGvVC085G3HLnlR/XC9ofe1Zhw1bZwAPzYtYLpGCxF+HzbU3M+xqqRJ71oRA1DwdNZQxafAk=
+X-Received: by 2002:a17:906:a018:: with SMTP id p24mr2529713ejy.349.1631085987755;
+ Wed, 08 Sep 2021 00:26:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <1630661377-31244-1-git-send-email-shengjiu.wang@nxp.com>
- <1630661377-31244-4-git-send-email-shengjiu.wang@nxp.com> <YTJQcIOU1mMxoIpF@robh.at.kernel.org>
- <CAL_JsqL_5U0QB5d5VmgX3PMa9LNkyFa+RHWSAzeeTzq6xR=_nA@mail.gmail.com>
- <CAA+D8ANSR49juFDvPxHECKv7-uSowjdxruqnb=z6vu_CEkujjg@mail.gmail.com> <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 8 Sep 2021 15:23:02 +0800
-Message-ID: <CAA+D8AOvF49f=sur19OApaq7FcovvbmJcG4tBKmcXb377h+CNA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
- binding document
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>
+References: <20210907083613.31268-1-brgl@bgdev.pl> <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+In-Reply-To: <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 8 Sep 2021 09:26:17 +0200
+Message-ID: <CAMRc=MdFCOiei0xxDuChfM0puu2XDkAKC9nsr+Cw5kyCFSjYZA@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: updates for v5.15
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:50 PM Rob Herring <robh+dt@kernel.org> wrote:
+On Tue, Sep 7, 2021 at 9:36 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Fri, Sep 3, 2021 at 9:58 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> On Tue, Sep 7, 2021 at 1:36 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 > >
-> > Hi Rob
-> >
-> > On Sat, Sep 4, 2021 at 12:50 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > On Fri, Sep 3, 2021 at 11:42 AM Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > On Fri, 03 Sep 2021 17:29:36 +0800, Shengjiu Wang wrote:
-> > > > > Define the compatible string and properties needed by imx_dsp_rproc
-> > > > > driver.
-> > > > >
-> > > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > > > ---
-> > > > >  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 131 ++++++++++++++++++
-> > > > >  1 file changed, 131 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
-> > > > >
-> > > >
-> > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > >
-> > > I take that back. What's the difference with this binding and
-> > > Documentation/devicetree/bindings/dsp/fsl,dsp.yaml?
-> >
-> > Some devices, but two kinds of driver. one for remoteproc
-> > framework,  another one is for ALSA.
-> > So should I merge fsl,imx-dsp-rproc.yaml to fsl,dsp.yaml?
+> >  We also have a new/old GPIO driver for rockchip - this
+> > one has been split out of the pinctrl driver, hence the pull from the
+> > pinctrl tree you can see in my branch. Another merge in the tree is from Andy
+> > for the intel drivers.
 >
-> You can have 100 drivers for all I care, but it's 1 DT binding for 1
-> piece of h/w.
+> I appreciate the heads-up, but just *look* at those merges.
 >
+> The intel GPIO merge at least talks about what it does, and looks
+> sane. I'm not convinced that automated shortlogs are great, but
+> whatever. The merge isn't bad.
+>
+> The rockchip one?
+>
+> All I can say is "WTF?"
+>
+> This is the complete and full commit message:
+>
+>     Merge branch 'ib-rockchip' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
+> into gpio/for-next
+>
+> what part of that screams "that's an acceptable commit message" to you?
+>
+> If the reason for that merge was that you want to have the current
+> state so that you can split it up, then SAY SO, for chrissake!
+>
+> Not that useless commit message.
+>
+> Why do I have to tell this to people SEVERAL TIMES EVERY SINGLE MERGE WINDOW?
+>
+> Merge commits need explanations. They need explanations for why the
+> merge is done, and what the merge pulls in. Not this "single line that
+> doesn't explain anything".
+>
+> Dammit.
+>
+> I've pulled this, but I'm upset. I'm upset because I've told people
+> literally hundreds of times by now. Merge commits are not some trivial
+> thing that should be ignored. Quite the reverse. Merge commits are
+> generally worth *more* explanation than normal commits, and should
+> take *more* effort and thought than some random code commit that is
+> obvious from just the code.
+>
+> Exactly because merges are *not* obvious from just looking at the
+> code. It's not some one-liner that is self-explanatory.
+>
+> If you cannot be bothered to make proper merge messages, then don't do
+> the merge. If y ou don't have a good reason for the merge that you can
+> articulate, then don't do the merge. If you can't explain what you are
+> merging, then don't do the merge.
+>
+> It really is that simple.
+>
+> I've pulled this, but I'm really fed up.
+>
+>             Linus
 
-Ok, I will merge it to fsl,dsp.yaml
+Hi Linus,
 
-Best regards
-wang shengjiu
+Thanks and sorry, noted for the future PRs.
+
+Bartosz
