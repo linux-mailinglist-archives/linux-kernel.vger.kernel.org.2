@@ -2,151 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6623403A92
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C433E403A9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349353AbhIHN2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:28:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44302 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235294AbhIHN2o (ORCPT
+        id S244451AbhIHNaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232010AbhIHNaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:28:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631107656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4zJCMyAEhGNeqtEq1uHSEAAohctgkdWhGGLuAjpd4pI=;
-        b=WhWCvsq94uaKR5T+/+I5mSL64ZbuhtRciK/1HOyqTFadJZgpUKfRxWpd+6+Kkj3Be0HtFM
-        zjoHnNJmQH1yL4mKZlfBrU8QRF+rbMZHPgeS+q9p3UO5lRrwqJEmVdDSeCqriG2zvfN8i/
-        8G9aLvCYKUcTJRoXzoQStewaFJH0j5Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416--9IIZwwuMYWWGNmY0bHy9w-1; Wed, 08 Sep 2021 09:27:35 -0400
-X-MC-Unique: -9IIZwwuMYWWGNmY0bHy9w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82ED0802929;
-        Wed,  8 Sep 2021 13:27:34 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.195.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 71CE4194B9;
-        Wed,  8 Sep 2021 13:27:28 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Ping Fang <pifang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org
-Subject: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment > 1
-Date:   Wed,  8 Sep 2021 15:27:27 +0200
-Message-Id: <20210908132727.16165-1-david@redhat.com>
+        Wed, 8 Sep 2021 09:30:14 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A130C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:29:07 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id x5so2314243ill.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UZon1PexiuAqnoGAx/YovVm5FTCLjCK9W9VSCqfLDoc=;
+        b=Bz156U5Bge4agLazjVmoP4E7f0eI/M0VhXa6DRSuun2bR7xGB3mu0c1nDxpjkcTT+/
+         sqRXKRIsYkbuv7QNJvAnZkoFZrvC++NFVq3xIiUsOinDETvggmwCFF2TmdywVVcVg23s
+         Gl6/3Y2Rp+wsrRDj3oVLnaj9QJya1/yBNI7RIYpidd0EqVHINJ9buEl9++vDMAJO5FGO
+         oG+mzqJEWEMXQ1jevV9m0Gbzt+UGfRE0BjTepjANSqcqYWfETvm7kmocwOwT0Z+LB3dC
+         b8A8V5X2avxsX45x824lbIEcGweJ+77ai2ovHucltw+Hr598+1xH3O/0q/VYwvMEAdYC
+         NQHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UZon1PexiuAqnoGAx/YovVm5FTCLjCK9W9VSCqfLDoc=;
+        b=F1gpob/LOHXThbj4YcB61752V5GgNATqXdEbmg2IpM9cqj8dtBNP5OeqFUSgG+Z64g
+         X71eOeVxSVBRrKXCrMV5ZF8vcrC0vcJadi87/7xbRyBchGMrsGbjFLbqfeYK92jrIqLi
+         4iIa1jLe8xiuudCO2Ngabk+sjGMZMbAjG2r465yvern3UvY+HBwZcRDe0M/magfMv2/0
+         96EZEvZahtUynZQuEslz0GmKIUR07H4sH3u1VN45Tsa0+maW+zzbne7KE8G1O75/ZQ0T
+         Oije+gEkdgLPnTKkG0aWHS4YNbSZ73zCu0Tz0k3QjTLtnTc/WuN3WQWkzogmrhGwWbjN
+         Cocg==
+X-Gm-Message-State: AOAM530GEAtsuEwAyE1AslepHKSUYlZLTlHLjI9XwqHmdU++cj/9A7F/
+        J8+7eK1chZsyp8m1k+acWo8=
+X-Google-Smtp-Source: ABdhPJyiTdK1f2NXTp10PhVbJfkFE5atXpkQiwRwkhFkxGBpEYkOZzIXPmHH8OXHp3P9bOqZgD5RXg==
+X-Received: by 2002:a92:cb4b:: with SMTP id f11mr2923245ilq.189.1631107746416;
+        Wed, 08 Sep 2021 06:29:06 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id z16sm1126874ile.72.2021.09.08.06.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 06:29:06 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EA32B27C0054;
+        Wed,  8 Sep 2021 09:29:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 08 Sep 2021 09:29:04 -0400
+X-ME-Sender: <xms:n7o4YUJdphQk0kNygx7EgTVkY5OjpAxZTmf2PHnGZUI7K1tDqpKixg>
+    <xme:n7o4YUIdbb833382rjfujz1BTJQ9_aG5O8QM2AqdwNmwm6T-1GVzK_YvggBoDsBJG
+    9k240yTvTQKlMtlYw>
+X-ME-Received: <xmr:n7o4YUsZ97UVtbF45taTINNDVAJTp7oVPJ_aLCUmXXeX9Df1hqI3FA0-ltM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefjedgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:n7o4YRaT9hrZmcSYPKFvmdQGTPoF2Wzwso74Vyaw-aP7AIoRz-YePA>
+    <xmx:n7o4YbYoruvim9x_kS1fgUVmmfMk9stifl0YGU1oZlax6wNSzjpwhQ>
+    <xmx:n7o4YdB1aa67byj59hBhRGtzm9nrbiX96k39zcac4QW_pub-TU10jQ>
+    <xmx:oLo4YZCciLxZiGmIz0WzCLZ_4LeLF5Q6dAiQnCEMz5d6zb0cj2W4UXCxDQc>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Sep 2021 09:29:03 -0400 (EDT)
+Date:   Wed, 8 Sep 2021 21:27:35 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <YTi6R1SqNeX8mDfd@boqun-archlinux>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-find_vmap_lowest_match() is imprecise such that it won't always
-find "the first free block ... that will accomplish the request" if
-an alignment > 1 was specified: especially also when the alignment is
-PAGE_SIZE. Unfortuantely, the way the vmalloc data structures were
-designed, propagating the max size without alignment information through
-the tree, it's hard to make it precise again when an alignment > 1 is
-specified.
+On Wed, Sep 08, 2021 at 01:51:24PM +0200, Peter Zijlstra wrote:
+[...]
+> @@ -201,23 +207,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+>  {
+>  	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>  	unsigned long flags;
+> +	int readers;
+>  
+>  	/* Take the rtmutex as a first step */
+>  	if (rwbase_rtmutex_lock_state(rtm, state))
+>  		return -EINTR;
+>  
+>  	/* Force readers into slow path */
+> -	atomic_sub(READER_BIAS, &rwb->readers);
+> +	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
+>  
+> -	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+>  	/*
+>  	 * set_current_state() for rw_semaphore
+>  	 * current_save_and_set_rtlock_wait_state() for rwlock
+>  	 */
+>  	rwbase_set_and_save_current_state(state);
+> +	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+>  
+> -	/* Block until all readers have left the critical section. */
+> -	for (; atomic_read(&rwb->readers);) {
+> +	/*
+> +	 * Block until all readers have left the critical section.
+> +	 *
+> +	 * In the case of !readers, the above implies TSO ordering
+> +	 * at the very least and hence provides ACQUIRE vs the earlier
+> +	 * atomic_sub_return_relaxed().
+> +	 */
+> +	while (readers) {
+>  		/* Optimized out for rwlocks */
+>  		if (rwbase_signal_pending_state(state, current)) {
+>  			__set_current_state(TASK_RUNNING);
+> @@ -230,8 +243,12 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+>  		 * Schedule and wait for the readers to leave the critical
+>  		 * section. The last reader leaving it wakes the waiter.
+>  		 */
+> -		if (atomic_read(&rwb->readers) != 0)
+> +		readers = atomic_read(&rwb->readers);
+> +		if (readers != 0)
+>  			rwbase_schedule();
+> +		/*
+> +		 * Implies smp_mb() and provides ACQUIRE for the !readers case.
+> +		 */
 
-The issue is that in order to be able to eventually align later,
-find_vmap_lowest_match() has to search for a slightly bigger area and
-might skip some applicable subtrees just by lookign at the result of
-get_subtree_max_size(). While this usually doesn't matter, it matters for
-exact allocations as performed by KASAN when onlining a memory block,
-when the free block exactly matches the request.
-(mm/kasn/shadow.c:kasan_mem_notifier()).
+->readers may get changed to non-zero here, because ->wait_lock is not
+held by the writer, and there could be readers in slow-path running.
+We need to re-read ->readers after holding ->wait_lock. Otherwise, we
+may use an old value of ->readers, and grab a write lock while there
+still exists readers.
 
-In case we online memory blocks out of order (not lowest to highest
-address), find_vmap_lowest_match() with PAGE_SIZE alignment will reject
-an exact allocation if it corresponds exactly to a free block. (there are
-some corner cases where it would still work, if we're lucky and hit the
-first is_within_this_va() inside the while loop)
+Regards,
+Boqun
 
-[root@vm-0 fedora]# echo online > /sys/devices/system/memory/memory82/state
-[root@vm-0 fedora]# echo online > /sys/devices/system/memory/memory83/state
-[root@vm-0 fedora]# echo online > /sys/devices/system/memory/memory85/state
-[root@vm-0 fedora]# echo online > /sys/devices/system/memory/memory84/state
-[  223.858115] vmap allocation for size 16777216 failed: use vmalloc=<size> to increase size
-[  223.859415] bash: vmalloc: allocation failure: 16777216 bytes, mode:0x6000c0(GFP_KERNEL), nodemask=(null),cpuset=/,mems_allowed=0
-[  223.860992] CPU: 4 PID: 1644 Comm: bash Kdump: loaded Not tainted 4.18.0-339.el8.x86_64+debug #1
-[  223.862149] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[  223.863580] Call Trace:
-[  223.863946]  dump_stack+0x8e/0xd0
-[  223.864420]  warn_alloc.cold.90+0x8a/0x1b2
-[  223.864990]  ? zone_watermark_ok_safe+0x300/0x300
-[  223.865626]  ? slab_free_freelist_hook+0x85/0x1a0
-[  223.866264]  ? __get_vm_area_node+0x240/0x2c0
-[  223.866858]  ? kfree+0xdd/0x570
-[  223.867309]  ? kmem_cache_alloc_node_trace+0x157/0x230
-[  223.868028]  ? notifier_call_chain+0x90/0x160
-[  223.868625]  __vmalloc_node_range+0x465/0x840
-[  223.869230]  ? mark_held_locks+0xb7/0x120
-
-While we could fix this in kasan_mem_notifier() by passing an alignment
-of "1", this is actually an implementation detail of vmalloc and to be
-handled internally.
-
-So use an alignment of 1 when calling find_vmap_lowest_match() for exact
-allocations that are expected to succeed -- if the given range can
-satisfy the alignment requirements.
-
-Fixes: 68ad4a330433 ("mm/vmalloc.c: keep track of free blocks for vmap allocation")
-Reported-by: Ping Fang <pifang@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: linux-mm@kvack.org
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/vmalloc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index d5cd52805149..c6071f5f8de3 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1153,7 +1153,8 @@ is_within_this_va(struct vmap_area *va, unsigned long size,
- /*
-  * Find the first free block(lowest start address) in the tree,
-  * that will accomplish the request corresponding to passing
-- * parameters.
-+ * parameters. Note that with an alignment > 1, this function
-+ * can be imprecise and skip applicable free blocks.
-  */
- static __always_inline struct vmap_area *
- find_vmap_lowest_match(unsigned long size,
-@@ -1396,7 +1397,15 @@ __alloc_vmap_area(unsigned long size, unsigned long align,
- 	enum fit_type type;
- 	int ret;
- 
--	va = find_vmap_lowest_match(size, align, vstart);
-+	/*
-+	 * For exact allocations, ignore the alignment, such that
-+	 * find_vmap_lowest_match() won't search for a bigger free area just
-+	 * able to align later and consequently fail the search.
-+	 */
-+	if (vend - vstart == size && IS_ALIGNED(vstart, align))
-+		va = find_vmap_lowest_match(size, 1, vstart);
-+	else
-+		va = find_vmap_lowest_match(size, align, vstart);
- 	if (unlikely(!va))
- 		return vend;
- 
-
-base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
--- 
-2.31.1
-
+>  		set_current_state(state);
+>  		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+>  	}
+[...]
