@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710B4403ED3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB88403EE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240759AbhIHSDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S1348124AbhIHSKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349170AbhIHSDj (ORCPT
+        with ESMTP id S229689AbhIHSKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:03:39 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A682C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:02:31 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id z18so5983674ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:02:31 -0700 (PDT)
+        Wed, 8 Sep 2021 14:10:40 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F09C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:09:32 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so1079021ooe.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Gu8e1ociaUygZlHpYt0cJFnGkDC9qTdRaei69NSNSJo=;
-        b=bzlU7hyESlqwXFEy6CXaBei8anUsfhiBSIFDK0JdeZs9KvtO5ksiKvnENwYQj2GG65
-         KF+/sxQFRxZ93iPOHo/nOw6hXfMyv7f40Wp3FPrhaXShzaRHFkRFHvMRhUpOXJgwSYeC
-         ed7WBPYati5cnCNJnqXa3iUOxk/35W2J+gMt6vlZhK6q41XAQMBXg0t7kt0ETRur4TDt
-         sxxeHwnjWC5ZuhQ8ORKnp6WyZDXXHB1DXuYhQn7eGVH3UjcjFxXatGvlSFY01I6AAJ5m
-         uSMikb3hN08PQXAMZPA0gh6ziNnHLFq4sKqKIkaIyexsFuhfsYtd/sg3N4qsuQvcJm0A
-         irYA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BHTh1HO906gMjGsq/6c8x/AFAmsBhynFAoihw7tpJW4=;
+        b=MlZxyo+1q1YTDCfKyB+mJppyYe+4VNRTPxxVr4MozOrje+oXFksFm6Q5vI0DvrHgmH
+         lOgCE+iwZ640bunqIRN5j9A2mTl9AmFDjnQAtRHfma976UHd787FrR8RXpjWndw/RNUi
+         zXK9niUZmv+A4Rxrv5pzbbTBVlCvolUMm7DKM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Gu8e1ociaUygZlHpYt0cJFnGkDC9qTdRaei69NSNSJo=;
-        b=PyjUyPWozcOEPagaRveEeWHwi1A+hCvDV8p0ymleK0dwTt1JeAthk/XZPBWEuz0v4z
-         F5CB4Ip1vrvUxbCPzYnNLWrspIhTQwr5AwPAaI89Ui1AycVkQBhEedZ6ULtI9hcpiFpy
-         WnAPgdt66FuA0qkXNCUWFIVc3zHoRZs8juEMo/Jd1WCQbJtvq/a+2HO2xBT/AQwDTvTn
-         xT7GRdOivVDUD4WGKXtGL2cRr2r2t7Dp9EEhbM4i9Wf+mJ4fC8EW+OLF4xDX5hjEEakF
-         IfJEUVapMNtc0Fr/ZZC7hPpvIsT8Ie2yd3O4DGCD0j9DUjmQmtzEJG/HCneOiCiqMiKv
-         osQg==
-X-Gm-Message-State: AOAM533oAxTsM23khQR7IPE6SglhNZBVpWSHhtT7RPKq4P90U93FoadN
-        hIAI9B9D9v8fcdbEFTijuXAyCvIWaKAzEWEW0CQ=
-X-Google-Smtp-Source: ABdhPJwIb1ddyirqwdg5B4oEkCvDMUB6yzgpE9YSqbCn7aIP/xZGBnVG4XajzjFp7Jvz1KEcTD5xfHdoW/j0UKWDxFA=
-X-Received: by 2002:a25:bc0f:: with SMTP id i15mr6135082ybh.233.1631124150445;
- Wed, 08 Sep 2021 11:02:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BHTh1HO906gMjGsq/6c8x/AFAmsBhynFAoihw7tpJW4=;
+        b=zmk6cEGfxsOtz/tnY3vK+a7c7wv/jbNLF/qeVS/yeBmUjIPER1rqUAk8B18R3oWGHC
+         YOnaJ3tcBVcRaD1J3d9xHtUQgiF29jC9hDmEUWtugFAJiohi9ronzXsym8aJyJPcHTxz
+         IsrTzDuV2Od+WXM2Rzz2H7hJ4lJB9Lk73t/EKpeH2TsoNS7QOYo1G4HrUaaftolqFP8D
+         pVgCPUOIBUg78HmvEoOundprrSSNyMuNzRBQ/K1b2OWz1dZ3LpBLXw0RVWszpPx4FWhy
+         KoD00qFat16gYrCVi6vI0N4+M+rqS9xHHDC0ZO87ix2sYd+Y7/Lpkb0Xoc7ZYS+RCYba
+         HIgw==
+X-Gm-Message-State: AOAM532YzGYB0UXQTjk+MhTu9tLjmjM49+0J1HPHtM7sRoe1hAOBjZg8
+        axq/Ywk7nt7iuaPjQIuTtK6+ZgSYYOeXSw==
+X-Google-Smtp-Source: ABdhPJwFGhEmfWjcLGhnLgcYA/2CltBlxy13ISRKqP/yttSL+YGvgRNmVobmNXy3JiajRstx2Hjnaw==
+X-Received: by 2002:a4a:e792:: with SMTP id x18mr4041178oov.53.1631124570569;
+        Wed, 08 Sep 2021 11:09:30 -0700 (PDT)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com. [209.85.167.179])
+        by smtp.gmail.com with ESMTPSA id t21sm584898otl.67.2021.09.08.11.09.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 11:09:29 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id v2so4180277oie.6
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:09:29 -0700 (PDT)
+X-Received: by 2002:aca:4557:: with SMTP id s84mr3270975oia.77.1631124568911;
+ Wed, 08 Sep 2021 11:09:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7000:8d0a:0:0:0:0 with HTTP; Wed, 8 Sep 2021 11:02:29
- -0700 (PDT)
-Reply-To: ubapjplc@gmail.com
-From:   "Mr. Jagodago W. Van" <mrwilliamvan@gmail.com>
-Date:   Wed, 8 Sep 2021 19:02:29 +0100
-Message-ID: <CAG_pqGkWdAd1YLZBLqrNps_daB+tVjswctyN-CGiDPLQeKg2dg@mail.gmail.com>
-Subject: Attention my dear sir/madam,
-To:     undisclosed-recipients:;
+References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+ <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid> <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
+In-Reply-To: <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 8 Sep 2021 11:09:17 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXPLrpfnm70RLDD+c8Df8X3-q5FaOjCDWFSbzNwim1MisA@mail.gmail.com>
+Message-ID: <CA+ASDXPLrpfnm70RLDD+c8Df8X3-q5FaOjCDWFSbzNwim1MisA@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/2] arm64: dts: rockchip: add Coresight debug
+ range for RK3399
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Attention my dear sir/madam,
-My greeting to you, we have received a mail from the Ministry of
-Finance to release your long awaited payment, our bank management has
-instructed me to contact you for immediate release of the fund and
-your payment file code sum of Three Million and Five Hundred Thousand
-US Dollars only. To notify you the process of (T.T) for the releasing
-of your entitlement, through online banking transfer
-payment. Furthermore, you have to open a non-resident current account
-with our bank which the fund will be credited into so the transfer
-will not be difficult through transferring your Fund in your
-domiciliary bank account there in your Country. As we wait for
-your response as a matter of urgency. Confirm to us immediately
-you receive this message. Use our website;
-www.ebid.com to open our online account check online banking. Be
-informed that the payment will stop after the third week of September
-2021, this is very important and your last opportunity although it
-comes to those who are prepared for it. Get back to us as soon as you
-read this mail.
+On Wed, Sep 8, 2021 at 8:10 AM Doug Anderson <dianders@chromium.org> wrote:
+> On Tue, Sep 7, 2021 at 9:46 AM Brian Norris <briannorris@chromium.org> wrote:
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > @@ -433,6 +433,54 @@ usbdrd_dwc3_1: usb@fe900000 {
+> >                 };
+> >         };
+> >
+> > +       debug@fe430000 {
+>
+> I think your sort order is wrong? 0xfe430000 comes before 0xfe900000?
 
-Thanks your sincere
-Mr. Jagodago W. Van
-Manager and Payment Unit
-ECOWAS Bank for Investment and Development (EBID)
-Tel:+221-708-744-401
-E-mail: ubapjplc@gmail.com
+Yep... In attempt to explain my own brain: perhaps I assumed the
+USB-related nodes must be uninterrupted, which caused my sorting eyes
+to skip over.
+
+v2 is coming.
+
+Thanks,
+Brian
