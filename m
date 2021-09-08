@@ -2,210 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F874403E17
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49387403E20
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352379AbhIHRGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:06:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235666AbhIHRGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:06:11 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1301961139;
-        Wed,  8 Sep 2021 17:05:00 +0000 (UTC)
-Date:   Wed, 8 Sep 2021 18:08:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Roan van Dijk <roan@protonic.nl>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1 3/3] drivers: iio: chemical: Add support for
- Sensirion SCD4x CO2 sensor
-Message-ID: <20210908180826.7074161d@jic23-huawei>
-In-Reply-To: <7b93a51a-3856-63a8-20fb-e2b7f341254a@protonic.nl>
-References: <20210901105911.178646-1-roan@protonic.nl>
-        <20210901105911.178646-4-roan@protonic.nl>
-        <20210905152253.3ea6beb3@jic23-huawei>
-        <7b93a51a-3856-63a8-20fb-e2b7f341254a@protonic.nl>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1352398AbhIHRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352337AbhIHRIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:08:52 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B17C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:07:44 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n27so4027828oij.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E4tOgOt4yehd+aPYxD2GXw5G5+5COCK1/J0EptH+YuM=;
+        b=Lht57q8kyiusHO0ElOuT7VBKg0czz5rVv5T1bwBy1eW+n36Goac9gNjuGKDhChI4YJ
+         RPStEbU3JJZyI9dlyEj6Gux9JD6JN+eVM9NorAt/IYbkqldVFrg8QCm/Hy3xuoD+azpW
+         fplHX1drC2ZWwHDISq4dmbnpo5txAGI9d4RmjbYN8XZD78JFPdmCg/FDQBoGJ0C/kdae
+         2lTFQKTBWnR0eSqHd4yn2ENxhHvyv0t3Fw9ic103ZEWsSn7WvhT858fodmzp7SQfrdel
+         IqoTvSfxrYkFVVhZmSdV2ZYSATA1qIIuFzuCrFVy5rLDENRwgR9eDTVXUKyXTkk2wpeJ
+         lOMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E4tOgOt4yehd+aPYxD2GXw5G5+5COCK1/J0EptH+YuM=;
+        b=R5h1rRvvBVr0LUATdtiJ6hTwOlB952V/ujkjFjdl7pOvZm6wtE5DwlkIslVll46aj5
+         L2sNv62OHtKjSJu/NdfgaC6eXFqM0Dv1+IlrjtCHXBx3pJpTnrrDth21qijLWjX/8EPh
+         2ky++idqJ/pVW1rgGVf2tCH9+xSY/Sb/lzx2ZlM4UtzHSzhs8Ab8OedI6q/wpRq7Ftw/
+         8uNaKsDqAElirY5DS+odQomwF/HacFidLWeuSWzmOodpbtg5aU6sAnWCt1DhEoyJy92p
+         KMGqeP9zrvCMo3Mr/HLeg+PZ3KygN/e+Bj6GPSfnT08ZoBzuMc74cRlYUyBANTRZJQsx
+         YXyQ==
+X-Gm-Message-State: AOAM532W0oM/eu4jI/LYlnwtfqfV2wdLyusi6dXrcL6+isQI8cfeLfgC
+        G65JXM+0t7oXKBB+Q5Au83K/Hg==
+X-Google-Smtp-Source: ABdhPJxbfp3uV4sVKN/yboHL2W/8Wr9ZjBACTTJiR6MFAPHCagAUyXDvUVboRobIZ68QRCxTKhTaEA==
+X-Received: by 2002:aca:3b85:: with SMTP id i127mr3157888oia.28.1631120863614;
+        Wed, 08 Sep 2021 10:07:43 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h17sm544947otl.74.2021.09.08.10.07.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 10:07:43 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 10:08:41 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     skakit@codeaurora.org, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, swboyd@chromium.org,
+        kgunda@codeaurora.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+Message-ID: <YTjuGVOmzkTot8z1@ripper>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
+ <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+ <YTeskY7kXsdmvGPp@google.com>
+ <b10e5f36fb0216a4c951d752f5103099@codeaurora.org>
+ <YTjW9LAGhTuszoa4@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTjW9LAGhTuszoa4@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sep 2021 16:10:40 +0200
-Roan van Dijk <roan@protonic.nl> wrote:
+On Wed 08 Sep 08:29 PDT 2021, Matthias Kaehlcke wrote:
 
-> On 05-09-2021 16:22, Jonathan Cameron wrote:
-> > On Wed,  1 Sep 2021 12:59:11 +0200
-> > Roan van Dijk <roan@protonic.nl> wrote:
-> >  
-> >> This is a driver for the SCD4x CO2 sensor from Sensirion. The sensor is
-> >> able to measure CO2 concentration, temperature and relative humdity.
-> >> The sensor uses a photoacoustic principle for measuring CO2 concentration.
-> >> An I2C interface is supported by this driver in order to communicate with
-> >> the sensor.
-> >>
-> >> Signed-off-by: Roan van Dijk <roan@protonic.nl>  
-> > Hi Roan,
-> >
-> > Various comments inline.
-> >
-> > Thanks,
-> >
-> > Jonathan  
-> Hi Jonathan,
+> On Wed, Sep 08, 2021 at 02:37:39PM +0530, skakit@codeaurora.org wrote:
+> > On 2021-09-07 23:46, Matthias Kaehlcke wrote:
+> > > On Mon, Sep 06, 2021 at 04:11:07PM +0530, satya priya wrote:
+> > > > Add pwm support for PM8350C pmic.
+> > > > 
+> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > > > ---
+> > > >  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> > > > b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> > > > index e1b75ae..ecdae55 100644
+> > > > --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> > > > +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> > > > @@ -29,6 +29,12 @@
+> > > >  			interrupt-controller;
+> > > >  			#interrupt-cells = <2>;
+> > > >  		};
+> > > > +
+> > > > +		pm8350c_pwm4: pwm {
+> > > 
+> > > What does the '4' represent, an internal channel number? It should
+> > > probably be omitted if the PM8350 only has a single output PWM
+> > > port.
+> > > 
+> > 
+> > pm8350c has four PWMs, but I think we can drop the '4' here.
 > 
-> Thank you for your feedback. Changes due to your
-> comments will be added in the next patch.
-> 
-> However, I have some questions about some of the comments.
-> I added my questions to your inline comments.
-> Could you help me with these questions?
-> 
-> Thanks,
-> 
-> Roan
-Replies follow,
+> Why is only one PWM exposed if the PMIC has for of them? Why number 4
+> and not one of the others?
 
-Jonathan
+The node should represent all 4 channels, which ones the board uses is
+captured in how they are bound to other clients - or defines as LEDs by
+additional child nodes.
 
-> >> +static int scd4x_read_raw(struct iio_dev *indio_dev,
-> >> +			struct iio_chan_spec const *chan, int *val,
-> >> +			int *val2, long mask)
-> >> +{
-> >> +	struct scd4x_state *state = iio_priv(indio_dev);
-> >> +	int ret;
-> >> +	uint16_t tmp;
-> >> +
-> >> +	mutex_lock(&state->lock);
-> >> +	switch (mask) {
-> >> +	case IIO_CHAN_INFO_RAW:
-> >> +	case IIO_CHAN_INFO_PROCESSED:
-> >> +		ret = iio_device_claim_direct_mode(indio_dev);
-> >> +		if (ret)
-> >> +			break;
-> >> +
-> >> +		ret = scd4x_read_poll(state);  
-> > Perhaps neater to wrap scd4x_read_poll() as scd4x_read_channel() that
-> > returns the value for the requested channel.  That would make this
-> > look like
-> > 		
-> > 		ret = scd4x_read_poll(state, chan->address);
-> > 		iio_device_release_direct_mode();
-> > 		if (ret)
-> > 			return ret;
-> >
-> > 		*val = ret;
-> > 		return IIO_VAL_INT;  
-> The scd4x_read_poll() can return errors, like -ETIMEOUT. In that case
-> we need to check here if ret has returned an error or data for the
-> requested channel. Which could make the readability a bit harder.
-
-This is pretty common for read type functions so readability impact
-is not great.
-
-> Besides the scd4x_read_poll() is also used in scd4x_trigger_handler()
-> to read all channels at once instead of just one channel. So I think
-> changing it to a request for one channel at a time, will not make it neater.
-
-I'm suggesting a wrapper around that function not removing it.
-What I would like to avoid is 'stashing' temporary variables inside
-the state structure when there is not need.  An alternative would be to
-pass in a buffer on the stack and put the value in that. 
-
-> Or am I mistaken? I could still rename the function to
-> scd4x_read_channels() if that makes more sense or do you have
-> other suggestions?
-
-The rename is a good idea anyway.
-
-> >> +		if (ret) {
-> >> +			iio_device_release_direct_mode(indio_dev);
-> >> +			break;
-> >> +		}
-> >> +		*val = state->meas[chan->address];  
-> > If you need to protect a local variable, use a local lock as well as
-> > iio_device_release_direct_mode().  Today that function provides the
-> > mutual exclusion you want but it isn't necessarily always going to do
-> > so...
-> >  
-> >> +		iio_device_release_direct_mode(indio_dev);
-> >> +		ret = IIO_VAL_INT;
-> >> +		break;
-> >> +	case IIO_CHAN_INFO_CALIBBIAS:
-> >> +		ret = scd4x_read(state, CMD_GET_TEMP_OFFSET, &tmp, 3);
-> >> +		if (ret)
-> >> +			break;
-> >> +		*val = 175000 * be16_to_cpu(tmp) / 65536;
-> >> +		ret = IIO_VAL_INT;
-> >> +		break;
-> >> +	}
-> >> +	mutex_unlock(&state->lock);
-> >> +
-> >> +	return ret;
-> >> +}
-
-...
-
-
-> >> +
-> >> +static ssize_t calibration_forced_value_store(struct device *dev,
-> >> +					struct device_attribute *attr,
-> >> +					const char *buf, size_t len)
-> >> +{
-> >> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> >> +	struct scd4x_state *state = iio_priv(indio_dev);
-> >> +	uint16_t val, arg;
-> >> +	int ret;
-> >> +
-> >> +	ret = kstrtou16(buf, 0, &arg);
-> >> +	if (ret)
-> >> +		return ret;
-> >> +
-> >> +	if (arg < SCD4X_FRC_MIN_PPM || arg > SCD4X_FRC_MAX_PPM)
-> >> +		return -EINVAL;
-> >> +
-> >> +	mutex_lock(&state->lock);
-> >> +	ret = scd4x_write_and_fetch(state, CMD_FRC, arg, &val, 3);
-> >> +	mutex_unlock(&state->lock);
-> >> +
-> >> +	if (val == 0xff) {
-> >> +		dev_err(state->dev, "forced calibration has failed");
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >> +	return ret ?: len;
-> >> +}
-> >> +
-> >> +static IIO_DEVICE_ATTR_RW(calibration_auto_enable, 0);
-> >> +static IIO_DEVICE_ATTR_WO(calibration_forced_value, 0);
-> >> +
-> >> +static struct attribute *scd4x_attrs[] = {
-> >> +	&iio_dev_attr_calibration_auto_enable.dev_attr.attr,  
-> > Documentation in Documentation/ABI/sysfs-bus-iio-scd4x or similar needed.  
-> What do you think is the best way to do this? To keep the ABI as simple
-> as possible, I used the same attributes for scd4x as used by the scd30 
-> driver.
-> These attributes are already described in
-> Documentation/ABI/sysfs-bus-iio-scd30. So should I make a new file for
-> the scd4x with the same information or maybe rename the scd30 file
-> to a shared file like Documentation/ABI/sysfs-bus-iio-scdxx?
-
-Unfortunately the documentation build system doesn't support repeated
-naming in multiple files.  So you need to pull this into a common file.
-Given it isn't c02 sensor specific, move it from the scd30 to the
-main sysfs-bus-iio file.
-
-> >> +	&iio_dev_attr_calibration_forced_value.dev_attr.attr,
-> >> +	NULL
-> >> +};
-> >> +
-
-...
+Regards,
+Bjorn
