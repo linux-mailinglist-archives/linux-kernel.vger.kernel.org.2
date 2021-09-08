@@ -2,135 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19DF403457
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B704403458
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhIHGk7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 02:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345901AbhIHGk5 (ORCPT
+        id S1347771AbhIHGnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 02:43:19 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15306 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238860AbhIHGnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 02:40:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE43BC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 23:39:49 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mNrF7-000821-T7; Wed, 08 Sep 2021 08:39:33 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mNrF3-00031K-86; Wed, 08 Sep 2021 08:39:29 +0200
-Message-ID: <5ffef736524f3d7fb69f97332576ee9913032bcd.camel@pengutronix.de>
-Subject: Re: [PATCH v10 07/17] dt-bindings: display: mediatek: merge: add
- additional prop for mt8195
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        hsinyi@chromium.org, fshao@chromium.org,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        nancy.lin@mediatek.com, singo.chang@mediatek.com,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Date:   Wed, 08 Sep 2021 08:39:29 +0200
-In-Reply-To: <20210908060312.24007-8-jason-jh.lin@mediatek.com>
-References: <20210908060312.24007-1-jason-jh.lin@mediatek.com>
-         <20210908060312.24007-8-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 8 Sep 2021 02:43:17 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H4CGV4mChz8swh;
+        Wed,  8 Sep 2021 14:41:38 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 8 Sep 2021 14:42:06 +0800
+Received: from [10.174.179.79] (10.174.179.79) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 8 Sep 2021 14:42:05 +0800
+Subject: Re: [PATCH v2 -next] riscv: mm: remove redundant trampoline PGD for
+ 64bit
+To:     Palmer Dabbelt <palmer@dabbelt.com>, <alex@ghiti.fr>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, <aou@eecs.berkeley.edu>,
+        "Anup Patel" <Anup.Patel@wdc.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        <wangkefeng.wang@huawei.com>, <tiantao6@hisilicon.com>,
+        <qiuwenbo@phytium.com.cn>, <rppt@kernel.org>, <jszhang@kernel.org>,
+        <mick@ics.forth.gr>
+References: <mhng-ea598bd7-cae0-4b60-83c5-b862a664116d@palmerdabbelt-glaptop>
+From:   Nanyong Sun <sunnanyong@huawei.com>
+Message-ID: <150d9366-c042-3119-d86f-163b579d91b4@huawei.com>
+Date:   Wed, 8 Sep 2021 14:42:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <mhng-ea598bd7-cae0-4b60-83c5-b862a664116d@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.79]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-On Wed, 2021-09-08 at 14:03 +0800, jason-jh.lin wrote:
-> add MERGE additional properties description for mt8195:
-> 1. async clock
-> 2. fifo setting enable
-> 3. reset controller
-> 
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  .../display/mediatek/mediatek,merge.yaml      | 30 +++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.yaml
-> index 75beeb207ceb..0fe204d9ad2c 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.yaml
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.yaml
-> @@ -38,6 +38,19 @@ properties:
->    clocks:
->      items:
->        - description: MERGE Clock
-> +      - description: MERGE Async Clock
-> +          Controlling the synchronous process between MERGE and other display
-> +          function blocks cross clock domain.
-> +
-> +  mediatek,merge-fifo-en:
-> +    description:
-> +      The setting of merge fifo is mainly provided for the display latency
-> +      buffer to ensure that the back-end panel display data will not be
-> +      underrun, a little more data is needed in the fifo.
-> +      According to the merge fifo settings, when the water level is detected
-> +      to be insufficient, it will trigger RDMA sending ultra and preulra
-> +      command to SMI to speed up the data rate.
-> +    type: boolean
->  
->    mediatek,gce-client-reg:
->      description:
-> @@ -50,6 +63,10 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
->      maxItems: 1
->  
-> +  resets:
-> +    description: reset controller
-> +      See Documentation/devicetree/bindings/reset/reset.txt for details.
+On 2021/8/14 6:08, Palmer Dabbelt wrote:
+> On Mon, 02 Aug 2021 05:43:02 PDT (-0700), alex@ghiti.fr wrote:
+>> Hi Nanyong,
+>>
+>> Le 28/07/2021 à 13:55, Alex Ghiti a écrit :
+>>>
+>>>
+>>> Le 28/07/2021 à 04:49, Nanyong Sun a écrit :
+>>>> Remove redundant trampoline PGD for 64bit and add more comment
+>>>> for why 32bit systems need trampoline PGD.
+>>>>
+>>>>
+>>>> +load_kernel_pgd:
+>>>> +        /*
+>>>> +         * Switch to kernel page tables.  A full fence is necessary
+>>>> in order to
+>>>> +         * avoid using the trampoline translations, which are only
+>>>> correct for
+>>>> +         * the first superpage.  Fetching the fence is guarnteed 
+>>>> to work
+>>>> +         * because that first superpage is translated the same way.
+>>>> +         */
+>>>> +        csrw CSR_SATP, a2
+>>>> +        sfence.vma
+>>>> +
+>>>> +load_done:
+>>>>       /* Set trap vector to spin forever to help debug */
+>>>>       la a0, .Lsecondary_park
+>>>>       csrw CSR_TVEC, a0
+>>
+>>
+>> I suppose stvec was set this way to catch any problem with early_pg_dir,
+>> you moved that and then this defeats this original purpose.
+>
+Hi Alex,
 
-From the example this looks like it could have a maxItems: 1.
+     I don't think so, before set early_pg_dir to satp, it's the 
+physical address world, we must set stvec as
 
-> +
->  required:
->    - compatible
->    - reg
+the first place in virtual address world we want jump to. And I don't 
+think ".Lsecondary_park " can catch
 
-Should the resets property be required for "mediatek,mt8195-disp-merge"?
+problem of bad early_pg_dir, if the basic page table is wrong, CPU also 
+can not go to the virtual address stored in stvec correctly.
 
-> @@ -67,3 +84,16 @@ examples:
->          power-domains = <&spm MT8173_POWER_DOMAIN_MM>;
->          clocks = <&mmsys CLK_MM_DISP_MERGE>;
->      };
-> +
-> +    merge5: disp_vpp_merge5@1c110000 {
-> +        compatible = "mediatek,mt8195-disp-merge";
-> +        reg = <0 0x1c110000 0 0x1000>;
-> +        interrupts = <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        clocks = <&vdosys1 CLK_VDO1_VPP_MERGE4>,
-> +                 <&vdosys1 CLK_VDO1_MERGE4_DL_ASYNC>;
-> +        clock-names = "merge","merge_async";
-> +        power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
-> +        mediatek,gce-client-reg = <&gce1 SUBSYS_1c11XXXX 0x0000 0x1000>;
-> +        mediatek,merge-fifo-en = <1>;
-> +        resets = <&vdosys1 MT8195_VDOSYS1_SW0_RST_B_MERGE4_DL_ASYNC>;
-> +    };
+More, in the original code, before set trampoline_pg_dir, what if the 
+trampoline_pg_dir had a problem?
 
-regards
-Philipp
+> Essentially.
+>
+> The specific issue is that the JTAG debug spec is defined (or at least 
+> was when I was using it, it's been years since I've needed to do that) 
+> in terms of committed instructions.  Thus if you end up in a position 
+> where the processer is unable to commit an instruction you also lose 
+> the ability to do anything meaningful with the debugger, thus 
+> essentially locking up the system.
+>
+> The most common way to end up in a situation where the processor is 
+> unable to commit an instruction is to have a fault with an invalid 
+> trap vector: maybe dangling from M-mode, the last boot, reset, 
+> whatever.  Then as soon as you take a trap the system locks up.  Any 
+> trap before we have a working trap handler is a bug, but it's way 
+> harder to debug things when the debugger doesn't function.
+>
+> There is of course no way to fundamentally prevent these sort of 
+> no-commitable-instruction situations, but I got into the habbit of 
+> just setting up a trivial trap entry point ASAP -- it probably took a 
+> dozen rounds of trying to debug the debugger only to realize it was 
+> per spec to hang, but that idiom eventually crept into pretty much 
+> everything.
+>
+> Not sure if the debug spec is still written this way (or if debuggers 
+> respect it), as I haven't had to use one in a while.
+>
+>>
+>>
+>>>>
+>>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>>> index ac48742fa6fc..306fcb2334fa 100644
+>>>> --- a/arch/riscv/mm/init.c
+>>>> +++ b/arch/riscv/mm/init.c
+>>>> @@ -219,13 +219,17 @@ unsigned long pfn_base __ro_after_init;
+>>>>   EXPORT_SYMBOL(pfn_base);
+>>>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>>> +#ifndef CONFIG_64BIT
+>>>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>>> +#endif /* CONFIG_64BIT */
+>>
+>>
+>> As stated in Documentation/process/coding-style.rst, it is better to use
+>> __maybe_unused rather than #ifdefs.
+>>
+>>
+I'm afraid that __maybe_unused can not save one page memory here.
+>>
+>> Overall this version adds more complexity to assembly code than I
+>> thought, but I don't see any way to improve that (which does not mean
+>> there isn't!).
+>>
+>> Thanks,
+>>
+>> Alex
+>>
+Thanks for your review, let me figure out a better solution.
+>>
+>>> _______________________________________________
+>>> linux-riscv mailing list
+>>> linux-riscv@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
