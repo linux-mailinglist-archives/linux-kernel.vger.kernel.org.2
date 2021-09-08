@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AC7403726
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CB9403730
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348545AbhIHJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347717AbhIHJoE (ORCPT
+        id S1351423AbhIHJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:44:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:9696 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351405AbhIHJoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:44:04 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F0BC061575;
-        Wed,  8 Sep 2021 02:42:56 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so3715918lfu.5;
-        Wed, 08 Sep 2021 02:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tcxDxLsWHGr7j1cvxMG2JLruNGk37pPqhVGSTiHNRTI=;
-        b=geGIKAXuwrxvpukyugOKBZCm3v64zHneGc4gUrxldK2pKi2rdjMNXnfj8dgx8K58uf
-         ogvILTSHxVVBAyqLgjYHreu0k52T++uJp9lOvpiKnpIQ8Bjyz2BIX7YxHlOjn1gortwr
-         QOkCGYy9DhxEIO6grVDNeIYuzaEpDIKRHkrvbnADXd+UfND9vaLyUaIZYjH3EbSwN7zu
-         hs5MGlB4oIUF1M2DKo6NAAxX4oQmhFNJxeIdmT7c6S72Ui3a+eZ0yvPXJLtQ+owtPjvi
-         S8dDAis6RFUobhVc7tVIRcEpEso4uMkcIqQrszZhhuu47/TXi4vZaBTUqGSAjOO/A+Pr
-         mauA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tcxDxLsWHGr7j1cvxMG2JLruNGk37pPqhVGSTiHNRTI=;
-        b=sejXb2knxRiBfHkL5IFAG5/MeeSFZWuJgc5FY3VajtYf5Yo9n4iSJ8CgtRYsPEhB0n
-         gKXVDWQjBCBSda4bhTvoMA884m0tK89UcbuXS0fOIzqMm4wUACjMenu8UgykUFWBbnwT
-         7gnrJ0x2ymlyTZIxQhwsEHUruz1fS88Cah6sQIvtizbvl6mm72AR+DD95O/Sfuq9ycyQ
-         DugQ+45mnDds2mXnob6ZxnhVWfkTxYXzdZecejbqREc1YxLpIXrsul2cwjGJLjaEIEbS
-         YTnAhboqOk8D3zWNOWmKPwJOwryMoYB1SucCYC8PGiJBAQuDe6aegFWshwqgxJc75iGT
-         TKZg==
-X-Gm-Message-State: AOAM531wMXNHE3DkG/EpEO0xPPBkOR8Ttsh960QIWFx2gwkT2SZHWGTr
-        lm6QwX+RHu0dW82awYCyKL0=
-X-Google-Smtp-Source: ABdhPJxrOHq4d4XwI1TCtF/j7UjWh+chOlUNydbJM4p4e9w/eyyWqy8UuaUlIgCkRr7/6Fru0VeUQg==
-X-Received: by 2002:ac2:4185:: with SMTP id z5mr2080264lfh.391.1631094175380;
-        Wed, 08 Sep 2021 02:42:55 -0700 (PDT)
-Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
-        by smtp.gmail.com with ESMTPSA id o8sm142625lfr.265.2021.09.08.02.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 02:42:54 -0700 (PDT)
-Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
-        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 1889gpxA015666;
-        Wed, 8 Sep 2021 12:42:52 +0300
-Received: (from paul@localhost)
-        by home.paul.comp (8.15.2/8.15.2/Submit) id 1889gnns015665;
-        Wed, 8 Sep 2021 12:42:49 +0300
-Date:   Wed, 8 Sep 2021 12:42:49 +0300
-From:   Paul Fertser <fercerpav@gmail.com>
-To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-Cc:     robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        lee.jones@linaro.org, osk@google.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org,
-        Konstantin Klubnichkin <kitsok@yandex-team.ru>
-Subject: Re: [PATCH v2 0/3] arm: aspeed: Add UART routing support
-Message-ID: <20210908094248.GZ23326@home.paul.comp>
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+        Wed, 8 Sep 2021 05:44:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631094219; x=1662630219;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ewAUrQJURfYDPGd+sHCrQMi5PMP+lIP4vadIYJIr6lE=;
+  b=0xxV13BBbw8KRL6MpiGVaoynEjNMkFiztmdzVWRhBR+Uqf6nNR0bZJUw
+   he6cUfNDe0wWL32U54144DZIzkZiXi+QEWLgehKHTQDPmTTCqMXA7E4H3
+   SPb/xgGhAM9u+0cvhOfQQ0gmSuw+EybG2pwi/bTsZ7C/+eJBOM14/w0ou
+   ahsJc04V/EyQ9k13c9Sangx3xPk7yy2u5AbZ0F3WLTxlq2cqYI8l06nMV
+   q3Vt85QIxX+y2MbDZOQaJKUsfp7tl2+FVM5Ph2940sA4lOHeHOBEs6WVc
+   +R2FlhOAGvUB6eke4cgUS201rYOpkZapHzsR64xwpsHIut39Is+cfdqYN
+   Q==;
+IronPort-SDR: 9pFAfS5XV+02xqzW5OodiOjHBUPh+cr+qejp7LxX+Jb9RMQVIE78yKNFKGhX8mhdJlJQRHCQyQ
+ 3j+mxqzeAR1es8a3QRiqGCF5tl1rQY+tTyVsUIJe2bNWIMo8MxGOSuI7YEOjBtalBjLkOTUKkl
+ wR68peioXHBQjV/AThJ8wGLolaC/YTIOv9YSnL5EKJvS92gdvA2hETWDmBCo3PXTJQZ9KSpVy/
+ qCPtY9v22z64uNJodl+NeAWj11hdfWSDd00vmZxr7Z29w6Kp0yuQdqammYuv/2R3o+hLyFrtTc
+ zZL2X4uBck5lAmDQhei+D0QK
+X-IronPort-AV: E=Sophos;i="5.85,277,1624345200"; 
+   d="scan'208";a="128601268"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Sep 2021 02:43:38 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 8 Sep 2021 02:43:38 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 8 Sep 2021 02:43:34 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama7g5: add chipid
+Date:   Wed, 8 Sep 2021 12:43:29 +0300
+Message-ID: <20210908094329.182477-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add chipid node for sama7g5.
 
-On Thu, Sep 02, 2021 at 10:18:13AM +0800, Chia-Wei Wang wrote:
-> Add UART routing driver and the device tree nodes.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
 
-Thank you for working on exposing this functionality in upstreamable
-way, that's so much better than all the register-level hacks in U-Boot
-and similar approaches!
+Hi Nicolas,
 
+This applies clean on top of series with title "ARM: at91: add new nodes
+to DT and fix for PM".
 
-One (somewhat) related question that I hope you do not mind answering:
-is there anything special regarding the routing or other configuration
-that needs to be done for VUART to work with IRQs?
+ arch/arm/boot/dts/sama7g5.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-The reason I ask is that I have tried hard (and I know several other
-developers who have too) to use VUART functionality but somehow as
-soon as Linux was booting on host and starting to use the IRQ-based
-16550 driver the communication was halted both ways. Basically, the
-BMC firmware was enabling VUART in DTS, then setting LPC address to
-0x3F8 and LPC IRQ to 4 and reading/writing using the corresponding
-/dev/ttyS* node. The datasheet is not clearly telling what other
-actions need to be performed for this to work. Not using VUART and
-instead routing UART1 lines with exactly the same pinctrl/pinmux
-worked just fine. One detail is that with VUART the host wasn't seeing
-new interrupts but when they were simulated by exporting the LPC
-interrupt pin via /sys/class/gpio and toggling it manually the data
-was getting through.
-
-Does UART1 need some explicit disabling for VUART IRQs to work? It
-looks like setting LPC address and IRQ number in VUART is enough to
-override the register part but probably not for the interrupt?
-
+diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
+index e50806cf7660..6c58c151c6d9 100644
+--- a/arch/arm/boot/dts/sama7g5.dtsi
++++ b/arch/arm/boot/dts/sama7g5.dtsi
+@@ -159,6 +159,11 @@ ps_wdt: watchdog@e001d180 {
+ 			clocks = <&clk32k 0>;
+ 		};
+ 
++		chipid@e0020000 {
++			compatible = "microchip,sama7g5-chipid";
++			reg = <0xe0020000 0x8>;
++		};
++
+ 		sdmmc0: mmc@e1204000 {
+ 			compatible = "microchip,sama7g5-sdhci", "microchip,sam9x60-sdhci";
+ 			reg = <0xe1204000 0x4000>;
 -- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+2.25.1
+
