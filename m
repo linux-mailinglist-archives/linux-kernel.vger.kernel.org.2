@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEB04033AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200B4033AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbhIHFPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S234727AbhIHFQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhIHFPw (ORCPT
+        with ESMTP id S232097AbhIHFQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:15:52 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71310C061575;
-        Tue,  7 Sep 2021 22:14:45 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso1380041otv.12;
-        Tue, 07 Sep 2021 22:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pyGzdXX+PpJNqBikj4EAmTcOGVssrcYKCfwJglYLCj0=;
-        b=SEFgrGHC9E2SXS1BNTVsZcc/MwXjrCKJaIxMWTzPguzBTM76KVl95fr89wj5dDe8am
-         uwoChaS/Vb+4ZshnhmDZHotWk5Hyk00mCqTKT4lcdZ/vFMmVfgzc6SDdiivfHkwOQL//
-         LZnaByQM3sZRMdP28APGWamlH0IbjBKVAeiCy0VO7CavQq5J+AX3hvnmYK00CwQ70lHO
-         QQaMQHX44JIZmv3wC2RtxknxD2MEatk5sCKYAEVJdIE45NTxEFB2Ez1tlIGV6ukJskkS
-         h18KBQQuecqRbltdDbwQdlTVxRf94QlX8TUwxeKisQ/BubHevy6gPusbe4PFuYWVX54g
-         z11g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pyGzdXX+PpJNqBikj4EAmTcOGVssrcYKCfwJglYLCj0=;
-        b=Q+zSgd22gm0+VN8FIsfv6WfrI3IA8kGFAPK91RcugYzQM5eP3MU1nyZYw06tPmluEm
-         CbQuEq/kYrf12YKiKGqy0dcCG9dLdrSh7/i2TJ96nFtZChOW+o9IsLcvALtpS8VgWDdj
-         M6FnvMCZZKbtrmvbIM1C82hZzFfjvFfllwtVXDMzfFGPMqpR+9hsvbd7tl2nOtOo0jbK
-         UzIAEv1qBqtDT2/XWlC62idwr2VFR0VemNJf53rpQ6QwKBJpaI4iOnHUzX+DXVKXYk3g
-         x5gpbSUwZFoV32VB8ZSt41KWVchbpgM9xkqPe0K01jR+tu3R+y+PZagce6226mGau0Wz
-         MBCQ==
-X-Gm-Message-State: AOAM533q5b+dMcJwRjD48YClVpdHHgojFGoAcTS2XwG92Xj6Zs4wm00R
-        IWFoDEGC9TeG9rKHLlFjdRDtEryR9/0=
-X-Google-Smtp-Source: ABdhPJwfoxZFnmDqIFU3Tx9LFM24pirkH+8yCM4hFLiexLDdw21H9Sxxekm8dUSlhUXRRe86Snkx4A==
-X-Received: by 2002:a9d:458b:: with SMTP id x11mr1562574ote.313.1631078084569;
-        Tue, 07 Sep 2021 22:14:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p65sm264176oif.57.2021.09.07.22.14.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 22:14:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-References: <20210906142615.GA1917503@roeck-us.net>
- <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
- <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net>
- <20210908042838.GA2585993@roeck-us.net>
- <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-Message-ID: <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
-Date:   Tue, 7 Sep 2021 22:14:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 01:16:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E23C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 22:14:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631078097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqW5xA+TX1dcVDvVzstFqcCZnje9NHJk8BbDlw9cLWo=;
+        b=0pjGLz44tFWJFn5RTSW8j9xwtPuGGlA1TWZD5ClImc6C+anZoInZoZYd5JPEfVB+X80mi4
+        ttmui4CpoY5QVPZzh28keWwPFi9omvWUql2LN8YuSEuw5Ms0d689KBvvX0iOxlq0B4qGJ2
+        U0j0LElZ0Q5q31ma4JA9o0lC1LAEzhdahVIRGqWF8MXtwPT5FTbAisOrwYts8VNTS1/GMm
+        9EyMyhXSQKzusl8N4LiGP7xLZRNGwTpajoEiZDBISOAf6FY1OexFvT9imQVyqCKxDFnTeM
+        3dSL44KCD+uFh/J0krq/m5VphgzP89KjyKihKwjV+bJErGUQRSxh8Wm3TosRHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631078097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqW5xA+TX1dcVDvVzstFqcCZnje9NHJk8BbDlw9cLWo=;
+        b=Df/eS6ewKxHpsZ7dug61lRbFvNTP8bdqeDZ9ozoPcCfLyqxd94ySoai47AzhYD17y5+WUj
+        vJasRZ6ciHdlVWAg==
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Ziljstra <peterz@infradead.org>
+Subject: RE: [patch V2 00/20] x86/fpu: Clean up exception fixups and error
+ handling in sigframe related code
+In-Reply-To: <cf9a841219904c048983fe2aee578761@intel.com>
+References: <20210907195612.321345EED@xen13.tec.linutronix.de>
+ <874kaw9mpo.ffs@tglx> <e190b62e3f954cc1804a41149a842641@intel.com>
+ <871r609m2i.ffs@tglx> <a883fe85b6b941b9bff44bc4b268bba1@intel.com>
+ <87v93c82zn.ffs@tglx> <87sfyg8118.ffs@tglx>
+ <cf9a841219904c048983fe2aee578761@intel.com>
+Date:   Wed, 08 Sep 2021 07:14:56 +0200
+Message-ID: <87pmtj8x7z.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:48 PM, Al Viro wrote:
-> On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
-> 
->> 	memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
+On Wed, Sep 08 2021 at 04:06, Tony Luck wrote:
+
+>>> Huch? That tree is based on 0bcfe68b876 and it just has those 20 patches
+>>> on top which should not at all interfere with your root filesystem
+>>> device. Let me verify.
 >>
->> but that just seems weird. Is there a better solution ?
-> 
-> (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
-> ioremap(), rather than casting explicit constants?
-> 
+>> I lost connection to my test machines. Will continue tomorrow morning.
+>
+> To save you some time I ran a bisect. It says the wheels fall off the bus at
+> patch 13/2
 
-Typecasts or even assigning the address to a variable does not help.
-The sanitizer function can not be static either.
+Yes, but that's not the real culprit. That's just the messenger.
 
-I don't know the hardware, so I can not answer the ioremap() question.
-
-This is just one example, though; there are several sprinkled throughout
-the code. Another is:
-
-arch/parisc/kernel/setup.c:	running_on_qemu = (memcmp(&PAGE0->pad0, "SeaBIOS", 8) == 0);
-
-where
-
-#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-
-and __PAGE_OFFSET depends on the configuration.
-
-That code runs early in setup; I don't think ioremap() would even
-be available at that time. A workaround for that problem would be
-a global variable pointing to PAGE0 (or of course an address sanitizer
-function), but again that seems odd just to make the compiler happy.
-
-Guenter
