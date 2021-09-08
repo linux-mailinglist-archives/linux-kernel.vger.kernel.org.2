@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B4F4032F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9464032F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344596AbhIHDhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        id S243962AbhIHDlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhIHDhI (ORCPT
+        with ESMTP id S234382AbhIHDlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:37:08 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E676C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:36:01 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id c10so882063qko.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:36:01 -0700 (PDT)
+        Tue, 7 Sep 2021 23:41:00 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE484C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:39:52 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id bd1so1359042oib.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 20:39:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=va3qLF49mXwo2qEKOYCT81K5dNv0miga50Xk8uaUMHc=;
-        b=KdFL2XFD5/y5UwVa42KQwzyaksZ6R0j6vfMdoPNDGiqtscT87XuhFWe7Bw2HcANZPJ
-         Kj4h3YGm+qvilaHkb4WiTwOKk1mYH32xrMTe3PLgRqupy3xMKS8uCA22um4n+ZTZtxx6
-         7Bv90uxICb/SeAs/zhLfY4H5x77SD2eNPaqlSCxGGXzmeqbZ8uQsgDpXanJX2LOhpNmO
-         PiiFYAjYlZUfd6hcOM1BJJ7e5l2+6K3NDcj3WVpN8mJNIyGoiQ1SWGtB6QxcbZVaM1if
-         rSgLKVDwk4kK94LG3C+BHpFF4Hz+WoppdBuq7neV82VuzPQQQWG/qutHVAXhPlXQbiOk
-         VxwA==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=GZ0a+q1qXF7MfrjInrLnr5HFObJ3ogMjBmTjbogeVrw=;
+        b=dX9mbpXkrmh1LTKr1u17bTeswHB33lW+3ok9Bgv+zTTgo6UDGp6SKIJhxNX2bOS042
+         +1ue2wyoNZ9z4Z1lfeJCE3nRIJACi/onP6pdf/H8tGud4qRyk3Mflb3Axqqav7vVAP7B
+         6fPs9wFc6pOED/0ZtVJwISqOuYyc6kwk8eEgc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=va3qLF49mXwo2qEKOYCT81K5dNv0miga50Xk8uaUMHc=;
-        b=s5EozvYN6OCwoR8FT7AxNKWMmOUxghoR7U/qRPvxE5woaJPc9Lhfv/VreznBWRIGSq
-         GcpCDNwY8Ztl3oiYGBwBI9VCxqJb6gbfYzns8D34h1odmcwdBm5+erp/8rI0w4w2Ln4R
-         eBgL6/OPP4X6g9nni/iHVBiXdh8Ggz9LqlJZHt1F0XZwSfW76R6p6b1nyUVn3yOtKEOg
-         xM3uO5GAh2fCjycM6hv3Xv4iWVzk823psKhI4NKYI0uBKROiAQuIsQRAUlMx3hT0ozWo
-         Xu00CmFY6RQrh2mG/OEosMfrKsbNWzeaZwCuPu3JJcuVSOsjY+ZpO7J6TBqqHeIlq6fR
-         mtHg==
-X-Gm-Message-State: AOAM530QHvaFQ74kP8wfCzp2/8A7k8u+pR0QekJy1ZtDwG8zM9F8wsCo
-        1rRlZ2LJ3C8zm+XpmWoeRIF7eknzKs3465HeqKk=
-X-Google-Smtp-Source: ABdhPJx+sTzc+/ItKGf/oZR9yrZTp57Dj5D+jR/Sbww8bLVl7HyibV2aBVpWdWiaqLxp6myTzkRHi2ezPv6RJisHaFo=
-X-Received: by 2002:ae9:dd43:: with SMTP id r64mr1492829qkf.225.1631072160836;
- Tue, 07 Sep 2021 20:36:00 -0700 (PDT)
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=GZ0a+q1qXF7MfrjInrLnr5HFObJ3ogMjBmTjbogeVrw=;
+        b=4oB2uvELRs6JGU3Hbx15ULdXZxRQq2IhvroHxfh/mlnWwOvzMvUOlnrwhbbnhfM7kL
+         XksxtAxpPoPbWu3lZC0rAqBD5GIPxtdaY46Wuga9MLUSHccOjD1ST9RmHDcoIIxOWfqx
+         h83CjCYLw3SU8xwQWSckqDa8jm9f6sPuhCFRpETS+m3fYpIVyad3yWav6CK3CvbCEB6d
+         u4E0R4L1DCR/x5251lOO0rQtMOk05zjlY43K0e97i3NUsdXnibQ3MIJCpSFMmraBN2ur
+         kUuc23EaMxckKsuDI6+qsp82nA8KMorZhUaMDwkIW2IBTu9fQrK9IzWwi0iiHjSnq+0l
+         gf+g==
+X-Gm-Message-State: AOAM530D6Tu/fKurTsSHDcFRZ49v/JHuDP9SeLOyEvM8Pc7e2JBpOL4Z
+        0uq1S5pkpDc0XVfexWYhBnK6AiFXnV3qH18qPMYicQ==
+X-Google-Smtp-Source: ABdhPJxdiiGjJ10TgqGvBQ1/7Lm6AUVwtj/VpCWil2bU6pYVcRN9bsCnM/aq8sDCvKEppqWfKKHKcnIE0NCcnfAWF34=
+X-Received: by 2002:a54:4419:: with SMTP id k25mr1090071oiw.32.1631072392333;
+ Tue, 07 Sep 2021 20:39:52 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 8 Sep 2021 03:39:51 +0000
 MIME-Version: 1.0
-References: <1631015968-9779-1-git-send-email-huangzhaoyang@gmail.com>
- <79c08d1d-eef5-bc15-8186-7e3367b4ebe7@suse.cz> <CAGWkznHY-iZ0ERbJdX-j4S5qOsUAzV0+x67maprz3W+xbq4hTQ@mail.gmail.com>
- <YTdoesOHCNoe+rGH@cmpxchg.org>
-In-Reply-To: <YTdoesOHCNoe+rGH@cmpxchg.org>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Wed, 8 Sep 2021 11:35:40 +0800
-Message-ID: <CAGWkznG+m0CgEHUAN4dmeenYYkBFP5JUzyLnzhfTK0Am25xXDA@mail.gmail.com>
-Subject: Re: [PATCH] mm : bail out from psi memstall after submit_bio in swap_readpage
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210623035039.772660-1-bjorn.andersson@linaro.org>
+References: <20210623035039.772660-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 8 Sep 2021 03:39:51 +0000
+Message-ID: <CAE-0n53SLqmXhJBPROeQj2HzShgYoFzDqsi-KCj3dgVHdDWUTA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
+ Generator binding
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 9:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Tue, Sep 07, 2021 at 08:15:30PM +0800, Zhaoyang Huang wrote:
-> > On Tue, Sep 7, 2021 at 8:03 PM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > >
-> > > On 9/7/21 13:59, Huangzhaoyang wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > >
-> > > > It doesn't make sense to count IO time into psi memstall. Bail out after
-> > > > bio submitted.
-> > >
-> > > Isn't that the point if psi, to observe real stalls, which include IO?
->
-> Yes, correct.
->
-> > IO stalls could be observed within blk_io_schedule. The time cost of
-> > the data from block device to RAM is counted here.
->
-> Yes, that is on purpose. The time a thread waits for swap read IO is
-> time in which the thread is not productive due to a lack of memory.
->
-> For async-submitted IO, this happens in lock_page() called from
-> do_swap_page(). If the submitting thread directly waits after the
-> submit_bio(), then that should be accounted too.
-IMO, memstall counting should be terminated by bio submitted. blk
-driver fetching request and the operation on the real device shouldn't
-be counted in. It especially doesn't make sense in a virtualization
-system like XEN etc, where the blk driver is implemented via
-backend-frontend way that introduce  memory irrelevant latency
+Quoting Bjorn Andersson (2021-06-22 20:50:38)
+> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> new file mode 100644
+> index 000000000000..10aee61a7ffc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> @@ -0,0 +1,164 @@
+[....]
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    lpg {
 
->
-> This patch doesn't make sense to me.
+Should the node name be led or leds?
+
+> +      compatible = "qcom,pmi8994-lpg";
+
+Shouldn't there be a reg property? I see the driver has them hardcoded
+but if this is a child of the spmi node then it should have a reg
+property (or many reg properties).
