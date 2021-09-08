@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE215403225
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CA4403229
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345915AbhIHBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhIHBXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:23:02 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465FAC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:21:55 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id d16so685387ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KeNC+xKtdDu6RTTBHmLc6/GMNcuVkbNM9xz7wbPcFt0=;
-        b=C6PQPdgaqWvNpRQJzk5mjGikGCmfGfZG6rs53tEoPAr3c11GXY1RIpPL0qf6HG9P/q
-         buUN59vo7ouy1QSmlby8yYm1wVmLwMwpc1iVPBhRRbnPvV0yJw5yxAIE+y3FaQUUj6m6
-         jtnD2rlG0gohDBQoliNzFByxIk8SASTAWndDbDhzyqVcVMaVS1fcQEeSrQQ+On5tk+t7
-         TFzlKpyVYDZg+krdIr/p9gjuQ56GYB8DyajIIcfPrdBMQhQaM7srg46y+/qN5qzhBxLW
-         l3X5zWdH3fOA4/uIid1YC0k13YVW7Ce5EwvKIDLzcGWvocmo7GGtO4/R2Nqi2DAYHUn8
-         PfIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KeNC+xKtdDu6RTTBHmLc6/GMNcuVkbNM9xz7wbPcFt0=;
-        b=hbBJJhv30oEAhc4CG2rTc+loHLj/1QV3lRKkT9bpCXgrYtT+6cW2xMIuglSPT60KQY
-         +pAIQM6+axIlC97NBcpHrdQ3Io9j0Y5rnfzXid04bWq5UWibu5Asyz5sln2Ots4UUD34
-         27435zqQllSu0ZS/F+TK8KL35nLWkXVAcsntvCBbSRZKEjn97E/jeZdM6w9Wcpl0jUZO
-         KPm9lcHBfSCowLPedSon9Q2lVKAorb4n7+k5a8SLCiTmQHRprac05i25jjNPgqkyXQBs
-         boSRgJrHfG3+PnkrXVKMJzdJ1yea2JF6dYfZUseZzqBQ0o5OMR5Rek+oatDztVrGNmhK
-         6QTg==
-X-Gm-Message-State: AOAM533Bi6iEzJznfNoJ5r1S7kL3Jsc20HjlyyfekxA7Hu+ZD/UHJcC7
-        COrc88H//R+F1+UAEmeB+caUoWQJGt25+YdWfjks8w==
-X-Google-Smtp-Source: ABdhPJxmk5JpnPt/l3GLD8X4Z8zmvHTEhjebR5aPXNGM2ng2gIkRYC0aVcx89Tzi5a7HpVOXBJqnUniHbq1Mb2Oqxyc=
-X-Received: by 2002:a2e:a0c8:: with SMTP id f8mr790291ljm.170.1631064112393;
- Tue, 07 Sep 2021 18:21:52 -0700 (PDT)
+        id S1345213AbhIHBZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:25:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhIHBZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:25:35 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0851A6113E;
+        Wed,  8 Sep 2021 01:24:27 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 21:24:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Robin H. Johnson" <robbat2@gentoo.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rjohnson@digitalocean.com, Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
+Message-ID: <20210907212426.73ed81d1@rorschach.local.home>
+In-Reply-To: <20210831043723.13481-1-robbat2@gentoo.org>
+References: <20210831043723.13481-1-robbat2@gentoo.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210907123112.10232-1-justin.he@arm.com> <20210907123112.10232-2-justin.he@arm.com>
-In-Reply-To: <20210907123112.10232-2-justin.he@arm.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Tue, 7 Sep 2021 20:21:40 -0500
-Message-ID: <CAOQ_QshwO2AtzKTNZJ1FXWTuvdvnxnLQxej1UpLAqVrJC_oCgw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] KVM: arm64: vgic: Add memcg accounting to vgic allocations
-To:     Jia He <justin.he@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, Liu Shixin <liushixin2@huawei.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 7:33 AM Jia He <justin.he@arm.com> wrote:
->
-> Inspired by commit 254272ce6505 ("kvm: x86: Add memcg accounting to KVM
-> allocations"), it would be better to make arm64 vgic consistent with
-> common kvm codes.
->
-> The memory allocations of VM scope should be charged into VM process
-> cgroup, hence change GFP_KERNEL to GFP_KERNEL_ACCOUNT.
->
-> There remain a few cases since these allocations are global, not in VM
-> scope.
->
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-init.c    |  2 +-
->  arch/arm64/kvm/vgic/vgic-irqfd.c   |  2 +-
->  arch/arm64/kvm/vgic/vgic-its.c     | 14 +++++++-------
->  arch/arm64/kvm/vgic/vgic-mmio-v3.c |  2 +-
->  arch/arm64/kvm/vgic/vgic-v4.c      |  2 +-
->  5 files changed, 11 insertions(+), 11 deletions(-)
->
 
-Reviewed-by: Oliver Upton <oupton@google.com>
+I'll need Acks for these patches from the Perf maintainers.
+
+-- Steve
+
+
+On Mon, 30 Aug 2021 21:37:22 -0700
+"Robin H. Johnson" <robbat2@gentoo.org> wrote:
+
+> If the perf buffer isn't large enough, provide a hint about how large it
+> needs to be for whatever is running.
+> 
+> Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
+> ---
+>  kernel/trace/trace_event_perf.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+> index 03be4435d103..26eed4b89100 100644
+> --- a/kernel/trace/trace_event_perf.c
+> +++ b/kernel/trace/trace_event_perf.c
+> @@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
+>  	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
+>  
+>  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
+> -		      "perf buffer not large enough"))
+> +		      "perf buffer not large enough, wanted %d, have %d",
+> +		      size, PERF_MAX_TRACE_SIZE))
+>  		return NULL;
+>  
+>  	*rctxp = rctx = perf_swevent_get_recursion_context();
+
