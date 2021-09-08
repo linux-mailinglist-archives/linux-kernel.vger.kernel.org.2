@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3D84037EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FB14037F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348923AbhIHKeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:34:11 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58507 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234958AbhIHKeJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:34:09 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id AD687808EB;
-        Wed,  8 Sep 2021 13:33:00 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1631097180;
-        bh=bEIHNRfkQLVOb8OVfwOJchCdmltfMN+AbEre3I6fz6U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RfGspP6RecjiDoOt+E94QdUT2MjC/0P05nwiP/+/Dj+5rQXWoOOuuhszKZj98AMgU
-         3plIxLQBskJiHs9jAvk5TJhS0mz69P7eAT/fNVzeY7sqt8HrQOTb4F5G3c/WJHkptS
-         pgjiP2ByU5s4uQN88b1MicCYvhZuJy4SS5043OIY=
-Received: from [192.168.211.176] (192.168.211.176) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 8 Sep 2021 13:33:00 +0300
-Subject: Re: [PATCH v3 0/9] fs/ntfs3: Use new mount api and change some opts
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Kari Argillander <kari.argillander@gmail.com>
-CC:     "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <20210829095614.50021-1-kari.argillander@gmail.com>
- <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox>
- <69c8ab24-9443-59ad-d48d-7765b29f28f9@paragon-software.com>
- <CAHp75Vd==Dm1s=WK9p2q3iEBSHxN-1spHmmtZ21eRNoqyJ5v=Q@mail.gmail.com>
- <CAC=eVgTwDsE+i3jG+iwZJhFDBXzCyPprRnGk5tjUKXP+Ltrw4w@mail.gmail.com>
- <CAHp75VetzFedGyqaB5TmsBH5UjBYpR8rimGmt8scn5fZ4FRbqg@mail.gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Message-ID: <c62ee307-d2ca-a3b5-ceea-fd8afa1b2bf8@paragon-software.com>
-Date:   Wed, 8 Sep 2021 13:32:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234958AbhIHKgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:36:41 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59040 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhIHKgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:36:39 -0400
+Received: from zn.tnic (p200300ec2f0efc002d1ac0b1b41b9169.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:2d1a:c0b1:b41b:9169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B73C1EC036B;
+        Wed,  8 Sep 2021 12:35:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631097330;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vNZo46xtdLfPCSghubjAQ0AbiTd/3e4sJ5wQ5kYrsZk=;
+        b=aRJSgvRLCoKkTWzIqFJm5RepVqZxbasjqfKuU8UvRw9DGDOAjYyqQXl+jgGN/P0Y/4qyYf
+        qAH2j4creMyuTF+DO2WKIckrrNg72u000ui50+YNIeysEGcVatNjDcL5w3Cn9Mn6Lk34qF
+        VS3GawEjtGqtDyAYGL8tP62fy0OfuDI=
+Date:   Wed, 8 Sep 2021 12:35:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
+ not present entries
+Message-ID: <YTiR6aK6XKJ4z0wH@zn.tnic>
+References: <20210819132717.19358-1-rppt@kernel.org>
+ <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VetzFedGyqaB5TmsBH5UjBYpR8rimGmt8scn5fZ4FRbqg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.176]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 25, 2021 at 11:47:10AM -0700, Dave Hansen wrote:
+> On 8/19/21 6:27 AM, Mike Rapoport wrote:
+> > Such PMDs are created when free_kernel_image_pages() frees regions larger
+> > than 2Mb. In this case a part of the freed memory is mapped with PMDs and
+> > the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+> > mark the PMD as not present rather than wipe it completely.
+> > 
+> > Make kern_addr_valid() to check whether higher level page table entries are
+> > present before trying to dereference them to fix this issue and to avoid
+> > similar issues in the future.
+> > 
+> > Reported-by: Jiri Olsa <jolsa@redhat.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Cc: <stable@vger.kernel.org>	# 4.4...
+> >  	pmd = pmd_offset(pud, addr);
+> > -	if (pmd_none(*pmd))
+> > +	if (!pmd_present(*pmd))
+> >  		return 0;
+> 
+> Yeah, that seems like the right fix.  The one kern_addr_valid() user is
+> going to touch the memory so it *better* be present.  p*d_none() was
+> definitely the wrong check.
+> 
+> Acked-by: Dave Hansen <dave.hansen@intel.com>
 
+So I did stare at this for a while, trying to make sense of it and David
+Hildenbrand asked for a Fixes: tag in v1 review and from doing a bit of
+git archeology I think it should be:
 
-On 08.09.2021 12:00, Andy Shevchenko wrote:
-> On Tue, Sep 7, 2021 at 11:47 PM Kari Argillander
-> <kari.argillander@gmail.com> wrote:
->> On Tuesday, September 7, 2021, Andy Shevchenko
->> (andy.shevchenko@gmail.com) wrote:
->>> On Tuesday, September 7, 2021, Konstantin Komarov <almaz.alexandrovich@paragon-software.com> wrote:
->>>> On 07.09.2021 10:36, Kari Argillander wrote:
-> 
-> ...
-> 
->>>> Yes, everything else seems good.
->>>> We tested patches locally - no regression was
->>>
->>> The formal answer in such case should also contain the Tested-by tag. I would suggest you to read the Submitting Patches document (available in the Linux kernel source tree).
->>
->> He is a maintainer so he can add tags when he picks this up.
-> 
-> It's a good practice to do so. Moreover, it's better to do it
-> patch-by-patch, so tools like `b4` can cope with tags for *anybody*
-> who will use it in automated way.
-> 
->> This is not
->> really relevant here.
-> 
-> Why not?
-> 
->> Yes it should be good to include that but I have already
->> sended v4 which he has not tested. So I really cannot put this tag for him.
->> So at the end he really should not even put it here.
-> 
-> For v4 I agree with you.
+c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
 
-My answer doesn't contain Tested-by tag because author of patch already said
-that there will be next version of patch.
-Thanks for Submitting Patches document suggestion.
+because that thing added the clearing of the Present bit for the high
+kernel image mapping of those areas.
 
-> 
->> Also usually the maintainers will always make their own tests and usually
->> they will not even bother with a tested-by tag.
-> 
-> If it's their own code, yes, if it's others', why not? See above as well.
-> 
->> Or do you say to me that I
->> should go read Submitting Patches document as I'm the one who submit
->> this?
-> 
-> It's always good to refresh memory, so why not? :-)
-> 
+Right?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
