@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6800340398F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CA7403994
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351650AbhIHMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbhIHMP7 (ORCPT
+        id S1351681AbhIHMQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:16:44 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54381 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231372AbhIHMQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:15:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC588C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 05:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hEuKeBl0bf7BPTqdloL/nKyrupvk3MfCfBiLXZV+JGo=; b=C0pyq+4MTP9GV/XkkdcwdYrBeL
-        VtLyT3IpdGg0rMMgrOB0oISXy/GE3Pt390RTiq0HNrmljJDklcwCdTVJHODRFpT27YiFokBnbciB7
-        tyZ/63dsfAg7Up6HojqXrMPrNxCy6BWLv0wkRRZF5zSZSkttM0vtgVq2SmD9Rv8D6swwA2pXELEQs
-        kKucCfj7F1QikfTTiDweMb0peya5sNPum93U4/e9og+Y2QGIa3HcqIZ+R87K25a0ud57uhPkQtgzm
-        7dFiJ8N/vrrLeBW8MpXeN7ilNSwIGVQmmcTlQy1JH/5nDX/kSMxyrTwwbXF54kRLMqQBUOJFncyqD
-        kPUNEupA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNwTH-001dYu-0C; Wed, 08 Sep 2021 12:14:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1B646300332;
-        Wed,  8 Sep 2021 14:14:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0578F2080015E; Wed,  8 Sep 2021 14:14:29 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 14:14:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-Message-ID: <YTipJJcjU57l7Mju@hirez.programming.kicks-ass.net>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
- <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
+        Wed, 8 Sep 2021 08:16:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Ungmnr5_1631103332;
+Received: from localhost(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Ungmnr5_1631103332)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 08 Sep 2021 20:15:32 +0800
+From:   Yi Tao <escape@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+Subject: [RFC PATCH 0/2] support cgroup pool in v1
+Date:   Wed,  8 Sep 2021 20:15:11 +0800
+Message-Id: <cover.1631102579.git.escape@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 01:51:24PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 01, 2021 at 11:06:27PM +0800, Boqun Feng wrote:
-> @@ -201,23 +207,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
->  {
->  	struct rt_mutex_base *rtm = &rwb->rtmutex;
->  	unsigned long flags;
-> +	int readers;
->  
->  	/* Take the rtmutex as a first step */
->  	if (rwbase_rtmutex_lock_state(rtm, state))
->  		return -EINTR;
->  
->  	/* Force readers into slow path */
-> -	atomic_sub(READER_BIAS, &rwb->readers);
-> +	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
+In a scenario where containers are started with high concurrency, in
+order to control the use of system resources by the container, it is
+necessary to create a corresponding cgroup for each container and
+attach the process. The kernel uses the cgroup_mutex global lock to
+protect the consistency of the data, which results in a higher
+long-tail delay for cgroup-related operations during concurrent startup.
+For example, long-tail delay of creating cgroup under each subsystems
+is 900ms when starting 400 containers, which becomes bottleneck of
+performance. The delay is mainly composed of two parts, namely the
+time of the critical section protected by cgroup_mutex and the
+scheduling time of sleep. The scheduling time will increase with
+the increase of the cpu overhead.
 
-Hurmph... the above really begs for something like
+In order to solve this long-tail delay problem, we designed a cgroup
+pool. The cgroup pool will create a certain number of cgroups in advance.
+When a user creates a cgroup through the mkdir system call, a clean cgroup
+can be quickly obtained from the pool. Cgroup pool draws on the idea of
+cgroup rename. By creating pool and rename in advance, it reduces the
+critical area of cgroup creation, and uses a spinlock different from
+cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
+competition with attaching processes on the other hand.
 
-	if (!readers)
-		return 0;
+The core idea of implementing a cgroup pool is to create a hidden kernfs
+tree. Cgroup is implemented based on the kernfs file system. The user
+manipulates the cgroup through the kernfs file. Therefore, we can create
+a cgroup in advance and place it in a hidden kernfs tree, so that the user
+can not operate the cgroup. When the user needs to create one, move the
+cgroup to its original location. Because this only needs to remove a node
+from one kernfs tree and move it to another tree, it does not affect other
+data of the cgroup and related subsystems, so this operation is very
+efficient and fast, and there is no need to hold cgroup_mutex. In this
+way, we get rid of the limitation of cgroup_mutex and reduce the time
+consumption of the critical section, but the kernfs_rwsem is still
+protecting the kernfs-related data structure, and the scheduling time
+of sleep still exists.
 
-But then we needs that _acquire() thing again :/
+In order to avoid the use of kernfs_rwsem, we introduced a pinned state for
+the kernfs node. When the pinned state of this node is true, the lock that
+protects the data of this node is changed from kernfs_rwsem to a lock that
+can be set. In the scenario of a cgroup pool, the parent cgroup will have a
+corresponding spinlock. When the pool is enabled, the kernfs nodes of all
+cgroups under the parent cgroup are set to the pinned state. Create,
+delete, and move these kernfs nodes are protected by the spinlock of the
+parent cgroup, so data consistency will not be a problem.
+
+After opening the pool, the user creates a cgroup will take the fast path
+and obtain it from the cgroup pool. Deleting cgroups still take the slow
+path. When resources in the pool are insufficient, a delayed task will be
+triggered, and the pool will be replenished after a period of time. This
+is done to avoid competition with the current creation of cgroups and thus
+affect performance. When the resources in the pool are exhausted and not
+replenished in time, the creation of a cgroup will take a slow path,
+so users need to set an appropriate pool size and supplementary delay time.
+
+What we did in the patches are:
+	1.add pinned flags for kernfs nodes, so that they can get rid of
+	kernfs_rwsem and choose to be protected by other locks.
+	2.add pool_size interface which used to open cgroup pool and
+	close cgroup pool.
+	3.add extra kernfs tree which used to hide cgroup in pool.
+	4.add spinlock to protect kernfs nodes of cgroup in pool
+
+
+Yi Tao (2):
+  add pinned flags for kernfs node
+  support cgroup pool in v1
+
+ fs/kernfs/dir.c             |  74 ++++++++++++++++-------
+ include/linux/cgroup-defs.h |  16 +++++
+ include/linux/cgroup.h      |   2 +
+ include/linux/kernfs.h      |  14 +++++
+ kernel/cgroup/cgroup-v1.c   | 139 ++++++++++++++++++++++++++++++++++++++++++++
+ kernel/cgroup/cgroup.c      | 113 ++++++++++++++++++++++++++++++++++-
+ kernel/sysctl.c             |   8 +++
+ 7 files changed, 345 insertions(+), 21 deletions(-)
+
+-- 
+1.8.3.1
 
