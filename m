@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6944033AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEB04033AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhIHFNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S233675AbhIHFPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhIHFN3 (ORCPT
+        with ESMTP id S232097AbhIHFPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:13:29 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EC4C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 22:12:22 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s12so1471690ljg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 22:12:22 -0700 (PDT)
+        Wed, 8 Sep 2021 01:15:52 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71310C061575;
+        Tue,  7 Sep 2021 22:14:45 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso1380041otv.12;
+        Tue, 07 Sep 2021 22:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cEg9j5PHH4GrveK8S9hlpJRiAHD5wKCWS95UHHv0q00=;
-        b=N4InN9Bj8fK6jG56hBNBpJBevxf+zsjhr7g+bMTchVecF318z1bCZNQ7q8LjKHJ+rY
-         FgI1xNRgaljSEjyEWdJkhHCYF7JA+S7v3h1Kmo8J0p5GjZuXB38rvOI1xcsBxJS0cNGf
-         IEReRyPR8+eORygkamDmkpP366EyiO4cBCUPc=
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pyGzdXX+PpJNqBikj4EAmTcOGVssrcYKCfwJglYLCj0=;
+        b=SEFgrGHC9E2SXS1BNTVsZcc/MwXjrCKJaIxMWTzPguzBTM76KVl95fr89wj5dDe8am
+         uwoChaS/Vb+4ZshnhmDZHotWk5Hyk00mCqTKT4lcdZ/vFMmVfgzc6SDdiivfHkwOQL//
+         LZnaByQM3sZRMdP28APGWamlH0IbjBKVAeiCy0VO7CavQq5J+AX3hvnmYK00CwQ70lHO
+         QQaMQHX44JIZmv3wC2RtxknxD2MEatk5sCKYAEVJdIE45NTxEFB2Ez1tlIGV6ukJskkS
+         h18KBQQuecqRbltdDbwQdlTVxRf94QlX8TUwxeKisQ/BubHevy6gPusbe4PFuYWVX54g
+         z11g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cEg9j5PHH4GrveK8S9hlpJRiAHD5wKCWS95UHHv0q00=;
-        b=RuiP2RkyUn1JX2RpE+iXUwHfkM5Ou2kqATfxFeJc2xZ6BDnklbjvAWtcHvCIxDW4P0
-         2RZNA/PqX+vR7cwaUA3dRyxz9l3PBG9zqHylWPC9Cl6UaE0RtW+33j/SR899gpmXjLje
-         iz7r6hHdgEjAefEdDWngiM9sodwoazwR+wt3NMvWyxDXKYoSnJH0GrcOzPxCDL+okDn4
-         42Rtje+qGTyNjtj2EYBULU2niHRWI2XKvOGJXy+reN5c/oDhvAxrwz4oGFNJHIFo2rwR
-         VDoBOE4XRsQdaxUlqb3/uMfFfmYQf6f6p+SXWt1/cvn+FGBdPKnKxijAuAuMLXHRlrnW
-         XoEg==
-X-Gm-Message-State: AOAM530JH1OIOHTpsnOYQUuazA6oNRueQQhyHW+XpOGhDRaAaXRV+Iv7
-        d+AcAdon5Xi9NuaGujhTzt7Bqb1PUKrXiQwaEBPqIQ==
-X-Google-Smtp-Source: ABdhPJy1eiw/GhIkayI2GgkNyxQN+8Yh+FdEG4Rp52WWFbHlAo3RxV1qWk231DHeycdNYZPN6u8599LpZ1rHJ4OzvW8=
-X-Received: by 2002:a2e:9a44:: with SMTP id k4mr1320396ljj.201.1631077940431;
- Tue, 07 Sep 2021 22:12:20 -0700 (PDT)
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pyGzdXX+PpJNqBikj4EAmTcOGVssrcYKCfwJglYLCj0=;
+        b=Q+zSgd22gm0+VN8FIsfv6WfrI3IA8kGFAPK91RcugYzQM5eP3MU1nyZYw06tPmluEm
+         CbQuEq/kYrf12YKiKGqy0dcCG9dLdrSh7/i2TJ96nFtZChOW+o9IsLcvALtpS8VgWDdj
+         M6FnvMCZZKbtrmvbIM1C82hZzFfjvFfllwtVXDMzfFGPMqpR+9hsvbd7tl2nOtOo0jbK
+         UzIAEv1qBqtDT2/XWlC62idwr2VFR0VemNJf53rpQ6QwKBJpaI4iOnHUzX+DXVKXYk3g
+         x5gpbSUwZFoV32VB8ZSt41KWVchbpgM9xkqPe0K01jR+tu3R+y+PZagce6226mGau0Wz
+         MBCQ==
+X-Gm-Message-State: AOAM533q5b+dMcJwRjD48YClVpdHHgojFGoAcTS2XwG92Xj6Zs4wm00R
+        IWFoDEGC9TeG9rKHLlFjdRDtEryR9/0=
+X-Google-Smtp-Source: ABdhPJwfoxZFnmDqIFU3Tx9LFM24pirkH+8yCM4hFLiexLDdw21H9Sxxekm8dUSlhUXRRe86Snkx4A==
+X-Received: by 2002:a9d:458b:: with SMTP id x11mr1562574ote.313.1631078084569;
+        Tue, 07 Sep 2021 22:14:44 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p65sm264176oif.57.2021.09.07.22.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 22:14:43 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+ <20210908042838.GA2585993@roeck-us.net>
+ <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
+Date:   Tue, 7 Sep 2021 22:14:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
- <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
-In-Reply-To: <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 8 Sep 2021 13:12:09 +0800
-Message-ID: <CAGXv+5H9q7PZCBADk8ncTRYde7W_pgRT=+WNNUdg2jNSt0LtkQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH 2/2] arm64: dts: rockchip: add Coresight debug
- range for RK3399
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 12:46 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> Per Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt.
->
-> This IP block can be used for sampling the PC of any given CPU, which is
-> useful in certain panic scenarios where you can't get the CPU to stop
-> cleanly (e.g., hard lockup).
->
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+On 9/7/21 9:48 PM, Al Viro wrote:
+> On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
+> 
+>> 	memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
+>>
+>> but that just seems weird. Is there a better solution ?
+> 
+> (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
+> ioremap(), rather than casting explicit constants?
+> 
 
-The datasheet isn't clear on whether the debug subsystem has a separate
-power domain or not, so that may bug us later. Otherwise,
+Typecasts or even assigning the address to a variable does not help.
+The sanitizer function can not be static either.
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+I don't know the hardware, so I can not answer the ioremap() question.
+
+This is just one example, though; there are several sprinkled throughout
+the code. Another is:
+
+arch/parisc/kernel/setup.c:	running_on_qemu = (memcmp(&PAGE0->pad0, "SeaBIOS", 8) == 0);
+
+where
+
+#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
+
+and __PAGE_OFFSET depends on the configuration.
+
+That code runs early in setup; I don't think ioremap() would even
+be available at that time. A workaround for that problem would be
+a global variable pointing to PAGE0 (or of course an address sanitizer
+function), but again that seems odd just to make the compiler happy.
+
+Guenter
