@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BD74033E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1784033EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347560AbhIHFr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245528AbhIHFrW (ORCPT
+        id S234655AbhIHFuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:50:04 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60606 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232277AbhIHFuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:47:22 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2928AC061575;
-        Tue,  7 Sep 2021 22:46:13 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id v2so1685859oie.6;
-        Tue, 07 Sep 2021 22:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oI034eT0o3xJiZ0XQLCTDDDSm6gdqB6B1NQ4npTSYHk=;
-        b=HJhp2UpxJXFc+THZ2MvQqyB9sdi46546xOcIpM+/wZnoWg0u3azReP5bzAGRGEfozr
-         jxZ/XInG5BgfbT1KgJEhtH8VUMbwSK9tsOhVIb5nKMjgd6kBE04wq7WAxfuypM+W9ZOK
-         EabyF8QjvtAJKmYXoCcraYlwHEfWpLR59L4pe6X0ZY68hC7VRvU5wIB8vinwjNbsYJXS
-         564g6wgYgxDnPuvc8Koc1duY73NKaum7bjhJ17QGwQhs5R0Sso//L3fSDHl7e95Bmf8U
-         NWyRq0DaOTE1ZJlmtUTXClOUDxORGRfrpZFJIaZJJbsUnVrGRBiyLvp1q+e0JY8hP6V9
-         x/ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oI034eT0o3xJiZ0XQLCTDDDSm6gdqB6B1NQ4npTSYHk=;
-        b=jZAv2uvX/YwyH3fkPQrFWs2j3a/TzHdnmR9q+52lJ8HeH8eXOvrrErZrYTIckuzVA/
-         fqNcqVfgS7zf5fc4lSgVPMEiTnpAoaJejwJopNB9gcVLhWMhhab9KbFgWKyxb39c9vn1
-         021pas6yO6JDTXZ/3dXZtFSNsGpLnap7uTECGzjZ2M1q12+T5z7+qf/bXFGqAXa/FJMb
-         A7w6+HY0EKBxqVDQA65qYSnt7sZb+AEl8zR7NE4NtNO8nexWqY5jXq3G47WqoTpyWbFN
-         v9Oc3d/5eJtviDmsQSMIom1iw4c0YA69KK2bfJdbTRNyYy5nW7Ha6t7wyGtkh1W3kHXm
-         7e5A==
-X-Gm-Message-State: AOAM5318oe+6tn2oZw+1Z4gIChue/DFpT+6ymdSmOYVSN/7s2FviXa+n
-        hPko4WZJXwqJtYfI68CEr5rXBlHhNtM=
-X-Google-Smtp-Source: ABdhPJwQoz4X84mHFzWwmg5UHCID8nHwzTKcCPrAtsiOCdwMC1gl8gg03UaPxhjDeHi8aUjXMBm/MA==
-X-Received: by 2002:aca:ad07:: with SMTP id w7mr1238229oie.22.1631079972289;
-        Tue, 07 Sep 2021 22:46:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c3sm270855oiy.30.2021.09.07.22.46.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 22:46:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-References: <20210906142615.GA1917503@roeck-us.net>
- <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
- <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net>
- <20210908042838.GA2585993@roeck-us.net>
- <CAHk-=whVDMcg==vcOopR0Mci2FQ8bzJjufyCg+WPh003K2i2ww@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-Message-ID: <0428495c-fbf3-77f2-b296-cba4a59e52da@roeck-us.net>
-Date:   Tue, 7 Sep 2021 22:46:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 01:50:00 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1885mie3037092;
+        Wed, 8 Sep 2021 00:48:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631080124;
+        bh=2vI1xY8COoy2aNYEy9pE5ZOXaHw78xyMeW2MhP1KkE4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=fSiD9Clff46sXzsRGhNHCV9aHgXJTZpkkLGaXW97UaG9lSv7FeYWT5W2qQ+F8pqYJ
+         zhgF0YzCm0xbN3IhZavsQU/CblGMfETx8aIDFj3LLZVNSv76YcsIXYzAkGphpUWDRS
+         3Loi8oITBk0t2SneWrAp/LAlUbHyQdYh7w8CuGKE=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1885mieE049562
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 8 Sep 2021 00:48:44 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
+ Sep 2021 00:48:44 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 8 Sep 2021 00:48:44 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1885misE016294;
+        Wed, 8 Sep 2021 00:48:44 -0500
+Date:   Wed, 8 Sep 2021 00:48:44 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Bao Cheng Su <baocheng.su@siemens.com>,
+        Chao Zeng <chao.zeng@siemens.com>
+Subject: Re: [PATCH v2 1/4] arm64: dts: ti: k3-am65: Flip mmc device ordering
+Message-ID: <20210908054844.7ym3flo6f2pryd2x@unplug>
+References: <cover.1631032682.git.jan.kiszka@siemens.com>
+ <0dce149347353556e38a0bdf9a9489ffc9cf66d2.1631032682.git.jan.kiszka@siemens.com>
+ <20210908024442.jskmqqye432p4nmt@gatherer>
+ <674ccec8-c972-a32b-6722-922bf3c55abd@siemens.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whVDMcg==vcOopR0Mci2FQ8bzJjufyCg+WPh003K2i2ww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <674ccec8-c972-a32b-6722-922bf3c55abd@siemens.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:55 PM, Linus Torvalds wrote:
-> On Tue, Sep 7, 2021 at 9:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> It is seen with gcc 11.x whenever a memXXX or strXXX function parameter
->> is a pointer to a fixed address.
+On 07:25-20210908, Jan Kiszka wrote:
+> On 08.09.21 04:44, Nishanth Menon wrote:
+> > On 18:37-20210907, Jan Kiszka wrote:
+> >> From: Jan Kiszka <jan.kiszka@siemens.com>
+> >>
+> >> This ensures that the SD card will remain mmc0 across devices with and
+> >> without eMMC.
+> >>
+> >> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >> ---
+> >>  arch/arm64/boot/dts/ti/k3-am65.dtsi | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> >> index a9fc1af03f27..785d931a2dd9 100644
+> >> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> >> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> >> @@ -31,6 +31,8 @@ aliases {
+> >>  		i2c4 = &main_i2c2;
+> >>  		i2c5 = &main_i2c3;
+> >>  		ethernet0 = &cpsw_port1;
+> >> +		mmc0 = &sdhci1;
+> >> +		mmc1 = &sdhci0;
+> > 
+> > Jan,
+> > 
+> > Responding in context of [1]. Suggestion from Aswath is to do the
+> > following instead at SoC level:
+> > +		mmc0 = &sdhci0;
+> > +		mmc1 = &sdhci1;
+> > 
 > 
-> I wonder why I don't see it with gcc 11.2 here on x86-64.
-> 
+> Then I will leave this up to you and will go back to v1 of this patch
+> (as we require it the other way around).
 
-I see the problem only on some architectures. No idea what triggers it,
-but it is definitely architecture dependent.
+Could you elaborate on the rationale as to why the other way around?
+That would probably provide the reasoning to override the SoC generic
+definitions in the board dts/dtsi as the exception case.
 
->> gcc is happy if "(void *) 0xfffc1f2c"
->> is passed to a global function which does nothing but return the address,
->> such as:
->>
->> void *sanitize_address(void *address)
->> {
->>          return address;
->> }
-> 
-> We have had reasons to do things like that before for somewhat similar
-> (well, opposite) reasons - trying to disassociate some pointer from
-> its originating symbol type.
-> 
-> Look at RELOC_HIDE().
-> 
-> It might be worth it having something similar for "absolute_pointer()".
-> 
-> Entirely untested "written-in-the-MUA" garbage:
-> 
->     #define absolute_pointer(val) \
->          ({ void *__res; __asm__("":"=r" (__res):"0" ((unsigned
-> long)(val))); __res; })
-> 
-
-or:
-
-#define absolute_pointer(val) RELOC_HIDE(val, 0)
-
-or maybe:
-
-#define absolute_pointer(val) RELOC_HIDE((void *)val, 0)
-
-would do the same (though the first variant needs a pointer as argument).
-All of those compile.
-
-I tested the first and the last option on qemu:parisc and confirmed that
-both work as expected.
-
-I'd be happy to send a formal patch. Which one do you prefer, and where
-should I put it ?
-
-Thanks,
-Guenter
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
