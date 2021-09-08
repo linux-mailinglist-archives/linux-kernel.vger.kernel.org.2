@@ -2,130 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209904040C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4572C4040C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhIHVzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
+        id S235638AbhIHV7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 17:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbhIHVzw (ORCPT
+        with ESMTP id S234144AbhIHV7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 17:55:52 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2736EC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 14:54:44 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id y128so4985407oie.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 14:54:44 -0700 (PDT)
+        Wed, 8 Sep 2021 17:59:19 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B840C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 14:58:11 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id o4-20020ae9f504000000b003d39d97b227so6845658qkg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 14:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=id1AC9x8vyJiUkyhS8f6o/K9GxgIl6ioqhTgdnqtmHw=;
-        b=No3Q7Hwhui8zWlFb5CeTFJxyT8/3MnSJ7OK4NxBc7YRGvJpjmfXVdHmXiNuWHn4agA
-         ZeTwh2NMwGDD2cwVqE6uZCG8udQ+ZXxsBBPJ79QJwPYReN+sOzcTK27HXvtYK1rBzhDi
-         hLDZtdx91gW4OvDS4WlgAtwTcswVwJOK279EA=
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:subject:from:to:cc;
+        bh=x+U5iWmPoc1LfbS98FFnjN/NqYTsrrmBn1Md/SAIYso=;
+        b=Tb2pIUbrz/LJACHHduVCMRoPRDcBFoGHjznQXviGDyrNSpLai7hvOZ6dpLnVy5eNcv
+         WXnuQGKUwQySu76yuzPsNaaK9tZXW8W9gBfc4vE0gnfDuU4xcxEZlbaQQ76vA/elMYpN
+         EEoQDvOLEOMSGwQWXYzzh3vRBW3gfLm1Z1t+JBcOQ7I/b1zE04OXmc4qMiCmIB9cfPvs
+         v5d7Q6A+5/iYS1O27OFKVNJVEaGh8VyayIob16RTd8gD6Y9a57H33xvGDnttaGSrEtXr
+         nZEGAFQ7SKCLFViPYFXu3mP8YfvzFbF2/ojkF5oM1hdgr8F4TGi948uSkJwcfKIH2csH
+         HL7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=id1AC9x8vyJiUkyhS8f6o/K9GxgIl6ioqhTgdnqtmHw=;
-        b=QTcgURBHLKwdxDo4eywk6jjS347R1iI7PQKNa4gJLOx/CV5o+RFUZ/hBwc5owBcWp5
-         r/OGsPoyMOF/1i8IcoXreyKqyvdkKfskhRajCrr2ER+ZOhQxs/fX741IUcuw6/GLO5+8
-         J0kL+2h5jc6UK4WLCtciDzYPOf9le7PM2uGer4MogA619xVhZAq9GbK8MV/DMP/8/FsS
-         BIVI0AuZrDzoY5DWLLpajtyKC3b0ly3Yk+YJ+zH+Fu/qwnM20BTyYnIYORC3fdz+7vRP
-         mh79gbSE+dXtBW+thm8u4qnfwLotCbwSGKo7B7dfyKdn4KN2ulqZulREoXUADoHS6HVr
-         UUFg==
-X-Gm-Message-State: AOAM533on0dDJBLXJ4JkLQ5Hhdj+jS8TloECm69CsaE63s+ayD/uG/ZQ
-        WNqfQIFNUYmOi3QN0KgulLpqAeTa+MrzVQd3Rh7fuVHu0oI=
-X-Google-Smtp-Source: ABdhPJxWU3grarEQsUaCCHFBb3wbhF7sDBy11V69yCq1eU0H9QPsoF6IVdQIGYwa0KGqsnm3YWxKgwVmNunQEZRB9Ow=
-X-Received: by 2002:a05:6808:909:: with SMTP id w9mr3975413oih.164.1631138083381;
- Wed, 08 Sep 2021 14:54:43 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 8 Sep 2021 21:54:42 +0000
-MIME-Version: 1.0
-In-Reply-To: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
-References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 8 Sep 2021 21:54:42 +0000
-Message-ID: <CAE-0n52ia_Em6GYU-ketmzi4OQxcdux3uLjMGhzVTUJbC0Yz-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/bridge: parade-ps8640: Use regmap APIs
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version:subject
+         :from:to:cc;
+        bh=x+U5iWmPoc1LfbS98FFnjN/NqYTsrrmBn1Md/SAIYso=;
+        b=kQLph+9CmgHzXP62OkQVYUtW/6dDApUBTgwm21NFUv4jVVxBW+u8Cj0Bc+g6wA27bw
+         4lz20WDIQctpUx5mZy3EtyIDzqM4aqKgGuPxyDN3mEslyt/epDY7DnUKG1bZjydLahQv
+         wVE9kG8JJvpmJdIqNXnXniQSyTTZ99Lsm49w1apHzbqqTa7ACbVtfFZKnCdhMPESsPsh
+         sj5MsbISDFY2JFpiFeLkjy1QnhNm5/Az4JIIZ1umOut1UheZfdR2zb2BAE3qPx7JmAMh
+         S/UHEWl/ltzs8S4Aa5KSZHEEjeKxSJO/6scwYW7r9Dhr5gljSr7HA+rdX+eb9Ttz5veB
+         ma0Q==
+X-Gm-Message-State: AOAM530lVNEemiELlahW6hFshqNO721QhoJX0YWVGFq/rWXiTl2lgcui
+        SG5zwGHji30yyc87dQPBpNJsewcMnyzb4UQ=
+X-Google-Smtp-Source: ABdhPJxe3ydz2tSxy7UkERAnDMDXfIJdVm9ByjH+6b1kkjTXPwmcS0WxbSSXtEAf2PYqOxWMPlnuCpLTG48LELI=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:de29:dab5:94d3:3388])
+ (user=saravanak job=sendgmr) by 2002:a05:6214:20eb:: with SMTP id
+ 11mr497044qvk.52.1631138290824; Wed, 08 Sep 2021 14:58:10 -0700 (PDT)
+Date:   Wed,  8 Sep 2021 14:58:06 -0700
+In-Reply-To: <2023d07e-18bb-e129-760a-18b17ff772cd@samsung.com>
+Message-Id: <20210908215806.2748361-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+Subject: [PATCH v1] RFC: of: property: fix phy-hanlde issue
+From:   Saravana Kannan <saravanak@google.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-09-08 11:18:05)
-> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> index 685e9c38b2db..a16725dbf912 100644
-> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> @@ -64,12 +65,29 @@ struct ps8640 {
->         struct drm_bridge *panel_bridge;
->         struct mipi_dsi_device *dsi;
->         struct i2c_client *page[MAX_DEVS];
-> +       struct regmap   *regmap[MAX_DEVS];
->         struct regulator_bulk_data supplies[2];
->         struct gpio_desc *gpio_reset;
->         struct gpio_desc *gpio_powerdown;
->         bool powered;
->  };
->
-> +static const struct regmap_range ps8640_volatile_ranges[] = {
-> +       { .range_min = 0, .range_max = 0xff },
+This is a test patch. I'll split it up into multiple commits and clean
+it up once it's shown to help.
 
-Is the plan to fill this out later or is 0xff the max register? If it's
-the latter then I think adding the max register to regmap_config is
-simpler.
+Marek, can you please test this and let me know if it helps?
 
-> +};
-> +
-> +static const struct regmap_access_table ps8640_volatile_table = {
-> +       .yes_ranges = ps8640_volatile_ranges,
-> +       .n_yes_ranges = ARRAY_SIZE(ps8640_volatile_ranges),
-> +};
-> +
-> +static const struct regmap_config ps8640_regmap_config = {
-> +       .reg_bits = 8,
-> +       .val_bits = 8,
-> +       .volatile_table = &ps8640_volatile_table,
-> +       .cache_type = REGCACHE_NONE,
-> +};
-> +
->  static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
->  {
->         return container_of(e, struct ps8640, bridge);
-> @@ -78,13 +96,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
->  static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
->                                      const enum ps8640_vdo_control ctrl)
->  {
-> -       struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
-> -       u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
-> +       struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
-> +       u8 vdo_ctrl_buf[] = {VDO_CTL_ADD, ctrl};
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/of/property.c | 76 ++++++++++++++++++++++++-------------------
+ 1 file changed, 43 insertions(+), 33 deletions(-)
 
-Nitpick: Add a space after { and before }.
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 0c0dc2e369c0..039e1cb07348 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -30,6 +30,35 @@
+ 
+ #include "of_private.h"
+ 
++/**
++ * struct supplier_bindings - Property parsing functions for suppliers
++ *
++ * @parse_prop: function name
++ *	parse_prop() finds the node corresponding to a supplier phandle
++ * @parse_prop.np: Pointer to device node holding supplier phandle property
++ * @parse_prop.prop_name: Name of property holding a phandle value
++ * @parse_prop.index: For properties holding a list of phandles, this is the
++ *		      index into the list
++ * @optional: Describes whether a supplier is mandatory or not
++ * @node_not_dev: The consumer node containing the property is never a device.
++ * @sup_node_always_dev: The supplier node pointed to by the property will
++ *			 always have a struct device created for it even if it
++ *			 doesn't have a "compatible" property.
++ *
++ * Returns:
++ * parse_prop() return values are
++ * - phandle node pointer with refcount incremented. Caller must of_node_put()
++ *   on it when done.
++ * - NULL if no phandle found at index
++ */
++struct supplier_bindings {
++	struct device_node *(*parse_prop)(struct device_node *np,
++					  const char *prop_name, int index);
++	bool optional;
++	bool node_not_dev;
++	bool sup_node_always_dev;
++};
++
+ /**
+  * of_graph_is_present() - check graph's presence
+  * @node: pointer to device_node containing graph port
+@@ -1079,6 +1108,7 @@ static struct device_node *of_get_compat_node(struct device_node *np)
+  * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
+  * @con_np: consumer device tree node
+  * @sup_np: supplier device tree node
++ * @s: The supplier binding used to get the supplier phandle
+  *
+  * Given a phandle to a supplier device tree node (@sup_np), this function
+  * finds the device that owns the supplier device tree node and creates a
+@@ -1093,7 +1123,8 @@ static struct device_node *of_get_compat_node(struct device_node *np)
+  * - -ENODEV if struct device will never be create for supplier
+  */
+ static int of_link_to_phandle(struct device_node *con_np,
+-			      struct device_node *sup_np)
++			      struct device_node *sup_np,
++			      const struct supplier_bindings *s)
+ {
+ 	struct device *sup_dev;
+ 	struct device_node *tmp_np = sup_np;
+@@ -1102,11 +1133,15 @@ static int of_link_to_phandle(struct device_node *con_np,
+ 	 * Find the device node that contains the supplier phandle.  It may be
+ 	 * @sup_np or it may be an ancestor of @sup_np.
+ 	 */
+-	sup_np = of_get_compat_node(sup_np);
+-	if (!sup_np) {
+-		pr_debug("Not linking %pOFP to %pOFP - No device\n",
+-			 con_np, tmp_np);
+-		return -ENODEV;
++	if (s->sup_node_always_dev) {
++		of_node_get(sup_np);
++	} else {
++		sup_np = of_get_compat_node(sup_np);
++		if (!sup_np) {
++			pr_debug("Not linking %pOFP to %pOFP - No device\n",
++				 con_np, tmp_np);
++			return -ENODEV;
++		}
+ 	}
+ 
+ 	/*
+@@ -1239,31 +1274,6 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
+ 	return parse_suffix_prop_cells(np, prop_name, index, suffix, cells); \
+ }
+ 
+-/**
+- * struct supplier_bindings - Property parsing functions for suppliers
+- *
+- * @parse_prop: function name
+- *	parse_prop() finds the node corresponding to a supplier phandle
+- * @parse_prop.np: Pointer to device node holding supplier phandle property
+- * @parse_prop.prop_name: Name of property holding a phandle value
+- * @parse_prop.index: For properties holding a list of phandles, this is the
+- *		      index into the list
+- * @optional: Describes whether a supplier is mandatory or not
+- * @node_not_dev: The consumer node containing the property is never a device.
+- *
+- * Returns:
+- * parse_prop() return values are
+- * - phandle node pointer with refcount incremented. Caller must of_node_put()
+- *   on it when done.
+- * - NULL if no phandle found at index
+- */
+-struct supplier_bindings {
+-	struct device_node *(*parse_prop)(struct device_node *np,
+-					  const char *prop_name, int index);
+-	bool optional;
+-	bool node_not_dev;
+-};
+-
+ DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
+ DEFINE_SIMPLE_PROP(interconnects, "interconnects", "#interconnect-cells")
+ DEFINE_SIMPLE_PROP(iommus, "iommus", "#iommu-cells")
+@@ -1380,7 +1390,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_resets, },
+ 	{ .parse_prop = parse_leds, },
+ 	{ .parse_prop = parse_backlight, },
+-	{ .parse_prop = parse_phy_handle, },
++	{ .parse_prop = parse_phy_handle, .sup_node_always_dev = true, },
+ 	{ .parse_prop = parse_gpio_compat, },
+ 	{ .parse_prop = parse_interrupts, },
+ 	{ .parse_prop = parse_regulators, },
+@@ -1430,7 +1440,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
+ 					: of_node_get(con_np);
+ 			matched = true;
+ 			i++;
+-			of_link_to_phandle(con_dev_np, phandle);
++			of_link_to_phandle(con_dev_np, phandle, s);
+ 			of_node_put(phandle);
+ 			of_node_put(con_dev_np);
+ 		}
+-- 
+2.33.0.153.gba50c8fa24-goog
 
->         int ret;
->
-> -       ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
-> -                                            sizeof(vdo_ctrl_buf),
-> -                                            vdo_ctrl_buf);
-> +       ret = regmap_bulk_write(map, PAGE3_SET_ADD,
-> +                               vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
-> +
->         if (ret < 0) {
->                 DRM_ERROR("failed to %sable VDO: %d\n",
->                           ctrl == ENABLE ? "en" : "dis", ret);
