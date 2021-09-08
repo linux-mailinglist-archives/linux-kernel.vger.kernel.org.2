@@ -2,121 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F3F403B0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637B1403B1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351777AbhIHNzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        id S1350664AbhIHOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhIHNzV (ORCPT
+        with ESMTP id S235767AbhIHOBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:55:21 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC647C061757;
-        Wed,  8 Sep 2021 06:54:13 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso3056651ots.5;
-        Wed, 08 Sep 2021 06:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KVSAsAmNU3tpwYv+FwBzgvsKBTEXiRMkI36CYU+m7jk=;
-        b=YAuKZsUwSoXOmchxu4hDVApkdnFGSH6PtyETCFmTcUaM7xNM4jO1h/oZHjDmI5JUVZ
-         FgDkoQosToFnrlF2bjOhMJANYz8N6fc0lHrNaKL/bCKekiluZz4VpJzRWd+HZbBwD2DP
-         1/Zp28WFjqgllHezBDRwt1JYd6stJP3eypXuJ042O26P7++MII9tKH9ekDAsueMzLZwD
-         WQMTY8dMxYfTruDB9cv7eUHjkUjnx/g7JKIgemRb3F3EmteWZfMPEofoQznUk/ZvAeYK
-         DchBOgSH2o3HCyUmYt2QBscSwfFCSnuJZnNc9fdjb9ZSIjU7BeIf1Q1s3ruIUFN4mpSJ
-         YaKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KVSAsAmNU3tpwYv+FwBzgvsKBTEXiRMkI36CYU+m7jk=;
-        b=gsGW2mfAZl8UNwgXDDR/NO4ABkoc2DioQwVMJ9Fq+E2TOHuS3ZlkoHwtZ9xyej4zUH
-         B52wfZK5bNPCodAhxvdHyqxwQ7qf4lLayaXArOLlrudBy17ui/iM9zu38U2zEo/KepxV
-         uljjjiNXsUi+u/eMkGME4ca024o8Gk71puJ/JZRYgISLpe1O1WIG0B0RZ+S7D90YEr4V
-         YkEM9TGvduWrEzoClM97yjLYVciglPWal2wIEavNEOiMk3W6FnVsSOwEOyOubFj6Oak5
-         uD3wMxxyCJjV6qne9eh7T2x+9VNrWgWihsAbPvi+G8aRGhsjUB6rpvl5VVh529Bw5IqP
-         reiQ==
-X-Gm-Message-State: AOAM531xow0/Qm3sZfvp270MymZ9AtMVUJ/BN4omKj53DYIimH4eUvNS
-        DLSx+c4Jrg4pMMkPNunEJLI=
-X-Google-Smtp-Source: ABdhPJxs1yfSUHiv2n9ZH1xXSJpfR9JEQ1cOpJ3v7SWDCuJOyQRB4PqH3QQ2Wcgh8KQ4Kd8QoNxs6A==
-X-Received: by 2002:a9d:5a9e:: with SMTP id w30mr3046135oth.378.1631109253346;
-        Wed, 08 Sep 2021 06:54:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x22sm442213oox.26.2021.09.08.06.54.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 06:54:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Martin Sebor <msebor@gcc.gnu.org>
-References: <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
- <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net>
- <20210908042838.GA2585993@roeck-us.net>
- <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk>
- <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
- <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com>
- <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
- <23b3a9ab-7205-9f4e-9425-17506aec3170@roeck-us.net>
- <YTi4RdEFfa7m/ufD@zeniv-ca.linux.org.uk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-Message-ID: <1c1c54c4-efd9-e3da-022f-3396471d72d2@roeck-us.net>
-Date:   Wed, 8 Sep 2021 06:54:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 10:01:50 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D341EC061575;
+        Wed,  8 Sep 2021 07:00:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0efc003bde2e7441c2ae39.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:3bde:2e74:41c2:ae39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 537511EC0298;
+        Wed,  8 Sep 2021 16:00:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631109636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FPmCIettNSQ3hJ3fLlb/FqgkzqUF7CIDcbo8CDhLUf8=;
+        b=Nc04+xpA2MmAZFNCVhPl1P6lsbelU/cKur7xnArKEftSArWcXYPjSXl/i8afF9fF2wOWtg
+        VJya2j168umGzNSDaldIW1+0VLNiMZSefupEmUoWe5c1WKs515ik72cjV8eKRW92ixnf7s
+        sBmuJxp0nGblT0trjBgJZ0lsGLFwKjc=
+Date:   Wed, 8 Sep 2021 16:00:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 37/38] virt: sevguest: Add support to derive key
+Message-ID: <YTjB/KTBsqExqylc@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-38-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YTi4RdEFfa7m/ufD@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-38-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 6:19 AM, Al Viro wrote:
-> On Wed, Sep 08, 2021 at 05:42:30AM -0700, Guenter Roeck wrote:
-> 
->> Oddly enough, a memcpy on the 'rtc' variable doesn't fail,
->> neither with nor without volatile. Something else is going on.
-> 
-> While we are at it, would memcpy_fromio() complain?  Seeing that
-> this is what's really intended there...
-> 
+On Fri, Aug 20, 2021 at 10:19:32AM -0500, Brijesh Singh wrote:
+> +2.2 SNP_GET_DERIVED_KEY
+> +-----------------------
+> +:Technology: sev-snp
+> +:Type: guest ioctl
+> +:Parameters (in): struct snp_derived_key_req
+> +:Returns (out): struct snp_derived_key_req on success, -negative on error
+> +
+> +The SNP_GET_DERIVED_KEY ioctl can be used to get a key derive from a root key.
+> +The derived key can be used by the guest for any purpose, such as sealing keys
+> +or communicating with external entities.
+> +
+> +The ioctl uses the SNP_GUEST_REQUEST (MSG_KEY_REQ) command provided by the
+> +SEV-SNP firmware to derive the key. See SEV-SNP specification for further details
+> +on the various fileds passed in the key derivation request.
+> +
+> +On success, the snp_derived_key_resp.data will contains the derived key
 
-It doesn't make a difference on m68k.
+"will contain"
 
-#define memcpy_fromio memcpy_fromio
-static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
-                                  int count)
-{
-         __builtin_memcpy(dst, (void __force *) src, count);
-}
+> +value.
+> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
+> index d029a98ad088..621b1c5a9cfc 100644
+> --- a/drivers/virt/coco/sevguest/sevguest.c
+> +++ b/drivers/virt/coco/sevguest/sevguest.c
+> @@ -303,6 +303,50 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_user_guest_reque
+>  	return rc;
+>  }
+>  
+> +static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_user_guest_request *arg)
+> +{
+> +	struct snp_guest_crypto *crypto = snp_dev->crypto;
+> +	struct snp_derived_key_resp *resp;
+> +	struct snp_derived_key_req req;
+> +	int rc, resp_len;
+> +
+> +	if (!arg->req_data || !arg->resp_data)
+> +		return -EINVAL;
+> +
+> +	/* Copy the request payload from the userspace */
 
-It boils down to the use of __builtin_memcpy(). m68k implements its own version
-of memcpy(). If that is used, everything works fine. However, if a file includes
-<linux/string.h>, memcpy is replaced with __builtin_memcpy:
+"from userspace"
 
-#define __HAVE_ARCH_MEMCPY
-extern void *memcpy(void *, const void *, __kernel_size_t);
-#define memcpy(d, s, n) __builtin_memcpy(d, s, n)
+> +	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
+> +		return -EFAULT;
+> +
+> +	/* Message version must be non-zero */
+> +	if (!req.msg_version)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * The intermediate response buffer is used while decrypting the
+> +	 * response payload. Make sure that it has enough space to cover the
+> +	 * authtag.
+> +	 */
+> +	resp_len = sizeof(resp->data) + crypto->a_len;
+> +	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
+> +	if (!resp)
+> +		return -ENOMEM;
+> +
+> +	/* Issue the command to get the attestation report */
+> +	rc = handle_guest_request(snp_dev, req.msg_version, SNP_MSG_KEY_REQ,
+> +				  &req.data, sizeof(req.data), resp->data, resp_len,
+> +				  &arg->fw_err);
+> +	if (rc)
+> +		goto e_free;
+> +
+> +	/* Copy the response payload to userspace */
+> +	if (copy_to_user((void __user *)arg->resp_data, resp, sizeof(*resp)))
+> +		rc = -EFAULT;
+> +
+> +e_free:
+> +	kfree(resp);
+> +	return rc;
+> +}
+> +
+>  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+>  {
+>  	struct snp_guest_dev *snp_dev = to_snp_dev(file);
+> @@ -320,6 +364,10 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+>  		ret = get_report(snp_dev, &input);
+>  		break;
+>  	}
+> +	case SNP_GET_DERIVED_KEY: {
+> +		ret = get_derived_key(snp_dev, &input);
+> +		break;
+> +	}
 
-and the compilation fails.
+{} brackets are not needed.
 
-That also explains why only some architectures/files are affected.
-Presumably those are the architectures which use __builtin_memcpy().
+What, however, is bothering me more in this function is that you call
+the respective ioctl function which might fail, you do not look at the
+return value and copy_to_user() unconditionally.
 
-Guenter
+Looking at get_derived_key(), for example, if it returns after:
+
+        if (!arg->req_data || !arg->resp_data)
+                return -EINVAL;
+
+you will be copying the same thing back to the user, you copied in
+earlier. That doesn't make any sense to me.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
