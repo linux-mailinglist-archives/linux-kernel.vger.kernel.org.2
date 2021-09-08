@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF1A4033E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BD74033E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244586AbhIHFqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:46:33 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:36698 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243555AbhIHFq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:46:28 -0400
-Received: from [IPv6:240e:35a:103d:5100:dc73:854d:832e:2] (unknown [IPv6:240e:35a:103d:5100:dc73:854d:832e:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 34A9D65A02;
-        Wed,  8 Sep 2021 01:45:14 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1631079920;
-        bh=skXpqGL8omTvkp37HgQuyUQoLphk9IsJFkc3Fq/tg6A=;
-        h=Subject:From:Reply-To:To:Cc:Date:In-Reply-To:References:From;
-        b=kZAVUehMGhCegeoX9VZH7FTd8rDLpKPf79aGC7QfgyNfBe32QGh2IhdFHPNagCgUH
-         FaSo38n+YRIqmMpD4XsQ9vA+KwPEf7xisg2ku1D9nrXgyuOjfg4XkJKxcC9+QETbOi
-         O5PUW5BxiT3+G/KsTxJCgfAIL09J7mvhorxWp4dulNyYJl9RvulzcmAuZ99zBRxyOr
-         bk1dg1icAw4X+SiYuLen51Aznq2xtrYeOT22KmszO29lp3g9bCIQgDfHLEJsEE/Xib
-         zfLmRVZrSi589pwj/Imi09Wk5rAOJokid9BLvXYYYe8PnHXqOJNUQcK8Q1gfDNnCDG
-         K2GUL8iAV+o9Q==
-Message-ID: <cc0ea443d738f0e31c47cdc9661b824f27b0020b.camel@mengyan1223.wang>
-Subject: Re: [PATCH 2/2] cpufreq: intel_pstate: Process HWP Guaranteed
- change notification
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-Reply-To: xry111@mengyan1223.wang
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, lenb@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xry111@mengyan1223.wang
-Date:   Wed, 08 Sep 2021 13:45:08 +0800
-In-Reply-To: <7fa77e2239dd87004319a799dbea39988b718233.camel@linux.intel.com>
-References: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
-         <20210820024006.2347720-2-srinivas.pandruvada@linux.intel.com>
-         <00450b0a9efbfde513ea8b445d31657ce5ac2f37.camel@mengyan1223.wang>
-         <7fa77e2239dd87004319a799dbea39988b718233.camel@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S1347560AbhIHFr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245528AbhIHFrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 01:47:22 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2928AC061575;
+        Tue,  7 Sep 2021 22:46:13 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id v2so1685859oie.6;
+        Tue, 07 Sep 2021 22:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oI034eT0o3xJiZ0XQLCTDDDSm6gdqB6B1NQ4npTSYHk=;
+        b=HJhp2UpxJXFc+THZ2MvQqyB9sdi46546xOcIpM+/wZnoWg0u3azReP5bzAGRGEfozr
+         jxZ/XInG5BgfbT1KgJEhtH8VUMbwSK9tsOhVIb5nKMjgd6kBE04wq7WAxfuypM+W9ZOK
+         EabyF8QjvtAJKmYXoCcraYlwHEfWpLR59L4pe6X0ZY68hC7VRvU5wIB8vinwjNbsYJXS
+         564g6wgYgxDnPuvc8Koc1duY73NKaum7bjhJ17QGwQhs5R0Sso//L3fSDHl7e95Bmf8U
+         NWyRq0DaOTE1ZJlmtUTXClOUDxORGRfrpZFJIaZJJbsUnVrGRBiyLvp1q+e0JY8hP6V9
+         x/ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oI034eT0o3xJiZ0XQLCTDDDSm6gdqB6B1NQ4npTSYHk=;
+        b=jZAv2uvX/YwyH3fkPQrFWs2j3a/TzHdnmR9q+52lJ8HeH8eXOvrrErZrYTIckuzVA/
+         fqNcqVfgS7zf5fc4lSgVPMEiTnpAoaJejwJopNB9gcVLhWMhhab9KbFgWKyxb39c9vn1
+         021pas6yO6JDTXZ/3dXZtFSNsGpLnap7uTECGzjZ2M1q12+T5z7+qf/bXFGqAXa/FJMb
+         A7w6+HY0EKBxqVDQA65qYSnt7sZb+AEl8zR7NE4NtNO8nexWqY5jXq3G47WqoTpyWbFN
+         v9Oc3d/5eJtviDmsQSMIom1iw4c0YA69KK2bfJdbTRNyYy5nW7Ha6t7wyGtkh1W3kHXm
+         7e5A==
+X-Gm-Message-State: AOAM5318oe+6tn2oZw+1Z4gIChue/DFpT+6ymdSmOYVSN/7s2FviXa+n
+        hPko4WZJXwqJtYfI68CEr5rXBlHhNtM=
+X-Google-Smtp-Source: ABdhPJwQoz4X84mHFzWwmg5UHCID8nHwzTKcCPrAtsiOCdwMC1gl8gg03UaPxhjDeHi8aUjXMBm/MA==
+X-Received: by 2002:aca:ad07:: with SMTP id w7mr1238229oie.22.1631079972289;
+        Tue, 07 Sep 2021 22:46:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c3sm270855oiy.30.2021.09.07.22.46.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 22:46:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+ <20210908042838.GA2585993@roeck-us.net>
+ <CAHk-=whVDMcg==vcOopR0Mci2FQ8bzJjufyCg+WPh003K2i2ww@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <0428495c-fbf3-77f2-b296-cba4a59e52da@roeck-us.net>
+Date:   Tue, 7 Sep 2021 22:46:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHk-=whVDMcg==vcOopR0Mci2FQ8bzJjufyCg+WPh003K2i2ww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 18:54 -0700, Srinivas Pandruvada wrote:
-> Hi Wang,
+On 9/7/21 9:55 PM, Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 9:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> It is seen with gcc 11.x whenever a memXXX or strXXX function parameter
+>> is a pointer to a fixed address.
 > 
-> I think this is Lenovo system. The FW sends some interrupts prematurely
-> before driver is ready,
-
-It's not Lenovo, but I think this kind of FW bugs exist in wild.
-
-> There is a fix available but We have decided to revert the commit.
+> I wonder why I don't see it with gcc 11.2 here on x86-64.
 > 
-> Please try the patch attached here.
-> https://bugzilla.kernel.org/show_bug.cgi?id=214329
 
-I can confirm it fixed the issue (at least on my machine :).
+I see the problem only on some architectures. No idea what triggers it,
+but it is definitely architecture dependent.
 
-Thanks!
+>> gcc is happy if "(void *) 0xfffc1f2c"
+>> is passed to a global function which does nothing but return the address,
+>> such as:
+>>
+>> void *sanitize_address(void *address)
+>> {
+>>          return address;
+>> }
+> 
+> We have had reasons to do things like that before for somewhat similar
+> (well, opposite) reasons - trying to disassociate some pointer from
+> its originating symbol type.
+> 
+> Look at RELOC_HIDE().
+> 
+> It might be worth it having something similar for "absolute_pointer()".
+> 
+> Entirely untested "written-in-the-MUA" garbage:
+> 
+>     #define absolute_pointer(val) \
+>          ({ void *__res; __asm__("":"=r" (__res):"0" ((unsigned
+> long)(val))); __res; })
+> 
 
--- 
-Xi Ruoyao <xry111@mengyan1223.wang>
-School of Aerospace Science and Technology, Xidian University
+or:
 
+#define absolute_pointer(val) RELOC_HIDE(val, 0)
+
+or maybe:
+
+#define absolute_pointer(val) RELOC_HIDE((void *)val, 0)
+
+would do the same (though the first variant needs a pointer as argument).
+All of those compile.
+
+I tested the first and the last option on qemu:parisc and confirmed that
+both work as expected.
+
+I'd be happy to send a formal patch. Which one do you prefer, and where
+should I put it ?
+
+Thanks,
+Guenter
