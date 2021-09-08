@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B27404079
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8394540407F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350815AbhIHVSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 17:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhIHVSm (ORCPT
+        id S1350997AbhIHVXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 17:23:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43523 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231956AbhIHVXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 17:18:42 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAD9C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 14:17:33 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so4726664otq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 14:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TPlAlW9m0l3/305TAZdOn8PajEjpurMWCxqwt3GbkS4=;
-        b=k5Abv4lPU09XKV+T9DT6mwM4nvhzpbp8w1z70/OHtY75Ynul9pQ6hYn5bXFmBFeMrW
-         O0+919A9pdjrK0y3dcJvzhZin3ZKvXoUiyDt23xQHj/SSnlPAAi9VRQzz8a1I4ubHeF0
-         4nYBDLB8Lz6QbbDkoFiuCJHvyWUVUa3EzltHvqTW/L4+AUCf7EQWCKr68+2A7LB0C3ZB
-         q4oXu0fljrYBN40kLy/hL1DYa7IAkakc0Yf4BDFQNlOFsl5vyYVrUyyUyf3OAkf0Gq/o
-         aDrKuO+c9bQIEHnV0CzehyjBRrbMdQCVCf6U1wUNm2OTmqSD0tlRXzMVuymIfnAuoQV+
-         izxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TPlAlW9m0l3/305TAZdOn8PajEjpurMWCxqwt3GbkS4=;
-        b=cEMZdUstUlrJPRFqGjaAcplGE107cwP8SAC8nrZFK9CDIXwHwE3xxpfaR0UBEp4RQN
-         gm4LtjGEqIdAulp+shl2SZCW3QO7mSXQJH6rIjQ9aKB8dAvCjEZX7Dzuv/IBto/8PLId
-         /jDoFbXREG3k7VIAG8jE6VUGjm25HHD61454y86Jfj3wujB0wn6hJ30KO7Vwi5CEFw25
-         R66Fsf2c6OpF8bG9GJeiG4toDdqRvq/en0AhvYbON8zNCx5SjcULtXRPP/eUGAJrqXP1
-         ax2LPfLvg4MHSSV9xBUTXphHQM55iD3os22HSjWb8FIQAGySu9GMgEfk7Pfdcp9mbIIL
-         eYWg==
-X-Gm-Message-State: AOAM5330Wic2y+wSM95rsy1Z/cf/j5/Xs0ezQK13mXYNlf7h5RO7ngca
-        U+v2QPE1oDoLFbg+xFZ2DG0=
-X-Google-Smtp-Source: ABdhPJxkjqUmx0EXZUtOM51rkpogDdc1elqKgJf+LSadeuZxUOTgYN8HN8JPtJWeUSz2gihbxedmdg==
-X-Received: by 2002:a9d:7f07:: with SMTP id j7mr181524otq.84.1631135853295;
-        Wed, 08 Sep 2021 14:17:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j8sm39523ooc.21.2021.09.08.14.16.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 14:17:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com
-References: <20210906142615.GA1917503@roeck-us.net>
- <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain>
- <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
- <YTkjJPCdR1VGaaVm@archlinux-ax161>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
-Date:   Wed, 8 Sep 2021 14:16:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 17:23:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631136131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jpdRoOn5BDB05RQA7ROFiVgGX3Km8+6qyEssXip4Qec=;
+        b=QHedviqNmpPdxE/Ggq4l40XDMCnDjYHgfXrwkSCLzxIQZ9qJ0F5rU521izs8y6EWMsNwG/
+        UQAqNlLp1mLa/1+t5I6Dv68UahPQukpX41UMvPav/EcYaSVbfOneGU56fgLFCIg05914XL
+        LFN9gnWOYbxqe5QbfEMQd97hrGdBP1o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-ahF0wDRjMKqE0W3zIef4yw-1; Wed, 08 Sep 2021 17:22:07 -0400
+X-MC-Unique: ahF0wDRjMKqE0W3zIef4yw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE25918D6A2C;
+        Wed,  8 Sep 2021 21:22:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CD6260C04;
+        Wed,  8 Sep 2021 21:22:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix updating of i_blocks on file/dir extension
+From:   David Howells <dhowells@redhat.com>
+To:     markus.suvanto@gmail.com
+Cc:     linux-afs@lists.infradead.org, dhowells@redhat.com,
+        marc.dionne@auristor.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 08 Sep 2021 22:22:04 +0100
+Message-ID: <163113612442.352844.11162345591911691150.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <YTkjJPCdR1VGaaVm@archlinux-ax161>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 1:55 PM, Nathan Chancellor wrote:
-> Hi Arnd,
-> 
-> On Tue, Sep 07, 2021 at 11:11:17AM +0200, Arnd Bergmann wrote:
->> On Tue, Sep 7, 2021 at 4:32 AM Nathan Chancellor <nathan@kernel.org> wrote:
->>>
->>> arm32-allmodconfig.log: crypto/wp512.c:782:13: error: stack frame size (1176) exceeds limit (1024) in function 'wp512_process_buffer' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:294:12: error: stack frame size (1256) exceeds limit (1024) in function 'bpmp_debug_show' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:357:16: error: stack frame size (1264) exceeds limit (1024) in function 'bpmp_debug_store' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1384) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5560) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/mtd/chips/cfi_cmdset_0001.c:1872:12: error: stack frame size (1064) exceeds limit (1024) in function 'cfi_intelext_writev' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/ntb/hw/idt/ntb_hw_idt.c:1041:27: error: stack frame size (1032) exceeds limit (1024) in function 'idt_scan_mws' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:902:12: error: stack frame size (1072) exceeds limit (1024) in function 'fbtft_init_display_from_property' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:992:5: error: stack frame size (1064) exceeds limit (1024) in function 'fbtft_init_display' [-Werror,-Wframe-larger-than]
->>> arm32-allmodconfig.log: drivers/staging/rtl8723bs/core/rtw_security.c:1288:5: error: stack frame size (1040) exceeds limit (1024) in function 'rtw_aes_decrypt' [-Werror,-Wframe-larger-than]
->>> arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1376) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
->>> arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5384) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
->>>
->>> Aside from the dce_calcs.c warnings, these do not seem too bad. I
->>> believe allmodconfig turns on UBSAN but it could also be aggressive
->>> inlining by clang. I intend to look at all -Wframe-large-than warnings
->>> closely later.
->>
->> I've had them close to zero in the past, but a couple of new ones came in.
->>
->> The amdgpu ones are probably not fixable unless they stop using 64-bit
->> floats in the kernel for
->> random calculations. The crypto/* ones tend to be compiler bugs, but hard to fix
-> 
-> I have started taking a look at these. Most of the allmodconfig ones
-> appear to be related to CONFIG_KASAN, which is now supported for
-> CONFIG_ARM.
-> 
+When an afs file or directory is modified locally such that the total file
+size is extended, i_blocks needs to be recalculated too.
 
-Would it make sense to make KASAN depend on !COMPILE_TEST ?
-After all, the point of KASAN is runtime testing, not build testing.
+Fix this by making afs_write_end() and afs_edit_dir_add() call
+afs_set_i_size() rather than setting inode->i_size directly as that also
+recalculates inode->i_blocks.
 
-Guenter
+This can be tested by creating and writing into directories and files and
+then examining them with du.  Without this change, directories show a 4
+blocks (they start out at 2048 bytes) and files show 0 blocks; with this
+change, they should show a number of blocks proportional to the file size
+rounded up to 1024.
+
+Fixes: 31143d5d515ece617ffccb7df5ff75e4d1dfa120 ("AFS: implement basic file write support")
+Fixes: 63a4681ff39c ("afs: Locally edit directory data for mkdir/create/unlink/...")
+Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-afs@lists.infradead.org
+---
+
+ fs/afs/dir_edit.c |    4 ++--
+ fs/afs/inode.c    |   10 ----------
+ fs/afs/internal.h |   10 ++++++++++
+ fs/afs/write.c    |    2 +-
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
+index f4600c1353ad..540b9fc96824 100644
+--- a/fs/afs/dir_edit.c
++++ b/fs/afs/dir_edit.c
+@@ -263,7 +263,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
+ 		if (b == nr_blocks) {
+ 			_debug("init %u", b);
+ 			afs_edit_init_block(meta, block, b);
+-			i_size_write(&vnode->vfs_inode, (b + 1) * AFS_DIR_BLOCK_SIZE);
++			afs_set_i_size(vnode, (b + 1) * AFS_DIR_BLOCK_SIZE);
+ 		}
+ 
+ 		/* Only lower dir pages have a counter in the header. */
+@@ -296,7 +296,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
+ new_directory:
+ 	afs_edit_init_block(meta, meta, 0);
+ 	i_size = AFS_DIR_BLOCK_SIZE;
+-	i_size_write(&vnode->vfs_inode, i_size);
++	afs_set_i_size(vnode, i_size);
+ 	slot = AFS_DIR_RESV_BLOCKS0;
+ 	page = page0;
+ 	block = meta;
+diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+index 126daf9969db..8fcffea2daf5 100644
+--- a/fs/afs/inode.c
++++ b/fs/afs/inode.c
+@@ -53,16 +53,6 @@ static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *paren
+ 		dump_stack();
+ }
+ 
+-/*
+- * Set the file size and block count.  Estimate the number of 512 bytes blocks
+- * used, rounded up to nearest 1K for consistency with other AFS clients.
+- */
+-static void afs_set_i_size(struct afs_vnode *vnode, u64 size)
+-{
+-	i_size_write(&vnode->vfs_inode, size);
+-	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
+-}
+-
+ /*
+  * Initialise an inode from the vnode status.
+  */
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index c97618855b46..12b2bdae6d1a 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -1595,6 +1595,16 @@ static inline void afs_update_dentry_version(struct afs_operation *op,
+ 			(void *)(unsigned long)dir_vp->scb.status.data_version;
+ }
+ 
++/*
++ * Set the file size and block count.  Estimate the number of 512 bytes blocks
++ * used, rounded up to nearest 1K for consistency with other AFS clients.
++ */
++static inline void afs_set_i_size(struct afs_vnode *vnode, u64 size)
++{
++	i_size_write(&vnode->vfs_inode, size);
++	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
++}
++
+ /*
+  * Check for a conflicting operation on a directory that we just unlinked from.
+  * If someone managed to sneak a link or an unlink in on the file we just
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 32a764c24284..2dfe3b3a53d6 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -137,7 +137,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 		write_seqlock(&vnode->cb_lock);
+ 		i_size = i_size_read(&vnode->vfs_inode);
+ 		if (maybe_i_size > i_size)
+-			i_size_write(&vnode->vfs_inode, maybe_i_size);
++			afs_set_i_size(vnode, maybe_i_size);
+ 		write_sequnlock(&vnode->cb_lock);
+ 	}
+ 
+
+
