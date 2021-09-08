@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71307403928
+	by mail.lfdr.de (Postfix) with ESMTP id 030C1403927
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351581AbhIHLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:50:23 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:15976 "EHLO
+        id S1351586AbhIHLuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:50:20 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:57626 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349298AbhIHLuL (ORCPT
+        with ESMTP id S1351496AbhIHLuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:50:11 -0400
+        Wed, 8 Sep 2021 07:50:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631101744; x=1662637744;
+  t=1631101748; x=1662637748;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=/HGcvjBRlRWmlO7DpcZMdq/0nGMUZASrevuJOV+aBGA=;
-  b=dqnKVenU9RCkWKr2r0Jnrw6XMmiP2b5cgbZq0ByQLX5+dzOIdOAhrCII
-   QUpXm6rHh8Xgy8KVH3stJBXh5zdkWAe80BMIZ5KgK42prQlncxQ+13Kou
-   qxhg91eLK8NnHL7LbCOhxVhoyJ9pF+Re4uB6/Ch3sRBQTrrXzdqwjEiJV
-   uvO3pWMIwg5uFOKZ1mwfAnn4a7/a3eSMlRLIlKlfMYcagVZxxPYBXXSl8
-   RZ4qQPlFaKH/7+7pjG83zv+dO59b1+6hAF5IullkCWd5DSU1CENPG0sLx
-   xoUJVTxhF1PkXMXqFSYmDUgdqSOcfYdZYVVHiVC7R57ZfwUuy1rsoed9P
+  bh=IJzUTubxDUwl5su3QPbEKI+MlLxshdcIy7LIdDNq1Y8=;
+  b=M7SgDO3Sm79uhfzLtuQHfFfQbURJhAZYH2R+7h5tUE1j4zGjVQ65wxdS
+   dzJkN1uGArlN1mF5zhxInc3osGIlsSCG84x+xDzv5IwkyeQCaj6k17Srz
+   ia/8djySpNyXmtqdbKYTWlZYWh7fIqYsSxFGbO30PK4nkYhdQI0TUfIBY
+   ZXoSGieseOggiMcL5WhLMcnJKcvUjofdWoxiWcxRVUpoHPV7Vou6hQ0o1
+   q5KGkzhrc6bmIJBRGaEbxdvhZdshWWC2raxi8JUE9ZSGFFBFUMPVPCVqt
+   cwvYF4VG0J6xcov86LzRrIOMUpni/UAahEPq4Nu0LLOmCBVvMTTcGyaso
    g==;
-IronPort-SDR: oCDQ7A6eX7ttNYxTDSmz/FyhlwFFW1w8eJnbRc5sUrKxjJt0m67MO1q3Kj8Y5WnulopK43trMu
- AOdztl1qD9nZ+kcmCb5HhGGT4yK6Y8Dvvf6w9LWcn1ozViw+XpoT29/ZW64WsuD+oGktsbNu7e
- ken7fexlikeeIYLZdJoC9c/7UhHTmp0TGhCLPztk8/X2RGuavhF0lBoUVGvZljLiwfB1mPoTSn
- 318Z9G3SnFHP7+BfDC0FA7WSbiX8YQt9Q2kSzpDgG3SQWTQjG4o10S6SWqxCu2OzfOytLRqplX
- j7QZJG8iJHmbeowDN+JC6+Q5
+IronPort-SDR: mIUbWEL961g0oskuyNoyRW5gpNk5Us3/EyDrhoP5QoRbQFGZWSZJ1yFfb+NTyE7SaaYPBaRTuH
+ dGSqd5+3+LVd9ZtB5jdV1vKAe5HsGbF9IKH4Lg9GUkpMc50vpU27Z80nto8XsASWMjJGr4cZNV
+ 3OFOrM6Lxx36ul0n70OCgKpUffRJoc+Sgox5fav535/A01UfpFV1G4bPkLCFyJ8Ogsxk0As77g
+ JdS/8rnaFszdPwcYNFYPxgi6FSVoivtWMSG1z7c1LAPK6YUgI94VlRE/BV9qjpAfzv0oTviWAf
+ 3vTRHjddRps3Q77yg/Jz/J01
 X-IronPort-AV: E=Sophos;i="5.85,277,1624345200"; 
-   d="scan'208";a="131094788"
+   d="scan'208";a="135795780"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Sep 2021 04:49:03 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Sep 2021 04:49:08 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 8 Sep 2021 04:49:03 -0700
+ 15.1.2176.14; Wed, 8 Sep 2021 04:49:08 -0700
 Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 8 Sep 2021 04:48:59 -0700
+ 15.1.2176.14 via Frontend Transport; Wed, 8 Sep 2021 04:49:05 -0700
 From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 To:     <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
         <Eugen.Hristev@microchip.com>, <Kavyasree.Kotagiri@microchip.com>,
         <Manohar.Puri@microchip.com>
-Subject: [PATCH v2 2/3] clk: lan966x: Add lan966x SoC clock driver
-Date:   Wed, 8 Sep 2021 17:18:43 +0530
-Message-ID: <20210908114844.22131-3-kavyasree.kotagiri@microchip.com>
+Subject: [PATCH v2 3/3] dt-bindings: clock: lan966x: Add LAN966X Clock Controller
+Date:   Wed, 8 Sep 2021 17:18:44 +0530
+Message-ID: <20210908114844.22131-4-kavyasree.kotagiri@microchip.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210908114844.22131-1-kavyasree.kotagiri@microchip.com>
 References: <20210908114844.22131-1-kavyasree.kotagiri@microchip.com>
@@ -59,269 +59,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds Generic Clock Controller driver for lan966x SoC.
-
-Lan966x clock controller contains 3 PLLs - cpu_clk, ddr_clk
-and sys_clk. It generates and supplies clock to various
-peripherals within SoC.
-Register settings required to provide GCK clocking to a
-peripheral is as below:
-GCK_SRC_SEL     = Select clock source.
-GCK_PRESCALER   = Set divider value.
-GCK_ENA         = 1 - Enable GCK clock.
+This adds the DT bindings documentation for lan966x SoC
+generic clock controller.
 
 Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-Co-developed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 ---
 v1 -> v2:
-- No changes.
+- Updated example provided for clk controller DT node.
 
- drivers/clk/clk-lan966x.c | 235 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 235 insertions(+)
- create mode 100644 drivers/clk/clk-lan966x.c
+ .../bindings/clock/microchip,lan966x-gck.yaml | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
 
-diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
+diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
 new file mode 100644
-index 000000000000..4492be90cecf
+index 000000000000..cb8c1f5002f8
 --- /dev/null
-+++ b/drivers/clk/clk-lan966x.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Microchip LAN966x SoC Clock driver.
-+ *
-+ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-+ *
-+ * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-+ */
++++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/microchip,lan966x-gck.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/bitfield.h>
-+#include <linux/clk-provider.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
++title: Microchip LAN966X Generic Clock Controller
 +
-+#include <dt-bindings/clock/microchip,lan966x.h>
++maintainers:
++  - Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 +
-+#define GCK_ENA         BIT(0)
-+#define GCK_SRC_SEL     GENMASK(9, 8)
-+#define GCK_PRESCALER   GENMASK(23, 16)
++description: |
++  The LAN966X Generic clock controller contains 3 PLLs - cpu_clk,
++  ddr_clk and sys_clk. This clock controller generates and supplies
++  clock to various peripherals within the SoC.
 +
-+static const char *clk_names[N_CLOCKS] = {
-+	"qspi0", "qspi1", "qspi2", "sdmmc0",
-+	"pi", "mcan0", "mcan1", "flexcom0",
-+	"flexcom1", "flexcom2", "flexcom3",
-+	"flexcom4", "timer", "usb_refclk",
-+};
++properties:
++  compatible:
++    const: microchip,lan966x-gck
 +
-+struct lan966x_gck {
-+	struct clk_hw hw;
-+	void __iomem *reg;
-+};
-+#define to_lan966x_gck(hw) container_of(hw, struct lan966x_gck, hw)
++  reg:
++    maxItems: 1
 +
-+static struct clk_init_data init;
-+static void __iomem *base;
++  clocks:
++    maxItems: 1
 +
-+static int lan966x_gck_enable(struct clk_hw *hw)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
++  '#clock-cells':
++    const: 1
 +
-+	val |= GCK_ENA;
-+	writel(val, gck->reg);
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#clock-cells'
 +
-+	return 0;
-+}
++additionalProperties: false
 +
-+static void lan966x_gck_disable(struct clk_hw *hw)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
++examples:
++  - |
++    cpu_clk: cpu_clk {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <600000000>;
++    };
 +
-+	val &= ~GCK_ENA;
-+	writel(val, gck->reg);
-+}
++    ddr_clk: ddr_clk {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <300000000>;
++    };
 +
-+static int lan966x_gck_set_rate(struct clk_hw *hw,
-+				unsigned long rate,
-+				unsigned long parent_rate)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 div, val = readl(gck->reg);
++    sys_clk: sys_clk {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <162500000>;
++    };
 +
-+	if (rate == 0 || parent_rate == 0)
-+		return -EINVAL;
-+
-+	/* Set Prescalar */
-+	div = parent_rate / rate;
-+	val &= ~GCK_PRESCALER;
-+	val |= FIELD_PREP(GCK_PRESCALER, (div - 1));
-+	writel(val, gck->reg);
-+
-+	return 0;
-+}
-+
-+static long lan966x_gck_round_rate(struct clk_hw *hw, unsigned long rate,
-+				   unsigned long *parent_rate)
-+{
-+	unsigned int div;
-+
-+	if (rate == 0 || *parent_rate == 0)
-+		return -EINVAL;
-+
-+	if (rate >= *parent_rate)
-+		return *parent_rate;
-+
-+	div = DIV_ROUND_CLOSEST(*parent_rate, rate);
-+
-+	return *parent_rate / div;
-+}
-+
-+static unsigned long lan966x_gck_recalc_rate(struct clk_hw *hw,
-+					     unsigned long parent_rate)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 div, val = readl(gck->reg);
-+
-+	div = FIELD_GET(GCK_PRESCALER, val);
-+
-+	return parent_rate / (div + 1);
-+}
-+
-+static int lan966x_gck_determine_rate(struct clk_hw *hw,
-+				      struct clk_rate_request *req)
-+{
-+	struct clk_hw *parent;
-+	int i;
-+
-+	for (i = 0; i < clk_hw_get_num_parents(hw); ++i) {
-+		parent = clk_hw_get_parent_by_index(hw, i);
-+		if (!parent)
-+			continue;
-+
-+		if (clk_hw_get_rate(parent) / req->rate < 254) {
-+			req->best_parent_hw = parent;
-+			req->best_parent_rate = clk_hw_get_rate(parent);
-+
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static u8 lan966x_gck_get_parent(struct clk_hw *hw)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	return FIELD_GET(GCK_SRC_SEL, val);
-+}
-+
-+static int lan966x_gck_set_parent(struct clk_hw *hw, u8 index)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	val &= ~GCK_SRC_SEL;
-+	val |= FIELD_PREP(GCK_SRC_SEL, index);
-+	writel(val, gck->reg);
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops lan966x_gck_ops = {
-+	.enable         = lan966x_gck_enable,
-+	.disable        = lan966x_gck_disable,
-+	.set_rate       = lan966x_gck_set_rate,
-+	.round_rate     = lan966x_gck_round_rate,
-+	.recalc_rate    = lan966x_gck_recalc_rate,
-+	.determine_rate = lan966x_gck_determine_rate,
-+	.set_parent     = lan966x_gck_set_parent,
-+	.get_parent     = lan966x_gck_get_parent,
-+};
-+
-+static struct clk_hw *lan966x_gck_clk_register(struct device *dev, int i)
-+{
-+	struct lan966x_gck *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return ERR_PTR(-ENOMEM);
-+
-+	priv->reg = base + (i * 4);
-+	priv->hw.init = &init;
-+	ret = devm_clk_hw_register(dev, &priv->hw);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return &priv->hw;
-+};
-+
-+static int lan966x_clk_probe(struct platform_device *pdev)
-+{
-+	struct clk_hw_onecell_data *hw_data;
-+	struct device *dev = &pdev->dev;
-+	const char *parent_names[3];
-+	int i, ret;
-+
-+	hw_data = devm_kzalloc(dev, sizeof(*hw_data), GFP_KERNEL);
-+	if (!hw_data)
-+		return -ENOMEM;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	init.ops = &lan966x_gck_ops;
-+	init.num_parents = 3;
-+
-+	for (i = 0; i < init.num_parents; ++i) {
-+		parent_names[i] = of_clk_get_parent_name(pdev->dev.of_node, i);
-+		if (!parent_names[i])
-+			return -EINVAL;
-+	}
-+
-+	init.parent_names = parent_names;
-+	hw_data->num = N_CLOCKS;
-+
-+	for (i = 0; i < N_CLOCKS; i++) {
-+		init.name = clk_names[i];
-+		hw_data->hws[i] = lan966x_gck_clk_register(dev, i);
-+		if (IS_ERR(hw_data->hws[i])) {
-+			dev_err(dev, "failed to register %s clock\n",
-+				init.name);
-+			return ret;
-+		}
-+	}
-+
-+	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, hw_data);
-+}
-+
-+static const struct of_device_id lan966x_clk_dt_ids[] = {
-+	{ .compatible = "microchip,lan966x-gck", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lan966x_clk_dt_ids);
-+
-+static struct platform_driver lan966x_clk_driver = {
-+	.probe  = lan966x_clk_probe,
-+	.driver = {
-+		.name = "lan966x-clk",
-+		.of_match_table = lan966x_clk_dt_ids,
-+	},
-+};
-+builtin_platform_driver(lan966x_clk_driver);
-+
-+MODULE_AUTHOR("Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>");
-+MODULE_DESCRIPTION("LAN966X clock driver");
-+MODULE_LICENSE("GPL v2");
++    clks: clock-controller@e00c00a8 {
++        compatible = "microchip,lan966x-gck";
++        #clock-cells = <1>;
++        clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
++        reg = <0xe00c00a8 0x38>;
++    };
++...
 -- 
 2.17.1
 
