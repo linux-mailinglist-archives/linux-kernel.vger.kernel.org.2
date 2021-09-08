@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637B1403B1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6DA403B26
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350664AbhIHOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235767AbhIHOBu (ORCPT
+        id S1348156AbhIHOFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:05:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19707 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235455AbhIHOF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:01:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D341EC061575;
-        Wed,  8 Sep 2021 07:00:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0efc003bde2e7441c2ae39.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:3bde:2e74:41c2:ae39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 8 Sep 2021 10:05:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631109860; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7eNx0fhwCSF+xb+ymgZCfriGvUaN9NPGimpmZv0IsVw=; b=ZOKR4Uy3poIO5vv+tP88zxoOx6Rz2hoj7gi3hVLJxxVF0fdeVCDk7A1qA0Fs7D+rNdC2aqvb
+ 9HQJjV2UNAwwZ0xiOhHcWGvR7NvDBXFehnTou7FWIoqKUgllc1efj5S2Li8aJXHDBeljc67I
+ Cg9+oWqr1DXxTTZnuvaHnv+DjSU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6138c2dfd15f4d68a266ef05 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 14:04:15
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F548C4361C; Wed,  8 Sep 2021 14:04:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 537511EC0298;
-        Wed,  8 Sep 2021 16:00:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631109636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FPmCIettNSQ3hJ3fLlb/FqgkzqUF7CIDcbo8CDhLUf8=;
-        b=Nc04+xpA2MmAZFNCVhPl1P6lsbelU/cKur7xnArKEftSArWcXYPjSXl/i8afF9fF2wOWtg
-        VJya2j168umGzNSDaldIW1+0VLNiMZSefupEmUoWe5c1WKs515ik72cjV8eKRW92ixnf7s
-        sBmuJxp0nGblT0trjBgJZ0lsGLFwKjc=
-Date:   Wed, 8 Sep 2021 16:00:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 37/38] virt: sevguest: Add support to derive key
-Message-ID: <YTjB/KTBsqExqylc@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-38-brijesh.singh@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-38-brijesh.singh@amd.com>
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0060C4338F;
+        Wed,  8 Sep 2021 14:04:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A0060C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v2] ASoC: dt-bindings: lpass: add binding headers for digital codecs
+Date:   Wed,  8 Sep 2021 19:33:51 +0530
+Message-Id: <1631109831-1360-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:32AM -0500, Brijesh Singh wrote:
-> +2.2 SNP_GET_DERIVED_KEY
-> +-----------------------
-> +:Technology: sev-snp
-> +:Type: guest ioctl
-> +:Parameters (in): struct snp_derived_key_req
-> +:Returns (out): struct snp_derived_key_req on success, -negative on error
-> +
-> +The SNP_GET_DERIVED_KEY ioctl can be used to get a key derive from a root key.
-> +The derived key can be used by the guest for any purpose, such as sealing keys
-> +or communicating with external entities.
-> +
-> +The ioctl uses the SNP_GUEST_REQUEST (MSG_KEY_REQ) command provided by the
-> +SEV-SNP firmware to derive the key. See SEV-SNP specification for further details
-> +on the various fileds passed in the key derivation request.
-> +
-> +On success, the snp_derived_key_resp.data will contains the derived key
+Add header defining for lpass internal digital codecs rx,tx and va
+dai node id's.
 
-"will contain"
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes since v1:
+    -- Add missing dai node ID's
 
-> +value.
-> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
-> index d029a98ad088..621b1c5a9cfc 100644
-> --- a/drivers/virt/coco/sevguest/sevguest.c
-> +++ b/drivers/virt/coco/sevguest/sevguest.c
-> @@ -303,6 +303,50 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_user_guest_reque
->  	return rc;
->  }
->  
-> +static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_user_guest_request *arg)
-> +{
-> +	struct snp_guest_crypto *crypto = snp_dev->crypto;
-> +	struct snp_derived_key_resp *resp;
-> +	struct snp_derived_key_req req;
-> +	int rc, resp_len;
-> +
-> +	if (!arg->req_data || !arg->resp_data)
-> +		return -EINVAL;
-> +
-> +	/* Copy the request payload from the userspace */
+ include/dt-bindings/sound/qcom,lpass.h | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-"from userspace"
-
-> +	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
-> +		return -EFAULT;
-> +
-> +	/* Message version must be non-zero */
-> +	if (!req.msg_version)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * The intermediate response buffer is used while decrypting the
-> +	 * response payload. Make sure that it has enough space to cover the
-> +	 * authtag.
-> +	 */
-> +	resp_len = sizeof(resp->data) + crypto->a_len;
-> +	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
-> +	if (!resp)
-> +		return -ENOMEM;
-> +
-> +	/* Issue the command to get the attestation report */
-> +	rc = handle_guest_request(snp_dev, req.msg_version, SNP_MSG_KEY_REQ,
-> +				  &req.data, sizeof(req.data), resp->data, resp_len,
-> +				  &arg->fw_err);
-> +	if (rc)
-> +		goto e_free;
-> +
-> +	/* Copy the response payload to userspace */
-> +	if (copy_to_user((void __user *)arg->resp_data, resp, sizeof(*resp)))
-> +		rc = -EFAULT;
-> +
-> +e_free:
-> +	kfree(resp);
-> +	return rc;
-> +}
-> +
->  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->  	struct snp_guest_dev *snp_dev = to_snp_dev(file);
-> @@ -320,6 +364,10 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->  		ret = get_report(snp_dev, &input);
->  		break;
->  	}
-> +	case SNP_GET_DERIVED_KEY: {
-> +		ret = get_derived_key(snp_dev, &input);
-> +		break;
-> +	}
-
-{} brackets are not needed.
-
-What, however, is bothering me more in this function is that you call
-the respective ioctl function which might fail, you do not look at the
-return value and copy_to_user() unconditionally.
-
-Looking at get_derived_key(), for example, if it returns after:
-
-        if (!arg->req_data || !arg->resp_data)
-                return -EINVAL;
-
-you will be copying the same thing back to the user, you copied in
-earlier. That doesn't make any sense to me.
-
-Thx.
-
+diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
+index 7b0b80b..a9404c3 100644
+--- a/include/dt-bindings/sound/qcom,lpass.h
++++ b/include/dt-bindings/sound/qcom,lpass.h
+@@ -10,6 +10,37 @@
+ 
+ #define LPASS_DP_RX	5
+ 
++#define LPASS_CDC_DMA_RX0 6
++#define LPASS_CDC_DMA_RX1 7
++#define LPASS_CDC_DMA_RX2 8
++#define LPASS_CDC_DMA_RX3 9
++#define LPASS_CDC_DMA_RX4 10
++#define LPASS_CDC_DMA_RX5 11
++#define LPASS_CDC_DMA_RX6 12
++#define LPASS_CDC_DMA_RX7 13
++#define LPASS_CDC_DMA_RX8 14
++#define LPASS_CDC_DMA_RX9 15
++
++#define LPASS_CDC_DMA_TX0 16
++#define LPASS_CDC_DMA_TX1 17
++#define LPASS_CDC_DMA_TX2 18
++#define LPASS_CDC_DMA_TX3 19
++#define LPASS_CDC_DMA_TX4 20
++#define LPASS_CDC_DMA_TX5 21
++#define LPASS_CDC_DMA_TX6 22
++#define LPASS_CDC_DMA_TX7 23
++#define LPASS_CDC_DMA_TX8 24
++
++#define LPASS_CDC_DMA_VA_TX0 25
++#define LPASS_CDC_DMA_VA_TX1 26
++#define LPASS_CDC_DMA_VA_TX2 27
++#define LPASS_CDC_DMA_VA_TX3 28
++#define LPASS_CDC_DMA_VA_TX4 29
++#define LPASS_CDC_DMA_VA_TX5 30
++#define LPASS_CDC_DMA_VA_TX6 31
++#define LPASS_CDC_DMA_VA_TX7 32
++#define LPASS_CDC_DMA_VA_TX8 33
++
+ #define LPASS_MCLK0	0
+ 
+ #endif /* __DT_QCOM_LPASS_H */
 -- 
-Regards/Gruss,
-    Boris.
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-https://people.kernel.org/tglx/notes-about-netiquette
