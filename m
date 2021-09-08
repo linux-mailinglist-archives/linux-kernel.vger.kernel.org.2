@@ -2,83 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6D8403D11
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C00403D14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352144AbhIHP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349791AbhIHP6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE7660EE6;
-        Wed,  8 Sep 2021 15:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631116646;
-        bh=ELvutsBWnKljahCvmsUf1lTmYmJcUrk25vI9Qu6RLeU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PPKnDcaUpF7UJAtCrxsg6TaImq+zosSFohM4v+Two1N1RTL0H2O6LjldOSv8+ajsI
-         NPSLzjOfRmv+DcULTsCoJ5/Qow+YUMoZH4wvHKIYmrxuO8WC2HWywg6OPIzfnKKIVz
-         r5gd0praMBEggJVNzQ29xSyYQ9XAVhbqMv7LQqt1smeFME3oK0G3vJYhA/SrYJb3Eo
-         mKAjKg9iEK4Kge0vMJ9Syj7hQ4FxpBYMoCJT8W6B751ZJho+gikM7kQOAb5mV8qNBZ
-         sFeKCTwBaopKA9DyrnlMkaYVawj8tOIxUsiiocQ5hrx5wj8iY+7J9zki+nLs3PAQmm
-         /r1vcY8pBCpBQ==
-Date:   Wed, 8 Sep 2021 08:57:23 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     moyufeng <moyufeng@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        alexander.duyck@gmail.com, linux@armlinux.org.uk, mw@semihalf.com,
-        linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        hawk@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, akpm@linux-foundation.org,
-        peterz@infradead.org, will@kernel.org, willy@infradead.org,
-        vbabka@suse.cz, fenghua.yu@intel.com, guro@fb.com,
-        peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, chenhao288@hisilicon.com
-Subject: Re: [PATCH net-next v2 4/4] net: hns3: support skb's frag page
- recycling based on page pool
-Message-ID: <20210908085723.3c9c2de2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YTjWK1rNsYIcTt4O@apalos.home>
-References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
-        <1628217982-53533-5-git-send-email-linyunsheng@huawei.com>
-        <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
-        <20210908080843.2051c58d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YTjWK1rNsYIcTt4O@apalos.home>
+        id S1352228AbhIHP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:58:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352204AbhIHP6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:58:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631116656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1ZOJvbxzO8BUjr09tA/fWWBxB+TgiUoA1TeVch1z3+g=;
+        b=f7NoLvDN4mCHR/W0IOyeaUCuWE08VnEAn/McZd+hSzAVNDHaTiYT1pAPMPnmrIfaLsyrAS
+        NabCTu63ZgEtAus7eGjCBh6wQ6TKn1VbN6CuEItmLHxkNaGsE7rqfD5++LE19hnu0a0ckC
+        l0a3cuJpK6mAZYI7KOCa0Md3Yf5xdEg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-r85xmPL7NxWt5Og6R6_qbA-1; Wed, 08 Sep 2021 11:57:35 -0400
+X-MC-Unique: r85xmPL7NxWt5Og6R6_qbA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD3DD18414A1;
+        Wed,  8 Sep 2021 15:57:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 99D0E5C1BB;
+        Wed,  8 Sep 2021 15:57:32 +0000 (UTC)
+Subject: [PATCH 0/6] afs: Fixes for 3rd party-induced data corruption
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        Markus Suvanto <markus.suvanto@gmail.com>, dhowells@redhat.com,
+        markus.suvanto@gmail.com, Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 08 Sep 2021 16:57:31 +0100
+Message-ID: <163111665183.283156.17200205573146438918.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021 18:26:35 +0300 Ilias Apalodimas wrote:
-> > Normally I'd say put the stats in ethtool -S and the rest in debugfs
-> > but I'm not sure if exposing pages_state_hold_cnt and
-> > pages_state_release_cnt directly. Those are short counters, and will
-> > very likely wrap. They are primarily meaningful for calculating
-> > page_pool_inflight(). Given this I think their semantics may be too
-> > confusing for an average ethtool -S user.
-> > 
-> > Putting all the information in debugfs seems like a better idea.  
-> 
-> I can't really disagree on the aforementioned stats being confusing.
-> However at some point we'll want to add more useful page_pool stats (e.g the
-> percentage of the page/page fragments that are hitting the recycling path).
-> Would it still be 'ok' to have info split across ethtool and debugfs?
 
-Possibly. We'll also see what Alex L comes up with for XDP stats. Maybe
-we can arrive at a netlink API for standard things (broken record).
+Here are some fixes for AFS that can cause data corruption due to
+interaction with another client modifying data cached locally[1].
 
-You said percentage - even tho I personally don't like it - there is a
-small precedent of ethtool -S containing non-counter information (IOW
-not monotonically increasing event counters), e.g. some vendors rammed
-PCI link quality in there. So if all else fails ethtool -S should be
-fine.
+ (1) When d_revalidating a dentry, don't look at the inode to which it
+     points.  Only check the directory to which the dentry belongs.  This
+     was confusing things and causing the silly-rename cleanup code to
+     remove the file now at the dentry of a file that got deleted.
+
+ (2) Fix mmap data coherency.  When a callback break is received that
+     relates to a file that we have cached, the data content may have been
+     changed (there are other reasons, such as the user's rights having
+     been changed).  However, we're checking it lazily, only on entry to
+     the kernel, which doesn't happen if we have a writeable shared mapped
+     page on that file.
+
+     We make the kernel keep track of mmapped files and clear all PTEs
+     mapping to that file as soon as the callback comes in by calling
+     unmap_mapping_pages() (we don't necessarily want to zap the
+     pagecache).  This causes the kernel to be reentered when userspace
+     tries to access the mmapped address range again - and at that point we
+     can query the server and, if we need to, zap the page cache.
+
+     Ideally, I would check each file at the point of notification, but
+     that involves poking the server[*] - which is holding up final closure
+     of the change it is making, waiting for all the clients it notified to
+     reply.  This could then deadlock against the server.  Further,
+     invalidating the pagecache might call ->launder_page(), which would
+     try to write to the file, which would definitely deadlock.  (AFS
+     doesn't lease file access).
+
+     [*] Checking to see if the file content has changed is a matter of
+     	 comparing the current data version number, but we have to ask the
+     	 server for that.  We also need to get a new callback promise and
+     	 we need to poke the server for that too.
+
+ (3) Add some more points at which the inode is validated, since we're
+     doing it lazily, notably in ->read_iter() and ->page_mkwrite(), but
+     also when performing some directory operations.
+
+     Ideally, checking in ->read_iter() would be done in some derivation of
+     filemap_read().  If we're going to call the server to read the file,
+     then we get the file status fetch as part of that.
+
+ (4) The above is now causing us to make a lot more calls to afs_validate()
+     to check the inode - and afs_validate() takes the RCU read lock each
+     time to make a quick check (ie. afs_check_validity()).  This is
+     entirely for the purpose of checking cb_s_break to see if the server
+     we're using reinitialised its list of callbacks - however this isn't a
+     very common operation, so most of the time we're taking this
+     needlessly.
+
+     Add a new cell-wide counter to count the number of reinitialisations
+     done by any server and check that - and only if that changes, take the
+     RCU read lock and check the server list (the server list may change,
+     but the cell a file is part of won't).
+
+ (5) Don't update vnode->cb_s_break and ->cb_v_break inside the validity
+     checking loop.  The cb_lock is done with read_seqretry, so we might go
+     round the loop a second time after resetting those values - and that
+     could cause someone else checking validity to miss something (I
+     think).
+
+Also included are patches for fixes for some bugs encountered whilst
+debugging this.
+
+ (6) Fix a leak of afs_read objects and fix a leak of keys hidden by that.
+
+ (7) Fix a leak of pages that couldn't be added to extend a writeback.
+
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214217 [1]
+
+---
+David Howells (6):
+      afs: Fix missing put on afs_read objects and missing get on the key therein
+      afs: Fix page leak
+      afs: Add missing vnode validation checks
+      afs: Fix incorrect triggering of sillyrename on 3rd-party invalidation
+      afs: Fix mmap coherency vs 3rd-party changes
+      afs: Try to avoid taking RCU read lock when checking vnode validity
+
+
+ fs/afs/callback.c          | 44 ++++++++++++++++++-
+ fs/afs/cell.c              |  2 +
+ fs/afs/dir.c               | 57 ++++++++----------------
+ fs/afs/file.c              | 83 ++++++++++++++++++++++++++++++++++-
+ fs/afs/inode.c             | 88 +++++++++++++++++++-------------------
+ fs/afs/internal.h          | 10 +++++
+ fs/afs/rotate.c            |  1 +
+ fs/afs/server.c            |  2 +
+ fs/afs/super.c             |  1 +
+ fs/afs/write.c             | 27 ++++++++++--
+ include/trace/events/afs.h |  8 +++-
+ mm/memory.c                |  1 +
+ 12 files changed, 230 insertions(+), 94 deletions(-)
+
+
