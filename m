@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6705B4038AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3146A4038B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349104AbhIHLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:22:45 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:32914 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351390AbhIHLWl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:22:41 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 188BLHtY004258;
-        Wed, 8 Sep 2021 06:21:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631100077;
-        bh=tQ/oRH0/DOAVAVT9DA6HnrABsHYorEoEFqH+SpdThGA=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=VgIP4l5OdFTSp9xHKJ8kx0uOHSIhye0fvYqNqyPkwKfADE8bceIJ6f2YnXyzqTlyM
-         7DvRhCha9ukSaAfD4gNffG8JbFWZw0DQjbL7sV3UjAnC/oBoeec7+kXjxWaGeK5KTV
-         zWLcRR6F02bUlhoiFz7Lm0gqZggb5lEZnEJjMXEI=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 188BLHwU121750
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Sep 2021 06:21:17 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
- Sep 2021 06:21:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 8 Sep 2021 06:21:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 188BLGcW086516;
-        Wed, 8 Sep 2021 06:21:17 -0500
-Date:   Wed, 8 Sep 2021 16:51:15 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Parshuram Raju Thombare <pthombar@cadence.com>
-CC:     "broonie@kernel.org" <broonie@kernel.org>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jayshri Dajiram Pawar <jpawar@cadence.com>,
-        Milind Parab <mparab@cadence.com>,
-        Konrad Kociolek <konrad@cadence.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v3 2/2] spi: cadence: add support for Cadence XSPI
- controller
-Message-ID: <20210908112113.smnwmayjb3jit3eg@ti.com>
-References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
- <1630499858-20456-1-git-send-email-pthombar@cadence.com>
- <20210903185653.7vrfn4qfzvuiaiq2@ti.com>
- <CY4PR07MB275737A008CBB58C4B108D2FC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
+        id S1351458AbhIHLXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:23:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232430AbhIHLXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:23:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F82861078;
+        Wed,  8 Sep 2021 11:22:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631100161;
+        bh=ALxiOwLgszVWrVBZDyapBhC1fA/x/vzP431jfN69HAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jsf2Mw/GVuU9UpcmP2PG0O/Rb4JUi0D7Fovo2UU666jqECJkmEdX9z5av8kdNFKxV
+         thg6JhYxJv8cyhAhdDa2ni3dZ8emj1aT75E6yIF258hGoXVEDb6ipwx/O7QRcbDRwh
+         bn8QspmdbJORahKy4eqxZz43QQHxjBHb2TK24Hytbx6FayPLfKZv57v8I/93lYoXmV
+         mf2Iz1Fc0T5vU//gCwDfaFIlT93OPcQ9Y/EwmLUP4pI6Q3TuCYxYo5tfoP5rLSsbBA
+         cBHY5yrXtZhxb+Npu/Em6Y4P3tf/8y2prV1qIIAdqxFihUjAtsUq/UU2PmAIPo3BeV
+         sj3f0PBq4RCIg==
+Date:   Wed, 8 Sep 2021 14:22:31 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
+ not present entries
+Message-ID: <YTic90lqv0HbuYOI@kernel.org>
+References: <20210819132717.19358-1-rppt@kernel.org>
+ <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
+ <YTiR6aK6XKJ4z0wH@zn.tnic>
+ <YTiV/Sdm/T/jnsHC@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CY4PR07MB275737A008CBB58C4B108D2FC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YTiV/Sdm/T/jnsHC@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/21 07:27AM, Parshuram Raju Thombare wrote:
-> >Depends on SPI_MEM as well.
-> 
-> Ok
-> 
-> >I commented on this last time around as well. This does not look right
-> >at all. A SPI MEM based driver should *not* need to know anything about
-> >the subsystem driving it. That is the entire point of the API.
-> >
-> >The controller seems to be able to extract the read and write opcodes
-> >from the SFDP on its own since you don't pass in that information to
-> >cdns_xspi_nor_read(). It looks like it is tied very heavily to a NOR
-> >flash, and I am not sure if it can really be used with a NAND flash, or
-> >something else entirely.
-> >
-> >Which makes me wonder how we should handle controllers like these. I
-> >don't think they fit in very well with the SPI MEM model, since they
-> >can't execute arbitrary SPI MEM commands very well. At the same time we
-> >are trying to get rid of mtd/spi-nor/controllers. Dunno...
-> >
-> >Mark, Tudor, Vignesh, any ideas?
-> 
-> Ok, then for now I will drop ACMD PIO mode and use only STIG mode.
-> In STIG mode driver configures bus width and clock edge mode for
-> command, address and data for each operation. 
+On Wed, Sep 08, 2021 at 12:52:45PM +0200, Borislav Petkov wrote:
+> On Wed, Sep 08, 2021 at 12:35:21PM +0200, Borislav Petkov wrote:
+> > So I did stare at this for a while, trying to make sense of it and David
+> > Hildenbrand asked for a Fixes: tag in v1 review and from doing a bit of
+> > git archeology I think it should be:
+> > 
+> > c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+> > 
+> > because that thing added the clearing of the Present bit for the high
+> > kernel image mapping of those areas.
+> > 
+> > Right?
 
-But it would reduce performance by a lot, no? I think we should try to 
-figure out how we can accomodate controllers like this before resorting 
-to using the slower modes.
+Yes, in a sense. 
+As the only user of kern_addr_valid() is kcore and it only uses this check
+for high kernel mappings, there should be no problem before 4.19.
+
+But...
+
+
+> Hmm, but that commit is in v4.19. Mike has added
+> 
+> Cc: <stable@vger.kernel.org>    # 4.4+
+> 
+> Mike, why 4.4 and newer?
+
+kern_addr_valid() wrongly uses pxy_none() rather than pxy_present() because
+according to 9a14aefc1d28 ("x86: cpa, fix lookup_address") there could be
+cases when page table entries exist but they are not valid.
+So a call to kern_addr_valid() for an address in the direct map would oops.
+
+I've stopped digging at 9a14aefc1d28 (which is in v2.6.26) and added the
+oldest stable we still support (4.4).
+
+I agree that before 4.19 it's more of a theoretical bug, but you know,
+things happen...
+ 
+> Hmmm.
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Sincerely yours,
+Mike.
