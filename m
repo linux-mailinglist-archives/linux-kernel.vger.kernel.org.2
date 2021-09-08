@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0D9403D32
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B58403D48
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352301AbhIHQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:01:44 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52079 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349719AbhIHQBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:01:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="200050286"
-X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; 
-   d="scan'208";a="200050286"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 09:00:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; 
-   d="scan'208";a="547885610"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Sep 2021 09:00:34 -0700
-Date:   Wed, 8 Sep 2021 09:02:06 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Hao Peng <flyingpenghao@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
- supported
-Message-ID: <20210908160206.7jncf45ptn7bwamf@gupta-dev2.localdomain>
-References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
- <20210907051454.56eocxfxeuqixlf6@gupta-dev2.localdomain>
- <CAPm50aLWUJZbgmvrt09S9LKowuH28NQpn7ZSuCkJGf_=jKFjXg@mail.gmail.com>
- <20210907225912.2i6cmprvauyxrhlu@gupta-dev2.localdomain>
- <CAPm50aLFvP=F6Lz9M-a5aNcrx+cEkAZ6NPWwEShEx2yKk64c_g@mail.gmail.com>
+        id S245378AbhIHQHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhIHQHv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 12:07:51 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7F4C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:06:43 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id t19so5385989lfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F4infFLVixS1zGDFn3Ppp1mthbrjmBNRT6/Rci2kJg8=;
+        b=H8ZMch42HiybhAm4Ner+rjzqPv+vf/l5o8J/kw1HS5STE/87Uu67cqIKV7XOttIzH6
+         Fr/yJ3v1JspZbfGvuL5igjanpDAyvA/Yy598WQlVH1jVhZa0SPwMaVtG0sJiHxnuShdx
+         4vioibFKRKMO6AdS+qLyXRlpX18FbIq4PUiRk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F4infFLVixS1zGDFn3Ppp1mthbrjmBNRT6/Rci2kJg8=;
+        b=bjTqtFTWtVergKQuvu6NfC3ammkkCsONiueQWAM1Aq7qFF+79qjB5FaexZgSNaEJo1
+         jNfuWwmK2CUr6vv1eqm+4G+nmTmRsptIGB6C/pi/uZGbbJTnrPZrTxeEqK+EZGMlSVzO
+         vAhM4ctoPnlvJlKBGvx1EixEM9ZFxAtPjHg1txldyx7jlXxg++xGAMEfEuOslz2OxgNa
+         nQcphz09lNmkCdPMyLum952Z4flqMys6ngqZ7J+7TieJNhm7TlXwSHsoFKiJuBa04Il2
+         3v1NrobCK4d3AwUP2aq16QE8uzLoRnOsQr6tzFw4BJK2euSSC8Tjt+jM+kbVqDYSFQyb
+         ayyQ==
+X-Gm-Message-State: AOAM533YNt3TUtwguJQ8Ur8ydHMaMRmApoS9s6GC7J1Gln+cYmacRbDM
+        cR1RG9kDAS2eu4p7FvSzTeSGzwH5f3+2yvjEDuY=
+X-Google-Smtp-Source: ABdhPJy40067RM5um1GawevYwVDmnP9tMSja/Vhdw1oxyMzNl3skq7UKUugTt5oWwuoJMFIRm9OYFA==
+X-Received: by 2002:a05:6512:c3:: with SMTP id c3mr3081457lfp.406.1631117201195;
+        Wed, 08 Sep 2021 09:06:41 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id t12sm247513lfr.190.2021.09.08.09.06.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 09:06:40 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id w4so4346067ljh.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:06:40 -0700 (PDT)
+X-Received: by 2002:a05:651c:158f:: with SMTP id h15mr3559594ljq.249.1631116792643;
+ Wed, 08 Sep 2021 08:59:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPm50aLFvP=F6Lz9M-a5aNcrx+cEkAZ6NPWwEShEx2yKk64c_g@mail.gmail.com>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <20210908100304.oknxj4v436sbg3nb@liuwe-devbox-debian-v2>
+In-Reply-To: <20210908100304.oknxj4v436sbg3nb@liuwe-devbox-debian-v2>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 8 Sep 2021 08:59:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgMyCaFMybdQRJYJLbbbv5S2UHsU3oQ+CBRyYkvjmR=hA@mail.gmail.com>
+Message-ID: <CAHk-=wgMyCaFMybdQRJYJLbbbv5S2UHsU3oQ+CBRyYkvjmR=hA@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.09.2021 13:06, Hao Peng wrote:
->On Wed, Sep 8, 2021 at 6:57 AM Pawan Gupta
-><pawan.kumar.gupta@linux.intel.com> wrote:
->>
->> On 07.09.2021 14:36, Hao Peng wrote:
->> >On Tue, Sep 7, 2021 at 1:13 PM Pawan Gupta
->> ><pawan.kumar.gupta@linux.intel.com> wrote:
->> >>
->> >> On 06.09.2021 10:46, Hao Peng wrote:
->> >> >If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
->> >> >RTM and HLE features, it will affect TAA mitigation.
->> >>
->> >> Guests are on purpose not allowed to control TSX via MSR_IA32_TSX_CTRL,
->> >> otherwise a malicious guest can enable TSX and attack host or other
->> >> guests. The TAA mitigation within a guest is same as MDS i.e.
->> >> micro-architectural buffer clear using VERW instruction. Support for
->> >> VERW is added by the microcode update and enumerate by
->> >> MSR_ARCH_CAP[MD_CLEAR] bit.
->> >>
->> >> >Signed-off-by: Peng Hao <flyingpeng@tencent.com>
->> >> >---
->> >> > arch/x86/kernel/cpu/tsx.c | 7 +++++++
->> >> > 1 file changed, 7 insertions(+)
->> >> >
->> >> >diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
->> >> >index 9c7a5f049292..5e852c14fef2 100644
->> >> >--- a/arch/x86/kernel/cpu/tsx.c
->> >> >+++ b/arch/x86/kernel/cpu/tsx.c
->> >> >@@ -122,6 +122,13 @@ void __init tsx_init(void)
->> >> >
->> >> >        if (!tsx_ctrl_is_supported()) {
->> >> >                tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
->> >> >+
->> >> >+               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
->> >> >+                * but guest supports RTM and HLE features, it will affect TAA
->> >> >+                * （tsx_async_abort）mitigation.
->> >> >+                */
->> >> >+               setup_clear_cpu_cap(X86_FEATURE_RTM);
->> >> >+               setup_clear_cpu_cap(X86_FEATURE_HLE);
->> >>
->> >> This is not correct. TSX feature can exist without TSX_CTRL MSR.
->> >> Moreover, clearing the cached bits with setup_clear_cpu_cap() doesn't
->> >> disable the TSX feature in CPU.
->> >>
->> >After applying this patch, the output of
->> >/sys/devices/system/cpu/vulnerabilities/tsx_async_abort
->> >becomes “Mitigation: TSX disabled”.Do you mean that tsx is still
->> >enabled in this case in guest?
->>
->> If the host has TSX enabled, guest can use TSX instructions irrespective
->> of what cpu capabilities in the guest says.
->>
->I understand that guest cannot produce any actual effects on the hardware,
->so if the host has resolved the TAA bug on the hardware, does the guest actually
->have no vulnerability no matter what TAA status is displayed?
+On Wed, Sep 8, 2021 at 3:03 AM Wei Liu <wei.liu@kernel.org> wrote:
+>
+> Thanks for the heads-up. I found one instance of this bad practice in
+> hv_apic.c. Presumably that's the one you were referring to.
 
-Yes, if the host does not have TAA bug, guest also does not have it.
+Yeah, that must have been the one I saw.
+
+> However calling into the allocator from that IPI path seems very heavy
+> weight. I will discuss with fellow engineers on how to fix it properly.
+
+In other places, the options have been fairly straightforward:
+
+ (a) avoid the allocation entirely.
+
+I think the main reason hyperv does it is because it wants to clear
+the "current cpu" from the cpumask for the ALL_BUT_SELF case, and if
+you can just instead keep track of that "all but self" bit separately
+and pass it down the call chain, you may not need that allocation at
+all.
+
+ (b) use a static percpu allocation
+
+The IPI code generally wants interrupts disabled anyway, or it
+certainly can just do the required preemption disable to make sure
+that it has exclusive access to a percpu allocation.
+
+ (c) take advantage of any hypervisor limitations
+
+If hyperv is limited to some smaller number of CPU's - google seems to
+imply 240 - maybe you can keep such a smaller allocation on the stack,
+but just verify that the incoming cpumask is less than whatever the
+hyperv limit is.
+
+That (c) is obviously the worst choice in some sense, but in some
+cases limiting yourself to simplify things isn't wrong.
+
+I suspect the percpu allocation model is the easiest one. It's what
+other IPI code does. See for example
+
+  arch/x86/kernel/apic/x2apic_cluster.c:
+      __x2apic_send_IPI_mask()
+
+and that percpu 'ipi_mask' thing.
+
+That said, if you are already just iterating over the mask, doing (a)
+may be trivial. No allocation at all is even better than a percpu one.
+
+I'm sure there are other options. The above is just the obvious ones
+that come to mind.
+
+           Linus
