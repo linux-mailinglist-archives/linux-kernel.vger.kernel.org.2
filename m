@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98494038EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCEB4038FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351510AbhIHLhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349245AbhIHLhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:37:50 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0863C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 04:36:42 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id u21so1490659qtw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 04:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CxVbl1NeHOmwGOjTCkO4fNrdlLNXumgR3g3uKY0Phu8=;
-        b=PhLB7xEzyYMO4ug5NLmHBrjiQJfJIgt9af2XwwRxN/CbrlVzAQ9nP6MV3dGJyMZ+iN
-         dEr2fhakSYLAu74YiYFswbacvSx9JGiBednwW8rGK2ZF8EZHzQIvdbmZnl21+5TTidZm
-         4aXwoOgKm29Kxx68Dm+oNdBrk9tTGAz0iLYMmtsaAKvmJq7SZtXOiWiinVdlpjn4t7lb
-         tGyHLuDkztQO24R0eDXScwfEofTSq5YNHeFUByAvO40rKNE8HKMnyhNeKi7KBfl/99aS
-         BepBdG4nz6jTn29+b/7dYK7JSZjCOoF3afl2FvMHRyiRO7CDQgebD7ue5zplY5oqMn7I
-         ZbOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CxVbl1NeHOmwGOjTCkO4fNrdlLNXumgR3g3uKY0Phu8=;
-        b=k1B+lp9lvJhTzSedJowGL2kszfOqbrEFhyGfGg3dh0dJyBSUj2FHWHk3CBo9L8sMAO
-         CdCfN1vbuZRnhApl5Qie4N5WqK1QWUTsxhvnZ8f+HmcYG33OV502nWgbg91+1vI5GvnS
-         SKeWtkVUbJXCD21xq4tlFVapqqdYF+d+3ZVlV3I3H+0zWZB9PjUfEHahSrC9VKDBjA5z
-         DhUaGiIL34UGksGmkuh4mVYWkaIZuZL0s49yjI2IECUARWfPtrtmnDFp21s9N/geGNRI
-         gkbA5r+gZDAr6HKE26LGYYkLAVmB/6fJ5KZaP5cUqInngvTsBDeiN09j1+GqnCcpmQPV
-         wnNQ==
-X-Gm-Message-State: AOAM531f0F6lxzHwwS9ZZ2tWqG9kU+rB88Gla/rvZQj98JWl7ldqO5+o
-        xno8q6rrUeBZ4fN3/HL1djjqSQ==
-X-Google-Smtp-Source: ABdhPJzgPm55269QZnGtldqlzox3IAdOxvhJ61R1CAlHX5+DY+sPztfcEnuKG2TM1uli3z0c5Pl00w==
-X-Received: by 2002:ac8:4716:: with SMTP id f22mr3120727qtp.250.1631101001992;
-        Wed, 08 Sep 2021 04:36:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:190a])
-        by smtp.gmail.com with ESMTPSA id x83sm1437263qkb.118.2021.09.08.04.36.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 04:36:41 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 07:36:40 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm : bail out from psi memstall after submit_bio in
- swap_readpage
-Message-ID: <YTigSOuZWgqldGBO@cmpxchg.org>
-References: <1631015968-9779-1-git-send-email-huangzhaoyang@gmail.com>
- <79c08d1d-eef5-bc15-8186-7e3367b4ebe7@suse.cz>
- <CAGWkznHY-iZ0ERbJdX-j4S5qOsUAzV0+x67maprz3W+xbq4hTQ@mail.gmail.com>
- <YTdoesOHCNoe+rGH@cmpxchg.org>
- <CAGWkznG+m0CgEHUAN4dmeenYYkBFP5JUzyLnzhfTK0Am25xXDA@mail.gmail.com>
+        id S1351505AbhIHLlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:41:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235453AbhIHLlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:41:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5F95561157;
+        Wed,  8 Sep 2021 11:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631101205;
+        bh=14G3beQpxy2SPLHfXGVauPG/jcl9eTPysyZMbssgrIw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Ox2EONkSBX70W9l9X109b6rWySSfQzgxMidvA865fuOwcrQnK9qc+9uKRKUv8WG62
+         5WUFOMVt2OHwJXyGAWw9P/rv92aXR7HRXIwVp/51AO8NSsCgX1+O77hY4ayy7tmYAk
+         eA4XQGfNuvECPznb2sHGCsY74Q2jt3qYHqI+i73108SKe85vtN+xmDUdKOE0RKKuG7
+         i6ioMZkWrtrmlE1L2lVMYqeAXBq49nPcnOuVSx2EQv9ZUe0KpAziKMZltPRu9hRd8B
+         mdySU8QWq8wz4K/ewM8uQP51KrtdiIsJZyN9rFHyB1NkPt7GYc049swUsKN757TIkG
+         4sq78R6ZMJzKA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5336A60A6D;
+        Wed,  8 Sep 2021 11:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznG+m0CgEHUAN4dmeenYYkBFP5JUzyLnzhfTK0Am25xXDA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: stmmac: fix system hang caused by eee_ctrl_timer
+ during suspend/resume
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163110120533.13176.6299418024122400249.git-patchwork-notify@kernel.org>
+Date:   Wed, 08 Sep 2021 11:40:05 +0000
+References: <20210908074335.4662-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20210908074335.4662-1-qiangqing.zhang@nxp.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        linux-imx@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 11:35:40AM +0800, Zhaoyang Huang wrote:
-> On Tue, Sep 7, 2021 at 9:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Tue, Sep 07, 2021 at 08:15:30PM +0800, Zhaoyang Huang wrote:
-> > > On Tue, Sep 7, 2021 at 8:03 PM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > > >
-> > > > On 9/7/21 13:59, Huangzhaoyang wrote:
-> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > >
-> > > > > It doesn't make sense to count IO time into psi memstall. Bail out after
-> > > > > bio submitted.
-> > > >
-> > > > Isn't that the point if psi, to observe real stalls, which include IO?
-> >
-> > Yes, correct.
-> >
-> > > IO stalls could be observed within blk_io_schedule. The time cost of
-> > > the data from block device to RAM is counted here.
-> >
-> > Yes, that is on purpose. The time a thread waits for swap read IO is
-> > time in which the thread is not productive due to a lack of memory.
-> >
-> > For async-submitted IO, this happens in lock_page() called from
-> > do_swap_page(). If the submitting thread directly waits after the
-> > submit_bio(), then that should be accounted too.
-> IMO, memstall counting should be terminated by bio submitted. blk
-> driver fetching request and the operation on the real device shouldn't
-> be counted in. It especially doesn't make sense in a virtualization
-> system like XEN etc, where the blk driver is implemented via
-> backend-frontend way that introduce  memory irrelevant latency
+Hello:
 
-Yes but the entire IO operation and all the associated latency only
-happens due to a shortage of memory in the first place. The thread is
-incurring these delays due to a lack of memory.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-What is a memstall if not the latencies and wait times incurred in the
-process of reloading pages that were evicted prematurely?
+On Wed,  8 Sep 2021 15:43:35 +0800 you wrote:
+> commit 5f58591323bf ("net: stmmac: delete the eee_ctrl_timer after
+> napi disabled"), this patch tries to fix system hang caused by eee_ctrl_timer,
+> unfortunately, it only can resolve it for system reboot stress test. System
+> hang also can be reproduced easily during system suspend/resume stess test
+> when mount NFS on i.MX8MP EVK board.
+> 
+> In stmmac driver, eee feature is combined to phylink framework. When do
+> system suspend, phylink_stop() would queue delayed work, it invokes
+> stmmac_mac_link_down(), where to deactivate eee_ctrl_timer synchronizly.
+> In above commit, try to fix issue by deactivating eee_ctrl_timer obviously,
+> but it is not enough. Looking into eee_ctrl_timer expire callback
+> stmmac_eee_ctrl_timer(), it could enable hareware eee mode again. What is
+> unexpected is that LPI interrupt (MAC_Interrupt_Enable.LPIEN bit) is always
+> asserted. This interrupt has chance to be issued when LPI state entry/exit
+> from the MAC, and at that time, clock could have been already disabled.
+> The result is that system hang when driver try to touch register from
+> interrupt handler.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: stmmac: fix system hang caused by eee_ctrl_timer during suspend/resume
+    https://git.kernel.org/netdev/net/c/276aae377206
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
