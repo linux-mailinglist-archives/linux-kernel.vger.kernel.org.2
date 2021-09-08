@@ -2,202 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB46403E2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CF1403E2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352411AbhIHRLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:11:46 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:28712 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229689AbhIHRLp (ORCPT
+        id S1352419AbhIHRM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350166AbhIHRM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:11:45 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 188GxQ4X018357;
-        Wed, 8 Sep 2021 17:09:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- subject : from : in-reply-to : date : cc : content-transfer-encoding :
- message-id : references : to : mime-version; s=corp-2021-07-09;
- bh=hMrVIasxZQpa2ea4PPS2lV21un6mPe1hwX6xA61zj3M=;
- b=ewdQjP7hogqRWcBM13S9+k3kIhd4K3xYvlE/YKocDyQ4e7aWFJMB0xOWks7Tj46S7Od5
- vej2Qt952Ufl2Ew1rZPmL79IzuqyBonm/tmzyT7h+BjcF5jzLQf2Se/k/LP7NWZ+v4Yw
- kzwo6uFBE7+FEYw65JMDhzHqVSlu+hR8d95fWGqlvol4pUQgSsDGTXp17EJRXEjIvW36
- 7oyY2PmfTIWBepGLkGYAukGHqTgj5fV4oU16Ud+Z+f1Zro8PPXFfSTBFzvdtduj16zXJ
- aW6w0ckPxz8OWOneqe9VSl8qRuYz2mFdbi7QFJpeWUk5zyNNQE/3mpUfsL4XhDtxzbG2 yA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- subject : from : in-reply-to : date : cc : content-transfer-encoding :
- message-id : references : to : mime-version; s=corp-2020-01-29;
- bh=hMrVIasxZQpa2ea4PPS2lV21un6mPe1hwX6xA61zj3M=;
- b=ty1LrZIZJTpG2uUXgJC/F936mDFvs+0jRzy3P5cV7gV198jsW1Ri1tYNmgVvGk9DAg1x
- TxCHcDiVdJoxHh3pVCCBfmy0dUvxr/e1MegtEju96YukcFdE5H986c9CfVShglw6tO7J
- gkZFxMp0Im5/aCCW9P4gRe0ZqtXD3VdE1Lsgd7Pyl0gsK2OZmPO930yV1XAUqnC/IHiT
- 3BrZFECSEcG/Y9gGrCdI/Vg1VbaYri6v3tUkvTjT9NS6RYkKCHiTpJUpql6hnaIt8mR2
- eZon6PiVPIg5Gns3XgdvEPKto6sBQn+8nRTgJDGSvJPO7srIrKpj8annztA0JDIi9/T4 Dw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3axd8q3g6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 17:09:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 188H0EfJ024409;
-        Wed, 8 Sep 2021 17:09:57 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by aserp3030.oracle.com with ESMTP id 3axcpp1sc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 17:09:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SbR4Fq+/Fuoztj8R7Fs/63zC+7npLEORPuRv1+5vXa+whaEGka5CMQCiXTf0KSD+vXERO042j1O91Dv0SyEuqsIrVkYdwUACfX8gdJtAF0DLOArL5eeciGBV471gG3GIsMFejDcnj3pOD8oadBWuf8bxOIInkXYvEhunsrNxLxrlw8iZ1IEufiduhQlCWXZhS9QUstrxvoMU/sOTZ8rsbBtDvoFuWePRKK2HdUf7SBfItaDyeylXEzae5ZKyQPb9Xd4UiZ+SJ+L8aEdV7l5KxjZnXBheJ0iU2uUNmNMMr0JKUfaJJ4otQ+VZ2GG47G72ech4WA5PWSaIPc6Gw+dq0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=hMrVIasxZQpa2ea4PPS2lV21un6mPe1hwX6xA61zj3M=;
- b=GxWXqHbyj6hOsOQaV5WtdXQMpIi6UKTXTaiVhITULI1LcOvdGJrcPWM6MBs+B9cGVOkM7+WcI8jRBpkdWN7wDYKy1U6r1oEEypkz0sPc/Fe+TryBYGgeDvUyU1DaSDcx/88l4CImIWQsKHKl4KMXtD3JFa32lXnzPLkUwwgCeTJHEWtjwjQYaTQvr1VmUmHCQelNU/BGE+alVVrMsgBp89eM4YcTHIxMNeaizSGulGTljb1UrbjmKaxv20C5ihoOgoVHha77B1083a+dbcWtBgZf3g/hpTDfGY48fdpwAN4yStw9oyGn+81Ffo4am4PRYYFgs/cpwxUmyMt3mhfLuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 8 Sep 2021 13:12:27 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D44C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:11:18 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s25so3953772edw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hMrVIasxZQpa2ea4PPS2lV21un6mPe1hwX6xA61zj3M=;
- b=RFxySebl4N63ly8MylMO6hFT+0nuSb7YvOBMc0gL2FBsig/14m6Z7mjasXdBMXLxFa4Gx9liCdnHTC3YaAM4nsUc9ZQe6P7hgcktTwjBp6oMc84PHHn3QkyUW2V6MMRFlOvR+O7su0pV9kw5QqpcvJivbJbS7TpCdNd393Ru8u4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
- by CH2PR10MB3749.namprd10.prod.outlook.com (2603:10b6:610:3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Wed, 8 Sep
- 2021 17:09:55 +0000
-Received: from CH2PR10MB4150.namprd10.prod.outlook.com
- ([fe80::340c:c4d9:1efa:5bc7]) by CH2PR10MB4150.namprd10.prod.outlook.com
- ([fe80::340c:c4d9:1efa:5bc7%8]) with mapi id 15.20.4500.016; Wed, 8 Sep 2021
- 17:09:55 +0000
-Content-Type: text/plain; charset=utf-8
-Subject: Re: [PATCH v5 00/12] Enroll kernel keys thru MOK
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-In-Reply-To: <7f9fb65a4ee20c337646a1fc887cd24365c2c59e.camel@kernel.org>
-Date:   Wed, 8 Sep 2021 11:09:44 -0600
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <17C81066-DBE8-4DB0-B66B-822BF6EFF67C@oracle.com>
-References: <20210907160110.2699645-1-eric.snowberg@oracle.com>
- <7f9fb65a4ee20c337646a1fc887cd24365c2c59e.camel@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-X-Mailer: Apple Mail (2.3273)
-X-ClientProxiedBy: BY3PR03CA0023.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::28) To CH2PR10MB4150.namprd10.prod.outlook.com
- (2603:10b6:610:ac::13)
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fZFPWfpUjBfmfyPVniqFfV8xQXNj2TCZ/K6MCuay8jc=;
+        b=g0pHU6tSNcDVWMaIwhl+3pft719J1R+Dn710bJIREkMh1Z5UfGnvCf6T7OeY83UGgn
+         I89jsrqvcIHJw4kG3GFX51aD/g4Lsi+l0Xk3Fqz44Rv7KBAda3xyrT4pBa9mc8KPRgmh
+         cT8kqdzXMJQRg/ELtJhk5GpMdditrCr9jDNY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=fZFPWfpUjBfmfyPVniqFfV8xQXNj2TCZ/K6MCuay8jc=;
+        b=FwiAS4U+laXO2oPsWurhfEVSvSStnA+faLtneG4pjvMMt106tbsHUS3n5SDdfTTj8Q
+         QHRKkqGgxQZFEB8ZP4288nGWzxxeL44o2fOLrysAXKneW+TJGgzx0B2Q2Tt6ipVds1HA
+         3UdCirWiInCJpcslmixdsm7fi8egNzbYTdWd2OSJU8bLOyH5j4cBGJDP9nmJ9V5eU4Ij
+         2sLn3kUDbqb15TKFsL2si5/zqqRj3eqoTg4fiwuwxYKM6EbNBIC+0sjnxGP5ETjR/0iF
+         kOj63+A3YfemaNVgsLfcOvNf+gPGLS+63uL6g2H2Msglzxr5x1B8JqDcUqllZiieL2+w
+         A9Fg==
+X-Gm-Message-State: AOAM531W+SbXubBMSDOK5KFzLaW/FpuIBKEgXeXzp6MTNlvs2Yz6Dj5g
+        UQAWj2I5iW9aib8deKGkHr0pTg==
+X-Google-Smtp-Source: ABdhPJwiKFtpULQAFgOuBN/N3JwKr/ljJWXegBl52xUcw9unKTU19JHCnQ+4HyvJtfNrs8ilakxGNw==
+X-Received: by 2002:a50:ba84:: with SMTP id x4mr3864950ede.376.1631121077576;
+        Wed, 08 Sep 2021 10:11:17 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i20sm1269859eds.14.2021.09.08.10.11.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 10:11:16 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 19:11:14 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     David Gow <davidgow@google.com>
+Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-um <linux-um@lists.infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
+Message-ID: <YTjusuDs4UhvCJuc@phenom.ffwll.local>
+Mail-Followup-To: David Gow <davidgow@google.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
+        Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        linux-um <linux-um@lists.infradead.org>,
+        David Airlie <airlied@linux.ie>
+References: <20210902020129.25952-1-rdunlap@infradead.org>
+ <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
+ <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
+ <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+ <YTDjlixwDWi7Y2uR@phenom.ffwll.local>
+ <CABVgOSnvW_H03KjXxK5=j0ApEPh-Me3RxMF9QGFFT3kEtXJ65Q@mail.gmail.com>
 MIME-Version: 1.0
-Received: from [IPv6:2606:b400:2001:93:8000::53] (2606:b400:8024:1010::17c6) by BY3PR03CA0023.namprd03.prod.outlook.com (2603:10b6:a03:39a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 17:09:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 28da17ac-a38f-42ad-a24d-08d972eb7a79
-X-MS-TrafficTypeDiagnostic: CH2PR10MB3749:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH2PR10MB37499841C70C8E9EF7DB6B9187D49@CH2PR10MB3749.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CNXwcZVb8cW39vwoSGubrvrK17oNiaMjC3bBgdnFX48Sz0BESwC5txka8Gif2a8yV8aBiGmzocqg0mgxCFJwcyEqxzxEg0G6pVzlgBhLFkZJF80c+/ZczYYpVSZhrWESgIrrqi6HchVm9oxIecZ9mb6L7iVIvIB6Rdlw22+1YjQxyFJ86aAVwPz4AnW5vp4mxpLraPdnvq9qZuYyhS5pgC+rzny/TumYnV412fYRDac8fXySqSb9592r+kHW9DbjK709bXTwlPGYVz33bBN4E1EJe5+pSnU3vu3ENjMRY1uPFn/Dppo21eBE0sFsx/p1rMKxZBw/i23yRg0tuO1+qeZsZv76A2kx8/+YDb8s1ETEkb8ZanpLkPUKRwxEIU4P9Is9TGsELklVZKvXnX09OFs2/4uDLwPtbIIUBRwTRPXmnmDx1TF91T+tvSHE5UE6lGrWSVX8QGQHyt7ojZiKUDe8CgkPIF0UFIp9LVkyB9Tumo7C5uM4zjkj/Of8Vmc01OgDmVGzbA2N+/tXlac6uzUkX1u2rYPkDsd4O+z5Vlv+ilQtY26HEJIiVEUoLyWQiAGewqMZpm3tCJOFy4ygtqbqbJHV9znRLvKg27uGGK6RCZDk8exJ+28H8lVoA5FIlkKJzFNLyLQnkoFwDbt6YucUVi0GBXW2gV1c72aol3dW3QgOzgtlxaf7S1mUl/94gVrZs9c9Sd0yWyvpIxm5Cg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66476007)(66556008)(6916009)(53546011)(66946007)(6666004)(38100700002)(8676002)(4326008)(54906003)(86362001)(316002)(44832011)(36756003)(2906002)(8936002)(107886003)(33656002)(5660300002)(2616005)(508600001)(83380400001)(7416002)(186003)(6486002)(52116002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MCsrNVdRYllsbHZPbnFybjIxWkF4bUQrWlJkeHZRMmh0Y05QbnNXNHJTK3Y5?=
- =?utf-8?B?NndIWkxZV1QyZ3EybzFTdkxhU3Q1MlRsUEhvSlN5Zzl3empoejN4ZVBxNTB1?=
- =?utf-8?B?d3JtKzVmaTBQM01yYy8vdTAwTStBRk9UekppTXhNd003UU0rYnh3MEFEY0l2?=
- =?utf-8?B?VjQ2c1EwcUo0elkwK1UrMXFSN2FwMjhuS1ZFNmhteHRnSjQ3dnlHam1XeGhz?=
- =?utf-8?B?cXh0VFNFTmRUcFNXVXkzUURnNE5vcDNPYWpxYU1CQ3BZcDVaanN3VVNHcXZN?=
- =?utf-8?B?UlVyVnhCZEZVZjBCaW1uMmVib09aNG1yU0lERjJlTC9IUUhoNEJiQjRERXJr?=
- =?utf-8?B?bENwaGNXQ0hOeHYrbmlUL00yWXNJODgwRnJaTUJlTmRSUytVLzhBT0p2U1VU?=
- =?utf-8?B?OEVjbi9ScGFrRklTNnpPYzk5anh1K2ZiSjhRQ1Eyc3BSNFpxQzhJc3UzSnUy?=
- =?utf-8?B?QTNCaWREZkcrdWJKRDVYK3VtdS9ydkNTTnpCb1NZQk1IT2xKRXF3YTEwVGpm?=
- =?utf-8?B?YUVJdXh1bFB1WXlWbkxyRHJSS1U3Y0E2Ty9wNkJpUHk0c2I5OHc3djlwKy8y?=
- =?utf-8?B?OExFYVd4NnhaaGI5RnRLSFkvOG1iOXVOeUVRTHFwZ0NKMWg5WHErRUJRNjRO?=
- =?utf-8?B?QnQ3aFNZRmlpeGJ1QWpVWmFNU1hhWmVIaEszeFhUOEt0M2RpOVFibVpuSmNY?=
- =?utf-8?B?d04ybUtmbmZ2VTRla3dFTzViWVJsS0NYUzJId2NHcjFFSEVreTdsSHNIQkdq?=
- =?utf-8?B?TGJFVS94RVZIbXFMclNhMnNXbGpTQnIyRFl6REIwYWVEZ1J5VUhDN1plZEox?=
- =?utf-8?B?dUIyV0RreUk0emNQOHJjTURjYUxPYVJYeEg5eEtqUkhLRHhrMlJoRkNWUFpx?=
- =?utf-8?B?NXpMR2RtSHhyVFVJNU92d0FJTTdnZDN0cmpHQnlZWHdzTnNscTRoZjM4SkNa?=
- =?utf-8?B?bzBvNTMyOXZOeDl1UTVabXJYNzVqL2xteEFSTnkremordm4zSVpIZm9TMnBq?=
- =?utf-8?B?WldCUm1Sb1JNUW15RmFhczlZeHZvbVFiV0RoR2JLaHJtdDBCcUtxMDFkd09M?=
- =?utf-8?B?RUNkVmYvNkZCSnU0Y3ZvWlBDV2R1dExubjYwalhCUUZDUGJ5UkJHQ1dTdVBx?=
- =?utf-8?B?Rm9ZbEcrMnQwYXEyczd4NFp5a1pWcXVWK0k0NGVaNW9EQm1ZTkJBT2hTbkUz?=
- =?utf-8?B?NEwxUUJ0T1JjVVc5QkZ4NUVQTytvdEhPSlpVSXkwRXZRWUVyemhrWExoWlJi?=
- =?utf-8?B?dnJRUmxqTkZISEdZWEFBMmdPM3pBd05iZWxZbVRnL2FhU2V5OE5VTDQyVE5y?=
- =?utf-8?B?b2JheU1YVlZpK2hMRkFGajBMb0JiVkVOY3Rva2dISUQvbE9NNlVGNGkzbVc4?=
- =?utf-8?B?ZHdCbFd0bUd6U2dHY1dYOHVsL1dMK0dTRTkyUDl0RVNwRTM1Y2svV28zajBo?=
- =?utf-8?B?OEh2aHdUZVBPUW9pMVUyYXdzZG1KMVV1YjdoNGZXeG5mMUMvRGNJRU1jNUZl?=
- =?utf-8?B?MTlYa2FzZWdwYzIvTnZNU1JhbFdrOVVRMEVIOHVCTFk4ZEcveW1yc0dqTHpx?=
- =?utf-8?B?Tlpyb0srdXVPTGcyMWgzNGp1TXkzbnlDT2FrTEZzeitOVDZQMy8zZys4blVS?=
- =?utf-8?B?c0t2TTIwaDJ5bHRNb0d4K0RDdnhXYnZId2VCQ3o2YzF2T0Fob0RHU0wveUF3?=
- =?utf-8?B?ZnJWWXN3WXRNMWttUnpPRmhyaGVZNDYvRUIyeGl5VGJ1UkwzUzltQ2NzYzk0?=
- =?utf-8?B?VjgxYytHMmxwN3BaMzNEdE9iWENUZHdDVENScFIxQU54WndSS3VNZlBLSDRi?=
- =?utf-8?B?ZTI2MDNIY0NRMERRWkdnZz09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28da17ac-a38f-42ad-a24d-08d972eb7a79
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 17:09:54.9688
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Sv8nxLbUShaf0UBsTe3xnNy9qbOV8DRPnZbvIK02M+PwJPBFjYLm61X+znCMbsspMM7urBNMuAuvKqNaLPy7uqsFammx3EidefzkfEfln+o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB3749
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10101 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109080107
-X-Proofpoint-GUID: wU9IFKYLqzqURTPYIGot3iMQyeMRO983
-X-Proofpoint-ORIG-GUID: wU9IFKYLqzqURTPYIGot3iMQyeMRO983
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABVgOSnvW_H03KjXxK5=j0ApEPh-Me3RxMF9QGFFT3kEtXJ65Q@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 04, 2021 at 11:50:37AM +0800, David Gow wrote:
+> On Thu, Sep 2, 2021 at 10:46 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Thu, Sep 02, 2021 at 07:19:01AM +0100, Anton Ivanov wrote:
+> > > On 02/09/2021 06:52, Randy Dunlap wrote:
+> > > > On 9/1/21 10:48 PM, Anton Ivanov wrote:
+> > > > > On 02/09/2021 03:01, Randy Dunlap wrote:
+> > > > > > boot_cpu_data [struct cpuinfo_um (on UML)] does not have a struct
+> > > > > > member named 'x86', so provide a default page protection mode
+> > > > > > for CONFIG_UML.
+> > > > > >
+> > > > > > Mends this build error:
+> > > > > > ../drivers/gpu/drm/ttm/ttm_module.c: In function
+> > > > > > ‘ttm_prot_from_caching’:
+> > > > > > ../drivers/gpu/drm/ttm/ttm_module.c:59:24: error: ‘struct
+> > > > > > cpuinfo_um’ has no member named ‘x86’
+> > > > > >    else if (boot_cpu_data.x86 > 3)
+> > > > > >                          ^
+> > > > > >
+> > > > > > Fixes: 3bf3710e3718 ("drm/ttm: Add a generic TTM memcpy move for
+> > > > > > page-based iomem")
+> > > > > > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > > > > > Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+> > > > > > Cc: Christian König <christian.koenig@amd.com>
+> > > > > > Cc: Huang Rui <ray.huang@amd.com>
+> > > > > > Cc: dri-devel@lists.freedesktop.org
+> > > > > > Cc: Jeff Dike <jdike@addtoit.com>
+> > > > > > Cc: Richard Weinberger <richard@nod.at>
+> > > > > > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> > > > > > Cc: linux-um@lists.infradead.org
+> > > > > > Cc: David Airlie <airlied@linux.ie>
+> > > > > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > > > > ---
+> > > > > >   drivers/gpu/drm/ttm/ttm_module.c |    4 ++++
+> > > > > >   1 file changed, 4 insertions(+)
+> > > > > >
+> > > > > > --- linux-next-20210901.orig/drivers/gpu/drm/ttm/ttm_module.c
+> > > > > > +++ linux-next-20210901/drivers/gpu/drm/ttm/ttm_module.c
+> > > > > > @@ -53,6 +53,9 @@ pgprot_t ttm_prot_from_caching(enum ttm_
+> > > > > >       if (caching == ttm_cached)
+> > > > > >           return tmp;
+> > > > > > +#ifdef CONFIG_UML
+> > > > > > +    tmp = pgprot_noncached(tmp);
+> > > > > > +#else
+> > > > > >   #if defined(__i386__) || defined(__x86_64__)
+> > > > > >       if (caching == ttm_write_combined)
+> > > > > >           tmp = pgprot_writecombine(tmp);
+> > > > > > @@ -69,6 +72,7 @@ pgprot_t ttm_prot_from_caching(enum ttm_
+> > > > > >   #if defined(__sparc__)
+> > > > > >       tmp = pgprot_noncached(tmp);
+> > > > > >   #endif
+> > > > > > +#endif
+> > > > > >       return tmp;
+> > > > > >   }
+> > > > >
+> > > > > Patch looks OK.
+> > > > >
+> > > > > I have a question though - why all of DRM is not !UML in config. Not
+> > > > > like we can use them.
+> > > >
+> > > > I have no idea about that.
+> > > > Hopefully one of the (other) UML maintainers can answer you.
+> > >
+> > > Touche.
+> > >
+> > > We will discuss that and possibly push a patch to !UML that part of the
+> > > tree. IMHO it is not applicable.
+> >
+> > I thought kunit is based on top of uml, and we do want to eventually adopt
+> > that. Especially for helper libraries like ttm.
+> 
+> UML is not actually a dependency for KUnit, so it's definitely
+> possible to test things which aren't compatible with UML. (In fact,
+> there's even now some tooling support to use qemu instead on a number
+> of architectures.)
+> 
+> That being said, the KUnit tooling does use UML by default, so if it's
+> not too difficult to keep some level of UML support, it'll make it a
+> little easier (and faster) for people to run any KUnit tests.
 
-> On Sep 8, 2021, at 10:03 AM, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->=20
-> On Tue, 2021-09-07 at 12:00 -0400, Eric Snowberg wrote:
->> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
->> what is called Machine Owner Keys (MOK).  Shim uses both the UEFI Secure
->> Boot DB and MOK keys to validate the next step in the boot chain.  The
->> MOK facility can be used to import user generated keys.  These keys can
->> be used to sign an end-user development kernel build.  When Linux boots,
->> pre-boot keys (both UEFI Secure Boot DB and MOK keys) get loaded in the
->> Linux .platform keyring. =20
->>=20
->> Currently, pre-boot keys are not trusted within the Linux trust boundary
->> [1]. These platform keys can only be used for kexec. If an end-user
->=20
-> What exactly is "trust boundary"? And what do you mean when you say that
-> Linux "trusts" something? AFAIK, software does not have feelings. Please,
-> just speak about exact things.
+Yeah my understanding is that uml is the quickest way to spawn a new
+kernel, which kunit needs to run. And I really do like that idea, because
+having virtualization support in cloud CI systems (which use containers
+themselves) is a bit a fun exercise. The less we rely on virtual machines
+in containers for that, the better.
 
-I am using terminology used previously by others when addressing this issue=
-. =20
-If I should be using different terminology, please advise. The kernel does =
-not=20
-trust pre-boot keys within it, meaning these pre-boot keys can not be used =
-to=20
-validate items within the kernel. This is the =E2=80=9Ctrust boundary=E2=80=
-=9D. Preboot keys are
-on one side of the boundary, compiled-in keys are on the other.  MOK keys a=
-re=20
-pre-boot keys.  Currently they can not be used to validate things within th=
-e=20
-kernel itself (kernel modules, IMA keys, etc).
-
-
+Hence why I really like the uml approach for kunit.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
