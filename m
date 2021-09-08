@@ -2,135 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114DF4032D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF6C4032DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345895AbhIHDLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:11:52 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:52765 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhIHDLv (ORCPT
+        id S1347361AbhIHDPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:15:25 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:64426 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231769AbhIHDPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:11:51 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 1883AKEl025531;
-        Wed, 8 Sep 2021 12:10:21 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1883AKEl025531
+        Tue, 7 Sep 2021 23:15:22 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 1883DvF6011711;
+        Wed, 8 Sep 2021 12:13:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1883DvF6011711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631070621;
-        bh=nHWYZJE2Do/yJRZXFrukxP+/SHM6+ZtDfSm5MRfpZO4=;
+        s=dec2015msa; t=1631070838;
+        bh=DiTP/AS3T3vq4JaeKSJu2Ri/qt3KnM6Fx/+72YJ6xGU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lbp32YViCmvOJqwiYR/v96S+uAW8fkpfsms3RQtBT0/Jy3+mgijOy/tUXS+FmYj6o
-         qC81K531eJXgYOKCtuG+FEJaE5SsDgLVcjQ1DHsTk0wWNcictufE5ycUCsCX6nPrlz
-         ++qXKyLs74D3H20CWpt2yh4htJphY3F5lo6t6iQkPEQgNv2kFJhDmhCcCBmq7EIEr4
-         GHKqvkxGG09yZq0NmG8DQWDWH4mvCBIYuchyiichp+iyWKlNlHjr0M3pxOVR6sVAgL
-         jikqnOI0Rf/xtip44TcLcNbRsYR15fvZN3QP/5XZDsE/b0C5DLzXnisZCoT8l8y9it
-         LgTRIrL8g8YBw==
-X-Nifty-SrcIP: [209.85.216.48]
-Received: by mail-pj1-f48.google.com with SMTP id k23-20020a17090a591700b001976d2db364so485690pji.2;
-        Tue, 07 Sep 2021 20:10:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533lB2InUcngb+60ry2twGpPdO5eFz/EZignjUeO8eRY1yccL8Xm
-        BH6ohvbyqFFwcteEB/CbuFbswGVT9aw0I/Go+W8=
-X-Google-Smtp-Source: ABdhPJztCKogR5LYXJPaBemEsCRe3LzDBSbSck7WaqY/rhUuichBRvcDZUBYUCCvb61zC26n/7Q6agQC1m4I8Ez3jeo=
-X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id
- h3-20020a170902f703b029012c0982c9aemr1137855plo.20.1631070619984; Tue, 07 Sep
- 2021 20:10:19 -0700 (PDT)
+        b=uq24T7VOY9DzMY2Ttse8IMfSKSJ3nAzJEww51VcTiGop5IKF9mXMZoEJE8g+oB25J
+         H8FXrW273mevkmofLJZdPfyWYc7pVppc52cATl3m3HQR+Gbp2A46519A8xON0MtMat
+         WCZdIstesFb5Hc212QXqESmLXSp6bZ7HLWJy3VCA3v952l+bZD02aJFWB2W9en3ZVY
+         EGhJzWA9IbCxNqGyycrcBGMJs6uKzPeKuM5EZ9KjI3hYnltsimRBj7f5uwhX2jTHbi
+         tEJIOmIrTqFFHa5TDe+OF8CU7Ty9FDvzDKanrRSMdxfajodpXa150TF0+tG+22ez/a
+         DPe2n7cd1ZXRQ==
+X-Nifty-SrcIP: [209.85.215.182]
+Received: by mail-pg1-f182.google.com with SMTP id r2so1036615pgl.10;
+        Tue, 07 Sep 2021 20:13:58 -0700 (PDT)
+X-Gm-Message-State: AOAM5325ATKtSm4a78nwrsqcM7Is4/yBLZENrun6b3d1MDOYJM9nI+Jk
+        fDNqt8wtjjl0f1okWpEzdf0ns8Ay0lJrpCpAQHI=
+X-Google-Smtp-Source: ABdhPJyPU4uh1o2NcT/aR4ZPGLpv6t2vzuzFEOmM8q5aihG3cwIUJLm6ZYqb445avfVEnp26Ym0k8VmPnUWDt0gqMjM=
+X-Received: by 2002:aa7:949d:0:b0:416:4555:3021 with SMTP id
+ z29-20020aa7949d000000b0041645553021mr1560140pfk.36.1631070837441; Tue, 07
+ Sep 2021 20:13:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
- <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
- <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com>
- <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com>
- <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
- <87a6kq2nze.fsf@oldenburg.str.redhat.com> <YTY7oYPJPYstU1+f@localhost.localdomain>
-In-Reply-To: <YTY7oYPJPYstU1+f@localhost.localdomain>
+References: <20210820123348.6535a87e@canb.auug.org.au> <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
+ <20210902075038.7461d3c8@canb.auug.org.au> <20210906084947.4f65761d@canb.auug.org.au>
+ <CAKMK7uF6K+gdWVT09wL0sPBQs8RRixggk01e291veE0VecD=TQ@mail.gmail.com>
+In-Reply-To: <CAKMK7uF6K+gdWVT09wL0sPBQs8RRixggk01e291veE0VecD=TQ@mail.gmail.com>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 8 Sep 2021 12:09:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATRN15cBU6gSZLHBqegj6F-x8+B8GNYp12wRUx_5u-FbQ@mail.gmail.com>
-Message-ID: <CAK7LNATRN15cBU6gSZLHBqegj6F-x8+B8GNYp12wRUx_5u-FbQ@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+Date:   Wed, 8 Sep 2021 12:13:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQdgr7pn0j9mdAGfB_0fGOVMn+uq=Kv7buRaCOcoF+p7A@mail.gmail.com>
+Message-ID: <CAK7LNAQdgr7pn0j9mdAGfB_0fGOVMn+uq=Kv7buRaCOcoF+p7A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm tree
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Nikula, Jani" <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        John Harrison <John.C.Harrison@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 1:02 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Mon, Sep 6, 2021 at 4:34 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> On Mon, Sep 06, 2021 at 08:54:13AM +0200, Florian Weimer wrote:
-> > * Linus Torvalds:
+> On Mon, Sep 6, 2021 at 12:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > Hi all,
 > >
-> > > On Sat, Sep 4, 2021 at 8:19 AM Florian Weimer <fweimer@redhat.com> wrote:
-> > >>
-> > >> In any case, it would be nice to know what the real motivation is.
+> > On Thu, 2 Sep 2021 07:50:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 > > >
-> > > I don't know about the original motivation, but the reason I like that
-> > > patch after-the-fact is that I've actually been in situations where I
-> > > test out self-built compilers without installing them.
+> > > On Fri, 20 Aug 2021 15:23:34 +0900 Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > > On Fri, Aug 20, 2021 at 11:33 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > > >
+> >  > > After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+> > > > > failed like this:
+> > > > >
+> > > > > In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
+> > > > > drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef.h: No such file or directory
+> > > > >     9 | #include <stddef.h>
+> > > > >       |          ^~~~~~~~~~
+> > > > >
+> > > > > Caused by commit
+> > > > >
+> > > > >   564f963eabd1 ("isystem: delete global -isystem compile option")
+> > > > >
+> > > > > from the kbuild tree interacting with commit
+> > > > >
+> > > > >   b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work with GuC")
+> > > > >
+> > > > > I have applied the following patch for today.
+> > > >
+> > > >
+> > > > Thanks.
+> > > >
+> > > > This fix-up does not depend on my kbuild tree in any way.
+> > > >
+> > > > So, the drm maintainer can apply it to his tree.
+> > > >
+> > > > Perhaps with
+> > > >
+> > > > Fixes: b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to
+> > > > work with GuC")
+> > >
+> > > OK, so that didn't happen so I will now apply the merge fix up to the
+> > > merge of the kbuild tree.
+> > >
+> > > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > Date: Fri, 20 Aug 2021 12:24:19 +1000
+> > > > > Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/fixup stdarg.h and other headers"
+> > > > >
+> > > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > ---
+> > > > >  drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > > index 51dbe0e3294e..d2969f68dd64 100644
+> > > > > --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > > +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > > @@ -6,7 +6,7 @@
+> > > > >  #ifndef INTEL_GT_REQUESTS_H
+> > > > >  #define INTEL_GT_REQUESTS_H
+> > > > >
+> > > > > -#include <stddef.h>
+> > > > > +#include <linux/stddef.h>
+> > > > >
+> > > > >  struct intel_engine_cs;
+> > > > >  struct intel_gt;
+> > > > > --
+> > > > > 2.32.0
 > >
-> > Does this really simplify matters?  Why wouldn't the gcc compiler driver
-> > find cc1, but not be able to pass the right path options, so that the
-> > include/ subdirectory can be located as well?
-> >
-> > > Then it's convenient to have a completely standalone kernel tree.
-> >
-> > The final patch in the series is here:
-> >
-> >   isystem: delete global -isystem compile option
-> >   <https://lore.kernel.org/linux-kernel/YQhY40teUJcTc5H4@localhost.localdomain/>
-> >
-> > It's still not self-contained.
+> > Ping?  I am still applying this ...
 >
-> What do you mean?
+> Apologies, this fell through a lot of cracks. I applied this to drm-next now.
+
+
+
+Rather, I was planning to apply this fix to my kbuild tree.
+
+Since you guys did not fix the issue in time,
+I ended up with dropping [1] from my pull request.
+
+I want to get [1] merged in this MW.
+
+If I postponed it, somebody would add new
+<stddef.h> or <stdint.h> inclusion in the next development
+cycle, I will never make it in the mainline.
+
+[1] https://lore.kernel.org/linux-kernel/YQhY40teUJcTc5H4@localhost.localdomain/
+
+
+
+
+
+> Matt/John, as author/committer it's your job to make sure issues and
+> fixes for the stuff you're pushing don't get lost. I'd have expected
+> John to apply this to at least drm-intel-gt-next (it's not even
+> there).
 >
-> Mainline has 1/3 and 2/3 now:
+> Joonas, I think this is the 2nd or 3rd or so issue this release cycle
+> where some compile fix got stuck a bit because drm-intel-gt-next isn't
+> in linux-next. Can we please fix that? It probably needs some changes
+> to the dim script.
 >
->         c0891ac15f0428ffa81b2e818d416bdf3cb74ab6 isystem: ship and use stdarg.h
->         39f75da7bcc829ddc4d40bb60d0e95520de7898b isystem: trim/fixup stdarg.h and other headers
->
-> 3/3 is stuck in -next:
->
->         https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/log/?h=for-next
->
-> I'm not sure why. If the patch is bad it should be dropped from -next
-> as well. If it is good, it should be in mainline, otherwise more
-> compile time failures will happen.
+> Cheers, Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
 
 
-See
-
-https://lore.kernel.org/all/20210906084947.4f65761d@canb.auug.org.au/
-
-Your 3/3 correctly detected a new use of <stddef.h>
-in the drm tree.
-
-Stephen Rothwell pointed it out a long time ago,
-and fixed it in linux-next.
-
-But, the drm maintainers did not fix it in time.
-I could not fix it either since the bad commit,
-b97060a99b01b4, was not in my tree.
-
-Now it is mainlined, so my plan is to
-do  s/<stddef.h>/<linux/stddef.h>/
-in my tree, then include your 3/3
-in my second pull request in this MW.
-
-
-
-
-
-
-
---
+-- 
 Best Regards
 Masahiro Yamada
