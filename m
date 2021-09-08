@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9DB40400D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2104D404016
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350670AbhIHUBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 16:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343558AbhIHUBP (ORCPT
+        id S1352508AbhIHUNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 16:13:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54378 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350785AbhIHUNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 16:01:15 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C76FC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 13:00:07 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id k20-20020a4ad114000000b0029133123994so1172094oor.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 13:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RtxwRt2rTuC496QAV96NN3FjKBQdlap5HoR2ATAA9hU=;
-        b=RsOiPsYODfTsIryeJE0IlLhSwf62h5Se7YksEGS0zegwU3Il8jCzlrJ5if1mEFhhWZ
-         ydKf5ZGJ6tTV/T4rdQn0/ly2reLSXSyVv2w7UYsfWj56TP4Bkqsbt/pB9G03uZUbkKXL
-         qWoY1WnDs4Stetsc1dJaf4YW/bNtlFlNXxvCk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RtxwRt2rTuC496QAV96NN3FjKBQdlap5HoR2ATAA9hU=;
-        b=jnxhVEm/tmaQQtb/KB+auAjlVww6kT7eX4eZiGlxfQxSTsAJv25tAeX2N5fCpHG1Th
-         Bt5oouBMf+s3ElVo6lq6FBtq43cHyZG3GIab6KvbG65z4sWp/H7rVe0qbSU2Knwx0+Up
-         TzxZV2EkTYD7AZWkKB3Kri/QfKRIFALOevMKWAp/MOwn/gXfemiPAl2MLHtLNnjF6P2j
-         x9ss0jvm4fkSV7EFKFNAalX0a8g+toKww2OYucEb+040RuOOKLDeD+cvf0lRBjxWwBFW
-         oshN+TwlYUDlDtAnX3izshmnimVJa/Utm0k1uLjYLYJbvzRCv/NvCC+Sqz9AcU+cchO7
-         8OGQ==
-X-Gm-Message-State: AOAM530neg4JxubvInlMtaR8EImzXmUNIrfhDxRtenezBW5+mxM+63ys
-        IDB59TKjQYUho8ZfSXkj+vCzow==
-X-Google-Smtp-Source: ABdhPJxVIKlbDojIl6ZNygmPq7kE1gZ8MAYMaX+VkWQ1Tv7ShdXJr5e2KhVp5DP7gFiCu0ty2mXMfQ==
-X-Received: by 2002:a05:6820:613:: with SMTP id e19mr21508oow.67.1631131206643;
-        Wed, 08 Sep 2021 13:00:06 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z18sm14301oib.27.2021.09.08.13.00.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 13:00:06 -0700 (PDT)
-Subject: Re: [PATCH 01/19] x86/cpufreatures: add AMD CPPC extension feature
- flag
-To:     Huang Rui <ray.huang@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        linux-pm@vger.kernel.org
-Cc:     Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-2-ray.huang@amd.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c8c57be3-5a86-062c-bd5c-5132d05dde3f@linuxfoundation.org>
-Date:   Wed, 8 Sep 2021 14:00:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 8 Sep 2021 16:13:06 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631131916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GeLJugmfwpo7jAlKKwyWt4ebo/kC1oROCE15+sKTgB0=;
+        b=CL3+dpMT7kp6Odt14ryNcdM1/1524of/KqcM+/HlIdit0qXpFq8ZpZRa0k72QYK8K7S2Wa
+        r/uqhQfN7H0bTsC08OLFy/qnwtoPBpdCX18+7R9XA74R9Y5Hs91TJHNwUcZig/RcniMgL5
+        4T35c9RgvaNd0Dr8cQTIzlkAABYWZS5T2OQtn7XV9Ug3M/fTsexD1Qx5knA3rIPThUe5X6
+        3GWSkxSnfCqFYuSv57+S1NgBp4rV7CH51hEol9LLwByh0MsKCJuHKADEzjg8fVEfVMU2fp
+        M30b1C1wley3EBDEQXEK59ggEk/O8Wwwo1RIEftNabl/9A4zZnHmA/7LE3Je6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631131916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GeLJugmfwpo7jAlKKwyWt4ebo/kC1oROCE15+sKTgB0=;
+        b=l7ieBzc7FjvI1f1Cmv8scw7WGxJNANq0JO3TYdREbLpVa6i85WWdL6kEDAipYWM7Mf0b/O
+        5wwuOL25SOPiydBA==
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>
+Cc:     Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [tip: timers/urgent] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+In-Reply-To: <a4bbf640306c42429afda8a4fc396f98@AcuMS.aculab.com>
+References: <AM6PR01MB541637BD6F336B8FFB72AF80EEC69@AM6PR01MB5416.eurprd01.prod.exchangelabs.com>
+ <163111620295.25758.18154572095175068828.tip-bot2@tip-bot2>
+ <a4bbf640306c42429afda8a4fc396f98@AcuMS.aculab.com>
+Date:   Wed, 08 Sep 2021 22:11:55 +0200
+Message-ID: <87zgsmesj8.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210908150001.3702552-2-ray.huang@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 8:59 AM, Huang Rui wrote:
-> Add Collaborative Processor Performance Control Extension feature flag
-> for AMD processors.
-> 
+David,
 
-Please add a couple of sentences about the feature and what it does.
+On Wed, Sep 08 2021 at 16:01, David Laight wrote:
+>> +	if (ts->tv_sec <= KTIME_SEC_MIN)
+>> +		return KTIME_MIN;
+>> +
+>>  	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
+>>  }
+>
+> Adding tv_nsec can still overflow -  even if tv_nsec is bounded to +/- 1 second.
+> This is no more 'garbage in' => 'garbage out' than the code without the
+> multiply under/overflow check.
 
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->   arch/x86/include/asm/cpufeatures.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index d0ce5cfd3ac1..f7aea50e3371 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -313,6 +313,7 @@
->   #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
->   #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
->   #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
-> +#define X86_FEATURE_AMD_CPPC_EXT	(13*32+27) /* Collaborative Processor Performance Control Extension */
->   
->   /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
->   #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
-> 
+In kernel timespecs are always normalized:  0 < tv_nsec < 1e9 - 1
 
-thanks,
--- Shuah
+Let's do the math:
+
+  KTIME_SEC_MAX = KTIME_MAX / NSEC_PER_SEC
+
+  The overflow prevention does:
+
+    if PSVAL >= KTIME_SEC_MAX:
+       return KTIME_MAX
+
+  so the largest positive seconds value which passes the above is:
+
+    PSMAX = KTIME_SEC_MAX - 1
+
+  ergo:
+
+    PSMAX * NSEC_PER_SEC + (NSEC_PER_SEC - 1) < KTIME_SEC_MAX < KTIME_MAX
+
+I leave the proof for negative values as an excercise for the reader.
+
+Thanks,
+
+        tglx
+---
+"Math is hard, let's go shopping!" - John Stultz
