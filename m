@@ -2,59 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B447D4034CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0064034C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347548AbhIHHJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348036AbhIHHJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:09:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5220BC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xTrVWx4u6aj0HJxIiwK6w63wBv8UFL6W0kryTgqQOBk=; b=UZnSHfGOxpfl5k2QHa5deLLAej
-        zonJbx4n51ec8iDwWq3JYz2OPPMiVjGyAUWGv4ls4dA1usel5U3fT/1gvezBu704ucCFd3+IoU+Xx
-        /3suk5AMMFVT85WrMAbyKyeKyDc8jQpU1ubdS0X6vYrUL91adfQ/uEwVJtCOmDDvt/xQGeNw5r7aT
-        yWtkmphfLXByz/kFQQDjCEIQq8TuIrs78mKspznFajfvCQvCX6gPMzESAMk0sibuyeVlB3FQIOYdo
-        CHiaZ+u6qSC1/p9oaZJ8UOV2EehqAHMkshll3Ux7bbkQN51H9mmfHonVGwsJSgxPP910Gd4H8k47p
-        w6qvbcTw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNrfF-008aXl-2g; Wed, 08 Sep 2021 07:06:59 +0000
-Date:   Wed, 8 Sep 2021 08:06:33 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: Re: [PATCH 09/12] swiotlb-xen: drop DEFAULT_NSLABS
-Message-ID: <YThg+e+5lDoSFuqO@infradead.org>
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
- <15259326-209a-1d11-338c-5018dc38abe8@suse.com>
+        id S1346470AbhIHHH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234219AbhIHHHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:07:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1786113D;
+        Wed,  8 Sep 2021 07:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631084801;
+        bh=bzENUDQvlhOu/9k9BEnztyqzOCg+TmfEpoBVF7KGxVo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Sbt9fkrxZpSg1eifWll6Kzj48gxpeeq0nUVd5/3gjG6AA/mSfrmcPLfkQ76Fcb0j1
+         a4P+jRoaWWzkJ0YMqbTCRpJRtj03l0ffjaB7zLhbmXROxJVCN+b8TEXCImpkc9Tj1I
+         Q0O8KQZCxZx5p0OKzb3l4BqWo+O/LV1acY5eIsms=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.13.15
+Date:   Wed,  8 Sep 2021 09:06:35 +0200
+Message-Id: <163108479524870@kroah.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15259326-209a-1d11-338c-5018dc38abe8@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 02:07:47PM +0200, Jan Beulich wrote:
-> It was introduced by 4035b43da6da ("xen-swiotlb: remove xen_set_nslabs")
-> and then not removed by 2d29960af0be ("swiotlb: dynamically allocate
-> io_tlb_default_mem").
-> 
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+I'm announcing the release of the 5.13.15 kernel.
 
-Looks good,
+All users of the 5.13 kernel series must upgrade.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+The updated 5.13.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.13.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                                    |    2 
+ arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts |    4 +
+ arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi           |    2 
+ arch/x86/events/amd/ibs.c                                   |    8 +++
+ arch/x86/events/amd/power.c                                 |    1 
+ arch/x86/events/intel/pt.c                                  |    2 
+ arch/xtensa/Kconfig                                         |    2 
+ drivers/block/Kconfig                                       |    4 -
+ drivers/block/cryptoloop.c                                  |    2 
+ drivers/gpu/ipu-v3/ipu-cpmem.c                              |   30 ++++++------
+ drivers/media/usb/stkwebcam/stk-webcam.c                    |    6 +-
+ drivers/net/dsa/mv88e6xxx/serdes.c                          |   11 ++--
+ drivers/net/ethernet/cadence/macb_ptp.c                     |   11 ++++
+ drivers/net/ethernet/qlogic/qed/qed_main.c                  |    7 ++
+ drivers/net/ethernet/qlogic/qede/qede_main.c                |    2 
+ drivers/reset/reset-zynqmp.c                                |    3 -
+ drivers/usb/serial/cp210x.c                                 |   21 +++++---
+ drivers/usb/serial/pl2303.c                                 |    1 
+ fs/ceph/mdsmap.c                                            |    8 ++-
+ fs/ext4/inline.c                                            |    6 ++
+ fs/ext4/super.c                                             |    8 +++
+ sound/core/pcm_lib.c                                        |    2 
+ sound/pci/hda/patch_realtek.c                               |   11 ++++
+ sound/usb/endpoint.c                                        |    5 ++
+ 24 files changed, 115 insertions(+), 44 deletions(-)
+
+Bin Meng (2):
+      riscv: dts: microchip: Use 'local-mac-address' for emac1
+      riscv: dts: microchip: Add ethernet0 to the aliases node
+
+Christoph Hellwig (1):
+      cryptoloop: add a deprecation warning
+
+Greg Kroah-Hartman (1):
+      Linux 5.13.15
+
+Harini Katakam (1):
+      net: macb: Add a NULL check on desc_ptp
+
+Jan Kara (1):
+      ext4: fix e2fsprogs checksum failure for mounted filesystem
+
+Johan Hovold (2):
+      USB: serial: cp210x: fix control-characters error handling
+      USB: serial: cp210x: fix flow-control error handling
+
+Johnathon Clark (1):
+      ALSA: hda/realtek: Quirk for HP Spectre x360 14 amp setup
+
+Kim Phillips (2):
+      perf/x86/amd/ibs: Work around erratum #1197
+      perf/x86/amd/power: Assign pmu.module
+
+Krzysztof Hałasa (1):
+      gpu: ipu-v3: Fix i.MX IPU-v3 offset calculations for (semi)planar U/V formats
+
+Nathan Rossi (1):
+      net: dsa: mv88e6xxx: Update mv88e6393x serdes errata
+
+Pavel Skripkin (1):
+      media: stkwebcam: fix memory leak in stk_camera_probe
+
+Randy Dunlap (1):
+      xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
+
+Robert Marko (1):
+      USB: serial: pl2303: fix GL type detection
+
+Sai Krishna Potthuri (1):
+      reset: reset-zynqmp: Fixed the argument data type
+
+Shai Malin (2):
+      qed: Fix the VF msix vectors flow
+      qede: Fix memset corruption
+
+Takashi Iwai (2):
+      ALSA: usb-audio: Fix regression on Sony WALKMAN NW-A45 DAC
+      ALSA: hda/realtek: Workaround for conflicting SSID on ASUS ROG Strix G17
+
+Theodore Ts'o (1):
+      ext4: fix race writing to an inline_data file while its xattrs are changing
+
+Tuo Li (1):
+      ceph: fix possible null-pointer dereference in ceph_mdsmap_decode()
+
+Xiaoyao Li (1):
+      perf/x86/intel/pt: Fix mask of num_address_ranges
+
+Zubin Mithra (1):
+      ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
+
