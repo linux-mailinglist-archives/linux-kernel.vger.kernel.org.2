@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AE34034FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD6F403501
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349002AbhIHHND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:13:03 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:58284 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348733AbhIHHNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:13:00 -0400
-Received: from BC-Mail-Ex27.internal.baidu.com (unknown [172.31.51.21])
-        by Forcepoint Email with ESMTPS id 6A44F5619AF682181CA5;
-        Wed,  8 Sep 2021 15:11:48 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex27.internal.baidu.com (172.31.51.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 8 Sep 2021 15:11:48 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 8 Sep 2021 15:11:47 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Santosh Shilimkar" <ssantosh@kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>
-Subject: [PATCH] soc: sunxi_sram: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Wed, 8 Sep 2021 15:11:16 +0800
-Message-ID: <20210908071123.348-6-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210908071123.348-1-caihuoqing@baidu.com>
-References: <20210908071123.348-1-caihuoqing@baidu.com>
+        id S1349108AbhIHHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:13:06 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:38707 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348992AbhIHHNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:13:04 -0400
+Received: by mail-vs1-f45.google.com with SMTP id a25so1167854vso.5;
+        Wed, 08 Sep 2021 00:11:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6SOp9qzgb+7OLbzhEnYOxzUm312xgb+yIQvHHl06QRQ=;
+        b=JN0fGn7B6D81XWBoc1ZBusruvP+QEqcIpFyx+x9Jz2OlDlDRjW36Ls3Mblw6SlZpit
+         srJfIbyVlWHrCFOMiT4nfjs3Wg5a5Kci6Uk6jdi0N1LCm+OOomIJ7+UhT9rMPK4bKMkL
+         8v8HVHuOIA2v/bOmIgq4Iyn0jks/QXN/jz5YFkHBqgo8vc6e26lpAszLzwnsnEX+KuIR
+         T/f3ITaJGvdiQgKivRHJPI8eMkIU24/PUp4huwKXZtj/Nb3BewI/IlgU3mRZ4KAh7bfr
+         21HQrr/7k7Vxfo1DI8mDXIQb3HP9dnHE2ZYeaLyvVslRl9+UFRCSj7nbCmJyk31shkjE
+         I+FQ==
+X-Gm-Message-State: AOAM530lYEB/Xqf+QGMm+tct0Ueb5yKOZvjPJcN8c7C/aRFr/EGnjOUW
+        3+to1qVeZT1wv/6AA7cyb7mfn7dDyd7y2Q2HKsM=
+X-Google-Smtp-Source: ABdhPJzjGNGylzP8LxtbraFdz4alRjQZDJJTUIPo6jsA4z7q7jbMwhO+Z7i4SE3fylrJCV6B+DQIMmJdF43oArWG9O8=
+X-Received: by 2002:a67:efd6:: with SMTP id s22mr1272938vsp.50.1631085116034;
+ Wed, 08 Sep 2021 00:11:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net> <20210908042838.GA2585993@roeck-us.net>
+ <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk> <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
+In-Reply-To: <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 8 Sep 2021 09:11:43 +0200
+Message-ID: <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
+On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 9/7/21 9:48 PM, Al Viro wrote:
+> > On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
+> >>      memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
+> >>
+> >> but that just seems weird. Is there a better solution ?
+> >
+> > (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
+> > ioremap(), rather than casting explicit constants?
+>
+> Typecasts or even assigning the address to a variable does not help.
+> The sanitizer function can not be static either.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/soc/sunxi/sunxi_sram.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+So it can only be fixed by obfuscating the constant address in a
+chain of out-of-line functions...
+How is this compiler to be used for bare-metal programming?
 
-diff --git a/drivers/soc/sunxi/sunxi_sram.c b/drivers/soc/sunxi/sunxi_sram.c
-index 42833e33a96c..a8f3876963a0 100644
---- a/drivers/soc/sunxi/sunxi_sram.c
-+++ b/drivers/soc/sunxi/sunxi_sram.c
-@@ -331,7 +331,6 @@ static struct regmap_config sunxi_sram_emac_clock_regmap = {
- 
- static int sunxi_sram_probe(struct platform_device *pdev)
- {
--	struct resource *res;
- 	struct dentry *d;
- 	struct regmap *emac_clock;
- 	const struct sunxi_sramc_variant *variant;
-@@ -342,8 +341,7 @@ static int sunxi_sram_probe(struct platform_device *pdev)
- 	if (!variant)
- 		return -EINVAL;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	base = devm_ioremap_resource(&pdev->dev, res);
-+	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
+> I don't know the hardware, so I can not answer the ioremap() question.
+
+Yes it should.  But this driver dates back to 2.1.110, when only
+half of the architectures already had ioremap().
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
