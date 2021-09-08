@@ -2,134 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2791403CD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE69403CD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349682AbhIHPuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349633AbhIHPuL (ORCPT
+        id S1349829AbhIHPvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:51:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52988 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349660AbhIHPvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:50:11 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE6C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:49:03 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id j12so4273662ljg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PcF296h2+jiTZRH7itaWnGkrpPXNXdTwX29k3fuQ+jc=;
-        b=ZwCRqKII+z7vKEvFb10WpEzrknavJ+xY91cakvNMvB12ilS1ZXGEroVoZGRbTsMeHX
-         r2zn5SfzXpbQBiUmBwz5flemzUgkqkyaVzmRA0zAl11PDMt+Eapr9rFmLWA3oZAESpPQ
-         tpmQ6lADbmqWjIXc3iG+eXb+QhwWpsNLgETq0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PcF296h2+jiTZRH7itaWnGkrpPXNXdTwX29k3fuQ+jc=;
-        b=nKpTwGTOiDYqB71dfBIGXOpCPI5xuNu23joVvJJtmU8yCjc5VI6GmI2AEWGnfL6PjH
-         HvMTFueC8dXSJ4DJQDZJvDyphR388kRj9RZNhRtRBttst2nqTBsCkIpgkD63jDNLQH7w
-         7Um7QMe3C3U+Xv4s9UJSBobtmeI1MDp6fcdbOqK7x7V7hpFHhUjZMQVb0z9sv60eFAl8
-         qfVW9z/sFxHfFbA1Q2xH1qemLgJOSh/fFhJgn0TjQ/IhAbfkPNV2FEpxRJJmKvyUfsnM
-         puNDU+wKSzIiASy3pnfj+lz1jQBjk6uo6JU1jXRt5NEqebotiHqFOYf5U8SxVM+3gZ/a
-         RoTA==
-X-Gm-Message-State: AOAM533eVbren3F8EDT5BK66IFauEnXNvZGDMMMxSmBFik2RUqJ428V0
-        tx5UZlwV3Bcaq89Dbwhxb0KEJVWJr5EL6Xk5l8I=
-X-Google-Smtp-Source: ABdhPJxvtoibMycYb48izPkqkHcRCb0XnCE9Cnn6ifEabW0xp48JXwDyfqBs0jEjHeFMY9WrAM4fGg==
-X-Received: by 2002:a2e:8795:: with SMTP id n21mr3536176lji.474.1631116141586;
-        Wed, 08 Sep 2021 08:49:01 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id a16sm277306ljq.22.2021.09.08.08.48.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 08:48:58 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id k4so5785118lfj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:48:58 -0700 (PDT)
-X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr3186957lfg.150.1631116138014;
- Wed, 08 Sep 2021 08:48:58 -0700 (PDT)
+        Wed, 8 Sep 2021 11:51:13 -0400
+Date:   Wed, 08 Sep 2021 15:50:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631116204;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7t9TbDcVf8dPQh6cAvl+s+/BeeyFeZw4VocU+Hrytok=;
+        b=pUK76Wrv3r5p30GnB1ROuGZl47ydMAnfCOttM2yvrI6EGTJT08kWMHq81yucfCeU6q4Kit
+        1hGvrkpidqlpihysHoWtS4Cceyl+teKtM2kALO6dgKHGyrDjLE9iRTjv78dmjjAl67HLAY
+        3mKp6nBT4tYTiy7BpUBjAIe2okmcYNRggLOwZib0lqcSiZtuYAihuSahj6dzXVUe0+CbAf
+        3T6QDCLQnk2ZfVdoZDOT18Ul2KzV2EQjqgvEah9z8kmqHCsZFAdnMcTvVzsNKCIWtvAsC7
+        xTLP3YEvGdzv3aFM7cCqBLNQB7zT8Mg9F4BNFsq4zAL99tZ3MgplLq+DVR66/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631116204;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7t9TbDcVf8dPQh6cAvl+s+/BeeyFeZw4VocU+Hrytok=;
+        b=rXralnTHJaVQBiP89xLwqLqqs3hRVD/S3BDl2M8fGBZ7HauR3iTq9nsmSAreMD67L+NCqC
+        Spzxkg1pNCmQwBCg==
+From:   "tip-bot2 for Lukas Hannen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+Cc:     Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3CAM6PR01MB541637BD6F336B8FFB72AF80EEC69=40AM6PR01MB?=
+ =?utf-8?q?5416=2Eeurprd01=2Eprod=2Eexchangelabs=2Ecom=3E?=
+References: =?utf-8?q?=3CAM6PR01MB541637BD6F336B8FFB72AF80EEC69=40AM6PR01M?=
+ =?utf-8?q?B5416=2Eeurprd01=2Eprod=2Eexchangelabs=2Ecom=3E?=
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <53ce8db-3372-b5e2-cee7-c0ebe9c45a9@tarent.de> <CANn89iJzyPbR-fS8S_oAMSJzUGTHAfx49CXVc6ZSckUk91Opvg@mail.gmail.com>
-In-Reply-To: <CANn89iJzyPbR-fS8S_oAMSJzUGTHAfx49CXVc6ZSckUk91Opvg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 8 Sep 2021 08:48:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whkOK2DTHMt1rQ7wCBCqW=itkihpQBcZ=T6vrciEE4ycA@mail.gmail.com>
-Message-ID: <CAHk-=whkOK2DTHMt1rQ7wCBCqW=itkihpQBcZ=T6vrciEE4ycA@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Thorsten Glaser <t.glaser@tarent.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163111620295.25758.18154572095175068828.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 7:50 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> At least on my builds,  do_tcp_getsockopt() uses less than 512 bytes of stack.
->
-> Probably because tcp_zerocopy_receive() is _not_ inlined, by pure luck
-> I suppose.
->
-> Perhaps we should use noinline_for_stack here.
+The following commit has been merged into the timers/urgent branch of tip:
 
-I agree that that is likely a good idea, but I also suspect that the
-stack growth may be related to other issues. So it being less than 512
-bytes for you may be related to other random noise than inlining.
+Commit-ID:     39ff83f2f6cc5cc1458dfcea9697f96338210beb
+Gitweb:        https://git.kernel.org/tip/39ff83f2f6cc5cc1458dfcea9697f96338210beb
+Author:        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
+AuthorDate:    Wed, 25 Aug 2021 10:12:43 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 08 Sep 2021 17:44:26 +02:00
 
-In the past I've seen at least two patterns
+time: Handle negative seconds correctly in timespec64_to_ns()
 
- (a) not merging stack slots at all
+timespec64_ns() prevents multiplication overflows by comparing the seconds
+value of the timespec to KTIME_SEC_MAX. If the value is greater or equal it
+returns KTIME_MAX.
 
- (b) some odd "pattern allocator" problems, where I think gcc ended up
-re-using previous stack slots if they were the right size, but failing
-when previous allocations were fragmented
+But that check casts the signed seconds value to unsigned which makes the
+comparision true for all negative values and therefore return wrongly
+KTIME_MAX.
 
-that (a) thing is what -fconserve-stack is all about, and we also used
-to have (iirc) -fno-defer-pop to avoid having function call argument
-stacks stick around.
+Negative second values are perfectly valid and required in some places,
+e.g. ptp_clock_adjtime().
 
-And (b) is one of those "random allocation pattern" things, which
-depends on the phase of the moon, where gcc ends up treating the stack
-frame as a series of fixed-size allocations, but isn't very smart
-about it. Even if some allocations got free'd, they might be
-surrounded by oithers that didn't, and then gcc wouldn't re-use them
-if there's a bigger allocation afterwards. And similarly, I don't
-think gcc ever even joins together two free'd stack frame allocations.
+Remove the cast and add a check for the negative boundary which is required
+to prevent undefined behaviour due to multiplication underflow.
 
-I also wouldn't be surprised at all if some of our hardening flags
-ended up causing the stack frame reuse to entirely fail. IOW, I could
-easily see things like INIT_STACK_ALL_ZERO might cause the compiler to
-initialize all the stack frame allocations "early", so that their
-lifetimes all overlap.
+Fixes: cb47755725da ("time: Prevent undefined behaviour in timespec64_to_ns()")'
+Signed-off-by: Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/AM6PR01MB541637BD6F336B8FFB72AF80EEC69@AM6PR01MB5416.eurprd01.prod.exchangelabs.com
+---
+ include/linux/time64.h |  9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-So it could easily be about very subtle and random code generation
-choices that just change the order of allocation. A spill in the wrong
-place, things like that.
-
-Or it could be about not-so-subtle big config option things.
-
-          Linus
+diff --git a/include/linux/time64.h b/include/linux/time64.h
+index 5117cb5..81b9686 100644
+--- a/include/linux/time64.h
++++ b/include/linux/time64.h
+@@ -25,7 +25,9 @@ struct itimerspec64 {
+ #define TIME64_MIN			(-TIME64_MAX - 1)
+ 
+ #define KTIME_MAX			((s64)~((u64)1 << 63))
++#define KTIME_MIN			(-KTIME_MAX - 1)
+ #define KTIME_SEC_MAX			(KTIME_MAX / NSEC_PER_SEC)
++#define KTIME_SEC_MIN			(KTIME_MIN / NSEC_PER_SEC)
+ 
+ /*
+  * Limits for settimeofday():
+@@ -124,10 +126,13 @@ static inline bool timespec64_valid_settod(const struct timespec64 *ts)
+  */
+ static inline s64 timespec64_to_ns(const struct timespec64 *ts)
+ {
+-	/* Prevent multiplication overflow */
+-	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
++	/* Prevent multiplication overflow / underflow */
++	if (ts->tv_sec >= KTIME_SEC_MAX)
+ 		return KTIME_MAX;
+ 
++	if (ts->tv_sec <= KTIME_SEC_MIN)
++		return KTIME_MIN;
++
+ 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
+ }
+ 
