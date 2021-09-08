@@ -2,231 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE784040D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C638840410A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhIHWDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 18:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234144AbhIHWDA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:03:00 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1ABC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 15:01:51 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id k65so7223883yba.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QrmGu/DrfyoJRjpghd3iKC2qArp95acLTRr1DpVzOXw=;
-        b=HtOCYnqF+XNFihpSSOGepIIhsy0mk604rHmTDijAxbnCqHuL3964QWi8+AeYU4XsyM
-         CIZPEbQeMeabtupTgTi6YAHyfgULH1rAMDazCcsTyO7+2h2Ew0XLMEXEiEQ7xYL06f+D
-         ujnKxZXqc/J2NgGH2DAu/Jaz51Skk4SWS5R4W6o9n/9wUa7JFfrNFPykqON0rsfM6aIy
-         oQPtuw48u3Gfbq2UI2739jAqRIw1QJC+K0bAIhW4qQFasPRzM7zGIhF1b6JDZTQ32aSr
-         +erojPB0cSP2kaV9IxfbGgAWyMCiORgKpbh7f+84tLWov+D2Zc7Apg80uruu2zVqqgpX
-         fXdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QrmGu/DrfyoJRjpghd3iKC2qArp95acLTRr1DpVzOXw=;
-        b=cCNHNofcWQQKe1aTj3SKLEr8mh7Ul0yyxDmUUIuJ8r3COjlqdxUr1Wy0H673Rwu07g
-         mb8BECLHSi3B0LQLCrTLTjU+IhL+OdkpohsLAOzkhS0QH0HhCLZXkjpvAuUG3H6KUv8V
-         PAJA1gTMa3p2HkYX2bh1AbxGPXkfZTzMYSuFF91WNpYcxk3cXsMbVNmA4lQq1P6ocim0
-         xQBchgaAnJQRCjBjTQ2S5H3opelNDgh/e+GN8cUtWdDbPrirH8kkAm137uNRgJUc6UPc
-         y+v6dgbBAHsVHbWxETv/Fn442Se3l0TVfWyf5Y1SbInEeSUpZpQ8/1Pl2yNzX5NAcOOn
-         0OkQ==
-X-Gm-Message-State: AOAM532Qx0ppwkkcWGBL06pVb5H9VcvboJ44FCZ0q0siqJSLkLfbVtPT
-        OdDA6zHU64DWyJX6NU+hUVZsiF74iNqRw5EDyDvrUQ==
-X-Google-Smtp-Source: ABdhPJzcrGOFhcWqvJKmXAgREc3Jl+IJVplHAN9b5rURTUIIgccy4UFyMg6V6WbeOAMJPrDtQs11Lw3yJ0JnWwEIeB4=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr565239ybl.508.1631138510833;
- Wed, 08 Sep 2021 15:01:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210904000543.2019010-1-saravanak@google.com>
- <20210904000543.2019010-3-saravanak@google.com> <CAPDyKFqO9PLygSnNWSPg9OhnfFfiSUXsEmj7juYjNyYSn2C6og@mail.gmail.com>
-In-Reply-To: <CAPDyKFqO9PLygSnNWSPg9OhnfFfiSUXsEmj7juYjNyYSn2C6og@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 8 Sep 2021 15:01:14 -0700
-Message-ID: <CAGETcx-0-DN5U6JY0xTahAje0SkdhwAesdAwi2Lp19meLsfe8g@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
+        id S241276AbhIHWdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 18:33:43 -0400
+Received: from ixit.cz ([94.230.151.217]:33150 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229997AbhIHWdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 18:33:42 -0400
+Received: from newone.lan (ixit.cz [94.230.151.217])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 7F21324BAF;
+        Wed,  8 Sep 2021 21:34:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1631129685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SxiVdUlQ7fYzowAHt3rgwVXftn+wj1pzvOHK68gmgPY=;
+        b=wO7Wnqgjg6LHEVCOcSFU7TfunNi3wC6eu9Yxq4K/cUMaN6w+370N5Islyn6OVh/KXcO968
+        We/iE5hmciQjowr3x++aYKIp6wbcPe9/W3oFwIPdqHXJAS9N4IMbhM21e3BLFjk5MAC1n3
+        reB52BlboHn0lGO7q2Z1EKqAV1ypUwg=
+From:   David Heidelberg <david@ixit.cz>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-oxnas@groups.io,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Manu Gautam <mgautam@codeaurora.org>
+Cc:     linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH 2/2] ARM: dts: qcom: ipq4019: add dwc3 arch spec compatible
+Date:   Wed,  8 Sep 2021 21:33:29 +0200
+Message-Id: <20210908193329.87992-2-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210908193329.87992-1-david@ixit.cz>
+References: <20210908193329.87992-1-david@ixit.cz>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 3:29 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Sat, 4 Sept 2021 at 02:05, Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > The simple-pm-bus driver is mandatory for CONFIG_OF based platforms to
-> > work with fw_devlink. So, always compile it in for CONFIG_OF and delete
-> > the config since it's no longer necessary.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
->
-> Some comments, see below. Nevertheless, feel free to add:
->
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+To be compilant with qcom,dwc3 definition
+ - add compatible
+ - rename dwc3@ to usb@
 
-Thanks.
+No functional changes intended.
 
->
-> Kind regards
-> Uffe
->
-> > ---
-> >  arch/arm/configs/multi_v7_defconfig |  1 -
-> >  arch/arm/configs/oxnas_v6_defconfig |  1 -
-> >  arch/arm/configs/shmobile_defconfig |  1 -
-> >  arch/arm/mach-omap2/Kconfig         |  1 -
-> >  arch/arm64/configs/defconfig        |  1 -
-> >  drivers/bus/Kconfig                 | 12 ------------
-> >  drivers/bus/Makefile                |  2 +-
-> >  drivers/soc/canaan/Kconfig          |  1 -
-> >  8 files changed, 1 insertion(+), 19 deletions(-)
->
-> Not sure what other people think (and it's not my call to make), but I
-> would suggest to split this up in four pieces (drivers/bus,
-> drivers/soc, arm, arm64)
->
-> The important part is that the change in drivers/bus gets merged as
-> part of your series, to make sure we don't break anything.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ arch/arm/boot/dts/qcom-ipq4019.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I think it'll be better if it's one commit like this and we have Greg
-up the series. That way, there's no chance of broken trees anywhere.
+diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+index a3ae5458ac68..25b7e10537df 100644
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -637,7 +637,7 @@ usb3_hs_phy: hsphy@a6000 {
+ 		};
+ 
+ 		usb3: usb3@8af8800 {
+-			compatible = "qcom,dwc3";
++			compatible = "qcom,ipq4019-dwc3", "qcom,dwc3";
+ 			reg = <0x8af8800 0x100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+@@ -648,7 +648,7 @@ usb3: usb3@8af8800 {
+ 			ranges;
+ 			status = "disabled";
+ 
+-			dwc3@8a00000 {
++			usb@8a00000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x8a00000 0xf8000>;
+ 				interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
+@@ -669,7 +669,7 @@ usb2_hs_phy: hsphy@a8000 {
+ 		};
+ 
+ 		usb2: usb2@60f8800 {
+-			compatible = "qcom,dwc3";
++			compatible = "qcom,ipq4019-dwc3", "qcom,dwc3";
+ 			reg = <0x60f8800 0x100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+@@ -680,7 +680,7 @@ usb2: usb2@60f8800 {
+ 			ranges;
+ 			status = "disabled";
+ 
+-			dwc3@6000000 {
++			usb@6000000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x6000000 0xf8000>;
+ 				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.33.0
 
--Saravana
-
->
-> >
-> > diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-> > index d9abaae118dd..362720ae8d65 100644
-> > --- a/arch/arm/configs/multi_v7_defconfig
-> > +++ b/arch/arm/configs/multi_v7_defconfig
-> > @@ -196,7 +196,6 @@ CONFIG_PCI_EPF_TEST=m
-> >  CONFIG_DEVTMPFS=y
-> >  CONFIG_DEVTMPFS_MOUNT=y
-> >  CONFIG_OMAP_OCP2SCP=y
-> > -CONFIG_SIMPLE_PM_BUS=y
-> >  CONFIG_MTD=y
-> >  CONFIG_MTD_CMDLINE_PARTS=y
-> >  CONFIG_MTD_BLOCK=y
-> > diff --git a/arch/arm/configs/oxnas_v6_defconfig b/arch/arm/configs/oxnas_v6_defconfig
-> > index cae0db6b4eaf..de37f7e90999 100644
-> > --- a/arch/arm/configs/oxnas_v6_defconfig
-> > +++ b/arch/arm/configs/oxnas_v6_defconfig
-> > @@ -46,7 +46,6 @@ CONFIG_DEVTMPFS=y
-> >  CONFIG_DEVTMPFS_MOUNT=y
-> >  CONFIG_DMA_CMA=y
-> >  CONFIG_CMA_SIZE_MBYTES=64
-> > -CONFIG_SIMPLE_PM_BUS=y
-> >  CONFIG_MTD=y
-> >  CONFIG_MTD_CMDLINE_PARTS=y
-> >  CONFIG_MTD_BLOCK=y
-> > diff --git a/arch/arm/configs/shmobile_defconfig b/arch/arm/configs/shmobile_defconfig
-> > index d9a27e4e0914..18d2a960b2d2 100644
-> > --- a/arch/arm/configs/shmobile_defconfig
-> > +++ b/arch/arm/configs/shmobile_defconfig
-> > @@ -40,7 +40,6 @@ CONFIG_PCI_RCAR_GEN2=y
-> >  CONFIG_PCIE_RCAR_HOST=y
-> >  CONFIG_DEVTMPFS=y
-> >  CONFIG_DEVTMPFS_MOUNT=y
-> > -CONFIG_SIMPLE_PM_BUS=y
-> >  CONFIG_MTD=y
-> >  CONFIG_MTD_BLOCK=y
-> >  CONFIG_MTD_CFI=y
-> > diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kconfig
-> > index 7df8f5276ddf..02f2f3157f07 100644
-> > --- a/arch/arm/mach-omap2/Kconfig
-> > +++ b/arch/arm/mach-omap2/Kconfig
-> > @@ -112,7 +112,6 @@ config ARCH_OMAP2PLUS
-> >         select PM_GENERIC_DOMAINS
-> >         select PM_GENERIC_DOMAINS_OF
-> >         select RESET_CONTROLLER
-> > -       select SIMPLE_PM_BUS
-> >         select SOC_BUS
-> >         select TI_SYSC
-> >         select OMAP_IRQCHIP
-> > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> > index f423d08b9a71..474b1f2e3f06 100644
-> > --- a/arch/arm64/configs/defconfig
-> > +++ b/arch/arm64/configs/defconfig
-> > @@ -245,7 +245,6 @@ CONFIG_DEVTMPFS_MOUNT=y
-> >  CONFIG_FW_LOADER_USER_HELPER=y
-> >  CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
-> >  CONFIG_HISILICON_LPC=y
-> > -CONFIG_SIMPLE_PM_BUS=y
-> >  CONFIG_FSL_MC_BUS=y
-> >  CONFIG_TEGRA_ACONNECT=m
-> >  CONFIG_GNSS=m
-> > diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-> > index e7f7eee6ee9a..dc3801369488 100644
-> > --- a/drivers/bus/Kconfig
-> > +++ b/drivers/bus/Kconfig
-> > @@ -141,18 +141,6 @@ config QCOM_EBI2
-> >           Interface 2, which can be used to connect things like NAND Flash,
-> >           SRAM, ethernet adapters, FPGAs and LCD displays.
-> >
-> > -config SIMPLE_PM_BUS
-> > -       tristate "Simple Power-Managed Bus Driver"
-> > -       depends on OF && PM
-> > -       help
-> > -         Driver for transparent busses that don't need a real driver, but
-> > -         where the bus controller is part of a PM domain, or under the control
-> > -         of a functional clock, and thus relies on runtime PM for managing
-> > -         this PM domain and/or clock.
-> > -         An example of such a bus controller is the Renesas Bus State
-> > -         Controller (BSC, sometimes called "LBSC within Bus Bridge", or
-> > -         "External Bus Interface") as found on several Renesas ARM SoCs.
-> > -
-> >  config SUN50I_DE2_BUS
-> >         bool "Allwinner A64 DE2 Bus Driver"
-> >           default ARM64
-> > diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-> > index 397e35392bff..86aacd36a56d 100644
-> > --- a/drivers/bus/Makefile
-> > +++ b/drivers/bus/Makefile
-> > @@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_OCP2SCP)    += omap-ocp2scp.o
-> >  obj-$(CONFIG_QCOM_EBI2)                += qcom-ebi2.o
-> >  obj-$(CONFIG_SUN50I_DE2_BUS)   += sun50i-de2.o
-> >  obj-$(CONFIG_SUNXI_RSB)                += sunxi-rsb.o
-> > -obj-$(CONFIG_SIMPLE_PM_BUS)    += simple-pm-bus.o
-> > +obj-$(CONFIG_OF)               += simple-pm-bus.o
-> >  obj-$(CONFIG_TEGRA_ACONNECT)   += tegra-aconnect.o
-> >  obj-$(CONFIG_TEGRA_GMI)                += tegra-gmi.o
-> >  obj-$(CONFIG_TI_PWMSS)         += ti-pwmss.o
-> > diff --git a/drivers/soc/canaan/Kconfig b/drivers/soc/canaan/Kconfig
-> > index 8179b69518b4..853096b7e84c 100644
-> > --- a/drivers/soc/canaan/Kconfig
-> > +++ b/drivers/soc/canaan/Kconfig
-> > @@ -5,7 +5,6 @@ config SOC_K210_SYSCTL
-> >         depends on RISCV && SOC_CANAAN && OF
-> >         default SOC_CANAAN
-> >          select PM
-> > -        select SIMPLE_PM_BUS
-> >          select SYSCON
-> >          select MFD_SYSCON
-> >         help
-> > --
-> > 2.33.0.153.gba50c8fa24-goog
-> >
