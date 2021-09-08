@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0DC403424
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A12403428
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347696AbhIHGRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 02:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S1347714AbhIHGSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 02:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhIHGRp (ORCPT
+        with ESMTP id S1347701AbhIHGR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 02:17:45 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4748EC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 23:16:38 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id n4so638523plh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 23:16:38 -0700 (PDT)
+        Wed, 8 Sep 2021 02:17:56 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05156C0613D9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 23:16:44 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id i24so1027003pfo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 23:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IBHRTJis02t5NHbVpsn7FcWLrdPlDkUd3aly8ckXp2A=;
-        b=uGZYOkMQ0oxoXFAXwN4WsRVYxvsIpE+F6t/rBD436q5dPKy8+KpJNqyAAN1GEVpuE6
-         Q8ATFiodGWQ2tko+LaU/MhMq1lESZyoQrx8gHqN21fGp3Fm4RUoUPvQOe1EYLUxg3Ma0
-         SuhQoekfUoqhWtLvxVl9jGLhLsZtu5O0Qu6wzKFq6OUgN4O+8D4pFBBHUehHUgk/qLrk
-         UnxjJOUlyNrTOch8MNNjVZwEhk7rXhFP/Ls1xE9FDhs7wH8U/WwTVklJujOJC9zAGwC2
-         XcgICIRdl7qruXGQ+pJgTKlTgBOwJkcGouJdMYlYq9eoQ6HFUaWYyIeXoLUwwvwm7pdy
-         hnCA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=t326ukayDkNK+rInLGvygXBSQMBOdWFnPHaxte87M+E=;
+        b=aZnUi3gU92sRkqR7q5q3DONWNupExinn4y/WaYDXhpLYKWKr5OdlN/fkMAWFkrflhP
+         UnC7QgTkEco8s+WWq9E6EjZlE3NoBgcawU+Ax1ZEaEDxAItomc2K4TuY8xgsYN1jCI52
+         OqCt3S45tushW8jQfA9EweFPPfMW1yKEwsY1qef92fPuXcrYSr/wD+G2kcRF879d9ihF
+         ZhX04yzR79MOJE5UelBfyLX45caSitc1K4J3k6O31JRktnvi/ZWk4JmkPRduVwzOlFHx
+         2sdSsiPaM8+GIQlLMFqgFhHvTVkJeUkDuD6k1ZoaaP18gO82NwUW+jSn5gIZVatgsV59
+         GOXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IBHRTJis02t5NHbVpsn7FcWLrdPlDkUd3aly8ckXp2A=;
-        b=bQFkzz6LUQ71gCfbJf1wT6m6m/sw64K8ZqLcGm1bOY4LKYo3uhaMkWfKVF+8h+8TX+
-         +oYioUkqqYpSwKZYB+4hGkfcW4K/piOpfNXTpy0a8/Dr+1edi3fbo0Qv0JWVRrMXOZtT
-         6mqJkDNuhB2vin0oNSMrFXp7sUp8U/XpzttfCYILObIfKCeNPT8R1u7zBkmqEe/1frUd
-         5p5eZxsAPx1IQHXSDM6QKPThpfE0QKSWuq0osu6HOkW6WIFgiG4pPovgGB+XmmvhJx7Q
-         ez8NODo1Qxa0hJ5DwC241IXoFS8VCm6LSGFAZpGGKqap0OBpwTdk3yVo1JocJo/a087Z
-         FBew==
-X-Gm-Message-State: AOAM532eeVcf+43Mout1WaLf+arKchTJuODY4SOeTS+8RTN+OZe7NMKd
-        Js8ayTA9G9ZWoT7abPgLfZo83QGyiHpZaovg
-X-Google-Smtp-Source: ABdhPJxETxzi0g5gl3RUyFq2zu9ocPPeVjaau0w3XyrUMBpoPDhfEKgmgY7/b1kMTYZjj0muVDHQOw==
-X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr2395580pju.51.1631081797744;
-        Tue, 07 Sep 2021 23:16:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=t326ukayDkNK+rInLGvygXBSQMBOdWFnPHaxte87M+E=;
+        b=QArYKZAVgxcKGca4m0VNsSAQY8L/PDLqs3yL8uhMqfRcRYKTAXEtEHTnekFFV+qws9
+         Nld5qVvsLa9JMIYiG6/zMexEEJxUDw70hYG7KFq7hH6SSRoBUAk8qfoc6srJ3Gd7FCCQ
+         xexoXn/Rvdm2U7cnMySHn6L//kzXhWSLijPhzKunxyLY99MS0jxu04eTjdbUThDP3RCp
+         GJIJ0QwYK121L3S+9ER+Aogka9xjtJPovAN3lD1+RINBFhdTKAP6wlRStr6P5zZFELQj
+         Bv1gDji+7L079SvrfDyi+BOY+xTalCgDD/uc+u94JGLwzMET+hMxYmL26SsnSyxnHinm
+         g13g==
+X-Gm-Message-State: AOAM531/k1fweszdRz0GoOF65dfmUKDN5aOCX0ffkjgDyaOHXjMWkQtu
+        pEeV/nqygxTgdv3f+FgV7yAQ2Q==
+X-Google-Smtp-Source: ABdhPJx6JwVjc91ZM1FGjBMsTgl5ytdnlFm870wu6IIJD9+4A+LbZB2ac6mZqeo76XmRtRaMVFTdMw==
+X-Received: by 2002:a63:4f17:: with SMTP id d23mr2110849pgb.253.1631081803639;
+        Tue, 07 Sep 2021 23:16:43 -0700 (PDT)
 Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id n1sm971730pfv.209.2021.09.07.23.16.34
+        by smtp.gmail.com with ESMTPSA id n1sm971730pfv.209.2021.09.07.23.16.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 23:16:37 -0700 (PDT)
+        Tue, 07 Sep 2021 23:16:43 -0700 (PDT)
 From:   Shunsuke Mie <mie@igel.co.jp>
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>
 Cc:     Shunsuke Mie <mie@igel.co.jp>,
@@ -60,49 +59,38 @@ Cc:     Shunsuke Mie <mie@igel.co.jp>,
         Leon Romanovsky <leon@kernel.org>,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         dhobsong@igel.co.jp, taki@igel.co.jp, etom@igel.co.jp
-Subject: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
-Date:   Wed,  8 Sep 2021 15:16:08 +0900
-Message-Id: <20210908061611.69823-1-mie@igel.co.jp>
+Subject: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+Date:   Wed,  8 Sep 2021 15:16:09 +0900
+Message-Id: <20210908061611.69823-2-mie@igel.co.jp>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908061611.69823-1-mie@igel.co.jp>
+References: <20210908061611.69823-1-mie@igel.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series add a support for rxe driver.
+To share memory space using dma-buf, a API of the dma-buf requires dma
+device, but devices such as rxe do not have a dma device. For those case,
+change to specify a device of struct ib instead of the dma device.
 
-A dma-buf based memory registering has beed introduced to use the memory
-region that lack of associated page structures (e.g. device memory and CMA
-managed memory) [1]. However, to use the dma-buf based memory, each rdma
-device drivers require add some implementation. The rxe driver has not
-support yet.
+Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+---
+ drivers/infiniband/core/umem_dmabuf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1] https://www.spinics.net/lists/linux-rdma/msg98592.html
-
-To enable to use the memories in rxe rdma device, add some changes and
-implementation in this patch series.
-
-This series consists of three patches. The first patch changes the IB core
-to support for rdma drivers that have not real dma device. The second
-patch extracts a memory mapping process of rxe as a common function to use
-a dma-buf support. The third patch adds the dma-buf support to rxe driver.
-
-Related user space RDMA library changes are provided as a separate
-patch.
-
-Shunsuke Mie (3):
-  RDMA/umem: Change for rdma devices has not dma device
-  RDMA/rxe: Extract a mapping process into a function
-  RDMA/rxe: Support dma-buf as memory region
-
- drivers/infiniband/core/umem_dmabuf.c |   2 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   |   3 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 186 +++++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_verbs.c |  36 +++++
- 4 files changed, 193 insertions(+), 34 deletions(-)
-
+diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+index c6e875619fac..58d6ac9cb51a 100644
+--- a/drivers/infiniband/core/umem_dmabuf.c
++++ b/drivers/infiniband/core/umem_dmabuf.c
+@@ -146,7 +146,7 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
+ 
+ 	umem_dmabuf->attach = dma_buf_dynamic_attach(
+ 					dmabuf,
+-					device->dma_device,
++					device->dma_device ? device->dma_device : &device->dev,
+ 					ops,
+ 					umem_dmabuf);
+ 	if (IS_ERR(umem_dmabuf->attach)) {
 -- 
 2.17.1
 
