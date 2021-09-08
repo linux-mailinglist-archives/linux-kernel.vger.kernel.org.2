@@ -2,114 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBF0403E35
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE552403E3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352432AbhIHROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhIHROU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:14:20 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67A7C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:13:12 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id mf2so5614945ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=94RfL+XQJazAGxoDLsJBPk4y2Cmj3BLmNWDabKgbvBo=;
-        b=TfRslReoIaZtyNR/fIDuNfW/Da+aBlcZMFJ8/jUAcIzOaBjUQ9S51BuA7yLlCkCUHN
-         5IZV+0gS1+GmsJRN9e+KMlb2+9a1jRNm71j0kybuMXGH6USHvFfYSg6i02nMlZH+y7cy
-         VDu+QJiW0Gve+5e8j2KclF6rQHzmPc7SvMDpY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=94RfL+XQJazAGxoDLsJBPk4y2Cmj3BLmNWDabKgbvBo=;
-        b=y9cEmYdQPwt6M4fduZ12xDLy/x3g0D/r3HhlynD/GL7ByW3P+a+1LN7ybJfAiCOpq9
-         YWC70E28PBD53NVIukbCiZzJQpzXuPQRXPeBIwMwk0BTbfyAMguu84p/xwdI5GVHeJCe
-         Qh1951IZBieNgxoXH5iDfGceJwwnpcmhQ33WSPbQZdV6h6G047tG+1PPE9wBYefJkS39
-         W9fJ4LcRXQPZ+5mauSh6Zm+u4di1gKoRTRagHRg1cweLVrFtXFknh5m/DwYxjmG0bGdJ
-         OxeEs0twmsEYCLLMueJeYmMt+sVtHNMQ0jzvhGvrejI2rCtTtqif5ZQB+4GddQLwuZC3
-         bfZw==
-X-Gm-Message-State: AOAM533HxXdqvj3aiPI1t1T4ivnYXneeXF95Rx3uI2xhA6InVe+9jjIT
-        bhgcQkOpylULgSlqdeVUH+evNA==
-X-Google-Smtp-Source: ABdhPJxBatGiw03lcpCbxiZWOnM2wBapIEG0A8UmwJ2+oLJ4x93tKMCbvGGv2mCJwmWmgOKYGZBisQ==
-X-Received: by 2002:a17:906:314e:: with SMTP id e14mr932125eje.165.1631121191251;
-        Wed, 08 Sep 2021 10:13:11 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id qx18sm1324868ejb.75.2021.09.08.10.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:13:10 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 19:13:08 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drm/i915: clean up inconsistent indenting
-Message-ID: <YTjvJFeMs6+Hi3IR@phenom.ffwll.local>
-Mail-Followup-To: Colin King <colin.king@canonical.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210902215737.55570-1-colin.king@canonical.com>
+        id S1348884AbhIHRRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:17:15 -0400
+Received: from ixit.cz ([94.230.151.217]:47876 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhIHRRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:17:14 -0400
+Received: from newone.lan (ixit.cz [94.230.151.217])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id A0A8C24A25;
+        Wed,  8 Sep 2021 19:16:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1631121364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2luen1Aw75WFk54UH4uHBWb4js/b04AcAZvA6vWMGpQ=;
+        b=01ZQyret+a97Aqgn4L3B666nJNHqH0l3vZC9MTZFxBwvvUUEmAaaw9FeRPtWPQqjyKLfza
+        QPcP3KODt4pEHpwitWoVQL5JckV49IlPqsrpDW8B8ndByLyTWPfVm4NlKHQAuY3cklcyzh
+        9BAB5DYTDI+jG2WRw17dgO32OaINWjU=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: [RFC PATCH] [v2] dt-bindings: arm/msm/qcom,idle-state convert to YAML
+Date:   Wed,  8 Sep 2021 19:14:53 +0200
+Message-Id: <20210908171453.53259-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902215737.55570-1-colin.king@canonical.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:57:37PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a statement that is indented one character too deeply,
-> clean this up.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Switched maintainer from Lina to Bjorn.
 
-Queued to drm-intel-gt-next, thanks for patch.
--Daniel
+Doesn't fix:
+```
+idle-states: 'spc' does not match any of the regexes: '^(cpu|cluster)-', 'pinctrl-[0-9]+'
+```
+from colliding arm/idle-states.yaml .
 
-> ---
->  drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> index de5f9c86b9a4..aeb324b701ec 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> @@ -2565,7 +2565,7 @@ __execlists_context_pre_pin(struct intel_context *ce,
->  	if (!__test_and_set_bit(CONTEXT_INIT_BIT, &ce->flags)) {
->  		lrc_init_state(ce, engine, *vaddr);
->  
-> -		 __i915_gem_object_flush_map(ce->state->obj, 0, engine->context_size);
-> +		__i915_gem_object_flush_map(ce->state->obj, 0, engine->context_size);
->  	}
->  
->  	return 0;
-> -- 
-> 2.32.0
-> 
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
 
+v2
+ - maintainer is now Bjorn
+ - fixed some newlines
+ - specified exact state names (added $)
+
+ .../bindings/arm/msm/qcom,idle-state.txt      |  84 ------------
+ .../bindings/arm/msm/qcom,idle-state.yaml     | 126 ++++++++++++++++++
+ 2 files changed, 126 insertions(+), 84 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
+
+diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
+deleted file mode 100644
+index 6ce0b212ec6d..000000000000
+--- a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
++++ /dev/null
+@@ -1,84 +0,0 @@
+-QCOM Idle States for cpuidle driver
+-
+-ARM provides idle-state node to define the cpuidle states, as defined in [1].
+-cpuidle-qcom is the cpuidle driver for Qualcomm SoCs and uses these idle
+-states. Idle states have different enter/exit latency and residency values.
+-The idle states supported by the QCOM SoC are defined as -
+-
+-    * Standby
+-    * Retention
+-    * Standalone Power Collapse (Standalone PC or SPC)
+-    * Power Collapse (PC)
+-
+-Standby: Standby does a little more in addition to architectural clock gating.
+-When the WFI instruction is executed the ARM core would gate its internal
+-clocks. In addition to gating the clocks, QCOM cpus use this instruction as a
+-trigger to execute the SPM state machine. The SPM state machine waits for the
+-interrupt to trigger the core back in to active. This triggers the cache
+-hierarchy to enter standby states, when all cpus are idle. An interrupt brings
+-the SPM state machine out of its wait, the next step is to ensure that the
+-cache hierarchy is also out of standby, and then the cpu is allowed to resume
+-execution. This state is defined as a generic ARM WFI state by the ARM cpuidle
+-driver and is not defined in the DT. The SPM state machine should be
+-configured to execute this state by default and after executing every other
+-state below.
+-
+-Retention: Retention is a low power state where the core is clock gated and
+-the memory and the registers associated with the core are retained. The
+-voltage may be reduced to the minimum value needed to keep the processor
+-registers active. The SPM should be configured to execute the retention
+-sequence and would wait for interrupt, before restoring the cpu to execution
+-state. Retention may have a slightly higher latency than Standby.
+-
+-Standalone PC: A cpu can power down and warmboot if there is a sufficient time
+-between the time it enters idle and the next known wake up. SPC mode is used
+-to indicate a core entering a power down state without consulting any other
+-cpu or the system resources. This helps save power only on that core.  The SPM
+-sequence for this idle state is programmed to power down the supply to the
+-core, wait for the interrupt, restore power to the core, and ensure the
+-system state including cache hierarchy is ready before allowing core to
+-resume. Applying power and resetting the core causes the core to warmboot
+-back into Elevation Level (EL) which trampolines the control back to the
+-kernel. Entering a power down state for the cpu, needs to be done by trapping
+-into a EL. Failing to do so, would result in a crash enforced by the warm boot
+-code in the EL for the SoC. On SoCs with write-back L1 cache, the cache has to
+-be flushed in s/w, before powering down the core.
+-
+-Power Collapse: This state is similar to the SPC mode, but distinguishes
+-itself in that the cpu acknowledges and permits the SoC to enter deeper sleep
+-modes. In a hierarchical power domain SoC, this means L2 and other caches can
+-be flushed, system bus, clocks - lowered, and SoC main XO clock gated and
+-voltages reduced, provided all cpus enter this state.  Since the span of low
+-power modes possible at this state is vast, the exit latency and the residency
+-of this low power mode would be considered high even though at a cpu level,
+-this essentially is cpu power down. The SPM in this state also may handshake
+-with the Resource power manager (RPM) processor in the SoC to indicate a
+-complete application processor subsystem shut down.
+-
+-The idle-state for QCOM SoCs are distinguished by the compatible property of
+-the idle-states device node.
+-
+-The devicetree representation of the idle state should be -
+-
+-Required properties:
+-
+-- compatible: Must be one of -
+-			"qcom,idle-state-ret",
+-			"qcom,idle-state-spc",
+-			"qcom,idle-state-pc",
+-		and "arm,idle-state".
+-
+-Other required and optional properties are specified in [1].
+-
+-Example:
+-
+-	idle-states {
+-		CPU_SPC: spc {
+-			compatible = "qcom,idle-state-spc", "arm,idle-state";
+-			entry-latency-us = <150>;
+-			exit-latency-us = <200>;
+-			min-residency-us = <2000>;
+-		};
+-	};
+-
+-[1]. Documentation/devicetree/bindings/arm/idle-states.yaml
+diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
+new file mode 100644
+index 000000000000..254868e09520
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
+@@ -0,0 +1,126 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/msm/qcom,idle-state.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: QCOM Idle States binding description
++
++maintainers:
++  - Bjorn Andersson <bjorn.andersson@linaro.org>
++
++description: |
++  ARM provides idle-state node to define the cpuidle states, as defined in [1].
++  cpuidle-qcom is the cpuidle driver for Qualcomm SoCs and uses these idle
++  states. Idle states have different enter/exit latency and residency values.
++  The idle states supported by the QCOM SoC are defined as -
++
++    * Standby
++    * Retention
++    * Standalone Power Collapse (Standalone PC or SPC)
++    * Power Collapse (PC)
++
++  Standby: Standby does a little more in addition to architectural clock gating.
++  When the WFI instruction is executed the ARM core would gate its internal
++  clocks. In addition to gating the clocks, QCOM cpus use this instruction as a
++  trigger to execute the SPM state machine. The SPM state machine waits for the
++  interrupt to trigger the core back in to active. This triggers the cache
++  hierarchy to enter standby states, when all cpus are idle. An interrupt brings
++  the SPM state machine out of its wait, the next step is to ensure that the
++  cache hierarchy is also out of standby, and then the cpu is allowed to resume
++  execution. This state is defined as a generic ARM WFI state by the ARM cpuidle
++  driver and is not defined in the DT. The SPM state machine should be
++  configured to execute this state by default and after executing every other
++  state below.
++
++  Retention: Retention is a low power state where the core is clock gated and
++  the memory and the registers associated with the core are retained. The
++  voltage may be reduced to the minimum value needed to keep the processor
++  registers active. The SPM should be configured to execute the retention
++  sequence and would wait for interrupt, before restoring the cpu to execution
++  state. Retention may have a slightly higher latency than Standby.
++
++  Standalone PC: A cpu can power down and warmboot if there is a sufficient time
++  between the time it enters idle and the next known wake up. SPC mode is used
++  to indicate a core entering a power down state without consulting any other
++  cpu or the system resources. This helps save power only on that core.  The SPM
++  sequence for this idle state is programmed to power down the supply to the
++  core, wait for the interrupt, restore power to the core, and ensure the
++  system state including cache hierarchy is ready before allowing core to
++  resume. Applying power and resetting the core causes the core to warmboot
++  back into Elevation Level (EL) which trampolines the control back to the
++  kernel. Entering a power down state for the cpu, needs to be done by trapping
++  into a EL. Failing to do so, would result in a crash enforced by the warm boot
++  code in the EL for the SoC. On SoCs with write-back L1 cache, the cache has to
++  be flushed in s/w, before powering down the core.
++
++  Power Collapse: This state is similar to the SPC mode, but distinguishes
++  itself in that the cpu acknowledges and permits the SoC to enter deeper sleep
++  modes. In a hierarchical power domain SoC, this means L2 and other caches can
++  be flushed, system bus, clocks - lowered, and SoC main XO clock gated and
++  voltages reduced, provided all cpus enter this state.  Since the span of low
++  power modes possible at this state is vast, the exit latency and the residency
++  of this low power mode would be considered high even though at a cpu level,
++  this essentially is cpu power down. The SPM in this state also may handshake
++  with the Resource power manager (RPM) processor in the SoC to indicate a
++  complete application processor subsystem shut down.
++
++  The idle-state for QCOM SoCs are distinguished by the compatible property of
++  the idle-states device node.
++
++  [1] Documentation/devicetree/bindings/arm/idle-states.yaml
++
++properties:
++  $nodename:
++    const: idle-states
++
++patternProperties:
++  "^(ret|spc|pc)$":
++    type: object
++    description:
++      Each state node represents a domain idle state description.
++
++    properties:
++      compatible:
++        items:
++          - enum:
++            - qcom,idle-state-ret
++            - qcom,idle-state-spc
++            - qcom,idle-state-pc
++          - const: arm,idle-state
++
++      entry-latency-us:
++        description:
++          The worst case latency in microseconds required to enter the idle
++          state. Note that, the exit-latency-us duration may be guaranteed only
++          after the entry-latency-us has passed.
++
++      exit-latency-us:
++        description:
++          The worst case latency in microseconds required to exit the idle
++          state.
++
++      min-residency-us:
++        description:
++          The minimum residency duration in microseconds after which the idle
++          state will yield power benefits, after overcoming the overhead while
++          entering the idle state.
++
++    required:
++      - compatible
++      - entry-latency-us
++      - exit-latency-us
++      - min-residency-us
++
++additionalProperties: false
++
++examples:
++  - |
++    idle-states {
++      CPU_SPC: spc {
++        compatible = "qcom,idle-state-spc", "arm,idle-state";
++        entry-latency-us = <150>;
++        exit-latency-us = <200>;
++        min-residency-us = <2000>;
++      };
++    };
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.33.0
+
