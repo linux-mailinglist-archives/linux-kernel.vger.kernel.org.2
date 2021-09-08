@@ -2,66 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D652403C65
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652D4403C69
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349568AbhIHPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:19:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235940AbhIHPTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:19:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED4560F6C;
-        Wed,  8 Sep 2021 15:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631114316;
-        bh=QYYCrb5xUdDBqMUZgOy0J9e3LMwjGDvCfYmNV5Vqq1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZN8zXn3QFbidhhCFiQ/x6qjt630vQckN7G45WnmaBd2xpKQrIDUZ8g8eTfBsFfZYr
-         hqOwlLzOOt7wOe1Pr1M8ZQ6svb6imREHq0sRN/MO7dhscORhqh3oJ5Q7L8IJmYE0ha
-         3UvAgG1mu90ni7m5Jbl4iWqeuJWHsFctSeMDEp/a/OiCe9j3uTwXQUZItuD2WS6t23
-         z2z9j58Pu2AM5aRg6eF9AWxxSR/uqqRpayJOADQy2Z44Q6EyfHTwj0qflPBXrH1/gq
-         nxiCIVjBkbm792Ksso0Md6Ersi5CbnC8xeV9KSa7vUgeMLamqx5ceNP6DCn/5duy+Q
-         ljGycoH/U2fNw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EA2D34038F; Wed,  8 Sep 2021 12:18:30 -0300 (-03)
-Date:   Wed, 8 Sep 2021 12:18:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf dlfilter: Add dlfilter-show-cycles
-Message-ID: <YTjURgpxXEFGMn2Y@kernel.org>
-References: <20210906160850.22716-1-adrian.hunter@intel.com>
- <7bee95a7-fa31-a801-8068-80c63ba6ccfe@linux.intel.com>
- <b8b1d870-9db2-4b0f-7138-c139e1ef878b@intel.com>
+        id S1349584AbhIHPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhIHPVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:21:36 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20581C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:20:29 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso3428697ots.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OZ2P9mw3evJ0P/P4xOie79/DsuG4DubNBUve1ewYQ78=;
+        b=iHH0KMk+8RMxSZ9tk2OCzj07ySk6EOxzZLq1IU/f8ptYk4eWvbW5lL1rco4I+WLD6Z
+         llGmb0VyUwqJRCQZq6y1AxvYW6i/RqNx96pDOYCHXCro4R6GssOj5m5ELxQTLqfbnul7
+         2BhPFjP1yYykUEojCKqtPk2e4VEzwuxytb//SuMxCCfiOdIwkivLdmCJ4PeIra02Woe3
+         Z6Hw8YjSgVF371GmFia0IMMAzseDloXzERhqveZSS6AvVH+Jqkn+taLdzFJ5aOVu1ADh
+         p1/AUYyXCa6MiVPG6UhcyOpA/5rgeoTlcio4iyKppypq0ji/4ed9l3mWpv8aDw5SaUXz
+         x94w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=OZ2P9mw3evJ0P/P4xOie79/DsuG4DubNBUve1ewYQ78=;
+        b=1z6Csbcptogy1izwGdaohKOB5zrFHNJrNxYW/m0gFPNCfxvwnGuAd9LPogU7vMSaWS
+         viUHAffNsRB2vyQlk9d4JfNhr15O+qeO3/xXA/mxJtmz9iD9lMOZdtEYMnL6N/FMrd5O
+         w88eqy4F8Y5hv5QhGbauuP3TPOQ6hTO8yyvVNTzQJrq5HRmulOX090uimlUrmQfV+s3h
+         cHu/bdxnWwXkVmv+bS8xPvnppfMWbzfm5T7ItwoZSdrunoYwsRFs4CWamZTvTP3JZnYM
+         51uBrv7UuR/3/LMHU3jnZkrsQXOCditx/ooYPbgeH0se3wckVi0/BQskx1Q11xhb8/aw
+         7UwQ==
+X-Gm-Message-State: AOAM530n6Rt8hFnfet1yQz3e/J7uuLerTtrdasc1zUHkbDUZbqaAjrs2
+        w6SjUMNjUCYimjRlPgwmS7w=
+X-Google-Smtp-Source: ABdhPJykU+BnKFSX2H2eEnY5PXaRYHIodrFLISD1QZbpXa9HVxp9M4KhIjMn/qQWqR66X/w4qbACPA==
+X-Received: by 2002:a9d:4605:: with SMTP id y5mr3465775ote.171.1631114428478;
+        Wed, 08 Sep 2021 08:20:28 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l3sm489631otd.79.2021.09.08.08.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 08:20:27 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 8 Sep 2021 08:20:26 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] nds32/setup: remove unused memblock_region variable in
+ setup_memory()
+Message-ID: <20210908152026.GA389642@roeck-us.net>
+References: <20210712125218.28951-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b8b1d870-9db2-4b0f-7138-c139e1ef878b@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210712125218.28951-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 07, 2021 at 10:06:03AM +0300, Adrian Hunter escreveu:
-> On 7/09/21 5:54 am, Andi Kleen wrote:
-> > On 9/6/2021 9:08 AM, Adrian Hunter wrote:
-> >> Add a new dlfilter to show cycles.
+On Mon, Jul 12, 2021 at 03:52:18PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> kernel test robot reports unused variable warning:
+> 
+> cppcheck possible warnings: (new ones prefixed by >>, may not real
+> problems)
+> 
+> >> arch/nds32/kernel/setup.c:247:26: warning: Unused variable: region
+> >> [unusedVariable]
+>     struct memblock_region *region;
+>                             ^
+> 
+> Remove the unused variable.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> >> Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
-> >> from IPC information, and printed together with the change since the last
-> >> print, at the start of each line.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> > Thanks! An example how to use it would be nice 
- 
-> I started looking at making an example and noticed that this approach
-> does not work very well because the IPC cycle count only increases when
-> the IPC is output which (for CYC accurate mode) is only happens when a
-> CYC packet is output that corresponds to the current sample.  Seems like
-> this needs a re-think, sorry.
+This is now fatal.
 
-Ok, will wait then. And this shows part of the value of this, checking
-if it works as expected :-)
+arch/nds32/kernel/setup.c: In function 'setup_memory':
+arch/nds32/kernel/setup.c:247:26: error: unused variable 'region'
 
-- Arnaldo
+Anyone care to apply it ?
+
+Guenter
+
+> ---
+>  arch/nds32/kernel/setup.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/nds32/kernel/setup.c b/arch/nds32/kernel/setup.c
+> index 41725eaf8bac..b3d34d646652 100644
+> --- a/arch/nds32/kernel/setup.c
+> +++ b/arch/nds32/kernel/setup.c
+> @@ -244,7 +244,6 @@ static void __init setup_memory(void)
+>  	unsigned long ram_start_pfn;
+>  	unsigned long free_ram_start_pfn;
+>  	phys_addr_t memory_start, memory_end;
+> -	struct memblock_region *region;
+>  
+>  	memory_end = memory_start = 0;
+>  
+> 
+> base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+> -- 
+> 2.28.0
+> 
