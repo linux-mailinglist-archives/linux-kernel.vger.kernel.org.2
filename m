@@ -2,48 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F6B403C11
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1E5403C12
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352001AbhIHPAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59216 "EHLO mail.kernel.org"
+        id S1352017AbhIHPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351929AbhIHPAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351930AbhIHPAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Sep 2021 11:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 946FB61176;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C39A61104;
         Wed,  8 Sep 2021 14:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631113142;
-        bh=I9nRCiQVEaw8EMBn5XYRpxUoWQZ4SY7CJXtl/LWJAoI=;
+        bh=ki4td2MFWNbZVRLxp5SDjFPg8foyU6N+QHzIjpS9V0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s6LAHJt5xWJXpN07aWvZO3sjC9t8KEqalsjJyNJ8VVUDLuzqaibDLwkIcbhXc9UMT
-         TF4mLT0q2e6KySMk8Zo+/HYNbf2KZwwnOWlN3AaE8UOIMZUEgXT952ws/TsOxJcbJE
-         aIIHxb8Glx1PTcJk9lvbGbF08JcBPuwMrL8b8cVq/56RScimnA/uwzMPjttm0DEmYb
-         NQLiGFl+5CDhvhKegBNwAZK1UuD0lUp0CAeGD12ZCbgP2JaHaAkGh3MleLU6YJcsY/
-         bpkFdvDzHU2aHe5Q7Hivc/IKFArBmfYLI2kTN+FfvTixJc5I4X9oKdhxsu7IafXfzE
-         HbtZ/drai+QEA==
+        b=gmKJL9h7ewxp3XpCKCYyQTuflGoQ2yxGFAvLZJGi6HGhDYMsu5eOSVKSGfu5U8A3p
+         c4RK2UV80jUGY9L+GyFqrEXL0+Z6z9ahiUd/DaX1tDMhV9rm+9htu7m2fy2HUCsDKP
+         SJFioRELBcvDRA+gzDvLGF7wg6F5glPkprb7jq2twPdAOPPLJIGADsD1l/z2eN6xbP
+         uzZTXfZqEL5/6zEXaCOqeEWGGIHVkqpQSzYAq9RJ6KSVAub/eLRdXbqUhlbbyxkbRg
+         UwQbmylybRK+QDSgcOPqvd8Pq4Fb1X0oBdHssRGsZ8DQ+XqYf4HsNzre5JJqGuW2pw
+         KRkCm/bBZHUgw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mNz2S-006r45-VW; Wed, 08 Sep 2021 16:59:00 +0200
+        id 1mNz2T-006r4A-0Q; Wed, 08 Sep 2021 16:59:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg KH <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Raphael Gianotti <raphgi@linux.microsoft.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        THOBY Simon <Simon.THOBY@viveris.fr>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 8/9] ABI: security: fix location for evm and ima_policy
-Date:   Wed,  8 Sep 2021 16:58:55 +0200
-Message-Id: <27f568bf8973afb9c7aa023e96dcd4f50b07a188.1631112725.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 9/9] ABI: sysfs-module: document initstate
+Date:   Wed,  8 Sep 2021 16:58:56 +0200
+Message-Id: <9c7686a613ebab34f9717472e564c595905c1607.1631112725.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631112725.git.mchehab+huawei@kernel.org>
 References: <cover.1631112725.git.mchehab+huawei@kernel.org>
@@ -54,44 +48,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The What: definitions there are wrong, pointing to different
-locations than what's expected.
+Despite being an old ABI, present on all modules, its documentation
+is missing. Add it, based on the original commit.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/evm        | 4 ++--
- Documentation/ABI/testing/ima_policy | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/ABI/testing/sysfs-module | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/ABI/testing/evm b/Documentation/ABI/testing/evm
-index 553fd8a33e56..4b76a19b7bb4 100644
---- a/Documentation/ABI/testing/evm
-+++ b/Documentation/ABI/testing/evm
-@@ -1,4 +1,4 @@
--What:		security/evm
-+What:		/sys/kernel/security/evm /sys/kernel/security/*/evm
- Date:		March 2011
- Contact:	Mimi Zohar <zohar@us.ibm.com>
- Description:
-@@ -93,7 +93,7 @@ Description:
- 		core/ima-setup) have support for loading keys at boot
- 		time.
+diff --git a/Documentation/ABI/testing/sysfs-module b/Documentation/ABI/testing/sysfs-module
+index 88bddf192ceb..08886367d047 100644
+--- a/Documentation/ABI/testing/sysfs-module
++++ b/Documentation/ABI/testing/sysfs-module
+@@ -41,6 +41,13 @@ KernelVersion:	3.3
+ Contact:	Kay Sievers <kay.sievers@vrfy.org>
+ Description:	Module size in bytes.
  
--What:		security/integrity/evm/evm_xattrs
-+What:		/sys/kernel/security/*/evm/evm_xattrs
- Date:		April 2018
- Contact:	Matthew Garrett <mjg59@google.com>
- Description:
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index 5c2798534950..2d84063d196f 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -1,4 +1,4 @@
--What:		security/ima/policy
-+What:		/sys/kernel/security/*/ima/policy
- Date:		May 2008
- Contact:	Mimi Zohar <zohar@us.ibm.com>
- Description:
++What:		/sys/module/*/initstate
++Date:		Nov 2006
++KernelVersion:	2.6.19
++Contact:	Kay Sievers <kay.sievers@vrfy.org>
++Description:	Show the initialization state(live, coming, going) of
++		the module.
++
+ What:		/sys/module/*/taint
+ Date:		Jan 2012
+ KernelVersion:	3.3
 -- 
 2.31.1
 
