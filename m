@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C362403F08
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BB9403F0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349718AbhIHSZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S1349810AbhIHSZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235768AbhIHSZJ (ORCPT
+        with ESMTP id S233322AbhIHSZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:25:09 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E746EC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:24:00 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id t26so1867093uao.12
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:24:00 -0700 (PDT)
+        Wed, 8 Sep 2021 14:25:58 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2110EC061575;
+        Wed,  8 Sep 2021 11:24:50 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q26so4618606wrc.7;
+        Wed, 08 Sep 2021 11:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zg9SIKBAn9y4QkDFQZM1xH/JoxGqKi4pT4YDjZN4Piw=;
-        b=WQHbb84JlgXKfwH7sQnR/aoGf+ckXaxjTIaYQAmnQ5z7Y64cl9FZW/DFRdfEYCBsGo
-         suFOE4K2mf+U07/PW69LCfJFPhyssMoNPq5r2BXz9EshpsukG9UFHHI9pcnbSmjob64H
-         Gcp++yDBKbWL8wQC84oAMxjLIug6TS+50xk+vr0EThU2X70YBrdNyyuRPptO75h2hwR/
-         QmIYMheZvOllbkRQtgPdKVcPeSMcIIH3OhR54GyePZcuUtP03u2y4eaJL175ItfwHa55
-         nStsqxAjH/1kpPsI7vBjod4Gm6X3nfd5f1ZULOLC6HiK9QCNo/jaVZa48yLJM4AH4PNx
-         h9TQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FlE0qMHbL5+xBmP2RU91kwGqsR+DkDaJdTbdBQ5TmKk=;
+        b=o48JoJtHkBYjPAO44vHE1FRjZeflq+UFvLIUFRuK1vqw6gOsuLlMpBzWH0hQmIVvfw
+         tF9Y96/la7KKN6+zBA6ax4Ptwrw4SDNMgMettvE9Xewh+Jge7x2+dN2VCE0Y/B2CpB4u
+         jSnvc5EM21arIvJ0lM/RjaZ9qdGYyWkfR3IGocHrkDfYLo9zDn4gz/jX0l9/gpwAQ4Kk
+         22cbe+e5TZ3nKqT27XZsz58S27CoTClzbNejH4iIw7miZKyI1EaldbpTEfr2lOtgv+Gd
+         pMoosNRfOEpLH814Y6XE/3mO1TNqqSL5yJMOWr79YNPgxyG3ulyjn3l4HasxK6OTlrjX
+         DA4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zg9SIKBAn9y4QkDFQZM1xH/JoxGqKi4pT4YDjZN4Piw=;
-        b=4njrnQ/3rkRrZ7OF+OURQEKrBqNN5XV0sdXEdOHL0MpMrwgrl8IwlPIdPJQVSEf9Qr
-         xAa/P/r1BZauDOHFgfK9s0/ZKvTc/gDdKXxbQ7wafvt57CfCdfuGvPufkLwhd4892imV
-         xaT0+pNMEAsvMUfgayZNjqHtp7dgbOzaS/+N4iHKU6/vfA39TBsMJZGijvQFdL9PoceL
-         5SGtcsrpFp713rWBw7eEJOqA88hrjUREKdplatCaP9VmTdPTZTYrcTY7G1ZXZ4gTohM2
-         +A+bLj27hxS1wJvcXjas6+7IAhzu+nSYd8LPV/77o4cC4/3EgRkR2gJMeOA4c5AB4ggj
-         C+mg==
-X-Gm-Message-State: AOAM533tQNjIVK8s0GIeiTH0C8v5VZQCRHhHMmVrJsUdOMujWYDB9+4h
-        1od97g+9KoTowF8yBjbg3GkXgGAPCm9oRdnd0lk=
-X-Google-Smtp-Source: ABdhPJyYdu6j4++txPRpFbBpuTODtEoxyqjt1ACaJFnBM2kkdvQtIwnc5JgNTy+n9Nu+7pYeb6tfISD90M1MjhGQUWI=
-X-Received: by 2002:a9f:3210:: with SMTP id x16mr3316782uad.135.1631125439676;
- Wed, 08 Sep 2021 11:23:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FlE0qMHbL5+xBmP2RU91kwGqsR+DkDaJdTbdBQ5TmKk=;
+        b=ZLlTQQHmq405lgHEOrcYlrRIwt8RCRS/peSOax56bs66L4VZLaWegNxBD/YxEe3h5C
+         8PzjVvxCdRldLz98+U39DG8i71ruBtp5biuoLnpqf+PH9OAwVdVeabOwFXtajgxGpeFm
+         nKdNrZNRr/e2fndxwX37YIU5Wgh+YpXkf9A37NXBl2kuwQgjyJSaF01cnmOuoaLiDuEU
+         G1XP/HMQ6QZb3x+gCwok6C2uveF9Rn6eSBjKaBv/pU8Q7Xlvctf6NHXYLGZqseg8Xr7c
+         SuYETTM4YiJT2F55i+rZUpxmfUYfKnor5wO6JfbwDCAiiSs5YbU/Tv4sck1IEH1cz0MP
+         PWrA==
+X-Gm-Message-State: AOAM531mtzguiMG7QrUwUt7MmA/Q25gQ2CTyarrsBv8PtYzClWmSShch
+        syMijsqKEdMKvJW4qc8UJlaHz5uw9a6xGQ==
+X-Google-Smtp-Source: ABdhPJwtC89X6xnx4xtVm673l7DLn0DTu6g4+HEMXMg8vrY94kM9EOD9wkdDHf52cV7Oh7FP9uExZg==
+X-Received: by 2002:adf:e606:: with SMTP id p6mr5619132wrm.231.1631125488779;
+        Wed, 08 Sep 2021 11:24:48 -0700 (PDT)
+Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id s14sm2580837wmc.25.2021.09.08.11.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 11:24:48 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        "open list:CSI DRIVERS FOR ALLWINNER V3s" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ondrej Jirman <megous@megous.com>
+Cc:     Ondrej Jirman <megous@megous.com>
+Subject: Re: [PATCH] media: sun6i-csi: Allow the video device to be open multiple times
+Date:   Wed, 08 Sep 2021 20:24:47 +0200
+Message-ID: <1694867.cU3HQo44PE@kista>
+In-Reply-To: <20210908105609.1823449-1-megous@megous.com>
+References: <20210908105609.1823449-1-megous@megous.com>
 MIME-Version: 1.0
-Received: by 2002:a1f:a797:0:0:0:0:0 with HTTP; Wed, 8 Sep 2021 11:23:58 -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uchenna <okeyyoyopa7@gmail.com>
-Date:   Wed, 8 Sep 2021 11:23:58 -0700
-Message-ID: <CAH8nkva=_KNihbTayuQ7EehHt6UnanYrxtNX=BndrmbxFn7ZsA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
-ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
-stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
-stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGC0YDQsNC9
-0LfQsNC60YbQuNGOINGBINC/0L7QvNC+0YnRjNGOINC90L7QstC+0LPQvg0K0L/QsNGA0YLQvdC1
-0YDQsCDQuNC3INCS0LXQvdC10YHRg9GN0LvRiywg0Lgg0YLQtdC/0LXRgNGMINGB0YDQtdC00YHR
-gtCy0LAg0LHRi9C70Lgg0L/QtdGA0LXQstC10LTQtdC90Ysg0LIg0JLQtdC90LXRgdGD0Y3Qu9GD
-DQrQvdCwINCx0LDQvdC60L7QstGB0LrQuNC5INGB0YfQtdGCINC90L7QstC+0LPQviDQv9Cw0YDR
-gtC90LXRgNCwLg0KDQrQotC10Lwg0LLRgNC10LzQtdC90LXQvCDRjyDRgNC10YjQuNC7INC60L7Q
-vNC/0LXQvdGB0LjRgNC+0LLQsNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIgMzUwIDAwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkA0KKNGC0YDQuCDRgdC+0YLQvdC4INC/0Y/RgtGM0LTQtdGB0Y/R
-giDRgtGL0YHRj9GHINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQKSDQuNC3LdC30LAg0LLQsNGI0LjR
-hSDQv9GA0L7RiNC70YvRhSDRg9GB0LjQu9C40LksDQrRhdC+0YLRjyDQstGLINC80LXQvdGPINGA
-0LDQt9C+0YfQsNGA0L7QstCw0LvQuC4g0J3Qviwg0YLQtdC8INC90LUg0LzQtdC90LXQtSwg0Y8g
-0L7Rh9C10L3RjCDRgNCw0LQg0YPRgdC/0LXRiNC90L7QvNGDDQrQt9Cw0LLQtdGA0YjQtdC90LjR
-jiDRgtGA0LDQvdC30LDQutGG0LjQuCDQsdC10Lcg0LrQsNC60LjRhS3Qu9C40LHQviDQv9GA0L7Q
-sdC70LXQvCwg0Lgg0L/QvtGN0YLQvtC80YMg0Y8g0YDQtdGI0LjQuw0K0LrQvtC80L/QtdC90YHQ
-uNGA0L7QstCw0YLRjCDQstCw0Lwg0YHRg9C80LzRgyDQsiDRgNCw0LfQvNC10YDQtSAzNTAgMDAw
-LDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDRh9GC0L7QsdGLINCy0YsNCtGA0LDQt9C00LXQ
-u9C40LvQuCDRgdC+INC80L3QvtC5INGA0LDQtNC+0YHRgtGMLg0KDQrQryDRgdC+0LLQtdGC0YPR
-jiDQstCw0Lwg0L7QsdGA0LDRgtC40YLRjNGB0Y8g0Log0LzQvtC10LzRgyDRgdC10LrRgNC10YLQ
-sNGA0Y4g0LfQsCDQsdCw0L3QutC+0LzQsNGC0L3QvtC5INC60LDRgNGC0L7QuSDQvdCwDQozNTAg
-MDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDQutC+0YLQvtGA0YPRjiDRjyDQvtGB0YLQsNCy
-0LjQuyDQtNC70Y8g0LLQsNGBLiDQodCy0Y/QttC40YLQtdGB0Ywg0YEg0L3QuNC8DQrRgdC10LnR
-h9Cw0YEg0LHQtdC3INC/0YDQvtC80LXQtNC70LXQvdC40Y8uDQoNCtCd0LDQt9Cy0LDQvdC40LU6
-INCx0YDQtdC90LTQuCDRgdC+0LvQvtC80L7QvQ0KDQrQn9C+0YfRgtCwOiBzb2xvbW9uYnJhbmR5
-Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3QviDQv9C+0LTRgtCy0LXR
-gNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y46
-DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19fX19fX19fX19fX19fX19f
-DQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtGP
-INGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K0KLQstC+0Lkg0LLQvtC3
-0YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDRgNC+0LQg0LfQ
-sNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDQvdC+0LzQtdGAINC8
-0L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19fX19fX19fX19fX19fX19f
-Xw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC10YHQu9C4INCy0Ysg0L3Q
-tSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQuNC90YTQvtGA0LzQsNGG
-0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQ
-vtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC70LbQtdC9INCx0YvRgtGM
-INGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/0YDQvtGB0LjRgtC1INC1
-0LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw0L3QutC+0LzQsNGC0LAg
-0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Qu9C70LDRgNC+0LIg0KHQ
-qNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQu9GPINCy0LDRgS4NCg0K
-0KEg0L3QsNC40LvRg9GH0YjQuNC80Lgg0L/QvtC20LXQu9Cw0L3QuNGP0LzQuCwNCg0K0JMt0L0g
-0YPRh9C10L3QvdCwINC40LvQvtCx0LgNCg==
+Hi Ondrej!
+
+Dne sreda, 08. september 2021 ob 12:56:09 CEST je Ondrej Jirman napisal(a):
+> Previously it was possible, but a recent fix for uninitialized
+> `ret` variable broke this behavior.
+> 
+> v4l2_fh_is_singular_file() check is there just to determine
+> whether the power needs to be enabled, and it's not a failure
+> if it returns false.
+> 
+> Fixes: ba9139116bc0538 ("media: sun6i-csi: add a missing return code")
+
+Only 12 characters for SHA-1 ID
+
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+
+Otherwise:
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
+
