@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F93D4037C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F544037C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348632AbhIHKXP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 06:23:15 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:40846 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345299AbhIHKXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:23:03 -0400
-Received: by mail-vs1-f43.google.com with SMTP id d6so1546877vsr.7;
-        Wed, 08 Sep 2021 03:21:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8g1MXx8tPZJgEtHuWN2FTujyN4+VHT0fVsMeMam6ogc=;
-        b=kcED//ERt5trE8d7hnPV7Qcgck0m/iuCWcHpc8bGLMS5U7rj1GS0G+dB5xUN33P+Dt
-         jo5kdiQKuznjnOMk8wn3lyATBtPRBT03MC7a1UfFCGQH+p0Nyh08OmpYUPwcWeJ4sKG8
-         StdQKQkc3Dy0eBgek3n/WD6ctZ899CyH0mNLp1ncbtBAgMbFuNfHKEiUV6/mQmgNJenR
-         TGRiGi/DO2Q2FQl8bOnjJ5BNJhP4XpeHqz9VaUMSurXjp/EyNQO0IfPWvGliSrjWpYxt
-         ChQV9S6YKeUi2smrMgNVClWNYDF6giiXl8mgp0xcuQpxFyMVL72l9/NdNv/GiJ8oYYE8
-         lalw==
-X-Gm-Message-State: AOAM532RL6BbbMVs+PIcHWTwMsnWTM+bKrTCs7V65oxMY80af1s230Mg
-        JMLhuEbODwlNX6qpglBHydd8X5PgQQl7wPiFk6c=
-X-Google-Smtp-Source: ABdhPJwesct4erqU/THhxBqimdnSW2qDvyqSXH/Z9bFCp2dBvUaImTAJYv/+9mlsSscBCDOvzxRNjcaQ/XqI3i97b5g=
-X-Received: by 2002:a05:6102:b10:: with SMTP id b16mr1287001vst.41.1631096515454;
- Wed, 08 Sep 2021 03:21:55 -0700 (PDT)
+        id S1348756AbhIHKYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:24:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345299AbhIHKYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:24:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 725CB6113A;
+        Wed,  8 Sep 2021 10:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631096617;
+        bh=65QMXzF5Bvk24nU6duUdL3mKrm5mXPSa7dnF186YHww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c9zDqRwY+O9KjVcmp2SLPbQ5o5FikTMALXWNjOOVrbEzZk7VGnTW0bmDb7KyZDzjb
+         gYuD0RQrXuTF2GR/Mzhf5DHFocLhU0X60+FBPShm2MEDcTdw+a7Vjfe4riFpKajZqg
+         9bW1E+IFEtTwUSpxC0acEPXuFpwyGQn9nZjc2MLtL1EPwds1/VpaXmTrovR4ICv6D5
+         VqEgqfibEWt/M+h/Pb/IUg1w26VswhxIrYUvwWN92Bbtkd6xB5qdEajoToJTk74ZvT
+         Gcd3iKAjyHfY8rKTi8KtHbl19Ho+eOHm/ntQ5W7NT3tNlexafp53qFtDLnl9OrcYTN
+         pije68ZtmChXQ==
+Date:   Wed, 8 Sep 2021 11:23:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        tiwai@suse.com
+Subject: Re: [PATCH] ASoC: dt-bindings: lpass: add binding headers for
+ digital codecs
+Message-ID: <20210908102300.GA4112@sirena.org.uk>
+References: <1630934854-14086-1-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n53Zj3pp4EJ_f_kXhRm3EW=od83UO44qt91P37waEq-z4Q@mail.gmail.com>
+ <755e99d3-4d72-3292-a5da-ad3d6045038e@codeaurora.org>
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net> <20210908042838.GA2585993@roeck-us.net>
- <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk> <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
- <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com> <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
-In-Reply-To: <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 8 Sep 2021 12:21:44 +0200
-Message-ID: <CAMuHMdU5SWFVvMkuEWY5hvv4aro=cGogGi-Xw+Qtden-1m7fOQ@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Martin Sebor <msebor@gcc.gnu.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+In-Reply-To: <755e99d3-4d72-3292-a5da-ad3d6045038e@codeaurora.org>
+X-Cookie: Should I do my BOBBIE VINTON medley?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 11:50 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Wed, Sep 8, 2021 at 9:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > On 9/7/21 9:48 PM, Al Viro wrote:
-> > > > On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
-> > > >>      memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
-> > > >>
-> > > >> but that just seems weird. Is there a better solution ?
-> > > >
-> > > > (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
-> > > > ioremap(), rather than casting explicit constants?
-> > >
-> > > Typecasts or even assigning the address to a variable does not help.
-> > > The sanitizer function can not be static either.
-> >
-> > So it can only be fixed by obfuscating the constant address in a
-> > chain of out-of-line functions...
-> > How is this compiler to be used for bare-metal programming?
->
-> I reported this as a gcc bug when I first saw it back in March:
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
->
-> Martin Sebor suggested marking the pointer as 'volatile' as a workaround,
-> which is probably fine for bare-metal programming, but I would consider
-> that bad style for the kernel boot arguments. The RELOC_HIDE trick is probably
-> fine here, as there are only a couple of instances, and for the network
-> driver, using volatile is probably appropriate as well.
 
-A related one, I guess, is:
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    arch/m68k/include/asm/string.h:72:25: error: argument 2 null where
-non-null expected [-Werror=nonnull]
-       72 | #define memcpy(d, s, n) __builtin_memcpy(d, s, n)
-          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-    drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c:387:4:
-note: in expansion of macro ‘memcpy’
-      387 |    memcpy((char *)kmap(pages[0]) +
-          |    ^~~~~~
+On Wed, Sep 08, 2021 at 10:08:33AM +0530, Srinivasa Rao Mandadapu wrote:
+> On 9/8/2021 1:54 AM, Stephen Boyd wrote:
+> > Quoting Srinivasa Rao Mandadapu (2021-09-06 06:27:34)
 
-Seen with my sun3-allmodconfig build.
-As NO_DMA=y, dmam_alloc_coherent() returns NULL, and the compiler
-discovers that g_fragments_base is never assigned to and thus must
-be NULL.
+> > > +#define LPASS_CDC_DMA_VA0 8
+> > > +#define LPASS_MAX_PORTS 9
 
-Gr{oetje,eeting}s,
+> > Do we need LPASS_MAX_PORTS in the binding?
 
-                        Geert
+> Yes.=A0 based on this creating array of streams in machine driver. So to =
+make
+> upper limit introduced this macro.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+That's saying it's useful to have it in the code, do we need it in the
+binding itself though?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE4jwMACgkQJNaLcl1U
+h9Bjmwf/YaSV9rxdXPdpDXlgsyTS/gQcTJBtNOBq5BxQcVcRXcq4GmFnz8V4vcQ4
+cTp1TOa0f/j3XMd0xQrmzpwJPjxNJSZ0bT2kNH0totGI/AQje1F/ecFw313x6yLO
+bzjAhAw3JyEK268J+QK4hzYS26+mP2t/a9itRGdKqG+zDkBCERK8Ydf14CH0i1pp
+x1s5hSyad+KTsBRj3shF1TyP0V+JouH9MycZ2dJKRsL8TswhtT1jBYFQ4/4wamZx
+7YLNbhh6tuvk2oWmZuSr84N30/3BAXS4ISZMl1hw8qTLe4AIJu16DPXuMlmkAFz8
+SRQMBAXIWvXWzzDhJlEGvMRXPjeEXQ==
+=cvim
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
