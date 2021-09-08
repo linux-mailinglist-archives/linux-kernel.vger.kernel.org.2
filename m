@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1CC4038A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6705B4038AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351441AbhIHLVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349207AbhIHLVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:21:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 69A5F61163;
-        Wed,  8 Sep 2021 11:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631100005;
-        bh=h5898k9wyHKn5WFZVxWlI2b2qlF+887eYsHc+DWOrNY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Bdzi1HR8NuCwS5lswFMs1lCfnDwtmUhsF+JazfGq+QubKT6ppisy85aIZvXiV5T24
-         ihRuNbxZjTzgdTNdSFXUGWviwXn4F8D/ZoJT4Iv1yVZ+/rGf1asAlZHv+Yw/bCx5L+
-         dwnnBbeZmBFmQwPHQHzoyoO2FPNV7rJYnOfDrqmzLJUsfXMxpPROacITlHIJKq0dPS
-         RWYt2/7OnUtYCtRcg90KGVOYigBWU5c5tTNQIB8zTzFmaRKgTBZrwCYXwfmXfEIBKC
-         0CWR1rMDrJY4/lJuKRlybEPsKRKGjqLy391acD2For4s1rJPDHCn6YCYf10XQWSMlJ
-         6IObINUkmqiew==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5E9C760A24;
-        Wed,  8 Sep 2021 11:20:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1349104AbhIHLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:22:45 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32914 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351390AbhIHLWl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:22:41 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 188BLHtY004258;
+        Wed, 8 Sep 2021 06:21:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631100077;
+        bh=tQ/oRH0/DOAVAVT9DA6HnrABsHYorEoEFqH+SpdThGA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=VgIP4l5OdFTSp9xHKJ8kx0uOHSIhye0fvYqNqyPkwKfADE8bceIJ6f2YnXyzqTlyM
+         7DvRhCha9ukSaAfD4gNffG8JbFWZw0DQjbL7sV3UjAnC/oBoeec7+kXjxWaGeK5KTV
+         zWLcRR6F02bUlhoiFz7Lm0gqZggb5lEZnEJjMXEI=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 188BLHwU121750
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 8 Sep 2021 06:21:17 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
+ Sep 2021 06:21:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 8 Sep 2021 06:21:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 188BLGcW086516;
+        Wed, 8 Sep 2021 06:21:17 -0500
+Date:   Wed, 8 Sep 2021 16:51:15 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Milind Parab <mparab@cadence.com>,
+        Konrad Kociolek <konrad@cadence.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v3 2/2] spi: cadence: add support for Cadence XSPI
+ controller
+Message-ID: <20210908112113.smnwmayjb3jit3eg@ti.com>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499858-20456-1-git-send-email-pthombar@cadence.com>
+ <20210903185653.7vrfn4qfzvuiaiq2@ti.com>
+ <CY4PR07MB275737A008CBB58C4B108D2FC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: ipa: initialize all filter table slots
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163110000538.4441.10523758645271949269.git-patchwork-notify@kernel.org>
-Date:   Wed, 08 Sep 2021 11:20:05 +0000
-References: <20210907170554.399108-1-elder@linaro.org>
-In-Reply-To: <20210907170554.399108-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, pkurapat@codeaurora.org,
-        avuyyuru@codeaurora.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        evgreen@chromium.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CY4PR07MB275737A008CBB58C4B108D2FC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue,  7 Sep 2021 12:05:54 -0500 you wrote:
-> There is an off-by-one problem in ipa_table_init_add(), when
-> initializing filter tables.
+On 08/09/21 07:27AM, Parshuram Raju Thombare wrote:
+> >Depends on SPI_MEM as well.
 > 
-> In that function, the number of filter table entries is determined
-> based on the number of set bits in the filter map.  However that
-> count does *not* include the extra "slot" in the filter table that
-> holds the filter map itself.  Meanwhile, ipa_table_addr() *does*
-> include the filter map in the memory it returns, but because the
-> count it's provided doesn't include it, it includes one too few
-> table entries.
+> Ok
 > 
-> [...]
+> >I commented on this last time around as well. This does not look right
+> >at all. A SPI MEM based driver should *not* need to know anything about
+> >the subsystem driving it. That is the entire point of the API.
+> >
+> >The controller seems to be able to extract the read and write opcodes
+> >from the SFDP on its own since you don't pass in that information to
+> >cdns_xspi_nor_read(). It looks like it is tied very heavily to a NOR
+> >flash, and I am not sure if it can really be used with a NAND flash, or
+> >something else entirely.
+> >
+> >Which makes me wonder how we should handle controllers like these. I
+> >don't think they fit in very well with the SPI MEM model, since they
+> >can't execute arbitrary SPI MEM commands very well. At the same time we
+> >are trying to get rid of mtd/spi-nor/controllers. Dunno...
+> >
+> >Mark, Tudor, Vignesh, any ideas?
+> 
+> Ok, then for now I will drop ACMD PIO mode and use only STIG mode.
+> In STIG mode driver configures bus width and clock edge mode for
+> command, address and data for each operation. 
 
-Here is the summary with links:
-  - [net] net: ipa: initialize all filter table slots
-    https://git.kernel.org/netdev/net/c/b5c102238cea
+But it would reduce performance by a lot, no? I think we should try to 
+figure out how we can accomodate controllers like this before resorting 
+to using the slower modes.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
