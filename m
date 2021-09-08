@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8D0403B71
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290AB403B7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351877AbhIHO1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:27:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12991 "EHLO m43-7.mailgun.net"
+        id S1351912AbhIHO2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:28:40 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:11649 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhIHO1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:27:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631111155; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=C6lHs67nTzd74F8ZbiUGwTy6nz9NFd346v1mgtK8fzM=; b=r5ohkV5LfCuGHdsPorhamQK12+rKYx8EcoP2kwQy/yLpYtrI3vajD4hFQ71qoCT9yhUAEjkB
- iXFNHkJOiOXR3ghYAmWsJa8/zuejCFjqKXyS2if/L5j+s9vakdfPpkrw9b0Nbq5uJP6Vkksd
- v9oh/+sjUd8rwRliRzfgdHf14dM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6138c7f2506910c01bec3bda (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 14:25:54
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71C4CC43618; Wed,  8 Sep 2021 14:25:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51650C4338F;
-        Wed,  8 Sep 2021 14:25:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 51650C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] ASoC: qcom: lpass-platform: Reset irq clear reg post handling interrupts
-Date:   Wed,  8 Sep 2021 19:55:35 +0530
-Message-Id: <20210908142535.31106-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S229600AbhIHO2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 10:28:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1631111251;
+  x=1662647251;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ugl/3fZjTq1MAbdm7p9tbvGhoiUfJnboZoK5ayOnx3Q=;
+  b=LZwABOvfs2trWAvoSVYLl7CU9PT7pPsNiz6kOrKdLjv5UpHBAzNGVRlf
+   q+gjUq8GdKKmBMCCoPN7lDjfmSjcrbHqyX7NZKOLrM8qHFDud6DywPwFZ
+   Ou/oET2Fvs6jQPi4EsYBpBJ9m9vZLiC+wkGRu7w7I2i64QtzFGuQ3xAqo
+   zQurfCFPHwXGDRwfZ0GqZ9DPOQgA3F0OLAVHvodbPDKdX0Jd+lrase5RR
+   YRvgzZaIE/K6eugGr433ESfKmTauMmoTki0kVneWwl17RugcFhtazwR0V
+   U/rdLFBQgQIe45QzF2A/p3cyHQmgKgyYoGJyeJXbP7uaIP/x+T3Pmz76q
+   g==;
+Date:   Wed, 8 Sep 2021 16:27:29 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Hillf Danton <hdanton@sina.com>, <sfrench@samba.org>
+CC:     Bruno Goncalves <bgoncalv@redhat.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xiong Zhou <xzhou@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: possible circular locking dependency detected:
+ compound_send_recv+0x189/0x910 [cifs] vm_mmap_pgoff+0x85/0x160
+Message-ID: <20210908142729.GA6873@axis.com>
+References: <CA+QYu4rS+UkLUS-BDwNAOaMW2nQ4JY3V0OqdnLe3=zNoTrDDYQ@mail.gmail.com>
+ <20210827082746.2490-1-hdanton@sina.com>
+ <20210828020236.2679-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210828020236.2679-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update interrupt clear register with reset value after addressing
-all interrupts. This is to fix playback or capture hanging issue in
-simultaneous playback and capture usecase.
+On Sat, Aug 28, 2021 at 04:02:36AM +0200, Hillf Danton wrote:
+> On Fri, 27 Aug 2021 15:27:24 +0200 Vincent Whitchurch wrote:
+> > On Fri, Aug 27, 2021 at 10:27:46AM +0200, Hillf Danton wrote:
+> > > 
+> > > Only if it is too difficult to fix 05946d4b7a73 ("cifs: Fix preauth hash
+> > > corruption") within cifs then fix the deadlock by replacing kthread_run()
+> > > with queue_work().
+> > 
+> > Perhaps I'm missing something, but would the lockdep complaint really go
+> > away without 05946d4b7a73?  cifs_alloc_hash() is called under the
+> > srv_mutex in other places (for example setup_ntlmv2_rsp()), so the
+> > 
+> > 	&tcp_ses->srv_mutex --> &cpuset_rwsem --> &mm->mmap_lock
+> > 
+> > chain would still exist, and compound_send_recv() takes srv_mutex before
+> > 05946d4b7a73 too, so &mm->mmap_lock -> srv_mutex would exist too.
+> 
+> Yes you are right. The key is mmap_lock here.
+> > 
+> > For cifs_alloc_hash() to be able to be called without the srv_mutex I
+> > guess it would have to be done when the tcp_ses is allocated.  That
+> > however would essentially be a revert of commit 95dc8dd14e2e84cc3ada
+> > ("Limit allocation of crypto mechanisms to dialect which requires").
+> 
+> It is more appreciated to have a fix within cifs.
 
-Fixes: 4f629e4b8705f ("ASoC: qcom: Add ability to handle interrupts per dma channel")
-
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes since v1:
-    -- Update comments Header information with fixes tag
-
- sound/soc/qcom/lpass-platform.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index f9df76d37858..1a0a4b0b1a03 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
- 		}
- 	}
- 
-+	rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST), 0x0);
-+	if (rv) {
-+		pr_err("error writing to irqstat reg: %d\n", rv);
-+		return IRQ_NONE;
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Yes.  I'm hoping someone else with more insight into the cifs code can
+see if there's another way to fix this in cifs or if it's safe to try
+and revert 95dc8dd14e2e84cc3ada.  Steve?
