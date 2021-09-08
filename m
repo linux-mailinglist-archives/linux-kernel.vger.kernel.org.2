@@ -2,111 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23FF4036DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C364036EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348422AbhIHJ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:28:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234476AbhIHJ2a (ORCPT
+        id S1347970AbhIHJde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:33:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15393 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346064AbhIHJd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:28:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631093242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WSMToU1uUMoHfun1y7dnDAkzWYwJfJzd2Z/oipy2Y5M=;
-        b=EZjChSDfqOGSpwFi3Mg7Ds3SWhdFwKa+iMKS3/Dtzio4Bfr13BcYPmkv+vvcK69vMKZBDn
-        H5p72MBDCX22XAWbfafNvkM+e0KfHQdYKseZpn8pBv3Z6a8MTYn5ANsutNRe4zWnTVIUtX
-        fNNkt8SgOniTXg1W2w0Ashm0OwFmTkY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-UyvgIATwOhGSYXk-KyBkjw-1; Wed, 08 Sep 2021 05:27:20 -0400
-X-MC-Unique: UyvgIATwOhGSYXk-KyBkjw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 862101023F4E;
-        Wed,  8 Sep 2021 09:27:19 +0000 (UTC)
-Received: from T590 (ovpn-12-207.pek2.redhat.com [10.72.12.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E50545D9DC;
-        Wed,  8 Sep 2021 09:27:11 +0000 (UTC)
-Date:   Wed, 8 Sep 2021 17:27:13 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH v4 2/6] nbd: convert to use blk_mq_find_and_get_req()
-Message-ID: <YTiB8TLQ7ZJWvS7Y@T590>
-References: <20210907140154.2134091-1-yukuai3@huawei.com>
- <20210907140154.2134091-3-yukuai3@huawei.com>
- <YThmhhI1/fZd29b1@T590>
- <e295605c-bc8e-cbb9-ca51-1355fdfc0264@huawei.com>
- <YThtq154oyROxBj9@T590>
- <2cfb6701-6e58-3e13-be85-472437a5b2ed@huawei.com>
+        Wed, 8 Sep 2021 05:33:28 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H4Gyp3fJmzR3hH;
+        Wed,  8 Sep 2021 17:28:18 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 8 Sep 2021 17:32:17 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 8 Sep 2021
+ 17:32:17 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
+CC:     <dave.jiang@intel.com>, <vkoul@kernel.org>,
+        <john.wanghui@huawei.com>
+Subject: [PATCH -next] dmaengine: idxd: Use list_move_tail instead of list_del/list_add_tail
+Date:   Wed, 8 Sep 2021 17:28:26 +0800
+Message-ID: <20210908092826.67765-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cfb6701-6e58-3e13-be85-472437a5b2ed@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 04:29:57PM +0800, yukuai (C) wrote:
-> On 2021/09/08 16:00, Ming Lei wrote:
-> > On Wed, Sep 08, 2021 at 03:37:06PM +0800, yukuai (C) wrote:
-> > > On 2021/09/08 15:30, Ming Lei wrote:
-> > > 
-> > > > > +put_req:
-> > > > > +	if (req)
-> > > > > +		blk_mq_put_rq_ref(req);
-> > > > >    	return ret ? ERR_PTR(ret) : cmd;
-> > > > 
-> > > > After the request's refcnt is dropped, it can be freed immediately, then
-> > > > one stale command is returned to caller.
-> > > 
-> > > Hi, Ming
-> > > 
-> > > It's right this patch leave this problem. Please take a look at patch 3
-> > > and patch 4, the problem should be fixed with these patches.
-> > 
-> > Not see it is addressed in patch 3 & 4, and it is one obvious fault in
-> > patch 2, please fix it from beginning by moving the refcnt drop
-> > into recv_work().
-> 
-> Hi, Ming
-> 
-> With patch 3 & 4:
-> 
-> if nbd_read_stat() return a valid cmd, then the refcnt should not drop
-> to 0 before blk_mq_complete_request() in recv_work().
+Using list_move_tail() instead of list_del() + list_add_tail()
 
-The valid cmd won't be timed out just between nbd_read_stat() and
-calling blk_mq_complete_request()?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/dma/idxd/irq.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Yeah, the issue is addressed by patch 4, then please put 2 after
-3 & 4, and suggest to add comment why request ref won't drop to zero
-in recv_work().
-
-> 
-> if nbd_read_stat() failed, it won't be a problem if the request is freed
-> immediately when refcnt is dropped in nbd_read_stat().
-> 
-> That's why I said that the problem will be fixed.
-> 
-> BTW, if we move the refcnt drop into recv_work, we can only do that if
-> nbd_read_stat() return a valid cmd. If we get a valid rq and failed in
-> the following checkings in nbd_read_stat(), it's better to drop the
-> refcnt in nbd_read_stat().
-
-The usual pattern is to drop the refcnt on when the object isn't used
-any more, so it is perfectly fine to hold the ref until that time.
-
-
-Thanks,
-Ming
+diff --git a/drivers/dma/idxd/irq.c b/drivers/dma/idxd/irq.c
+index ca88fa7a328e..79fcfc4883e4 100644
+--- a/drivers/dma/idxd/irq.c
++++ b/drivers/dma/idxd/irq.c
+@@ -221,8 +221,7 @@ static void irq_process_work_list(struct idxd_irq_entry *irq_entry)
+ 
+ 	list_for_each_entry_safe(desc, n, &irq_entry->work_list, list) {
+ 		if (desc->completion->status) {
+-			list_del(&desc->list);
+-			list_add_tail(&desc->list, &flist);
++			list_move_tail(&desc->list, &flist);
+ 		}
+ 	}
+ 
+-- 
+2.17.1
 
