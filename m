@@ -2,205 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A87F40401A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D37340401C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 22:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352130AbhIHUPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 16:15:07 -0400
-Received: from ms.lwn.net ([45.79.88.28]:38650 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233179AbhIHUPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 16:15:06 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 42B986173;
-        Wed,  8 Sep 2021 20:13:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 42B986173
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1631132038; bh=1i/9rlpqoBrStc2V73h10zvqo04vsDO8asoz6GY9RI4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GLNnsLSBrfpZeb8ky/BwLxgnZlhs8610clxc/3qjOvH4db1NWkYaGM6BJYgD9MrF4
-         iAsMK06tSNiCFpmviiNHc1LMHDY5jiNYk4U5cGjtqn/z0oRwGyRlOtv0GdD8FtiFTY
-         z5PqQ+UgouO4ql204PfDfAIbqlo1lExm9lJI9Rpapt4Yh48AzKc0x3OKdIEJAWzFQN
-         e6S2tsZswUIh8MhBuEmyWL4eWRrwuTsVIni/IKv2ImNcWJVj7Q4J6ljxUL88Q9Y6Uv
-         v+8BXORrl/vBCrQcw4eki48g48P2Ocs3v15TYmbgYu/g8dUKaFy0QvQ+quDagp++1D
-         kZ+kNxF/D/CMA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [GIT PULL] More documentation changes for 5.15
-Date:   Wed, 08 Sep 2021 14:13:57 -0600
-Message-ID: <87ilzaq0ze.fsf@meer.lwn.net>
+        id S1347420AbhIHUP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 16:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235986AbhIHUPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 16:15:55 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE0BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 13:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=EWemu83n5pDQ6Fv4EKaY23k23/nR2hurW+tYi5vPqII=; b=HC4AqQEGu7o+TVPDwx8Q/uiWuc
+        FgiNTH1RLcIytFDJ2hGfcfnEkrop2p46mxnbXgHkmv1BOnydpVI6D9NbfzzTjNXtf9kfbpM5rWYbt
+        6FlPzu5WRhgjcHP7SaGczbRHEpZXrjTxEllS8/7k70qKbwz3M1HBv0mApIh8TbdczniaKRtZbEUwP
+        q2ZGHE99U0pWrAqBp82cuRU/j93YAaOhe/JvWPdQ5vy9NXP9y/3zll2YJOwjLNE/W4AuqveVsr5Mg
+        yIEkeul+jvw8A3qYTQ9Kp+ZKfPPHQ12VtQrFmDhZWW6g/R4uWho3s7A5ICkunbwV6MU1ACJpODOWr
+        48DIqciQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mO3xv-007Y1C-0h; Wed, 08 Sep 2021 20:14:39 +0000
+Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Codrin.Ciubotariu@microchip.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mirq-linux@rere.qmqm.pl,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>
+References: <20210707214752.3831-1-rdunlap@infradead.org>
+ <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
+ <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
+ <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
+ <a94c9788-0415-ffe3-9dd4-e6ed8d7ee96a@infradead.org>
+ <CAMuHMdWUcaC-xiW0UiVdTpx-R=e_i8eHSNc8JF_wqbcO6FynWw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f5cf4155-785f-9ec7-1f59-be5c92911b0a@infradead.org>
+Date:   Wed, 8 Sep 2021 13:14:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMuHMdWUcaC-xiW0UiVdTpx-R=e_i8eHSNc8JF_wqbcO6FynWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 37397b092e7f4b520a257aaafe83f868cd3d5e27:
+On 9/6/21 12:14 AM, Geert Uytterhoeven wrote:
+> Hi Randy,
+> 
+> On Fri, Sep 3, 2021 at 9:53 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> On 9/2/21 9:44 AM, Geert Uytterhoeven wrote:
+>>> On Thu, Jul 8, 2021 at 6:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>> On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
+>>>>> On 08.07.2021 00:47, Randy Dunlap wrote:
+>>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>>>>>
+>>>>>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+>>>>>> is not set, several ATMEL ASoC drivers select symbols that cause
+>>>>>> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
+>>>>>> needed. Dropping it eliminates the kconfig warnings and still builds
+>>>>>> with no problems reported.
+>>>>>>
+>>>>>> Fix the following kconfig warnings:
+>>>>>>
+>>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>>>>>      Selected by [m]:
+>>>>>>      - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+>>>>>>      - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>>>>>
+>>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+>>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>>>>>      Selected by [m]:
+>>>>>>      - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>>>>>
+>>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+>>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>>>>>      Selected by [m]:
+>>>>>>      - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>>>>>
+>>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+>>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>>>>>      Selected by [m]:
+>>>>>>      - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+>>>>>>      - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>>>>>
+>>>>>> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
+>>>>>> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
+>>>>>> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
+>>>>>
+>>>>> I am not sure about these fixes tags. As Alexandre mentioned, it looks
+>>>>> like the reason for HAS_DMA in the first place was the COMPILE_TEST with
+>>>>> m32r arch. I dig a bit, and, if any, I think we should use:
+>>>>> Fixes: eb17726b00b3 ("m32r: add simple dma")
+>>>>> since this commit adds dummy DMA support for m32r and seems to fix the
+>>>>> HAS_DMA dependency.
+>>>>
+>>>> Ah, I forgot to update the Fixes: tag(s).
+>>>>
+>>>> I won't disagree with your Fixes: suggestion (good digging) but
+>>>> I would probably have used 8d7d11005e930:
+>>>>     ASoC: atmel: fix build failure
+>>>> which is the commit that added "depends on HAS_DMA".
+>>>
+>>> M32r was not the only platform NO_DMA, so I guess the build would
+>>> have failed for the others, too (e.g. Sun-3).
+>>>
+>>> So the real fix was probably commit f29ab49b5388b2f8 ("dma-mapping:
+>>> Convert NO_DMA get_dma_ops() into a real dummy"), or one of the
+>>> related commits adding dummies to subsystems.
+>>
+>> Hi Geert,
+>> Does this mean that some other actions are needed here?
+>> E.g. revert + a different kind of fix?
+> 
+> While we can now compile drivers using DMA features on NO_DMA
+> platforms, thanks to the dummies, it does mean many of these drivers
+> cannot work on such platforms.  So I think it makes sense to replace
+> "depends on HAS_DMA" by "depends on HAS_DMA || COMPILE_TEST" if DMA
+> is not optional to the driver.
 
-  docs: sphinx-requirements: Move sphinx_rtd_theme to top (2021-08-12 09:15=
-:38 -0600)
+Hi Geert,
 
-are available in the Git repository at:
+Is this what you had in mind?  It seems to work with my (limited)
+testing.
 
-  git://git.lwn.net/linux.git tags/docs-5.15-2
+thanks.
 
-for you to fetch changes up to 7c5c18bdb656057cb76fabfa1a74b793ac49da35:
+---
+  sound/soc/atmel/Kconfig |    1 +
+  1 file changed, 1 insertion(+)
 
-  docs: pdfdocs: Fix typo in CJK-language specific font settings (2021-09-0=
-6 16:53:39 -0600)
-
-----------------------------------------------------------------
-Another collection of documentation patches, mostly fixes but also includes
-another set of traditional Chinese translations.
-
-Note that most of these changes were supposed to be in the first pull
-request.  I'm not really sure how that didn't happen; I blame switching
-between computers while an army of trained gorillas was loudly replacing
-all of the windows in my house.
-----------------------------------------------------------------
-Akira Yokosawa (1):
-      docs: pdfdocs: Fix typo in CJK-language specific font settings
-
-Alexander Aring (1):
-      Documentation: locking: fix references
-
-Alyssa Rosenzweig (1):
-      docs: kernel-hacking: Remove inappropriate text
-
-Changbin Du (1):
-      Documentation: in_irq() cleanup
-
-Chun-Hung Tseng (1):
-      Documentation: Update details of The Linux Kernel Module Programming =
-Guide
-
-Hu Haowen (3):
-      docs/zh_TW: add translations for zh_TW/arm64
-      docs/zh_TW: add translations for zh_TW/cpu-freq
-      docs/zh_TW: add translations for zh_TW/filesystems
-
-Jinay Jain (1):
-      Documentation: block: blk-mq: Fix small typo in multi-queue docs
-
-Mark Rutland (1):
-      Documentation/features/vm: correct huge-vmap APIs
-
-Pali Roh=C3=A1r (1):
-      Documentation: arm: marvell: Add 88F6825 model into list
-
-Peilin Ye (1):
-      docs: x86: Remove obsolete information about x86_64 vmalloc() faulting
-
-SeongJae Park (2):
-      Documentation/process/applying-patches: Activate linux-next man hyper=
-link
-      Documentation/process/maintainer-pgp-guide: Replace broken link to PG=
-P path finder
-
-Yanteng Si (1):
-      docs/zh_CN: Modify the translator tag and fix the wrong word
-
- Documentation/arm/marvell.rst                      |   1 +
- Documentation/block/blk-mq.rst                     |   2 +-
- Documentation/conf.py                              |   4 +-
- .../features/vm/huge-vmap/arch-support.txt         |   2 +-
- Documentation/kernel-hacking/hacking.rst           |   4 +-
- Documentation/kernel-hacking/locking.rst           |  12 +-
- Documentation/locking/futex-requeue-pi.rst         |   2 +-
- Documentation/locking/ww-mutex-design.rst          |   2 +-
- Documentation/process/applying-patches.rst         |   2 +-
- Documentation/process/kernel-docs.rst              |  14 +-
- Documentation/process/maintainer-pgp-guide.rst     |  14 +-
- .../translations/it_IT/kernel-hacking/hacking.rst  |   2 +-
- .../translations/it_IT/kernel-hacking/locking.rst  |   4 +-
- .../translations/zh_CN/core-api/cachetlb.rst       |   2 +-
- .../translations/zh_CN/core-api/index.rst          |   8 +-
- .../translations/zh_CN/core-api/irq/concepts.rst   |   8 +-
- .../translations/zh_CN/core-api/irq/index.rst      |   7 +-
- .../zh_CN/core-api/irq/irq-affinity.rst            |   8 +-
- .../translations/zh_CN/core-api/irq/irq-domain.rst |   8 +-
- .../zh_CN/core-api/irq/irqflags-tracing.rst        |   8 +-
- .../translations/zh_CN/core-api/kernel-api.rst     |   6 +-
- .../translations/zh_CN/core-api/kobject.rst        |   5 +-
- .../translations/zh_CN/core-api/local_ops.rst      |   6 +-
- .../translations/zh_CN/core-api/padata.rst         |   5 +-
- .../translations/zh_CN/core-api/printk-basics.rst  |   6 +-
- .../translations/zh_CN/core-api/printk-formats.rst |   6 +-
- .../zh_CN/core-api/refcount-vs-atomic.rst          |   6 +-
- .../zh_CN/core-api/symbol-namespaces.rst           |   6 +-
- .../translations/zh_CN/core-api/workqueue.rst      |   6 +-
- Documentation/translations/zh_CN/cpu-freq/core.rst |   8 +-
- .../translations/zh_CN/cpu-freq/cpu-drivers.rst    |   8 +-
- .../translations/zh_CN/cpu-freq/cpufreq-stats.rst  |   8 +-
- .../translations/zh_CN/cpu-freq/index.rst          |   8 +-
- .../translations/zh_CN/filesystems/debugfs.rst     |   2 +-
- .../translations/zh_CN/iio/ep93xx_adc.rst          |   8 +-
- .../translations/zh_CN/iio/iio_configfs.rst        |   8 +-
- Documentation/translations/zh_CN/iio/index.rst     |   8 +-
- .../translations/zh_CN/kernel-hacking/hacking.rst  |   2 +-
- Documentation/translations/zh_CN/mips/booting.rst  |   7 +-
- Documentation/translations/zh_CN/mips/features.rst |   7 +-
- Documentation/translations/zh_CN/mips/index.rst    |   7 +-
- .../translations/zh_CN/mips/ingenic-tcu.rst        |   7 +-
- .../translations/zh_CN/openrisc/index.rst          |   8 +-
- .../translations/zh_CN/openrisc/openrisc_port.rst  |   7 +-
- Documentation/translations/zh_CN/openrisc/todo.rst |   7 +-
- .../translations/zh_CN/parisc/debugging.rst        |   5 +-
- Documentation/translations/zh_CN/parisc/index.rst  |   5 +-
- .../translations/zh_CN/parisc/registers.rst        |   5 +-
- .../translations/zh_CN/riscv/boot-image-header.rst |   8 +-
- Documentation/translations/zh_CN/riscv/index.rst   |   8 +-
- .../translations/zh_CN/riscv/patch-acceptance.rst  |   8 +-
- Documentation/translations/zh_CN/riscv/pmu.rst     |   8 +-
- Documentation/translations/zh_TW/arm64/amu.rst     | 104 ++++++
- Documentation/translations/zh_TW/arm64/booting.txt | 251 ++++++++++++++
- .../translations/zh_TW/arm64/elf_hwcaps.rst        | 244 +++++++++++++
- .../translations/zh_TW/arm64/hugetlbpage.rst       |  49 +++
- Documentation/translations/zh_TW/arm64/index.rst   |  23 ++
- .../zh_TW/arm64/legacy_instructions.txt            |  77 +++++
- Documentation/translations/zh_TW/arm64/memory.txt  | 119 +++++++
- Documentation/translations/zh_TW/arm64/perf.rst    |  88 +++++
- .../translations/zh_TW/arm64/silicon-errata.txt    |  79 +++++
- .../translations/zh_TW/arm64/tagged-pointers.txt   |  57 ++++
- Documentation/translations/zh_TW/cpu-freq/core.rst | 108 ++++++
- .../translations/zh_TW/cpu-freq/cpu-drivers.rst    | 256 ++++++++++++++
- .../translations/zh_TW/cpu-freq/cpufreq-stats.rst  | 132 ++++++++
- .../translations/zh_TW/cpu-freq/index.rst          |  47 +++
- .../translations/zh_TW/filesystems/debugfs.rst     | 224 ++++++++++++
- .../translations/zh_TW/filesystems/index.rst       |  31 ++
- .../translations/zh_TW/filesystems/sysfs.txt       | 377 +++++++++++++++++=
-++++
- .../translations/zh_TW/filesystems/tmpfs.rst       | 148 ++++++++
- .../translations/zh_TW/filesystems/virtiofs.rst    |  61 ++++
- Documentation/translations/zh_TW/index.rst         |  13 +-
- Documentation/x86/x86_64/mm.rst                    |   4 -
- 73 files changed, 2686 insertions(+), 129 deletions(-)
- create mode 100644 Documentation/translations/zh_TW/arm64/amu.rst
- create mode 100644 Documentation/translations/zh_TW/arm64/booting.txt
- create mode 100644 Documentation/translations/zh_TW/arm64/elf_hwcaps.rst
- create mode 100644 Documentation/translations/zh_TW/arm64/hugetlbpage.rst
- create mode 100644 Documentation/translations/zh_TW/arm64/index.rst
- create mode 100644 Documentation/translations/zh_TW/arm64/legacy_instructi=
-ons.txt
- create mode 100644 Documentation/translations/zh_TW/arm64/memory.txt
- create mode 100644 Documentation/translations/zh_TW/arm64/perf.rst
- create mode 100644 Documentation/translations/zh_TW/arm64/silicon-errata.t=
-xt
- create mode 100644 Documentation/translations/zh_TW/arm64/tagged-pointers.=
-txt
- create mode 100644 Documentation/translations/zh_TW/cpu-freq/core.rst
- create mode 100644 Documentation/translations/zh_TW/cpu-freq/cpu-drivers.r=
-st
- create mode 100644 Documentation/translations/zh_TW/cpu-freq/cpufreq-stats=
-.rst
- create mode 100644 Documentation/translations/zh_TW/cpu-freq/index.rst
- create mode 100644 Documentation/translations/zh_TW/filesystems/debugfs.rst
- create mode 100644 Documentation/translations/zh_TW/filesystems/index.rst
- create mode 100644 Documentation/translations/zh_TW/filesystems/sysfs.txt
- create mode 100644 Documentation/translations/zh_TW/filesystems/tmpfs.rst
- create mode 100644 Documentation/translations/zh_TW/filesystems/virtiofs.r=
-st
+--- linux-next-20210907.orig/sound/soc/atmel/Kconfig
++++ linux-next-20210907/sound/soc/atmel/Kconfig
+@@ -11,6 +11,7 @@ if SND_ATMEL_SOC
+  
+  config SND_ATMEL_SOC_PDC
+  	bool
++	depends on HAS_DMA || COMPILE_TEST
+  
+  config SND_ATMEL_SOC_DMA
+  	bool
