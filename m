@@ -2,178 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2816403F58
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19753403F5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350336AbhIHTEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:04:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54086 "EHLO
+        id S1350276AbhIHTGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:06:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54116 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhIHTEW (ORCPT
+        with ESMTP id S240432AbhIHTGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:04:22 -0400
-Date:   Wed, 08 Sep 2021 19:03:11 -0000
+        Wed, 8 Sep 2021 15:06:22 -0400
+Date:   Wed, 8 Sep 2021 21:05:12 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631127793;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020; t=1631127913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Cc4XKzlAxS2JV3J1f8eqsKquDD1+Lo6QrqMckR6OU9E=;
-        b=2a9isP1SrMzoKsMARCnOodf/AOZ4OZtCWOdXAC1t+/rWl6OvwXl26r4/KFYZKnaTiuoXd9
-        xAuzMdfiZ07CKIdOTJEUycBlhcEaZwEk75weluEC6m5wChahDeuET4euXuTs5oFYUHLZcz
-        PZDqbxYdnZksqK3LRVoFN1E6KZOaQWssSlPEHyV8Z9hFMuFfubt19RQbrdPsEhvfS6OUs8
-        ccmI+bOH62lRUEsew9wkjEgF0B6EcrQYr33hhTtKolWH11TsLeuxfxVeTLsATdyGMm3kgo
-        HXE1dc3/XLsQsf7kMVol79UmncR5IshfRbeCy5kR9F54SGlXifz1Bpt8ImVIlw==
+        bh=5aGeWY7DO3MzPMypk/VyLpu8f2mEs1dGB7dzzGJfmcI=;
+        b=CMwV+ckrrDH9kmSgeaPQ8vRtQtH+WL4pOXJFZAwtgHdzpJ/Sw0g9p8xRlCLIR0Y1oXpiVn
+        ZMvcRD04gS/zH9XA6udIyK7rAsoHeYS5UOzNFRBl/amplVKObDGK85x6KVwwQn0Oy0J6ei
+        WDPqZop0iAlYw8jncZvDmA7DLhzmKwzIG0XbnzFgZZRN+nDMqcSp1VxH5dGJPuHpvoB6II
+        WunQ7MRJqFQff6VeSzua5F1fGi8ItIJPr80/cwhCoJIpgXvBl2VtUN97U4YYKNAGfQkJ8M
+        D0P66QjUyMIXknUUmT6jyQQz2tDMFg7tCwBIB9BaS5xDatpKP+NHpnFBaOZTVw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631127793;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020e; t=1631127913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Cc4XKzlAxS2JV3J1f8eqsKquDD1+Lo6QrqMckR6OU9E=;
-        b=mrTXsTWCaeOhZ6ev+EEwpnC9sR5WC5nHWYBli36E25xcC8vdjA2gJGqbebGKjmju251SWJ
-        obpS3wTu0wVfmrCg==
-From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/mm: Fix kern_addr_valid() to cope with existing
- but not present entries
-Cc:     Jiri Olsa <jolsa@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
-        Borislav Petkov <bp@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210819132717.19358-1-rppt@kernel.org>
-References: <20210819132717.19358-1-rppt@kernel.org>
+        bh=5aGeWY7DO3MzPMypk/VyLpu8f2mEs1dGB7dzzGJfmcI=;
+        b=nTWC5aXSoVBtlTqWZrexkU4VusCmN7zXjuKf2Tl2pfLHhvSL0WR6L3qwSJXo/e01N+kps+
+        /YoRHL+5WdhV/RCQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Clark Williams <williams@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH PREEMPT_RT] i915: fix PREEMPT_RT locking splats
+Message-ID: <20210908190512.ocuyu2uzuyexas2m@linutronix.de>
+References: <20210823150015.61ebc7d6@theseus>
 MIME-Version: 1.0
-Message-ID: <163112779151.25758.9291514239160548248.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210823150015.61ebc7d6@theseus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 2021-08-23 15:00:15 [-0500], Clark Williams wrote:
+> Found two separate spots where i915 was throwing "sleeping
+> function called from invalid context" when running on a
+> PREEMPT_RT kernel. In both cases it was from calling
+> local_irq_disable prior to taking a spin_lock. Since spin
+> locks are converted to rt_mutex_t on PREEMPT_RT this means
+> that we might sleep with interrupts disabled.
+> 
+> Since in both cases the calls were in threaded context on RT
+> (irq or ksoftirqd) and in no danger of reentrance, change the
+> code to only disable interrupts on non-PREEMPT_RT kernels.
+> 
+> Signed-off-by: Clark Williams <williams@redhat.com>
 
-Commit-ID:     34b1999da935a33be6239226bfa6cd4f704c5c88
-Gitweb:        https://git.kernel.org/tip/34b1999da935a33be6239226bfa6cd4f704c5c88
-Author:        Mike Rapoport <rppt@linux.ibm.com>
-AuthorDate:    Thu, 19 Aug 2021 16:27:17 +03:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 08 Sep 2021 20:50:32 +02:00
+I try to deal with this in
+   https://lkml.kernel.org/r/20210908185703.2989414-1-bigeasy@linutronix.de
 
-x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
-
-Jiri Olsa reported a fault when running:
-
-  # cat /proc/kallsyms | grep ksys_read
-  ffffffff8136d580 T ksys_read
-  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
-
-  /proc/kcore:     file format elf64-x86-64
-
-  Segmentation fault
-
-  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
-  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
-  RIP: 0010:kern_addr_valid
-  Call Trace:
-   read_kcore
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? trace_hardirqs_on
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? lock_release
-   ? _raw_spin_unlock
-   ? __handle_mm_fault
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? lock_release
-   proc_reg_read
-   ? vfs_read
-   vfs_read
-   ksys_read
-   do_syscall_64
-   entry_SYSCALL_64_after_hwframe
-
-The fault happens because kern_addr_valid() dereferences existent but not
-present PMD in the high kernel mappings.
-
-Such PMDs are created when free_kernel_image_pages() frees regions larger
-than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
-the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-mark the PMD as not present rather than wipe it completely.
-
-Have kern_addr_valid() check whether higher level page table entries are
-present before trying to dereference them to fix this issue and to avoid
-similar issues in the future.
-
-Stable backporting note:
-------------------------
-
-Note that the stable marking is for all active stable branches because
-there could be cases where pagetable entries exist but are not valid -
-see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
-sure to be on the safe side here and use pXY_present() accessors rather
-than pXY_none() which could #GP when accessing pages in the direct map.
-
-Also see:
-
-  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
-
-for more info.
-
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-Cc: <stable@vger.kernel.org>	# 4.4+
-Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
----
- arch/x86/mm/init_64.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index ddeaba9..879886c 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
- 		return 0;
- 
- 	p4d = p4d_offset(pgd, addr);
--	if (p4d_none(*p4d))
-+	if (!p4d_present(*p4d))
- 		return 0;
- 
- 	pud = pud_offset(p4d, addr);
--	if (pud_none(*pud))
-+	if (!pud_present(*pud))
- 		return 0;
- 
- 	if (pud_large(*pud))
- 		return pfn_valid(pud_pfn(*pud));
- 
- 	pmd = pmd_offset(pud, addr);
--	if (pmd_none(*pmd))
-+	if (!pmd_present(*pmd))
- 		return 0;
- 
- 	if (pmd_large(*pmd))
+Sebastian
