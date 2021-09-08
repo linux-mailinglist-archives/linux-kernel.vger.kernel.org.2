@@ -2,117 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C0F403799
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4074037A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347885AbhIHKMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:12:20 -0400
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:43644 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347877AbhIHKMQ (ORCPT
+        id S1347802AbhIHKPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbhIHKPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:12:16 -0400
-Received: by mail-vs1-f47.google.com with SMTP id u1so1510814vsq.10;
-        Wed, 08 Sep 2021 03:11:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IbTzHHY/WI6T/MMG5snxRp97B/nG4as15XsvK/bKWX4=;
-        b=fBW3TtAosz9IDzfFHHzIYfivloccAdP+HvWiQ9qlFR/eD6A3PLK14QLW3XCckDFXlF
-         WNz9HVVNyOX+vuzJ2LyojJkdbW5euu3WxJ1zk1q7Pg3rwsXUQYcLAYExmMt9z6gpxA0I
-         OkU3lCqMqj1nWFZjksQRbWJQjjApdke4Yo/nRL8BQxtOM+4iZ24OD/7SNhTKy2fG2Zfp
-         kchTBnMKY02j7nRHPxCOpqOARzZTh4OWEq5n9JqZkZ33NWdnxKNylyL75vKDIHAaPytK
-         oze+QeIDquA63AUPP0OuSrQZvkWphVr+f5llLJ+PwZe0Ix7IpGxq6LUZDaC7GgN1Ja59
-         YMGQ==
-X-Gm-Message-State: AOAM533VbkLq61wlEcR1jBp1ACiS4uocyfBYO8GW0SorTMbXetosYlPU
-        R2FX/w24W3IDMTsmTx1dDxh/Shd73fe8+r+HCsw=
-X-Google-Smtp-Source: ABdhPJyphSeifnjOp7oNIUahNJmyU6J5WjkkLDF0tVnZsBz1aPZxxoo6jIFvaLs1SeQPQMM8/visQwCk23wD9oVuNPg=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr1424921vsl.9.1631095868938;
- Wed, 08 Sep 2021 03:11:08 -0700 (PDT)
+        Wed, 8 Sep 2021 06:15:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9EC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 03:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0ciSKTQVg9jB/JRJoAkcU2i5AuVKoWJVYLmKxmFW0dM=; b=l7+Z82aBQnq1R3K5PazXQAzEJP
+        IWQoiNUrAooJEXd4P7SHQB1oLoOYQj/Pa+TdliJjR8Peq3rtKnYQxBO8GmQLc53tkcU6/+rM83Ni0
+        iaiX5mhUZSyRnbmUfA6FdESgxucQ2TbIasegfBGA9OGCvdY/yHAZDBXaKx45XqcCMYMjWkLFr51rX
+        hOqZrx91SyCvnwb3N6si5jbGFBXyChyhywAOaofGZosKzqO+tJNS74AG7sxUhHHydZWZAm29o4xva
+        bRb8h5PZkhFxvubcE9o7N31BPpeidvUEHNz5dXUQeNcCYDvguwX5ndYU8OiQ7E6W99kRgqvuUXex4
+        JzizeQ7w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNub3-001cTF-BM; Wed, 08 Sep 2021 10:14:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7FD16300332;
+        Wed,  8 Sep 2021 12:14:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 681AF2067E684; Wed,  8 Sep 2021 12:14:23 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 12:14:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/locking: Add context to ww_mutex_trylock.
+Message-ID: <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net> <20210908042838.GA2585993@roeck-us.net>
- <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk> <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
- <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com> <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
-In-Reply-To: <CAK8P3a3yJHvJaFHUh2+5GPm2n_g9gSfX2rFbrSLzDt6yC4eDog@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 8 Sep 2021 12:10:57 +0200
-Message-ID: <CAMuHMdV51YuBYg6bvoQW9fBXFv8BRtnG9YTZST3AnbFwOsdW9g@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Martin Sebor <msebor@gcc.gnu.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Tue, Sep 07, 2021 at 03:20:44PM +0200, Maarten Lankhorst wrote:
+> i915 will soon gain an eviction path that trylock a whole lot of locks
+> for eviction, getting dmesg failures like below:
+> 
+> BUG: MAX_LOCK_DEPTH too low!
+> turning off the locking correctness validator.
+> depth: 48  max: 48!
+> 48 locks held by i915_selftest/5776:
+>  #0: ffff888101a79240 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x88/0x160
+>  #1: ffffc900009778c0 (reservation_ww_class_acquire){+.+.}-{0:0}, at: i915_vma_pin.constprop.63+0x39/0x1b0 [i915]
+>  #2: ffff88800cf74de8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_vma_pin.constprop.63+0x5f/0x1b0 [i915]
+>  #3: ffff88810c7f9e38 (&vm->mutex/1){+.+.}-{3:3}, at: i915_vma_pin_ww+0x1c4/0x9d0 [i915]
+>  #4: ffff88810bad5768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>  #5: ffff88810bad60e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+> ...
+>  #46: ffff88811964d768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>  #47: ffff88811964e0e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+> INFO: lockdep is turned off.
 
-On Wed, Sep 8, 2021 at 11:50 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Wed, Sep 8, 2021 at 9:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > On 9/7/21 9:48 PM, Al Viro wrote:
-> > > > On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
-> > > >>      memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
-> > > >>
-> > > >> but that just seems weird. Is there a better solution ?
-> > > >
-> > > > (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
-> > > > ioremap(), rather than casting explicit constants?
-> > >
-> > > Typecasts or even assigning the address to a variable does not help.
-> > > The sanitizer function can not be static either.
-> >
-> > So it can only be fixed by obfuscating the constant address in a
-> > chain of out-of-line functions...
-> > How is this compiler to be used for bare-metal programming?
->
-> I reported this as a gcc bug when I first saw it back in March:
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
->
-> Martin Sebor suggested marking the pointer as 'volatile' as a workaround,
-> which is probably fine for bare-metal programming, but I would consider
-> that bad style for the kernel boot arguments. The RELOC_HIDE trick is probably
-> fine here, as there are only a couple of instances, and for the network
-> driver, using volatile is probably appropriate as well.
+> As an intermediate solution, add an acquire context to ww_mutex_trylock,
+> which allows us to do proper nesting annotations on the trylocks, making
+> the above lockdep splat disappear.
 
-Yeah, volatile should be fine for drivers.
-In fact this is one of the few places where I/O registers are accessed
-without involving volatile.
+Fair enough I suppose.
 
-> I still hope this can be fixed in a future gcc-11.x release. Maybe we should
-> add further instances of the problem on the gcc bug to boost the priority?
->
-> > > I don't know the hardware, so I can not answer the ioremap() question.
-> >
-> > Yes it should.  But this driver dates back to 2.1.110, when only
-> > half of the architectures already had ioremap().
->
-> How does  mvme16x even create the mapping? Is this a virtual address
-> that is hardwired to the bus or do you have a static mapping somewhere?
+> +/**
+> + * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
+> + * @lock: mutex to lock
+> + * @ctx: optional w/w acquire context
+> + *
+> + * Trylocks a mutex with the optional acquire context; no deadlock detection is
+> + * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
+> + *
+> + * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
+> + * specified, -EALREADY and -EDEADLK handling may happen in calls to ww_mutex_lock.
+> + *
+> + * A mutex acquired with this function must be released with ww_mutex_unlock.
+> + */
+> +int __sched
+> +ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ctx)
+> +{
+> +	bool locked;
+> +
+> +	if (!ctx)
+> +		return mutex_trylock(&ww->base);
+> +
+> +#ifdef CONFIG_DEBUG_MUTEXES
+> +	DEBUG_LOCKS_WARN_ON(ww->base.magic != &ww->base);
+> +#endif
+> +
+> +	preempt_disable();
+> +	locked = __mutex_trylock(&ww->base);
+> +
+> +	if (locked) {
+> +		ww_mutex_set_context_fastpath(ww, ctx);
+> +		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ctx->dep_map, _RET_IP_);
+> +	}
+> +	preempt_enable();
+> +
+> +	return locked;
+> +}
+> +EXPORT_SYMBOL(ww_mutex_trylock);
 
-It's part of the transparent mapping of the top address space for
-I/O devices in arch/m68k/kernel/head.S.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+You'll need a similar hunk in ww_rt_mutex.c
