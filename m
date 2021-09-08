@@ -2,135 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71617403E84
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C321A403E7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352547AbhIHRrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S1350111AbhIHRqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352492AbhIHRq7 (ORCPT
+        with ESMTP id S235841AbhIHRqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:46:59 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD33EC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:45:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id k23-20020a17090a591700b001976d2db364so2077610pji.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:45:48 -0700 (PDT)
+        Wed, 8 Sep 2021 13:46:34 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FA0C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:45:26 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 9so2826623edx.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=iGhMejAAmA76H3ZkvML6O16y7Qo+v4duTV6nU5CVEvA=;
-        b=HYwOm/v80woR7hZrASRuBt9VEWYdfEIGZVv1D7mKKxhBV9MozBcHYtMEk60BWOmfTK
-         7IXvrPee8c++Uiy95m635dPmN2A2eMyYF8QL/k63dzswzQKuvtLqI0MhOxNdGxfbAjI7
-         CMlIWh07zb5yta+9yQyXdPYB7z/h+bzyTURg5LGhVE7mi5xeW4dxIghVP4GpDXJ8ahpm
-         aQzsFa25jPAVO1cixaDya+rs9fch8l2CQS5/vuosaGYsssdj0C6iMgswqpRUgWpEPoGm
-         vNa+GDMCAujcNTZnAkdmO6+r9X78DRv0JBdL5BPwjUEJSSv6FYVto+Ta3a/vpUkNJMSs
-         /HbA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+xEb27PMFQUN6a8DcLn87Q6DnS83FJhxmti0I/5v+c8=;
+        b=NApzBmW3UHVNrriG9leoqpe0UPqlSwGG+HHEvMS6VrsAJ8Zk61JcNe2wN49FhKPnoj
+         xp7yb2mjOQAw38ZaLHutQYGOZjV0CSU9Qo0X5R7hEJ23bnK8V9iPe1bEWcndMu/3PFf1
+         W9pHkI/23al4QTNYhOthpUxC7jqfJ3l2jmHWI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iGhMejAAmA76H3ZkvML6O16y7Qo+v4duTV6nU5CVEvA=;
-        b=SjoxWD0ZbSG7Znd7WxXSecih9wQsGyIcQYp5K7MGfHCpCSTeJFhY6ItrOh2dFoFdV6
-         MnuqSHKIsWhahpRbf46J8EWKmklYefQZBSFvd9+NZX8j316jz1yZcHetJNBIZsOke1ij
-         w2paY2w9tzGXQTxLo4qYrm3dZlgTtTMB/+l39CoYbCysNDQnKlaRACXcRzdhO589/IXv
-         i29S56eohUyokHL9uITVBe8sC2n0uSvLoTH0GP7A7+SbCaYgA+89p8bKjLkZyPXohYOd
-         f/JzxcEhObre/+FjHxsYvmKFMcfPqRhfpHFBJ8HxjmbCtHkGvBX6XDLR6lgFaDdHoe9X
-         tZuA==
-X-Gm-Message-State: AOAM531Df1JVaXkVgPyLfN83JEzXFc8qLafy9KpdBaiJ/TdBlpzlP6cJ
-        gTykUivWjCmk4Pf08/KfNQh18Q==
-X-Google-Smtp-Source: ABdhPJxREmCJ+n/R6hnBhI28AUCMDziOr6/XIG0206lpF6ZNUJo2cmW3uWW0usZEdTDgXOB7YpYSZQ==
-X-Received: by 2002:a17:90a:1d8:: with SMTP id 24mr5418832pjd.69.1631123148372;
-        Wed, 08 Sep 2021 10:45:48 -0700 (PDT)
-Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id b5sm3108466pfr.26.2021.09.08.10.45.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=+xEb27PMFQUN6a8DcLn87Q6DnS83FJhxmti0I/5v+c8=;
+        b=dRHpredHOsz+f545EQkSDeP51KrAQpSLNVVsnUBfEGM8ZKHe6wTqzjBoTXTVTLpnD5
+         UgnUoKwBBZEFCby1/Ov2ZgwaD7sNgYkxWbFYDaLL2q6BeBuMkJCAI5mbNsuGWsfRcxjg
+         ruaebot+vpdtlEB2QXL6kiZ/r6UQk9YKBBFbky9wKeZen2KHp3b0IyppuyFV3qO+ITUQ
+         vy0RZISIKvrY4yH22/542OxsMqzhwXwsWoiDEZzVNss/F3uwahqdLiPoBanR/rSvEYQ0
+         q5UxCH5lAcJaIoFjUdD2vu/362UzM2w6BwtGRmFNfHoEF4YRb6UFnj5uCT40ewR6Luj4
+         MGeA==
+X-Gm-Message-State: AOAM531zrb+uXIwuuSop+ZIssQ7ncAPHpwHHL163RbeoAEitWVEmvHvQ
+        Em0eGg58OeiTRcZv5cz+KCyYIA==
+X-Google-Smtp-Source: ABdhPJxNTQqMjSZn5VxSobt+K12XzbD5osKL3cKE0pBWdtZGzMzii+9hy1LRcgB0zMHvtfaOFvXhoQ==
+X-Received: by 2002:a50:d0d1:: with SMTP id g17mr2357446edf.96.1631123124210;
+        Wed, 08 Sep 2021 10:45:24 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r6sm1352603ejb.119.2021.09.08.10.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:45:48 -0700 (PDT)
-From:   Greentime Hu <greentime.hu@sifive.com>
-To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aou@eecs.berkeley.edu, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, vincent.chen@sifive.com
-Subject: [RFC PATCH v8 08/21] riscv: Add vector struct and assembler definitions
-Date:   Thu,  9 Sep 2021 01:45:20 +0800
-Message-Id: <96e2155d473e72c97c70360df549015c188fe6b8.1631121222.git.greentime.hu@sifive.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631121222.git.greentime.hu@sifive.com>
-References: <cover.1631121222.git.greentime.hu@sifive.com>
+        Wed, 08 Sep 2021 10:45:23 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 19:45:21 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Steven Price <steven.price@arm.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v3 4/9] drm/scheduler: Add fence deadline support
+Message-ID: <YTj2scNdCHAdF+cl@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>, David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Steven Price <steven.price@arm.com>, Melissa Wen <mwen@igalia.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210903184806.1680887-1-robdclark@gmail.com>
+ <20210903184806.1680887-5-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903184806.1680887-5-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vector state context struct in struct thread and asm-offsets.c
-definitions.
+On Fri, Sep 03, 2021 at 11:47:55AM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> As the finished fence is the one that is exposed to userspace, and
+> therefore the one that other operations, like atomic update, would
+> block on, we need to propagate the deadline from from the finished
+> fence to the actual hw fence.
+> 
+> v2: Split into drm_sched_fence_set_parent() (ckoenig)
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/scheduler/sched_fence.c | 34 +++++++++++++++++++++++++
+>  drivers/gpu/drm/scheduler/sched_main.c  |  2 +-
+>  include/drm/gpu_scheduler.h             |  8 ++++++
+>  3 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+> index bcea035cf4c6..4fc41a71d1c7 100644
+> --- a/drivers/gpu/drm/scheduler/sched_fence.c
+> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+> @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
+>  	dma_fence_put(&fence->scheduled);
+>  }
+>  
+> +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
+> +						  ktime_t deadline)
+> +{
+> +	struct drm_sched_fence *fence = to_drm_sched_fence(f);
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&fence->lock, flags);
+> +
+> +	/* If we already have an earlier deadline, keep it: */
+> +	if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
+> +	    ktime_before(fence->deadline, deadline)) {
+> +		spin_unlock_irqrestore(&fence->lock, flags);
+> +		return;
+> +	}
+> +
+> +	fence->deadline = deadline;
+> +	set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
+> +
+> +	spin_unlock_irqrestore(&fence->lock, flags);
+> +
+> +	if (fence->parent)
+> +		dma_fence_set_deadline(fence->parent, deadline);
+> +}
+> +
+>  static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
+>  	.get_driver_name = drm_sched_fence_get_driver_name,
+>  	.get_timeline_name = drm_sched_fence_get_timeline_name,
+> @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
+>  	.get_driver_name = drm_sched_fence_get_driver_name,
+>  	.get_timeline_name = drm_sched_fence_get_timeline_name,
+>  	.release = drm_sched_fence_release_finished,
+> +	.set_deadline = drm_sched_fence_set_deadline_finished,
+>  };
+>  
+>  struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> @@ -152,6 +177,15 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+>  }
+>  EXPORT_SYMBOL(to_drm_sched_fence);
+>  
+> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
+> +				struct dma_fence *fence)
+> +{
+> +	s_fence->parent = dma_fence_get(fence);
+> +	if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> +		     &s_fence->finished.flags))
 
-The vector registers will be saved in datap pointer of __riscv_v_state. It
-will be dynamically allocated in kernel space. It will be put right after
-the __riscv_v_state data structure in user space.
+Don't you need the spinlock here too to avoid races? test_bit is very
+unordered, so guarantees nothing. Spinlock would need to be both around
+->parent = and the test_bit.
 
-Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
----
- arch/riscv/include/asm/processor.h   |  1 +
- arch/riscv/include/uapi/asm/ptrace.h | 11 +++++++++++
- arch/riscv/kernel/asm-offsets.c      |  6 ++++++
- 3 files changed, 18 insertions(+)
+Entirely aside, but there's discussions going on to preallocate the hw
+fence somehow. If we do that we could make the deadline forwarding
+lockless here. Having a spinlock just to set the parent is a bit annoying
+...
 
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index 021ed64ee608..1b037c69d311 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -35,6 +35,7 @@ struct thread_struct {
- 	unsigned long s[12];	/* s[0]: frame pointer */
- 	struct __riscv_d_ext_state fstate;
- 	unsigned long bad_cause;
-+	struct __riscv_v_state vstate;
- };
- 
- #define INIT_THREAD {					\
-diff --git a/arch/riscv/include/uapi/asm/ptrace.h b/arch/riscv/include/uapi/asm/ptrace.h
-index 882547f6bd5c..bd3b8a710246 100644
---- a/arch/riscv/include/uapi/asm/ptrace.h
-+++ b/arch/riscv/include/uapi/asm/ptrace.h
-@@ -77,6 +77,17 @@ union __riscv_fp_state {
- 	struct __riscv_q_ext_state q;
- };
- 
-+struct __riscv_v_state {
-+	unsigned long vstart;
-+	unsigned long vl;
-+	unsigned long vtype;
-+	unsigned long vcsr;
-+	void *datap;
-+#if __riscv_xlen == 32
-+	__u32 __padding;
-+#endif
-+};
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _UAPI_ASM_RISCV_PTRACE_H */
-diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
-index 90f8ce64fa6f..34f43c84723a 100644
---- a/arch/riscv/kernel/asm-offsets.c
-+++ b/arch/riscv/kernel/asm-offsets.c
-@@ -72,6 +72,12 @@ void asm_offsets(void)
- 	OFFSET(TSK_STACK_CANARY, task_struct, stack_canary);
- #endif
- 
-+	OFFSET(RISCV_V_STATE_VSTART, __riscv_v_state, vstart);
-+	OFFSET(RISCV_V_STATE_VL, __riscv_v_state, vl);
-+	OFFSET(RISCV_V_STATE_VTYPE, __riscv_v_state, vtype);
-+	OFFSET(RISCV_V_STATE_VCSR, __riscv_v_state, vcsr);
-+	OFFSET(RISCV_V_STATE_DATAP, __riscv_v_state, datap);
-+
- 	DEFINE(PT_SIZE, sizeof(struct pt_regs));
- 	OFFSET(PT_EPC, pt_regs, epc);
- 	OFFSET(PT_RA, pt_regs, ra);
+Alternative is that you do this locklessly with barriers and a _lot_ of
+comments. Would be good to benchmark whether the overhead matters though
+first.
+-Daniel
+
+> +		dma_fence_set_deadline(fence, s_fence->deadline);
+> +}
+> +
+>  struct drm_sched_fence *drm_sched_fence_alloc(struct drm_sched_entity *entity,
+>  					      void *owner)
+>  {
+> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+> index 595e47ff7d06..27bf0ac0625f 100644
+> --- a/drivers/gpu/drm/scheduler/sched_main.c
+> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> @@ -978,7 +978,7 @@ static int drm_sched_main(void *param)
+>  		drm_sched_fence_scheduled(s_fence);
+>  
+>  		if (!IS_ERR_OR_NULL(fence)) {
+> -			s_fence->parent = dma_fence_get(fence);
+> +			drm_sched_fence_set_parent(s_fence, fence);
+>  			r = dma_fence_add_callback(fence, &sched_job->cb,
+>  						   drm_sched_job_done_cb);
+>  			if (r == -ENOENT)
+> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> index 7f77a455722c..158ddd662469 100644
+> --- a/include/drm/gpu_scheduler.h
+> +++ b/include/drm/gpu_scheduler.h
+> @@ -238,6 +238,12 @@ struct drm_sched_fence {
+>           */
+>  	struct dma_fence		finished;
+>  
+> +	/**
+> +	 * @deadline: deadline set on &drm_sched_fence.finished which
+> +	 * potentially needs to be propagated to &drm_sched_fence.parent
+> +	 */
+> +	ktime_t				deadline;
+> +
+>          /**
+>           * @parent: the fence returned by &drm_sched_backend_ops.run_job
+>           * when scheduling the job on hardware. We signal the
+> @@ -505,6 +511,8 @@ void drm_sched_entity_set_priority(struct drm_sched_entity *entity,
+>  				   enum drm_sched_priority priority);
+>  bool drm_sched_entity_is_ready(struct drm_sched_entity *entity);
+>  
+> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
+> +				struct dma_fence *fence);
+>  struct drm_sched_fence *drm_sched_fence_alloc(
+>  	struct drm_sched_entity *s_entity, void *owner);
+>  void drm_sched_fence_init(struct drm_sched_fence *fence,
+> -- 
+> 2.31.1
+> 
+
 -- 
-2.31.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
