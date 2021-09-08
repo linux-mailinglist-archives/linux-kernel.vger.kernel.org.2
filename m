@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDCD403C4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C6B403C51
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349248AbhIHPLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        id S1351957AbhIHPMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhIHPLG (ORCPT
+        with ESMTP id S1349308AbhIHPMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:11:06 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E79DC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:09:58 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id s16so2657478ilo.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:09:58 -0700 (PDT)
+        Wed, 8 Sep 2021 11:12:46 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACFCC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:11:38 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id q3so3405227edt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yRPp5IHtHZbh2VaC3A/pPLLamUQg+uMH0n8xJchofN8=;
-        b=I2IrUovC0NAik8gQxEeKQbBh/+E3r1Ftc2iriNrtCYRmaOT/WfeH2y3O4YSWdUy8sq
-         6jAWU0V6WXZyy9beh89xVm0hzWeWloejNkfBnlYCfYncR05Lt/w1j02hKERMBtQ0dJe9
-         1rPWIKVprNObr/nlryClStiA51vf+aQWK6+as=
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=I2FM/c/lyq+wiSWHr+eS3OSV6CCy3Zk/GIi/tQYaLjs=;
+        b=WL5L7e0XBT7UCN92kDkzg6MZthdrzTZPAfM2g43YzvyGXX0WzUU3/BVkEYHSSUhESZ
+         3ySc366zPoks/eVrnBSzFl/m6JmFZVo2QghUdvItPC5L0Q6ZAt7wpHo0Ht6Tsdk3sipH
+         8IU+/w5Bz4Ki9dHyPO+BJzELB1eUjsWlVpxHeReghK9NwgcQUOCsY9rutysXAnLfBZRF
+         NT8lD0hg2mf51SL3XKttd0vUNCGq0flFPvCBAKtthIffi//RRlnOd/KLCrQ6L4WxW5+r
+         zUf3z2y9bCvJch5p2Wq7OR4wObNCXZdq4P7rbiw2/5cuYwK5GphgUN3CJJM7AC/oK8pa
+         1gBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yRPp5IHtHZbh2VaC3A/pPLLamUQg+uMH0n8xJchofN8=;
-        b=3ou3JE8QfB0g7jc8IYwSgVtmEvzhBWe3gMXaWUvlDCDuPtU0k//6zRom6qQKOMdS6K
-         5vEBrT6XMJ5LvnsasATcpuPn0yWnnPOXBsJA3DQzzkv3P5xu82KXL8NAMwijeLV881LO
-         tPj3EmlaqjzSAK4Om2mbKKgLQImUFeRGEvDLxW4BFuSGTT4Z8AFjk8nchhgBqQeWGY6s
-         22Ksv+W6JI70Y8o3vSIEPZVo/3jav+Mb9j0OJbqbA30QwpRCmgroJUo9zJandGESl3VZ
-         PUfAlj9E2pTcb18fKfHi6H9OZBaik7Hv/HviUsGz3kFCLzhOkUHNBv/VVYTIJTlNxHW8
-         VWgg==
-X-Gm-Message-State: AOAM531CtefVPEchR12j5imFYKO2w5/lzVtU+zYjTC7SUZfI52fzIrZQ
-        DGLolN8pb/lRyUl2/z/tqhG6d1sFMGFQwQ==
-X-Google-Smtp-Source: ABdhPJzSzWLKmrpgL1ZaJGmUobiBa/Cg1G8P5jh5ygZuAB3hLkbcdcUKZy+IHFi0iovh+wKszKP28A==
-X-Received: by 2002:a92:cda4:: with SMTP id g4mr262464ild.236.1631113797651;
-        Wed, 08 Sep 2021 08:09:57 -0700 (PDT)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
-        by smtp.gmail.com with ESMTPSA id o2sm1272854ilg.47.2021.09.08.08.09.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 08:09:57 -0700 (PDT)
-Received: by mail-il1-f173.google.com with SMTP id x10so2646994ilm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:09:56 -0700 (PDT)
-X-Received: by 2002:a92:cb52:: with SMTP id f18mr274812ilq.120.1631113795742;
- Wed, 08 Sep 2021 08:09:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=I2FM/c/lyq+wiSWHr+eS3OSV6CCy3Zk/GIi/tQYaLjs=;
+        b=XuCzytJRYu6KdN7092taqMNZSydeNYEbqNG3ABWKflwzh5nP/j61TLOPgMohRiZyFB
+         b5g/bRMlF7+5r4pL8Oc1abRRoH+hBe0Nv/bn7Vd3QR48tPh13Q5OOqegknDZvd8vxe8T
+         Rk23F3xWaYGEc8JhzQQaJjZcs50TfZB3fT4LBAFsa6mEeAJoCdK4CbU1mK1ddU/cEUE8
+         yQyfDz7KBIdfKFX+S+QHqpL6lCK0UyGO5iTI0Rq8B4lfAAWHQ8xwbpobix0KnAWosooM
+         MUYrM1x2rj2j05dNSFGev2KVawYkmpiXEHC6/H0wAd+Phn47s1amHY5T/d5vMVYL11S7
+         Juxw==
+X-Gm-Message-State: AOAM531MzyEwTnwtRlfrX3+DmF0kzsbtiBylY/EC5bf007l+9lF0+hTm
+        xBhFLBxuIqdYQbq7AnGRW/svzIM9mcEaaNsnYrI=
+X-Google-Smtp-Source: ABdhPJxCWG/V0HLoS7zYbhXd8v38UTjOope8dswZdvTp6dZ4Yn405XoctIAEMBubHd6TocpE8EDAP7VIALQcl3Wgd1M=
+X-Received: by 2002:a05:6402:26d2:: with SMTP id x18mr4290153edd.195.1631113896732;
+ Wed, 08 Sep 2021 08:11:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
- <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
-In-Reply-To: <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 8 Sep 2021 08:09:44 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
-Message-ID: <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
-Subject: Re: [RESEND PATCH 2/2] arm64: dts: rockchip: add Coresight debug
- range for RK3399
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Reply-To: godwinppter@gmail.com
+Sender: mikelekwe@gmail.com
+Received: by 2002:a17:906:2b01:0:0:0:0 with HTTP; Wed, 8 Sep 2021 08:11:35
+ -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Wed, 8 Sep 2021 17:11:35 +0200
+X-Google-Sender-Auth: AgugE_VMpVqZN70kpcS-Hq7HM_k
+Message-ID: <CABCVdAGoaArnjtpzg_970+vUUk7H_1R=JErCVnOoFCy5giaRwg@mail.gmail.com>
+Subject: Eu preciso de sua resposta
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Meu bom amigo,
 
-On Tue, Sep 7, 2021 at 9:46 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> Per Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt.
->
-> This IP block can be used for sampling the PC of any given CPU, which is
-> useful in certain panic scenarios where you can't get the CPU to stop
-> cleanly (e.g., hard lockup).
->
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
->
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 48 ++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index 3871c7fd83b0..c8c62637b600 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -433,6 +433,54 @@ usbdrd_dwc3_1: usb@fe900000 {
->                 };
->         };
->
-> +       debug@fe430000 {
+S=C3=B3 quero saber se voc=C3=AA pode me ajudar a transferir o valor de (US=
+ $ 3
+milh=C3=B5es). Ap=C3=B3s a transfer=C3=AAncia, temos que compartilhar, 50% =
+para mim e
+50% para voc=C3=AA. Informe-me se voc=C3=AA puder me ajudar para que eu pos=
+sa
+fornecer mais informa=C3=A7=C3=B5es sobre a transfer=C3=AAncia. Espero que =
+voc=C3=AA possa
+trabalhar comigo honestamente?
 
-I think your sort order is wrong? 0xfe430000 comes before 0xfe900000?
-
-Other than that this looks good to me.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+obrigado
