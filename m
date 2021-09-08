@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23733403CA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DF5403CB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352132AbhIHPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:41:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349635AbhIHPk7 (ORCPT
+        id S1349875AbhIHPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239842AbhIHPpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:40:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631115591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G48sRBUv0RW8Bmsn3wBbdcGbHLUcyA8MFWQ2Ei8wvdk=;
-        b=NE/7lgtGGWGJbuyFBUR+XbHbX5bqkSkSkpOzHLPeRYOZ1yqQYvgkHeR7YWe4tZeikx9BMl
-        V4pni2iD2XP5C2IrCEewKZIpcGN005Uva26m836L4cPyAXcvXhBTdBw7KnmwF0moloMPFu
-        TFlqEUWZF5UjNcp09qpd9XYgMBco81o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-Yxml9_9IPZma1vMyFQgQOw-1; Wed, 08 Sep 2021 11:39:49 -0400
-X-MC-Unique: Yxml9_9IPZma1vMyFQgQOw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 884791030C20;
-        Wed,  8 Sep 2021 15:39:47 +0000 (UTC)
-Received: from x2.localnet (unknown [10.22.8.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4456E77F29;
-        Wed,  8 Sep 2021 15:39:31 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     =?ISO-8859-1?Q?Wei=DF=2C?= Michael 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Richard Guy Briggs <rgb@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "song@kernel.org" <song@kernel.org>,
-        "eparis@redhat.com" <eparis@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-Subject: Re: [PATCH v4 0/3] dm: audit event logging
-Date:   Wed, 08 Sep 2021 11:39:02 -0400
-Message-ID: <4344604.LvFx2qVVIh@x2>
-Organization: Red Hat
-In-Reply-To: <20210908131616.GK490529@madcap2.tricolour.ca>
-References: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de> <9ca855cb19097b6fa98f2b3419864fd8ddadf065.camel@aisec.fraunhofer.de> <20210908131616.GK490529@madcap2.tricolour.ca>
+        Wed, 8 Sep 2021 11:45:15 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD31C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:44:07 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id lc21so5094559ejc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=dfWXvWVLK8PdqGgfjMJG/VOHk/WvJvkwHokilz/Z9eU=;
+        b=jO73f3thXMB7AZin2T5yH9rpAhsyE29kDnwH4pVjD7xZreIbZ2oa2UCbfcohBNzPA9
+         GeT9bHHYS/oq++md1OSactXXPvJfF3071PwlKPanhooOtizBBhjd2TZE8m/T3ImbdYk5
+         P9F9Ky1394KQ4+rnV9G6OkW8gOMJKoFqwnF7I7476cvnvELWevR4h25bXkQEGTfm+42j
+         nQ7sr9IVCVmrq0+o6216tb0/3HMZPmgcxGPPi14h3n9y6qvXXsTAgcfFoFx2t3SYXqzA
+         LLsyX6dE6hpbtxXm7DD5lkrFvNdTDpadkNlAOgKVhK9mLH7AYOYdarNzLAngPJF0nUBV
+         EXrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=dfWXvWVLK8PdqGgfjMJG/VOHk/WvJvkwHokilz/Z9eU=;
+        b=gBTaXTBhgi2PgjTMqE9PjlPCM2u44Mj/U3P2ssjO29QAAPBlYzruq3RFMQgdYQ+n1h
+         W6x52mjtJptWeb8baNASVe7iawbqm3accYPW11H0NbV0ACjwbUqrfwZjJai61iS0mVLC
+         JGTwB/rQky+V0d2NNDJqKZP0Nwmy/tfJXJvp4ijPAeBc0X+pgksfEqnbOVDl7sANlGHE
+         rO53wCvPeFOe8SyqWXmngLcVBugiT/vkJoR6gyj9iW4brxzXrNabUKDWOVh1+nghBaDW
+         hN3v0yfdBcUpzVv3ntD8Qul2DsKUaOY4QuVdRWBdhMpKvI/PMKR4jYRQmrahBj9KBd48
+         vEEg==
+X-Gm-Message-State: AOAM531p37tG1waWDRNkV+pCdE+XaawMGKAj9z0BcHCRHd9BGfu72hUl
+        b6AV85RYbOIu4heoMcgLWfQR5L5E3WugdXAgQgI=
+X-Google-Smtp-Source: ABdhPJxXJk7kZ6CdBoMwGfxvVWpS2LblgIXVYZ93aRDM+MUEt2okEyOq62OkpMibzdW6tBRMSlFeAl5gDnJABT87FxQ=
+X-Received: by 2002:a17:906:3fd7:: with SMTP id k23mr518093ejj.176.1631115845345;
+ Wed, 08 Sep 2021 08:44:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Received: by 2002:a54:2643:0:0:0:0:0 with HTTP; Wed, 8 Sep 2021 08:44:04 -0700 (PDT)
+Reply-To: michaelrachid7@gmail.com
+From:   Michael Rachid <lopdylan1818@gmail.com>
+Date:   Wed, 8 Sep 2021 16:44:04 +0100
+Message-ID: <CABU9XdCpc4FD_t_S65HOmxkp02+23mD8buBJo5qGNpXhLKYD=A@mail.gmail.com>
+Subject: =?UTF-8?B?UFJPUE9TQUwv4LiC4LmJ4Lit4LmA4Liq4LiZ4LitIEvMhMSleCBzzIRlbng=?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 8, 2021 9:16:16 AM EDT Richard Guy Briggs wrote:
->  Another minor oddity is the double "=" for the subj
-> 
-> > > field, which doesn't appear to be a bug in your code, but still
-> > > puzzling.
-> > 
-> > In the test setup, I had Apparmor enabled and set as default security
-> > module. This behavior occurs in any audit_log message.
-> > Seems that this is coming from the label handling there. Having a quick
-> > look at the code there is that they use '=' in the label to provide a
-> > root view as part of their policy virtualization. The corresponding
-> > commit is sitting there since 2017:
-> > "26b7899510ae243e392960704ebdba52d05fbb13"
-> 
-> Interesting...  Thanks for tracking down that cause.  I don't know how
-> much pain that will cause the userspace parsing tools.  I've added Steve
-> Grubb to the Cc: to get his input, but this should not derail this patch
-> set.
-
-It likely breaks any parser. I would even say that it's a malformed event 
-that should be corrected. There's been a published a specification for audit 
-events  for at least 5 years. Latest copy is here:
-
-https://github.com/linux-audit/audit-documentation/wiki/SPEC-Writing-Good-Events
-
--Steve
-
-
-
+4LmA4Lie4Li34LmI4Lit4LiZ4Lij4Lix4LiBLA0KDQrguInguLHguJnguYDguILguLXguKLguJng
+uYDguJ7guLfguYjguK3guYHguIjguYnguIfguYPguKvguYnguITguLjguJPguJfguKPguLLguJrg
+uYDguIHguLXguYjguKLguKfguIHguLHguJrguILguYnguK3guYDguKrguJnguK3guJfguLLguIfg
+uJjguLjguKPguIHguLTguIjguJfguLXguYjguInguLHguJnguKHguLXguIvguLbguYjguIfguIng
+uLHguJnguJXguYnguK3guIfguIHguLLguKPguIjguLHguJTguIHguLLguKPguIHguLHguJrguITg
+uLjguJMNCuC4q+C5ieC4suC4quC4tOC4muC4peC5ieC4suC4meC4lOC4reC4peC4peC4suC4o+C5
+jOC4oeC4teC4quC5iOC4p+C4meC4o+C5iOC4p+C4oSDguKHguLHguYjguJnguYPguIjguYTguJTg
+uYnguKfguYjguLLguJfguLjguIHguK3guKLguYjguLLguIfguJbguLnguIHguIHguI7guKvguKHg
+uLLguKLguYHguKXguLDguJvguKPguLLguKjguIjguLLguIHguITguKfguLLguKHguYDguKrguLXg
+uYjguKLguIcNCuC4geC4o+C4uOC4k+C4suC4o+C4sOC4muC4uOC4hOC4p+C4suC4oeC4quC4meC5
+g+C4iOC4guC4reC4h+C4hOC4uOC4kw0KDQrguYTguKHguYDguITguLTguKUg4Lij4Liy4LiK4Li0
+4LiULg0KDQpQaGXhu6XMhMyAeG4gcuG6oWssDQoNCmPMhGjhuqFuIGvMhGhlxKt5biBwaGXhu6XM
+hMyAeCBjw6bMgm5nIGjMhMSxzIIga2h14bmHIHRocsSBYiBrZcSrzIB5dyBr4bqhYiBrzITEpXgg
+c8yEZW54DQp0aMSBbmcg4bmtaHVya2ljIHRoxKvMgCBjzIRo4bqhbiBtxKsgc+G7pcyAbmcgY8yE
+aOG6oW4gdMyCeG5na8SBciBj4bqhZGvEgXIga+G6oWIga2h14bmHDQpozITMgsSBIHPMhGliIGzM
+gsSBbiBkeGxsxIFyzJIgbcSrIHPMhMyAd24gcsyAd20gbeG6ocyAbmPEsSBk4buLzIIg4bqBxIEg
+dGh1ayB44buzxIFuZyB0zIRoxatrDQpr4biNaMyEbcSBeSBsw6ZhIHByxIHhuaPMhGPEgWsga2h3
+xIFtIHPMhGXEq8yAeW5nDQprcnXhuYfEgSByYWJ1IGtod8SBbSBzzIRuY8SxIGvMhGh4bmcga2h1
+4bmHDQoNCm3hu4traGVpbCByxIEgY2hpZC4NCg0KDQoNCg0KRGVhciBmcmllbmQsDQoNCkkgd3Jp
+dGUgdG8gaW5mb3JtIHlvdSBhYm91dCBhIGJ1c2luZXNzIHByb3Bvc2FsIEkgaGF2ZSB3aGljaCBJ
+IHdvdWxkDQpsaWtlIHRvIGhhbmRsZSB3aXRoIHlvdS4NCkZpZnR5IG1pbGxpb24gZG9sbGFycyBp
+cyBpbnZvbHZlZC4gQmUgcmVzdCBhc3N1cmVkIHRoYXQgZXZlcnl0aGluZyBpcw0KbGVnYWwgYW5k
+IHJpc2sgZnJlZS4NCktpbmRseSBpbmRpY2F0ZSB5b3VyIGludGVyZXN0Lg0KDQpNaWNoYWVsIFJh
+Y2hpZA0K
