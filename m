@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0508403C88
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540F3403C8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236212AbhIHPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhIHPb6 (ORCPT
+        id S1352115AbhIHPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:33:53 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:46935 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352096AbhIHPdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:31:58 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B79C061575;
-        Wed,  8 Sep 2021 08:30:50 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id p2so3592661oif.1;
-        Wed, 08 Sep 2021 08:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S1I527MSfurdr1d2ztxDApsIAM7u0kpadwEyPZU2lRM=;
-        b=DTInn5MCElDUDr75tHRRKQy1CbTrsMnaL3SZYIrevfNJZ4VKZWfRyQe567VEQidnqf
-         dI4aBQvSNTwibrC4NyF0X2K7xKJNaQ/R8I7LlV/WAKI5B6juzy8+MhLk8IcBqIuPdZVV
-         6wc0m7jWQ20qSZKxRdBikEDLw4cu1KHh/Kk+oss/d0yC5cmLRJyt38RrZrlbeEXwK6Ww
-         GAo1wnxOgcUBtPX179ElFIXS4MU2XngiIETmrMVzzuIkS7ICwiEqKZflqcDNAWmD5Dh9
-         tQnDD2IV/FtvWIS2OLto8rP2+4yIOW19ic5PNAERiwtikoPRrq/gueqRM4qERpubAHkM
-         drxw==
+        Wed, 8 Sep 2021 11:33:51 -0400
+Received: by mail-ot1-f51.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso3441521ott.13;
+        Wed, 08 Sep 2021 08:32:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=S1I527MSfurdr1d2ztxDApsIAM7u0kpadwEyPZU2lRM=;
-        b=XoUHtmo2gacyIIIoMBtsMcJLu97MotXEZbhOUEdwrbIpt+e4BP39Tc/mSBaEHtHCPu
-         LZHpbuJ21VNUfMdgmCh69U1R7yG3cnqdFn1KrPNzkxESFE5eavBiTMBZa7vJrgQKLxD/
-         Lg98qL5Rw9o1dky8l1qtnn8Vf/HmQxLZfYog2xKrMhcnhvey3s3XJEPDIlL4ChY1rT/M
-         jwDAdx3Ev7PW/X+uJ2bTB/YKsrgGTMSqerpng9UjOVgy7Og4Ofcgoyn14BprA5+PiJhg
-         Cq01kaDeGYPt4rr0ZB06kUqUFj7OfPYfiYwzGiUdd7epWxiOtPaxkLtPBAhVL1Gz0XO1
-         u6DQ==
-X-Gm-Message-State: AOAM532TEY8F4bDwXaLYe+ElqzWcvX71Je/H+YcG8QqdEXbd9kMsWJQt
-        wwP47WFu0MmE49jj53MEQlU=
-X-Google-Smtp-Source: ABdhPJyipXJsjt2BhcEmx4BzU7EenAWT8g3uCxzkfYpI/c42Dauo1ByIXUy69d/eTjY90J80u000WA==
-X-Received: by 2002:a05:6808:222a:: with SMTP id bd42mr2875847oib.87.1631115049364;
-        Wed, 08 Sep 2021 08:30:49 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l13sm507884otp.29.2021.09.08.08.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 08:30:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Move pci_dev_is_behind_card_dino to where it is used
-Date:   Wed,  8 Sep 2021 08:30:41 -0700
-Message-Id: <20210908153041.643069-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=wCpW8P/qcfUBAUP9yX0etIAnVGW4oa2u6cdb6qiSrnk=;
+        b=Sw/fTWu1Wl5t2ppekAGkn2VAi4O4pncaXfQ7swW/XpUK4q/mY0QA9UKTeVT4x1Uy4s
+         Lz/B+bwI9MAXVSil7c3T6l2fUThLaPqRSrFohB/wjG2us5+dGWnh2qXZ8k48q/AIKLXT
+         Tvmzj5THeof63lDWs/776kGmiVsLvKL29+3n5dg9OFLzVxwUnD2pKmfkB+YOZDcC+muo
+         DWN3ADt8OV5ZchWK1IiduiISFvXGiFq8c1vMh5mr4KyJbQwoL5/VqTREBYlR+79XoGZp
+         wq5KhQvT0B714JU4DlCs7yXX6zp+LrICEysFZp71AO7yamN5JOllpdhp3vicMgEC0RSp
+         XuHA==
+X-Gm-Message-State: AOAM533KBYUDTtbfyjHt4PMPyB6qkGmqUceEq10V1o6Zo/ugJg809lOA
+        dJWWxLUKpBv2rBL8x2IycfWzB6sZzLUewSUXv2RcCRlvEAE=
+X-Google-Smtp-Source: ABdhPJwjDpAIAa6bP74QWXIdmK708YE7bbnCkp4tIEYhFyLQniE/ez5UxX+qKhH/TJs2LKWkh4/oLpULx1N70TlCDVU=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr3647281otk.86.1631115163066;
+ Wed, 08 Sep 2021 08:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 8 Sep 2021 17:32:32 +0200
+Message-ID: <CAJZ5v0isrxaOi_C50qO1S5t81xQZpnr-bunZp+Y_St+VuH6XxA@mail.gmail.com>
+Subject: [GIT PULL] More ACPI updates for v5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-parisc build test images fail to compile with the following error.
+Hi Linus,
 
-drivers/parisc/dino.c:160:12: error:
-	'pci_dev_is_behind_card_dino' defined but not used
+Please pull from the tag
 
-Move the function just ahead of its only caller to avoid the error.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.15-rc1-2
 
-Fixes: 5fa1659105fa ("parisc: Disable HP HSC-PCI Cards to prevent kernel crash")
-Cc: Helge Deller <deller@gmx.de>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/parisc/dino.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+with top-most commit e543b10cd9d75309c820d2175200d09b2a62f249
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 889d7ce282eb..952a92504df6 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -156,15 +156,6 @@ static inline struct dino_device *DINO_DEV(struct pci_hba_data *hba)
- 	return container_of(hba, struct dino_device, hba);
- }
- 
--/* Check if PCI device is behind a Card-mode Dino. */
--static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
--{
--	struct dino_device *dino_dev;
--
--	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
--	return is_card_dino(&dino_dev->hba.dev->id);
--}
--
- /*
-  * Dino Configuration Space Accessor Functions
-  */
-@@ -447,6 +438,15 @@ static void quirk_cirrus_cardbus(struct pci_dev *dev)
- DECLARE_PCI_FIXUP_ENABLE(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_6832, quirk_cirrus_cardbus );
- 
- #ifdef CONFIG_TULIP
-+/* Check if PCI device is behind a Card-mode Dino. */
-+static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
-+{
-+	struct dino_device *dino_dev;
-+
-+	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
-+	return is_card_dino(&dino_dev->hba.dev->id);
-+}
-+
- static void pci_fixup_tulip(struct pci_dev *dev)
- {
- 	if (!pci_dev_is_behind_card_dino(dev))
--- 
-2.33.0
+ Merge branches 'acpi-pm' and 'acpi-docs'
 
+on top of commit 6f1e8b12eec44ee047dc9e0a9544b2cfed739503
+
+ Merge tag 'acpi-5.15-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more ACPI updates for 5.15-rc1.
+
+These add ACPI support to the PCI VMD driver, improve suspend-to-idle
+support for AMD platforms and update documentation.
+
+Specifics:
+
+ - Add ACPI support to the PCI VMD driver (Rafael Wysocki).
+
+ - Rearrange suspend-to-idle support code to reflect the platform
+   firmware expectations on some AMD platforms (Mario Limonciello).
+
+ - Make SSDT overlays documentation follow the code documented by it
+   more closely (Andy Shevchenko).
+
+Thanks!
+
+
+---------------
+
+Andy Shevchenko (1):
+      Documentation: ACPI: Align the SSDT overlays file with the code
+
+Mario Limonciello (1):
+      ACPI: PM: s2idle: Run both AMD and Microsoft methods if both are supported
+
+Rafael J. Wysocki (1):
+      PCI: VMD: ACPI: Make ACPI companion lookup work for VMD bus
+
+---------------
+
+ Documentation/admin-guide/acpi/ssdt-overlays.rst | 49 ++++++++--------
+ drivers/acpi/x86/s2idle.c                        | 67 ++++++++++++---------
+ drivers/pci/controller/vmd.c                     | 55 ++++++++++++++++++
+ drivers/pci/host-bridge.c                        |  1 +
+ drivers/pci/pci-acpi.c                           | 74 ++++++++++++++++++++++++
+ include/linux/pci-acpi.h                         |  3 +
+ 6 files changed, 197 insertions(+), 52 deletions(-)
