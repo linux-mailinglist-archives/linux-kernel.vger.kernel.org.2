@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4754032E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160244032EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbhIHDXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S239994AbhIHDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhIHDXm (ORCPT
+        with ESMTP id S230454AbhIHDbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:23:42 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F324C061575;
-        Tue,  7 Sep 2021 20:22:35 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m26so850717pff.3;
-        Tue, 07 Sep 2021 20:22:35 -0700 (PDT)
+        Tue, 7 Sep 2021 23:31:41 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3377C061575;
+        Tue,  7 Sep 2021 20:30:33 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oc9so655955pjb.4;
+        Tue, 07 Sep 2021 20:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=JDypbW+LfLzXGf0hDgoUroHgIdfKmH/FQrJkEZpGnbs=;
-        b=VGc4LucmZPAYAossEfjwERMo5F1auVco/0qByRPcFFp7OGn8KKBLk3MDEnmncsSaeq
-         oYXCkLRJxC4gPqQLv08ax5teRg+AQWC/RSn7pchvbKmcY7Gr14iOlugLcO49q7aBfhaQ
-         9hslrKF2qO7cuH9+XEwSnq9Qau9I858/GEUQ+7xhOEeyKTzMiyZL4RTb7ElVe5Ch0+Sy
-         Pk1dDfwrsrV0EvjBCcO02E7s9n5E4X5NDMzKfIhgYe8hvufWvQVMmwoV09P0sLE+jFt3
-         YiiL9C59UdMTaU0XvkCKnh8GsHrxz44lafKZDy7Ly7VKK0OEhEe2HfYj2oxNhyF/HIey
-         MtRA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YCmgiIqK/f2uj+2FIB5ZoM8EM/HSqIdCmUJnhQwVgP4=;
+        b=dc9bzny1WKO1FGe6huTtpTsHefn+LffqFdPXd+y+4gPjwBzud1kpZ5EhiyAEpYrN/H
+         QhI4DSxGtfB7pncHLAAHSOveW8GqDwwrhhHu4VAOdyznAyKYfG84FLJ5mI9xCXY2UBmx
+         lg169RpruRjntuPFhDy/PF7n0qZmtEcuoUWQCYSgh1a9d1sh4Sjl7tdv16M9Hft2CMmV
+         mR/Q9u9ERoCuTNyN8fhVC++xgTt0aGbaSGbC0aD9xcxmFKa0N9fAnPpARPH5U3WQ5AjH
+         xbeXqzLxh18Zup4wtDo2V+i/gTx5S1LTGhSMXSHeWZO4O+4ng75XAINJvMXT6RpQfz28
+         qXpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=JDypbW+LfLzXGf0hDgoUroHgIdfKmH/FQrJkEZpGnbs=;
-        b=Z0/SBc9cdhqpWgafaUwE2nd1F8VuztQcO0f4STVZ2dLoVR+zacII83nTO+FrrQFp+F
-         qMRpytRWokEW8cgS3cuy+LJ6xyI1cLX1R6JuJL2TspytQVHVv57O1PXdjvZ3H0c6ThyH
-         aFQLzPWPUf3WzvWRfAVDDcaGfB/WVhTGNPwM/4jDeIY6DDGjWDnQdFdUNHEy0AeIqblW
-         HoAVBPfgVHGKSmalZXOHEvMmFFUKun53SO7uf7jZc6rHGeWtbpu8eLqx4r8l+aUWKrn5
-         vBaV9HbAHME5RDR1opfM7Vhw6MpZQ3Br/p6Nb63K0zF0RdLwjA3VitBgvxwVap/JvbKm
-         z+GQ==
-X-Gm-Message-State: AOAM531x7cq+HFHz+NkkBbeHuxI/QVyXyibbTN+gzYe3cJgG9KFhHx4r
-        B/Rz+4FFGISiYiMmuaDHtuO59T5wNw0=
-X-Google-Smtp-Source: ABdhPJwzTHpLlSU7GIBz982yD7LZnjiPTqQcVWwEi+TFYfdysc3BMG4k9p45bqHa3518TxTBH3cIIw==
-X-Received: by 2002:a62:8287:0:b0:3ec:f6dc:9672 with SMTP id w129-20020a628287000000b003ecf6dc9672mr1495384pfd.65.1631071354479;
-        Tue, 07 Sep 2021 20:22:34 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id x75sm584134pgx.43.2021.09.07.20.22.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 20:22:34 -0700 (PDT)
-To:     Jonathan Corbet <corbet@lwn.net>, Hu Haowen <src.res@email.cn>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] docs: zh_TW/index: Move arm64/index to arch-specific section
-Message-ID: <53d86385-b4db-5d02-be6b-795900166f17@gmail.com>
-Date:   Wed, 8 Sep 2021 12:22:30 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YCmgiIqK/f2uj+2FIB5ZoM8EM/HSqIdCmUJnhQwVgP4=;
+        b=jLlUD/Hqixw7LkV+2GHQaDK8e47+QbuJTNDssKCXaeHUVi1JDXJmM3+NfPT+MaIU7r
+         IQHnnxVMc9U5OHGBX2VryevvV2a/ui9N4VtofK7ZdnX1K/NlpPMSow/E/q8CebyaIeag
+         nLYgJbryRvtX4hFvuFsT5D67qosvtA5tCFmCt8NRCDnZX+K4YhaLV6P/fdOQdIdUEl+M
+         UkYeoTHqBefLxmtZSy90vj4+LblZ6NBLIFdznAZP9tZlMEu2d5QiJAAN1n0uc38TeNJk
+         Lg4tBLqKuEVFBLPIW8BznO07xcIwgv7Nb3wjBEnGGRm8TMAsygvELmcxQS9yGv6fBCxe
+         xnQQ==
+X-Gm-Message-State: AOAM5313kBPcff8WsR4em9KF7ct1IeZKKiPYrBBkZWkG+gFnRjORVyZb
+        Uhirmbz3R5MixDv+gWdvVvw=
+X-Google-Smtp-Source: ABdhPJzDt5UczW+E462e0Rsta+z7TRVsEMOa46W64QdwzX81nyylrn7uzqChkR1kefHPcLE507Bn3w==
+X-Received: by 2002:a17:90a:b785:: with SMTP id m5mr1823388pjr.213.1631071833256;
+        Tue, 07 Sep 2021 20:30:33 -0700 (PDT)
+Received: from localhost ([45.76.146.157])
+        by smtp.gmail.com with ESMTPSA id t15sm595283pgi.80.2021.09.07.20.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 20:30:31 -0700 (PDT)
+From:   Kortan <kortanzh@gmail.com>
+To:     nathan@kernel.org, ndesaulniers@google.com
+Cc:     masahiroy@kernel.org, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Kortan <kortanzh@gmail.com>
+Subject: [PATCH v2] gen_compile_commands: fix missing 'sys' package
+Date:   Wed,  8 Sep 2021 11:28:48 +0800
+Message-Id: <20210908032847.18683-1-kortanzh@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm64/index is architecture specific.
-Move it to the section "=E7=89=B9=E5=AE=9A=E9=AB=94=E7=B3=BB=E7=B5=90=E6=A7=
-=8B=E6=96=87=E6=AA=94" or "Architecture-specific
-documentation".
+We need to import the 'sys' package since the script has called
+sys.exit() method.
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Fixes: e5cb9494fe79 ("docs/zh_TW: add translations for zh_TW/arm64")
-Cc: Hu Haowen <src.res@email.cn>
+Signed-off-by: Kortan <kortanzh@gmail.com>
 ---
-Hi,
+Changes v1 -> v2:
+* Fix commit title.
+* Improve commit message. 
 
-zh_CN/index.rst has arm64/index under the section "=E7=89=B9=E5=AE=9A=E4=BD=
-=93=E7=B3=BB=E7=BB=93=E6=9E=84=E6=96=87=E6=A1=A3".
-zh_TW should be consistent with it.
+ scripts/clang-tools/gen_compile_commands.py | 1 +
+ 1 file changed, 1 insertion(+)
 
-        Thanks, Akira
---
- Documentation/translations/zh_TW/index.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/translations/zh_TW/index.rst b/Documentation/t=
-ranslations/zh_TW/index.rst
-index 2a281036c406..f56f78ba7860 100644
---- a/Documentation/translations/zh_TW/index.rst
-+++ b/Documentation/translations/zh_TW/index.rst
-@@ -140,11 +140,6 @@ TODOList:
- =E9=AB=94=E7=B3=BB=E7=B5=90=E6=A7=8B=E7=84=A1=E9=97=9C=E6=96=87=E6=AA=94=
-
- ----------------
-=20
--.. toctree::
--   :maxdepth: 2
--
--   arm64/index
--
- TODOList:
-=20
- * asm-annotations
-@@ -152,6 +147,11 @@ TODOList:
- =E7=89=B9=E5=AE=9A=E9=AB=94=E7=B3=BB=E7=B5=90=E6=A7=8B=E6=96=87=E6=AA=94=
-
- ----------------
-=20
-+.. toctree::
-+   :maxdepth: 2
-+
-+   arm64/index
-+
- TODOList:
-=20
- * arch
---=20
-2.17.1
-
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 0033eedce003..1d1bde1fd45e 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -13,6 +13,7 @@ import logging
+ import os
+ import re
+ import subprocess
++import sys
+ 
+ _DEFAULT_OUTPUT = 'compile_commands.json'
+ _DEFAULT_LOG_LEVEL = 'WARNING'
+-- 
+2.33.0
 
