@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D05B40327C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B4E40327E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347112AbhIHCKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
+        id S1347148AbhIHCKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347006AbhIHCKI (ORCPT
+        with ESMTP id S1347006AbhIHCKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:10:08 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87908C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:09:01 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so1683398lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:09:01 -0700 (PDT)
+        Tue, 7 Sep 2021 22:10:44 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAA7C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:09:37 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id t20so546978pju.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:09:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMfhnZEDUobmgMhlgRrfI9FnzHQ5cBHWiHpC8dZfDL8=;
-        b=PaytCRkY84O6DVS1dyHCT8Cfr2TXCcsOW8lD7RUZNnJhHuwUDUmbH8lDBBsT8S60wZ
-         TrX2KvKSPjcbxEIdOWtmQs6VTGHmqiTLgkq/Pk/tZNUL+lEd1/5ClG0NwnwYDYmvPgqg
-         8x2hDuO8nRlvlVXhOhFPNlqxephWBiaHokPOw=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7NYzM/JHWz+Fchf07XDZ5B5EQZtrwYGf0aZaNqlzyHc=;
+        b=nBbT/qUKGrTbqMibm0K8J4JkgO3JQakv4S3JxJCGj1nqvnkGXh60acFH6QHdOdOwFq
+         tl2JgUe/6Y+vT0gVbgAPKikswJIfV1buTiAh9B71JzG71J2uzX9Fw0nEgTWg8UVoIG45
+         yhBSM1GVQOrT1pzXmxmHoQoIOO4VjQHBMyjpIR022OjCNlKae5xRXVoYjr2E30tDhemA
+         updhzfS6gsPwWpWNjd0U8o7/bwuajJ99c2EVsY8tB7/yIUqM9K8gg0B/Zcnwkmj+s+KZ
+         ZJ375lKTAZRRNglanTHHEzVJ01JqWvMaOIEIulafVBU7vM11Fy7fwImFdym4PsIJ+2Wz
+         C5ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMfhnZEDUobmgMhlgRrfI9FnzHQ5cBHWiHpC8dZfDL8=;
-        b=mEoLY7CZ4rmv/zYFb/ui+R+T6bFj0QHtEyw0HcMrpgSr/Cn+WCKNVph0dTBNeCqF5R
-         57xqNg9akych5GJBQKMtqVS1ThfAXxvln5fmePiNbYk4MXa0JJD3Ohi7kvta51ittM12
-         HdYsavzGADPeKrDlzHveRriPUA/UHR/AH6S84FjgGEabdXOsTLaSlH7IUcNfprSztbU1
-         MQdZjo2nhrXbHb37ZiB9RaaPhc2UsdtYvmm4cn0wq5kIvAcllDjlBV4A/imVxhBUcBzx
-         FcZ8Y5AFIOz+HvVSs3Jw7ubH9Qvrnm8X2LWqlr+OZ2tJedkQmlTZSMseHFv6thdiNjlY
-         6tLw==
-X-Gm-Message-State: AOAM531AB23qaaA3a5ZzbgAK1e0BhGkLMLGQ3FzC/m810u2gs9tcMITV
-        2hKW0RLnL/p8gF78SQWB58nKTY1Bsad7aKkeBos=
-X-Google-Smtp-Source: ABdhPJwsOaHPVTce8cVMK4wg6HenIMbxjQWrU7fJ2VABqDDGi0gTriDlZhCmZ0Z8Pk2wM0vermw4Wg==
-X-Received: by 2002:a19:f014:: with SMTP id p20mr967730lfc.589.1631066939246;
-        Tue, 07 Sep 2021 19:08:59 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id m4sm54266lfr.279.2021.09.07.19.08.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 19:08:59 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id w4so799563ljh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:08:58 -0700 (PDT)
-X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr867691ljp.494.1631066938338;
- Tue, 07 Sep 2021 19:08:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7NYzM/JHWz+Fchf07XDZ5B5EQZtrwYGf0aZaNqlzyHc=;
+        b=hycUimHkAJ85SgTldmNdU70+PA6zyBRewpJFqylFtby8Zesot1ZUJnHSP/CsueputU
+         b8XUtzXO+8D/wIAMO9QlH8RGUXcCKAV8v91DVZf9I7kYJTOCAmMW3eO47VSFWm1zAh4p
+         fYxqoZYLsXZKYqH6b/cx2/CiqHNd1QtkC4INMBOiY9e/22TUFjB/+KYPq4OOYS/t2RRT
+         vmKbiHfTgxGkjMR8cCZAk7zX3CC+zPg2oj4dgpcx8mD4wY6qnJu4jTt1UFtOeWuG6xoU
+         5kcYdkbpICgSrajAm2/4X+PfGNUg7ecHRlncx4dXnK6jBEbK5MSMYPt8KGpduVZU1Dsz
+         7rBA==
+X-Gm-Message-State: AOAM531uNYTDJjx87F2eZYzRVNQvcYzYeKcXduQqP3BTsBh3gwniVFlK
+        +qtGcg+0cTHmZU+Njqmnxy3uXw==
+X-Google-Smtp-Source: ABdhPJxdP4gTchzCo+ZAT1VvYKwNscoCzoB5wdo4DUOGVEojV9N2Jj5yp24CISY6jJFA1h2GQcsMKw==
+X-Received: by 2002:a17:902:c205:b0:138:c28f:a774 with SMTP id 5-20020a170902c20500b00138c28fa774mr939495pll.59.1631066976966;
+        Tue, 07 Sep 2021 19:09:36 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id d5sm331607pfd.142.2021.09.07.19.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 19:09:36 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 10:09:31 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH 2/2] arm64: dts: rockchip: add Coresight debug
+ range for RK3399
+Message-ID: <20210908020931.GB1538480@leoy-ThinkPad-X240s>
+References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+ <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
 MIME-Version: 1.0
-References: <20210907213943.GA822380@bjorn-Precision-5520>
-In-Reply-To: <20210907213943.GA822380@bjorn-Precision-5520>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 19:08:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiCgh_V-g74LE4pQKqakbiK+CM5opVtH1t2+Y3R=uH9EA@mail.gmail.com>
-Message-ID: <CAHk-=wiCgh_V-g74LE4pQKqakbiK+CM5opVtH1t2+Y3R=uH9EA@mail.gmail.com>
-Subject: Re: [GIT PULL] PCI changes for v5.15
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        David Miller <davem@davemloft.net>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 2:39 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
->   drivers/net/ethernet/broadcom/bnxt/bnxt.c
->   drivers/net/ethernet/broadcom/bnx2.c
->     Fallout from the VPD changes below.  These include both PCI core and
->     driver changes, and the driver changes got merged via the net tree and
->     then reverted so everything would be merged via the PCI tree.
+On Tue, Sep 07, 2021 at 09:46:37AM -0700, Brian Norris wrote:
+> Per Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt.
+> 
+> This IP block can be used for sampling the PC of any given CPU, which is
+> useful in certain panic scenarios where you can't get the CPU to stop
+> cleanly (e.g., hard lockup).
+> 
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 
-Christ.
+Looks good to me, FWIW:
 
-So the revert from the networking tree has basically _zero_ useful
-information. It just says "revert".
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-David, that's not ok. The natural reaction to this situation is
-
-  "ok, this commit was done both in the networking tree and the PCI
-tree, but then the networking tree reverted it. So there must be
-something wrong with it, and I should take the reverted state"
-
-but Bjorn's comment implies that it was reverted in order to _avoid_
-merge conflicts since it was also done in the PCI tree, which is pure
-and utter garbage, because I end up with the merge conflict *ANYWAY*
-due to the other changes, and now instead of going "ok, the PCI tree
-had that same commit, all good", I have to go "ok, so the PCI tree had
-the same commit, but it was reverted in the networking tree, so now I
-have both sides making different changes and a very confusing merge".
-
-Here's the thing. There's a couple of very simple and basic rules:
-
- (a) don't do stupid things. In particular, don't try to make my
-merges easier by adding MORE crap on top of the known merge problem.
-
-     This is not that different from "don't rebase merge conflicts
-away". You're making things worse.
-
- (b) INDEPENDENTLY of that "don't do stupid things", the #1 rules for
-_any_ commit is to give the damn reason for the commit.
-
-     You can't just say "revert X" in a commit message. That's not a
-reason. That doesn't explain ANYTHING at all.
-
-So now I have to basically guess at what is going on.
-
-Yes, yes, I can make fairly informed guesses from looking more
-carefully at the code, looking at the *other* commit messages, and
-doing something sensible. So my guesses aren't going to be about
-tossing a coin. But please don't do these kinds of things!
-
-Don't make my life "easier" by doing stupid things, and DO put a
-reason for every single commit you do. Reverts aren't "oh, I'm just
-turning back the clock, so no reason to say anything else".
-
-          Linus
+> ---
+> 
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 48 ++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index 3871c7fd83b0..c8c62637b600 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -433,6 +433,54 @@ usbdrd_dwc3_1: usb@fe900000 {
+>  		};
+>  	};
+>  
+> +	debug@fe430000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe430000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_L>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_l0>;
+> +	};
+> +
+> +	debug@fe432000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe432000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_L>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_l1>;
+> +	};
+> +
+> +	debug@fe434000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe434000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_L>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_l2>;
+> +	};
+> +
+> +	debug@fe436000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe436000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_L>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_l3>;
+> +	};
+> +
+> +	debug@fe610000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe610000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_B>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_b0>;
+> +	};
+> +
+> +	debug@fe710000 {
+> +		compatible = "arm,coresight-cpu-debug", "arm,primecell";
+> +		reg = <0 0xfe710000 0 0x1000>;
+> +		clocks = <&cru PCLK_COREDBG_B>;
+> +		clock-names = "apb_pclk";
+> +		cpu = <&cpu_b1>;
+> +	};
+> +
+>  	cdn_dp: dp@fec00000 {
+>  		compatible = "rockchip,rk3399-cdn-dp";
+>  		reg = <0x0 0xfec00000 0x0 0x100000>;
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
