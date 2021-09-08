@@ -2,264 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C900C40399C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657804039A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351697AbhIHMRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351670AbhIHMRd (ORCPT
+        id S1351719AbhIHMWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:22:23 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:50422 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351652AbhIHMWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:17:33 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5FCC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 05:16:26 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id l10so2048206ilh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 05:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+GtAWakd3pdV8HQ9F3sd52YrBJrg5R1xSo+M5bxbcpM=;
-        b=gEictymgNG4qWkNdiHTk3Ai+MVxyUTVoFa+sTi9CD86hHkRokj6A90ykjKYM1y2CBr
-         1iJ5gllin4eBbqHMagANOYi+/lpZATWOe6M6+QN8Z0Z1KtbulXLBv4sZbp4LNdPQXnWZ
-         LfxyP2atZKmJNku7Tksle0Q85lylxvMIoh+qDJHRSAmvH8G/UQEhMSY3FHawrOTaUD1n
-         kTSWCJEFcOO1VRfhqK26vpRcqHSBGRJUSZJ44MQ7tU+AfTHHzSacVdu6FnRq5pulT1ON
-         +sADDGtmj43e6yE0VGO0rhqOyk8ZLIHCInqu3CZhbcJnSevF2NHTq31/Z4m+WQ4KLbid
-         bfRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+GtAWakd3pdV8HQ9F3sd52YrBJrg5R1xSo+M5bxbcpM=;
-        b=m++W8Ngc3ta3uRn3rG+2zbKhJ1+114Qox8qqnHPyGC8rIL5WPIX7D4ElYHBdnzghjs
-         hhF92dExilg/FHfsIJDg8IbJH6SAxT2UG6Y8KRmAcm2+IEtWrscuyRBwuyfnWwuE75eI
-         EwYRk8uanTYrfIRFedsQpKC7T2ghtbnXs8uKVVJDpVCnLtRRSCd5DfCALjGQVIaZEGzR
-         3WLrKRnpX45Pr9hZcWv2IjluYtbyKQztJTz+7w1XZ0FJCoD4T+HcDO/ZjTSBC2iN1Li4
-         5l2vz5MbB5mIymXWlGiPTTBre5km4AAfLguurmkrF4snQWdEz1dlPLUMkZEZULrSk6f+
-         ppSQ==
-X-Gm-Message-State: AOAM531Jp1OPBhFCkjJf4UOTQkGh8ftXWNn+Eku6Nv91HGr+if5jUqC/
-        XMTeEQGmQq5QU/JdbA+/BFDmuw==
-X-Google-Smtp-Source: ABdhPJzRXh8bRGnBu/21Dpmv3vWUZkpgIUUYj6TIJhcmSYhtSmzslICbd3iPLxkRJv5ySd0sBBScmA==
-X-Received: by 2002:a92:c5cf:: with SMTP id s15mr2710598ilt.62.1631103385661;
-        Wed, 08 Sep 2021 05:16:25 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id p15sm1070440iop.15.2021.09.08.05.16.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 05:16:25 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: uart: fix tty use after
- free
-To:     Johan Hovold <johan@kernel.org>
-Cc:     David Lin <dtwlin@gmail.com>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210906124538.22358-1-johan@kernel.org>
- <56782caa-bd9d-b049-7ca6-c64e3fbe109a@linaro.org>
- <YThsyOlHqWmb5hsV@hovoldconsulting.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <1ec74bbe-2185-d287-09cf-a001d14a012c@linaro.org>
-Date:   Wed, 8 Sep 2021 07:16:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 08:22:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UnhbUrf_1631103655;
+Received: from localhost.localdomain(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnhbUrf_1631103655)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 08 Sep 2021 20:21:05 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     wuzongyong@linux.alibaba.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+Subject: [PATCH 0/6] vDPA driver for legacy virtio-pci device
+Date:   Wed,  8 Sep 2021 20:20:31 +0800
+Message-Id: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YThsyOlHqWmb5hsV@hovoldconsulting.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 2:56 AM, Johan Hovold wrote:
-> On Tue, Sep 07, 2021 at 08:32:25AM -0500, Alex Elder wrote:
->> On 9/6/21 7:45 AM, Johan Hovold wrote:
->    
->>> +static void gb_tty_port_destruct(struct tty_port *port)
->>> +{
->>> +	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
->>> +
->>
->> So the minor number is GB_NUM_MINORS until after both the buffer
->> and the kfifo have been allocated.
-> 
-> Yes, but more importantly until the minor number has been allocated.
-> 
->> And kfifo_free() (similar to
->> kfree()) handles being provided a non-initialized kfifo, correct?
-> 
-> Correct, as long as it has been zeroed.
+This series implements the vDPA driver for legacy virtio-pci device.
+Currently we already have the vDPA driver for modern virtio-pci device
+only, but there are some legacy virtio-pci devices conforming to the
+virtio-pci specifications of 0.9.x or older versions. For example,
+ENI(Elastic Network Interface) of Alibaba ECS baremetal instance is a
+hardware virtio network device which follows the Virtio PCI Card 0.9.5
+Draft specification. Such legacy virtio-pci devices have some
+inconsistent behaviour with modern virtio-pci devices, so some common
+codes are split out and modern device specific codes are moved to a
+separated file.
 
-The original patch looks fine to me.  Thanks for the explanation.
+For legacy devices, it is not supported to negotiate the virtqueue size
+by the specification. So a new callback get_vq_num_unchangeable is
+introduced to indicate user not to try change the virtqueue size of the
+legacy vdpa device. For example, QEMU should not allocate memory for
+virtqueue according to the properties tx_queue_size and rx_queue_size if
+we use legacy virtio-pci device as the vhost-vdpa backend. Instead, QEMU
+should use the new callback get_vq_num_unchangeable first to check if
+the vdpa device support to change virtqueue size. If not, QEMU should
+call the callback get_vq_num_max to get the static virtqueue size then
+allocate the same size memory for the virtqueue.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+This series have been tested with the ENI in Alibaba ECS baremetal
+instance.
 
->>> +	if (gb_tty->minor != GB_NUM_MINORS)
->>> +		release_minor(gb_tty);
->>> +	kfifo_free(&gb_tty->write_fifo);
->>> +	kfree(gb_tty->buffer);
->>> +	kfree(gb_tty);
->>> +}
->>> +
->>>    static const struct tty_operations gb_ops = {
->>>    	.install =		gb_tty_install,
->>>    	.open =			gb_tty_open,
->>> @@ -786,6 +797,7 @@ static const struct tty_port_operations gb_port_ops = {
->>>    	.dtr_rts =		gb_tty_dtr_rts,
->>>    	.activate =		gb_tty_port_activate,
->>>    	.shutdown =		gb_tty_port_shutdown,
->>> +	.destruct =		gb_tty_port_destruct,
->>>    };
->>>    
->>>    static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>> @@ -798,17 +810,11 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    	int retval;
->>>    	int minor;
->>>    
->>> -	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
->>> -	if (!gb_tty)
->>> -		return -ENOMEM;
->>> -
->>
->> Why do you reorder when you allocate the gb_tty structure?
->> I don't have a problem with it, but it seems like the order
->> doesn't matter.  Is it just so you can initialize it right
->> after it's allocated?  (If so, I like that reason.)
-> 
-> Yeah, and I wanted to keep the bits managed by the port reference count
-> together.
-> 
->>>    	connection = gb_connection_create(gbphy_dev->bundle,
->>>    					  le16_to_cpu(gbphy_dev->cport_desc->id),
->>>    					  gb_uart_request_handler);
->>> -	if (IS_ERR(connection)) {
->>> -		retval = PTR_ERR(connection);
->>> -		goto exit_tty_free;
->>> -	}
->>> +	if (IS_ERR(connection))
->>> +		return PTR_ERR(connection);
->>>    
->>>    	max_payload = gb_operation_get_payload_size_max(connection);
->>>    	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
->>> @@ -816,13 +822,23 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    		goto exit_connection_destroy;
->>>    	}
->>>    
->>> +	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
->>> +	if (!gb_tty) {
->>> +		retval = -ENOMEM;
->>> +		goto exit_connection_destroy;
->>> +	}
->>> +
->>> +	tty_port_init(&gb_tty->port);
->>> +	gb_tty->port.ops = &gb_port_ops;
->>> +	gb_tty->minor = GB_NUM_MINORS;
->>> +
->>>    	gb_tty->buffer_payload_max = max_payload -
->>>    			sizeof(struct gb_uart_send_data_request);
->>>    
->>>    	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
->>>    	if (!gb_tty->buffer) {
->>>    		retval = -ENOMEM;
->>> -		goto exit_connection_destroy;
->>> +		goto exit_put_port;
->>>    	}
->>>    
->>>    	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
->>> @@ -830,7 +846,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
->>>    			     GFP_KERNEL);
->>>    	if (retval)
->>> -		goto exit_buf_free;
->>> +		goto exit_put_port;
->>>    
->>>    	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
->>>    	init_completion(&gb_tty->credits_complete);
->>> @@ -844,7 +860,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    		} else {
->>>    			retval = minor;
->>>    		}
->>> -		goto exit_kfifo_free;
->>> +		goto exit_put_port;
->>>    	}
->>>    
->>>    	gb_tty->minor = minor;
->>> @@ -853,9 +869,6 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    	init_waitqueue_head(&gb_tty->wioctl);
->>>    	mutex_init(&gb_tty->mutex);
->>>    
->>> -	tty_port_init(&gb_tty->port);
->>> -	gb_tty->port.ops = &gb_port_ops;
->>> -
->>>    	gb_tty->connection = connection;
->>>    	gb_tty->gbphy_dev = gbphy_dev;
->>>    	gb_connection_set_data(connection, gb_tty);
->>> @@ -863,7 +876,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    
->>>    	retval = gb_connection_enable_tx(connection);
->>>    	if (retval)
->>> -		goto exit_release_minor;
->>> +		goto exit_put_port;
->>>    
->>>    	send_control(gb_tty, gb_tty->ctrlout);
->>>    
->>> @@ -890,16 +903,10 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->>>    
->>>    exit_connection_disable:
->>>    	gb_connection_disable(connection);
->>> -exit_release_minor:
->>> -	release_minor(gb_tty);
->>> -exit_kfifo_free:
->>> -	kfifo_free(&gb_tty->write_fifo);
->>> -exit_buf_free:
->>> -	kfree(gb_tty->buffer);
->>> +exit_put_port:
->>> +	tty_port_put(&gb_tty->port);
->>>    exit_connection_destroy:
->>>    	gb_connection_destroy(connection);
->>> -exit_tty_free:
->>> -	kfree(gb_tty);
->>>    
->>>    	return retval;
->>>    }
->>> @@ -930,15 +937,10 @@ static void gb_uart_remove(struct gbphy_device *gbphy_dev)
->>>    	gb_connection_disable_rx(connection);
->>>    	tty_unregister_device(gb_tty_driver, gb_tty->minor);
->>>    
->>> -	/* FIXME - free transmit / receive buffers */
->>> -
->>>    	gb_connection_disable(connection);
->>> -	tty_port_destroy(&gb_tty->port);
->>>    	gb_connection_destroy(connection);
->>> -	release_minor(gb_tty);
->>> -	kfifo_free(&gb_tty->write_fifo);
->>> -	kfree(gb_tty->buffer);
->>> -	kfree(gb_tty);
->>> +
->>> +	tty_port_put(&gb_tty->port);
->>
->> In the error path above, you call tty_port_put()
->> before calling gb_connection_destroy(), which matches
->> (in reverse) the order in which they're created. I'm
->> accustomed to having the order of the calls here match
->> the error path.  Is this difference intentional?  (It
->> shouldn't really matter.)
-> 
-> I considered reordering (it stands out a bit in my eyes too) but decided
-> to leave it in place to highlight the fact that the connection may be
-> freed before the rest of the state either way (since a user may hold a
-> reference to it).
-> 
-> [ A driver mustn't do I/O after remove() returns even if it might be
->    possible to keep the connection structure around. That would however be
->    complicated by the lack of reference counting on the bundle/interface
->    structures so I decided not to venture down that path. ]
-> 
-> Like you say, the order here doesn't really matter so I can move it up
-> if you prefer.
-> 
-> Johan
-> 
+These patches may under consideration, welcome for comments.
+
+
+Wu Zongyong (6):
+  virtio-pci: introduce legacy device module
+  vdpa: fix typo
+  vp_vdpa: add vq irq offloading support
+  vp_vdpa: split out reusable and device specific codes to separate file
+  vdpa: add get_vq_num_unchangeable callback in vdpa_config_ops
+  vp_vdpa: introduce legacy virtio pci driver
+
+ drivers/vdpa/Kconfig                     |   7 +
+ drivers/vdpa/virtio_pci/Makefile         |   3 +
+ drivers/vdpa/virtio_pci/vp_vdpa.c        |   8 +
+ drivers/vdpa/virtio_pci/vp_vdpa_common.c | 220 ++++++++++++++
+ drivers/vdpa/virtio_pci/vp_vdpa_common.h |  67 +++++
+ drivers/vdpa/virtio_pci/vp_vdpa_legacy.c | 346 +++++++++++++++++++++++
+ drivers/vdpa/virtio_pci/vp_vdpa_modern.c | 327 +++++++++++++++++++++
+ drivers/vhost/vdpa.c                     |  19 ++
+ drivers/virtio/Kconfig                   |  10 +
+ drivers/virtio/Makefile                  |   1 +
+ drivers/virtio/virtio_pci_common.c       |  10 +-
+ drivers/virtio/virtio_pci_common.h       |   9 +-
+ drivers/virtio/virtio_pci_legacy.c       | 101 ++-----
+ drivers/virtio/virtio_pci_legacy_dev.c   | 220 ++++++++++++++
+ drivers/virtio/virtio_vdpa.c             |   5 +-
+ include/linux/vdpa.h                     |   6 +-
+ include/linux/virtio_pci_legacy.h        |  44 +++
+ include/uapi/linux/vhost.h               |   2 +
+ 18 files changed, 1320 insertions(+), 85 deletions(-)
+ create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.c
+ create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.h
+ create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
+ create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_modern.c
+ create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
+ create mode 100644 include/linux/virtio_pci_legacy.h
+
+-- 
+2.31.1
 
