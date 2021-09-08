@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516B9403D4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9223403D4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347258AbhIHQIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344680AbhIHQI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345306AbhIHQI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 8 Sep 2021 12:08:29 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C63C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:07:21 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id v10so5322649ybm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:07:21 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhIHQIZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 12:08:25 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6092BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:07:17 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u19-20020a7bc053000000b002f8d045b2caso1970228wmc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:07:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OlLwloMM1UNziGhSZ73I5whfEToHkI4ZvWhuIcM5G8s=;
-        b=j5bGc2IirxaeHkq6J05nylDjOjhI8/WNnNCH218C+ljUcd3BGM6/pCCcKr7PlgQ9rX
-         mqW/bc2JL6DSp2FiVstvuKUqj+sxSdPA6D3jxap2gRz/Av8srgQrIVRHdc/QBVyOAMzT
-         gnjJFbXHDV1N79Vn4zAP+N9TEfUfDMpKdghWSrb3hKHoDqu8urjueLFJAX/2B0xLei0H
-         kKvHUpnCdwec4gbQbL2VsN9H/6tmlUj7M6kQfhy4Cf2xb7nJqKGB0kLL59QoxiBmxHTO
-         OsVNa+PcYwqBB1wJS9AUKqqv4GEtDXYhPdINQVZ6iU3jI863GfKQsA/GQcKcEoCtxCwm
-         AcSg==
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=GYpi6gE4nzN8o+CwjqakTN6E/NlmqkQ97rUaOk/UWX4=;
+        b=dB7G61cBrEEZi4ZBM15sM0lRlQhSceRMs2j8VpUdowxIq7I+EV/O6tHzIlRKCQYMhb
+         sqKtTBuda7JR29GXYY6wtlEPEmOdXuyI7/eQcNvuWD7Cd6m0WoBprusLR/6QX1edwqZP
+         AEgnDtPlQkFvRAK8tJMfKHKW/BuNDC7p19BUYyqoOnFk34twoyiM63BUtq5fRNLxyUQu
+         FhAQzzeo+b1ZVFvMKe/gu1jnlA1YwVlBXGS9QfgyV+mFfgc7UHcQHhb7OM4+wcj/jdTy
+         QwVDcjJcgrc4vPhQrTFrGQYRbWhLz6d4x5VBLtaw1qcQwCtxkRx90tYfvdAdCEyJBoh5
+         VguQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OlLwloMM1UNziGhSZ73I5whfEToHkI4ZvWhuIcM5G8s=;
-        b=GE2kT3VVlxvIpUf/5exafUDEk9/PImWEy2h5XdbsV29J7GJbLny2+tWCS9dS3RF4yk
-         5Cm8IGPv72tOwD8XIeMnGiKeI62nubTlJ7DJxLQQQE154K6XsAeIMXuNdR+5PaRKyz8o
-         4DWl8NrPjSI9IKLyRmEcKOSQ12wU7XIcSr0cLiF6TdKpcULkVkmfE+AMi2B8X5FzbMp9
-         ZzpvoT4BU+xrl2uk9k6sFct988CS6tZHSAsVNlcBL0y6v484tpEHuts9xIDie5W1mF5t
-         wYyWJ77026gC3Y8VAYWLzJ5tWwsbn3N8os3MN2teXoi3saXECGmJSicbAutFvt9QYEjJ
-         fsnA==
-X-Gm-Message-State: AOAM5301ZOzvO8Ut9lbkbxKhjeu+4//N72c+7CVh/pnSqK2qXusWQjSJ
-        KjK/UfajOHsSebqzly04SdzaGSyzwqIbPOsoe9Hsqw==
-X-Google-Smtp-Source: ABdhPJw4+DDt30fQHD5oYPdoChAnKFa73Ue9B3s9aptNmiCY1/fZWxEuLXm7T7yt4bdUe3JR8cBNfjANw4oHXZpOlhA=
-X-Received: by 2002:a25:abeb:: with SMTP id v98mr4667226ybi.30.1631117240489;
- Wed, 08 Sep 2021 09:07:20 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GYpi6gE4nzN8o+CwjqakTN6E/NlmqkQ97rUaOk/UWX4=;
+        b=HUshNi2lWk/35TTs+ZhZqoplXI+u2e0blb50qCgxGhH8pqNceI0zVir2ABOBcL35br
+         OX0bGjJW2L0cmzv3TdsiGgVEA/v2hyQ5n9NcCzZm0hhmfbIQmyXOg/YUlHB62zhrubBV
+         5OhzhDwYj8drkhSy8UHzY4T6O8PTf3sQpzlePUxbwaEo1gW3IePuAHuMVF829F+8vQW/
+         6wnXV3j9Y8V3Mmouig8wn6W4PLuXl+y/PD3biKGo5u5D+FK4w138mwQoSZSUmTQhxVdL
+         ZaS5oT4LuswdrfmknNmBlYanS0xrO95t8YIqx8o4JXCyrFawT3o34LvQknPkPJ6QLYex
+         8/uQ==
+X-Gm-Message-State: AOAM533z+MsA5KgtgnOjbS+efQwTS9e6lY/WEmm+pz0Z7C8L0b/u1X3M
+        IKT15s+CxLXa29kmmEVfPdxYGA==
+X-Google-Smtp-Source: ABdhPJxayYYiB4BOAaE9G9T0xgs/ruopGjv/M4dqlYrqylq981dWEmgdngr8ZqrrDDkmypDvw7WByA==
+X-Received: by 2002:a7b:c4cb:: with SMTP id g11mr4377562wmk.80.1631117235971;
+        Wed, 08 Sep 2021 09:07:15 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id o7sm2359684wmq.36.2021.09.08.09.07.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 09:07:15 -0700 (PDT)
+Subject: Re: [PATCH v2] ASoC: qcom: lpass-platform: Reset irq clear reg post
+ handling interrupts
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <20210908142535.31106-1-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <c29802c9-4577-87bd-b843-8540588c6d06@linaro.org>
+Date:   Wed, 8 Sep 2021 17:07:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210830044425.2686755-1-mizhang@google.com> <20210830044425.2686755-3-mizhang@google.com>
- <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
- <YS5fxJtX/nYb43ir@google.com> <CAL715WJUmRJmt=u4Gi3ydTpbTGy2M5Wi=CbF9Qs8GNRK8g5FAA@mail.gmail.com>
-In-Reply-To: <CAL715WJUmRJmt=u4Gi3ydTpbTGy2M5Wi=CbF9Qs8GNRK8g5FAA@mail.gmail.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Wed, 8 Sep 2021 09:07:09 -0700
-Message-ID: <CAL715WJYqusqiztS=fYE46jXmHUi9uni_kswt=ALyUx_hxKBFg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if page
- stats work correctly
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ben Gardon <bgardon@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210908142535.31106-1-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 1:05 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> On Tue, Aug 31, 2021 at 9:58 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Mon, Aug 30, 2021, Ben Gardon wrote:
-> > > On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > > > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> > > > index af1031fed97f..07eb6b5c125e 100644
-> > > > --- a/tools/testing/selftests/kvm/lib/test_util.c
-> > > > +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> > > > @@ -15,6 +15,13 @@
-> > > >  #include "linux/kernel.h"
-> > > >
-> > > >  #include "test_util.h"
-> > > > +#include "processor.h"
-> > > > +
-> > > > +static const char * const pagestat_filepaths[] = {
-> > > > +       "/sys/kernel/debug/kvm/pages_4k",
-> > > > +       "/sys/kernel/debug/kvm/pages_2m",
-> > > > +       "/sys/kernel/debug/kvm/pages_1g",
-> > > > +};
-> > >
-> > > I think these should only be defined for x86_64 too. Is this the right
-> > > file for these definitions or is there an arch specific file they
-> > > should go in?
-> >
-> > The stats also need to be pulled from the selftest's VM, not from the overall KVM
-> > stats, otherwise the test will fail if there are any other active VMs on the host,
-> > e.g. I like to run to selftests and kvm-unit-tests in parallel.
->
-> That is correct. But since this selftest is not the 'default' selftest
-> that people normally run, can we make an assumption on running these
-> tests at this moment? I am planning to submit this test and improve it
-> in the next series by using Jing's fd based KVM stats interface to
-> eliminate the assumption of the existence of a single running VM.
-> Right now, this interface still needs some work, so I am taking a
-> shortcut that directly uses the whole-system metricfs based interface.
->
-> But I can choose to do that and submit the fd-based API together with
-> this series. What do you suggest?
 
 
-I will take my point back, since some of the "TEST_ASSERT" in this
-selftest does assume that there is no other VM running even on
-'default' case (ie., run ./dirty_logging_perf_test without arguments).
-Therefore, this patch will make the test flaky.
+On 08/09/2021 15:25, Srinivasa Rao Mandadapu wrote:
+> Update interrupt clear register with reset value after addressing
+> all interrupts. This is to fix playback or capture hanging issue in
+> simultaneous playback and capture usecase.
 
-I will go back to implement the fd based API and submit the code along
-with this selftest.
+Could explain bit more about the issue.
+Specifically which interrupt and which ports is this issue seen.
 
-Thanks.
--Mingwei
+> 
+> Fixes: 4f629e4b8705f ("ASoC: qcom: Add ability to handle interrupts per dma channel")
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+> Changes since v1:
+>      -- Update comments Header information with fixes tag
+> 
+>   sound/soc/qcom/lpass-platform.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index f9df76d37858..1a0a4b0b1a03 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
+>   		}
+>   	}
+>   
+> +	rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST), 0x0);
+
+Writing 1 to a bit of this register will clear the corresponding latched 
+interrupt. So I don't really understand how writing 0 is really helping 
+here?
+
+Do you have this patch in your tree?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/sound/soc/qcom/lpass-cpu.c?h=v5.14&id=6a7f5bd6185e1c86256d5e52c3bb7a4d390d6e19
+
+
+--srini
+
+> +	if (rv) {
+> +		pr_err("error writing to irqstat reg: %d\n", rv);
+> +		return IRQ_NONE;
+> +	}
+> +
+>   	return IRQ_HANDLED;
+>   }
+>   
+> 
