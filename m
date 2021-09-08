@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533B4403F2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF09403F2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349800AbhIHSnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        id S1350181AbhIHSnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbhIHSnI (ORCPT
+        with ESMTP id S1350029AbhIHSnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:43:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4825C061575;
-        Wed,  8 Sep 2021 11:41:59 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0efc00b7f29acf52797616.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:b7f2:9acf:5279:7616])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2CA691EC04E0;
-        Wed,  8 Sep 2021 20:41:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631126514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=64mwiSa3Im6pBZVjlFClUkt/HUK4jUzSI5qR9jC8njI=;
-        b=Zw/Gh9j4SodIEppnc9OJzKReT966ru5la4OsRZAvOgWj2XhJ0I7tE+FTPHPSoYFwgkpjqG
-        09WCQ7joRx3Cfbg/G6lSMmEHHCTBssLTPPNEUs+iGffumQhkM9/45hDv1AzV58lQ1snchS
-        RitveNpqOwlNPyhMFdkFXhWQvO9Tw30=
-Date:   Wed, 8 Sep 2021 20:41:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     Naveen Krishna Chatradhi <nchatrad@amd.com>,
-        linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        Muralidhara M K <muralimk@amd.com>
-Subject: Re: [PATCH v3 3/3] EDAC/amd64: Enumerate memory on noncpu nodes
-Message-ID: <YTkD6iy9JhwetSYU@zn.tnic>
-References: <20210806074350.114614-4-nchatrad@amd.com>
- <20210823185437.94417-1-nchatrad@amd.com>
- <20210823185437.94417-4-nchatrad@amd.com>
- <YSjM8b9vvkmRew94@zn.tnic>
- <YS/JkgWA8VreIx1R@yaz-ubuntu>
+        Wed, 8 Sep 2021 14:43:40 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA1DC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:42:31 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so1757308pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ABvGIs5eX2JcG2RKOXdfPuOSsqXlbFksA1bqMpiHrKg=;
+        b=gggg8QY83kYOHmlQFwrqwpTrxRQ37OKExGKYl+YcDgMR4e8uWIDSoRYCkqZwj+ddht
+         zO23SG38AW+h3fnG5RPY72UcoFxK8l9NEIPJIfKiRfR3MlK7YJSeNR3br+isPCUUcmF9
+         NvUUh8Y6VgCFCFuNiWn2L2OtxHjmecXPgNcqWVTwt8vNbTqo9iN7Oyw4uoOEKXVo8wsY
+         C24bb9xHQJ9d2f1psLLQxW8qq/bcwWnjXjrnsqhRPbMeVP2VOjlzShjL5fDK4rprKmIR
+         BlM6H+e3TxMX7aykAeiOxIPcrU5MTW4PB6oJSYCzVAe6mp8245j2H0vElw0rO1pqB+Yf
+         K+IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ABvGIs5eX2JcG2RKOXdfPuOSsqXlbFksA1bqMpiHrKg=;
+        b=KgNw1MqpmcEMK7vzp6Y7VOWo5noiBEHvkfiXiGZKXF5YvkqGEx/a1ob9Alpn+xAXH4
+         3r+XODNE228srYCwjNyVk21gN+5hr7mngoLu/CxHqzWq7IiXcwMuxDfVMweUETWYCdTn
+         q0+l9WrM0WkPGu8eaw5Sio7XuTBS974+dfKZjsHkl/cTf+zP7MSENxNJ9cgJ5AUJw87t
+         8vTTEt6dD2bbUx92fi+K3rczVqdevB0AbugTsNJYAf/aDEXNOg3ziRgJ2Gr4zSp7/4p6
+         g5O0Nfcn9NxYyZC+YzKAqvzZYmWlrCKal8QnwRO37gS7uAXYp5SH+CmiS4/33R7V6GMC
+         dx2Q==
+X-Gm-Message-State: AOAM5316QGjHzDYmY1LdacplOvSA/FHhJmvUFpMeMc4XOf0UCSvjnBTM
+        O1fu1ejgg3H9TCar3ipCaQRk9Q==
+X-Google-Smtp-Source: ABdhPJy4e/vI56FcplVnGf0mW1f0p2XiKwuKf2Umtrz+2M+vgo8laMp7d1jaXTbTS/HdfYOrprWQZw==
+X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr5638781pjb.43.1631126546438;
+        Wed, 08 Sep 2021 11:42:26 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j4sm2924229pjc.46.2021.09.08.11.42.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 11:42:25 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 18:42:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Jiang Jiasheng <jiasheng@iscas.ac.cn>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        pbonzini@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, jarkko@kernel.org,
+        dave.hansen@linux.intel.com
+Subject: Re: [PATCH 4/4] KVM: X86: Potential 'index out of range' bug
+Message-ID: <YTkEDoe8R5JJ77+B@google.com>
+References: <1630655700-798374-1-git-send-email-jiasheng@iscas.ac.cn>
+ <87czppnasv.fsf@vitty.brq.redhat.com>
+ <YTI5SYVTJHiMdm+W@google.com>
+ <87tuiy3qtc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YS/JkgWA8VreIx1R@yaz-ubuntu>
+In-Reply-To: <87tuiy3qtc.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 06:42:26PM +0000, Yazen Ghannam wrote:
-> err.channel still needs to be used in error_address_to_page_and_offset()
-> below.
+On Mon, Sep 06, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> > On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
+> >> Jiang Jiasheng <jiasheng@iscas.ac.cn> writes:
+> >> 
+> >> > The kvm_get_vcpu() will call for the array_index_nospec()
+> >> > with the value of atomic_read(&(v->kvm)->online_vcpus) as size,
+> >> > and the value of constant '0' as index.
+> >> > If the size is also '0', it will be unreasonabe
+> >> > that the index is no less than the size.
+> >> >
+> >> 
+> >> Can this really happen?
+> >> 
+> >> 'online_vcpus' is never decreased, it is increased with every
+> >> kvm_vm_ioctl_create_vcpu() call when a new vCPU is created and is set to
+> >> 0 when all vCPUs are destroyed (kvm_free_vcpus()).
+> >> 
+> >> kvm_guest_time_update() takes a vcpu as a parameter, this means that at
+> >> least 1 vCPU is currently present so 'online_vcpus' just can't be zero.
+> >
+> > Agreed, but doing kvm_get_vcpu() is ugly and overkill.
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 86539c1686fa..cc1cb9a401cd 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -2969,7 +2969,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+> >                                        offsetof(struct compat_vcpu_info, time));
+> >         if (vcpu->xen.vcpu_time_info_set)
+> >                 kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
+> > -       if (v == kvm_get_vcpu(v->kvm, 0))
+> > +       if (!kvm_vcpu_get_idx(v))
+> 
+> Do we really need to keep kvm_vcpu_get_idx() around though? It has only
+> 3 users, all in arch/x86/kvm/hyperv.[ch], and the inline simpy returns
+> 'vcpu->vcpu_idx'.
 
-I think you mean __log_ecc_error().
+Nope, looks like it's a holdover from before the introduction of vcpu_idx.  I'll
+send a small series to jettison the wrapper and make the above change.
 
-> This is a good idea. But we have a global *fam_type, so this should be moved
-> into struct amd64_pvt, if possible. Then each node can have its own fam_type.
-
-per_family_init() does assign stuff to pvt members so yes, we're saying
-the same thing, practically.
-
-> Fair point. I like the idea of having unique names though. Is this possible
-> with the current EDAC framework? Or is it not worth it?
-
-We don't have unique names for the CPU nodes:
-
-[   25.637486] EDAC MC0: Giving out device to module amd64_edac controller F17h_M30h: DEV 0000:00:18.3 (INTERRUPT)
-[   25.799554] EDAC MC1: Giving out device to module amd64_edac controller F17h_M30h: DEV 0000:00:19.3 (INTERRUPT)
-
-why does it matter to have unique names for the accelerators?
-
-If you wanna differentiate them, you can dump the PCI devs like above.
-
-Just to make it clear - I'm not against it per-se - I'd just need a
-stronger justification for doing this than just "I like the idea".
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks!
