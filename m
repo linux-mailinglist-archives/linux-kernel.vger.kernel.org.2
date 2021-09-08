@@ -2,83 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCEE4034AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39D04034B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347986AbhIHHCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347959AbhIHHCe (ORCPT
+        id S1347987AbhIHHCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:02:49 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35840
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346092AbhIHHCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:02:34 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CE9C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:01:27 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id h1so1780296ljl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nzXaUAalZqbrYv6j2stFbPFR8gVHfPe6iNbwkck2gaQ=;
-        b=I1O9kC6SsLJK4g5PyixqNxAjrnfsTIyox8pmgc6TZJICHzT2LP9NxZK8qLXv+rRlJA
-         htYN5ABJjJ4+wr84+nsWuut0jYihhpds2TBbcZzI+azmDpj96X7pVXz6FfwFJpyxmpwt
-         ezfrmkfKFGFMkT1mOqemRXfryDV25SDYPHj0mxz3AeJbn5OQpZCdHsB+bD9JZjSlL3t4
-         JUHsOYfs1Jz+Ro3wOtl4O104qhq6DWne2x815Y10W+SZssAZAlzmGl+G9tXZ1G68uUBF
-         kDyjCISsiV72NcZPju2V6W+u5TGHVlsJwczfhhUtCy+YjuYhT5Nz0oRPRgcMV2yxIT/K
-         41kQ==
+        Wed, 8 Sep 2021 03:02:46 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8D94B3F335
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631084497;
+        bh=7OsT0XPB+KLnwypcRQ26qkCgD4akJ8q/u9rPuGRcl6M=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Qw+NdwZRVNVRT5UI/DEvYtfCw2eqwT8ZkDg+2IWACaCthxWKo5tiupE9FHxyagDeL
+         N4hKCXp4mfgcKYSqL/FEY/w1IvDVWa7HPcVzgfZslomB3Zv/BGIFuMjYmDSppYStWY
+         QE9ztbs7eKY+8PXbK2XgfYMS/J4H/lZbNl0qk/NMY0OiLw/jQWkKUmQdKC4UZyxqxc
+         CCVr3fVlAzu2jc2oNY/7uJbmYYqm/qLra+XRASMLMF3ZAgy3xCGTRKJJk+dt5iiHkp
+         urtCo/U2yVtZLSfH8Fz2WRWry+VhszcxCaxyYC+TRtOGACdmmyl3lu7GObl7dherTJ
+         HNSYPOl/KOn7w==
+Received: by mail-wr1-f69.google.com with SMTP id p10-20020adfce0a000000b001572d05c970so201482wrn.21
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:01:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nzXaUAalZqbrYv6j2stFbPFR8gVHfPe6iNbwkck2gaQ=;
-        b=pt4Lytc1Rs3+YmyHXHYtpbCEKzsc6eQvy+hXJaqxTBzsW0T4XY9Y7gPs9Th5NTnyEw
-         ootTT7FlruziGJ/CEha0wUMkdZd4z9QmflqPlP6MZyw49mBUFhwODpq/shYk0cR8hGU5
-         WNPG2FyIP9/cfSNECm49qeexBdkWQTxDB9JV2YHi4ga+WfnppuJ92BF5pLhLezfw21WO
-         SO6vxtfOjP9Wa3nXba4h0BgvfBeXTstFlZEDDqSXQB/DDg+bYkNMfGRIm4E067wt4Zjs
-         S7Jnon2/q2EeA+P9sJSYYHp8iBvxDAO5MfiZqB4SZbwpGQJQhcKoR5SWbkLQ5rOafakg
-         yp6Q==
-X-Gm-Message-State: AOAM533moKXeXieR4yESYYHWCnLw1Y7ViFQb1W1oVQNTBds1aXYuRBfg
-        HhoabL/oQfQw+SGknWZ34O9Ifz2cojPraW66S0NnqA==
-X-Google-Smtp-Source: ABdhPJwuTMM7db+CKbywV5n8DOBaJdUVZ9/pm9vdpYvhauCZICpdO2MsiV8vTp6ey6VXwezzc71z0pbJc8YuXvHEyKs=
-X-Received: by 2002:a2e:b8c7:: with SMTP id s7mr1738648ljp.105.1631084485315;
- Wed, 08 Sep 2021 00:01:25 -0700 (PDT)
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7OsT0XPB+KLnwypcRQ26qkCgD4akJ8q/u9rPuGRcl6M=;
+        b=mVlFju2JSBIzWbJKhgUGBa5mwD3/4tRIbUY/vRdU/YCtKB/1nSaN5GnV28Hz+yIB25
+         nXoLl2XdwYl4oFTtSBEgo0kyaG7Uze1baaMK4OcZ73cKABN/8RjqmJZ0J3/CXwufESz5
+         BCJ1gRBZWva4Ty6VxMprJnPrBeOplNydKWkdxZCbMMuJjB51WIT8zPVtzmVBgYq6n2rU
+         OtPV31ZuSxA506/PGbPv/NjAsXYA/AxGTrmWGAKulPGKpHgA5fohNZpNXptQBruMzIRJ
+         ujLX7VaX+cjnaBXAivE3bjI/JXz1w4Ax8TR8VXS8SjGs9hFgA8rz51yZNNUduKnDGbWR
+         x5Kw==
+X-Gm-Message-State: AOAM533AzFOK56/pYEjBFk4VRElZPJvmSh9NbY4F+ceBBegchWd0zUMq
+        ceTo+UrpbUQbZpntlDlrszqUE+mXZMlhBfolxkYEdUQOJBP1isXHyudD5C2DvwQIbc8Muiv9OMM
+        74OJNv8ERWw11MfeQsiyYRNu+mWf2TUJLhFgSp9wqqw==
+X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr2165630wrx.70.1631084486184;
+        Wed, 08 Sep 2021 00:01:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAmJ4+SOX1o+v7aucWstLZvxDjC7dz0hHMt68cmrHjjVhjdJdEeWBblBfkce0XG8SHHwAphg==
+X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr2165600wrx.70.1631084485973;
+        Wed, 08 Sep 2021 00:01:25 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.74])
+        by smtp.gmail.com with ESMTPSA id o14sm1164596wrg.91.2021.09.08.00.01.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 00:01:25 -0700 (PDT)
+Subject: Re: [PATCH 0/7] ARM: support THREAD_INFO_IN_TASK (v3)
+To:     Keith Packard <keithpac@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     Abbott Liu <liuwenliang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+References: <20210904060908.1310204-1-keithp@keithp.com>
+ <20210907220038.91021-1-keithpac@amazon.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2d5e3f95-77ce-cd26-9020-3c1a8a65e799@canonical.com>
+Date:   Wed, 8 Sep 2021 09:01:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org>
-In-Reply-To: <YThXe4WxHErNiwgE@infradead.org>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Wed, 8 Sep 2021 16:01:14 +0900
-Message-ID: <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "Christian K??nig" <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210907220038.91021-1-keithpac@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your comment.
->
-> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > To share memory space using dma-buf, a API of the dma-buf requires dma
-> > device, but devices such as rxe do not have a dma device. For those case,
-> > change to specify a device of struct ib instead of the dma device.
->
-> So if dma-buf doesn't actually need a device to dma map why do we ever
-> pass the dma_device here?  Something does not add up.
-As described in the dma-buf api guide [1], the dma_device is used by dma-buf
-exporter to know the device buffer constraints of importer.
-[1] https://lwn.net/Articles/489703/
+On 08/09/2021 00:00, Keith Packard wrote:
+> Placing thread_info in the kernel stack leaves it vulnerable to stack
+> overflow attacks. This short series addresses that by using the
+> existing THREAD_INFO_IN_TASK infrastructure.
+> 
+> This is the third version of this series, in this version the changes
+> are restricted to hardware which provides the TPIDRPRW register. This
+> register is repurposed from holding the per_cpu_offset value to
+> holding the 'current' value as that allows fetching this value
+> atomically so that it can be used in a preemptable context.
+> 
+> The series is broken into seven pieces:
+> 
+>  1) Change the secondary_start_kernel API to receive the cpu
+>     number. This avoids needing to be able to find this value independently in
+>     future patches.
+> 
+>  2) Change the secondary_start_kernel API to also receive the 'task'
+>     value. Passing the value to this function also avoids needing to
+>     be able to discover it independently.
+> 
+>  3) A cleanup which avoids assuming that THREAD_INFO_IN_TASK is not set.
+> 
+>  4) A hack, borrowed from the powerpc arch, which allows locating the 'cpu'
+>     field in either thread_info or task_struct, without requiring linux/sched.h
+>     to be included in asm/smp.h
+> 
+>  5) Disable the optimization storing per_cpu_offset in TPIDRPRW. This leaves
+>     the register free to hold 'current' instead.
+> 
+>  6) Use TPIDRPRW for 'current'. This is enabled for either CPU_V6K or CPU_V7,
+>     but not if CPU_V6 is also enabled.
+> 
+>  7) Enable THREAD_INFO_IN_TASK whenever TPIDRPRW is used to hold 'current'.
+
+Hi,
+
+Thanks for your patches. This seems to be a v3 but the patches are not
+marked with it. Use "-v3" in format-patch to get it right.
+
+The email here also lacks diffstat which is useful, for example to check
+whether any maintainer's relevant files are touched here. You can get it
+with "--cover-letter".
+
+In total the command should look like:
+    git format-patch --cover-letter -v3 -7 HEAD
+
+Of course you can use any other tools to achieve the same result but as
+of now - result is not the same.
+
+Best regards,
+Krzysztof
