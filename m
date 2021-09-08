@@ -2,51 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D98B4037D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11D14037DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348855AbhIHK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234958AbhIHK0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:26:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5BE56113A;
-        Wed,  8 Sep 2021 10:25:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631096739;
-        bh=NiCfI13R4LrvaT+owBE7g+4UJWIO/e9R5b5MoX02Png=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gas+Gt4RivH1IpU96+UkUeQZJJ74+BIM5F6tA36+SvsipUXg44ungmeVaSPR0N37d
-         WHog008RdrlsReaMXEyNzOUhjPEUew0gFSLtz6EsR/p8sv6g5kzRD3Tmm2S85M+WGz
-         gRbT1y/EmznblAlZN9EAYaX6UW8vsBOtEEZGp4H0=
-Date:   Wed, 8 Sep 2021 12:25:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Subject: Re: [PATCH] /dev/mem: nowait zero/null ops
-Message-ID: <YTiPoKc9GiG52DNd@kroah.com>
-References: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
+        id S1348883AbhIHKaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:30:06 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15251 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhIHKaF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:30:05 -0400
+Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H4JHm2JMhz1DGpG;
+        Wed,  8 Sep 2021 18:28:04 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggeml765-chm.china.huawei.com
+ (10.1.199.175) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 8 Sep
+ 2021 18:28:55 +0800
+From:   Liu Yuntao <liuyuntao10@huawei.com>
+To:     <hughd@google.com>, <akpm@linux-foundation.org>,
+        <kirill.shutemov@linux.intel.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <wuxu.wu@huawei.com>, <liusirui@huawei.com>,
+        <windspectator@gmail.com>
+Subject: [PATCH] virtio-gpu: fix possible memory allocation failure
+Date:   Wed, 8 Sep 2021 18:26:47 +0800
+Message-ID: <20210908102648.2326917-1-liuyuntao10@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml765-chm.china.huawei.com (10.1.199.175)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 11:06:51AM +0100, Pavel Begunkov wrote:
-> Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
-> advertised as FMODE_NOWAIT. This helps subsystems like io_uring to use
-> it more effectively. Set FMODE_NOWAIT for /dev/null as well, it never
-> waits and therefore trivially meets the criteria.
+When kmem_cache_zalloc in virtio_gpu_get_vbuf fails, it will return
+an error code. But none of its callers checks this error code, and
+a core dump will take place.
 
-I do not understand, why would io_uring need to use /dev/zero and how is
-this going to help anything?
+Considering many of its callers can't handle such error, I add
+a __GFP_NOFAIL flag when calling kmem_cache_zalloc to make sure
+it won't fail, and delete those unused error handlings.
 
-What workload does this help with?
+Fixes: dc5698e80cf724 ("Add virtio gpu driver.")
+Signed-off-by: Yuntao Liu <liuyuntao10@huawei.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_vq.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-thanks,
+diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
+index cf84d382dd41..5286cf110208 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_vq.c
++++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
+@@ -91,9 +91,7 @@ virtio_gpu_get_vbuf(struct virtio_gpu_device *vgdev,
+ {
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+-	vbuf = kmem_cache_zalloc(vgdev->vbufs, GFP_KERNEL);
+-	if (!vbuf)
+-		return ERR_PTR(-ENOMEM);
++	vbuf = kmem_cache_zalloc(vgdev->vbufs, GFP_KERNEL | __GFP_NOFAIL);
+ 
+ 	BUG_ON(size > MAX_INLINE_CMD_SIZE ||
+ 	       size < sizeof(struct virtio_gpu_ctrl_hdr));
+@@ -147,10 +145,6 @@ static void *virtio_gpu_alloc_cmd_resp(struct virtio_gpu_device *vgdev,
+ 
+ 	vbuf = virtio_gpu_get_vbuf(vgdev, cmd_size,
+ 				   resp_size, resp_buf, cb);
+-	if (IS_ERR(vbuf)) {
+-		*vbuffer_p = NULL;
+-		return ERR_CAST(vbuf);
+-	}
+ 	*vbuffer_p = vbuf;
+ 	return (struct virtio_gpu_command *)vbuf->buf;
+ }
+-- 
+2.23.0
 
-greg k-h
