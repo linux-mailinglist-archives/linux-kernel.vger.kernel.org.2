@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AFF403FBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5173D403FC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352430AbhIHTVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34128 "EHLO mail.kernel.org"
+        id S1350586AbhIHTV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:21:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350811AbhIHTVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:21:34 -0400
+        id S1350956AbhIHTVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:21:35 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B80C61183;
-        Wed,  8 Sep 2021 19:20:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E59761175;
+        Wed,  8 Sep 2021 19:20:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mO36v-0014Wr-FE; Wed, 08 Sep 2021 15:19:53 -0400
-Message-ID: <20210908191953.311766520@goodmis.org>
+        id 1mO36v-0014XO-LR; Wed, 08 Sep 2021 15:19:53 -0400
+Message-ID: <20210908191953.503827696@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Sep 2021 15:18:52 -0400
+Date:   Wed, 08 Sep 2021 15:18:53 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [for-next][PATCH 01/12] tracing: Add migrate-disabled counter to tracing output.
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [for-next][PATCH 02/12] tracing: Fix some alloc_event_probe() error handling bugs
 References: <20210908191851.381347939@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,151 +35,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-migrate_disable() forbids task migration to another CPU. It is available
-since v5.11 and has already users such as highmem or BPF. It is useful
-to observe this task state in tracing which already has other states
-like the preemption counter.
+There are two bugs in this code.  First, if the kzalloc() fails it leads
+to a NULL dereference of "ep" on the next line.  Second, if the
+alloc_event_probe() function returns an error then it leads to an
+error pointer dereference in the caller.
 
-Instead of adding the migrate disable counter as a new entry to struct
-trace_entry, which would extend the whole struct by four bytes, it is
-squashed into the preempt-disable counter. The lower four bits represent
-the preemption counter, the upper four bits represent the migrate
-disable counter. Both counter shouldn't exceed 15 but if they do, there
-is a safety net which caps the value at 15.
+Link: https://lkml.kernel.org/r/20210824115150.GI31143@kili
 
-Add the migrate-disable counter to the trace entry so it shows up in the
-trace. Due to the users mentioned above, it is already possible to
-observe it:
-
-|  bash-1108    [000] ...21    73.950578: rss_stat: mm_id=2213312838 curr=0 type=MM_ANONPAGES size=8192B
-|  bash-1108    [000] d..31    73.951222: irq_disable: caller=flush_tlb_mm_range+0x115/0x130 parent=ptep_clear_flush+0x42/0x50
-|  bash-1108    [000] d..31    73.951222: tlb_flush: pages:1 reason:local mm shootdown (3)
-
-The last value is the migrate-disable counter.
-
-Things that popped up:
-- trace_print_lat_context() does not print the migrate counter. Not sure
-  if it should. It is used in "verbose" mode and uses 8 digits and I'm
-  not sure ther is something processing the value.
-
-- trace_define_common_fields() now defines a different variable. This
-  probably breaks things. No ide what to do in order to preserve the old
-  behaviour. Since this is used as a filter it should be split somehow
-  to be able to match both nibbles here.
-
-Link: https://lkml.kernel.org/r/20210810132625.ylssabmsrkygokuv@linutronix.de
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[bigeasy: patch description.]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-[ SDR: Removed change to common_preempt_count field name ]
+Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c        | 26 +++++++++++++++++++-------
- kernel/trace/trace_events.c |  1 +
- kernel/trace/trace_output.c | 11 ++++++++---
- 3 files changed, 28 insertions(+), 10 deletions(-)
+ kernel/trace/trace_eprobe.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 489924cde4f8..b554e18924f8 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2603,6 +2603,15 @@ enum print_line_t trace_handle_return(struct trace_seq *s)
- }
- EXPORT_SYMBOL_GPL(trace_handle_return);
+diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+index 56a96e9750cf..3044b762cbd7 100644
+--- a/kernel/trace/trace_eprobe.c
++++ b/kernel/trace/trace_eprobe.c
+@@ -151,7 +151,7 @@ static struct trace_eprobe *alloc_event_probe(const char *group,
  
-+static unsigned short migration_disable_value(void)
-+{
-+#if defined(CONFIG_SMP)
-+	return current->migration_disabled;
-+#else
-+	return 0;
-+#endif
-+}
-+
- unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
- {
- 	unsigned int trace_flags = irqs_status;
-@@ -2621,7 +2630,8 @@ unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
- 		trace_flags |= TRACE_FLAG_NEED_RESCHED;
- 	if (test_preempt_need_resched())
- 		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
--	return (trace_flags << 16) | (pc & 0xff);
-+	return (trace_flags << 16) | (min_t(unsigned int, pc & 0xff, 0xf)) |
-+		(min_t(unsigned int, migration_disable_value(), 0xf)) << 4;
- }
- 
- struct ring_buffer_event *
-@@ -4189,9 +4199,10 @@ static void print_lat_help_header(struct seq_file *m)
- 		    "#                  | / _----=> need-resched    \n"
- 		    "#                  || / _---=> hardirq/softirq \n"
- 		    "#                  ||| / _--=> preempt-depth   \n"
--		    "#                  |||| /     delay            \n"
--		    "#  cmd     pid     ||||| time  |   caller      \n"
--		    "#     \\   /        |||||  \\    |   /         \n");
-+		    "#                  |||| / _-=> migrate-disable \n"
-+		    "#                  ||||| /     delay           \n"
-+		    "#  cmd     pid     |||||| time  |   caller     \n"
-+		    "#     \\   /        ||||||  \\    |    /       \n");
- }
- 
- static void print_event_info(struct array_buffer *buf, struct seq_file *m)
-@@ -4229,9 +4240,10 @@ static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file
- 	seq_printf(m, "#                            %.*s / _----=> need-resched\n", prec, space);
- 	seq_printf(m, "#                            %.*s| / _---=> hardirq/softirq\n", prec, space);
- 	seq_printf(m, "#                            %.*s|| / _--=> preempt-depth\n", prec, space);
--	seq_printf(m, "#                            %.*s||| /     delay\n", prec, space);
--	seq_printf(m, "#           TASK-PID  %.*s CPU#  ||||   TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
--	seq_printf(m, "#              | |    %.*s   |   ||||      |         |\n", prec, "       |    ");
-+	seq_printf(m, "#                            %.*s||| / _-=> migrate-disable\n", prec, space);
-+	seq_printf(m, "#                            %.*s|||| /     delay\n", prec, space);
-+	seq_printf(m, "#           TASK-PID  %.*s CPU#  |||||  TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
-+	seq_printf(m, "#              | |    %.*s   |   |||||     |         |\n", prec, "       |    ");
- }
- 
- void
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 1349b6de5eeb..830b3b9940f4 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -181,6 +181,7 @@ static int trace_define_common_fields(void)
- 
- 	__common_field(unsigned short, type);
- 	__common_field(unsigned char, flags);
-+	/* Holds both preempt_count and migrate_disable */
- 	__common_field(unsigned char, preempt_count);
- 	__common_field(int, pid);
- 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index a0bf446bb034..c2ca40e8595b 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -492,8 +492,13 @@ int trace_print_lat_fmt(struct trace_seq *s, struct trace_entry *entry)
- 	trace_seq_printf(s, "%c%c%c",
- 			 irqs_off, need_resched, hardsoft_irq);
- 
--	if (entry->preempt_count)
--		trace_seq_printf(s, "%x", entry->preempt_count);
-+	if (entry->preempt_count & 0xf)
-+		trace_seq_printf(s, "%x", entry->preempt_count & 0xf);
-+	else
-+		trace_seq_putc(s, '.');
-+
-+	if (entry->preempt_count & 0xf0)
-+		trace_seq_printf(s, "%x", entry->preempt_count >> 4);
- 	else
- 		trace_seq_putc(s, '.');
- 
-@@ -656,7 +661,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
- 		trace_seq_printf(
- 			s, "%16s %7d %3d %d %08x %08lx ",
- 			comm, entry->pid, iter->cpu, entry->flags,
--			entry->preempt_count, iter->idx);
-+			entry->preempt_count & 0xf, iter->idx);
- 	} else {
- 		lat_print_generic(s, entry, iter->cpu);
+ 	ep = kzalloc(struct_size(ep, tp.args, nargs), GFP_KERNEL);
+ 	if (!ep) {
+-		trace_event_put_ref(ep->event);
++		trace_event_put_ref(event);
+ 		goto error;
  	}
+ 	ep->event = event;
+@@ -851,7 +851,8 @@ static int __trace_eprobe_create(int argc, const char *argv[])
+ 		ret = PTR_ERR(ep);
+ 		/* This must return -ENOMEM, else there is a bug */
+ 		WARN_ON_ONCE(ret != -ENOMEM);
+-		goto error;	/* We know ep is not allocated */
++		ep = NULL;
++		goto error;
+ 	}
+ 
+ 	argc -= 2; argv += 2;
 -- 
 2.32.0
