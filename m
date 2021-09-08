@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C560B40383B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCC740383F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348905AbhIHKw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:52:56 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:33544 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347300AbhIHKww (ORCPT
+        id S1348928AbhIHKyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235209AbhIHKyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:52:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UngnLi9_1631098292;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UngnLi9_1631098292)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 08 Sep 2021 18:51:33 +0800
-Subject: Re: [PATCH v2] ocfs2: Fix handle refcount leak in two exception
- handling paths
-To:     Chenyuan Mi <cymi20@fudan.edu.cn>, akpm <akpm@linux-foundation.org>
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-References: <20210908102055.10168-1-cymi20@fudan.edu.cn>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
-Date:   Wed, 8 Sep 2021 18:51:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Wed, 8 Sep 2021 06:54:01 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B35C061575;
+        Wed,  8 Sep 2021 03:52:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id p15so2765533ljn.3;
+        Wed, 08 Sep 2021 03:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SCa5sUcg3hd31K9Jh0v/b9ezKnAfrViWPcQLkGDjQ+4=;
+        b=oCkzDEUShK5lI6n91PzLUskjiJzDmMHgbLjz+KXzkc3Rfw26w3sRoW8v962TNFfa4M
+         LsrrvsBQeSkrcbTeOeRR4l8qvU6E/8I2wBFPYE6JUUQcYNr+aebrSAXpirXTJmM1x1nX
+         ZEl9Pi2vuebkV5Tt0mat0PwmMWj2KFR1AMJT8WCEXuE1wxBUfgcSbkDXEJ2cLXlKkwjJ
+         AVMKcRonmm3JkuZjdZybhr3eYQSlH5CC3n66VmGnipizSPmq33qJFWDib6RxUYg3IVg1
+         0yVgTa1YzQxeU4xMujoXFRDUsET4S612uh/mofJ43hKBtxo7TM9wOGzq6SK+it8jLiz1
+         CFDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SCa5sUcg3hd31K9Jh0v/b9ezKnAfrViWPcQLkGDjQ+4=;
+        b=XQ6hUVrkcejWwwy9Gz1I38jplEREvJPxq9zD5u0cDgie/Ui39PMITPnxetpESE17Q/
+         +Lqb1Wg4JtdQspsdEA+UTYVCTvLSqZFmLlH4kMuddbLjbvl74RXhVty+O89dT6JTzng+
+         sIx0rfJkLb9DwxFkAEKLYy/uCXo6pw8shjHWuZeTk58mWDIYZX8xU/xXTzfaE1Rnsuuf
+         6jjV4J1LOWhWCgkE57zcBK0BLtytXBojTZAHXTttnb3e7gwsUTIWZesmmAXXnqasMOHC
+         kZDNpSaG52I+nmvHvBBHc/qDC161OY+UzMJMcJvR8npJLjkHzjAQcvZl2ccxyw8SpOmB
+         hOsA==
+X-Gm-Message-State: AOAM532cfjo0ZgWP0TyYzI+4qMup+ea0zlDNiBwomik5kIQELPf4IDmz
+        dCuVWiOrR+rSXf5Opa7ObHQ=
+X-Google-Smtp-Source: ABdhPJzwOrSuphL+vd9b2Iy/O3YtR+9hdvovE6aK5/918675iAVWeZPr9K75U2+6lQiLHq5djr8icA==
+X-Received: by 2002:a2e:99d9:: with SMTP id l25mr2262345ljj.217.1631098371710;
+        Wed, 08 Sep 2021 03:52:51 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id o7sm201332lji.17.2021.09.08.03.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 03:52:51 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 188Aqmlt015750;
+        Wed, 8 Sep 2021 13:52:49 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 188Aqkv8015749;
+        Wed, 8 Sep 2021 13:52:46 +0300
+Date:   Wed, 8 Sep 2021 13:52:45 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "osk@google.com" <osk@google.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        Konstantin Klubnichkin <kitsok@yandex-team.ru>
+Subject: Re: [PATCH v2 0/3] arm: aspeed: Add UART routing support
+Message-ID: <20210908105245.GB23326@home.paul.comp>
+References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+ <20210908094248.GZ23326@home.paul.comp>
+ <HK0PR06MB3779180F75DB8BD872F8A78391D49@HK0PR06MB3779.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210908102055.10168-1-cymi20@fudan.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <HK0PR06MB3779180F75DB8BD872F8A78391D49@HK0PR06MB3779.apcprd06.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 08, 2021 at 10:18:35AM +0000, ChiaWei Wang wrote:
+> > Does UART1 need some explicit disabling for VUART IRQs to work? It looks like
+> > setting LPC address and IRQ number in VUART is enough to override the
+> > register part but probably not for the interrupt?
+> 
+> You may need to confirm that the Host does not enable the SIO SUART1
+> device. This will conflict with VUART as both SUART and VAURT are
+> competing for the port address 0x3f8 and SIRQ 4.
 
+Do you really mean the Host here, that is, software that controls LPC
+master when ASpeed is used as an LPC slave? Linux driver is not doing
+anything special with the UART1, it's just trying to use it as if it
+was a hardware 16550A physical IC on I/O bus.
 
-On 9/8/21 6:20 PM, Chenyuan Mi wrote:
-> The reference counting issue happens in two exception handling paths
-> of ocfs2_replay_truncate_records(). When executing these two exception
-> handling paths, the function forgets to decrease the refcount of handle
-> increased by ocfs2_start_trans(), causing a refcount leak.
-> 
-> Fix this issue by using ocfs2_commit_trans() to decrease the refcount
-> of handle in two handling paths.
-> 
-> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Or do you mean the BMC software shouldn't be enabling SUART1 by making
+sure its clock is disabled in SCU0C? Is there anything else needed?
+I've tried reading the ast2500 datasheet many times but this detail
+seem to be missing. Is there some appnote on the topic probably?
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  fs/ocfs2/alloc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-> index f1cc8258d34a..b05fde7edc3a 100644
-> --- a/fs/ocfs2/alloc.c
-> +++ b/fs/ocfs2/alloc.c
-> @@ -5940,6 +5940,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
->  		status = ocfs2_journal_access_di(handle, INODE_CACHE(tl_inode), tl_bh,
->  						 OCFS2_JOURNAL_ACCESS_WRITE);
->  		if (status < 0) {
-> +			ocfs2_commit_trans(osb, handle);
->  			mlog_errno(status);
->  			goto bail;
->  		}
-> @@ -5964,6 +5965,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
->  						     data_alloc_bh, start_blk,
->  						     num_clusters);
->  			if (status < 0) {
-> +				ocfs2_commit_trans(osb, handle);
->  				mlog_errno(status);
->  				goto bail;
->  			}
-> 
+In this case do we have some way to make it an obvious error to enable
+both SUART1 and VUART in DTS? If they're conflicting surely there
+should be a way to express that?
+
+Thank you for looking into this!
+
+-- 
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
