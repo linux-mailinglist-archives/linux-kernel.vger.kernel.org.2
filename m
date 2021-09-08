@@ -2,290 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE552403E3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EC9403E41
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348884AbhIHRRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:17:15 -0400
-Received: from ixit.cz ([94.230.151.217]:47876 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhIHRRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:17:14 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id A0A8C24A25;
-        Wed,  8 Sep 2021 19:16:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1631121364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2luen1Aw75WFk54UH4uHBWb4js/b04AcAZvA6vWMGpQ=;
-        b=01ZQyret+a97Aqgn4L3B666nJNHqH0l3vZC9MTZFxBwvvUUEmAaaw9FeRPtWPQqjyKLfza
-        QPcP3KODt4pEHpwitWoVQL5JckV49IlPqsrpDW8B8ndByLyTWPfVm4NlKHQAuY3cklcyzh
-        9BAB5DYTDI+jG2WRw17dgO32OaINWjU=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
-Subject: [RFC PATCH] [v2] dt-bindings: arm/msm/qcom,idle-state convert to YAML
-Date:   Wed,  8 Sep 2021 19:14:53 +0200
-Message-Id: <20210908171453.53259-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S1352429AbhIHRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhIHRRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:17:55 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9C9C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:16:46 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id n24so4230737ion.10
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wXplQMubjcd6fCTPFQofW1bbtwJw+knTkqPSzTUItas=;
+        b=E/8T+sVaLCWx1hbAmMySx72lTe77R2eEaA5yZQMBxdWe+SS5W9ydqZ4BBpH4BqpJ1g
+         5G8lncyz+I+uiGoXEcLL6IFbYIaSPzeHJDwxV4VH5CS1WqDoiemXe+95Vi+LwXeZNzUP
+         xG7p+SZJeQ2la/u7TPBbqtdlAW5PNv2mJd+qg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wXplQMubjcd6fCTPFQofW1bbtwJw+knTkqPSzTUItas=;
+        b=SOU3iB7BJriIi2NkkReJU6UfgHTWgVeGlhSFu4ybbvdZitQ5SajKHRnSxO0BYCojXE
+         NunULUg7ofA3X0JE1svMiJWTjyx++islroKGHnBXHWng88NdetdNX8yJbxjwAKQFzwxB
+         PB9l77MqEuMcptI4ztiyJgfazbEkKkKvioQT6ofd1v3bwzdsbmYbKrQNQr1s9AwdrMnK
+         4fzCOPy1BZXQwlhu4jjUPYTrXw5bSDxDVkIhgtwddHPJukFy8Lx82MZd9/rggE400HMQ
+         LuhM0kGEXgoSSGGRR6/aBpvUmAJB9R0CLV+5aN5+/8+9aXd0fbSbleC0R3axFEPCzI+u
+         3Mmw==
+X-Gm-Message-State: AOAM532JXeeP99iCvTe7da49CuBNviD/Vh49gUn3Xu0MhJ3uj0QWISQ4
+        YDeEq2qWcu0id2Qxqs8Ik6M/lQ==
+X-Google-Smtp-Source: ABdhPJw+fLIAgN6eXO/bn5p+o6ATA+ketYOj97BdB6Xy/+hUTMbGPzl+dajyYMJrnyELyJoR7Ov9Ng==
+X-Received: by 2002:a6b:be02:: with SMTP id o2mr756764iof.103.1631121406277;
+        Wed, 08 Sep 2021 10:16:46 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m13sm1314633ilh.43.2021.09.08.10.16.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 10:16:45 -0700 (PDT)
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+Date:   Wed, 8 Sep 2021 11:16:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+In-Reply-To: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switched maintainer from Lina to Bjorn.
+On 9/8/21 11:05 AM, Arnd Bergmann wrote:
+> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>> On 9/7/21 5:14 PM, Linus Torvalds wrote:
+>>> The KUNIT macros create all these individually reasonably small
+>>> initialized structures on stack, and when you have more than a small
+>>> handful of them the KUNIT infrastructure just makes the stack space
+>>> explode. Sometimes the compiler will be able to re-use the stack
+>>> slots, but it seems to be an iffy proposition to depend on it - it
+>>> seems to be a combination of luck and various config options.
+>>>
+>>
+>> I have been concerned about these macros creeping in for a while.
+>> I will take a closer look and work with Brendan to come with a plan
+>> to address it.
+> 
+> I've previously sent patches to turn off the structleak plugin for
+> any kunit test file to work around this, but only a few of those patches
+> got merged and new files have been added since. It would
+> definitely help to come up with a proper fix, but my structleak-disable
+> hack should be sufficient as a quick fix.
+> 
 
-Doesn't fix:
-```
-idle-states: 'spc' does not match any of the regexes: '^(cpu|cluster)-', 'pinctrl-[0-9]+'
-```
-from colliding arm/idle-states.yaml .
+Looks like these are RFC patches and the discussion went cold. Let's pick
+this back up and we can make progress.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
+https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
 
-v2
- - maintainer is now Bjorn
- - fixed some newlines
- - specified exact state names (added $)
-
- .../bindings/arm/msm/qcom,idle-state.txt      |  84 ------------
- .../bindings/arm/msm/qcom,idle-state.yaml     | 126 ++++++++++++++++++
- 2 files changed, 126 insertions(+), 84 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
- create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
-
-diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
-deleted file mode 100644
-index 6ce0b212ec6d..000000000000
---- a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
-+++ /dev/null
-@@ -1,84 +0,0 @@
--QCOM Idle States for cpuidle driver
--
--ARM provides idle-state node to define the cpuidle states, as defined in [1].
--cpuidle-qcom is the cpuidle driver for Qualcomm SoCs and uses these idle
--states. Idle states have different enter/exit latency and residency values.
--The idle states supported by the QCOM SoC are defined as -
--
--    * Standby
--    * Retention
--    * Standalone Power Collapse (Standalone PC or SPC)
--    * Power Collapse (PC)
--
--Standby: Standby does a little more in addition to architectural clock gating.
--When the WFI instruction is executed the ARM core would gate its internal
--clocks. In addition to gating the clocks, QCOM cpus use this instruction as a
--trigger to execute the SPM state machine. The SPM state machine waits for the
--interrupt to trigger the core back in to active. This triggers the cache
--hierarchy to enter standby states, when all cpus are idle. An interrupt brings
--the SPM state machine out of its wait, the next step is to ensure that the
--cache hierarchy is also out of standby, and then the cpu is allowed to resume
--execution. This state is defined as a generic ARM WFI state by the ARM cpuidle
--driver and is not defined in the DT. The SPM state machine should be
--configured to execute this state by default and after executing every other
--state below.
--
--Retention: Retention is a low power state where the core is clock gated and
--the memory and the registers associated with the core are retained. The
--voltage may be reduced to the minimum value needed to keep the processor
--registers active. The SPM should be configured to execute the retention
--sequence and would wait for interrupt, before restoring the cpu to execution
--state. Retention may have a slightly higher latency than Standby.
--
--Standalone PC: A cpu can power down and warmboot if there is a sufficient time
--between the time it enters idle and the next known wake up. SPC mode is used
--to indicate a core entering a power down state without consulting any other
--cpu or the system resources. This helps save power only on that core.  The SPM
--sequence for this idle state is programmed to power down the supply to the
--core, wait for the interrupt, restore power to the core, and ensure the
--system state including cache hierarchy is ready before allowing core to
--resume. Applying power and resetting the core causes the core to warmboot
--back into Elevation Level (EL) which trampolines the control back to the
--kernel. Entering a power down state for the cpu, needs to be done by trapping
--into a EL. Failing to do so, would result in a crash enforced by the warm boot
--code in the EL for the SoC. On SoCs with write-back L1 cache, the cache has to
--be flushed in s/w, before powering down the core.
--
--Power Collapse: This state is similar to the SPC mode, but distinguishes
--itself in that the cpu acknowledges and permits the SoC to enter deeper sleep
--modes. In a hierarchical power domain SoC, this means L2 and other caches can
--be flushed, system bus, clocks - lowered, and SoC main XO clock gated and
--voltages reduced, provided all cpus enter this state.  Since the span of low
--power modes possible at this state is vast, the exit latency and the residency
--of this low power mode would be considered high even though at a cpu level,
--this essentially is cpu power down. The SPM in this state also may handshake
--with the Resource power manager (RPM) processor in the SoC to indicate a
--complete application processor subsystem shut down.
--
--The idle-state for QCOM SoCs are distinguished by the compatible property of
--the idle-states device node.
--
--The devicetree representation of the idle state should be -
--
--Required properties:
--
--- compatible: Must be one of -
--			"qcom,idle-state-ret",
--			"qcom,idle-state-spc",
--			"qcom,idle-state-pc",
--		and "arm,idle-state".
--
--Other required and optional properties are specified in [1].
--
--Example:
--
--	idle-states {
--		CPU_SPC: spc {
--			compatible = "qcom,idle-state-spc", "arm,idle-state";
--			entry-latency-us = <150>;
--			exit-latency-us = <200>;
--			min-residency-us = <2000>;
--		};
--	};
--
--[1]. Documentation/devicetree/bindings/arm/idle-states.yaml
-diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
-new file mode 100644
-index 000000000000..254868e09520
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/msm/qcom,idle-state.yaml
-@@ -0,0 +1,126 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/msm/qcom,idle-state.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: QCOM Idle States binding description
-+
-+maintainers:
-+  - Bjorn Andersson <bjorn.andersson@linaro.org>
-+
-+description: |
-+  ARM provides idle-state node to define the cpuidle states, as defined in [1].
-+  cpuidle-qcom is the cpuidle driver for Qualcomm SoCs and uses these idle
-+  states. Idle states have different enter/exit latency and residency values.
-+  The idle states supported by the QCOM SoC are defined as -
-+
-+    * Standby
-+    * Retention
-+    * Standalone Power Collapse (Standalone PC or SPC)
-+    * Power Collapse (PC)
-+
-+  Standby: Standby does a little more in addition to architectural clock gating.
-+  When the WFI instruction is executed the ARM core would gate its internal
-+  clocks. In addition to gating the clocks, QCOM cpus use this instruction as a
-+  trigger to execute the SPM state machine. The SPM state machine waits for the
-+  interrupt to trigger the core back in to active. This triggers the cache
-+  hierarchy to enter standby states, when all cpus are idle. An interrupt brings
-+  the SPM state machine out of its wait, the next step is to ensure that the
-+  cache hierarchy is also out of standby, and then the cpu is allowed to resume
-+  execution. This state is defined as a generic ARM WFI state by the ARM cpuidle
-+  driver and is not defined in the DT. The SPM state machine should be
-+  configured to execute this state by default and after executing every other
-+  state below.
-+
-+  Retention: Retention is a low power state where the core is clock gated and
-+  the memory and the registers associated with the core are retained. The
-+  voltage may be reduced to the minimum value needed to keep the processor
-+  registers active. The SPM should be configured to execute the retention
-+  sequence and would wait for interrupt, before restoring the cpu to execution
-+  state. Retention may have a slightly higher latency than Standby.
-+
-+  Standalone PC: A cpu can power down and warmboot if there is a sufficient time
-+  between the time it enters idle and the next known wake up. SPC mode is used
-+  to indicate a core entering a power down state without consulting any other
-+  cpu or the system resources. This helps save power only on that core.  The SPM
-+  sequence for this idle state is programmed to power down the supply to the
-+  core, wait for the interrupt, restore power to the core, and ensure the
-+  system state including cache hierarchy is ready before allowing core to
-+  resume. Applying power and resetting the core causes the core to warmboot
-+  back into Elevation Level (EL) which trampolines the control back to the
-+  kernel. Entering a power down state for the cpu, needs to be done by trapping
-+  into a EL. Failing to do so, would result in a crash enforced by the warm boot
-+  code in the EL for the SoC. On SoCs with write-back L1 cache, the cache has to
-+  be flushed in s/w, before powering down the core.
-+
-+  Power Collapse: This state is similar to the SPC mode, but distinguishes
-+  itself in that the cpu acknowledges and permits the SoC to enter deeper sleep
-+  modes. In a hierarchical power domain SoC, this means L2 and other caches can
-+  be flushed, system bus, clocks - lowered, and SoC main XO clock gated and
-+  voltages reduced, provided all cpus enter this state.  Since the span of low
-+  power modes possible at this state is vast, the exit latency and the residency
-+  of this low power mode would be considered high even though at a cpu level,
-+  this essentially is cpu power down. The SPM in this state also may handshake
-+  with the Resource power manager (RPM) processor in the SoC to indicate a
-+  complete application processor subsystem shut down.
-+
-+  The idle-state for QCOM SoCs are distinguished by the compatible property of
-+  the idle-states device node.
-+
-+  [1] Documentation/devicetree/bindings/arm/idle-states.yaml
-+
-+properties:
-+  $nodename:
-+    const: idle-states
-+
-+patternProperties:
-+  "^(ret|spc|pc)$":
-+    type: object
-+    description:
-+      Each state node represents a domain idle state description.
-+
-+    properties:
-+      compatible:
-+        items:
-+          - enum:
-+            - qcom,idle-state-ret
-+            - qcom,idle-state-spc
-+            - qcom,idle-state-pc
-+          - const: arm,idle-state
-+
-+      entry-latency-us:
-+        description:
-+          The worst case latency in microseconds required to enter the idle
-+          state. Note that, the exit-latency-us duration may be guaranteed only
-+          after the entry-latency-us has passed.
-+
-+      exit-latency-us:
-+        description:
-+          The worst case latency in microseconds required to exit the idle
-+          state.
-+
-+      min-residency-us:
-+        description:
-+          The minimum residency duration in microseconds after which the idle
-+          state will yield power benefits, after overcoming the overhead while
-+          entering the idle state.
-+
-+    required:
-+      - compatible
-+      - entry-latency-us
-+      - exit-latency-us
-+      - min-residency-us
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    idle-states {
-+      CPU_SPC: spc {
-+        compatible = "qcom,idle-state-spc", "arm,idle-state";
-+        entry-latency-us = <150>;
-+        exit-latency-us = <200>;
-+        min-residency-us = <2000>;
-+      };
-+    };
--- 
-2.33.0
+thanks,
+-- Shuah
 
