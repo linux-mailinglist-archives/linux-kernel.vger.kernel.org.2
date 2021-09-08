@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFA7403C47
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDCD403C4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351698AbhIHPJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 11:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349248AbhIHPJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 548E6611C6;
-        Wed,  8 Sep 2021 15:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631113725;
-        bh=EcFdlIlPuXpuvXGjbL2rGt+KIE0grzuBurK1IY0GYXE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FYD6C6nflF/20yxECHrnoZBf29DPDeGsA08BuRUaUu4zoq4SOfCTCCObhS79xN04O
-         2lfsy/eWmi8YES3m73WjP50fWo+g5qb6V9xSMuuv/0BBpt/0uD25K4v/3m8FBZFq90
-         Yj7GtcWbEP280yCS1oBb9nGKyPL6s26OtKm0V0flqnG8x4oW2DA/8OTmsyocIi6xkx
-         3shuPnOlles6AsM3pZdgn0gpdv8mZhbrRKFsLtclrBzJTQSd0FgNRgGHxdl9jT0RFl
-         lZkB6myOLN0wFmMx45AzmDE9OHkm1kJMz6eyv02SQCQJj9cdLZElUSFxT345pI/97o
-         oZoseWoFvIdgw==
-Date:   Wed, 8 Sep 2021 08:08:43 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     moyufeng <moyufeng@huawei.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
-        <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>
-Subject: Re: [PATCH net-next v2 4/4] net: hns3: support skb's frag page
- recycling based on page pool
-Message-ID: <20210908080843.2051c58d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
-References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
-        <1628217982-53533-5-git-send-email-linyunsheng@huawei.com>
-        <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
+        id S1349248AbhIHPLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhIHPLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:11:06 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E79DC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 08:09:58 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id s16so2657478ilo.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yRPp5IHtHZbh2VaC3A/pPLLamUQg+uMH0n8xJchofN8=;
+        b=I2IrUovC0NAik8gQxEeKQbBh/+E3r1Ftc2iriNrtCYRmaOT/WfeH2y3O4YSWdUy8sq
+         6jAWU0V6WXZyy9beh89xVm0hzWeWloejNkfBnlYCfYncR05Lt/w1j02hKERMBtQ0dJe9
+         1rPWIKVprNObr/nlryClStiA51vf+aQWK6+as=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yRPp5IHtHZbh2VaC3A/pPLLamUQg+uMH0n8xJchofN8=;
+        b=3ou3JE8QfB0g7jc8IYwSgVtmEvzhBWe3gMXaWUvlDCDuPtU0k//6zRom6qQKOMdS6K
+         5vEBrT6XMJ5LvnsasATcpuPn0yWnnPOXBsJA3DQzzkv3P5xu82KXL8NAMwijeLV881LO
+         tPj3EmlaqjzSAK4Om2mbKKgLQImUFeRGEvDLxW4BFuSGTT4Z8AFjk8nchhgBqQeWGY6s
+         22Ksv+W6JI70Y8o3vSIEPZVo/3jav+Mb9j0OJbqbA30QwpRCmgroJUo9zJandGESl3VZ
+         PUfAlj9E2pTcb18fKfHi6H9OZBaik7Hv/HviUsGz3kFCLzhOkUHNBv/VVYTIJTlNxHW8
+         VWgg==
+X-Gm-Message-State: AOAM531CtefVPEchR12j5imFYKO2w5/lzVtU+zYjTC7SUZfI52fzIrZQ
+        DGLolN8pb/lRyUl2/z/tqhG6d1sFMGFQwQ==
+X-Google-Smtp-Source: ABdhPJzSzWLKmrpgL1ZaJGmUobiBa/Cg1G8P5jh5ygZuAB3hLkbcdcUKZy+IHFi0iovh+wKszKP28A==
+X-Received: by 2002:a92:cda4:: with SMTP id g4mr262464ild.236.1631113797651;
+        Wed, 08 Sep 2021 08:09:57 -0700 (PDT)
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
+        by smtp.gmail.com with ESMTPSA id o2sm1272854ilg.47.2021.09.08.08.09.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 08:09:57 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id x10so2646994ilm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 08:09:56 -0700 (PDT)
+X-Received: by 2002:a92:cb52:: with SMTP id f18mr274812ilq.120.1631113795742;
+ Wed, 08 Sep 2021 08:09:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+ <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
+In-Reply-To: <20210907094628.RESEND.2.Ibc87b4785709543c998cc852c1edaeb7a08edf5c@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 8 Sep 2021 08:09:44 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
+Message-ID: <CAD=FV=Uo7oK6a8X69KGneP8CvXE127ZxU7U59Rrz+_Dv6D5t3g@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/2] arm64: dts: rockchip: add Coresight debug
+ range for RK3399
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021 16:31:40 +0800 moyufeng wrote:
->     After adding page pool to hns3 receiving package process,
-> we want to add some debug info. Such as below:
->=20
-> 1. count of page pool allocate and free page, which is defined
-> for pages_state_hold_cnt and pages_state_release_cnt in page
-> pool framework.
->=20
-> 2. pool size=E3=80=81order=E3=80=81nid=E3=80=81dev=E3=80=81max_len, which=
- is setted for
-> each rx ring in hns3 driver.
->=20
-> In this regard, we consider two ways to show these info=EF=BC=9A
->=20
-> 1. Add it to queue statistics and query it by ethtool -S.
->=20
-> 2. Add a file node "page_pool_info" for debugfs, then cat this
-> file node, print as below:
->=20
-> queue_id  allocate_cnt  free_cnt  pool_size  order  nid  dev  max_len
-> 000		   xxx       xxx        xxx    xxx  xxx  xxx      xxx
-> 001
-> 002
-> .
-> .
-> =09
-> Which one is more acceptable, or would you have some other suggestion?
+Hi,
 
-Normally I'd say put the stats in ethtool -S and the rest in debugfs
-but I'm not sure if exposing pages_state_hold_cnt and
-pages_state_release_cnt directly. Those are short counters, and will
-very likely wrap. They are primarily meaningful for calculating
-page_pool_inflight(). Given this I think their semantics may be too
-confusing for an average ethtool -S user.
+On Tue, Sep 7, 2021 at 9:46 AM Brian Norris <briannorris@chromium.org> wrote:
+>
+> Per Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt.
+>
+> This IP block can be used for sampling the PC of any given CPU, which is
+> useful in certain panic scenarios where you can't get the CPU to stop
+> cleanly (e.g., hard lockup).
+>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+>
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 48 ++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index 3871c7fd83b0..c8c62637b600 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -433,6 +433,54 @@ usbdrd_dwc3_1: usb@fe900000 {
+>                 };
+>         };
+>
+> +       debug@fe430000 {
 
-Putting all the information in debugfs seems like a better idea.
+I think your sort order is wrong? 0xfe430000 comes before 0xfe900000?
+
+Other than that this looks good to me.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
