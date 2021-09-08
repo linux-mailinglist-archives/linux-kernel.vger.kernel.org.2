@@ -2,199 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473F4403695
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D1040369C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348583AbhIHJI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234820AbhIHJIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:08:22 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E4C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 02:07:15 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id c79so2228930oib.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 02:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PRwcd/2UOKTqhghCO0rYGQDQocd3n1lo0frI4efs54s=;
-        b=Q55DSa5sCHU8EnDeHUgLydtlZ4Fbz4Nppjat38nh6VwQ8r1sOTEZBwkVNjDa+jUuPI
-         fWyzNWTbjVL0sovYL5cni0bbvPZ6Ffk42Lj7DjfzKeKzzbf4jV1b0nNdU4aYOTNqcv6K
-         EFEZeOcGQoi8o71BFSyoGzwCzT5Gny8lG6hEA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PRwcd/2UOKTqhghCO0rYGQDQocd3n1lo0frI4efs54s=;
-        b=AFzF2mjOxzUROyuArxXvkdXINHksZ+JmnkzAhHOT+ll3/9qSyS0e+yuOUbbaZ4HB/G
-         taT4C0bR77DlYbF3+dtG4YQVtvYiOUcn/vXcgLGxX5H15+g2887DpwiVvexEJRqM4PwE
-         FYL/prTOoaAmY+ttZdSwH68UeRMKjOcyKtC3UG8V0FUvUvC4lbhfxG4vU2Jz+8+szxUv
-         O6Kl6HEFxIhZx4zuQ3s2JW7eLjKnqglUYwlT1S8eHQBFuXq7eeHjmH324ft4t4eN4VC3
-         CzyRDXtAMbqS4kbcRmv/mx8bIzYWzSRnPmBYtLhu3ABVGJNHC/UXhinXncAyCFtEjoqk
-         ToNw==
-X-Gm-Message-State: AOAM533aFSE6wMDFsklp8M32YwRO4Zy4L4hyW5t4W0dg/Rc0Vyez9aQE
-        Bvllv+L572g8Yy9fF/atSSWUZcIvXRN3llubmFrZGg==
-X-Google-Smtp-Source: ABdhPJxUOsi7Xekf2m6ONTAtRDQsLdU7reFN7AYckKBI+x/+5mAY35qtPw9WV3x4caxiCh9hmckLu0w7xJRvDUYFAQ0=
-X-Received: by 2002:a05:6808:2116:: with SMTP id r22mr1632623oiw.128.1631092034216;
- Wed, 08 Sep 2021 02:07:14 -0700 (PDT)
+        id S1348574AbhIHJJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:09:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52737 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348455AbhIHJJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 05:09:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631092082; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8szJlKgcGuGNNeXnnIPug4EYFkWW3s0E9P2TtnxnQks=;
+ b=U9B5NBmqikbztC4aFt8SN/q+JpNUXUGnMcy43rD3tkG3vXJZ8gsRUn0v0Y4pI3PXTkQ1oBS7
+ g1AT2eh8CSc0yQQ3vrzU39z5XkVFtDDSNZ9TWs2V++ONU4AkfwmNWgk6cWoe3PHqc7q1xqth
+ FaLVbTo64SdZUQs44qITPZP/z3U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 61387d5cb52e91333ca621f4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 09:07:40
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 527F9C43616; Wed,  8 Sep 2021 09:07:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0623C4338F;
+        Wed,  8 Sep 2021 09:07:39 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210820123348.6535a87e@canb.auug.org.au> <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
- <20210902075038.7461d3c8@canb.auug.org.au> <20210906084947.4f65761d@canb.auug.org.au>
- <CAKMK7uF6K+gdWVT09wL0sPBQs8RRixggk01e291veE0VecD=TQ@mail.gmail.com> <CAK7LNAQdgr7pn0j9mdAGfB_0fGOVMn+uq=Kv7buRaCOcoF+p7A@mail.gmail.com>
-In-Reply-To: <CAK7LNAQdgr7pn0j9mdAGfB_0fGOVMn+uq=Kv7buRaCOcoF+p7A@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 8 Sep 2021 11:07:03 +0200
-Message-ID: <CAKMK7uEjGA01bhPYVJt5aHfvh1i6roV0w-P5Bq9-tohS65esdA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm tree
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "Nikula, Jani" <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        John Harrison <John.C.Harrison@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 08 Sep 2021 14:37:39 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        swboyd@chromium.org, kgunda@codeaurora.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+In-Reply-To: <YTeskY7kXsdmvGPp@google.com>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
+ <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+ <YTeskY7kXsdmvGPp@google.com>
+Message-ID: <b10e5f36fb0216a4c951d752f5103099@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 5:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Mon, Sep 6, 2021 at 4:34 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, Sep 6, 2021 at 12:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > Hi all,
-> > >
-> > > On Thu, 2 Sep 2021 07:50:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > >
-> > > > On Fri, 20 Aug 2021 15:23:34 +0900 Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Aug 20, 2021 at 11:33 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > > > >
-> > >  > > After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
-> > > > > > failed like this:
-> > > > > >
-> > > > > > In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
-> > > > > > drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef.h: No such file or directory
-> > > > > >     9 | #include <stddef.h>
-> > > > > >       |          ^~~~~~~~~~
-> > > > > >
-> > > > > > Caused by commit
-> > > > > >
-> > > > > >   564f963eabd1 ("isystem: delete global -isystem compile option")
-> > > > > >
-> > > > > > from the kbuild tree interacting with commit
-> > > > > >
-> > > > > >   b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work with GuC")
-> > > > > >
-> > > > > > I have applied the following patch for today.
-> > > > >
-> > > > >
-> > > > > Thanks.
-> > > > >
-> > > > > This fix-up does not depend on my kbuild tree in any way.
-> > > > >
-> > > > > So, the drm maintainer can apply it to his tree.
-> > > > >
-> > > > > Perhaps with
-> > > > >
-> > > > > Fixes: b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to
-> > > > > work with GuC")
-> > > >
-> > > > OK, so that didn't happen so I will now apply the merge fix up to the
-> > > > merge of the kbuild tree.
-> > > >
-> > > > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > > > Date: Fri, 20 Aug 2021 12:24:19 +1000
-> > > > > > Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/fixup stdarg.h and other headers"
-> > > > > >
-> > > > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > > > ---
-> > > > > >  drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > > > > > index 51dbe0e3294e..d2969f68dd64 100644
-> > > > > > --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > > > > > +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > > > > > @@ -6,7 +6,7 @@
-> > > > > >  #ifndef INTEL_GT_REQUESTS_H
-> > > > > >  #define INTEL_GT_REQUESTS_H
-> > > > > >
-> > > > > > -#include <stddef.h>
-> > > > > > +#include <linux/stddef.h>
-> > > > > >
-> > > > > >  struct intel_engine_cs;
-> > > > > >  struct intel_gt;
-> > > > > > --
-> > > > > > 2.32.0
-> > >
-> > > Ping?  I am still applying this ...
-> >
-> > Apologies, this fell through a lot of cracks. I applied this to drm-next now.
->
->
->
-> Rather, I was planning to apply this fix to my kbuild tree.
->
-> Since you guys did not fix the issue in time,
-> I ended up with dropping [1] from my pull request.
->
-> I want to get [1] merged in this MW.
->
-> If I postponed it, somebody would add new
-> <stddef.h> or <stdint.h> inclusion in the next development
-> cycle, I will never make it in the mainline.
->
-> [1] https://lore.kernel.org/linux-kernel/YQhY40teUJcTc5H4@localhost.localdomain/
+On 2021-09-07 23:46, Matthias Kaehlcke wrote:
+> On Mon, Sep 06, 2021 at 04:11:07PM +0530, satya priya wrote:
+>> Add pwm support for PM8350C pmic.
+>> 
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi 
+>> b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> index e1b75ae..ecdae55 100644
+>> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> @@ -29,6 +29,12 @@
+>>  			interrupt-controller;
+>>  			#interrupt-cells = <2>;
+>>  		};
+>> +
+>> +		pm8350c_pwm4: pwm {
+> 
+> What does the '4' represent, an internal channel number? It should
+> probably be omitted if the PM8350 only has a single output PWM
+> port.
+> 
 
-Yeah no problem if you apply it too. For that:
+pm8350c has four PWMs, but I think we can drop the '4' here.
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>> +			compatible = "qcom,pm8350c-pwm";
+>> +			#pwm-cells = <2>;
+>> +			status = "okay";
+> 
+> I don't think it should be enabled by default, there may be boards with
+> the PM8350C that don't use the PWM.
 
-I just figured I make sure this is at least not lost.
--Daniel
-
->
->
->
->
->
-> > Matt/John, as author/committer it's your job to make sure issues and
-> > fixes for the stuff you're pushing don't get lost. I'd have expected
-> > John to apply this to at least drm-intel-gt-next (it's not even
-> > there).
-> >
-> > Joonas, I think this is the 2nd or 3rd or so issue this release cycle
-> > where some compile fix got stuck a bit because drm-intel-gt-next isn't
-> > in linux-next. Can we please fix that? It probably needs some changes
-> > to the dim script.
-> >
-> > Cheers, Daniel
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Okay.
