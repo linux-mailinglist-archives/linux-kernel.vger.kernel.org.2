@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3764E403874
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84F640387C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351451AbhIHK7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:59:31 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:41852 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1351535AbhIHK7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:59:17 -0400
-Received: from Bc-Mail-Ex13.internal.baidu.com (unknown [172.31.51.53])
-        by Forcepoint Email with ESMTPS id A145D64496600D136CD7;
-        Wed,  8 Sep 2021 18:58:08 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- Bc-Mail-Ex13.internal.baidu.com (172.31.51.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 8 Sep 2021 18:58:08 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 8 Sep 2021 18:58:07 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] staging: media: rkvdec: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Wed, 8 Sep 2021 18:57:59 +0800
-Message-ID: <20210908105801.2086-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S1348994AbhIHLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233694AbhIHLCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:02:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461B6C061575;
+        Wed,  8 Sep 2021 04:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NBB/pE6kVFPym7y5im4H4R75sKk+SHXomtuzG57X2fg=; b=OTNXMORpOInjk+Ph5RpPeN2/aY
+        rZiZp9Ef9TC++jLN8rIHqpe8ByMJtm2QR0MUo0qs0wEA3W5/IbDa1sMRe+FSqg3zpuV+8weXgUMYg
+        edAz0BkHy1kg8onASopvMCrRmO0ea1xtENHFmY/okEJPU9Qh0lr5mgxwTe3qrZq34BXiMtn5vBEJV
+        k3pF0HsPyvdBk104yry6D+Uf2PDFKJfMsAg9MM4sPoBG9a433U8gl6ct4g6Si/mUTPgkmWvoSeuyh
+        NrpIjA0r2pYPuh1H2Ap/OT4/3EAqge+2cgoWZvkchvmJhfCEXXm3aFNDdeNt3xsjDB+K5rxKUwi1v
+        nYVYybFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNvJb-001cqL-Jy; Wed, 08 Sep 2021 11:00:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 431D0300362;
+        Wed,  8 Sep 2021 13:00:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 11D81212EAB69; Wed,  8 Sep 2021 13:00:26 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 13:00:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     stern@rowland.harvard.edu, alexander.shishkin@linux.intel.com,
+        hpa@zytor.com, andrea.parri@amarulasolutions.com, mingo@kernel.org,
+        paulmck@kernel.org, vincent.weaver@maine.edu, tglx@linutronix.de,
+        jolsa@redhat.com, acme@redhat.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, eranian@google.com, will@kernel.org
+Cc:     linux-tip-commits@vger.kernel.org
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
+On Tue, Oct 02, 2018 at 03:11:10AM -0700, tip-bot for Alan Stern wrote:
+> Commit-ID:  6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> Gitweb:     https://git.kernel.org/tip/6e89e831a90172bc3d34ecbba52af5b9c4a447d1
+> Author:     Alan Stern <stern@rowland.harvard.edu>
+> AuthorDate: Wed, 26 Sep 2018 11:29:17 -0700
+> Committer:  Ingo Molnar <mingo@kernel.org>
+> CommitDate: Tue, 2 Oct 2018 10:28:01 +0200
+> 
+> tools/memory-model: Add extra ordering for locks and remove it for ordinary release/acquire
+> 
+> More than one kernel developer has expressed the opinion that the LKMM
+> should enforce ordering of writes by locking.  In other words, given
+> the following code:
+> 
+> 	WRITE_ONCE(x, 1);
+> 	spin_unlock(&s):
+> 	spin_lock(&s);
+> 	WRITE_ONCE(y, 1);
+> 
+> the stores to x and y should be propagated in order to all other CPUs,
+> even though those other CPUs might not access the lock s.  In terms of
+> the memory model, this means expanding the cumul-fence relation.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/staging/media/rkvdec/rkvdec.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Let me revive this old thread... recently we ran into the case:
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 7131156c1f2c..bf00fe6534a3 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -967,7 +967,6 @@ static const char * const rkvdec_clk_names[] = {
- static int rkvdec_probe(struct platform_device *pdev)
- {
- 	struct rkvdec_dev *rkvdec;
--	struct resource *res;
- 	unsigned int i;
- 	int ret, irq;
- 
-@@ -999,8 +998,7 @@ static int rkvdec_probe(struct platform_device *pdev)
- 	 */
- 	clk_set_rate(rkvdec->clocks[0].clk, 500 * 1000 * 1000);
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	rkvdec->regs = devm_ioremap_resource(&pdev->dev, res);
-+	rkvdec->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(rkvdec->regs))
- 		return PTR_ERR(rkvdec->regs);
- 
--- 
-2.25.1
+	WRITE_ONCE(x, 1);
+	spin_unlock(&s):
+	spin_lock(&r);
+	WRITE_ONCE(y, 1);
 
+which is distinct from the original in that UNLOCK and LOCK are not on
+the same variable.
+
+I'm arguing this should still be RCtso by reason of:
+
+  spin_lock() requires an atomic-acquire which:
+
+    TSO-arch)		implies smp_mb()
+    ARM64)		is RCsc for any stlr/ldar
+    Power)		LWSYNC
+    Risc-V)		fence r , rw
+    *)			explicitly has smp_mb()
+
+
+However, Boqun points out that the memory model disagrees, per:
+
+  https://lkml.kernel.org/r/YTI2UjKy+C7LeIf+@boqun-archlinux
+
+Is this an error/oversight of the memory model, or did I miss a subtlety
+somewhere?
