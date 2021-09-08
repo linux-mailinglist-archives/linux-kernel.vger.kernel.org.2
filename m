@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8E6404073
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B27404079
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 23:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhIHVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 17:12:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54628 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbhIHVMi (ORCPT
+        id S1350815AbhIHVSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 17:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhIHVSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 17:12:38 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631135489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fu5kMUZpxkX+s5Xzjbe5W/ZeaCin9i6TKC3Ug/LbFGk=;
-        b=MKUkMumzzF+0be0JCG+ZKnKNNl6zmlRXBNuh6cepuXn6JRGI+UyG9/wPEJ0O5yfy46PErS
-        NrTqfjMaPakQ9i5EiPzuW1Arnd+eoZb3rNCewboqj0zSrY4/cq9fimlSoidIn07LtalZbv
-        XGD6uTfOOlv1i4AYHN+dndZmJ1lHBFjbMPhtKWmIDbohpwvcMVVR1ZgXPsizQtgDlXnMRv
-        zoRLCepXaCINQPrcVYKkJCWwM3uR4vmQTTSnM3Kya7inLz0ivwZAtK1G7VuiOILjJTKE/I
-        lg+IaBo81ekxAekilCNo6VWE/PRIcm22r+srMVxa5gfhaaj/qsYkW7wn5i95sA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631135489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fu5kMUZpxkX+s5Xzjbe5W/ZeaCin9i6TKC3Ug/LbFGk=;
-        b=rBUyok1IbfCsd+RX7ktrzmcXUqVcHxSTUBBYRiXvhNoJ32El16eCShGxpHL6wLnN2TKlO+
-        vlnQvmWy3PEBPkDw==
-To:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        io-uring@vger.kernel.org
-Subject: Re: [syzbot] general protection fault in hrtimer_start_range_ns
-In-Reply-To: <111a312d-ec11-be36-ac74-ef92c8896967@kernel.dk>
-References: <0000000000009eeadd05cb511b60@google.com> <875yvbf23g.ffs@tglx>
- <8bbede01-4a97-bf22-92ad-c05a562c9799@kernel.dk>
- <111a312d-ec11-be36-ac74-ef92c8896967@kernel.dk>
-Date:   Wed, 08 Sep 2021 23:11:28 +0200
-Message-ID: <87tuiueprz.ffs@tglx>
+        Wed, 8 Sep 2021 17:18:42 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAD9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 14:17:33 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so4726664otq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 14:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TPlAlW9m0l3/305TAZdOn8PajEjpurMWCxqwt3GbkS4=;
+        b=k5Abv4lPU09XKV+T9DT6mwM4nvhzpbp8w1z70/OHtY75Ynul9pQ6hYn5bXFmBFeMrW
+         O0+919A9pdjrK0y3dcJvzhZin3ZKvXoUiyDt23xQHj/SSnlPAAi9VRQzz8a1I4ubHeF0
+         4nYBDLB8Lz6QbbDkoFiuCJHvyWUVUa3EzltHvqTW/L4+AUCf7EQWCKr68+2A7LB0C3ZB
+         q4oXu0fljrYBN40kLy/hL1DYa7IAkakc0Yf4BDFQNlOFsl5vyYVrUyyUyf3OAkf0Gq/o
+         aDrKuO+c9bQIEHnV0CzehyjBRrbMdQCVCf6U1wUNm2OTmqSD0tlRXzMVuymIfnAuoQV+
+         izxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TPlAlW9m0l3/305TAZdOn8PajEjpurMWCxqwt3GbkS4=;
+        b=cEMZdUstUlrJPRFqGjaAcplGE107cwP8SAC8nrZFK9CDIXwHwE3xxpfaR0UBEp4RQN
+         gm4LtjGEqIdAulp+shl2SZCW3QO7mSXQJH6rIjQ9aKB8dAvCjEZX7Dzuv/IBto/8PLId
+         /jDoFbXREG3k7VIAG8jE6VUGjm25HHD61454y86Jfj3wujB0wn6hJ30KO7Vwi5CEFw25
+         R66Fsf2c6OpF8bG9GJeiG4toDdqRvq/en0AhvYbON8zNCx5SjcULtXRPP/eUGAJrqXP1
+         ax2LPfLvg4MHSSV9xBUTXphHQM55iD3os22HSjWb8FIQAGySu9GMgEfk7Pfdcp9mbIIL
+         eYWg==
+X-Gm-Message-State: AOAM5330Wic2y+wSM95rsy1Z/cf/j5/Xs0ezQK13mXYNlf7h5RO7ngca
+        U+v2QPE1oDoLFbg+xFZ2DG0=
+X-Google-Smtp-Source: ABdhPJxkjqUmx0EXZUtOM51rkpogDdc1elqKgJf+LSadeuZxUOTgYN8HN8JPtJWeUSz2gihbxedmdg==
+X-Received: by 2002:a9d:7f07:: with SMTP id j7mr181524otq.84.1631135853295;
+        Wed, 08 Sep 2021 14:17:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8sm39523ooc.21.2021.09.08.14.16.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 14:17:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain>
+ <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+ <YTkjJPCdR1VGaaVm@archlinux-ax161>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
+Date:   Wed, 8 Sep 2021 14:16:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YTkjJPCdR1VGaaVm@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08 2021 at 11:20, Jens Axboe wrote:
-
-> On 9/8/21 11:02 AM, Jens Axboe wrote:
->> On 9/8/21 10:45 AM, Thomas Gleixner wrote:
->>> On Mon, Sep 06 2021 at 03:28, syzbot wrote:
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
->>>> git tree:       upstream
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=14489886300000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=d793523866f2daea
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=b935db3fe409625cca1b
->>>> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>> Reported-by: syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com
->>>>
->>>> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->>>> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->>>> CPU: 0 PID: 12936 Comm: iou-sqp-12929 Not tainted 5.14.0-syzkaller #0
->>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>>> RIP: 0010:lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
+On 9/8/21 1:55 PM, Nathan Chancellor wrote:
+> Hi Arnd,
+> 
+> On Tue, Sep 07, 2021 at 11:11:17AM +0200, Arnd Bergmann wrote:
+>> On Tue, Sep 7, 2021 at 4:32 AM Nathan Chancellor <nathan@kernel.org> wrote:
 >>>
->>> That's almost certainly deferencing hrtimer->base and as that is NULL
->>> this looks like a not initialized hrtimer.
->> 
->> Does certainly look like that, I'll take a look. And agree the next one
->> looks like the same thing.
->
-> I think both are fallout from a regression that we had in linked
-> requests, where we'd queue requests that weren't fully prepared. Current
-> Linus -git should not have this problem:
->
-> These were the two related fixes:
->
->       io_uring: fix queueing half-created requests
->       io_uring: don't submit half-prepared drain request
+>>> arm32-allmodconfig.log: crypto/wp512.c:782:13: error: stack frame size (1176) exceeds limit (1024) in function 'wp512_process_buffer' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:294:12: error: stack frame size (1256) exceeds limit (1024) in function 'bpmp_debug_show' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/firmware/tegra/bpmp-debugfs.c:357:16: error: stack frame size (1264) exceeds limit (1024) in function 'bpmp_debug_store' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1384) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5560) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/mtd/chips/cfi_cmdset_0001.c:1872:12: error: stack frame size (1064) exceeds limit (1024) in function 'cfi_intelext_writev' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/ntb/hw/idt/ntb_hw_idt.c:1041:27: error: stack frame size (1032) exceeds limit (1024) in function 'idt_scan_mws' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:902:12: error: stack frame size (1072) exceeds limit (1024) in function 'fbtft_init_display_from_property' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/staging/fbtft/fbtft-core.c:992:5: error: stack frame size (1064) exceeds limit (1024) in function 'fbtft_init_display' [-Werror,-Wframe-larger-than]
+>>> arm32-allmodconfig.log: drivers/staging/rtl8723bs/core/rtw_security.c:1288:5: error: stack frame size (1040) exceeds limit (1024) in function 'rtw_aes_decrypt' [-Werror,-Wframe-larger-than]
+>>> arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3043:6: error: stack frame size (1376) exceeds limit (1024) in function 'bw_calcs' [-Werror,-Wframe-larger-than]
+>>> arm32-fedora.log: drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:77:13: error: stack frame size (5384) exceeds limit (1024) in function 'calculate_bandwidth' [-Werror,-Wframe-larger-than]
+>>>
+>>> Aside from the dce_calcs.c warnings, these do not seem too bad. I
+>>> believe allmodconfig turns on UBSAN but it could also be aggressive
+>>> inlining by clang. I intend to look at all -Wframe-large-than warnings
+>>> closely later.
+>>
+>> I've had them close to zero in the past, but a couple of new ones came in.
+>>
+>> The amdgpu ones are probably not fixable unless they stop using 64-bit
+>> floats in the kernel for
+>> random calculations. The crypto/* ones tend to be compiler bugs, but hard to fix
+> 
+> I have started taking a look at these. Most of the allmodconfig ones
+> appear to be related to CONFIG_KASAN, which is now supported for
+> CONFIG_ARM.
+> 
 
-Makes sense and the backtraces in the changelogs point at the same class
-of problem.
+Would it make sense to make KASAN depend on !COMPILE_TEST ?
+After all, the point of KASAN is runtime testing, not build testing.
 
-Thanks,
-
-        tglx
+Guenter
