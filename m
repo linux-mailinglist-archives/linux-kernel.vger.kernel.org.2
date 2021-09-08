@@ -2,119 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7AA403F54
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2816403F58
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350308AbhIHTEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349845AbhIHTEB (ORCPT
+        id S1350336AbhIHTEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:04:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54086 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhIHTEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:04:01 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F545C061575;
-        Wed,  8 Sep 2021 12:02:53 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id v16so3414786ilo.10;
-        Wed, 08 Sep 2021 12:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2FDPr6yRtupQhLE4miDTkWgI4YgoogIHLlJR7Xih1A=;
-        b=Rpo6d0wlBs2UZEoJBrspoTCPbB2wxnXk64z2+Lqv1mJmSmcQ+UxeUZ1F3PHDBA0V+G
-         J/OOqo7iHAaV3MtLlLFhy40oXQiMJ4Dk9b1xUwH9/C18SQaHZ1EqjaesKfFwkvAjSasc
-         HRBanr/V7It5mDM9hQEd7vSWJG4hthhYhWrecwzSZTj4ckK3GikSxTs9APJn7XpElsJo
-         apviXdoVWetpabXwpu/p9vcU9128w+FNMdwHUukwQlve/Q9DO3ox0xwWZsZtaJJaLANj
-         OgtEmPEXsPSPHaKtxQy6zRLaLg4r4rdWqrqehYWhb7H1EsuhuOvyAL+uMOMwcDOQySNu
-         kYMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2FDPr6yRtupQhLE4miDTkWgI4YgoogIHLlJR7Xih1A=;
-        b=GO9mU8T8Ir6fpGdeYcvrbTbP+WuGNzTufelKM0AaFrO4oSAVvsFl0G0fUq1hvpSzu2
-         +LWDr+uzFN+8VNE4cVgpuIXlNeBgn7XrU6whWEgP6gTAQySgnpagthqlKhBZ4CyZfL9O
-         r91VOw2W6FkhVZRgnhM5DuNhePvtnKy2nJXLTMPlmz9orZFg2v9KUYkoJRZqk/D4cldV
-         zWR+7NyNUx+ndCHYAOFZZT+72OGsIvJvdIonmqXKJsl34RJDGElBvwnHt/EwWmAgEReA
-         H4TYWcW/boPVP36LGSR7k+cjC02DzJjDyrqZHofInSX3xaB8RCbacqwFwOvQwxsMNQBG
-         HVKw==
-X-Gm-Message-State: AOAM530IIuAknRli4HwO7JBjo0dKekKmG/a4+LmTEI1lixqJkr2bTW4t
-        GIS4unjdv9M5dOiuLx44Kj0Ch3ZS00AphAt2CUTS88n/Cbs=
-X-Google-Smtp-Source: ABdhPJxdPQMgyqHVHO5RULubySm78Aw9INUL0p+riw8HzmRchTllzs2uPB3wmmDJl0sO2kgvFC0wIv/Obda2aVoUxC8=
-X-Received: by 2002:a92:1304:: with SMTP id 4mr1043255ilt.196.1631127772901;
- Wed, 08 Sep 2021 12:02:52 -0700 (PDT)
+        Wed, 8 Sep 2021 15:04:22 -0400
+Date:   Wed, 08 Sep 2021 19:03:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631127793;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cc4XKzlAxS2JV3J1f8eqsKquDD1+Lo6QrqMckR6OU9E=;
+        b=2a9isP1SrMzoKsMARCnOodf/AOZ4OZtCWOdXAC1t+/rWl6OvwXl26r4/KFYZKnaTiuoXd9
+        xAuzMdfiZ07CKIdOTJEUycBlhcEaZwEk75weluEC6m5wChahDeuET4euXuTs5oFYUHLZcz
+        PZDqbxYdnZksqK3LRVoFN1E6KZOaQWssSlPEHyV8Z9hFMuFfubt19RQbrdPsEhvfS6OUs8
+        ccmI+bOH62lRUEsew9wkjEgF0B6EcrQYr33hhTtKolWH11TsLeuxfxVeTLsATdyGMm3kgo
+        HXE1dc3/XLsQsf7kMVol79UmncR5IshfRbeCy5kR9F54SGlXifz1Bpt8ImVIlw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631127793;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cc4XKzlAxS2JV3J1f8eqsKquDD1+Lo6QrqMckR6OU9E=;
+        b=mrTXsTWCaeOhZ6ev+EEwpnC9sR5WC5nHWYBli36E25xcC8vdjA2gJGqbebGKjmju251SWJ
+        obpS3wTu0wVfmrCg==
+From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mm: Fix kern_addr_valid() to cope with existing
+ but not present entries
+Cc:     Jiri Olsa <jolsa@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210819132717.19358-1-rppt@kernel.org>
+References: <20210819132717.19358-1-rppt@kernel.org>
 MIME-Version: 1.0
-References: <20210907202958.692166-1-ztong0001@gmail.com> <48b53487-a708-ec79-a993-3448f4ca6e6d@microchip.com>
-In-Reply-To: <48b53487-a708-ec79-a993-3448f4ca6e6d@microchip.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Wed, 8 Sep 2021 12:02:41 -0700
-Message-ID: <CAA5qM4CtA7mQ5ph8t5Da2zz08zuLOCocYYkHVTdM_rPS_xYJkA@mail.gmail.com>
-Subject: Re: [PATCH v1] net: macb: fix use after free on rmmod
-To:     Nicolas Ferre <Nicolas.Ferre@microchip.com>
-Cc:     Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163112779151.25758.9291514239160548248.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Nicolas, sent a v2 as suggested.
-- Tong
+The following commit has been merged into the x86/urgent branch of tip:
 
-On Wed, Sep 8, 2021 at 12:27 AM <Nicolas.Ferre@microchip.com> wrote:
->
-> On 07/09/2021 at 22:29, Tong Zhang wrote:
-> > plat_dev->dev->platform_data is released by platform_device_unregister(),
-> > use of pclk and hclk is use after free. This patch keeps a copy to fix
-> > the issue.
-> >
-> > [   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
-> > [   31.275563] Freed by task 306:
-> > [   30.276782]  platform_device_release+0x25/0x80
-> >
-> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> > ---
-> >   drivers/net/ethernet/cadence/macb_pci.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
-> > index 8b7b59908a1a..4dd0cec2e542 100644
-> > --- a/drivers/net/ethernet/cadence/macb_pci.c
-> > +++ b/drivers/net/ethernet/cadence/macb_pci.c
-> > @@ -110,10 +110,12 @@ static void macb_remove(struct pci_dev *pdev)
-> >   {
-> >          struct platform_device *plat_dev = pci_get_drvdata(pdev);
-> >          struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
-> > +       struct clk *pclk = plat_data->pclk;
-> > +       struct clk *hclk = plat_data->hclk;
-> >
-> >          platform_device_unregister(plat_dev);
-> > -       clk_unregister(plat_data->pclk);
-> > -       clk_unregister(plat_data->hclk);
-> > +       clk_unregister(pclk);
-> > +       clk_unregister(hclk);
->
-> NACK, I  would prefer that you switch lines and do clock clk unregister
-> before: this way we avoid the problem and I think that you don't need
-> clocks for unregistering the platform device anyway.
->
-> Please change accordingly or tell me what could go bad.
->
-> Regards,
->    Nicolas
->
->
-> >   }
-> >
-> >   static const struct pci_device_id dev_id_table[] = {
-> > --
-> > 2.25.1
-> >
->
->
-> --
-> Nicolas Ferre
+Commit-ID:     34b1999da935a33be6239226bfa6cd4f704c5c88
+Gitweb:        https://git.kernel.org/tip/34b1999da935a33be6239226bfa6cd4f704c5c88
+Author:        Mike Rapoport <rppt@linux.ibm.com>
+AuthorDate:    Thu, 19 Aug 2021 16:27:17 +03:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 08 Sep 2021 20:50:32 +02:00
+
+x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
+
+Jiri Olsa reported a fault when running:
+
+  # cat /proc/kallsyms | grep ksys_read
+  ffffffff8136d580 T ksys_read
+  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
+
+  /proc/kcore:     file format elf64-x86-64
+
+  Segmentation fault
+
+  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+  RIP: 0010:kern_addr_valid
+  Call Trace:
+   read_kcore
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? trace_hardirqs_on
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   ? _raw_spin_unlock
+   ? __handle_mm_fault
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   proc_reg_read
+   ? vfs_read
+   vfs_read
+   ksys_read
+   do_syscall_64
+   entry_SYSCALL_64_after_hwframe
+
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
+
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
+
+Have kern_addr_valid() check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
+
+Stable backporting note:
+------------------------
+
+Note that the stable marking is for all active stable branches because
+there could be cases where pagetable entries exist but are not valid -
+see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
+sure to be on the safe side here and use pXY_present() accessors rather
+than pXY_none() which could #GP when accessing pages in the direct map.
+
+Also see:
+
+  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+
+for more info.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: <stable@vger.kernel.org>	# 4.4+
+Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
+---
+ arch/x86/mm/init_64.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index ddeaba9..879886c 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
+ 
+ 	p4d = p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (!p4d_present(*p4d))
+ 		return 0;
+ 
+ 	pud = pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (!pud_present(*pud))
+ 		return 0;
+ 
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+ 
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (!pmd_present(*pmd))
+ 		return 0;
+ 
+ 	if (pmd_large(*pmd))
