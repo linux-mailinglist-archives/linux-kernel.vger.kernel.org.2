@@ -2,231 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0F1403F0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E4C403F16
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349832AbhIHS0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:26:14 -0400
-Received: from mail-sn1anam02on2041.outbound.protection.outlook.com ([40.107.96.41]:6286
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235224AbhIHS0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:26:09 -0400
+        id S1350039AbhIHS2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:28:19 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:27374 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235227AbhIHS1v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 14:27:51 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 188ILvw9030286;
+        Wed, 8 Sep 2021 11:26:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=FQuzQx64q4H3khbdMZn2yGkKH8ce2fX8A5IXneOih5Y=;
+ b=fEsV8gdCNde+FkSZRIt9ej7t883o/VeabfZyk99QnhQWmH2wNHE9YCggK3c3S/uf846O
+ Wxoqjm/yVDegMNJ/gTUmX1Lzr1AL0ow4pd3yg5kqdW7RLNPnxakMWUUF3dMX+07qgC9W
+ En/wF8sCmneFlK5szRNgI/GlaUlGSkvAg5MZAKJ4haFI5OtQ88OkBGFr93Z2qNYoNHez
+ +Kb2wloX4LAbC9pZDeKX7Imh4y4eBNcjLrDUZtnbLQq8x5SzLgz4WYJsl/3Lm3xgjOKe
+ jUYOK8T9D3RTuW94RMk5R0Pw8/fA4cFoA3tSTwmNXNfMJQH6FZ3tJv78P4RIdjzLvIxh nQ== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 3axcn5c470-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 11:26:35 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mlK5j++qCmSvwrQ2YG3g485rW0jwZJdPiTo674a9eflYq8xKSaEfGfpo4EkQ3DG/V7W0dHwTrM59zfrUtKORPCIeLDThSoCOZE+zg3eU44pHoSh//fW6ALG60IqTuGrjGwTNX9TMgHYodco2fSn3bw5+UjDeACm6Ke+wEU6mby/U1/ph0xbuZaUxKEQ/6gMNEYFLzVPP9uvQAVlo3LTdnCzeebwGAyyWZMZWzERqJO9byHNr79/1EhcqajmB5hFzwSYYIB94Lb264KtIUNcfddY4pzLDVJlp+TscC6WOWKVv7eQfN76jZZ5rpWvzP/EFUgeFuAMbI351wW3yzWv9BA==
+ b=IJoTjHRuWxj9OHDh6W2TD/062xJZoVwcdh5V+U4Sw7CVkTj6TMzTCLBYmWI50tDZQuC6v3BkKjHSaSb3VDRx/ccZlT9zuD8vVtglxkWAm0X32GAUj6II0NUibjfBHh/PpgS7C6NQmtCQbY5djuUJ7qIcn9n5T5LbxEHavasj+PNsgWF6rAgoGH4KryyaiOCTl33m1SJRjTMQm8K80ISk46SrvzkqXz1A7rOSOfWBWP1pzGGArhJEPQ22DhIvGhRtobq3h9rV4tDNyMgsLf9UuI7qYhIQMx3adsIxh1pYuoB0IRcGXcl4AivoW1BnLK/PyICcCGVPwojN6L/cFkJ9RA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=hCfNM8Iz7KAm5bALt8HUeJoCuTtiwTpZkOr4KM8gEKI=;
- b=TG0DqNa2nF52AXa1c58P34aoPvd5lp4l0+AGGDY5TyW8To4nC0Dy1levgNKsMraudifHdgPQ8VQLy4uANRa6LCTrX9e+qKhR22HeZT1aEMJC51AVen/gvaTkx/000IA1XbPXI2/L0XnJ8a9QfvK/ltSRzHg5oYCsAQnzBu7no9qfyuetY6RgP9S3QMLX67tcRzI/vO4woYZ6pFK53jgtfVUz3DSWhOXQLgWGPA7pLYm2p1PQsBmQxw2DL8l/kOEgplRMTHK1wGQ78Fgqb6n/+xNkX13/25MDSwE5o1L3C7qrn7HvEA0FpzOTr0SM5Ni0dlhNciDhMd+bITJlsyAkaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=FQuzQx64q4H3khbdMZn2yGkKH8ce2fX8A5IXneOih5Y=;
+ b=hDEVnqiBSX50zMouKMO3ZW8qraXR/cRmgET1gyVKm+EEdB0z6vMtLf92JU06pml52ZHLQBC2SODM+loEBfM/Fo0hQNpdAif9qvECbv/wURF4d1IXLzjKjIVwBBJFNZv9gdAeqQhqlZNQiXcK/bfEy0jUXtqaQtcMraEl0xig4m2EDIjHOUIhECA41Uv6NHR4jWW2BC4/Xt/8O8d6FcucDpgtrA5yWSl4KaC1t+6DKC6GoHWmzK3UjU/vp6ZbNTuEQ/gu5nQUArui9XoRjmWlSRhyHRejT77P4eXYBOEHci3nHzteSPgVwE/9tJPKDt4OXLqPLEy1e2XRuVHJ6cJVrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hCfNM8Iz7KAm5bALt8HUeJoCuTtiwTpZkOr4KM8gEKI=;
- b=ZD+Tp1duxUtFyvi4mNa8KrVgdEk/6eqP+m5KpylyZD8u5pcrZGWKY07Gj8asd4vZdklWdTg+OltIyhp/RQ8HzIicIEzAXtRkAQc4gQKCsT5o3HH0CvmTFFAHqaS+rh1htQDC5RMIVQyQa0v26c/hpAoQ4NInh2zHnZCKB3gPHys=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB4720.namprd12.prod.outlook.com (2603:10b6:805:e6::31)
- by SN1PR12MB2576.namprd12.prod.outlook.com (2603:10b6:802:22::22) with
+ bh=FQuzQx64q4H3khbdMZn2yGkKH8ce2fX8A5IXneOih5Y=;
+ b=T1TDn31iIT8JPlqcTHQQ0Hj6ngQBI+J+cQP/j9qclpNJlqFW2oVO795ikwsEgu6kzfNFyOifeB9zp3eikE7SfchcbF792XuiBDYKyRfxLxgJf0nT+IPD7A2eK5D22nq8jXp8+rA2Ev2PQ7JIchLf39v1DgiP4r0Rr7A9sy0i1KU=
+Received: from BN6PR13CA0015.namprd13.prod.outlook.com (2603:10b6:404:10a::25)
+ by BL0PR07MB3986.namprd07.prod.outlook.com (2603:10b6:207:42::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 18:25:00 +0000
-Received: from SN6PR12MB4720.namprd12.prod.outlook.com
- ([fe80::e134:658f:3a82:f750]) by SN6PR12MB4720.namprd12.prod.outlook.com
- ([fe80::e134:658f:3a82:f750%4]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
- 18:24:58 +0000
-Subject: Re: [PATCH 08/19] cpufreq: amd: add boost mode support for amd-pstate
-To:     Huang Rui <ray.huang@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        linux-pm@vger.kernel.org
-Cc:     Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-9-ray.huang@amd.com>
-From:   "Fontenot, Nathan" <Nathan.Fontenot@amd.com>
-Message-ID: <a2718365-5975-5c91-350f-fe9098b4de7b@amd.com>
-Date:   Wed, 8 Sep 2021 13:24:54 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210908150001.3702552-9-ray.huang@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0147.namprd11.prod.outlook.com
- (2603:10b6:806:131::32) To SN6PR12MB4720.namprd12.prod.outlook.com
- (2603:10b6:805:e6::31)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Wed, 8 Sep
+ 2021 18:26:32 +0000
+Received: from BN8NAM12FT065.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:404:10a:cafe::82) by BN6PR13CA0015.outlook.office365.com
+ (2603:10b6:404:10a::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.8 via Frontend
+ Transport; Wed, 8 Sep 2021 18:26:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
+ smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
+ client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
+Received: from rmmaillnx1.cadence.com (199.43.4.23) by
+ BN8NAM12FT065.mail.protection.outlook.com (10.13.182.134) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.8 via Frontend Transport; Wed, 8 Sep 2021 18:26:32 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 188IQUwJ017985
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 14:26:31 -0400
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu4.global.cadence.com (10.160.110.201) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 8 Sep 2021 20:26:30 +0200
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu4.global.cadence.com (10.160.110.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 8 Sep 2021 20:26:29 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 8 Sep 2021 20:26:29 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 188IQTCS028405;
+        Wed, 8 Sep 2021 20:26:29 +0200
+Received: (from sjakhade@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 188IQSKm028404;
+        Wed, 8 Sep 2021 20:26:28 +0200
+From:   Swapnil Jakhade <sjakhade@cadence.com>
+To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <mparab@cadence.com>, <sjakhade@cadence.com>, <lokeshvutla@ti.com>,
+        <a-govindraju@ti.com>
+Subject: [PATCH 0/5] PHY: Add support to output derived and received reference clock from Torrent
+Date:   Wed, 8 Sep 2021 20:26:23 +0200
+Message-ID: <20210908182628.28364-1-sjakhade@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Received: from [172.31.130.72] (165.204.78.25) by SA0PR11CA0147.namprd11.prod.outlook.com (2603:10b6:806:131::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 18:24:56 +0000
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f2766f2e-7870-4c2e-3392-08d972f5f703
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2576:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB25765C899331F3AEE47C8DF0ECD49@SN1PR12MB2576.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Office365-Filtering-Correlation-Id: e666329a-d4a5-495a-dbc1-08d972f62ef6
+X-MS-TrafficTypeDiagnostic: BL0PR07MB3986:
+X-Microsoft-Antispam-PRVS: <BL0PR07MB398646FA94590BEB70730AE4C5D49@BL0PR07MB3986.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /UnvBtBGMEaBa5K6NqR/18M9pHz5IZmw1WQZJ64SkN+77E6gz+34wdzKCxuuLJlsq1a6M9QVlfkYgDxO3wnKrWM9yP9R0ubrdQUm93mLVfC9H0B/D1ZUj+vGg8Vuaav5WtFf05nlXnRW2NeP5qYyqVT1sMmeBP7wAlRYllXNFJI8cnyzZ1bE6y2hlUOJLoXazwqikBh5C5B65L+k6G09K5Ts/8jzqfFY1EKrFZRi2XwWM1e49LsMxkCf9GRjSb8Rm1fattLkU98oSn/W7Aih1nDj9jO9hRgQ7sPFT8GrVHaT1t8CB1lO8XO4rLp+j93Kw7nIq1tzY9b1DjCBD2I+cBT0rE4sm061/bDuceGayi0tphxNcra+4Yg6s1HvRiu6pTAWvTNo29r8MgVq7LrOEkF5b2JPk3OVZ5AtuvJLPw2jkwL9JTBv6bgk/1Fu764OLdOcjxeH19QDIBZDRTBTe+WiHsWHjMtrfQGGjQefkCWlmFOx5Azk9bjqIIGeFrYCFeN9gvPCtDKOwQl4G5bh6ZVAAtg7R+qYwTucFCLdwAppAAIvudkd59Oh/CSqlASjxUPa+ZWV/9A+VohsQfqCpsK0HGJUIkX/ev0Xapb7pj3exyT5stirSpEMQ67MiUnYXkH4AAUUF5KTdAnCEgrdZTnRPq1FlXl4eskxAFnKovTXg0p7l0klrzE70t/5kmMv5WzwO36Ooj4hlJbqAG/Zh2tHDZlVIxkb0EfC3E1dNoY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB4720.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(396003)(136003)(346002)(8936002)(31696002)(83380400001)(53546011)(316002)(110136005)(16576012)(956004)(54906003)(5660300002)(2906002)(6486002)(66476007)(2616005)(66556008)(66946007)(36756003)(31686004)(186003)(4326008)(26005)(8676002)(86362001)(478600001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STJ6cVlNRkU3My8xUTY4TnA2aTIrMjN4OE5GWW9aVzA0NTVpeE04QXBjRXFS?=
- =?utf-8?B?VDd5M1krb055akd1NTA0anlxK1dQUnpvWWVCMzF4M3NIREFhSUVOOGVGRDZI?=
- =?utf-8?B?NlhNUllUdS9UYkhuQU9uTU5xcHZYK0NrVUZvYUlJdklwWEUrMzVTUlpVRHdL?=
- =?utf-8?B?NGlSRVU5Z01pb0hvOUlDSG9KK3FSSGhoL0dUSFZjamh3bHdZaHlrL0FaK0lw?=
- =?utf-8?B?cEJhTG9aemZrcXlUTk1udVZ1aGtNY1VlWi9lRU94K01IZGhFZzFKODVNVXBH?=
- =?utf-8?B?Y0hGc0Z2ZnREaVI0RlQzQ3lBUm1PbDJzbTR2VEVVaEtUUVlHVjg4UlVaOE5M?=
- =?utf-8?B?TTdCZndYSEh0QUZTOWdUVHg2SWhuNlQxaWpseTM1VVdtTFkxUWYrSHp2bU1K?=
- =?utf-8?B?d09xSUhQVUJZZm82UzFaZEhjNzl6YUIraU4zVGxMVnZ6Z2tYalhiVUQvUDd2?=
- =?utf-8?B?a0hpQlFDTU04QnF6a09ndDlBU3d0WDdZM29meUQyd0tUUlFZZmFOTGxJNzJh?=
- =?utf-8?B?LzJlN3BxNTFMcU03NnJLSHV6NGlEZ3g1TTVYbkNiaUtHd0N0UEQyYTJKeTg3?=
- =?utf-8?B?QmU4VVh1eDVBdG1TWml6ZXJkMVROcFZscVdiTFNmWE5NZWduazVSV0VUb3lt?=
- =?utf-8?B?OW4wQUE2R3hYSzFQZ0F1T3dXaHBYUnlHQzN1VFlaWFBiUFRFWFhpa1lLd1FF?=
- =?utf-8?B?ekkvMldSY1c5QkF1clJnTDFCaENSa0hXd3E1aXErVjRJR1ZqeG0xZnBQdlR2?=
- =?utf-8?B?M2NqaDNGUXFYVC9RYWVVUVdiOTU3bUVWbG9vQlhNNDlQVnpkK0t6djBWSGdF?=
- =?utf-8?B?T3p3d2lRdTdDR2owNVdGZGxScUhOOGZacndGVkZNSldWZWZqQVM4RDcyQlY3?=
- =?utf-8?B?NW80dzVNYnE0ZWVqNUp4VU5KSTh1UmdmZHlvNHZaZHRTQ0c2cURUY2x1M2tk?=
- =?utf-8?B?cUNwVXBFbW9QOXdyaHBFMXJmcGJYWXJSYzNkNHJzaUVDZUpUSlhkcHFOMExE?=
- =?utf-8?B?bjlXSnpZa0ZEKzdWZllTZVMveWRGNFNHLzkrUFVMU2FUQmhsNm82VGZ2dVdP?=
- =?utf-8?B?OHV0OXR1MkU5WGJydkV2UkMzODFtNS9mdms1c3RJU0gxdE1nbnhEMHEvV2VR?=
- =?utf-8?B?bW1lSTVMNGpNa0xHQld0cDJ6c3ZSOTBhQUtjR0c5ZW5iSE45Wmk3dXVvL0R1?=
- =?utf-8?B?dmYxck5Jd2RKZDZNS2d6aGpHZktSTFFaTFJMcUgrWjFUdXMwS253WnhCTXl2?=
- =?utf-8?B?K082c3MyeUo0cXBYY2h6QTV2aklKdHJjUzkrZWh5RzJPYm9TZld4TTN6bHBq?=
- =?utf-8?B?T09RZnZPOEh3aTVFTEExbm9ONWdyeWk2MzkrZUR4V0dSemZwNndKdlZpdDYx?=
- =?utf-8?B?cUk0dGYrcTdDL2R5cGdVbjZVRmI2ZkE0aklZTFFUSXd0VlFYQTJlTjRBTFkw?=
- =?utf-8?B?RVc3TFo0V1lxS1hKRTNCZUlrVm9XUlk0Y3p4MjI0cmFUYmVEZ1ptZENNM3Ir?=
- =?utf-8?B?Y2V6Z3FPekVTT08reEFDdk1uUjJVd2czWENTSEJockZNTldmUFM5cFg1Smoy?=
- =?utf-8?B?SmlPcVNJdnZ6am9Gek9aM2d5MmhJbnBHcGp3SmpIMytBRHg4cDJjT1JrTENk?=
- =?utf-8?B?TVdoWldVMnlBTThjSEtzd0tURUUrSWRMOEtqbUt0bXpMang3R1RjeTNydHZI?=
- =?utf-8?B?ZUpPYmJacEVJcFRWRFo4RDErY2ZRdCtjaGN1Z0NBL1ZhRnNtQjB5ZlF4OStY?=
- =?utf-8?Q?RmmhRQMHJ9Ll8Xpy5f+Ik7NsBkeaup+sT9KvzRF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2766f2e-7870-4c2e-3392-08d972f5f703
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB4720.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 18:24:58.7871
+X-Microsoft-Antispam-Message-Info: mGQfjTY3HG5EPf4Tcb04R6VOyS0SFmD7KsRAQpsHaxV8w3RE3nyIkRywsnzDJzBsHzFuBZ6oH5nd1AWxwq5a8m7oEr3gq/uoOiigeLb7N29dKcQTpVgVBgBPtBLk+VWm/G72NgU/xGFgi+vOsVp0kw6FEJDlpOZj++eXismTtGeCLr7SnnVG7EI5fCSOsPFnXnUf7YFS3OiCzBmXy57vnTguIa5fGxnjModU3ac0E6HPtQvIIukXiRT4wuEOIvHnFOsuAiF3sNBpJWySq1eykETMiKTtwWisTPYVhupc6YlkeaDwwm3886Iv03pvfKjrns4HqWdqm9d3pIjFrCv9sL+SY6hxu2BlLQm4gOcLowYNm4kSGEGh/UE9BTFvFhK6R+XbiriueKG+Mpqun+w2J5D+v2Il/axzpObF0WVkOlGarjDlWws75mPqbU6FdMLGA+WPTXeKPU/dfpoQZiAwbb271FCmPb5p/t2MtexpJIkiX/4ogKNhHOoQTGIUvjwOY9D4PHNExgLHXYyB1QxWl9gQvMbuqpTXaZhMAIqzyIK98N8KD8Hcp+5u/tYulEz1ZA+3+uJ0Ga+yWqCOPKinPUBhx+vOAd+jKZDGP2UQVkcEryQdWjpG5IK0GMskuPGeWp+tQ+9K113UONIClDZHZlko8i4Uhyuqr+FuKyZDpqOI0pHb6unDFSKMwmlNMLIiclorueGgZJ6ylIBVZdzpwixcsxhwQEOZH+fk0a2kmOXmbE7yRu8+zAgZ/uON6TvMT908E04v5i3K95CyJGhe1Coud2jYtPngANY81Pqco5c=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(36092001)(46966006)(36840700001)(81166007)(70206006)(356005)(47076005)(70586007)(54906003)(2906002)(4326008)(36756003)(2616005)(82740400003)(36906005)(82310400003)(316002)(110136005)(1076003)(186003)(83380400001)(5660300002)(42186006)(8676002)(8936002)(36860700001)(26005)(478600001)(336012)(426003)(6666004)(86362001)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 18:26:32.4777
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fB4B5Uf9+CwQjnvJttURmpAV6XMiaoYX9Oqj3be/UAm8PK49nVB3marsDk+MihSRHxpGPBhJMiD2l4dltEcFOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2576
+X-MS-Exchange-CrossTenant-Network-Message-Id: e666329a-d4a5-495a-dbc1-08d972f62ef6
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT065.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB3986
+X-Proofpoint-ORIG-GUID: U_PdgBw3B0TQTydpCMVfrKEXfiM81sM7
+X-Proofpoint-GUID: U_PdgBw3B0TQTydpCMVfrKEXfiM81sM7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-08_06,2021-09-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=596 spamscore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/2021 9:59 AM, Huang Rui wrote:
-> If the sbios supports the boost mode of amd-pstate, let's switch to
-> boost enabled by default.
-> 
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->  drivers/cpufreq/amd-pstate.c | 50 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index ea965a122431..67a9a117f524 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -75,6 +75,8 @@ struct amd_cpudata {
->  	u32	min_freq;
->  	u32	nominal_freq;
->  	u32	lowest_nonlinear_freq;
-> +
-> +	bool	boost_supported;
->  };
->  
->  struct amd_pstate_perf_funcs {
-> @@ -229,6 +231,19 @@ amd_pstate_update(struct amd_cpudata *cpudata, u32 min_perf,
->  				      max_perf, fast_switch);
->  }
->  
-> +static bool amd_pstate_boost_supported(struct amd_cpudata *cpudata)
-> +{
-> +	u32 highest_perf, nominal_perf;
-> +
-> +	highest_perf = READ_ONCE(cpudata->highest_perf);
-> +	nominal_perf = READ_ONCE(cpudata->nominal_perf);
-> +
-> +	if (highest_perf > nominal_perf)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static int amd_pstate_verify(struct cpufreq_policy_data *policy)
->  {
->  	cpufreq_verify_within_cpu_limits(policy);
-> @@ -402,6 +417,37 @@ static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
->  	return lowest_nonlinear_freq * 1000;
->  }
->  
-> +static int amd_pstate_set_boost(struct cpufreq_policy *policy, int state)
-> +{
-> +	struct amd_cpudata *cpudata = policy->driver_data;
-> +	int ret;
-> +
-> +	if (!cpudata->boost_supported) {
-> +		pr_err("Boost mode is not supported by this processor or SBIOS\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (state)
-> +		policy->cpuinfo.max_freq = cpudata->max_freq;
-> +	else
-> +		policy->cpuinfo.max_freq = cpudata->nominal_freq;
-> +
-> +	policy->max = policy->cpuinfo.max_freq;
-> +
-> +	ret = freq_qos_update_request(&cpudata->req[1],
-> +				      policy->cpuinfo.max_freq);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static void amd_pstate_boost_init(struct amd_cpudata *cpudata)
-> +{
-> +	cpudata->boost_supported = true;
-> +	amd_pstate_driver.boost_enabled = true;
-> +}
-> +
->  static int amd_pstate_init_freqs_in_cpudata(struct amd_cpudata *cpudata,
->  					    u32 max_freq, u32 min_freq,
->  					    u32 nominal_freq,
-> @@ -504,6 +550,9 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->  
->  	policy->driver_data = cpudata;
->  
-> +	if (amd_pstate_boost_supported(cpudata))
-> +		amd_pstate_boost_init(cpudata);
+This patch series updates reference clock driver implementation for Torrent
+by adding support to output derived as well as received reference clock.
+When reference clock driver is enabled, either derived or received refclk
+is output on cmn_refclk_p/m.
 
-Is there any reason to not merge amd_pstate_boost_supported() and
-amd_pstate_boost_init() into a single function? I don't see that
-amd_pstate_boost_supported() is called anywhere else.
+In derived reference clock mode, cmn_refclk_p/m outputs the refclk derived
+from internal PLLs while when received refclk is selected to output on
+cmn_refclk_p/m, this is the internal reference clock driven on the
+pma_cmn_refclk_int.
 
--Nathan
+Swapnil Jakhade (5):
+  phy: cadence-torrent: Migrate to clk_hw based registration and OF APIs
+  dt-bindings: phy: cadence-torrent: Add clock IDs for derived and
+    received refclk
+  phy: cadence-torrent: Add support for derived reference clock output
+  phy: cadence-torrent: Add support for received reference clock output
+  phy: cadence-torrent: Model reference clock driver as a gate and mux
+    clock
 
-> +
->  	return 0;
->  
->  free_cpudata3:
-> @@ -535,6 +584,7 @@ static struct cpufreq_driver amd_pstate_driver = {
->  	.fast_switch    = amd_pstate_fast_switch,
->  	.init		= amd_pstate_cpu_init,
->  	.exit		= amd_pstate_cpu_exit,
-> +	.set_boost	= amd_pstate_set_boost,
->  	.name		= "amd-pstate",
->  };
->  
-> -- 
-> 2.25.1
-> 
+ drivers/phy/cadence/phy-cadence-torrent.c | 316 +++++++++++++++++++---
+ include/dt-bindings/phy/phy-cadence.h     |   2 +
+ 2 files changed, 286 insertions(+), 32 deletions(-)
+
+-- 
+2.26.1
+
