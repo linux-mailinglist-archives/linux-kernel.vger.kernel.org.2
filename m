@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FC140419D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D1A40419E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236470AbhIHXLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S237837AbhIHXLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhIHXLY (ORCPT
+        with ESMTP id S235595AbhIHXLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:11:24 -0400
+        Wed, 8 Sep 2021 19:11:25 -0400
 Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61743C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:10:16 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x6so5570246wrv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:10:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34552C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:10:17 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id b6so5573061wrh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UZtUkA8uA7tyAnR1JQv0hvRBLsmltUOtKeKYLbxIW8c=;
-        b=CqZQgiOgLva3wRn6rcX+rsQbs7Aihl/+1pSGLWlq4AcBHLL/c1D/xAq5P+E0T55R+9
-         o9S3P6t25cjtHKTJMRTx9bxjYc0YelCDwox/bNZAtgQM2biglVLHQCJ3Bjm1p2frULep
-         3axycg5ILdeRvg8YBG/FCyPdPwK/d+xpLgxnhjKnzrcomBhyI8G2SdguMkS8z0ZInJ6L
-         C+n9tJDdmKY/NUNL5KBgWi8MEwNyW9M3oHGz3NLk22fcrs7xQ7SmSVxAS+VkMHvJJKg1
-         IvmZ9Dc+E0kK0VEfgy7y/WrS1OvTnShW5UWJL6fEkgfubdCgFR6vV+v9N/1sWNMu/irp
-         FlcQ==
+        bh=Bck3GxM/smuWPP1BN2oyn2huDSeUCK8vvjWeb+leiQk=;
+        b=OJ6wttDqNyKkGNxg8MNgwxQayIgUMQxKm+MI/X5bR0AFTYdkt7jVJlOy5sGCnvtwGV
+         A9Ae2BqXvcCFLpQnWknKXzjC5WGbjCFOv361MK2YVo+UNg9UcQwN5SAHLRroth6X3UOm
+         aWHA1Kjgv3PaVBuUvpmff28lPiZvPJXiaXYpz9r2KZIhZfbDjzmpj3Hl3vS1nX089eNS
+         /MoorYx8g6mF7GQBiduC2jSlWm3SD/j9mk1KMMU3II6vhOKLyTFa07wOfS6q1y4IlcLP
+         QN0VkTEk842XxXzV3qvUHqSnWhT+ekkzK0vkPUq7AHSGYlXDv4DJhp2FeE888RgGthEa
+         vx8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UZtUkA8uA7tyAnR1JQv0hvRBLsmltUOtKeKYLbxIW8c=;
-        b=w+pd1CE1rXvWXjLglzPHgVMf9fvZAQNW0Rw9A2USMXczZbFUJdRaxXQPta9k5VF5Mj
-         7qhIVBwQi8mOcQYpyY/zyssyCQ3RZ2m5HzB8NNOgayxtcqJ9LrvmAg0BOtf6+G32k01G
-         2r54ozRvjP7G6//Md/dpcXx/hQIxy5nfiZtfPUHCLQz5Bx2c2f7a8fnKLd5jy5Inz3zF
-         Zq6jOOP9anrqqfua0TQgvfuMDGLH5L8msOH2I7xS2jRv82Ru4VGsqwpBe9Ckcho/mRXJ
-         euC2S+VhLL7OTKe+YaO6M1AAQZ/8h7EfzwLbmn+xJb/xgOlW6ZgwaoChUbyIFD9izQ5G
-         Jx3w==
-X-Gm-Message-State: AOAM5331VJt6Nz0YZtM6Db5kvyg/32072+oZw7ny7HlzOAozIOhAeTni
-        Io0pqw/w/XZN+UoQ9Wl/DFQ=
-X-Google-Smtp-Source: ABdhPJwmbUd4K2WLg6p3JTv6MNdyVrJy5d1p4iVIYgBaZ8pfF54JFOCfZZmlSTF2Xw8Lv2Oc8WHkwg==
-X-Received: by 2002:adf:eacb:: with SMTP id o11mr65857wrn.418.1631142615093;
+        bh=Bck3GxM/smuWPP1BN2oyn2huDSeUCK8vvjWeb+leiQk=;
+        b=5nQCLoOsgwuhB20f0NB79w1TTAzBECicR3L3YnNLlQYTIrPRSpfqLY6lU/TfBD9+Bk
+         ad/gGpAa/41aH4+s5gWSjm2/PZj3PfWzDddsI5KIA2/nHVGt6bui01dub5/rcJKcu5l4
+         FqTaGRmFdkdmZ11/2oEFgXR5JnMO14acQb1Kd65Mv+Srarvd1X7bM/tA9Wezgt9YE3gi
+         7lxsiDSWn9wAtzlBHsOG2Wuy8vpQufhCSck+b8jqWhWBTSUwMhCos3sVBaeXpc3NFPU8
+         tTBt7nre008SyPQfvsM1/GexvDCdSxSEIVDiTI6GQ1Z7y9C6tPlzzZ6J0kFGpIe+vulf
+         91yg==
+X-Gm-Message-State: AOAM533+WGKoc64ZTEZs+2rO3wWfLYhUtNrIoS3pL64jqnZqE+Ofa3rI
+        jvr+iUwStGaXSu3iU8x2mKY=
+X-Google-Smtp-Source: ABdhPJzhdAmgitEAHjHd4q7oxUOqHssQvkjGp8GQZVP8dwRoTSHGoKBoYquguQfk1hCgOdjr4LbIDg==
+X-Received: by 2002:adf:f101:: with SMTP id r1mr47110wro.355.1631142615891;
         Wed, 08 Sep 2021 16:10:15 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id l21sm348393wmh.31.2021.09.08.16.10.14
+        by smtp.gmail.com with ESMTPSA id l21sm348393wmh.31.2021.09.08.16.10.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 16:10:14 -0700 (PDT)
+        Wed, 08 Sep 2021 16:10:15 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 1/2] staging: r8188eu: remove unused odm_Init_RSSIForDM()
-Date:   Thu,  9 Sep 2021 01:09:52 +0200
-Message-Id: <20210908230953.16931-2-straube.linux@gmail.com>
+Subject: [PATCH 2/2] staging: r8188eu: remove unused ODM_MacStatusQuery()
+Date:   Thu,  9 Sep 2021 01:09:53 +0200
+Message-Id: <20210908230953.16931-3-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210908230953.16931-1-straube.linux@gmail.com>
 References: <20210908230953.16931-1-straube.linux@gmail.com>
@@ -66,42 +66,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function odm_Init_RSSIForDM() is unused and empty, remove it.
+Function ODM_MacStatusQuery() is unused and empty, remove it.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm_HWConfig.c     | 4 ----
- drivers/staging/r8188eu/include/odm_HWConfig.h | 2 --
- 2 files changed, 6 deletions(-)
+ drivers/staging/r8188eu/hal/odm_HWConfig.c     | 8 --------
+ drivers/staging/r8188eu/include/odm_HWConfig.h | 7 -------
+ 2 files changed, 15 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/odm_HWConfig.c b/drivers/staging/r8188eu/hal/odm_HWConfig.c
-index ada22a526fee..db4c072ec6c5 100644
+index db4c072ec6c5..0a07795e3912 100644
 --- a/drivers/staging/r8188eu/hal/odm_HWConfig.c
 +++ b/drivers/staging/r8188eu/hal/odm_HWConfig.c
-@@ -356,10 +356,6 @@ static void odm_RxPhyStatus92CSeries_Parsing(struct odm_dm_struct *dm_odm,
- 	dm_odm->DM_FatTable.antsel_rx_keep_2 = pPhyStaRpt->antsel_rx_keep_2;
+@@ -519,14 +519,6 @@ void ODM_PhyStatusQuery(struct odm_dm_struct *dm_odm,
+ 	ODM_PhyStatusQuery_92CSeries(dm_odm, pPhyInfo, pPhyStatus, pPktinfo, adapt);
  }
  
--void odm_Init_RSSIForDM(struct odm_dm_struct *dm_odm)
+-/*  For future use. */
+-void ODM_MacStatusQuery(struct odm_dm_struct *dm_odm, u8 *mac_stat,
+-			u8 macid, bool pkt_match_bssid,
+-			bool pkttoself, bool pkt_beacon)
 -{
+-	/*  2011/10/19 Driver team will handle in the future. */
 -}
 -
- static void odm_Process_RSSIForDM(struct odm_dm_struct *dm_odm,
- 				  struct odm_phy_status_info *pPhyInfo,
- 				  struct odm_per_pkt_info *pPktinfo)
+ enum HAL_STATUS ODM_ConfigRFWithHeaderFile(struct odm_dm_struct *dm_odm,
+ 					   enum rf_radio_path content,
+ 					   enum rf_radio_path rfpath)
 diff --git a/drivers/staging/r8188eu/include/odm_HWConfig.h b/drivers/staging/r8188eu/include/odm_HWConfig.h
-index 9b2ab3bcf992..790ab4d1eff5 100644
+index 790ab4d1eff5..e2edcb7dbad6 100644
 --- a/drivers/staging/r8188eu/include/odm_HWConfig.h
 +++ b/drivers/staging/r8188eu/include/odm_HWConfig.h
-@@ -89,8 +89,6 @@ struct phy_status_rpt {
- #endif
- };
+@@ -95,13 +95,6 @@ void ODM_PhyStatusQuery(struct odm_dm_struct *pDM_Odm,
+ 			struct odm_per_pkt_info *pPktinfo,
+ 			struct adapter *adapt);
  
--void odm_Init_RSSIForDM(struct odm_dm_struct *pDM_Odm);
+-void ODM_MacStatusQuery(struct odm_dm_struct *pDM_Odm,
+-			u8 *pMacStatus,
+-			u8	MacID,
+-			bool	bPacketMatchBSSID,
+-			bool	bPacketToSelf,
+-			bool	bPacketBeacon);
 -
- void ODM_PhyStatusQuery(struct odm_dm_struct *pDM_Odm,
- 			struct odm_phy_status_info *pPhyInfo,
- 			u8 *pPhyStatus,
+ enum HAL_STATUS ODM_ConfigRFWithHeaderFile(struct odm_dm_struct *pDM_Odm,
+ 					   enum rf_radio_path Content,
+ 					   enum rf_radio_path eRFPath);
 -- 
 2.33.0
 
