@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACB0403E19
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CCC403E23
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352395AbhIHRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:06:37 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:41119 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbhIHRGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:06:36 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MTRhS-1mVbBL0h7E-00Thux; Wed, 08 Sep 2021 19:05:27 +0200
-Received: by mail-wr1-f51.google.com with SMTP id v10so4350633wrd.4;
-        Wed, 08 Sep 2021 10:05:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533pasDslRMzbtCw2nyHeiYYVu/vud7oIWn3KApxhwmjIfYPNkga
-        9HS1qC/TZfwBTC025q5bOZr4qeEsOq5F4j7IHVA=
-X-Google-Smtp-Source: ABdhPJzOUrSEiIv0q10uICqQrwOldGJmWwcvW1SLF5a8/urhNzDqKM4vL1/vvxLsqhtkj4EVD+XB1lj3zMjCDiekuuc=
-X-Received: by 2002:a5d:528b:: with SMTP id c11mr5105672wrv.369.1631120726753;
- Wed, 08 Sep 2021 10:05:26 -0700 (PDT)
+        id S1352407AbhIHRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350158AbhIHRJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:09:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34BDB61139;
+        Wed,  8 Sep 2021 17:07:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631120874;
+        bh=80AvqZOv2RZcZbeG+YgdxOHOj1vveJJVoxh9nrQ9MFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mnwyjq5BW0zV7+7N3JPvf6PAUAeT/bhKnb04jCd4zUYdWPe3z6+bseg5+aFhz8Pp0
+         peGJih9WiWxGlRxxl//19cwYc21vHId1R+ckzCv2uTzH/xGcC3NQ7uMZ7dEpB7M9FK
+         KU6gYmADQMF8/Hl0NkWzN5l1ohe4II+IJmgsV4R+He3AWPCH27UjjNf7fhAxxIS3LF
+         0owKopXTFG2f0NXAu6CmYAU5KYIaIl/io9CNrZrvnd2ZKKvQCEXLgIfulz3dAxyKLp
+         aaKA7YXmtCZ2y1RG0z7mgCraIhk7kO5V8HjdMM6J5q20HD0T+aEoQb0Y65bj2/tZ2x
+         fk24CIwOH7V+A==
+Date:   Wed, 8 Sep 2021 10:07:48 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kortan <kortanzh@gmail.com>
+Cc:     ndesaulniers@google.com, masahiroy@kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] gen_compile_commands: fix missing 'sys' package
+Message-ID: <YTjt5C7xTqNLUSl/@archlinux-ax161>
+References: <20210908032847.18683-1-kortanzh@gmail.com>
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
-In-Reply-To: <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 8 Sep 2021 19:05:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
-Message-ID: <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:KH+Kxt+CxavGn9c2xFpOOUmelKCATtvt/4S0bYSXXPjVou+2tC5
- NxJSyIV8u09ba1J5Ik8WStxnWkH8HZfaHtNJOgW7Mw5LFW+6dHDV4xL6sdqDp2bW/pCN7Rd
- ggfjYkFTpadfC+HA9nT5XkgHk/+gnlvvI20PxmNzYp3J3dvwkga8+2IyH7HWmxjIv//N6GR
- OHGUEtAJAdJd+3XtZdDsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UH8s4HJ8+3Y=:Jt2B6PVkZNHyYKm1twCnYl
- A5QIQEvwPJrI9L50mm1pS31gRjdFtMueLJ1PGBbzqw/Q0YLql3yY3mmrOKfwzgpdbhloGoo5G
- 9J4UQLwjjNWXegDzDpcsxtkt8FdyIGs9aluH3xD6qp14EtNkE7ZLKH7wciIwmalxCLCHXviU8
- f0LY+qCK+b2t5Fmb9BnZq65l1wkcF0r5KD2ys96zqcrHYP7/bIAaRpq9D4CXS1LMDxajh4U5z
- H7p+wr4vz0qc5medE6owG1PkjQPXNlraSS1s/XJ1CtYXK3qE8hBKzEL6zjLV/Q01tUn7KFvKo
- twAhQT6Dj5rS9T9PSPi2NXXxUYGOZo4tv4jwV+kJsQFfs+r5TYnKqY3IHn8PEeu6qwdEsp+6W
- 31BkAia5oQu9Htl1tnD5H+d8gkQoWpv95tf5acu4CJKRdUT29vUkbqTGDuUnITD/WV1s9bfhA
- GCbbNwq9eGXqTJyXvgmOsM7UjewftcTFs/Wl9WSVBqn7GFvGE05lALQ31WXXhM07rxOORWZ+z
- Ab+mGz8xzHgBN8DshZlewKyzIeWejEZXOJWvZoV27II1GQZ7gkxMeUscpKNwf9/lwu6EubWep
- 7k0rS+3T58wjfJ191Xy9g6BNYOfxhicL6RkgW6I3kR7du87eFJuYmRIRzBlslMz+XVwRQnOCJ
- A1NPWYXPu83qNQXGnvGPtHJbZBSZdMG2MOVBV6+e/F9cBAEfJNWR+t9nPeYQ3C+fLtQKzkx38
- NtNKkV6B03zD42tnuYeW/5EYjxR/cjpQpTQB6HOSC6FxQ5+sEU86ONUK2Cf/vQBXTbTktbd50
- ClQkxsJ8XopRQwPM8O7y+xL46ELbg0SyCP08+CoOGFg7FN1BeC9rECrA7UhCmYj++QOdU14+K
- JGVqFlFFOhhMMOnuGz6Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908032847.18683-1-kortanzh@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> On 9/7/21 5:14 PM, Linus Torvalds wrote:
-> > The KUNIT macros create all these individually reasonably small
-> > initialized structures on stack, and when you have more than a small
-> > handful of them the KUNIT infrastructure just makes the stack space
-> > explode. Sometimes the compiler will be able to re-use the stack
-> > slots, but it seems to be an iffy proposition to depend on it - it
-> > seems to be a combination of luck and various config options.
-> >
->
-> I have been concerned about these macros creeping in for a while.
-> I will take a closer look and work with Brendan to come with a plan
-> to address it.
+On Wed, Sep 08, 2021 at 11:28:48AM +0800, Kortan wrote:
+> We need to import the 'sys' package since the script has called
+> sys.exit() method.
+> 
+> Signed-off-by: Kortan <kortanzh@gmail.com>
 
-I've previously sent patches to turn off the structleak plugin for
-any kunit test file to work around this, but only a few of those patches
-got merged and new files have been added since. It would
-definitely help to come up with a proper fix, but my structleak-disable
-hack should be sufficient as a quick fix.
+Thank you for making those changes!
 
-       Arnd
+I should have mentioned that this probably warrants a Fixes: tag, which
+can be generated by running:
+
+$ git show -s --format='Fixes: %h ("%s")' 6ad7cbc01527223f3f92baac9b122f15651cf76b
+Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
+
+as that was the patch that introduced this issue. I personally have a
+git alias for this as it comes up enough.
+
+$ git config --get alias.fixes
+show -s --format="Fixes: %h (\"%s\")"
+
+I do not think this warrants a v3, just something to keep in mind for
+the future.
+
+Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+> ---
+> Changes v1 -> v2:
+> * Fix commit title.
+> * Improve commit message. 
+> 
+>  scripts/clang-tools/gen_compile_commands.py | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> index 0033eedce003..1d1bde1fd45e 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -13,6 +13,7 @@ import logging
+>  import os
+>  import re
+>  import subprocess
+> +import sys
+>  
+>  _DEFAULT_OUTPUT = 'compile_commands.json'
+>  _DEFAULT_LOG_LEVEL = 'WARNING'
+> -- 
+> 2.33.0
+> 
+> 
