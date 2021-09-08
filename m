@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199DF4036C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914114036CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351382AbhIHJSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:18:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:27165 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351351AbhIHJSq (ORCPT
+        id S1351351AbhIHJU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:20:27 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:12892 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348710AbhIHJUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:18:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631092659; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=D4m1HZX4XxglmANFvhM+U619loFcf8JXgc2VJMqoQP8=;
- b=b/XsxfZQTL1VEi/9eC28ikc6Ks23BrvZshZQTV+sNXzHEZvL/nk7leSCSZEznvNq1vNOB3wF
- 0jBKpMSXsBwcc3w1dvgLZmoL6HICAmTtlFxVTUicwt914y5KpzNFrqTVgyEt/JTgpImwiwPP
- jE6rKvMcyEMSCdH8eEm9fqpi1vg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61387fb2096d475c7c75650e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 09:17:38
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76D98C43617; Wed,  8 Sep 2021 09:17:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D77DCC4338F;
-        Wed,  8 Sep 2021 09:17:37 +0000 (UTC)
+        Wed, 8 Sep 2021 05:20:23 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1888xQX8027144;
+        Wed, 8 Sep 2021 16:59:26 +0800 (GMT-8)
+        (envelope-from ryan_chen@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 8 Sep
+ 2021 17:18:55 +0800
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     ryan_chen <ryan_chen@aspeedtech.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCHv2] clk:aspeed:Fix AST2600 hpll calculate formula
+Date:   Wed, 8 Sep 2021 17:18:45 +0800
+Message-ID: <20210908091845.4230-1-ryan_chen@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 08 Sep 2021 14:47:37 +0530
-From:   skakit@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
-        kgunda@codeaurora.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/3] leds: Add pm8350c support to Qualcomm LPG driver
-In-Reply-To: <CAE-0n52Jb9nw9rbbQJrKNDQ_O2iCahDr8WLGkWORcNks9ptH-g@mail.gmail.com>
-References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
- <1630924867-4663-3-git-send-email-skakit@codeaurora.org>
- <CAE-0n52Jb9nw9rbbQJrKNDQ_O2iCahDr8WLGkWORcNks9ptH-g@mail.gmail.com>
-Message-ID: <f35822d036988a1a6b6e4dcaa46373e7@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1888xQX8027144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-08 01:50, Stephen Boyd wrote:
-> Quoting satya priya (2021-09-06 03:41:06)
->> Add pm8350c compatible and lpg_data to the driver.
->> 
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->> ---
->>  drivers/leds/rgb/leds-qcom-lpg.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->> 
->> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c 
->> b/drivers/leds/rgb/leds-qcom-lpg.c
->> index 327e81a..6ee80d6 100644
->> --- a/drivers/leds/rgb/leds-qcom-lpg.c
->> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
->> @@ -1275,9 +1275,19 @@ static const struct lpg_data pm8150l_lpg_data = 
->> {
->>         },
->>  };
->> 
->> +static const struct lpg_data pm8350c_pwm_data = {
->> +       .pwm_9bit_mask = BIT(2),
->> +
->> +       .num_channels = 1,
->> +       .channels = (struct lpg_channel_data[]) {
-> 
-> Can this be const struct lpg_channel_data? I think that will move it to
-> rodata which is only a good thing.
-> 
+AST2600 HPLL calculate formula [SCU200]
+HPLL Numerator(M): have fixed value depend on SCU strap.
+M = SCU500[10] ? 0x5F : SCU500[8] ? 0xBF : SCU200[12:0]
 
-I agree.
-@Bjorn, can we make it const struct?
+if SCU500[10] = 1, M=0x5F.
+else if SCU500[10]=0 & SCU500[8]=1, M=0xBF.
+others (SCU510[10]=0 and SCU510[8]=0)
+depend on SCU200[12:0] (default 0x8F) register setting.
 
->> +               { .base = 0xeb00 },
->> +       },
->> +};
->> +
->>  static const struct of_device_id lpg_of_table[] = {
->>         { .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data 
->> },
->>         { .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data 
->> },
->> +       { .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data 
->> },
->>         { .compatible = "qcom,pm8916-pwm", .data = &pm8916_pwm_data },
->>         { .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
->>         { .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
+HPLL Denumerator (N) =	SCU200[18:13] (default 0x2)
+HPLL Divider (P)	 =	SCU200[22:19] (default 0x0)
+
+Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
+Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+---
+ drivers/clk/clk-ast2600.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
+index 085d0a18b2b6..5d8c46bcf237 100644
+--- a/drivers/clk/clk-ast2600.c
++++ b/drivers/clk/clk-ast2600.c
+@@ -169,6 +169,33 @@ static const struct clk_div_table ast2600_div_table[] = {
+ };
+ 
+ /* For hpll/dpll/epll/mpll */
++static struct clk_hw *ast2600_calc_hpll(const char *name, u32 val)
++{
++	unsigned int mult, div;
++	u32 hwstrap = readl(scu_g6_base + ASPEED_G6_STRAP1);
++
++	if (val & BIT(24)) {
++		/* Pass through mode */
++		mult = div = 1;
++	} else {
++		/* F = 25Mhz * [(M + 2) / (n + 1)] / (p + 1) */
++		u32 m = val  & 0x1fff;
++		u32 n = (val >> 13) & 0x3f;
++		u32 p = (val >> 19) & 0xf;
++
++		if (hwstrap & BIT(10))
++			m = 0x5F;
++		else {
++			if (hwstrap & BIT(8))
++				m = 0xBF;
++		}
++		mult = (m + 1) / (n + 1);
++		div = (p + 1);
++	}
++	return clk_hw_register_fixed_factor(NULL, name, "clkin", 0,
++			mult, div);
++};
++
+ static struct clk_hw *ast2600_calc_pll(const char *name, u32 val)
+ {
+ 	unsigned int mult, div;
+@@ -716,7 +743,7 @@ static void __init aspeed_g6_cc(struct regmap *map)
+ 	 * and we assume that it is enabled
+ 	 */
+ 	regmap_read(map, ASPEED_HPLL_PARAM, &val);
+-	aspeed_g6_clk_data->hws[ASPEED_CLK_HPLL] = ast2600_calc_pll("hpll", val);
++	aspeed_g6_clk_data->hws[ASPEED_CLK_HPLL] = ast2600_calc_hpll("hpll", val);
+ 
+ 	regmap_read(map, ASPEED_MPLL_PARAM, &val);
+ 	aspeed_g6_clk_data->hws[ASPEED_CLK_MPLL] = ast2600_calc_pll("mpll", val);
+-- 
+2.17.1
+
