@@ -2,112 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15123403E48
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A873D403E4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344656AbhIHRWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S1350245AbhIHRZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbhIHRWG (ORCPT
+        with ESMTP id S231723AbhIHRZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:22:06 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E93C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:20:58 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b10so4248532ioq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:20:58 -0700 (PDT)
+        Wed, 8 Sep 2021 13:25:31 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7007DC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:24:23 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m26so2650732pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=R/b0I+ce/m50yXmZCAAUVXsudiTnZHVC+UYIpQAkofU=;
-        b=RqEQ17a1IvDgvMT41ZsUWvOO/WWGTXlRldkOuUAcdbtUH0g7rWkTc8I+1NUs7gFebA
-         Q4dSj3VJvSzussdO/AV8v8qD562aDHkS4aFTEMDy3gwBeupCSJ/jTFN2v4OMOnmW3JdF
-         zIGaGBOwUhanURfvn4xt6BvBar1xZIUlSn89K7oZgtMd1yz0jlSPzpTu8q6hLDQBaf/z
-         L1Tbo1mLmvGQ6LT0hFk7Ofas5e0cwB3isas2/vCHsbBtwpNh7NadXGbm/g2gle6x9d4s
-         IR/Knqd5ifme4vOPPZswEmV2g/GR9AqyvNopIcAQT/Hd04TuKz8fhsWAoLkw3tlrSA2A
-         blLw==
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vHmGIOB1NHQy8ecOuiu9k+eNtsh1TK6SDUwkj58c7UY=;
+        b=cOXfog/jv853BRLqDnKD86aRE3wO62YCoFAd15w/jyBa3mfpR0uStjWFoyxIlLjGVB
+         q8XaD0jvT2gnaLh6P1iXVEbH17if5S006cVAJvQJaiGFvlJePTeu3KwdYld6GgXjWCqg
+         5cr6jOHmblvoIVCpd91ubPvF/mEwcMtiE6BmHEEeAPnhLRKRC2rdmmFsl8ip5poF851C
+         5noLcdvavWAxVUwq+krowAZhwx6f7wneGUD6ESPKaOBjnL9Ilo927d1SJMq0tEdf8I1F
+         p1wTcr8ab05xhF5DfXZ7Fm3fOL4LdyaBFQzN8ZU0yxYOKLT5yUl3/JQg/TvBbsPkzTI2
+         Nq1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R/b0I+ce/m50yXmZCAAUVXsudiTnZHVC+UYIpQAkofU=;
-        b=YUnFIdueCi5BkTp5sq2z7L8WzD/GTiEnaLUFRZ5z6uy4t0lw3qhEMO0/g9HYLy/L6s
-         VoTG63Z0nIqE6wmHNhQAuXe446BdRDoqP3ygQQvhiITCE8nnjViDkNXZgn2lyY0OUeUW
-         lPu56+Zg0cl9iLP4nr4OzGYNr5ZA9CiTHlHeoPxccUU3BgVJtDj9zNoTvgoiOQhGVkdo
-         Zgz9nBH1Lu3ZiZubIphSjHZmmAWTqN+cy/wugKDwi0hxtMmf2BIJ39XCEMq0+k5/9T+J
-         6zJaeIIN19rLiNxwmFtTnfLOV1fs7/lHbBACJFw7ntB8Y6hFuGI8OTDJobJHOdyp/9Fq
-         m83A==
-X-Gm-Message-State: AOAM532R1hDchcmaMdYEbWZQU5lda4Fwe31ZCN5jrH5oHWi2qfXed/pA
-        BYq75kiPCccEjki93Vr9R3JbMg==
-X-Google-Smtp-Source: ABdhPJwiUwDMXW5fQOYAbdh+oUeNWCXrjOuoFC83e4+i8iW70uTSEAzcSFBOQ05PaQOOVxPlOJjChA==
-X-Received: by 2002:a6b:8e50:: with SMTP id q77mr822319iod.96.1631121657806;
-        Wed, 08 Sep 2021 10:20:57 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id j10sm1308638ilk.84.2021.09.08.10.20.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 10:20:57 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in hrtimer_start_range_ns
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        io-uring@vger.kernel.org
-References: <0000000000009eeadd05cb511b60@google.com> <875yvbf23g.ffs@tglx>
- <8bbede01-4a97-bf22-92ad-c05a562c9799@kernel.dk>
-Message-ID: <111a312d-ec11-be36-ac74-ef92c8896967@kernel.dk>
-Date:   Wed, 8 Sep 2021 11:20:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=vHmGIOB1NHQy8ecOuiu9k+eNtsh1TK6SDUwkj58c7UY=;
+        b=vDq+IkN0o9+vdLk0SUEOuQOf1Yw2wS0hPXQVTiZT8AEum9vobKTB+afuRKi0lV4sxz
+         RXmNey1qE0VTDRL50YFKY1g0ZF9EfC9WriBB96bezWRVA7/lAoiIJ+RlFOvlEGvxL3zw
+         gcstYdq+KFuyL+eUW6PcXH2M8mYInHeprVP6eUQtTk1VcDNJVMBmV17KKjXd1CAngZ+n
+         MjuKi4ts1PWgGz87Ydo/OGl5LHNMIOoGpQqou392osflGLtT+BQ90DTNUJgKuiYBHZq9
+         qF5Yc9xKGojo8Y1xcnDYVRj5PUXd5CfLnoJvlnV3lm1EMRK0XLdf2in0zXFsLhyThpS+
+         IL9g==
+X-Gm-Message-State: AOAM530Camo7kUYeoy1IEs1BM2TsSuDhBdEzKjgaA5/sV1QrPaZAK6Oz
+        hyDtVFMkyCclg0l5fvaILes=
+X-Google-Smtp-Source: ABdhPJzgNg/ubJR8s1atOpkAegUo0wB9DE1acYb2UDn+pbdS5Kcb/PUlPzNiQWgnMcUrVvN2oggz3A==
+X-Received: by 2002:a63:a54f:: with SMTP id r15mr4769413pgu.11.1631121862940;
+        Wed, 08 Sep 2021 10:24:22 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:e240:f1e5:4c1a:8029:e4d1])
+        by smtp.gmail.com with ESMTPSA id v7sm2610321pjk.37.2021.09.08.10.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 10:24:22 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Michael Petlan <mpetlan@redhat.com>
+Subject: [PATCH v2] perf/core: Add a new read format to get a number of lost samples
+Date:   Wed,  8 Sep 2021 10:24:20 -0700
+Message-Id: <20210908172420.879240-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
 MIME-Version: 1.0
-In-Reply-To: <8bbede01-4a97-bf22-92ad-c05a562c9799@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 11:02 AM, Jens Axboe wrote:
-> On 9/8/21 10:45 AM, Thomas Gleixner wrote:
->> On Mon, Sep 06 2021 at 03:28, syzbot wrote:
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=14489886300000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=d793523866f2daea
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=b935db3fe409625cca1b
->>> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
->>>
->>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com
->>>
->>> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->>> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->>> CPU: 0 PID: 12936 Comm: iou-sqp-12929 Not tainted 5.14.0-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>> RIP: 0010:lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
->>
->> That's almost certainly deferencing hrtimer->base and as that is NULL
->> this looks like a not initialized hrtimer.
-> 
-> Does certainly look like that, I'll take a look. And agree the next one
-> looks like the same thing.
+Sometimes we want to know an accurate number of samples even if it's
+lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
+might be shared with other events.  So it's hard to know per-event
+lost count.
 
-I think both are fallout from a regression that we had in linked
-requests, where we'd queue requests that weren't fully prepared. Current
-Linus -git should not have this problem:
+Add event->lost_samples field and PERF_FORMAT_LOST to retrieve it from
+userspace.
 
-These were the two related fixes:
+Original-patch-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ include/linux/perf_event.h      |  2 ++
+ include/uapi/linux/perf_event.h |  5 ++++-
+ kernel/events/core.c            | 22 +++++++++++++++++++---
+ kernel/events/ring_buffer.c     |  5 ++++-
+ 4 files changed, 29 insertions(+), 5 deletions(-)
 
-      io_uring: fix queueing half-created requests
-      io_uring: don't submit half-prepared drain request
-
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index f5a6a2f069ed..189a471fba42 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -756,6 +756,8 @@ struct perf_event {
+ 	struct pid_namespace		*ns;
+ 	u64				id;
+ 
++	atomic64_t			lost_samples;
++
+ 	u64				(*clock)(void);
+ 	perf_overflow_handler_t		overflow_handler;
+ 	void				*overflow_handler_context;
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index bf8143505c49..f72008949ff0 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -299,6 +299,7 @@ enum {
+  *	  { u64		time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
+  *	  { u64		time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
+  *	  { u64		id;           } && PERF_FORMAT_ID
++ *	  { u64		lost;         } && PERF_FORMAT_LOST
+  *	} && !PERF_FORMAT_GROUP
+  *
+  *	{ u64		nr;
+@@ -306,6 +307,7 @@ enum {
+  *	  { u64		time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
+  *	  { u64		value;
+  *	    { u64	id;           } && PERF_FORMAT_ID
++ *	    { u64	lost;         } && PERF_FORMAT_LOST
+  *	  }		cntr[nr];
+  *	} && PERF_FORMAT_GROUP
+  * };
+@@ -315,8 +317,9 @@ enum perf_event_read_format {
+ 	PERF_FORMAT_TOTAL_TIME_RUNNING		= 1U << 1,
+ 	PERF_FORMAT_ID				= 1U << 2,
+ 	PERF_FORMAT_GROUP			= 1U << 3,
++	PERF_FORMAT_LOST			= 1U << 4,
+ 
+-	PERF_FORMAT_MAX = 1U << 4,		/* non-ABI */
++	PERF_FORMAT_MAX = 1U << 5,		/* non-ABI */
+ };
+ 
+ #define PERF_ATTR_SIZE_VER0	64	/* sizeof first published struct */
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0e125ae2fa92..8708325ee4a2 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1841,6 +1841,9 @@ static void __perf_event_read_size(struct perf_event *event, int nr_siblings)
+ 	if (event->attr.read_format & PERF_FORMAT_ID)
+ 		entry += sizeof(u64);
+ 
++	if (event->attr.read_format & PERF_FORMAT_LOST)
++		entry += sizeof(u64);
++
+ 	if (event->attr.read_format & PERF_FORMAT_GROUP) {
+ 		nr += nr_siblings;
+ 		size += sizeof(u64);
+@@ -5255,11 +5258,15 @@ static int __perf_read_group_add(struct perf_event *leader,
+ 	values[n++] += perf_event_count(leader);
+ 	if (read_format & PERF_FORMAT_ID)
+ 		values[n++] = primary_event_id(leader);
++	if (read_format & PERF_FORMAT_ID)
++		values[n++] = atomic64_read(&leader->lost_samples);
+ 
+ 	for_each_sibling_event(sub, leader) {
+ 		values[n++] += perf_event_count(sub);
+ 		if (read_format & PERF_FORMAT_ID)
+ 			values[n++] = primary_event_id(sub);
++		if (read_format & PERF_FORMAT_ID)
++			values[n++] = atomic64_read(&sub->lost_samples);
+ 	}
+ 
+ 	raw_spin_unlock_irqrestore(&ctx->lock, flags);
+@@ -5316,7 +5323,7 @@ static int perf_read_one(struct perf_event *event,
+ 				 u64 read_format, char __user *buf)
+ {
+ 	u64 enabled, running;
+-	u64 values[4];
++	u64 values[5];
+ 	int n = 0;
+ 
+ 	values[n++] = __perf_event_read_value(event, &enabled, &running);
+@@ -5326,6 +5333,8 @@ static int perf_read_one(struct perf_event *event,
+ 		values[n++] = running;
+ 	if (read_format & PERF_FORMAT_ID)
+ 		values[n++] = primary_event_id(event);
++	if (read_format & PERF_FORMAT_LOST)
++		values[n++] = atomic64_read(&event->lost_samples);
+ 
+ 	if (copy_to_user(buf, values, n * sizeof(u64)))
+ 		return -EFAULT;
+@@ -5664,6 +5673,7 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+ 
+ 		return perf_event_modify_attr(event,  &new_attr);
+ 	}
++
+ 	default:
+ 		return -ENOTTY;
+ 	}
+@@ -6835,7 +6845,7 @@ static void perf_output_read_one(struct perf_output_handle *handle,
+ 				 u64 enabled, u64 running)
+ {
+ 	u64 read_format = event->attr.read_format;
+-	u64 values[4];
++	u64 values[5];
+ 	int n = 0;
+ 
+ 	values[n++] = perf_event_count(event);
+@@ -6849,6 +6859,8 @@ static void perf_output_read_one(struct perf_output_handle *handle,
+ 	}
+ 	if (read_format & PERF_FORMAT_ID)
+ 		values[n++] = primary_event_id(event);
++	if (read_format & PERF_FORMAT_LOST)
++		values[n++] = atomic64_read(&event->lost_samples);
+ 
+ 	__output_copy(handle, values, n * sizeof(u64));
+ }
+@@ -6859,7 +6871,7 @@ static void perf_output_read_group(struct perf_output_handle *handle,
+ {
+ 	struct perf_event *leader = event->group_leader, *sub;
+ 	u64 read_format = event->attr.read_format;
+-	u64 values[5];
++	u64 values[6];
+ 	int n = 0;
+ 
+ 	values[n++] = 1 + leader->nr_siblings;
+@@ -6877,6 +6889,8 @@ static void perf_output_read_group(struct perf_output_handle *handle,
+ 	values[n++] = perf_event_count(leader);
+ 	if (read_format & PERF_FORMAT_ID)
+ 		values[n++] = primary_event_id(leader);
++	if (read_format & PERF_FORMAT_LOST)
++		values[n++] = atomic64_read(&leader->lost_samples);
+ 
+ 	__output_copy(handle, values, n * sizeof(u64));
+ 
+@@ -6890,6 +6904,8 @@ static void perf_output_read_group(struct perf_output_handle *handle,
+ 		values[n++] = perf_event_count(sub);
+ 		if (read_format & PERF_FORMAT_ID)
+ 			values[n++] = primary_event_id(sub);
++		if (read_format & PERF_FORMAT_LOST)
++			values[n++] = atomic64_read(&sub->lost_samples);
+ 
+ 		__output_copy(handle, values, n * sizeof(u64));
+ 	}
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 52868716ec35..727ca8f4caad 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -172,8 +172,10 @@ __perf_output_begin(struct perf_output_handle *handle,
+ 		goto out;
+ 
+ 	if (unlikely(rb->paused)) {
+-		if (rb->nr_pages)
++		if (rb->nr_pages) {
+ 			local_inc(&rb->lost);
++			atomic64_inc(&event->lost_samples);
++		}
+ 		goto out;
+ 	}
+ 
+@@ -254,6 +256,7 @@ __perf_output_begin(struct perf_output_handle *handle,
+ 
+ fail:
+ 	local_inc(&rb->lost);
++	atomic64_inc(&event->lost_samples);
+ 	perf_output_put_handle(handle);
+ out:
+ 	rcu_read_unlock();
 -- 
-Jens Axboe
+2.33.0.309.g3052b89438-goog
 
