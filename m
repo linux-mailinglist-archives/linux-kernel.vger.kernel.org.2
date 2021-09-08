@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D92403F81
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21373403F83
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345788AbhIHTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344396AbhIHTMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:12:33 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CC1C061575;
-        Wed,  8 Sep 2021 12:11:25 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id z4so4808292wrr.6;
-        Wed, 08 Sep 2021 12:11:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=epgRnVOOroSlbCA0eO/Yc0L+DFlk8dm3qxy0SzGKgSE=;
-        b=djY15+HDTmLcbrb9TEdkCsLcyVO0aSv8wkoONIX5Aiu8lnt9XFjevDei32Zf2pJgU1
-         ti088Nu7YNDc2glX5WbdXlBJXLZpRSjma5dhdS03Vgup8Fy+/+5OeL3mZ+bUjnbB7B/m
-         X9oMvTvJgzjADkFSm8cebpYAc3KrndhRrnE66ycxUlpnHUpWf/MgOUL2stoLLoTDh/xO
-         AOL7onky+jrxjmgOGr7TWYE0gRsPWogqsSLkxHrcYHdyMhgzLLN35wzb7envwRrmNKFU
-         QqYnrw9RUKjSZ+8nHHv60qtAoTpMiirdvYzq9gr81uzYkwnPFuPv3ThIz6CBoH6O+0Si
-         Wrnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=epgRnVOOroSlbCA0eO/Yc0L+DFlk8dm3qxy0SzGKgSE=;
-        b=2uhRP+vnFSQsdtBQheIIVye92+5js3Nly/yQH3oVKMFFPrfbp8TlSWhday8es+ELpM
-         x4r9KQqcUO4sgcl0KwnevnHaGHorkry1/M8yPC/I512hnKPXyxtcj/OH/JnYKTvvLsJo
-         0hwdoZRXgpWuzKz8NUNBHcxvTkRzHjMgIKyhjr7gqx0Lfts8uiY+Y+HUVaAxZaEWrR2R
-         FEq6BxXl42koXrbjiblByX1p6s+ABzqvKmJ893NTFxMW2Lx93SDm7/6v6aIoHYeTNS4Y
-         tOJo5TMACtTKykjffDDiwkcB/r/UG0hMVl0ZRHzHRkEqCx23c3ulWq1sm+3z+fld/Gbb
-         grXQ==
-X-Gm-Message-State: AOAM530sXcRz2l+wLZypURgk1BYHqDhUrS64Az8BXgvnl0xzeJhfeqqK
-        Pj14T9k67rBifZ5erPGK3s0=
-X-Google-Smtp-Source: ABdhPJxuRN60pCl0//zAH6LpslSCTDwJcZxNY/uL+ya93rzUxsmkK9nh14sKzyyHpDf01qVL7ZxYmg==
-X-Received: by 2002:adf:e745:: with SMTP id c5mr5771891wrn.321.1631128283911;
-        Wed, 08 Sep 2021 12:11:23 -0700 (PDT)
-Received: from localhost.localdomain ([185.69.144.232])
-        by smtp.gmail.com with ESMTPSA id h15sm827wrc.19.2021.09.08.12.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 12:11:23 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Subject: [PATCH v2] /dev/mem: nowait zero/null ops
-Date:   Wed,  8 Sep 2021 20:10:38 +0100
-Message-Id: <f11090f97ddc2b2ce49ea1211258658ddfbc5563.1631127867.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S1349091AbhIHTMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:12:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345251AbhIHTMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:12:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FABE610A3;
+        Wed,  8 Sep 2021 19:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631128291;
+        bh=z31e8qSY4Nh9Jkp6SWIDwkT4uIWfqkLETf3pT4/bx0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dRYCXCHM0R/Y/qqIMdM08fitpL0+40AGIx2weEqYXZRWoFingxS3Ok3mxOH4Jg+tj
+         kBCOZPbK5nDh8R7NUKLPgcxrOxXOlGHtBuUsn/j62NEVl7kUId4RV4+DxvUtd516Qw
+         dENGbf1ieQiLPcTyZlkubolNbI9xcEZuW8kQQGp7lRC61kB3vZ1Fa1mYzl4mGvFhHq
+         ewtq+D2A2q0lg0psHJ0xbAQ0fKeIjXO812zIcYvk1lkgqswOXupq25y1GFpUVVM6IJ
+         rASE28VhKdUwjym+JS/bQ2UKDYnwqOcKIwCA2fIig5dGgOeEfFXEH0hBE4NutpRjix
+         7i7fcgV/gSdsQ==
+Received: by pali.im (Postfix)
+        id 873CB708; Wed,  8 Sep 2021 21:11:29 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 21:11:29 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v4 6/9] fs/ntfs3: Make mount option nohidden more
+ universal
+Message-ID: <20210908191129.t43r3z275rtpkpbn@pali>
+References: <20210907153557.144391-1-kari.argillander@gmail.com>
+ <20210907153557.144391-7-kari.argillander@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210907153557.144391-7-kari.argillander@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
-advertised as FMODE_NOWAIT. It's useful for io_uring, which needs it to
-apply certain optimisations when doing I/O against the device.
+On Tuesday 07 September 2021 18:35:54 Kari Argillander wrote:
+> If we call Opt_nohidden with just keyword hidden, then we can use
+> hidden/nohidden when mounting. We already use this method for almoust
+> all other parameters so it is just logical that this will use same
+> method.
+> 
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 
-Set FMODE_NOWAIT for /dev/null as well, it never waits and therefore
-trivially meets the criteria.
+Reviewed-by: Pali Rohár <pali@kernel.org>
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
-
-v2:
-Don't stop IOCB_NOWAIT read after first page (Jens)
-Adjust commit message (following Greg's reply)
-
-iterate nowait until exhausting 
-
- drivers/char/mem.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 1c596b5cdb27..cc296f0823bd 100644
---- a/drivers/char/mem.c
-+++ b/drivers/char/mem.c
-@@ -495,6 +495,10 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
- 		written += n;
- 		if (signal_pending(current))
- 			return written ? written : -ERESTARTSYS;
-+		if (!need_resched())
-+			continue;
-+		if (iocb->ki_flags & IOCB_NOWAIT)
-+			return written ? written : -EAGAIN;
- 		cond_resched();
- 	}
- 	return written;
-@@ -696,11 +700,11 @@ static const struct memdev {
- #ifdef CONFIG_DEVMEM
- 	 [DEVMEM_MINOR] = { "mem", 0, &mem_fops, FMODE_UNSIGNED_OFFSET },
- #endif
--	 [3] = { "null", 0666, &null_fops, 0 },
-+	 [3] = { "null", 0666, &null_fops, FMODE_NOWAIT },
- #ifdef CONFIG_DEVPORT
- 	 [4] = { "port", 0, &port_fops, 0 },
- #endif
--	 [5] = { "zero", 0666, &zero_fops, 0 },
-+	 [5] = { "zero", 0666, &zero_fops, FMODE_NOWAIT },
- 	 [7] = { "full", 0666, &full_fops, 0 },
- 	 [8] = { "random", 0666, &random_fops, 0 },
- 	 [9] = { "urandom", 0666, &urandom_fops, 0 },
--- 
-2.33.0
-
+> ---
+>  fs/ntfs3/super.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 420cd1409170..729ead6f2fac 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -242,7 +242,7 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
+>  	fsparam_flag_no("discard",		Opt_discard),
+>  	fsparam_flag_no("force",		Opt_force),
+>  	fsparam_flag_no("sparse",		Opt_sparse),
+> -	fsparam_flag("nohidden",		Opt_nohidden),
+> +	fsparam_flag_no("hidden",		Opt_nohidden),
+>  	fsparam_flag_no("acl",			Opt_acl),
+>  	fsparam_flag_no("showmeta",		Opt_showmeta),
+>  	fsparam_string("nls",			Opt_nls),
+> @@ -331,7 +331,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
+>  		opts->sparse = result.negated ? 0 : 1;
+>  		break;
+>  	case Opt_nohidden:
+> -		opts->nohidden = 1;
+> +		opts->nohidden = result.negated ? 1 : 0;
+>  		break;
+>  	case Opt_acl:
+>  		if (!result.negated)
+> -- 
+> 2.25.1
+> 
