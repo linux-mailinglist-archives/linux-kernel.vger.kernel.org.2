@@ -2,143 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18234032C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1554032C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347392AbhIHCyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345895AbhIHCyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:54:10 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942FCC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:53:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id f18so1350225lfk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FjvpMqPdNZFQsYmJZHelUV/clBYJUUkWHVd43X/arJo=;
-        b=OPV6yfb2KvxvQvVoEx2dtPnNZNoGBs6s1nUmz1enVOwBZLubjzkZqjxpzBWalY8UGt
-         icqdafw8DgsyMogRySKd8EoEnE30gQTUJzi0d69tvAdBC1jlE4TwMXN+qDTeglbnd8nU
-         HqLrA1idTwI5PHzQyFj1h4a8p0IzQgUpN3Ks8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FjvpMqPdNZFQsYmJZHelUV/clBYJUUkWHVd43X/arJo=;
-        b=BFp+7cg2JNJL2paiXDWsFmGCouVVUymEchYUSGJTrppSfSmta1Evqdv9Zb7OtKEZIG
-         sX0KUcCLM4UtomN7wb98sLxmUv/Y/Qs9Z6L00BjMIbFMhfPvRGB1SgqVou2Ld3+WlrVn
-         ++XgJnZEMMF20WNPPj3y28H59CTSucxz56y0PYF+CWW8JgQarqnJTuZB5xcnFrKDBQ4s
-         +uEPVV/sWRXSLpoSJyoVo9Dz1BByi1S1EfliLZiQkbq0rKg8qne/OnwxaHVwVQ9VXbxs
-         2z67LdSJDSkVqW53tIkWuh8fv6i29Wdo1ZEGamH7JUhdZfo4SR8RVDSG/Ird32CxZDEk
-         kYlw==
-X-Gm-Message-State: AOAM5319zLXd6YaDiFBFGWhKM77Z3lRkIjXJ4Nmgw8QUp8bhckQXBE2Z
-        RuOozyb2y5hNflFp+JmWE2xUqawnaxdyvjjhiVw=
-X-Google-Smtp-Source: ABdhPJz9kelg2vt3l35d4UTnAAtIIl+D5TxqnC7LlwQKw4DWAsg1C7NhjhI+PuZSzfytpt+xdrmSBw==
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr1052384lfg.38.1631069580608;
-        Tue, 07 Sep 2021 19:53:00 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id b14sm76981ljr.111.2021.09.07.19.53.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 19:53:00 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id n2so1942027lfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:53:00 -0700 (PDT)
-X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr1044974lfg.402.1631069579859;
- Tue, 07 Sep 2021 19:52:59 -0700 (PDT)
+        id S1347440AbhIHC4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347323AbhIHC4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 22:56:43 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB1D061164;
+        Wed,  8 Sep 2021 02:55:35 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 22:55:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "bristot@redhat.com" <bristot@redhat.com>,
+        "bristot@kernel.org" <bristot@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] trace/osnoise: Fix missed cpus_read_unlock() in
+ start_per_cpu_kthreads()
+Message-ID: <20210907225534.7d9d48c0@rorschach.local.home>
+In-Reply-To: <BL1PR11MB5478CF84562E63476BB1472AFFD49@BL1PR11MB5478.namprd11.prod.outlook.com>
+References: <20210831022919.27630-1-qiang.zhang@windriver.com>
+        <20210907211714.696cca61@rorschach.local.home>
+        <BL1PR11MB5478CF84562E63476BB1472AFFD49@BL1PR11MB5478.namprd11.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAHk-=wiCgh_V-g74LE4pQKqakbiK+CM5opVtH1t2+Y3R=uH9EA@mail.gmail.com>
- <20210908022620.GA845134@bjorn-Precision-5520>
-In-Reply-To: <20210908022620.GA845134@bjorn-Precision-5520>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 19:52:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whk-OFqqFbiyuY3_f2h2gp4+vQ7ZR-mhm=h2-=V07y4vA@mail.gmail.com>
-Message-ID: <CAHk-=whk-OFqqFbiyuY3_f2h2gp4+vQ7ZR-mhm=h2-=V07y4vA@mail.gmail.com>
-Subject: Re: [GIT PULL] PCI changes for v5.15
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 7:26 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> I was a little mystified about why there was a conflict at all, since
-> I expected those patches to apply cleanly on top of the revert, and I
-> should have investigated that more instead of just chalking it up to
-> my lack of git-fu.
+On Wed, 8 Sep 2021 02:34:46 +0000
+"Zhang, Qiang" <Qiang.Zhang@windriver.com> wrote:
 
-It's because that wasn't the only change to that function.
+> >FYI, no need to add the "# v5.14+", as it also breaks my scripts. The
+> >"Fixes:" tag is now used to know what stable releases it needs to be
+> >applied to (if any).
+> >  
+> Thanks Steve
+> I will resend v3.
+>  
 
-So for example, the networking tree had that "bnx2: Search VPD with
-pci_vpd_find_ro_info_keyword()" commit, and then reverted it.
+No need. I fixed it. I'll add Daniel's reviewed by if he gives one.
 
-Fine - that's a no-op, right? So then the fact that the PCI tree had
-that change - and other changes - should just merge cleanly.
+I'm currently running it through my test suite (with several other patches).
 
-Except the networking tree *also* had "bnx2: Replace open-coded
-version with swab32s()", and that wasn't reverted.
-
-End result: the networkling tree and the PCI tree touched the exact
-same code, and did it differently.  So - conflict.
-
-And the bnxt.c case is similar, except there the networking tree _did_
-revert the "other" commit too, but it seems to have actively done
-something else as well. See how the networking tree actually has that
-"This reverts commit 58a9b5d2621e725526a63847ae77b3a4c2c2bf93"
-_twice_, because it did it wrong.
-
-Anyway, because of that "revert twice", my tree actually had (before
-your pull) that
-
-        i = pci_vpd_find_tag(vpd_data, vpd_size, PCI_VPD_LRDT_RO_DATA);
-        if (i < 0) {
-                netdev_err(bp->dev, "VPD READ-Only not found\n");
-                goto exit;
-        }
-
-code duplicated twice, so now the conflict was due to that.
-
-And the thing is, the revert for some merge reason is always the wrong
-thing to do, but it's doubly wrong when it's done badly.
-
-I'd *much* rather see a few more conflicts, and then go "oh, tree X
-and Y both did Z, but Y also did ABC". That's a very straightforward
-conflict, and I can go "I'll take the Y side" because it's clearly and
-unambiguously the "superset" of the changes.
-
-The revert actually made things harder. Now neither branch had a
-superset of changes, and the networking side in particular looked like
-the original change had actually been in error, and should be reverted
-entirely (and the PCI side had just missed the problem). See? It
-actually technically looked like the networking tree did more, and
-knew more.
-
-A revert is additional work, and by default I assume that a revert was
-done for a sane reason (ie "that commit was broken, so I'll revert
-it").
-
-In this case I had to take the hint from your pull request that it
-wasn't that the commit was broken and thus reverted.
-
-So the networking tree did two really horribly bad things: doing extra
-work for a bad reason, and then not even *documenting* that bad
-reason. Either of them is bad on its own. Together, they are really
-really bad.
-
-Anyway. I obviously _think_ my merge is all good (and it wasn't really
-a complicated merge despite the annoyance), but considering the
-confusion, it's always a good idea to double-check.
-
-Because mistakes do happen. I'm pretty good at merges these days, but
-they most definitely happen to me too.
-
-            Linus
+-- Steve
