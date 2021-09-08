@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8E640352F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D806040353E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349423AbhIHHWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
+        id S235185AbhIHHYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347425AbhIHHWc (ORCPT
+        with ESMTP id S1350012AbhIHHYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:22:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6421BC061575;
-        Wed,  8 Sep 2021 00:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mtSKj36IL1qd4ZjB9aH2PMck4nVJTWLq/fv+o2UE00w=; b=PGPYATYTF46SLSYRW3M473O0LA
-        11RKEANEL7AjfccMC9AzDWmTOeAKiOdctdQAbr+gAS3jguCXnhiZFovXskABT9mnY5NODakv0gBqC
-        u4KOc8o8ZhZnrwXVmv2QJ9nuXiPirrKYA0oWKZxz0lPMQ2BSoMA1gHXBvk8v9N9PYscAffke8Khh9
-        0PqVl5dnTxVkhW3jGR1UFQ+Slzd1i1q7T2hAEGdlIupR3ftssdXSJOV2N11irQUyMEpeq8qP06yFu
-        oOeiZPfzxVvmMvcvp2Ja6kS53NR4iUJHl7FlW9KeA795XeOl11QJZiZCenQ2aMQaMIiuhFGFHxTnp
-        2/bOWQfA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNrrT-008bJz-0e; Wed, 08 Sep 2021 07:19:26 +0000
-Date:   Wed, 8 Sep 2021 08:19:11 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shunsuke Mie <mie@igel.co.jp>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Christian K??nig <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma
- device
-Message-ID: <YThj70ByPvZNQjgU@infradead.org>
-References: <20210908061611.69823-1-mie@igel.co.jp>
- <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org>
- <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+        Wed, 8 Sep 2021 03:24:21 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38384C061575;
+        Wed,  8 Sep 2021 00:23:14 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id a10so1282909qka.12;
+        Wed, 08 Sep 2021 00:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QISFurn052uq4hGhwxdYBG/1xRqkANqtCrV2mA2mnzY=;
+        b=jxQw7jUuXTX04PwDbFygUgBjnqpaIQh1c1sDG4oQxr17zdGTZrYdpwCuo+N0c2MbFt
+         zebTrubozmQl7+W0Rj945+iQCJlZVxGMN/brqjodrc5AZJBTXS+AORI84qadUwsv5nl5
+         7o5SmvHcm1l7ibLC/+o9i3pm3Xb2iABOr6BBzxaPyvNlTPPF5xZiSa35dT4tusErZSAJ
+         PuiiNR8i8r23lA3tsDimZLE7kxQ4jVJdLChm3UkIpWlBwlB6V9QDOk9wZOalax0p05ql
+         9g2Yuzw/WECp5k4jq1uj2CWvYKyFHCfEYRjy1sYvuBnNrbMVM0cYd/T/zO/QwjyaBdy+
+         Vesg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QISFurn052uq4hGhwxdYBG/1xRqkANqtCrV2mA2mnzY=;
+        b=FyFPngXay53dSltl08QvHeMB2ZyvRtXUNDV/f0CZ3ojRZl6flxVxIGvj8BS1m6Ea0V
+         lfVbs9p3I4KpQj2LGTcRaqhc/tbh5f5WB01/+Sc6eCB65ZqDPZQ7GgMfAfHfjiTFl9MD
+         vDsU4GfUR79Tg1gaJ/Rhrx7smbLZTZXyLYkjCeakTvIqRjHuoVqO0FmUbw7ZqcIe9TOd
+         u5fwJBbTuS6iHPyGOaMllfEEagqCRl2zo1ScxwiJ42beWjg5p/gjOJ+Exva8n0Jp8g5n
+         +KCm8ABCuTohwJpRuP6ts15HY4qfq7N2E7GXc1cFYIUAa37PHHZax2gOHpTMiOmc7kIV
+         5zKA==
+X-Gm-Message-State: AOAM530QMRdatMmOc3zKhZnCUwhTOfTT67iOFv3ihVqLgCZEQ0FlmHYU
+        ChgK7PsHlwiVj+belAi9/RX8NQcQ9U2D/7OwnFU=
+X-Google-Smtp-Source: ABdhPJyQMAVzbMp/vk4N5ubvPQqpMh6HYwn2PFBBNlLkl7/flU3MnlXwycAJFBUNuadVNdkKCWX+l5Gz2WryQ30kObI=
+X-Received: by 2002:a05:620a:1905:: with SMTP id bj5mr2017294qkb.124.1631085793458;
+ Wed, 08 Sep 2021 00:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <1630661377-31244-1-git-send-email-shengjiu.wang@nxp.com>
+ <1630661377-31244-4-git-send-email-shengjiu.wang@nxp.com> <YTJQcIOU1mMxoIpF@robh.at.kernel.org>
+ <CAL_JsqL_5U0QB5d5VmgX3PMa9LNkyFa+RHWSAzeeTzq6xR=_nA@mail.gmail.com>
+ <CAA+D8ANSR49juFDvPxHECKv7-uSowjdxruqnb=z6vu_CEkujjg@mail.gmail.com> <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 8 Sep 2021 15:23:02 +0800
+Message-ID: <CAA+D8AOvF49f=sur19OApaq7FcovvbmJcG4tBKmcXb377h+CNA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
+ binding document
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> Thank you for your comment.
+On Tue, Sep 7, 2021 at 8:50 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Fri, Sep 3, 2021 at 9:58 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
 > >
-> > On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > > To share memory space using dma-buf, a API of the dma-buf requires dma
-> > > device, but devices such as rxe do not have a dma device. For those case,
-> > > change to specify a device of struct ib instead of the dma device.
+> > Hi Rob
 > >
-> > So if dma-buf doesn't actually need a device to dma map why do we ever
-> > pass the dma_device here?  Something does not add up.
-> As described in the dma-buf api guide [1], the dma_device is used by dma-buf
-> exporter to know the device buffer constraints of importer.
-> [1] https://lwn.net/Articles/489703/
+> > On Sat, Sep 4, 2021 at 12:50 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Fri, Sep 3, 2021 at 11:42 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Fri, 03 Sep 2021 17:29:36 +0800, Shengjiu Wang wrote:
+> > > > > Define the compatible string and properties needed by imx_dsp_rproc
+> > > > > driver.
+> > > > >
+> > > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > > ---
+> > > > >  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 131 ++++++++++++++++++
+> > > > >  1 file changed, 131 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> > > > >
+> > > >
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > >
+> > > I take that back. What's the difference with this binding and
+> > > Documentation/devicetree/bindings/dsp/fsl,dsp.yaml?
+> >
+> > Some devices, but two kinds of driver. one for remoteproc
+> > framework,  another one is for ALSA.
+> > So should I merge fsl,imx-dsp-rproc.yaml to fsl,dsp.yaml?
+>
+> You can have 100 drivers for all I care, but it's 1 DT binding for 1
+> piece of h/w.
+>
 
-Which means for rxe you'd also have to pass the one for the underlying
-net device.
+Ok, I will merge it to fsl,dsp.yaml
+
+Best regards
+wang shengjiu
