@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A0B40344B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A33D40344E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 08:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244109AbhIHGfB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Sep 2021 02:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhIHGe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 02:34:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DDDC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 23:33:52 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mNr9I-0007Wr-61; Wed, 08 Sep 2021 08:33:32 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mNr9G-0002oS-8y; Wed, 08 Sep 2021 08:33:30 +0200
-Message-ID: <688d0dc9fd83e98e0a7ed9d8d166e232e75031c6.camel@pengutronix.de>
-Subject: Re: [PATCH 2/3] Input: sun4i-lradc-keys: Add optional clock/reset
- support
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Samuel Holland <samuel@sholland.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-input@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 08 Sep 2021 08:33:30 +0200
-In-Reply-To: <20210908034016.24119-3-samuel@sholland.org>
-References: <20210908034016.24119-1-samuel@sholland.org>
-         <20210908034016.24119-3-samuel@sholland.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1343773AbhIHGhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 02:37:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:41236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhIHGhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 02:37:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 909756D;
+        Tue,  7 Sep 2021 23:36:11 -0700 (PDT)
+Received: from [10.57.21.172] (unknown [10.57.21.172])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B65A3F73D;
+        Tue,  7 Sep 2021 23:36:10 -0700 (PDT)
+Subject: Re: [PATCH 1/2] PM: EM: fix kernel-doc comments
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+References: <20210906084453.3068-1-lukasz.luba@arm.com>
+ <CAJZ5v0hSzzkVzO0CuP0sf16p70kppfr6oHU1VDjfuBqt_HVfSw@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d68d7050-4226-24d3-22d2-8968e81e6388@arm.com>
+Date:   Wed, 8 Sep 2021 07:36:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAJZ5v0hSzzkVzO0CuP0sf16p70kppfr6oHU1VDjfuBqt_HVfSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 22:40 -0500, Samuel Holland wrote:
-> Until the R329, the LRADC hardware was always active. Now it requires
-> enabling a clock gate and deasserting a reset line. Do this if the clock
-> and reset are provided in the device tree, but keep them optional to
-> maintain support for the existing binding.
+
+
+On 9/7/21 8:22 PM, Rafael J. Wysocki wrote:
+> On Mon, Sep 6, 2021 at 10:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+
 > 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Applied as 5.15-rc material along with the [2/2], thanks!
+> 
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Thank you Rafael!
 
-regards
-Philipp
+Regards,
+Lukasz
