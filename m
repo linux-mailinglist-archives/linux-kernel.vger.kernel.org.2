@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEFE403311
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ED3403314
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 05:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347623AbhIHDsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 23:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347506AbhIHDsJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 23:48:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880E6C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 20:47:02 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mNoXx-0000R3-2h; Wed, 08 Sep 2021 05:46:49 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mNoXt-0006Bz-4O; Wed, 08 Sep 2021 05:46:45 +0200
-Date:   Wed, 8 Sep 2021 05:46:45 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     robin@protonic.nl, linux@rempel-privat.de, socketcan@hartkopp.net,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: fix errant WARN_ON_ONCE in
- j1939_session_deactivate
-Message-ID: <20210908034645.GA26100@pengutronix.de>
-References: <20210906094200.95868-1-william.xuanziyang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210906094200.95868-1-william.xuanziyang@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 05:44:33 up 202 days,  7:08, 69 users,  load average: 0.01, 0.07,
- 0.08
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1347506AbhIHDtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 23:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232366AbhIHDtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 23:49:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E15E061152;
+        Wed,  8 Sep 2021 03:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631072881;
+        bh=JLkt6Qk4cBOHL4WvzMpDeS8CtQ+PtEq+Btqu/k4uqsM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=evc4gC9uu8KD3daYOAFZohbBNb3ZxYbI/0N1xTNpqcEOzsKFld9GlXy3eemWBxnDg
+         jAkOBkiQKVxQTU/NXBsPsclgQXm2OcDlsVW8y6NE4QubsnI8ppUChhHY4sWPAl/TRS
+         StzCwdhPV1V52b6Z5iBx8d9GBz1/nFNsaHyu1nLBLxEXrZp0d3nuZF6NMKLm6ZGt2E
+         HLOT3AWOo/2zEHqBIy2gFdhXJqdZyjxtFAJwDYxZGyCjwtz77B5aF33SaRI6Nru4nH
+         3T0rLlTU9F+N0g6mD+1kxp8Osn8vM06JIpYsekXd9QFMA53rbHXoFbQejsfGqK4TNJ
+         4r/CfdwRdXF0w==
+Date:   Wed, 8 Sep 2021 12:47:57 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH] selftests/ftrace: Exclude "(fault)" in testing
+ add/remove eprobe events
+Message-Id: <20210908124757.b80638d630436bebf1280836@kernel.org>
+In-Reply-To: <20210907230429.5783d519@rorschach.local.home>
+References: <20210907230429.5783d519@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 7 Sep 2021 23:04:29 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Thank you for your patches. Please stay on hold, I'll review it end of
-this week.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> The original test for adding and removing eprobes used synthetic events
+> and retrieved the filename from the open system call at the end of the
+> system call. This would allow it to always be loaded into the page tables
+> when accessed.
+> 
+> Masami suggested that the test was too complex for just testing add and
+> remove, so it was changed to test just adding and removing an event probe
+> on top of the start of the open system call event. Now it is possible that
+> the filename will not be loaded into memory at the time the eprobe is
+> triggered, and will result in "(fault)" being displayed in the event. This
+> causes the test to fail.
+> 
+> Account for "(fault)" also being one of the values of the filename field
+> of the event probe.
 
-On Mon, Sep 06, 2021 at 05:42:00PM +0800, Ziyang Xuan wrote:
-> The conclusion "j1939_session_deactivate() should be called with a
-> session ref-count of at least 2" is incorrect. In some concurrent
-> scenarios, j1939_session_deactivate can be called with the session
-> ref-count less than 2. But there is not any problem because it
-> will check the session active state before session putting in
-> j1939_session_deactivate_locked().
+Looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
 > 
-> Here is the concurrent scenario of the problem reported by syzbot
-> and my reproduction log.
-> 
->         cpu0                            cpu1
->                                 j1939_xtp_rx_eoma
-> j1939_xtp_rx_abort_one
->                                 j1939_session_get_by_addr [kref == 2]
-> j1939_session_get_by_addr [kref == 3]
-> j1939_session_deactivate [kref == 2]
-> j1939_session_put [kref == 1]
-> 				j1939_session_completed
-> 				j1939_session_deactivate
-> 				WARN_ON_ONCE(kref < 2)
-> 
-> =====================================================
-> WARNING: CPU: 1 PID: 21 at net/can/j1939/transport.c:1088 j1939_session_deactivate+0x5f/0x70
-> CPU: 1 PID: 21 Comm: ksoftirqd/1 Not tainted 5.14.0-rc7+ #32
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-> RIP: 0010:j1939_session_deactivate+0x5f/0x70
-> Call Trace:
->  j1939_session_deactivate_activate_next+0x11/0x28
->  j1939_xtp_rx_eoma+0x12a/0x180
->  j1939_tp_recv+0x4a2/0x510
->  j1939_can_recv+0x226/0x380
->  can_rcv_filter+0xf8/0x220
->  can_receive+0x102/0x220
->  ? process_backlog+0xf0/0x2c0
->  can_rcv+0x53/0xf0
->  __netif_receive_skb_one_core+0x67/0x90
->  ? process_backlog+0x97/0x2c0
->  __netif_receive_skb+0x22/0x80
-> 
-> Fixes: 0c71437dd50d ("can: j1939: j1939_session_deactivate(): clarify lifetime of session object")
-> Reported-by: syzbot+9981a614060dcee6eeca@syzkaller.appspotmail.com
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> Fixes: 079db70794ec5 ("selftests/ftrace: Add test case to test adding and removing of event probe")
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
->  net/can/j1939/transport.c | 4 ----
->  1 file changed, 4 deletions(-)
+>  .../selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc       | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index bdc95bd7a851..0f8309314075 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1079,10 +1079,6 @@ static bool j1939_session_deactivate(struct j1939_session *session)
->  	bool active;
+> diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
+> index 25a3da4eaa44..5f5b2ba3e557 100644
+> --- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
+> @@ -22,7 +22,7 @@ ls
+>  echo 0 > events/eprobes/$EPROBE/enable
 >  
->  	j1939_session_list_lock(priv);
-> -	/* This function should be called with a session ref-count of at
-> -	 * least 2.
-> -	 */
-> -	WARN_ON_ONCE(kref_read(&session->kref) < 2);
->  	active = j1939_session_deactivate_locked(session);
->  	j1939_session_list_unlock(priv);
+>  content=`grep '^ *ls-' trace | grep 'file='`
+> -nocontent=`grep '^ *ls-' trace | grep 'file=' | grep -v -e '"/' -e '"."'` || true
+> +nocontent=`grep '^ *ls-' trace | grep 'file=' | grep -v -e '"/' -e '"."' -e '(fault)' ` || true
 >  
+>  if [ -z "$content" ]; then
+>  	exit_fail
 > -- 
-> 2.25.1
+> 2.31.1
 > 
-> 
+
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Masami Hiramatsu <mhiramat@kernel.org>
