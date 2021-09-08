@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5FF403EB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9660D403EB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243844AbhIHR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S1343745AbhIHR5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhIHRzl (ORCPT
+        with ESMTP id S232781AbhIHR5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:55:41 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC8AC0613D9
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:54:20 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z19so4023672edi.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:54:20 -0700 (PDT)
+        Wed, 8 Sep 2021 13:57:11 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C70BC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:56:03 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id z19so4029529edi.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w24hLsRl7XZ5LbDSKhuzZ/Cfz4LFXM+tWc1TnSEUUss=;
-        b=gewWGShr7Xr2Qy09YNJ3ZB3EE97D9zs6XnByfQ/9byau67LOFQ7/Pl37j7Ld6KiYMV
-         CZuNmSoK1BnjvwIvkJxM2tTz+SYOqSAeW1Vx55yJcJ8tscSAuulR2d/2GtTTQlIVt9aq
-         Fk4sBJSYv1cp2LvywuuLKQa5IOJdXteV+Sv3c=
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nTI6uK5ZnZFKdkZzGsIFw1dg5sgvvgRR4gACSjk5hCg=;
+        b=cemRhJ2zuSZZ3HxEtjInYPYJfG1GLROgLf0r9GtH7A7FK/Vh2l1Dc24o8OZw9emjXr
+         SXtEaW5ocCG1RzaFmV94775zVSaEEZt8lydGwWr5x8XO6ti4K3njTeWBZ23CurSzeoYj
+         ZMqW7jGZBPmb9iWSjZ/OG2+hxlmu8C1HH9Jk4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=w24hLsRl7XZ5LbDSKhuzZ/Cfz4LFXM+tWc1TnSEUUss=;
-        b=erM2TO8Kbrt4GbwMRMpa+jjWQreoFSNtO296LRm3m3x71c3Qt/kqaHAiI2fr26MSxh
-         0nPTeE0wwJwPvZDoB550HpFFKFWgKy6V0nJyR4U8AZDO4k38RV7SclqBqzI5gWrePorB
-         707DjoMV6FLwr8hZzsPOQey+0VsM8yHMdxQ0VDovVplqagFp8iISqLVPgsAzkwNmjvkQ
-         qiZ4lKfqaBNIdWjDC5lMz1NcWVRBwFcUViTZAYRZ2Fq1ZnpeWgIZaa65u9YNMrdfEryy
-         sskUcX4mz12PaaAAqm9UQyW6smRRvOK3Dc6UuYLS9db8TetnYCIjQxlbFJzxAVKjsYC5
-         OmcQ==
-X-Gm-Message-State: AOAM5339dmqBR4UegufOsqEYftbeBAMfgpIRF2xBObng2U7Fi4sxFm+x
-        EuJRKuhGzsrAQHRBv0/r9hswdA==
-X-Google-Smtp-Source: ABdhPJxBIQkBjPF3Gt5WEu386lz3cQM0dwlAunhiFpiwa6VJYwYAF1IbUqPzkfujW1BiIhDKl7lybg==
-X-Received: by 2002:a05:6402:1248:: with SMTP id l8mr4993687edw.94.1631123658998;
-        Wed, 08 Sep 2021 10:54:18 -0700 (PDT)
+         :content-transfer-encoding:in-reply-to;
+        bh=nTI6uK5ZnZFKdkZzGsIFw1dg5sgvvgRR4gACSjk5hCg=;
+        b=PX3UKbYqghO3rR7b5NfFxW1D/b6FPYWwdW6YXxQEfmCq8sqQqrrlMbyvHWfe91RmQd
+         DJAwJloD9+hl5BgnLk2pfpOWzOvr4NnzIv1jac+x8SJwmrH3sC+fXUjv6AbOjIPGpsyG
+         M7rEYb9mAk5G2M5LbhFbjuOmFGHaG1dkzQWYthRoqU4ZUS6lHhoA1k+zje4AuPGNExLL
+         zGOaHzJJjzR29AQYIBWmI/78GYtIKXK0vr7sFfVbgRi1VPIYxEyWV/FzRFtqHfQ4CNHq
+         hYKm/Sh8iPcveBUOwyGXqcZbD+EcupomU14/YE24udBzQVcfatsyc31XiUSwp0J2c2e/
+         /xkA==
+X-Gm-Message-State: AOAM531DSmLmTE5mvvaNeOw2Xbu9obo1yh5uqEL88um1bU6VehV155bt
+        NNq4gYEyhhHQX8PgyYnxCYuGmQ==
+X-Google-Smtp-Source: ABdhPJxhIq7UANzQZ2ADFeFtoKV7zIh9j1x7mEufNI0IxeaJGvGSzLeD/6EQflC2FwO8pjqQK18/iw==
+X-Received: by 2002:a50:fd98:: with SMTP id o24mr4955151edt.129.1631123762032;
+        Wed, 08 Sep 2021 10:56:02 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p8sm1365586ejo.2.2021.09.08.10.54.18
+        by smtp.gmail.com with ESMTPSA id jx21sm1370002ejb.41.2021.09.08.10.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:54:18 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 19:54:16 +0200
+        Wed, 08 Sep 2021 10:56:01 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 19:55:59 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Rob Clark <robdclark@gmail.com>
 Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
@@ -56,80 +57,137 @@ Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
         Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
         Pekka Paalanen <ppaalanen@gmail.com>,
         Rob Clark <robdclark@chromium.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 7/9] dma-buf/fence-chain: Add fence deadline support
-Message-ID: <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
+Subject: Re: [PATCH v3 1/9] dma-fence: Add deadline awareness
+Message-ID: <YTj5LzD19u5Rgz+J@phenom.ffwll.local>
 Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
         dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
         Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
         Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
         Pekka Paalanen <ppaalanen@gmail.com>,
         Rob Clark <robdclark@chromium.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
 References: <20210903184806.1680887-1-robdclark@gmail.com>
- <20210903184806.1680887-8-robdclark@gmail.com>
+ <20210903184806.1680887-2-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210903184806.1680887-8-robdclark@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210903184806.1680887-2-robdclark@gmail.com>
 X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 11:47:58AM -0700, Rob Clark wrote:
+On Fri, Sep 03, 2021 at 11:47:52AM -0700, Rob Clark wrote:
 > From: Rob Clark <robdclark@chromium.org>
 > 
+> Add a way to hint to the fence signaler of an upcoming deadline, such as
+> vblank, which the fence waiter would prefer not to miss.  This is to aid
+> the fence signaler in making power management decisions, like boosting
+> frequency as the deadline approaches and awareness of missing deadlines
+> so that can be factored in to the frequency scaling.
+> 
+> v2: Drop dma_fence::deadline and related logic to filter duplicate
+>     deadlines, to avoid increasing dma_fence size.  The fence-context
+>     implementation will need similar logic to track deadlines of all
+>     the fences on the same timeline.  [ckoenig]
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Reviewed-by: Christian König <christian.koenig@amd.com>
 > Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  drivers/dma-buf/dma-fence-chain.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  drivers/dma-buf/dma-fence.c | 20 ++++++++++++++++++++
+>  include/linux/dma-fence.h   | 16 ++++++++++++++++
+>  2 files changed, 36 insertions(+)
 > 
-> diff --git a/drivers/dma-buf/dma-fence-chain.c b/drivers/dma-buf/dma-fence-chain.c
-> index 1b4cb3e5cec9..736a9ad3ea6d 100644
-> --- a/drivers/dma-buf/dma-fence-chain.c
-> +++ b/drivers/dma-buf/dma-fence-chain.c
-> @@ -208,6 +208,18 @@ static void dma_fence_chain_release(struct dma_fence *fence)
->  	dma_fence_free(fence);
+> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+> index ce0f5eff575d..1f444863b94d 100644
+> --- a/drivers/dma-buf/dma-fence.c
+> +++ b/drivers/dma-buf/dma-fence.c
+> @@ -910,6 +910,26 @@ dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
 >  }
+>  EXPORT_SYMBOL(dma_fence_wait_any_timeout);
 >  
 > +
-> +static void dma_fence_chain_set_deadline(struct dma_fence *fence,
-> +					 ktime_t deadline)
+> +/**
+> + * dma_fence_set_deadline - set desired fence-wait deadline
+> + * @fence:    the fence that is to be waited on
+> + * @deadline: the time by which the waiter hopes for the fence to be
+> + *            signaled
+> + *
+> + * Inform the fence signaler of an upcoming deadline, such as vblank, by
+> + * which point the waiter would prefer the fence to be signaled by.  This
+> + * is intended to give feedback to the fence signaler to aid in power
+> + * management decisions, such as boosting GPU frequency if a periodic
+> + * vblank deadline is approaching.
+> + */
+> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)
 > +{
-> +	dma_fence_chain_for_each(fence, fence) {
-> +		struct dma_fence_chain *chain = to_dma_fence_chain(fence);
-> +		struct dma_fence *f = chain ? chain->fence : fence;
+> +	if (fence->ops->set_deadline && !dma_fence_is_signaled(fence))
+> +		fence->ops->set_deadline(fence, deadline);
+> +}
+> +EXPORT_SYMBOL(dma_fence_set_deadline);
+> +
+>  /**
+>   * dma_fence_init - Initialize a custom fence.
+>   * @fence: the fence to initialize
+> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> index 6ffb4b2c6371..9c809f0d5d0a 100644
+> --- a/include/linux/dma-fence.h
+> +++ b/include/linux/dma-fence.h
+> @@ -99,6 +99,7 @@ enum dma_fence_flag_bits {
+>  	DMA_FENCE_FLAG_SIGNALED_BIT,
+>  	DMA_FENCE_FLAG_TIMESTAMP_BIT,
+>  	DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+> +	DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+>  	DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
+>  };
+>  
+> @@ -261,6 +262,19 @@ struct dma_fence_ops {
+>  	 */
+>  	void (*timeline_value_str)(struct dma_fence *fence,
+>  				   char *str, int size);
+> +
+> +	/**
+> +	 * @set_deadline:
+> +	 *
+> +	 * Callback to allow a fence waiter to inform the fence signaler of an
+> +	 * upcoming deadline, such as vblank, by which point the waiter would
+> +	 * prefer the fence to be signaled by.  This is intended to give feedback
+> +	 * to the fence signaler to aid in power management decisions, such as
+> +	 * boosting GPU frequency.
 
-Doesn't this just end up calling set_deadline on a chain, potenetially
-resulting in recursion? Also I don't think this should ever happen, why
-did you add that?
+Please add here that this callback is called without &dma_fence.lock held,
+and that locking is up to callers if they have some state to manage.
+
+I realized that while scratching some heads over your later patches.
 -Daniel
 
-> +
-> +		dma_fence_set_deadline(f, deadline);
-> +	}
-> +}
-> +
->  const struct dma_fence_ops dma_fence_chain_ops = {
->  	.use_64bit_seqno = true,
->  	.get_driver_name = dma_fence_chain_get_driver_name,
-> @@ -215,6 +227,7 @@ const struct dma_fence_ops dma_fence_chain_ops = {
->  	.enable_signaling = dma_fence_chain_enable_signaling,
->  	.signaled = dma_fence_chain_signaled,
->  	.release = dma_fence_chain_release,
-> +	.set_deadline = dma_fence_chain_set_deadline,
+> +	 *
+> +	 * This callback is optional.
+> +	 */
+> +	void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
 >  };
->  EXPORT_SYMBOL(dma_fence_chain_ops);
 >  
+>  void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
+> @@ -586,6 +600,8 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+>  	return ret < 0 ? ret : 0;
+>  }
+>  
+> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline);
+> +
+>  struct dma_fence *dma_fence_get_stub(void);
+>  struct dma_fence *dma_fence_allocate_private_stub(void);
+>  u64 dma_fence_context_alloc(unsigned num);
 > -- 
 > 2.31.1
 > 
