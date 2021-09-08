@@ -2,122 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8403E40325C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF30040323B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346797AbhIHBol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        id S1346603AbhIHBib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346153AbhIHBok (ORCPT
+        with ESMTP id S1346223AbhIHBia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:44:40 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A1DC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:43:33 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id n11so576139edv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:43:33 -0700 (PDT)
+        Tue, 7 Sep 2021 21:38:30 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E01C061575;
+        Tue,  7 Sep 2021 18:37:23 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 62so350240qvb.11;
+        Tue, 07 Sep 2021 18:37:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cmtZIOS9Ve5xG2iMzkU1sWtv+qTK9kG1NPN7g5hyzNo=;
-        b=Avp2QNon6oXLwlm91DcxXo2K8Ngk0nif54gPFAF8gSN1i8UGU3RnS5zbBTY4njddzE
-         kRimZCEAjTDErRvXr9NzGnDj9ERJN9NqfNGni7tfa8fg8ZRHueouEt6GdIwj0aLgB6gt
-         6fk+gKUyYscFIVOTodXPJQY4t8lVrFzEU6fng=
+        bh=ciBzCjagQnTip0jhcuPtA6NB3onzElPc291uOOyrzyM=;
+        b=bithVZitjX59Lt3RcjNnDfJU/uUHPRrRkBDyknarhntnoXj1G1iASqbCbdRhUo8Pt+
+         FLV7z+W1O2JmgFRT+v3sCKCrhguRv38WbDPivEuQAOrdEMPR978YFR3uo5M1/7qdBI3L
+         TVR/BczxCBKRzQm1liSpdbfmtiPuA/JChcClxVYzaFBzPn/Cy+Z8XC2f6n37GxzuY+k7
+         mhKRqTyFNeV2HN22zApu3nlxxMFMxcSTf26Ecxz813ag7CQbzOdaOVR8LEX2t27h3E7L
+         gypmOInhelID1nSq5dNuub0y5sPGnWK4RVggceJIxrdRlZthcZ/fZRuDxRVAl91y3Tci
+         rQAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cmtZIOS9Ve5xG2iMzkU1sWtv+qTK9kG1NPN7g5hyzNo=;
-        b=oQ86+Zm9t9zs43Lcu967gxToRIBPVBIezsNnrfaqziRQK6DIN0y2RRRFBqrnk+QoTC
-         KTz+xAZPjbf9JHGn6TxQ9eAqfrvdcEWGJdzMpzT29YrZDQM/d7STLDjhIUOXw3WtYb47
-         qUHZdI3nJ7U4jXJLi2W3Hf/Z1n6/lkB1LUIznFQKdcKkOw/5qOhpakFlHmLHQohKhDD1
-         B3j+HgRRDTe8oOfCGZR2Z3jklZN/zbUF20MMss6dZ/NMkRXXOXz/SFRB66aHoh95YzIf
-         JFc7VYGz/HKGCjPROLZE3PvXvqvEmtcpMoYfJ4rsRNYuQRX7NG5TsJQs8wE0UoEYPHx4
-         994Q==
-X-Gm-Message-State: AOAM532fNvthV9/tFoJku4Whkc2zftW1jWUsb6eoAqOkDaEYIRwZ7ne2
-        qEvSXAfVaGlna7jyRbcTz82X6tuYG1i9Z5Wsa9I=
-X-Google-Smtp-Source: ABdhPJyNjOPkFj/C4N7wLrc11B46FcLx8iGc7aJwPY93CtPytcW8oiCGqh0+i34OXpTNIaR/SQ+v8Q==
-X-Received: by 2002:a05:6402:2032:: with SMTP id ay18mr1272345edb.364.1631065411801;
-        Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
-        by smtp.gmail.com with ESMTPSA id r26sm196982ejd.85.2021.09.07.18.43.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
-Received: by mail-wr1-f47.google.com with SMTP id q26so728662wrc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:43:31 -0700 (PDT)
-X-Received: by 2002:a2e:b53a:: with SMTP id z26mr781467ljm.95.1631064966392;
- Tue, 07 Sep 2021 18:36:06 -0700 (PDT)
+        bh=ciBzCjagQnTip0jhcuPtA6NB3onzElPc291uOOyrzyM=;
+        b=uUyAZPeisriHknbjTLMfWmO5OWrQnTsgD8kt8OWcCZf8bnM6VIv7NzUdik5rMmPOtp
+         fN3l//3yMYs82VQ+ABzF0gELVtdqmsDwczFP9uS0c1omwtLld3Q19S0utJLX7jRjIlUC
+         hbEvdq8FtQ20PxbvlyPueUJVHJzSGP67KvB/QPAsmjMDQbbTmQpoug1oaI6+fKVuRHBh
+         dhxLUE36Z/4M8uHclzGGKqAQo4h9vqilGcYzRPZe8/VfJL4fmxggsqWRe8+d4RzcfPFu
+         dDW0hgUBsfZrCr+mifxxJMY0wrVzGhavUTGxhk8VYjk9Omzd7amqovA0UgBSn0/zh3GJ
+         Fm2A==
+X-Gm-Message-State: AOAM533z/fKD/uMdnCoxQBo7n7MuJKzPPOCFYjXZ+pvjLUm+YZY5MS2y
+        7CK7dOWEXxrfJr9p3/e0XPVCVWnwj0kNYcxyKpW/kmyMxxGMdMyH
+X-Google-Smtp-Source: ABdhPJyZX8Ws4H4CK//9vF6DwOfMVVDxAED9g7heseyQVdqgO/Dg6FserqZ3XyM3raWxTLzCUa//Kzk5ma7acROdNGk=
+X-Received: by 2002:a0c:80ce:: with SMTP id 72mr1195106qvb.39.1631065042341;
+ Tue, 07 Sep 2021 18:37:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org> <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
- <a2c18c6b-ff13-a887-dd52-4f0aeeb25c27@kernel.org>
-In-Reply-To: <a2c18c6b-ff13-a887-dd52-4f0aeeb25c27@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 18:35:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
-Message-ID: <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
+References: <20210906094927.524106-1-schnelle@linux.ibm.com>
+ <CAOSf1CFyuf9FaeSNparj+7W0mKTPvtcM8vxjHDSFsNDC6k_7xQ@mail.gmail.com>
+ <e739c2919f97e277849a1bc1324a20df6a7d59eb.camel@linux.ibm.com> <0c9326c943c0e6aa572cc132ee2deb952bf41c7f.camel@linux.ibm.com>
+In-Reply-To: <0c9326c943c0e6aa572cc132ee2deb952bf41c7f.camel@linux.ibm.com>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Wed, 8 Sep 2021 11:37:11 +1000
+Message-ID: <CAOSf1CH2T-R44qx1mGpJQ8WgD0upxG8sQNud_5L3SHYZJm9LRA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Linas Vepstas <linasvepstas@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 5:15 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Tue, Sep 7, 2021 at 10:21 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
 >
-> Ah, okay, that is an x86-only limitation so I missed it. I do not think
-> there is any bug with that Kconfig logic but it is only used on x86.
+> On Tue, 2021-09-07 at 10:45 +0200, Niklas Schnelle wrote:
+> > On Tue, 2021-09-07 at 12:04 +1000, Oliver O'Halloran wrote:
+> > > On Mon, Sep 6, 2021 at 7:49 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+> > > > Patch 3 I already sent separately resulting in the discussion below but without
+> > > > a final conclusion.
+> > > >
+> > > > https://lore.kernel.org/lkml/20210720150145.640727-1-schnelle@linux.ibm.com/
+> > > >
+> > > > I believe even though there were some doubts about the use of
+> > > > pci_dev_is_added() by arch code the existing uses as well as the use in the
+> > > > final patch of this series warrant this export.
+> > >
+> > > The use of pci_dev_is_added() in arch/powerpc was because in the past
+> > > pci_bus_add_device() could be called before pci_device_add(). That was
+> > > fixed a while ago so It should be safe to remove those calls now.
+> >
+> > Hmm, ok that confirms Bjorns suspicion and explains how it came to be.
+> > I can certainly sent a patch for that. This would then leave only the
+> > existing use in s390 which I added because of a dead lock prevention
+> > and explained here:
+> > https://lore.kernel.org/lkml/87d15d5eead35c9eaa667958d057cf4a81a8bf13.camel@linux.ibm.com/
+> >
+> > Plus the need to use it in the recovery code of this series. I think in
+> > the EEH code the need for a similar check is alleviated by the checks
+> > in the beginning of
+> > arch/powerpc/kernel/eeh_driver.c:eeh_handle_normal_event() especially
+> > eeh_slot_presence_check() which checks presence via the hotplug slot.
+> > I guess we could use our own state tracking in a similar way but felt
+> > like pci_dev_is_added() is the more logical choice.
 
-Yeah. I think other architectures are basically just buggy, but nobody
-has ever cared or noticed, because the hardware basically doesn't
-exist.
+The slot check is mainly there to prevent attempts to "recover"
+devices that have been surprise removed (i.e NVMe hot-unplug). The
+actual recovery process operates off the eeh_pe tree which is frozen
+in place when an error is detected. If a pci_dev is added or removed
+it's not really a problem since those are only ever looked at when
+notifying drivers which is done with the rescan_remove lock held. That
+said, I wouldn't really encourage anyone to follow the EEH model since
+it's pretty byzantine.
 
-People hopefully don't actually configure for the kernel theoretical
-maximum outside of x86. Even there it's a bit ridiculous, but the
-hardware with lots and lots of cores at least _has_ existed.
+> Looking into this again, I think we actually can't easily track this
+> state ourselves outside struct pci_dev. The reason for this is that
+> when e.g. arch/s390/pci/pci_sysfs.c:recover_store() removes the struct
+> pci_dev and scans it again the new struct pci_dev re-uses the same
+> struct zpci_dev because from a platform point of view the PCI device
+> was never removed but only disabled and re-enabled. Thus we can only
+> distinguish the stale struct pci_dev by looking at things stored in
+> struct pci_dev itself.
 
-> Indeed. Grepping around the tree, I see that arc, arm64, ia64, powerpc,
-> and sparc64 all support NR_CPUS up to 4096 (8192 for PPC) but none of
-> them select CPUMASK_OFFSTACK
+IMO the real problem is removing and re-adding the pci_dev. I think
+it's something that's done largely because the PCI core doesn't really
+provide any better mechanism for getting a device back into a
+known-good state so it's abused to implement error recovery. This is
+something that's always annoyed me since it conflates recovery with
+hotplug. After a hot-(un)plug we might have a different device or no
+device. In the recovery case we expect to start and end with the same
+device. Why not apply the same logic to the pci_dev?
 
-I think this one says it all:
+Something I was tinkering with before I left IBM was re-working the
+way EEH handles recovering devices that don't have a driver with error
+handling callbacks to something like:
 
-   arch/arc/Kconfig: range 2 4096
+1. unbind the driver
+2. pci_save_state()
+3. do the reset
+4. pci_restore_state()
+5. re-bind the driver
 
-yeah. ARC allows you to configure 4k CPU's.
+That would allow keeping the pci_dev around and let me delete a pile
+of confusing code which handles binding the eeh_dev to the new
+pci_dev. The obvious problem with that approach is the assumption the
+device is functional enough to allow saving the config space, but I
+don't think that's a deal breaker. We could stash a copy of the device
+state before we allow drivers to attach and use that to restore the
+device after the reset. The end result would be the same known-good
+state that we'd get after a re-scan.
 
-I think a lot of them have just copied the x86 code (it was 4k long
-ago), without actually understanding all the details.
+> That said, I think for the recovery case we might be able to drop the
+> pci_dev_is_added() and rely on pdev->driver != NULL which we check
+> anyway and that should catch any PCI device that was already removed.
 
-That is indeed a strong argument for getting rid of the current
-much-too-subtle CPUMASK_OFFSTACK situation.
-
-But as the hyperv code shows, even on x86 the "we never allocate a
-full cpumask on the stack" has gotten lost a bit since the days that
-Rusty and others actually implemented this all.
-
-           Linus
+Would that work if there was an error on a device without a driver
+bound? If you're just trying to stop races between recovery and device
+removal then pci_dev_is_added() is probably the right tool for the
+job. Trying to substitute it with a proxy seems like a bad idea.
