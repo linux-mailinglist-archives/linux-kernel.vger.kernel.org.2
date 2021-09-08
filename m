@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A184041D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9DE4041D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344508AbhIHXfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
+        id S236079AbhIHXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhIHXfF (ORCPT
+        with ESMTP id S229482AbhIHXhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:35:05 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0242CC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:33:57 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id g11so78004qvd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:33:56 -0700 (PDT)
+        Wed, 8 Sep 2021 19:37:11 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474D8C061575;
+        Wed,  8 Sep 2021 16:36:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso73144pjq.4;
+        Wed, 08 Sep 2021 16:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gwQYHck7BMUKkGamYdSoRVg09azr+jdJw6rIsi6S+vk=;
-        b=DrMOX6OWFsDUPMEr61rWc//+OocHVa+BlQarE2QJLAroD7R834CN2CdA60vYdbScf+
-         06N2f9l0l9yQsJMNqKiXWFC8qRCdSHEkL0z7qpPDEx2pcy/iqghV3mhf+lT96tT8KR5c
-         zKrOn5qw5MuX0+8xUDY53Hs1qmEQMNm72cW0DnCRjzHATsLp7ee9UPFA7Y5M+ZdvICfi
-         m38Zys2Ll4OFtUhgbn2gBw4pYwgDQeXhHOEqOQ3jEUZ/VGKaj4JVHQaoa42ay/2by832
-         SQU9JPiK8z3x26iLy2h3TE5rJAI+j+sxvKNfhOItDU2bg8Eu2rR8tMqXnlIyS03xfjsy
-         Vbgw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=l2Gws221qWRp8GCtH3z2XvKK7KCKX8k0E4WtkqiUUvY=;
+        b=GQ0n88KuQUumpL0kdESA5BvuwQZQYtaU0FFxv0gjFTY/MZZCjibwekKqa8+cYHeae3
+         pk6jH+7tfeiP8HQVFDwoTLX6HZmPPvG2jffefq6QtiEFbq4X/Jghh6CAs6t/nRgBnrll
+         IUXRASWqV+DT4WzNsAO1XNbq9ssW0Tg3IBILGMpdIf4i3BtpCWdxtWk1qnt1GDNgy1Ka
+         kuAuijIib/AqI4QE1aHh0rmf5wq2PiNjvlGRfCnfDBjfdKDRkqahRSNfg3jND1DKJMis
+         VYmYSGwRPdtZgC/wjM/Vxh6epAAtwHx72M2MD+5GyGVA/eQCP8mWmdfocrB1z4iETrh3
+         e7Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gwQYHck7BMUKkGamYdSoRVg09azr+jdJw6rIsi6S+vk=;
-        b=PXT26HwCTR9o5SVsxHnRhCpmusB30DN5Kd1K852ERDk47Zn0XomS+e1FwGAoQktJ3v
-         clC6ngTFg8UrUlI9PUnk0t3p7JTRX2OE1EGxHa6BIX1bTCybcUPC0UpSbtS/KSFt+UoL
-         9rHQbeyiLlGNy1zNZ0fVEZ2fQTUbK3+O7cAqfdMYWx2mfbKqZ2fxdBDC1X51p2Q+82//
-         LtJ69GR2YyhLcJE3sPpIvncRYQGLBk73xJYxch3cc3xx6aRehjUnjU45+UQlYui6MAM1
-         xIRzZxR7JFIWzsOQzwp6+53jNGrOm3KcSo5ntZjvOoJsqkH4906RCOEo64f8WfpT3oDn
-         8sHw==
-X-Gm-Message-State: AOAM530UEWL+SAaRcAX/27sJ9CSaBL0/kFc39xhGwk+n0npiZmvJrxOV
-        jPlUSbwv5wGjDW996DbGIHd6ew==
-X-Google-Smtp-Source: ABdhPJwNA/77xtIMS3uTVLRdtquJh/PSHYWAq5zpTf6KOpMK4j8ysc8NRWaKQIZlIxbLoD95rKXBXg==
-X-Received: by 2002:a05:6214:104d:: with SMTP id l13mr69910qvr.13.1631144036203;
-        Wed, 08 Sep 2021 16:33:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id x3sm78338qkx.62.2021.09.08.16.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 16:33:55 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mO74k-00EsBp-Ob; Wed, 08 Sep 2021 20:33:54 -0300
-Date:   Wed, 8 Sep 2021 20:33:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Shunsuke Mie <mie@igel.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma
- device
-Message-ID: <20210908233354.GB3544071@ziepe.ca>
-References: <20210908061611.69823-1-mie@igel.co.jp>
- <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org>
- <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org>
- <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca>
- <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
- <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=l2Gws221qWRp8GCtH3z2XvKK7KCKX8k0E4WtkqiUUvY=;
+        b=8PWiAi7oDXx3IIekm9J3aeO7alLIVZejKKXSY7sadFxtoFiIWSMqvO3B+Qn8ccTGg5
+         ePDYWmJhXMJF6tNLiTrvYjtp8zzocnsgzHM1sAJTdI/tzcETvKJc6GQHjOhJ4r7zr/Fe
+         KHtJi5fjCCb9Kp8t873WSH9QjrgLrL7spaRMZQ9+QFoWRM/wIogaN9UG3/2to14jUio1
+         3Bn3DnbmGvkclXZUI6fEtVZeKVo+Vtm8DS2E7FEESzMK7qqLiXPA2AbgK8co+iaNBpyR
+         7p0eV2joDItqz8lBYQipDb2HW4gOVeoLj2zoQD8nlArW81YKuNA1VigBocSCruIV1+Fi
+         S8UA==
+X-Gm-Message-State: AOAM530nZB9EBt78WFemSeq1I+InDhZftonGzO9ObuZFALUZvGrpuxUU
+        Xkn391B9aSkCqke1/s/1Edc=
+X-Google-Smtp-Source: ABdhPJzwH2OO72zGiMsrctXktiHD437JjHl1GPJ8ULCSf3k2VV29xo2YXuyLfNtRG/GZ6I36WVes8g==
+X-Received: by 2002:a17:902:bcc6:b0:138:d3ca:c356 with SMTP id o6-20020a170902bcc600b00138d3cac356mr179988pls.6.1631144162577;
+        Wed, 08 Sep 2021 16:36:02 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id v66sm10112pfc.91.2021.09.08.16.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 16:36:02 -0700 (PDT)
+Message-ID: <0ce35724-336d-572e-4ba3-e5a014d035fc@gmail.com>
+Date:   Wed, 8 Sep 2021 16:36:00 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Circular dependency between DSA switch driver and tagging
+ protocol driver
+Content-Language: en-US
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210908220834.d7gmtnwrorhharna@skbuf>
+ <e0567cfe-d8b6-ed92-02c6-e45dd108d7d7@gmail.com>
+ <20210908221958.cjwuag6oz2fmnd2n@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210908221958.cjwuag6oz2fmnd2n@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
-> On Wed, Sep 8, 2021 at 3:33 PM Christian König <christian.koenig@amd.com> wrote:
-> > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> > >> 2021年9月8日(水) 16:20 Christoph Hellwig <hch@infradead.org>:
-> > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> > >>>> Thank you for your comment.
-> > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > >>>>>> To share memory space using dma-buf, a API of the dma-buf requires dma
-> > >>>>>> device, but devices such as rxe do not have a dma device. For those case,
-> > >>>>>> change to specify a device of struct ib instead of the dma device.
-> > >>>>> So if dma-buf doesn't actually need a device to dma map why do we ever
-> > >>>>> pass the dma_device here?  Something does not add up.
-> > >>>> As described in the dma-buf api guide [1], the dma_device is used by dma-buf
-> > >>>> exporter to know the device buffer constraints of importer.
-> > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=ARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=0
-> > >>> Which means for rxe you'd also have to pass the one for the underlying
-> > >>> net device.
-> > >> I thought of that way too. In that case, the memory region is constrained by the
-> > >> net device, but rxe driver copies data using CPU. To avoid the constraints, I
-> > >> decided to use the ib device.
-> > > Well, that is the whole problem.
-> > >
-> > > We can't mix the dmabuf stuff people are doing that doesn't fill in
-> > > the CPU pages in the SGL with RXE - it is simply impossible as things
-> > > currently are for RXE to acess this non-struct page memory.
-> >
-> > Yeah, agree that doesn't make much sense.
-> >
-> > When you want to access the data with the CPU then why do you want to
-> > use DMA-buf in the first place?
-> >
-> > Please keep in mind that there is work ongoing to replace the sg table
-> > with an DMA address array and so make the underlying struct page
-> > inaccessible for importers.
+
+
+On 9/8/2021 3:19 PM, Vladimir Oltean wrote:
+> On Wed, Sep 08, 2021 at 03:14:51PM -0700, Florian Fainelli wrote:
+>> On 9/8/2021 3:08 PM, Vladimir Oltean wrote:
+>>> Hi,
+>>>
+>>> Since commits 566b18c8b752 ("net: dsa: sja1105: implement TX
+>>> timestamping for SJA1110") and 994d2cbb08ca ("net: dsa: tag_sja1105: be
+>>> dsa_loop-safe"), net/dsa/tag_sja1105.ko has gained a build and insmod
+>>> time dependency on drivers/net/dsa/sja1105.ko, due to several symbols
+>>> exported by the latter and used by the former.
+>>>
+>>> So first one needs to insmod sja1105.ko, then insmod tag_sja1105.ko.
+>>>
+>>> But dsa_port_parse_cpu returns -EPROBE_DEFER when dsa_tag_protocol_get
+>>> returns -ENOPROTOOPT. It means, there is no DSA_TAG_PROTO_SJA1105 in the
+>>> list of tagging protocols known by DSA, try again later. There is a
+>>> runtime dependency for DSA to have the tagging protocol loaded. Combined
+>>> with the symbol dependency, this is a de facto circular dependency.
+>>>
+>>> So when we first insmod sja1105.ko, nothing happens, probing is deferred.
+>>>
+>>> Then when we insmod tag_sja1105.ko, we expect the DSA probing to kick
+>>> off where it left from, and probe the switch too.
+>>>
+>>> However this does not happen because the deferred probing list in the
+>>> device core is reconsidered for a new attempt only if a driver is bound
+>>> to a new device. But DSA tagging protocols are drivers with no struct
+>>> device.
+>>>
+>>> One can of course manually kick the driver after the two insmods:
+>>>
+>>> echo spi0.1 > /sys/bus/spi/drivers/sja1105/bind
+>>>
+>>> and this works, but automatic module loading based on modaliases will be
+>>> broken if both tag_sja1105.ko and sja1105.ko are modules, and sja1105 is
+>>> the last device to get a driver bound to it.
+>>>
+>>> Where is the problem?
+>>
+>> I'd say with 994d2cbb08ca, since the tagger now requires visibility into
+>> sja1105_switch_ops which is not great, to say the least. You could solve
+>> this by:
+>>
+>> - splitting up the sja1150 between a library that contains
+>> sja1105_switch_ops and does not contain the driver registration code
+>>
+>> - finding a different way to do a dsa_switch_ops pointer comparison, by
+>> e.g.: maintaining a boolean in dsa_port that tracks whether a particular
+>> driver is backing that port
 > 
-> Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
-> for cpu access. Which intentionally does not require any device. No
-> idea why there's a dma_buf_attach involved. Now not all exporters
-> support this, but that's fixable, and you must call
-> dma_buf_begin/end_cpu_access for cache management if the allocation
-> isn't cpu coherent. But it's all there, no need to apply hacks of
-> allowing a wrong device or other fun things.
+> What about 566b18c8b752 ("net: dsa: sja1105: implement TX timestamping for SJA1110")?
+> It is essentially the same problem from a symbol usage perspective, plus
+> the fact that an skb queue belonging to the driver is accessed.
 
-Can rxe leave the vmap in place potentially forever?
-
-Jason
+I believe we will have to accept that another indirect function call 
+must be made in order to avoid creating a direct symbol dependency with 
+sja1110_rcv_meta() would that be acceptable performance wise?
+-- 
+Florian
