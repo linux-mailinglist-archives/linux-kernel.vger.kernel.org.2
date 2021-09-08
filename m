@@ -2,174 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9107140339D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CA24033A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 07:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbhIHFHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 01:07:49 -0400
-Received: from mail-eopbgr1310128.outbound.protection.outlook.com ([40.107.131.128]:30784
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229657AbhIHFHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 01:07:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M7jk/PaeLfkBfCtCUCCoK9o2IMkyWqYpCDHaJWPErzC7sWIxcVkQEtUHxAqSFKsbe4C2Hej3IvCQ8/nBVPb9YYnHX652IHnXHJJJt679TyghS5sZq2ZzKLwenM7WdFzjrsKYwjOzfWySgtGhu6UzzIJkSDApQn39bAlsvEOTxNy9A2xykzgieFqdChvjzFKWXauvN6LnGfW5o9tFaJJHca82253Z7X3dS7Q/u3B+WGEATB75KlXQAkav3iYY4cB1N3aFroAFK54M5+rr9Dt4X8EeMeP5dtYeLt95yoan+K8HIFs1VqsGgmbkMP6y+Sok9HRlxcJCf0LUgGUz34GlZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=EeEuEZtRuz7bO5bMyrKjau3kDPrTaPnz3jkc1ni+g8M=;
- b=hgUqqumuFXZkv+IJgok87RXroHWzfr+Dfee+pkgb6l1BCDJnYpJbZzEUY6rMIHE2hDYhfIk/r443yu1tlvBx5jCxvFqHBwPoXzugDqXy4tFD17A6UXDwbpJYqbXivgqGuzCu8tb+ZNxAXDqxj6nkIGR68nYoS83zfleEOsrp3Q2Js9XN2J08xUMgnkg2nWXRGDEKh1lJfuLiyx5HqOLUycMSSfmo+phaCfC0gSw0gAPD2i7wnlFy/ENrWybFI0u0SrF/rgMwHA2e595vSCbrm13KaWts0lhKiV+aK2fVfJUb7lTX5PKKtTfMDi/HMQhIougg5pbAJWeyOF/Vxwkh/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EeEuEZtRuz7bO5bMyrKjau3kDPrTaPnz3jkc1ni+g8M=;
- b=rDwS2dxDBKHthge1P28YHKVvohsZYzYr2kWcKMG2R3jHt7KBfbaPI1bBpD66efDa+/juc6TdeBR8gYEkm4JyBQ5ONMuaNH6QxraO0fReIx6UOr97nnU3nlIuWbQ2OGxZQ91/pJRppd75ODFPK3JLOkGYwsiVCuyjAv6Bc4gJbTIIUzNHjcd5RLGz/plI2y92PhR+pchyHRRQ9A5vK0rM3wrgrXQ0Kwl8kRNAxF48yoV0X9B96ajMfO7G3fwknWM5TMwmy/rkWb0HhIpchEFQyn+ujpisXr2dXQlGZWtezLwcmS7ru0WmaUvpNvHNPz3wvkrZfdwR8FgBo1A9B5mGVw==
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3252.apcprd06.prod.outlook.com (2603:1096:202:40::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Wed, 8 Sep
- 2021 05:06:36 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4457.026; Wed, 8 Sep 2021
- 05:06:36 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "osk@google.com" <osk@google.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-Subject: RE: [PATCH v2 1/3] dt-bindings: aspeed-lpc: Add UART routing
- compatible string
-Thread-Topic: [PATCH v2 1/3] dt-bindings: aspeed-lpc: Add UART routing
- compatible string
-Thread-Index: AQHXn6EXTrG9luH4/kKvLz7wmMPMC6uY8jOAgACs7OA=
-Date:   Wed, 8 Sep 2021 05:06:35 +0000
-Message-ID: <HK0PR06MB3779D0B44F9F927A48F017EA91D49@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
- <20210902021817.17506-2-chiawei_wang@aspeedtech.com>
- <YTezn1TDatYs2FMd@robh.at.kernel.org>
-In-Reply-To: <YTezn1TDatYs2FMd@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9d1e49ef-7ae3-4636-2251-08d972866f40
-x-ms-traffictypediagnostic: HK2PR06MB3252:
-x-microsoft-antispam-prvs: <HK2PR06MB3252C4345EFE7CC165A6A03491D49@HK2PR06MB3252.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eFHqghmgwCPOoVzRKOXs+QZYh4QTJZ7f+8OFoKsFoLYvd8dv13tC1u/Ih+2wVKh+x93PejhQ3dkvDKdiRUlYYmKChYI+2z7YYTtD3ah3w/kKSwquq2QjdcpMBMuM9iu9URMp9uu1oWCcRGQu+AdH+jKvoiKGgCygiTGJMawOyC6+RfDoO71r8OX8SbyAiiAE8xMp7yzdwuYnc1hiceifUi4aMKLrbQE202QzDtJgNybDCAV6LebWvDymevM73qw+ldqzlgNj9Ns00/4DkVaIYFMl0bpzPGBDa9T+9Doq+f4K9gFwHSqp1KNYl+iH/YkQ2lJ75tnPwPojiFEZqEuvqbreOl9QEQEQriMQfYehN/oMGtjfrEkBwa9Wd4jX7CC2U+/LJyiZgPmeAkMse3Pv1MGdyuqltE3mAqIODGQqlZUJsxVt+SPeb95rt49xub5+tim/J0mn5Npae18SDm5SR/9C5wJP7wr+/fBrfdl8F9dgPIH4fDr/xI2uuozLrpH3QPIhhiFo1bXX9XKUeOW4/EdVR26igfSpeKXZRiKeXgbnR/hF1859wIURXkQquWTHJ2NT1ssnd9kdfp7Am1Q3NdOl2R1ROJnTyMRtpXDYE1xelX0gl46PLBIccmiZhUTU3aZ2QKguHbMbSGhG/KBydIH/L0kVYvb5IQYRvt4lSBCoa2LHiFm89SdpiqCGEelvve6DDsqkr+4HW9XaoOsVmg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(346002)(376002)(39840400004)(5660300002)(6916009)(52536014)(66476007)(66946007)(66556008)(64756008)(6506007)(8676002)(38070700005)(55016002)(26005)(316002)(8936002)(186003)(66446008)(71200400001)(7416002)(2906002)(76116006)(4326008)(478600001)(33656002)(86362001)(54906003)(38100700002)(7696005)(9686003)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wbxngiiFHNi0493tS5LOCSIWF0OQvSHMyEffa8Vg555StJGxsT9LVgq3O/gT?=
- =?us-ascii?Q?Vf6YSF44YSF6yGpe6HsR9UyUdK6/LdBEjbId972kN5aR22UcaSYpqmIh0ai/?=
- =?us-ascii?Q?oI2NZapiiz+j5dBTAM/2zL1AW6paE1ccpglZqKM8pjp94l8GyJ4qJh1Jh1av?=
- =?us-ascii?Q?IsoKE5Q4nYFdmiwa/TB7FH8h99NG4aYlwhi3/7suzV5x07t7Lti63EjQok4b?=
- =?us-ascii?Q?i1AEu3/bIFKEtEg5ZOjM6RRmvfvIWYEld0zaJ+pBa3IxPgmjNvmRekfFnEXr?=
- =?us-ascii?Q?VsaXlcD/xk2sSAbx9JwImx9EHlMuQiwF7RYlPa8NM2DKi0pUhi9EFuBwnqzY?=
- =?us-ascii?Q?L1sAWc7oIvu7F/rH8E9fqaIOW3bVRVSTSZdDDFxgcW9NfGxDhoH5ujQWwRMa?=
- =?us-ascii?Q?Jz2Eoe2j/Bc9s4Q1kxaB9RI6wQTvgz70mIARUpmkuIQci+HT/FSl19rFK+w5?=
- =?us-ascii?Q?WMBS7zm/7LCQqTMGdO7bZwT4Ds4L5qg9hqwne/B8v3Pu0gORc/4WcJrFiCz3?=
- =?us-ascii?Q?YGSSyxvIIFBd2TtECbx6Z4TwrzWhIHrroQNuru5IiTdlLNnHSQRyvqVlMDYz?=
- =?us-ascii?Q?u5zZDYwknMG8T1SWleFquYebAnAwoPx8d29lUCyu4S4N9iUJ14ZuwBLljbaP?=
- =?us-ascii?Q?NmDFOEYbvg7MekRlPaKqNy9US85a7BFezduC7OYGkMDTPDEhGesGuI0/txEY?=
- =?us-ascii?Q?3NS6peICUe5cAOExozrZ7h6DCqMH3ipOHyl6aTB6DLJYISyZI0kAilmS5FV3?=
- =?us-ascii?Q?qPQGnmpiaKfxyJRpx6urq92MT6Sq4yofBvHzc/A1+VSeCYQybroxvZFWNE+c?=
- =?us-ascii?Q?S4Q2uZpjHlSMfCHoXwYK7X41okLtzBjpe24NvN7fVVezLSnvIuR7qkKREX2s?=
- =?us-ascii?Q?M+NjedbFybhEG4brPI9IEZ7+S68wCHhdh88+35df7BTwskX+9umONSoTs4rY?=
- =?us-ascii?Q?/HIftw/ztGb3sKUNjevv9y6RmYZKygG2Had3JD10LfV5+9DFnJbUjFvOH9Fd?=
- =?us-ascii?Q?a+9idaigkYo5W38vT3G/QhR6WaaLT/FcE5lyLm8tn+XtabE4dXAr7eeCw2+i?=
- =?us-ascii?Q?Lr3vjZaOKVqh8uHPKMIi+lZNejz//gDHEs8N585X40QyU1xJdsA0P528fFw4?=
- =?us-ascii?Q?cEBlb2p63rmSefBeRWh8ESAQh8ZBs3iZyyv//B8xeHrrUE1oYJBtYGJQ1mnV?=
- =?us-ascii?Q?/JjQOAbD97j2wbdaJAYQI1VZdR8nUFVAPPN8QMVCxKDbyjIShCPeAGdwAL1n?=
- =?us-ascii?Q?v0x/YsrQjfho/8dCeNVBfIq3Mnj7nMRXqZPf7SuMGa7zFT3jt8RoC7bbWMqy?=
- =?us-ascii?Q?L4Ak3c2knKHNK+saY/lL8cCr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233286AbhIHFIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 01:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233103AbhIHFIU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 01:08:20 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415A3C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 22:07:13 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id s126so348842vkd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 22:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vhKS75PrHBFIhQLrE36iDZUz0yJIZoiRmtXOsoWmUz8=;
+        b=GpkbbHd/vM38KWaAB5OrpxGMo3wDCr1SwCbk40xmVmv6irgLYrsngmSic3+TECTfQ/
+         hhH2BWkFf5Sz9n+KTHV6BQz2rEthAB22PHD439dG4voT3EjvHvmKyxjLwIe2JeEh+4ft
+         hh4f3rkiBHKyO/XyR25JukmBlpBjlZcOTzwa9dDCgivD5xo1VXt5ZND0uHPkJSneUah3
+         QBE4MYrYCB0MMvpZZHURkhpqhv9Xl/aMGPX/mTDhR3VhJ65XvVVKutB+/C1nloFXZzyh
+         bwR25VcnaUR/6vqXNGZg+qIgeqTFfmmYVaGQXCGVSzOAeDBdcbpSm2EmP+A7tuxp3AhD
+         9xLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vhKS75PrHBFIhQLrE36iDZUz0yJIZoiRmtXOsoWmUz8=;
+        b=oLvbd10QRBKW23/7KcTtxrW5Ot8LyQ8ZYTsEwlOCvLHvziWnChOCrmOKpJ/rMxbFRb
+         QQm8jGTRy8By3CuQTWYyQ/Lzt7gYdpO6WHTBhYZz9qECuXJLIoPGTc/u8QqJw5HjlHaK
+         mhwcw7+tGrOcaCDYL+J7moKg8hjzBC4IlPaRc1CiNdQH2uSa4YVbDHAs8DEZt0XcrvHh
+         4HTrRTZno8yC7/+vXJWc5xdQkPbj3b18MjQE/jl4G4tO5GWnKVahQbeb5PvxWtYOmedk
+         rMO87o2N2U9RlwajMz9pMmHbgvZ9a+g8BzHMB2jTLrfyhTPuZeVlT28gOFakX78iZH0n
+         Immw==
+X-Gm-Message-State: AOAM5307sBii/JUmuvp3BBrR9QjAhRQ2KHvbDf1rn2oXTTUimt53VpSQ
+        /rGHw+PQRFLv97ZhX8OeP5jnD9ibn7JGszSgqog=
+X-Google-Smtp-Source: ABdhPJzUpmfaopUaO1PhN3AAYZCaTrVMuljcr1JsKA1JBn4clBg//Ge+OaTwZhnXEMceF/2/XnnnFGHcVum0pct3Oxc=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr1021738vkj.21.1631077632347;
+ Tue, 07 Sep 2021 22:07:12 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d1e49ef-7ae3-4636-2251-08d972866f40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2021 05:06:36.4355
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n/8xUaMoBZVk0q4kifuz58bd+MkzAXxvOm1Xdd/4agWezfFuAOdUJ9+Z/xcekspmyTJrIqS0YKD+/vL3JWF65QHPUdvCK5INFTZmqs4K0bo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3252
+References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
+ <20210907051454.56eocxfxeuqixlf6@gupta-dev2.localdomain> <CAPm50aLWUJZbgmvrt09S9LKowuH28NQpn7ZSuCkJGf_=jKFjXg@mail.gmail.com>
+ <20210907225912.2i6cmprvauyxrhlu@gupta-dev2.localdomain>
+In-Reply-To: <20210907225912.2i6cmprvauyxrhlu@gupta-dev2.localdomain>
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Wed, 8 Sep 2021 13:06:44 +0800
+Message-ID: <CAPm50aLFvP=F6Lz9M-a5aNcrx+cEkAZ6NPWwEShEx2yKk64c_g@mail.gmail.com>
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not supported
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Rob Herring <robh@kernel.org>
-> Sent: Wednesday, September 8, 2021 2:47 AM
->=20
-> On Thu, Sep 02, 2021 at 10:18:14AM +0800, Chia-Wei Wang wrote:
-> > Add the compatible string and the device tree description for the
-> > Aspeed AST25xx/AST26xx UART routing control.
-> >
-> > Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> > ---
-> >  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 22 +++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
->=20
-> Either convert aspeed-lpc.txt to DT schema or make this a separate schema
-> doc.
-
-I will send a v3 patch with a separate schema included. Thanks.
-
-Chiawei
-
->=20
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > index 936aa108eab4..45d44f812e5e 100644
-> > --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > @@ -155,3 +155,25 @@ lpc_reset: reset-controller@98 {
-> >          reg =3D <0x98 0x4>;
-> >          #reset-cells =3D <1>;
-> >  };
-> > +
-> > +UART routing control
-> > +--------------------
-> > +
-> > +The UART routing control manages the RX muxes among the UART
-> > +controllers and the I/O pins. This is typicall used for the
-> > +Serial-Over-Lan (SOL) service.
-> > +
-> > +Required properties:
-> > +
-> > + - compatible:		One of:
-> > +			"aspeed,ast2500-uart-routing";
-> > +			"aspeed,ast2600-uart-routing";
-> > +
-> > + - reg:			offset and length of the IP in the LPC memory region
-> > +
-> > +Example:
-> > +
-> > +uart_routing: uart-routing@98 {
-> > +	compatible =3D "aspeed,ast2600-uart-routing";
-> > +	reg =3D <0x98 0x8>;
-> > +};
-> > --
-> > 2.17.1
-> >
-> >
+On Wed, Sep 8, 2021 at 6:57 AM Pawan Gupta
+<pawan.kumar.gupta@linux.intel.com> wrote:
+>
+> On 07.09.2021 14:36, Hao Peng wrote:
+> >On Tue, Sep 7, 2021 at 1:13 PM Pawan Gupta
+> ><pawan.kumar.gupta@linux.intel.com> wrote:
+> >>
+> >> On 06.09.2021 10:46, Hao Peng wrote:
+> >> >If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+> >> >RTM and HLE features, it will affect TAA mitigation.
+> >>
+> >> Guests are on purpose not allowed to control TSX via MSR_IA32_TSX_CTRL=
+,
+> >> otherwise a malicious guest can enable TSX and attack host or other
+> >> guests. The TAA mitigation within a guest is same as MDS i.e.
+> >> micro-architectural buffer clear using VERW instruction. Support for
+> >> VERW is added by the microcode update and enumerate by
+> >> MSR_ARCH_CAP[MD_CLEAR] bit.
+> >>
+> >> >Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> >> >---
+> >> > arch/x86/kernel/cpu/tsx.c | 7 +++++++
+> >> > 1 file changed, 7 insertions(+)
+> >> >
+> >> >diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+> >> >index 9c7a5f049292..5e852c14fef2 100644
+> >> >--- a/arch/x86/kernel/cpu/tsx.c
+> >> >+++ b/arch/x86/kernel/cpu/tsx.c
+> >> >@@ -122,6 +122,13 @@ void __init tsx_init(void)
+> >> >
+> >> >        if (!tsx_ctrl_is_supported()) {
+> >> >                tsx_ctrl_state =3D TSX_CTRL_NOT_SUPPORTED;
+> >> >+
+> >> >+               /* If hypervisor does not support MSR_IA32_TSX_CTRL e=
+mulation,
+> >> >+                * but guest supports RTM and HLE features, it will a=
+ffect TAA
+> >> >+                * =EF=BC=88tsx_async_abort=EF=BC=89mitigation.
+> >> >+                */
+> >> >+               setup_clear_cpu_cap(X86_FEATURE_RTM);
+> >> >+               setup_clear_cpu_cap(X86_FEATURE_HLE);
+> >>
+> >> This is not correct. TSX feature can exist without TSX_CTRL MSR.
+> >> Moreover, clearing the cached bits with setup_clear_cpu_cap() doesn't
+> >> disable the TSX feature in CPU.
+> >>
+> >After applying this patch, the output of
+> >/sys/devices/system/cpu/vulnerabilities/tsx_async_abort
+> >becomes =E2=80=9CMitigation: TSX disabled=E2=80=9D.Do you mean that tsx =
+is still
+> >enabled in this case in guest?
+>
+> If the host has TSX enabled, guest can use TSX instructions irrespective
+> of what cpu capabilities in the guest says.
+>
+I understand that guest cannot produce any actual effects on the hardware,
+so if the host has resolved the TAA bug on the hardware, does the guest act=
+ually
+have no vulnerability no matter what TAA status is displayed?
+> >I made a mistake in the description before. This problem occurred
+> >under the qemu -cpu Icelake-server .
+>
+> So looks like the real problem is with qemu feature definitions for
+> cpu "Icelake-Server", it is probably not exporting "taa-no".
+>
+Yes, I already know the reason, but because it is inconvenient to
+update the version of
+the host component, consider the guest compatibility method.
+> >When I debug this problem to -cpu host, the guest can see taa-no.
+> >Thanks.
+>
+> Thats good.
