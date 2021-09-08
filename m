@@ -2,87 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD6F403501
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F7D403502
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349108AbhIHHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:13:06 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:38707 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348992AbhIHHNE (ORCPT
+        id S1349101AbhIHHN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:13:27 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51129 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349259AbhIHHNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:13:04 -0400
-Received: by mail-vs1-f45.google.com with SMTP id a25so1167854vso.5;
-        Wed, 08 Sep 2021 00:11:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6SOp9qzgb+7OLbzhEnYOxzUm312xgb+yIQvHHl06QRQ=;
-        b=JN0fGn7B6D81XWBoc1ZBusruvP+QEqcIpFyx+x9Jz2OlDlDRjW36Ls3Mblw6SlZpit
-         srJfIbyVlWHrCFOMiT4nfjs3Wg5a5Kci6Uk6jdi0N1LCm+OOomIJ7+UhT9rMPK4bKMkL
-         8v8HVHuOIA2v/bOmIgq4Iyn0jks/QXN/jz5YFkHBqgo8vc6e26lpAszLzwnsnEX+KuIR
-         T/f3ITaJGvdiQgKivRHJPI8eMkIU24/PUp4huwKXZtj/Nb3BewI/IlgU3mRZ4KAh7bfr
-         21HQrr/7k7Vxfo1DI8mDXIQb3HP9dnHE2ZYeaLyvVslRl9+UFRCSj7nbCmJyk31shkjE
-         I+FQ==
-X-Gm-Message-State: AOAM530lYEB/Xqf+QGMm+tct0Ueb5yKOZvjPJcN8c7C/aRFr/EGnjOUW
-        3+to1qVeZT1wv/6AA7cyb7mfn7dDyd7y2Q2HKsM=
-X-Google-Smtp-Source: ABdhPJzjGNGylzP8LxtbraFdz4alRjQZDJJTUIPo6jsA4z7q7jbMwhO+Z7i4SE3fylrJCV6B+DQIMmJdF43oArWG9O8=
-X-Received: by 2002:a67:efd6:: with SMTP id s22mr1272938vsp.50.1631085116034;
- Wed, 08 Sep 2021 00:11:56 -0700 (PDT)
+        Wed, 8 Sep 2021 03:13:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UnfT516_1631085126;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UnfT516_1631085126)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 08 Sep 2021 15:12:07 +0800
+Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
+To:     "H. Peter Anvin" <hpa@zytor.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210902105052.2842-1-jiangshanlai@gmail.com>
+ <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
+ <f84c2b3c-a880-502f-4f51-4624b3800a05@zytor.com>
+ <638f3b2b-aff9-72e5-3a5d-fff5ef6b88fc@zytor.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <f76296d5-8d95-cf3d-b800-3f6b2e2d21fb@linux.alibaba.com>
+Date:   Wed, 8 Sep 2021 15:12:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net> <20210908042838.GA2585993@roeck-us.net>
- <YThAgIhKPQZq5UZn@zeniv-ca.linux.org.uk> <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
-In-Reply-To: <f4817c3d-c051-4030-e9ca-ea8b3f846119@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 8 Sep 2021 09:11:43 +0200
-Message-ID: <CAMuHMdWhzL+aWosce71Xm-7dKsgXFyL42tQ2gV2HyEZp5r0N7A@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <638f3b2b-aff9-72e5-3a5d-fff5ef6b88fc@zytor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 7:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 9/7/21 9:48 PM, Al Viro wrote:
-> > On Tue, Sep 07, 2021 at 09:28:38PM -0700, Guenter Roeck wrote:
-> >>      memcpy(eth_addr, sanitize_address((void *) 0xfffc1f2c), ETH_ALEN);
-> >>
-> >> but that just seems weird. Is there a better solution ?
-> >
-> > (char (*)[ETH_ALEN])?  Said that, shouldn't that be doing something like
-> > ioremap(), rather than casting explicit constants?
->
-> Typecasts or even assigning the address to a variable does not help.
-> The sanitizer function can not be static either.
 
-So it can only be fixed by obfuscating the constant address in a
-chain of out-of-line functions...
-How is this compiler to be used for bare-metal programming?
 
-> I don't know the hardware, so I can not answer the ioremap() question.
+On 2021/9/8 13:00, H. Peter Anvin wrote:
+> On 9/7/21 9:42 PM, H. Peter Anvin wrote:
+>>
+>>
+>> On 9/7/21 6:38 PM, H. Peter Anvin wrote:
+>>> On 9/2/21 3:50 AM, Lai Jiangshan wrote:
+>>>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>>>
+>>>> There is no constrain/limition to force native_load_gs_index() to be in
+>>>> ASM code.
+>>>
+>>> Hi,
+>>>
+>>> First of all, let me say I really like your patchset, and I will try to
+>>> review it in detail ASAP (most of the initial read pass looks very sane
+>>> to me.
 
-Yes it should.  But this driver dates back to 2.1.110, when only
-half of the architectures already had ioremap().
+Hello
 
-Gr{oetje,eeting}s,
+Thank you for your review.
 
-                        Geert
+>>>
+>>> However, I would like to object in part this specific patch. It adds a
+>>> fair bit of extra code to the exception path, and adds jumps between
+>>> files which makes the code much harder to read.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I tried putting all code into a single C function.
+But I didn't know how to use a C-label in _ASM_EXTABLE and then I split it.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Your code is much better.
+
+Thanks
+Lai
+
+
+>>>
+>>> You end up doing one swapgs in assembly and one in C, which would seem
+>>> to be a very good indication that really isn't an improvement.
+>>>
+>>> Note that this entire sequence is scheduled to be obsoleted by a single
+>>> atomic hardware instruction, LKGS, which will replace ALL of
+>>> native_load_gs_index(); it will no longer be necessary even to disable
+>>> interrupts as there is no non-atomic state. In that sense, doing this as
+>>> an out-of-line C function (with some inline assembly) is great, because
+>>> it makes it far easier to use LKGS as an alternative; the only (small)
+>>> disadvantage is that it ends up clobbering a lot of registers
+>>> unnecessarily (in assembly it can be implemented clobbering only two
+>>> registers; one if one uses pushf/popf to save the interrupt flag.)
+>>>
+>>
+>> OK, here is a version which actually compiles:
+>>
+> 
+> ... slightly shorter and minimally better compiled code ...
+> 
+> noinstr void native_load_gs_index(unsigned int selector)
+> {
+>      unsigned long flags;
+> 
+>      local_irq_save(flags);
+>      native_swapgs();
+> do_mov_gs:
+>      asm_volatile_goto("1: mov %[seg],%%gs\n"
+>                "2:\n"
+>                _ASM_EXTABLE(1b,%l[bad_seg])
+>                : : [seg] "r" (selector) : : bad_seg);
+>      alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
+>      native_swapgs();
+>      local_irq_restore(flags);
+>      return;
+> 
+> bad_seg:
+>      /* The exception dispatch will have restored kernel GS */
+>      native_swapgs();
+>      alternative_input("", "mov %[seg],%%gs",
+>                X86_BUG_NULL_SEG, [seg] "r" (__USER_DS));
+>      selector = 0;
+>      goto do_mov_gs;
+> }
