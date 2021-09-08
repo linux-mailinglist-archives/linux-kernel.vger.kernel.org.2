@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAA3403774
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D030A40378A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345097AbhIHKEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:04:44 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:45888 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232259AbhIHKEP (ORCPT
+        id S244785AbhIHKIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231734AbhIHKIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:04:15 -0400
-Received: by mail-wr1-f41.google.com with SMTP id n5so2348720wro.12;
-        Wed, 08 Sep 2021 03:03:07 -0700 (PDT)
+        Wed, 8 Sep 2021 06:08:39 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC183C061575;
+        Wed,  8 Sep 2021 03:07:31 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so1078538wml.3;
+        Wed, 08 Sep 2021 03:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IuVAXOniPs80otZ91yGL82RmtViOBhOlj/adKgbx/8w=;
+        b=pGl8ltgHx8yuhgvAVU3pBI0QcBs8QIiIpX4gpxovbtjVtV8j2ojaZvf4JCYYEDllIq
+         NAZrwG030ghSvhp+zTCnXEmc18nYyl2dAc/rSU5X/1G0kY6Hjg7JWKB28tr120XeiNEk
+         aC1e7gm0jJ8Bg1NPc75R+WVpRhk1Hbyd329JVOPUbelz2w69WqZ4e3pxVM13Y/Rhc9I1
+         KtvU+v3+ZZUegwp/E245WrG5sjyrgyBJ3tMSlECp9pDsM0tk7uDaCmw8hmQRh//o5VzW
+         CThsAc8rxwoZsmV3VzLy8WCRxNTZrkbJO9pYQVNTVkIbH7iZhn50r/3CzGjohxfwsmKL
+         uKAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bppKmbeT5omixDkAwV5VX75Oyw3uE5XXr6lcDeM/RCw=;
-        b=xcbX9Dyg3+xFkD2aiVwosIlG4MtzaAbD7QHPye1eqk1OwhhwWLGUi+/Rgig0BWGUza
-         lGY/nF4CID2ijgtXHCGES/Go1YsYwDjTE4KvfPWM1M0h+1M8B893bxY1/jpiKznRAnr7
-         4KvwAHBGbBC2T6KyuHJZ7d4sYmVNxoTZE1nT0bk2+obzDNsM5jsh+QJKiiUBmSsSbj9/
-         9SM/1TOf5BU51zNnUUOMBtT3dqYatS84sKSNl44PqVc7jhM2OPP8sCCiG0XLfKSprkZz
-         gsvYSNjIr940Y+HGI9tltuQze6576m28nuIhGzCejdGZtLeOJL4FUBEw3PzlJynaitKf
-         xpZQ==
-X-Gm-Message-State: AOAM531RWe2j7nC9KrRNIJmL4wKim3jv/phfs8zmj19jvR2Nw5tQModC
-        cGY9EE2N+6bxqRFts9xW9Ymx1ofHvWE=
-X-Google-Smtp-Source: ABdhPJwKMGsPUGI/psvQhbpr9QV5aFSDEK3FisaHG5BysW/q2LSnCyMwpS3nudif41VBV7Ci/RKZmg==
-X-Received: by 2002:adf:ea90:: with SMTP id s16mr3040095wrm.235.1631095386823;
-        Wed, 08 Sep 2021 03:03:06 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id x11sm1648796wro.83.2021.09.08.03.03.05
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IuVAXOniPs80otZ91yGL82RmtViOBhOlj/adKgbx/8w=;
+        b=rbz1uiIA2XPD9zyC3kCk7MgUGpaGKedtCqrriazxwnyrWdubBoOaCaS7eHVs4a7llV
+         O7CfSeONhnjSU/1BXrG0PdWo4SC216VLv+tdR5m/KrHv9a5iJkWjJ86sUCrhp76UVGkk
+         8hN48TheuIeljXfRcvV+ou7zXGFpt1ajLyhMJBTCMwfwxKhCT74nf5dURpfNMhU9nddX
+         5U40wP+3/6xk6yZeJ86hC8kYsAGL0Ziy38Gil3mID8OzumHWd0lsfNUNczhDFPKoJM77
+         wAluDGscV08wMiDU0qIREUMXPAcpbTAOsPVzDYuTjvpKTOHwvnHL5gQAeGadsY2eTava
+         a2GQ==
+X-Gm-Message-State: AOAM531KNV5rmAA4OnVf3WfJES1pMwXHFh+HnQcm+qMQn4qPJ3JJlJ9v
+        COTkoidQ8P16Ac1HPCUJoFE=
+X-Google-Smtp-Source: ABdhPJz8H/7Kpg3SF8tU6o2SIr20U4JEZtzuEn1zTwFGBxm80uM76lyVBzpvzIDuMLeFNrtqRHbt+Q==
+X-Received: by 2002:a05:600c:3209:: with SMTP id r9mr2725457wmp.106.1631095650468;
+        Wed, 08 Sep 2021 03:07:30 -0700 (PDT)
+Received: from localhost.localdomain ([185.69.144.232])
+        by smtp.gmail.com with ESMTPSA id l26sm1623961wmi.13.2021.09.08.03.07.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 03:03:06 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 10:03:04 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 08 Sep 2021 03:07:29 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-Message-ID: <20210908100304.oknxj4v436sbg3nb@liuwe-devbox-debian-v2>
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+        linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Subject: [PATCH] /dev/mem: nowait zero/null ops
+Date:   Wed,  8 Sep 2021 11:06:51 +0100
+Message-Id: <16c78d25f507b571df7eb852a571141a0fdc73fd.1631095567.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 04:14:24PM -0700, Linus Torvalds wrote:
-> [ Added maintainers for various bits and pieces, since I spent the
-> time trying to look at why those bits and pieces wasted stack-space
-> and caused problems ]
-> 
-> On Tue, Sep 7, 2021 at 3:16 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-[...]
-> 
-> There are many more of these cases. I've seen Hyper-V allocate 'struct
-> cpumask' on the stack, which is once again an absolute no-no that
-> people have apparently just ignored the warning for. When you have
-> NR_CPUS being the maximum of 8k, those bits add up, and a single
-> cpumask is 1kB in size. Which is why you should never do that on
-> stack, and instead use '
-> 
->        cpumask_var_t mask;
->        alloc_cpumask_var(&mask,..)
-> 
-> which will do a much more reasonable job. But the reason I call out
-> hyperv is that as far as I know, hyperv itself doesn't actually
-> support 8192 CPU's. So all that apic noise with 'struct cpumask' that
-> uses 1kB of data when NR_CPUS is set to 8192 is just wasted. Maybe I'm
-> wrong. Adding hyperv people to the cc too.
-> 
-> A lot of the stack frame size warnings are hidden by the fact that our
-> default value for warning about stack usage is 2kB for 64-bit builds.
-> 
-> Probably exactly because people did things like that cpumask thing,
-> and have these arrays of structures that are often even bigger in the
-> 64-bit world.
-> 
+Make read_iter_zero() to honor IOCB_NOWAIT, so /dev/zero can be
+advertised as FMODE_NOWAIT. This helps subsystems like io_uring to use
+it more effectively. Set FMODE_NOWAIT for /dev/null as well, it never
+waits and therefore trivially meets the criteria.
 
-Thanks for the heads-up. I found one instance of this bad practice in
-hv_apic.c. Presumably that's the one you were referring to.
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ drivers/char/mem.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-However calling into the allocator from that IPI path seems very heavy
-weight. I will discuss with fellow engineers on how to fix it properly.
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 1c596b5cdb27..531f144d7132 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -495,6 +495,8 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
+ 		written += n;
+ 		if (signal_pending(current))
+ 			return written ? written : -ERESTARTSYS;
++		if (iocb->ki_flags & IOCB_NOWAIT)
++			return written ? written : -EAGAIN;
+ 		cond_resched();
+ 	}
+ 	return written;
+@@ -696,11 +698,11 @@ static const struct memdev {
+ #ifdef CONFIG_DEVMEM
+ 	 [DEVMEM_MINOR] = { "mem", 0, &mem_fops, FMODE_UNSIGNED_OFFSET },
+ #endif
+-	 [3] = { "null", 0666, &null_fops, 0 },
++	 [3] = { "null", 0666, &null_fops, FMODE_NOWAIT },
+ #ifdef CONFIG_DEVPORT
+ 	 [4] = { "port", 0, &port_fops, 0 },
+ #endif
+-	 [5] = { "zero", 0666, &zero_fops, 0 },
++	 [5] = { "zero", 0666, &zero_fops, FMODE_NOWAIT },
+ 	 [7] = { "full", 0666, &full_fops, 0 },
+ 	 [8] = { "random", 0666, &random_fops, 0 },
+ 	 [9] = { "urandom", 0666, &urandom_fops, 0 },
+-- 
+2.33.0
 
-Wei.
-
->                 Linus
