@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91E940325E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C1E40325F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346905AbhIHBo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S1346987AbhIHBpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346153AbhIHBo4 (ORCPT
+        with ESMTP id S1346864AbhIHBpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:44:56 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9D9C061757;
-        Tue,  7 Sep 2021 18:43:49 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id t20so511547pju.5;
-        Tue, 07 Sep 2021 18:43:49 -0700 (PDT)
+        Tue, 7 Sep 2021 21:45:12 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FFDC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:44:05 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id p15so764365ljn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IUajGtbIkTnMLmvJKDDM5bNk82jKbI6oddFYd20CVM8=;
-        b=V0FW30MvEZTV/igRZjLppoHUoGJTHLMAWRScMq+QK8z1oj6YoDNwWDqWpDUCGvOxSk
-         eze8wWtvhumaRwR670DP8T3p3eFdif2JmB2wqnR1QryWPUGyV8p6IU8dhMcU667+wBOY
-         mdEZwg8pdX8ce8u/x+xchoAVqmnMA6e5tqTVRhK4ze1/zyoe2xFMjMhKNJgNHfs8pQyl
-         PlhWLOGK4MbIJ6mVlJc+mj8pS0JuXcfO4CmfUnpzGdF4tlJ1v5c6Pjlq9DvfusD2f4no
-         z3lWMyAldO2jhBy7WkqnGc5u4cx5/iNWVaRJxGXOLRIogBAys6WUWz++2RjUAv5CYp52
-         DqCw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LxLbN5oXo3pkASZMt7+BOQU43HJcJssxtcghQNdRrVo=;
+        b=AvxEqZUbI6FOu7pL8djSL10B3yrzx6C1ITuJnwmqc68sRjbZt0UZcqj4OOhM/IN1fR
+         mQG32bTk85V1KzAyt6/UfkczGxInrsiK0SxFntGyw21Fx6X9gUZPDg0Vkw6nUon4YkgN
+         GbxPU6vAxh7JV7pXhTlUM8mduw1Pz4ptY22hI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IUajGtbIkTnMLmvJKDDM5bNk82jKbI6oddFYd20CVM8=;
-        b=a3cYFblXPLC4qc4eF/0HBG2XWQsML33SxvCtLdtUpkHuUsJWvGGZrnGifI4FFugHx/
-         lFhuYuC/zmbTb74nSU/Da8oKJHymxVmSlwJR3bBP77U/l+l8WefSJ9XrVBt7qbHFWEal
-         /pMs/JxszbopSuDy2zrQDvPeHbcFRq9wiE/It6IHoUIY8/rXfcE5Nv8tXaLEO5NXKD4k
-         OMRjFVHOU1sqi2wU40dsxUUZQfTTfKjtZO66KABlLHyHMW4d4kb0TDnMPcE/AxwjW2Zw
-         Tkfops7v3dtw+F21XTPgBP+PRPFi9/RVVZDIMjx5SYvsZnvQH+Mo/XTPK/Sn2B96QBp7
-         hn6A==
-X-Gm-Message-State: AOAM532ry/WNEW3g6OMaSyde6G7IP+kSqrgZG+/Z2viewnAiN6G+adre
-        n1ERyicG1W2cZxN2OM+edwznLYJS33U=
-X-Google-Smtp-Source: ABdhPJwrXXm0yXPxI3u3HhPDOQQta9IquAbHV4nqKwMP4comgvSHywK/CP6bxyQWL8xMjgz32CfoZA==
-X-Received: by 2002:a17:90b:4a51:: with SMTP id lb17mr1327070pjb.245.1631065428401;
-        Tue, 07 Sep 2021 18:43:48 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:ded6:ee2d:2354:13b7])
-        by smtp.gmail.com with ESMTPSA id h16sm282254pfn.215.2021.09.07.18.43.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 18:43:47 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 18:43:45 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] Input: analog: Always use ktime functions
-Message-ID: <YTgVUWzFSOg/I4C+@google.com>
-References: <20210907123734.21520-1-linux@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LxLbN5oXo3pkASZMt7+BOQU43HJcJssxtcghQNdRrVo=;
+        b=lCL4jlSZ0ZRTR034pCwPqKYtnMVmETHP0bAGaGCLKsswTsrqyi/QapMQYIHUQeiLUh
+         1qscX+wM6ghsSz1pbV1UP563TcNoCAREs3dQrOwcvURpMjYUYMh1ggXrF1v4wNyYvE5N
+         G5y1sz3Fy21bEzBq+bczMVXGXjzKYjbeHuW6A++DLebzSWp9YlSg+qGJStu+OUW0u99b
+         8L4duqeFIoohB48/+C+UHcaVKSO0aK/TOp1KEu8XhvflJxnpaJa7bgWcmLs8b1RNGjW1
+         TrjUcmsMkfI3u5S+oXNM9Nc7wmUGTRz6gbP7UD7PcYWVAF24MPUvrsG05O+4cxhIRPIc
+         qqFQ==
+X-Gm-Message-State: AOAM531UcXLaWpFM25BHoR568KGAG1NANi+5enqIOJg8MeQLsynUQ8Vb
+        5uMlrCXNBIoDj99XMBP+zhvnl4qwDe4bYDaaXMA=
+X-Google-Smtp-Source: ABdhPJxOUOkSg68LYmgyBMWDaueTKmRUr/u4anW6+b3z3QS2OTs3jKznYYdSGni9+Y4QPPjkKBpfDA==
+X-Received: by 2002:a2e:9cd9:: with SMTP id g25mr847772ljj.346.1631065442912;
+        Tue, 07 Sep 2021 18:44:02 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id p3sm51285lfk.152.2021.09.07.18.44.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 18:44:02 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id s10so1090500lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:44:02 -0700 (PDT)
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr946864lfu.280.1631065441904;
+ Tue, 07 Sep 2021 18:44:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210907123734.21520-1-linux@roeck-us.net>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org> <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
+ <a2c18c6b-ff13-a887-dd52-4f0aeeb25c27@kernel.org> <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whcFKGyJOgmwJtWwDCP7VFPydnTtsvjPL6ZP6d6gTyPDQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 18:43:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi+O66NwiiAYBeS6kiix6YGuDvPf-MPddtycE_D4fWV=g@mail.gmail.com>
+Message-ID: <CAHk-=wi+O66NwiiAYBeS6kiix6YGuDvPf-MPddtycE_D4fWV=g@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Tue, Sep 7, 2021 at 6:35 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I think a lot of them have just copied the x86 code (it was 4k long
+> ago), without actually understanding all the details.
 
-On Tue, Sep 07, 2021 at 05:37:34AM -0700, Guenter Roeck wrote:
-> @@ -241,11 +176,11 @@ static int analog_cooked_read(struct analog_port *port)
->  	int i, j;
->  
->  	loopout = (ANALOG_LOOP_TIME * port->loop) / 1000;
-> -	timeout = ANALOG_MAX_TIME * port->speed;
-> +	timeout = ANALOG_MAX_TIME * NSEC_PER_MSEC;
->  
->  	local_irq_save(flags);
->  	gameport_trigger(gameport);
-> -	now = get_time();
-> +	now = ktime_get();
+Just to put the x86 number in perspective: it was raised to 8192 back
+in 2013, with the comment
 
-There are time[4], now, etc variables above this block that are u64. I
-think they can be make ktime_t. I can do it myself if you agree.
+    x86/cpu: Increase max CPU count to 8192
 
-> @@ -378,35 +313,19 @@ static void analog_calibrate_timer(struct analog_port *port)
->  	u64 t1, t2, t3;
+    The MAXSMP option is intended to enable silly large numbers of
+    CPUs for testing purposes.  The current value of 4096 isn't very
+    silly any longer as there are actual SGI machines that approach
+    6096 CPUs when taking HT into account.
 
-I think these should also be ktime_t.
+    Increase the value to a nice round 8192 to account for this and
+    allow for short term future increases.
 
-Thanks.
+so on the x86 side, people have actually done these things.
 
--- 
-Dmitry
+Other architectures? I think some IBM power9 machines can hit 192
+cores (with SMT4 - so NR_CPUS of 768), but I don't think there's been
+an equivalent of an SGI for anything but x86.
+
+But admittedly I haven't checked or followed those things. I could
+easily imagine some boutique super-beefy setup.
+
+               Linus
