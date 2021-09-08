@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCC740383F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9412C403844
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348928AbhIHKyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S1348986AbhIHKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbhIHKyB (ORCPT
+        with ESMTP id S1348884AbhIHKyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:54:01 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B35C061575;
-        Wed,  8 Sep 2021 03:52:53 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id p15so2765533ljn.3;
-        Wed, 08 Sep 2021 03:52:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SCa5sUcg3hd31K9Jh0v/b9ezKnAfrViWPcQLkGDjQ+4=;
-        b=oCkzDEUShK5lI6n91PzLUskjiJzDmMHgbLjz+KXzkc3Rfw26w3sRoW8v962TNFfa4M
-         LsrrvsBQeSkrcbTeOeRR4l8qvU6E/8I2wBFPYE6JUUQcYNr+aebrSAXpirXTJmM1x1nX
-         ZEl9Pi2vuebkV5Tt0mat0PwmMWj2KFR1AMJT8WCEXuE1wxBUfgcSbkDXEJ2cLXlKkwjJ
-         AVMKcRonmm3JkuZjdZybhr3eYQSlH5CC3n66VmGnipizSPmq33qJFWDib6RxUYg3IVg1
-         0yVgTa1YzQxeU4xMujoXFRDUsET4S612uh/mofJ43hKBtxo7TM9wOGzq6SK+it8jLiz1
-         CFDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SCa5sUcg3hd31K9Jh0v/b9ezKnAfrViWPcQLkGDjQ+4=;
-        b=XQ6hUVrkcejWwwy9Gz1I38jplEREvJPxq9zD5u0cDgie/Ui39PMITPnxetpESE17Q/
-         +Lqb1Wg4JtdQspsdEA+UTYVCTvLSqZFmLlH4kMuddbLjbvl74RXhVty+O89dT6JTzng+
-         sIx0rfJkLb9DwxFkAEKLYy/uCXo6pw8shjHWuZeTk58mWDIYZX8xU/xXTzfaE1Rnsuuf
-         6jjV4J1LOWhWCgkE57zcBK0BLtytXBojTZAHXTttnb3e7gwsUTIWZesmmAXXnqasMOHC
-         kZDNpSaG52I+nmvHvBBHc/qDC161OY+UzMJMcJvR8npJLjkHzjAQcvZl2ccxyw8SpOmB
-         hOsA==
-X-Gm-Message-State: AOAM532cfjo0ZgWP0TyYzI+4qMup+ea0zlDNiBwomik5kIQELPf4IDmz
-        dCuVWiOrR+rSXf5Opa7ObHQ=
-X-Google-Smtp-Source: ABdhPJzwOrSuphL+vd9b2Iy/O3YtR+9hdvovE6aK5/918675iAVWeZPr9K75U2+6lQiLHq5djr8icA==
-X-Received: by 2002:a2e:99d9:: with SMTP id l25mr2262345ljj.217.1631098371710;
-        Wed, 08 Sep 2021 03:52:51 -0700 (PDT)
-Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
-        by smtp.gmail.com with ESMTPSA id o7sm201332lji.17.2021.09.08.03.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 03:52:51 -0700 (PDT)
-Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
-        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 188Aqmlt015750;
-        Wed, 8 Sep 2021 13:52:49 +0300
-Received: (from paul@localhost)
-        by home.paul.comp (8.15.2/8.15.2/Submit) id 188Aqkv8015749;
-        Wed, 8 Sep 2021 13:52:46 +0300
-Date:   Wed, 8 Sep 2021 13:52:45 +0300
-From:   Paul Fertser <fercerpav@gmail.com>
-To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "osk@google.com" <osk@google.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        Konstantin Klubnichkin <kitsok@yandex-team.ru>
-Subject: Re: [PATCH v2 0/3] arm: aspeed: Add UART routing support
-Message-ID: <20210908105245.GB23326@home.paul.comp>
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
- <20210908094248.GZ23326@home.paul.comp>
- <HK0PR06MB3779180F75DB8BD872F8A78391D49@HK0PR06MB3779.apcprd06.prod.outlook.com>
+        Wed, 8 Sep 2021 06:54:02 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D60C061575;
+        Wed,  8 Sep 2021 03:52:54 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0efc002d1ac0b1b41b9169.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:2d1a:c0b1:b41b:9169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 823EB1EC0246;
+        Wed,  8 Sep 2021 12:52:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631098372;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/c1i7MJmMtvpNZUmYoO8pHyXNL8x7+xg5ZYSPs97nbA=;
+        b=jr+NflkNApcbMcE3x32XD/UX7p/0fqIF65IsSvGVzESGORog8godikPznZVkEHWAEfDZp/
+        3cJpFWYdwvZIYVjJoVqIb18N+9kITRR9p/Hy2pBWEoAPDfgBtrObF1m218D0WEFw/Run5F
+        lcaRmegenetKjtMzrdNH5JFrk8D+7M8=
+Date:   Wed, 8 Sep 2021 12:52:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
+ not present entries
+Message-ID: <YTiV/Sdm/T/jnsHC@zn.tnic>
+References: <20210819132717.19358-1-rppt@kernel.org>
+ <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
+ <YTiR6aK6XKJ4z0wH@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <HK0PR06MB3779180F75DB8BD872F8A78391D49@HK0PR06MB3779.apcprd06.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YTiR6aK6XKJ4z0wH@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:18:35AM +0000, ChiaWei Wang wrote:
-> > Does UART1 need some explicit disabling for VUART IRQs to work? It looks like
-> > setting LPC address and IRQ number in VUART is enough to override the
-> > register part but probably not for the interrupt?
+On Wed, Sep 08, 2021 at 12:35:21PM +0200, Borislav Petkov wrote:
+> So I did stare at this for a while, trying to make sense of it and David
+> Hildenbrand asked for a Fixes: tag in v1 review and from doing a bit of
+> git archeology I think it should be:
 > 
-> You may need to confirm that the Host does not enable the SIO SUART1
-> device. This will conflict with VUART as both SUART and VAURT are
-> competing for the port address 0x3f8 and SIRQ 4.
+> c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+> 
+> because that thing added the clearing of the Present bit for the high
+> kernel image mapping of those areas.
+> 
+> Right?
 
-Do you really mean the Host here, that is, software that controls LPC
-master when ASpeed is used as an LPC slave? Linux driver is not doing
-anything special with the UART1, it's just trying to use it as if it
-was a hardware 16550A physical IC on I/O bus.
+Hmm, but that commit is in v4.19. Mike has added
 
-Or do you mean the BMC software shouldn't be enabling SUART1 by making
-sure its clock is disabled in SCU0C? Is there anything else needed?
-I've tried reading the ast2500 datasheet many times but this detail
-seem to be missing. Is there some appnote on the topic probably?
+Cc: <stable@vger.kernel.org>    # 4.4+
 
-In this case do we have some way to make it an obvious error to enable
-both SUART1 and VUART in DTS? If they're conflicting surely there
-should be a way to express that?
+Mike, why 4.4 and newer?
 
-Thank you for looking into this!
+Hmmm.
 
 -- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
