@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F14403510
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C3E40351B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349474AbhIHHPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:15:43 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:60866 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348919AbhIHHPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:15:37 -0400
-Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
-        by Forcepoint Email with ESMTPS id 09C5F97CD86EBF3CC402;
-        Wed,  8 Sep 2021 15:14:28 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 8 Sep 2021 15:14:27 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 8 Sep 2021 15:14:27 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-pm@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] soc: bcm63xx-power: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Wed, 8 Sep 2021 15:14:16 +0800
-Message-ID: <20210908071417.494-2-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210908071417.494-1-caihuoqing@baidu.com>
-References: <20210908071417.494-1-caihuoqing@baidu.com>
+        id S1348948AbhIHHR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348916AbhIHHRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:17:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B0AC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MnjsixqmosBihT6Q0qVYXXqBZ2K/JeOxHPpv883b1xQ=; b=XbM8Xg3PjSFGTYmv3zW07WfyaY
+        yWEdMq1eEqx0RRQqf2r7e6pYKpvEx0oG4KVrQaoCagb/MmI7o0acywnXwpXSPJTo/1MkSPkPOEFJy
+        mKVPyz7XoUQE44YQmLjxnlC/1P/RLwrxrspgdaqdkFsWsJpB2cRQfFSd4r+Bz7k7bOYyGJ9XCEdOU
+        VV701Kva713ECwwrgTRZcHhYdgohcpF+ORONW/M/BNUXYF7JoqGFO0tJVrTc+1JqjXQEOCwt3RRqO
+        IbwKTqnS0QnoY/SeWesV1xBSinYJz2jyaANLtuvExQupl4FPr9q6HdJd1s3vCXjHopyF3JjAZ7vVe
+        7+fwQCwQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNrml-008b2V-QY; Wed, 08 Sep 2021 07:14:58 +0000
+Date:   Wed, 8 Sep 2021 08:14:19 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH 12/12] swiotlb-xen: this is PV-only on x86
+Message-ID: <YThiyxG0d2tmCtb+@infradead.org>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
+ <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
+On Tue, Sep 07, 2021 at 02:13:21PM +0200, Jan Beulich wrote:
+> The code is unreachable for HVM or PVH, and it also makes little sense
+> in auto-translated environments. On Arm, with
+> xen_{create,destroy}_contiguous_region() both being stubs, I have a hard
+> time seeing what good the Xen specific variant does - the generic one
+> ought to be fine for all purposes there. Still Arm code explicitly
+> references symbols here, so the code will continue to be included there.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/soc/bcm/bcm63xx/bcm63xx-power.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Can the Xen/arm folks look into that?  Getting ARM out of using
+swiotlb-xen would be a huge step forward cleaning up some DMA APIs.
 
-diff --git a/drivers/soc/bcm/bcm63xx/bcm63xx-power.c b/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
-index 515fe182dc34..aa72e13d5d0e 100644
---- a/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
-+++ b/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
-@@ -91,7 +91,6 @@ static int bcm63xx_power_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
--	struct resource *res;
- 	const struct bcm63xx_power_data *entry, *table;
- 	struct bcm63xx_power *power;
- 	unsigned int ndom;
-@@ -102,8 +101,7 @@ static int bcm63xx_power_probe(struct platform_device *pdev)
- 	if (!power)
- 		return -ENOMEM;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	power->base = devm_ioremap_resource(&pdev->dev, res);
-+	power->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(power->base))
- 		return PTR_ERR(power->base);
- 
--- 
-2.25.1
+> 
+> Instead of making PCI_XEN's "select" conditional, simply drop it -
+> SWIOTLB_XEN will be available unconditionally in the PV case anyway, and
+> is - as explained above - dead code in non-PV environments.
+> 
+> This in turn allows dropping the stubs for
+> xen_{create,destroy}_contiguous_region(), the former of which was broken
+> anyway - it failed to set the DMA handle output.
 
+Looks good:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
