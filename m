@@ -2,140 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF56040353B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1944034A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349652AbhIHHXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:23:36 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47828 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235185AbhIHHX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:23:29 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 53DFF1A2E4A;
-        Wed,  8 Sep 2021 09:22:21 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EE7EC1A4595;
-        Wed,  8 Sep 2021 09:22:20 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id EFB8C183AD45;
-        Wed,  8 Sep 2021 15:22:19 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH 3/3] PCI: imx: add compliance tests mode to enable measure signal quality
-Date:   Wed,  8 Sep 2021 14:59:26 +0800
-Message-Id: <1631084366-24785-3-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631084366-24785-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1631084366-24785-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1347952AbhIHHC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346759AbhIHHC1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:02:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1560C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R8OKvw4S2MzNKNmIXpBxq9HTvvmNUrQ/SvUk9VnsHUY=; b=rpo3HkOJxy7GQnr44u+Kw8/GWw
+        b8U0qMtuai8fWaIBPF65LKePgrrYtAvsRonr7HKZ/kABbXwFaD3Mpb9NLGgv57kVtXFmpclCY72AW
+        bRhylceyEaHc9mZwksibH7RRQWka7q8ZoZO0inYa0QUo14guNPVn4vgylPrf7IJVRKoj/ZEvI6QNn
+        BnqFevB+Z2JckxFutk9LRF6NHmlUhurLK75V0CumKbej0KWAQMeYjX0SWkuA0cQAqZ5knLN3VjNDg
+        0Q71U9TW6LUgg1Y/e5lIBYVvFbraJ7etFrdulT7G7nM5y7yJQdeATwHB+s08UVof9jVe9hk8cGZ1V
+        nCpsr0OQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNrZH-008aHN-76; Wed, 08 Sep 2021 07:00:34 +0000
+Date:   Wed, 8 Sep 2021 08:00:23 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH 06/12] swiotlb-xen: limit init retries
+Message-ID: <YThfh2aIlAIkdrXA@infradead.org>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
+ <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refer to the system board signal Quality of PCIe archiecture PHY test
-specification. Signal quality tests can be executed with devices in the
-polling.compliance state.
+On Tue, Sep 07, 2021 at 02:06:37PM +0200, Jan Beulich wrote:
+> Due to the use of max(1024, ...) there's no point retrying (and issuing
+> bogus log messages) when the number of slabs is already no larger than
+> this minimum value.
+> 
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-To let the device support polling.compliance stat, the clocks and
-powers shouldn't be turned off during the compliance tests although
-the PHY link might be down.
-Add the i.MX PCIe compliance tests mode enable option to keep the and
-powers on, and finish the driver probe without error return.
+Looks good,
 
-Use the "pcie_cmp_enabled=yes" in kernel command line to enable the
-compliance tests mode.
-
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 41 +++++++++++++++++++++------
- 1 file changed, 33 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 129928e42f84..3aef0e86f1c2 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -143,6 +143,7 @@ struct imx6_pcie {
- #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
- #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
- 
-+static int imx6_pcie_cmp_enabled;
- static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie);
- static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie);
- 
-@@ -748,10 +749,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 	 * started in Gen2 mode, there is a possibility the devices on the
- 	 * bus will not be detected at all.  This happens with PCIe switches.
- 	 */
--	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
--	tmp &= ~PCI_EXP_LNKCAP_SLS;
--	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
--	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	if (!imx6_pcie_cmp_enabled) {
-+		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-+		tmp &= ~PCI_EXP_LNKCAP_SLS;
-+		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-+		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	}
- 
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
-@@ -812,9 +815,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
- 		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
- 	imx6_pcie_reset_phy(imx6_pcie);
--	imx6_pcie_clk_disable(imx6_pcie);
--	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
--		regulator_disable(imx6_pcie->vpcie);
-+	if (!imx6_pcie_cmp_enabled) {
-+		imx6_pcie_clk_disable(imx6_pcie);
-+		if (imx6_pcie->vpcie
-+		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-+			regulator_disable(imx6_pcie->vpcie);
-+	}
- 	return ret;
- }
- 
-@@ -1010,6 +1016,17 @@ static const struct dev_pm_ops imx6_pcie_pm_ops = {
- 				      imx6_pcie_resume_noirq)
- };
- 
-+static int __init imx6_pcie_compliance_test_enable(char *str)
-+{
-+	if (!strcmp(str, "yes")) {
-+		pr_info("Enable the i.MX PCIe TX/CLK compliance tests mode.\n");
-+		imx6_pcie_cmp_enabled = 1;
-+	}
-+	return 1;
-+}
-+
-+__setup("pcie_cmp_enabled=", imx6_pcie_compliance_test_enable);
-+
- static int imx6_pcie_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1187,8 +1204,16 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = dw_pcie_host_init(&pci->pp);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (imx6_pcie_cmp_enabled) {
-+			/* The PCIE clocks and powers wouldn't be turned off */
-+			dev_info(dev, "To do the compliance tests.\n");
-+			ret = 0;
-+		} else {
-+			dev_err(dev, "Unable to add pcie port.\n");
-+		}
- 		return ret;
-+	}
- 
- 	if (pci_msi_enabled()) {
- 		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
--- 
-2.25.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
