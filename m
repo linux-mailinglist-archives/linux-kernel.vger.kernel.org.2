@@ -2,121 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61107403BAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B52D403BB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349309AbhIHOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:41:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41043 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231164AbhIHOl0 (ORCPT
+        id S1351943AbhIHOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351932AbhIHOno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:41:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631112017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0mS/4vH+akbhx3KmKiVesBsbwWaeG1PhCRwFwsmwm4=;
-        b=XhJNvncY/kFTOOvP/oc6U+NuHKobjBRhetort0Q+mJSDosGIaKl+RxkDH87kR+o1fYdlLw
-        m9LRkzOzOA89C+2l9nd5weHfs3F6HqvGtAm+ilZjOi7tJRlvYez84Jd1lNCOuX1C2+daZd
-        UL0+g4+bRi6jVw4lCwHBXt5LQYdY0wc=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-8aXf3lXuMAmVuIIEd5ErFQ-1; Wed, 08 Sep 2021 10:40:16 -0400
-X-MC-Unique: 8aXf3lXuMAmVuIIEd5ErFQ-1
-Received: by mail-qt1-f197.google.com with SMTP id o7-20020a05622a138700b002a0e807258bso2452694qtk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 07:40:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=F0mS/4vH+akbhx3KmKiVesBsbwWaeG1PhCRwFwsmwm4=;
-        b=fClKXg0mEtLww3DMEolOEWlri4RPH+xUEsBfgIbarU3m2uF/kPt1ZYZ/8W0iW8g96i
-         rl6JuVZv6ivZEmER3kOLu7P1k2/1+bsUlF/qFWgse55ov66XgCnZKTa2l2EvA46M6W+H
-         5lyQn44VNbjUJODYTYUA9GLHHRccb+PLK0w8khxfiaCY1wJZ9YIh5wLM4pVH8xMnV0Pq
-         pbxhM8+TxiABGo3favNmLztNOHeN2JEWCFx0hw5H1/zg5Eprcc3r3EHbHcSZhcVcRauv
-         Iv8/WyANf2wAYSd5Q3Axda9362ZYzMw2hvuqSPvY5klsvp6Mosw8QJl4Gqx8dtwOMoeN
-         AZyA==
-X-Gm-Message-State: AOAM531ngU6z+cJgypoitAJrSOeo3fmMliirDbv6wyh5GPnc5wRjG9ty
-        YYDkausehOo6YCL7dr7A4p0ptFs2i6pRGZq2w/zdX8Vi1LonGz73O8B3xsr0aOOoYjDLCp2UY8B
-        8McLNl/mVK7GF7CXnniRJcKxW
-X-Received: by 2002:ad4:5f06:: with SMTP id fo6mr4293723qvb.32.1631112016420;
-        Wed, 08 Sep 2021 07:40:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/QsCtIYTif18mNNXhu/aYeBjgKlf815YDrQE6oMXEjqwGIZImLb3bnFRl+eOk1YZkdCP9HA==
-X-Received: by 2002:ad4:5f06:: with SMTP id fo6mr4293695qvb.32.1631112016200;
-        Wed, 08 Sep 2021 07:40:16 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id d68sm1882756qke.19.2021.09.08.07.40.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 07:40:15 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2] lockdep: Let lock_is_held_type() detect recursive read
- as read
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Waiman Long <llong@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
- <9af2b074-9fcf-5aea-f37d-9b2482146489@redhat.com>
- <20210903084001.lblecrvz4esl4mrr@linutronix.de>
- <YTgc8xXuVlpOhoUT@boqun-archlinux>
-Message-ID: <959eddbd-799b-3b10-0f30-0209f883d5ed@redhat.com>
-Date:   Wed, 8 Sep 2021 10:40:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 8 Sep 2021 10:43:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600E3C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=umPny3Ok0/zsN6Nvy2jYnqoJuWfVc2FWJg6UAYNRrPo=; b=g9hpn+iFXn8HwbSWpCypvYf4wO
+        1OHpv4WsFFJrsS1z1BZt93Qbhu7Y46ZHNVfA57Qecf/dV7wT+gvVdoIIUbudm5pjs/J7xNik9h3KI
+        kC3iwxIxC5UaiPy4yqbWXtfb/eMZ25YuNcPAISo/S5VvHw/iZIO5zf4N23ddON+uo1+RQ/t4t6vDH
+        Hw0YOuyH48E0d6SVhi/JrP2ZYt6UgaDoqNMhmoDzqMUJaJhAJOMvlnm2PXpxaVg4AHg+34rx5M7jo
+        sP7K+2hb2bOLDMb8J24soE8jCev6aWo3J0JBddyqmm15vV7bqOl6Wy/klEp62OGL2VgO1nspqGYK2
+        39yMtz0w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNylD-008tSZ-Bf; Wed, 08 Sep 2021 14:41:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BA43300454;
+        Wed,  8 Sep 2021 16:41:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 36FD3201736A5; Wed,  8 Sep 2021 16:41:10 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 16:41:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <YTjLhnvDxwkE9Kky@hirez.programming.kicks-ass.net>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
+ <YTi15PNcExiJRZoa@boqun-archlinux>
 MIME-Version: 1.0
-In-Reply-To: <YTgc8xXuVlpOhoUT@boqun-archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTi15PNcExiJRZoa@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 10:16 PM, Boqun Feng wrote:
-> On Fri, Sep 03, 2021 at 10:40:01AM +0200, Sebastian Andrzej Siewior wrote:
->> lock_is_held_type(, 1) detects acquired read locks. It only recognized
->> locks acquired with lock_acquire_shared(). Read locks acquired with
->> lock_acquire_shared_recursive() are not recognized because a `2' is
->> stored as the read value.
->>
->> Rework the check to additionally recognise lock's read value one and two
->> as a read held lock.
->>
->> Fixes: e918188611f07 ("locking: More accurate annotations for read_lock()")
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> ---
->> v1…v2:
->>    - simplify the read check to !!read as suggested by Waiman Long.
->>
->>   kernel/locking/lockdep.c |    2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> --- a/kernel/locking/lockdep.c
->> +++ b/kernel/locking/lockdep.c
->> @@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_
->>   		struct held_lock *hlock = curr->held_locks + i;
->>   
->>   		if (match_held_lock(hlock, lock)) {
->> -			if (read == -1 || hlock->read == read)
->> +			if (read == -1 || hlock->read == !!read)
-> I think this should be:
->
-> 	!!hlock->read == read
->
-> With that,
->
-> Acked-by: Boqun Feng <boqun.feng@gmail.com>
->
-You are right. It should be the other way around. read can only be -1, 
-0, 1 while hlock->read can be 0, 1, 2.
+On Wed, Sep 08, 2021 at 09:08:52PM +0800, Boqun Feng wrote:
+> On Wed, Sep 08, 2021 at 01:51:24PM +0200, Peter Zijlstra wrote:
+> [...]
+> > @@ -201,23 +207,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+> >  {
+> >  	struct rt_mutex_base *rtm = &rwb->rtmutex;
+> >  	unsigned long flags;
+> > +	int readers;
+> >  
+> >  	/* Take the rtmutex as a first step */
+> >  	if (rwbase_rtmutex_lock_state(rtm, state))
+> >  		return -EINTR;
+> >  
+> >  	/* Force readers into slow path */
+> > -	atomic_sub(READER_BIAS, &rwb->readers);
+> > +	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
+> >  
+> > -	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+> >  	/*
+> >  	 * set_current_state() for rw_semaphore
+> >  	 * current_save_and_set_rtlock_wait_state() for rwlock
+> >  	 */
+> >  	rwbase_set_and_save_current_state(state);
+> 
+> rwbase_set_and_save_current_state() may eventually call
+> current_save_and_set_rtlock_wait_state(), which requires being called
+> with irq-off, while rwbase_write_lock() may be called with irq-on. I
+> guess we can change the raw_spin_lock() to raw_spin_lock_irqsave() in
+> current_save_and_set_rtlock_wait_state() to solve this.
 
-Cheers,
-Longman
+Oh right... that's actually something I pointed out to Thomas during
+review, and I suppose we both forgot about it, or figured it didn't
+matter enough.
 
+Oooh, Thomas added that lockdep_assert.. still lemme change that to
+match set_special_state().
+
+Also,...
+
+---
+Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
+
+While looking at current_save_and_set_rtlock_wait_state() I'm thinking
+it really ought to use smp_store_mb(), because something like:
+
+	current_save_and_set_rtlock_wait_state();
+	for (;;) {
+		if (try_lock())
+			break;
+		raw_spin_unlock_irq(&lock->wait_lock);
+		if (!cond)
+			schedule();
+		raw_spin_lock_irq(&lock->wait_lock);
+		set_current_state(TASK_RTLOCK_WAIT);
+	}
+	current_restore_rtlock_saved_state();
+
+which is very close to the advertised usage in the comment, is actually
+broken I think:
+
+ - try_lock() doesn't need to provide any ordering on failure;
+ - raw_spin_unlock() only needs to provide RELEASE ordering;
+
+which gives that the above turns into something like:
+
+	WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);
+	raw_spin_unlock(&current->pi_lock);
+	raw_spin_unlock(&lock->wait_lock);
+	if (!cond)
+
+and the load of @cond is then allowed to speculate right before the
+__state store, and we've got a missed wakeup -> BAD(tm).
+
+Fixes: 5f220be21418 ("sched/wakeup: Prepare for RT sleeping spin/rwlocks")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 1780260f237b..3d3246d7e87d 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -245,7 +245,8 @@ struct task_group;
+  *		if (try_lock())
+  *			break;
+  *		raw_spin_unlock_irq(&lock->wait_lock);
+- *		schedule_rtlock();
++ *		if (!cond)
++ *			schedule_rtlock();
+  *		raw_spin_lock_irq(&lock->wait_lock);
+  *		set_current_state(TASK_RTLOCK_WAIT);
+  *	}
+@@ -253,22 +254,24 @@ struct task_group;
+  */
+ #define current_save_and_set_rtlock_wait_state()			\
+ 	do {								\
+-		lockdep_assert_irqs_disabled();				\
+-		raw_spin_lock(&current->pi_lock);			\
++		unsigned long flags; /* may shadow */			\
++									\
++		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		current->saved_state = current->__state;		\
+ 		debug_rtlock_wait_set_state();				\
+-		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
+-		raw_spin_unlock(&current->pi_lock);			\
++		smp_store_mb(current->__state, TASK_RTLOCK_WAIT);	\
++		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0);
+ 
+ #define current_restore_rtlock_saved_state()				\
+ 	do {								\
+-		lockdep_assert_irqs_disabled();				\
+-		raw_spin_lock(&current->pi_lock);			\
++		unsigned long flags; /* may shadow */			\
++									\
++		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		debug_rtlock_wait_restore_state();			\
+ 		WRITE_ONCE(current->__state, current->saved_state);	\
+ 		current->saved_state = TASK_RUNNING;			\
+-		raw_spin_unlock(&current->pi_lock);			\
++		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0);
+ 
+ #define get_current_state()	READ_ONCE(current->__state)
