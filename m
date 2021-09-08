@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F88C403D91
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCB5403D96
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348736AbhIHQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:27:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:48646 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238352AbhIHQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:27:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64B231FB;
-        Wed,  8 Sep 2021 09:26:24 -0700 (PDT)
-Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.197.93])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 108923F766;
-        Wed,  8 Sep 2021 09:26:22 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Adam Lackorzynski <adam@l4re.org>,
-        Peter Maydell <peter.maydell@linaro.org>
-Subject: [PATCH] ARM: decompressor: Avoid UNPREDICTABLE NOP encoding
-Date:   Wed,  8 Sep 2021 17:26:17 +0100
-Message-Id: <20210908162617.104962-1-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S238352AbhIHQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234225AbhIHQas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 12:30:48 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88C5C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 09:29:40 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id l11so1646024plk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 09:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kNVo0qh9MTWbPC3PadsYf8Y/pn65A10GpuX8pbuQI9k=;
+        b=e35rgEOnpH/s7Tw2/4HppThD6Io0+OFEe71MRzevWCkzjuhA+3gaj1JvmKizwOI6W1
+         9pqr5ge31hytDPPB13wN4mgBJnYU/g514qDuMm4OgbeKC/ZYxN0Owy/aqewpOI9Ngnk3
+         xA/esTa/t1EYpqPpLUizhElL8gHhwqxHRZxvF9LNvv2orvOZrxwh/1u5nHs8/L9omfsV
+         B2wrjm0a5Q9hmdiOW9pzpgtTwbCuNUcqDMF9yEWLNMajiuasGqzHJ7OZIhU/UwFo4UW5
+         7K7GGiEYqw9x6fyUP1CqqqLuhnkLi+3lt/tECT+GH1eeimQBXzp/dT96L+Ehhi0GfnE3
+         sWgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kNVo0qh9MTWbPC3PadsYf8Y/pn65A10GpuX8pbuQI9k=;
+        b=7EbdgvSq1ksBewkd8swm4DAWhq+5y8Fha2CAaUNam5NAPjTigU2J5v9wA7no9FpCu6
+         0WxLuzGA5z13f1tHSd3kPPTo0rB1IKlNseTrgjn0ytFLU4URoaNnFOPFfJ3jegeETk6C
+         4NcbQnHbY8AsIlHYfMRV/cV7IVb6rtlidwS+kBVXjqD6P7RikBdcf4mFtGDQWWhZO4Z8
+         PZr2EUIUH4Vj5oEOQ60qws+JFrYXIb7Zep95OGgG7N5OItrZk7SiS94FMCf+JsezBQGw
+         xHJxqOKFeK5KkN7h9FkFoqLCEVhMPj3LOOWk0DrUfQSXutcGddAv5IBh2xllsLv/rhy7
+         pl9w==
+X-Gm-Message-State: AOAM532tiolJRJOgM8+OKHNOQ41qozAqb4AgkGSdrYfbkwwul1+F3s6N
+        kHIPmiUKvj5XRg7NpMRVHSc=
+X-Google-Smtp-Source: ABdhPJx/D6pDPbsBLzhOxj3aJzivrrO+yk2FkOYdDOS4G7xN7bwtjcJcyzJwHMJq79tkxcvR9ppTCg==
+X-Received: by 2002:a17:90a:6503:: with SMTP id i3mr5257895pjj.22.1631118580052;
+        Wed, 08 Sep 2021 09:29:40 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id x10sm3105435pfj.174.2021.09.08.09.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 09:29:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 8 Sep 2021 06:29:38 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Zhang Qiao <zhangqiao22@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+Message-ID: <YTjk8oiFa5EfDPn9@slm.duckdns.org>
+References: <20210826112635.7404-1-zhangqiao22@huawei.com>
+ <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
+ <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
+ <1f0cd867-9c6d-4e22-cadd-06af9f852f7a@huawei.com>
+ <YS60T2bfLpxb6SUY@slm.duckdns.org>
+ <128d52ab-b4ee-65f8-e0a3-2796ef43a98b@huawei.com>
+ <YS+uEmQRmQqAbkmG@slm.duckdns.org>
+ <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
+ <YTea0kK9yL5+GoKt@slm.duckdns.org>
+ <be0bdf5a-479c-51bb-6d51-42739c11710d@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be0bdf5a-479c-51bb-6d51-42739c11710d@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the decompressor's head.S we need to start with an instruction that
-is some kind of NOP, but also mimics as the PE/COFF header, when the
-kernel is linked as an UEFI application. The clever solution here is
-"tstne r0, #0x4d000", which in the worst case just clobbers the
-condition flags, and bears the magic "MZ" signature in the lowest 16 bits.
+Hello,
 
-However the encoding used (0x13105a4d) is actually not valid, since bits
-[15:12] are supposed to be 0 (written as "(0)" in the ARM ARM).
-Violating this is UNPREDICTABLE, and *can* trigger an UNDEFINED
-exception. Common Cortex cores seem to ignore those bits, but QEMU
-chooses to trap, so the code goes fishing because of a missing exception
-handler at this point. We are just saved by the fact that commonly (with
--kernel or when running from U-Boot) the "Z" bit is set, so the
-instruction is never executed. See [0] for more details.
+On Wed, Sep 08, 2021 at 07:32:06PM +0800, Zhang Qiao wrote:
+> I will update this patch by following the steps below:
+> 1)rename cgroup_subsys->fork() to cgroup_subsys->post_fork();
+> 2)add cgroup_subsys->fork() and the cpu_cgroup_fork() callback like this:
+> 
+> void cpu_cgroup_fork(struct task_struct *task) {
+> ....
+> 	p->sched_task_group = task_group(current);
+> 	__set_task_cpu(p, smp_processor_id());
+> 	if (p->sched_class->task_fork)
+> 		p->sched_class->task_fork(p);
+> ....
+> 
+> 
+> 3)call cgroup_subsys->fork() after cgroup_can_fork().
+> 
+> Do you have any suggestion?
 
-To make things more robust and avoid UNPREDICTABLE behaviour in the
-kernel code, lets replace this with a "two-instruction NOP":
-The first instruction is an exclusive OR, the effect of which the second
-instruction reverts. This does not leave any trace, neither in a
-register nor in the condition flags. Also it's a perfectly valid
-encoding. Kudos to Peter Maydell for coming up with this gem.
+I'm not following why it needs to shuffle the callbacks. Can't you just
+relocate the fectching of task_group after can_fork?
 
-[0] https://lore.kernel.org/qemu-devel/YTPIdbUCmwagL5%2FD@os.inf.tu-dresden.de/T/
+Thanks.
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Reported-by: Adam Lackorzynski <adam@l4re.org>
-Suggested-by: Peter Maydell <peter.maydell@linaro.org>
----
- arch/arm/boot/compressed/efi-header.S | 22 ++++++++++++++--------
- arch/arm/boot/compressed/head.S       |  3 ++-
- 2 files changed, 16 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm/boot/compressed/efi-header.S b/arch/arm/boot/compressed/efi-header.S
-index c0e7a745103e..230030c13085 100644
---- a/arch/arm/boot/compressed/efi-header.S
-+++ b/arch/arm/boot/compressed/efi-header.S
-@@ -9,16 +9,22 @@
- #include <linux/sizes.h>
- 
- 		.macro	__nop
--#ifdef CONFIG_EFI_STUB
--		@ This is almost but not quite a NOP, since it does clobber the
--		@ condition flags. But it is the best we can do for EFI, since
--		@ PE/COFF expects the magic string "MZ" at offset 0, while the
--		@ ARM/Linux boot protocol expects an executable instruction
--		@ there.
--		.inst	MZ_MAGIC | (0x1310 << 16)	@ tstne r0, #0x4d000
--#else
-  AR_CLASS(	mov	r0, r0		)
-   M_CLASS(	nop.w			)
-+		.endm
-+
-+		.macro __initial_nops
-+#ifdef CONFIG_EFI_STUB
-+		@ This is a two-instruction NOP, which happens to bear the
-+		@ PE/COFF signature "MZ" in the first two bytes, so the kernel
-+		@ is accepted as an EFI binary. Booting via the UEFI stub
-+		@ will not execute those instructions, but the ARM/Linux
-+		@ boot protocol does, so we need some NOPs here.
-+		.inst	MZ_MAGIC | (0xe225 << 16)	@ eor r5, r5, 0x4d000
-+		eor	r5, r5, 0x4d000			@ undo previous insn
-+#else
-+		__nop
-+		__nop
- #endif
- 		.endm
- 
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index b1cb1972361b..bf79f2f78d23 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -203,7 +203,8 @@ start:
- 		 * were patching the initial instructions of the kernel, i.e
- 		 * had started to exploit this "patch area".
- 		 */
--		.rept	7
-+		__initial_nops
-+		.rept	5
- 		__nop
- 		.endr
- #ifndef CONFIG_THUMB2_KERNEL
 -- 
-2.17.1
-
+tejun
