@@ -2,374 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65AF4034C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAF34034CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347324AbhIHHIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346276AbhIHHH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:07:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79BD760ED8;
-        Wed,  8 Sep 2021 07:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631084810;
-        bh=Ly3EkTEich3eQK1JP3ut9e5gzKql9couVBmppJUEH2c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RXmtHu0QyIxLgvy6NMXEjn/nQtnYQaKO9HitI+NY84bWCqNCGgghycLPcmc5OCQj3
-         L5bNFby2yZdasw3tpfl8dyULMoXC09Zpgq5By1tINKEGFZ2kAK+iVCvca7rTP14alp
-         C7kzUOtPoAe+wdzZD9Uv6jr+ea9qgLoEEIa+hM3w=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.14.2
-Date:   Wed,  8 Sep 2021 09:06:41 +0200
-Message-Id: <1631084800151162@kroah.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <1631084800230205@kroah.com>
-References: <1631084800230205@kroah.com>
+        id S1348159AbhIHHIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:08:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20250 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345947AbhIHHI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:08:26 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18873UqI150071;
+        Wed, 8 Sep 2021 03:07:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ruoYdbmAJSNEFNyz5GvaGAjORefo7IUUyT/V6WiJ6Us=;
+ b=fEl1YxFl8/hu7f4rrGKf5R5Fkiby+7usg2IcvzXvqcTGy+BE09w6ViffnS+AU3mt69Jl
+ vcE48QOam0Q1d52KpEqOfi7p6OQgCAy37Hrhe8YtZyZ1l1Ndgh/2yabfeN0SXvtghpwa
+ TfijppfCeanBOTM+TlNLgzI6H53bynea+Qp5P4YKlnYUp/ocpYBFP5VRjDekLWgiuBqF
+ yAWraClAMCNDpJ5wJvTfe946DnJ7vrBw523J29djs5gIhbyqG2MCjgrqdcHqdEOE25jN
+ AMU4JcW0ExfJow7vqL2OfnetqKh11qy7NO8FALCP9G8A/SynRltS59woLfVKV+KgZV7m eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3axqy9gryu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 03:07:18 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18873UMH150146;
+        Wed, 8 Sep 2021 03:07:18 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3axqy9grxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 03:07:17 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18873K2N011308;
+        Wed, 8 Sep 2021 07:07:15 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3axcnp54v4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 07:07:15 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18877C8v29163990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 07:07:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0367311C05C;
+        Wed,  8 Sep 2021 07:07:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69FE911C052;
+        Wed,  8 Sep 2021 07:07:11 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.79.242])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Sep 2021 07:07:11 +0000 (GMT)
+Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
+ Topology-Change-Report
+To:     Pierre Morel <pmorel@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        frankja@linux.ibm.com, cohuck@redhat.com, thuth@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
+ <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+ <d85a6998-0f86-44d9-4eae-3051b65c2b4e@redhat.com>
+ <c4cfc6b1-44b5-eda7-c602-a54858971f01@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <720762c5-01ab-55f6-e585-b46c9b62ce8c@de.ibm.com>
+Date:   Wed, 8 Sep 2021 09:07:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <c4cfc6b1-44b5-eda7-c602-a54858971f01@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QomOUwNb_IVkaAYuQi2WBZs0Fcay0xKv
+X-Proofpoint-ORIG-GUID: Li0lZM0PqJRoS_FpGpdE7iTTChYTimn9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_02:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1015 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109080044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 83d1f7c1fd30..9a2b00ecc6af 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 14
--SUBLEVEL = 1
-+SUBLEVEL = 2
- EXTRAVERSION =
- NAME = Opossums on Parade
- 
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 3878880469d1..b843902ad9fd 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -30,7 +30,7 @@ config XTENSA
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if !MMU
-+	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_PCI
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 06130dc431a0..b234958f883a 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -377,27 +377,27 @@ static int hid_submit_ctrl(struct hid_device *hid)
- 	len = hid_report_len(report);
- 	if (dir == USB_DIR_OUT) {
- 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
--		usbhid->urbctrl->transfer_buffer_length = len;
- 		if (raw_report) {
- 			memcpy(usbhid->ctrlbuf, raw_report, len);
- 			kfree(raw_report);
- 			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
- 		}
- 	} else {
--		int maxpacket, padlen;
-+		int maxpacket;
- 
- 		usbhid->urbctrl->pipe = usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
- 		maxpacket = usb_maxpacket(hid_to_usb_dev(hid),
- 					  usbhid->urbctrl->pipe, 0);
- 		if (maxpacket > 0) {
--			padlen = DIV_ROUND_UP(len, maxpacket);
--			padlen *= maxpacket;
--			if (padlen > usbhid->bufsize)
--				padlen = usbhid->bufsize;
-+			len += (len == 0);    /* Don't allow 0-length reports */
-+			len = DIV_ROUND_UP(len, maxpacket);
-+			len *= maxpacket;
-+			if (len > usbhid->bufsize)
-+				len = usbhid->bufsize;
- 		} else
--			padlen = 0;
--		usbhid->urbctrl->transfer_buffer_length = padlen;
-+			len = 0;
- 	}
-+	usbhid->urbctrl->transfer_buffer_length = len;
- 	usbhid->urbctrl->dev = hid_to_usb_dev(hid);
- 
- 	usbhid->cr->bRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
-diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
-index a45d464427c4..0e231e576dc3 100644
---- a/drivers/media/usb/stkwebcam/stk-webcam.c
-+++ b/drivers/media/usb/stkwebcam/stk-webcam.c
-@@ -1346,7 +1346,7 @@ static int stk_camera_probe(struct usb_interface *interface,
- 	if (!dev->isoc_ep) {
- 		pr_err("Could not find isoc-in endpoint\n");
- 		err = -ENODEV;
--		goto error;
-+		goto error_put;
- 	}
- 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
- 	dev->vsettings.mode = MODE_VGA;
-@@ -1359,10 +1359,12 @@ static int stk_camera_probe(struct usb_interface *interface,
- 
- 	err = stk_register_video_device(dev);
- 	if (err)
--		goto error;
-+		goto error_put;
- 
- 	return 0;
- 
-+error_put:
-+	usb_put_intf(interface);
- error:
- 	v4l2_ctrl_handler_free(hdl);
- 	v4l2_device_unregister(&dev->v4l2_dev);
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 3c80bfbf3bec..d48bed5782a5 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -1164,10 +1164,8 @@ static int cp210x_set_chars(struct usb_serial_port *port,
- 
- 	kfree(dmabuf);
- 
--	if (result < 0) {
--		dev_err(&port->dev, "failed to set special chars: %d\n", result);
-+	if (result < 0)
- 		return result;
--	}
- 
- 	return 0;
- }
-@@ -1192,6 +1190,7 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
- 	struct cp210x_flow_ctl flow_ctl;
- 	u32 flow_repl;
- 	u32 ctl_hs;
-+	bool crtscts;
- 	int ret;
- 
- 	/*
-@@ -1219,8 +1218,10 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
- 		chars.bXoffChar = STOP_CHAR(tty);
- 
- 		ret = cp210x_set_chars(port, &chars);
--		if (ret)
--			return;
-+		if (ret) {
-+			dev_err(&port->dev, "failed to set special chars: %d\n",
-+					ret);
-+		}
- 	}
- 
- 	mutex_lock(&port_priv->mutex);
-@@ -1249,14 +1250,14 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
- 			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
- 		else
- 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
--		port_priv->crtscts = true;
-+		crtscts = true;
- 	} else {
- 		ctl_hs &= ~CP210X_SERIAL_CTS_HANDSHAKE;
- 		if (port_priv->rts)
- 			flow_repl |= CP210X_SERIAL_RTS_ACTIVE;
- 		else
- 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
--		port_priv->crtscts = false;
-+		crtscts = false;
- 	}
- 
- 	if (I_IXOFF(tty)) {
-@@ -1279,8 +1280,12 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
- 	flow_ctl.ulControlHandshake = cpu_to_le32(ctl_hs);
- 	flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
- 
--	cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
-+	ret = cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
- 			sizeof(flow_ctl));
-+	if (ret)
-+		goto out_unlock;
-+
-+	port_priv->crtscts = crtscts;
- out_unlock:
- 	mutex_unlock(&port_priv->mutex);
- }
-diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
-index 930b3d50a330..f45ca7ddf78e 100644
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -433,6 +433,7 @@ static int pl2303_detect_type(struct usb_serial *serial)
- 		switch (bcdDevice) {
- 		case 0x100:
- 		case 0x305:
-+		case 0x405:
- 			/*
- 			 * Assume it's an HXN-type if the device doesn't
- 			 * support the old read request value.
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 70cb64db33f7..24e994e75f5c 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -750,6 +750,12 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	BUG_ON(!ext4_has_inline_data(inode));
- 
-+	/*
-+	 * ei->i_inline_off may have changed since ext4_write_begin()
-+	 * called ext4_try_to_write_inline_data()
-+	 */
-+	(void) ext4_find_inline_data_nolock(inode);
-+
- 	kaddr = kmap_atomic(page);
- 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
- 	kunmap_atomic(kaddr);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..970013c93d3e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5032,6 +5032,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
- 					  GFP_KERNEL);
- 	}
-+	/*
-+	 * Update the checksum after updating free space/inode
-+	 * counters.  Otherwise the superblock can have an incorrect
-+	 * checksum in the buffer cache until it is written out and
-+	 * e2fsprogs programs trying to open a file system immediately
-+	 * after it is mounted can fail.
-+	 */
-+	ext4_superblock_csum_set(sb);
- 	if (!err)
- 		err = percpu_counter_init(&sbi->s_dirs_counter,
- 					  ext4_count_dirs(sb), GFP_KERNEL);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 7d5883432085..a144a3f68e9e 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1746,7 +1746,7 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
- 		channels = params_channels(params);
- 		frame_size = snd_pcm_format_size(format, channels);
- 		if (frame_size > 0)
--			params->fifo_size /= (unsigned)frame_size;
-+			params->fifo_size /= frame_size;
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7ad689f991e7..70516527ebce 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8438,6 +8438,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f6, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
-@@ -9521,6 +9522,16 @@ static int patch_alc269(struct hda_codec *codec)
- 
- 	snd_hda_pick_fixup(codec, alc269_fixup_models,
- 		       alc269_fixup_tbl, alc269_fixups);
-+	/* FIXME: both TX300 and ROG Strix G17 have the same SSID, and
-+	 * the quirk breaks the latter (bko#214101).
-+	 * Clear the wrong entry.
-+	 */
-+	if (codec->fixup_id == ALC282_FIXUP_ASUS_TX300 &&
-+	    codec->core.vendor_id == 0x10ec0294) {
-+		codec_dbg(codec, "Clear wrong fixup for ASUS ROG Strix G17\n");
-+		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
-+	}
-+
- 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
- 	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
- 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 6c0a052a28f9..5b19901f305a 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -94,6 +94,7 @@ struct snd_usb_endpoint {
- 	struct list_head ready_playback_urbs; /* playback URB FIFO for implicit fb */
- 
- 	unsigned int nurbs;		/* # urbs */
-+	unsigned int nominal_queue_size; /* total buffer sizes in URBs */
- 	unsigned long active_mask;	/* bitmask of active urbs */
- 	unsigned long unlink_mask;	/* bitmask of unlinked urbs */
- 	char *syncbuf;			/* sync buffer for all sync URBs */
-@@ -187,6 +188,7 @@ struct snd_usb_substream {
- 	} dsd_dop;
- 
- 	bool trigger_tstamp_pending_update; /* trigger timestamp being updated from initial estimate */
-+	bool early_playback_start;	/* early start needed for playback? */
- 	struct media_ctl *media_ctl;
- };
- 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 4f856771216b..bf26c04cf471 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1126,6 +1126,10 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
- 		INIT_LIST_HEAD(&u->ready_list);
- 	}
- 
-+	/* total buffer bytes of all URBs plus the next queue;
-+	 * referred in pcm.c
-+	 */
-+	ep->nominal_queue_size = maxsize * urb_packs * (ep->nurbs + 1);
- 	return 0;
- 
- out_of_memory:
-@@ -1287,6 +1291,11 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
- 	 * to be set up before parameter setups
- 	 */
- 	iface_first = ep->cur_audiofmt->protocol == UAC_VERSION_1;
-+	/* Workaround for Sony WALKMAN NW-A45 DAC;
-+	 * it requires the interface setup at first like UAC1
-+	 */
-+	if (chip->usb_id == USB_ID(0x054c, 0x0b8c))
-+		iface_first = true;
- 	if (iface_first) {
- 		err = endpoint_set_interface(chip, ep, true);
- 		if (err < 0)
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 4e5031a68064..f5cbf61ac366 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -614,6 +614,14 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 	subs->period_elapsed_pending = 0;
- 	runtime->delay = 0;
- 
-+	/* check whether early start is needed for playback stream */
-+	subs->early_playback_start =
-+		subs->direction == SNDRV_PCM_STREAM_PLAYBACK &&
-+		subs->data_endpoint->nominal_queue_size >= subs->buffer_bytes;
-+
-+	if (subs->early_playback_start)
-+		ret = start_endpoints(subs);
-+
-  unlock:
- 	snd_usb_unlock_shutdown(chip);
- 	return ret;
-@@ -1394,7 +1402,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 		subs->trigger_tstamp_pending_update = false;
- 	}
- 
--	if (period_elapsed && !subs->running) {
-+	if (period_elapsed && !subs->running && !subs->early_playback_start) {
- 		subs->period_elapsed_pending = 1;
- 		period_elapsed = 0;
- 	}
-@@ -1448,7 +1456,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 					      prepare_playback_urb,
- 					      retire_playback_urb,
- 					      subs);
--		if (cmd == SNDRV_PCM_TRIGGER_START) {
-+		if (!subs->early_playback_start &&
-+		    cmd == SNDRV_PCM_TRIGGER_START) {
- 			err = start_endpoints(subs);
- 			if (err < 0) {
- 				snd_usb_endpoint_set_callback(subs->data_endpoint,
+
+
+On 07.09.21 14:28, Pierre Morel wrote:
+> 
+> 
+> On 9/6/21 8:37 PM, David Hildenbrand wrote:
+>> On 03.08.21 10:26, Pierre Morel wrote:
+>>> We let the userland hypervisor know if the machine support the CPU
+>>> topology facility using a new KVM capability: KVM_CAP_S390_CPU_TOPOLOGY.
+>>>
+>>> The PTF instruction will report a topology change if there is any change
+>>> with a previous STSI_15_2 SYSIB.
+>>> Changes inside a STSI_15_2 SYSIB occur if CPU bits are set or clear
+>>> inside the CPU Topology List Entry CPU mask field, which happens with
+>>> changes in CPU polarization, dedication, CPU types and adding or
+>>> removing CPUs in a socket.
+>>>
+>>> The reporting to the guest is done using the Multiprocessor
+>>> Topology-Change-Report (MTCR) bit of the utility entry of the guest's
+>>> SCA which will be cleared during the interpretation of PTF.
+>>>
+>>> To check if the topology has been modified we use a new field of the
+>>> arch vCPU to save the previous real CPU ID at the end of a schedule
+>>> and verify on next schedule that the CPU used is in the same socket.
+>>>
+>>> We deliberatly ignore:
+>>> - polarization: only horizontal polarization is currently used in linux.
+>>> - CPU Type: only IFL Type are supported in Linux
+>>> - Dedication: we consider that only a complete dedicated CPU stack can
+>>>    take benefit of the CPU Topology.
+>>>
+>>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>>
+>>
+>>> @@ -228,7 +232,7 @@ struct kvm_s390_sie_block {
+>>>       __u8    icptcode;        /* 0x0050 */
+>>>       __u8    icptstatus;        /* 0x0051 */
+>>>       __u16    ihcpu;            /* 0x0052 */
+>>> -    __u8    reserved54;        /* 0x0054 */
+>>> +    __u8    mtcr;            /* 0x0054 */
+>>>   #define IICTL_CODE_NONE         0x00
+>>>   #define IICTL_CODE_MCHK         0x01
+>>>   #define IICTL_CODE_EXT         0x02
+>>> @@ -246,6 +250,7 @@ struct kvm_s390_sie_block {
+>>>   #define ECB_TE        0x10
+>>>   #define ECB_SRSI    0x04
+>>>   #define ECB_HOSTPROTINT    0x02
+>>> +#define ECB_PTF        0x01
+>>
+>>  From below I understand, that ECB_PTF can be used with stfl(11) in the hypervisor.
+>>
+>> What is to happen if the hypervisor doesn't support stfl(11) and we consequently cannot use ECB_PTF? Will QEMU be able to emulate PTF fully?
+>>
+>>
+>>>       __u8    ecb;            /* 0x0061 */
+>>>   #define ECB2_CMMA    0x80
+>>>   #define ECB2_IEP    0x20
+>>> @@ -747,6 +752,7 @@ struct kvm_vcpu_arch {
+>>>       bool skey_enabled;
+>>>       struct kvm_s390_pv_vcpu pv;
+>>>       union diag318_info diag318_info;
+>>> +    int prev_cpu;
+>>>   };
+>>>   struct kvm_vm_stat {
+>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>> index b655a7d82bf0..ff6d8a2b511c 100644
+>>> --- a/arch/s390/kvm/kvm-s390.c
+>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>>>       case KVM_CAP_S390_VCPU_RESETS:
+>>>       case KVM_CAP_SET_GUEST_DEBUG:
+>>>       case KVM_CAP_S390_DIAG318:
+>>> +    case KVM_CAP_S390_CPU_TOPOLOGY:
+>>
+>> I would have expected instead
+>>
+>> r = test_facility(11);
+>> break
+>>
+>> ...
+>>
+>>>           r = 1;
+>>>           break;
+>>>       case KVM_CAP_SET_GUEST_DEBUG2:
+>>> @@ -819,6 +820,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>>>           icpt_operexc_on_all_vcpus(kvm);
+>>>           r = 0;
+>>>           break;
+>>> +    case KVM_CAP_S390_CPU_TOPOLOGY:
+>>> +        mutex_lock(&kvm->lock);
+>>> +        if (kvm->created_vcpus) {
+>>> +            r = -EBUSY;
+>>> +        } else {
+>>
+>> ...
+>> } else if (test_facility(11)) {
+>>      set_kvm_facility(kvm->arch.model.fac_mask, 11);
+>>      set_kvm_facility(kvm->arch.model.fac_list, 11);
+>>      r = 0;
+>> } else {
+>>      r = -EINVAL;
+>> }
+>>
+>> similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
+>>
+>> But I assume you want to be able to support hosts without ECB_PTF, correct?
+>>
+>>
+>>> +            set_kvm_facility(kvm->arch.model.fac_mask, 11);
+>>> +            set_kvm_facility(kvm->arch.model.fac_list, 11);
+>>> +            r = 0;
+>>> +        }
+>>> +        mutex_unlock(&kvm->lock);
+>>> +        VM_EVENT(kvm, 3, "ENABLE: CPU TOPOLOGY %s",
+>>> +             r ? "(not available)" : "(success)");
+>>> +        break;
+>>> +
+>>> +        r = -EINVAL;
+>>> +        break;
+>>
+>> ^ dead code
+>>
+>> [...]
+>>
+>>>   }
+>>>   void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>>>   {
+>>> +    vcpu->arch.prev_cpu = vcpu->cpu;
+>>>       vcpu->cpu = -1;
+>>>       if (vcpu->arch.cputm_enabled && !is_vcpu_idle(vcpu))
+>>>           __stop_cpu_timer_accounting(vcpu);
+>>> @@ -3198,6 +3239,11 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>>>           vcpu->arch.sie_block->ecb |= ECB_HOSTPROTINT;
+>>>       if (test_kvm_facility(vcpu->kvm, 9))
+>>>           vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>>> +
+>>> +    /* PTF needs both host and guest facilities to enable interpretation */
+>>> +    if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
+>>> +        vcpu->arch.sie_block->ecb |= ECB_PTF;
+>>
+>> Here you say we need both ...
+>>
+>>> +
+>>>       if (test_kvm_facility(vcpu->kvm, 73))
+>>>           vcpu->arch.sie_block->ecb |= ECB_TE;
+>>> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+>>> index 4002a24bc43a..50d67190bf65 100644
+>>> --- a/arch/s390/kvm/vsie.c
+>>> +++ b/arch/s390/kvm/vsie.c
+>>> @@ -503,6 +503,9 @@ static int shadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>>>       /* Host-protection-interruption introduced with ESOP */
+>>>       if (test_kvm_cpu_feat(vcpu->kvm, KVM_S390_VM_CPU_FEAT_ESOP))
+>>>           scb_s->ecb |= scb_o->ecb & ECB_HOSTPROTINT;
+>>> +    /* CPU Topology */
+>>> +    if (test_kvm_facility(vcpu->kvm, 11))
+>>> +        scb_s->ecb |= scb_o->ecb & ECB_PTF;
+>>
+>> but here you don't check?
+>>
+>>>       /* transactional execution */
+>>>       if (test_kvm_facility(vcpu->kvm, 73) && wants_tx) {
+>>>           /* remap the prefix is tx is toggled on */
+>>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>>> index d9e4aabcb31a..081ce0cd44b9 100644
+>>> --- a/include/uapi/linux/kvm.h
+>>> +++ b/include/uapi/linux/kvm.h
+>>> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
+>>>   #define KVM_CAP_BINARY_STATS_FD 203
+>>>   #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+>>>   #define KVM_CAP_ARM_MTE 205
+>>> +#define KVM_CAP_S390_CPU_TOPOLOGY 206
+>>
+>> We'll need a Documentation/virt/kvm/api.rst description.
+>>
+>> I'm not completely confident that the way we're handling the capability+facility is the right approach. It all feels a bit suboptimal.
+>>
+>> Except stfl(74) -- STHYI --, we never enable a facility via set_kvm_facility() that's not available in the host. And STHYI is special such that it is never implemented in hardware.
+>>
+>> I'll think about what might be cleaner once I get some more details about the interaction with stfl(11) in the hypervisor.
+>>
+> 
+> OK, may be we do not need to handle the case stfl(11) is not present in the host, these are pre GA10...
+
+What about VSIE? For all existing KVM guests, stfl11 is off.
