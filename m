@@ -2,252 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCB0403BC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69B9403BC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349458AbhIHOvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S1349332AbhIHOvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 10:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349385AbhIHOvm (ORCPT
+        with ESMTP id S238237AbhIHOve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:51:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F27C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:50:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LgpvfypdVLL0GX2yopkhXW9gmCnuLEbTmbgtObGA9kc=; b=Kvs5HNufdENmKCbLdgl5s7A+Cd
-        HkLG1057zQIzo6Un5fazd7uwT2eCMPKOCANzyN1TZ6zrpMBB3E6LrBpm+Lr5PXBd1DCkF/NVvAoxr
-        NDS+EglGdsT1XKFLAaT+rLIAtbI5hpdlmJGp2/5pcFWS5vHAFQzEnanBJa2Nuwl14vbsxZcqnvgu2
-        +H7uV4bH36PqpzqONERz6T4pEdXGSeVtNfgJGmhjueNguMMmu2gnjrRTt0JZXEGVtkzD6dopfiKol
-        WuGM/+DmGo6l3ODqvnj/0uwxK+UzgwUA24Mi9K76Gkc1UqUink3V+ViKaRxf1wGoHpxL9JrVPotBs
-        x/UuzzVA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNyt8-008tlK-10; Wed, 08 Sep 2021 14:49:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 153EB300314;
-        Wed,  8 Sep 2021 16:49:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EF6DC201736BC; Wed,  8 Sep 2021 16:49:20 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 16:49:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-Message-ID: <YTjNcD7nyLiChTIJ@hirez.programming.kicks-ass.net>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
- <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
- <YTi15PNcExiJRZoa@boqun-archlinux>
- <YTjLhnvDxwkE9Kky@hirez.programming.kicks-ass.net>
+        Wed, 8 Sep 2021 10:51:34 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D0AC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:50:26 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id v10so4816981ybm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 07:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YXEDz7oYZ9GVUcmsFxgUXf/+gVqKX8tYxel25XnFhQk=;
+        b=pbjCyzFTALXr0BXl5ZqQtgWQqC6a1sLiadtnhsMIPnXGTyhzgH5kpweFWU7G6SfwO2
+         PKPGmPvHs/dIEXV/HSvW73bdIn3P0hovqzS/K2acGseK0vRVcBbsKNl/L7XiTKHawWwA
+         PesH7J1hMvPSSfrXN5Q8DbaxO7JtlmJwEnR84mEdKy3jdcLG+7fpvIGw0INc8nKVi0uL
+         awjKo5K7nYwIlHXDfBzXaqKeTjdP4xznndi20EBb91myipuqd2nUuQ96ZOiPnon6SJU4
+         Dgm9iB+A0JM4WMK0WhV75KDb+BFZuTGz73TNUufVrrnzN8otT+pUWAW1BKcLl0MF/nte
+         R5GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YXEDz7oYZ9GVUcmsFxgUXf/+gVqKX8tYxel25XnFhQk=;
+        b=2c0nFuunOW1aO6VqG/m0+/RS7HMBJnSJbn1AhdZTQYVfRAGfihlKv09r9e2zt2l0Kv
+         vnIUf9NdHd/ETs+1xJQ06HrE40+8zCTjK3A414FDYKamX815VlwAAHnypfVuknZjiEet
+         ijFP8FsNS45Xr0ahgGgKzcb/tVveWSVq/WzF0h7mUxRdYQ0obHhRYWB1ZxCHpLToKwoG
+         Qn2ZV3opaSvUpWE2BznFN6QEyZiMu8ebJndqo04+WLhkG0zclYzLoaPle5lC9XDDcPXK
+         hDZOsiuo9S2yj8et7WuXTIXpqL+Ck+dJhw8+zEGep7/KJrF3GI7ti5diROVnCHPSCqhV
+         AzNA==
+X-Gm-Message-State: AOAM5301eXhArUO7Qsr9rwgjY064MVkoj8ao8DBIosQOFAfEvtpL4s5X
+        zb5ItClXmNTAkKsvv0M5qHcoujSou5xoaZqPPbWY2A==
+X-Google-Smtp-Source: ABdhPJz/s/V+QKAdSxOV2bcgwhoA1WXIhjED/O6lwg6Bbxfk8TTcLpRhkZ3HeC7f0kNS2MSsTUihgZ41vrb77ROMIHM=
+X-Received: by 2002:a25:dd46:: with SMTP id u67mr5486909ybg.295.1631112625292;
+ Wed, 08 Sep 2021 07:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTjLhnvDxwkE9Kky@hirez.programming.kicks-ass.net>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <53ce8db-3372-b5e2-cee7-c0ebe9c45a9@tarent.de>
+In-Reply-To: <53ce8db-3372-b5e2-cee7-c0ebe9c45a9@tarent.de>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 8 Sep 2021 07:50:13 -0700
+Message-ID: <CANn89iJzyPbR-fS8S_oAMSJzUGTHAfx49CXVc6ZSckUk91Opvg@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Thorsten Glaser <t.glaser@tarent.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 04:41:10PM +0200, Peter Zijlstra wrote:
+On Wed, Sep 8, 2021 at 6:48 AM Thorsten Glaser <t.glaser@tarent.de> wrote:
+>
+> On Tue, 7 Sep 2021, Linus Torvalds wrote:
+>
+> > The do_tcp_getsockopt() one in tpc.c is a classic case of "lots of
+> > different case statements, many of them with their own struct
+> > allocations on stack, and all of them disjoint".
+>
+> Any compiler developers here? AFAIK the compiler knows the lifetime
+> of function-local variables, so why not alias the actual memory
+> locations and ranges to minimise stack usage?
+>
 
-> Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
-> 
-> While looking at current_save_and_set_rtlock_wait_state() I'm thinking
-> it really ought to use smp_store_mb(), because something like:
-> 
-> 	current_save_and_set_rtlock_wait_state();
-> 	for (;;) {
-> 		if (try_lock())
-> 			break;
-> 		raw_spin_unlock_irq(&lock->wait_lock);
-> 		if (!cond)
-> 			schedule();
-> 		raw_spin_lock_irq(&lock->wait_lock);
-> 		set_current_state(TASK_RTLOCK_WAIT);
-> 	}
-> 	current_restore_rtlock_saved_state();
-> 
-> which is very close to the advertised usage in the comment, is actually
-> broken I think:
-> 
->  - try_lock() doesn't need to provide any ordering on failure;
->  - raw_spin_unlock() only needs to provide RELEASE ordering;
-> 
-> which gives that the above turns into something like:
-> 
-> 	WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);
-> 	raw_spin_unlock(&current->pi_lock);
-> 	raw_spin_unlock(&lock->wait_lock);
-> 	if (!cond)
-> 
-> and the load of @cond is then allowed to speculate right before the
-> __state store, and we've got a missed wakeup -> BAD(tm).
-> 
-> Fixes: 5f220be21418 ("sched/wakeup: Prepare for RT sleeping spin/rwlocks")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
+At least on my builds,  do_tcp_getsockopt() uses less than 512 bytes of stack.
 
-On top of which we can do your patch like.
+Probably because tcp_zerocopy_receive() is _not_ inlined, by pure luck
+I suppose.
 
----
-Subject: lockin/rwbase: Take care of ordering guarantee for fastpath reader
-From: Boqun Feng <boqun.feng@gmail.com>
-Date: Wed, 1 Sep 2021 23:06:27 +0800
+Perhaps we should use noinline_for_stack here.
 
-From: Boqun Feng <boqun.feng@gmail.com>
-
-Readers of rwbase can lock and unlock without taking any inner lock, if
-that happens, we need the ordering provided by atomic operations to
-satisfy the ordering semantics of lock/unlock. Without that, considering
-the follow case:
-
-	{ X = 0 initially }
-
-	CPU 0			CPU 1
-	=====			=====
-				rt_write_lock();
-				X = 1
-				rt_write_unlock():
-				  atomic_add(READER_BIAS - WRITER_BIAS, ->readers);
-				  // ->readers is READER_BIAS.
-	rt_read_lock():
-	  if ((r = atomic_read(->readers)) < 0) // True
-	    atomic_try_cmpxchg(->readers, r, r + 1); // succeed.
-	  <acquire the read lock via fast path>
-
-	r1 = X;	// r1 may be 0, because nothing prevent the reordering
-	        // of "X=1" and atomic_add() on CPU 1.
-
-Therefore audit every usage of atomic operations that may happen in a
-fast path, and add necessary barriers.
-
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210901150627.620830-1-boqun.feng@gmail.com
----
- kernel/locking/rwbase_rt.c |   41 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 5 deletions(-)
-
---- a/kernel/locking/rwbase_rt.c
-+++ b/kernel/locking/rwbase_rt.c
-@@ -41,6 +41,12 @@
-  * The risk of writer starvation is there, but the pathological use cases
-  * which trigger it are not necessarily the typical RT workloads.
-  *
-+ * Fast-path orderings:
-+ * The lock/unlock of readers can run in fast paths: lock and unlock are only
-+ * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
-+ * semantics of rwbase_rt. Atomic ops then should be stronger than _acquire()
-+ * and _release() to provide necessary ordering guarantee.
-+ *
-  * Common code shared between RT rw_semaphore and rwlock
-  */
- 
-@@ -53,6 +59,7 @@ static __always_inline int rwbase_read_t
- 	 * set.
- 	 */
- 	for (r = atomic_read(&rwb->readers); r < 0;) {
-+		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
- 		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
- 			return 1;
- 	}
-@@ -162,6 +169,8 @@ static __always_inline void rwbase_read_
- 	/*
- 	 * rwb->readers can only hit 0 when a writer is waiting for the
- 	 * active readers to leave the critical section.
-+	 *
-+	 * dec_and_test() is fully ordered, provides RELEASE.
- 	 */
- 	if (unlikely(atomic_dec_and_test(&rwb->readers)))
- 		__rwbase_read_unlock(rwb, state);
-@@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock
- {
- 	struct rt_mutex_base *rtm = &rwb->rtmutex;
- 
--	atomic_add(READER_BIAS - bias, &rwb->readers);
-+	/*
-+	 * _release() is needed in case that reader is in fast path, pairing
-+	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
-+	 */
-+	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
- 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
- 	rwbase_rtmutex_unlock(rtm);
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index e8b48df73c852a48e51754ea98b1e08bf024bb9e..437910c096b202420518c9e5e5cd26b2194d8aa2
+100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2054,9 +2054,10 @@ static void tcp_zc_finalize_rx_tstamp(struct sock *sk,
  }
-@@ -201,6 +214,7 @@ static int __sched rwbase_write_lock(str
+
+ #define TCP_ZEROCOPY_PAGE_BATCH_SIZE 32
+-static int tcp_zerocopy_receive(struct sock *sk,
+-                               struct tcp_zerocopy_receive *zc,
+-                               struct scm_timestamping_internal *tss)
++static noinline_for_stack int
++tcp_zerocopy_receive(struct sock *sk,
++                    struct tcp_zerocopy_receive *zc,
++                    struct scm_timestamping_internal *tss)
  {
- 	struct rt_mutex_base *rtm = &rwb->rtmutex;
- 	unsigned long flags;
-+	int readers;
- 
- 	/* Take the rtmutex as a first step */
- 	if (rwbase_rtmutex_lock_state(rtm, state))
-@@ -210,14 +224,23 @@ static int __sched rwbase_write_lock(str
- 	atomic_sub(READER_BIAS, &rwb->readers);
- 
- 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+
-+	/* The below set_*_state() thingy implies smp_mb() to provide ACQUIRE */
-+	readers = atomic_read(&rwb->readers);
- 	/*
- 	 * set_current_state() for rw_semaphore
- 	 * current_save_and_set_rtlock_wait_state() for rwlock
- 	 */
- 	rwbase_set_and_save_current_state(state);
- 
--	/* Block until all readers have left the critical section. */
--	for (; atomic_read(&rwb->readers);) {
-+	/*
-+	 * Block until all readers have left the critical section.
-+	 *
-+	 * _acqurie() is needed in case that the reader side runs in the fast
-+	 * path, pairing with the atomic_dec_and_test() in rwbase_read_unlock(),
-+	 * provides ACQUIRE.
-+	 */
-+	while (readers) {
- 		/* Optimized out for rwlocks */
- 		if (rwbase_signal_pending_state(state, current)) {
- 			__set_current_state(TASK_RUNNING);
-@@ -229,8 +252,12 @@ static int __sched rwbase_write_lock(str
- 		/*
- 		 * Schedule and wait for the readers to leave the critical
- 		 * section. The last reader leaving it wakes the waiter.
-+		 *
-+		 * _acquire() is not needed, because we can rely on the smp_mb()
-+		 * in set_current_state() to provide ACQUIRE.
- 		 */
--		if (atomic_read(&rwb->readers) != 0)
-+		readers = atomic_read(&rwb->readers);
-+		if (readers)
- 			rwbase_schedule();
- 		set_current_state(state);
- 		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-@@ -253,7 +280,11 @@ static inline int rwbase_write_trylock(s
- 	atomic_sub(READER_BIAS, &rwb->readers);
- 
- 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
--	if (!atomic_read(&rwb->readers)) {
-+	/*
-+	 * _acquire() is needed in case reader is in the fast path, pairing with
-+	 * rwbase_read_unlock(), provides ACQUIRE.
-+	 */
-+	if (!atomic_read_acquire(&rwb->readers)) {
- 		atomic_set(&rwb->readers, WRITER_BIAS);
- 		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
- 		return 1;
+        u32 length = 0, offset, vma_len, avail_len, copylen = 0;
+        unsigned long address = (unsigned long)zc->address;
