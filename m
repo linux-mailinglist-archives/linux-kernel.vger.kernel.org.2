@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405F540329A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA13C40329C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347198AbhIHC02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347136AbhIHC0S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:26:18 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484F8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 19:25:11 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q3so732293edt.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 19:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=cGQBLJd9BFCyGeZtKgcnWP1xbWqOMOxEZCB3hH5o+fLb/j5Zew8nRBn8D/L5bwMdey
-         29IHDwCuJCp9F/ZBNmWcQ7Sf8cx8hIZT/CX/WLRxJoiGyk4TDtTvHAdwkj9F2DXK2Bny
-         fydYK8auSST/R0xp6nbO5dm3q5mJ7ZZAfUgb54Jznxp4htXkPCEaC9BF+jkfvwGvK8lo
-         /dkX4khGDOVpUqjayxCuEUm73PiGMe8g6WawAJVCT6J9xVU1a1qquMrqeBMaduLZvyaL
-         0O2dxAPvTAkcnFtQj/8USnbNqLT25ntFjdPy2mcWLhxl+uDvQHfD7bgOzsQ4nX46zQXo
-         B67Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=COhKUHt5JeBNk/kwJNVtZhzvgq3P3OMKEcltZn8TJCk7j+TErq3EPNCy2iQiON+Z5S
-         Kl7B6irzJ25a1uEyM0uDSFl0yUcaLBKsb3aRAwwmaRngJV1tRmXGpqMbhRd5Zg+Tdpay
-         f0tH5j/xu5lm92twHrEfY/3tEA3pEPfdE+TLXnNLuV3CSa2ZeKqbHhL+WMfSOe/vYtQk
-         R2hVJkNaYEN2W7knLuPfyxvnwOpwmW8eBqyNo1wCR3uwGRT4VPl9YGbof2BzPdTMDvnv
-         GomDbyvPBmwmQrXbvW9xQOEOzmZ5RHjrB+LPZqwR0Ht6bhgouJzGI2E/yasGMxUaCHWz
-         NFzw==
-X-Gm-Message-State: AOAM532Spw4dQJidw8B52b9ilq3/xPWBVtnL+numLa6IkSPLrt2PKr3t
-        T6zREtQipOqDcdWxiP3ivtTelqrR7FH4EwpcNtU=
-X-Google-Smtp-Source: ABdhPJzNK74YppU+GDjVzOq+zTuy9lNmlQNV5DJwRMnn+c0y1ChTqHnj4BJ1Wgz150h9P5vsk6efxTbjjwo/IZzOb0o=
-X-Received: by 2002:aa7:c945:: with SMTP id h5mr1447472edt.350.1631067909760;
- Tue, 07 Sep 2021 19:25:09 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: mrkamohlatif@gmail.com
-Received: by 2002:a54:2a50:0:0:0:0:0 with HTTP; Tue, 7 Sep 2021 19:25:09 -0700 (PDT)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Wed, 8 Sep 2021 04:25:09 +0200
-X-Google-Sender-Auth: x4IQ0RcHKnnCTnlIX9CL6odXWys
-Message-ID: <CAEb5uCeXQd6SmzV-AxQA2WRntsnWMjz5QCrSm65W2SsZauSECw@mail.gmail.com>
-Subject: I need your response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1347264AbhIHC0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:26:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345608AbhIHC0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 22:26:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0F2686103D;
+        Wed,  8 Sep 2021 02:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631067932;
+        bh=x5eJIw8d5pU1nHyQe8PRTorbBS4Wew8tnK31KU472kQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=gUE3MEJnzsrsNpGbcdtofcsfglwV4S9G93oJgzfuIHA4lqBpn/qJgPQ2LD0dlLz5O
+         46KuFpraEzZFvBZu2elSRIRYKNiYOoSq0wNC96AB7SN0WdNe2zJbpOtyOVf9nixYxt
+         i1wW6CTsLWr/hY8U+l6bt46Bg5RUyts+YBtInYyyzqpm2qzrtrEQgoivKmE82ZyoiQ
+         Gp3eiesrDA7SOGPalieIb2XcZOuSwiBbChLrAOgkFOBPMRHUZECTQgFnGq5V/atl3B
+         ob14vtN1xYxcE+cNvwU3ZX1uJc/rRX2ZXXFybFvvkF63Jr/ghIgkkcitPFC31qvtMe
+         6zCBaPmCXaB1w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F0E33609AB;
+        Wed,  8 Sep 2021 02:25:31 +0000 (UTC)
+Subject: Re: [GIT PULL] PCI changes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210907213943.GA822380@bjorn-Precision-5520>
+References: <20210907213943.GA822380@bjorn-Precision-5520>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210907213943.GA822380@bjorn-Precision-5520>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.15-changes
+X-PR-Tracked-Commit-Id: 742a4c49a82a8fe1369e4ec2af4a9bf69123cb88
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ac08b1c68d1b1ed3cebb218fc3ea2c07484eb07d
+Message-Id: <163106793192.22425.9151403771501141128.pr-tracker-bot@kernel.org>
+Date:   Wed, 08 Sep 2021 02:25:31 +0000
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My good friend,
+The pull request you sent on Tue, 7 Sep 2021 16:39:43 -0500:
 
-I just want to know if you, can help me to transfer the amount of
-($6Million). After the transfer we have to share it, 50% for me, and
-50% for you. Please let me know if you can help me for more
-information in regards with the transfer. I hope you can work with me
-honestly?
+> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.15-changes
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ac08b1c68d1b1ed3cebb218fc3ea2c07484eb07d
 
-Thanks.
+Thank you!
 
-Godwin Peter,
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
