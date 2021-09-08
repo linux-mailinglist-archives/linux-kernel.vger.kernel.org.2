@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D12403E12
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF3B403E14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352359AbhIHREI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        id S1352368AbhIHREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbhIHREH (ORCPT
+        with ESMTP id S235666AbhIHREa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:04:07 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B29C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:02:58 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id m11so4191209ioo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:02:58 -0700 (PDT)
+        Wed, 8 Sep 2021 13:04:30 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A797BC061575;
+        Wed,  8 Sep 2021 10:03:22 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id me10so5543565ejb.11;
+        Wed, 08 Sep 2021 10:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=8vmW8CNo10X/py+rXbtDt1wy95pmiR8tAY7SiBfQ/Qk=;
-        b=Ca8/o+q+zwX6BUCib7/O5PrmmLtAtuVpoDKxiTOHiWPfs766esup+LF3LOPz9yzGaa
-         K/mIyLLOIP5aN8ZRzf7aNnbe/NEMdx6cCf9/od0Z3TwBwlxj7GkPi6qIt5PTwatwEQ5+
-         nvSKOcxwROMu4a5wXOPYxPf4wfRf6fnFPRbnxYGwf2Xn/qs2OvCsjDT6NQIpWSHcjhiW
-         no37Bb4HN7vZ7JuXf67dyROOcFOx7YFuUeuRLh9+WglY+Upwd+k8i7VRwbmeaNbk84gw
-         bDmKHK2vuAkMoZn0zYsUe9qBVrefPALXod8jKGyHdQH4a1SRtWXQG+v8HB2e9PYzbGWH
-         ZlCg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pFZQZP6SBUQcSO4Xl8lHY2eIg5EWdq+cWHjbXAwPeek=;
+        b=K9Nt38iL9uqIB/blizmHJoFPGhRn6fduNNr0fKn3SJPJLtTc15CaVCN/mMV+bCJsr8
+         2UhhujJO7g/jIPFyE/ksVBtnF64pT3jkjL6cL8dQF0BLTdA4LqUfm+mx0DUNRtHAUm3/
+         8uD7D+As9Ls0CTCXmZ3qbJHa7SF+TClTScI/2DZFwudjMKjTpfyvZ7b7J+9i+e0dKG2O
+         XGfAPn+o/cMnMnPVbiEaq/juYKX9MSIL52w22DJgSul9sEtUWM9q9NByVIjtTMDD56+2
+         a/YeO549Dv/TLXvAZoPgSL7Q/omvHtkuBPOo88RXqWZLKB/l0bWWu8CwCwCBX4ejKbvP
+         UN2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8vmW8CNo10X/py+rXbtDt1wy95pmiR8tAY7SiBfQ/Qk=;
-        b=oVSVOA1DKhrE6qjBYqj9NfVaQcJuEMQ+c67PfKr1z+v074kGXMY0aS0ouaB/mE5ZJK
-         xrYY0cLx/GyA46cqDAvcq5QZroaE9wsR8nO7bJStp0ocryoT4gaYZHsNBsvhRH7p5n2D
-         6mHi1a4NuLkEJXHQ+mzHAFF+DclJzQ23PjUzMCr6qUWZacAyC7vktMf0kwCCRzGROKpc
-         VMM5HRbKP4DIVhByYkf3cISduDBY6OepaO7uGkg3IKmH0jPQtUX2a0MrcXNo+P49DFK7
-         ggYZLz3YZ8dq3dSlKAFN6hxN1uWXqi4EQ5rbjP+rLxgLNQ/ZK6s8Z2ey89+IZ8a1i86m
-         o4ZQ==
-X-Gm-Message-State: AOAM530gxMPUFS5W1PwuGti4NzzNkLbnh16Rd+u6B9Fw9r9VJ98vIE9u
-        61FwLC8ZWqNgaNlrJJlpga4ejQ==
-X-Google-Smtp-Source: ABdhPJwVoi7TyUjNACJavBsV+ROTtAKQNl/im2ftA49c+o9nq9gO5Ne6g/oMjRt3npgVCFcUa6hMaA==
-X-Received: by 2002:a02:c7c6:: with SMTP id s6mr4794312jao.34.1631120578280;
-        Wed, 08 Sep 2021 10:02:58 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id t14sm1323364ilu.67.2021.09.08.10.02.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 10:02:57 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in hrtimer_start_range_ns
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        io-uring@vger.kernel.org
-References: <0000000000009eeadd05cb511b60@google.com> <875yvbf23g.ffs@tglx>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8bbede01-4a97-bf22-92ad-c05a562c9799@kernel.dk>
-Date:   Wed, 8 Sep 2021 11:02:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=pFZQZP6SBUQcSO4Xl8lHY2eIg5EWdq+cWHjbXAwPeek=;
+        b=tLlu8UZBg5i4X8mTF3KwhzUjBiaRMHL33bqzRW0ehAO59H8rWvOwlhHKeIB/oiG8Q9
+         oiUuqeIoLyBVJYtbwr588oIXpxmmf6i9rPUPXXbSKVwkIHgV7PXOlXS8dTb+g/xtQbuI
+         pJ2GqKSGu1Iaaed1Osy18mZfcGnXeDGdewchS56T7M7tWR9emctdvZMUUst70KAX/2LL
+         TsOjxXfd+EVJkMcs9Rz4sZY6fqR7+WD5XJKhbNWQS11H+hrhWUG+A0l9GlK1mCVL/ntl
+         zFIvsjdFySVedA+h15zWyLVtyhlnw76S1rpOe0ZGg2+QV0X8g31wuukXkwRzeoQ1e0yJ
+         rXCA==
+X-Gm-Message-State: AOAM532FXNyBLAT9qcGR8hivzCWLz1PoTyry67Zv95x7HfStQifZUTM7
+        rGUdtll2JnbQY+0j6l6M7yw=
+X-Google-Smtp-Source: ABdhPJzN2N4LNWd+P/4FKysGkFbBUKYeltUmWMptS3lVHukXEHx4CFZZCMbH6h0UaEDXposS6YzK9w==
+X-Received: by 2002:a17:906:c416:: with SMTP id u22mr843426ejz.543.1631120601141;
+        Wed, 08 Sep 2021 10:03:21 -0700 (PDT)
+Received: from kwango.redhat.com (ip-94-112-171-183.net.upcbroadband.cz. [94.112.171.183])
+        by smtp.gmail.com with ESMTPSA id w9sm1034950edr.20.2021.09.08.10.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 10:03:20 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph updates for 5.15-rc1
+Date:   Wed,  8 Sep 2021 19:02:57 +0200
+Message-Id: <20210908170257.18646-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-In-Reply-To: <875yvbf23g.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 10:45 AM, Thomas Gleixner wrote:
-> On Mon, Sep 06 2021 at 03:28, syzbot wrote:
->> syzbot found the following issue on:
->>
->> HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=14489886300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=d793523866f2daea
->> dashboard link: https://syzkaller.appspot.com/bug?extid=b935db3fe409625cca1b
->> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com
->>
->> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->> CPU: 0 PID: 12936 Comm: iou-sqp-12929 Not tainted 5.14.0-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
-> 
-> That's almost certainly deferencing hrtimer->base and as that is NULL
-> this looks like a not initialized hrtimer.
+Hi Linus,
 
-Does certainly look like that, I'll take a look. And agree the next one
-looks like the same thing.
+The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
 
--- 
-Jens Axboe
+  Linux 5.14 (2021-08-29 15:04:50 -0700)
 
+are available in the Git repository at:
+
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.15-rc1
+
+for you to fetch changes up to 05a444d3f90a3c3e6362e88a1bf13e1a60f8cace:
+
+  ceph: fix dereference of null pointer cf (2021-09-03 10:55:51 +0200)
+
+----------------------------------------------------------------
+We have:
+
+- a set of patches to address fsync stalls caused by depending on
+  periodic rather than triggered MDS journal flushes in some cases
+  (Xiubo Li)
+
+- a fix for mtime effectively not getting updated in case of competing
+  writers (Jeff Layton)
+
+- a couple of fixes for inode reference leaks and various WARNs after
+  "umount -f" (Xiubo Li)
+
+- a new ceph.auth_mds extended attribute (Jeff Layton)
+
+- a smattering of fixups and cleanups from Jeff, Xiubo and Colin.
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      ceph: fix dereference of null pointer cf
+
+Jeff Layton (11):
+      ceph: fix memory leak on decode error in ceph_handle_caps
+      ceph: fix comment about short copies in ceph_write_end
+      ceph: remove some defunct forward declarations
+      ceph: add a new vxattr to return auth mds for an inode
+      ceph: cancel delayed work instead of flushing on mdsc teardown
+      ceph: remove redundant initializations from mdsc and session
+      ceph: add ceph_change_snap_realm() helper
+      ceph: print more information when we can't find snaprealm
+      ceph: request Fw caps before updating the mtime in ceph_write_iter
+      ceph: lockdep annotations for try_nonblocking_invalidate
+      ceph: drop the mdsc_get_session/put_session dout messages
+
+Xiubo Li (8):
+      ceph: make ceph_create_session_msg a global symbol
+      ceph: make iterate_sessions a global symbol
+      ceph: flush mdlog before umounting
+      ceph: flush the mdlog before waiting on unsafe reqs
+      ceph: reconnect to the export targets on new mdsmaps
+      ceph: remove the capsnaps when removing caps
+      ceph: don't WARN if we're force umounting
+      ceph: don't WARN if we're forcibly removing the session caps
+
+ fs/ceph/addr.c               |   2 +-
+ fs/ceph/cache.h              |   6 -
+ fs/ceph/caps.c               | 266 ++++++++++++++++++++++++++++---------------
+ fs/ceph/file.c               |  32 +++---
+ fs/ceph/inode.c              |  11 +-
+ fs/ceph/mds_client.c         | 218 +++++++++++++++++++++++++----------
+ fs/ceph/mds_client.h         |   5 +
+ fs/ceph/mdsmap.c             |  12 +-
+ fs/ceph/metric.c             |   4 +-
+ fs/ceph/snap.c               |  59 ++++++----
+ fs/ceph/strings.c            |   1 +
+ fs/ceph/super.h              |   9 +-
+ fs/ceph/xattr.c              |  19 ++++
+ include/linux/ceph/ceph_fs.h |   1 +
+ 14 files changed, 438 insertions(+), 207 deletions(-)
