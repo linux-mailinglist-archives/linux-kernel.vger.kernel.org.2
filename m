@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1944034A9
+	by mail.lfdr.de (Postfix) with ESMTP id ACCEE4034AB
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347952AbhIHHC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
+        id S1347986AbhIHHCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346759AbhIHHC1 (ORCPT
+        with ESMTP id S1347959AbhIHHCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:02:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1560C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R8OKvw4S2MzNKNmIXpBxq9HTvvmNUrQ/SvUk9VnsHUY=; b=rpo3HkOJxy7GQnr44u+Kw8/GWw
-        b8U0qMtuai8fWaIBPF65LKePgrrYtAvsRonr7HKZ/kABbXwFaD3Mpb9NLGgv57kVtXFmpclCY72AW
-        bRhylceyEaHc9mZwksibH7RRQWka7q8ZoZO0inYa0QUo14guNPVn4vgylPrf7IJVRKoj/ZEvI6QNn
-        BnqFevB+Z2JckxFutk9LRF6NHmlUhurLK75V0CumKbej0KWAQMeYjX0SWkuA0cQAqZ5knLN3VjNDg
-        0Q71U9TW6LUgg1Y/e5lIBYVvFbraJ7etFrdulT7G7nM5y7yJQdeATwHB+s08UVof9jVe9hk8cGZ1V
-        nCpsr0OQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNrZH-008aHN-76; Wed, 08 Sep 2021 07:00:34 +0000
-Date:   Wed, 8 Sep 2021 08:00:23 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: Re: [PATCH 06/12] swiotlb-xen: limit init retries
-Message-ID: <YThfh2aIlAIkdrXA@infradead.org>
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
- <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
+        Wed, 8 Sep 2021 03:02:34 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CE9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:01:27 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h1so1780296ljl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nzXaUAalZqbrYv6j2stFbPFR8gVHfPe6iNbwkck2gaQ=;
+        b=I1O9kC6SsLJK4g5PyixqNxAjrnfsTIyox8pmgc6TZJICHzT2LP9NxZK8qLXv+rRlJA
+         htYN5ABJjJ4+wr84+nsWuut0jYihhpds2TBbcZzI+azmDpj96X7pVXz6FfwFJpyxmpwt
+         ezfrmkfKFGFMkT1mOqemRXfryDV25SDYPHj0mxz3AeJbn5OQpZCdHsB+bD9JZjSlL3t4
+         JUHsOYfs1Jz+Ro3wOtl4O104qhq6DWne2x815Y10W+SZssAZAlzmGl+G9tXZ1G68uUBF
+         kDyjCISsiV72NcZPju2V6W+u5TGHVlsJwczfhhUtCy+YjuYhT5Nz0oRPRgcMV2yxIT/K
+         41kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nzXaUAalZqbrYv6j2stFbPFR8gVHfPe6iNbwkck2gaQ=;
+        b=pt4Lytc1Rs3+YmyHXHYtpbCEKzsc6eQvy+hXJaqxTBzsW0T4XY9Y7gPs9Th5NTnyEw
+         ootTT7FlruziGJ/CEha0wUMkdZd4z9QmflqPlP6MZyw49mBUFhwODpq/shYk0cR8hGU5
+         WNPG2FyIP9/cfSNECm49qeexBdkWQTxDB9JV2YHi4ga+WfnppuJ92BF5pLhLezfw21WO
+         SO6vxtfOjP9Wa3nXba4h0BgvfBeXTstFlZEDDqSXQB/DDg+bYkNMfGRIm4E067wt4Zjs
+         S7Jnon2/q2EeA+P9sJSYYHp8iBvxDAO5MfiZqB4SZbwpGQJQhcKoR5SWbkLQ5rOafakg
+         yp6Q==
+X-Gm-Message-State: AOAM533moKXeXieR4yESYYHWCnLw1Y7ViFQb1W1oVQNTBds1aXYuRBfg
+        HhoabL/oQfQw+SGknWZ34O9Ifz2cojPraW66S0NnqA==
+X-Google-Smtp-Source: ABdhPJwuTMM7db+CKbywV5n8DOBaJdUVZ9/pm9vdpYvhauCZICpdO2MsiV8vTp6ey6VXwezzc71z0pbJc8YuXvHEyKs=
+X-Received: by 2002:a2e:b8c7:: with SMTP id s7mr1738648ljp.105.1631084485315;
+ Wed, 08 Sep 2021 00:01:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org>
+In-Reply-To: <YThXe4WxHErNiwgE@infradead.org>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Wed, 8 Sep 2021 16:01:14 +0900
+Message-ID: <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "Christian K??nig" <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 02:06:37PM +0200, Jan Beulich wrote:
-> Due to the use of max(1024, ...) there's no point retrying (and issuing
-> bogus log messages) when the number of slabs is already no larger than
-> this minimum value.
-> 
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
-
-Looks good,
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Thank you for your comment.
+>
+> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
+> > To share memory space using dma-buf, a API of the dma-buf requires dma
+> > device, but devices such as rxe do not have a dma device. For those case,
+> > change to specify a device of struct ib instead of the dma device.
+>
+> So if dma-buf doesn't actually need a device to dma map why do we ever
+> pass the dma_device here?  Something does not add up.
+As described in the dma-buf api guide [1], the dma_device is used by dma-buf
+exporter to know the device buffer constraints of importer.
+[1] https://lwn.net/Articles/489703/
