@@ -2,111 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DF440329F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF2A4032A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347451AbhIHC1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347386AbhIHC1E (ORCPT
+        id S1347722AbhIHC1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:27:32 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:34177 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347665AbhIHC11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:27:04 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD92EC061757;
-        Tue,  7 Sep 2021 19:25:57 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id k24so920276pgh.8;
-        Tue, 07 Sep 2021 19:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=KpE+tSoXtIOrVuWjkXbb+qiN54PPmFaUs54WUhu4gqg=;
-        b=BkHHn77LAqXdcGy4v409R8lRlvO+MrZf1qVHKrfWSys1JSsFPjZ8pRBJ3iRtsEmg6I
-         YzNch8dK74TpOJPHiCeXWlinHlcu5vHhnOfbhcfjzW0GToY8mDmYwHWR97ZJyb9A77NY
-         ZhVV3yaRKB0WKy7NCsLwv0mZGqXTkScBn5NXhsa8DyFuePK20jUSBKj9TzSACPSTY3/g
-         7JtnnMqoWWTOME2+eXBp5lfB1H7tc3PAKPhUF2AQVgcmAyusye5ejOn88YS2iXTNOTb/
-         qrIrcut4KRh0dWxEJCCyvM0h+JbkoMHvoAeC1MMdBH68qO2I8ufb6GxpTIbrrNmEdzyD
-         Knrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=KpE+tSoXtIOrVuWjkXbb+qiN54PPmFaUs54WUhu4gqg=;
-        b=BP3MVETE5opO/SnokBVgQHgkhi3xjDWRSopoknkHaZ/aXjFEKN8PBlgvoIABCWTb2F
-         9nvEl43VpOK+D2XEcUXYB0y2mQGkAQ+WqWPXmz0TPWUCRHlpyLx0t4azZjJ+1nc5BgLs
-         HoiioNBdffCn/PPEqgmqJjGgZTLOaUUdSXQJgKN+7i+Rfn1naLbt3gX5sf0c1Nchp+Cw
-         sap+lTi4zg65VLXe//M7OQBGinEOx6tIOuigoz/aJy/fivVSmS/Lz8bhST6tNySZZxyP
-         otA8ztIibdNhApRX5DIuEbPMZA/pBxgLDNmRp87dk4xmwHKBacXZMef0BGb8CVChZiy5
-         BK1w==
-X-Gm-Message-State: AOAM53032x2U7rSXirsoioa5zWcd3zbjCT+8h07QMu/x4gzn5w1j3prB
-        taildJGTaeQnRnRVp635hZL4tjGh6rfWtHdAVXQ=
-X-Google-Smtp-Source: ABdhPJyzofjTb0czO2LIyAQi5gy0gAyChpYPgCp191UZsxkU6yXnFTt0PWUITu0Wm2quIn/pm6ka92QFPg7vTZAHSss=
-X-Received: by 2002:a65:63d0:: with SMTP id n16mr1404509pgv.432.1631067957289;
- Tue, 07 Sep 2021 19:25:57 -0700 (PDT)
+        Tue, 7 Sep 2021 22:27:27 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 7C98F2B0027C;
+        Tue,  7 Sep 2021 22:26:16 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 07 Sep 2021 22:26:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=e
+        KnyYOS2v782jSePg7xdkP7npAfnDnVRMX0yx7qLjeE=; b=ix6wRrcGWQmnPM2q5
+        jPwq1ukeQGIb2k9xJJSZyjp1c9TpGgLBHYfiQKRAUf7MPlnosKsFN7iqxxM3vBJF
+        Iab7ePyQsMDFabsabI+/KO0Kp7nhUk2j4GXmiNdWp0y8uPn6MGojc0WkCtX+GjSB
+        NCrq39LaFca5OqYUawOzAHNMIrDAs+ejZnP/nbCTLe8oKpo2dXI8MlEDa5s0aT7L
+        soUuZySCPHcF3qPLDi67IvfSJFYeh/sgRc8Hw1h7+tx/W62m0qCH9chSfxCpP/Og
+        PZnl3RZLUqSLPzehubcIdBQfFQTY0aqXOekm+P5b268l2LN7aNoMja1sJgbW9jj5
+        uOTbw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=eKnyYOS2v782jSePg7xdkP7npAfnDnVRMX0yx7qLj
+        eE=; b=i86/NE/TaKJwB4dmLA8GlS60zzbqRoHFIOh4swDBZ7yjGrvj0OcvMsSTj
+        WhZK3Lm/xPAtoXGBIaS7e3dcZbYXbMqpsW+xehauntd1IYsCTHH/0A9+BiN1HwNj
+        qkkDGCYKxKaIPk7mIXng1Lo44DggDC6OVewrPM+EiVd6Al704kYm4lqk6Yv7iAhq
+        aYKOu+nmjkB5N7bX+tZIiZajePRJmMyXUTH650HPlEA5jedxlbGH02depu+JcPsI
+        z5CngEzR8EEYB7mqTefyIFfADtCVZCJPTImG3+D1I9EImolsrb7vZNPtfDfq1WO9
+        O13md6cqo6RxcoS5y3HNeck5aNpBQ==
+X-ME-Sender: <xms:Rx84YRdhK0A5zQojiQIiPUsZ7gRMeVHU7A1NYtTsl5zAdzyiZx_UkQ>
+    <xme:Rx84YfMc3QZk7f98L_lKKgR5Jrrz1N4nbyPPm_JtdU1detyZop8FkdEene6la9vc6
+    9MOTrIY_H-8JRZO8g>
+X-ME-Received: <xmr:Rx84Yaj9i_WPCvIP3-SPqUrc0jVJQUq-eTA9-XH49mFKO_3AsMwuee_tBAockSP50aV-Uud7_EwCyJBbjsRgFT7C7grdN3nXBrPZVHlX7wCZp_Jkad9SyoG_kg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
+    hedtfeevuedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:Rx84Ya9cQx7iRtuj6ysYroa66quK2rVA6kmgAZHua-4Gz1KPo8Bapw>
+    <xmx:Rx84Ydt0i9cjqQoeKmhyW7vcOA_u3BCO2vrDGBXyTpsesnb2z4asWg>
+    <xmx:Rx84YZEfKDYodQw-iPRmZKG5VGmMjI_BkuN9xwviB-_7SeHMrjEV6A>
+    <xmx:SB84YTIHNfI_YzmKdVPAPQlXK2mPQqyKPxQN0x90vos8Viy3jVWjg2kggIk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Sep 2021 22:26:14 -0400 (EDT)
+To:     Rob Herring <robh@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210901053951.60952-1-samuel@sholland.org>
+ <20210901053951.60952-2-samuel@sholland.org>
+ <YTDtelCx5If3J5cM@robh.at.kernel.org>
+ <53d6d018-93bf-9bfc-e296-a232105306de@sholland.org>
+ <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [RFC PATCH 1/7] dt-bindings: rtc: sun6i: Add H616 and R329
+ compatibles
+Message-ID: <80fb6869-4955-25a1-ed1c-118dbf61b206@sholland.org>
+Date:   Tue, 7 Sep 2021 21:26:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-From:   Ujjal Roy <royujjal@gmail.com>
-Date:   Wed, 8 Sep 2021 07:55:45 +0530
-Message-ID: <CAE2MWknAvL01A9V44PaODencJpGFHuOzH36h4ry=pbgOf4B9jw@mail.gmail.com>
-Subject: ip6mr: Indentation not proper in ip6mr_cache_report()
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        James Morris <jmorris@namei.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Patrick McHardy <kaber@trash.net>
-Cc:     Kernel <linux-kernel@vger.kernel.org>,
-        Kernel <netdev@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000339ba105cb729a62"
+In-Reply-To: <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000339ba105cb729a62
-Content-Type: text/plain; charset="UTF-8"
+On 9/7/21 9:44 AM, Rob Herring wrote:
+> On Fri, Sep 3, 2021 at 10:36 AM Samuel Holland <samuel@sholland.org> wrote:
+>>
+>> On 9/2/21 10:27 AM, Rob Herring wrote:
+>>> On Wed, Sep 01, 2021 at 12:39:45AM -0500, Samuel Holland wrote:
+>>>> For these new SoCs, start requiring a complete list of input clocks.
+>>>>
+>>>> For H616, this means bus, hosc, and pll-32k. For R329, this means ahb,
+>>>> bus, and hosc; and optionally ext-osc32k.
+>>>>
+>>>> I'm not sure how to best represent this in the binding...
+>>>>
+>>>> Signed-off-by: Samuel Holland <samuel@sholland.org>
+>>>> ---
+>>>>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 55 +++++++++++++++++--
+>>>>  include/dt-bindings/clock/sun50i-rtc.h        | 12 ++++
+>>>>  2 files changed, 61 insertions(+), 6 deletions(-)
+>>>>  create mode 100644 include/dt-bindings/clock/sun50i-rtc.h
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>> index beeb90e55727..3e085db1294f 100644
+>>>> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>> @@ -26,6 +26,8 @@ properties:
+>>>>            - const: allwinner,sun50i-a64-rtc
+>>>>            - const: allwinner,sun8i-h3-rtc
+>>>>        - const: allwinner,sun50i-h6-rtc
+>>>> +      - const: allwinner,sun50i-h616-rtc
+>>>> +      - const: allwinner,sun50i-r329-rtc
+>>>
+>>> Can you please make all the single entry cases a single 'enum'.
+>>>
+>>>>
+>>>>    reg:
+>>>>      maxItems: 1
+>>>> @@ -37,7 +39,24 @@ properties:
+>>>>        - description: RTC Alarm 1
+>>>>
+>>>>    clocks:
+>>>> -    maxItems: 1
+>>>> +    minItems: 1
+>>>> +    maxItems: 4
+>>>> +
+>>>> +  clock-names:
+>>>> +    minItems: 1
+>>>> +    maxItems: 4
+>>>> +    items:
+>>>> +      - anyOf:
+>>>
+>>> This says the first entry is any of these. What about the rest of them?
+>>
+>> Oh, right. The list below is the list of all possible clocks.
+>>
+>>>> +          - const: ahb
+>>>> +            description: AHB parent for SPI bus clock
+>>>
+>>> The description should go in 'clocks'.
+>>
+>> Will do for v2.
+>>
+>>> The order should be defined as well with the first clock being the
+>>> one that existed previously.
+>>
+>> The only way I know how to further refine the list is with
+>> minItems/maxItems. My problem is that 1) some clocks are only valid for
+>> certain SoCs, and 2) some clocks are optional, depending on how the
+>> board is wired. So there is no single order where the "valid"
+>> combinations are prefixes of the "possible" combinations of clocks.
+>>
+>> Or in other words, how can I say "clocks #1 and #2 from this list are
+>> required, and #4 is optional, but #3 is not allowed"?
+> 
+> This says you have up to 4 clocks, but only defines the 1st 2:
+> 
+> maxItems: 4
+> items:
+>   - description: 1st clock
+>   - description: 2nd clock
+> 
+> But I think you will be better off with just defining the range
+> (minItems/maxItems) at the top level and then use if/then schemas.
 
-Hi All,
+Ah, thanks for the suggestions.
 
-Before sending the patch, I am writing this email to get your
-attention please. As per my knowledge I can see ip6mr_cache_report()
-has some indentation issues. Please have a look at the line 1085.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ipv6/ip6mr.c#n1085
+>>
+>> Some concrete examples, with the always-required clocks moved to the
+>> beginning:
+>>
+>> H6:
+>>  - bus: required
+>>  - hosc: required
+>>  - ahb: not allowed
+>>  - ext-osc32k: optional
+>>  - pll-32k: not allowed
+> 
+> Is this really 2 different 32k clock inputs to the h/w block? Doesn't
+> seem like it given both are never valid.
 
-Sharing a patch based on the latest stable Linux.
+Yes, there are two separate 32k inputs. Both are valid at the same time
+on some SoCs like T5 (patch 7), but not on any of those I listed here.
 
-Thanks,
-UjjaL Roy
+Regards,
+Samuel
 
---000000000000339ba105cb729a62
-Content-Type: application/octet-stream; 
-	name="ip6mr-ip6mr_cache_report-indent-fix.patch"
-Content-Disposition: attachment; 
-	filename="ip6mr-ip6mr_cache_report-indent-fix.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ktavq4ka0>
-X-Attachment-Id: f_ktavq4ka0
+>>
+>> H616:
+>>  - bus: required
+>>  - hosc: required
+>>  - ahb: not allowed
+>>  - ext-osc32k: not allowed
+>>  - pll-32k: required
+>>
+>> R329:
+>>  - bus: required
+>>  - hosc: required
+>>  - ahb: required
+>>  - ext-osc32k: optional
+>>  - pll-32k: not allowed
+>>
+>> Should I just move the entire clocks/clock-items properties to if/then
+>> blocks based on the compatible?
+> 
+> Probably so.
+> 
+> Rob
+> 
 
-ZGlmZiAtLWdpdCBhL25ldC9pcHY2L2lwNm1yLmMgYi9uZXQvaXB2Ni9pcDZtci5jCmluZGV4IDM2
-ZWQ5ZWZiODgyNS4uYWE1Yjg4NGE4MTllIDEwMDY0NAotLS0gYS9uZXQvaXB2Ni9pcDZtci5jCisr
-KyBiL25ldC9pcHY2L2lwNm1yLmMKQEAgLTEwODIsMzAgKzEwODIsMjYgQEAgc3RhdGljIGludCBp
-cDZtcl9jYWNoZV9yZXBvcnQoc3RydWN0IG1yX3RhYmxlICptcnQsIHN0cnVjdCBza19idWZmICpw
-a3QsCiAJfSBlbHNlCiAjZW5kaWYKIAl7Ci0JLyoKLQkgKglDb3B5IHRoZSBJUCBoZWFkZXIKLQkg
-Ki8KKwkJLyogQ29weSB0aGUgSVAgaGVhZGVyICovCisJCXNrYl9wdXQoc2tiLCBzaXplb2Yoc3Ry
-dWN0IGlwdjZoZHIpKTsKKwkJc2tiX3Jlc2V0X25ldHdvcmtfaGVhZGVyKHNrYik7CisJCXNrYl9j
-b3B5X3RvX2xpbmVhcl9kYXRhKHNrYiwgaXB2Nl9oZHIocGt0KSwKKwkJCQkJc2l6ZW9mKHN0cnVj
-dCBpcHY2aGRyKSk7CisKKwkJLyogQWRkIG91ciBoZWFkZXIgKi8KKwkJc2tiX3B1dChza2IsIHNp
-emVvZigqbXNnKSk7CisJCXNrYl9yZXNldF90cmFuc3BvcnRfaGVhZGVyKHNrYik7CisJCW1zZyA9
-IChzdHJ1Y3QgbXJ0Nm1zZyAqKXNrYl90cmFuc3BvcnRfaGVhZGVyKHNrYik7CiAKLQlza2JfcHV0
-KHNrYiwgc2l6ZW9mKHN0cnVjdCBpcHY2aGRyKSk7Ci0Jc2tiX3Jlc2V0X25ldHdvcmtfaGVhZGVy
-KHNrYik7Ci0Jc2tiX2NvcHlfdG9fbGluZWFyX2RhdGEoc2tiLCBpcHY2X2hkcihwa3QpLCBzaXpl
-b2Yoc3RydWN0IGlwdjZoZHIpKTsKKwkJbXNnLT5pbTZfbWJ6ID0gMDsKKwkJbXNnLT5pbTZfbXNn
-dHlwZSA9IGFzc2VydDsKKwkJbXNnLT5pbTZfbWlmID0gbWlmaTsKKwkJbXNnLT5pbTZfcGFkID0g
-MDsKKwkJbXNnLT5pbTZfc3JjID0gaXB2Nl9oZHIocGt0KS0+c2FkZHI7CisJCW1zZy0+aW02X2Rz
-dCA9IGlwdjZfaGRyKHBrdCktPmRhZGRyOwogCi0JLyoKLQkgKglBZGQgb3VyIGhlYWRlcgotCSAq
-LwotCXNrYl9wdXQoc2tiLCBzaXplb2YoKm1zZykpOwotCXNrYl9yZXNldF90cmFuc3BvcnRfaGVh
-ZGVyKHNrYik7Ci0JbXNnID0gKHN0cnVjdCBtcnQ2bXNnICopc2tiX3RyYW5zcG9ydF9oZWFkZXIo
-c2tiKTsKLQotCW1zZy0+aW02X21ieiA9IDA7Ci0JbXNnLT5pbTZfbXNndHlwZSA9IGFzc2VydDsK
-LQltc2ctPmltNl9taWYgPSBtaWZpOwotCW1zZy0+aW02X3BhZCA9IDA7Ci0JbXNnLT5pbTZfc3Jj
-ID0gaXB2Nl9oZHIocGt0KS0+c2FkZHI7Ci0JbXNnLT5pbTZfZHN0ID0gaXB2Nl9oZHIocGt0KS0+
-ZGFkZHI7Ci0KLQlza2JfZHN0X3NldChza2IsIGRzdF9jbG9uZShza2JfZHN0KHBrdCkpKTsKLQlz
-a2ItPmlwX3N1bW1lZCA9IENIRUNLU1VNX1VOTkVDRVNTQVJZOworCQlza2JfZHN0X3NldChza2Is
-IGRzdF9jbG9uZShza2JfZHN0KHBrdCkpKTsKKwkJc2tiLT5pcF9zdW1tZWQgPSBDSEVDS1NVTV9V
-Tk5FQ0VTU0FSWTsKIAl9CiAKIAlyY3VfcmVhZF9sb2NrKCk7Cg==
---000000000000339ba105cb729a62--
