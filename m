@@ -2,254 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9B74041DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037924041DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236793AbhIHXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235595AbhIHXkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:40:12 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BABC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 16:39:03 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id m4so6251783ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 16:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2WeuCmhWaFYpyNVf9oP+KeCDcHhyaae5mJ9onxwaPPE=;
-        b=O327Ig1XKpBHQ67egGdBzzNalweEv/MWYcnITSM7fnWIU/fovblbPA6fub7vzhTICf
-         t1mrkpbOHL1yZG3Z4O15FZjB5kurpXglhwpFjfCJb8FlFHEhEViQ3z6eSwg4Gs2VfqrO
-         X2eIhKuW0oJFOqDX6IsJdGwGiUhNsJQc4YCagRpvAdPYELZhvLcFwzlp76ly6RWTO073
-         as5yXv7qnnohr1vENmrujf/uq3bzf8rUTitkMubz/a0iW12HQY4cbEJ1JK9fO6VY3Sk2
-         SGkSqPrQSRFyjzziW5sNLfWzbMBlQkqpqJssiSO9pNHU+K664T23PKfJ6yxaCi6Q+9Il
-         /JxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2WeuCmhWaFYpyNVf9oP+KeCDcHhyaae5mJ9onxwaPPE=;
-        b=SG7e1Xu4qOnvrnmdqJNoZujWWat1wCZ9MVE6aUtZIYR9/+psIZWSYfdcDEs3uxWKk/
-         o5u7fJ6wFIaR01q8q3j34nX3zkBIw3KAHx03K/tpyC2yz3+6zZeF7OLgeLKY8DvaXaHm
-         O7VcMBZJc0JaNaFcFEBE/wH3ytbozp7O5+Ex4fJmnqcA6Mk/iCrp7aHHyIm3rc5xoUhB
-         xz9L3K7JsU5ultnIBCDahI00mFPEZGiuK1d8KG2VG9OMDDcD3sCPWbQljRL5QNpzS73d
-         GlJ2WMrei9T8oFzop3h6wXnIoaHpdhanBH8TUPRdL4mwztcDjVd74ipF1z7PArd7wKPm
-         +pcA==
-X-Gm-Message-State: AOAM531ilg5IRE5OWssYFgi7DkYtWCMql+d4pY+lkZR6RotVEtTrkY39
-        DqR1pnh1zcgwoFNIIJiAtRwiz+4INvtoF/DGVbMqCy1Id8M=
-X-Google-Smtp-Source: ABdhPJxRRvoxjXIq8Em7uYSGE5Tb5mF9KiWDuLBGRpZkPuXv4fwzD5lhuEMZ8zYSTSx+gJdWc1urdbx4Q+79JGBiXhY=
-X-Received: by 2002:a05:651c:118f:: with SMTP id w15mr631194ljo.47.1631144341124;
- Wed, 08 Sep 2021 16:39:01 -0700 (PDT)
+        id S241996AbhIHXlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:41:44 -0400
+Received: from mail-dm6nam11on2054.outbound.protection.outlook.com ([40.107.223.54]:18615
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235595AbhIHXln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:41:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ocI+VftSnOP69ejuJWObX5cgFoMajHu1GMLb+cS7hZddCkYV0UFhwSzt6pbZWE/8qGCKCz/p0iL4Mnm1n/YyxWEEXJLQdYXr0rsHjj706dHWdL+fQytdXI96pNXd+U4FuXzlGNXyO/uIwClm3JM6sRV39r+Bb37zkf4pls6D0kvOkw5AsjTN9hJ4+QdUdwYIVG1bDtuJ51Jsc+df+M8mEFlK9+vqA1X4Xplyh8HZUOypCw/2OWGv73KSDRcaxfoY9gt4/THAUV9j2xBV18iNC41WeVgVcb1idpKj1oag0s2V27n0RHwp0nxoHny92GIjYEzlnpisVJ9GVTMpKJYk+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=niKDznqEkhR+VQRnxKv5DPlbYBdwwvocqaoH4ew8e/M=;
+ b=Qw5ZOAe7JCOnNa7n5TeceGA1Hl831pkY6u8ooGoGCX52+oZX3GerDk/Fp4HonakB9GD/+1+EA5PNQ6/WopYaZDp7xMFai0lwOy6AwKdN1gXQoNQOXyuLBZBVqYSa2oglFfHh6qi6KCIzhfTALQFA5mbVeDSS/bzTTy16LgarPjgpTN8b59bBHVUtdEYS2IFhBn3VtnnQnwCwmW0jklFdKcoVnIE2hFecN/dy1iZ13Uofm+JzGCTowzYEUscJNpiBfxu4+DCsNG5UWcFL26VOcIeUxh7Iw7NxEPR6XRqagiBDiQdrYEpn4QvzYlrpAb4+5iQLbGhV1J4pyZqnyCyKGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=niKDznqEkhR+VQRnxKv5DPlbYBdwwvocqaoH4ew8e/M=;
+ b=J8Ol+XMO7d0U2wR6jfY8Q69V+vmeF0I3C9sSr7mb22zt3r269ta48KpFJdt3hi/SUo5AHtu2dZJpdkUSblN/s9tX51Mg2/iFyEET2UMc4SqaIlHmQL3W1diHaEERtJ5vkcbK2haIPlrD8dfY1yXCrG0+HydHBX/dpxJtnaHOKSHybHw/OoRBNxAmiv5uc5l0JD3Gc2FNorqtYtfEABhr/drs9A45GJ67yysGcQqj9CkKLC6s5F8lvBbzRjhczUZOhitfVzuKamgwqtI1u6GRKLZAlaBH7GdUGWyXtlwRuojuvXxIrMO+kN7W2PxHGucp8M40S36oDM5ax1edrj7pyg==
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
+ 2021 23:40:33 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
+ 23:40:33 +0000
+Date:   Wed, 8 Sep 2021 20:40:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20210908234032.GA3545321@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
+Content-Disposition: inline
+X-ClientProxiedBy: BL0PR02CA0144.namprd02.prod.outlook.com
+ (2603:10b6:208:35::49) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
-In-Reply-To: <20210908184905.163787-3-posk@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 9 Sep 2021 01:38:34 +0200
-Message-ID: <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
-Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0144.namprd02.prod.outlook.com (2603:10b6:208:35::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 23:40:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mO7BA-00EsKl-KY; Wed, 08 Sep 2021 20:40:32 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3501227f-5c1a-4d8b-d677-08d973220d0a
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5047:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB50477CF6670CD6A5FCE7D6C8C2D49@BL1PR12MB5047.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 96mlg04Ld1wgWGWUUbA+48avsVj9A0tRLnz3sBDt3lhoPApyKOJ6zzHHGqT5i0QMyMs32Yz/cB+IoI6GpO0v/e2ykxDSOTsHq4Q0rS8tARAUlxgOR9zXspHnuGURluoxxvQfNSrEaCe/PelQxs6pSoxbKxj6GoXeymntgJ5ueE2eJI/sAgxfhysUlCGyNbgMHREpUURrjrYyiGBaRlzRioAlZPM5u0IvtKBqRMG7TSaEF145oUBZ3d3laEaeO6y5WnHZ8oVkXno9T33HtMV4A3evwyyxD9/vZV62RHX1TRZhlcSDzEfGiyj5M7J0QIvdnSgixpwtX5oEYvNC7wiouXjv0FGLbLc7e3J7sBS/sczQ4AaoMbGAyxvsLit9tQgJEmFrtvDBPA5PXcxWlMb8AzyP1ul3HNjBy/ZhLXUfGs6rcc4TDlFPqyE1ceFw4CADCh4j22E4apWtnUR1ZpkO97WGGsCFDtFmVZzyD9dP0u4LKMaqIfTNxBUvpKsw6K4SCN6AOo5sN1xIQAJXTYEOqNlyKWFnPa5+V8mCgMIardWVWASA/gPuVOgbYUSteA+J65qcpjXWQSlLHjvXIMGf/KdmWPFibZMgugkhapfibxF9vIhrJ954sH7M1zZrzfTha4ZmTjMOAKQRw5w0LjlVbK6LlIq9eKZHt/yk9rrXKpDGARsud2Tvxskn5G0G6g1hawrKtAhD4fUTE0sW7l9cJg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(2616005)(316002)(8936002)(44144004)(9786002)(110136005)(2906002)(4326008)(86362001)(9746002)(426003)(66476007)(478600001)(1076003)(5660300002)(33656002)(66946007)(66556008)(26005)(8676002)(186003)(83380400001)(36756003)(38100700002)(21480400003)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4KYmtqaCP1+x1Re0j0mo/OyypFFWYaGZ4ljR/hscL1aUofRfHcCsdM7+TptX?=
+ =?us-ascii?Q?cKPjpDRYdSJvhGJqNDv9KnHNq4zAV0xVcH7U75/eRShmqWPAZGqP0n+QhfZE?=
+ =?us-ascii?Q?gMNDT8QCATqKsYgTW7FCZRlWT6uX3v/8l4l9txY7YRt48Inh948++S0/0Oij?=
+ =?us-ascii?Q?Iql01Wtxrk3UwMqNVJsp4HyXo3uurdAiG7I0We+1tO0FSqDbk7O0RHAxZmjd?=
+ =?us-ascii?Q?1WSWUW6NOBFMkSu/PQmscxbcItdM8Uq5EIoBkbhNxwjZ9HNQbjd4ae3NY+6l?=
+ =?us-ascii?Q?8Xz/JEYkhE3Lj6RO8JhCzeRbMqJ9Gc86uEQTest1bwGbVVQp52YtnKwA6ysh?=
+ =?us-ascii?Q?WUy0hei9vtHClOpOBOqmoM7hLUSIIcV8FKwd+b1NXHQL1j8gvqMsACJgGpGE?=
+ =?us-ascii?Q?SogiovLGnXASzwYd+oSk1Tbok9VzqU+Xz2bMUCt+KWJYvMK7SJN9ReI7+Qhj?=
+ =?us-ascii?Q?fZD7laDmQPXrB+46tZvqWtCvIe0JMT43oFUf4bc/2nXDYRXlDt9U4A+p1PDP?=
+ =?us-ascii?Q?87nVfTxu81OmJL/h+2YNtxzg7V5gIlUC4JiDHYdhp76M3oyPJOI2hw5XUZtl?=
+ =?us-ascii?Q?NMgToJWEyCtVJqPQeBBc23Up8O4YvZCvEk9EwNUGQbQ0ZclaTloJ2nSRxEwU?=
+ =?us-ascii?Q?S4jsHYo8MGJCJJMNU9GPdN7g/oPl/TysKotPhBZKnFNVRWkHAMwt3KWASkkB?=
+ =?us-ascii?Q?FrQMdbdpUf2qZEk8cg9mKnv+8Z2jjiZ/rgq5j4DbImKEToN/M8KtMl9B/gOb?=
+ =?us-ascii?Q?Uv4MRifANFEICHj07mn4n5iomvUNM6LqfNQ1m9ucPQK4pLrjLnX8mPPZDEs5?=
+ =?us-ascii?Q?sOhMAGHfqUImQVLx9fnzRh6tnETCdaF3CZQt2iuUXZUnBUdV6UL6z+tbslmW?=
+ =?us-ascii?Q?D5hyLSZj1wi29/TYPSgRJlNvuDsey2uLUk+INz+Eci0WidYY/m1Plp0U1T9Q?=
+ =?us-ascii?Q?Mxi0YBSAAzg2fDGmMNzajvz9MzPHyhkWDY6hULnt4zV5ogmDCnaHucz+HHnE?=
+ =?us-ascii?Q?0A2TgKB1ZUs9CUF1c9tzW8LAVXRvjASMhIjDEoxGT6o1RCe15X34Een+J2VL?=
+ =?us-ascii?Q?wTVW/F/fqJMOdmL1kD5XJ/hrP9hnwe3/RjRE9nxNbCtyMTmwfcr3Hlqg0027?=
+ =?us-ascii?Q?IVbB6nNNXXhr3OqmwxNc2mLyZjQN6RY5XO4Zta5vphlQp8WqGkQ7ZJ/PIyS1?=
+ =?us-ascii?Q?HxKjRWlpOzNNa+rznHciFy+M98I+Lm7vGp43FDJxPY7UN4YG1RC0XL476TnO?=
+ =?us-ascii?Q?gx3s1N6KV/KQi7FMPhqZKtrR5iqlI0/gzR+9qheMH5zcKU8zUlR79/Z+8pQP?=
+ =?us-ascii?Q?4Jfy2Qt09oouoBPXifGXfM3t?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3501227f-5c1a-4d8b-d677-08d973220d0a
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 23:40:33.7250
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s8ARMBUfEohoenGxj+HXANl0sJHltxNXpSxelS35zjzpntiQ7LtJ/khfPvMY2Uhk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 8:49 PM Peter Oskolkov <posk@posk.io> wrote:
-> Add helper functions to work atomically with userspace 32/64 bit values -
-> there are some .*futex.* named helpers, but they are not exactly
-> what is needed for UMCG; I haven't found what else I could use, so I
-> rolled these.
-[...]
-> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault)
-> +{
-> +       struct mm_struct *mm = current->mm;
-> +       int ret;
-> +
-> +       mmap_read_lock(mm);
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-A minor note: mmap_read_lock() can potentially block for extended
-amounts of time, so *if* you have a way to safely bail out, it's nice
-to use mmap_read_lock_killable() to ensure that if the task gets
-killed, it'll go away quickly instead of continuing to potentially
-wait on the lock. (But of course, there are situations where you just
-can't do that, so there you have to use the unconditional
-mmap_read_lock().)
+Hi Linus,
 
-So here, since you need a bailout path anyway in this function, I'd write:
+I don't usually send a second PR in the merge window, but the fix to
+mlx5 is significant enough that it should start going through the
+process ASAP. Along with it comes some of the usual -rc stuff that
+would normally wait for a -rc2 or so.
 
-if (mmap_read_lock_killable(mm))
-        return -EINTR;
+Thanks,
+Jason
 
-> +       ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
-> +                       NULL);
-> +       mmap_read_unlock(mm);
-> +
-> +       return ret < 0 ? ret : 0;
-> +}
-[...]
-> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
-> +{
-> +       u64 oldval = 0;
-> +       int ret = 0;
-> +
-> +       asm volatile("\n"
-> +               "1:\txchgq %0, %2\n"
-> +               "2:\n"
-> +               "\t.section .fixup, \"ax\"\n"
-> +               "3:\tmov     %3, %0\n"
-> +               "\tjmp     2b\n"
-> +               "\t.previous\n"
-> +               _ASM_EXTABLE_UA(1b, 3b)
-> +               : "=r" (oldval), "=r" (ret), "+m" (*uaddr)
-> +               : "i" (-EFAULT), "0" (newval), "1" (0)
-> +       );
-> +
-> +       if (ret)
-> +               return ret;
-> +
-> +       *oval = oldval;
-> +       return 0;
-> +}
-[...]
-> +/**
-> + * xchg_64_user - atomically exchange 64-bit values
-> + *
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + */
-> +static inline int xchg_user_64(u64 __user *uaddr, u64 *val)
-> +{
-> +       int ret = -EFAULT;
-> +
-> +       if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +               return -EFAULT;
+The following changes since commit 6a217437f9f5482a3f6f2dc5fcd27cf0f62409ac:
 
-For these atomic xchg operations, I think you should probably also
-check for proper alignment (something like "(unsigned long)uaddr %
-sizeof(*uaddr) == 0", I guess)?
-Otherwise the __try_xchg_user_64() call could hit Split Lock Detection
-(see <https://lore.kernel.org/all/1555536851-17462-1-git-send-email-fenghua.yu@intel.com/>)
-on newer hardware, meaning the XCHGQ instruction would throw a #AC
-exception, which would get caught by the kernel because it happened
-during user access, so then you land on the fixup path that returns
--EFAULT, and then this function would assume that it was caused by a
-pagefault, invoke pagefault handling, the pagefault handling would say
-"the page is present, try again now", and you'd end up in an infinite
-loop...
+  Merge branch 'sg_nents' into rdma.git for-next (2021-08-30 09:49:59 -0300)
 
-(Yes, the futex version doesn't have that - the futex code instead
-does that check further up, in get_futex_key() and
-handle_futex_death().)
+are available in the Git repository at:
 
-> +       pagefault_disable();
-> +
-> +       while (true) {
-> +               __uaccess_begin_nospec();
-> +               ret = __try_xchg_user_64(val, uaddr, *val);
-> +               user_access_end();
-> +
-> +               if (!ret)
-> +                       break;
-> +
-> +               if (fix_pagefault((unsigned long)uaddr, true) < 0)
-> +                       break;
-> +       }
-> +
-> +       pagefault_enable();
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * get_user_nosleep - get user value with inline fixup without sleeping.
-> + *
-> + * get_user() might sleep and therefore cannot be used in preempt-disabled
-> + * regions.
-> + */
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-If this function is not allowed to sleep, as the comment says...
+for you to fetch changes up to 2169b908894df2ce83e7eb4a399d3224b2635126:
 
-> +#define get_user_nosleep(out, uaddr)                                   \
-> +({                                                                     \
-> +       int ret = -EFAULT;                                              \
-> +                                                                       \
-> +       if (access_ok((uaddr), sizeof(*(uaddr)))) {                     \
-> +               pagefault_disable();                                    \
-> +                                                                       \
-> +               while (true) {                                          \
-> +                       if (!__get_user((out), (uaddr))) {              \
-> +                               ret = 0;                                \
-> +                               break;                                  \
-> +                       }                                               \
-> +                                                                       \
-> +                       if (fix_pagefault((unsigned long)(uaddr), false) < 0) \
-> +                               break;                                  \
+  IB/hfi1: make hist static (2021-09-08 08:33:04 -0300)
 
-... then I'm pretty sure you can't call fix_pagefault() here, which
-acquires the mmap semaphore (which may involve sleeping) and then goes
-through the pagefault handling path (which can also sleep for various
-reasons, like allocating memory for pagetables, loading pages from
-disk / NFS / FUSE, and so on).
+----------------------------------------------------------------
+RDMA v5.15 merge window 2nd Pull Request
 
-If you're in some kind of non-sleepable context, and you want to
-access a userspace address that isn't currently paged in, you have to
-get out of whatever non-sleepable context you're in before going
-through the fault-handling path and back into the context you were in.
+An important error case regression fixes in mlx5:
 
-Alternatively, if sleeping isn't possible and getting back out of the
-sleepable context temporarily is also too hard, you could try to look
-up the userspace page ahead of time (e.g. during umcg_ctl()) with
-pin_user_pages_unlocked() and kmap() it into the kernel. That's
-probably a lot slower than a direct userspace access, but if you only
-have to do it during umcg_ctl(), that might not be a problem. It also
-more or less requires that the userspace struct doesn't cross a page
-boundary (otherwise you'd have to either vmap it or use helpers for
-accessing the pages), and it means you have 4KiB of extra unswappable
-memory per thread, and it might worsen memory fragmentation (because
-pinned pages can't be migrated anymore even though the kernel thought
-they'd probably be migratable at page allocation time).
+- Wrong size used when computing the error path smaller allocation request
+  leads to corruption
 
-Since it looks like you want to access userspace memory during
-sched_submit_work() (e.g. for storing the UMCG_TF_PREEMPTED flag), I
-think the pin_user_pages_unlocked() approach is what you'll have to
-use there. There you can then essentially access the userspace
-structure through its kernel mapping, basically like normal kernel
-memory (except of course that you have to keep in mind that userspace
-can concurrently read and write that memory, so instead of plain
-loads/stores you have to use at least READ_ONCE()/WRITE_ONCE()).
+- Confusing but ultimately harmless alignment mis-calculation
 
-You of course won't be able to simply traverse userspace pointers in
-such a situation, only access the specific userspace object that
-you've prepared beforehand, but luckily it looks like:
+- Static checker warnings:
+    Null pointer subtraction in qib
+    kcalloc in bnxt_re
+    Missing static on global variable in hfi1
 
- * idle_server_tid_ptr is only accessed in get_idle_server()
-   -> which is used from process_waking_worker()
-     -> which runs in sleepable context
- * idle_workers_ptr is accessed from:
-   -> enqueue_idle_worker
-     -> which is also used from process_waking_worker()
+----------------------------------------------------------------
+Jason Gunthorpe (1):
+      IB/qib: Fix null pointer subtraction compiler warning
 
-so I guess that's not a problem?
+Len Baker (1):
+      RDMA/bnxt_re: Prefer kcalloc over open coded arithmetic
 
+Niklas Schnelle (2):
+      RDMA/mlx5: Fix number of allocated XLT entries
+      RDMA/mlx5: Fix xlt_chunk_align calculation
 
+chongjiapeng (1):
+      IB/hfi1: make hist static
 
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 4 ++--
+ drivers/infiniband/hw/hfi1/trace.c       | 2 +-
+ drivers/infiniband/hw/mlx5/mr.c          | 4 ++--
+ drivers/infiniband/hw/qib/qib_sysfs.c    | 4 +++-
+ 4 files changed, 8 insertions(+), 6 deletions(-)
 
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +               }                                                       \
-> +                                                                       \
-> +               pagefault_enable();                                     \
-> +       }                                                               \
-> +       ret;                                                            \
-> +})
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAmE5Se0ACgkQOG33FX4g
+mxrN0w/6A03D6TXwI13Ldjh8d03OBUwOz5UQL30peaTS2Gg0dMIxqGmP21j1fRc3
+y2x4ifDbGQ4KnH0OS4Iw/Vu8HxsECX5Z6q2NA9JypN1wY0ACjK7YsMPamEIRvi18
+zGbmwpPe475pYtKCmxa+QFHIGK8xvmq2IFdC1NVptTjQ+Zf7UahAZAREArtNyis6
+CcpxVVbNPjBYhyBHQYccnaePdO3mtmdP0lpPBtzLlw19+1VytzrvBTFeZB1Vivq9
+HDd4O1tJQkGcEZSqR12MSlknDGJ7SpGIK9zQDd8UZrdsVvSNWOuDxVHVoS+mKJ5P
+CFKbG8ps004rMJVfk2pDfYihewraLHUgsxNwwiK0LJ5ktpPvc31ZczGH+/ARFU5p
+WjhTkDYJ/4VFk2UyQn+lwRc3NuKLuEW6XEzSAW8jDxhvs9/OJPxg5Y80U3KqyB2q
+BD2vD6/AtSU+EAHaXL4C7ZZNZJlr7DXEd42jrR+Ya2SlGhdIeL3l1PMt6mkv5Jdp
+QIWlTwKLYAjYthb7KsEjg7Gy5edD90ZkKs54l27zzjy/rR6WuChbTfA8CFbRo2z+
+5SDadsw3NQC8ZqwKRG9qpnhdqXi489h2OSRZ+iCU6ODOUyWdZfjiectH6y9/uYLI
+Gidb2hUHW21lfZaiX8PPbi1I2IEnTjg8CieGPdqx8lU/LOEw850=
+=7mp0
+-----END PGP SIGNATURE-----
+
+--IJpNTDwzlM2Ie8A6--
