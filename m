@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C171403BFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14171403C14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 16:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351797AbhIHO75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 10:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbhIHO74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 10:59:56 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C9AC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:58:48 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id j12so4007073ljg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 07:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7ctzyqeUORnBgzeTvVfI+qTP2OEJKYVtguuxCX7NuxM=;
-        b=zFA0ZaBgmO5LxN1vr2QeBoXbpnRWzRS0LHNbEmhSdjv4YQmk8kdw7UioMtotKRf9RP
-         Y7lTMX7xmKkcvYRKt6xW9JeAjFHC0+VgNR3FjdWQs8QT7CxVpticq1ts+ZkIKv6wHYxj
-         8O9hfsakmeTwu20Lhu883yh2hFmfbI30eEpyJGkkL06J/Dv9Xg9AmNP/GyZf2nmgjnSi
-         wlmusu2SUFJTsosf9oGy7szL6oCIgYivENkT8UzxUD33T6oPU+6hHF3mVlKRE9KkeuYi
-         N0yfNwEeCsciTZaHQ6DWGsYSo84lyV7USAi+2enL1SlyJmlybf3dTXQzJeiQ4c2ndGMa
-         PD5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7ctzyqeUORnBgzeTvVfI+qTP2OEJKYVtguuxCX7NuxM=;
-        b=rfj3ivJjR+lkkQcSBbLR612xLEaEqm8rctmEAIqa2fuPcmpDJnHXZ4AXickNS0l6BA
-         QOF/LVJ8krrThqwc+auehrStzO7ssbcq2tdLp4JNtnmrVl0rKtQPm0XexlWD5uS1oXt0
-         HFZ3nH70EcpyXn+giqjbRY54kIvdIGjcebEJ9w7VkGGFAlIEajU6OUKWt7hKDk6J1nwF
-         9gC5ndkNKVwTskqi1zv5bVAWFBboZuAwwcS6Hhh9iQ5gZ/WiC6zRlV6wZjrgJlpABmwi
-         3BPqaePICQyZEyhPyp+5MhJH1hOiJWUcMdIlB/74cRJllFxqKwNNugRZ5UHO3JzFI87H
-         GP2A==
-X-Gm-Message-State: AOAM530I62OxoEn8RU0iIc0aNua+XkqXi3ygEvUje0uIdsv5NZIyuavK
-        gvSTy6NoL3oeq5sGfz4bhEK/kaz8+hMoCg==
-X-Google-Smtp-Source: ABdhPJyTH3Ocl2mWgKQz+uDdKdKdPGDlx7IKI6iwhxK2uCiTqm0MmvrkHlwK0IL46lI19PhlSIadsA==
-X-Received: by 2002:a2e:b8d2:: with SMTP id s18mr3085498ljp.529.1631113126303;
-        Wed, 08 Sep 2021 07:58:46 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id n25sm212456lfe.125.2021.09.08.07.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 07:58:45 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 7BD21102F38; Wed,  8 Sep 2021 17:58:44 +0300 (+03)
-Date:   Wed, 8 Sep 2021 17:58:44 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Liu Yuntao <liuyuntao10@huawei.com>
-Cc:     hughd@google.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, wuxu.wu@huawei.com,
-        liusirui@huawei.com, windspectator@gmail.com
-Subject: Re: [PATCH] fix judgment error in shmem_is_huge()
-Message-ID: <20210908145844.wqkyfuizqaj5mmrj@box>
-References: <20210908102648.2326917-1-liuyuntao10@huawei.com>
- <20210908102648.2326917-2-liuyuntao10@huawei.com>
+        id S1352102AbhIHPAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 11:00:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351932AbhIHPAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 831A661163;
+        Wed,  8 Sep 2021 14:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631113142;
+        bh=iER6cNpcjgk8n1TWkifigpXyj5UmGCift9D4uF2jMns=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jEUUiYNesrwxixTuVWUx37ompZysIA5p0KCoiioN0f2BlrS+efomxgByiawC6Jjl8
+         PfASkEjlfK7hzn3PNaz05R+fyf9GRreUV4a7BzTb9ouOrpuHon2nuQvF1WY/NNgHmC
+         4t4sQQQX0l/0beJPHdHfx/wbrDWugLr74aLeNc3pPp2boRHSfLPcda06Vfzz/bPVkP
+         STfQDLJpguHWxcT/MVZBintfsTiKoFKXdekzRbOzF+JA36vlO4oBOHqfVXsVVkX30W
+         3j2HjgCY9z6S4nOOWu7yrTZmsviG4hwOnZf1Xez8C06XGSDDbZzBtD7v0995qNdA82
+         mmKlHGuSQkIxQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mNz2S-006r3a-E3; Wed, 08 Sep 2021 16:59:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/9] get_abi.pl: Check for missing symbols at the ABI specs
+Date:   Wed,  8 Sep 2021 16:58:47 +0200
+Message-Id: <cover.1631112725.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908102648.2326917-2-liuyuntao10@huawei.com>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 06:26:48PM +0800, Liu Yuntao wrote:
-> In the case of SHMEM_HUGE_WITHIN_SIZE, the page index is not rounded
-> up correctly. When the page index points to the first page in a huge
-> page, round_up() cannot bring it to the end of the huge page, but
-> to the end of the previous one.
-> 
-> an example:
-> HPAGE_PMD_NR on my machine is 512(2 MB huge page size).
-> After allcoating a 3000 KB buffer, I access it at location 2050 KB.
-> In shmem_is_huge(), the corresponding index happens to be 512.
-> After rounded up by HPAGE_PMD_NR, it will still be 512 which is
-> smaller than i_size, and shmem_is_huge() will return true.
-> As a result, my buffer takes an additional huge page, and that
-> shouldn't happen when shmem_enabled is set to within_size.
-> 
-> Fixes: f3f0e1d2150b2b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> Signed-off-by: Liu Yuntao <liuyuntao10@huawei.com>
-> ---
->  mm/shmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 88742953532c..5747572859d1 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -490,7 +490,7 @@ bool shmem_is_huge(struct vm_area_struct *vma,
->  	case SHMEM_HUGE_ALWAYS:
->  		return true;
->  	case SHMEM_HUGE_WITHIN_SIZE:
-> -		index = round_up(index, HPAGE_PMD_NR);
-> +		index = round_up(index + 1, HPAGE_PMD_NR);
->  		i_size = round_up(i_size_read(inode), PAGE_SIZE);
->  		if (i_size >= HPAGE_PMD_SIZE && (i_size >> PAGE_SHIFT) >= index)
+Hi Greg,
 
-With the change, the condition can be simplified to
+Sometime ago, I discussed with Jonathan Cameron about providing 
+a way check that the ABI documentation is incomplete.
 
-		if (i_size >> PAGE_SHIFT >= index)
+While it would be doable to validate the ABI by searching __ATTR and 
+similar macros around the driver, this would probably be very complex
+and would take a while to parse.
 
-right?
+So, I ended by implementing a new feature at scripts/get_abi.pl
+which does a check on the sysfs contents of a running system:
+it reads everything under /sys and reads the entire ABI from
+Documentation/ABI. It then warns for symbols that weren't found,
+optionally showing possible candidates that might be misdefined.
 
->  			return true;
-> -- 
-> 2.23.0
-> 
+I opted to place it on 3 patches:
+
+The first patch adds the basic logic. It runs really quicky (up to 2
+seconds), but it doesn't use sysfs softlinks.
+
+Patch 2 adds support for also parsing softlinks. It slows the logic,
+with now takes ~40 seconds to run on my desktop (and ~23
+seconds on a HiKey970 ARM board). There are space there for
+performance improvements, by using a more sophisticated
+algorithm, at the expense of making the code harder to
+understand. I ended opting to use a simple implementation
+for now, as ~40 seconds sounds acceptable on my eyes.
+
+Patch 3 adds an optional parameter to allow filtering the results
+using a regex given by the user.
+
+One of the problems with the current ABI definitions is that several
+symbols define wildcards, on non-standard ways. The more commonly
+wildcards used there are:
+
+	<foo>
+	{foo}
+	[foo]
+	X
+	Y
+	Z
+	/.../
+
+The script converts the above wildcards into (somewhat relaxed)
+regexes.
+
+There's one place using  "(some description)". This one is harder to
+parse, as parenthesis are used by the parsing regexes. As this happens
+only on one file, patch 4 addresses such case.
+
+Patch 5 to 9 fix some other ABI troubles I identified.
+
+In long term, perhaps the better would be to just use regex on What:
+fields, as this would avoid extra heuristics at get_abi.pl, but this is
+OOT from this patch, and would mean a large number of changes.
+
+-
+
+As reference, I sent an early implementation of this change as a RFC:
+	https://lore.kernel.org/lkml/cover.1624014140.git.mchehab+huawei@kernel.org/
+
+Mauro Carvalho Chehab (9):
+  scripts: get_abi.pl: Check for missing symbols at the ABI specs
+  scripts: get_abi.pl: detect softlinks
+  scripts: get_abi.pl: add an option to filter undefined results
+  ABI: sysfs-bus-usb: better document variable argument
+  ABI: sysfs-module: better document module name parameter
+  ABI: sysfs-tty: better document module name parameter
+  ABI: sysfs-kernel-slab: use a wildcard for the cache name
+  ABI: security: fix location for evm and ima_policy
+  ABI: sysfs-module: document initstate
+
+ Documentation/ABI/stable/sysfs-module       |  10 +-
+ Documentation/ABI/testing/evm               |   4 +-
+ Documentation/ABI/testing/ima_policy        |   2 +-
+ Documentation/ABI/testing/sysfs-bus-usb     |  16 +-
+ Documentation/ABI/testing/sysfs-kernel-slab |  94 ++++-----
+ Documentation/ABI/testing/sysfs-module      |   7 +
+ Documentation/ABI/testing/sysfs-tty         |  32 +--
+ scripts/get_abi.pl                          | 218 +++++++++++++++++++-
+ 8 files changed, 303 insertions(+), 80 deletions(-)
 
 -- 
- Kirill A. Shutemov
+2.31.1
+
+
