@@ -2,167 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFAA40377F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAA3403774
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348748AbhIHKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:05:21 -0400
-Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:14657
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348771AbhIHKEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:04:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f93go9PkowKK1iIKx/UzTFJi7sQA4cMsH56z2/yppyVAuqOrG6rSYysI0aOW0r/vTUL8W15CrvfmZFnZhMLoJnhhaHUZTGIj4gft5SRScRD6VmCJS5nlFZw9kLDpwDIVw316V28dgvWJawUakm8VKGxjoo+88CwWnv5kMq8Y5zxCkO7BDqTMPegvYid523ffogg35sbDKHz0f7sIuVCFvrVcULfH8JKB31RA4zPQgmgTgBm0E0ZSCxbeNjt8qCULtXrAHIkso3LOJmi9PWLx0EKDv+DQADDGfa/FBssgOkW9pX8vox9x/z8iL3i6uMETsGnnN8FHauDRR4EXWDCKGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=TDgemKq6P1MdA7Kl2m3yyrwqgQfYCGz2XfTrDEpCyG0=;
- b=b+S1+9aUgQ/DbQz8xlnIB7ER6DnDc3EDIetWzZgqtq1o8I3dOCyaJiQVHtFo00Gie6pNT31PFLB7FTRjT3b4WkoZNF0JjQ086LI4M8Wn8TtuT8Vqim107uEMYhmkXPmxYmbg+PcjvzAiWPuxqo1VsMqWr3wf3SsBnv8vkfgdfm4ICpBP7kwIeo+nMzOX2RxFOfdELD3XTa5a03A5fZPMomNS3yVheJOxv8mkNKuuBT2CsDHxhdg+4KqPuu+ebSv8CHhMf4TbVBjqWKVq1EtPGyJQCQ+G6BLuf15foxb527t5pUc3hG1CtaMJ61M2FXmZ6i/6ee9GrmnI5/ltEXnH/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TDgemKq6P1MdA7Kl2m3yyrwqgQfYCGz2XfTrDEpCyG0=;
- b=XJHWQ2EnOfzyHeAndsDzylpklpiU8+LqEwtMFCctcn914x+2EcE2sH//oQTZoqX24JBRZg5IzBu3dmUuMNuVdRSW17fedMTyVW4Vuu9B9Bm9IlDPWt5EiOrpbrXYb1lR6vebM6M+cdvS1tXmOubIe8pgnG6lgPtt556nUXp8v9Y=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB5786.eurprd04.prod.outlook.com (2603:10a6:10:a8::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 10:03:23 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
- 10:03:23 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        shawnguo@kernel.org
-Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] arm64: dts: imx8m: remove unused "nvmem_macaddr_swap" property for FEC
-Date:   Wed,  8 Sep 2021 18:02:57 +0800
-Message-Id: <20210908100257.17833-7-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
-References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0105.apcprd01.prod.exchangelabs.com
- (2603:1096:3:15::31) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+        id S1345097AbhIHKEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:04:44 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:45888 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232259AbhIHKEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 06:04:15 -0400
+Received: by mail-wr1-f41.google.com with SMTP id n5so2348720wro.12;
+        Wed, 08 Sep 2021 03:03:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bppKmbeT5omixDkAwV5VX75Oyw3uE5XXr6lcDeM/RCw=;
+        b=xcbX9Dyg3+xFkD2aiVwosIlG4MtzaAbD7QHPye1eqk1OwhhwWLGUi+/Rgig0BWGUza
+         lGY/nF4CID2ijgtXHCGES/Go1YsYwDjTE4KvfPWM1M0h+1M8B893bxY1/jpiKznRAnr7
+         4KvwAHBGbBC2T6KyuHJZ7d4sYmVNxoTZE1nT0bk2+obzDNsM5jsh+QJKiiUBmSsSbj9/
+         9SM/1TOf5BU51zNnUUOMBtT3dqYatS84sKSNl44PqVc7jhM2OPP8sCCiG0XLfKSprkZz
+         gsvYSNjIr940Y+HGI9tltuQze6576m28nuIhGzCejdGZtLeOJL4FUBEw3PzlJynaitKf
+         xpZQ==
+X-Gm-Message-State: AOAM531RWe2j7nC9KrRNIJmL4wKim3jv/phfs8zmj19jvR2Nw5tQModC
+        cGY9EE2N+6bxqRFts9xW9Ymx1ofHvWE=
+X-Google-Smtp-Source: ABdhPJwKMGsPUGI/psvQhbpr9QV5aFSDEK3FisaHG5BysW/q2LSnCyMwpS3nudif41VBV7Ci/RKZmg==
+X-Received: by 2002:adf:ea90:: with SMTP id s16mr3040095wrm.235.1631095386823;
+        Wed, 08 Sep 2021 03:03:06 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id x11sm1648796wro.83.2021.09.08.03.03.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 03:03:06 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 10:03:04 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+Message-ID: <20210908100304.oknxj4v436sbg3nb@liuwe-devbox-debian-v2>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0105.apcprd01.prod.exchangelabs.com (2603:1096:3:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 10:03:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 290994af-bf16-405a-069d-08d972afe4a6
-X-MS-TrafficTypeDiagnostic: DB8PR04MB5786:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB578698471808A005AD85C7D9E6D49@DB8PR04MB5786.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G5pN+qk+rnuQ2Sk7nA01IOzNwzMzAFuBVMUbYA+2i8ukXR/qxV2e4vPcPCQGNTrDy/kANjQwf0HEfk56sQENMZgluhQiv4r1v2VxgEzNAOt1OqmnHbI8mmI2VAyC02FRlKdhM74Trq8hnFCfZK0sjYGzWuN2jE222mD5q/ygVCYPH1wiC6gEDiXVVxrixs3vfTsoxgfSf5LDNJW55S4nqFWYyswlXKb7VaSmwHS5f1A58BqDCf7ia0IUAv3Jc0+gGVG1qsUDAJR4B2fJEAroftShWxqbyhYiz/9ZU0MtUHBFutsUzx+7+z0hFPiF+g8SCSX5eGZuqijMNYuu5+wHDPm5+ZetQC9LrPyTpKutgKjkhhnK76ijAPQ7MBxHEm0lKH+cQhWHhLXKkqKsY7lvIR/5u1irlkSiY4ozKjwp5U3oSu7Jvry7pJyjwkrlZw8MIEHrGqIbM/FDlIRAp2rROFseQFTQvcZ7oLmNy0seWbLR/996d+ug7I5SQ6kkEDdxtrUNk1SgEWak2V6NKlxFzvyurNFoWsNn1Ff43595EBHBjRkS+tTtp5fBGTeJO4ffDOoc3H4Yfn2kO3JT4JDR+4IQNF+vwYigW4qJQ0pq7SogjNbdJt5RwK6rbPo3kqstBj5k9Gwh8ONOJ/eX/S2l0I8b9yTnGEQXr0SDydkYFwCzT1gshsHwgHJOG06N/1YuNEaqSz3Q1YCmOfqmF2aKRXv3hSEOJyXoSmW7TbwshnA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(86362001)(8936002)(66556008)(6486002)(8676002)(38100700002)(2616005)(66476007)(956004)(478600001)(38350700002)(66946007)(6506007)(316002)(36756003)(52116002)(26005)(5660300002)(83380400001)(1076003)(6512007)(4326008)(6666004)(2906002)(186003)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FJs+f6X7831aP0MlKbbIsWhDr0TSmWCFbA0RNpkZccJCGf0X3k3fZDTAW2e6?=
- =?us-ascii?Q?uQlHBeU2uCk0sXqB3lbhdfJT7cdtZnRenQuA1HmOUQgMvvSSNNwTt2kmtD/B?=
- =?us-ascii?Q?1H8tUaGUxTQuhdBQHExWwAP7eTe1NUsyMe8V8wf8nrzigHOXGusR3iOyE1Mm?=
- =?us-ascii?Q?+0V+SKpGkPs9+l9oXkaN0NsbYGkf+FieyBHUbLhzJ3pUGfAPrMyuCxCMXgW8?=
- =?us-ascii?Q?CgJhZJFA4NElHzPd+fw259QoedXTPMT6VYoPgUY0FvXxaJpvU9xvfSP/zi2l?=
- =?us-ascii?Q?tH/dj6gefxYjwUmIJjwm545c42k3dgLXth6AFu/x6YnZhUxXBIA4AtJnUzpa?=
- =?us-ascii?Q?H/wxHJKX4LOYFjBXD6LsftRKv4dpwFFiGfIxc/sRMYzG6j9hlZ2LTqgvKkHM?=
- =?us-ascii?Q?7UnCAchhy8bveiHXBrIfwYOtpuVk0HePQG/gA6eOcPpkgh287ZcEZJYXr2r0?=
- =?us-ascii?Q?WJBABfBUtalWee/D6W21Bo884eE9mLlgXJcduh8z4AYAHdqQU9iFKsHfNryk?=
- =?us-ascii?Q?XLrZiJdn6qXDjWY/MvsqPZc3Ah6bvppBDBDIbeXnTGTab6+OCrsoiTAizAJq?=
- =?us-ascii?Q?fYdZkCVEUGSOi4hQxdcnINaSe9vSmUvKAUftSnqNlbHXM0Y3OYGu+FI/LMtK?=
- =?us-ascii?Q?HuHIPnwAwjtsUA9+9wzXDIKnbj/K5d6DQtq+1l+Esh11fWio75oTLnJmXt4w?=
- =?us-ascii?Q?N7xiDQPNup15k70vEp8ITvTw5PzulaZfcQsjtpggAjEHkdWkpNIayT6rXQR5?=
- =?us-ascii?Q?YWMrFTFz86dNk1W4S/7Xl1EfI8k1ViGV7E/so+F74BY06vvCKd7WNIQ/TmKS?=
- =?us-ascii?Q?tqcieCF1iijhpbPTs4+V7N9pOip+FctRr7dvDmrF44CSTi9UkUDOUQaOmqyY?=
- =?us-ascii?Q?14RZ54v8KhVyr28JrrLUU/SBoz/3aumA/LwuBFAl5suj0IocISnZaqPDjg0J?=
- =?us-ascii?Q?Y8fyjuj2Pc0hDHpYeQuaFDXAeWe+islPVN27lXBSPKgMNnfzJpVI32VxeAJv?=
- =?us-ascii?Q?3M3JwUSRKaY0rShZ9Yb5FIpWCEtERUxQPo6/hSaXnld+bBOZcjMYA4MRfy/3?=
- =?us-ascii?Q?p67COBiwrfiXdbp7uT+25NwQn4dmRM8O6dh6u0bONIFJxQez3UxNARSLCnI3?=
- =?us-ascii?Q?KJ4Y3mfz7ouemf69lL8qjo22bLY0dc9b1MHHbaCAAB9yLXsJ8XF+E2klIvVf?=
- =?us-ascii?Q?V/rdK0w+UDptxenqsNjlOWAXkgknKo2gBFZBuSyut3G+P8q1qtuZLtWcuaXT?=
- =?us-ascii?Q?W4PtFn0hQ2qeR9fo/xjqpVaLcPIYUWxK7QtVNxW3BSkZqvYQ4ZzvKQAfHWX5?=
- =?us-ascii?Q?5U7PjuE58fGUbcjw4090gfl+?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 290994af-bf16-405a-069d-08d972afe4a6
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 10:03:23.2098
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DVsQwHAmp/kw0tMW7LMnl5wNHPKAHvFJtyxkTaWkjrEq6JOq8D3Fkp2dfS1GDmtL3vKvHyYapDx/YEa02C6hww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5786
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused "nvmem_macaddr_swap" property for FEC, there is no info in both
-dt-binding and driver, so it's safe to remove it.
+On Tue, Sep 07, 2021 at 04:14:24PM -0700, Linus Torvalds wrote:
+> [ Added maintainers for various bits and pieces, since I spent the
+> time trying to look at why those bits and pieces wasted stack-space
+> and caused problems ]
+> 
+> On Tue, Sep 7, 2021 at 3:16 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+[...]
+> 
+> There are many more of these cases. I've seen Hyper-V allocate 'struct
+> cpumask' on the stack, which is once again an absolute no-no that
+> people have apparently just ignored the warning for. When you have
+> NR_CPUS being the maximum of 8k, those bits add up, and a single
+> cpumask is 1kB in size. Which is why you should never do that on
+> stack, and instead use '
+> 
+>        cpumask_var_t mask;
+>        alloc_cpumask_var(&mask,..)
+> 
+> which will do a much more reasonable job. But the reason I call out
+> hyperv is that as far as I know, hyperv itself doesn't actually
+> support 8192 CPU's. So all that apic noise with 'struct cpumask' that
+> uses 1kB of data when NR_CPUS is set to 8192 is just wasted. Maybe I'm
+> wrong. Adding hyperv people to the cc too.
+> 
+> A lot of the stack frame size warnings are hidden by the fact that our
+> default value for warning about stack usage is 2kB for 64-bit builds.
+> 
+> Probably exactly because people did things like that cpumask thing,
+> and have these arrays of structures that are often even bigger in the
+> 64-bit world.
+> 
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 1 -
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 1 -
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 1 -
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 -
- 4 files changed, 4 deletions(-)
+Thanks for the heads-up. I found one instance of this bad practice in
+hv_apic.c. Presumably that's the one you were referring to.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index fb14be932386..2210cfda4e60 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -948,7 +948,6 @@
- 				fsl,num-rx-queues = <3>;
- 				nvmem-cells = <&fec_mac_address>;
- 				nvmem-cell-names = "mac-address";
--				nvmem_macaddr_swap;
- 				fsl,stop-mode = <&gpr 0x10 3>;
- 				status = "disabled";
- 			};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 0a994e6edc0b..408024426315 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -951,7 +951,6 @@
- 				fsl,num-rx-queues = <3>;
- 				nvmem-cells = <&fec_mac_address>;
- 				nvmem-cell-names = "mac-address";
--				nvmem_macaddr_swap;
- 				fsl,stop-mode = <&gpr 0x10 3>;
- 				status = "disabled";
- 			};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 37188ff07f21..cb7867791d05 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -821,7 +821,6 @@
- 				nvmem-cells = <&eth_mac1>;
- 				nvmem-cell-names = "mac-address";
- 				fsl,stop-mode = <&gpr 0x10 3>;
--				nvmem_macaddr_swap;
- 				status = "disabled";
- 			};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 1cb211e470ae..dc4e39ef9d39 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1191,7 +1191,6 @@
- 				fsl,num-rx-queues = <3>;
- 				nvmem-cells = <&fec_mac_address>;
- 				nvmem-cell-names = "mac-address";
--				nvmem_macaddr_swap;
- 				fsl,stop-mode = <&iomuxc_gpr 0x10 3>;
- 				status = "disabled";
- 			};
--- 
-2.17.1
+However calling into the allocator from that IPI path seems very heavy
+weight. I will discuss with fellow engineers on how to fix it properly.
 
+Wei.
+
+>                 Linus
