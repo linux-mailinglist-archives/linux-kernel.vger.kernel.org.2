@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C903D403ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E582403ACE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348290AbhIHNoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:44:24 -0400
-Received: from mxout70.expurgate.net ([194.37.255.70]:47707 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235462AbhIHNoX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:44:23 -0400
-X-Greylist: delayed 520 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Sep 2021 09:44:23 EDT
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1mNxii-0006AB-Gy; Wed, 08 Sep 2021 15:34:32 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1mNxih-000Bkh-Ed; Wed, 08 Sep 2021 15:34:31 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id E9F42240041;
-        Wed,  8 Sep 2021 15:34:30 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 77837240040;
-        Wed,  8 Sep 2021 15:34:30 +0200 (CEST)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id ABC032029C;
-        Wed,  8 Sep 2021 15:34:29 +0200 (CEST)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        Eckert.Florian@googlemail.com
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tpm/tpm_i2c_infineon: Fix init endian vendor check
-Date:   Wed,  8 Sep 2021 15:34:16 +0200
-Message-ID: <20210908133416.12408-1-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
+        id S234530AbhIHNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:40:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:46618 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229945AbhIHNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:40:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D3966D;
+        Wed,  8 Sep 2021 06:39:32 -0700 (PDT)
+Received: from [10.57.94.84] (unknown [10.57.94.84])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C69903F766;
+        Wed,  8 Sep 2021 06:39:30 -0700 (PDT)
+Subject: Re: [PATCH 10/10] arm64: errata: Add workaround for TSB flush
+ failures
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, will@kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-11-suzuki.poulose@arm.com>
+ <87mtq5a1gs.wl-maz@kernel.org> <c41330d9-c2a2-afbe-624f-77c1e94f0490@arm.com>
+ <477c4943-7c35-8502-0291-4c0ed3a03905@arm.com>
+ <32f719c8f9f61b244b3fc29137f76a19@kernel.org>
+ <eb02839d-b7af-0284-e4ef-8c628e0548d9@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <37b9e52a-9790-2d9d-f613-b95b7aa50994@arm.com>
+Date:   Wed, 8 Sep 2021 14:39:28 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-ID: 151534::1631108072-00000D29-D0C1529F/0/0
-X-purgate: clean
-X-purgate-type: clean
+In-Reply-To: <eb02839d-b7af-0284-e4ef-8c628e0548d9@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my embedded system I use this tpm infineon chip via I2C.
-My system is a MIPS architecture and therefore works in big endian mode.
+On 03/08/2021 04:51, Anshuman Khandual wrote:
+> 
+> 
+> On 8/2/21 3:05 PM, Marc Zyngier wrote:
+>> On 2021-08-02 10:12, Anshuman Khandual wrote:
+>>> On 7/29/21 4:11 PM, Suzuki K Poulose wrote:
+>>>> On 29/07/2021 10:55, Marc Zyngier wrote:
+>>>>> On Wed, 28 Jul 2021 14:52:17 +0100,
+>>>>> Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> [...]
+>>
+>>>>>> +            __tsb_csync();                        \
+>>>>>> +            __tsb_csync();                        \
+>>>>>> +        } else {                            \
+>>>>>> +            __tsb_csync();                        \
+>>>>>> +        }                                \
+>>>>>
+>>>>> nit: You could keep one unconditional __tsb_csync().
+>>>>
+>>>> I thought about that, I was worried if the CPU expects them back to back
+>>>> without any other instructions in between them. Thinking about it a bit
+>>>> more, it doesn't look like that is the case. I will confirm this and
+>>>> change it accordingly.
+>>> But its a very subtle change which might be difficult to debug and blame
+>>> later on, if indeed both the instructions need to be back to back. Seems
+>>> like just better to leave this unchanged.
+>>
+>> Is that an actual requirement? Sounds like you want to find out
+>> from the errata document.
+> 
+> Sure, will get back on this.
+> 
+>>
+>> And if they actually need to be back to back, what ensures that
+>> this is always called with interrupt disabled?
+>>
+>> You would also need to have them in the same asm block to avoid
+>> the compiler reordering stuff.
+> 
+> Agreed, both the above constructs will be required to make sure that
+> the instructions will be executed consecutively (if required).
+> 
 
-The problem is that the chip type is not recognised, because the vendor I=
-D
-is incorrectly stored in memory.
 
-By converting the vendor ID with ie32_to_cpus() to the correct format,
-the TPM chip is recognised by the driver and works as expected.
+I checked this with our architects and it doesn't have to be in tight
+loop. The TSBs are meant to be used with the PE in Trace prohibited
+regions (which they are for TRBE and the KVM nvhe stub, TRFCR_ELx 
+cleared). As long as that is honored, we are fine. I will update
+the patch.
 
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- drivers/char/tpm/tpm_i2c_infineon.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/char/tpm/tpm_i2c_infineon.c b/drivers/char/tpm/tpm_i=
-2c_infineon.c
-index a19d32cb4e94..111a8c34329a 100644
---- a/drivers/char/tpm/tpm_i2c_infineon.c
-+++ b/drivers/char/tpm/tpm_i2c_infineon.c
-@@ -638,6 +638,8 @@ static int tpm_tis_i2c_init(struct device *dev)
- 		goto out_release;
- 	}
-=20
-+	le32_to_cpus(&vendor);
-+
- 	if (vendor =3D=3D TPM_TIS_I2C_DID_VID_9645) {
- 		tpm_dev.chip_type =3D SLB9645;
- 	} else if (vendor =3D=3D TPM_TIS_I2C_DID_VID_9635) {
---=20
-2.20.1
+Kind regards
+Suzuki
 
