@@ -2,192 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57783403DC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CC2403DC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350040AbhIHQqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:46:19 -0400
-Received: from mail-dm3nam07on2076.outbound.protection.outlook.com ([40.107.95.76]:42240
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346619AbhIHQqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:46:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b3ItZzFYmX4VT85nfbCalrc2gRALSAZ8D0vSMMR/O93iGCcbKoagzJqKpHAlM0mjwumlcsS/HIz30VkuINTAAW1NSxDgRN8D2ktV3jkCoVhur32zuerxCGt31Ia5dzgR2W4M6Pdq8sXgrryNAteHMwqZALDYyj3lDaIVSB63R/b+q559UfgCnUQ3JqxIERKyOa+2sw/8XHZs9uriVH5OqSq89US4RA38cd5sIhDbRsSE8a5JFa2GJViIpq+ARdSCE7JUtfALPJjZfLCcw59OOg5RpOxOrOM0AA312OiOKm/o2qCUXKX84tHl35gqg7H/j30k1r/YFGRJQzuTeWNa1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YbAkEjjHE97kyI38nYY/30bFY28bUsuVbbSkTq+HNc0=;
- b=kzrAMzoUvWMkUpdVS4ESEd+gpPww+RmohpEodfxBK5dN5wXtWxmT7eHC8pjNLLGT2NgNO9fiBJ/pP8Af+a94/q4CIAT/ilHRD2jdQWKFw/wB2cFefkesrzHSS8VIR6CfXds/Oibi4alUWgT0GHM1NckxDaIoP5RmhK/GNhk+o35AE3hyUszkhAWUMrIn1jdQBKyLLqDVQXbi5rZoUpMW05LVvaxWr1pkAO8eQUWjTBbb6S+oiaKgwABmUBwyiIqd4pssAezhXxFvIgq5lK02cd//ft/GI8wqKPWp/uW+Iwc88OvCwF/BIGCampufDB7X9Vew0HPL/GKXTQl4SHuLKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YbAkEjjHE97kyI38nYY/30bFY28bUsuVbbSkTq+HNc0=;
- b=oWFaNnZks4WHlKoJD6BmxpEHhirCkatP+KlMQZiT8ewhz5XIM30/Rk9J3SBt3Ix+IRh8wko5bwMSi9m/vXnQPaGjfDSXW3+bG/xGuBFYc5OZFLPg+eXu8sDvNLJ7YFDvyxX7mSlR1uclX7++uWWAiJIFI0HiwDntOFGSGblMLacqwJazl+A0VJWbSJJosjqeNFPm3E6YkCNB+An5F6F3DpdBbmuvYfikJvM6nvZxMv+YzjxzrLf5PO4J8Zyfc5v1zVTvVf3Z+ZHS24WJX8RFKYTNZ/ek03dbgonETHya7SRgIYS2Bdr+epg7pSSh9pw/eYDazMwd3H2C+5sqTGXxMw==
-Received: from BN6PR11CA0005.namprd11.prod.outlook.com (2603:10b6:405:2::15)
- by MN2PR12MB3360.namprd12.prod.outlook.com (2603:10b6:208:c7::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Wed, 8 Sep
- 2021 16:45:08 +0000
-Received: from BN8NAM11FT065.eop-nam11.prod.protection.outlook.com
- (2603:10b6:405:2:cafe::b1) by BN6PR11CA0005.outlook.office365.com
- (2603:10b6:405:2::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
- Transport; Wed, 8 Sep 2021 16:45:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- BN8NAM11FT065.mail.protection.outlook.com (10.13.177.63) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 16:45:08 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep
- 2021 09:45:07 -0700
-Received: from [10.26.49.12] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep
- 2021 16:45:04 +0000
-Subject: Re: [PATCH v4 4/4] arm64: tegra: Add GPCDMA node for tegra186 and
- tegra194
-To:     Akhil R <akhilrajeev@nvidia.com>
-CC:     <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
-        <kyarlagadda@nvidia.com>, <ldewangan@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <p.zabel@pengutronix.de>, <rgumasta@nvidia.com>,
-        <thierry.reding@gmail.com>, <vkoul@kernel.org>
-References: <1630044294-21169-1-git-send-email-akhilrajeev@nvidia.com>
- <1631111538-31467-1-git-send-email-akhilrajeev@nvidia.com>
- <1631111538-31467-5-git-send-email-akhilrajeev@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <81fb8278-a01d-c557-5080-6f5115f4682b@nvidia.com>
-Date:   Wed, 8 Sep 2021 17:45:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1351997AbhIHQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:46:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53294 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349992AbhIHQqc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 12:46:32 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631119524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xK7tnDBt7Mv35ZlbOM5hzY0NbTi3hoQEG+jDHcstiBU=;
+        b=Z3VvjVBqWpYprjI90RYCkIn1Ut7i7OHzPVKd+y8vxDr6xD4IBqNJy5oAbYe3DrFzvg7cQm
+        iCNFjb3WSt2JKTB5wWDD683aMlqm+HouAl/mSqKIj4dtb4NEg1KJFKeiB9MKcIEbc+ACkz
+        FZ+kNeeMMRp6Tf9U8M9G/PWS8lHJap/xUuWl7Mfv4NRZ+one5dcqwlaGu50luOcvAooIhD
+        9k3149NL/g8Y5/Nv+jw22Q0yiyLADTbAAXEL0ui/TqbgTBWxh+SkRFERilFeZnsXsrpal9
+        uzu+TayGQZCJlIe5FBCw8DVK//Os/6a8nuDxLhV7zXJGJgH0bD3QAPjb2BLpyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631119524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xK7tnDBt7Mv35ZlbOM5hzY0NbTi3hoQEG+jDHcstiBU=;
+        b=yDRBvFNBZ0NS5+a+rKB5Q0alY89xKXFQ5/iX3zJaSeYqm9x+72fYs96R+mn4yLU9JwHnz9
+        J0HSq3jvgV/QCBDA==
+To:     syzbot <syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [syzbot] general protection fault in hrtimer_start_range_ns
+In-Reply-To: <0000000000009eeadd05cb511b60@google.com>
+References: <0000000000009eeadd05cb511b60@google.com>
+Date:   Wed, 08 Sep 2021 18:45:23 +0200
+Message-ID: <875yvbf23g.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <1631111538-31467-5-git-send-email-akhilrajeev@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d7237c22-ccf4-4820-5afa-08d972e80472
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3360:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB3360FCE820F0F82A902A9B07D9D49@MN2PR12MB3360.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CGK7HZCsUyz25sjN728+C3crSHIelVgg7547zxYQC8x/O3AT49N6fgHLhfSL45L+HmXukqkOmdm+lQvsSatt5zhc9ZCJNauGxYKQ8DMSvmNSGL4WvTSnTP1w30kJAnZbOor81AuVmKnKR0IcHA3uW027Jsg1/4uDP94yzGQDHgh8rNSZfexHyQG4oq2BmxG1UPBqjwWQZwlSOuphqaJH1DQm7zMpGDbPaQc9LQ/BNZ+yy66j+dPYeoYjraWC7L9tbmycuNpgDzIz0X1VDA4j5XjBqCkAZuPGcYWAqUXQidN0j3ZCdJxp+ZpFl5TiYnVMPhckzexidhUJ2+2QaBHcLm2/gwdEgMIYwm6krO82vdVxvSEw/p7WtrwxuU7Cztl02+CJDXK0qhMKXb/D0zR+DiE78oXnb3nJFORWi3sjlOnXLdrjRq5/PGFDb8WbfEVXSi9UIEsCftGj3Eh6dOQ0DXAFAFDNNyMND06suQpgvs5Qic4eKr07veXa+ptl9p/t0U2ESKfL9BT5A+OkYvzW6pfydPkS3CkluDBYSeV6qLOH/x+a+yrNNqxRvF2+BsSKU96IHPAEe5DsemMalVnydRGyAvrJfcEFXYwH6JzVaBBf+ZyjJUuEODwLAqbypAhZs2D4PNSyv94tg+3ghQcuGQydda9sShk+9GpviOvUBVP3WpTuIR+452Gg7QS0BFmsvxsp1HA/SNVeD4f9M3YL9gtFQF9hQZ2YNdbuUY0yxlw=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(5660300002)(31696002)(508600001)(2906002)(86362001)(36860700001)(26005)(6666004)(8676002)(4326008)(54906003)(316002)(83380400001)(336012)(70206006)(16576012)(6636002)(37006003)(82310400003)(70586007)(8936002)(186003)(6862004)(47076005)(2616005)(426003)(31686004)(36756003)(53546011)(356005)(16526019)(7636003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 16:45:08.0619
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7237c22-ccf4-4820-5afa-08d972e80472
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT065.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3360
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 06 2021 at 03:28, syzbot wrote:
+> syzbot found the following issue on:
+>
+> HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14489886300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d793523866f2daea
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b935db3fe409625cca1b
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b935db3fe409625cca1b@syzkaller.appspotmail.com
+>
+> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> CPU: 0 PID: 12936 Comm: iou-sqp-12929 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
 
-On 08/09/2021 15:32, Akhil R wrote:
-> Add device tree node for GPCDMA controller on Tegra186 target
-> and Tegra194 target.
-> 
-> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+That's almost certainly deferencing hrtimer->base and as that is NULL this looks
+like a not initialized hrtimer.
+
+Jens?
+
+> RIP: 0010:hrtimer_start_range_ns+0xc9/0x1ae0 kernel/time/hrtimer.c:1296
+> Code: 89 9c 24 88 00 00 00 42 80 3c 33 00 74 08 48 89 ef e8 7b 34 5b 00 4c 8b 6d 00 4d 39 fd 0f 84 95 00 00 00 4d 89 ef 49 c1 ef 03 <43> 80 3c 37 00 74 08 4c 89 ef e8 58 34 5b 00 49 8b 7d 00 e8 6f 19
+> RSP: 0018:ffffc900097af170 EFLAGS: 00010046
+> RAX: ffff888016d49508 RBX: 1ffff11002da92a7 RCX: ffff888027371c80
+> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+> RBP: ffff888016d49538 R08: ffffffff816fb4b5 R09: 0000000000000003
+> R10: fffff520012f5e2d R11: 0000000000000004 R12: 0000000000000000
+> R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
+> FS:  00007f7386f28700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000002b5e4000 CR4: 00000000001526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  hrtimer_start include/linux/hrtimer.h:418 [inline]
+>  io_timeout fs/io_uring.c:6120 [inline]
+>  io_issue_sqe+0x53d3/0x9280 fs/io_uring.c:6590
+>  __io_queue_sqe+0xe3/0x1000 fs/io_uring.c:6864
+>  tctx_task_work+0x2ad/0x560 fs/io_uring.c:2143
+>  task_work_run+0x146/0x1c0 kernel/task_work.c:164
+>  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>  io_run_task_work+0x110/0x140 fs/io_uring.c:2403
+>  io_sq_thread+0xb5e/0x1220 fs/io_uring.c:7337
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Modules linked in:
+> ---[ end trace 841fafb7511d53d3 ]---
+> RIP: 0010:lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
+> RIP: 0010:hrtimer_start_range_ns+0xc9/0x1ae0 kernel/time/hrtimer.c:1296
+> Code: 89 9c 24 88 00 00 00 42 80 3c 33 00 74 08 48 89 ef e8 7b 34 5b 00 4c 8b 6d 00 4d 39 fd 0f 84 95 00 00 00 4d 89 ef 49 c1 ef 03 <43> 80 3c 37 00 74 08 4c 89 ef e8 58 34 5b 00 49 8b 7d 00 e8 6f 19
+> RSP: 0018:ffffc900097af170 EFLAGS: 00010046
+> RAX: ffff888016d49508 RBX: 1ffff11002da92a7 RCX: ffff888027371c80
+> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+> RBP: ffff888016d49538 R08: ffffffff816fb4b5 R09: 0000000000000003
+> R10: fffff520012f5e2d R11: 0000000000000004 R12: 0000000000000000
+> R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
+> FS:  00007f7386f28700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000002b5e4000 CR4: 00000000001526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0:	89 9c 24 88 00 00 00 	mov    %ebx,0x88(%rsp)
+>    7:	42 80 3c 33 00       	cmpb   $0x0,(%rbx,%r14,1)
+>    c:	74 08                	je     0x16
+>    e:	48 89 ef             	mov    %rbp,%rdi
+>   11:	e8 7b 34 5b 00       	callq  0x5b3491
+>   16:	4c 8b 6d 00          	mov    0x0(%rbp),%r13
+>   1a:	4d 39 fd             	cmp    %r15,%r13
+>   1d:	0f 84 95 00 00 00    	je     0xb8
+>   23:	4d 89 ef             	mov    %r13,%r15
+>   26:	49 c1 ef 03          	shr    $0x3,%r15
+> * 2a:	43 80 3c 37 00       	cmpb   $0x0,(%r15,%r14,1) <-- trapping instruction
+>   2f:	74 08                	je     0x39
+>   31:	4c 89 ef             	mov    %r13,%rdi
+>   34:	e8 58 34 5b 00       	callq  0x5b3491
+>   39:	49 8b 7d 00          	mov    0x0(%r13),%rdi
+>   3d:	e8                   	.byte 0xe8
+>   3e:	6f                   	outsl  %ds:(%rsi),(%dx)
+>   3f:	19                   	.byte 0x19
+>
+>
 > ---
->   arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi |  4 +++
->   arch/arm64/boot/dts/nvidia/tegra186.dtsi       | 46 ++++++++++++++++++++++++++
->   arch/arm64/boot/dts/nvidia/tegra194.dtsi       | 46 ++++++++++++++++++++++++++
->   3 files changed, 96 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi b/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> index fcd71bf..71dd10e 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> @@ -56,6 +56,10 @@
->   		};
->   	};
->   
-> +	dma@2600000 {
-> +		status = "okay";
-> +	};
-> +
->   	memory-controller@2c00000 {
->   		status = "okay";
->   	};
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-> index d02f6bf..f68291c 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-> @@ -73,6 +73,52 @@
->   		snps,rxpbl = <8>;
->   	};
->   
-> +	gpcdma: dma@2600000 {
-> +			compatible = "nvidia,tegra186-gpcdma";
-> +			reg = <0x2600000 0x210000>;
-> +			resets = <&bpmp TEGRA186_RESET_GPCDMA>;
-> +			reset-names = "gpcdma";
-> +			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
-> +				      <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
-> +			#dma-cells = <1>;
-> +			iommus = <&smmu TEGRA186_SID_GPCDMA_0>;
-> +			dma-coherent;
-> +			nvidia,start-dma-channel-index = <1>;
-> +			dma-channels = <31>;
-> +			status = "disabled";
-
-
-Looks like the comments from the previous version are not addressed in 
-this version.
-
-Jon
-
--- 
-nvpublic
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
