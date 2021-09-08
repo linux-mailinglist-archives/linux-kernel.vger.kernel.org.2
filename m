@@ -2,98 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC0B4035B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173E14035C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347275AbhIHHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:51:38 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:34769 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347679AbhIHHv0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:51:26 -0400
-Received: by mail-vs1-f49.google.com with SMTP id x137so1244601vsx.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:50:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CHWQ+YyUIuf6+g8aXLRSEFfZyfK8saLLBSTNrZfo+jo=;
-        b=bIfITnvxGCDoX5EpppMe4+Y1jO/ZR6EX93lxae4APCoz1BNzPXJ4A2hbXZ5pYwp94x
-         gv7qI9Y8OuQRBYoJT3ubtNIfuieBxEKUfvh6koIhXC+MAt/TmCG+77y2GfsxrgJ0R9Yq
-         HUsLcornBpWjxIQuzX4q8W2aPGCPxKZobHVhO8FY26lc09NsovDPsqNRv0/h/J0AXvHj
-         KHbMzTDsp2rSDEK74mz4cdUyTRWBMwo2l626fMl29doC3PepMfIr0tV2E5nQolrI+r+E
-         egm+bajHHBveYRzNYiFAA57cQo7rZrfu3xyBySxfxxuEQGFSPxlzxsWHzsl9LSmsDEoH
-         zNvw==
-X-Gm-Message-State: AOAM5325tmUT9KL1HlhvP8Te/Gu8aH48lcqcnrj4cWlQmrSwM/2Ztx8Y
-        SRkTw73VyMhidUYQIvXPLzMLdgddViFXen8Jm04=
-X-Google-Smtp-Source: ABdhPJzZ13uplSALu72VGeSdNO7WsRIeqAR995jKHWoEGX3nQiJ+8n3lNsb/Zgcr1zA1dw25X+AvmXOyH3YgMmSVK0Y=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr1206374vsl.9.1631087418281;
- Wed, 08 Sep 2021 00:50:18 -0700 (PDT)
+        id S1347503AbhIHH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:58:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234696AbhIHH6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A7B610A3;
+        Wed,  8 Sep 2021 07:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631087828;
+        bh=jz9wlXKaLI0RSIL3ClN6wAXFar4LORkGjAHnGdogGy0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bQFZBqja1XOyxYvIJChbO5kwHSOthj1ZB5bPdW8QRHTgyUP/JaM2SKQ8onptdWtEa
+         MdeLGH7JPT5hjKIzCJwRXXbF+DFNSlABWQ5/Fbe3JSJn+0Et7CpkQdqZANpytgMYQH
+         MyfuRFWuzyzwyuyHN+HTmrTS19Z40SZTyWklha1DqoZZ9cOH98Ib8j2wJCsVXrhk3N
+         m+Grlxai5Sl8dOHspIZ3AGxZuwVxMydWI73aeKnqsmss4v0Q/aE5dPRjAXtLDSjE0o
+         uI5IYDHeUpzLzsgsIM7BFf4nrNTdIufFzmPuHqcNEv0Y+wglkCrpF3zgeEES/Nds0X
+         0CFyal/A3JWtw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mNsS0-00049i-3P; Wed, 08 Sep 2021 09:56:56 +0200
+Date:   Wed, 8 Sep 2021 09:56:56 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     David Lin <dtwlin@gmail.com>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: uart: fix tty use after
+ free
+Message-ID: <YThsyOlHqWmb5hsV@hovoldconsulting.com>
+References: <20210906124538.22358-1-johan@kernel.org>
+ <56782caa-bd9d-b049-7ca6-c64e3fbe109a@linaro.org>
 MIME-Version: 1.0
-References: <20210904060908.1310204-1-keithp@keithp.com> <20210907220038.91021-1-keithpac@amazon.com>
- <2d5e3f95-77ce-cd26-9020-3c1a8a65e799@canonical.com> <CAMj1kXF8X0j7Be_+3Z4uHcq0ZHKxsB5hW-7PEVb4dB54HFJgOg@mail.gmail.com>
-In-Reply-To: <CAMj1kXF8X0j7Be_+3Z4uHcq0ZHKxsB5hW-7PEVb4dB54HFJgOg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 8 Sep 2021 09:50:06 +0200
-Message-ID: <CAMuHMdXX+-vbxvSt5oA3_SM7bJGeY97bKWt+KCZjGzEHbhw5ng@mail.gmail.com>
-Subject: Re: [PATCH 0/7] ARM: support THREAD_INFO_IN_TASK (v3)
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Keith Packard <keithpac@amazon.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christoph Lameter <cl@linux.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56782caa-bd9d-b049-7ca6-c64e3fbe109a@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+On Tue, Sep 07, 2021 at 08:32:25AM -0500, Alex Elder wrote:
+> On 9/6/21 7:45 AM, Johan Hovold wrote:
+  
+> > +static void gb_tty_port_destruct(struct tty_port *port)
+> > +{
+> > +	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
+> > +
+> 
+> So the minor number is GB_NUM_MINORS until after both the buffer
+> and the kfifo have been allocated.
 
-On Wed, Sep 8, 2021 at 9:47 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> Also, this ended up in my GMail spam folder, likely due to some
-> antispam ID header being set incorrectly?
+Yes, but more importantly until the minor number has been allocated.
 
-I have a rule to never mark as spam email with "patch" in the subject.
-So far only one false positive in all these years ;-)
+> And kfifo_free() (similar to
+> kfree()) handles being provided a non-initialized kfifo, correct?
 
-Gr{oetje,eeting}s,
+Correct, as long as it has been zeroed.
 
-                        Geert
+> > +	if (gb_tty->minor != GB_NUM_MINORS)
+> > +		release_minor(gb_tty);
+> > +	kfifo_free(&gb_tty->write_fifo);
+> > +	kfree(gb_tty->buffer);
+> > +	kfree(gb_tty);
+> > +}
+> > +
+> >   static const struct tty_operations gb_ops = {
+> >   	.install =		gb_tty_install,
+> >   	.open =			gb_tty_open,
+> > @@ -786,6 +797,7 @@ static const struct tty_port_operations gb_port_ops = {
+> >   	.dtr_rts =		gb_tty_dtr_rts,
+> >   	.activate =		gb_tty_port_activate,
+> >   	.shutdown =		gb_tty_port_shutdown,
+> > +	.destruct =		gb_tty_port_destruct,
+> >   };
+> >   
+> >   static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> > @@ -798,17 +810,11 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   	int retval;
+> >   	int minor;
+> >   
+> > -	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
+> > -	if (!gb_tty)
+> > -		return -ENOMEM;
+> > -
+> 
+> Why do you reorder when you allocate the gb_tty structure?
+> I don't have a problem with it, but it seems like the order
+> doesn't matter.  Is it just so you can initialize it right
+> after it's allocated?  (If so, I like that reason.)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Yeah, and I wanted to keep the bits managed by the port reference count
+together.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> >   	connection = gb_connection_create(gbphy_dev->bundle,
+> >   					  le16_to_cpu(gbphy_dev->cport_desc->id),
+> >   					  gb_uart_request_handler);
+> > -	if (IS_ERR(connection)) {
+> > -		retval = PTR_ERR(connection);
+> > -		goto exit_tty_free;
+> > -	}
+> > +	if (IS_ERR(connection))
+> > +		return PTR_ERR(connection);
+> >   
+> >   	max_payload = gb_operation_get_payload_size_max(connection);
+> >   	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
+> > @@ -816,13 +822,23 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   		goto exit_connection_destroy;
+> >   	}
+> >   
+> > +	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
+> > +	if (!gb_tty) {
+> > +		retval = -ENOMEM;
+> > +		goto exit_connection_destroy;
+> > +	}
+> > +
+> > +	tty_port_init(&gb_tty->port);
+> > +	gb_tty->port.ops = &gb_port_ops;
+> > +	gb_tty->minor = GB_NUM_MINORS;
+> > +
+> >   	gb_tty->buffer_payload_max = max_payload -
+> >   			sizeof(struct gb_uart_send_data_request);
+> >   
+> >   	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
+> >   	if (!gb_tty->buffer) {
+> >   		retval = -ENOMEM;
+> > -		goto exit_connection_destroy;
+> > +		goto exit_put_port;
+> >   	}
+> >   
+> >   	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
+> > @@ -830,7 +846,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
+> >   			     GFP_KERNEL);
+> >   	if (retval)
+> > -		goto exit_buf_free;
+> > +		goto exit_put_port;
+> >   
+> >   	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
+> >   	init_completion(&gb_tty->credits_complete);
+> > @@ -844,7 +860,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   		} else {
+> >   			retval = minor;
+> >   		}
+> > -		goto exit_kfifo_free;
+> > +		goto exit_put_port;
+> >   	}
+> >   
+> >   	gb_tty->minor = minor;
+> > @@ -853,9 +869,6 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   	init_waitqueue_head(&gb_tty->wioctl);
+> >   	mutex_init(&gb_tty->mutex);
+> >   
+> > -	tty_port_init(&gb_tty->port);
+> > -	gb_tty->port.ops = &gb_port_ops;
+> > -
+> >   	gb_tty->connection = connection;
+> >   	gb_tty->gbphy_dev = gbphy_dev;
+> >   	gb_connection_set_data(connection, gb_tty);
+> > @@ -863,7 +876,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   
+> >   	retval = gb_connection_enable_tx(connection);
+> >   	if (retval)
+> > -		goto exit_release_minor;
+> > +		goto exit_put_port;
+> >   
+> >   	send_control(gb_tty, gb_tty->ctrlout);
+> >   
+> > @@ -890,16 +903,10 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+> >   
+> >   exit_connection_disable:
+> >   	gb_connection_disable(connection);
+> > -exit_release_minor:
+> > -	release_minor(gb_tty);
+> > -exit_kfifo_free:
+> > -	kfifo_free(&gb_tty->write_fifo);
+> > -exit_buf_free:
+> > -	kfree(gb_tty->buffer);
+> > +exit_put_port:
+> > +	tty_port_put(&gb_tty->port);
+> >   exit_connection_destroy:
+> >   	gb_connection_destroy(connection);
+> > -exit_tty_free:
+> > -	kfree(gb_tty);
+> >   
+> >   	return retval;
+> >   }
+> > @@ -930,15 +937,10 @@ static void gb_uart_remove(struct gbphy_device *gbphy_dev)
+> >   	gb_connection_disable_rx(connection);
+> >   	tty_unregister_device(gb_tty_driver, gb_tty->minor);
+> >   
+> > -	/* FIXME - free transmit / receive buffers */
+> > -
+> >   	gb_connection_disable(connection);
+> > -	tty_port_destroy(&gb_tty->port);
+> >   	gb_connection_destroy(connection);
+> > -	release_minor(gb_tty);
+> > -	kfifo_free(&gb_tty->write_fifo);
+> > -	kfree(gb_tty->buffer);
+> > -	kfree(gb_tty);
+> > +
+> > +	tty_port_put(&gb_tty->port);
+> 
+> In the error path above, you call tty_port_put()
+> before calling gb_connection_destroy(), which matches
+> (in reverse) the order in which they're created. I'm
+> accustomed to having the order of the calls here match
+> the error path.  Is this difference intentional?  (It
+> shouldn't really matter.)
+
+I considered reordering (it stands out a bit in my eyes too) but decided
+to leave it in place to highlight the fact that the connection may be
+freed before the rest of the state either way (since a user may hold a
+reference to it).
+
+[ A driver mustn't do I/O after remove() returns even if it might be
+  possible to keep the connection structure around. That would however be
+  complicated by the lack of reference counting on the bundle/interface
+  structures so I decided not to venture down that path. ]
+
+Like you say, the order here doesn't really matter so I can move it up
+if you prefer.
+
+Johan
