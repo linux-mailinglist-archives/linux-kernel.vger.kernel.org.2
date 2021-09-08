@@ -2,185 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1D6403EA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53C2403EAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 19:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240195AbhIHRvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 13:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbhIHRvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:51:44 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C396BC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 10:50:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id lc21so5823686ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 10:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vuSk6k+wa7pbmbqWvCvDdZqbC/SZgYreAXUEe3eNDTI=;
-        b=CrZPXrbRVBTI1Aeeq3S3hJAKJib2O3JHOIozuY4W+uOWFio621qYyJ7hq1RO+8crgh
-         wRDjLG+SqzqtDTHBtVhkPIB/T34XJ4owMRBT6j3Id9cEMkVbnt+iBJ9W3MQ+v4amOHmz
-         gkeffzcDQEBIZk+ujoZFNjxsDJ1MuSZpSvfqA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=vuSk6k+wa7pbmbqWvCvDdZqbC/SZgYreAXUEe3eNDTI=;
-        b=g+cJTgw65PUgOl6TLqT4SaipP5PxrThhiBbVauWFXjrFD7+Py/Foj2X2x74TvzpTq+
-         GjjgLlmxJiZ1B/Gh5yBnrYBY+GXQmTZmMOe7XJlDj+c8Z/lpdDYuI0vX+7A83ZromRN3
-         ylYVpNlhKyzYO+sOrBuv6/wjdoMa2RYxqt0pkbM/7xWrcRUsJLdNsrQvRSZ76GeMRCHY
-         BKAGiqLfJeGNu6HgaYM1g0uro9qgMMKEms8BnUDBqEFFzn5M+HfyEFIbxuQFOOumUvGq
-         ReBJesdjfRK2fWXeQy417a1AHtkC7F88ad2UQnYwBhognTakeeJjA3PFGbGFaooqs0I6
-         +WyA==
-X-Gm-Message-State: AOAM533j+bPDyIbxzPQkjZ9PJLtxtmYwvU49hQ/7RxpeBrlNnxbG1u1G
-        7hdOD65AtFzZuy5v7oqKZXeIJA==
-X-Google-Smtp-Source: ABdhPJyLY5ZP+DrKCEiNDoixuHHNHP6eq1Kk0XYL+iCJY9nnpI/B5uHAvbhuiIkC29KGm61OMQLXTw==
-X-Received: by 2002:a17:906:c1d0:: with SMTP id bw16mr1160810ejb.146.1631123434349;
-        Wed, 08 Sep 2021 10:50:34 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id w3sm1475271edc.42.2021.09.08.10.50.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 10:50:33 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 19:50:32 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] dma-buf/sync_file: Add SET_DEADLINE ioctl
-Message-ID: <YTj36NbUNxnn6uBU@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210903184806.1680887-1-robdclark@gmail.com>
- <20210903184806.1680887-9-robdclark@gmail.com>
+        id S230238AbhIHRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 13:54:53 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37338 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351800AbhIHRyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:54:45 -0400
+Received: from zn.tnic (p200300ec2f0efc00b7f29acf52797616.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fc00:b7f2:9acf:5279:7616])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 883E51EC04E0;
+        Wed,  8 Sep 2021 19:53:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631123611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=gFBT5jisyD5OrPPKazcB1aYXRhJJSDNKlvdqZzQSdQQ=;
+        b=S3VFqKiSqcTs+sO6UecCnNAoJuOHJ5Rs8otpd7OJz937BI0HOTXiPW9XiO7OpLvRIMTW2A
+        reIy8yKyC1m7Wf23muvyO5KZMm6BXPEvUWunssdohr4aG0CiUE2lKXooDcDz6DqYXPrQUK
+        92hDjjGcgEmJmmtuM3khaoSP58GTSf4=
+Date:   Wed, 8 Sep 2021 19:53:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 38/38] virt: sevguest: Add support to get
+ extended report
+Message-ID: <YTj4kZCTudDauIn1@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-39-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210903184806.1680887-9-robdclark@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <20210820151933.22401-39-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 11:47:59AM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> The initial purpose is for igt tests, but this would also be useful for
-> compositors that wait until close to vblank deadline to make decisions
-> about which frame to show.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+On Fri, Aug 20, 2021 at 10:19:33AM -0500, Brijesh Singh wrote:
+> Version 2 of GHCB specification defines NAE to get the extended guest
 
-Needs userspace and I think ideally also some igts to make sure it works
-and doesn't go boom.
--Daniel
+Resolve "NAE" pls.
 
+> request. It is similar to the SNP_GET_REPORT ioctl. The main difference
+> is related to the additional data that be returned. The additional
+
+"that will be returned"
+
+> data returned is a certificate blob that can be used by the SNP guest
+> user. The certificate blob layout is defined in the GHCB specification.
+> The driver simply treats the blob as a opaque data and copies it to
+> userspace.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > ---
->  drivers/dma-buf/sync_file.c    | 19 +++++++++++++++++++
->  include/uapi/linux/sync_file.h | 20 ++++++++++++++++++++
->  2 files changed, 39 insertions(+)
+>  Documentation/virt/coco/sevguest.rst  |  22 +++++
+>  drivers/virt/coco/sevguest/sevguest.c | 126 ++++++++++++++++++++++++++
+>  include/uapi/linux/sev-guest.h        |  13 +++
+>  3 files changed, 161 insertions(+)
 > 
-> diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-> index 394e6e1e9686..f295772d5169 100644
-> --- a/drivers/dma-buf/sync_file.c
-> +++ b/drivers/dma-buf/sync_file.c
-> @@ -459,6 +459,22 @@ static long sync_file_ioctl_fence_info(struct sync_file *sync_file,
->  	return ret;
+> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
+> index 25446670d816..7acb8696fca4 100644
+> --- a/Documentation/virt/coco/sevguest.rst
+> +++ b/Documentation/virt/coco/sevguest.rst
+> @@ -85,3 +85,25 @@ on the various fileds passed in the key derivation request.
+>  
+>  On success, the snp_derived_key_resp.data will contains the derived key
+>  value.
+> +
+> +2.2 SNP_GET_EXT_REPORT
+> +----------------------
+> +:Technology: sev-snp
+> +:Type: guest ioctl
+> +:Parameters (in/out): struct snp_ext_report_req
+> +:Returns (out): struct snp_report_resp on success, -negative on error
+> +
+> +The SNP_GET_EXT_REPORT ioctl is similar to the SNP_GET_REPORT. The difference is
+> +related to the additional certificate data that is returned with the report.
+> +The certificate data returned is being provided by the hypervisor through the
+> +SNP_SET_EXT_CONFIG.
+> +
+> +The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command provided by the SEV-SNP
+> +firmware to get the attestation report.
+> +
+> +On success, the snp_ext_report_resp.data will contains the attestation report
+
+"will contain"
+
+> +and snp_ext_report_req.certs_address will contains the certificate blob. If the
+
+ditto.
+
+> +length of the blob is lesser than expected then snp_ext_report_req.certs_len will
+
+"is smaller"
+
+> +be updated with the expected value.
+> +
+> +See GHCB specification for further detail on how to parse the certificate blob.
+> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
+> index 621b1c5a9cfc..d978eb432c4c 100644
+> --- a/drivers/virt/coco/sevguest/sevguest.c
+> +++ b/drivers/virt/coco/sevguest/sevguest.c
+> @@ -39,6 +39,7 @@ struct snp_guest_dev {
+>  	struct device *dev;
+>  	struct miscdevice misc;
+>  
+> +	void *certs_data;
+>  	struct snp_guest_crypto *crypto;
+>  	struct snp_guest_msg *request, *response;
+>  };
+> @@ -347,6 +348,117 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_user_guest_
+>  	return rc;
 >  }
 >  
-> +static int sync_file_ioctl_set_deadline(struct sync_file *sync_file,
-> +					unsigned long arg)
+> +static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_user_guest_request *arg)
 > +{
-> +	struct sync_set_deadline ts;
+> +	struct snp_guest_crypto *crypto = snp_dev->crypto;
+> +	struct snp_guest_request_data input = {};
+> +	struct snp_ext_report_req req;
+> +	int ret, npages = 0, resp_len;
+> +	struct snp_report_resp *resp;
+> +	struct snp_report_req *rreq;
+> +	unsigned long fw_err = 0;
 > +
-> +	if (copy_from_user(&ts, (void __user *)arg, sizeof(ts)))
-> +		return -EFAULT;
-> +
-> +	if (ts.pad)
+> +	if (!arg->req_data || !arg->resp_data)
 > +		return -EINVAL;
 > +
-> +	dma_fence_set_deadline(sync_file->fence, ktime_set(ts.tv_sec, ts.tv_nsec));
+> +	/* Copy the request payload from the userspace */
+
+"from userspace"
+
+> +	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
+> +		return -EFAULT;
 > +
-> +	return 0;
-> +}
+> +	rreq = &req.data;
 > +
->  static long sync_file_ioctl(struct file *file, unsigned int cmd,
->  			    unsigned long arg)
+> +	/* Message version must be non-zero */
+> +	if (!rreq->msg_version)
+> +		return -EINVAL;
+> +
+> +	if (req.certs_len) {
+> +		if (req.certs_len > SEV_FW_BLOB_MAX_SIZE ||
+> +		    !IS_ALIGNED(req.certs_len, PAGE_SIZE))
+> +			return -EINVAL;
+> +	}
+> +
+> +	if (req.certs_address && req.certs_len) {
+> +		if (!access_ok(req.certs_address, req.certs_len))
+> +			return -EFAULT;
+> +
+> +		/*
+> +		 * Initialize the intermediate buffer with all zero's. This buffer
+> +		 * is used in the guest request message to get the certs blob from
+> +		 * the host. If host does not supply any certs in it, then we copy
+
+
+Please use passive voice: no "we" or "I", etc,
+
+> +		 * zeros to indicate that certificate data was not provided.
+> +		 */
+> +		memset(snp_dev->certs_data, 0, req.certs_len);
+> +
+> +		input.data_gpa = __pa(snp_dev->certs_data);
+> +		npages = req.certs_len >> PAGE_SHIFT;
+> +	}
+> +
+> +	/*
+> +	 * The intermediate response buffer is used while decrypting the
+> +	 * response payload. Make sure that it has enough space to cover the
+> +	 * authtag.
+> +	 */
+> +	resp_len = sizeof(resp->data) + crypto->a_len;
+> +	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
+> +	if (!resp)
+> +		return -ENOMEM;
+> +
+> +	if (copy_from_user(resp, (void __user *)arg->resp_data, sizeof(*resp))) {
+> +		ret = -EFAULT;
+> +		goto e_free;
+> +	}
+> +
+> +	/* Encrypt the userspace provided payload */
+> +	ret = enc_payload(snp_dev, rreq->msg_version, SNP_MSG_REPORT_REQ,
+> +			  &rreq->user_data, sizeof(rreq->user_data));
+> +	if (ret)
+> +		goto e_free;
+> +
+> +	/* Call firmware to process the request */
+> +	input.req_gpa = __pa(snp_dev->request);
+> +	input.resp_gpa = __pa(snp_dev->response);
+> +	input.data_npages = npages;
+> +	memset(snp_dev->response, 0, sizeof(*snp_dev->response));
+> +	ret = snp_issue_guest_request(EXT_GUEST_REQUEST, &input, &fw_err);
+> +
+> +	/* Popogate any firmware error to the userspace */
+> +	arg->fw_err = fw_err;
+> +
+> +	/* If certs length is invalid then copy the returned length */
+> +	if (arg->fw_err == SNP_GUEST_REQ_INVALID_LEN) {
+> +		req.certs_len = input.data_npages << PAGE_SHIFT;
+> +
+> +		if (copy_to_user((void __user *)arg->req_data, &req, sizeof(req)))
+> +			ret = -EFAULT;
+> +
+> +		goto e_free;
+> +	}
+> +
+> +	if (ret)
+> +		goto e_free;
+
+This one is really confusing. You assign ret in the if branch
+above but then you test ret outside too, just in case the
+snp_issue_guest_request() call above has failed.
+
+But then if that call has failed, you still go and do some cleanup work
+for invalid certs length...
+
+So that get_ext_report() function is doing too many things at once and
+is crying to be split.
+
+For example, the glue around snp_issue_guest_request() is already carved
+out in handle_guest_request(). Why aren't you calling that function here
+too?
+
+That'll keep the enc, request, dec payload game separate and then the
+rest of the logic can remain in get_ext_report()...
+
+...
+
+>  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
 >  {
-> @@ -471,6 +487,9 @@ static long sync_file_ioctl(struct file *file, unsigned int cmd,
->  	case SYNC_IOC_FILE_INFO:
->  		return sync_file_ioctl_fence_info(sync_file, arg);
->  
-> +	case SYNC_IOC_SET_DEADLINE:
-> +		return sync_file_ioctl_set_deadline(sync_file, arg);
-> +
->  	default:
->  		return -ENOTTY;
+>  	struct snp_guest_dev *snp_dev = to_snp_dev(file);
+> @@ -368,6 +480,10 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+>  		ret = get_derived_key(snp_dev, &input);
+>  		break;
 >  	}
-> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-> index ee2dcfb3d660..f67d4ffe7566 100644
-> --- a/include/uapi/linux/sync_file.h
-> +++ b/include/uapi/linux/sync_file.h
-> @@ -67,6 +67,18 @@ struct sync_file_info {
->  	__u64	sync_fence_info;
->  };
+> +	case SNP_GET_EXT_REPORT: {
+> +		ret = get_ext_report(snp_dev, &input);
+> +		break;
+> +	}
+>  	default:
+>  		break;
+>  	}
+> @@ -453,6 +569,12 @@ static int __init snp_guest_probe(struct platform_device *pdev)
+>  		goto e_free_req;
+>  	}
 >  
-> +/**
-> + * struct sync_set_deadline - set a deadline on a fence
-> + * @tv_sec:	seconds elapsed since epoch
-> + * @tv_nsec:	nanoseconds elapsed since the time given by the tv_sec
-> + * @pad:	must be zero
-> + */
-> +struct sync_set_deadline {
-> +	__s64	tv_sec;
-> +	__s32	tv_nsec;
-> +	__u32	pad;
-> +};
+> +	snp_dev->certs_data = alloc_shared_pages(SEV_FW_BLOB_MAX_SIZE);
+> +	if (IS_ERR(snp_dev->certs_data)) {
+> +		ret = PTR_ERR(snp_dev->certs_data);
+> +		goto e_free_resp;
+> +	}
+
+Same comments here as for patch 37.
+
 > +
->  #define SYNC_IOC_MAGIC		'>'
->  
->  /**
-> @@ -95,4 +107,12 @@ struct sync_file_info {
->   */
->  #define SYNC_IOC_FILE_INFO	_IOWR(SYNC_IOC_MAGIC, 4, struct sync_file_info)
->  
-> +
-> +/**
-> + * DOC: SYNC_IOC_SET_DEADLINE - set a deadline on a fence
-> + *
-> + * Allows userspace to set a deadline on a fence, see dma_fence_set_deadline()
-> + */
-> +#define SYNC_IOC_SET_DEADLINE	_IOW(SYNC_IOC_MAGIC, 5, struct sync_set_deadline)
-> +
->  #endif /* _UAPI_LINUX_SYNC_H */
-> -- 
-> 2.31.1
-> 
+>  	misc = &snp_dev->misc;
+>  	misc->minor = MISC_DYNAMIC_MINOR;
+>  	misc->name = DEVICE_NAME;
+
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
