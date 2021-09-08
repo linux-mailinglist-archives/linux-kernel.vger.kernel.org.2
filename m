@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C3D403FD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4B3403FE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 21:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350994AbhIHTfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 15:35:54 -0400
-Received: from ixit.cz ([94.230.151.217]:48720 "EHLO ixit.cz"
+        id S1351962AbhIHTjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 15:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235043AbhIHTfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:35:53 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 4A12024A25;
-        Wed,  8 Sep 2021 21:34:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1631129682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qfKwqdN8/i0EQu0234+MgD/TXBnxpkNPG+kG+/L9/Fs=;
-        b=u6KJ5Xtey4caQ9eIorPd0Jg2bQcPyPYd6IaAHQUm4poeAkTL2SRWbpETaGH+UUkjhEN3qI
-        eVnDojk+E6F6L1iiN6y5nkTzyrBSmUnIkbQwYcRqJ7Dy4rQ5HCgG/nMMvLgVSZatFR8Cbd
-        EcnMK+i7RSSADlJhsPANpUDxVw55dbg=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>
-Cc:     linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH 1/2] dt-bindings: usb/qcom,dwc3: add ipq4019 compatible
-Date:   Wed,  8 Sep 2021 21:33:28 +0200
-Message-Id: <20210908193329.87992-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S1350977AbhIHTjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 15:39:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC7761164;
+        Wed,  8 Sep 2021 19:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631129886;
+        bh=c1urIeTLcxvXfHMAgK3GJHpA9/PnLBvBRxDW12izvU4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZhIGeisO/6KLPXt98kGjNCNuwBcXaAofQ3AomuJMGEbM3MnWB5wqOO2VP3UfTQ7Ee
+         +pOLuhjImEFVf0UiEu4tB0WCGSOc9u8qDV69CW7pgQwGxCjzQky0010FF9KRyqh8+Q
+         WpE2hJLAfvklCGQaY0diWQiaTdKDrk0xp/QEaSuKjoERbAM65Yve6j2gJ8HtX8A8wl
+         Uhh1iCuKXEVykn70lSJ9/JGCsECndckZES/liCjDZEh3OtDdkWtyDxWyVb9Tq2Wmb0
+         1So1IvhCGn9UJzLg3IUyp2q8N37L8Sv3KHRPotat+I6j0JmDDqbL3HUKVYVjWkPRNS
+         WDb3p19UM55Dg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH] tracing/boot: Fix to loop on only subkeys
+Date:   Thu,  9 Sep 2021 04:38:03 +0900
+Message-Id: <163112988361.74896.2267026262061819145.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prequisite for getting rid of another warnings when building ipq4019.
+Since the commit e5efaeb8a8f5 ("bootconfig: Support mixing
+a value and subkeys under a key") allows to co-exist a value
+node and key nodes under a node, xbc_node_for_each_child()
+is not only returning key node but also a value node.
+In the boot-time tracing using xbc_node_for_each_child() to
+iterate the events, groups and instances, but those must be
+key nodes. Thus it must use xbc_node_for_each_subkey().
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Fixes: e5efaeb8a8f5 ("bootconfig: Support mixing a value and subkeys under a key")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace_boot.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index e70afc40edb2..19641380f922 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -13,6 +13,7 @@ properties:
-   compatible:
-     items:
-       - enum:
-+          - qcom,ipq4019-dwc3
-           - qcom,msm8996-dwc3
-           - qcom,msm8998-dwc3
-           - qcom,sc7180-dwc3
--- 
-2.33.0
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 1060b0446032..388e65d05978 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -522,14 +522,14 @@ trace_boot_init_events(struct trace_array *tr, struct xbc_node *node)
+ 	if (!node)
+ 		return;
+ 	/* per-event key starts with "event.GROUP.EVENT" */
+-	xbc_node_for_each_child(node, gnode) {
++	xbc_node_for_each_subkey(node, gnode) {
+ 		data = xbc_node_get_data(gnode);
+ 		if (!strcmp(data, "enable")) {
+ 			enable_all = true;
+ 			continue;
+ 		}
+ 		enable = false;
+-		xbc_node_for_each_child(gnode, enode) {
++		xbc_node_for_each_subkey(gnode, enode) {
+ 			data = xbc_node_get_data(enode);
+ 			if (!strcmp(data, "enable")) {
+ 				enable = true;
+@@ -625,7 +625,7 @@ trace_boot_init_instances(struct xbc_node *node)
+ 	if (!node)
+ 		return;
+ 
+-	xbc_node_for_each_child(node, inode) {
++	xbc_node_for_each_subkey(node, inode) {
+ 		p = xbc_node_get_data(inode);
+ 		if (!p || *p == '\0')
+ 			continue;
 
