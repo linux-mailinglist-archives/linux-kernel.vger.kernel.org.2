@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CA4403229
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070C0403232
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345213AbhIHBZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:25:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhIHBZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:25:35 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0851A6113E;
-        Wed,  8 Sep 2021 01:24:27 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 21:24:26 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Robin H. Johnson" <robbat2@gentoo.org>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rjohnson@digitalocean.com, Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
-Message-ID: <20210907212426.73ed81d1@rorschach.local.home>
-In-Reply-To: <20210831043723.13481-1-robbat2@gentoo.org>
-References: <20210831043723.13481-1-robbat2@gentoo.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1346191AbhIHBdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:33:32 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44824 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229946AbhIHBdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:33:31 -0400
+X-UUID: 7be96b5b8aa34593acb250edd54c3ab2-20210908
+X-UUID: 7be96b5b8aa34593acb250edd54c3ab2-20210908
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 662536991; Wed, 08 Sep 2021 09:32:20 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 8 Sep 2021 09:32:19 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 8 Sep 2021 09:32:18 +0800
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] mmc: mediatek: Add HS400 online tuning support
+Date:   Wed, 8 Sep 2021 09:32:16 +0800
+Message-ID: <20210908013218.29702-1-wenbin.mei@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change in v3:
+- add detail descripthion for hs400 dly3
 
-I'll need Acks for these patches from the Perf maintainers.
+Change in v2:
+- remove the check "mmc_can_ext_csd"
+- change the hs400 tuning condition for "msdc_cmd_done" function and
+"msdc_cmd_next" function
+- use "-EIO" instead of "-ERANGE"
 
--- Steve
+Wenbin Mei (2):
+  dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
+  mmc: mediatek: Add HS400 online tuning support
 
+ .../devicetree/bindings/mmc/mtk-sd.yaml       |  12 ++
+ drivers/mmc/core/mmc.c                        |   8 ++
+ drivers/mmc/host/mtk-sd.c                     | 118 +++++++++++++++++-
+ include/linux/mmc/host.h                      |   3 +
+ 4 files changed, 139 insertions(+), 2 deletions(-)
 
-On Mon, 30 Aug 2021 21:37:22 -0700
-"Robin H. Johnson" <robbat2@gentoo.org> wrote:
-
-> If the perf buffer isn't large enough, provide a hint about how large it
-> needs to be for whatever is running.
-> 
-> Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
-> ---
->  kernel/trace/trace_event_perf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-> index 03be4435d103..26eed4b89100 100644
-> --- a/kernel/trace/trace_event_perf.c
-> +++ b/kernel/trace/trace_event_perf.c
-> @@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
->  	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
->  
->  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
-> -		      "perf buffer not large enough"))
-> +		      "perf buffer not large enough, wanted %d, have %d",
-> +		      size, PERF_MAX_TRACE_SIZE))
->  		return NULL;
->  
->  	*rctxp = rctx = perf_swevent_get_recursion_context();
+--
+2.25.1
 
