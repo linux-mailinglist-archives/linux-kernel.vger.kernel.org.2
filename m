@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B066D40362F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1A3403635
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 10:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348299AbhIHIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 04:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S1348285AbhIHIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 04:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348356AbhIHIgk (ORCPT
+        with ESMTP id S1348087AbhIHIjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 04:36:40 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A63C061796
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:35:31 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id q26so1998175wrc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:35:31 -0700 (PDT)
+        Wed, 8 Sep 2021 04:39:18 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E0DC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 01:38:10 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id u15-20020a05600c19cf00b002f6445b8f55so908425wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 01:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=q+gTvqPkBS/9NQBkBlzTyY1pPZIuXVfqF0gdAjXvmEQ=;
-        b=wDveK5lAB6l1NMxSINMMJExaTElhC1Hadv0ygYAfqTxaaYMv3IySUTUjp8bzuOPdRa
-         bMndFJRdmVlulEHWcXp/LnteEs6vsNeOY8CT4htoyWxrJ74sTlvSEcRcZYgqmPILmOgc
-         A4YtqmDEVblPPqigSHeeg7ICEqSpsHoL+p3C+kiue48QmlrgGL7sE0GJBJTwLjbOXfPl
-         zJv9eJtsccvxTHkrB0VgN6p+n3N0t44AZxg77NZHqqyxv0+iSx2wngp0tllluH8IfgqJ
-         G3WtqLaUK9i4s9Jzl6JIqkwOmtk7byhNg775DAh2t0Kjhwx/p35yVj+EesJNoCQpB2Rw
-         NnoA==
+        bh=5ILfedyfA7TPHqyBNZ/TjjapMKjWfHALaRNb6+vus4M=;
+        b=Rq63Ukeo3zhZYJb8DfVPuJ+ZlafG0bW4jpUJ1nH3k2einUu+O2DnOkh+2CfpepE9J6
+         XwQkWvMFO7wVfanY7uSCHAm5kgetmsk4r6nnx3ddUx5lWpBhVFBRn4od9nLyt9ECjaq2
+         IEsndYP4HmZpynv/GMLu58l4z4j4pTKXwU5VblnNl4nF1tSFe80p215ojNzp0+lDLfyg
+         p418iVjoASz1D43D2gmR2MIVpTFRyspYOLLrlMJrHNwlb61kWKxcL1L3Do4h/NOyH0ZW
+         9viKhye+u9e4BuQdJMZsD1O+4NgOtmX3SDD2YVR/pjISSYrhrgpczfFW8KRjeM9lM9lI
+         al+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
+        d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=q+gTvqPkBS/9NQBkBlzTyY1pPZIuXVfqF0gdAjXvmEQ=;
-        b=0cj9erxVya2JOmpEOrx2lKO3ljNW3mmSm/xELkpK28aksQUKtRy0w3mnopFaKwCGbX
-         RrlwZ0zVu++bLd0paKbqjfbJblIQO9hkKCioAJO64ZCeIj/w4xO84SqnTFZ/QTdULYj5
-         tjy7B00nWkQUCHVNOOgL+DbNzlJEoJhmWeT+3nogbtAdSWkJ4f7y9YkZObzHAA47bocf
-         UVyU33xAEb6K3+VrZ7bn5oIaDvKSiEElr34wA4WBO7361h6y58uXncjfgp8XvZ2z2QFy
-         B5U8679SXWrb4Sq8nkUm6upqx96v6mLyZah0H82j4JNlcwq9+0zpFJcNgKZV/I2pTV7C
-         BUFA==
-X-Gm-Message-State: AOAM532/183dlMtbOGkE5ywZdXJZJRPzmTUPTjm9ikUJcEehB+nhpWxX
-        2bVPHX1rXZyDeSo8dcNxCeMYL2OIx5LATutMT1hDvQ==
-X-Google-Smtp-Source: ABdhPJxnmqEbAAXw4ZZscbrlTqRG8a/a1xTdLDZhNeb4FqiNF0dwRr/GBN9JwQCWTsqYDoM7El3dNiZ090+mHhCE49A=
-X-Received: by 2002:adf:d1a8:: with SMTP id w8mr2667202wrc.306.1631090129589;
- Wed, 08 Sep 2021 01:35:29 -0700 (PDT)
+        bh=5ILfedyfA7TPHqyBNZ/TjjapMKjWfHALaRNb6+vus4M=;
+        b=UN4nUsRFILrlBYuijoQmDbqp1/++r7tfz3haIiBmmJGsC8s+jSEDTKepJIdRdB0ezY
+         PF0+JobydvfxOh+OsqS07+L5IuX0Jy7UuBTFENZFs/W1wszYv62BkCdDiMqOyxi4jnrc
+         XFbl1ibPbWo/VjB+zTNZJUQ/cBHhtxIATVrDsLom9AxjpDH0wU+jEdyN3RswCNVMMidR
+         fx0p05Z5gVEQXaNnFbPy/nzl1aSN2x+7vqng9fHX77caZQTS4/s3GYSWweJS4hGhBHDw
+         klf7OwGoGKoPJlFm2Y9ZmufiZo0rCPHNFJCrsbt82VdK/xFdSC0A+L8kWWuK5IJ0XRuT
+         JHVw==
+X-Gm-Message-State: AOAM5317hwd1OK5pTbpJEEVgGbbirERRT6FcIXKjqTuyaE7eHGSjp2zZ
+        Zf1VFZIrmdEHfqInwzQvefToDTn117y/2ton4mCDjnW40tE=
+X-Google-Smtp-Source: ABdhPJwTLSIAXa5bFuTiTTMynzBXUStSpSK/LG8Y7aRLbOSUVFSSUxJSmAev5mr9BMod3NxrEem3HLc3DORSEKl0b4g=
+X-Received: by 2002:a7b:cc14:: with SMTP id f20mr2288363wmh.137.1631090289364;
+ Wed, 08 Sep 2021 01:38:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907200254.467375-1-vgupta@kernel.org>
-In-Reply-To: <20210907200254.467375-1-vgupta@kernel.org>
+References: <20210726112511.78350-1-xypron.glpk@gmx.de>
+In-Reply-To: <20210726112511.78350-1-xypron.glpk@gmx.de>
 From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 8 Sep 2021 14:05:18 +0530
-Message-ID: <CAAhSdy018QJ2hdqL2BSZXV81-CVbTf_g6chJSHM4UH2EhLUpCA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: mm: don't advertise 1 num_asid for 0 asid bits
-To:     Vineet Gupta <vgupta@kernel.org>
+Date:   Wed, 8 Sep 2021 14:07:57 +0530
+Message-ID: <CAAhSdy2qXrb9pJENgq-iXpHJmHqn9gzSrfyZoVGN=zaK2DhsLg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] riscv: defconfig: enable BLK_DEV_NVME
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
 Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Atish Patra <atish.patra@wdc.com>,
         Anup Patel <anup.patel@wdc.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
         linux-riscv <linux-riscv@lists.infradead.org>,
         "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -66,67 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 1:33 AM Vineet Gupta <vgupta@kernel.org> wrote:
+On Mon, Jul 26, 2021 at 4:55 PM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
 >
-> Even if mmu doesn't support ASID, current code calculates @num_asids=1
-> which is misleading, so avoid setting any asid related variables in such
-> a case.
+> NVMe is a non-volatile storage media attached via PCIe.
+> As NVMe has much higher throughput than other block devices like
+> SATA it is a must have for RISC-V. Enable CONFIG_BLK_DEV_NVME.
 >
-> Also while here, print the number of asid bits discovered even for the
-> disabled case.
+> The HiFive Unmatched is a board providing M.2 slots for NVMe drives.
+> Enable CONFIG_PCIE_FU740.
 >
-> Verified this on Hifive Unmatched.
->
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
-> ---
->  arch/riscv/mm/context.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index ee3459cb6750..c8c6f8831a3b 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -233,8 +233,10 @@ static int __init asids_init(void)
->         local_flush_tlb_all();
->
->         /* Pre-compute ASID details */
-> -       num_asids = 1 << asid_bits;
-> -       asid_mask = num_asids - 1;
-> +       if (asid_bits) {
-> +               num_asids = 1 << asid_bits;
-> +               asid_mask = num_asids - 1;
-> +       }
->
->         /*
->          * Use ASID allocator only if number of HW ASIDs are
-> @@ -255,7 +257,7 @@ static int __init asids_init(void)
->                 pr_info("ASID allocator using %lu bits (%lu entries)\n",
->                         asid_bits, num_asids);
->         } else {
-> -               pr_info("ASID allocator disabled\n");
-> +               pr_info("ASID allocator disabled: %lu bits\n", asid_bits);
+> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 
-May be use:
-
-pr_info("ASID allocator disabled (%lu bits)\n", asid_bits);
-
-for consistency with the ASID enabled case.
-
-Otherwise, it looks good to me.
+Looks good to me.
 
 Reviewed-by: Anup Patel <anup@brainfault.org>
 
->         }
+Regards,
+Anup
+
+> ---
+>  arch/riscv/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
 >
->         return 0;
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 1f2be234b11c..393bf3843e5c 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -39,10 +39,12 @@ CONFIG_PCI=y
+>  CONFIG_PCIEPORTBUS=y
+>  CONFIG_PCI_HOST_GENERIC=y
+>  CONFIG_PCIE_XILINX=y
+> +CONFIG_PCIE_FU740=y
+>  CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_VIRTIO_BLK=y
+> +CONFIG_BLK_DEV_NVME=m
+>  CONFIG_BLK_DEV_SD=y
+>  CONFIG_BLK_DEV_SR=y
+>  CONFIG_SCSI_VIRTIO=y
 > --
 > 2.30.2
 >
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-Regards,
-Anup
