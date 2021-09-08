@@ -2,154 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF30040323B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1000403246
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346603AbhIHBib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346223AbhIHBia (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:38:30 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E01C061575;
-        Tue,  7 Sep 2021 18:37:23 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 62so350240qvb.11;
-        Tue, 07 Sep 2021 18:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ciBzCjagQnTip0jhcuPtA6NB3onzElPc291uOOyrzyM=;
-        b=bithVZitjX59Lt3RcjNnDfJU/uUHPRrRkBDyknarhntnoXj1G1iASqbCbdRhUo8Pt+
-         FLV7z+W1O2JmgFRT+v3sCKCrhguRv38WbDPivEuQAOrdEMPR978YFR3uo5M1/7qdBI3L
-         TVR/BczxCBKRzQm1liSpdbfmtiPuA/JChcClxVYzaFBzPn/Cy+Z8XC2f6n37GxzuY+k7
-         mhKRqTyFNeV2HN22zApu3nlxxMFMxcSTf26Ecxz813ag7CQbzOdaOVR8LEX2t27h3E7L
-         gypmOInhelID1nSq5dNuub0y5sPGnWK4RVggceJIxrdRlZthcZ/fZRuDxRVAl91y3Tci
-         rQAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ciBzCjagQnTip0jhcuPtA6NB3onzElPc291uOOyrzyM=;
-        b=uUyAZPeisriHknbjTLMfWmO5OWrQnTsgD8kt8OWcCZf8bnM6VIv7NzUdik5rMmPOtp
-         fN3l//3yMYs82VQ+ABzF0gELVtdqmsDwczFP9uS0c1omwtLld3Q19S0utJLX7jRjIlUC
-         hbEvdq8FtQ20PxbvlyPueUJVHJzSGP67KvB/QPAsmjMDQbbTmQpoug1oaI6+fKVuRHBh
-         dhxLUE36Z/4M8uHclzGGKqAQo4h9vqilGcYzRPZe8/VfJL4fmxggsqWRe8+d4RzcfPFu
-         dDW0hgUBsfZrCr+mifxxJMY0wrVzGhavUTGxhk8VYjk9Omzd7amqovA0UgBSn0/zh3GJ
-         Fm2A==
-X-Gm-Message-State: AOAM533z/fKD/uMdnCoxQBo7n7MuJKzPPOCFYjXZ+pvjLUm+YZY5MS2y
-        7CK7dOWEXxrfJr9p3/e0XPVCVWnwj0kNYcxyKpW/kmyMxxGMdMyH
-X-Google-Smtp-Source: ABdhPJyZX8Ws4H4CK//9vF6DwOfMVVDxAED9g7heseyQVdqgO/Dg6FserqZ3XyM3raWxTLzCUa//Kzk5ma7acROdNGk=
-X-Received: by 2002:a0c:80ce:: with SMTP id 72mr1195106qvb.39.1631065042341;
- Tue, 07 Sep 2021 18:37:22 -0700 (PDT)
+        id S1346639AbhIHBkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:40:37 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:38025 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235180AbhIHBkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 21:40:36 -0400
+Received: from hanvin-mobl2.amr.corp.intel.com ([192.55.54.55])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 1881csTI3985246
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 7 Sep 2021 18:38:54 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 1881csTI3985246
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631065136;
+        bh=SWU8siwqoXV59+HvsvFd3sZ1A9vEq4Keh/dISQ/R4sE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UYz377kBdi+iTpQ/uskG4QQlDadzlRcb5tBpdkiqrubEQJ8kOCySO//ZdCXCiKr49
+         IJ+++jmNwGPkaVw3V13yS68CevLqQ1rLPGtjr8wjE7WW8j+fQ1ZcriGheRCI43g8ow
+         QKc6lGF0Xg3cZOfbS7riwAzrUowHW9upH2YNQuuuRNtqKlRTflD9TCVJTFpeLawi1Y
+         4qjsjLCnaG0gT94JQKgBNMkvSWRyF7gYOIKPjOzU6TnNXuzFJ6U8qzsAg2TrZjba9g
+         Wjmc7VMWTDxQPEzby2MlEHLrD7KEpLu3Xe+PNulszt65xtTeDew6eR/n/AJDLYgzDI
+         /pkTkYEk3sCjw==
+Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210902105052.2842-1-jiangshanlai@gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <9fdb04b1-dbb8-069d-f5ef-d4e8c0f2a83e@zytor.com>
+Date:   Tue, 7 Sep 2021 18:38:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210906094927.524106-1-schnelle@linux.ibm.com>
- <CAOSf1CFyuf9FaeSNparj+7W0mKTPvtcM8vxjHDSFsNDC6k_7xQ@mail.gmail.com>
- <e739c2919f97e277849a1bc1324a20df6a7d59eb.camel@linux.ibm.com> <0c9326c943c0e6aa572cc132ee2deb952bf41c7f.camel@linux.ibm.com>
-In-Reply-To: <0c9326c943c0e6aa572cc132ee2deb952bf41c7f.camel@linux.ibm.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Wed, 8 Sep 2021 11:37:11 +1000
-Message-ID: <CAOSf1CH2T-R44qx1mGpJQ8WgD0upxG8sQNud_5L3SHYZJm9LRA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210902105052.2842-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 10:21 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
->
-> On Tue, 2021-09-07 at 10:45 +0200, Niklas Schnelle wrote:
-> > On Tue, 2021-09-07 at 12:04 +1000, Oliver O'Halloran wrote:
-> > > On Mon, Sep 6, 2021 at 7:49 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
-> > > > Patch 3 I already sent separately resulting in the discussion below but without
-> > > > a final conclusion.
-> > > >
-> > > > https://lore.kernel.org/lkml/20210720150145.640727-1-schnelle@linux.ibm.com/
-> > > >
-> > > > I believe even though there were some doubts about the use of
-> > > > pci_dev_is_added() by arch code the existing uses as well as the use in the
-> > > > final patch of this series warrant this export.
-> > >
-> > > The use of pci_dev_is_added() in arch/powerpc was because in the past
-> > > pci_bus_add_device() could be called before pci_device_add(). That was
-> > > fixed a while ago so It should be safe to remove those calls now.
-> >
-> > Hmm, ok that confirms Bjorns suspicion and explains how it came to be.
-> > I can certainly sent a patch for that. This would then leave only the
-> > existing use in s390 which I added because of a dead lock prevention
-> > and explained here:
-> > https://lore.kernel.org/lkml/87d15d5eead35c9eaa667958d057cf4a81a8bf13.camel@linux.ibm.com/
-> >
-> > Plus the need to use it in the recovery code of this series. I think in
-> > the EEH code the need for a similar check is alleviated by the checks
-> > in the beginning of
-> > arch/powerpc/kernel/eeh_driver.c:eeh_handle_normal_event() especially
-> > eeh_slot_presence_check() which checks presence via the hotplug slot.
-> > I guess we could use our own state tracking in a similar way but felt
-> > like pci_dev_is_added() is the more logical choice.
+On 9/2/21 3:50 AM, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> There is no constrain/limition to force native_load_gs_index() to be in
+> ASM code.
 
-The slot check is mainly there to prevent attempts to "recover"
-devices that have been surprise removed (i.e NVMe hot-unplug). The
-actual recovery process operates off the eeh_pe tree which is frozen
-in place when an error is detected. If a pci_dev is added or removed
-it's not really a problem since those are only ever looked at when
-notifying drivers which is done with the rescan_remove lock held. That
-said, I wouldn't really encourage anyone to follow the EEH model since
-it's pretty byzantine.
+Hi,
 
-> Looking into this again, I think we actually can't easily track this
-> state ourselves outside struct pci_dev. The reason for this is that
-> when e.g. arch/s390/pci/pci_sysfs.c:recover_store() removes the struct
-> pci_dev and scans it again the new struct pci_dev re-uses the same
-> struct zpci_dev because from a platform point of view the PCI device
-> was never removed but only disabled and re-enabled. Thus we can only
-> distinguish the stale struct pci_dev by looking at things stored in
-> struct pci_dev itself.
+First of all, let me say I really like your patchset, and I will try to
+review it in detail ASAP (most of the initial read pass looks very sane
+to me.
 
-IMO the real problem is removing and re-adding the pci_dev. I think
-it's something that's done largely because the PCI core doesn't really
-provide any better mechanism for getting a device back into a
-known-good state so it's abused to implement error recovery. This is
-something that's always annoyed me since it conflates recovery with
-hotplug. After a hot-(un)plug we might have a different device or no
-device. In the recovery case we expect to start and end with the same
-device. Why not apply the same logic to the pci_dev?
+However, I would like to object in part this specific patch. It adds a
+fair bit of extra code to the exception path, and adds jumps between
+files which makes the code much harder to read.
 
-Something I was tinkering with before I left IBM was re-working the
-way EEH handles recovering devices that don't have a driver with error
-handling callbacks to something like:
+You end up doing one swapgs in assembly and one in C, which would seem
+to be a very good indication that really isn't an improvement.
 
-1. unbind the driver
-2. pci_save_state()
-3. do the reset
-4. pci_restore_state()
-5. re-bind the driver
+Note that this entire sequence is scheduled to be obsoleted by a single
+atomic hardware instruction, LKGS, which will replace ALL of
+native_load_gs_index(); it will no longer be necessary even to disable
+interrupts as there is no non-atomic state. In that sense, doing this as
+an out-of-line C function (with some inline assembly) is great, because
+it makes it far easier to use LKGS as an alternative; the only (small)
+disadvantage is that it ends up clobbering a lot of registers
+unnecessarily (in assembly it can be implemented clobbering only two
+registers; one if one uses pushf/popf to save the interrupt flag.)
 
-That would allow keeping the pci_dev around and let me delete a pile
-of confusing code which handles binding the eeh_dev to the new
-pci_dev. The obvious problem with that approach is the assumption the
-device is functional enough to allow saving the config space, but I
-don't think that's a deal breaker. We could stash a copy of the device
-state before we allow drivers to attach and use that to restore the
-device after the reset. The end result would be the same known-good
-state that we'd get after a re-scan.
+noinstr void native_load_gs_index(unsigned int selector)
+{
+	unsigned long flags;
 
-> That said, I think for the recovery case we might be able to drop the
-> pci_dev_is_added() and rely on pdev->driver != NULL which we check
-> anyway and that should catch any PCI device that was already removed.
+	local_irq_save(flags);
+	native_swapgs();
+redo:
+	asm goto("1: movl %0,%%gs\n",
+		   "2:\n"
+		   _ASM_EXTABLE(%1)
+		   : : "r" (selector) : "i" (&&bad_seg);
+	alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
+	native_swapgs();
+	local_irq_restore(flags);
+	return;
 
-Would that work if there was an error on a device without a driver
-bound? If you're just trying to stop races between recovery and device
-removal then pci_dev_is_added() is probably the right tool for the
-job. Trying to substitute it with a proxy seems like a bad idea.
+bad_seg:
+	/* Exception entry will have restored kernel GS */
+	native_swapgs();
+	
+	if (static_cpu_has(X86_BUG_NULL_SEG)) {
+		asm volatile("movl %0,%%gs"
+			: : "r" (__USER_DS));
+	}
+	selector = 0;
+	goto redo;
+}
+
+	-hpa
