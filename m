@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5547403591
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEF7403592
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347611AbhIHHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:38:33 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19017 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349925AbhIHHiY (ORCPT
+        id S1347843AbhIHHif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:38:35 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39918
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347742AbhIHHia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:38:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H4DPz3nV5zbmMy;
-        Wed,  8 Sep 2021 15:33:11 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 8 Sep 2021 15:37:07 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 8 Sep 2021 15:37:06 +0800
-Subject: Re: [PATCH v4 2/6] nbd: convert to use blk_mq_find_and_get_req()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yi.zhang@huawei.com>
-References: <20210907140154.2134091-1-yukuai3@huawei.com>
- <20210907140154.2134091-3-yukuai3@huawei.com> <YThmhhI1/fZd29b1@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <e295605c-bc8e-cbb9-ca51-1355fdfc0264@huawei.com>
-Date:   Wed, 8 Sep 2021 15:37:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 8 Sep 2021 03:38:30 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9B3763F333
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 07:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631086639;
+        bh=Xl/DB/qd7Mt2jtRMD1Jrfz+4cyEFuk2xdMOwq0sPa0o=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=bZTHswkeXNyTDPc3Gu20ebh+AcnBAZsYMsQiK9ETuhXhcqYN2aVxVUPVmgGqcRe0u
+         pamQzRskNyv7oR0zjEEhBxhTJbHem91KkZg63GSVpVWcPFR+/bSUXUAtFNDBgJ3woJ
+         o5FwDJw9VTYkVSdj+t9x1ZBEVK+LyxFBxCyrM+IIwPLemxmV/3GINweabCUAH1FMOZ
+         mhb7VRgQ1ScGTD6N9jNKUrkcFWtdew5uToOaGRnahVZNZWmbD55yImiMgUjv0LGapH
+         dC1Yyu38J3DBcCcZUZHdaddYSmlSpZtlaf9RBFLS0E+OhNadygf4IOfNuILHjroG/7
+         6IRxjH0lSUhlg==
+Received: by mail-wm1-f72.google.com with SMTP id j33-20020a05600c48a100b002e879427915so596603wmp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Xl/DB/qd7Mt2jtRMD1Jrfz+4cyEFuk2xdMOwq0sPa0o=;
+        b=KmAoiqtlb3GnMB79F3G/N1JFJ+hfn1Pk08IuG1RiAkLLhRtXDnPq+RjaY9mXQqFEd2
+         c4VGo9OSr+Bo+tk7YoV9JTgCupX7/TMkVry6S/HhOqE37D54rYnpDan28kLQCm6eMr2P
+         g3viLWBniZlR7Au3y3IYM7m9VuyCVcnDapqrz0fwEQsye872Oitd7AT6D9VP3F8FYmXJ
+         lOqNn9CjOcMnFCmL7fnTFFix+ArB4545oF/MZHzhCLqvAGonsRa89oPAVZoiU6Kx7S/E
+         sXMWDIRsmOlO403FZCGBKOvjSTUmZhOXzzheMfKsJ5mB0EjqtCoYXOOz+e3D+V5pPSPN
+         fnnA==
+X-Gm-Message-State: AOAM530j2fNFeyPmqV0LaeHT/uJfphPYTn06ySZ7mb8KMdhuN592Yi7k
+        vfYfnpwScEn9g7CRn7IeECQMKD3k5e1KUcAXYH3QIZMntKbGeKScjD2qCpbBBU80Ac9XXqIhgkw
+        bMWJQzCmEbLRUpa25FYCKJLor35j954skOXFy03SASA==
+X-Received: by 2002:a7b:c850:: with SMTP id c16mr2134064wml.22.1631086639205;
+        Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxT/gY/L6a1d5mGa18rZxRFI+AF2+c6swdpOKQ0gxBamkjIAd+eDg9BV8WN4geyHZLXCOsag==
+X-Received: by 2002:a7b:c850:: with SMTP id c16mr2134042wml.22.1631086639049;
+        Wed, 08 Sep 2021 00:37:19 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.217])
+        by smtp.gmail.com with ESMTPSA id s12sm1285746wru.41.2021.09.08.00.37.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 00:37:18 -0700 (PDT)
+Subject: Re: [PATCH 2/6] dt-bindings: mmc: cdns: match MPFS MMC/SDHCI
+ controller
+To:     Conor.Dooley@microchip.com, robh@kernel.org
+Cc:     atish.patra@wdc.com, ulf.hansson@linaro.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, geert+renesas@glider.be,
+        yash.shah@sifive.com, yamada.masahiro@socionext.com,
+        piotrs@cadence.com, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+ <20210819154436.117798-2-krzysztof.kozlowski@canonical.com>
+ <YSUDTSuNlsOmu/G+@robh.at.kernel.org>
+ <9423ddab-4635-ea15-7a9d-dbcf1bc215dc@canonical.com>
+ <CAL_JsqKU4opYerjxXTnAuouLc5-GQQKnPX+qZEMBuzYV-inmJw@mail.gmail.com>
+ <b607f187-5eee-6afa-f50a-c6532acf19e5@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c9855c99-1240-b0a3-4a5c-9f16cee7fe6e@canonical.com>
+Date:   Wed, 8 Sep 2021 09:37:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YThmhhI1/fZd29b1@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <b607f187-5eee-6afa-f50a-c6532acf19e5@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/08 15:30, Ming Lei wrote:
-
->> +put_req:
->> +	if (req)
->> +		blk_mq_put_rq_ref(req);
->>   	return ret ? ERR_PTR(ret) : cmd;
+On 06/09/2021 10:38, Conor.Dooley@microchip.com wrote:
+> On 30/08/2021 16:09, Rob Herring wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On Tue, Aug 24, 2021 at 2:02 PM Krzysztof Kozlowski
+>> <krzysztof.kozlowski@canonical.com> wrote:
+>>> On 24/08/2021 16:33, Rob Herring wrote:
+>>>> On Thu, Aug 19, 2021 at 05:44:32PM +0200, Krzysztof Kozlowski wrote:
+>>>>> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
+>>>>> without any additional vendor compatible:
+>>>> I think the lack of vendor compatible is the error here. Experience has
+>>>> shown that vendor specific compatibles are needed for licensed IP.
+>>>>
+>>> In such case this could be:
+>>> 1. a specific "microchip,mpfs250t-sd4hc", which
+>>> seems to be on MPFS Icicle Kit:
+>>> https://www.digikey.co.uk/en/product-highlight/m/microchip-technology/mpfs-icicle-kit-es--polarfire-soc-fpga-icicle-kit
+>>>
+>>> 2. or a generic "microchip,mpfs-sd4hc"
+>>>
+>>> Any hints here?
+>> Best for a Microchip person to answer, but sure there's some existing
+>> compatible strings for other blocks on this chip to follow the same
+>> pattern.
+>>
+>> Rob
 > 
-> After the request's refcnt is dropped, it can be freed immediately, then
-> one stale command is returned to caller.
+> #2 would be ideal since the controller doesn't change across the part 
+> range, the 250t bit in the part name just covers the size/configuration 
+> of the FPGA.
 
-Hi, Ming
 
-It's right this patch leave this problem. Please take a look at patch 3
-and patch 4, the problem should be fixed with these patches.
+Thanks! I'll go with the microchip,mpfs-sd4hc.
 
-Thanks,
-Kuai
-> 
-> Thanks,
-> Ming
-> 
-> .
-> 
+
+Best regards,
+Krzysztof
