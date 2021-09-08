@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB7C403987
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6800340398F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351682AbhIHMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:10:55 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:35376 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351675AbhIHMKy (ORCPT
+        id S1351650AbhIHMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235195AbhIHMP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:10:54 -0400
-Received: by mail-ot1-f53.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so2643869otf.2;
-        Wed, 08 Sep 2021 05:09:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j7ojHJ1eCmWRZa3pwYfDHA3k+qFmPKIKJn/96r4lWZQ=;
-        b=HKQYV3/aBH2b77KXbYvfooJkUJAD3OCRlWR2BgbyXQ1M0JYsSOSu60pHv7PMVMMUce
-         v+VJgV9xH+74A4Cew96yDQhufXK1XU1Hp4PpaWdxjusbwItkHz/JpsKAsevl4rOeBWY3
-         otWFBY+WzcPRGpbiYrI3bdUXyJvbms1j+qNHnYWjqnuJPJnNgXzko3mSsJ3nsm+hMFiY
-         Prnb2CqEZGf2sr3uOsF5+zMpu8N2GapZgxv0YmZUtGbY4GliidgrTLSbpY9Zz22JhRkW
-         h4Qr5HfJODGDhYb927bmCuFK0ItrStYMZ8oeFt72gP/oG4H9lvv/TB5xmoeHR8hpSyBP
-         4iSw==
-X-Gm-Message-State: AOAM530ndT3qhs2XkbyAD+ZuJ1H/vkyLWRNmUC9TpYagDnRGk0zN1CIB
-        eFucp2aUV1M+vAmdaOGdIg==
-X-Google-Smtp-Source: ABdhPJxWseZDeKVP+HWmuLFENdu1NKMmCTa/qCI19k9RLF4GoYFUHyFtsDm8udD9WFFDAtNTmMM4BA==
-X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr2643550oto.175.1631102986008;
-        Wed, 08 Sep 2021 05:09:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s14sm407750oiw.8.2021.09.08.05.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 05:09:44 -0700 (PDT)
-Received: (nullmailer pid 1869396 invoked by uid 1000);
-        Wed, 08 Sep 2021 12:09:43 -0000
-Date:   Wed, 8 Sep 2021 07:09:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     angelogioacchino.delregno@somainline.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        martin.botka@somainline.org, jamipkettunen@somainline.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-arm-msm@vger.kernel.org,
-        marijn.suijten@somainline.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 1/2] dt-bindings: thermal: tsens: Add msm8992/4
- compatibles
-Message-ID: <YTioBwEEQHWy9Cjf@robh.at.kernel.org>
-References: <20210904211508.317560-1-konrad.dybcio@somainline.org>
+        Wed, 8 Sep 2021 08:15:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC588C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 05:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hEuKeBl0bf7BPTqdloL/nKyrupvk3MfCfBiLXZV+JGo=; b=C0pyq+4MTP9GV/XkkdcwdYrBeL
+        VtLyT3IpdGg0rMMgrOB0oISXy/GE3Pt390RTiq0HNrmljJDklcwCdTVJHODRFpT27YiFokBnbciB7
+        tyZ/63dsfAg7Up6HojqXrMPrNxCy6BWLv0wkRRZF5zSZSkttM0vtgVq2SmD9Rv8D6swwA2pXELEQs
+        kKucCfj7F1QikfTTiDweMb0peya5sNPum93U4/e9og+Y2QGIa3HcqIZ+R87K25a0ud57uhPkQtgzm
+        7dFiJ8N/vrrLeBW8MpXeN7ilNSwIGVQmmcTlQy1JH/5nDX/kSMxyrTwwbXF54kRLMqQBUOJFncyqD
+        kPUNEupA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNwTH-001dYu-0C; Wed, 08 Sep 2021 12:14:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1B646300332;
+        Wed,  8 Sep 2021 14:14:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0578F2080015E; Wed,  8 Sep 2021 14:14:29 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 14:14:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <YTipJJcjU57l7Mju@hirez.programming.kicks-ass.net>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210904211508.317560-1-konrad.dybcio@somainline.org>
+In-Reply-To: <YTijvI3BpBxkWcTd@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 04 Sep 2021 23:15:07 +0200, Konrad Dybcio wrote:
-> Add the compatibles for msm8992/4 TSENS hardware.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
-> Changes since v1:
-> - Separate this into a standalone patch
-> 
->  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Wed, Sep 08, 2021 at 01:51:24PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 01, 2021 at 11:06:27PM +0800, Boqun Feng wrote:
+> @@ -201,23 +207,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+>  {
+>  	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>  	unsigned long flags;
+> +	int readers;
+>  
+>  	/* Take the rtmutex as a first step */
+>  	if (rwbase_rtmutex_lock_state(rtm, state))
+>  		return -EINTR;
+>  
+>  	/* Force readers into slow path */
+> -	atomic_sub(READER_BIAS, &rwb->readers);
+> +	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hurmph... the above really begs for something like
+
+	if (!readers)
+		return 0;
+
+But then we needs that _acquire() thing again :/
+
