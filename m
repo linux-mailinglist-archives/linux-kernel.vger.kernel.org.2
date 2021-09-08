@@ -2,247 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EBF403EFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37765403EEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348529AbhIHSUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
+        id S1349683AbhIHSQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350029AbhIHSTb (ORCPT
+        with ESMTP id S235747AbhIHSQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:19:31 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26B4C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:18:23 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id s29so2780030pfw.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:18:23 -0700 (PDT)
+        Wed, 8 Sep 2021 14:16:06 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE5FC061575;
+        Wed,  8 Sep 2021 11:14:58 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d6so4561363wrc.11;
+        Wed, 08 Sep 2021 11:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6QH0RDVPeUL0uAEEBFwJbknOg+BdYfx7CH2ypXTwO2w=;
-        b=giEp0q8J6UXeA/d1SLYcpRaU1ZjhSNWr6Zok/12qH11RdsMmboBwH+tnmog2G0hHbG
-         ncWe0rPFBfyCAvfEBdz8r2AiKjfnQ0GkhQUdJf9wU030gaFI8ZnZ+brqRNC4qe4CxB5/
-         Rlw0pSZMf8AvD4vn5NHOp0aK6yfn3D6dvsw2o=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YRUmRUUCYmjE8wlXNGRCZTbNeHfZjNb6hJUKTvoLMJE=;
+        b=NRxAAd7y72m0T3aSIbndy+HJVgXcePIEbPw7RzYDKSkGDr7OylwuEsyXxLXxC8Wp3Q
+         a2GeUbAOblhD4Kd/GXztAUU3QND2ihaT0zBBFqWoVemp5eU4KoEC6ZLs3i5TPFQRrhP+
+         zyvLA5xf++zEAKTIqnJ+KxtRDJx8aRRN51jsLJG0x0daYyKFFiCxRoVYBj8euPIGg3jf
+         TR4H1ANvax/D2ToiabFBoYc4vkcD0otvfSmW/Ak3Aw3amFvoAR3T1RpnwmYpHIab1GOg
+         cNHMS/aScEaYwuP8E9p6G1sX74a54i59OEjALlYeL7d7LCTTaaip5SpKqk6EHdfIc27q
+         sN8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6QH0RDVPeUL0uAEEBFwJbknOg+BdYfx7CH2ypXTwO2w=;
-        b=5/VzXtGJJ8qqGaOvGUhw56WcT7QFiorWXcFJLMA9RA2AfTETfrxLn+zSyoM95kPZ/3
-         e/+k/Ao7igzqO+PM9OB5MtfgzmGUG3HJ4MVpqAHilIHrLvWXwYz8nJhTvUqzfFlWyCRD
-         jPE2IlcfNGfTC3UF6yxmHbIzFCPmTeoG82xlJ+Z2RE88wg8Ph/zSypUr0lGJnQou44sh
-         7nBLhy8o1UbPiyKWTeLCdtOwlTd6Q9EH7F5emVHUIJ201nKyaWZhTT98dNaS8dyjbNMn
-         TJqogCz2T5QmmCislQ2QIMdwmLsxES46nplo53N00LEMLnAws1o4EW0gZAK75R633Qsn
-         wU+Q==
-X-Gm-Message-State: AOAM530G6bdPne4iVrfQFTZhszBlHz1PHOjD495y9V6+sV8ZO6kTFoXL
-        E7wH9Eyroolt68eANebdTcYnS1acuIeBvQ==
-X-Google-Smtp-Source: ABdhPJzlngk5m6DfitZJu/F5uavnw6y2sXHYRt7J0/1hqNxGVrL/EMFn5/WRKrUXb7qoJ4oCus5XAg==
-X-Received: by 2002:aa7:86cb:0:b0:412:448c:89c8 with SMTP id h11-20020aa786cb000000b00412448c89c8mr5015182pfo.84.1631125103206;
-        Wed, 08 Sep 2021 11:18:23 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:527e:e80d:8e14:9d07])
-        by smtp.gmail.com with ESMTPSA id mq12sm2917584pjb.38.2021.09.08.11.18.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 11:18:22 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
-Date:   Wed,  8 Sep 2021 11:18:06 -0700
-Message-Id: <20210908111500.2.Iac57921273b27d7f7d65e12ff7be169657f4c1eb@changeid>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-In-Reply-To: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
-References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YRUmRUUCYmjE8wlXNGRCZTbNeHfZjNb6hJUKTvoLMJE=;
+        b=zFRIzNpRlGJx3uWQFQ1gcaWwnh0mtsXBBobdejooyFlGzx3jDBna6eA1v0OFQ0/qT3
+         uGQ/EuF/70Pj2R3EAvOTjLSZ/gUqXTp+dkyCZBtbKKqpmxgDRXU5KcKtE6VI2zfZDYkG
+         xLh1NE+UEJOOIR6nggsrJKO1eRFDP3y4ZD6WAhLZXUWmGS4meYtlJXQHvbna9NwBlpTd
+         UWClqN4BcsePrxPOppDJ4kjba8mUytuXLW27Qn6tffVcBevs3cZjRXCdXuz55xK7hhA3
+         OBcU0G9LR0dKuVtOCxJkLlN11bt3UrPQPUcBWcbdYxo4bank/gvSkjoUIhiK1eAAOwRY
+         Yfjw==
+X-Gm-Message-State: AOAM533Kmb6QWT+jK8TEG2tHP9oo2V7Ij3EpAKPj1AFHGl5Zm74z9ttv
+        tSY2xHMZK3M4TiAX9pKdYdvSjKWnLLTB/sFZsXo=
+X-Google-Smtp-Source: ABdhPJymRYwAKCqCyQNDewZqZfzSmR+wV89gVCvB1gmqaqDId8Vj6kyBJgUfihNgx2+kZsKBr3HzdEa02e+Y80EVfrE=
+X-Received: by 2002:a5d:4488:: with SMTP id j8mr5580376wrq.260.1631124896977;
+ Wed, 08 Sep 2021 11:14:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-8-robdclark@gmail.com>
+ <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
+In-Reply-To: <YTj4yPk1YuFk3oeL@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 8 Sep 2021 11:19:15 -0700
+Message-ID: <CAF6AEGs3DhSKhDkft58VqkM6GwMMSq87GZkQAaPf_LLavDdacA@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] dma-buf/fence-chain: Add fence deadline support
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the first version of AUX support, which will be useful as
-we expand the driver to support varied use cases.
+On Wed, Sep 8, 2021 at 10:54 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Fri, Sep 03, 2021 at 11:47:58AM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/dma-buf/dma-fence-chain.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/drivers/dma-buf/dma-fence-chain.c b/drivers/dma-buf/dma-fence-chain.c
+> > index 1b4cb3e5cec9..736a9ad3ea6d 100644
+> > --- a/drivers/dma-buf/dma-fence-chain.c
+> > +++ b/drivers/dma-buf/dma-fence-chain.c
+> > @@ -208,6 +208,18 @@ static void dma_fence_chain_release(struct dma_fence *fence)
+> >       dma_fence_free(fence);
+> >  }
+> >
+> > +
+> > +static void dma_fence_chain_set_deadline(struct dma_fence *fence,
+> > +                                      ktime_t deadline)
+> > +{
+> > +     dma_fence_chain_for_each(fence, fence) {
+> > +             struct dma_fence_chain *chain = to_dma_fence_chain(fence);
+> > +             struct dma_fence *f = chain ? chain->fence : fence;
+>
+> Doesn't this just end up calling set_deadline on a chain, potenetially
+> resulting in recursion? Also I don't think this should ever happen, why
+> did you add that?
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
+Tbh the fence-chain was the part I was a bit fuzzy about, and the main
+reason I added igt tests.  The iteration is similar to how, for ex,
+dma_fence_chain_signaled() work, and according to the igt test it does
+what was intended
 
- drivers/gpu/drm/bridge/parade-ps8640.c | 123 +++++++++++++++++++++++++
- 1 file changed, 123 insertions(+)
+BR,
+-R
 
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index a16725dbf912..3f0241a60357 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -9,15 +9,36 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/of_graph.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_bridge.h>
-+#include <drm/drm_dp_helper.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
- #include <drm/drm_print.h>
- 
-+#define PAGE0_AUXCH_CFG3	0x76
-+#define  AUXCH_CFG3_RESET	0xff
-+#define PAGE0_AUX_ADDR_7_0	0x7d
-+#define PAGE0_AUX_ADDR_15_8	0x7e
-+#define PAGE0_AUX_ADDR_23_16	0x7f
-+#define  AUX_ADDR_19_16_MASK	GENMASK(3, 0)
-+#define  AUX_CMD_MASK		GENMASK(7, 4)
-+#define PAGE0_AUX_LENGTH	0x80
-+#define  AUX_LENGTH_MASK	GENMASK(3, 0)
-+#define PAGE0_AUX_WDATA		0x81
-+#define PAGE0_AUX_RDATA		0x82
-+#define PAGE0_AUX_CTRL		0x83
-+#define  AUX_START		0x01
-+#define PAGE0_AUX_STATUS	0x84
-+#define  AUX_STATUS_MASK	GENMASK(7, 5)
-+#define  AUX_STATUS_TIMEOUT	(0x7 << 5)
-+#define  AUX_STATUS_DEFER	(0x2 << 5)
-+#define  AUX_STATUS_NACK	(0x1 << 5)
-+
- #define PAGE2_GPIO_H		0xa7
- #define  PS_GPIO9		BIT(1)
- #define PAGE2_I2C_BYPASS	0xea
-@@ -63,6 +84,7 @@ enum ps8640_vdo_control {
- struct ps8640 {
- 	struct drm_bridge bridge;
- 	struct drm_bridge *panel_bridge;
-+	struct drm_dp_aux aux;
- 	struct mipi_dsi_device *dsi;
- 	struct i2c_client *page[MAX_DEVS];
- 	struct regmap	*regmap[MAX_DEVS];
-@@ -93,6 +115,102 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
- 	return container_of(e, struct ps8640, bridge);
- }
- 
-+static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
-+{
-+	return container_of(aux, struct ps8640, aux);
-+}
-+
-+static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-+				   struct drm_dp_aux_msg *msg)
-+{
-+	struct ps8640 *ps_bridge = aux_to_ps8640(aux);
-+	struct i2c_client *client = ps_bridge->page[PAGE0_DP_CNTL];
-+	struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
-+	unsigned int len = msg->size;
-+	unsigned int data;
-+	int ret;
-+	u8 request = msg->request &
-+		     ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
-+	u8 *buf = msg->buffer;
-+	bool is_native_aux = false;
-+
-+	if (len > DP_AUX_MAX_PAYLOAD_BYTES)
-+		return -EINVAL;
-+
-+	pm_runtime_get_sync(&client->dev);
-+
-+	switch (request) {
-+	case DP_AUX_NATIVE_WRITE:
-+	case DP_AUX_NATIVE_READ:
-+		is_native_aux = true;
-+	case DP_AUX_I2C_WRITE:
-+	case DP_AUX_I2C_READ:
-+		regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	/* Assume it's good */
-+	msg->reply = 0;
-+
-+	data = ((request << 4) & AUX_CMD_MASK) |
-+	       ((msg->address >> 16) & AUX_ADDR_19_16_MASK);
-+	regmap_write(map, PAGE0_AUX_ADDR_23_16, data);
-+	data = (msg->address >> 8) & 0xff;
-+	regmap_write(map, PAGE0_AUX_ADDR_15_8, data);
-+	data = msg->address & 0xff;
-+	regmap_write(map, PAGE0_AUX_ADDR_7_0, msg->address & 0xff);
-+
-+	data = (len - 1) & AUX_LENGTH_MASK;
-+	regmap_write(map, PAGE0_AUX_LENGTH, data);
-+
-+	if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE) {
-+		ret = regmap_noinc_write(map, PAGE0_AUX_WDATA, buf, len);
-+		if (ret < 0) {
-+			DRM_ERROR("failed to write PAGE0_AUX_WDATA");
-+			goto exit;
-+		}
-+	}
-+
-+	regmap_write(map, PAGE0_AUX_CTRL, AUX_START);
-+
-+	regmap_read(map, PAGE0_AUX_STATUS, &data);
-+	switch (data & AUX_STATUS_MASK) {
-+	case AUX_STATUS_DEFER:
-+		if (is_native_aux)
-+			msg->reply |= DP_AUX_NATIVE_REPLY_DEFER;
-+		else
-+			msg->reply |= DP_AUX_I2C_REPLY_DEFER;
-+		goto exit;
-+	case AUX_STATUS_NACK:
-+		if (is_native_aux)
-+			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-+		else
-+			msg->reply |= DP_AUX_I2C_REPLY_NACK;
-+		goto exit;
-+	case AUX_STATUS_TIMEOUT:
-+		ret = -ETIMEDOUT;
-+		goto exit;
-+	}
-+
-+	if (request == DP_AUX_NATIVE_READ || request == DP_AUX_I2C_READ) {
-+		ret = regmap_noinc_read(map, PAGE0_AUX_RDATA, buf, len);
-+		if (ret < 0)
-+			DRM_ERROR("failed to read PAGE0_AUX_RDATA");
-+	}
-+
-+exit:
-+	pm_runtime_mark_last_busy(&client->dev);
-+	pm_runtime_put_autosuspend(&client->dev);
-+
-+	if (ret)
-+		return ret;
-+
-+	return len;
-+}
-+
- static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
- 				     const enum ps8640_vdo_control ctrl)
- {
-@@ -387,6 +505,11 @@ static int ps8640_probe(struct i2c_client *client)
- 
- 	i2c_set_clientdata(client, ps_bridge);
- 
-+	ps_bridge->aux.name = "parade-ps8640-aux";
-+	ps_bridge->aux.dev = dev;
-+	ps_bridge->aux.transfer = ps8640_aux_transfer;
-+	drm_dp_aux_init(&ps_bridge->aux);
-+
- 	drm_bridge_add(&ps_bridge->bridge);
- 
- 	return 0;
--- 
-2.33.0.153.gba50c8fa24-goog
-
+> -Daniel
+>
+> > +
+> > +             dma_fence_set_deadline(f, deadline);
+> > +     }
+> > +}
+> > +
+> >  const struct dma_fence_ops dma_fence_chain_ops = {
+> >       .use_64bit_seqno = true,
+> >       .get_driver_name = dma_fence_chain_get_driver_name,
+> > @@ -215,6 +227,7 @@ const struct dma_fence_ops dma_fence_chain_ops = {
+> >       .enable_signaling = dma_fence_chain_enable_signaling,
+> >       .signaled = dma_fence_chain_signaled,
+> >       .release = dma_fence_chain_release,
+> > +     .set_deadline = dma_fence_chain_set_deadline,
+> >  };
+> >  EXPORT_SYMBOL(dma_fence_chain_ops);
+> >
+> > --
+> > 2.31.1
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
