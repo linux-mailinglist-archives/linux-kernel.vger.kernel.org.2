@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266204038C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7F84038CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 13:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349161AbhIHLdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 07:33:25 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35164 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbhIHLdV (ORCPT
+        id S1349190AbhIHLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 07:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233694AbhIHLdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:33:21 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 188BWBN8008178;
-        Wed, 8 Sep 2021 06:32:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631100731;
-        bh=AZVddGgyrMeNCeMAdzzk6hAXy8GcpJUdmlIjzPJCxT0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=kto+A+tye33ToZTbvTZtwDalC974GvHFFU7GfUy+d1ggAkYK/mJJKdo6c8kbgmtIl
-         PTbFqYJohfMl0PS9E1m64cksp+0rRF7vs9NjiMq3uDfqZA11y60wjLOZrRVrUvT9oa
-         oUe1f9EugMLKxv3y40lV13qUHqw3lv3oKIqKuSJc=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 188BWBwA026093
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Sep 2021 06:32:11 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
- Sep 2021 06:32:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 8 Sep 2021 06:32:11 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 188BWAgw044553;
-        Wed, 8 Sep 2021 06:32:11 -0500
-Date:   Wed, 8 Sep 2021 17:02:09 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Parshuram Raju Thombare <pthombar@cadence.com>
-CC:     "broonie@kernel.org" <broonie@kernel.org>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jayshri Dajiram Pawar <jpawar@cadence.com>,
-        Milind Parab <mparab@cadence.com>,
-        Konrad Kociolek <konrad@cadence.com>
-Subject: Re: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
- Cadence XSPI controller
-Message-ID: <20210908113207.6y6h6l23htngrea2@ti.com>
-References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
- <1630499829-20059-1-git-send-email-pthombar@cadence.com>
- <20210903181722.ukarfanyew2b7yoz@ti.com>
- <CY4PR07MB2757DF7EFD862D67FBF648CBC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
+        Wed, 8 Sep 2021 07:33:39 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447A9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 04:32:32 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 4so1216204qvp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 04:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dGqDBNeImnlpPB+fs7MgCAcmpAqznzgXXA/D+4qA06o=;
+        b=jzVOZYESov2a5VL3sQFR5E/Uw54T5pZbWSarFTKJb9HWHvGKCzxNi6pqflNyPSguss
+         jiO16tAm4nIWFzLXq1Bk6Fm86RYfeJSVN1UmnWfxBWJClbsb+ozMRkBsx+e2+ZKkaJP1
+         amAkUDZRDr/nkX9gd5QEyPJopaV26p/kuz3GdsxbRJMU+emmqzVw+mKmppUsAkL+efNM
+         RsbtaWNXBVXijmKqeQaA+mz+sYzUoMQyn/xEq/s7R9BqUlE9SAOWOWqfSJIjRHCQCuLV
+         DXgK7tO6XbmyyO44dSOriqyCDwtjJNU2hLFRgOlMrf5GqL8iA9TdeL3Qhu0O9qCiVMn5
+         dtoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dGqDBNeImnlpPB+fs7MgCAcmpAqznzgXXA/D+4qA06o=;
+        b=Y9bNT0wdcPFi2/WoyuAgj+BBBRu2d2rRzgUaL/h3fc2+ozyikFElB1townBZiez/rJ
+         j88lV3Sfl+08bSAk5i0xSSYbno4YSEV972zmUGaTv9LbjO1CF1QtuyUObCl1o4VIYt0n
+         qFETZZSXg2m471owqmHO7nKo9k/Tdhr5PG7x0g5LmCoPlmru5uCPdyUujbeBQwDYGfVx
+         tvgXeqN1Kcd/hw07n1YiXQ9uh1X5rWcVS+A7nZEjcjgfR68aEtKeT+fNyfFf1d7ldUYV
+         d6eF3/k7RZiAMFMLTwug/vZF1oUoIhNmUGpnAn+PpjVQGxrnXFAB6I8XXrzh/W03NVDC
+         ghug==
+X-Gm-Message-State: AOAM53312Ki1hGzR9Luit0v+zFMYXopF+x4vOraLxGLmxpUCL4j8rXdO
+        9KEQ7afGhJmnrVDRbRU7/Zb/Og==
+X-Google-Smtp-Source: ABdhPJxmOb2XHCvNsxDX7Z0jfaVtgPhbKAdnBalix+36RPRrrAxj9KZUPl2TI8dRvuQ0Y4EJny0DQA==
+X-Received: by 2002:a0c:cb10:: with SMTP id o16mr3334416qvk.57.1631100751517;
+        Wed, 08 Sep 2021 04:32:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:190a])
+        by smtp.gmail.com with ESMTPSA id j23sm1486722qkl.65.2021.09.08.04.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 04:32:30 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 07:32:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Ravi Singh <ravi.singh1@samsung.com>
+Cc:     mingo@redhat.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
+        v.narang@samsung.com, vishal.goel@samsung.com,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH] psi: fix integer overflow on unsigned int multiply on 32
+ bit systems
+Message-ID: <YTifTWj6xsLZSjLA@cmpxchg.org>
+References: <CGME20210906122653epcas5p19c46576f0be4d4a101f851a751addde8@epcas5p1.samsung.com>
+ <1630931124-27197-1-git-send-email-ravi.singh1@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CY4PR07MB2757DF7EFD862D67FBF648CBC1D49@CY4PR07MB2757.namprd07.prod.outlook.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <1630931124-27197-1-git-send-email-ravi.singh1@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/21 06:52AM, Parshuram Raju Thombare wrote:
-> >This needs to be a "subclass" of the spi-controller.yaml binding.
-> >
-> >allOf:
-> >  - $ref: spi-controller.yaml#
+CC Suren
+
+On Mon, Sep 06, 2021 at 05:55:24PM +0530, Ravi Singh wrote:
+> psi accepts window sizes upto WINDOW_MAX_US(10000000). In the case
+> where window_us is larger than 4294967, the result of an
+> multiplication overflows an unsigned int/long(4 bytes on 32 bit
+> system).
 > 
-> Isn't stating that validation need against spi-controller.yaml as well as
-> this schema sufficient ? Can you please point an example how to make
-> controller binding a "subclass" of spi-controller.yaml binding ?
-
-I just showed you. You need to add the below lines:
-
-allOf:
-  - $ref: spi-controller.yaml#
-
-See cdns,qspi-nor.yaml or nvidia,tegra210-quad.yaml or any of the 
-multiple controller bindings we already have.
-
-By "subclass" I did not mean a programming construct, I just meant it 
-should logically be a subclass of the spi-controller.yaml binding, which 
-can be done by the allOf.
-
+> For example, this can happen when the window_us is 5000000 so 5000000
+> * 1000 (NSEC_PER_USEC) will result in 5000000000 which is greater than
+> UINT_MAX(4294967295). Due to this overflow, 705032704 is stored in
+> t->win.size instead of 5000000000. Now psi will be monitoring the
+> window size of 705 msecs instead of 5 secs as expected by user.
 > 
-> >Node name should be flash@0.
+> Fix this by type casting the first term of the mutiply to a u64.
 > 
-> I think spi-controller.yaml uses wildcard for the name of a device node,
-> so anything in string@hexvalue: should work.
-
-Sure, but mtd.yaml (which the SPI NOR binding depends on) requires it.
-
+> Issue doesnot occur on 64 bit systems because NSEC_PER_USEC is of type
+> long which is 8 bytes on 64 bit systems.
 > 
-> >> +            compatible = "spi-nor", "micron,mt35xu512";
-> >
-> >These compatibles are arbitrary and undocumented. You probably just need
-> >"jedec,spi-nor". If you need anything else, you need to justify why.
+> Signed-off-by: Ravi Singh <ravi.singh1@samsung.com>
+> Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+> ---
+>  kernel/sched/psi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Although just "spi-nor" also works, I agree to use "jedec, spi-nor" and drop
-> device name.
-
-Does it? I see "jedec,spi-nor" compatible documented, but not just 
-"spi-nor". And I don't see "micron,mt35xu512" compatible documented 
-anywhere either.
-
-Anyway, please just use "jedec,spi-nor".
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 1652f2bb5..a2cc33dc2 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -1145,7 +1145,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+>  	t->group = group;
+>  	t->state = state;
+>  	t->threshold = threshold_us * NSEC_PER_USEC;
+> -	t->win.size = window_us * NSEC_PER_USEC;
+> +	t->win.size = (u64)window_us * NSEC_PER_USEC;
+>  	window_reset(&t->win, 0, 0, 0);
+>  
+>  	t->event = 0;
+> -- 
+> 2.17.1
+> 
