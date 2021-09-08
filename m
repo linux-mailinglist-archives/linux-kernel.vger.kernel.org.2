@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE91403596
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884F840359E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347947AbhIHHio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350520AbhIHHig (ORCPT
+        id S1350520AbhIHHkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:40:02 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41679 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350174AbhIHHj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:38:36 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68225C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 00:37:29 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id g34so438936vkd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 00:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxByYRg2XXqbg48iaJnwshxIX8ARRbQbbWyTDrsMpDg=;
-        b=JtC8vxGN7eRYHrK74+0gnNKbyBQ6ygwCoAYMm88H5oYJZgf0QTejxJoGm/EWBYMNI2
-         u74hLHaovlTxOuAO53GNWUjTNPZS1gCwm0TDI/ZJUB4HeCswQastk9SHPqMEB61BUjNC
-         DierBZIFFkUSg8nBXL8zZskDsijYbJLqKYVig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxByYRg2XXqbg48iaJnwshxIX8ARRbQbbWyTDrsMpDg=;
-        b=nijm09rUkETjnXG/XPn71D6qPHu5h2Dn62IrISJHfi0OmJ3eOnwCEz714V0fGB5C/T
-         4GNE9g/qBcNDjEiw4Zj/64bKbcy11LKw/O3GfyT6pEyT+RzvTN7t2X5XPMoU9dLSArAD
-         GhMsVMTvzlNORmJsqlSStWbi+ZZPDtKLlrGqEViq2FdQbwSi7cCVIt8TXJQ3jADgC/zZ
-         BWoUvmZXSQafSm/p/hybIjBQHOndUmecq81rzrctHtqz5T6yNeb5dNMAmMnlp391iNkR
-         wM62GVIvJ25k1aef3ZDPCIMV/YsMJ2wWKaaN9+C1nANFtq1ZF8oqhq/vnYB/OQNaNB7G
-         wXFQ==
-X-Gm-Message-State: AOAM533/MRvpxO5EM/yO7I6wBwmZpw0QvvUOIbnzPHE+/TlvgCY50RVs
-        kI0xMaEqpQC2+gt2rrVeEtutm2mZPZFytq4DKT/oMQ==
-X-Google-Smtp-Source: ABdhPJzIbNRikobIOOunmSW5bp+DYjiJjzAzKNlWichoE9SwXSEqDDtjTORr8+/U3/M9/5256zkNoLf4zkFpLQ7XPiI=
-X-Received: by 2002:a1f:a348:: with SMTP id m69mr216744vke.10.1631086648497;
- Wed, 08 Sep 2021 00:37:28 -0700 (PDT)
+        Wed, 8 Sep 2021 03:39:59 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id EC2725C017C;
+        Wed,  8 Sep 2021 03:38:51 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 08 Sep 2021 03:38:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=eY9e3KHvImSnOcly/mgefvGxXsz
+        urR1QnYbyWlk8BAY=; b=j1RHEjTfDs+LIMAvs3Pp3IzH2wEoHTLg5+DUD+C62fn
+        14aMV8JawnsUQ3xCq7aT8hAhlfaTDFhwxgiUiICNbVW5XDx8QW5szCGNIx5Pd6mz
+        rQDP4FBGdpHQu2FQD2y4v2gr1bA74RrVTwNTlW3ZcjPaLl5qw08edKmqpxhgaWOF
+        w/pHbMPQSt6TguBqOuKnNREqWThURw2ujIJ0rjSdBnQS0yIZdFhPIZcO0lHAXw0H
+        bW1y5AJzHlZGeDhekYlL/9rnwdjByfXmcYuTEQJWdt9b89WUevtIR2UEkdiqQUs5
+        pFrb1sB80RKajzm6MceshNVgvaQhEvFh9vtBGscOlWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eY9e3K
+        HvImSnOcly/mgefvGxXszurR1QnYbyWlk8BAY=; b=lTd07EADpZlJ7Is8FFCQnL
+        nUPcT0Tvks52flu/YVXIJqQGIAMln2w57XoPfRqlkAk6Sz7ORtz7xF85mMRhdmwW
+        vkyzGJ+r4ocUieaVeMMGBdeMDtXdNe16sAumqjQ+JTBGNnjd+krPrza9LxtKcAzi
+        TTcRSxF0oHMdbeF+ciV7V663u+mSPLeYUG+BB8Z+qz+juwHe0tFR6VAmdbDRDyg1
+        AJucffZPTYnwwXo9BQolYMxXLJzDa/8AWked30UwH8XcJvazoBOtTa9HlWCEvtiJ
+        p/sqvoNEWCHU1tYmFPeIaZDL/OdKKfycjmEc1uMBhpUoj41x+ATJCGai3S8tot7g
+        ==
+X-ME-Sender: <xms:iWg4YYilmkPWFJGzWo0sYCFpwWJkPWJ5uhOta5GvN4DI9iml-_aG9A>
+    <xme:iWg4YRDH5or7LcxGr4lzUEGYt_V_SeLwug_2T18qDToIF4yuDKYxdK_Yf7R-NmLOu
+    _mW8tSkWxW_Aq85ffs>
+X-ME-Received: <xmr:iWg4YQF6O9XbcWJaEHAoCIuviB4vl5GXaj-__xP8EZq1ytNJyHm3o2YnEGPqvHceAeBpLU4lRzaL0jBM2HaOGQfWA3Fs9_Nn-Rkk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedguddulecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:iWg4YZREv9XRVbEQEQ5tr4rQjOK_lN5AFebI4EprTXwYURHPDwH5Bg>
+    <xmx:iWg4YVzvwKaCmQL_cXPJJDaf79aZLxA32eCY4gyFFEfghOJDnaWDFg>
+    <xmx:iWg4YX4u6UgZpqxdzJselJLNKEIH7Kr_MTnGKLn8ZOYGGqhBPimYYw>
+    <xmx:i2g4YXuZveOxAObP646JkT6YYt2JY9iDHhWWD-zk3JCNOaL_aMMQjw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Sep 2021 03:38:49 -0400 (EDT)
+Date:   Wed, 8 Sep 2021 09:38:48 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: sunxi_sram: Make use of the helper function
+ devm_platform_ioremap_resource()
+Message-ID: <20210908073848.prn2exktfcozputt@gilmour>
+References: <20210908071716.772-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com> <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
- <YTYoEDT+YOtCHXW0@work-vm> <CAJfpegvbkmdneMxMjYMuNM4+RmWT8S7gaTiDzaq+TCzb0UrQrw@mail.gmail.com>
- <YTfcT1JUactPhwSA@redhat.com>
-In-Reply-To: <YTfcT1JUactPhwSA@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 8 Sep 2021 09:37:17 +0200
-Message-ID: <CAJfpegumUMsQ1Zk4MjnSXhrcnX_RJfM5LJ2oL6W3Um_wFNPRFQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Daniel J Walsh <dwalsh@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Casey Schaufler <casey.schaufler@intel.com>,
-        LSM <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        "Fields, Bruce" <bfields@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rssfxldbfmegsqom"
+Content-Disposition: inline
+In-Reply-To: <20210908071716.772-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 23:40, Vivek Goyal <vgoyal@redhat.com> wrote:
->
-> On Mon, Sep 06, 2021 at 04:56:44PM +0200, Miklos Szeredi wrote:
-> > On Mon, 6 Sept 2021 at 16:39, Dr. David Alan Gilbert
-> > <dgilbert@redhat.com> wrote:
-> >
-> > > IMHO the real problem here is that the user/trusted/system/security
-> > > 'namespaces' are arbitrary hacks rather than a proper namespacing
-> > > mechanism that allows you to create new (nested) namespaces and associate
-> > > permissions with each one.
-> >
-> > Indeed.
-> >
-> > This is what Eric Biederman suggested at some point for supporting
-> > trusted xattrs within a user namespace:
-> >
-> > | For trusted xattrs I think it makes sense in principle.   The namespace
-> > | would probably become something like "trusted<ns-root-uid>.".
-> >
-> > Theory sounds simple enough.  Anyone interested in looking at the details?
->
-> So this namespaced trusted.* xattr domain will basically avoid the need
-> to have CAP_SYS_ADMIN in init_user_ns, IIUC.  I guess this is better
-> than giving CAP_SYS_ADMIN in init_user_ns.
 
-That's the objective, yes.  I think the trick is getting filesystems
-to store yet another xattr type.
+--rssfxldbfmegsqom
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Miklos
+On Wed, Sep 08, 2021 at 03:17:15PM +0800, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+Applied, thanks
+Maxime
+
+--rssfxldbfmegsqom
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYThoiAAKCRDj7w1vZxhR
+xdi6AQCw/YNF5oM5VY6/a/WeE0h2X2pWXX17mFDcWOVv0suIeQD9F3YnP67aw83e
+sphwY0wv9TCVqtO5WcizO0kJ1kCOYAc=
+=Gcia
+-----END PGP SIGNATURE-----
+
+--rssfxldbfmegsqom--
