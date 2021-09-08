@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9851403D36
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0D9403D32
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 18:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349588AbhIHQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 12:02:57 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:33778 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234148AbhIHQCz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 12:02:55 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-228-r6fXZtf1PPeuGpV28TwQBA-1; Wed, 08 Sep 2021 17:01:45 +0100
-X-MC-Unique: r6fXZtf1PPeuGpV28TwQBA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Wed, 8 Sep 2021 17:01:43 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Wed, 8 Sep 2021 17:01:43 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>
-CC:     Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [tip: timers/urgent] time: Handle negative seconds correctly in
- timespec64_to_ns()
-Thread-Topic: [tip: timers/urgent] time: Handle negative seconds correctly in
- timespec64_to_ns()
-Thread-Index: AQHXpMkzlZUT75FKtkqpqy/t13Z0QquaSvLg
-Date:   Wed, 8 Sep 2021 16:01:43 +0000
-Message-ID: <a4bbf640306c42429afda8a4fc396f98@AcuMS.aculab.com>
-References: =?utf-8?q?=3CAM6PR01MB541637BD6F336B8FFB72AF80EEC69=40AM6PR01M?=
- =?utf-8?q?B5416=2Eeurprd01=2Eprod=2Eexchangelabs=2Ecom=3E?=
- <163111620295.25758.18154572095175068828.tip-bot2@tip-bot2>
-In-Reply-To: <163111620295.25758.18154572095175068828.tip-bot2@tip-bot2>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1352301AbhIHQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 12:01:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52079 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349719AbhIHQBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 12:01:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="200050286"
+X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; 
+   d="scan'208";a="200050286"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 09:00:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; 
+   d="scan'208";a="547885610"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Sep 2021 09:00:34 -0700
+Date:   Wed, 8 Sep 2021 09:02:06 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
+ supported
+Message-ID: <20210908160206.7jncf45ptn7bwamf@gupta-dev2.localdomain>
+References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
+ <20210907051454.56eocxfxeuqixlf6@gupta-dev2.localdomain>
+ <CAPm50aLWUJZbgmvrt09S9LKowuH28NQpn7ZSuCkJGf_=jKFjXg@mail.gmail.com>
+ <20210907225912.2i6cmprvauyxrhlu@gupta-dev2.localdomain>
+ <CAPm50aLFvP=F6Lz9M-a5aNcrx+cEkAZ6NPWwEShEx2yKk64c_g@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPm50aLFvP=F6Lz9M-a5aNcrx+cEkAZ6NPWwEShEx2yKk64c_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBDb21taXR0ZXI6ICAgICBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4g
-Q29tbWl0dGVyRGF0ZTogV2VkLCAwOCBTZXAgMjAyMSAxNzo0NDoyNiArMDI6MDANCj4gDQo+IHRp
-bWU6IEhhbmRsZSBuZWdhdGl2ZSBzZWNvbmRzIGNvcnJlY3RseSBpbiB0aW1lc3BlYzY0X3RvX25z
-KCkNCj4gDQo+IHRpbWVzcGVjNjRfbnMoKSBwcmV2ZW50cyBtdWx0aXBsaWNhdGlvbiBvdmVyZmxv
-d3MgYnkgY29tcGFyaW5nIHRoZSBzZWNvbmRzDQo+IHZhbHVlIG9mIHRoZSB0aW1lc3BlYyB0byBL
-VElNRV9TRUNfTUFYLiBJZiB0aGUgdmFsdWUgaXMgZ3JlYXRlciBvciBlcXVhbCBpdA0KPiByZXR1
-cm5zIEtUSU1FX01BWC4NCj4gDQo+IEJ1dCB0aGF0IGNoZWNrIGNhc3RzIHRoZSBzaWduZWQgc2Vj
-b25kcyB2YWx1ZSB0byB1bnNpZ25lZCB3aGljaCBtYWtlcyB0aGUNCj4gY29tcGFyaXNpb24gdHJ1
-ZSBmb3IgYWxsIG5lZ2F0aXZlIHZhbHVlcyBhbmQgdGhlcmVmb3JlIHJldHVybiB3cm9uZ2x5DQo+
-IEtUSU1FX01BWC4NCj4gDQo+IE5lZ2F0aXZlIHNlY29uZCB2YWx1ZXMgYXJlIHBlcmZlY3RseSB2
-YWxpZCBhbmQgcmVxdWlyZWQgaW4gc29tZSBwbGFjZXMsDQo+IGUuZy4gcHRwX2Nsb2NrX2FkanRp
-bWUoKS4NCj4gDQo+IFJlbW92ZSB0aGUgY2FzdCBhbmQgYWRkIGEgY2hlY2sgZm9yIHRoZSBuZWdh
-dGl2ZSBib3VuZGFyeSB3aGljaCBpcyByZXF1aXJlZA0KPiB0byBwcmV2ZW50IHVuZGVmaW5lZCBi
-ZWhhdmlvdXIgZHVlIHRvIG11bHRpcGxpY2F0aW9uIHVuZGVyZmxvdy4NCj4gDQo+IEZpeGVzOiBj
-YjQ3NzU1NzI1ZGEgKCJ0aW1lOiBQcmV2ZW50IHVuZGVmaW5lZCBiZWhhdmlvdXIgaW4gdGltZXNw
-ZWM2NF90b19ucygpIiknDQo+IFNpZ25lZC1vZmYtYnk6IEx1a2FzIEhhbm5lbiA8bHVrYXMuaGFu
-bmVuQG9wZW5zb3VyY2UudHR0ZWNoLWluZHVzdHJpYWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBU
-aG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4gQ2M6IHN0YWJsZUB2Z2VyLmtl
-cm5lbC5vcmcNCj4gTGluazoNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci9BTTZQUjAxTUI1
-NDE2MzdCRDZGMzM2QjhGRkI3MkFGODBFRUM2OUBBTTZQUjAxTUI1NDE2LmV1cnByZDAxLnByb2Qu
-ZXhjaGFuZ2VsDQo+IGFicy5jb20NCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L3RpbWU2NC5oIHwg
-IDkgKysrKysrKy0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAyIGRlbGV0
-aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdGltZTY0LmggYi9pbmNs
-dWRlL2xpbnV4L3RpbWU2NC5oDQo+IGluZGV4IDUxMTdjYjUuLjgxYjk2ODYgMTAwNjQ0DQo+IC0t
-LSBhL2luY2x1ZGUvbGludXgvdGltZTY0LmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC90aW1lNjQu
-aA0KPiBAQCAtMjUsNyArMjUsOSBAQCBzdHJ1Y3QgaXRpbWVyc3BlYzY0IHsNCj4gICNkZWZpbmUg
-VElNRTY0X01JTgkJCSgtVElNRTY0X01BWCAtIDEpDQo+IA0KPiAgI2RlZmluZSBLVElNRV9NQVgJ
-CQkoKHM2NCl+KCh1NjQpMSA8PCA2MykpDQo+ICsjZGVmaW5lIEtUSU1FX01JTgkJCSgtS1RJTUVf
-TUFYIC0gMSkNCj4gICNkZWZpbmUgS1RJTUVfU0VDX01BWAkJCShLVElNRV9NQVggLyBOU0VDX1BF
-Ul9TRUMpDQo+ICsjZGVmaW5lIEtUSU1FX1NFQ19NSU4JCQkoS1RJTUVfTUlOIC8gTlNFQ19QRVJf
-U0VDKQ0KPiANCj4gIC8qDQo+ICAgKiBMaW1pdHMgZm9yIHNldHRpbWVvZmRheSgpOg0KPiBAQCAt
-MTI0LDEwICsxMjYsMTMgQEAgc3RhdGljIGlubGluZSBib29sIHRpbWVzcGVjNjRfdmFsaWRfc2V0
-dG9kKGNvbnN0IHN0cnVjdCB0aW1lc3BlYzY0ICp0cykNCj4gICAqLw0KPiAgc3RhdGljIGlubGlu
-ZSBzNjQgdGltZXNwZWM2NF90b19ucyhjb25zdCBzdHJ1Y3QgdGltZXNwZWM2NCAqdHMpDQo+ICB7
-DQo+IC0JLyogUHJldmVudCBtdWx0aXBsaWNhdGlvbiBvdmVyZmxvdyAqLw0KPiAtCWlmICgodW5z
-aWduZWQgbG9uZyBsb25nKXRzLT50dl9zZWMgPj0gS1RJTUVfU0VDX01BWCkNCj4gKwkvKiBQcmV2
-ZW50IG11bHRpcGxpY2F0aW9uIG92ZXJmbG93IC8gdW5kZXJmbG93ICovDQo+ICsJaWYgKHRzLT50
-dl9zZWMgPj0gS1RJTUVfU0VDX01BWCkNCj4gIAkJcmV0dXJuIEtUSU1FX01BWDsNCj4gDQo+ICsJ
-aWYgKHRzLT50dl9zZWMgPD0gS1RJTUVfU0VDX01JTikNCj4gKwkJcmV0dXJuIEtUSU1FX01JTjsN
-Cj4gKw0KPiAgCXJldHVybiAoKHM2NCkgdHMtPnR2X3NlYyAqIE5TRUNfUEVSX1NFQykgKyB0cy0+
-dHZfbnNlYzsNCj4gIH0NCg0KQWRkaW5nIHR2X25zZWMgY2FuIHN0aWxsIG92ZXJmbG93IC0gIGV2
-ZW4gaWYgdHZfbnNlYyBpcyBib3VuZGVkIHRvICsvLSAxIHNlY29uZC4NClRoaXMgaXMgbm8gbW9y
-ZSAnZ2FyYmFnZSBpbicgPT4gJ2dhcmJhZ2Ugb3V0JyB0aGFuIHRoZSBjb2RlIHdpdGhvdXQgdGhl
-DQptdWx0aXBseSB1bmRlci9vdmVyZmxvdyBjaGVjay4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVy
-ZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5
-bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On 08.09.2021 13:06, Hao Peng wrote:
+>On Wed, Sep 8, 2021 at 6:57 AM Pawan Gupta
+><pawan.kumar.gupta@linux.intel.com> wrote:
+>>
+>> On 07.09.2021 14:36, Hao Peng wrote:
+>> >On Tue, Sep 7, 2021 at 1:13 PM Pawan Gupta
+>> ><pawan.kumar.gupta@linux.intel.com> wrote:
+>> >>
+>> >> On 06.09.2021 10:46, Hao Peng wrote:
+>> >> >If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+>> >> >RTM and HLE features, it will affect TAA mitigation.
+>> >>
+>> >> Guests are on purpose not allowed to control TSX via MSR_IA32_TSX_CTRL,
+>> >> otherwise a malicious guest can enable TSX and attack host or other
+>> >> guests. The TAA mitigation within a guest is same as MDS i.e.
+>> >> micro-architectural buffer clear using VERW instruction. Support for
+>> >> VERW is added by the microcode update and enumerate by
+>> >> MSR_ARCH_CAP[MD_CLEAR] bit.
+>> >>
+>> >> >Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+>> >> >---
+>> >> > arch/x86/kernel/cpu/tsx.c | 7 +++++++
+>> >> > 1 file changed, 7 insertions(+)
+>> >> >
+>> >> >diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+>> >> >index 9c7a5f049292..5e852c14fef2 100644
+>> >> >--- a/arch/x86/kernel/cpu/tsx.c
+>> >> >+++ b/arch/x86/kernel/cpu/tsx.c
+>> >> >@@ -122,6 +122,13 @@ void __init tsx_init(void)
+>> >> >
+>> >> >        if (!tsx_ctrl_is_supported()) {
+>> >> >                tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
+>> >> >+
+>> >> >+               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
+>> >> >+                * but guest supports RTM and HLE features, it will affect TAA
+>> >> >+                * （tsx_async_abort）mitigation.
+>> >> >+                */
+>> >> >+               setup_clear_cpu_cap(X86_FEATURE_RTM);
+>> >> >+               setup_clear_cpu_cap(X86_FEATURE_HLE);
+>> >>
+>> >> This is not correct. TSX feature can exist without TSX_CTRL MSR.
+>> >> Moreover, clearing the cached bits with setup_clear_cpu_cap() doesn't
+>> >> disable the TSX feature in CPU.
+>> >>
+>> >After applying this patch, the output of
+>> >/sys/devices/system/cpu/vulnerabilities/tsx_async_abort
+>> >becomes “Mitigation: TSX disabled”.Do you mean that tsx is still
+>> >enabled in this case in guest?
+>>
+>> If the host has TSX enabled, guest can use TSX instructions irrespective
+>> of what cpu capabilities in the guest says.
+>>
+>I understand that guest cannot produce any actual effects on the hardware,
+>so if the host has resolved the TAA bug on the hardware, does the guest actually
+>have no vulnerability no matter what TAA status is displayed?
 
+Yes, if the host does not have TAA bug, guest also does not have it.
