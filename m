@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E427403205
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA67403207
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 03:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346264AbhIHBCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 21:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        id S1346338AbhIHBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 21:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345838AbhIHBCO (ORCPT
+        with ESMTP id S239456AbhIHBDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 21:02:14 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B851CC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 18:01:07 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so305015pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 18:01:07 -0700 (PDT)
+        Tue, 7 Sep 2021 21:03:18 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5268FC061575;
+        Tue,  7 Sep 2021 18:02:11 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x19so595211pfu.4;
+        Tue, 07 Sep 2021 18:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=fL7IHHdZ/gzoOTGUPxPDxAU1KAMX+gAeeQ7IEIgS92I=;
-        b=fUGYNrjWnrb3I1eaPcRpBHa5uCveys5QZgedEq6FkqjUD4OZbSwa4C3wVTN3Ea0J1E
-         NEeFEDtPtBpxrAKvOWTnaDwo2B2v/P/5kd5YLX/XwbKcaO8nplHt67j6ZHZVQpMteY+4
-         0eAtp+P3YO9W747F5K61gMUrXOoE1IA72GO8EM4UhZ02fP45WR68o9G/TsFy4xh+tT6j
-         8Gh/i3SW9y/vNeQtT6qSMbCQ9H+zzZF6E2bhHT6OyoUZ3m6dfTL3zikE4O0/Fj8Ue6Rj
-         Bh5cOEbzVLnmPBaFdSs4A1+vikjxpd4fQt9bHyJ402yyWqWjZTTapx4aTi1GtG/PfSRF
-         MbAg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pDeJ+ImvfyUW8iRlMB1BgxblOKPWqeMm95cLvzOnvLQ=;
+        b=X/n2fvENXtyKuD++HXWb8VUFHFoAs5QEokF3VnxEYtdady9Xp6TQ8TKvDSPtyKP4pX
+         nShX4IDjohovCGYJgJXX4G111NAtZePcHicljk6XZJ3Gw1ZAxEwopM3xuh09aj11yXUr
+         eYeCWZuAGleDVa0JADpvKKpmQcTFX8+WiAG9Tr0uTgrsCVi5b6Wtr0mlbHXHZvc72vja
+         j7tPwe9VguwDbIubzSy1e02RX8KgRXduUom1blOeufFgkrAfSf4ob3Wu4ag1y65HxFMd
+         Kgpw4foJoFWsNVQrXCX84R8nCuR/zdcru5mhdL6oM/r90QnPFVTqU7P/zpcxidlraCQ2
+         36aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=fL7IHHdZ/gzoOTGUPxPDxAU1KAMX+gAeeQ7IEIgS92I=;
-        b=AOPhjt+XpxB6KNnkCJ+iBVJzId/dGKGSPS3wZ6DcWZkdVpKtwA89w/s5sd2shk/09q
-         HAEM8eo5LUiA/H58rDObXm8bYhcJifUtKGu0oExRfVzei2q2/U7Wo0Iuyxv4g4wfrtVt
-         TooBPr9JXm3phRZzAhQUPSSrB143JHNqW3ldHxG+0JTqaJX6qfNmePzhsRv0FPYtB2JP
-         DcSedTk5QFKbu56AbTXCfS46eXddu/eu6d97yJqGuWblsqapRV8x86S6L4ifCNBrRlI8
-         iWWy2mmHzjaaGhHDzrFwoaUfNQkRTP6DJJDwcdbTwGNN79yrASufmKhF5asoy4YHNBfZ
-         eiWQ==
-X-Gm-Message-State: AOAM530w5Vs62SVXjq+931s12YbOHz86EmYwqMNWReeTR5vabghfQ47u
-        Y8Z2em3S6u4k7UWU0vthD6lW0w==
-X-Google-Smtp-Source: ABdhPJzn6dDaPFPvD6xD3dX6BMiDBYlT3VapdFvc9aR8lJIc1mWPZRw21Ia813useTb+MqcxrF740A==
-X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr1221312pjb.241.1631062867247;
-        Tue, 07 Sep 2021 18:01:07 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id g2sm239957pfo.154.2021.09.07.18.01.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 Sep 2021 18:01:06 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 09:00:58 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Soeren Moch <smoch@web.de>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>
-Subject: Re: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev
- as fallback
-Message-ID: <20210908010057.GB25255@dragon>
-References: <20210425110200.3050-1-shawn.guo@linaro.org>
- <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pDeJ+ImvfyUW8iRlMB1BgxblOKPWqeMm95cLvzOnvLQ=;
+        b=E5vykfKL4eoU3Sh94gF2U7WwDNSqVAwGzuno87oIJy5r0SmmmDUAUt7FOt/+2XkHyp
+         QpU5xTrUqvmhGDuASRkLQOrKyV77ksG/PFjRBkwu37rudhWem9BOtq77N4+iue0WfmlL
+         OUxelY+plWBkDFYNSeZqhECbHGexTY2TD7tXR0qyAbjHsKHqwHwkT4XM0zzE08qcIWlW
+         dYHPrakPR6uY6h/IK2iZlVMpr6tNZ+X9U2zmUxsdg4lLop48CyRLixKtd/+GXvWRmgkB
+         16xAE6NNuAHi9gLKQ/evKcO/EQ6wieKonFnbxLeHMRe9GG0nfJEshPgFzoKMViznIoy9
+         dp8Q==
+X-Gm-Message-State: AOAM530+CdI2hr9OI7F4bAHQSEdJ0zVXYLc2c89fTaHIuWnuI0f97qG+
+        8hpLsHTVUOP4LXqrR0sPbIO6POfNFAEr9PxIF/lzwxVDGZY3
+X-Google-Smtp-Source: ABdhPJwmw06Fb9TYgniH+bteM3MybbaR402maa6CcEWxUJBRAciFkOoef/R9o/rKKbY4Vhe2xe3bKf4wSPtLMj/vYX8=
+X-Received: by 2002:a62:920b:0:b0:3ec:7912:82be with SMTP id
+ o11-20020a62920b000000b003ec791282bemr1146623pfd.34.1631062930707; Tue, 07
+ Sep 2021 18:02:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk> <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+In-Reply-To: <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 8 Sep 2021 09:01:59 +0800
+Message-ID: <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Soeren,
-
-On Tue, Sep 07, 2021 at 09:22:52PM +0200, Soeren Moch wrote:
-> On 25.04.21 13:02, Shawn Guo wrote:
-> > Instead of aborting country code setup in firmware, use ISO3166 country
-> > code and 0 rev as fallback, when country_codes mapping table is not
-> > configured.  This fallback saves the country_codes table setup for recent
-> > brcmfmac chipsets/firmwares, which just use ISO3166 code and require no
-> > revision number.
-> This patch breaks wireless support on RockPro64. At least the access
-> point is not usable, station mode not tested.
-> 
-> brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4359/9 wl0: Mar  6 2017
-> 10:16:06 version 9.87.51.7 (r686312) FWID 01-4dcc75d9
-> 
-> Reverting this patch makes the access point show up again with linux-5.14 .
-
-Sorry for breaking your device!
-
-So it sounds like you do not have country_codes configured for your
-BCM4359/9 device, while it needs particular `rev` setup for the ccode
-you are testing with.  It was "working" likely because you have a static
-`ccode` and `regrev` setting in nvram file.  But roaming to a different
-region will mostly get you a broken WiFi support.  Is it possible to set
-up the country_codes for your device to get it work properly?
-
-Shawn
-
-> 
-> Regards,
-> Soeren
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> >  .../broadcom/brcm80211/brcmfmac/cfg80211.c      | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
+Pavel Begunkov <asml.silence@gmail.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=888=
+=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=885:31=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On 9/7/21 8:30 PM, Jens Axboe wrote:
+> > On 9/7/21 5:50 AM, Hao Sun wrote:
+> >> Hello,
+> >>
+> >> When using Healer to fuzz the latest Linux kernel, the following crash
+> >> was triggered.
+> >>
+> >> HEAD commit: 7d2a07b76933 Linux 5.14
+> >> git tree: upstream
+> >> console output:
+> >> https://drive.google.com/file/d/1c8uRooM0TwJiTIwEviOCB4RC-hhOgGHR/view=
+?usp=3Dsharing
+> >> kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGG=
+DvP9JvOghx/view?usp=3Dsharing
+> >> Similar report:
+> >> https://groups.google.com/u/1/g/syzkaller-bugs/c/FvdcTiJIGtY/m/PcXkoen=
+UAAAJ
+> >>
+> >> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> >> report can help.
+> >> If you fix this issue, please add the following tag to the commit:
+> >> Reported-by: Hao Sun <sunhao.th@gmail.com>
 > >
-> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> > index f4405d7861b6..6cb09c7c37b6 100644
-> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> > @@ -7442,18 +7442,23 @@ static s32 brcmf_translate_country_code(struct brcmf_pub *drvr, char alpha2[2],
-> >  	s32 found_index;
-> >  	int i;
-> >
-> > -	country_codes = drvr->settings->country_codes;
-> > -	if (!country_codes) {
-> > -		brcmf_dbg(TRACE, "No country codes configured for device\n");
-> > -		return -EINVAL;
-> > -	}
-> > -
-> >  	if ((alpha2[0] == ccreq->country_abbrev[0]) &&
-> >  	    (alpha2[1] == ccreq->country_abbrev[1])) {
-> >  		brcmf_dbg(TRACE, "Country code already set\n");
-> >  		return -EAGAIN;
-> >  	}
-> >
-> > +	country_codes = drvr->settings->country_codes;
-> > +	if (!country_codes) {
-> > +		brcmf_dbg(TRACE, "No country codes configured for device, using ISO3166 code and 0 rev\n");
-> > +		memset(ccreq, 0, sizeof(*ccreq));
-> > +		ccreq->country_abbrev[0] = alpha2[0];
-> > +		ccreq->country_abbrev[1] = alpha2[1];
-> > +		ccreq->ccode[0] = alpha2[0];
-> > +		ccreq->ccode[1] = alpha2[1];
-> > +		return 0;
-> > +	}
-> > +
-> >  	found_index = -1;
-> >  	for (i = 0; i < country_codes->table_size; i++) {
-> >  		cc = &country_codes->table[i];
-> 
+> > Would be great with a reproducer for this one, though...
+>
+> And syzbot usually sends an execution log with all syz programs
+> it run, which may be helpful. Any chance you have anything similar
+> left?
+>
+
+Yes, found it[1]. Here is an execution history with latest 1024
+executed progs before crash saved.
+Hope it can help. I'll also follow this crash closely, see if Healer
+can find a reproducer and send it to you once it found.
+
+[1] https://drive.google.com/file/d/14k8qOFeyKPD4HsqOpIjud3b9jsxFSo-u/view?=
+usp=3Dsharing
+
+> --
+> Pavel Begunkov
