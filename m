@@ -2,255 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9009D40380A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824C940382A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 12:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346482AbhIHKmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 06:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345783AbhIHKmg (ORCPT
+        id S1345766AbhIHKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 06:47:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231440AbhIHKrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:42:36 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9521C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 03:41:28 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s3so2681464ljp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 03:41:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bWOaXa5VhJBxFtZSpMo9+BEgvHHzq+TzkYPYrSPoYiU=;
-        b=Dj5UuFzBz9AV5EgJFcwlmz7F6PGeWkQ7K3EW1W93EB5U0Lt00OMbIEpmmV6fSXg2kr
-         Z9s8swQosFKZYuldi/iEnrzCWCrGgRtqCme6mdM4uAS1JFTVuoSJIcImM4rtMfu6wUyZ
-         ZBj9rWEHuQPzGmFVzkWzBtOt0SaMmAMFZDqob863uzaLKOARVocexAzv/pu1RT88L8va
-         /Re+++pxg5HQh1h/UTyGgGPXHfjaf4q8Tmorx+focFTs2jDYi5decCsUBIf4789CPiMw
-         2cVZTaThllBuBeF72KUUHiVVh8srJPYfQyGOFLFu/XXM4h4CQ86vKOx9yOMIvq4d71uK
-         P1HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bWOaXa5VhJBxFtZSpMo9+BEgvHHzq+TzkYPYrSPoYiU=;
-        b=r6fuiWn4Y6UrlaPrMfgTLTt9yOy+GTDzXwpW1zUnyb7RtLNxUWLr1UkXGsI6mpBn6s
-         DBCcfeMSpht3Fcg5BtBizttH6VfDBKpG0pGGRovity9VOS8Is5QNVoGuA5y0RYhQA0nM
-         ErPuoPogKQZM2+SoTrinhDS02YYPXbNMxOsNsF4amfK2ZEaIrd/gcDJ2He/v4SmFOA8Q
-         fF7RUyz0UlH+d6w1Bx8TtJNXsqbW0znvTxenlvSJma4yo+qOoF7C6/tj000S/dkD41Mk
-         TgzsEZv95bW2VO1GhDJo4sbbR/h05quy4DyoWwTEwfx1h4EVO7OuUnNa0JbtLw432md5
-         Inxw==
-X-Gm-Message-State: AOAM5319MLdSQx/EqC7qvm+riHlWp19ZzmRd+1EwaDl6n2BITy8fBky8
-        bEJyZ10JLpRagK/9wouIysXcNE2TE5ZDmhGX9XBZug==
-X-Google-Smtp-Source: ABdhPJxPYbIYf6dACCVmjxa6qwFLQoPNNC/oQpPWSBJVgU/ywrhWi4sq+Zxvm4mQfPP4xv8qdEReczTl44w9X1ABPBI=
-X-Received: by 2002:a2e:960c:: with SMTP id v12mr2420457ljh.300.1631097686869;
- Wed, 08 Sep 2021 03:41:26 -0700 (PDT)
+        Wed, 8 Sep 2021 06:47:33 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188AYM8W007749;
+        Wed, 8 Sep 2021 06:46:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=pp1; bh=Bf1jLT0XZ2n0j8yKCerL0h64crrSOksW2ucsLj/LGGg=;
+ b=tE8QpkXA80ZTCkAmqrc34c+F5IdNNtZ6n/g/pvPmUIvs4+RBZQJfzNcs7Wj6VtrfwtR4
+ SHZEBp9/rWnyVCfiM5FObFIXAz1Euy6tUr5U0YNb3h6nr3T2Wz7tBxzTU8Qtr9NkhR62
+ pfQMg/N78GyFtr9FllF9krsGtU/vUysaYhomub3gmPu/bR8+xni1OuSJbifqag7bsevl
+ 9P+sGAQj3WCqZa/jbBNWOyCEGmCB3TDGncEjwFO+Cawg9YVvnbXHgdampJIT+DmuASUQ
+ wlp7yrqPa13xiMHtOYPlXp6DK0TErKIjKlSoG2ArAk57YE1wneVKzoR+FLKiDTKl6Qce tw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axhcendy3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 06:46:11 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 188AhPVM025426;
+        Wed, 8 Sep 2021 10:46:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3axcnp7gh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 10:46:09 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 188Ak6Z445023498
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 10:46:06 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE942AE05D;
+        Wed,  8 Sep 2021 10:46:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D3EAAE051;
+        Wed,  8 Sep 2021 10:46:02 +0000 (GMT)
+Received: from vajain21.in.ibm.com (unknown [9.43.55.200])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  8 Sep 2021 10:46:02 +0000 (GMT)
+Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Wed, 08 Sep 2021 16:16:01 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Shivaprasad G Bhat <sbhat@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     nvdimm@lists.linux.dev, aneesh.kumar@linux.ibm.com,
+        sbhat@linux.ibm.com, dan.j.williams@intel.com
+Subject: Re: [RFC PATCH v2] powerpc/papr_scm: Move duplicate definitions to
+ common header files
+In-Reply-To: <87sfyfmzhh.fsf@mpe.ellerman.id.au>
+References: <163092037510.812.12838160593592476913.stgit@82313cf9f602>
+ <87sfyfmzhh.fsf@mpe.ellerman.id.au>
+Date:   Wed, 08 Sep 2021 16:16:00 +0530
+Message-ID: <878s07s5uf.fsf@vajain21.in.ibm.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KhecTvEg0T7ZqrdissAhXJUgmvbPa4ZT
+X-Proofpoint-ORIG-GUID: KhecTvEg0T7ZqrdissAhXJUgmvbPa4ZT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210831102141.624725-1-ulf.hansson@linaro.org>
- <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
- <CAPDyKFq7aD_VXyY6=Kvp3t2Ph1_+CheZWDA6j2AoPK6ExX4h0g@mail.gmail.com>
- <CAGETcx_NRWYYWxp77d+0LmpVT1F7X1sh3qoS1DuissfRyDWp=w@mail.gmail.com>
- <CAPDyKFotC5FBPkaTXHEqV_S=9RSsqBuM9U2YgUaSUk4vB0Kc2w@mail.gmail.com> <CAGETcx86_f-exfLC+jF8SaRgV92wkOCjc-eBygOF5g39uN9G8Q@mail.gmail.com>
-In-Reply-To: <CAGETcx86_f-exfLC+jF8SaRgV92wkOCjc-eBygOF5g39uN9G8Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 8 Sep 2021 12:40:50 +0200
-Message-ID: <CAPDyKFq8tOCj6PVB_92wTs_6XN7FZPKSxQqkXYqpU0LWHSFJQw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_05:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 clxscore=1011
+ mlxscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+Hi Mpe,
 
-> > >
-> > > Device-A {
-> > >         compatible="foo";
-> > >
-> > >         Device-B {
-> > >                 compatible="flam";
-> > >                 power-domains = <&Device-C>;
-> > >         }
-> > > }
-> > >
-> > > Device-C {
-> > >         compatible="bar";
-> > >
-> > >         Device-D {
-> > >                 compatible="baz";
-> > >                 power-domains = <&Device-A>;
-> > >         }
-> > > }
-> > >
-> > > Legend:
-> > > I'll use X -> Y to indicate links where X is the consumer and Y is the supplier.
-> > > I'll call out the link types as fwnode or device links.
-> > > If I don't explicitly state otherwise, when I say device links, I mean
-> > > stateful/managed device link that is NOT sync-state-only device links.
-> > >
-> > > I think your first question is asking about fwnode link. So I'll answer that.
-> > >
-> > > fwnode links are created from the actual nodes that list the
-> > > dependencies. So in this case from device-B -> device-C and device-D
-> > > -> device-A. It needs to be done this way for a couple of reasons. But
-> > > to answer your question on "why do this when Device-B doesn't have a
-> > > compatible string?":
-> > >
-> > > 1. Not all devices have compatible strings (in an ideal world this
-> > > won't be the case). So Device-A would create a struct device for
-> > > Device-B, set the of_node/fwnode to point to Device-B DT node. Then
-> > > device-B gets probed, etc. In those cases, we want the device links to
-> > > be created between device-B -> device-C and NOT from device-A ->
-> > > device-C. Because if we did follow that logic, we'll get device-A ->
-> > > device-C and device-C -> device-A. This obviously can't work because
-> > > it's a cyclic dependency and fw_devlink will have to give up on these.
-> > >
-> > > 2. When device-C is added (assuming device-A is added already), we
-> > > need to create a sync-state-only device link from device-A to device-C
-> > > as a proxy for the future device-B -> device-C device link that'll
-> > > come up. This is to make sure device-C's sync_state() doesn't fire too
-> > > early. So the way fw_devlink can tell apart device-A's real dependency
-> > > (none in this case) vs device-B's dependency it's proxying for is by
-> > > the fact the fwnode link is from device-B DT -> device-C DT.
-> > >
-> > > Hope that makes sense.
-> >
-> > Yes, it does and I understand that it may become complicated in some
-> > cases. If you get the time to put together an LWN article about
-> > fw_devlinks, I would certainly read it. :-)
-> >
-> > However, at least for power-domains, the DT example you describe above
-> > is an invalid description of a HW. It doesn't make sense to try to
-> > support if for fw_devlink, at least in my opinion. Let me elaborate.
-> >
-> > So, I assume you have left out the #power-domain-cells property (for
-> > simplicity) for Device-A and Device-C, as those seem to be the
-> > power-domain providers.
->
-> Yes, but also because I don't want you to take these dependencies too
-> literally. I should have just used "depends-on =" as a standing in
-> fake property to make my point. And what "depends-on" maps to in each
-> DT node could be any one of the properties that point to a supplier.
->
-> The TLDR for this entire email is: You can't transfer the dependency
-> requirement of a child to its parent just because the child doesn't
-> have a "compatible" property (that's exactly what your patch was
-> doing). The incorrect creation of a cyclic dependency is one example
-> of why it's wrong.
->
-> > *) If Device-B is a consumer of Device-C, it also means that Device-A
-> > must be assigned as the child-power-domain to Device-C's power-domain.
->
-> This statement doesn't make any sense. If Device-B is the actual
-> consumer of device-C, why the heck should Device-A be assigned as the
-> child-power domain of device-C. Device-B should be assigned as the
-> child-power domain of device-C. Device-A could be on a completely
-> different power domain and not depend on Device-C for anything.
->
-> > **) If Device-D is the consumer of Device-A, it also means that
-> > Device-C must be assigned as the child-power-domain to Device-A's
-> > power-domain.
->
-> Similar comment here about device-D being the child power domain to
-> Device-A. Read further below about cycles.
+Thanks for looking into this patch.
 
-Well, I assumed the usual way of how we treat child nodes for power-domains.
+Michael Ellerman <mpe@ellerman.id.au> writes:
 
-In any case, the description is wrong from the HW point of view -
-power-domains can't be described like that.
-
+> Shivaprasad G Bhat <sbhat@linux.ibm.com> writes:
+>> papr_scm and ndtest share common PDSM payload structs like
+>> nd_papr_pdsm_health. Presently these structs are duplicated across papr_pdsm.h
+>> and ndtest.h header files. Since 'ndtest' is essentially arch independent and can
+>> run on platforms other than PPC64, a way needs to be deviced to avoid redundancy
+>> and duplication of PDSM structs in future.
+>>
+>> So the patch proposes moving the PDSM header from arch/powerpc/include/uapi/ to
+>> the generic include/uapi/linux directory. Also, there are some #defines common
+>> between papr_scm and ndtest which are not exported to the user space. So, move
+>> them to a header file which can be shared across ndtest and papr_scm via newly
+>> introduced include/linux/papr_scm.h.
+>>
+>> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+>> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+>> ---
+>> Changelog:
+>>
+>> Since v1:
+>> Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/162505488483.72147.12741153746322191381.stgit@56e104a48989/
+>> * Removed dependency on this patch for the other patches
+>>
+>>  MAINTAINERS                               |    2 
+>>  arch/powerpc/include/uapi/asm/papr_pdsm.h |  165 -----------------------------
+>>  arch/powerpc/platforms/pseries/papr_scm.c |   43 --------
+>>  include/linux/papr_scm.h                  |   48 ++++++++
+>>  include/uapi/linux/papr_pdsm.h            |  165 +++++++++++++++++++++++++++++
 >
-> > This simply can't be right from the HW point of view - and we don't
-> > support this in the Linux kernel anyway.
+> This doesn't make sense to me.
 >
-> That's my point. By doing what you wanted to do, you are making
-> Device-A dependent on Device-C and Device-C dependent on Device-A.
-> Which makes no sense.
-
-Exactly.
-
-If that configuration exists in DT, why should we bother to support it
-with fw_devlinks, it's broken anyway.
-
+> Anything with papr (or PAPR) in the name is fundamentally powerpc
+> specific, it doesn't belong in a generic header, or in a generic
+> location.
 >
-> > A power-domain can not be
-> > both parent and child to another power-domain. In other words, cyclic
-> > dependencies can't exist for power-domains, as it would be a wrong
-> > description of the HW.
+> What's the actual problem you're trying to solve?
 >
-> Real cyclic dependencies can't exist between any HW -- doesn't matter
-> if it's a power domain or not. That'd just be wrong.
->
-> > I wonder if the similar reasoning is applicable for other types of
-> > resources, like clocks and regulators, for example.
->
-> So the example I gave definitely happens between two PMIC in one of
-> the MSM chips. Forgot which one. If you follow what you suggested,
-> we'll end up with both the devices not probing because they are
-> waiting on each other to probe.
->
-> Also, to go back to my main point, don't focus too much on one
-> framework/property. In my example above, Device-D could be dependent
-> on Device-A for a clock and you'll hit the same problem.
+The ndtest module (tools/testing/nvdimm/test/ndtest.c) is implemented in
+an arch independed way to enable testing of PAPR PDSMs on non ppc64
+platforms like x86_64. It uses the same PDSM structs as used by papr_scm
+to communicate with libndctl userspace. 
 
-Well, again, that would not be a correct description of the HW, but I
-get your point.
+Since papr_scm is ppc64 arch specific we were so far duplicating the
+PDSM structures between ndtest and papr_scm. The patch tries to solve
+this duplication by moving the shared structs to arch independent common
+include dirs.
 
-[...]
+Secondly, PDSMs describes how userspace can use NVDIMM_FAMILY_PAPR to
+interact with NVDIMMs. So potentially a new NVDIMM beyond powerpc arch
+can add its support and would need access to the same structs used by
+papr_scm and ndtest. In that context it would make sense to move PDSM
+headers to generic include dirs.
 
-> > > >
-> > > > Would you mind elaborating for my understanding and perhaps point me
-> > > > to an example where it will break?
-> > >
-> > > So if you did this, it'll break:
-> > > (1) the probe of device-A/device-C due to cyclic dependencies. Really
-> > > no, because fw_devlink will just stop enforcing ordering between
-> > > device-A and device-C if it detects a cycle. But if there was a real
-> > > dependency (can me multiple links deep) between device-A -> device-C,
-> > > that would no longer get enforced.
-> >
-> > As I said above, cyclic dependencies don't exist for power-domains.
+> If it's just including papr_scm bits into ndtest.c then that should be
+> as simple as:
 >
-> As I said above, *real* cyclic dependencies don't exist for anything.
+> #ifdef __powerpc__
+> #include <asm/papr_scm.h>
+> #endif
 >
-> > > (2) It'd break sync_state() correctness for device-B -> device-C dependency.
-> >
-> > I don't see that. Again, because power-domain providers can't be
-> > described in a cyclic way in DT.
+> Shouldn't it?
 >
-> I think I answered this above. Change one of the "power-domains"
-> property to clocks (or one of the many properties fw_devlink supports)
-> and you'll have the same issue I described.
+No, as ndtest implements support for NVDIMM_FAMILY_PAPR and would need
+access to PDSM related structs which presently are only available for
+powerpc.
+
+> cheers
 >
-> > >
-> > > Hope that helps.
-> > >
-> >
-> > Perhaps, renaming the flag to "non-cyclic" would be an option? As it
-> > seems like that is what this boils done to, right?
->
-> No property is truly wanting to create a cycle. So if you were to
-> create such a flag, every property should set it. See my TLDR above.
 
-Well, I assume there are some valid cases where cyclic dependencies
-are okay, like the "remote-endpoint" DT property, for example? No?
-
-My point is, we are assuming there may be cyclic dependencies for all
-the DT properties we parse for fw_devlink, while in fact those should
-exist only for a few cases, right?
-
-Doesn't the additional parsing and creation of links, to deal with
-cyclic dependencies come with an overhead? If so - an option could be
-to let it hurt only those properties that really need it.
-
-[...]
-
-Kind regards
-Uffe
+-- 
+Cheers
+~ Vaibhav
