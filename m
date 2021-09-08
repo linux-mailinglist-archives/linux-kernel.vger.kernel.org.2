@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F9D4036E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23FF4036DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348456AbhIHJ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbhIHJ3I (ORCPT
+        id S1348422AbhIHJ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:28:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234476AbhIHJ2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:29:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4279DC061575;
-        Wed,  8 Sep 2021 02:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XkMsv0U5b8POCiXTPKYIykquQ4WRiqRp/+CywSEeQKM=; b=cvLwcnMFIGRllbKwXrEE+bZePC
-        SYvAY+GPndlL+z/BcUJ5g7TXR6D+jeHVQwudTo2w1fts68ld4gkSXBWBDP8SDpbQo3/Gu1Ju2rxSa
-        88VOQH2p6jhfjx6OjpoxugebWvkdYzRT+t3JOT83V/fEFHSXf6zkibnsgNIGH1X6RV5Zdo3kvZYeN
-        JWNLj2Uo4fevyhsDOSzFQPF/YfDMDDcQccDOypH0pbyyPdXBPGqwUynNSVCuE66r0AE1txVfiYvYB
-        zdYHsarQN8cplUpL3q+ADQW2Df6fofzCT0p8uI9x66u+CKrT0XAfYBoLEc78n80+fy6YfBczbiEsD
-        JV9U0Csg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNtqG-008gZD-Tx; Wed, 08 Sep 2021 09:26:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0975F300454;
-        Wed,  8 Sep 2021 11:26:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 90263212EAB70; Wed,  8 Sep 2021 11:26:01 +0200 (CEST)
-Date:   Wed, 8 Sep 2021 11:26:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Kajol Jain <kjain@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
-        jolsa@kernel.org, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
-        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
-        rnsastry@linux.ibm.com, yao.jin@linux.intel.com, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com,
-        kan.liang@linux.intel.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, paulus@samba.org
-Subject: Re: [PATCH 1/3] perf: Add macros to specify onchip L2/L3 accesses
-Message-ID: <YTiBqbxe7ieqY2OE@hirez.programming.kicks-ass.net>
-References: <20210904064932.307610-1-kjain@linux.ibm.com>
- <87ilzbmt7i.fsf@mpe.ellerman.id.au>
+        Wed, 8 Sep 2021 05:28:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631093242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WSMToU1uUMoHfun1y7dnDAkzWYwJfJzd2Z/oipy2Y5M=;
+        b=EZjChSDfqOGSpwFi3Mg7Ds3SWhdFwKa+iMKS3/Dtzio4Bfr13BcYPmkv+vvcK69vMKZBDn
+        H5p72MBDCX22XAWbfafNvkM+e0KfHQdYKseZpn8pBv3Z6a8MTYn5ANsutNRe4zWnTVIUtX
+        fNNkt8SgOniTXg1W2w0Ashm0OwFmTkY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-UyvgIATwOhGSYXk-KyBkjw-1; Wed, 08 Sep 2021 05:27:20 -0400
+X-MC-Unique: UyvgIATwOhGSYXk-KyBkjw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 862101023F4E;
+        Wed,  8 Sep 2021 09:27:19 +0000 (UTC)
+Received: from T590 (ovpn-12-207.pek2.redhat.com [10.72.12.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E50545D9DC;
+        Wed,  8 Sep 2021 09:27:11 +0000 (UTC)
+Date:   Wed, 8 Sep 2021 17:27:13 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v4 2/6] nbd: convert to use blk_mq_find_and_get_req()
+Message-ID: <YTiB8TLQ7ZJWvS7Y@T590>
+References: <20210907140154.2134091-1-yukuai3@huawei.com>
+ <20210907140154.2134091-3-yukuai3@huawei.com>
+ <YThmhhI1/fZd29b1@T590>
+ <e295605c-bc8e-cbb9-ca51-1355fdfc0264@huawei.com>
+ <YThtq154oyROxBj9@T590>
+ <2cfb6701-6e58-3e13-be85-472437a5b2ed@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ilzbmt7i.fsf@mpe.ellerman.id.au>
+In-Reply-To: <2cfb6701-6e58-3e13-be85-472437a5b2ed@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 05:17:53PM +1000, Michael Ellerman wrote:
-> Kajol Jain <kjain@linux.ibm.com> writes:
+On Wed, Sep 08, 2021 at 04:29:57PM +0800, yukuai (C) wrote:
+> On 2021/09/08 16:00, Ming Lei wrote:
+> > On Wed, Sep 08, 2021 at 03:37:06PM +0800, yukuai (C) wrote:
+> > > On 2021/09/08 15:30, Ming Lei wrote:
+> > > 
+> > > > > +put_req:
+> > > > > +	if (req)
+> > > > > +		blk_mq_put_rq_ref(req);
+> > > > >    	return ret ? ERR_PTR(ret) : cmd;
+> > > > 
+> > > > After the request's refcnt is dropped, it can be freed immediately, then
+> > > > one stale command is returned to caller.
+> > > 
+> > > Hi, Ming
+> > > 
+> > > It's right this patch leave this problem. Please take a look at patch 3
+> > > and patch 4, the problem should be fixed with these patches.
+> > 
+> > Not see it is addressed in patch 3 & 4, and it is one obvious fault in
+> > patch 2, please fix it from beginning by moving the refcnt drop
+> > into recv_work().
+> 
+> Hi, Ming
+> 
+> With patch 3 & 4:
+> 
+> if nbd_read_stat() return a valid cmd, then the refcnt should not drop
+> to 0 before blk_mq_complete_request() in recv_work().
 
-> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > index f92880a15645..030b3e990ac3 100644
-> > --- a/include/uapi/linux/perf_event.h
-> > +++ b/include/uapi/linux/perf_event.h
-> > @@ -1265,7 +1265,9 @@ union perf_mem_data_src {
-> >  #define PERF_MEM_LVLNUM_L2	0x02 /* L2 */
-> >  #define PERF_MEM_LVLNUM_L3	0x03 /* L3 */
-> >  #define PERF_MEM_LVLNUM_L4	0x04 /* L4 */
-> > -/* 5-0xa available */
-> > +#define PERF_MEM_LVLNUM_OC_L2	0x05 /* On Chip L2 */
-> > +#define PERF_MEM_LVLNUM_OC_L3	0x06 /* On Chip L3 */
-> 
-> The obvious use for 5 is for "L5" and so on.
-> 
-> I'm not sure adding new levels is the best idea, because these don't fit
-> neatly into the hierarchy, they are off to the side.
-> 
-> 
-> I wonder if we should use the remote field.
-> 
-> ie. for another core's L2 we set:
-> 
->   mem_lvl = PERF_MEM_LVL_L2
->   mem_remote = 1
+The valid cmd won't be timed out just between nbd_read_stat() and
+calling blk_mq_complete_request()?
 
-This mixes APIs (see below), IIUC the correct usage would be something
-like: lvl_num=L2 remote=1
+Yeah, the issue is addressed by patch 4, then please put 2 after
+3 & 4, and suggest to add comment why request ref won't drop to zero
+in recv_work().
 
-> Which would mean "remote L2", but not remote enough to be
-> lvl = PERF_MEM_LVL_REM_CCE1.
 > 
-> It would be printed by the existing tools/perf code as "Remote L2", vs
-> "Remote cache (1 hop)", which seems OK.
+> if nbd_read_stat() failed, it won't be a problem if the request is freed
+> immediately when refcnt is dropped in nbd_read_stat().
 > 
+> That's why I said that the problem will be fixed.
 > 
-> ie. we'd be able to express:
-> 
->   Current core's L2: LVL_L2
->   Other core's L2:   LVL_L2 | REMOTE
->   Other chip's L2:   LVL_REM_CCE1 | REMOTE
-> 
-> And similarly for L3.
-> 
-> I think that makes sense? Unless people think remote should be reserved
-> to mean on another chip, though we already have REM_CCE1 for that.
+> BTW, if we move the refcnt drop into recv_work, we can only do that if
+> nbd_read_stat() return a valid cmd. If we get a valid rq and failed in
+> the following checkings in nbd_read_stat(), it's better to drop the
+> refcnt in nbd_read_stat().
 
-IIRC the PERF_MEM_LVL_* namespace is somewhat depricated in favour of
-the newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields. Of
-course, ABIs being what they are, we get to support both :/ But I'm not
-sure mixing them is a great idea.
+The usual pattern is to drop the refcnt on when the object isn't used
+any more, so it is perfectly fine to hold the ref until that time.
 
-Also, clearly this could use a comment...
 
-The 'new' composite doesnt have a hops field because the hardware that
-nessecitated that change doesn't report it, but we could easily add a
-field there.
+Thanks,
+Ming
 
-Suppose we add, mem_hops:3 (would 6 hops be too small?) and the
-corresponding PERF_MEM_HOPS_{NA, 0..6}
-
-Then I suppose you can encode things like:
-
-	L2			- local L2
-	L2 | REMOTE		- remote L2 at an unspecified distance (NA)
-	L2 | REMOTE | HOPS_0	- remote L2 on the same node
-	L2 | REMOTE | HOPS_1	- remote L2 on a node 1 removed
-
-Would that work?
