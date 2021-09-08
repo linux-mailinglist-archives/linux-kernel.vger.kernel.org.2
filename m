@@ -2,227 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14238403F48
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C13403F4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 20:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350351AbhIHSvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 14:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239716AbhIHSvC (ORCPT
+        id S1350353AbhIHSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 14:51:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10244 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350225AbhIHSvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:51:02 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAACC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 11:49:54 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q11so4716129wrr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 11:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Agej1UpQhMlzZlUynlcP0AacuesowFLmK/jfqh//Tc=;
-        b=GEwoJ4yP3BIHmNDyjyrr2wFPQZIUwC/WOiYJjW8klI585PFI8rsUPHzrS8d0jh/3d7
-         LtF3wMbCGpmb6yJt+FDmMqpXEZ7xjRokRLACCHMiqdTIOHTHUnTSAQbn8TZKd7qNB+ac
-         4PosfkBG9PtKUdiDjBDDmkmTdcRrPEjTnQP4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=4Agej1UpQhMlzZlUynlcP0AacuesowFLmK/jfqh//Tc=;
-        b=SVZt4N9WQp142J4h0LhbBdqyIbk/EXHWZFbxVhKkFvEhMWy7YOSK65l4nt/sdPU7XE
-         QGLDCaaOFnMX19yP+ovw8wOYdQ+587MXm2+WpyQQEC3Pbsfkmn4KKyHZLc5k9E+jnttI
-         e8vkBpup+WDyJDzT+W+8h4oJeyK+IepN21HfTb8AMaGHBavl8NZIXDHSzi/d7zgWflDO
-         YDMKR47Y+VgADz/Pcx26SkkbyjGw782xXi/sttBbA2hamHBgyJ8hXR/CkiWF+OwKfwLm
-         2ffjvVCmtsBYI1ij5pGblJ9hWt71rxZKvycMTsPq/6bx9KaQ7uJosKNAR2keJ4CiLODb
-         zfhQ==
-X-Gm-Message-State: AOAM531bwTCo89Fk5ymPom0RrpokRQT5PJKyRAgFdmhKCxV0VojIEKev
-        K2jvdqk+vLZomyriQC3jY6+pgg==
-X-Google-Smtp-Source: ABdhPJwa5zPNpbxcNhJoOYO6pSJAqT/4uA/ZFd6XhfTDNelaBwEo+F/jtz6SLgBDyu24uXIQZhmMNg==
-X-Received: by 2002:adf:f08d:: with SMTP id n13mr232471wro.339.1631126992942;
-        Wed, 08 Sep 2021 11:49:52 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c4sm3479357wme.14.2021.09.08.11.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 11:49:52 -0700 (PDT)
-Date:   Wed, 8 Sep 2021 20:49:50 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 8/9] dma-buf/sync_file: Add SET_DEADLINE ioctl
-Message-ID: <YTkFzjs3cEvPcCzn@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210903184806.1680887-1-robdclark@gmail.com>
- <20210903184806.1680887-9-robdclark@gmail.com>
- <YTj36NbUNxnn6uBU@phenom.ffwll.local>
- <CAF6AEGuVkHOvOkVHo69fOy71qiBh=12Nd=yMXm36p_bjzfFe9A@mail.gmail.com>
+        Wed, 8 Sep 2021 14:51:46 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188IXX51157759;
+        Wed, 8 Sep 2021 14:50:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VejXnR12bwgW4mRU9KCmWfR44BHrQLRMaeGV6lm6q7A=;
+ b=fh21NFPlPMNUvNTl12ZYMWDEqHdOiiQgM1XBFk1BeadMqdGv46vLXn6s5B3VlB9EA/D1
+ ON12ahX1RsRlJf4kUuELwCLIkkKUrsV9Rv0Uf0vsUq+I8Gu26Fn32O1w2g1E0t0N3IzE
+ 4IGH1uKDJFNNkxXqtm2XwMvqEVnknl/HfJ55QQ3fC9EBwkgQjMnPAbe6awUOWGUgp/f2
+ RgkK7fF4AxlmSB0r68TVmzfZl+j8GofhVadbCNsOlq2CxTGPiC2LfO7lfhzMlPyAhaIC
+ pMKIauGPrRoDUhzY2uBlCy8SSBoh04821BIZ53u/8aCkQdHHiZLMhtJzTTbfJ0gcfZIN ZQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axmvn4px4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 14:50:37 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 188IXu6O158782;
+        Wed, 8 Sep 2021 14:50:37 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axmvn4pwm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 14:50:37 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 188Ig5S8032425;
+        Wed, 8 Sep 2021 18:50:35 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 3axcnk4nsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Sep 2021 18:50:35 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 188IoU4M44302710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Sep 2021 18:50:31 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E42264C04E;
+        Wed,  8 Sep 2021 18:50:30 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6DD944C044;
+        Wed,  8 Sep 2021 18:50:30 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.12.56])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Sep 2021 18:50:30 +0000 (GMT)
+Date:   Wed, 8 Sep 2021 20:50:27 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: Re: [PATCH v4 02/14] KVM: s390: pv: avoid double free of sida page
+Message-ID: <20210908205027.4f595c6e@p-imbrenda>
+In-Reply-To: <ad1a386e-3ae9-13d7-430b-c24ed0cc4c85@de.ibm.com>
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+        <20210818132620.46770-3-imbrenda@linux.ibm.com>
+        <ad1a386e-3ae9-13d7-430b-c24ed0cc4c85@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGuVkHOvOkVHo69fOy71qiBh=12Nd=yMXm36p_bjzfFe9A@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4IXWemJVoDLCywAFRMKkLPfjgnaL-fS5
+X-Proofpoint-ORIG-GUID: wOH3UOAOAE2G1x9GlRAeV9EEWjkiSP0B
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 priorityscore=1501
+ malwarescore=0 mlxlogscore=782 suspectscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 11:23:42AM -0700, Rob Clark wrote:
-> On Wed, Sep 8, 2021 at 10:50 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Fri, Sep 03, 2021 at 11:47:59AM -0700, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > The initial purpose is for igt tests, but this would also be useful for
-> > > compositors that wait until close to vblank deadline to make decisions
-> > > about which frame to show.
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >
-> > Needs userspace and I think ideally also some igts to make sure it works
-> > and doesn't go boom.
+On Tue, 31 Aug 2021 15:55:07 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+
+> On 18.08.21 15:26, Claudio Imbrenda wrote:
+> > If kvm_s390_pv_destroy_cpu is called more than once, we risk calling
+> > free_page on a random page, since the sidad field is aliased with the
+> > gbea, which is not guaranteed to be zero.
+> > 
+> > The solution is to simply return successfully immediately if the vCPU
+> > was already non secure.
+> > 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > Fixes: 19e1227768863a1469797c13ef8fea1af7beac2c ("KVM: S390: protvirt: Introduce instruction data area bounce buffer")  
 > 
-> See cover-letter.. there are igt tests, although currently that is the
-> only user.
+> Patch looks good. Do we have any potential case where we call this twice? In other words,
+> do we need the Fixes tag with the code as of today or not?
 
-Ah sorry missed that. It would be good to record that in the commit too
-that adds the uapi. git blame doesn't find cover letters at all, unlike on
-gitlab where you get the MR request with everything.
+I think so.
 
-Ok there is the Link: thing, but since that only points at the last
-version all the interesting discussion is still usually lost, so I tend to
-not bother looking there.
+if QEMU calls KVM_PV_DISABLE, and it fails, some VCPUs might have been
+made non secure, but the VM itself still counts as secure. QEMU can
+then call KVM_PV_DISABLE again, which will try to convert all VCPUs to
+non secure again, triggering this bug.
 
-> I'd be ok to otherwise initially restrict this and the sw_sync UABI
-> (CAP_SYS_ADMIN?  Or??) until there is a non-igt user, but they are
-> both needed by the igt tests
+this scenario will not happen in practice (unless the hardware is
+broken)
 
-Hm really awkward, uapi for igts in cross vendor stuff like this isn't
-great. I think hiding it in vgem is semi-ok (we have fences there
-already). But it's all a bit silly ...
+> > ---
+> >   arch/s390/kvm/pv.c | 19 +++++++++----------
+> >   1 file changed, 9 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> > index c8841f476e91..0a854115100b 100644
+> > --- a/arch/s390/kvm/pv.c
+> > +++ b/arch/s390/kvm/pv.c
+> > @@ -16,18 +16,17 @@
+> >   
+> >   int kvm_s390_pv_destroy_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc)
+> >   {
+> > -	int cc = 0;
+> > +	int cc;
+> >   
+> > -	if (kvm_s390_pv_cpu_get_handle(vcpu)) {
+> > -		cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu),
+> > -				   UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
+> > +	if (!kvm_s390_pv_cpu_get_handle(vcpu))
+> > +		return 0;
+> > +
+> > +	cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu), UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
+> > +
+> > +	KVM_UV_EVENT(vcpu->kvm, 3, "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
+> > +		     vcpu->vcpu_id, *rc, *rrc);
+> > +	WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x", *rc, *rrc);
+> >   
+> > -		KVM_UV_EVENT(vcpu->kvm, 3,
+> > -			     "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
+> > -			     vcpu->vcpu_id, *rc, *rrc);
+> > -		WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x",
+> > -			  *rc, *rrc);
+> > -	}
+> >   	/* Intended memory leak for something that should never happen. */
+> >   	if (!cc)
+> >   		free_pages(vcpu->arch.pv.stor_base,
+> >   
 
-For the tests, should we instead have a selftest/Kunit thing to exercise
-this stuff? igt probably not quite the right thing. Or combine with a page
-flip if you want to test msm.
--Daniel
-
-> 
-> BR,
-> -R
-> 
-> > -Daniel
-> >
-> > > ---
-> > >  drivers/dma-buf/sync_file.c    | 19 +++++++++++++++++++
-> > >  include/uapi/linux/sync_file.h | 20 ++++++++++++++++++++
-> > >  2 files changed, 39 insertions(+)
-> > >
-> > > diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-> > > index 394e6e1e9686..f295772d5169 100644
-> > > --- a/drivers/dma-buf/sync_file.c
-> > > +++ b/drivers/dma-buf/sync_file.c
-> > > @@ -459,6 +459,22 @@ static long sync_file_ioctl_fence_info(struct sync_file *sync_file,
-> > >       return ret;
-> > >  }
-> > >
-> > > +static int sync_file_ioctl_set_deadline(struct sync_file *sync_file,
-> > > +                                     unsigned long arg)
-> > > +{
-> > > +     struct sync_set_deadline ts;
-> > > +
-> > > +     if (copy_from_user(&ts, (void __user *)arg, sizeof(ts)))
-> > > +             return -EFAULT;
-> > > +
-> > > +     if (ts.pad)
-> > > +             return -EINVAL;
-> > > +
-> > > +     dma_fence_set_deadline(sync_file->fence, ktime_set(ts.tv_sec, ts.tv_nsec));
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > >  static long sync_file_ioctl(struct file *file, unsigned int cmd,
-> > >                           unsigned long arg)
-> > >  {
-> > > @@ -471,6 +487,9 @@ static long sync_file_ioctl(struct file *file, unsigned int cmd,
-> > >       case SYNC_IOC_FILE_INFO:
-> > >               return sync_file_ioctl_fence_info(sync_file, arg);
-> > >
-> > > +     case SYNC_IOC_SET_DEADLINE:
-> > > +             return sync_file_ioctl_set_deadline(sync_file, arg);
-> > > +
-> > >       default:
-> > >               return -ENOTTY;
-> > >       }
-> > > diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-> > > index ee2dcfb3d660..f67d4ffe7566 100644
-> > > --- a/include/uapi/linux/sync_file.h
-> > > +++ b/include/uapi/linux/sync_file.h
-> > > @@ -67,6 +67,18 @@ struct sync_file_info {
-> > >       __u64   sync_fence_info;
-> > >  };
-> > >
-> > > +/**
-> > > + * struct sync_set_deadline - set a deadline on a fence
-> > > + * @tv_sec:  seconds elapsed since epoch
-> > > + * @tv_nsec: nanoseconds elapsed since the time given by the tv_sec
-> > > + * @pad:     must be zero
-> > > + */
-> > > +struct sync_set_deadline {
-> > > +     __s64   tv_sec;
-> > > +     __s32   tv_nsec;
-> > > +     __u32   pad;
-> > > +};
-> > > +
-> > >  #define SYNC_IOC_MAGIC               '>'
-> > >
-> > >  /**
-> > > @@ -95,4 +107,12 @@ struct sync_file_info {
-> > >   */
-> > >  #define SYNC_IOC_FILE_INFO   _IOWR(SYNC_IOC_MAGIC, 4, struct sync_file_info)
-> > >
-> > > +
-> > > +/**
-> > > + * DOC: SYNC_IOC_SET_DEADLINE - set a deadline on a fence
-> > > + *
-> > > + * Allows userspace to set a deadline on a fence, see dma_fence_set_deadline()
-> > > + */
-> > > +#define SYNC_IOC_SET_DEADLINE        _IOW(SYNC_IOC_MAGIC, 5, struct sync_set_deadline)
-> > > +
-> > >  #endif /* _UAPI_LINUX_SYNC_H */
-> > > --
-> > > 2.31.1
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
