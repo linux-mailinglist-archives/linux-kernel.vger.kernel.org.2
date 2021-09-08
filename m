@@ -2,103 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C638840410A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FEA4040D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 00:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241276AbhIHWdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 18:33:43 -0400
-Received: from ixit.cz ([94.230.151.217]:33150 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229997AbhIHWdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:33:42 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7F21324BAF;
-        Wed,  8 Sep 2021 21:34:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1631129685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SxiVdUlQ7fYzowAHt3rgwVXftn+wj1pzvOHK68gmgPY=;
-        b=wO7Wnqgjg6LHEVCOcSFU7TfunNi3wC6eu9Yxq4K/cUMaN6w+370N5Islyn6OVh/KXcO968
-        We/iE5hmciQjowr3x++aYKIp6wbcPe9/W3oFwIPdqHXJAS9N4IMbhM21e3BLFjk5MAC1n3
-        reB52BlboHn0lGO7q2Z1EKqAV1ypUwg=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>
-Cc:     linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH 2/2] ARM: dts: qcom: ipq4019: add dwc3 arch spec compatible
-Date:   Wed,  8 Sep 2021 21:33:29 +0200
-Message-Id: <20210908193329.87992-2-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210908193329.87992-1-david@ixit.cz>
-References: <20210908193329.87992-1-david@ixit.cz>
+        id S235947AbhIHWEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 18:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236062AbhIHWEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 18:04:06 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D917C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 15:02:58 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id a93so7314282ybi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 15:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h/KrPoSusIWXfaxxiz6d+5SZKzgcam3GYDlFFEZnnMY=;
+        b=pe7+5xlygWREYLTBPwQ4X2nvtNtdGJRqObWDRJY9EMov224EgPVX8Ha+BITykbcrHD
+         pgsGo/GfwQZLxzwUvA+bnJjC95jBhDgCnzyENJs8mZKhTTXQuAXdlqFyEL/8CNVtHmrO
+         n8utNK+rV2QUw0YCAaPdPBh9QbZ+uyEQXNfliHXAtJ1zTv/zI+gbbP5QD0Ker4nklmVS
+         h3smtQKVGfJLnPLDpcCPwSStMR1VMU37GPu8lzuf1k4S/UEqeUm4zr8TPpmWmMoJltTf
+         7MRUz+in30TtguUqXKOYxQWfmwNGBFSYQGmksXgJF+6xmRiisHJEcGLmQZ8KcMnngO3F
+         fMXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h/KrPoSusIWXfaxxiz6d+5SZKzgcam3GYDlFFEZnnMY=;
+        b=LVbaP3+KbqqDJTnVpgjE+5PUbfRwv2OZ0cVlYIqK0KfZbrSBdurkIdSzXAo3uubW5+
+         IXjtXYOxyhE+2NISYUHjcZIInTpRuF7i4ioi+3Nj2eqgvAg/rq93eu1DDB1LZTZ8UxrG
+         tNjaATyhA82QnN7FrnHqtbynbh2Fjh7BNdmm0Bk8K+U+igjz9JaNHiAy6Zhp4RhxbuiD
+         +13li5p02hY52tNY91UqXT9s08tSBypnzXXaqOaM08lcgzXz13hxD6n2SyRd76e8NiK8
+         /SYE1ydfPGjedaFEYorDxgKOVwQYcyfKUKwMx+/GtyYlroDd6GSmQAwlBEcFur8ZDqQ/
+         lLgw==
+X-Gm-Message-State: AOAM531FIc+QeOUDI7tSPuxT/Aw1Qd2E4UXdkx2WTDvBhH1ekSwJ2tJ/
+        V8l6JG9kABv4omllWPhm0yr7uglmTiGTrEMkHPTZMQ==
+X-Google-Smtp-Source: ABdhPJxClOdeLnlr90MK1KP1cTL7b5WQrlcEprzjPCW6hNsUleQfKwSjp3Z9+e8nH9EAsa8vkVGGODNF/IKN+WaxZHU=
+X-Received: by 2002:a05:6902:1201:: with SMTP id s1mr600170ybu.432.1631138577011;
+ Wed, 08 Sep 2021 15:02:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210904000543.2019010-1-saravanak@google.com>
+ <20210904000543.2019010-2-saravanak@google.com> <CAPDyKFrsKvHXMT-6CuFXKfqX+hZa3vGAu7hQz=9ZYBC7-dYS0w@mail.gmail.com>
+In-Reply-To: <CAPDyKFrsKvHXMT-6CuFXKfqX+hZa3vGAu7hQz=9ZYBC7-dYS0w@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 8 Sep 2021 15:02:21 -0700
+Message-ID: <CAGETcx8xfb+mnmo9wvX_C19Ta_FFh+jn8sz2sKyx5PJY1aZCyg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-oxnas@groups.io,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be compilant with qcom,dwc3 definition
- - add compatible
- - rename dwc3@ to usb@
+On Tue, Sep 7, 2021 at 3:41 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Sat, 4 Sept 2021 at 02:05, Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > fw_devlink could end up creating device links for bus only devices.
+> > However, bus only devices don't get probed and can block probe() or
+> > sync_state() [1] call backs of other devices. To avoid this, probe these
+> > devices using the simple-pm-bus driver.
+> >
+> > However, there are instances of devices that are not simple buses (they
+> > get probed by their specific drivers) that also list the "simple-bus"
+> > (or other bus only compatible strings) in their compatible property to
+> > automatically populate their child devices. We still want these devices
+> > to get probed by their specific drivers. So, we make sure this driver
+> > only probes devices that are only buses.
+> >
+> > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > Tested-by: Saravana Kannan <saravanak@google.com>
+>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> I will run some tests as soon as I can and let you know the results.
 
-No functional changes intended.
+Thanks.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm/boot/dts/qcom-ipq4019.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+-Saravana
 
-diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-index a3ae5458ac68..25b7e10537df 100644
---- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-@@ -637,7 +637,7 @@ usb3_hs_phy: hsphy@a6000 {
- 		};
- 
- 		usb3: usb3@8af8800 {
--			compatible = "qcom,dwc3";
-+			compatible = "qcom,ipq4019-dwc3", "qcom,dwc3";
- 			reg = <0x8af8800 0x100>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-@@ -648,7 +648,7 @@ usb3: usb3@8af8800 {
- 			ranges;
- 			status = "disabled";
- 
--			dwc3@8a00000 {
-+			usb@8a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8a00000 0xf8000>;
- 				interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
-@@ -669,7 +669,7 @@ usb2_hs_phy: hsphy@a8000 {
- 		};
- 
- 		usb2: usb2@60f8800 {
--			compatible = "qcom,dwc3";
-+			compatible = "qcom,ipq4019-dwc3", "qcom,dwc3";
- 			reg = <0x60f8800 0x100>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-@@ -680,7 +680,7 @@ usb2: usb2@60f8800 {
- 			ranges;
- 			status = "disabled";
- 
--			dwc3@6000000 {
-+			usb@6000000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x6000000 0xf8000>;
- 				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.33.0
-
+>
+> Kind regards
+> Uffe
+>
+> > ---
+> >  drivers/bus/simple-pm-bus.c | 32 +++++++++++++++++++++++++++++---
+> >  1 file changed, 29 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> > index 01a3d0cd08ed..3e086a9f34cb 100644
+> > --- a/drivers/bus/simple-pm-bus.c
+> > +++ b/drivers/bus/simple-pm-bus.c
+> > @@ -13,11 +13,26 @@
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> >
+> > -
+> >  static int simple_pm_bus_probe(struct platform_device *pdev)
+> >  {
+> > -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> > -       struct device_node *np = pdev->dev.of_node;
+> > +       const struct device *dev = &pdev->dev;
+> > +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> > +       struct device_node *np = dev->of_node;
+> > +       const struct of_device_id *match;
+> > +
+> > +       match = of_match_device(dev->driver->of_match_table, dev);
+> > +
+> > +       /*
+> > +        * These are transparent bus devices (not simple-pm-bus matches) that
+> > +        * have their child nodes populated automatically.  So, don't need to
+> > +        * do anything more.
+> > +        */
+> > +       if (match && match->data) {
+> > +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
+> > +                       return 0;
+> > +               else
+> > +                       return -ENODEV;
+> > +       }
+> >
+> >         dev_dbg(&pdev->dev, "%s\n", __func__);
+> >
+> > @@ -31,14 +46,25 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+> >
+> >  static int simple_pm_bus_remove(struct platform_device *pdev)
+> >  {
+> > +       const void *data = of_device_get_match_data(&pdev->dev);
+> > +
+> > +       if (data)
+> > +               return 0;
+> > +
+> >         dev_dbg(&pdev->dev, "%s\n", __func__);
+> >
+> >         pm_runtime_disable(&pdev->dev);
+> >         return 0;
+> >  }
+> >
+> > +#define ONLY_BUS       ((void *) 1) /* Match if the device is only a bus. */
+> > +
+> >  static const struct of_device_id simple_pm_bus_of_match[] = {
+> >         { .compatible = "simple-pm-bus", },
+> > +       { .compatible = "simple-bus",   .data = ONLY_BUS },
+> > +       { .compatible = "simple-mfd",   .data = ONLY_BUS },
+> > +       { .compatible = "isa",          .data = ONLY_BUS },
+> > +       { .compatible = "arm,amba-bus", .data = ONLY_BUS },
+> >         { /* sentinel */ }
+> >  };
+> >  MODULE_DEVICE_TABLE(of, simple_pm_bus_of_match);
+> > --
+> > 2.33.0.153.gba50c8fa24-goog
+> >
