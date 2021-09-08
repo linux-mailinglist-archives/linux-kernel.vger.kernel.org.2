@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B292D403983
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB7C403987
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351671AbhIHMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:10:06 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:39889 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351655AbhIHMKD (ORCPT
+        id S1351682AbhIHMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:10:55 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:35376 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351675AbhIHMKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:10:03 -0400
-Received: by mail-ot1-f41.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so2608462otf.6;
-        Wed, 08 Sep 2021 05:08:55 -0700 (PDT)
+        Wed, 8 Sep 2021 08:10:54 -0400
+Received: by mail-ot1-f53.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so2643869otf.2;
+        Wed, 08 Sep 2021 05:09:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vrLLvw3xOTTCRU86Xfj4PMbgmYuibMDeCWrdzyiGca8=;
-        b=DjjemY0QuHd0s/x+Ii3SnID2nXZc/Jwju8BloFka6+GNxhFc36J5ly5i46HHS0Mlwg
-         Fw6Fz2RxYFJyxFiyS/GFq6a5mI/2sRDI+FAJsRd6FeQJ4awYkPRWjBSgOhCqLwBMhLyV
-         ZjpnVVuB6VyOPKd4ui63UCxD0QhkRWEqlEmYCXPub1QzUQjW9eErYTxU98vsSkaM4Ov7
-         qaAML4LYeVud8uwW90OAGyi+uarbfkj1wgdJxrcTzKkwwcDpHj6fWYMrciXp0sMeNAgN
-         zrApYL6cHA9Jf105ZN6BxQo0eBhWXyHBKzedOtqXZRRpNGdpbrtrizZUDOOC6Ed2Jwsu
-         ilSw==
-X-Gm-Message-State: AOAM531mKoMkYx13W7JcFPoCu3XNe3fstk+NndbVJcK66m0t40Nkcdnx
-        4SOCED6k412tptr7Iqldg3ZfvkiMiQ==
-X-Google-Smtp-Source: ABdhPJyKe/fxlDI+Fva7pn1G9AJ4ZdpS+C3pvKgu6+LleWD1wC5liKyozojGH0TXlI8unEmxTos7Bw==
-X-Received: by 2002:a05:6830:603:: with SMTP id w3mr2664233oti.147.1631102935279;
-        Wed, 08 Sep 2021 05:08:55 -0700 (PDT)
+        bh=j7ojHJ1eCmWRZa3pwYfDHA3k+qFmPKIKJn/96r4lWZQ=;
+        b=HKQYV3/aBH2b77KXbYvfooJkUJAD3OCRlWR2BgbyXQ1M0JYsSOSu60pHv7PMVMMUce
+         v+VJgV9xH+74A4Cew96yDQhufXK1XU1Hp4PpaWdxjusbwItkHz/JpsKAsevl4rOeBWY3
+         otWFBY+WzcPRGpbiYrI3bdUXyJvbms1j+qNHnYWjqnuJPJnNgXzko3mSsJ3nsm+hMFiY
+         Prnb2CqEZGf2sr3uOsF5+zMpu8N2GapZgxv0YmZUtGbY4GliidgrTLSbpY9Zz22JhRkW
+         h4Qr5HfJODGDhYb927bmCuFK0ItrStYMZ8oeFt72gP/oG4H9lvv/TB5xmoeHR8hpSyBP
+         4iSw==
+X-Gm-Message-State: AOAM530ndT3qhs2XkbyAD+ZuJ1H/vkyLWRNmUC9TpYagDnRGk0zN1CIB
+        eFucp2aUV1M+vAmdaOGdIg==
+X-Google-Smtp-Source: ABdhPJxWseZDeKVP+HWmuLFENdu1NKMmCTa/qCI19k9RLF4GoYFUHyFtsDm8udD9WFFDAtNTmMM4BA==
+X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr2643550oto.175.1631102986008;
+        Wed, 08 Sep 2021 05:09:46 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k21sm397255ots.53.2021.09.08.05.08.53
+        by smtp.gmail.com with ESMTPSA id s14sm407750oiw.8.2021.09.08.05.09.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 05:08:54 -0700 (PDT)
-Received: (nullmailer pid 1867581 invoked by uid 1000);
-        Wed, 08 Sep 2021 12:08:53 -0000
-Date:   Wed, 8 Sep 2021 07:08:52 -0500
+        Wed, 08 Sep 2021 05:09:44 -0700 (PDT)
+Received: (nullmailer pid 1869396 invoked by uid 1000);
+        Wed, 08 Sep 2021 12:09:43 -0000
+Date:   Wed, 8 Sep 2021 07:09:43 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-Cc:     alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-Message-ID: <YTin1C4DHMTIAwH7@robh.at.kernel.org>
-References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
- <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     angelogioacchino.delregno@somainline.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        martin.botka@somainline.org, jamipkettunen@somainline.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-arm-msm@vger.kernel.org,
+        marijn.suijten@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 1/2] dt-bindings: thermal: tsens: Add msm8992/4
+ compatibles
+Message-ID: <YTioBwEEQHWy9Cjf@robh.at.kernel.org>
+References: <20210904211508.317560-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
+In-Reply-To: <20210904211508.317560-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 04 Sep 2021 01:15:34 +0200, Nicolas Frattaroli wrote:
-> This adds the YAML bindings for the Rockchip I2S/TDM audio driver.
+On Sat, 04 Sep 2021 23:15:07 +0200, Konrad Dybcio wrote:
+> Add the compatibles for msm8992/4 TSENS hardware.
 > 
-> Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  .../bindings/sound/rockchip,i2s-tdm.yaml      | 218 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 219 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+> Changes since v1:
+> - Separate this into a standalone patch
+> 
+>  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
