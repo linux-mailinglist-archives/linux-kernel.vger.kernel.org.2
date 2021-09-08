@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793EB403293
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E20403296
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 04:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347214AbhIHCXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 22:23:53 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56465 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235450AbhIHCXv (ORCPT
+        id S1347287AbhIHCYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 22:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347250AbhIHCYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 22:23:51 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 0E61B320039A;
-        Tue,  7 Sep 2021 22:22:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 07 Sep 2021 22:22:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=K
-        BQJ2htm+9uNSNpB1V4iykXXKdsWXwGHJy4WSWj9p/Q=; b=lUJ3LpEP6r98th3O0
-        4K+5iB0uku7U1jSOK/WhRYiypKj9nt7ZogjFa+Fm66/6Z8M1KRoFx3VZXUZMW5S/
-        qWpEFpZ3HHtof6Bi1Pd+hORgHnB8f/fSNuDk1Rx7ZSGQ0RERuSiyzenegbRxKVDt
-        RiKDUiHQAqKe9mhe5pqP1wgWPaO3hTKWEF0ePZZ7Yd0ZuvmNJNk4WfrhkonG3Rvp
-        y/6zJTS0cMy/fYFbtGBm35Wb9pS7vg9KfswZxgTCREWv3C6A9VZzCxBLA06c2Dw1
-        XK36GNt+oXpgiVEwgkqeZPyQEaP/PInSm9jPUDpKlTt1pieP9hSoaSt/6L3AmMaL
-        mgVDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=KBQJ2htm+9uNSNpB1V4iykXXKdsWXwGHJy4WSWj9p
-        /Q=; b=GqKyIaWF9Rg4lLQtqUrcB6Q8Mg+DHcisLXb6tPIuvcoO0Km2/0DpNmm4K
-        8Y7BXPAf7UMCwiYGERbbHtpqoFeK5VXTh9/tqxlw+9ptaVG7sR8o8vOsv02CMD7S
-        +sxu6Mtw0x6uqfxw5dVZqpXNyt4TfPbfKPNEqMewDxjDcDIPZJXtU4Dmunf3/CoA
-        E68tg9HeTcpDx+bt7/AKRdJwzdf1jv1ijHDt9j06r2sj7P8NnbL3i9b8PlYvdTjR
-        DN7NMa8eXYCpGoWhBia74lUhJgA7C/fOUIuHqJ04z2zzZBO2VHeOR20eH0+q7EkJ
-        9sfHN7jnVh+6Pj5Ucg09aCpemlHCg==
-X-ME-Sender: <xms:cR44YfDcO0OZ7yVf7qw7FKwEJWqFCygHTI_X-MybMuLvr0Wu6FGALw>
-    <xme:cR44YVjOMn66_rCD5pp3BDmvo2bWyLlQN13MrroHU19i4af5ghzUpNFsZ1MsKIfqA
-    G_-5qfkEFv4LkBECg>
-X-ME-Received: <xmr:cR44YalDheHy-e836mfcc8MrXLEBS_vNz7Jfc9vnZLUtPhRVq-HeD5H2r1kFxuxLCBLjZYh5X1VYGilZwkDGjKRda93sw_TDC7eSxXyjefV3r-zDGDMbACEW1A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:cR44YRwRN_MmVcL7Z05EG1q1xe4egkawkUalaZ-dVv02Q12DEU7IcQ>
-    <xmx:cR44YUQ15VGKT-eHqKDByJnYmNHQWwJMCVoVnvs4nHnd71mPwlLW3g>
-    <xmx:cR44YUZiCWBgdwPOm1UppSHBnj7ZtKiPs7-uZn-r9USJWk_-LNT_Lw>
-    <xmx:cx44YTFeGlIIrsXmGY3hPaxJxt8bsYR3MV8UCufFSY91Xy8lUY77aw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Sep 2021 22:22:41 -0400 (EDT)
-Subject: Re: [PATCH] mailbox: sun6i: Make use of the helper function
- devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev
-References: <20210907074201.2553-1-caihuoqing@baidu.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <0d8c959b-d256-921c-e6a4-2f99e298b9cc@sholland.org>
-Date:   Tue, 7 Sep 2021 21:22:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Tue, 7 Sep 2021 22:24:00 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027C7C06175F;
+        Tue,  7 Sep 2021 19:22:53 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id e16so738089pfc.6;
+        Tue, 07 Sep 2021 19:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:date:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=RgKpPDodG3G5oLWhYuKNMeJdFTTOJJB0RNkReJ0NUcw=;
+        b=R3aTWtDcq6OEPruWydNlWcCuhPQOTZh38ifMO0YYkI2RtcN8BOaFlFIPOFIetS6hLm
+         lE9XRhFuw0NiGnNrApwroNdTVkGBN6+drWHFfVZtrLHxSyhjHYvEC+3zHfQQ3DDvVEQw
+         DWd/xBKG8GgDtMpXx+hm4vv84Vy0J9fBiPcbAE6zmSu55kZ3zJ31dA6CJDjfjuyNx9zY
+         5wJZCBwRbvFUtZ5RxYF3FHhdxSSfvlFvSyRwxEgiSaUYxmsclAl8BU2uYGdFIomvXuR4
+         Cgdm6mMfqCJkIgN5nJVufdlXNEiBIysOBBydrKsG6OMhVPLGL6Ox/TXYKbIz9oK0Pl66
+         +kbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=RgKpPDodG3G5oLWhYuKNMeJdFTTOJJB0RNkReJ0NUcw=;
+        b=cuCTG+bZ9R45/YApcYrU0Dz8XpgBn7SXXAefxZe9hrW71CAhWGJefIXetaUFZ1HReI
+         BHeAcEu2x5cKrXry3TRDLssERkttsbnSBoZmciS9lBOGMX88XHO7DjhexLYsx9ywUL+N
+         wDQPOFbf2raVWNIItJxFLa9lX4Din5eGiQsuN391K9avJv+5PTgTjbVtDYtO6OIuIipF
+         gNLyvXKTNMOiyhChKEwbCZGPlNP8UMgZYynJGUX840ZwhRh6cpZtVZhZQAQbWjbpHvfg
+         I4QdiNYiO+vlh/ZAvwO5IX2wwBekyKIu3A+ZcfQKjfGEJ4N9IpTwKdoq0DRLoBwvhikM
+         LmHQ==
+X-Gm-Message-State: AOAM533WUf6V7/xMK2Fhx77GYPMn4OK/4SG1fxKxFc2DWGPRLMHnCVLm
+        RxGuXkF4dw4XmaoLKp4kd07X/c7XU82Pgw==
+X-Google-Smtp-Source: ABdhPJxYE3fKWGUVetuvwfA/m57aNn0CUrXx82i9bK8h75ppM+lWtRKW12hARoe9d818bHP9PuhMNQ==
+X-Received: by 2002:aa7:9f10:0:b0:414:ab4e:7c53 with SMTP id g16-20020aa79f10000000b00414ab4e7c53mr1380478pfr.59.1631067773331;
+        Tue, 07 Sep 2021 19:22:53 -0700 (PDT)
+Received: from slk1.local.net (n49-192-82-34.sun3.vic.optusnet.com.au. [49.192.82.34])
+        by smtp.gmail.com with ESMTPSA id n11sm330633pjh.23.2021.09.07.19.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 19:22:52 -0700 (PDT)
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+X-Google-Original-From: Duncan Roe <dunc@slk1.local.net>
+Date:   Wed, 8 Sep 2021 12:22:44 +1000
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
+        kuba@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: Re: [PATCH net v2] net: netfilter: Fix port selection of FTP for
+ NF_NAT_RANGE_PROTO_SPECIFIED
+Message-ID: <YTgedODOPAQboQlm@slk1.local.net>
+Mail-Followup-To: Jan Engelhardt <jengelh@inai.de>,
+        Florian Westphal <fw@strlen.de>,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
+        kuba@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+References: <20210907021415.962-1-Cole.Dishington@alliedtelesis.co.nz>
+ <20210907135458.GF23554@breakpoint.cc>
+ <r46nn4-n993-rs28-84sr-o1qop429rr9@vanv.qr>
 MIME-Version: 1.0
-In-Reply-To: <20210907074201.2553-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <r46nn4-n993-rs28-84sr-o1qop429rr9@vanv.qr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 2:42 AM, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/mailbox/sun6i-msgbox.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+On Tue, Sep 07, 2021 at 05:11:42PM +0200, Jan Engelhardt wrote:
+>
+> On Tuesday 2021-09-07 15:54, Florian Westphal wrote:
+> >> -	/* Try to get same port: if not, try to change it. */
+> >> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
+> >> -		int ret;
+> >> +	if (htons(nat->range_info.min_proto.all) == 0 ||
+> >> +	    htons(nat->range_info.max_proto.all) == 0) {
+> >
+> >Either use if (nat->range_info.min_proto.all || ...
+> >
+> >or use ntohs().  I will leave it up to you if you prefer
+> >ntohs(nat->range_info.min_proto.all) == 0 or
+> >nat->range_info.min_proto.all == ntohs(0).
+>
+> If one has the option, one should always prefer to put htons/htonl on
+> the side with the constant literal;
+> Propagation of constants and compile-time evaluation is the target.
+>
+> That works for some other functions as well (e.g.
+> strlen("fixedstring")).
 
-Reviewed-by: Samuel Holland <samuel@sholland.org>
+When comparing against constant zero, why use htons/htonl at all?
+
+Cheers ... Duncan.
