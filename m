@@ -2,115 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607E0403AB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7936403ABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243647AbhIHNcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
+        id S238232AbhIHNdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348576AbhIHNav (ORCPT
+        with ESMTP id S232097AbhIHNds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:30:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79F7C061796
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:29:43 -0700 (PDT)
-Message-ID: <20210908132526.084109938@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631107782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=rFxC3S5gbRp/H2bomRXVEANafwUFHVJ7upN0L20UZ2PqVAVUlH7CmEjfjVc+fZrFoc6mj8
-        XQdd/63M5xOm/GwxBO1/V9jCCS10TsZhicw0OqeApOAeXAN5VxSTLpNAu4ufR9mp1MiVpv
-        FilOcjgvGkM4VzBmX2X2UT7uwQxjObxxcGFcbW6mai7Bt4bL/+E6tlyO9+wYfgyWVGZ82v
-        W2bHM/vHRCeqAU69xcmEzW/Na33a7hFSq2Mi4A+NVF2tir56UWynjv+si6PQPMyAE5nS/z
-        QBuIAUzymwRuoDWrukIvpHj7Bmk7GqTTH95fh/so6+BQ5yR9XXSfmL3AXc1B8A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631107782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=5JWFH5GRh5L6dCTS+U+lx3eNAjpXYCMXL1h8O1mhrBIXsJALQowhGi/s2qxChLo/0AFXtW
-        ZZDRXYsO0WzXhECg==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [patch V3 20/20] x86/fpu/signal: Change return code of
- restore_fpregs_from_user() to boolean
-References: <20210908130922.118265849@linutronix.de>
+        Wed, 8 Sep 2021 09:33:48 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB105C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:32:40 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id i13so2323013ilm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=RdtzwNEFqLqA3tpIdS51MoWtiiUaFHn6z50ywUjaYAI=;
+        b=KgC13npi+zwcXid32lVaYsQ1vd3Jl6q7wyBIRD7SyD0k4FvGDHQkzENbsI4+f0YGYp
+         SufQXj+/B5q4fdS3YtotpnLoKCpBQilv3cigQWEBuctprs5qNVQTxHIPMw4odKIcKxjv
+         GpXeiF13AcZdvAUsHGqKnCWL77EkRZW1KLoH1Rd4O0927dLM+YwLXBPtBu4N8ZFAGd7j
+         I+6m2D+5nTVYVdoCduudOJYPKIEobqjuN0rP8buOX9EW54MkdUBKuXctVUvAc0N4Q089
+         X1gJwwrpzP9+kLtVtBrSiKUMxeZajw4i42aP4QAKmBGyRbq6JA8HNukzcj3vWYiv0wX8
+         Ny1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=RdtzwNEFqLqA3tpIdS51MoWtiiUaFHn6z50ywUjaYAI=;
+        b=QO1rcc5RFD7ymJJqDtIUOkTySDO4PI/q4X8xq57huFn/norr+Cy0fBMuLYOce+fvi1
+         F7Wx92YmX6MT5V/0bPbtRNoFC51PpB5z7aUYXE38hV0d6PqKGKEVXu8NHeRyNUwMiHCE
+         4MNEMzsMZ6scl174qokM26dgo3fOqsFLclqpjdZxB9aFRVuNfU7595+frmZzOedcjJdw
+         8nT/TvL9HC0l1Lk459rgb2y3xGUPSeP9nwttZFkUAC6QzHlje5EwEP3Ti1bog43DXBSP
+         vrgl3gx38VGxCjFDinInNbXTTssa8V1XoOgSCLdnwHULQG3S+u6uVHI/bcdSH27qSdoW
+         Ryxg==
+X-Gm-Message-State: AOAM531MbfnL1mCR9mht8yhSfID36GYbkZJUf9awvOyVx+0QP67hBgRb
+        GtvtuhUdIQHIAH8K3fIpB37CAA==
+X-Google-Smtp-Source: ABdhPJypjj0Fuf0YV+dNeiT3WvoCwsJ6BXbv+eL/GK8pGmGiwddvFk8jnVNo6gydzyj4IVms5ylF+A==
+X-Received: by 2002:a92:bf0b:: with SMTP id z11mr2704894ilh.117.1631107960320;
+        Wed, 08 Sep 2021 06:32:40 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id u13sm1093530iot.29.2021.09.08.06.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 06:32:39 -0700 (PDT)
+Message-ID: <fffd24d3374ecb2fbfafa9b85fa0ef8012fc7efa.camel@ndufresne.ca>
+Subject: Re: [PATCH v8 04/15] media:Add v4l2 event codec_error and skip
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
+Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Wed, 08 Sep 2021 09:32:38 -0400
+In-Reply-To: <647f84c1e7c2a48d6492d38fa4f06586235500b8.1631002447.git.ming.qian@nxp.com>
+References: <cover.1631002447.git.ming.qian@nxp.com>
+         <647f84c1e7c2a48d6492d38fa4f06586235500b8.1631002447.git.ming.qian@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed,  8 Sep 2021 15:29:41 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fpu_sig_restore() only needs information about success or fail and no
-real error code.
+Hi Ming,
 
-This cleans up the confusing conversion of the trap number, which is
-returned by the *RSTOR() exception fixups, to an error code.
+more API only review.
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/fpu/signal.c |   17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+Le mardi 07 septembre 2021 à 17:49 +0800, Ming Qian a écrit :
+> The codec_error event can tell client that
+> there are some error occurs in the decoder engine.
+> 
+> The skip event can tell the client that
+> there are a frame has been decoded,
+> but it won't be outputed.
+> 
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
+> Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
+> ---
+>  .../userspace-api/media/v4l/vidioc-dqevent.rst       | 12 ++++++++++++
+>  include/uapi/linux/videodev2.h                       |  2 ++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> index 6eb40073c906..87d40ad25604 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> @@ -182,6 +182,18 @@ call.
+>  	the regions changes. This event has a struct
+>  	:c:type:`v4l2_event_motion_det`
+>  	associated with it.
+> +    * - ``V4L2_EVENT_CODEC_ERROR``
+> +      - 7
+> +      - This event is triggered when some error occurs inside the codec engine,
+> +	usually it can be replaced by a POLLERR event, but in some cases, the POLLERR
+> +	may cause the application to exit, but this event can allow the application to
+> +	handle the codec error without exiting.
 
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -255,8 +255,8 @@ static int __restore_fpregs_from_user(vo
-  * Attempt to restore the FPU registers directly from user memory.
-  * Pagefaults are handled and any errors returned are fatal.
-  */
--static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
--				    bool fx_only, unsigned int size)
-+static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
-+				     bool fx_only, unsigned int size)
- {
- 	struct fpu *fpu = &current->thread.fpu;
- 	int ret;
-@@ -285,12 +285,11 @@ static int restore_fpregs_from_user(void
- 
- 		/* Try to handle #PF, but anything else is fatal. */
- 		if (ret != X86_TRAP_PF)
--			return -EINVAL;
-+			return false;
- 
--		ret = fault_in_pages_readable(buf, size);
--		if (!ret)
-+		if (!fault_in_pages_readable(buf, size))
- 			goto retry;
--		return ret;
-+		return false;
- 	}
- 
- 	/*
-@@ -307,7 +306,7 @@ static int restore_fpregs_from_user(void
- 
- 	fpregs_mark_activate();
- 	fpregs_unlock();
--	return 0;
-+	return true;
- }
- 
- static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
-@@ -342,8 +341,8 @@ static bool __fpu_restore_sig(void __use
- 		 * faults. If it does, fall back to the slow path below, going
- 		 * through the kernel buffer with the enabled pagefault handler.
- 		 */
--		return !restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
--						 state_size);
-+		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
-+						state_size);
- 	}
- 
- 	/*
+Events are sent to userspace in a separate queue from the VB2 queue. Which means
+it's impossible for userspace to know where this error actually took place.
+Userspace may endup discarding valid frames from the VB queue, as it does not
+know which one are good, and which one are bad.
+
+There is likely a bit of spec work to be done here for non-fatal decode errors,
+but I think the right approach is to use V4L2_BUF_FLAG_ERROR. What we expect
+from decoders is that for each frame, a CAPTURE buffer is assigned. If decoding
+that frame was not possible but the error is recoverable (corrupted bitstream,
+missing reference, etc.), then the failing frame get marked with FLAG_ERROR and
+decoding continues as usual.
+
+What isn't documented is that you can set bytesused to 0, meaning there is
+nothing useful in that frame, or a valid bytesused when you know only some
+blocks are broken (e.g. missing 1 ref). Though, GStreamer might be the only
+implementation of that, and byteused 0 may confuse some existing userspace.
+
+> +    * - ``V4L2_EVENT_SKIP``
+> +      - 8
+> +      - This event is triggered when one frame is decoded, but it won't be outputed
+> +	to the display. So the application can't get this frame, and the input frame count
+> +	is dismatch with the output frame count. And this evevt is telling the client to
+> +	handle this case.
+
+Similar to my previous comment, this event is flawed, since userspace cannot
+know were the skip is located in the queued buffers. Currently, all decoders are
+mandated to support V4L2_BUF_FLAG_TIMESTAMP_COPY. The timestamp must NOT be
+interpreted by the driver and must be reproduce as-is in the associated CAPTURE
+buffer. It is possible to "garbage" collect skipped frames with this method,
+though tedious.
+
+An alternative, and I think it would be much nicer then this, would be to use
+the v4l2_buffer.sequence counter, and just make it skip 1 on skips. Though, the
+down side is that userspace must also know how to reorder frames (a driver job
+for stateless codecs) in order to identify which frame was skipped. So this is
+perhaps not that useful, other then knowing something was skipped in the past.
+
+A third option would be to introduce V4L2_BUF_FLAG_SKIPPED. This way the driver
+could return an empty payload (bytesused = 0) buffer with this flag set, and the
+proper timestamp properly copied. This would let the driver communicate skipped
+frames in real-time. Note that this could break with existing userspace, so it
+would need to be opted-in somehow (a control or some flags).
+
+>      * - ``V4L2_EVENT_PRIVATE_START``
+>        - 0x08000000
+>        - Base event number for driver-private events.
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 5bb0682b4a23..c56640d42dc5 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -2369,6 +2369,8 @@ struct v4l2_streamparm {
+>  #define V4L2_EVENT_FRAME_SYNC			4
+>  #define V4L2_EVENT_SOURCE_CHANGE		5
+>  #define V4L2_EVENT_MOTION_DET			6
+> +#define V4L2_EVENT_CODEC_ERROR			7
+> +#define V4L2_EVENT_SKIP				8
+>  #define V4L2_EVENT_PRIVATE_START		0x08000000
+>  
+>  /* Payload for V4L2_EVENT_VSYNC */
+
 
