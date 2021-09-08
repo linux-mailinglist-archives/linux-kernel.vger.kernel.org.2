@@ -2,192 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5264036AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2554036B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351216AbhIHJO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:14:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233824AbhIHJOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:14:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 759BD6105A;
-        Wed,  8 Sep 2021 09:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631092426;
-        bh=zWISC5wuTeD2y7PZn0k5WwXqICCzqgXU2dfaQECsLZw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HTkKjQ9gyN0MtXWM1hX4mvKEO6y/uxOa+7ShlgiGqqppoucWGIwrgL7836C5iMIDt
-         ar2hRT2YWrdfwCaXBfSF5kN920zcI+vzvq6S6MHCwMObeE/pe7pVCyd0r5OffaIHiU
-         FPwTTKNTo5XYqkf/ch0xEcv8TQooB57SnqlJ9GK+q+Bl2z/440Rfe64Ch2G7+hj7l4
-         QrkGSPA1FUfr/EFZxhGRvh78AsRgOhAt31NVC8+hSp7pzQ+LPMP5K8qn5lE7+hILJD
-         H1Uzf9ktYNfGzlnNr/ioq54hyV9dJ0Eb7u7P2BtR1ojva8oQMFOm/uJxsw9olB9ix+
-         a+vb0hKxV5qKQ==
-Date:   Wed, 8 Sep 2021 12:13:37 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     x86@kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
- not present entries
-Message-ID: <YTh+wfvXjwdgdCuR@kernel.org>
-References: <20210819132717.19358-1-rppt@kernel.org>
+        id S1351288AbhIHJQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:16:27 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23576 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348710AbhIHJQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 05:16:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631092517; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=RDiwY+AZ3ACBodU30o7rTrzXnw0PgLmsZq3HxNZIBBE=;
+ b=wT3+envUic3mKCNCSa3d2dXUKPQfE4xzxlf0YvysdtE1f6wzDDP5+kS9cDv7EVkJdgkVj6eb
+ qMGCeRdNmL1NtGIyO3p1fb7l59KoGTaEpm4SZDMqFz2C5CUIa5J2Gb9V810wtRLPwKqqvFbx
+ CJmGcKBYs/FD7/+sxG7OpF0pFAM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61387f11fc1f4cb6926f86ba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 09:14:57
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1DB8EC43617; Wed,  8 Sep 2021 09:14:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E258C4338F;
+        Wed,  8 Sep 2021 09:14:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819132717.19358-1-rppt@kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 08 Sep 2021 14:44:56 +0530
+From:   skakit@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        mka@chromium.org, kgunda@codeaurora.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+In-Reply-To: <CAE-0n51CCqrbKr9NCkzaK3JxCtJgRKdXTeR4kxnnOK_wNKpP6A@mail.gmail.com>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
+ <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+ <CAE-0n51CCqrbKr9NCkzaK3JxCtJgRKdXTeR4kxnnOK_wNKpP6A@mail.gmail.com>
+Message-ID: <b15b7da50186d8ec86857dce0a31f1e3@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
-
-On Thu, Aug 19, 2021 at 04:27:17PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 2021-09-08 09:04, Stephen Boyd wrote:
+> Quoting satya priya (2021-09-06 03:41:07)
+>> Add pwm support for PM8350C pmic.
+>> 
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi 
+>> b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> index e1b75ae..ecdae55 100644
+>> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> @@ -29,6 +29,12 @@
+>>                         interrupt-controller;
+>>                         #interrupt-cells = <2>;
+>>                 };
+>> +
+>> +               pm8350c_pwm4: pwm {
+>> +                       compatible = "qcom,pm8350c-pwm";
 > 
-> Jiri Olsa reported a fault when running:
-> 
-> 	# cat /proc/kallsyms | grep ksys_read
-> 	ffffffff8136d580 T ksys_read
-> 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
-> 
-> 	/proc/kcore:     file format elf64-x86-64
-> 
-> 	Segmentation fault
-> 
-> krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
-> [   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
-> [   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
-> [   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
-> [   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
-> [   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
-> [   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
-> [   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
-> [   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
-> [   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
-> [   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
-> [   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
-> [   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
-> [   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   68.361597] PKRU: 55555554
-> [   68.362460] Call Trace:
-> [   68.363252]  read_kcore+0x57f/0x920
-> [   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
-> [   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.370793]  ? lock_acquire+0x195/0x2f0
-> [   68.371920]  ? lock_acquire+0x195/0x2f0
-> [   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.374364]  ? lock_acquire+0x195/0x2f0
-> [   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.381268]  ? lock_release+0x22b/0x3e0
-> [   68.382458]  ? _raw_spin_unlock+0x1f/0x30
-> [   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
-> [   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.386389]  ? lock_acquire+0x195/0x2f0
-> [   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
-> [   68.388969]  ? lock_release+0x22b/0x3e0
-> [   68.390145]  proc_reg_read+0x55/0xa0
-> [   68.391257]  ? vfs_read+0x78/0x1b0
-> [   68.392336]  vfs_read+0xa7/0x1b0
-> [   68.393328]  ksys_read+0x68/0xe0
-> [   68.394308]  do_syscall_64+0x3b/0x90
-> [   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   68.396804] RIP: 0033:0x7fcc11cf92e2
-> [   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
-> [   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> [   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
-> [   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
-> [   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
-> [   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
-> [   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
-> [   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
-> [   68.419591] ---[ end trace e2c30f827226966b ]---
-> [   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
-> [   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
-> [   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
-> [   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
-> [   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
-> [   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
-> [   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
-> [   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
-> [   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
-> [   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
-> [   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   68.447010] PKRU: 55555554
-> 
-> The fault happens because kern_addr_valid() dereferences existent but not
-> present PMD in the high kernel mappings.
-> 
-> Such PMDs are created when free_kernel_image_pages() frees regions larger
-> than 2Mb. In this case a part of the freed memory is mapped with PMDs and
-> the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-> mark the PMD as not present rather than wipe it completely.
-> 
-> Make kern_addr_valid() to check whether higher level page table entries are
-> present before trying to dereference them to fix this issue and to avoid
-> similar issues in the future.
-> 
-> Reported-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: <stable@vger.kernel.org>	# 4.4+
-> ---
-> 
-> v2:
-> * drop pXd_none() checks and leave only pXd_present(), per David
-> 
-> v1: https://lore.kernel.org/lkml/20210817135854.25407-1-rppt@kernel.org
-> 
->  arch/x86/mm/init_64.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index ddeaba947eb3..879886c6cc53 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
->  		return 0;
->  
->  	p4d = p4d_offset(pgd, addr);
-> -	if (p4d_none(*p4d))
-> +	if (!p4d_present(*p4d))
->  		return 0;
->  
->  	pud = pud_offset(p4d, addr);
-> -	if (pud_none(*pud))
-> +	if (!pud_present(*pud))
->  		return 0;
->  
->  	if (pud_large(*pud))
->  		return pfn_valid(pud_pfn(*pud));
->  
->  	pmd = pmd_offset(pud, addr);
-> -	if (pmd_none(*pmd))
-> +	if (!pmd_present(*pmd))
->  		return 0;
->  
->  	if (pmd_large(*pmd))
-> -- 
-> 2.28.0
+> Shouldn't there be a reg property?
 > 
 
--- 
-Sincerely yours,
-Mike.
+The bindings do not specify reg property. I think it is because we are 
+adding the base address in struct "pm8350c_pwm_data".
+
+>> +                       #pwm-cells = <2>;
+>> +                       status = "okay";
+>> +               };
+>>         };
+>>  };
+>> 
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
