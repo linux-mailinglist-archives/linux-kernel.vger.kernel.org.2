@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523A24034DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2E34034E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 09:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348018AbhIHHLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 03:11:10 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:55136 "EHLO baidu.com"
+        id S1347488AbhIHHMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 03:12:21 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:56986 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1347504AbhIHHLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 03:11:00 -0400
-Received: from BC-Mail-Ex10.internal.baidu.com (unknown [172.31.51.50])
-        by Forcepoint Email with ESMTPS id 7BF9BA85B7143C02D90D;
-        Wed,  8 Sep 2021 15:09:50 +0800 (CST)
+        id S235984AbhIHHMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 03:12:14 -0400
+Received: from BC-Mail-EX04.internal.baidu.com (unknown [172.31.51.44])
+        by Forcepoint Email with ESMTPS id 12632394B92C5783F706;
+        Wed,  8 Sep 2021 15:11:06 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex10.internal.baidu.com (172.31.51.50) with Microsoft SMTP Server
+ BC-Mail-EX04.internal.baidu.com (172.31.51.44) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 8 Sep 2021 15:09:50 +0800
+ 15.1.2242.12; Wed, 8 Sep 2021 15:11:05 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 8 Sep 2021 15:09:49 +0800
+ 15.1.2308.14; Wed, 8 Sep 2021 15:11:05 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     Niklas Cassel <nks@flawful.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 6/6] soc: qcom: rpmh-rsc: Make use of the helper function devm_platform_ioremap_resource_byname()
-Date:   Wed, 8 Sep 2021 15:09:30 +0800
-Message-ID: <20210908070930.214-6-caihuoqing@baidu.com>
+Subject: [PATCH 2/3] soc: mtk-mutex: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Wed, 8 Sep 2021 15:10:57 +0800
+Message-ID: <20210908071059.291-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210908070930.214-1-caihuoqing@baidu.com>
-References: <20210908070930.214-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [172.31.63.8]
@@ -43,37 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource_byname() helper instead of
-calling platform_get_resource_byname() and devm_ioremap_resource()
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
 separately
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/soc/qcom/rpmh-rsc.c | 4 +---
+ drivers/soc/mediatek/mtk-mutex.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index e749a2b285d8..2834c6efc16b 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -910,7 +910,6 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
+diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+index 2e4bcc300576..065ec1c47e0b 100644
+--- a/drivers/soc/mediatek/mtk-mutex.c
++++ b/drivers/soc/mediatek/mtk-mutex.c
+@@ -458,7 +458,6 @@ static int mtk_mutex_probe(struct platform_device *pdev)
  {
- 	struct device_node *dn = pdev->dev.of_node;
- 	struct rsc_drv *drv;
--	struct resource *res;
- 	char drv_id[10] = {0};
- 	int ret, irq;
- 	u32 solver_config;
-@@ -941,8 +940,7 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
- 		drv->name = dev_name(&pdev->dev);
+ 	struct device *dev = &pdev->dev;
+ 	struct mtk_mutex_ctx *mtx;
+-	struct resource *regs;
+ 	int i;
  
- 	snprintf(drv_id, ARRAY_SIZE(drv_id), "drv-%d", drv->id);
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, drv_id);
--	base = devm_ioremap_resource(&pdev->dev, res);
-+	base = devm_platform_ioremap_resource_byname(pdev, dri_id);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
+ 	mtx = devm_kzalloc(dev, sizeof(*mtx), GFP_KERNEL);
+@@ -479,8 +478,7 @@ static int mtk_mutex_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
+-	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	mtx->regs = devm_ioremap_resource(dev, regs);
++	mtx->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(mtx->regs)) {
+ 		dev_err(dev, "Failed to map mutex registers\n");
+ 		return PTR_ERR(mtx->regs);
 -- 
 2.25.1
 
