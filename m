@@ -2,191 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D9D403A23
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A416E403A24
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 14:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351750AbhIHMxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 08:53:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62912 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346153AbhIHMxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:53:19 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188CXKWc168550;
-        Wed, 8 Sep 2021 08:52:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=S18rahtjgCFUjUFwVEitjwK8LiYm/yk+g1sXfgfi+do=;
- b=sxDByZxeUuV9lMC47wTOZGoHAO8xWdpDYCPmJBuZkmKOzpJMPMDArTW8XstAh8LG6O7m
- 29PoDUzzSzMuvP6uvWGp4UjPBmTglLcpDPLl0qdQvOTkohro832Y7y2+YhwbmLZCiWwc
- E7wdj6/96sZ+rAyOVs13WJAiVRCNdWdgD2BFnAr+X7r/j3U35vc1COyLSaLkpC0bQhXm
- IDM4++IbyW+5SwigUbTt0cubyFHLSz2yZRdWw6/DAUTAagAP/yy9l7/JNVfh3JqSXFgj
- I+h8v2AbSG8SmOV1zvU9jJzeub0XbxibtZ6s1oh5XemOG5QXOieGp/QZJ80rj3yHmviA 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3axrd4gbjk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Sep 2021 08:52:10 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 188CY5DY172108;
-        Wed, 8 Sep 2021 08:52:10 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3axrd4gbj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Sep 2021 08:52:10 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 188ClMas010831;
-        Wed, 8 Sep 2021 12:52:08 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3axcnp8vam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Sep 2021 12:52:08 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 188ClkI951970530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Sep 2021 12:47:46 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7D4EA405C;
-        Wed,  8 Sep 2021 12:52:04 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B2B1A4066;
-        Wed,  8 Sep 2021 12:52:04 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.52.8])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Sep 2021 12:52:04 +0000 (GMT)
-Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
- Topology-Change-Report
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        frankja@linux.ibm.com, cohuck@redhat.com, thuth@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
- <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
- <d85a6998-0f86-44d9-4eae-3051b65c2b4e@redhat.com>
- <59ff09e8-6975-20c2-78de-282585e2953d@linux.ibm.com>
- <66754109-4b35-f6e5-3db7-654d8b67392e@de.ibm.com>
- <d76697e5-d7fb-4210-234a-7b3482e7babc@linux.ibm.com>
- <461c895b-d25a-7dba-4c06-235235e18f1b@de.ibm.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <316097be-81f6-4667-0245-a32d62b19a25@linux.ibm.com>
-Date:   Wed, 8 Sep 2021 14:52:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <461c895b-d25a-7dba-4c06-235235e18f1b@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1351764AbhIHMx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 08:53:57 -0400
+Received: from mail-dm6nam10on2067.outbound.protection.outlook.com ([40.107.93.67]:63840
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235448AbhIHMxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 08:53:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YBYfUuqE5bYq7ZRWHLw/Q2QST+wdEFyjnmjNQ+R9vKTyT+hc4LIM0jsfg38lq4vQmG0BJdfwUXZ6qRYRK4ySbc4xEV7LR7XObUI4N3gmPQZkdN4lCrOvPOCch9NTRQd/aI9mpsRnY7T6JFdm+vCu/Wg7ZqTKSKFmbio3fshRBOb2ragc/18XHQZ8hv+x9cXcPyymP1SPrsEkifShqg/tj80C7M8IWGVf54d9cig6WZ51eyckYW0rIxnxvNjV5iIBI0fo9rojWCl7cy9Mybws+vuFSvF+BmEgJXqK1c0NDQmnj0W4ASzpPnNl9YON57Jlrwrk7riVfXfbjae+Frr7Lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=HQE2gZ1tmLo9HCtlgal88W8FF1In9pMbmeVH4nO0alM=;
+ b=Iu7TBjZfUft0+J725KflfN2IjpOFxumwYhmUafrZnlfZwG+B0rdmzhkCJ4vaLJUb1qqYX71QjDWoF1wsIGoGs9LMgNgcX9aRTeaAdZTaifnqOO7DQWm0iP9Up//2E28kthELnRNIZjX21mhTrNeaE6uibjnt4LBTPOBAEPywQapBYYvHvJbgI7MFmmet18Tcfpeng6AAqI4vEyZMXM2QYBA7ekmW3fHqjcccwrq3FONq4Sh/fyk/0AwKjaWRUyDat77YU8nwswRoR+4RSLcIDlQPdUlZ2YNNHyO+29b/P3Nyr7c0VrCe8NqLC/AicAXIsBlL0MuC5nZy37tgma2omQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HQE2gZ1tmLo9HCtlgal88W8FF1In9pMbmeVH4nO0alM=;
+ b=KHsRdmsgb772lgyk5XCBE9EUnFta8+TBe7KeizfMz1uk6bkqKkJSAP+EnJ2z83IhmTWyR/jClzqCA7/ys2B2cjIFW38EGVqtHK6Ls89wGxPpE2ZFp24upldv9UquhhRm5T/7Vod1Q4czYuzRd1utEVespuILFtBr7nRqdXdEzA4=
+Received: from DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) by
+ DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4478.22; Wed, 8 Sep 2021 12:52:43 +0000
+Received: from DM6PR12MB4250.namprd12.prod.outlook.com
+ ([fe80::899f:5742:e36e:b303]) by DM6PR12MB4250.namprd12.prod.outlook.com
+ ([fe80::899f:5742:e36e:b303%9]) with mapi id 15.20.4478.025; Wed, 8 Sep 2021
+ 12:52:43 +0000
+From:   "Yu, Lang" <Lang.Yu@amd.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Thread-Topic: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Thread-Index: AQHXpKowoLymFk5Tf0idLKRe5rRrP6uaEbwAgAAAhDA=
+Date:   Wed, 8 Sep 2021 12:52:43 +0000
+Message-ID: <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+References: <20210908120723.3920701-1-lang.yu@amd.com>
+ <YTitRjOZtWPTyRHd@kroah.com>
+In-Reply-To: <YTitRjOZtWPTyRHd@kroah.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7-h6HByKwyzx1FcdA5_buRt5u8g2kC8O
-X-Proofpoint-ORIG-GUID: f6ybdRWYhytpRKzz-NmKsqXNel4GlzHh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
- clxscore=1011 priorityscore=1501 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080080
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-09-08T12:52:28Z;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
+ Only-AIP 2.0;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=147e342e-8e22-487b-8fa1-d14e4989afc4;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 02e064a5-6669-4850-1288-08d972c78ca0
+x-ms-traffictypediagnostic: DM6PR12MB2938:
+x-microsoft-antispam-prvs: <DM6PR12MB2938BFE2B695241E437B4ADEFBD49@DM6PR12MB2938.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: z3rnDhE6HAFHWFZRMM20A9Q04SwqPLeg3liE26KgNfmlfrd4mkhKnYwQOOB5VZQ2p/ENmJggp445gyNDXi4dLOyTqO0SrjLCuPk6k59Pi4uRBrPC/dr1iwD8rFRRzSgAc5i/B07qML5vf+cucvJirZkLntZO3denPGuJAiGiSS3caLfoYjNNcqtzCxR0sFe/kNM6aOdfLns71ZqQAAGdhuQY2LBbcBY3V31ReaHrjm3HHmRvi7CuyFyjyucfrmS3kQsKdgFsI4hWSGmeyiNavoNmf0cCztvImdGHXVJ9IoT1nesaABWsQXcvDHyauISnzOoqgnq7Ye3prc29+tiQt5TU9HMlHyBlSBCjF8z0lAu2MWGx1liIU6yolkaQO+CWYieG6ymGudM6YJ9c8BlQI2BpUxgpcwNvUY9awxM/N+w+CkkU9VRn+Y17rEeRMV2Ni0SG5QWhWyTlwyyYGd9MSBScoF4h9XWttSJG+efWsq93SPT2sREjAsvFKUGQZhtSD+FUzf/OxSO37eFRL5kGZrZXr/rDcOsZ6EZeU9dOxYOjgKJIuWA5D/gnLVu19HazhbjnBCfsc/KH3Tvr4ZGq21+YeiqVp3bPMQdUZLQ3qJ6C17w7Ih7jGZgEkv8IRlH1DwpsWHU/QElR771dX80oycs44jMksMp1Zy7AB2W0jCMLj9Yxcjw1hHOvobFjIOcn0LPME7Z+Oj5RigJMm2BaWg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4250.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(39860400002)(366004)(66946007)(26005)(33656002)(86362001)(71200400001)(76116006)(186003)(38100700002)(122000001)(4326008)(8676002)(478600001)(66446008)(55016002)(66556008)(64756008)(2906002)(9686003)(6506007)(66476007)(83380400001)(7696005)(54906003)(316002)(38070700005)(6916009)(5660300002)(52536014)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VXf+QQ50hAwMpXA4zwXh7RHMItSwKECCKEhGZiw7eAgWm+l8al6dMN8n0iQM?=
+ =?us-ascii?Q?qfiERtsd4e3UQQmBOAqNvupeI/Iwo7RvicHChQh4rWh9iLuJO9LK3kN4b6EJ?=
+ =?us-ascii?Q?NPXXtiSn7pZepWIbvwdvwKvf0G1vF0F1F+Jo2M3dOVUAF6aAmAq/9AlBDa8x?=
+ =?us-ascii?Q?vxPD6zJW++X45K6h573r9u8FN2R9UCAGRlv/7Ad1I8aFvv9+HfJelPWWXC53?=
+ =?us-ascii?Q?q1GW4TunM8GTrm/yRBhb8AC+kTkAlEnH6Vzr/C2MvZnul7wm7EZ6NEn9YjNt?=
+ =?us-ascii?Q?/s8BBnIHjRQfEhmdFwjzaq5/EEXTJIPEADFX5OK5hAcc5bytr9BJ0S6B0eQE?=
+ =?us-ascii?Q?PsElYbxONKV7iKX78cnaAL/t3nOXqJyF/GHHRGxRHJQVmeAK2JBgG7+zYlSD?=
+ =?us-ascii?Q?7CgQG96kbHUadh+EQZTuOKkGde+3A9fqdPpMXoRRrDGxEa9PI2e0ajt7cKcS?=
+ =?us-ascii?Q?EJx5lDCnQFvtFPlu6MLmmX/0kamlmOyhSfY2YVZmwb4MYbqIIHJA/Ea/8hrB?=
+ =?us-ascii?Q?Zo/vN9jJlovUILpFb6BIL+wtpZQ1wTMe1KiJSViu/BqD6HlbL/ZuaSLwWJd+?=
+ =?us-ascii?Q?HNuuoPeIa22FGo1c73KNtRcXICvabFVELffrlz+d4Fo2BUhcHJPbsSWBJpAS?=
+ =?us-ascii?Q?bt2j6cPTqNsjB//KUEvfIlCRo9hFOIAL3W1uCIRb4muWbaCtIFxbYpOt4jXl?=
+ =?us-ascii?Q?la/D20Eu84HcSX2je8v7ayP5Y3kGHKm78RuHzxAPKP4Eko5MMLTq9VbCapjV?=
+ =?us-ascii?Q?F4qNsP3nIv9kG9FXVpIBoD0pqgTCe0PwAMp4OLDMt/2kfPQHNaof8sr8x/AE?=
+ =?us-ascii?Q?GLvi7hDs2ci5S25UUjavJ5K86V6UKwnT9y7esQcHCQsDDTxzFQNgwKWAAJsQ?=
+ =?us-ascii?Q?iEsJO65271vsqsUzCjv3zYMozpbIUicTqtUqwvClqngRWZMGhChoAX0jPPkl?=
+ =?us-ascii?Q?HX2hx0AAsOHb9vRlFFLjeD0Ajwmk0R+bp+5GissR1y825nanVTajzDdLQuPR?=
+ =?us-ascii?Q?C00yFC49YJv2BVwO/TM/uEVAIxQHYWNuFpsZPcTJCHNxCNNYC/4QmGGjrS+l?=
+ =?us-ascii?Q?F/KAeX7u3Kw7nc45Wa5V9L0YmBtmKJoIraDSOafz62a1xZyX0YHpmD20+Pgu?=
+ =?us-ascii?Q?uQnz082665ny+SjgEZe1AFGYHJt3aUvGUXqAKXD3cJR4eyi1H1ZR6H3Lavk+?=
+ =?us-ascii?Q?ORzMTTsz+7UviS0dqVjue5r588zRFFhxTwSleyntviBnauKETymmffLXjlGI?=
+ =?us-ascii?Q?04xCrNAmFXeFtf02Oh2hMWXrhH54x6/JGMJirtP5DpzLwB5Fh0jMjZAHgJC4?=
+ =?us-ascii?Q?JCTxjsLkSmp2VuhkTfzdyuG4?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4250.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02e064a5-6669-4850-1288-08d972c78ca0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2021 12:52:43.1630
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cjlbfnC+xfIJUjR3G+ljhfzxB+kk65gUvS30rK9GlwP2vCG9Q7jQWi5RfXUHodXt1GMQGpwxXUg+ars7zHJzOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2938
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[AMD Official Use Only]
 
+Thanks for your reply.
+Just curious if we don't put such a limitation, what are the consequences?
+If we remove the limitation, sys_emit/sys_emit_at api will be more flexible=
+.
+Since the comments of  sysfs_emit/ sys_emit_at api are =20
+" sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer. ",
+Why not make them more equivalent with scnprintf?
 
-On 9/8/21 2:01 PM, Christian Borntraeger wrote:
-> 
-> 
-> On 08.09.21 14:00, Pierre Morel wrote:
->>
->>
->> On 9/8/21 9:04 AM, Christian Borntraeger wrote:
->>>
->>>
->>> On 07.09.21 12:24, Pierre Morel wrote:
->>>>
->>>>
->>>> On 9/6/21 8:37 PM, David Hildenbrand wrote:
->>>>> On 03.08.21 10:26, Pierre Morel wrote:
->>>>>> We let the userland hypervisor know if the machine support the CPU
->>>>>> topology facility using a new KVM capability: 
->>>>>> KVM_CAP_S390_CPU_TOPOLOGY.
->>>>>>
->>>>>> The PTF instruction will report a topology change if there is any 
->>>>>> change
->>>>>> with a previous STSI_15_2 SYSIB.
->>>>>> Changes inside a STSI_15_2 SYSIB occur if CPU bits are set or clear
->>>>>> inside the CPU Topology List Entry CPU mask field, which happens with
->>>>>> changes in CPU polarization, dedication, CPU types and adding or
->>>>>> removing CPUs in a socket.
->>>>>>
->>>>>> The reporting to the guest is done using the Multiprocessor
->>>>>> Topology-Change-Report (MTCR) bit of the utility entry of the guest's
->>>>>> SCA which will be cleared during the interpretation of PTF.
->>>>>>
->>>>>> To check if the topology has been modified we use a new field of the
->>>>>> arch vCPU to save the previous real CPU ID at the end of a schedule
->>>>>> and verify on next schedule that the CPU used is in the same socket.
->>>>>>
->>>>>> We deliberatly ignore:
->>>>>> - polarization: only horizontal polarization is currently used in 
->>>>>> linux.
->>>>>> - CPU Type: only IFL Type are supported in Linux
->>>>>> - Dedication: we consider that only a complete dedicated CPU stack 
->>>>>> can
->>>>>>    take benefit of the CPU Topology.
->>>>>>
->>>>>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
->>>>>
->>>>>
->>>>>> @@ -228,7 +232,7 @@ struct kvm_s390_sie_block {
->>>>>>       __u8    icptcode;        /* 0x0050 */
->>>>>>       __u8    icptstatus;        /* 0x0051 */
->>>>>>       __u16    ihcpu;            /* 0x0052 */
->>>>>> -    __u8    reserved54;        /* 0x0054 */
->>>>>> +    __u8    mtcr;            /* 0x0054 */
->>>>>>   #define IICTL_CODE_NONE         0x00
->>>>>>   #define IICTL_CODE_MCHK         0x01
->>>>>>   #define IICTL_CODE_EXT         0x02
->>>>>> @@ -246,6 +250,7 @@ struct kvm_s390_sie_block {
->>>>>>   #define ECB_TE        0x10
->>>>>>   #define ECB_SRSI    0x04
->>>>>>   #define ECB_HOSTPROTINT    0x02
->>>>>> +#define ECB_PTF        0x01
->>>>>
->>>>>  From below I understand, that ECB_PTF can be used with stfl(11) in 
->>>>> the hypervisor.
->>>>>
->>>>> What is to happen if the hypervisor doesn't support stfl(11) and we 
->>>>> consequently cannot use ECB_PTF? Will QEMU be able to emulate PTF 
->>>>> fully?
->>>>
->>>> Yes.
->>>
->>> Do we want that? I do not think so. Other OSes (like zOS) do use PTF 
->>> in there low level interrupt handler, so PTF must be really fast.
->>> I think I would prefer that in that case the guest will simply not 
->>> see stfle(11).
->>> So the user can still specify the topology but the guest will have no 
->>> interface to query it.
->>
->> I do not understand.
->> If the host support stfle(11) we interpret PTF.
->>
->> The proposition was to emulate only in the case it is not supported, 
->> what you propose is to not advertise stfl(11) if the host does not 
->> support it, and consequently to never emulate is it right?
-> 
-> Yes, exactly. My idea is to provide it to guests if we can do it fast, 
-> but do not provide it if it would add a performance issue.
+Regards,
+Lang =20
 
-OK, understood, I will update this and the QEMU part too as we do not 
-need emulation there anymore.
-
-Thanks,
-Pierre
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+>-----Original Message-----
+>From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>Sent: Wednesday, September 8, 2021 8:32 PM
+>To: Yu, Lang <Lang.Yu@amd.com>
+>Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
+>linux-kernel@vger.kernel.org
+>Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs=
+_emit
+>and sysfs_emit_at
+>
+>On Wed, Sep 08, 2021 at 08:07:23PM +0800, Lang Yu wrote:
+>> The key purpose of sysfs_emit and sysfs_emit_at is to ensure that no
+>> overrun is done. Make them more equivalent with scnprintf.
+>
+>That's not the only purpose.
+>
+>So why are you changing this?
+>
+>What in-kernel users are being tripped up by this, shouldn't we fix them i=
+nstead?
+>
+>Remember, sysfs files are "one value per file", so why are the boundries n=
+ot
+>properly set here?
+>
+>thanks,
+>
+>greg k-h
