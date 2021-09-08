@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A4E4041E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3084041ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244560AbhIHXuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:50:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        id S1346793AbhIHXwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 19:52:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233834AbhIHXug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:50:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E264B61157;
-        Wed,  8 Sep 2021 23:49:26 +0000 (UTC)
+        id S233834AbhIHXv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:51:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7C4FE61157;
+        Wed,  8 Sep 2021 23:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631144968;
-        bh=qFd6rM3whVeSqofp8QV4rz4l/SwmbW/WN77ENeeorfA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pvxmqgKcqZI8Qw9fghMDM+n1GrfZpnGAMKShq0QEA/xuL5OcE9dHtn6yXodyNCvFV
-         q21elM9KzDaF1HzpBNRJvv6KAxF1bPkLE8+EpfD+yP4z5pwlxNH1qnjqbrW97lpDW8
-         26alWZ1UXI+KhZKbq9zh54vBoHvUHCjjcwq5/nnid9ahYclLXSnA5BcgNW3R3zWypq
-         t2wMPYiEpiZVrHLGy743E9wvo75otPMfdR9uuqrBUGwySK/MtRACBsATZlT9JYvRi/
-         gFiasq3Y5YFiC8nH1iLsY28MukzkgQ7/6PdDZY6Kn3grDDFkGiU9Y2jK4sddn0Z4WD
-         Ktk9YVIvcmd/w==
-Date:   Thu, 9 Sep 2021 01:49:14 +0200
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Compiler Attributes for v5.15-rc1
-Message-ID: <20210908234751.GA8052@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: elm/2
+        s=k20201202; t=1631145048;
+        bh=TWceRenTLJ4V3ytpuHZj89ufyHnGipRz2CcEh1r9qgs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=UtA+82g/0lsK40WpLpEVIg4pPxZ9YluV22dbrST2KVgGu1ph7i9g4La6zVddlrnpE
+         Nfb/u7vJDGo0K+TJ+rpY+RrCI6tgzWSj8Ae2DRe2IS44PnH2QixBCnvIG3IUfDKRZI
+         dTZhXxG+r81q9NRb8Cdpjh8Gj3Z85nMYsnlwAOjqfRtGh7F8+JJKhHC0UKcJ/svQW5
+         3zTTHTYt9h2LrArGC1X53WzMhlhyiPwp6B79K6Vd9fA9I5yVadLSYzDFWJQ993ZIMZ
+         Ng6sIumLhLwrDx1ixpTV7DfyAwYFiZ5IAnCn03OLi1yyRc6YOoPgf14ybThN9QNtmQ
+         NMhvTqzFNQ1EQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6C71D60A38;
+        Wed,  8 Sep 2021 23:50:48 +0000 (UTC)
+Subject: Re: [GIT PULL] More ACPI updates for v5.15-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0isrxaOi_C50qO1S5t81xQZpnr-bunZp+Y_St+VuH6XxA@mail.gmail.com>
+References: <CAJZ5v0isrxaOi_C50qO1S5t81xQZpnr-bunZp+Y_St+VuH6XxA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0isrxaOi_C50qO1S5t81xQZpnr-bunZp+Y_St+VuH6XxA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.15-rc1-2
+X-PR-Tracked-Commit-Id: e543b10cd9d75309c820d2175200d09b2a62f249
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9c566611ac5cc7b45af943632f7a9b1b6a642991
+Message-Id: <163114504838.23960.9468749259210760444.pr-tracker-bot@kernel.org>
+Date:   Wed, 08 Sep 2021 23:50:48 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Wed, 8 Sep 2021 17:32:32 +0200:
 
-Please pick up the following fix for GCC 4.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.15-rc1-2
 
-I have had this in my tree for a while... you will find an easy conflict.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9c566611ac5cc7b45af943632f7a9b1b6a642991
 
-Cheers,
-Miguel
+Thank you!
 
-The following changes since commit 62fb9874f5da54fdb243003b386128037319b219:
-
-  Linux 5.13 (2021-06-27 15:21:11 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.15-rc1
-
-for you to fetch changes up to 7ed012969bbcdbd7aef5778a061681e6cbc4b402:
-
-  Compiler Attributes: fix __has_attribute(__no_sanitize_coverage__) for GCC 4 (2021-07-16 01:06:44 +0200)
-
-----------------------------------------------------------------
-A Compiler Attributes fix:
-
-  - Fix __has_attribute(__no_sanitize_coverage__) for GCC 4 (Marco Elver)
-
-----------------------------------------------------------------
-Marco Elver (1):
-      Compiler Attributes: fix __has_attribute(__no_sanitize_coverage__) for GCC 4
-
- include/linux/compiler_attributes.h | 1 +
- 1 file changed, 1 insertion(+)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
