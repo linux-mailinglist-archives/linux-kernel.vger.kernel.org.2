@@ -2,127 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DCB403AEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5FD403AF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 15:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348970AbhIHNuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 09:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230326AbhIHNuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 09:50:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9B86108D;
-        Wed,  8 Sep 2021 13:49:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631108949;
-        bh=i95Q+Hu6kRLFQSUX18gJUCooiTYuHehfg9wwXqlSv6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZB58KX2TquCZCoeKebqqKF3FyArD17ZSbkX02Fn53HR0dpq53GhY0Ohj5/BKxmzwf
-         rOUxk88dfWWrBMloZZ23ZpAzdZl/NId+O/eLQZmjUAUs4eTPskYkI8P+zt/60lD73u
-         MNfNYgUALEPaQG9/01pMz0ss7AtyPd1vUCR2jxEA=
-Date:   Wed, 8 Sep 2021 15:49:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Yu, Lang" <Lang.Yu@amd.com>
-Cc:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Message-ID: <YTi/UxFCYKqdT34L@kroah.com>
-References: <20210908120723.3920701-1-lang.yu@amd.com>
- <YTitRjOZtWPTyRHd@kroah.com>
- <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTi0xkTVYqUpKXSt@kroah.com>
- <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+        id S1349509AbhIHNup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 09:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhIHNun (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:50:43 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E523C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 06:49:35 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso1677039wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 06:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y0lh+sRHyJvQUVAPP40k5yKczJum04OO6ZyC4AudIkU=;
+        b=oZdIoJNdme6vvjVB/0Gc1a7V21qx2XE+NiQ7TRgrELm+J9yaO9LaPpFJsvpQq9klZ/
+         HqLtUaAcz/afrFGiy/d6OenFiDKWhNBr4WzUK8xj0l3U8eBSB09TxVjGjLv1jQEIVV88
+         38AIqd6sUEPv91QTXD8fOV3yV8/49Qak7CX7o+Rhpe1GNDNYGPsrJ3GuYah3GcCkCeyC
+         uTngstmz4BsZWCCwUWZMj50LjGbKdnATC4bR3O2b3dEpTu3yWtydzGCUsgmrnSgsyzDb
+         I1II2grn8UkgJ9c7osJMgRbDQjL3p+okgD7IkB1rW27pukzY+p6xPiBiRuzIdvM3mLqD
+         E60Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y0lh+sRHyJvQUVAPP40k5yKczJum04OO6ZyC4AudIkU=;
+        b=sHEc3II+D2XHKw+yhcEaS8FrBRs0DKEpcIIoL3o6WsxHb6CStcsMQnXvaXKLdeaTkc
+         C6jLsEqpTsAWKKvZM3SME+/PRnutI1zEEvHwLITmbuOSSn+v2ByP5iFWKACEu9r2k91w
+         9WnzscdYijLetWtEfUvirMHIXtVm+Rc8RSxWboROaSwMQ6fZe5rH2ON7d+lS1AArfLAO
+         CmGpokVJojWsWJaEfLQM+14woHwQq0/uXzajPgEYUi4MH9G7oeXNXFo8y13TG8sZPh1J
+         cT3ao5cuFMGdX/KIpFU8OV1PbrjyYi2pw97H4McNlyK4Pd5jPJqhLxDbxkxck5wC08te
+         dtXA==
+X-Gm-Message-State: AOAM530BNdm2mM0+EUgCLHf1hfSr1wO85nxzws/N5StPCvGYSYlfkD8p
+        KjNOxJMQ2XYqvjKOmMm5Eqo631xojsiP4Tbo
+X-Google-Smtp-Source: ABdhPJxbIMavCBh55V8iWCnGjzV8EOJfy9bGnqV2NbUt8wggKrAvSL1Pd11a9RjPE+B2TkXi099IMA==
+X-Received: by 2002:a1c:7515:: with SMTP id o21mr3714062wmc.150.1631108973796;
+        Wed, 08 Sep 2021 06:49:33 -0700 (PDT)
+Received: from [192.168.1.12] (host-92-17-50-173.as13285.net. [92.17.50.173])
+        by smtp.gmail.com with ESMTPSA id w1sm2193690wmc.19.2021.09.08.06.49.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 06:49:33 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+ <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+ <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
+ <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+ <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+ <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org>
+ <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
+ <YTgeIuwumPoR9ZTE@ripper>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+Message-ID: <076cb487-7929-2af4-b2c0-385cd731ee48@linaro.org>
+Date:   Wed, 8 Sep 2021 14:49:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+In-Reply-To: <YTgeIuwumPoR9ZTE@ripper>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 01:21:16PM +0000, Yu, Lang wrote:
-> [AMD Official Use Only]
+
+
+On 08/09/2021 03:21, Bjorn Andersson wrote:
+> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
+> 
+>> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
+>>>
+>>>
+>>> On 09/08/2021 17:12, Rob Clark wrote:
+>>>> On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
+>>>> <akhilpo@codeaurora.org> wrote:
+> [..]
+>>>>> I am a bit confused. We don't define a power domain for gpu in dt,
+>>>>> correct? Then what exactly set_opp do here? Do you think this usleep is
+>>>>> what is helping here somehow to mask the issue?
+>>> The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
+>>> the GPU DT. For the sake of simplicity I'll refer to the lowest
+>>> frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
+>>> the "min" state, and the highest frequency (710000000) and OPP level
+>>> (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
+>>> sdm845.dtsi under the gpu node.
+>>>
+>>> The new devfreq behaviour unmasks what I think is a driver bug, it
+>>> inadvertently puts much more strain on the GPU regulators than they
+>>> usually get. With the new behaviour the GPU jumps from it's min state to
+>>> the max state and back again extremely rapidly under workloads as small
+>>> as refreshing UI. Where previously the GPU would rarely if ever go above
+>>> 342MHz when interacting with the device, it now jumps between min and
+>>> max many times per second.
+>>>
+>>> If my understanding is correct, the current implementation of the GMU
+>>> set freq is the following:
+>>>    - Get OPP for frequency to set
+>>>    - Push the frequency to the GMU - immediately updating the core clock
+>>>    - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
+>>> up somewhere in power management code and causes the gx regulator level
+>>> to be updated
+>>
+>> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
+>> were using a different api earlier which got deprecated -
+>> dev_pm_opp_set_bw().
+>>
+> 
+> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
+> I'm lucky I managed to hit a few keys before it crashes, so I spent a
+> few hours looking into this as well...
+> 
+> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
+> The opp-level is just there for show and isn't used by anything, at
+> least not on 845.
+> 
+> Further more, I'm missing something in my tree, so the interconnect
+> doesn't hit sync_state, and as such we're not actually scaling the
+> buses. So the problem is not that Linux doesn't turn on the buses in
+> time.
+> 
+> So I suspect that the "AHB bus error" isn't saying that we turned off
+> the bus, but rather that the GPU becomes unstable or something of that
+> sort.
 > 
 > 
+> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
+> Aquarium for 20 minutes without a problem. I then switched the gpu
+> devfreq governor to "userspace" and ran the following:
 > 
-> >-----Original Message-----
-> >From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >Sent: Wednesday, September 8, 2021 9:04 PM
-> >To: Yu, Lang <Lang.Yu@amd.com>
-> >Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
-> >linux-kernel@vger.kernel.org
-> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs_emit
-> >and sysfs_emit_at
-> >
-> >A:
-> >https://nam11.safelinks.protection.outlook.com/?url=http%3A%2F%2Fen.wikipe
-> >dia.org%2Fwiki%2FTop_post&amp;data=04%7C01%7CLang.Yu%40amd.com%7C
-> >fed047de547541548fcc08d972c92627%7C3dd8961fe4884e608e11a82d994e183d
-> >%7C0%7C0%7C637667030534349355%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
-> >MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&
-> >amp;sdata=LHujj041jxZjvoYxVYUKtNr7us%2FX4pl%2FdOkFSOP1W8U%3D&amp;r
-> >eserved=0
-> >Q: Were do I find info about this thing called top-posting?
-> >A: Because it messes up the order in which people normally read text.
-> >Q: Why is top-posting such a bad thing?
-> >A: Top-posting.
-> >Q: What is the most annoying thing in e-mail?
-> >
-> >A: No.
-> >Q: Should I include quotations after my reply?
-> >
-> >https://nam11.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdaringfire
-> >ball.net%2F2007%2F07%2Fon_top&amp;data=04%7C01%7CLang.Yu%40amd.co
-> >m%7Cfed047de547541548fcc08d972c92627%7C3dd8961fe4884e608e11a82d99
-> >4e183d%7C0%7C0%7C637667030534349355%7CUnknown%7CTWFpbGZsb3d8ey
-> >JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C
-> >1000&amp;sdata=AOLGBdj01XiEjhmsBSGTNuqejgU%2B6jg416Paz5XdM1A%3D&a
-> >mp;reserved=0
-> >
-> >
-> >On Wed, Sep 08, 2021 at 12:52:43PM +0000, Yu, Lang wrote:
-> >> [AMD Official Use Only]
-> >>
-> >> Thanks for your reply.
-> >> Just curious if we don't put such a limitation, what are the consequences?
-> >> If we remove the limitation, sys_emit/sys_emit_at api will be more flexible.
-> >> Since the comments of  sysfs_emit/ sys_emit_at api are " sysfs_emit -
-> >> scnprintf equivalent, aware of PAGE_SIZE buffer. ", Why not make them
-> >> more equivalent with scnprintf?
-> >
-> >Because this is not a general replacement for scnprintf(), it is only to be used with
-> >sysfs files.
-> >
-> >Where else are you wanting to use these functions that this patch woulud be
-> >required that does not haver to deal with sysfs?
-> >
-> >thanks,
-> >
-> >greg k-h
+> while true; do
+>    echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+>    echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+> done
 > 
-> But some guys think it is a general replacement for scnprintf(),
+> It took 19 iterations of this loop to crash the GPU.
+> 
+> So the problem doesn't seem to be Rob's change, it's just that prior to
+> it the chance to hitting it is way lower. Question is still what it is
+> that we're triggering.
 
-Who thinks that?  Where?  The name should give them a clue that this is
-not true.
+Do the opp-levels in DTS represent how the hardware behaves? If so then it does just
+appear to be that whatever is responsible for scaling the GX rail voltage
+has no time limits and will attempt to switch the regulator between min/max
+voltage as often as we tell it to which is probably not something the hardware expected.
+> 
+> Regards,
+> Bjorn
+> 
 
-> and  recommend that use sysfs_emit() instead of scnprintf(),
-
-Please no.
-
-> and send many patches that replace  scnprintf() with sysfs_emit(),
-> and finally cause some invalid sysfs_emit_at: buf:00000000f19bdfde warnings.
-
-Where were those patches sent?  I will be glad to review those.
-
-> I think we better not put " scnprintf equivalent, aware of PAGE_SIZE buffer " words in comments.
-> It is obviously not. Some  guys are misled by that. Thanks! 
-
-Please feel free to add better documentation for the functions if you
-feel people are getting confused, do not change the existing behavior of
-the code as it rightly caught it being misused.
-
-thanks,
-
-greg k-h
+-- 
+Kind Regards,
+Caleb (they/them)
