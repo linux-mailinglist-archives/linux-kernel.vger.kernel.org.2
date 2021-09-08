@@ -2,170 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A314036BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFD94036C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 11:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351344AbhIHJSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 05:18:03 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:39212 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351327AbhIHJSC (ORCPT
+        id S1351366AbhIHJSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 05:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351353AbhIHJSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 05:18:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631092613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5o3MjP4Xyup2z4+VruHsu4pa+Ez3/ZYNop7+qUPcPWU=;
-        b=YR7GJ6xA45Dl+RPi0d5ZvAJoLG8SizbcE0G15r7QMeKdvv7Y0P42s0A7jNDBrrpnrZUSzR
-        RB3YIAhpG9ZddfLFmVKg7s/FyxLHvUvOfyZfpAmHL92Yj54kyVPi862R9CaZoGQzv0EiQ/
-        KKjzDL6ZUSjYq60AZsyLDJRdt1dF8hY=
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04lp2055.outbound.protection.outlook.com [104.47.14.55]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-19-wJcEkFcVP1ebfVIA_sWHvw-2; Wed, 08 Sep 2021 11:16:53 +0200
-X-MC-Unique: wJcEkFcVP1ebfVIA_sWHvw-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iENznPPznq4lOx7kKxSZ0R6DH6baKoSPmiBe14QQaJiQmCetzQTroOsgkpRXwnRpAHg4nRG97mJ78KAMzexlyIefbfVB2GVAk0k6/Ng/L51Hqy2IU4aMrhoi0wcpo9Qbjd2COm4Ux4vrEBgEwMkrfhtr8WPe75bZzvt5bQ17axpOel+xKKf1rSROgCgtr8C0dhdYQlWLysEo2Wy8Jqc78JeCkmR0bAkNGE2W3r5W+h6Q2NWq//q6sf7m+/kwrbLwuV+Vy3YlIVGjsid0ioJxpK0h0B/aRs0FpfVHYkKrwFJC0bz0xI3sMWZMlgIBXLEOy2AdRqFPX+pjj4Xd1bfQgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=5o3MjP4Xyup2z4+VruHsu4pa+Ez3/ZYNop7+qUPcPWU=;
- b=Gtvc26UtBl36xK/xqvboQlK6LugjpJx+nlHVpZw/VkesP0uaQdZ3GXbspTLilQxP2eTPgXvF3vLo2GKTMGGcpBzI8T7Tig9M8SXYRuaUEpRtEqe38bCyzyXr2JoVxWTNH5iTyNjWtBgfPW8Hdm5/OgVQHqBHLr8PGzDcuRj98rFwdDrjJCxL6WPDvX+UuZtLa9ICUBrKogAJIkpX2txNlTxW1kR/5Am+0qnwsOWa/zjn872jdC07metqq8evut/WdspAgNgCc/Kxxo9aTfhdNH0aSFj4SDBhkKMTo2JXX0w6NFsI+lKh/0lAIpWBJqvLW1qXX/Y4ZSWT3m5SNDaqCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VE1PR04MB6383.eurprd04.prod.outlook.com (2603:10a6:803:11b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 09:16:50 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
- 09:16:50 +0000
-Subject: Re: [PATCH 04/12] swiotlb-xen: ensure to issue well-formed
- XENMEM_exchange requests
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
- <397bf325-f81e-e104-6142-e8c9c4955475@suse.com>
- <YThey/iyCxi5NUwC@infradead.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <0082b78b-3821-9908-d365-3f66cf1e92ce@suse.com>
-Date:   Wed, 8 Sep 2021 11:16:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YThey/iyCxi5NUwC@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P193CA0035.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:51::10) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Wed, 8 Sep 2021 05:18:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24512C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 02:17:39 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mNti4-0002ko-Kl; Wed, 08 Sep 2021 11:17:36 +0200
+Received: from ukl by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mNti3-00020W-RH; Wed, 08 Sep 2021 11:17:35 +0200
+Date:   Wed, 8 Sep 2021 11:17:35 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     zhaoxiao <long870912@gmail.com>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: ab8500: Don't check the return code of
+ pwmchip_remove()
+Message-ID: <20210908091735.yxyr7wqpbyirkw73@pengutronix.de>
+References: <20210908060200.7876-1-long870912@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR3P193CA0035.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:51::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 09:16:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58c068e7-bd38-449e-2459-08d972a963dc
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6383:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB6383BD57F9654B7F487D365DB3D49@VE1PR04MB6383.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1122;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Guxq+V8Is6BKCmeCsESNqL3+mxl1B1a2wWpJVzr1gl8atZjNJBvUBvXAivqypvQEZxHP/lrHbmhlay8GPHwGY6Uvj20ZI4z8qbRr+xMijHzK1s0yYkArZVk/9kgM+c88j26L1dTgqtXICM9b4KsuwXcMZD4AncWX0iVWRiv07LVadBBvxjUJ/GyjX66RytpI1/JedJwLcuWlJfsisEP/aYdKOXysZnU+Neq/pTBQD70rifQhPwUQXB3zYqatUnpqiVh635kx8n4hyI1LHlh6gYViK+s28uz+/Z5VmMtcGZcoRIDImxw4gawMgfm1qYXRH1xZD5RCbUCx6l446EW32j0nZMCVtJhzlPwkGGv4hjV7tkvIlgA/Jid8CUIYWV4HFay5qcxWBFOyBY2wF61L1gHSkOrewZj4UCrxbUWbOIcyc/lAsXp16Z6h9LCiCv5AyDJs509Aixmkzl53YhRak4qcz9zlhxuSRD8nTAxNmBt7qgJ9Y+gklh1Wb9D7M/m9N6PGozx2ewast5JggbZPUBgP8VMPv2CsnErpbMa+afwHMIEck30zHp7Ky4Ij4kWwSrf61wk33aNWnSej3TtzyYAqrnBPXlkQPa44s5QqatqVu2naF5voVirFeIJgiHuDTiJefvSqvJ/Ijq7NAprepagdz2NyB57ZZJ0ZAjRKuzD8y1IGRxfp2Ly1EnhbltrL56WgbCnDKvwaU8w64R8tTH88zVhu5nFmdV9TXZGkw+ceyOyvsHuPimA6hCYIBhIC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(346002)(396003)(366004)(316002)(16576012)(2906002)(6486002)(478600001)(66556008)(53546011)(38100700002)(83380400001)(186003)(66476007)(66946007)(5660300002)(54906003)(31686004)(6916009)(36756003)(2616005)(4326008)(956004)(86362001)(8676002)(26005)(31696002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NUdKYUlFbHN3NUVNWGRUaGh3YUl5b1ZYRGN3M2pXWmY1bEliYkJUMzRZN29O?=
- =?utf-8?B?MjNUTGx3TEpEcW9ZalVhbmpQVHFKeHgvRHgwTmJaZktnMEp6TDFVTURzT3M2?=
- =?utf-8?B?LzVhbW9nUTRLNzZGUUNyRWdqZnJGaU9GM2FMWWZSeUE1Rlc3RHp3NzBkZDU4?=
- =?utf-8?B?VlFWcGJDQWlraFRXbGhhUDNMSGFJMzUxQVN3MmFQODhOR2tqcHBoMlluNCs4?=
- =?utf-8?B?NXBSRkMrM1B5US9McUpjYUJ6YXQ0VVJCakJVMXZ2RmhGQ3BlOUV1ZnkrUTBr?=
- =?utf-8?B?bDBERG5xaFpaTHdsOHRPV2FONEVubUt2MXF2dWlXTVN3NmR4OTdYTld6dFJh?=
- =?utf-8?B?UHdOeUJ5ZCtLclV5bEY1RmRTQ2JuQlJzRWZaODNvaEFQTHhKb3g5c00vanRW?=
- =?utf-8?B?Z282eUVJbTQ1N3RzTUFxYWdMVmFpVVdzRnppUkxmTlBFL01aWjUxQ0tYSVo2?=
- =?utf-8?B?UDVWOTFTNFcrZ2V0RU82bm9abU0yeVpzKzhkeURFaEh2bmNRTStiT0NJUEZ5?=
- =?utf-8?B?c3VBQlJPdEJQdTd0Q0ZJb0VhYVMxTWZoaEFpQlhZTDVHblpmaUd0Z0VadlJl?=
- =?utf-8?B?bEx5QXZOalhoUWg3WWRHSXZtT1pXbUY5ZzViczhhRkZlQ050T1hISEtPS3Qy?=
- =?utf-8?B?UkxHNVc5Y3JFZStnSUZNM2ZSdTIzOXA1RVFtL29sZ2hmSHkxbi9CU1FGMTA5?=
- =?utf-8?B?cDFBVS9LT0VzNVk2OXp0RktDdFROOVpZa3pXVU11OEsrcmE1MHNSd3Y3eTdG?=
- =?utf-8?B?NS9iMzZsZW91Nk1HcXRTcTFGZnk5dWlkb3BTNXVpNXYvM3kzTFpMSllKWjBw?=
- =?utf-8?B?K0NuVVBEaEFWU2hFYzFINEgvWnlsNjFvRHdPdXZHMlBqMmJ2dThuaHh0enVI?=
- =?utf-8?B?M1VJdDB5bGxpQk94cTJudXhaWnZTa0tWTldnMXAxYXJ5aGpsSGg2MDZwd1lu?=
- =?utf-8?B?cSsvSHA4c1lmTlBmRjkzaThPUmlyVzVXbXphZEx0MVB4YVE5Mk9EZ2FJaEsy?=
- =?utf-8?B?eFhBNWxQOFZlSCtpLzljeFdnOTl1UEtVNEo4UzNjbnQ4VnJoQlUrcVhhZ1lB?=
- =?utf-8?B?ekVFR21FeG4zYUxKQVY2S2VKMnBqYnZVeXVjRlliU1FQZUViajBENk02cDN5?=
- =?utf-8?B?UWM1NGZ2SG1pTGM5cmtGM3U3Q2lJajh6eldCdk50TXdVdXdPalVlcFJHZnJ5?=
- =?utf-8?B?VVVrb1ZVak04WTcvQkZjckJCb3dtTlZTMXpaVjVGb3dBTnNWenpsb2dMMVhl?=
- =?utf-8?B?SXZ4cUdiSFNDVlVVTHQ5QkM0UldZaTQ2b3djTDE4ZUl6QStmeU5hVVgwVnZl?=
- =?utf-8?B?L21PMmc1RWt6WWpOQlZyaFlTMXpHQTl1UDR0aFZ2Zm5nZW1BZC92SHk0WnpC?=
- =?utf-8?B?UG5uVkQ2SkM4MGJVWUNmdzRoaU84N1FOMU9sZlFhWkViS1Z0UFdVdGkxcnNo?=
- =?utf-8?B?VU5KR2VjK2ZENHpiTForaEhMWHpreVZxaHRGMURsY3M0VUVVbk14Q3pxUlAz?=
- =?utf-8?B?Ynpsd3BxV1JGK2tIS1cyWk5PcXd2eDcrQzVrVTBWNjNmT2RhM3pXVm5zY0pO?=
- =?utf-8?B?VXd3c2Vvam1zdkVaeEdWVkpmWWhuYktDRkhuSDN1cDYwUFd3ai8yMUd6d2c0?=
- =?utf-8?B?RGdUWFdXa3NGSmhCN0N0UWZzdmZDbFRoTDlmU0MvYmVudDQyaGk4Zzh3RzRM?=
- =?utf-8?B?dE9tZ1N1ekxGZU5DcU91U0FGYWNRc1dVWGF3UlRkVXBPNnAzR2FUYWxRZDZ6?=
- =?utf-8?Q?qbZVQZz9At29VAsS2iO2s4Jy08h6Ek2uyO5oZvQ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58c068e7-bd38-449e-2459-08d972a963dc
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 09:16:50.1985
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oxiRe2KcUtPOjSQt5W89hd1K48UU4j81/tBa+grj82mrAEvna7RhDDNcFvfBWZtOxr9eFEGZyOzcKB3JKWQ0+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6383
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908060200.7876-1-long870912@gmail.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.09.2021 08:57, Christoph Hellwig wrote:
-> On Tue, Sep 07, 2021 at 02:05:32PM +0200, Jan Beulich wrote:
->> While the hypervisor hasn't been enforcing this, we would still better
->> avoid issuing requests with GFNs not aligned to the requested order.
->>
->> Signed-off-by: Jan Beulich <jbeulich@suse.com>
->> ---
->> I wonder how useful it is to include the alignment in the panic()
->> message. I further wonder how useful it is to wrap "bytes" in
->> PAGE_ALIGN(), when it is a multiple of a segment's size anyway (or at
->> least was supposed to be, prior to "swiotlb-xen: maintain slab count
->> properly").
->>
->> --- a/drivers/xen/swiotlb-xen.c
->> +++ b/drivers/xen/swiotlb-xen.c
->> @@ -231,10 +231,10 @@ retry:
->>  	/*
->>  	 * Get IO TLB memory from any location.
->>  	 */
->> -	start = memblock_alloc(PAGE_ALIGN(bytes), PAGE_SIZE);
->> +	start = memblock_alloc(PAGE_ALIGN(bytes), IO_TLB_SEGSIZE << IO_TLB_SHIFT);
->>  	if (!start)
->> -		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
->> -		      __func__, PAGE_ALIGN(bytes), PAGE_SIZE);
->> +		panic("%s: Failed to allocate %lu bytes align=%#x\n",
->> +		      __func__, PAGE_ALIGN(bytes), IO_TLB_SEGSIZE << IO_TLB_SHIFT);
+Hello zhaoxiao,
+
+On Wed, Sep 08, 2021 at 02:02:00PM +0800, zhaoxiao wrote:
+> pwmchip_remove() returns always 0. Don't use the value to make it
+> possible to eventually change the function to return void. Also the
+> driver core ignores the return value of ab8500_pwm_remove()
+> and considers the device removed anyhow. So returning early results
+> in a resource leak.
 > 
-> CAn you avoid the overly long lines here?  A good way to make it more
-> readable would be a variable to hold the byte count.
+> Signed-off-by: zhaoxiao <long870912@gmail.com>
 
-There already is a variable for the byte count - bytes. Did you read
-the post-commit-message remark? _That's_ what I'd prefer to shorten
-things. Meanwhile I can of course wrap lines; I will admit that I
-failed to pay attention to line length here.
+Can you please base your patches on top of linux-next? This patch is
+invalid in the presence of 
+https://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git/commit/?h=for-next&id=14ac9e17f9bd4bd0dfe18e384a3c2ca8dfbffcc8
 
-Jan
+So this is waste of your (and my) time :-\
 
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
