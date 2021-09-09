@@ -2,96 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187DF4044EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BB54044F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350687AbhIIFXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350499AbhIIFXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:23:31 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA79C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 22:22:22 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id m11so769129ioo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7Ja+MA4OCzFYM/Hx8ySIku22LElZavZCzLsENm+S9Mc=;
-        b=sSrKzdgbodHekgxN4FeKFtpd8Y4Csq7gzvDRQimT+tWyjS2LXY7/BuapliIukRhqkG
-         Io+6kUubaiVrscaC82Af6p1nUdBkfSX4eUr2v4loWlgQDqFuH6d0WF3s+mSjHOFgKkll
-         JnavnAYo7F0qxztVd/Pzz09WfH16Zrc+8IKrvs8libeSHlhU2XeB3Lje4p3qSeX2Rfce
-         W1VW0vcIdi9Bw1ZuM4oJI+DPDjWoMOOG7xQ16u49oNtnrcc0HV2eINlwGZGBlLOohXK/
-         Qo9en2g0liePMOSs+oEZeOm1FMQayg0KLs4qpa7kwSuOIXjJuDBgMRl0W1CUQ+d7Psp6
-         A1Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7Ja+MA4OCzFYM/Hx8ySIku22LElZavZCzLsENm+S9Mc=;
-        b=FJqpAR7nKA8/kbfbGqI1tC9lXmSLA1dNvQq1/PSEYbekAFwh6viI8I7I7JMr+YNq4L
-         Op74XGu/Q36OslpijVpxGzifGj4qMnPdK6+wWnEF+eiqD8uHEBRhedR+hRr+SoVA0On5
-         pSj/8f44+EYnKT0aRYYIKWiuJZOtmUs53Kj79gVQEbcAKk/OuVEXvMnQBkTRLRxbp7O7
-         QMvSDxtyKJIt3VAqWps56hauKFC2Q3wKCm4HkfjbCM0egY/1rJVxLH7e1FcxMayV6ZCx
-         iMVALJQYreMCP58LmDciD+qK+IigSjzuupKdpFy5QYZkbG6V5gfOinitU0unr5wgVTQ1
-         g9nw==
-X-Gm-Message-State: AOAM533NdE0miUtAtCguW3jM/W1X5sd0O8pjI8FIDcf10IGShW12O4y7
-        /JHNs23Ld+1fxVjqT4t1C7lU5t2xatUjgQ==
-X-Google-Smtp-Source: ABdhPJy8iklDSbE81P3I3H1zXA7m4JYm6w3j44cDkU5aPYiQLRdS7kUUAS26jVunWdjTARITmatx0Q==
-X-Received: by 2002:a02:cc30:: with SMTP id o16mr1211625jap.101.1631164941450;
-        Wed, 08 Sep 2021 22:22:21 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id t10sm408390iol.34.2021.09.08.22.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 22:22:20 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 05:22:17 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 12/18] KVM: selftests: Keep track of the number of
- vCPUs for a VM
-Message-ID: <YTmaCWPkJ2TOeTsT@google.com>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-13-rananta@google.com>
+        id S1350730AbhIIFYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:24:03 -0400
+Received: from verein.lst.de ([213.95.11.211]:41231 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350499AbhIIFYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:24:01 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9CC8567373; Thu,  9 Sep 2021 07:22:49 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 07:22:49 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, fujita.tomonori@lab.ntt.co.jp,
+        axboe@kernel.dk, martin.petersen@oracle.com, hch@lst.de,
+        gregkh@linuxfoundation.org, wanghaibin.wang@huawei.com
+Subject: Re: [PATCH] scsi: bsg: Fix device unregistration
+Message-ID: <20210909052249.GA24029@lst.de>
+References: <20210909034608.1435-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210909013818.1191270-13-rananta@google.com>
+In-Reply-To: <20210909034608.1435-1-yuzenghui@huawei.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 01:38:12AM +0000, Raghavendra Rao Ananta wrote:
-> The host may want to know the number of vCPUs that were
-> created for a particular VM (used in upcoming patches).
-> Hence, include nr_vcpus as a part of 'struct kvm_vm' to
-> keep track of vCPUs as and when they are added or
-> deleted, and return to the caller via vm_get_nr_vcpus().
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  tools/testing/selftests/kvm/include/kvm_util.h      | 1 +
->  tools/testing/selftests/kvm/lib/kvm_util.c          | 7 +++++++
->  tools/testing/selftests/kvm/lib/kvm_util_internal.h | 1 +
->  3 files changed, 9 insertions(+)
+Looks good,
 
-Shouldn't a test keep track/know how many vCPUs it has created?
-
---
-Thanks,
-Oliver
+Reviewed-by: Christoph Hellwig <hch@lst.de>
