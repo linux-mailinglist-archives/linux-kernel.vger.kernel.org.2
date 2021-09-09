@@ -2,120 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3F0404966
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853F0404A6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236272AbhIILjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:39:22 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55617 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235658AbhIILjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:39:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Unnf9Xb_1631187478;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0Unnf9Xb_1631187478)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 19:37:59 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT))
-Subject: [PATCH 2/3] kvm: x86: Refactor kvm_emulate_hypercall() to no skip instruction
-Date:   Thu,  9 Sep 2021 19:37:55 +0800
-Message-Id: <961516749b864f8f8397905cc5d4a7db60f45dbe.1631186996.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631186996.git.houwenlong93@linux.alibaba.com>
-References: <cover.1631186996.git.houwenlong93@linux.alibaba.com>
+        id S237068AbhIILqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239648AbhIILoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 666CF611EE;
+        Thu,  9 Sep 2021 11:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631187745;
+        bh=UG3wFphemK0QyVhxrHNI+4F4NkJgNfaz6M0NIhwyY/8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CMml/Jz3QRwsVV9ADyWngB0VFQWP5VnLpK1cBDm2ulchn/4p45YHusB9+V46M/nUU
+         SszZui3GR/8J2rx0ig6vFbQo3JoHblZ7/u/tUnprE2uzUhMOZK4dIdHkzwUScvhqLF
+         zxmN2hhAwbgtaBSCQ2/1tOt+BH5lYhP8tCD306DbAP88SPS5ZdoY4CHpVoooXLcAj2
+         1Jm01SinmBjtJfOTgvA/+B2CRyofXLjrtNoXf9k4W88VKwi5mIOqB6qgANBlvDNqfI
+         wJvAX3z8QDoU+OSCFQlxBt7JB6Lm4br3KxEAeZRBpGlB2+pm3Py0BF0wN64pntoCcy
+         zm6Vw/sUbU75A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jake Wang <haonan.wang2@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.14 061/252] drm/amd/display: Fixed hardware power down bypass during headless boot
+Date:   Thu,  9 Sep 2021 07:37:55 -0400
+Message-Id: <20210909114106.141462-61-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor kvm_emulate_hypercall() to no skip instruction, it can
-be used in next patch for emulating hypercall in instruction
-emulation.
+From: Jake Wang <haonan.wang2@amd.com>
 
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+[ Upstream commit 3addbde269f21ffc735f6d3d0c2237664923824e ]
+
+[Why]
+During headless boot, DIG may be on which causes HW/SW discrepancies.
+To avoid this we power down hardware on boot if DIG is turned on. With
+introduction of multiple eDP, hardware power down is being bypassed
+under certain conditions.
+
+[How]
+Fixed hardware power down bypass, and ensured hardware will power down
+if DIG is on and seamless boot is not enabled.
+
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Jake Wang <haonan.wang2@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 27 +++++++++----------
+ .../drm/amd/display/dc/dcn30/dcn30_hwseq.c    | 25 ++++++++---------
+ .../drm/amd/display/dc/dcn31/dcn31_hwseq.c    |  5 +++-
+ 3 files changed, 27 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4e2836b94a01..b8d799e1c57c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8636,17 +8636,11 @@ static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
- 	return kvm_skip_emulated_instruction(vcpu);
- }
- 
--int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-+static int kvm_emulate_hypercall_noskip(struct kvm_vcpu *vcpu)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index c545eddabdcc..dee1ce5f9609 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -1502,25 +1502,22 @@ void dcn10_init_hw(struct dc *dc)
+ void dcn10_power_down_on_boot(struct dc *dc)
  {
- 	unsigned long nr, a0, a1, a2, a3, ret;
- 	int op_64_bit;
+ 	struct dc_link *edp_links[MAX_NUM_EDP];
+-	struct dc_link *edp_link;
++	struct dc_link *edp_link = NULL;
+ 	int edp_num;
+ 	int i = 0;
  
--	if (kvm_xen_hypercall_enabled(vcpu->kvm))
--		return kvm_xen_hypercall(vcpu);
+ 	get_edp_links(dc, edp_links, &edp_num);
 -
--	if (kvm_hv_hypercall_enabled(vcpu))
--		return kvm_hv_hypercall(vcpu);
--
- 	nr = kvm_rax_read(vcpu);
- 	a0 = kvm_rbx_read(vcpu);
- 	a1 = kvm_rcx_read(vcpu);
-@@ -8664,11 +8658,6 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 		a3 &= 0xFFFFFFFF;
- 	}
+-	if (edp_num) {
+-		for (i = 0; i < edp_num; i++) {
+-			edp_link = edp_links[i];
+-			if (edp_link->link_enc->funcs->is_dig_enabled &&
+-					edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
+-					dc->hwseq->funcs.edp_backlight_control &&
+-					dc->hwss.power_down &&
+-					dc->hwss.edp_power_control) {
+-				dc->hwseq->funcs.edp_backlight_control(edp_link, false);
+-				dc->hwss.power_down(dc);
+-				dc->hwss.edp_power_control(edp_link, false);
+-			}
+-		}
++	if (edp_num)
++		edp_link = edp_links[0];
++
++	if (edp_link && edp_link->link_enc->funcs->is_dig_enabled &&
++			edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
++			dc->hwseq->funcs.edp_backlight_control &&
++			dc->hwss.power_down &&
++			dc->hwss.edp_power_control) {
++		dc->hwseq->funcs.edp_backlight_control(edp_link, false);
++		dc->hwss.power_down(dc);
++		dc->hwss.edp_power_control(edp_link, false);
+ 	} else {
+ 		for (i = 0; i < dc->link_count; i++) {
+ 			struct dc_link *link = dc->links[i];
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+index c68e3a708a33..2e8ab9775fa3 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+@@ -580,22 +580,19 @@ void dcn30_init_hw(struct dc *dc)
+ 	 */
+ 	if (dc->config.power_down_display_on_boot) {
+ 		struct dc_link *edp_links[MAX_NUM_EDP];
+-		struct dc_link *edp_link;
++		struct dc_link *edp_link = NULL;
  
--	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
--		static_call(kvm_x86_handle_hypercall_fail)(vcpu);
--		return 1;
--	}
--
- 	ret = -KVM_ENOSYS;
+ 		get_edp_links(dc, edp_links, &edp_num);
+-		if (edp_num) {
+-			for (i = 0; i < edp_num; i++) {
+-				edp_link = edp_links[i];
+-				if (edp_link->link_enc->funcs->is_dig_enabled &&
+-						edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
+-						dc->hwss.edp_backlight_control &&
+-						dc->hwss.power_down &&
+-						dc->hwss.edp_power_control) {
+-					dc->hwss.edp_backlight_control(edp_link, false);
+-					dc->hwss.power_down(dc);
+-					dc->hwss.edp_power_control(edp_link, false);
+-				}
+-			}
++		if (edp_num)
++			edp_link = edp_links[0];
++		if (edp_link && edp_link->link_enc->funcs->is_dig_enabled &&
++				edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
++				dc->hwss.edp_backlight_control &&
++				dc->hwss.power_down &&
++				dc->hwss.edp_power_control) {
++			dc->hwss.edp_backlight_control(edp_link, false);
++			dc->hwss.power_down(dc);
++			dc->hwss.edp_power_control(edp_link, false);
+ 		} else {
+ 			for (i = 0; i < dc->link_count; i++) {
+ 				struct dc_link *link = dc->links[i];
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+index 8a2119d8ca0d..8189606537c5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+@@ -226,6 +226,7 @@ void dcn31_init_hw(struct dc *dc)
+ 	if (dc->config.power_down_display_on_boot) {
+ 		struct dc_link *edp_links[MAX_NUM_EDP];
+ 		struct dc_link *edp_link;
++		bool power_down = false;
  
- 	switch (nr) {
-@@ -8733,7 +8722,28 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 	kvm_rax_write(vcpu, ret);
- 
- 	++vcpu->stat.hypercalls;
--	return kvm_skip_emulated_instruction(vcpu);
-+	return 1;
-+}
-+
-+int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-+{
-+	int ret;
-+
-+	if (kvm_xen_hypercall_enabled(vcpu->kvm))
-+		return kvm_xen_hypercall(vcpu);
-+
-+	if (kvm_hv_hypercall_enabled(vcpu))
-+		return kvm_hv_hypercall(vcpu);
-+
-+	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
-+		static_call(kvm_x86_handle_hypercall_fail)(vcpu);
-+		return 1;
-+	}
-+
-+	ret = kvm_emulate_hypercall_noskip(vcpu);
-+	if (ret)
-+		return kvm_skip_emulated_instruction(vcpu);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
+ 		get_edp_links(dc, edp_links, &edp_num);
+ 		if (edp_num) {
+@@ -239,9 +240,11 @@ void dcn31_init_hw(struct dc *dc)
+ 					dc->hwss.edp_backlight_control(edp_link, false);
+ 					dc->hwss.power_down(dc);
+ 					dc->hwss.edp_power_control(edp_link, false);
++					power_down = true;
+ 				}
+ 			}
+-		} else {
++		}
++		if (!power_down) {
+ 			for (i = 0; i < dc->link_count; i++) {
+ 				struct dc_link *link = dc->links[i];
  
 -- 
-2.31.1
+2.30.2
 
