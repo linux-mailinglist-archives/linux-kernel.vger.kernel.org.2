@@ -2,236 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC5C405F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B58405F2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343802AbhIIWEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:04:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:63207 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343758AbhIIWEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:04:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="281938652"
-X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="281938652"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 15:02:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="539972235"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Sep 2021 15:02:53 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOS8C-0003ZR-Du; Thu, 09 Sep 2021 22:02:52 +0000
-Date:   Fri, 10 Sep 2021 06:02:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- 868ad33bfa3bf39960982682ad3a0f8ebda1656e
-Message-ID: <613a846f.Ur9VXdbMlWG6G1+c%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S245411AbhIIWCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244703AbhIIWCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 18:02:37 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E5C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:01:27 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id c10so3613153qko.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QZqkF9duxuzZ+biCr/DN+cOPkA95d4hYzGir/0bZtG8=;
+        b=n4Yox4FllS4gAcO35Nu8s/ilFPO82gh8Gm/P3mDRND5oe2rctlncS/tr0y85Fs8npP
+         98l5IbSFrFXrw+cwcb0zvs+hCkjsxur9V2MMDUGHT3XXfhEce73/5iWt2xplCy/3EJhh
+         +2prmzstXNUANrptayppa1LTU1dcLX//fY9en1mSyyXXReAarLHQYYJ/9PUblzzl32wE
+         WCEvZ5kvcljGt7MED2wLGtYBCaYZcdNBK5lTYlEhrMEneFSeEYCqWAkX/McDiRbDrXNq
+         5rDknVoSQRALljSxiiu1jfnqPspcTcube+E4KtX+IPf4QLINfIOzYrHc0ANRy6ZvMxWa
+         qOTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QZqkF9duxuzZ+biCr/DN+cOPkA95d4hYzGir/0bZtG8=;
+        b=bg+5LroQbm/0tAM2Qqn0XA1bRRdCE/vJJ0C5czN45PyO+z/oVnK9LPhOwM9ET1PG87
+         TgNNdx3hKLQ7ClC8pFnGrgoUqEGWZdb+6XAUK/M/kMRDG7AeVajHun7OGziEMZIB+hZs
+         Z9FTZGM1fOpQLzgCwbCB3ngA+ARBiLTDZCg2BoISazmk+ZWYnTP9kO3DJ0MHhESnXZwO
+         0LHZHc6dvcPLbysy4XaMMMNKEjdVTTXlurk8CftfkDOLdHHxBBCwmk8x/YYqViONqDuL
+         uzX0bfQ5ctLTADDYq79rr+qJ1clLxclK7icKDRKsBUsE6nYV9EZ6R9dfD6rf6bQRizy2
+         +U6w==
+X-Gm-Message-State: AOAM532xf9p6xAoTS9nQzhI7L+/qqOXOR8dZXCGOXyBXKPO9+0eoCl3O
+        mzqgyGt8kn64zXZPU/kZ7imy80APWgTInA==
+X-Google-Smtp-Source: ABdhPJykIZNFvzFm3FAQRsJZQ2IJ7iZMncXFjisKzYimm3AW6YNhcKNTkQC8pRrSlAuvO/m/7fW51Q==
+X-Received: by 2002:a05:620a:2914:: with SMTP id m20mr5086687qkp.497.1631224886125;
+        Thu, 09 Sep 2021 15:01:26 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id s8sm1868997qta.48.2021.09.09.15.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 15:01:25 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 18:03:17 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YTqEpTIbwRJmwCwL@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YToBjZPEVN9Jmp38@infradead.org>
+ <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
+ <YTpPh2aaQMyHAi8m@cmpxchg.org>
+ <YTpWBif8DCV5ovON@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YTpWBif8DCV5ovON@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: 868ad33bfa3bf39960982682ad3a0f8ebda1656e  sched: Prevent balance_push() on remote runqueues
+On Thu, Sep 09, 2021 at 07:44:22PM +0100, Matthew Wilcox wrote:
+> On Thu, Sep 09, 2021 at 02:16:39PM -0400, Johannes Weiner wrote:
+> > My objection is simply to one shared abstraction for both. There is
+> > ample evidence from years of hands-on production experience that
+> > compound pages aren't the way toward scalable and maintainable larger
+> > page sizes from the MM side. And it's anything but obvious or
+> > self-evident that just because struct page worked for both roles that
+> > the same is true for compound pages.
+> 
+> I object to this requirement.  The folio work has been going on for almost
+> a year now, and you come in AT THE END OF THE MERGE WINDOW to ask for it
+> to do something entirely different from what it's supposed to be doing.
+> If you'd asked for this six months ago -- maybe.  But now is completely
+> unreasonable.
 
-elapsed time: 729m
+I asked for exactly this exactly six months ago.
 
-configs tested: 176
-configs skipped: 3
+On March 22nd, I wrote this re: the filesystem interfacing:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+: So I think transitioning away from ye olde page is a great idea. I
+: wonder this: have we mapped out the near future of the VM enough to
+: say that the folio is the right abstraction?
+:
+: What does 'folio' mean when it corresponds to either a single page or
+: some slab-type object with no dedicated page?
+:
+: If we go through with all the churn now anyway, IMO it makes at least
+: sense to ditch all association and conceptual proximity to the
+: hardware page or collections thereof. Simply say it's some length of
+: memory, and keep thing-to-page translations out of the public API from
+: the start. I mean, is there a good reason to keep this baggage?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210908
-arm                       aspeed_g4_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                            hisi_defconfig
-mips                        nlm_xlr_defconfig
-mips                  decstation_64_defconfig
-um                           x86_64_defconfig
-mips                        omega2p_defconfig
-powerpc                     asp8347_defconfig
-arm                         lpc32xx_defconfig
-powerpc                       eiger_defconfig
-h8300                            alldefconfig
-powerpc                 mpc834x_itx_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          collie_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-sparc                       sparc32_defconfig
-arm                           sama5_defconfig
-powerpc                     taishan_defconfig
-powerpc                     tqm8548_defconfig
-m68k                        m5272c3_defconfig
-microblaze                      mmu_defconfig
-powerpc                     mpc5200_defconfig
-arm                        spear6xx_defconfig
-alpha                            allyesconfig
-arc                        nsimosci_defconfig
-s390                                defconfig
-arm                         lpc18xx_defconfig
-sh                             sh03_defconfig
-sh                            titan_defconfig
-sh                            shmin_defconfig
-arm                      integrator_defconfig
-mips                      maltaaprp_defconfig
-powerpc                      chrp32_defconfig
-arm                         socfpga_defconfig
-powerpc                     ep8248e_defconfig
-arm                          pxa168_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    klondike_defconfig
-openrisc                            defconfig
-mips                          ath79_defconfig
-m68k                       m5208evb_defconfig
-m68k                        m5407c3_defconfig
-arm                       versatile_defconfig
-arm                        cerfcube_defconfig
-arm                          ixp4xx_defconfig
-mips                      fuloong2e_defconfig
-powerpc                      obs600_defconfig
-powerpc                 canyonlands_defconfig
-ia64                             allmodconfig
-arm                         at91_dt_defconfig
-powerpc                      ppc6xx_defconfig
-arm                        multi_v5_defconfig
-powerpc                     kilauea_defconfig
-sh                               j2_defconfig
-sh                             espt_defconfig
-ia64                        generic_defconfig
-arm                         vf610m4_defconfig
-mips                           ip32_defconfig
-sh                           se7750_defconfig
-mips                        workpad_defconfig
-powerpc                        warp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7343_defconfig
-powerpc                     redwood_defconfig
-sh                          r7785rp_defconfig
-x86_64                           alldefconfig
-ia64                          tiger_defconfig
-mips                       capcella_defconfig
-powerpc                         wii_defconfig
-mips                          ath25_defconfig
-mips                       lemote2f_defconfig
-xtensa                  nommu_kc705_defconfig
-arc                          axs103_defconfig
-mips                       rbtx49xx_defconfig
-mips                        vocore2_defconfig
-powerpc                      makalu_defconfig
-powerpc                    sam440ep_defconfig
-openrisc                         alldefconfig
-arm                           viper_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                    xip_kc705_defconfig
-sh                        edosk7760_defconfig
-mips                        qi_lb60_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     ppa8548_defconfig
-x86_64               randconfig-c001-20210908
-arm                  randconfig-c002-20210908
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210908
-x86_64               randconfig-a006-20210908
-x86_64               randconfig-a003-20210908
-x86_64               randconfig-a001-20210908
-x86_64               randconfig-a005-20210908
-x86_64               randconfig-a002-20210908
-i386                 randconfig-a005-20210908
-i386                 randconfig-a004-20210908
-i386                 randconfig-a006-20210908
-i386                 randconfig-a002-20210908
-i386                 randconfig-a001-20210908
-i386                 randconfig-a003-20210908
-arc                  randconfig-r043-20210908
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+It's not my fault you consistently dismissed and pushed past this
+question and then send a pull request anyway.
 
-clang tested configs:
-s390                 randconfig-c005-20210908
-powerpc              randconfig-c003-20210908
-mips                 randconfig-c004-20210908
-i386                 randconfig-c001-20210908
-x86_64               randconfig-c007-20210908
-arm                  randconfig-c002-20210908
-riscv                randconfig-c006-20210908
-x86_64               randconfig-a016-20210908
-x86_64               randconfig-a011-20210908
-x86_64               randconfig-a012-20210908
-x86_64               randconfig-a015-20210908
-x86_64               randconfig-a014-20210908
-x86_64               randconfig-a013-20210908
-i386                 randconfig-a012-20210908
-i386                 randconfig-a015-20210908
-i386                 randconfig-a011-20210908
-i386                 randconfig-a013-20210908
-i386                 randconfig-a014-20210908
-i386                 randconfig-a016-20210908
-s390                 randconfig-r044-20210908
-riscv                randconfig-r042-20210908
-hexagon              randconfig-r045-20210908
-hexagon              randconfig-r041-20210908
+> I don't think it's a good thing to try to do.  I think that your "let's
+> use slab for this" idea is bonkers and doesn't work.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Based on what exactly?
+
+You can't think it's that bonkers when you push for replicating
+slab-like grouping in the page allocator.
+
+Anyway, it was never about how larger pages will pan out in MM. It was
+about keeping some flexibility around the backing memory for cache
+entries, given that this is still an unsolved problem. This is not a
+crazy or unreasonable request, it's the prudent thing to do given the
+amount of open-ended churn and disruptiveness of your patches.
+
+It seems you're not interested in engaging in this argument. You
+prefer to go off on tangents and speculations about how the page
+allocator will work in the future, with seemingly little production
+experience about what does and doesn't work in real life; and at the
+same time dismiss the experience of people that deal with MM problems
+hands-on on millions of machines & thousands of workloads every day.
+
+> And I really object to you getting in the way of my patchset which
+> has actual real-world performance advantages
+
+So? You've gotten in the way of patches that removed unnecessary
+compound_head() call and would have immediately provided some of these
+same advantages without hurting anybody - because the folio will
+eventually solve them all anyway.
+
+We all balance immediate payoff against what we think will be the
+right thing longer term.
+
+Anyway, if you think I'm bonkers, just ignore me. If not, maybe lay
+off the rhetorics, engage in a good-faith discussion and actually
+address my feedback?
