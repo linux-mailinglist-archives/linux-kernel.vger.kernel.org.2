@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0AE4045D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677854045D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350672AbhIIGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:54:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20331 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231176AbhIIGyw (ORCPT
+        id S1350868AbhIIGz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhIIGzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:54:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631170423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lVJoPeTJ14ks4lQWKf8FQkfVIx9pT4lGJxslkRQboLs=;
-        b=HvsfbpsSV3PFD8ErzwcbMuqLQHHAc5I5xzLc9pIXp1BKDOSVFN+8fFIJVEAxNNIntZxrIA
-        K9LMKfYPl7R03Xm3JFzGeyAHlA7PcB3APADd3QyfZxD2rGtt0Bs53fuIwrVwxDlCdyCrSD
-        NGx6gGw4QwKOQnum/pNv76h1FISl8Us=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-HRTzxroPNrmXQnWX8-frjw-1; Thu, 09 Sep 2021 02:53:42 -0400
-X-MC-Unique: HRTzxroPNrmXQnWX8-frjw-1
-Received: by mail-ej1-f69.google.com with SMTP id n18-20020a170906089200b005dc91303dfeso305410eje.15
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:53:42 -0700 (PDT)
+        Thu, 9 Sep 2021 02:55:24 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A787BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:54:15 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id m9so966702wrb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PdyHdIGTIcExNI9r9vt6KvD+sKOV7iT7d1j4FssidJk=;
+        b=NEGnnOBV9RPUC15x/R1lIz4hVZL5OPCHBQAFWpmM/ROy7YTqLjYPBccHng0uAFC9nZ
+         YIVBE0eRwPBPhVcPMyv0sZ6Pra3+jQTN0duyhpRK8DI+VEgbMoBrSrq71HElVr4TY8tE
+         bX5Q7TsNXhmk7DrIrfhswRWxNZs702q45KCTHmVLRb7YU9ky0jkzfs6NL+3Xr0wuVgnc
+         Q9uAjZlAM58BupaV7tnSxeIwq0AZ19CHkDqLpJc//2CD6XxeEKdQQLZCph5h8Zax1Bi6
+         fzG4EmnbEwAuPeyVkO6dgrdvaEcrVq9RPZiXSnbH0qx11K4KSsgTpLED26jhZU2BbEyd
+         819g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lVJoPeTJ14ks4lQWKf8FQkfVIx9pT4lGJxslkRQboLs=;
-        b=nftHz6Y2O470Ah111UH3cjKII3wtYfajM0Ud7Pqlju7elm0Dpnjdt3RqmGnx/T4ky/
-         OBNR3MyQQhH46CK0pRZlVT4DkwqSyz9w3xHsPeE82g1fdo3Np+o8R/TX3ZHBPHFZ6OD8
-         dZoOmEnRmPHgy+/Ov7TKcYj1K8jvK6mIapeka2ByZ53FBDOBqoqRcAo2eegZJeoWeTXR
-         WRePj/vaXCviGvoMiwC35bKliclggTkhJ5ncg6P6ShVl2NS6rVbaQCvHq6vs+dc77VZg
-         LkravHwT0gT6tH1pv1inYkviIxczSvBz2Gi649ZZYuw+S+HJmMAscrr4gMJwMErBI62d
-         Qs4A==
-X-Gm-Message-State: AOAM532KscyuMXkB4hO6uZlIOqRbMft/WLOyUNp6CGJoZwpgJDQl7IdU
-        nNXpaIHwDYeBiM3R9eiIgmmc2FwWo3I4JcBcjbet9ymI8lMWvXrpDwW+xRElOCFAD3rpqbIncvg
-        U3OCzhCM5XzZ7GexHiWpET9KL
-X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr1558610edp.373.1631170421273;
-        Wed, 08 Sep 2021 23:53:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzT2kVMpMwhqwvnc4mwNm5O0NWY9+knRg4l5/t0Fuho97if+WNms/fZtVChK5kAL+kRk5zWw==
-X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr1558597edp.373.1631170421138;
-        Wed, 08 Sep 2021 23:53:41 -0700 (PDT)
-Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id bs13sm378308ejb.98.2021.09.08.23.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 23:53:40 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 08:53:38 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Oliver Upton <oupton@google.com>
-Cc:     Raghavendra Rao Ananta <rananta@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
-Message-ID: <20210909065338.ulh32fqi4e6gnh2o@gator>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-3-rananta@google.com>
- <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PdyHdIGTIcExNI9r9vt6KvD+sKOV7iT7d1j4FssidJk=;
+        b=c0WKxzvwjLWQj86C/fmygbOy5j5Zb6EHWiKW36UnUSTlvS7nCe4z2CCyLpBKTnWf1H
+         8dGtsDDZFVW69v1AYFtR5ZkHl22XNgGtitusa4IzaOvS9pEae8qFDkh5ObxlmMwfELIs
+         FfD6fLSieFDFwJhIiG/tv5DMShGKPqSlISujkSHZMKtqg7DrB1toeulF5W11APSaaYfm
+         aVX8Krh/BkXmU1Zv2lTnZhXuAI+szkQAhk2iTaQjMOUsnJio4wnizUWpmXQbC1jG5cFa
+         h6XeLQLnAOvEvWMUnJhjAk54CSEvjMrHcALhc4xW3XYt0pmshphbyRhL5e4OaMGOHYPM
+         Rm5g==
+X-Gm-Message-State: AOAM530lsTVmNkkb9FanZ8QNrjCGJy7jtBVSe1QItnOIBGmBJ5rguZB+
+        xYVQAszZ2rWSLFrVYX0Loaa0JBIQ3C1w4in9L29sfw==
+X-Google-Smtp-Source: ABdhPJwcZ/XBoMS2ALZ03DQVCmLDUjaC4x3wXUJC1n95C3XNz8zT8/c9nIlkWSOZsk/IhbPSsRFa8FQV8P8Jtnaa8oQ=
+X-Received: by 2002:a5d:6909:: with SMTP id t9mr1639256wru.44.1631170454168;
+ Wed, 08 Sep 2021 23:54:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com>
+References: <1631165296-81082-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1631165296-81082-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 9 Sep 2021 14:54:03 +0800
+Message-ID: <CABVgOSkbmS_EHtTdzmk8CVY8Gm-M9hUWRuUBt+4ZLt2-txy_Aw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: fix reference count leak in kfree_at_end
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:47:31PM -0400, Oliver Upton wrote:
-> Hi Raghu,
-> 
-> On Wed, Sep 8, 2021 at 9:38 PM Raghavendra Rao Ananta
-> <rananta@google.com> wrote:
-> >
-> > Bring-in the kernel's arch/arm64/include/asm/sysreg.h
-> > into selftests to make use of all the standard
-> > register definitions in consistence with the kernel.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  .../selftests/kvm/include/aarch64/sysreg.h    | 1278 +++++++++++++++++
-> >  1 file changed, 1278 insertions(+)
-> >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
-> 
-> This belongs in tools/arch/arm64/include/asm/sysreg.h, I believe.
+On Thu, Sep 9, 2021 at 1:28 PM 'Xiyu Yang' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
 >
+> The reference counting issue happens in the normal path of
+> kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
+> function forgets to handle the returned resource object, whose refcount
+> increased inside, causing a refcount leak.
+>
+> Fix this issue by calling kunit_put_resource() at the end of function.
+>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
 
-Yes, that's also where I expected it to land.
+Thanks for looking into this.
 
-Thanks,
-drew 
++ Daniel -- any thoughts?
 
+>  lib/kunit/executor_test.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> index cdbe54b16501..3af30abad826 100644
+> --- a/lib/kunit/executor_test.c
+> +++ b/lib/kunit/executor_test.c
+> @@ -113,11 +113,13 @@ static void kfree_res_free(struct kunit_resource *res)
+>   */
+>  static void kfree_at_end(struct kunit *test, const void *to_free)
+>  {
+> +       struct kunit_resource *res;
+>         /* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
+>         if (IS_ERR_OR_NULL(to_free))
+>                 return;
+> -       kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+> +       res = kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+>                                      (void *)to_free);
+> +       kunit_put_resource(res);
+
+Why not just change this to kunit_alloc_resource()?
+
+>  }
+>
+>  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
+> --
+> 2.7.4
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/1631165296-81082-1-git-send-email-xiyuyang19%40fudan.edu.cn.
