@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69195405A7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7768405AB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234832AbhIIQDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:03:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
+        id S236859AbhIIQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:22:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:37187 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229885AbhIIQDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:03:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 674C061101;
-        Thu,  9 Sep 2021 16:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631203331;
-        bh=URsvhsIa9xPYpIpkYJ19dcffnMkB3oAaPNGfxCk4ylo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SuGdhFhUMQ6BoKrVC0Uy9i8uFEwK1ANlmF7oUmVVyDxKu5/MhBLnGDn5lgZOyMdyQ
-         S6T8K71i5+yurrj+cnTIQJXeldGA6CYX6eQbq8xvNaxHyqXBjkwAMYAH+xE7cZlCVo
-         rZiNZgt8KYk8EQuFZSmCxGAgVnlIhPPijbYAq61A=
-Date:   Thu, 9 Sep 2021 18:02:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] lkdtm: Use init_uts_ns.name instead of macros
-Message-ID: <YTowAX7szcAP7ItU@kroah.com>
-References: <20210901233406.2571643-1-keescook@chromium.org>
- <202109090848.129A49E8BD@keescook>
+        id S236819AbhIIQWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 12:22:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="208062536"
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="208062536"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 09:18:12 -0700
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="450031774"
+Received: from dmert-dev.jf.intel.com ([10.166.241.5])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 09:18:11 -0700
+From:   Dave Ertman <david.m.ertman@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     yongxin.liu@windriver.com, shiraz.saleem@intel.com,
+        anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jesse.brandeburg@intel.com,
+        intel-wired-lan@lists.osuosl.org
+Subject: [PATCH net] ice: Correctly deal with PFs that do not support RDMA
+Date:   Thu,  9 Sep 2021 01:56:12 -0700
+Message-Id: <20210909085612.570229-1-david.m.ertman@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109090848.129A49E8BD@keescook>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 08:49:57AM -0700, Kees Cook wrote:
-> On Wed, Sep 01, 2021 at 04:34:06PM -0700, Kees Cook wrote:
-> > Using generated/compile.h triggered a full LKDTM rebuild with every
-> > build. Avoid this by using the exported strings instead.
-> > 
-> > Fixes: b8661450bc7f ("lkdtm: Add kernel version to failure hints")
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Hi Greg,
-> 
-> Your bot said "please wait, the merge window is open", but it'd be really
-> nice to get this into -rc1 to avoid annoying people doing rebuilds...
-> 
-> :)
+There are two cases where the current PF does not support RDMA
+functionality.  The first is if the NVM loaded on the device is set
+to not support RDMA (common_caps.rdma is false).  The second is if
+the kernel bonding driver has included the current PF in an active
+link aggregate.
 
-I'm not supposed to be adding new patches to my tree during this period
-of time in the merge window.
+When the driver has determined that this PF does not support RDMA, then
+auxiliary devices should not be created on the auxiliary bus.  Without
+a device on the auxiliary bus, even if the irdma driver is present, there
+will be no RDMA activity attempted on this PF.
 
-I can't see a rebuild locally here without this patch attached, so how
-much of a problem is it right now?
+Currently, in the reset flow, an attempt to create auxiliary devices is
+performed without regard to the ability of the PF.  There needs to be a
+check in ice_aux_plug_dev (as the central point that creates auxiliary
+devices) to see if the PF is in a state to support the functionality.
 
-And isn't -rc2 ok?
+When disabling and re-enabling RDMA due to the inclusion/removal of the PF
+in a link aggregate, we also need to set/clear the bit which controls
+auxiliary device creation so that a reset recovery in a link aggregate
+situation doesn't try to create auxiliary devices when it shouldn't.
 
-thanks,
+Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
+Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice.h     | 2 ++
+ drivers/net/ethernet/intel/ice/ice_idc.c | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-greg k-h
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index eadcb9958346..3c4f08d20414 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -695,6 +695,7 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
+ {
+ 	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+ 		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ 		ice_plug_aux_dev(pf);
+ 	}
+ }
+@@ -707,5 +708,6 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+ {
+ 	ice_unplug_aux_dev(pf);
+ 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ }
+ #endif /* _ICE_H_ */
+diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
+index 1f2afdf6cd48..adcc9a251595 100644
+--- a/drivers/net/ethernet/intel/ice/ice_idc.c
++++ b/drivers/net/ethernet/intel/ice/ice_idc.c
+@@ -271,6 +271,12 @@ int ice_plug_aux_dev(struct ice_pf *pf)
+ 	struct auxiliary_device *adev;
+ 	int ret;
+ 
++	/* if this PF doesn't support a technology that requires auxiliary
++	 * devices, then gracefully exit
++	 */
++	if (!ice_is_aux_ena(pf))
++		return 0;
++
+ 	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
+ 	if (!iadev)
+ 		return -ENOMEM;
+-- 
+2.31.1
+
