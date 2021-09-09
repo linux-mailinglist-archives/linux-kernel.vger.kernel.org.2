@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6266840447F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC0E404483
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350380AbhIIEej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:34:39 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:39653
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229549AbhIIEed (ORCPT
+        id S230311AbhIIEhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhIIEhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:34:33 -0400
+        Thu, 9 Sep 2021 00:37:38 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433B2C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 21:36:29 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j13so798280edv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 21:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=15PV/LqowfaC+fxf6vWbltb0UNQfC6jSPzN+3vijUwc=; b=3
-        DJjFnbhsbzatVfC5kPmsEk1UPwiv7vfjI6C/y/3X8LYWTdtQ7ti4nRqk85rOC9H6
-        ns5IPiAoofi7djqHBlyvKC18+JSgSB9zGqSV722nckXNML5Eu3ia5qq91eYOKjlr
-        W2pEWVmqTnuiZL6ZpFy5V5oZ6W1Tw/SRbH3kpfSGOA=
-Received: from localhost.localdomain (unknown [10.162.127.118])
-        by app1 (Coremail) with SMTP id XAUFCgCXn19pjjlhq309AA--.1163S3;
-        Thu, 09 Sep 2021 12:32:41 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] net/sunrpc: fix reference count leaks in rpc_sysfs_xprt_state_change
-Date:   Thu,  9 Sep 2021 12:32:38 +0800
-Message-Id: <1631161958-77832-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgCXn19pjjlhq309AA--.1163S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF1kAry5Kr43Gr1rKF48WFg_yoW8JFyfpr
-        y5K34a9F98tr47G3ZrC3W0ga4jvFs8X3W5X3yI9w1kA3WDAasxGr1F9rsrWr18ArWruFW8
-        JF109F4ruF4DCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9G14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
-        0xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbZmitUUUUU==
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VSkesal6uXPk33/+nkRgQ+V5f3XIAlP5lC5meWW/hsQ=;
+        b=HVvdBCOTgeP5ddh+OGQQ+Z4fccdITsyHhyQDTih1+++vllkKkkjNNgEGBOepbhXQ00
+         hYpAjBKElM/gRqPbKSV+hFlEi+tYcNSBWjHen0DMsmmz6r4vykSZmht3GnaUWIhY/Z0g
+         7pce8NGmhvaOgnlHd2ewFmWy3KTyf+gZtKIuPXUcbxoWsjbU6y84DaYZq7i1zwB+Om6S
+         VTwolDCCyuula7ZOS/GW04Pjl8QmeT0PgwLPIChN4/ppQTlpooIoL8b55ev11XPQ2alX
+         9fkpWC1XjTf7uh5koK6t4DN3V//6Cfyh/cEjeRV+riMlNiyMGlFvsOVn7874Q7CelzN4
+         HEfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VSkesal6uXPk33/+nkRgQ+V5f3XIAlP5lC5meWW/hsQ=;
+        b=benLCPicMjZXhUqNY6yY0uYUPc4ke2QFrlXCRv6UJcnhOZz0dy6A6TAMGWneYJkZ12
+         xotr10Vac6nBbP66I35f5u5F/1GoBI8yeyw3B752arl3Ze6ecrtNNRA43r7S7mjQFkTL
+         JGrV4LZraKi1hFkVdln686jGaP409WF4II0mJwSsrAyiv4y3EnssOJNy/tIfP97gLGf0
+         EEX3MSLpoQwieIxE7tKNDJhaiEruMA05VrxWrTCbhOuOUGVMlnS739755XAM97cE9X9x
+         1C/+Ncv8tv55aQx9CXJ3y/kISxfru+9DJHcahC+yZzJuP9UE2ALB9gkREcy13v7oRK3N
+         PP1A==
+X-Gm-Message-State: AOAM530x2zkLT6/aGi8FJVjyRKctmHeXy8iIthKxe/pOKHy6HLN9wWfR
+        lRrJumr9BYAzratuAtnaHS4uNcWAwkysyBCa/7w=
+X-Google-Smtp-Source: ABdhPJxTfJ5sfokGCyTrPuBkTkw02zunLQHzYlKSeRyQ8g3oAvdZt7t6+H0Hj/3H+1pI9qS1mGtbehX6W9LU1wgzAgI=
+X-Received: by 2002:aa7:d598:: with SMTP id r24mr1113935edq.285.1631162187510;
+ Wed, 08 Sep 2021 21:36:27 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a17:907:7216:0:0:0:0 with HTTP; Wed, 8 Sep 2021 21:36:26
+ -0700 (PDT)
+Reply-To: alihamed@kakao.com
+From:   Ali <zero070337@gmail.com>
+Date:   Wed, 8 Sep 2021 23:36:26 -0500
+Message-ID: <CANtxZo9Q6B3C32=hBy8EWW9DHgnvonrFBFrGyL=A7VRYigKx_Q@mail.gmail.com>
+Subject: Allow Me to Introduce Myself
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The refcount leak issues take place in an error handling path. When the
-3rd argument buf doesn't match with "offline", "online" or "remove", the
-function simply returns -EINVAL and forgets to decrease the reference
-count of a rpc_xprt object and a rpc_xprt_switch object increased by
-rpc_sysfs_xprt_kobj_get_xprt() and
-rpc_sysfs_xprt_kobj_get_xprt_switch(), causing reference count leaks of
-both unused objects.
+Attn: Sir,
 
-Fix this issue by jumping to the error handling path labelled with
-out_put when buf matches none of "offline", "online" or "remove".
+We are expanding our global presence by investing into projects
+outside the Gulf region in the form of equity finance, loan/JV
+partnership. We grant our funding at a guaranteed 3% ROI per annul
+for projects to 10years term and above, We have the financial
+capacity to fund starting & existing projects between $1M-500
+Million USD. Please email us your project Executive Summary for
+review and possible approval for funding.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- net/sunrpc/sysfs.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+We are currently seeking means of expanding and relocating our
+business interest in the following sectors: Banking, Real Estate,
+Stock Speculation and Mining, Transportation, Health sector and
+Tobacco or any other sector you may suggest.
 
-diff --git a/net/sunrpc/sysfs.c b/net/sunrpc/sysfs.c
-index 64da3bfd28e6..0cce0375107f 100644
---- a/net/sunrpc/sysfs.c
-+++ b/net/sunrpc/sysfs.c
-@@ -265,8 +265,10 @@ static ssize_t rpc_sysfs_xprt_state_change(struct kobject *kobj,
- 		online = 1;
- 	else if (!strncmp(buf, "remove", 6))
- 		remove = 1;
--	else
--		return -EINVAL;
-+	else {
-+		count = -EINVAL;
-+		goto out_put;
-+	}
- 
- 	if (wait_on_bit_lock(&xprt->state, XPRT_LOCKED, TASK_KILLABLE)) {
- 		count = -EINTR;
--- 
-2.7.4
+PLEASE NOTE: Intermediaries / Consultants / Brokers are welcome
+to bring their clients and are 100% protected. In complete
+confidence, we will do good business.
 
+Kindly revert back if you have projects that needs funding for
+further discussion and negotiation.
+
+Looking forward to hear from you.
+
+Regards,
+Ahmed Ali
+Best regards,
