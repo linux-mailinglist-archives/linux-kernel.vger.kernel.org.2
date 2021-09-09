@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55FA4046DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86C34046EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhIIIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhIIIRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:17:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5262960FE3;
-        Thu,  9 Sep 2021 08:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631175365;
-        bh=5arYVwkJzjH3qNHQAF+Jf/WKWE7U6MPjPA9FVILm2HU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HlDJ5yiKW2Sh3ET6LKP9dQYlGpaVvfy+HGqAsgIIkGEnqyBNCPNk7q0uffhlKOfNr
-         yYluMjw/K/8yujZH2hcllwoAQUHLB/NoZqxH3SgUUW1x95kSKc05jeW1duHrJSvEfh
-         burFJ8i2oPzmGU/eEkFUFlS/9RlvJGkf0B/n8UpLvTfu/q3pQY3SqKKZKRDoI4pOGl
-         oDHpMNuFNrWdOnora/VYf/J55lc673sUOnRhlVSSpKmYpnZORgSzbOaes8lOXJDMMK
-         CF0FeEznKTmSMaTiBkFQA/IAfLhit8yIRIm+rChJqOI6/pHKE3Apu8qngSvMqjPdjU
-         qG7pkKlbylMSQ==
-Received: by mail-wr1-f42.google.com with SMTP id u16so1262088wrn.5;
-        Thu, 09 Sep 2021 01:16:05 -0700 (PDT)
-X-Gm-Message-State: AOAM530VI09EMQb91sNIxkColKh78ICB9B+ktxl6Dcof5cW83nnLUKE+
-        DhBTkUhMKnKeRL3YPEt7Xt+UIKZ0fx0yR4X/TCk=
-X-Google-Smtp-Source: ABdhPJw7i3+0VL2UwK3fSbCX4vv+uwNopgIeq507D3S4wFPjy8MZzSlJP441rsW/9hkDihakdQBL9k5MMbkcRrIrZSY=
-X-Received: by 2002:adf:914e:: with SMTP id j72mr1998903wrj.428.1631175363972;
- Thu, 09 Sep 2021 01:16:03 -0700 (PDT)
+        id S231143AbhIIIVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:21:39 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:37951 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhIIIVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:21:37 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MekvT-1my8LO16EH-00aq5T; Thu, 09 Sep 2021 10:20:27 +0200
+Received: by mail-wm1-f44.google.com with SMTP id e26so719355wmk.2;
+        Thu, 09 Sep 2021 01:20:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533UIItAzGCQjF5m2mdvmPxaTfGSnkPoOr/PZqGZmX+GNcnUri6v
+        MOa+QO8ua6KGPKGERI9OA/jFU5WiTlwI9IA7iwY=
+X-Google-Smtp-Source: ABdhPJxw9darBRLOGU9T/Ai9xJXwVS9kDLiVsvTLI0kWLzOUQXjodmhRhtE0vr7opzWdpEFtiXs19dy520OXKdt0Xg4=
+X-Received: by 2002:a05:600c:896:: with SMTP id l22mr1514862wmp.173.1631175626890;
+ Thu, 09 Sep 2021 01:20:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210909044953.1564070-1-linux@roeck-us.net>
-In-Reply-To: <20210909044953.1564070-1-linux@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 9 Sep 2021 10:15:48 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2AQffbiqE_HFC5rtf=smjmv2Wu0afTR733bdhRHW4FsQ@mail.gmail.com>
-Message-ID: <CAK8P3a2AQffbiqE_HFC5rtf=smjmv2Wu0afTR733bdhRHW4FsQ@mail.gmail.com>
-Subject: Re: [PATCH] net: ni65: Avoid typecast of pointer to u32
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210909042543.1982893-1-alistair.francis@opensource.wdc.com>
+In-Reply-To: <20210909042543.1982893-1-alistair.francis@opensource.wdc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 9 Sep 2021 10:20:10 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Udjzy=M4Vs8pGCKdedwtv-vPRjxbTcvTL6kP=yXSs0A@mail.gmail.com>
+Message-ID: <CAK8P3a1Udjzy=M4Vs8pGCKdedwtv-vPRjxbTcvTL6kP=yXSs0A@mail.gmail.com>
+Subject: Re: [PATCH] perf bench: Add support for 32-bit systems with 64-bit time_t
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair23@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:awyyhFsU1jYtmonLl/6tOFZIx15FM7SK7uLUD8Bq2mKIcze7Aa5
+ VwIIHz/ZH0wL9MVr62zbI2uY0rFZu8I48ZUPUFkq+zcp2OWZTPag9QkTVl9pKs8Hr9qFhQW
+ dsvSr+cAsqHVn5RQBt0C1qL8MX0cC8Gu6yKad53vWB5eDyLXdXjsFjVSzWhYZI1kLD1KNPB
+ GuyuxHRs3tz6DIMijWjIA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lxpvQd3C128=:17V+5UmY6GsGWQrIe4mqKl
+ j7Nb7xIKnfpwtbee0sf7UGHlfQM2kYcvLIbPqT5JWqbeHUeRxuk+4fj3zIvlxifWVx3r9Rhds
+ a6h5uYTFj/g/MhtAECv0TeQTOL9zgpnlJUnid9ITLm43W6OT54X4A2jUs1rdBw0uZ3rNGQC5K
+ 3XNF360tmZSFiCixMz5l6UhP+gZdvJ/NNGrPGO2jbQddFD3+GMF8H1WggvWK8hXxYOhfc2y/X
+ usJ8SkF9sSz6pr/KB2KSUVU6cHWmWw/a2i+c/UbwZedTc/425Nk/zCn1pGgCzHZ9fFYbg9RQh
+ RIyCP1Wz5bL92EkF392/as4/9dE5ag8a8nT0qFflg9GbC5gEttV1qjbUaYHv9vGaLe74JTjmC
+ DXzijK2snMpza+CUbbBdu2ed+C1AS9mcWA8srOmmr2xarXGqDW/VgfmnOM7zXD9031PapQmlI
+ LX9855lxuH5I8z1OnaGx9VUPU9desyE69ZKfHkYk+C+bHj7kNQyuRAcZ81XrZdHG1e5yw/Wkq
+ XCyMbRwAGl6yrnAciTdb3IeKQpAWWys4Wu9kcv4W+T0RfKK5MVr+WMTEoRU6H5/6lHLFlG5Sb
+ sHzhSWjsrRi+JF6ImXMBG9Jwp7nSG7CGdwakB5F5yOCoXYbNr45HAnwCkEzxXveWQx/ZekoYb
+ m0naUgqRlq2X980GjuB0rJ2ZzlNGV7aCGbRjOj/32TWJ42knOaDG3SSBQamKsD263BlZeRr0B
+ Gu43PhK9PNOI0RssLmZVupNd6NsZIlXXLEq05r/7C9QO1BafCIOFSu+xkIWfWiB4qkFXHQt1M
+ kn8lb4IJLPgpMb21Y4Ex/7vdJpB9dD66xILRrnb+pNHYDtLhJCfRH7Cqx5Fhx4YS0TuqTn6Ro
+ afGcb7QhBLvbKu1kCV+w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:50 AM Guenter Roeck <linux@roeck-us.net> wrote:
+On Thu, Sep 9, 2021 at 6:25 AM Alistair Francis
+<alistair.francis@opensource.wdc.com> wrote:
 >
-> Building alpha:allmodconfig results in the following error.
+> From: Alistair Francis <alistair.francis@wdc.com>
 >
-> drivers/net/ethernet/amd/ni65.c: In function 'ni65_stop_start':
-> drivers/net/ethernet/amd/ni65.c:751:37: error:
->         cast from pointer to integer of different size
->                 buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
+> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+> time_t and as such don't have the SYS_futex syscall. This patch will
+> allow us to use the SYS_futex_time64 syscall on those platforms.
 >
-> 'buffer[]' is declared as unsigned long, so replace the typecast to u32
-> with a typecast to unsigned long to fix the problem.
+> This patch does not attempt to gracefully allow 32-bit architectures
+> with both SYS_futex and SYS_futex_time64 to support a 64-bit time_t.
+> This patch only applies to 32-bit architectures with a 64-bit time_t.
 >
-> Cc: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Hi Alistair,
 
-> ---
->  drivers/net/ethernet/amd/ni65.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/amd/ni65.c b/drivers/net/ethernet/amd/ni65.c
-> index b5df7ad5a83f..032e8922b482 100644
-> --- a/drivers/net/ethernet/amd/ni65.c
-> +++ b/drivers/net/ethernet/amd/ni65.c
-> @@ -748,7 +748,7 @@ static void ni65_stop_start(struct net_device *dev,struct priv *p)
->  #ifdef XMT_VIA_SKB
->                         skb_save[i] = p->tmd_skb[i];
->  #endif
-> -                       buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
-> +                       buffer[i] = (unsigned long)isa_bus_to_virt(tmdp->u.buffer);
+I know you've made this mistake before and I've pointed it out
+several times. Please don't do this again, and try to fix up the
+ones you already broke!
 
-I generally prefer uintptr_t over unsigned long for this cast because it's more
-descriptive, but the effect is the same.
+> +/**
+> + * Some newer 32-bit architectures (such as RISC-V 32-bit) don't have
+> + * the SYS_futex syscall and instead only have the SYS_futex_time64 call.
+> + * Let's ensure that those still compile and run by just using the
+> + * SYS_futex_time64 syscall. On these systems `struct timespec` will use a
+> + * 64-bit time_t so the SYS_futex_time64 call will work.
+> + */
+> +#if !defined(SYS_futex) && defined(SYS_futex_time64)
+> + #define SYS_futex SYS_futex_time64
+> +#endif
 
-      Arnd
+This cannot work, as two system calls take different arguments: futex() takes
+a __kernel_old_timespec and futex_time64() takes a __kernel_timespec.
+
+You cannot derive anything about the ABI of the C library based on whether
+the macros are defined or not. Either you convert the arguments passed into
+the system call into the format expected by the kernel, or you pick the
+correct system call based on sizeof(struct timespec).
+
+       Arnd
