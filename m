@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A784044E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187DF4044EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350714AbhIIFVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:21:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350685AbhIIFVH (ORCPT
+        id S1350687AbhIIFXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350499AbhIIFXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:21:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631164797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SRkJG9EGhC8VgYdl6gsAldPi2RC6qHvYq1zbEFWdBEM=;
-        b=S5j/53HwI+W5xUWgmFm1tk8FyNPo4Ej2YWgsEZQeFR1AHryJYpz4W8fU8taw6zFmB7l/M9
-        oeRNT37dlWopf9u3wrWJC7T7qTxRpoD+J8oKoPUlB6ZNZe2LqUvjizypIG3UimXUFQTeZl
-        Lthdlsjjt1eWDkcSVQ9n+fvQqxesAEY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-TxHAfsiXN2e7nWYBp2bkCA-1; Thu, 09 Sep 2021 01:19:56 -0400
-X-MC-Unique: TxHAfsiXN2e7nWYBp2bkCA-1
-Received: by mail-wr1-f72.google.com with SMTP id u2-20020adfdd42000000b001579f5d6779so120079wrm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:19:56 -0700 (PDT)
+        Thu, 9 Sep 2021 01:23:31 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA79C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 22:22:22 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id m11so769129ioo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Ja+MA4OCzFYM/Hx8ySIku22LElZavZCzLsENm+S9Mc=;
+        b=sSrKzdgbodHekgxN4FeKFtpd8Y4Csq7gzvDRQimT+tWyjS2LXY7/BuapliIukRhqkG
+         Io+6kUubaiVrscaC82Af6p1nUdBkfSX4eUr2v4loWlgQDqFuH6d0WF3s+mSjHOFgKkll
+         JnavnAYo7F0qxztVd/Pzz09WfH16Zrc+8IKrvs8libeSHlhU2XeB3Lje4p3qSeX2Rfce
+         W1VW0vcIdi9Bw1ZuM4oJI+DPDjWoMOOG7xQ16u49oNtnrcc0HV2eINlwGZGBlLOohXK/
+         Qo9en2g0liePMOSs+oEZeOm1FMQayg0KLs4qpa7kwSuOIXjJuDBgMRl0W1CUQ+d7Psp6
+         A1Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=SRkJG9EGhC8VgYdl6gsAldPi2RC6qHvYq1zbEFWdBEM=;
-        b=1rX0/dFIGphSyyZmhoJ6AcTb25BkSxmS1ueuCLebg/vDW4NbOQYFo0Srw/jUlBTAmC
-         MxWJhbc9NGgucFEBpTXo6ibweG5gRN5KWekhO9YlLocKfG634FfsDWJjzpmidBmE6Vww
-         voHGCZ0Bms3ah9br2lTeGWnjSEQ5I+kkezEAWGZdsDZh+XSLPMmARwk8GYoJ0FsX+fQi
-         EX/Wn9aXkTCM3OnpMwOz7L5ih+ZWJBwxJKJun/TfWO5H9/oeZoh56e2U49dnDmFjWR8H
-         Yup3L092dzeZSkBK512s4w3klmbtpmfKWpCFdx0Xd2h2gxoGP3oV3HqdJMPpKHxVvN0G
-         xj0w==
-X-Gm-Message-State: AOAM531h60CYkA5QUBto37EvzSe9aLe1nJMXpzgQPaaYLE6qwNc7sNp2
-        8rgHjkKDii8f4yvzdirT0ac43SmzKcYthrwHXAoWENUZaI5Dqg+9z/kqH78VabhYPW3ue2Yo4Zu
-        bW4/Ry3i64KqUvnCH1+LExwG7
-X-Received: by 2002:adf:d191:: with SMTP id v17mr1195124wrc.345.1631164795424;
-        Wed, 08 Sep 2021 22:19:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWu7mHKu8Bu/+CN9d6SsQc3M72VjMeAtWgfEflP6tjJsSvyBKJOOGDH6D6mh8Lte/+vUA/LQ==
-X-Received: by 2002:adf:d191:: with SMTP id v17mr1195110wrc.345.1631164795270;
-        Wed, 08 Sep 2021 22:19:55 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g5sm611728wrq.80.2021.09.08.22.19.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Ja+MA4OCzFYM/Hx8ySIku22LElZavZCzLsENm+S9Mc=;
+        b=FJqpAR7nKA8/kbfbGqI1tC9lXmSLA1dNvQq1/PSEYbekAFwh6viI8I7I7JMr+YNq4L
+         Op74XGu/Q36OslpijVpxGzifGj4qMnPdK6+wWnEF+eiqD8uHEBRhedR+hRr+SoVA0On5
+         pSj/8f44+EYnKT0aRYYIKWiuJZOtmUs53Kj79gVQEbcAKk/OuVEXvMnQBkTRLRxbp7O7
+         QMvSDxtyKJIt3VAqWps56hauKFC2Q3wKCm4HkfjbCM0egY/1rJVxLH7e1FcxMayV6ZCx
+         iMVALJQYreMCP58LmDciD+qK+IigSjzuupKdpFy5QYZkbG6V5gfOinitU0unr5wgVTQ1
+         g9nw==
+X-Gm-Message-State: AOAM533NdE0miUtAtCguW3jM/W1X5sd0O8pjI8FIDcf10IGShW12O4y7
+        /JHNs23Ld+1fxVjqT4t1C7lU5t2xatUjgQ==
+X-Google-Smtp-Source: ABdhPJy8iklDSbE81P3I3H1zXA7m4JYm6w3j44cDkU5aPYiQLRdS7kUUAS26jVunWdjTARITmatx0Q==
+X-Received: by 2002:a02:cc30:: with SMTP id o16mr1211625jap.101.1631164941450;
+        Wed, 08 Sep 2021 22:22:21 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id t10sm408390iol.34.2021.09.08.22.22.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 22:19:54 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com,
-        pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
-Subject: Re: [PATCH] KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
-In-Reply-To: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
-References: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
-Date:   Thu, 09 Sep 2021 07:19:53 +0200
-Message-ID: <874kau496u.fsf@vitty.brq.redhat.com>
+        Wed, 08 Sep 2021 22:22:20 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 05:22:17 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 12/18] KVM: selftests: Keep track of the number of
+ vCPUs for a VM
+Message-ID: <YTmaCWPkJ2TOeTsT@google.com>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-13-rananta@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909013818.1191270-13-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhang <yu.c.zhang@linux.intel.com> writes:
-
-> From: Vitaly Kuznetsov <vkuznets@redhat.com>
->
-> Currently, 'vmx->nested.vmxon_ptr' is not reset upon VMXOFF
-> emulation. This is not a problem per se as we never access
-> it when !vmx->nested.vmxon. But this should be done to avoid
-> any issue in the future.
->
-> Also, initialize the vmxon_ptr when vcpu is created.
->
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
-Thanks but even Suggested-by: would be enough :-)
-
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+On Thu, Sep 09, 2021 at 01:38:12AM +0000, Raghavendra Rao Ananta wrote:
+> The host may want to know the number of vCPUs that were
+> created for a particular VM (used in upcoming patches).
+> Hence, include nr_vcpus as a part of 'struct kvm_vm' to
+> keep track of vCPUs as and when they are added or
+> deleted, and return to the caller via vm_get_nr_vcpus().
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
->  arch/x86/kvm/vmx/nested.c | 1 +
->  arch/x86/kvm/vmx/vmx.c    | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 90f34f12f883..e4260f67caac 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -289,6 +289,7 @@ static void free_nested(struct kvm_vcpu *vcpu)
->  	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
->  
->  	vmx->nested.vmxon = false;
-> +	vmx->nested.vmxon_ptr = -1ull;
->  	vmx->nested.smm.vmxon = false;
->  	free_vpid(vmx->nested.vpid02);
->  	vmx->nested.posted_intr_nv = -1;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 0c2c0d5ae873..9a3e35c038f2 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6886,6 +6886,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  
->  	vcpu_setup_sgx_lepubkeyhash(vcpu);
->  
-> +	vmx->nested.vmxon_ptr = -1ull;
->  	vmx->nested.posted_intr_nv = -1;
->  	vmx->nested.current_vmptr = -1ull;
->  	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
+>  tools/testing/selftests/kvm/include/kvm_util.h      | 1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c          | 7 +++++++
+>  tools/testing/selftests/kvm/lib/kvm_util_internal.h | 1 +
+>  3 files changed, 9 insertions(+)
 
--- 
-Vitaly
+Shouldn't a test keep track/know how many vCPUs it has created?
 
+--
+Thanks,
+Oliver
