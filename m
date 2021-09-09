@@ -2,65 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E1F405917
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593C940591E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344071AbhIIOdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        id S1343509AbhIIOgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343717AbhIIOdq (ORCPT
+        with ESMTP id S237088AbhIIOgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:33:46 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B64C04CB1B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:35:40 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id z18so3900524ybg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:35:40 -0700 (PDT)
+        Thu, 9 Sep 2021 10:36:07 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896B8C16F95C
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:44:35 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id q3so2339979iot.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xVqPTIefUmYl+vS9yQCNfykIEkyUNjpaGiHkru6Ex9U=;
-        b=W2GdMzN1wBbdXEAQqAl1Q45alo0ADjlG7xdHxN4ljd9wGVG32S+KHfQn9PQFF21BNI
-         ZJ9niCWSpBCc0wdstxhnCjoEnfKzuKQGucCe+k97Qtc+oBA7sNAW2gavAXMLIUqer1YS
-         zju0LztVJJoy7fCzfiq5NBZOSK5B8j/e8YIzpICGwmxg5T4MxkBny9kElLXhDmkRSpeZ
-         02k3o3jyaXRVM12jHhSw2fOdMhBMqI5o2+vyf3agMIg8+W1VnTu6SjOEuVbWAtQQ0QI8
-         Ogk7+CAAAr5vV0tsj+A3zIm9XNk+102BUkirw6GaIg2HtUILHUcvKCC9sjblBx0kPRXJ
-         GZQg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MT6LELj4ua3aahT+trdn6bXJH9gCWz9tbef2rNohf7g=;
+        b=IXyY+qdUdaheRneEYpQoeQaywPUici9JGiF9t3WphFb1G7trbxB12r2NpEjXOwCtSr
+         9M99G/fDFwvMROTDGAX4O+m4sTH51AVg6zKXEzgcq4Ebs7UyZpLBlwjyyGtQyybTS6Zp
+         ennj9eYjrCgyO+gT45uBHdiqbU+TFK9SoPHSA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xVqPTIefUmYl+vS9yQCNfykIEkyUNjpaGiHkru6Ex9U=;
-        b=v2RZomX2U8iDjNgJhTuzu5KY/ZKf1baC7gLueHKeCwU54VpctXEHZySk9fsGAwZJac
-         S/OqReoSGo9rTmZfLH6W0rp8UjOLq0fmv1lwk9w+FuqEeUzM/jDoPRu+0IkhNwgKsY9j
-         spn7qL/JoEQlxF3HyFFXhfQJwkf5FQguCp0rnPmtKgaxzokK9Vswen7eH5l2G9qBuyfB
-         w0Naymrb9gKsR9/92vkhTnX8nLpykK7OaV7aPW82eJ68c91AeCEhbQgUTfrEjzNKxjuE
-         83RW6oWWhK7tbgxBQtaVHcNfGBDk6FQitzB8fGWf7zz5fOXe+dPHzlXcuJGyr/QwZsm4
-         KiJQ==
-X-Gm-Message-State: AOAM532/PyhQqE1E0ljc4z93z/2v7V5GQNNk8QKxKm/u3LtwCj8OGsTd
-        b4maSiLl9lAwkAoIx7wWI2JkUvBX5QVJRIpFNj4=
-X-Google-Smtp-Source: ABdhPJxuYb3fb/T3pjmA0qjqBsk7KbekDKDMtlKbn6oElKL02m6zZVGp5mhq99NCqsZI3f0hGpgAS/iiYB7R41FJLq8=
-X-Received: by 2002:a25:2394:: with SMTP id j142mr4265671ybj.226.1631194540083;
- Thu, 09 Sep 2021 06:35:40 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MT6LELj4ua3aahT+trdn6bXJH9gCWz9tbef2rNohf7g=;
+        b=8G6/UvrdUfN+Jxu0OIIyCUpORdYSK2v9qXGEWB5cWvGoSafHjcYixjlzLdPtwbZF8R
+         QerwP4Ne3xNeA3zsNj8O2g768/xnp3RkITPkH6wT4107urH3i1vbfXVJWqXOkkoCr6by
+         7hq5dZBwn21T61d/X4OKndZ99S3OnWoSk79JDNjzK3fylhqwS7UueyVCaku9rxODTMPL
+         P0jBVlcvMZ2zgkzQc5ZPFB/vLexs9ahQIut9ptknYs6RU5EsooCC4EMc9X/TnVmzsNJV
+         bL+Jc1UNRw2JQd3lqHiHE/49r7OaIqDGHTpNCpTRIIjr3nyfgmyrmcscEsit5oE6J60F
+         1zrA==
+X-Gm-Message-State: AOAM532Gp+6efvou4AKE5qJTvxJKV96OdQiH7TOiSaCjEsmc3PFnqRdY
+        Pu6+F2tP/8gIrZsP8jeIxbFcrIP2k6nnGA==
+X-Google-Smtp-Source: ABdhPJzyBJ3/6J4jOkKtHLfZz72UEp15gMbODSMGJuiA+MyIy3e314FmZjl01OTtHmjE6RN7UurVtg==
+X-Received: by 2002:a05:6638:619:: with SMTP id g25mr2920950jar.38.1631195074615;
+        Thu, 09 Sep 2021 06:44:34 -0700 (PDT)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com. [209.85.166.175])
+        by smtp.gmail.com with ESMTPSA id b8sm882629ilc.41.2021.09.09.06.44.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 06:44:34 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id x5so1949181ill.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:44:34 -0700 (PDT)
+X-Received: by 2002:a05:6e02:e02:: with SMTP id a2mr2454160ilk.180.1631195073651;
+ Thu, 09 Sep 2021 06:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7000:5a85:0:0:0:0 with HTTP; Thu, 9 Sep 2021 06:35:39
- -0700 (PDT)
-Reply-To: officiallady22@gmail.com
-From:   Miss Nicole <officialnicole55@gmail.com>
-Date:   Thu, 9 Sep 2021 13:35:39 +0000
-Message-ID: <CAJep-Om1xmf8LQLzCFaTy3SbeZTadhpb0O5P4Bkk0875fhRwxA@mail.gmail.com>
-Subject: Urgently for more details
-To:     undisclosed-recipients:;
+References: <20210909014623.128976-1-sashal@kernel.org>
+In-Reply-To: <20210909014623.128976-1-sashal@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 9 Sep 2021 06:44:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U2dGjeEzp+K1vnLTj8oPJ-GKBTTKz2XQ1OZ7QF_sTHuw@mail.gmail.com>
+Message-ID: <CAD=FV=U2dGjeEzp+K1vnLTj8oPJ-GKBTTKz2XQ1OZ7QF_sTHuw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.14 001/252] drm/bridge: ti-sn65dsi86: Don't read
+ EDID blob over DDC
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, dear one
-I hope this letter meets you in good health?
-Did you receive my previous mail? I have something important for you
-I wish to discuss an important business proposal with you
-Please reply
-Regards.
-Pilot Miss Nicole
+Hi,
+
+On Wed, Sep 8, 2021 at 6:46 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Douglas Anderson <dianders@chromium.org>
+>
+> [ Upstream commit a70e558c151043ce46a5e5999f4310e0b3551f57 ]
+>
+> This is really just a revert of commit 58074b08c04a ("drm/bridge:
+> ti-sn65dsi86: Read EDID blob over DDC"), resolving conflicts.
+>
+> The old code failed to read the EDID properly in a very important
+> case: before the bridge's pre_enable() was called. The way things need
+> to work:
+> 1. Read the EDID.
+> 2. Based on the EDID, decide on video settings and pixel clock.
+> 3. Enable the bridge w/ the desired settings.
+>
+> The way things were working:
+> 1. Try to read the EDID but fail; fall back to hardcoded values.
+> 2. Based on hardcoded values, decide on video settings and pixel clock.
+> 3. Enable the bridge w/ the desired settings.
+> 4. Try again to read the EDID, it works now!
+> 5. Realize that the hardcoded settings weren't quite right.
+> 6. Disable / reenable the bridge w/ the right settings.
+>
+> The reasons for the failures were twofold:
+> a) Since we never ran the bridge chip's pre-enable then we never set
+>    the bit to ignore HPD. This meant the bridge chip didn't even _try_
+>    to go out on the bus and communicate with the panel.
+> b) Even if we fixed things to ignore HPD, the EDID still wouldn't read
+>    if the panel wasn't on.
+>
+> Instead of reverting the code, we could fix it to set the HPD bit and
+> also power on the panel. However, it also works nicely to just let the
+> panel code read the EDID. Now that we've split the driver up we can
+> expose the DDC AUX channel bus to the panel node. The panel can take
+> charge of reading the EDID.
+>
+> NOTE: in order for things to work, anyone that needs to read the EDID
+> will need to instantiate their panel using the new DP AUX bus (AKA by
+> listing their panel under the "aux-bus" node of the bridge chip in the
+> device tree).
+>
+> In the future if we want to use the bridge chip to provide a full
+> external DP port (which won't have a panel) then we will have to
+> conditinally add EDID reading back in.
+>
+> Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Link: https://patchwork.freedesktop.org/patch/msgid/20210611101711.v10.9.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 ----------------------
+>  1 file changed, 22 deletions(-)
+
+I would suggest against backporting this one unless you're going to
+backport the whole pile of DP AUX bus patches, which probably doesn't
+make sense for stable. Even though the old EDID reading was broken for
+the first read, it still worked for later reads. ...and the first read
+didn't crash or anything--it just timed out.
+
+-Doug
