@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3CD405CA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A512405CA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244137AbhIISL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        id S244268AbhIISLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243493AbhIISLK (ORCPT
+        with ESMTP id S242897AbhIISLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:11:10 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7888C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:10:00 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id r3so4359126ljc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:10:00 -0700 (PDT)
+        Thu, 9 Sep 2021 14:11:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308F8C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:10:02 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id l11so5420735lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Xyyx98ohvBGLtu/RXBFKIsLv16m8Wp4VyNHMtY264u0=;
-        b=VzYjqIkohug8LcjSPPZbKDhi+RnOICZQIhj5CQdOX0jebUnadgBAvGoOsliXZ6/swK
-         LquJdWA/OJWavR/uAeFfuJ4FVHmmV82X7i9EssOEVeA39xGw94dmYlkD/nvXZv0ahHFU
-         JHl8TX/O+e/Rkb2GGen7mLyy0Il42Sl09fsgL4Uq1M2uAYI0KNHexZzixSAZSsHFyu4y
-         3yqeUgOxofqcnfGa+92r4sIUTIevbTs9+jHaucbyvwLVPbnw/IK1shfSwNMmL0WFCU+X
-         IeFf6zK3gcHbBJliSNkZpXTrqo/dXQHVRNk6vBpH7XcbAUXcOXku0EhmIL5PdBqlN0Zt
-         KZWg==
+        bh=IudACyYdUqJ7gnt0VBJlepLQi1HYDs/W9JfdNcI6Qbw=;
+        b=NEGi3nHWsfQg+1RLKfc0kywSDw4++RzTTs2UlUBBrdQ3VPzSjxiKHQ0j8p9JIjAydy
+         iqFUV7kdLN7h2dYd+DI5Pv/uprCzhNmTayfGGNs8RXuCw8sN0uh2KYyqkjSnibLmCr09
+         RgeWYLzfh3O+DB63OcsQ2ZTUQNiBXZiYx5T6sq7FlCpRjM4o6pYztOkFYGqru1EdDlvY
+         76yafJ7u/yTPdNVc9g7RkBRbzAU+UAKbgpyfEwZjoC4K73YFExpxQrL0ZajdZaRiQ+xu
+         dVhpXshnSR9xOg3gBQhvDTHFvic/5mIeN9GrPtUHL5KR9oquTNlAUILp2QB/LsXfPBYi
+         odIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xyyx98ohvBGLtu/RXBFKIsLv16m8Wp4VyNHMtY264u0=;
-        b=urO8Kta/YZeS4l9sGHPCnl+26R2MpDRcflhcMyg9aNcd+CFIBfCjgtajv7Nt7to0uZ
-         1H6vSnHYkeD8IOmrjjDP831r+AKIi1+If9KKN/e+8URUWHCqPL+VRVwJWv8GYLM5ygIu
-         nGLkI4LQhUYFliup3MFkp7EN16TzE3wTMGdmoprdii5qsybz4K1LLA7apu/EMsiyR9tg
-         WHc42y4EbM7rqBCQpQx3EGxK2ngC6z29PeQ0M7WzyIXnNNIlxbxAJWqLdNjqbhwJMwZ7
-         a7sYwgI9K/Pyb4hUWn0c2k+lFESbvkMH2D6knPJRIBkxHbOt8VGydC91L9NngZgkHSth
-         Lv4Q==
-X-Gm-Message-State: AOAM533w1UI6h4QHEyDu5WUo5+GbkquNcqmOZCVZwAWEm63UdrwhTH3D
-        ss2LtaUSpTQa+g52oWUXQO8=
-X-Google-Smtp-Source: ABdhPJyrS8ytRV+reeTGCs9+kg8U+/JVQ78r1mc/Dny6y+bu4yOKYC1AaVHhu/K0FRLqs2peASq3Sg==
-X-Received: by 2002:a2e:9607:: with SMTP id v7mr863208ljh.405.1631210999293;
-        Thu, 09 Sep 2021 11:09:59 -0700 (PDT)
+        bh=IudACyYdUqJ7gnt0VBJlepLQi1HYDs/W9JfdNcI6Qbw=;
+        b=mWDpMo7C0Qk/8cjbDFGPly23dp7R/JeNC8jWi/Uo+KTmrt564l6hNGtSYCn3HZ92e9
+         FhiVURIgu3XxxGhfmwy82XzBw38bobOyhrTJ7CslFMSmaHfo/PhZEkz2CKrQV2MmTzhO
+         00pX6iFHowWtUVLvL01v/AkGAhRd1PvOQhoh911MIEjgIxrul2ykCLmuCwudXMnZiwpZ
+         5OUS0Oq8ncI0RuLYcLOxfxW+gaLBAvFZVQPZSzZFn496d9FsFbm3hwvN87QHkw4fz+jm
+         zxyaF/yh5D22Xb2LgLbScKHpuXnLvgxxrdd+5J3U6ZNO8zggFjOVf8bPJ+xQvCRb66Cx
+         aVzw==
+X-Gm-Message-State: AOAM5337YIUMCu8ZEuW+Bhi8YsAfLzEXQM9SOhunDAPcx9NqwabWhJGr
+        vhHMwqCxU8K/VnHBwlQkzVU=
+X-Google-Smtp-Source: ABdhPJx8eDqX1tvtW/eN6WUxAqVJouZ5RSQZPsB2dAsBOIfznfCiN8DNeyZyOZL+ubLnLajOgtZrAw==
+X-Received: by 2002:a05:6512:39c9:: with SMTP id k9mr819851lfu.351.1631211000536;
+        Thu, 09 Sep 2021 11:10:00 -0700 (PDT)
 Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id u2sm270276lff.238.2021.09.09.11.09.58
+        by smtp.gmail.com with ESMTPSA id u2sm270276lff.238.2021.09.09.11.09.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:09:58 -0700 (PDT)
+        Thu, 09 Sep 2021 11:10:00 -0700 (PDT)
 From:   Kari Argillander <kari.argillander@gmail.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         ntfs3@lists.linux.dev
 Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 05/11] fs/ntfs3: Remove unnecessary variable loading in fill_super
-Date:   Thu,  9 Sep 2021 21:09:36 +0300
-Message-Id: <20210909180942.8634-6-kari.argillander@gmail.com>
+Subject: [PATCH 06/11] fs/ntfs3: Use sb instead of sbi->sb in fill_super
+Date:   Thu,  9 Sep 2021 21:09:37 +0300
+Message-Id: <20210909180942.8634-7-kari.argillander@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210909180942.8634-1-kari.argillander@gmail.com>
 References: <20210909180942.8634-1-kari.argillander@gmail.com>
@@ -66,80 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove some unnecessary variable loading. These look like copy paste
-work and they are not used to anything.
+Use sb instead of sbi->sb in fill_super. We have sb so why not use
+it. Also makes code more readable.
 
 Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 ---
- fs/ntfs3/super.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ fs/ntfs3/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index f3c3c2bea6ca..2eb1227bbf5a 100644
+index 2eb1227bbf5a..efe12c45e421 100644
 --- a/fs/ntfs3/super.c
 +++ b/fs/ntfs3/super.c
-@@ -879,7 +879,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	struct block_device *bdev = sb->s_bdev;
- 	struct inode *bd_inode = bdev->bd_inode;
- 	struct request_queue *rq = bdev_get_queue(bdev);
--	struct inode *inode = NULL;
-+	struct inode *inode;
- 	struct ntfs_inode *ni;
- 	size_t i, tt;
- 	CLST vcn, lcn, len;
-@@ -979,9 +979,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	sbi->volume.major_ver = info->major_ver;
- 	sbi->volume.minor_ver = info->minor_ver;
- 	sbi->volume.flags = info->flags;
--
- 	sbi->volume.ni = ni;
--	inode = NULL;
- 
- 	/* Load $MFTMirr to estimate recs_mirr. */
- 	ref.low = cpu_to_le32(MFT_REC_MIRR);
-@@ -1013,7 +1011,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 		goto out;
+@@ -1012,7 +1012,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
  
  	iput(inode);
--	inode = NULL;
  
- 	is_ro = sb_rdonly(sbi->sb);
+-	is_ro = sb_rdonly(sbi->sb);
++	is_ro = sb_rdonly(sb);
  
-@@ -1090,8 +1087,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 		return PTR_ERR(inode);
- 	}
+ 	if (sbi->flags & NTFS_FLAGS_NEED_REPLAY) {
+ 		if (!is_ro) {
+@@ -1103,7 +1103,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
  
--	ni = ntfs_i(inode);
--
- #ifndef CONFIG_NTFS3_64BIT_CLUSTER
- 	if (inode->i_size >> 32) {
- 		err = -EINVAL;
-@@ -1190,8 +1185,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 		return PTR_ERR(inode);
- 	}
- 
--	ni = ntfs_i(inode);
--
- 	if (inode->i_size != 0x10000 * sizeof(short)) {
- 		err = -EINVAL;
+ 	/* Not necessary. */
+ 	sbi->used.bitmap.set_tail = true;
+-	err = wnd_init(&sbi->used.bitmap, sbi->sb, tt);
++	err = wnd_init(&sbi->used.bitmap, sb, tt);
+ 	if (err)
  		goto out;
-@@ -1227,7 +1220,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	}
  
- 	iput(inode);
--	inode = NULL;
- 
- 	if (is_ntfs3(sbi)) {
- 		/* Load $Secure. */
-@@ -1261,8 +1253,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+@@ -1117,7 +1117,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	/* Load $AttrDef. */
+ 	ref.low = cpu_to_le32(MFT_REC_ATTR);
+ 	ref.seq = cpu_to_le16(MFT_REC_ATTR);
+-	inode = ntfs_iget5(sbi->sb, &ref, &NAME_ATTRDEF);
++	inode = ntfs_iget5(sb, &ref, &NAME_ATTRDEF);
+ 	if (IS_ERR(inode)) {
+ 		ntfs_err(sb, "Failed to load $AttrDef -> %d", err);
  		return PTR_ERR(inode);
- 	}
- 
--	ni = ntfs_i(inode);
--
- 	sb->s_root = d_make_root(inode);
- 	if (!sb->s_root)
- 		return -ENOMEM;
 -- 
 2.25.1
 
