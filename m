@@ -2,169 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FC8405A8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE92405A8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhIIQOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        id S234143AbhIIQP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbhIIQOj (ORCPT
+        with ESMTP id S232192AbhIIQPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:14:39 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D60C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:13:29 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id g9so2986797ioq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:13:29 -0700 (PDT)
+        Thu, 9 Sep 2021 12:15:25 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26F2C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:14:15 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id l11so1377795plk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pACnzJlHMR2izPaEcZdZJlVxKc2mAvyrU+PyfYWuqjY=;
-        b=t6b96zprUu+yVzDHJupCAH73jnub/kQdWCLt5XJgNoL33Oiellv9B1ido23G4XTORY
-         7k9Hh37OLWFfZcZlwIJVrbE2YWyDirMOczoUQ6/EofSVVgQ+Ol8mrcRsTmFdzvzRv6wF
-         elvTuv8Ea4SJP+CKYRit3qTfis4np14DXqIbiqW0B8J1mYwUI23q1FdzYQ+guyA4My+6
-         O00/IyGfcO6QP6VZc9+6jh//JSE2zz4WxNMOQPfZV8j0r9Zfgvxm5mHfBzyEKvoKGZdQ
-         KD8m6joLHqL4VV3E3b0GgqeIETpWKbSItcDG/lvtFdw8lzZ9vAtF7VxS5rioJduy6ztD
-         J3fw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1JGe4D2wjFUfPd6vacYx/JXO6F3wkweoltx6Dqf7HcU=;
+        b=QIqfTWdnhHkMYropAtc5L/CGOqbBtD2oaxfwL0irPS5uuhbKq0VHC/EdOES8zCc7y9
+         eDSkwfUxkzfCTk53qTHdGV8HbWHDfsKVnGhz92F6lwXXoDbfPtYHySzcJ6MD90Bk7IZn
+         t+Ztf7hqWNxjuhP/EgYohW2gDLqqGeY91Yi+g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pACnzJlHMR2izPaEcZdZJlVxKc2mAvyrU+PyfYWuqjY=;
-        b=lYSYUVcbglE/iCwSWiD57QAhtone5cC+f1HpnMYFvd2Tz5XW4EWGmz4e6dlNsWxkob
-         cdRTGQfwDHkzpwLTonS1f4eRmPG0oVXjWaYbVythuzQuM0xJcAxcMfTGuHSEoXqNXpg+
-         sOhTH1oNPz6pqLsj1/+2EyBcjEHK77rap/6/Ejx8ZsteFrGFK4Klm3ni4kmf2R4x8wqt
-         8WLIz/9qH4fWbbvfAslRMQ6B/HxHLk6m4PIwz/eIYTMSgewWEpW+M8Yztccn0UMgTrr2
-         vozUBr4cmHgkgfruz+hMeeTda6FO55q8asYqBzPyDovldRt/iiH3jBg8VuMZEQMhvOjJ
-         rbgA==
-X-Gm-Message-State: AOAM5323e0rFV8qMsyj5sIYE4rWi5sxckQ9t/eUr/5x8RIgPYfK8E0bg
-        +ZJmW4jSpQ+PWF1A/YERbPYrCrWDvrV6jz2SdgYtuw==
-X-Google-Smtp-Source: ABdhPJxt/WFs4KqqqwMz/AgcK0MKJvBdp6ymGY5KAiQiTL/VZpyvs3S9RKg1jPGlq525uKKkkgkmSwOdN7n8iEtOMo0=
-X-Received: by 2002:a02:9204:: with SMTP id x4mr523733jag.45.1631204009109;
- Thu, 09 Sep 2021 09:13:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1JGe4D2wjFUfPd6vacYx/JXO6F3wkweoltx6Dqf7HcU=;
+        b=LaBGi5AVdWuWlHWQ5DMQfmDK0BwWBXfJre6/IWSiAW7vCUJnJfPSNobhxtUKOiI1tN
+         USlGGkOVuTYDTTIf+9fpKO+c5pryjWgtfQVjTX6cAafd6vtN+sfLaQrb/E6kNrbuwuPt
+         v32Wm8UJ/eFp7iz0GZGOqZsY+OeaSAwbq+q+pQ8yP2Q1IjM65XgSox536oi2FEjOQdOC
+         BZyaJMYkupKsfDNVUBd9MHbIftbya4lAdKGktN30Nyc+tlQW75/oA0+4tO4mup+vIMKM
+         unAcWmtowfrp5YfHXl4vle8wTMiac/IYlKWMDWSMtJ0AKVEltvVoj8KInmSNEojJUl0V
+         6ahw==
+X-Gm-Message-State: AOAM53240f0Ou8GGz4fco9g+51qAlzAjRtmFSSO4U5rBUhdZs/obM4Q6
+        wuvY8HWWv/U/nOUEcztvHDTuMg==
+X-Google-Smtp-Source: ABdhPJyRLRkbM2YiR/gGbNNvha2UwrK1QhPP0hjYQxgvP/YlN9gWgEqi62vB80VuAEUW/ciKYDsiEw==
+X-Received: by 2002:a17:902:d895:b0:13a:2789:d5a with SMTP id b21-20020a170902d89500b0013a27890d5amr3406615plz.38.1631204055025;
+        Thu, 09 Sep 2021 09:14:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q29sm3113782pgc.91.2021.09.09.09.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 09:14:14 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] rapidio: Avoid bogus __alloc_size warning
+Date:   Thu,  9 Sep 2021 09:14:09 -0700
+Message-Id: <20210909161409.2250920-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
- <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org> <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
- <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org> <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
- <YTgeIuwumPoR9ZTE@ripper> <CAMi1Hd1TOFj5USToEhuvZz8vgboQbMWco7gN413-jHJp-A7Ozg@mail.gmail.com>
-In-Reply-To: <CAMi1Hd1TOFj5USToEhuvZz8vgboQbMWco7gN413-jHJp-A7Ozg@mail.gmail.com>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Thu, 9 Sep 2021 21:42:52 +0530
-Message-ID: <CAMi1Hd2gmo-qzDSDpi1hwpX=N1eGM+Q5HqPSvdbq9LdqwNuK+w@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3491; h=from:subject; bh=P1lUMvX1H8HLf+qzdl7h1sq7hz8im87SJa/BT7GjmDw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhOjLQzNf+JyoFp+8+uFIn0W83GW4rwhl8RZ9NWo0X sug5K4WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYToy0AAKCRCJcvTf3G3AJlQMD/ 93Y1qYVZrgypPvqY4Ut8xrc9WPQh8jQr3gaJrPLNVdI8CIJbjOfG9r+GLul4bA8p6S6i9K9AJpW1Si rlA1aUZkDijoa39HxUhmk9oolXNJC5YwsYYTMaqWkqZoYHbllNdSsLCRbp1jvsd6XvfDXaQ1xS4ucK ah+920AoEV2Lg7mr/OD//SG4q5EJZUsZRo0xrspuDbm+LviTZw4FxtYt9gVW2/FBz2whkCTjm4N+Wv IbiVkq2w84BGWFrqroWKlb7qFx4MwpoPVLXCFuBLGXLH1KFyS/jw557QHJ7aF0fsMEvJDLBzyViUOF hP36PYx9mw1zsQXYzjzH5M/W6uDNdr5qfpkmbsZG9mcxOXXMJ7zdGPcZZ0ac+g2D4aLaSu7OZ9GF6r ADlOcsSbOBh+ltzulhM37Oglt4aiPZ98VW+STqkB7duh27Vn2mI9+xcMXQVPYajVD7j9GZBlUcM8Sz 8CJuwNY53M6k3lPoskUx70sKJ6DTt2m3QItXCM+pMyUr9DJIeUm7j8FDsdSANbnzTlS6uDofwzvZFP yDbE6V2zJ4vgEEf0Wq2Q8ZGo6ji25hYkzQR8tPsXB1ePTyxsd9Gu2VsqnLaPDOSRc81tir7mXDqjnb s5BN+ExnjUek2OEGRonGWWSKfMHuUXxiVHxbWuGBMAx9BbImUewNbKXS9xyg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Sept 2021 at 17:47, Amit Pundir <amit.pundir@linaro.org> wrote:
->
-> On Wed, 8 Sept 2021 at 07:50, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
-> >
-> > > On 8/9/2021 9:48 PM, Caleb Connolly wrote:
-> > > >
-> > > >
-> > > > On 09/08/2021 17:12, Rob Clark wrote:
-> > > > > On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
-> > > > > <akhilpo@codeaurora.org> wrote:
-> > [..]
-> > > > > > I am a bit confused. We don't define a power domain for gpu in dt,
-> > > > > > correct? Then what exactly set_opp do here? Do you think this usleep is
-> > > > > > what is helping here somehow to mask the issue?
-> > > > The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
-> > > > the GPU DT. For the sake of simplicity I'll refer to the lowest
-> > > > frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
-> > > > the "min" state, and the highest frequency (710000000) and OPP level
-> > > > (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
-> > > > sdm845.dtsi under the gpu node.
-> > > >
-> > > > The new devfreq behaviour unmasks what I think is a driver bug, it
-> > > > inadvertently puts much more strain on the GPU regulators than they
-> > > > usually get. With the new behaviour the GPU jumps from it's min state to
-> > > > the max state and back again extremely rapidly under workloads as small
-> > > > as refreshing UI. Where previously the GPU would rarely if ever go above
-> > > > 342MHz when interacting with the device, it now jumps between min and
-> > > > max many times per second.
-> > > >
-> > > > If my understanding is correct, the current implementation of the GMU
-> > > > set freq is the following:
-> > > >   - Get OPP for frequency to set
-> > > >   - Push the frequency to the GMU - immediately updating the core clock
-> > > >   - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
-> > > > up somewhere in power management code and causes the gx regulator level
-> > > > to be updated
-> > >
-> > > Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
-> > > were using a different api earlier which got deprecated -
-> > > dev_pm_opp_set_bw().
-> > >
-> >
-> > On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
-> > I'm lucky I managed to hit a few keys before it crashes, so I spent a
-> > few hours looking into this as well...
-> >
-> > As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
-> > The opp-level is just there for show and isn't used by anything, at
-> > least not on 845.
-> >
-> > Further more, I'm missing something in my tree, so the interconnect
-> > doesn't hit sync_state, and as such we're not actually scaling the
-> > buses. So the problem is not that Linux doesn't turn on the buses in
-> > time.
-> >
-> > So I suspect that the "AHB bus error" isn't saying that we turned off
-> > the bus, but rather that the GPU becomes unstable or something of that
-> > sort.
-> >
-> >
-> > Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
-> > Aquarium for 20 minutes without a problem. I then switched the gpu
-> > devfreq governor to "userspace" and ran the following:
-> >
-> > while true; do
-> >   echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
-> >   echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
-> > done
-> >
-> > It took 19 iterations of this loop to crash the GPU.
->
-> Ack. With your above script, I can reproduce a crash too on db845c
-> (A630) running v5.14. I didn't get any crash log though and device
-> just rebooted to USB crash mode.
->
-> And same crash on RB5 (A650) too https://hastebin.com/raw/ejutetuwun
+GCC 9.3 (but not later) incorrectly evaluates the arguments to
+check_copy_size(), getting seemingly confused by the size being returned
+from array_size(). Instead, perform the calculation once, which both
+makes the code more readable and avoids the bug in GCC.
 
-fwiw I can't reproduce this crash on RB5 so far with v5.15-rc1 merge
-window (HEAD: 477f70cd2a67)
+   In file included from arch/x86/include/asm/preempt.h:7,
+                    from include/linux/preempt.h:78,
+                    from include/linux/spinlock.h:55,
+                    from include/linux/mm_types.h:9,
+                    from include/linux/buildid.h:5,
+                    from include/linux/module.h:14,
+                    from drivers/rapidio/devices/rio_mport_cdev.c:13:
+   In function 'check_copy_size',
+       inlined from 'copy_from_user' at include/linux/uaccess.h:191:6,
+       inlined from 'rio_mport_transfer_ioctl' at drivers/rapidio/devices/rio_mport_cdev.c:983:6:
+   include/linux/thread_info.h:213:4: error: call to '__bad_copy_to' declared with attribute error: copy destination size is too small
+     213 |    __bad_copy_to();
+         |    ^~~~~~~~~~~~~~~
 
->
-> >
-> > So the problem doesn't seem to be Rob's change, it's just that prior to
-> > it the chance to hitting it is way lower. Question is still what it is
-> > that we're triggering.
-> >
-> > Regards,
-> > Bjorn
+But the allocation size and the copy size are identical:
+
+	transfer = vmalloc(array_size(sizeof(*transfer), transaction.count));
+	if (!transfer)
+		return -ENOMEM;
+
+	if (unlikely(copy_from_user(transfer,
+				    (void __user *)(uintptr_t)transaction.block,
+				    array_size(sizeof(*transfer), transaction.count)))) {
+
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/linux-mm/202109091134.FHnRmRxu-lkp@intel.com/
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/rapidio/devices/rio_mport_cdev.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 94331d999d27..7df466e22282 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -965,6 +965,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+ 	struct rio_transfer_io *transfer;
+ 	enum dma_data_direction dir;
+ 	int i, ret = 0;
++	size_t size;
+ 
+ 	if (unlikely(copy_from_user(&transaction, arg, sizeof(transaction))))
+ 		return -EFAULT;
+@@ -976,13 +977,14 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+ 	     priv->md->properties.transfer_mode) == 0)
+ 		return -ENODEV;
+ 
+-	transfer = vmalloc(array_size(sizeof(*transfer), transaction.count));
++	size = array_size(sizeof(*transfer), transaction.count);
++	transfer = vmalloc(size);
+ 	if (!transfer)
+ 		return -ENOMEM;
+ 
+ 	if (unlikely(copy_from_user(transfer,
+ 				    (void __user *)(uintptr_t)transaction.block,
+-				    array_size(sizeof(*transfer), transaction.count)))) {
++				    size))) {
+ 		ret = -EFAULT;
+ 		goto out_free;
+ 	}
+@@ -994,8 +996,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+ 			transaction.sync, dir, &transfer[i]);
+ 
+ 	if (unlikely(copy_to_user((void __user *)(uintptr_t)transaction.block,
+-				  transfer,
+-				  array_size(sizeof(*transfer), transaction.count))))
++				  transfer, size)))
+ 		ret = -EFAULT;
+ 
+ out_free:
+-- 
+2.30.2
+
