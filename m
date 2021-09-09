@@ -2,230 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC47A406016
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40173406019
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245103AbhIIXeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 19:34:19 -0400
-Received: from mga04.intel.com ([192.55.52.120]:28933 "EHLO mga04.intel.com"
+        id S1348315AbhIIXeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 19:34:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:8845 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhIIXeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 19:34:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="219080561"
+        id S1349239AbhIIXeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 19:34:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="208167526"
 X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="219080561"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 16:32:55 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="208167526"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 16:33:07 -0700
 X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="525785278"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Sep 2021 16:32:54 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOTXJ-0003cG-Oz; Thu, 09 Sep 2021 23:32:53 +0000
-Date:   Fri, 10 Sep 2021 07:32:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 9964e5cf7598cbef7ebd34f8c3a760019dfb55e3
-Message-ID: <613a9984.wMr7TEwG8ByY11Q6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="581098908"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.210.210])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 16:33:07 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v14 0/4] Intel MAX10 BMC Secure Update Driver
+Date:   Thu,  9 Sep 2021 16:33:00 -0700
+Message-Id: <20210909233304.5650-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 9964e5cf7598cbef7ebd34f8c3a760019dfb55e3  kselftests/sched: cleanup the child processes
+The Intel MAX10 BMC Secure Update driver instantiates the FPGA Image
+Load class driver and provides the callback functions required to
+support secure updates on Intel n3000 PAC devices. This driver is
+implemented as a sub-driver of the Intel MAX10 BMC mfd driver.
 
-elapsed time: 729m
+This driver interacts with the HW secure update engine of the FPGA
+card BMC in order to transfer new FPGA and BMC images to FLASH on
+the FPGA card so that they will be automatically loaded when the
+FPGA card reboots. Security is enforced by hardware and firmware.
+The MAX10 BMC Secure Update driver interacts with the firmware to
+initiate an update, pass in the necessary data, and collect status
+on the update.
 
-configs tested: 170
-configs skipped: 3
+This driver provides sysfs files for displaying the flash count, the
+root entry hashes (REH), and the code-signing-key (CSK) cancellation
+vectors.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+These patches are dependent on other patches that are under review.
+If you want to apply and compile these patches on linux-next, please
+apply these patches first:
 
-gcc tested configs:
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210908
-powerpc                 xes_mpc85xx_defconfig
-parisc                generic-64bit_defconfig
-arm                             ezx_defconfig
-powerpc                     mpc83xx_defconfig
-arm                       aspeed_g4_defconfig
-sh                   sh7724_generic_defconfig
-arm                            hisi_defconfig
-mips                        nlm_xlr_defconfig
-mips                  decstation_64_defconfig
-mips                           gcw0_defconfig
-sh                           se7722_defconfig
-x86_64                           allyesconfig
-powerpc                     taishan_defconfig
-arm                          exynos_defconfig
-mips                        omega2p_defconfig
-powerpc                     asp8347_defconfig
-arm                         lpc32xx_defconfig
-powerpc                       eiger_defconfig
-h8300                            alldefconfig
-um                           x86_64_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          collie_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-sparc                       sparc32_defconfig
-powerpc                     mpc5200_defconfig
-arm                        spear6xx_defconfig
-alpha                            allyesconfig
-arc                        nsimosci_defconfig
-powerpc                      chrp32_defconfig
-arm                         socfpga_defconfig
-powerpc                     ep8248e_defconfig
-arm                          pxa168_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    klondike_defconfig
-openrisc                            defconfig
-mips                          ath79_defconfig
-m68k                       m5208evb_defconfig
-m68k                        m5407c3_defconfig
-arm                       versatile_defconfig
-arm                        cerfcube_defconfig
-arm                          ixp4xx_defconfig
-arm                         shannon_defconfig
-powerpc64                           defconfig
-powerpc                    gamecube_defconfig
-mips                       rbtx49xx_defconfig
-sh                               j2_defconfig
-sh                             espt_defconfig
-ia64                        generic_defconfig
-arm                         vf610m4_defconfig
-mips                           ip32_defconfig
-arm                  colibri_pxa300_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      obs600_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                     sequoia_defconfig
-sh                           se7750_defconfig
-mips                        workpad_defconfig
-powerpc                        warp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7343_defconfig
-powerpc                     redwood_defconfig
-sh                          r7785rp_defconfig
-x86_64                           alldefconfig
-xtensa                  nommu_kc705_defconfig
-arc                          axs103_defconfig
-mips                        vocore2_defconfig
-powerpc                      makalu_defconfig
-microblaze                      mmu_defconfig
-powerpc                    sam440ep_defconfig
-openrisc                         alldefconfig
-arm                           viper_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                    xip_kc705_defconfig
-sh                        edosk7760_defconfig
-mips                        qi_lb60_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     ppa8548_defconfig
-x86_64               randconfig-c001-20210908
-arm                  randconfig-c002-20210908
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210908
-x86_64               randconfig-a006-20210908
-x86_64               randconfig-a003-20210908
-x86_64               randconfig-a001-20210908
-x86_64               randconfig-a005-20210908
-x86_64               randconfig-a002-20210908
-i386                 randconfig-a005-20210908
-i386                 randconfig-a004-20210908
-i386                 randconfig-a006-20210908
-i386                 randconfig-a002-20210908
-i386                 randconfig-a001-20210908
-i386                 randconfig-a003-20210908
-arc                  randconfig-r043-20210908
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+(6 patches) https://marc.info/?l=linux-fpga&m=163115393232140&w=2
 
-clang tested configs:
-s390                 randconfig-c005-20210908
-x86_64               randconfig-c007-20210908
-powerpc              randconfig-c003-20210908
-mips                 randconfig-c004-20210908
-i386                 randconfig-c001-20210908
-arm                  randconfig-c002-20210908
-riscv                randconfig-c006-20210908
-x86_64               randconfig-a016-20210908
-x86_64               randconfig-a011-20210908
-x86_64               randconfig-a012-20210908
-x86_64               randconfig-a015-20210908
-x86_64               randconfig-a014-20210908
-x86_64               randconfig-a013-20210908
-i386                 randconfig-a012-20210908
-i386                 randconfig-a015-20210908
-i386                 randconfig-a011-20210908
-i386                 randconfig-a013-20210908
-i386                 randconfig-a014-20210908
-i386                 randconfig-a016-20210908
-s390                 randconfig-r044-20210908
-riscv                randconfig-r042-20210908
-hexagon              randconfig-r045-20210908
-hexagon              randconfig-r041-20210908
+Changelog v13 -> v14:
+  - Changed symbol and text references to reflect the renaming of the
+    Security Manager Class driver to FPGA Image Load.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Changelog v12 -> v13:
+  - Updated copyright to 2021
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Call updated fpga_sec_mgr_register() and fpga_sec_mgr_unregister()
+    functions instead of devm_fpga_sec_mgr_create() and
+    devm_fpga_sec_mgr_register().
+
+Changelog v11 -> v12:
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Removed size parameter from the write_blk() op. m10bmc_sec_write_blk()
+    no longer has a size parameter, and the block size is determined
+    in this (the lower-level) driver.
+
+Changelog v10 -> v11:
+  - Added Reviewed-by tag to patch #1
+
+Changelog v9 -> v10:
+  - Changed the path expressions in the sysfs documentation to
+    replace the n3000 reference with something more generic to
+    accomodate other devices that use the same driver.
+
+Changelog v8 -> v9:
+  - Rebased to 5.12-rc2 next
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v7 -> v8:
+  - Spit out patch "mfd: intel-m10-bmc: support for MAX10 BMC Secure
+    Updates" and submitted it separately:
+    https://marc.info/?l=linux-kernel&m=161126987101096&w=2
+
+Changelog v6 -> v7:
+  - Rebased patches for 5.11-rc2
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v5 -> v6:
+  - Added WARN_ON() prior to several calls to regmap_bulk_read()
+    to assert that the (SIZE / stride) calculations did not result
+    in remainders.
+  - Changed the (size / stride) calculation in regmap_bulk_write()
+    call to ensure that we don't write one less than intended.
+  - Changed flash_count_show() parameter list to achieve
+    reverse-christmas tree format.
+  - Removed unnecessary call to rsu_check_complete() in
+    m10bmc_sec_poll_complete() and changed while loop to
+    do/while loop.
+  - Initialized auth_result and doorbell to HW_ERRINFO_POISON
+    in m10bmc_sec_hw_errinfo() and removed unnecessary if statements.
+
+Changelog v4 -> v5:
+  - Renamed sysfs node user_flash_count to flash_count and updated
+    the sysfs documentation accordingly to more accurately descirbe
+    the purpose of the count.
+
+Changelog v3 -> v4:
+  - Moved sysfs files for displaying the flash count, the root
+    entry hashes (REH), and the code-signing-key (CSK) cancellation
+    vectors from the FPGA Security Manager class driver to this
+    driver (as they are not generic enough for the class driver).
+  - Added a new ABI documentation file with informtaion about the
+    new sysfs entries: sysfs-driver-intel-m10-bmc-secure
+  - Updated the MAINTAINERS file to add the new ABI documentation
+    file: sysfs-driver-intel-m10-bmc-secure
+  - Removed unnecessary ret variable from m10bmc_secure_probe()
+  - Incorporated new devm_fpga_sec_mgr_register() function into
+    m10bmc_secure_probe() and removed the m10bmc_secure_remove()
+    function.
+
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Security Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions are now called directly.
+  - Changed "_root_entry_hash" to "_reh", with a comment explaining
+    what reh is.
+  - Renamed get_csk_vector() to m10bmc_csk_vector()
+  - Changed calling functions of functions that return "enum fpga_sec_err"
+    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+
+Russ Weight (4):
+  fpga: m10bmc-sec: create max10 bmc secure update driver
+  fpga: m10bmc-sec: expose max10 flash update count
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+
+ .../testing/sysfs-driver-intel-m10-bmc-secure |  61 ++
+ MAINTAINERS                                   |   2 +
+ drivers/fpga/Kconfig                          |  11 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/intel-m10-bmc-secure.c           | 538 ++++++++++++++++++
+ 5 files changed, 615 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+ create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+
+-- 
+2.25.1
+
