@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4474045B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18A4045A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244622AbhIIGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:37:53 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50520
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230433AbhIIGhv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:37:51 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A99B53F320
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631169395;
-        bh=akLaMR2Qq8amUpvssgxVNr2WG7Nl5vSl23ypQFllRfM=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=QlU56PXYiwED1TkFBvvem8n0nH/6c1M5r9bsHCB1gPMvaS6ZLfJxH7rQzCg5nom0p
-         cCh8FAOHwKZgE0Di4XZeucjGOhfqvOos8dR3UnG2EgVXfmMh6ygyIc0d4Kxl/570K/
-         3ij0ZXYzETsQ8AKcbKPxOXwmSwoB8BbsAjQ8iwJH/UokzEY1tOn+oGUQolCAsNYUC5
-         HkibcGicglR7pHUN13dzbwgb9fIWEEj1yiWUY1pPfRjztGAlGXmljPHFyvaz1j+rVQ
-         eWQ7M1y0YfrqqieNAP7YU+lWH/mZN/XvYuqgtqq0V1dlzz5p6byM8MWlQH/N2+2evw
-         vdGF6PIO3T5nA==
-Received: by mail-ot1-f69.google.com with SMTP id b25-20020a9d60d9000000b00519be3bdc04so552599otk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:36:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=akLaMR2Qq8amUpvssgxVNr2WG7Nl5vSl23ypQFllRfM=;
-        b=w3/q0BnVEapznBzUtxLVoplas5gAgUpoBCqff310BFSNx3Odc0aPhdb9iy6EvH2wuA
-         WGcEhtNFUEFXPA9F+LfXJZHTI0NWUPjOd5L9i/UVidzTwJFUjLYKvyaJe5sABn09uULk
-         1Rm5aph7IdnBDfDfFJHrAF8s07k2WSduI01Dy1ogUrQ4Q7EdFRP9EA1sRm2HWsiRt07F
-         s3Mzaa0pGWPXyJWtds6a9deuCcr+mkbn+vl9l5OdTUQUfwBy5L3Bvef69ATEnjAVm8Aq
-         u/gcHu+xUWueBtQ3DJKFqtDLohEXUSfAeIzEKNRqrg5OetN8yS8u4OOxbHCphLvRSLN9
-         78vA==
-X-Gm-Message-State: AOAM53007Xu7UdkFWomV/iQdMgbxfMKLX0EmD5fmqXn/G2cmSO1n7F2Z
-        gydggZzaAqO2eIaQNHcJq9WUsTL2yGi5WrlhkmPlROgXLNRcnRbi622fN/Arw1LovnEL31wf3nE
-        brSUCLSF8ZDTaMHR/nNBXrBVYeLy4+N4yy2WhCjaI8vP4zrs3HzRDXuFCWw==
-X-Received: by 2002:a05:6830:1355:: with SMTP id r21mr1140775otq.11.1631169187448;
-        Wed, 08 Sep 2021 23:33:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydNUWa4iWIrH1MSc4yRb3P5wiZt7TtCAWb93Z2ahXjOMnItwMOcoXnTS7/j/i2x/EH0tmNaHVVy938jYvOcUc=
-X-Received: by 2002:a05:6830:1355:: with SMTP id r21mr1140764otq.11.1631169187145;
- Wed, 08 Sep 2021 23:33:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210708074232.924844-1-kai.heng.feng@canonical.com>
- <YObFJREB9/JlcNZP@8bytes.org> <fde11cec-d1bd-49be-f129-c69a973d1b3b@arm.com>
- <CAAd53p40RcG0oeYr9QAKMjYRtyq7he=d_b_a39n4Rt5JSVScRQ@mail.gmail.com>
- <f3bdedcb-5602-cbca-7df1-019e8b8c4217@arm.com> <YO4odF0EwqxfNLFq@fedora> <YO67m/jaBvco+I36@8bytes.org>
-In-Reply-To: <YO67m/jaBvco+I36@8bytes.org>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 9 Sep 2021 14:32:55 +0800
-Message-ID: <CAAd53p4138BB_5-++0P9k91B1dCuKzuv1yGjiG77ewhd1MRSbQ@mail.gmail.com>
-Subject: Re: [PATCH] iommu/amd: Enable swiotlb if any device supports iommu v2
- and uses identity mapping
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
+        id S234506AbhIIGee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:34:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:55353 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229605AbhIIGec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:34:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="207930752"
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="207930752"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:33:23 -0700
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="693882541"
+Received: from jax-mobl.gar.corp.intel.com ([10.213.103.124])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:33:20 -0700
+Message-ID: <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP
+ forced by BIOS
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Doug Smythies <doug.smythies@gmail.com>, rafael@kernel.org,
+        len.brown@intel.com
+Cc:     dsmythies@telus.net, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Date:   Wed, 08 Sep 2021 23:33:17 -0700
+In-Reply-To: <20210909034802.1708-1-dsmythies@telus.net>
+References: <20210909034802.1708-1-dsmythies@telus.net>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 6:25 PM Joerg Roedel <joro@8bytes.org> wrote:
->
-> On Tue, Jul 13, 2021 at 07:57:40PM -0400, Konrad Rzeszutek Wilk wrote:
-> > The SWIOTLB does have support to do late initialization (xen-pcifront
-> > does that for example - so if you add devices that can't do 64-bit it
-> > will allocate something like 4MB).
->
-> That sounds like a way to evaluate. I suggest to allocate the SWIOTLB
-> memory at boot and when the IOMMUs are initialized we re-evaluate what
-> we ended up with and free the SWIOTLB memory if its not needed.
->
-> If that turns out to be wrong during runtime (e.g. because a device is
-> switched to a passthrough default domain at runtime), we allocate a
-> small aperture for this device like the above mentioned 4MB.
+On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> If HWP has been already been enabled by BIOS, it may be
+> necessary to override some kernel command line parameters.
+> Once it has been enabled it requires a reset to be disabled.
+> 
+> Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/intel_pstate.c
+> b/drivers/cpufreq/intel_pstate.c
+> index bb4549959b11..073bae5d4498 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+>                  */
+>                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+>                     intel_pstate_hwp_is_enabled()) {
+> -                       hwp_active++;
+> +                       hwp_active = 1;
+Why this change?
 
-I am currently working on this but I found that 4MB is not enough,
-16MB is the minimal size to make the device work.
-How do I know the right SWIOTLB size for each device?
+>                         hwp_mode_bdw = id->driver_data;
+>                         intel_pstate.attr = hwp_cpufreq_attrs;
+>                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+>  
+>  static int __init intel_pstate_setup(char *str)
+>  {
+> +       /*
+> +        * If BIOS is forcing HWP, then parameter
+> +        * overrides might be needed. Only print
+> +        * the message once, and regardless of
+> +        * any overrides.
+> +        */
+> +       if(!hwp_active 
+This part of code is from early_param, Is it possible that 
+hwp_active is not 0?
 
->
-> (A boot option to always keep the aperture around might also be helpful
->  for some setups)
+> && boot_cpu_has(X86_FEATURE_HWP))
+> +               if(intel_pstate_hwp_is_enabled()){
+> +                       pr_info("HWP enabled by BIOS\n");
+> +                       hwp_active = 1;
+> +               }
+>         if (!str)
+>                 return -EINVAL;
+>  
+> -       if (!strcmp(str, "disable"))
+> +       if (!strcmp(str, "disable") && !hwp_active)
+>                 no_load = 1; 
+> -       else if (!strcmp(str, "active"))
+> +       if (!strcmp(str, "active"))
+>                 default_driver = &intel_pstate;
+> -       else if (!strcmp(str, "passive"))
+> +       if (!strcmp(str, "passive"))
+>                 default_driver = &intel_cpufreq;
 
-OK, will also implement this in next iteration.
+Why "else if" changed to "if" ?
 
-Kai-Heng
 
->
-> Regards,
->
->         Joerg
+Thanks,
+Srinivas
+
+> -
+> -       if (!strcmp(str, "no_hwp")) {
+> +       if (!strcmp(str, "no_hwp") && !hwp_active) {
+>                 pr_info("HWP disabled\n");
+>                 no_hwp = 1;
+>         }
+
+
