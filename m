@@ -2,206 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A13E404927
+	by mail.lfdr.de (Postfix) with ESMTP id 82D43404928
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhIILUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhIILTn (ORCPT
+        id S235798AbhIILUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:20:53 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:43671 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234993AbhIILT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:19:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF42C0613C1;
-        Thu,  9 Sep 2021 04:18:34 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 11:18:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631186312;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sbsnWyflh7v9/W/pHYLGS4xuthwnYl+zBqmpangxLww=;
-        b=cYodRph5HXlrQvi7Yt5bdeBgjNqfTEaNLNXycQMn077ba1mSfu8tB+ZmZ0T0N5PPKGDm/B
-        bjbPQxCB9Ta/l9EjCHZNUqc70ACXN/43NHGETKNIBG4VQZPuBF2A6MaET53uq8CYIsdv4g
-        7vJfY2VBfgt67wAUOHheImSNBrVTtDAqiHxqM4iwWo69OAloWKZOsc+cASDGcnqA9mJL66
-        VhE6gRdLW5rwlYVp72QvYLfmFVBHKpQs3laiYRgRwpCfK20aLshBUIkzpe4Xv1sTU8h33x
-        LrSw4sPZtgJ4gx+pqyy9ODSn1MbhPA9ALNY1sxk14NFZcHLILLwP2bB8/zTTiQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631186312;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sbsnWyflh7v9/W/pHYLGS4xuthwnYl+zBqmpangxLww=;
-        b=QcYcXpKc12QFZAZYfG9i6v9eMeZSR9S6rmXentguLyqA+gHrFmXVjsVpiB7zjzydQVF2yB
-        MllylXUZoPXskjAg==
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Add NOHZ balancer flag for
- nohz.next_balance updates
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210823111700.2842997-2-valentin.schneider@arm.com>
-References: <20210823111700.2842997-2-valentin.schneider@arm.com>
+        Thu, 9 Sep 2021 07:19:56 -0400
+Received: by mail-ot1-f44.google.com with SMTP id x10-20020a056830408a00b004f26cead745so1982469ott.10;
+        Thu, 09 Sep 2021 04:18:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KB4OAq1FA2ibjg5GPYhy0r8vL3pcy4KSo6N7CuRv9t0=;
+        b=rPT8Ht9djkYZO7tpf/XG4G6u4N0u3x69s3X31gq8kSp0Jezqv0AmxopmRUbJW3dg2T
+         ZQgQNnonZ7XRVeMWkDwUMGAOlmJv/NFG9O69NNOl3ytyku0xpfwM6Zfws65a/N8a4sCG
+         hQa2j5f7vG0eqLZilBBq4Z3zOxU58YflXG8zZf0hhgE83E3y/936SOyZKzX2zC0UySYX
+         KSWtZ03TvtiPd+9ZYkuzWVeviGUK4mk1IVUQTNkGqonm9NIcRTTpffIIigxFEy3//zEs
+         Ijzi1kwdGmIkhvoJKgqt4JJ2Jw0F2mikE5RiJ8IpmqPzDi2tyNnp9WcvWFGW0xknbRto
+         KDPw==
+X-Gm-Message-State: AOAM530T6vh6//zPqJK2fXjlc8muUdstfF/1zXwuKetnrm0it+hPLWMc
+        zeCfZALhfM3BifPOnPtPR1+KM9fm1XjfL+IjYtM=
+X-Google-Smtp-Source: ABdhPJz9VuZXyIc9RMeckXxDqTc7BW4njRZot0Sok+1ydJryCzKVqARZ0F5XmXgWRueJFJliuGfdqVBpgcb9plJweBg=
+X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr2006848ote.319.1631186326826;
+ Thu, 09 Sep 2021 04:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163118631198.25758.15468625029748806575.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+In-Reply-To: <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 9 Sep 2021 13:18:35 +0200
+Message-ID: <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
+ by BIOS
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Doug Smythies <doug.smythies@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Doug Smythies <dsmythies@telus.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Thu, Sep 9, 2021 at 8:52 AM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > If HWP has been already been enabled by BIOS, it may be
+> > necessary to override some kernel command line parameters.
+> > Once it has been enabled it requires a reset to be disabled.
+> >
+> > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > ---
+> >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/intel_pstate.c
+> > b/drivers/cpufreq/intel_pstate.c
+> > index bb4549959b11..073bae5d4498 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> >                  */
+> >                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> >                     intel_pstate_hwp_is_enabled()) {
+> > -                       hwp_active++;
+> > +                       hwp_active = 1;
+> Why this change?
 
-Commit-ID:     013ce5ed58f799a2f035b732f904f6ebd8e8d881
-Gitweb:        https://git.kernel.org/tip/013ce5ed58f799a2f035b732f904f6ebd8e8d881
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Mon, 23 Aug 2021 12:16:59 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 09 Sep 2021 11:27:29 +02:00
+I think hwp_active can be changed to bool and then it would make sense
+to update this line.
 
-sched/fair: Add NOHZ balancer flag for nohz.next_balance updates
+> >                         hwp_mode_bdw = id->driver_data;
+> >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> >
+> >  static int __init intel_pstate_setup(char *str)
+> >  {
+> > +       /*
+> > +        * If BIOS is forcing HWP, then parameter
+> > +        * overrides might be needed. Only print
+> > +        * the message once, and regardless of
+> > +        * any overrides.
+> > +        */
+> > +       if(!hwp_active
+> This part of code is from early_param, Is it possible that
+> hwp_active is not 0?
 
-A following patch will trigger NOHZ idle balances as a means to update
-nohz.next_balance. Vincent noted that blocked load updates can have
-non-negligible overhead, which should be avoided if the intent is to only
-update nohz.next_balance.
+Well, it wouldn't matter even if it were nonzero.  This check is just
+pointless anyway.
 
-Add a new NOHZ balance kick flag, NOHZ_NEXT_KICK. Gate NOHZ blocked load
-update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
-kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
-expected.
+> > && boot_cpu_has(X86_FEATURE_HWP))
+> > +               if(intel_pstate_hwp_is_enabled()){
 
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210823111700.2842997-2-valentin.schneider@arm.com
----
- kernel/sched/fair.c  | 24 ++++++++++++++----------
- kernel/sched/sched.h |  8 +++++++-
- 2 files changed, 21 insertions(+), 11 deletions(-)
+This should be
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 7b3e859..48ce754 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10342,7 +10342,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		goto out;
- 
- 	if (rq->nr_running >= 2) {
--		flags = NOHZ_KICK_MASK;
-+		flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 		goto out;
- 	}
- 
-@@ -10356,7 +10356,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 * on.
- 		 */
- 		if (rq->cfs.h_nr_running >= 1 && check_cpu_capacity(rq, sd)) {
--			flags = NOHZ_KICK_MASK;
-+			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 			goto unlock;
- 		}
- 	}
-@@ -10370,7 +10370,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 */
- 		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
- 			if (sched_asym_prefer(i, cpu)) {
--				flags = NOHZ_KICK_MASK;
-+				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 				goto unlock;
- 			}
- 		}
-@@ -10383,7 +10383,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 * to run the misfit task on.
- 		 */
- 		if (check_misfit_status(rq, sd)) {
--			flags = NOHZ_KICK_MASK;
-+			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 			goto unlock;
- 		}
- 
-@@ -10410,7 +10410,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 */
- 		nr_busy = atomic_read(&sds->nr_busy_cpus);
- 		if (nr_busy > 1) {
--			flags = NOHZ_KICK_MASK;
-+			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 			goto unlock;
- 		}
- 	}
-@@ -10572,7 +10572,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 * setting the flag, we are sure to not clear the state and not
- 	 * check the load of an idle cpu.
- 	 */
--	WRITE_ONCE(nohz.has_blocked, 0);
-+	if (flags & NOHZ_STATS_KICK)
-+		WRITE_ONCE(nohz.has_blocked, 0);
- 
- 	/*
- 	 * Ensures that if we miss the CPU, we must see the has_blocked
-@@ -10594,13 +10595,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 		 * balancing owner will pick it up.
- 		 */
- 		if (need_resched()) {
--			has_blocked_load = true;
-+			if (flags & NOHZ_STATS_KICK)
-+				has_blocked_load = true;
- 			goto abort;
- 		}
- 
- 		rq = cpu_rq(balance_cpu);
- 
--		has_blocked_load |= update_nohz_stats(rq);
-+		if (flags & NOHZ_STATS_KICK)
-+			has_blocked_load |= update_nohz_stats(rq);
- 
- 		/*
- 		 * If time for next balance is due,
-@@ -10631,8 +10634,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	if (likely(update_next_balance))
- 		nohz.next_balance = next_balance;
- 
--	WRITE_ONCE(nohz.next_blocked,
--		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
-+	if (flags & NOHZ_STATS_KICK)
-+		WRITE_ONCE(nohz.next_blocked,
-+			   now + msecs_to_jiffies(LOAD_AVG_PERIOD));
- 
- abort:
- 	/* There is still blocked load, enable periodic update */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e7e2bba..30b7bd2 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2706,12 +2706,18 @@ extern void cfs_bandwidth_usage_dec(void);
- #define NOHZ_BALANCE_KICK_BIT	0
- #define NOHZ_STATS_KICK_BIT	1
- #define NOHZ_NEWILB_KICK_BIT	2
-+#define NOHZ_NEXT_KICK_BIT	3
- 
-+/* Run rebalance_domains() */
- #define NOHZ_BALANCE_KICK	BIT(NOHZ_BALANCE_KICK_BIT)
-+/* Update blocked load */
- #define NOHZ_STATS_KICK		BIT(NOHZ_STATS_KICK_BIT)
-+/* Update blocked load when entering idle */
- #define NOHZ_NEWILB_KICK	BIT(NOHZ_NEWILB_KICK_BIT)
-+/* Update nohz.next_balance */
-+#define NOHZ_NEXT_KICK		BIT(NOHZ_NEXT_KICK_BIT)
- 
--#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK)
-+#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK | NOHZ_NEXT_KICK)
- 
- #define nohz_flags(cpu)	(&cpu_rq(cpu)->nohz_flags)
- 
+if (boot_cpu_has(X86_FEATURE_HWP) && intel_pstate_hwp_is_enabled()) {
+
+> > +                       pr_info("HWP enabled by BIOS\n");
+> > +                       hwp_active = 1;
+> > +               }
+> >         if (!str)
+> >                 return -EINVAL;
+> >
+> > -       if (!strcmp(str, "disable"))
+> > +       if (!strcmp(str, "disable") && !hwp_active)
+> >                 no_load = 1;
+> > -       else if (!strcmp(str, "active"))
+> > +       if (!strcmp(str, "active"))
+> >                 default_driver = &intel_pstate;
+> > -       else if (!strcmp(str, "passive"))
+> > +       if (!strcmp(str, "passive"))
+> >                 default_driver = &intel_cpufreq;
+>
+> Why "else if" changed to "if" ?
+>
+> > -
+> > -       if (!strcmp(str, "no_hwp")) {
+> > +       if (!strcmp(str, "no_hwp") && !hwp_active) {
+> >                 pr_info("HWP disabled\n");
+> >                 no_hwp = 1;
+> >         }
+>
