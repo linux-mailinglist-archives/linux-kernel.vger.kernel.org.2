@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D41405D0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98955405D0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhIIS4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:56:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
+        id S244343AbhIIS4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239764AbhIIS4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:56:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 096D46113E;
-        Thu,  9 Sep 2021 18:55:00 +0000 (UTC)
+        id S242417AbhIIS4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:56:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 60EE16113E;
+        Thu,  9 Sep 2021 18:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631213700;
-        bh=dA/PAuYz1IgXBj1BWQs4/4BfdGnHCVW6oAmdVwQ+w3s=;
+        s=k20201202; t=1631213705;
+        bh=7SvczpszirmtlTywpIOahQEFZcqDt/yHh4r5WJTP+iY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HS6getuDbDVUH/HK1i02+y/HiwgIgqk3E4u6g7hEWToJW2vKYD0WU3b8Z0oz4UQ6Z
-         E2J70+XqB7DX2dXYgw5KojVtxzVlJpV2LdKzDI72BCYurXXNFJUhDWl7ZVsKPNsXoU
-         Hv7RAbOArvNbVzJl5leLDsb1EFCk0figMRMVi+gqv9YHMRiqCLiHXtxabJsMrirAh1
-         bcbYvfK7OfoOGbaHnqtXqD3QOl/avzCWD+bEjPAdNaTYpJEP27dLrkkh4M1Qt2WTfu
-         He7g8xZ3+LHPMGlKWJfJqO5Ijz4sEok5r+XOe+cKLvZAklRVZEWwLnwwRNhzC0g9Qe
-         oSI7nokX0Qm3g==
+        b=sKSLTgjM4SfZ4L1no6e2a+6Xu2kAokeqpFTXkS7T+Tvsty2f+9WW7B5wFrrNM3Lg8
+         6qcyCwQterTWsFWYmfjNJShuY3zS8Yu2zrfQrwRgmNRxYURjFpghA+NmINzxYlWpjw
+         folWjYJrCxvz6J1ssHv0UQ0lShyYb0qtlh9mmkCSvbRzbk2i0uGBPOprGy/wRIauHr
+         MGZJ1wObO5Lobh4m2jmlb4CMUQ0WJrKiokwIMA5RkVf8hY7CvNa6E9fAmJPdv4xVAd
+         nDOsCpeYXlYoCXehoiNOuCk5OsEBnMqOKZqrvHgRO6DARlknTxvhnfwu1foCPyMeOh
+         4CYa4RFwsuTUA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 045CD60978;
-        Thu,  9 Sep 2021 18:55:00 +0000 (UTC)
-Subject: Re: [GIT PULL] libnvdimm / persistent memory update for v5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5934E60978;
+        Thu,  9 Sep 2021 18:55:05 +0000 (UTC)
+Subject: Re: [GIT PULL]: dmaengine updates for v5.15-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPcyv4hvzS1c01BweBkgDsjg=VGnaUUKi7b6j+1X=Rqzzm961Q@mail.gmail.com>
-References: <CAPcyv4hvzS1c01BweBkgDsjg=VGnaUUKi7b6j+1X=Rqzzm961Q@mail.gmail.com>
-X-PR-Tracked-List-Id: <nvdimm.lists.linux.dev>
-X-PR-Tracked-Message-Id: <CAPcyv4hvzS1c01BweBkgDsjg=VGnaUUKi7b6j+1X=Rqzzm961Q@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-for-5.15
-X-PR-Tracked-Commit-Id: 3fc3725357414636d91be1558ce8b14f228b4bda
+In-Reply-To: <YTg+csY9wy4mk035@matsya>
+References: <YTg+csY9wy4mk035@matsya>
+X-PR-Tracked-List-Id: <dmaengine.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YTg+csY9wy4mk035@matsya>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.15-rc1
+X-PR-Tracked-Commit-Id: 11a427be2c4749954e8b868ef5301dc65ca5a14b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2e5fd489a4e5fcc97b035c03ace724c1d481a4c1
-Message-Id: <163121370000.14164.4088154375380243727.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 Sep 2021 18:55:00 +0000
-To:     Dan Williams <dan.j.williams@intel.com>
+X-PR-Merge-Commit-Id: 0aa2516017123a7c35a2c0c35c4dc7727579b8a3
+Message-Id: <163121370535.14164.16687061404078666435.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Sep 2021 18:55:05 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 8 Sep 2021 16:18:28 -0700:
+The pull request you sent on Wed, 8 Sep 2021 10:09:14 +0530:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-for-5.15
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.15-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2e5fd489a4e5fcc97b035c03ace724c1d481a4c1
+https://git.kernel.org/torvalds/c/0aa2516017123a7c35a2c0c35c4dc7727579b8a3
 
 Thank you!
 
