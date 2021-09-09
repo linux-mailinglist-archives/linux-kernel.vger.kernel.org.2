@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96444043E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5ADF4043E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349737AbhIIDOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 23:14:37 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56809 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349225AbhIIDOd (ORCPT
+        id S1349769AbhIIDVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 23:21:49 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9017 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237357AbhIIDVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 23:14:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UnkWDai_1631157201;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UnkWDai_1631157201)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 11:13:22 +0800
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [RFC PATCH] perf: fix panic by mark recursion inside
- perf_log_throttle
-Message-ID: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
-Date:   Thu, 9 Sep 2021 11:13:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Wed, 8 Sep 2021 23:21:44 -0400
+Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H4kl02pv4zW0wc;
+        Thu,  9 Sep 2021 11:19:40 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggeml765-chm.china.huawei.com
+ (10.1.199.175) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 9 Sep
+ 2021 11:20:32 +0800
+From:   Liu Yuntao <liuyuntao10@huawei.com>
+To:     <kirill@shutemov.name>
+CC:     <akpm@linux-foundation.org>, <hughd@google.com>,
+        <kirill.shutemov@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <liusirui@huawei.com>,
+        <liuyuntao10@huawei.com>, <windspectator@gmail.com>,
+        <wuxu.wu@huawei.com>
+Subject: [PATCH v2] fix judgment error in shmem_is_huge()
+Date:   Thu, 9 Sep 2021 11:20:07 +0800
+Message-ID: <20210909032007.18353-1-liuyuntao10@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml765-chm.china.huawei.com (10.1.199.175)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running with ftrace function enabled, we observed panic
-as below:
+In the case of SHMEM_HUGE_WITHIN_SIZE, the page index is not rounded
+up correctly. When the page index points to the first page in a huge
+page, round_up() cannot bring it to the end of the huge page, but
+to the end of the previous one.
 
-  traps: PANIC: double fault, error_code: 0x0
-  [snip]
-  RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
-  [snip]
-  Call Trace:
-   <NMI>
-   perf_trace_buf_alloc+0x26/0xd0
-   perf_ftrace_function_call+0x18f/0x2e0
-   kernelmode_fixup_or_oops+0x5/0x120
-   __bad_area_nosemaphore+0x1b8/0x280
-   do_user_addr_fault+0x410/0x920
-   exc_page_fault+0x92/0x300
-   asm_exc_page_fault+0x1e/0x30
-  RIP: 0010:__get_user_nocheck_8+0x6/0x13
-   perf_callchain_user+0x266/0x2f0
-   get_perf_callchain+0x194/0x210
-   perf_callchain+0xa3/0xc0
-   perf_prepare_sample+0xa5/0xa60
-   perf_event_output_forward+0x7b/0x1b0
-   __perf_event_overflow+0x67/0x120
-   perf_swevent_overflow+0xcb/0x110
-   perf_swevent_event+0xb0/0xf0
-   perf_tp_event+0x292/0x410
-   perf_trace_run_bpf_submit+0x87/0xc0
-   perf_trace_lock_acquire+0x12b/0x170
-   lock_acquire+0x1bf/0x2e0
-   perf_output_begin+0x70/0x4b0
-   perf_log_throttle+0xe2/0x1a0
-   perf_event_nmi_handler+0x30/0x50
-   nmi_handle+0xba/0x2a0
-   default_do_nmi+0x45/0xf0
-   exc_nmi+0x155/0x170
-   end_repeat_nmi+0x16/0x55
+an example:
+HPAGE_PMD_NR on my machine is 512(2 MB huge page size).
+After allcoating a 3000 KB buffer, I access it at location 2050 KB.
+In shmem_is_huge(), the corresponding index happens to be 512.
+After rounded up by HPAGE_PMD_NR, it will still be 512 which is
+smaller than i_size, and shmem_is_huge() will return true.
+As a result, my buffer takes an additional huge page, and that
+shouldn't happen when shmem_enabled is set to within_size.
 
-According to the trace we know the story is like this, the NMI
-triggered perf IRQ throttling and call perf_log_throttle(),
-which triggered the swevent overflow, and the overflow process
-do perf_callchain_user() which triggered a user PF, and the PF
-process triggered perf ftrace which finally lead into a suspected
-stack overflow.
-
-This patch marking the context as recursion during perf_log_throttle()
-, so no more swevent during the process and no more panic.
-
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Fixes: f3f0e1d2150b2b ("khugepaged: add support of collapse for tmpfs/shmem pages")
+Signed-off-by: Liu Yuntao <liuyuntao10@huawei.com>
 ---
- kernel/events/core.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+V1->V2:
+add simplification of the condition after round_up()
+---
+ mm/shmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 744e872..6063443 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -8716,6 +8716,7 @@ static void perf_log_throttle(struct perf_event *event, int enable)
- 	struct perf_output_handle handle;
- 	struct perf_sample_data sample;
- 	int ret;
-+	int rctx;
-
- 	struct {
- 		struct perf_event_header	header;
-@@ -8738,14 +8739,17 @@ static void perf_log_throttle(struct perf_event *event, int enable)
-
- 	perf_event_header__init_id(&throttle_event.header, &sample, event);
-
-+	rctx = perf_swevent_get_recursion_context();
- 	ret = perf_output_begin(&handle, &sample, event,
- 				throttle_event.header.size);
--	if (ret)
--		return;
-+	if (!ret) {
-+		perf_output_put(&handle, throttle_event);
-+		perf_event__output_id_sample(event, &handle, &sample);
-+		perf_output_end(&handle);
-+	}
-
--	perf_output_put(&handle, throttle_event);
--	perf_event__output_id_sample(event, &handle, &sample);
--	perf_output_end(&handle);
-+	if (rctx >= 0)
-+		perf_swevent_put_recursion_context(rctx);
- }
-
- /*
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 88742953532c..b5860f4a2738 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -490,9 +490,9 @@ bool shmem_is_huge(struct vm_area_struct *vma,
+ 	case SHMEM_HUGE_ALWAYS:
+ 		return true;
+ 	case SHMEM_HUGE_WITHIN_SIZE:
+-		index = round_up(index, HPAGE_PMD_NR);
++		index = round_up(index + 1, HPAGE_PMD_NR);
+ 		i_size = round_up(i_size_read(inode), PAGE_SIZE);
+-		if (i_size >= HPAGE_PMD_SIZE && (i_size >> PAGE_SHIFT) >= index)
++		if (i_size >> PAGE_SHIFT >= index)
+ 			return true;
+ 		fallthrough;
+ 	case SHMEM_HUGE_ADVISE:
 -- 
-1.8.3.1
+2.23.0
 
