@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7FD405D4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F253405DB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245207AbhIIT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233562AbhIIT0J (ORCPT
+        id S1343878AbhIITob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:44:31 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:40488 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245548AbhIIToa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:26:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ED0C061574;
-        Thu,  9 Sep 2021 12:24:59 -0700 (PDT)
+        Thu, 9 Sep 2021 15:44:30 -0400
+X-Greylist: delayed 988 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 15:44:30 EDT
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9eYPN4SGvOoSGXLruTVuFwb68XsxZqpJHY8x5B67EyI=; b=lV2oJQVYRDMnUZkhcBngS14PQ3
-        1Mb+ZPJ+jQiKNeExH1+mA4Pg5AltvuEzB5ryIu5HVcvJI9WtPbnOmb1yn6qZco+emOlvxvimLw8+R
-        CXL/HiZEBWO2Umo4Q79bd3CufNZTN85rOBfsQGaHQNtTN8VhMlL0VbDnXiwKvoztdPkcxmCRCo9WP
-        OzikypG0d0XqWW9lT+qkOMwApJrqWujaF2YHpH0SEVCLVS4bJu3x8GhxEHLnCemfsjLf7Hq8uSaAy
-        MU/fzVHOyf+ul3Zm2LjlNd7Lot1MfgWY1Y2Y8HLJFyi6CuGTdFKbU7QVFojjqG+15132SmjujYfbq
-        Uj1sZl0A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOPe9-00AIXu-KF; Thu, 09 Sep 2021 19:23:49 +0000
-Date:   Thu, 9 Sep 2021 20:23:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YTpfPY+jSdEGRb10@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YToBjZPEVN9Jmp38@infradead.org>
- <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
- <969bf3e2-89be-c25b-938e-38430dc836d3@nvidia.com>
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kdmUsEMzgIoUcgyYPS7VbfsOKQD+k9dWiAFnqsbpUnI=; b=jZ2VsHL0UfhK2AOA1zPuCwPnA0
+        ylEB6vyXcgdmXj32Q64A0yFbi5OSecLfKBu6mjX6qqjfc4+d8QiyRIk+/tGWjrIcC+SJcKEmRCQPv
+        kgydvb22AU5+kCrdZNlnHqt//qnkYNeXbLOMbdNrMJisuMN7EIAhW3cYgI/H4Wsiyd+k=;
+Received: from [10.69.139.14] (helo=fractal7.mn.codeweavers.com)
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rbernon@codeweavers.com>)
+        id 1mOPhD-0003DM-Gx; Thu, 09 Sep 2021 14:26:51 -0500
+From:   Remi Bernon <rbernon@codeweavers.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     Remi Bernon <rbernon@codeweavers.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf symbol: Look for ImageBase in PE file to compute .text offset
+Date:   Thu,  9 Sep 2021 21:26:36 +0200
+Message-Id: <20210909192637.4139125-1-rbernon@codeweavers.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <969bf3e2-89be-c25b-938e-38430dc836d3@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 12:17:00PM -0700, John Hubbard wrote:
-> On 9/9/21 06:56, Vlastimil Babka wrote:
-> > On 9/9/21 14:43, Christoph Hellwig wrote:
-> > > So what is the result here?  Not having folios (with that or another
-> > > name) is really going to set back making progress on sane support for
-> > > huge pages.  Both in the pagecache but also for other places like direct
-> > > I/O.
-> > 
-> > Yeah, the silence doesn't seem actionable. If naming is the issue, I believe
-> > Matthew had also a branch where it was renamed to pageset. If it's the
-> > unclear future evolution wrt supporting subpages of large pages, should we
-> > just do nothing until somebody turns that hypothetical future into code and
-> > we see whether it works or not?
-> > 
-> 
-> When I saw Matthew's proposal to rename folio --> pageset, my reaction was,
-> "OK, this is a huge win!". Because:
-> 
-> * The new name addressed Linus' concerns about naming, which unblocks it
->   there, and
-> 
-> * The new name seems to meet all of the criteria of the "folio" name,
->   including even grep-ability, after a couple of tiny page_set and pageset
->   cases are renamed--AND it also meets Linus' criteria for self-describing
->   names.
-> 
-> So I didn't want to add noise to that thread, but now that there is still
-> some doubt about this, I'll pop up and suggest: do the huge
-> 's/folio/pageset/g', and of course the associated renaming of the conflicting
-> existing pageset and page_set cases, and then maybe it goes in.
+Instead of using the file offset in the debug file.
 
-So I've done that.
+This fixes a regression from 00a3423492bc90be99e529a64f13fdd80a0e8c0a,
+causing incorrect symbol resolution when debug file have been stripped
+from non-debug sections (in which case its .text section is empty and
+doesn't have any file position).
 
-https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/tags/pageset-5.15
+The debug files could also be created with a different file alignment,
+and have different file positions from the mmap-ed binary, or have the
+section reordered.
 
-I sent it to Linus almost two weeks ago:
-https://lore.kernel.org/linux-mm/YSmtjVTqR9%2F4W1aq@casper.infradead.org/
+This instead looks for the file image base, using the corresponding bfd
+*ABS* symbols. As PE symbols only have 4 bytes, it also needs to keep
+.text section vma high bits.
 
-Still nothing, so I presume he's still thinking about it.
+Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+---
+
+Hi!
+
+As I'm not updating it often I only recently realized that perf had a
+regression when using stripped debug info files, and all symbols from
+PE files are off. This should make things better.
+
+Cheers,
+
+ tools/perf/util/symbol.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 77fc46ca07c0..0fc9a5410739 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -1581,10 +1581,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+ 	if (bfd_get_flavour(abfd) == bfd_target_elf_flavour)
+ 		goto out_close;
+ 
+-	section = bfd_get_section_by_name(abfd, ".text");
+-	if (section)
+-		dso->text_offset = section->vma - section->filepos;
+-
+ 	symbols_size = bfd_get_symtab_upper_bound(abfd);
+ 	if (symbols_size == 0) {
+ 		bfd_close(abfd);
+@@ -1602,6 +1598,22 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+ 	if (symbols_count < 0)
+ 		goto out_free;
+ 
++	section = bfd_get_section_by_name(abfd, ".text");
++	if (section) {
++		for (i = 0; i < symbols_count; ++i) {
++			if (!strcmp(bfd_asymbol_name(symbols[i]), "__ImageBase") ||
++			    !strcmp(bfd_asymbol_name(symbols[i]), "__image_base__"))
++				break;
++		}
++		if (i < symbols_count) {
++			/* PE symbols can only have 4 bytes, so use .text high bits */
++			dso->text_offset = section->vma - (u32)section->vma;
++			dso->text_offset += (u32)bfd_asymbol_value(symbols[i]);
++		} else {
++			dso->text_offset = section->vma - section->filepos;
++		}
++	}
++
+ 	qsort(symbols, symbols_count, sizeof(asymbol *), bfd_symbols__cmpvalue);
+ 
+ #ifdef bfd_get_section
+-- 
+2.33.0
+
