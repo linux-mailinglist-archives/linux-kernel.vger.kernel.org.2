@@ -2,157 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712A7404968
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4F9404A6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhIILjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:39:25 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:43989 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236022AbhIILjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:39:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnnR7jA_1631187479;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UnnR7jA_1631187479)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 19:38:00 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT))
-Subject: [PATCH 3/3] kvm: x86: Emulate hypercall instead of fixing hypercall instruction
-Date:   Thu,  9 Sep 2021 19:37:56 +0800
-Message-Id: <9e4dc073caad1f098caf3c7dea06b9285a165602.1631186996.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631186996.git.houwenlong93@linux.alibaba.com>
-References: <cover.1631186996.git.houwenlong93@linux.alibaba.com>
+        id S241275AbhIILqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239649AbhIILoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E29CE6103D;
+        Thu,  9 Sep 2021 11:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631187746;
+        bh=njpbiNEWf9HBmJK+Vfx/Ddd6uYqglqFzFXSzkzQoiHU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dEZm4Qmkny2AzCgDVexe13mddJtQNMEbK/mLx3cH6wBgee4Un0jwjTl1hQ69vK255
+         uZmDt/ZiEa9ixLAESpBXFyS1igyz+/51KY5XRbBX0VT3v3gUEdwHCT0lAHbCXK5+EN
+         Mr/tZU2E+VAoma5po28KeGa0pR2nbpH0L5Xtws4mh6VQWoM+ozRRUQy7Etaegax2er
+         ACmMRmvKrm0+RQ2Ca1R+3kywnhcxuf4NvStOjefidgF4y5sUWnEEpFc9q7Qw4iBFYi
+         m9xLpAgMYBZy2SfFS4aMcpH35xpIQziSLnbl2tcAeMFqO/Za37QaCRYZBHPuyY1uFA
+         RlJdaKw3+b/tA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Oak Zeng <Oak.Zeng@amd.com>,
+        Christian Konig <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.14 062/252] drm/amdgpu: Fix a printing message
+Date:   Thu,  9 Sep 2021 07:37:56 -0400
+Message-Id: <20210909114106.141462-62-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is guest's resposibility to use right instruction for hypercall,
-hypervisor could emulate wrong instruction instead of modifying
-guest's instruction.
+From: Oak Zeng <Oak.Zeng@amd.com>
 
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+[ Upstream commit 95f71f12aa45d65b7f2ccab95569795edffd379a ]
+
+The printing message "PSP loading VCN firmware" is mis-leading because
+people might think driver is loading VCN firmware. Actually when this
+message is printed, driver is just preparing some VCN ucode, not loading
+VCN firmware yet. The actual VCN firmware loading will be in the PSP block
+hw_init. Fix the printing message
+
+Signed-off-by: Oak Zeng <Oak.Zeng@amd.com>
+Reviewed-by: Christian Konig <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/emulate.c     | 20 +++++++++-----------
- arch/x86/kvm/kvm_emulate.h |  2 +-
- arch/x86/kvm/x86.c         | 17 ++++++++---------
- 3 files changed, 18 insertions(+), 21 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2837110e66ed..671008a4ee20 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3732,13 +3732,11 @@ static int em_clts(struct x86_emulate_ctxt *ctxt)
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+index 284bb42d6c86..121ee9f2b8d1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -119,7 +119,7 @@ static int vcn_v1_0_sw_init(void *handle)
+ 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
+ 		adev->firmware.fw_size +=
+ 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
- static int em_hypercall(struct x86_emulate_ctxt *ctxt)
- {
--	int rc = ctxt->ops->fix_hypercall(ctxt);
-+	int rc = ctxt->ops->hypercall(ctxt);
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+index 8af567c546db..f4686e918e0d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+@@ -122,7 +122,7 @@ static int vcn_v2_0_sw_init(void *handle)
+ 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
+ 		adev->firmware.fw_size +=
+ 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
- 	if (rc != X86EMUL_CONTINUE)
- 		return rc;
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+index 888b17d84691..e0c0c3734432 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+@@ -152,7 +152,7 @@ static int vcn_v2_5_sw_init(void *handle)
+ 			adev->firmware.fw_size +=
+ 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+ 		}
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
--	/* Let the processor re-execute the fixed hypercall */
--	ctxt->_eip = ctxt->eip;
- 	/* Disable writeback. */
- 	ctxt->dst.type = OP_NONE;
- 	return X86EMUL_CONTINUE;
-@@ -4298,14 +4296,14 @@ static const struct opcode group7_rm2[] = {
- };
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+index 47d4f04cbd69..2f017560948e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -160,7 +160,7 @@ static int vcn_v3_0_sw_init(void *handle)
+ 			adev->firmware.fw_size +=
+ 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+ 		}
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
- static const struct opcode group7_rm3[] = {
--	DIP(SrcNone | Prot | Priv,		vmrun,		check_svme_pa),
--	II(SrcNone  | Prot | EmulateOnUD,	em_hypercall,	vmmcall),
--	DIP(SrcNone | Prot | Priv,		vmload,		check_svme_pa),
--	DIP(SrcNone | Prot | Priv,		vmsave,		check_svme_pa),
--	DIP(SrcNone | Prot | Priv,		stgi,		check_svme),
--	DIP(SrcNone | Prot | Priv,		clgi,		check_svme),
--	DIP(SrcNone | Prot | Priv,		skinit,		check_svme),
--	DIP(SrcNone | Prot | Priv,		invlpga,	check_svme),
-+	DIP(SrcNone | Prot | Priv,			vmrun,		check_svme_pa),
-+	II(SrcNone  | Prot | Priv | EmulateOnUD,	em_hypercall,	vmmcall),
-+	DIP(SrcNone | Prot | Priv,			vmload,		check_svme_pa),
-+	DIP(SrcNone | Prot | Priv,			vmsave,		check_svme_pa),
-+	DIP(SrcNone | Prot | Priv,			stgi,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			clgi,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			skinit,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			invlpga,	check_svme),
- };
- 
- static const struct opcode group7_rm7[] = {
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index 68b420289d7e..b090ec0688a6 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -216,7 +216,7 @@ struct x86_emulate_ops {
- 	int (*read_pmc)(struct x86_emulate_ctxt *ctxt, u32 pmc, u64 *pdata);
- 	void (*halt)(struct x86_emulate_ctxt *ctxt);
- 	void (*wbinvd)(struct x86_emulate_ctxt *ctxt);
--	int (*fix_hypercall)(struct x86_emulate_ctxt *ctxt);
-+	int (*hypercall)(struct x86_emulate_ctxt *ctxt);
- 	int (*intercept)(struct x86_emulate_ctxt *ctxt,
- 			 struct x86_instruction_info *info,
- 			 enum x86_intercept_stage stage);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b8d799e1c57c..aee3b08a1d85 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -329,7 +329,7 @@ static struct kmem_cache *kvm_alloc_emulator_cache(void)
- 					  size - useroffset, NULL);
- }
- 
--static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt);
-+static int emulator_hypercall(struct x86_emulate_ctxt *ctxt);
- 
- static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
- {
-@@ -7352,7 +7352,7 @@ static const struct x86_emulate_ops emulate_ops = {
- 	.read_pmc            = emulator_read_pmc,
- 	.halt                = emulator_halt,
- 	.wbinvd              = emulator_wbinvd,
--	.fix_hypercall       = emulator_fix_hypercall,
-+	.hypercall           = emulator_hypercall,
- 	.intercept           = emulator_intercept,
- 	.get_cpuid           = emulator_get_cpuid,
- 	.guest_has_long_mode = emulator_guest_has_long_mode,
-@@ -8747,16 +8747,15 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
- 
--static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt)
-+static int emulator_hypercall(struct x86_emulate_ctxt *ctxt)
- {
-+	int ret;
- 	struct kvm_vcpu *vcpu = emul_to_vcpu(ctxt);
--	char instruction[3];
--	unsigned long rip = kvm_rip_read(vcpu);
--
--	static_call(kvm_x86_patch_hypercall)(vcpu, instruction);
- 
--	return emulator_write_emulated(ctxt, rip, instruction, 3,
--		&ctxt->exception);
-+	ret = kvm_emulate_hypercall_noskip(vcpu);
-+	if (ret)
-+		return X86EMUL_CONTINUE;
-+	return X86EMUL_IO_NEEDED;
- }
- 
- static int dm_request_for_irq_injection(struct kvm_vcpu *vcpu)
+ 	r = amdgpu_vcn_resume(adev);
 -- 
-2.31.1
+2.30.2
 
