@@ -2,268 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9655D405EB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDC6405EB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346523AbhIIVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346067AbhIIVWe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:22:34 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487CDC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:21:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id y6so5207427lje.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jo48A/6vEdhUXGvQfBk5fPhiOK0Nx5+tyVkiJQ9UE1A=;
-        b=SOUFGOJDCqE8hO3ROO4SYkOmMIL8xsiEijGi+FXXATaHL0N0/VyhBlza7lMIb0daoi
-         eGqc3PQJgmztEDAJ283dGh3s5kbIxOEy92htSTzslv7DtYXbiy7HR7wnSaDFSOuq7KTl
-         U6WvBRRF/mX41nyx/+5R/pKX0CwH2c5yrqHbco1QCnvUQb8OC/RB2p6AZHuOwbRo+bYG
-         uIO/fgZVTk2fXKVBRoJzzdEh2GpH3bdEeyudyzcVFtBkf2+NpswyPir1SpaB4hYKOrHu
-         1FRvm8YpSFKzFbAOAs5KK/S3GEeNmRthwxBhHSj4J0o74s7Yxo4vOqctbCgfwI+0Wd+o
-         MUpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jo48A/6vEdhUXGvQfBk5fPhiOK0Nx5+tyVkiJQ9UE1A=;
-        b=KkzzoacVnYKWe2euHGnp18Qu6Ld/s6sl7OHsHsQVCYkVHAapVYzoUYIQFdafkbRxMk
-         kC6wD8O2ZTvGOlYJGC6IJWh/XszVnKbOXY7hI9xDNW5rQBLMrbdnNCOAuJ0Kv5aE60B3
-         S+BTd9L9gVxfnqCyLPLaDqyp3xQjFSix4v+tK+suyaJRFvDCCt6l3/Q8FD5+DUsDoOx/
-         YUTMTLaSC7Ri0Fi6z6RVRXDmH86tOtVFHiJrKAikww386iG8RwhPy6yvm/2zDFqXVpJl
-         uGbzE2+Jjnf7ZTAKP9DOClkE10m1oeujdChUpFT5CLClGUPbT2X1WtiOGeT1Qve5CZ6o
-         e2Tg==
-X-Gm-Message-State: AOAM533Aw6/MuVTu2jEAlh1t7vW3NXAnhCMRW1LMTeXTFvu5GvNIPBrB
-        aXmcRyA57iZBPQOb4p8dtrt9kOT+/+/Y6MuHfI2GLw==
-X-Google-Smtp-Source: ABdhPJxqwrJtXVgVcnK7CLGe9RMGTDbg9ItWrxypbspy4fHW2lO0d9u4QaAwddoTnFPMBXiw2rUdSE+1gAA6ImN599k=
-X-Received: by 2002:a2e:1508:: with SMTP id s8mr631481ljd.47.1631222482331;
- Thu, 09 Sep 2021 14:21:22 -0700 (PDT)
+        id S1345085AbhIIVWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346721AbhIIVWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 17:22:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DE7561131;
+        Thu,  9 Sep 2021 21:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631222489;
+        bh=XlELzx+Xv+i7SKcZjmeK0dXvvEjoI3jCo0u0b1yHTk8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=YK4RgPSScdldRZ8gjAigcUg72GPOoVnJ2r6Mqegrw7YsTOhCzd6lplak2J1Q8ha1z
+         SXZIc3kd7yXjQA5TqE4usb3v/GvfoyixO3qojt/+68YWVUmQKp84edNEUZLaz1hmhx
+         4NRMQ/byvYIBOCS1l4RELLd2vEakpYood8hQrVRp5FfHHtp9UZtZytheLoerAYmLi1
+         NGXGlS9kWRAmTJp50FSPMDOYDOmMprnEjwqGzD3cWGivp+r8EVb8xpeGIuPobSGS0p
+         dZrW1urbysjLNLI/lKJzbPcDAuucs2TAoraBQb3WzBF5lwF+CrrK/eq6WYr12GggBw
+         9CR1cL4nFyi8w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
- <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com> <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
-In-Reply-To: <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 9 Sep 2021 23:20:55 +0200
-Message-ID: <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
-Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Andrei Vagin <avagin@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210909073947.17438-3-kavyasree.kotagiri@microchip.com>
+References: <20210909073947.17438-1-kavyasree.kotagiri@microchip.com> <20210909073947.17438-3-kavyasree.kotagiri@microchip.com>
+Subject: Re: [PATCH v3 2/3] clk: lan966x: Add lan966x SoC clock driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Eugen.Hristev@microchip.com, Kavyasree.Kotagiri@microchip.com,
+        Manohar.Puri@microchip.com
+To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        mturquette@baylibre.com, robh+dt@kernel.org
+Date:   Thu, 09 Sep 2021 14:21:27 -0700
+Message-ID: <163122248779.1821005.1043993148772937495@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 9:07 PM Peter Oskolkov <posk@google.com> wrote:
-> On Wed, Sep 8, 2021 at 4:39 PM Jann Horn <jannh@google.com> wrote:
->
-> Thanks a lot for the reviews, Jann!
->
-> I understand how to address most of your comments. However, one issue
-> I'm not sure what to do about:
->
-> [...]
->
-> > If this function is not allowed to sleep, as the comment says...
->
-> [...]
->
-> > ... then I'm pretty sure you can't call fix_pagefault() here, which
-> > acquires the mmap semaphore (which may involve sleeping) and then goes
-> > through the pagefault handling path (which can also sleep for various
-> > reasons, like allocating memory for pagetables, loading pages from
-> > disk / NFS / FUSE, and so on).
->
-> <quote from peterz@ from
-> https://lore.kernel.org/lkml/20210609125435.GA68187@worktop.programming.kicks-ass.net/>:
->   So a PF_UMCG_WORKER would be added to sched_submit_work()'s PF_*_WORKER
->   path to capture these tasks blocking. The umcg_sleeping() hook added
->   there would:
->
->     put_user(BLOCKED, umcg_task->umcg_status);
->     ...
-> </quote>
->
-> Which is basically what I am doing here: in sched_submit_work() I need
-> to read/write to userspace; and we cannot sleep in
-> sched_submit_work(), I believe.
->
-> If you are right that it is impossible to deal with pagefaults from
-> within non-sleepable contexts, I see two options:
->
-> Option 1: as you suggest, pin pages holding struct umcg_task in sys_umcg_ctl;
+Quoting Kavyasree Kotagiri (2021-09-09 00:39:46)
+> diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
+> new file mode 100644
+> index 000000000000..4492be90cecf
+> --- /dev/null
+> +++ b/drivers/clk/clk-lan966x.c
+> @@ -0,0 +1,235 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Microchip LAN966x SoC Clock driver.
+> + *
+> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+[...]
+> +
+> +static int lan966x_clk_probe(struct platform_device *pdev)
+> +{
+> +       struct clk_hw_onecell_data *hw_data;
+> +       struct device *dev =3D &pdev->dev;
+> +       const char *parent_names[3];
+> +       int i, ret;
+> +
+> +       hw_data =3D devm_kzalloc(dev, sizeof(*hw_data), GFP_KERNEL);
+> +       if (!hw_data)
+> +               return -ENOMEM;
+> +
+> +       base =3D devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(base))
+> +               return PTR_ERR(base);
+> +
+> +       init.ops =3D &lan966x_gck_ops;
+> +       init.num_parents =3D 3;
+> +
+> +       for (i =3D 0; i < init.num_parents; ++i) {
+> +               parent_names[i] =3D of_clk_get_parent_name(pdev->dev.of_n=
+ode, i);
 
-FWIW, there is a variant on this that might also be an option:
+Please use clk_parent_data instead of of_clk_get_parent_name().
 
-You can create a new memory mapping from kernel code and stuff pages
-into it that were originally allocated as normal kernel pages. This is
-done in a bunch of places, e.g.:
+> +               if (!parent_names[i])
+> +                       return -EINVAL;
+> +       }
+> +
+> +       init.parent_names =3D parent_names;
+> +       hw_data->num =3D N_CLOCKS;
+> +
+> +       for (i =3D 0; i < N_CLOCKS; i++) {
+> +               init.name =3D clk_names[i];
+> +               hw_data->hws[i] =3D lan966x_gck_clk_register(dev, i);
+> +               if (IS_ERR(hw_data->hws[i])) {
+> +                       dev_err(dev, "failed to register %s clock\n",
+> +                               init.name);
+> +                       return ret;
 
-This has the advantage that it avoids pinning random pages that were
-originally allocated from ZONE_MOVABLE blocks. (Or pinning hugepages,
-or something like that.)
-The downsides are that it reduces userspace's freedom to place the
-UAPI structs wherever it wants (so userspace e.g. probably can't
-directly put the struct in thread-local storage, instead it has to
-store a pointer to the struct), and that you need to write a bunch of
-code to create the mapping and allocate slots in these pages for
-userspace threads.
+return PTR_ERR(hw_data->hws[i]);
 
-Maybe UMCG_CTL_REGISTER could do something vaguely like this (utterly
-untested, I just scribbled this down in my mail client)?
-
-
-#define UMCG_TASKS_PER_PAGE (sizeof(struct umcg_task) / PAGE_SIZE)
-struct umcg_page {
-  struct page *page;
-  struct umcg_task *__user user_base;
-  struct vm_special_mapping special_mapping;
-  DECLARE_BITMAP(inuse_bits, UMCG_TASKS_PER_PAGE);
- };
-struct mm_umcg {
-  struct umcg_page *slot_pages;
-  size_t slot_page_count;
-  size_t used_slots;
-};
-struct mm_struct {
-   ...
-#ifdef CONFIG_UMCG
-    struct mm_umcg umcg;
-#endif
-  ...
-};
-
-static int deny_mremap(struct vm_area_struct *new_vma)
-{
-  return -EINVAL;
-}
-
-BUILD_BUG_ON(UMCG_TASKS_PER_PAGE < 1);
-struct mm_struct *mm = current->mm;
-size_t page_idx, free_idx_in_page;
-if (!mmap_lock_killable(mm))
-  return -EINTR;
-if (mm->umcg.used_slots == mm->umcg.slot_page_count * UMCG_TASKS_PER_PAGE) {
-  unsigned long addr;
-  struct page *new_page;
-  struct umcg_page *slot_pages_new;
-
-  addr = get_unmapped_area(NULL, 0, PAGE_SIZE, 0, 0);
-  if (IS_ERR_VALUE(addr)) {
-    ret = addr;
-    goto unlock;
-  }
-
-  slot_pages_new = krealloc_array(mm->umcg.slot_page_count + 1,
-sizeof(struct umcg_page), GFP_KERNEL);
-  if (!slot_pages_new) {
-    ret = -ENOMEM;
-    goto unlock;
-  }
-  mm->umcg.slot_pages = slot_pages_new;
-  new_page = alloc_page(GFP_USER | __GFP_ACCOUNT);
-  if (!new_page) {
-    ret = -ENOMEM;
-    goto unlock;
-  }
-  mm->umcg.slot_pages[mm->umcg.slot_page_count].page = new_page;
-  mm->umcg.slot_pages[mm->umcg.slot_page_count].user_base = addr;
-  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.name = "[umcg]";
-  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.pages
-= &mm->umcg.slot_pages[mm->umcg.slot_page_count].page;
-  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.mremap
-= deny_mremap;
-  if (IS_ERR(_install_special_mapping(mm, addr, PAGE_SIZE,
-VM_READ|VM_WRITE|VM_MAYREAD|VM_MAYWRITE|VM_DONTCOPY,
-&new_page->special_mapping)))
-    ... free new_page and return error ...
-  mm->umcg.slot_page_count++;
-}
-
-for (page_idx = 0; 1; page_idx++) {
-  if (page_idx == mm->umcg->slot_page_count)
-    ... WARN() and bail out, shouldn't happen...
-  free_idx_in_page =
-find_first_zero_bit(mm->umcg->slot_pages[page_idx],
-UMCG_TASKS_PER_PAGE);
-  if (free_idx_in_page != UMCG_TASKS_PER_PAGE)
-    break;
-}
-set_bit(free_idx_in_page, mm->umcg->slot_pages[page_idx]);
-mm->umcg.used_slots++;
-current->umcg_user_mapping = mm->umcg->slot_pages[page_idx].user_base
-+ free_idx_in_page;
-current->umcg_kernel_mapping = (struct umcg_task
-*)page_to_virt(mm->umcg->slot_pages[page_idx].page) +
-free_idx_in_page;
-current->umcg_index = page_idx * UMCG_TASKS_PER_PAGE + free_idx_in_page;
-unlock:
-mmap_unlock(mm);
-
-... and then when a task exits, you'd pretty much just take the
-mmap_lock and do clear_bit(current->umcg_index % UMCG_TASKS_PER_PAGE,
-current->mm->umcg.slot_pages[current->umcg_index /
-UMCG_TASKS_PER_PAGE].inuse_bits)?
-
-The pages would stay allocated as long as the process is running, but
-given how fragmented those pages are going to get, that's probably
-inevitable. And when the process exits (more precisely, when the
-mm_struct is torn down), you could free all this stuff?
-
-Note that what I'm suggesting here is a bit unusual - normally only
-the vDSO is a "special mapping", other APIs tend to use mappings that
-are backed by files. But I think we probably don't want to have a file
-involved here...
-
-If you decide to go this route, you should probably CC
-linux-mm@kvack.org (for general memory management) and Andy Lutomirski
-(who has tinkered around in vDSO-related code a lot).
-
-> or
->
-> Option 2: add more umcg-related kernel state to task_struct so that
-> reading/writing to userspace is not necessary in sched_submit_work().
->
-> The first option sounds much better from the code simplicity point of
-> view, but I'm not sure if it is a viable approach, i.e. I'm afraid
-> we'll get a hard NACK here, as a non-privileged process will be able
-> to force the kernel to pin a page per task/thread.
-
-To clarify: It's entirely normal that userspace processes can force
-the kernel to hold on to some amounts of memory that can't be paged
-out - consider e.g. pagetables and kernel objects referenced by file
-descriptors. So an API that pins limited amounts of memory that are
-also mapped in userspace isn't inherently special. But pinning pages
-that were originally allocated as normal userspace memory can be more
-problematic because that memory might be hugepages, or file pages, or
-it might prevent the hugepaged from being able to defragment memory
-because the pinned page was allocated in ZONE_MOVABLE.
-
-
-> We may get around
-> it by first pinning a limited number of pages, then having the
-> userspace allocate structs umcg_task on those pages, so that a pinned
-> page would cover more than a single task/thread. And have a sysctl
-> that limits the number of pinned pages per MM.
-
-I think that you wouldn't necessarily need a sysctl for that if the
-kernel can enforce that you don't have more pages allocated than you
-need for the maximum number of threads that have ever been running
-under the process, and you also use __GFP_ACCOUNT so that cgroups can
-correctly attribute the memory usage.
-
-> Peter Z., could you, please, comment here? Do you think pinning pages
-> to hold structs umcg_task is acceptable?
+> +               }
+> +       }
+> +
+> +       return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, hw=
+_data);
+> +}
+> +
+> +static const struct of_device_id lan966x_clk_dt_ids[] =3D {
+> +       { .compatible =3D "microchip,lan966x-gck", },
+> +       { }
+> +};
