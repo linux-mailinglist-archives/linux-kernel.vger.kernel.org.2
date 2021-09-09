@@ -2,69 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6480404827
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C6B40482F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhIIKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:01:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
+        id S233327AbhIIKDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232630AbhIIKBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:01:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DED2C611AF;
-        Thu,  9 Sep 2021 10:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631181606;
-        bh=PMMPAgeIXLtsXfGbcW45EUU5EOoG+3kFRVw7qb4VMto=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WKCEdd1fGBUrh6ibxJYDt2zQS1ZDkB+V064A2QD+s0fw6JU7E/FD/6HOCDTHVGWxw
-         8cq/Sr1s6VvJ2nvnO4TuWm0+GR5bb82op7Ty/dSLFiUtmpvMNHksPXsEjZExvfiVjq
-         vgtoFnwPiRSdEJBVpkCFELlwyYZH8yvhQlLJU7DLGDIe2mc/9Ty05IKcd3ZqI0s8Fp
-         ZhVCSKOeVBv12gA+g+MN8rPds6AU+jDHkXw1vYUVOwEmA4ok3UzE7srv/EVCZq1gcX
-         lG2VuLUsbcCyUC3cs5RauYEI9caTJ+VUxuElycBrXbo5G0U5BdHv5JiDqSF61z8e0L
-         C1vl7ZLgq8W0w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D2690609B3;
-        Thu,  9 Sep 2021 10:00:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229601AbhIIKDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 06:03:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7F3B611AD;
+        Thu,  9 Sep 2021 10:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631181714;
+        bh=/1f9r8n9WVDTH6/Q/V695DPtM4Oyh3rAnEy9HTpXCm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GaBNtYTxaCkbW00RDO9jLMx28TcPJ2arczOBGqvAa6l6vLBjt9nYPnTO8sf8d37j4
+         SqR3oQan0g82yJ1F90YPW1cK9o2jeW2+sKJ2HgIIXtkYm2NwSY4+Q7qzZs/zJHSpGF
+         7pdh/UB9TvVYOUn+xTSm5h4nduILlOBa1UXHgI5Q=
+Date:   Thu, 9 Sep 2021 12:01:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: Remove conditionals
+ CONFIG_88EU_{AP_MODE,P2P}
+Message-ID: <YTnbj+1fLVav5fyN@kroah.com>
+References: <20210908050109.1279-1-Larry.Finger@lwfinger.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: macb: fix use after free on rmmod
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163118160685.750.14632147439062575524.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Sep 2021 10:00:06 +0000
-References: <20210908190232.573178-1-ztong0001@gmail.com>
-In-Reply-To: <20210908190232.573178-1-ztong0001@gmail.com>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908050109.1279-1-Larry.Finger@lwfinger.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed,  8 Sep 2021 12:02:32 -0700 you wrote:
-> plat_dev->dev->platform_data is released by platform_device_unregister(),
-> use of pclk and hclk is a use-after-free. Since device unregister won't
-> need a clk device we adjust the function call sequence to fix this issue.
+On Wed, Sep 08, 2021 at 12:01:09AM -0500, Larry Finger wrote:
+> These two conditional compile symbols are explicitly defined.
+> As a result, their included code is always compiled. They could be
+> converted to Kconfig symbols; however, my experience with this driver
+> in a GitHub repo is that many users of the device have it built into
+> a SOC or SBC that they wish to use as an access point. As a result,
+> CONFIG_88EU_APMODE would need to be selected. Thus it should be built in.
 > 
-> [   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
-> [   31.275563] Freed by task 306:
-> [   30.276782]  platform_device_release+0x25/0x80
+> There have also been many users the wish to establish peer-to-peer
+> networks with this device. For this reason, I am also proposing that
+> CONFIG_88EU_P2P be automatically included.
 > 
-> [...]
+> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 
-Here is the summary with links:
-  - [v2] net: macb: fix use after free on rmmod
-    https://git.kernel.org/netdev/net/c/d82d5303c4c5
+Makes sense.  If this really does need to be split up in the future, it
+can be done better without all of this #ifdef mess in the .c files.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+thanks,
 
-
+greg k-h
