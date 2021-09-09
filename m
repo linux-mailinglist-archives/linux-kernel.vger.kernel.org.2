@@ -2,157 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD7E404D20
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A386F404D28
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243340AbhIIMAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:00:55 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:54818 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242401AbhIIL4m (ORCPT
+        id S244061AbhIIMA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:00:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34128 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239498AbhIIL4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:56:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnnCNDU_1631188528;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UnnCNDU_1631188528)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 19:55:29 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT))
-Subject: [PATCH v2 3/3] kvm: x86: Emulate hypercall instead of fixing hypercall instruction
-Date:   Thu,  9 Sep 2021 19:55:25 +0800
-Message-Id: <7893d13e11648be0326834248fcb943088fb0b76.1631188011.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
-References: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
+        Thu, 9 Sep 2021 07:56:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 717C92237E;
+        Thu,  9 Sep 2021 11:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631188535;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SgcGpgCok67Bfm15+9kz4zmTvyKC+BSHeecrZCiv49Q=;
+        b=GTACSpY5D5vHon7LNL/+6ZVKddjICjrNBmK5SDUBpu2sGpWRpZGQycZW+D4F8GCSTtdArx
+        sv/u8p85QqKmkoC6oIo7xjp/tiAh5mDUukKaQwGsppcpfunXTdhgB6Iy7+67AZcqdfX7Ml
+        YFeH8vNbzlVIa9JMX6E0W8avL+YuZ08=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631188535;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SgcGpgCok67Bfm15+9kz4zmTvyKC+BSHeecrZCiv49Q=;
+        b=UblPpw5lVd/sRIPqMYDUmQifGMRHk/cBjM1jCfVKUmtM7Dmm7DsoKIAEhY90232FSJjQLp
+        4iAw5HEu/5lWq+Dw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6290AA3ED7;
+        Thu,  9 Sep 2021 11:55:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5DADDDA7A9; Thu,  9 Sep 2021 13:55:30 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 13:55:30 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 193/252] btrfs: grab correct extent map for
+ subpage compressed extent read
+Message-ID: <20210909115530.GC15306@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210909114106.141462-1-sashal@kernel.org>
+ <20210909114106.141462-193-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909114106.141462-193-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is guest's resposibility to use right instruction for hypercall,
-hypervisor could emulate wrong instruction instead of modifying
-guest's instruction.
+On Thu, Sep 09, 2021 at 07:40:07AM -0400, Sasha Levin wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> [ Upstream commit 557023ea9f06baf2659b232b08b8e8711f7001a6 ]
 
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
----
- arch/x86/kvm/emulate.c     | 20 +++++++++-----------
- arch/x86/kvm/kvm_emulate.h |  2 +-
- arch/x86/kvm/x86.c         | 17 ++++++++---------
- 3 files changed, 18 insertions(+), 21 deletions(-)
-
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2837110e66ed..671008a4ee20 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3732,13 +3732,11 @@ static int em_clts(struct x86_emulate_ctxt *ctxt)
- 
- static int em_hypercall(struct x86_emulate_ctxt *ctxt)
- {
--	int rc = ctxt->ops->fix_hypercall(ctxt);
-+	int rc = ctxt->ops->hypercall(ctxt);
- 
- 	if (rc != X86EMUL_CONTINUE)
- 		return rc;
- 
--	/* Let the processor re-execute the fixed hypercall */
--	ctxt->_eip = ctxt->eip;
- 	/* Disable writeback. */
- 	ctxt->dst.type = OP_NONE;
- 	return X86EMUL_CONTINUE;
-@@ -4298,14 +4296,14 @@ static const struct opcode group7_rm2[] = {
- };
- 
- static const struct opcode group7_rm3[] = {
--	DIP(SrcNone | Prot | Priv,		vmrun,		check_svme_pa),
--	II(SrcNone  | Prot | EmulateOnUD,	em_hypercall,	vmmcall),
--	DIP(SrcNone | Prot | Priv,		vmload,		check_svme_pa),
--	DIP(SrcNone | Prot | Priv,		vmsave,		check_svme_pa),
--	DIP(SrcNone | Prot | Priv,		stgi,		check_svme),
--	DIP(SrcNone | Prot | Priv,		clgi,		check_svme),
--	DIP(SrcNone | Prot | Priv,		skinit,		check_svme),
--	DIP(SrcNone | Prot | Priv,		invlpga,	check_svme),
-+	DIP(SrcNone | Prot | Priv,			vmrun,		check_svme_pa),
-+	II(SrcNone  | Prot | Priv | EmulateOnUD,	em_hypercall,	vmmcall),
-+	DIP(SrcNone | Prot | Priv,			vmload,		check_svme_pa),
-+	DIP(SrcNone | Prot | Priv,			vmsave,		check_svme_pa),
-+	DIP(SrcNone | Prot | Priv,			stgi,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			clgi,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			skinit,		check_svme),
-+	DIP(SrcNone | Prot | Priv,			invlpga,	check_svme),
- };
- 
- static const struct opcode group7_rm7[] = {
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index 68b420289d7e..b090ec0688a6 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -216,7 +216,7 @@ struct x86_emulate_ops {
- 	int (*read_pmc)(struct x86_emulate_ctxt *ctxt, u32 pmc, u64 *pdata);
- 	void (*halt)(struct x86_emulate_ctxt *ctxt);
- 	void (*wbinvd)(struct x86_emulate_ctxt *ctxt);
--	int (*fix_hypercall)(struct x86_emulate_ctxt *ctxt);
-+	int (*hypercall)(struct x86_emulate_ctxt *ctxt);
- 	int (*intercept)(struct x86_emulate_ctxt *ctxt,
- 			 struct x86_instruction_info *info,
- 			 enum x86_intercept_stage stage);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b8d799e1c57c..aee3b08a1d85 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -329,7 +329,7 @@ static struct kmem_cache *kvm_alloc_emulator_cache(void)
- 					  size - useroffset, NULL);
- }
- 
--static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt);
-+static int emulator_hypercall(struct x86_emulate_ctxt *ctxt);
- 
- static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
- {
-@@ -7352,7 +7352,7 @@ static const struct x86_emulate_ops emulate_ops = {
- 	.read_pmc            = emulator_read_pmc,
- 	.halt                = emulator_halt,
- 	.wbinvd              = emulator_wbinvd,
--	.fix_hypercall       = emulator_fix_hypercall,
-+	.hypercall           = emulator_hypercall,
- 	.intercept           = emulator_intercept,
- 	.get_cpuid           = emulator_get_cpuid,
- 	.guest_has_long_mode = emulator_guest_has_long_mode,
-@@ -8747,16 +8747,15 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
- 
--static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt)
-+static int emulator_hypercall(struct x86_emulate_ctxt *ctxt)
- {
-+	int ret;
- 	struct kvm_vcpu *vcpu = emul_to_vcpu(ctxt);
--	char instruction[3];
--	unsigned long rip = kvm_rip_read(vcpu);
--
--	static_call(kvm_x86_patch_hypercall)(vcpu, instruction);
- 
--	return emulator_write_emulated(ctxt, rip, instruction, 3,
--		&ctxt->exception);
-+	ret = kvm_emulate_hypercall_noskip(vcpu);
-+	if (ret)
-+		return X86EMUL_CONTINUE;
-+	return X86EMUL_IO_NEEDED;
- }
- 
- static int dm_request_for_irq_injection(struct kvm_vcpu *vcpu)
--- 
-2.31.1
-
+Please drop this patch from stable queue, thanks.
