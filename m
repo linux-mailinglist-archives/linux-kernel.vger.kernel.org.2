@@ -2,269 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BCA405A16
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAA3405A17
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237684AbhIIPTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S237898AbhIIPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236745AbhIIPT2 (ORCPT
+        with ESMTP id S236448AbhIIPTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:19:28 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D8DC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:18:19 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id oc9so1603721pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:18:19 -0700 (PDT)
+        Thu, 9 Sep 2021 11:19:49 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA1FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:18:40 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id u9so3086628wrg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VWNh9d2tUZKG8idZXByBeqTa3/M4oXQ5jM0T9ftLR/I=;
-        b=DnigeVP4cZBoGJUJUi88ziXn1T3CRIWIFPRKrJ3LPoiqoQGG3OigRZ/Nw3AdIecPYQ
-         JnFT/1lTu2E9E04ZwY9ZgZbYhJuhV7JPIB++wzcygMO8hvR2L+50c1wMFfxlYt0hVrYb
-         C/YN8jBK0j7lymZLZEXbML9qB5S5JUq017qmg=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBA3frC1peSMpXkdRxoXGSwcQST+Z0JE3+yWnniewqQ=;
+        b=MSDYMf8xVE/k8UvmjEeaoYZko+7eM782tCQpQznij2I3CRvTJu1BWp4Uy2F3vudhtN
+         MWq2nmhhJiMRXVMckwtTOq7kEUYo/xYJZqhj+jhkFzo5fpq+W5euc3BfE92Mwv5MG6Dr
+         c+vzjT55wLu8R/o+SXoWcpQL/2l8VvbTVjFbw4NvOcpsBRddmlkhr10dfWyV/wsr2X4X
+         VgrqfUK+buh1GbgtKis1nkoSRu65yG/fnr4L1Q+IXHGcmS7LTxlsOHrjotXO5TuBgi5P
+         gR4XILt+eO4ulV4iCHADSRAwaN0FVjxeA8MwCoJDzqgeIpi9QrN2lFGVzX01YnCLycwY
+         NTCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VWNh9d2tUZKG8idZXByBeqTa3/M4oXQ5jM0T9ftLR/I=;
-        b=Y6b/1Bfja9saZGVK7jUX39iNvIFsUWzBlJCKgB0x70FcuSvkxug/Q7NY8eLu5N0y1s
-         r/DfW9FNXD9vXzlS2iaXczHAl/eEXsNd9UEW66bxMyNW75kZAY31RVfQLYqLUbuoj8x0
-         fYPCgVvSZj5f0M+d+TpBcQk4f4E/oaNrgD13tXTdJ0rrOtOo2fSbsrKSfjCTncuJ8Lkm
-         /oBjPP+x6X+aEoQgPla9nxIj4aKSK33TzNZbmZP5bhFl2TdztrHxF3eTzyiWtRwP9rfR
-         xFBIYKJqYEUexXNN+iE1DBPL2aacdunMOgZdGTZC78cAVgL9eUe6z+FsUE+1xspcT8AS
-         EDgA==
-X-Gm-Message-State: AOAM531T0ucLrvgm/HMHul7kfR5OrSAxdJ5MsGXqOMDKktcJQybrB78D
-        NoQ46IV71csI4ZmjKmfwAEhgwg==
-X-Google-Smtp-Source: ABdhPJwOc/+AcPWbSFMHLSdY7Q78w3vlSzQ1LUqYnbXZ/HaAWI8X35xZ6GWLqwIRUxSL36sRhM136Q==
-X-Received: by 2002:a17:90a:2ecb:: with SMTP id h11mr4165144pjs.196.1631200698756;
-        Thu, 09 Sep 2021 08:18:18 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:27cc:a1d4:ed44:e1de])
-        by smtp.gmail.com with UTF8SMTPSA id q3sm3032653pgf.18.2021.09.09.08.18.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 08:18:18 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 08:18:16 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH v9 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-Message-ID: <YToluIBXlNJEFhcb@google.com>
-References: <20210623035039.772660-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBA3frC1peSMpXkdRxoXGSwcQST+Z0JE3+yWnniewqQ=;
+        b=2rLVKYnDBYpvHB+74l1CixiD8BD95ulm5eChtGgEPfAnHNuEa/9FWcm15LCan5V7Ix
+         UGSW5GSmIb+W/YuzUfzQbq3APSA2AgctGGM/LejRlQgNUCgiPqy9t+KyUbNpvvu66fii
+         ua6PStGxuSBTCHJyUZ+ocvDzat/d2Bg2M6FpbIXtrSCYYXnLmdpqI/p3io1RaWWnmD5j
+         5acEje/FFZqQ+AdCuT0c7W5PnjfY11kO/+0xWuJSUrUeeDcBcFbr1Ye19J2ZYSli3wMb
+         dMdV2u+X+WzV33TasomPnp65GznlBwPmfL8EoGq9CRrJAy1qeUVdtgTdZMJBeFDQcY9b
+         rJ7w==
+X-Gm-Message-State: AOAM5321yW3/BwYLC2Ji/qNFefOY1pkyj1Hffiur5OeK6DWpBNXXlel2
+        +0ycqalK0po4a2A2VBssV2U=
+X-Google-Smtp-Source: ABdhPJyfwQ6e928TELH8c6+9FGB9QmPtC1dkAqRIxsnRzJASZBnfNWAK/nqYkDKHEmnwHYBx8Ga7JA==
+X-Received: by 2002:adf:c54a:: with SMTP id s10mr4279568wrf.405.1631200718840;
+        Thu, 09 Sep 2021 08:18:38 -0700 (PDT)
+Received: from agape ([5.171.80.178])
+        by smtp.gmail.com with ESMTPSA id i11sm2047158wrb.48.2021.09.09.08.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 08:18:38 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH] extcon: extcon-axp288: use low level P-Unit semaphore lock for axp288 register accesses
+Date:   Thu,  9 Sep 2021 17:18:20 +0200
+Message-Id: <20210909151820.5303-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210623035039.772660-1-bjorn.andersson@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 08:50:38PM -0700, Bjorn Andersson wrote:
-> This adds the binding document describing the three hardware blocks
-> related to the Light Pulse Generator found in a wide range of Qualcomm
-> PMICs.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v8:
-> - None
-> 
-> Changes since v7:
-> - Added qcom,pmc8180c-lpg
-> - Defined constraints for qcom,power-source
-> - Changes qcom,dtest to matrix and added constraints
-> - Changed example from LED_COLOR_ID_MULTI to LED_COLOR_ID_RGB
-> 
->  .../bindings/leds/leds-qcom-lpg.yaml          | 164 ++++++++++++++++++
->  1 file changed, 164 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> new file mode 100644
-> index 000000000000..10aee61a7ffc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> @@ -0,0 +1,164 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-qcom-lpg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Light Pulse Generator
-> +
-> +maintainers:
-> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> +
-> +description: >
-> +  The Qualcomm Light Pulse Generator consists of three different hardware blocks;
-> +  a ramp generator with lookup table, the light pulse generator and a three
-> +  channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,pm8150b-lpg
-> +      - qcom,pm8150l-lpg
-> +      - qcom,pm8916-pwm
-> +      - qcom,pm8941-lpg
-> +      - qcom,pm8994-lpg
-> +      - qcom,pmc8180c-lpg
-> +      - qcom,pmi8994-lpg
-> +      - qcom,pmi8998-lpg
-> +
-> +  "#pwm-cells":
-> +    const: 2
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  qcom,power-source:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      power-source used to drive the output, as defined in the datasheet.
-> +      Should be specified if the TRILED block is present
-> +    enum: [0, 1, 3]
-> +
-> +  qcom,dtest:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    description: >
-> +      A list of integer pairs, where each pair represent the dtest line the
-> +      particular channel should be connected to and the flags denoting how the
-> +      value should be outputed, as defined in the datasheet. The number of
-> +      pairs should be the same as the number of channels.
-> +    items:
-> +      items:
-> +        - description: dtest line to attach
-> +        - description: flags for the attachment
-> +
-> +  multi-led:
-> +    type: object
-> +    $ref: leds-class-multicolor.yaml#
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      "^led@[0-9a-f]$":
-> +        type: object
-> +        $ref: common.yaml#
-> +
-> +patternProperties:
-> +  "^led@[0-9a-f]$":
-> +    type: object
-> +    $ref: common.yaml#
-> +
-> +    properties:
-> +      reg: true
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    lpg {
-> +      compatible = "qcom,pmi8994-lpg";
-> +
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      qcom,power-source = <1>;
-> +
-> +      qcom,dtest = <0 0>,
-> +                   <0 0>,
-> +                   <0 0>,
-> +                   <4 1>;
-> +
-> +      led@1 {
-> +        reg = <1>;
-> +        label = "green:user1";
-> +      };
-> +
-> +      led@2 {
-> +        reg = <2>;
-> +        label = "green:user0";
-> +        default-state = "on";
-> +      };
-> +
-> +      led@3 {
-> +        reg = <3>;
-> +        label = "green:user2";
-> +      };
-> +
-> +      led@4 {
-> +        reg = <4>;
-> +        label = "green:user3";
-> +      };
-> +    };
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    lpg {
-> +      compatible = "qcom,pmi8994-lpg";
-> +
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      qcom,power-source = <1>;
-> +
-> +      multi-led {
-> +        color = <LED_COLOR_ID_RGB>;
-> +        function = LED_FUNCTION_STATUS;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        led@1 {
-> +          reg = <1>;
-> +          color = <LED_COLOR_ID_RED>;
-> +        };
-> +
-> +        led@2 {
-> +          reg = <2>;
-> +          color = <LED_COLOR_ID_GREEN>;
-> +        };
-> +
-> +        led@3 {
-> +          reg = <3>;
-> +          color = <LED_COLOR_ID_BLUE>;
-> +        };
-> +      };
-> +    };
-> +  - |
-> +    lpg {
+use low level P-Unit semaphore lock for axp288 register
+accesses directly and for more than one access a time,
+to reduce the number of times this semaphore is locked
+and released which is an expensive operation.
 
-nit: should the node be named 'lpg-pwm'?
+i2c-bus to the XPower is shared between the kernel and the
+SoCs P-Unit. The P-Unit has a semaphore wich the kernel must
+lock for axp288 register accesses. When the P-Unit semaphore
+is locked CPU and GPU power states cannot change or the system
+will freeze.
 
-IIUC a PMIC .dtsi could have both a 'lpg' and a 'lpg-pwm' node, even though
-only one of them can be enabled at any time.
+The P-Unit semaphore lock is already managed inside the regmap
+access logic, but for each access the semaphore is locked and
+released. So use directly iosf_mbi_(un)block_punit_i2c_access(),
+we are safe in doing so because nested calls to the same
+semaphore are turned to nops.
 
-> +      compatible = "qcom,pm8916-pwm";
-> +      #pwm-cells = <2>;
-> +    };
+Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/extcon/extcon-axp288.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
+index fdb31954cf2b..460402b14ef2 100644
+--- a/drivers/extcon/extcon-axp288.c
++++ b/drivers/extcon/extcon-axp288.c
+@@ -24,6 +24,7 @@
+ 
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
++#include <asm/iosf_mbi.h>
+ 
+ /* Power source status register */
+ #define PS_STAT_VBUS_TRIGGER		BIT(0)
+@@ -215,6 +216,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+ 	unsigned int cable = info->previous_cable;
+ 	bool vbus_attach = false;
+ 
++	iosf_mbi_block_punit_i2c_access();
++
+ 	vbus_attach = axp288_get_vbus_attach(info);
+ 	if (!vbus_attach)
+ 		goto no_vbus;
+@@ -253,6 +256,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+ 	}
+ 
+ no_vbus:
++	iosf_mbi_unblock_punit_i2c_access();
++
+ 	extcon_set_state_sync(info->edev, info->previous_cable, false);
+ 	if (info->previous_cable == EXTCON_CHG_USB_SDP)
+ 		extcon_set_state_sync(info->edev, EXTCON_USB, false);
+@@ -275,6 +280,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+ 	return 0;
+ 
+ dev_det_ret:
++	iosf_mbi_unblock_punit_i2c_access();
++
+ 	if (ret < 0)
+ 		dev_err(info->dev, "failed to detect BC Mod\n");
+ 
+@@ -307,11 +314,14 @@ static irqreturn_t axp288_extcon_isr(int irq, void *data)
+ 
+ static void axp288_extcon_enable(struct axp288_extcon_info *info)
+ {
++	iosf_mbi_block_punit_i2c_access();
+ 	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
+ 						BC_GLOBAL_RUN, 0);
+ 	/* Enable the charger detection logic */
+ 	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
+ 					BC_GLOBAL_RUN, BC_GLOBAL_RUN);
++
++	iosf_mbi_unblock_punit_i2c_access();
+ }
+ 
+ static void axp288_put_role_sw(void *data)
+@@ -384,10 +394,14 @@ static int axp288_extcon_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	iosf_mbi_block_punit_i2c_access();
++
+ 	info->vbus_attach = axp288_get_vbus_attach(info);
+ 
+ 	axp288_extcon_log_rsi(info);
+ 
++	iosf_mbi_unblock_punit_i2c_access();
++
+ 	/* Initialize extcon device */
+ 	info->edev = devm_extcon_dev_allocate(&pdev->dev,
+ 					      axp288_extcon_cables);
+-- 
+2.20.1
+
