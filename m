@@ -2,124 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1D34059FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6DE4059FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239929AbhIIPDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbhIIPDE (ORCPT
+        id S239373AbhIIPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:03:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41744 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236545AbhIIPC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:03:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DA0C061575;
-        Thu,  9 Sep 2021 08:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/Y5MADjdN8PfBLXXdisZCNOGIKICg1o3R1wg6sLA0F0=; b=n0r32pBAY1IV9h2w7DoeJMyOoS
-        H1Rzt3uYTOlPQMqb6PcKGFYj7Dny0GAtWGm26Cvk+BNSHpAHOF3wSOaZZ11F0o0NwUcE7iK/8RvIK
-        Fn5DWktzPwzi/oeVOBQpSB8Tdv5qwyzV/xovHdUrVgc0SfiL8IW7P+R8mN/zt0j6YNxV9IPLJabG+
-        zm0KJLt+3y/nrrW2G47diDSC8/AyVLeGM9AOzRZaNlYXIjq+FDt+dDpSXr/y50lfaqZ4B8moxgUm8
-        IcKz9DYX15I29Y/oPAv3iJ9SthEsSAlwNlzjphTEHQLrjb/MBthxEedADbaB7zuRmtsx4M551+6uL
-        Sm8VwI8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOLYc-001tWu-Rb; Thu, 09 Sep 2021 15:01:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 9 Sep 2021 11:02:58 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7CA130004C;
-        Thu,  9 Sep 2021 17:01:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BFB5E20C09044; Thu,  9 Sep 2021 17:01:41 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 17:01:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 04/19] cpufreq: amd: introduce a new amd pstate driver to
- support future processors
-Message-ID: <YToh1Vhei2PyhlW+@hirez.programming.kicks-ass.net>
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-5-ray.huang@amd.com>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D088922334;
+        Thu,  9 Sep 2021 15:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631199707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7YDXHPzZgNhxK+JqlG9HXkSUyEV8IJc2b4TuXsz5yH0=;
+        b=kRRhZmQ3mqVSek9+0O4cHQ+rYzMVNOxaruVMvb1v75PP9GurRgzsXJuC+mknsmdvE8YkvW
+        Zb3LnQ3XGdB56U8spoEpjD4a2QLYTxaQiq0o27yIjFzfZdz3biJUxxSO3DHXksyCYs62PA
+        HwqjlBP1xSO36QTsp9qKWvwqz6leJmo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B427213C53;
+        Thu,  9 Sep 2021 15:01:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id F1QlK9shOmFYSAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 15:01:47 +0000
+Date:   Thu, 9 Sep 2021 17:01:46 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, vipinsh@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
+ failures
+Message-ID: <20210909150146.GA18171@blackbody.suse.cz>
+References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
+ <20210824164423.GA11859@blackbody.suse.cz>
+ <YSVDwc/1sEmXdOK9@slm.duckdns.org>
+ <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
+ <20210826112954.GD4520@blackbody.suse.cz>
+ <49057879-92a9-958a-ac30-057ceabd1b7f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210908150001.3702552-5-ray.huang@amd.com>
+In-Reply-To: <49057879-92a9-958a-ac30-057ceabd1b7f@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:59:46PM +0800, Huang Rui wrote:
+Hi.
 
-> +struct amd_pstate_perf_funcs {
-> +	int (*enable)(bool enable);
-> +	int (*init_perf)(struct amd_cpudata *cpudata);
-> +	void (*update_perf)(struct amd_cpudata *cpudata,
-> +			    u32 min_perf, u32 des_perf,
-> +			    u32 max_perf, bool fast_switch);
-> +};
+On Wed, Sep 08, 2021 at 01:29:18PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
+> I have sentout misc_cgroup events and events.local related patches.
+> I want to make corresponding changes to pids cgroup by the way. Do
+> you think it is ok?
 
-> +static int
-> +amd_pstate_enable(struct amd_pstate_perf_funcs *funcs, bool enable)
-> +{
-> +	if (!funcs)
-> +		return -EINVAL;
-> +
-> +	return funcs->enable(enable);
-> +}
+The pids controller is longer out there, so some changes should be more
+careful (e.g. I wouldn't drop the log message).
 
-> +static int amd_pstate_init_perf(struct amd_cpudata *cpudata)
-> +{
-> +	struct amd_pstate_perf_funcs *funcs = cpufreq_get_driver_data();
-> +
-> +	if (!funcs)
-> +		return -EINVAL;
-> +
-> +	return funcs->init_perf(cpudata);
-> +}
+Also, you can base it on [1] (there should be just missing the
+.local/hierarchical event files separation).
 
-> +static int
-> +amd_pstate_update_perf(struct amd_cpudata *cpudata, u32 min_perf,
-> +		       u32 des_perf, u32 max_perf, bool fast_switch)
-> +{
-> +	struct amd_pstate_perf_funcs *funcs = cpufreq_get_driver_data();
-> +
-> +	if (!funcs)
-> +		return -EINVAL;
-> +
-> +	funcs->update_perf(cpudata, min_perf, des_perf,
-> +			   max_perf, fast_switch);
-> +
-> +	return 0;
-> +}
+HTH,
+Michal
 
-> +static struct amd_pstate_perf_funcs pstate_funcs = {
-> +	.enable = pstate_enable,
-> +	.init_perf = pstate_init_perf,
-> +	.update_perf = pstate_update_perf,
-> +};
-
-> +static int __init amd_pstate_init(void)
-> +{
-> +	int ret;
-> +	struct amd_pstate_perf_funcs *funcs;
-
-> +
-> +	funcs = &pstate_funcs;
-
-What is the purpose of this seemingly pointless indirection? Showing off
-how good AMD hardware is at doing retpolines or something?
+[1] https://lore.kernel.org/lkml/20200205134426.10570-1-mkoutny@suse.com/
