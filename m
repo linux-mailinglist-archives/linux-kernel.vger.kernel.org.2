@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C5A404562
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF87D40455F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351048AbhIIGHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:07:15 -0400
-Received: from ixit.cz ([94.230.151.217]:35424 "EHLO ixit.cz"
+        id S1351024AbhIIGGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:06:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230416AbhIIGHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:07:13 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 07C2423B26;
-        Thu,  9 Sep 2021 08:06:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1631167563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=A9gTHyq6E3JeJFh8rkOt3DGluwoUgFLUZDyk7Gy4dQQ=;
-        b=z8V7WpWkItt7z08qQk5e+KoswMAOBJDWgsBuls+XLnNnYI1f27TdmyqePWT6abzmiGHDDI
-        Zzf+JKASxu37NnLWTuBPQ0kCaEi/W7gZ3FIHzFv/HKVIsYrHHgw2r1A8Ubap0q+PEtEEPx
-        QwwriMo6lBcmwPmId3VSRI7aoNGZXU4=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
-Subject: [PATCH] dt-bindings: arm: qcom: add ipq4019 standalone entry
-Date:   Thu,  9 Sep 2021 08:04:50 +0200
-Message-Id: <20210909060450.10111-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S230416AbhIIGGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:06:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAAF161179;
+        Thu,  9 Sep 2021 06:05:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631167521;
+        bh=+J4KXjBeG3cAtBstnQyJvR39htCdgo/LRw5guWIeF9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iV15742uImo5txCs9urHsllg1qEkqhE26niC0ZUGAnvsHV+9O486KrEZLM0Uts8//
+         4HxCGHYy2+XZJGev7MFI8QzDWS1eXl52KM0aBdVriYUK09hXbnC/l9zeC8sjgms6xe
+         cMmk8njji8/Tf3rivsNI9C1qyS4G9dd42Rd4b+pY=
+Date:   Thu, 9 Sep 2021 08:05:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Yu, Lang" <Lang.Yu@amd.com>
+Cc:     Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Message-ID: <YTmkHlzW8yfx9VGg@kroah.com>
+References: <20210908120723.3920701-1-lang.yu@amd.com>
+ <YTitRjOZtWPTyRHd@kroah.com>
+ <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTi0xkTVYqUpKXSt@kroah.com>
+ <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTi/UxFCYKqdT34L@kroah.com>
+ <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTmZXU7myBFjx8/y@kroah.com>
+ <DM6PR12MB4250DD8FBA99A7F78B247B17FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB4250DD8FBA99A7F78B247B17FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that some ipq4019 boards just accepted architecture.
+On Thu, Sep 09, 2021 at 05:31:40AM +0000, Yu, Lang wrote:
+> [AMD Official Use Only]
+> 
+> 
+> 
+> >-----Original Message-----
+> >From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >Sent: Thursday, September 9, 2021 1:19 PM
+> >To: Yu, Lang <Lang.Yu@amd.com>
+> >Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
+> >linux-kernel@vger.kernel.org
+> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs_emit
+> >and sysfs_emit_at
+> >
+> >On Wed, Sep 08, 2021 at 03:33:51PM +0000, Yu, Lang wrote:
+> >> >Please feel free to add better documentation for the functions if you
+> >> >feel people are getting confused, do not change the existing behavior
+> >> >of the code as it rightly caught it being misused.
+> >>
+> >> You can find many patches named "convert sysfs scnprintf/snprintf to
+> >syfs_emit/sysfs_emit_at".
+> >> or "use sysfs_emit/sysfs_emit_at in show functions". They may think
+> >> it's better to use syfs_emit/sysfs_emit_at given its overrun avoidance.
+> >
+> >Yes, and using that in sysfs functions is fine, there is nothing wrong with this
+> >usage.
+> >
+> >> But there are still some corner cases(e.g., a non page boundary aligned buf
+> >address : ).
+> >
+> >I need a specific example of where this has gone wrong.  Please provide a
+> >lore.kernel.org link as I fail to see the problem here.
+> >
+> >Are you sure that you are not just abusing sysfs and having more than one value
+> >per file?  Does this mean I need to go audit all of the gpu sysfs file entries?
+> >
+> Indeed, the one value per file rule was broken... Thanks.  
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- Documentation/devicetree/bindings/arm/qcom.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Great, which file is that so we can fix it!
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 5169ebb97946..9b6dd7dc3825 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -174,6 +174,9 @@ properties:
-               - qcom,ipq4019-dk04.1-c1
-           - const: qcom,ipq4019
- 
-+      - items:
-+          - const: qcom,ipq4019
-+
-       - items:
-           - enum:
-               - qcom,ipq8064-ap148
--- 
-2.33.0
+thanks,
 
+greg k-h
