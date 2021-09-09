@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FDD405C48
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D177C405C51
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237236AbhIIRmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:42:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22678 "EHLO m43-7.mailgun.net"
+        id S241528AbhIIRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242040AbhIIRmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:42:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631209299; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=MSqBzglIX9Ji1B2JsR7XcPOCuvkcT4shZgQ10Bd3KQw=; b=ekxDbgUH8m8vuM2oVzNys93j25l7qqCd0DNzvKB7YIyMxttcY6gsaI6BCo7LhZRIrDCekhlo
- yUsUFqDUqUx8iYO/dpmmD3KnkLgx62R1HDYC5C6aMyJ84RFSdeSzjYsOV9+vd1RJl2DsCDxi
- 04bzPcbqgzb0x1FxfYQofY054d0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 613a474437cdab60400f11cb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 17:41:24
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A1A24C4361C; Thu,  9 Sep 2021 17:41:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2DDFC43460;
-        Thu,  9 Sep 2021 17:41:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A2DDFC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v6 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
-Date:   Thu,  9 Sep 2021 23:10:45 +0530
-Message-Id: <1631209245-31256-5-git-send-email-pmaliset@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631209245-31256-1-git-send-email-pmaliset@codeaurora.org>
-References: <1631209245-31256-1-git-send-email-pmaliset@codeaurora.org>
+        id S237224AbhIIRoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:44:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CC4761101
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:42:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631209378;
+        bh=IDTb4rA4Iui5aRziLg9MwZ0JPlkvhlzJK5j6CG2YU+0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pxs7yYPjI2FiogSgf75+K6JNUwG88sxc4d2EJyEAvBGzZnDI+PHGAw8avRptP4WEQ
+         jFfZ1lcR2jvT4Tvo/idJXSCf1HfYKMT3ktsQQ0MysMm9b82cYmontz4So5K9Erw4Vv
+         ypziB/SfDt1DhcM4Iq2mTMXsOh55kPipZp8g7tkKUePG8PfH4jrq7LCl3ACRGoNkT8
+         S0qmWsKZkD4mT3Jjmsc2N06bySrJo96fJ0VijW8OZmlIf4D29ZBAd9dcFaRzF8hImP
+         M4bKgjKvQ0DLwvUYDPtz9N1XjxWswq76yR69fvZo5oYb3PRblKAqCin472/8z+nFDl
+         yVXI312YGUzYQ==
+Received: by mail-ej1-f42.google.com with SMTP id i21so5237714ejd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:42:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531hpXybilrQQh8kb+0RxYQFXwDezhVnA+RkYeZel4Ch2oindkqC
+        chs4bvWk6DsyGFl6LV/5PanfANO6RcxawuGgpWzmFQ==
+X-Google-Smtp-Source: ABdhPJyn7JVomP+013foZ3fe1Rj++6cVmuLQ0a6uE4cjyzNeSOquhtWZVmaI59hReMQtP+DBXtUTKzqoR1GxIR10EhY=
+X-Received: by 2002:a17:906:2cd5:: with SMTP id r21mr4773787ejr.435.1631209377027;
+ Thu, 09 Sep 2021 10:42:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <1631146225-13387-1-git-send-email-prakash.sangappa@oracle.com>
+In-Reply-To: <1631146225-13387-1-git-send-email-prakash.sangappa@oracle.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 9 Sep 2021 10:42:43 -0700
+X-Gmail-Original-Message-ID: <CALCETrVHf90pWD6YnE3DCOo2bw1StKGPvZMgFz9a08eWPK2pFg@mail.gmail.com>
+Message-ID: <CALCETrVHf90pWD6YnE3DCOo2bw1StKGPvZMgFz9a08eWPK2pFg@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
+To:     Prakash Sangappa <prakash.sangappa@oracle.com>
+Cc:     Linux API <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the SC7280, By default the clock source for pcie_1_pipe is
-TCXO for gdsc enable. But after the PHY is initialized, the clock
-source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+On Wed, Sep 8, 2021 at 5:02 PM Prakash Sangappa
+<prakash.sangappa@oracle.com> wrote:
+>
+> Resending RFC. This patchset is not final. I am looking for feedback on
+> this proposal to share thread specific data for us in latency sensitive
+> codepath.
+>
+> (patchset based on v5.14-rc7)
+>
+> Cover letter previously sent:
+> ----------------------------
+>
+> Some applications, like a Databases require reading thread specific stats
+> frequently from the kernel in latency sensitive codepath. The overhead of
+> reading stats from kernel using system call affects performance.
+> One use case is reading thread's scheduler stats from /proc schedstat file
+> (/proc/pid/schedstat) to collect time spent by a thread executing on the
+> cpu(sum_exec_runtime), time blocked waiting on runq(run_delay). These
+> scheduler stats, read several times per transaction in latency-sensitive
+> codepath, are used to measure time taken by DB operations.
+>
+> This patch proposes to introduce a mechanism for kernel to share thread
+> stats thru a per thread shared structure shared between userspace and
+> kernel. The per thread shared structure is allocated on a page shared
+> mapped between user space and kernel, which will provide a way for fast
+> communication between user and kernel. Kernel publishes stats in this
+> shared structure. Application thread can read from it in user space
+> without requiring system calls.
 
-Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 8a7a300..db62b3c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
- 	struct regulator_bulk_data supplies[2];
- 	struct reset_control *pci_reset;
- 	struct clk *pipe_clk;
-+	struct clk *gcc_pcie_1_pipe_clk_src;
-+	struct clk *phy_pipe_clk;
- };
- 
- union qcom_pcie_resources {
-@@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-+		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-+		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-+			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-+
-+		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-+		if (IS_ERR(res->phy_pipe_clk))
-+			return PTR_ERR(res->phy_pipe_clk);
-+	}
-+
- 	res->pipe_clk = devm_clk_get(dev, "pipe");
- 	return PTR_ERR_OR_ZERO(res->pipe_clk);
- }
-@@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
- static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-+	struct dw_pcie *pci = pcie->pci;
-+	struct device *dev = pci->dev;
-+	struct device_node *node = dev->of_node;
-+
-+	if (res->gcc_pcie_1_pipe_clk_src != NULL)
-+		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
- 
- 	return clk_prepare_enable(res->pipe_clk);
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Can these use cases be addressed by creating a perf event
+(perf_event_open) and mmapping it?
