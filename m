@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B399E4058F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1DB405903
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346605AbhIIOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S243034AbhIIO2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344364AbhIIOZv (ORCPT
+        with ESMTP id S242216AbhIIO22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:25:51 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A2AC120D7B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:58:16 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id m11so2127448ioo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:58:16 -0700 (PDT)
+        Thu, 9 Sep 2021 10:28:28 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C26C022587;
+        Thu,  9 Sep 2021 06:10:05 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id e23so3612951lfj.9;
+        Thu, 09 Sep 2021 06:10:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xtXEmCkgLjj2ICcn/5G5ZZlK2SnZW1IcakfDyVuInEA=;
-        b=hB6xV2U22F35EshU9H4Y6s6DCeylbHAC/VYNgUqb5P03tlfg8suiMyms6Ulz+KWw7o
-         PGzgv8eA5+p9RnyJctVqWIv2Xyf++kBehqOOaYe34EIRSDjYzfjAwYE3HiYVyhQ9rHGU
-         boS/wzrrgtIefOtlhcfW/UrPgIZFc0qHYbxhFQF1HmcbKBGk5vTqPQBtLqHXV0Pd45IC
-         niqe22DM+7zzFfTjKljcBcDwdfJq1boitMqFKRGjL+tVpI8xaH8VYiHRnMcbSrt3Fj7g
-         ALLEfHozSHiTTSc6fvxJNa/e/ifhwub0NnAkAsAT1DcOUWiLPQW+vaBKX8V1oNghIb+5
-         90cg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KHHoXrJ+SWW5a+9TtCJiIXbU7xyrGDf/8+LvAfdLqDE=;
+        b=PpJMwvr4XwaYDUeqvg+foTmVL2OPhrRKP7dZuNVVDjKveMWs8caoJjpQeu5cuPwj7R
+         G2F/iZWpZtSreegjcTtfB/5Gb8rs15S6J2fPFYdpXhzAMj3813MEbJT5xKwXHSbOzHBi
+         6aHSgRHY+dz0eCE2lAi69SfixQ0r3e823BU2wvLfVmxfmZZjn0j/tVUQlGJhgwRZ3aI0
+         ZeB249bCY81LdhwDSDkNNQm1Y/0CYP/e4zRJHjsdYg/TBhsZuYIRjayCDD1c8L/UlvtE
+         YCff0MJyqgrh4i8F/Z189NiZ0f5tROaSmgcwEF491imA4hDSZcHwxvjnKV2SR4Eb1Ber
+         msBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xtXEmCkgLjj2ICcn/5G5ZZlK2SnZW1IcakfDyVuInEA=;
-        b=K3+2S7i7PkkZATolP7ysLwXnTfhDL/U7AYq6xV64Z46E2O7kh3PQo7ZlUbpvL524ga
-         JU3EU9YrDyf4OUWYYlxJLiWbk3hjOeE114iCifWl1OEeF9jfQqNIF8lXVSaBXAuQgeX8
-         DJeJnvfG9NLupoEuicYGynErWoE+tbswUfBMwR7XsEvA1ugo0bM4ITIqqgOf6YkQe81P
-         7srWeeHwzxJZiX3vjciyHju8bg3IkRdM8fd2XhV6aX5A3obra2VA2Z/NkJRDpuRqCjLn
-         A12kucicAZDAKccbQ3s98rnByN65dlGFmV0yktFayVo3EwbzSKR+empV5f2ZaLaFraYt
-         nJpw==
-X-Gm-Message-State: AOAM532FJUhaXEUf5KEIfkqTwNRUl88v8EzCVqaUPYeoEEn9k2KkgWJX
-        GGBq2IMff0bK1a6Owslm8oRNeQ==
-X-Google-Smtp-Source: ABdhPJyC9BpbGwDqu0GxL7mOtDLS4R168asvGRVWOhfSos1bWN9ugSXqhGImveQTNEcWGV/AFqBQZg==
-X-Received: by 2002:a6b:905:: with SMTP id t5mr2566323ioi.209.1631192296197;
-        Thu, 09 Sep 2021 05:58:16 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a4sm837736ioe.19.2021.09.09.05.58.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 05:58:15 -0700 (PDT)
-Subject: Re: [PATCH -next] io-wq: Fix memory leak in create_io_worker
-To:     Bixuan Cui <cuibixuan@huawei.com>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     asml.silence@gmail.com, john.wanghui@huawei.com
-References: <20210909084919.29644-1-cuibixuan@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2a63f105-c2a9-7c57-3101-ba7779cccb6d@kernel.dk>
-Date:   Thu, 9 Sep 2021 06:58:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KHHoXrJ+SWW5a+9TtCJiIXbU7xyrGDf/8+LvAfdLqDE=;
+        b=z9fpTP7+n6yFvdREgT6wnndbKCKuR/ESxSSqV+jUhiRA4XGr7tsBvg5cGBQITzczua
+         0QvVf61SI9h9+N7Hujvjf90k5E0lUpl/hhiovy8RYAlKMdbbzEcFmT5+ikYBkERtl1ht
+         Muwbekt4H/LRM7k7R5xr7UKf8J2Syincymqb3825gxwb5OaxyGCq+q6KDp3cWzwz3shE
+         gitwTZm7rKFf8+6b9nbj3b4RGXqazd5dTgXL1T2rb1nwUzIyPqK5vWGv7G1ybrL76/bV
+         G3KzN1UxrqSr40n2Z/H6n0julGBpV118bfucxrhca0IZwAMeKfl7rMais7QEKMRliuCe
+         nypA==
+X-Gm-Message-State: AOAM532N9quyEhdSsFuWUy0c6IdwnMScODOlIaIgxF/3dnC2GWzIoybH
+        dpAYY38E7erY+HxvdSeiPpfqEXBpGsM=
+X-Google-Smtp-Source: ABdhPJw0fUflj9KJzjYW3MEnAJFaoPREIExujmJjLB0R16NBBZacjdzjI4wTTx3sL6g1P5gG3g2mLw==
+X-Received: by 2002:a05:6512:228f:: with SMTP id f15mr2263936lfu.253.1631193004167;
+        Thu, 09 Sep 2021 06:10:04 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id w9sm211056ljo.36.2021.09.09.06.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 06:10:03 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 16:10:02 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/3] fs/ntfs3: Speed up hardlink creation
+Message-ID: <20210909131002.sketqhqczh4ahe74@kari-VirtualBox>
+References: <db0989dd-c03b-d252-905c-f0ebd0abe27f@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <20210909084919.29644-1-cuibixuan@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db0989dd-c03b-d252-905c-f0ebd0abe27f@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 2:49 AM, Bixuan Cui wrote:
-> If io_should_retry_thread is false, free the worker before goto fails.
+On Thu, Sep 09, 2021 at 01:57:51PM +0300, Konstantin Komarov wrote:
+> xfstest 041 was taking some time before failing,
+> so this series aims to fix it and speed up.
 
-This one is incomplete, see other postings.
+Please replay patch series against to cover letter.
 
--- 
-Jens Axboe
-
+> 
+> Konstantin Komarov (3):
+>   fs/ntfs3: Fix insertion of attr in ni_ins_attr_ext
+>   fs/ntfs3: Change max hardlinks limit to 4000
+>   fs/ntfs3: Add sync flag to ntfs_sb_write_run and al_update
+> 
+>  fs/ntfs3/attrib.c   | 2 +-
+>  fs/ntfs3/attrlist.c | 6 +++---
+>  fs/ntfs3/frecord.c  | 6 +++++-
+>  fs/ntfs3/fslog.c    | 9 +++++----
+>  fs/ntfs3/fsntfs.c   | 8 ++++----
+>  fs/ntfs3/inode.c    | 2 +-
+>  fs/ntfs3/ntfs.h     | 3 ++-
+>  fs/ntfs3/ntfs_fs.h  | 4 ++--
+>  fs/ntfs3/xattr.c    | 2 +-
+>  9 files changed, 24 insertions(+), 18 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
