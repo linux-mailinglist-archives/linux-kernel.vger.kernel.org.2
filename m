@@ -2,92 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918DC405A77
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0313405A7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhIIPzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
+        id S236785AbhIIQBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhIIPzq (ORCPT
+        with ESMTP id S231974AbhIIQBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:55:46 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C260C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:54:36 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id w17so1816949qta.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:54:36 -0700 (PDT)
+        Thu, 9 Sep 2021 12:01:37 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41EEC061574;
+        Thu,  9 Sep 2021 09:00:27 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id n4so1344093plh.9;
+        Thu, 09 Sep 2021 09:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lNkOobc3fvllVNhfS015DlznHrwl6HCxnMSWZ4cncKQ=;
-        b=hOeCR/JJuW3vq5krtQ04NqAe3NRp9UNakz/JaDhHfDTZXY284UOdc/H3BIkQrQt4D3
-         2keTTfRtZtd8VXUfZ9/WHkaa+4yY59N15v5RRRDVZXIiZR5oQRWBUAsmXgDywC8AXUQf
-         p1lc2oep7lRHbwWCCMkvGXUqRXldKb0T4q/tnxwLCMFvMPsE0mAiF3B1M7CxRRNDbJTJ
-         VCEbEW3/BeqBqzXEJ1QPMMO7xwsBOyNng46vZOrHKngRonUTKFTflKhBX++Cbjrb3/k0
-         hMP7o1hCue6h2FAzSthtp4Xs9izE3FJcX9Ye+xndsOvyNsj9U5Hzylw5CFHQ8HvW7TMS
-         9OeQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ShIwsrMXfW3/Yrzc0ZIXeANjlzz7dQBqXVqjI+SxjTY=;
+        b=dBChgycr53cNPic6HHMTdDbJa0VYmQ3rqhecQ/uh//NlOM8gE2bpZ+v6yRuGJs52pf
+         XhZ+YWUYxHmiQvlxXTrP7SUwdisJErR4umzYEZxK8rbcY5tWZIvj8KG5eZg3ernyGmVE
+         svKP0r4QtU9c78qUpFI97jggv22uhdtt6rnR7qFcAyg/1gxzA3RtJNXY452M008VydbT
+         8Yj+ODEErtcVNjcnu1Pv47H4yfturP/05XwZ9fUtAjxd5qfmsIP2gK1FriNhyeXj+J0d
+         5f4mBstyaQnNa/ecX+02SmQmuectPRQmcESvbcj+A/CrYnqEGaj1tDnKB0bVdoUpWpTJ
+         1ERw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lNkOobc3fvllVNhfS015DlznHrwl6HCxnMSWZ4cncKQ=;
-        b=QHAR7UqAQHd3Q5Potf9hnayHwae/3CuoNoc2gFX6/G02d80bI+qc5rgJUmbbzZOqnf
-         kJSEKru3qsk3d7gU0IVtyzbJAJ/YvW12WYz3nCN1fE5nkl3ASKgZrL2ei/3doFP2UZns
-         Qm1hCs3BVxyr/wEpB9unQcpr4Ngty0MvXZ1Rvu9BiHm35bDQIuUSoffaZ9NwAXJYxa4X
-         AbvE4HbITTB+RQKJzKSbOjdQrAW2WAvT9cLYFrSKzqMyLIa0xtiiKjgg1ce2GT/KVFqK
-         0i+2CdBJhpgDHf3RStIZzwxe2DOUvYb2wUa9eIUhvZFQMlfaabK7haa+ibpxaPDRi0Gr
-         iGkg==
-X-Gm-Message-State: AOAM531aPMp8BGcbXm0XMM9CCw3ssxeYDi2FJb/Wfy32WCDczB5WUCmS
-        8azJToZP6gNYqcog5UDh92+S3UQd2K7hMw==
-X-Google-Smtp-Source: ABdhPJyAenaHR8h2iXKo1iDFqmURb78xjYil4jnfjAijvBPE9Zc4iIAAq2xHYlW/b76M4RVxlmECMA==
-X-Received: by 2002:ac8:6a0c:: with SMTP id t12mr3427239qtr.159.1631202875799;
-        Thu, 09 Sep 2021 08:54:35 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id f6sm1523925qko.85.2021.09.09.08.54.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 08:54:35 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 11:56:26 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Huangzhaoyang <huangzhaoyang@gmail.com>
-Cc:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
-        ke.wang@unisoc.com
-Subject: Re: [RFC PATCH] psi : calc psi memstall time more precisely
-Message-ID: <YTouqsXeAGV6c5oV@cmpxchg.org>
-References: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ShIwsrMXfW3/Yrzc0ZIXeANjlzz7dQBqXVqjI+SxjTY=;
+        b=MLvp1I8g47AXEgXJfhhOvUNd6I13pJYVVvd7J1ReB3do8yiZS85aRq+EFhno6sJFc/
+         jUZuWSj5V8gka5PBVBU9Le3oqWF6MpMG1C8OzvX2KbCq4o8Kmu9B2PEvu9TQCkcTUkbB
+         RB6WRXIQDmLtWXVSP24OZnHpgoK6MbDGt9BoYD+64YajnVLM/rcTsZX88CPItAY7Zd0G
+         nuSCGw5fXryA3tX25u+t9yGPXRlSPyrcUlxhFJCX2+Fx3iVviyN+yKnZbye5QM6RMQE2
+         /OvXZ/5JEtGLWdCKKRPiH7VPmJKpfJ21g0FOPc383YyGy7JtIu9cM2sQE3DOpFYhdAVf
+         IyEw==
+X-Gm-Message-State: AOAM530c+oPmx+eBeLXnY7pqTUxDuqE6KljnQBFvF8mG2S3xG0yHL+jS
+        4oUsL/2gHhXXZT9WbNMxsfM=
+X-Google-Smtp-Source: ABdhPJxaKJ6M8DAo5gMOure1MZbTIoVLb9ZcvBBHlTYLDGKsdifW48rKeBJRgsILENXWhfuyoJ1Esg==
+X-Received: by 2002:a17:90b:4c4d:: with SMTP id np13mr4469858pjb.166.1631203227323;
+        Thu, 09 Sep 2021 09:00:27 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id q21sm2900457pgk.71.2021.09.09.09.00.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 09:00:26 -0700 (PDT)
+Message-ID: <92ad3d7d-78db-289b-47d7-55b33b83c24e@gmail.com>
+Date:   Thu, 9 Sep 2021 09:00:21 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+Content-Language: en-US
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+ <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+ <20210909114248.aijujvl7xypkh7qe@skbuf>
+ <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+ <20210909154734.ujfnzu6omcjuch2a@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210909154734.ujfnzu6omcjuch2a@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 08:00:24PM +0800, Huangzhaoyang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
++Saravana,
+
+On 9/9/2021 8:47 AM, Vladimir Oltean wrote:
+> On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
+>>> Do you see similar things on your 5.10 kernel?
+>>
+>> For the master device is see
+>>
+>> lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consumer:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:spi3.0
 > 
-> psi's memstall time is counted as simple as exit - entry so far, which ignore
-> the task's off cpu time. Fix it by calc the percentage of off time via task and
-> rq's util and runq load.
+> So this is the worst of the worst, we have a device link but it doesn't help.
 > 
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> Where the device link helps is here:
+> 
+> __device_release_driver
+> 	while (device_links_busy(dev))
+> 		device_links_unbind_consumers(dev);
+> 
+> but during dev_shutdown, device_links_unbind_consumers does not get called
+> (actually I am not even sure whether it should).
+> 
+> I've reproduced your issue by making this very simple change:
+> 
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> index 60d94e0a07d6..ec00f34cac47 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> @@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver = {
+>   	.id_table = enetc_pf_id_table,
+>   	.probe = enetc_pf_probe,
+>   	.remove = enetc_pf_remove,
+> +	.shutdown = enetc_pf_remove,
+>   #ifdef CONFIG_PCI_IOV
+>   	.sriov_configure = enetc_sriov_configure,
+>   #endif
+> 
+> on my DSA master driver. This is what the genet driver has "special".
+> 
+> I was led into grave error by Documentation/driver-api/device_link.rst,
+> which I've based my patch on, where it clearly says that device links
+> are supposed to help with shutdown ordering (how?!).
 
-Can you please explain what practical problem you are trying to solve?
+I was also under the impression that device links were supposed to help 
+with shutdown ordering, because it does matter a lot. One thing that I 
+had to work before (and seems like it came back recently) is the 
+shutdown ordering between gpio_keys.c and the GPIO controller. If you 
+suspend the GPIO controller first, gpio_keys.c never gets a chance to 
+keep the GPIO pin configured for a wake-up interrupt, therefore no 
+wake-up event happens on key presses, whoops.
 
-If a reclaimer gets preempted and has to wait for CPU, should that
-stall be attributed to a lack of memory? Some of it should, since page
-reclaim consumed CPU budget that would've otherwise been available for
-doing real work. The application of course may still have experienced
-a CPU wait outside of reclaim, but potentially a shorter one. Memory
-pressure can definitely increase CPU pressure (as it can IO pressure).
+> 
+> So the question is, why did my DSA trees get torn down on shutdown?
+> Basically the short answer is that my SPI controller driver does
+> implement .shutdown, and calls the same code path as the .remove code,
+> which calls spi_unregister_controller which removes all SPI children..
+> 
+> When I added this device link, one of the main objectives was to not
+> modify all DSA drivers. I was certain based on the documentation that
+> device links would help, now I'm not so sure anymore.
+> 
+> So what happens is that the DSA master attempts to unregister its net
+> device on .shutdown, but DSA does not implement .shutdown, so it just
+> sits there holding a reference (supposedly via dev_hold, but where from?!)
+> to the master, which makes netdev_wait_allrefs to wait and wait.
 
-Proportional and transitive accounting - how much of total CPU load is
-page reclaim, and thus how much of each runq wait is due to memory
-pressure - would give more precise answers. But generally discounting
-off-CPU time in a stall is not any more correct than including it all.
+It's not coming from of_find_net_device_by_node() that's for sure and 
+with OF we don't go through the code path calling 
+dsa_dev_to_net_device() which does call dev_hold() and then shortly 
+thereafter the caller calls dev_put() anyway.
 
-This is doable, but I think there needs to be better justification for
-providing this level of precision, since it comes with code complexity
-that has performance and maintenance overhead.
+> 
+> I need more time for the denial phase to pass, and to understand what
+> can actually be done. I will also be away from the keyboard for the next
+> few days, so it might take a while. Your patches obviously offer a
+> solution only for KSZ switches, we need something more general. If I
+> understand your solution, it works not by virtue of there being any
+> shutdown ordering guarantee at all, but simply due to the fact that
+> DSA's .shutdown hook gets called eventually, and the reference to the
+> master gets freed eventually, which unblocks the unregister_netdevice
+> call from the master. I don't yet understand why DSA holds a long-term
+> reference to the master, that's one thing I need to figure out.
+> 
+
+Agreed.
+-- 
+Florian
