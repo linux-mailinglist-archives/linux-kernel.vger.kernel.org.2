@@ -2,150 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE55405D15
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBD3405D17
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239647AbhIIS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:58:58 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:65140 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbhIIS64 (ORCPT
+        id S237555AbhIITAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhIITAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:58:56 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id d43d481c64ac2b61; Thu, 9 Sep 2021 20:57:45 +0200
-Received: from kreacher.localnet (unknown [213.134.181.77])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 260B266A4C2;
-        Thu,  9 Sep 2021 20:57:45 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] MAINTAINERS: Change Rafael's e-mail address
-Date:   Thu, 09 Sep 2021 20:57:44 +0200
-Message-ID: <5509701.DvuYhMxLoT@kreacher>
+        Thu, 9 Sep 2021 15:00:20 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDABC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:59:10 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id j2so1704531pll.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ivHQCNTMj8d081EaJs/OWp0rY18lxe7zmhcLzE6AV3M=;
+        b=YnjGjn+AKEmZ920Dc2yEn3vadOv8hGcIrIfrx+Lo4uwM1Pk4c793DAW101NoeUSTn/
+         bXl13y7V493cBm7h6LnfqQKWturRswUuWOmhxkK55I7p1EPKL33/ZvKQAQFueqCUqPHA
+         /6BoyCl++OiJb3DXF+UgfzFU2RyYxyddNk+PQ2SdRqDCgwC0uFE8BxiSNevMselh/ml2
+         +knI0+9D8zKLV5Hnq5izjaiHkCU5anlpAM35eEkW4QLHmDrlCznQ3wsm9eJbkXBudqKs
+         8YoMSJ20ZMc+eosSj85XHm/D2OqyTyBKVQrloLYlXSc7ZjdthMi7wlGNFfXJDmvsC63N
+         WFwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ivHQCNTMj8d081EaJs/OWp0rY18lxe7zmhcLzE6AV3M=;
+        b=q6WjvbDDVj3RNQNMzA6F4+iO766E/kfcyxnPDLnGBR1Kgwn5Cx+yd3pLqMKmOuTDu9
+         DsRMEASZcAhJYBwMt/Doo/ANfdCw9N6ppar6HTjk+Z18aNp5iecuQMiTlVAVVDiFZ1Is
+         A8pUjrE4RgxNn5l5nHF6Qg9cjXGt1JylHOLueKE77jzGL/Ne12AN4pnFB29isG/uWsRk
+         1PZMxiAsMDncluaSjR892BJOBE2tWlOep2ylzZDUT7lSlWQff5j1U9Z1oRAb2/smgiAg
+         2uKXSM9ajj3TtfZdzYcHJRfq9Os/PcXXH5KDbrH9Fhz54gS+JixeCF9S5yr5C0gI6O40
+         Urnw==
+X-Gm-Message-State: AOAM530qhMLACpU//9nmq65UOoOcmaFNcqvrtmlL7lxGx/oIrrTow90K
+        PIoY9t4VUScZE+PYeAKpM4msxQ==
+X-Google-Smtp-Source: ABdhPJzbuG9m75RBkmn+9LvIUiv0Yxgry2fXtBpxvZf91/vhVbV1zXHbF1aZnXw49a+ez/Aw4NJQ2A==
+X-Received: by 2002:a17:90a:f002:: with SMTP id bt2mr5227853pjb.207.1631213949990;
+        Thu, 09 Sep 2021 11:59:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u7sm3063969pjn.45.2021.09.09.11.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 11:59:09 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 18:59:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, pbonzini@redhat.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+Message-ID: <YTpZeVZb5tsscAmv@google.com>
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
+ <YQRkBI9RFf6lbifZ@google.com>
+ <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
+ <YQgTPakbT+kCwMLP@google.com>
+ <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
+ <YTD4l7L0CKMCQwd5@google.com>
+ <YTD9kIIzAz34Ieeu@google.com>
+ <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.181.77
-X-CLIENT-HOSTNAME: 213.134.181.77
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudefledgudefudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffekteethfdvhfefgffhueefleehudeihedujeeutddvfeekvdehtdetteeuieehnecuffhomhgrihhnpegrrhhmrdgtohhmpdhophgvnhhlihhnuhigrdhorhhgpdhkrghnughordhhuhdpkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddukedurdejjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukedurdejjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
- gh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael@kernel.org>
+On Tue, Sep 07, 2021, Xiaoyao Li wrote:
+> On 9/3/2021 12:36 AM, Sean Christopherson wrote:
+> > On Thu, Sep 02, 2021, Sean Christopherson wrote:
+> > > On Tue, Aug 03, 2021, Xiaoyao Li wrote:
+> > > > On 8/2/2021 11:46 PM, Sean Christopherson wrote:
+> > > > > > > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+> > > > > > > >     	return 0;
+> > > > > > > >     }
+> > > > > > > > +static int handle_notify(struct kvm_vcpu *vcpu)
+> > > > > > > > +{
+> > > > > > > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
+> > > > > > > > +
+> > > > > > > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
+> > > > > > > 
+> > > > > > > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
+> > > > > > 
+> > > > > > It means whether the VM context is corrupted and not valid in the VMCS.
+> > > > > 
+> > > > > Well that's a bit terrifying.  Under what conditions can the VM context become
+> > > > > corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
+> > > > > then KVM needs to be ultra conservative as a false positive could be fatal to a
+> > > > > guest.
+> > > > > 
+> > > > 
+> > > > Short answer is no case will set the VM_CONTEXT_INVALID bit.
+> > > 
+> > > But something must set it, otherwise it wouldn't exist.
+> 
+> For existing Intel silicon, no case will set it. Maybe in the future new
+> case will set it.
+> 
+> > The condition(s) under
+> > > which it can be set matters because it affects how KVM should respond.  E.g. if
+> > > the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
+> > > it as a shutdown and reset the VMCS.
+> > 
+> > Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
+> > exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
+> > awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
+> > won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
+> > to handle that via an existing VM-Exit reason :-/
+> > 
+> > > But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
+> > > issue, then we can do:
+> > > 
+> > > 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
+> > > 		return -EIO;
+> > > 
+> > > Either way, to enable this by default we need some form of documentation that
+> > > describes what conditions lead to VM_CONTEXT_INVALID.
+> 
+> I still don't know why the conditions lead to it matters. I think the
+> consensus is that once VM_CONTEXT_INVALID happens, the vcpu can no longer
+> run.
 
-I have been slow to respond to messages going to rjw@rjwysocki.net
-recently, so change it to rafael@kernel.org (which works better for
-me) in MAINTAINERS.
+Yes, and no longer being able to run the vCPU is precisely the problem.  The
+condition(s) matters because if there's a possibility, however small, that enabling
+NOTIFY_WINDOW can kill a well-behaved guest then it absolutely cannot be enabled by
+default.
 
-Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
----
- MAINTAINERS |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+> Either KVM_BUG_ON() or a specific EXIT to userspace should be OK?
 
-Index: linux-pm/MAINTAINERS
-===================================================================
---- linux-pm.orig/MAINTAINERS
-+++ linux-pm/MAINTAINERS
-@@ -333,7 +333,7 @@ S:	Maintained
- F:	drivers/platform/x86/acer-wmi.c
- 
- ACPI
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Len Brown <lenb@kernel.org>
- L:	linux-acpi@vger.kernel.org
- S:	Supported
-@@ -354,7 +354,7 @@ F:	include/linux/fwnode.h
- F:	tools/power/acpi/
- 
- ACPI APEI
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Len Brown <lenb@kernel.org>
- R:	James Morse <james.morse@arm.com>
- R:	Tony Luck <tony.luck@intel.com>
-@@ -402,7 +402,7 @@ S:	Maintained
- F:	drivers/platform/x86/i2c-multi-instantiate.c
- 
- ACPI PMIC DRIVERS
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Len Brown <lenb@kernel.org>
- R:	Andy Shevchenko <andy@kernel.org>
- R:	Mika Westerberg <mika.westerberg@linux.intel.com>
-@@ -4797,7 +4797,7 @@ W:	http://www.arm.com/products/processor
- F:	drivers/cpufreq/vexpress-spc-cpufreq.c
- 
- CPU FREQUENCY SCALING FRAMEWORK
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Viresh Kumar <viresh.kumar@linaro.org>
- L:	linux-pm@vger.kernel.org
- S:	Maintained
-@@ -4815,7 +4815,7 @@ F:	kernel/sched/cpufreq*.c
- F:	tools/testing/selftests/cpufreq/
- 
- CPU IDLE TIME MANAGEMENT FRAMEWORK
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Daniel Lezcano <daniel.lezcano@linaro.org>
- L:	linux-pm@vger.kernel.org
- S:	Maintained
-@@ -7525,7 +7525,7 @@ W:	ftp://ftp.openlinux.org/pub/people/hc
- F:	fs/freevxfs/
- 
- FREEZER
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Pavel Machek <pavel@ucw.cz>
- L:	linux-pm@vger.kernel.org
- S:	Supported
-@@ -7778,7 +7778,7 @@ S:	Supported
- F:	drivers/i2c/muxes/i2c-demux-pinctrl.c
- 
- GENERIC PM DOMAINS
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Kevin Hilman <khilman@kernel.org>
- M:	Ulf Hansson <ulf.hansson@linaro.org>
- L:	linux-pm@vger.kernel.org
-@@ -8244,7 +8244,7 @@ W:	http://drama.obuda.kando.hu/~fero/cgi
- F:	drivers/video/fbdev/hgafb.c
- 
- HIBERNATION (aka Software Suspend, aka swsusp)
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Pavel Machek <pavel@ucw.cz>
- L:	linux-pm@vger.kernel.org
- S:	Supported
-@@ -14838,7 +14838,7 @@ F:	kernel/time/*timer*
- F:	kernel/time/namespace.c
- 
- POWER MANAGEMENT CORE
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- L:	linux-pm@vger.kernel.org
- S:	Supported
- B:	https://bugzilla.kernel.org
-@@ -17775,7 +17775,7 @@ F:	arch/sh/
- F:	drivers/sh/
- 
- SUSPEND TO RAM
--M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-+M:	"Rafael J. Wysocki" <rafael@kernel.org>
- M:	Len Brown <len.brown@intel.com>
- M:	Pavel Machek <pavel@ucw.cz>
- L:	linux-pm@vger.kernel.org
-
-
+Not if the VM_CONTEXT_INVALID happens while L2 is running.  If software can trigger
+VM_CONTEXT_INVALID at will, then killing the VM would open up the door to a
+malicious L2 killing L1 (which would be rather ironic since this is an anti-DoS
+feature).  IIUC, VM_CONTEXT_INVALID only means the current VMCS is garbage, thus
+an occurence while L2 is active means that vmcs02 is junk, but L1's state in vmcs01,
+vmcs12, etc... is still valid.
 
