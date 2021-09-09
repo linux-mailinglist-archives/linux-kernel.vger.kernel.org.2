@@ -2,154 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649BA404722
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E4F404793
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhIIIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:40:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61753 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231691AbhIIIkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:40:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631176740; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=dZetHwaye2lReUsUd8ql1cJnBrL9CLUFOLmfRGtkGzg=; b=EOYgFp+oPQjL6A66GYwb7TRoOubyxQIyWzAmIdB0iJ3OWFkoa9MGtVZPU0Bbl8juxtYffSBG
- biBTjilLLr6Ip0TSqVw7GqGwILKYN9rj7q9EKx0b4JIGjALob9hJIT+Qwg/LKjODSdijOp/C
- odMQiaXh+EXBil2/VC3YATiDiaA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6139c824ab61cfa9f4da5fa6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 08:39:00
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EA3F9C43616; Thu,  9 Sep 2021 08:38:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from PILLAIR1 (unknown [103.149.158.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4797AC4338F;
-        Thu,  9 Sep 2021 08:38:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4797AC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   <pillair@codeaurora.org>
-To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
-        <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>
-Cc:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
-        <mpubbise@codeaurora.org>
-References: <1628619089-12502-1-git-send-email-pillair@codeaurora.org> <CAE-0n539nm6BrR51bZW-jX8e=o5d19JFnKfT9fb-sVS9FGKn0A@mail.gmail.com>
-In-Reply-To: <CAE-0n539nm6BrR51bZW-jX8e=o5d19JFnKfT9fb-sVS9FGKn0A@mail.gmail.com>
-Subject: RE: [PATCH v2] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-Date:   Thu, 9 Sep 2021 14:08:53 +0530
-Message-ID: <005c01d7a556$220ae9b0$6620bd10$@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFga5rYGLLrUznfOc7QK5071klN0gIeqw2xrHjfJdA=
-Content-Language: en-us
+        id S232444AbhIIJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:15:05 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:45113 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhIIJPE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:15:04 -0400
+X-Greylist: delayed 1956 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 05:15:03 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=FdVnE8dqneJD33E5HI
+        B6C5thLfLaj9xAJii2UP8mF5U=; b=XpFGwryvCTbc7w5NyYHqsk3ZT96JaQ0rrT
+        QE0qWN1s938S2baU7RP1lUyxeCEfDR6JEznnIPe9IRm+q5jo1pS39aurKbhRVPPi
+        Ke5Kvff5VcDD0IlIwSW/9I2TdUbWHvDDMXlc3sfT4oFKuUh7bHOIteWvqBvovZIK
+        4JVeoNiB8=
+Received: from localhost.localdomain (unknown [221.221.167.32])
+        by smtp7 (Coremail) with SMTP id DsmowABngVg8yDlh1WPDUQ--.41134S4;
+        Thu, 09 Sep 2021 16:39:25 +0800 (CST)
+From:   zhang kai <zhangkaiheb@126.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhang kai <zhangkaiheb@126.com>
+Subject: [PATCH] ipv6: delay fib6_sernum increase in fib6_add
+Date:   Thu,  9 Sep 2021 16:39:18 +0800
+Message-Id: <20210909083918.27008-1-zhangkaiheb@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DsmowABngVg8yDlh1WPDUQ--.41134S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZryDCryfKF13tr1xAw48Xrb_yoWDJrX_Ga
+        97Ww15uF1jgrZ2kw1DZw43JFyrta1fWFyfZFWSyFZ7t3Zxtry5Aws3ZanxAFWfGry3Kay7
+        ur45GFyrAr1IgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUgAw3UUUUU==
+X-Originating-IP: [221.221.167.32]
+X-CM-SenderInfo: x2kd0wxndlxvbe6rjloofrz/1tbikx0J-lpECQ6N+AAAsV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+only increase fib6_sernum in net namespace after add fib6_info
+successfully.
 
+Signed-off-by: zhang kai <zhangkaiheb@126.com>
+---
+ net/ipv6/ip6_fib.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> -----Original Message-----
-> From: Stephen Boyd <swboyd@chromium.org>
-> Sent: Wednesday, August 11, 2021 1:22 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
-> bjorn.andersson@linaro.org; robh+dt@kernel.org
-> Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org
-> Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add WPSS remoteproc
-> node
->=20
-> Quoting Rakesh Pillai (2021-08-10 11:11:29)
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > index 53a21d0..41a7826 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > @@ -74,6 +74,16 @@
-> >                         reg =3D <0 0x8b700000 0 0x10000>;
-> >                         no-map;
-> >                 };
-> > +
-> > +               wlan_fw_mem: memory@80c00000 {
-> > +                       no-map;
-> > +                       reg =3D <0x0 0x80c00000 0x0 0xc00000>;
-> > +               };
->=20
-> Please try to keep this sorted by reg address. 80c00000 comes before
-> 8b700000.
->=20
-
-Hi Stephen,
-I will fix this and send v3 for this patch.
-
-
-> > +
-> > +               wpss_mem: memory@9ae00000 {
-> > +                       no-map;
-> > +                       reg =3D <0x0 0x9ae00000 0x0 0x1900000>;
-> > +               };
-> >         };
-> >
-> >         cpus {
-> > @@ -1270,6 +1280,53 @@
-> >                         };
-> >                 };
-> >
-> > +               remoteproc_wpss: remoteproc@8a00000 {
-> > +                       compatible =3D "qcom,sc7280-wpss-pil";
-> > +                       reg =3D <0 0x08a00000 0 0x10000>;
-> > +
-> > +                       interrupts-extended =3D <&intc GIC_SPI 587
-> IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 0 =
-IRQ_TYPE_NONE>,
-> > +                                             <&wpss_smp2p_in 1 =
-IRQ_TYPE_NONE>,
-> > +                                             <&wpss_smp2p_in 2 =
-IRQ_TYPE_NONE>,
-> > +                                             <&wpss_smp2p_in 3 =
-IRQ_TYPE_NONE>,
-> > +                                             <&wpss_smp2p_in 7
-> > + IRQ_TYPE_NONE>;
->=20
-> Is this IRQ_TYPE_EDGE_RISING? Please add some type of edge or level =
-flag.
-
-I will change it to IRQ_TYPE_EDGE_RISING and send out the next revision.
-
->=20
-> > +                       interrupt-names =3D "wdog", "fatal", =
-"ready", "handover",
-> > +                                         "stop-ack", =
-"shutdown-ack";
-> > +
-> > +                       clocks =3D <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
-> > +                                <&gcc GCC_WPSS_AHB_CLK>,
-> > +                                <&gcc GCC_WPSS_RSCP_CLK>,
-> > +                                <&rpmhcc RPMH_CXO_CLK>;
-> > +                       clock-names =3D "gcc_wpss_ahb_bdg_mst_clk",
-> > +                                     "gcc_wpss_ahb_clk",
-> > +                                     "gcc_wpss_rscp_clk",
-> > +                                     "xo";
-> > +
-> > +                       memory-region =3D <&wpss_mem>;
-> > +
-> > +                       qcom,smem-states =3D <&wpss_smp2p_out 0>;
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 4d7b93baa..07de2fbc9 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -1377,7 +1377,6 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
+ 	int err = -ENOMEM;
+ 	int allow_create = 1;
+ 	int replace_required = 0;
+-	int sernum = fib6_new_sernum(info->nl_net);
+ 
+ 	if (info->nlh) {
+ 		if (!(info->nlh->nlmsg_flags & NLM_F_CREATE))
+@@ -1477,7 +1476,7 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
+ 	if (!err) {
+ 		if (rt->nh)
+ 			list_add(&rt->nh_list, &rt->nh->f6i_list);
+-		__fib6_update_sernum_upto_root(rt, sernum);
++		__fib6_update_sernum_upto_root(rt, fib6_new_sernum(info->nl_net));
+ 		fib6_start_gc(info->nl_net, rt);
+ 	}
+ 
+-- 
+2.17.1
 
