@@ -2,61 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B2B4045CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F684045CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350746AbhIIGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:52:24 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:33785 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhIIGwX (ORCPT
+        id S1350859AbhIIGxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350839AbhIIGxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:52:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so1243089ilj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:51:14 -0700 (PDT)
+        Thu, 9 Sep 2021 02:53:38 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16741C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:52:29 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id bd1so1303297oib.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n/dbtsQItzFXG3VUtr5tpCtogf60jhbRfY1HqI+6zeg=;
+        b=gyFgjz4/3LjQCakqfOSTVUCjrvKZcjbZHuTwspXxUdu8JCq0c29GPSXdlOJKg8kEX/
+         whefJmwhR4dTsN+4Gtszow3uSHaLa5N4E7aWgjz+fNO0IEHOy7H0M4nx65A/RsyTaZOd
+         bFa5if1a/nFRzVskAHrouMI9W4Vnu7ZFnuBB87FdKR5L0hsBQlzU0YTb2e3JofdAJqy1
+         byh6cJb/po6bcwbieRkpagopbAf7WGXNJVdA8iTq3Q3KX+yphpw35xa2wVt9WnPNA9xT
+         i4CI2w7tN6MPiCB+aeM+VQefMXj5aKzAEQSX6vvBYMNa7rfqiB2GgaLjhYbOhkOVqtET
+         o5Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=kDkmBLWaDYRnrQjU0pW08RiRXMeXOiOOb1COf/LFO7U=;
-        b=V2z5L4SF8DZwLumdPff97fBzIYmsnroU6Q/bXe6IWncpeLFgHy6FN4XyErZt+Q3cyJ
-         M0M8zDoa4n0hk5YCPBr2P3imkascCCN2AInV+VVRomZucCs/sxK4OyrloQ5ILda857g7
-         RMh9AJlj8Xrbz1/kcAgVjiles0Qwv+Nk+q+6LwpWMMcfx17z07nF3hussYFc2NRAF5a3
-         Rq0luAdzkCPYAtuFIxp7r9zP0+VenEJa8nezFG5lrwf6TJY2BTZPlMDgNf7xVWS9mt0T
-         bSDF3nX3oxraHm0Ue55O0D38SZQzdsjuezGl4B47wy+SX/rQPrEh2NxGNKmgucsQo3qg
-         gwwQ==
-X-Gm-Message-State: AOAM532Ap9yBEnrGFS66Gtg2RYmNO1W/2PfQ1hEp+X/HfW33yuFMa3qh
-        jTwc/kB44bEn0/MWuyY50yemuqsG8ruHLCo0ltw1O3NIJTOW
-X-Google-Smtp-Source: ABdhPJzho46HFyo1dlf+WBjkzC2MnzGIgmkh9OHBrq8p1x32bpn2LBRKLLO/LQo4mQcInwQuDpOYrWCqCZfG3+LQIYK7sb2Q7O5E
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n/dbtsQItzFXG3VUtr5tpCtogf60jhbRfY1HqI+6zeg=;
+        b=yAW/WyuHaPMpovKljzp3rToRzVCXasA+VHelu95IjbI+Wi9EhvsUuBq6xtDqvLawIF
+         reqJLrB88H0HAry+3IIlhNB6RMzJUiwyNmERlVXEw1saI0pPrl4VxaILDP5bE/GwPF5Z
+         KRTYuS1FnrhQdt65RcLo3Qy21AOpZa1CvZoPByBdvgYCkGV0wm/211jsTG4Cc+SngPx/
+         6QqSyoi6d3ueZ0lBobMq6esiTeDTxMQTdoPh2jeha8BZkTj03zRRuLQY/6Ptu5fUgsV1
+         8UhSNSYa4JRnmoe1oFpf1QhhJTzfgSO1yTTvqiImqYfABUIOnt5AIAeOBiB/Dj/rhzir
+         Pohg==
+X-Gm-Message-State: AOAM532euONT1XmpHzEPidcfMSAV1LUXYN+aNEsw1SSagkp5QvGR+Ozo
+        E0ejWspuDiCU8S3CtnSetV39qoFe1XkFHyixmWMxFg==
+X-Google-Smtp-Source: ABdhPJxYlOZA1Z3SpX9pxnUob+P/iJhoYZcvVtQEHgSSu3BJmDqo3PtVCpNE/CpESGExUkz55CWZKfuAz539Xbp3cZY=
+X-Received: by 2002:a05:6808:1294:: with SMTP id a20mr962310oiw.4.1631170348266;
+ Wed, 08 Sep 2021 23:52:28 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e616:: with SMTP id g22mr1371654ioh.67.1631170274006;
- Wed, 08 Sep 2021 23:51:14 -0700 (PDT)
-Date:   Wed, 08 Sep 2021 23:51:14 -0700
-In-Reply-To: <9bef8d9e-7378-62e6-b78c-af3fceab2e46@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c01ddd05cb8a6ca0@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_wq_put_and_exit
-From:   syzbot <syzbot+f62d3e0a4ea4f38f5326@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+From:   Lei Yu <yulei.sh@bytedance.com>
+Date:   Thu, 9 Sep 2021 14:52:17 +0800
+Message-ID: <CAGm54UERFkOLXtG3wwL9x1-HAXjmRoaG4ZRbZZOLjP1bLZ=LSg@mail.gmail.com>
+Subject: Re: [External] [PATCH v2 0/3] arm: aspeed: Add UART routing support
+To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, lee.jones@linaro.org,
+        Oskar Senft <osk@google.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        openbmc <openbmc@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The patches are tested on meta-g220a build and it works fine with some
+changes in the sysfs path[1].
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Tested-by: Lei YU <yulei.sh@bytedance.com>
 
-Reported-and-tested-by: syzbot+f62d3e0a4ea4f38f5326@syzkaller.appspotmail.com
+[1]: https://github.com/openbmc/meta-bytedance/blob/master/meta-g220a/recipes-phosphor/console/obmc-console/obmc-console%40.service#L7-L10
 
-Tested on:
+On Thu, Sep 2, 2021 at 10:20 AM Chia-Wei Wang
+<chiawei_wang@aspeedtech.com> wrote:
+>
+> Add UART routing driver and the device tree nodes.
+>
+> v2:
+>  - Add dt-bindings
+>  - Add ABI documents for the exported sysfs interface
+>  - Revise driver implementation suggested by Joel
+>
+> Chia-Wei Wang (3):
+>   dt-bindings: aspeed-lpc: Add UART routing compatible string
+>   soc: aspeed: Add UART routing support
+>   ARM: dts: aspeed: Add uart routing to device tree
+>
+>  .../testing/sysfs-driver-aspeed-uart-routing  |  15 +
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    |  22 +
+>  arch/arm/boot/dts/aspeed-g5.dtsi              |   6 +
+>  arch/arm/boot/dts/aspeed-g6.dtsi              |   6 +
+>  drivers/soc/aspeed/Kconfig                    |  10 +
+>  drivers/soc/aspeed/Makefile                   |   9 +-
+>  drivers/soc/aspeed/aspeed-uart-routing.c      | 601 ++++++++++++++++++
+>  7 files changed, 665 insertions(+), 4 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
+>  create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
+>
+> --
+> 2.17.1
+>
 
-commit:         3b33e3f4 io-wq: fix silly logic error in io_task_work_..
-git tree:       git://git.kernel.dk/linux-block io_uring-5.15
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bfda6f9dee77cd
-dashboard link: https://syzkaller.appspot.com/bug?extid=f62d3e0a4ea4f38f5326
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+BRs,
+Lei YU
