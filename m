@@ -2,136 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6D7405A60
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FC2405A65
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236270AbhIIPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        id S236736AbhIIPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhIIPsr (ORCPT
+        with ESMTP id S234223AbhIIPvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:48:47 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF931C061574;
-        Thu,  9 Sep 2021 08:47:37 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id v5so3295719edc.2;
-        Thu, 09 Sep 2021 08:47:37 -0700 (PDT)
+        Thu, 9 Sep 2021 11:51:09 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141B6C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:50:00 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id i24so2109561pfo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:50:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SMuK2xLCSAdgKSOFL1sDq3ZtVCGQSUQXLqAzPrDhYes=;
-        b=gILOHh1sdy6YEvPMKhMJlebCkpe/XwjPiBDgrKoRc0t7d8rASs4YrF+KwQU9yXQ56c
-         aUcF0x+QI3kPOt+ETaVnSWDx2W6stCn3Tpzvd/lojs3Xa1jwqblBV8ag0EBxRERD4/kS
-         KUkrmJXnokAIaObIl/qC9ru4l8/p3v72U7QhNNuakqhNYXrEO9iwVf0eEOs2BvHfPtQq
-         /y53UVeJvfK+EotmcG01Qn46k/H8R1xU6nUBL//d7lA3SaUab3kC40yXT6S8pjJGOBdZ
-         8XCv5XBxHIoPYuDVW5y4vt3PeHrV203uopnrMMOJH1OydB9xQVn/nEhdNxHPwlbclxcP
-         enzw==
+        bh=ccOcs8iBHJVAAqs60NeIUiu4ZxBLFQEliRnS3en5X58=;
+        b=lxRXYgQmqVK5ANKfYJsFTga6OHIZyWAvTSJc+T3OCdM5t2tzGCVusH0zrc6rKu/GSj
+         oOBDX1R9qF/CVEADuAEBZ3CdkOtpUIH4XF5ahOe4ubwYS7U2s6LQmHDg5BtCtMPvfVRd
+         mq48ESscoLRHzWrfjmAuc2kM4s4CLjaCBx3Rc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SMuK2xLCSAdgKSOFL1sDq3ZtVCGQSUQXLqAzPrDhYes=;
-        b=y8P8mLdiAbAiHrKE0FS1zJtjk/5+5eZFAh7e917wWdNy8M/82le5yNNShGukOeVzGe
-         nI/m9Z8+mkNyjKD4G4pXU7OXv4mfKCdR5CCS3+1N7iVSjAMXRhlEmv6AA2ICehP7H/Rm
-         f9bMFGAQGovWv/z+lXHXZBhj4tLG9ibGl6paWy1rVqHtJUSKMqBT13e8N93RwSo+GF8Z
-         wot8CrEd1PPNYb4og4LgWZIFn0S4qMFY6kySnF0ITWW9Gyhd1EFoFPo9r+YLa2IouRfO
-         PRb6IwI6rTvmmvRZ3wxjHK0MkeU+46rdODJULBvFbMr5BEGrDgujtTB8OVguw/aVGS7P
-         q0/Q==
-X-Gm-Message-State: AOAM530eTmVYwFAe32Znu1kOs+8lGnTjRAFXWaGn9Pyq3xh4rR5PaBTw
-        YDWkmyaMIA+2nT1tEURTbCc=
-X-Google-Smtp-Source: ABdhPJzO9uSWNKj9OTHJkFLpOHM6VRqkMDzaYl0WAz+dHZj8rEHc/pkO8LbzZ6yYl50FW4xwKX3EdQ==
-X-Received: by 2002:aa7:c313:: with SMTP id l19mr3852169edq.131.1631202456310;
-        Thu, 09 Sep 2021 08:47:36 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id bj21sm1141469ejb.42.2021.09.09.08.47.35
+        bh=ccOcs8iBHJVAAqs60NeIUiu4ZxBLFQEliRnS3en5X58=;
+        b=QCQ1wmNATQO8B5BkGKoeU7eCMAthhO+oHI8n4MDSGA37bEI4GcYq/OJ2cqzR+QIbyo
+         S7quuB4V3Y+aiu/2WfVF+VJyYCI5IZGmjuHGzdlIysmDTK/dIea1r//onLTsJgJL+YQD
+         DBrtlHv58h6d+i0DXPFldyASvIZFfDvebac8RDeA9B+gnzPHK9PL+NSgTHUvpHdxW4WE
+         /AOO/qN3BOA7BMqepHfOrEVTEpzIbRNuSk7biakpZ5pjWcs8+NmT/P/YNE0v11ypxuIT
+         AiOuTAgRcIqGw2BbVo23Y83G07d2Ss8yelRQ5rEgPHTccx2jJhryZ6byFuG8O6P4d9vA
+         dgiA==
+X-Gm-Message-State: AOAM532QdrdI/8ZN4PP7iccBKPPvaNKtU3L3tiEcWCm1UXgjlI/SpNUx
+        SLYcTwnf4fs7okNdwA4tP359/226SeDCqA==
+X-Google-Smtp-Source: ABdhPJwO0jwD30CKKYCudS1Q+gjBcvBfbtEioGoP63vHyGYU5FLrehOZO/Fn/ODlq5u9Jb9P4L5Qhw==
+X-Received: by 2002:a63:7404:: with SMTP id p4mr3245964pgc.222.1631202599515;
+        Thu, 09 Sep 2021 08:49:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k190sm2821106pgc.11.2021.09.09.08.49.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 08:47:35 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 18:47:34 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <20210909154734.ujfnzu6omcjuch2a@skbuf>
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
- <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+        Thu, 09 Sep 2021 08:49:58 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 08:49:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] lkdtm: Use init_uts_ns.name instead of macros
+Message-ID: <202109090848.129A49E8BD@keescook>
+References: <20210901233406.2571643-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+In-Reply-To: <20210901233406.2571643-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
-> > Do you see similar things on your 5.10 kernel?
+On Wed, Sep 01, 2021 at 04:34:06PM -0700, Kees Cook wrote:
+> Using generated/compile.h triggered a full LKDTM rebuild with every
+> build. Avoid this by using the exported strings instead.
 > 
-> For the master device is see
+> Fixes: b8661450bc7f ("lkdtm: Add kernel version to failure hints")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Hi Greg,
+
+Your bot said "please wait, the merge window is open", but it'd be really
+nice to get this into -rc1 to avoid annoying people doing rebuilds...
+
+:)
+
+-Kees
+
+> ---
+>  drivers/misc/lkdtm/core.c  | 10 ++++++++++
+>  drivers/misc/lkdtm/lkdtm.h | 28 +++++++++++++++++-----------
+>  2 files changed, 27 insertions(+), 11 deletions(-)
 > 
-> lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consumer:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:spi3.0
+> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+> index 95b1c6800a22..fe6fd34b8caf 100644
+> --- a/drivers/misc/lkdtm/core.c
+> +++ b/drivers/misc/lkdtm/core.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/utsname.h>
+>  
+>  #define DEFAULT_COUNT 10
+>  
+> @@ -210,6 +211,8 @@ module_param(cpoint_count, int, 0644);
+>  MODULE_PARM_DESC(cpoint_count, " Crash Point Count, number of times the "\
+>  				"crash point is to be hit to trigger action");
+>  
+> +/* For test debug reporting. */
+> +char *lkdtm_kernel_info;
+>  
+>  /* Return the crashtype number or NULL if the name is invalid */
+>  static const struct crashtype *find_crashtype(const char *name)
+> @@ -490,6 +493,11 @@ static int __init lkdtm_module_init(void)
+>  	crash_count = cpoint_count;
+>  #endif
+>  
+> +	/* Common initialization. */
+> +	lkdtm_kernel_info = kasprintf(GFP_KERNEL, "kernel (%s %s)",
+> +				      init_uts_ns.name.release,
+> +				      init_uts_ns.name.machine);
+> +
+>  	/* Handle test-specific initialization. */
+>  	lkdtm_bugs_init(&recur_count);
+>  	lkdtm_perms_init();
+> @@ -538,6 +546,8 @@ static void __exit lkdtm_module_exit(void)
+>  	if (lkdtm_kprobe != NULL)
+>  		unregister_kprobe(lkdtm_kprobe);
+>  
+> +	kfree(lkdtm_kernel_info);
+> +
+>  	pr_info("Crash point unregistered\n");
+>  }
+>  
+> diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+> index d7d64d9765eb..c212a253edde 100644
+> --- a/drivers/misc/lkdtm/lkdtm.h
+> +++ b/drivers/misc/lkdtm/lkdtm.h
+> @@ -5,17 +5,17 @@
+>  #define pr_fmt(fmt) "lkdtm: " fmt
+>  
+>  #include <linux/kernel.h>
+> -#include <generated/compile.h>
+> -#include <generated/utsrelease.h>
+>  
+> -#define LKDTM_KERNEL "kernel (" UTS_RELEASE " " UTS_MACHINE ")"
+> +extern char *lkdtm_kernel_info;
+>  
+>  #define pr_expected_config(kconfig)				\
+>  {								\
+>  	if (IS_ENABLED(kconfig)) 				\
+> -		pr_err("Unexpected! This " LKDTM_KERNEL " was built with " #kconfig "=y\n"); \
+> +		pr_err("Unexpected! This %s was built with " #kconfig "=y\n", \
+> +			lkdtm_kernel_info);			\
+>  	else							\
+> -		pr_warn("This is probably expected, since this " LKDTM_KERNEL " was built *without* " #kconfig "=y\n"); \
+> +		pr_warn("This is probably expected, since this %s was built *without* " #kconfig "=y\n", \
+> +			lkdtm_kernel_info);			\
+>  }
+>  
+>  #ifndef MODULE
+> @@ -25,24 +25,30 @@ int lkdtm_check_bool_cmdline(const char *param);
+>  	if (IS_ENABLED(kconfig)) {				\
+>  		switch (lkdtm_check_bool_cmdline(param)) {	\
+>  		case 0:						\
+> -			pr_warn("This is probably expected, since this " LKDTM_KERNEL " was built with " #kconfig "=y but booted with '" param "=N'\n"); \
+> +			pr_warn("This is probably expected, since this %s was built with " #kconfig "=y but booted with '" param "=N'\n", \
+> +				lkdtm_kernel_info);		\
+>  			break;					\
+>  		case 1:						\
+> -			pr_err("Unexpected! This " LKDTM_KERNEL " was built with " #kconfig "=y and booted with '" param "=Y'\n"); \
+> +			pr_err("Unexpected! This %s was built with " #kconfig "=y and booted with '" param "=Y'\n", \
+> +				lkdtm_kernel_info);		\
+>  			break;					\
+>  		default:					\
+> -			pr_err("Unexpected! This " LKDTM_KERNEL " was built with " #kconfig "=y (and booted without '" param "' specified)\n"); \
+> +			pr_err("Unexpected! This %s was built with " #kconfig "=y (and booted without '" param "' specified)\n", \
+> +				lkdtm_kernel_info);		\
+>  		}						\
+>  	} else {						\
+>  		switch (lkdtm_check_bool_cmdline(param)) {	\
+>  		case 0:						\
+> -			pr_warn("This is probably expected, as this " LKDTM_KERNEL " was built *without* " #kconfig "=y and booted with '" param "=N'\n"); \
+> +			pr_warn("This is probably expected, as this %s was built *without* " #kconfig "=y and booted with '" param "=N'\n", \
+> +				lkdtm_kernel_info);		\
+>  			break;					\
+>  		case 1:						\
+> -			pr_err("Unexpected! This " LKDTM_KERNEL " was built *without* " #kconfig "=y but booted with '" param "=Y'\n"); \
+> +			pr_err("Unexpected! This %s was built *without* " #kconfig "=y but booted with '" param "=Y'\n", \
+> +				lkdtm_kernel_info);		\
+>  			break;					\
+>  		default:					\
+> -			pr_err("This is probably expected, since this " LKDTM_KERNEL " was built *without* " #kconfig "=y (and booted without '" param "' specified)\n"); \
+> +			pr_err("This is probably expected, since this %s was built *without* " #kconfig "=y (and booted without '" param "' specified)\n", \
+> +				lkdtm_kernel_info);		\
+>  			break;					\
+>  		}						\
+>  	}							\
+> -- 
+> 2.30.2
+> 
 
-So this is the worst of the worst, we have a device link but it doesn't help.
-
-Where the device link helps is here:
-
-__device_release_driver
-	while (device_links_busy(dev))
-		device_links_unbind_consumers(dev);
-
-but during dev_shutdown, device_links_unbind_consumers does not get called
-(actually I am not even sure whether it should).
-
-I've reproduced your issue by making this very simple change:
-
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index 60d94e0a07d6..ec00f34cac47 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver = {
- 	.id_table = enetc_pf_id_table,
- 	.probe = enetc_pf_probe,
- 	.remove = enetc_pf_remove,
-+	.shutdown = enetc_pf_remove,
- #ifdef CONFIG_PCI_IOV
- 	.sriov_configure = enetc_sriov_configure,
- #endif
-
-on my DSA master driver. This is what the genet driver has "special".
-
-I was led into grave error by Documentation/driver-api/device_link.rst,
-which I've based my patch on, where it clearly says that device links
-are supposed to help with shutdown ordering (how?!).
-
-So the question is, why did my DSA trees get torn down on shutdown?
-Basically the short answer is that my SPI controller driver does
-implement .shutdown, and calls the same code path as the .remove code,
-which calls spi_unregister_controller which removes all SPI children..
-
-When I added this device link, one of the main objectives was to not
-modify all DSA drivers. I was certain based on the documentation that
-device links would help, now I'm not so sure anymore.
-
-So what happens is that the DSA master attempts to unregister its net
-device on .shutdown, but DSA does not implement .shutdown, so it just
-sits there holding a reference (supposedly via dev_hold, but where from?!)
-to the master, which makes netdev_wait_allrefs to wait and wait.
-
-I need more time for the denial phase to pass, and to understand what
-can actually be done. I will also be away from the keyboard for the next
-few days, so it might take a while. Your patches obviously offer a
-solution only for KSZ switches, we need something more general. If I
-understand your solution, it works not by virtue of there being any
-shutdown ordering guarantee at all, but simply due to the fact that
-DSA's .shutdown hook gets called eventually, and the reference to the
-master gets freed eventually, which unblocks the unregister_netdevice
-call from the master. I don't yet understand why DSA holds a long-term
-reference to the master, that's one thing I need to figure out.
+-- 
+Kees Cook
