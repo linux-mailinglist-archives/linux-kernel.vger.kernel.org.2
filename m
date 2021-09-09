@@ -2,199 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5662F405CC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7E3405CC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243544AbhIISQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        id S244211AbhIISQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242867AbhIISQs (ORCPT
+        with ESMTP id S242975AbhIISP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:16:48 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C79C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:15:38 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id c6so5669149ybm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:15:38 -0700 (PDT)
+        Thu, 9 Sep 2021 14:15:58 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE193C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:14:48 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id t4so2790582qkb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DLULdAoTyNVxT3GTeYOIML5OrBg4cI4yg/Mz7NY7nSQ=;
-        b=RNm82nkHCcZY9Kkl2/aNxd1ooJTfrtR1tu8EWCRY3yskLsoP+D/DgshisoyB89KVO4
-         gdNBnyrbzoAB0xSVejuWXOtvWKx8CWRXLl/Q2r0tzRVNIneFEU9SOXd3dzQ7b5Yg1ct7
-         2E4Ttl7K/mcGjNrU9oZa7tTftQQKc4mJBQqWk=
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DblO9ClH443238qZj20JkQQSAd0noLNjchR3cpshmnA=;
+        b=Q86+9sX7t6cI3lgecF19O/4RxatjCaFYj4PdR8hhhd4DcI/gyHIeAO/qFH/KY5VJMC
+         31EhG1siSdE3ltgNctvI/T+/l5GYT657t4obERgmN+Evu3C+lzhD7Zm0DDWHv8JsIbrR
+         qkCDYW+qUkonLI8X4RJZf/6RgcuFMl4CHdC9WTSk0B2SiRun8eQqYwi2sogffpL01N2z
+         CEAFT2AwGIA5d8LLwfZmJmEARdfBoJT9wQOMuoTNfAajynu1B/cHOjAkdeAa6fBYJLfs
+         us6D9BVtgOrcSaJIbBzWBLtDbmVA44tT2Hwh3FJJ3YgOHVdGAaRobufS/CsuXBwavQFd
+         Lkwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DLULdAoTyNVxT3GTeYOIML5OrBg4cI4yg/Mz7NY7nSQ=;
-        b=sugFED9Sj3sOOaagHUx5HOtsg3YoAv7+T+KKAF6gXKQMY6J1TWFX1qCN+2HOdv1vfz
-         tZvJU7M3Q4K/rxBEQS/GS5VMU3KFlNN4lA5CgnaQR4+A7Bi19Fv5l+TEHrO0PQnDt54l
-         0AahG5WTpmQXUEsDFEBGG2fKZKoCt13MkpNtn7MdSrQQs9fffJzHL7+BGQoBl569o6YC
-         iKAmxXQP+MlCy3RgaWZcOFhla0nOorGBgSybd5093aB9i2hT3vbyieMj2bZvqttXDcNh
-         SaCAk0Y8Q/61bVGBrpvKWFM4n7jOCd6Nc8w9zzQ/uICMqRP31VyDlKGbOSyb8/9T8R92
-         eI3g==
-X-Gm-Message-State: AOAM531dwfK14FHYc3fQ38j8jXIvFONfuydR71tsgf22Kq78618s2YcE
-        szCdJueh2cWziO1R5YebZxgcwvCEJzp9N2TWnRL89A==
-X-Google-Smtp-Source: ABdhPJyT4+l6lEe4pNgJ/Z7iaJiRYceSDmbdnzbKl+Noln6iNuOUKovYS6NO15WGhrLlDWLYXOg+VkiGPjMn9BoSqZY=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr5432760ybl.508.1631211337634;
- Thu, 09 Sep 2021 11:15:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DblO9ClH443238qZj20JkQQSAd0noLNjchR3cpshmnA=;
+        b=N9xjhFuZSk/hii3aeBX7jnsoZ32Mbcsj+jQPlpbfyhRq5t98rFYjFKl5lQYDD+jEwa
+         NjkocK8jsGNiI8vl9xntHxqV+A+ysH8llaCduPj8gyYefOu0nx2WXoSRh/LmBHd/003a
+         ZWOrm7L2IVUqaNDLOn+JLBCcJIapt1zKmHjjpJ1cjh6VU9MejyW9nUr7XGGSRUTVPc2w
+         SDomV/ATftA+wPqybg2ehF7KqK9o7YZe0/apgVKNjbiVBSFjD8yfeBirPX0AwkdU5mk3
+         10xZ51mcnU3YWk34YeX3tTGTHq2LM8Kd7I4iSk7Dc7R2T8XCEqWJCGz57p7wg7dKfZpk
+         33pA==
+X-Gm-Message-State: AOAM533tPRkvc1O4zs/IewQCZWFWzbWbRPcB/52x0y44gdrJf1lQ8tQS
+        zRQLKIiBRLG933sw6xbZNOWz7w==
+X-Google-Smtp-Source: ABdhPJxZrSplUulNFGu6SlBUF9t6hILViTDkMRHvSu9j9tUAIEzSWig8TRANAwaksO+9ULJ2LUcvnQ==
+X-Received: by 2002:a37:a147:: with SMTP id k68mr4008554qke.416.1631211288054;
+        Thu, 09 Sep 2021 11:14:48 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id x125sm1867923qkd.8.2021.09.09.11.14.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 11:14:47 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 14:16:39 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YTpPh2aaQMyHAi8m@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YToBjZPEVN9Jmp38@infradead.org>
+ <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
 MIME-Version: 1.0
-References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
- <20210908111500.2.Iac57921273b27d7f7d65e12ff7be169657f4c1eb@changeid> <CAE-0n50mp5F79iJ+zVrbt4ZP7V+UUOcVQe9H3TwEcFFyZWMoNA@mail.gmail.com>
-In-Reply-To: <CAE-0n50mp5F79iJ+zVrbt4ZP7V+UUOcVQe9H3TwEcFFyZWMoNA@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 9 Sep 2021 11:15:27 -0700
-Message-ID: <CA+cxXhnPd1Z_HVjgM8b0wskASF-ZGuvYDh0quiVMwKFhKVx-JA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 09, 2021 at 03:56:54PM +0200, Vlastimil Babka wrote:
+> On 9/9/21 14:43, Christoph Hellwig wrote:
+> > So what is the result here?  Not having folios (with that or another
+> > name) is really going to set back making progress on sane support for
+> > huge pages.  Both in the pagecache but also for other places like direct
+> > I/O.
 
-On Wed, Sep 8, 2021 at 3:27 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-09-08 11:18:06)
-> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > index a16725dbf912..3f0241a60357 100644
-> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > @@ -93,6 +115,102 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-> >         return container_of(e, struct ps8640, bridge);
-> >  }
-> >
-> > +static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
-> > +{
-> > +       return container_of(aux, struct ps8640, aux);
-> > +}
-> > +
-> > +static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> > +                                  struct drm_dp_aux_msg *msg)
-> > +{
-> > +       struct ps8640 *ps_bridge = aux_to_ps8640(aux);
-> > +       struct i2c_client *client = ps_bridge->page[PAGE0_DP_CNTL];
-> > +       struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
-> > +       unsigned int len = msg->size;
-> > +       unsigned int data;
-> > +       int ret;
-> > +       u8 request = msg->request &
-> > +                    ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
-> > +       u8 *buf = msg->buffer;
-> > +       bool is_native_aux = false;
-> > +
-> > +       if (len > DP_AUX_MAX_PAYLOAD_BYTES)
-> > +               return -EINVAL;
-> > +
-> > +       pm_runtime_get_sync(&client->dev);
->
-> Is this driver using runtime PM? Probably can't add this until it is
-> actually runtime PM enabled.
-Thanks - I think this driver doesn't enable runtime PM yet.
-I'll remove all of the pm_runtime_* calls for now.
->
-> > +
-> > +       switch (request) {
-> > +       case DP_AUX_NATIVE_WRITE:
-> > +       case DP_AUX_NATIVE_READ:
-> > +               is_native_aux = true;
-> > +       case DP_AUX_I2C_WRITE:
-> > +       case DP_AUX_I2C_READ:
-> > +               regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-> > +               break;
-> > +       default:
-> > +               ret = -EINVAL;
-> > +               goto exit;
-> > +       }
-> > +
-> > +       /* Assume it's good */
-> > +       msg->reply = 0;
-> > +
-> > +       data = ((request << 4) & AUX_CMD_MASK) |
-> > +              ((msg->address >> 16) & AUX_ADDR_19_16_MASK);
-> > +       regmap_write(map, PAGE0_AUX_ADDR_23_16, data);
-> > +       data = (msg->address >> 8) & 0xff;
-> > +       regmap_write(map, PAGE0_AUX_ADDR_15_8, data);
-> > +       data = msg->address & 0xff;
-> > +       regmap_write(map, PAGE0_AUX_ADDR_7_0, msg->address & 0xff);
->
-> Can we pack this into a three byte buffer and write it in one
-> regmap_bulk_write()? That would be nice because it looks like the
-> addresses are all next to each other in the i2c address space.
-Sure, I will address this in the next version.
->
-> > +
-> > +       data = (len - 1) & AUX_LENGTH_MASK;
-> > +       regmap_write(map, PAGE0_AUX_LENGTH, data);
-> > +
-> > +       if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE) {
-> > +               ret = regmap_noinc_write(map, PAGE0_AUX_WDATA, buf, len);
-> > +               if (ret < 0) {
-> > +                       DRM_ERROR("failed to write PAGE0_AUX_WDATA");
->
-> Needs a newline.
-Adding an empty line here doesn't look like a common Linux style?
-Could you point me to any similar instances in the Linux codebase?
->
-> > +                       goto exit;
-> > +               }
-> > +       }
-> > +
-> > +       regmap_write(map, PAGE0_AUX_CTRL, AUX_START);
-> > +
-> > +       regmap_read(map, PAGE0_AUX_STATUS, &data);
-> > +       switch (data & AUX_STATUS_MASK) {
-> > +       case AUX_STATUS_DEFER:
-> > +               if (is_native_aux)
-> > +                       msg->reply |= DP_AUX_NATIVE_REPLY_DEFER;
-> > +               else
-> > +                       msg->reply |= DP_AUX_I2C_REPLY_DEFER;
-> > +               goto exit;
-> > +       case AUX_STATUS_NACK:
-> > +               if (is_native_aux)
-> > +                       msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-> > +               else
-> > +                       msg->reply |= DP_AUX_I2C_REPLY_NACK;
-> > +               goto exit;
-> > +       case AUX_STATUS_TIMEOUT:
-> > +               ret = -ETIMEDOUT;
-> > +               goto exit;
-> > +       }
-> > +
-> > +       if (request == DP_AUX_NATIVE_READ || request == DP_AUX_I2C_READ) {
-> > +               ret = regmap_noinc_read(map, PAGE0_AUX_RDATA, buf, len);
-> > +               if (ret < 0)
-> > +                       DRM_ERROR("failed to read PAGE0_AUX_RDATA");
->
-> Needs a newline.
->
-> > +       }
-> > +
-> > +exit:
-> > +       pm_runtime_mark_last_busy(&client->dev);
-> > +       pm_runtime_put_autosuspend(&client->dev);
-> > +
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       return len;
-> > +}
-> > +
-> >  static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
-> >                                      const enum ps8640_vdo_control ctrl)
-> >  {
+From my end, I have no objections to using the current shape of
+Willy's data structure as a cache descriptor for the filesystem API:
+
+struct foo {
+        /* private: don't document the anon union */
+        union {
+                struct {
+        /* public: */
+                        unsigned long flags;
+                        struct list_head lru;
+                        struct address_space *mapping;
+                        pgoff_t index;
+                        void *private;
+                        atomic_t _mapcount;
+                        atomic_t _refcount;
+#ifdef CONFIG_MEMCG
+                        unsigned long memcg_data;
+#endif
+        /* private: the union with struct page is transitional */
+                };
+                struct page page;
+        };
+};
+
+I also have no general objection to a *separate* folio or pageset or
+whatever data structure to address the compound page mess inside VM
+code. With its own cost/benefit analysis. For whatever is left after
+the filesystems have been sorted out.
+
+My objection is simply to one shared abstraction for both. There is
+ample evidence from years of hands-on production experience that
+compound pages aren't the way toward scalable and maintainable larger
+page sizes from the MM side. And it's anything but obvious or
+self-evident that just because struct page worked for both roles that
+the same is true for compound pages.
+
+Willy says it'll work out, I say it won't. We don't have code to prove
+this either way right now.
+
+Why expose the filesystems to this gamble?
+
+Nothing prevents us from putting a 'struct pageset pageset' or 'struct
+folio folio' into a cache descriptor like above later on, right?
+
+[ And IMO, the fact that filesystem people are currently exposed to,
+  and blocked on, mindnumbing internal MM discussions just further
+  strengthens the argument to disconnect the page cache frontend from
+  the memory allocation backend. The fs folks don't care - and really
+  shouldn't care - about any of this. I understand the frustration. ]
+
+Can we go ahead with the cache descriptor for now, and keep the door
+open on how they are backed from the MM side? We should be able to
+answer this without going too deep into MM internals.
+
+In the short term, this would unblock the fs people.
+
+In the longer term this would allow the fs people to focus on fs
+problems, and MM people to solve MM problems.
+
+> Yeah, the silence doesn't seem actionable. If naming is the issue, I believe
+> Matthew had also a branch where it was renamed to pageset. If it's the
+> unclear future evolution wrt supporting subpages of large pages, should we
+> just do nothing until somebody turns that hypothetical future into code and
+> we see whether it works or not?
+
+Folio or pageset works for compound pages, but implies unnecessary
+implementation details for a variable-sized cache descriptor, IMO.
+
+I don't love the name folio for compound pages, but I think it's
+actually hazardous for the filesystem API.
+
+To move forward with the filesystem bits, can we:
+
+1. call it something - anything - that isn't tied to the page, or the
+   nature of multiple pages? fsmem, fsblock, cachemem, cachent, I
+   don't care too deeply and would rather have a less snappy name than
+   a clever misleading one,
+
+2. make things like folio_order(), folio_nr_pages(), folio_page()
+   page_folio() private API in mm/internal.h, to acknowledge that
+   these are current implementation details, not promises on how the
+   cache entry will forever be backed in the future?
+
+3. remove references to physical contiguity, PAGE_SIZE, anonymous
+   pages - and really anything else that nobody has explicitly asked
+   for yet - from the kerneldoc; generally keep things specced to what
+   we need now, and not create dependencies against speculative future
+   ambitions that may or may not pan out,
+
+4. separate and/or table the bits that are purely about compound pages
+   inside MM code and not relevant for the fs interface - things like
+   the workingset.c and swap.c conversions (page_folio() usage seems
+   like a good indicator for where it permeated too deeply into MM
+   core code which then needs to translate back up again)?
