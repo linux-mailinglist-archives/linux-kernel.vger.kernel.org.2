@@ -2,190 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6BD40574C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F9C405756
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355089AbhIINdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:33:16 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44605 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356904AbhIINVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:21:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631193592;
-        bh=o+A1F6vlfY468csskwnPLRPnkzv0cU7vnY/8TAvErM8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Don1CUG18Fxw6csFAaHkTgtC1MMlK3t+/1Dc+zpR530/vug44JCW+H0LXwbwYR0g9
-         8tIRejHMxywERlLtqTv94/E0GTX3MxwafT5ZG5C1bJdCUg94lYhLGEyR1RiBVtRnWM
-         8g9M/IoAPvs186sMtxO2W/hcTxjO15K9H8OkrqOQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [46.223.119.124] ([46.223.119.124]) by web-mail.gmx.net
- (3c-app-gmx-bs01.server.lan [172.19.170.50]) (via HTTP); Thu, 9 Sep 2021
- 15:19:52 +0200
+        id S1357469AbhIINdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:33:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1355378AbhIINVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:21:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631193624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPz8rCaG1n5gmzRfNCxWNsl8VhshhGe4oboIWdB5nfY=;
+        b=KSZCZ0hko8hs84noG+nqXvOscbfUG75oiireZPmg2dNDLY2HcvscyJlnnCLOGcWb9gmxt8
+        +jGq6lib6Yu4r8aGoxvL2fk7ykm5n9mhcWBNNMFDQDJrqhf2NvVtlPBAY231jrTCRhTYqG
+        WmqD6VGuu3j7TBG0ty6k0YoYW4yTMlc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-i7AIqjliMJ6Wxgc9vQyBxQ-1; Thu, 09 Sep 2021 09:20:23 -0400
+X-MC-Unique: i7AIqjliMJ6Wxgc9vQyBxQ-1
+Received: by mail-ed1-f72.google.com with SMTP id m30-20020a50999e000000b003cdd7680c8cso954752edb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:20:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IPz8rCaG1n5gmzRfNCxWNsl8VhshhGe4oboIWdB5nfY=;
+        b=sUq5Y1CSKC1Xar1DqjR9cYIH8D7S2YJGfLR8CzIjc1dJolL7m6Mz/MHoFltyc84MW7
+         DKFQGeYX+Ifc7jLX9w+my3PrAugHdAioHgnIbLj4nRPx7I0Y3ycj/7I0XfGJwp8KRFS8
+         qSeCJ9vBR20OKMMZG53//g7WNFb9X2eA6wjx6A+lE6ZzhiNyh+6W+jiK2fk4dUh+Ob5v
+         q38PelLMzf65lo64IPQvXJl7vcRmP5aWZDOZ8l3yiI2RJZlwgURot3T2X4tRPu/FiGcD
+         WpCgpDrpHBYjBow4zdUUob8pWWF+lb1iu1plrYoXW54tiD4Nvq4sNDgyxVJXHA7AlbqP
+         iDSg==
+X-Gm-Message-State: AOAM532aWRLwr1wikusX+o9V+nbnvRTVcrXRAtGMvRMLAVYvnCVXwB4f
+        Rg51F2VCazIR3GBsuO/NFKvdeYxGGb/qdc+bPwr4f+34XUYMvssOGM5ZQNHZXI8tz7Jv+b55Rl4
+        +anrEeg1XJmGvHBQY2F4NQG/9
+X-Received: by 2002:a17:906:1510:: with SMTP id b16mr3523481ejd.332.1631193622101;
+        Thu, 09 Sep 2021 06:20:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxltN+LLKBsItVnHF6jboBkL7BG/4gKE6eUK2+syXfEg8esfR9/Hha6iEqkMhy0wQUkBEbcyQ==
+X-Received: by 2002:a17:906:1510:: with SMTP id b16mr3523459ejd.332.1631193621929;
+        Thu, 09 Sep 2021 06:20:21 -0700 (PDT)
+Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id l16sm999043eje.67.2021.09.09.06.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 06:20:21 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 15:20:19 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 12/18] KVM: selftests: Keep track of the number of
+ vCPUs for a VM
+Message-ID: <20210909132019.etrlz2t7pes7bc2o@gator>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-13-rananta@google.com>
 MIME-Version: 1.0
-Message-ID: <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Aw: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 9 Sep 2021 15:19:52 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210909125606.giiqvil56jse4bjk@skbuf>
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:Ja0lCbndn8thG0GnPuWLbYn3jwlS8EOt++u4dL6T6Mzm1vVgPqAGCvttqJf+qO4Lc4PEJ
- UYN7mebC6AcA8QVcGlhaAXPSeJ7cl/M57vKBxRmhf/OijfzN/xZhIOanhdif8L0tPePE7WLayBy/
- yGxuofax5MGhsFS40MKU2fFy/Za5oLiMS/D2fLmI4ZI0wqkBEvPh87cEXHd+BJYqy+DkoQzUAlSw
- L1Ux1+mOw1PKyA9RvpT7H3acSqyThShAlmcKGCx71s7XIUZkwZasb2DrS3WC9DxYo3Qh14xXKLqk
- mc=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hEcVDS4m76Y=:GQR00fTgpndLoJNgnbAU4V
- s9YbrFCQPu3PVWdSmQlaglKc30HtPnWR/lO2SE4K87Gyi7VAKj/8VYpBk6iBLZKzCX40jiXfb
- yfZyxoK9mHDURvLFY6GiFIHXYHtZpBLKVkVCsmVCk9h6APscq3NcYxXxRzvML/Jvy21TNOeMU
- 4T5zd7fIUW4Wl+ABmkqz6aVW1lCSA7tcGVsTvmU6XZOkTuWnx7E1UHEzfvF1nONyAylKIm8CG
- YKSxCuC/d/A6uvMcSQUiBS0ZV+5qb6joRcCha5Hn9htXPtYsq9BSMdqYTL8KX6eNtYCxyjZj3
- r2Vv5tHU8VQd3WsH4OBdGWW7J2PKdDGg1uXkkkchgZRhyE3UsfwSXk45BOR+p3EPsMg1yGHJE
- JhHdRE6yeCiflX1YX5ftumAVj4xoepHzc749MXLmDCNFYWLP7TGHLuN+vZGs5tQZnE84sB3OY
- 0APSRjd3OAhlf0KpmeM2YspqDcBfGnVHMG+2cpwZiUAwxdW6ByMYDc1x6Are3GE5HjPjtsh07
- Izcr1/utJZ2OK/RA1hFpYSM0bXwyzFE30vNSP/0jlnY7Fxm92ruNSrYxeP9nzP50WVIuYxmtw
- ckl01RLRBiMgpIUpyG1hWak13xNIQGMs3E76Kl72B574KJuk3W+jGa3UvSxh4AjdbJyc3aSco
- LpfLeeCYXhXVgtShVFxD/IiQXHn4BQprZU+/FGJlovIRjhzQLvCT1uWRQelh+Xwcox3lvtJ7E
- LMk6M8upzE6oMSna9+9T86ClLR7sHHG7N38LHPDsSEU6KmA/wS/Ahc8dR7GBWLxZWMSLP5rxs
- EdQwdPjwqG+nCZ1rSbhJyJpGXmAWRk2r8Ts1SNQn2zbSQvi+zY=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909013818.1191270-13-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir, Andrew,
+On Thu, Sep 09, 2021 at 01:38:12AM +0000, Raghavendra Rao Ananta wrote:
+> The host may want to know the number of vCPUs that were
+> created for a particular VM (used in upcoming patches).
+> Hence, include nr_vcpus as a part of 'struct kvm_vm' to
+> keep track of vCPUs as and when they are added or
+> deleted, and return to the caller via vm_get_nr_vcpus().
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  tools/testing/selftests/kvm/include/kvm_util.h      | 1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c          | 7 +++++++
+>  tools/testing/selftests/kvm/lib/kvm_util_internal.h | 1 +
+>  3 files changed, 9 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 010b59b13917..d5d0ca919928 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -399,5 +399,6 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t vcpu_id, struct ucall *uc);
+>  
+>  int vm_get_stats_fd(struct kvm_vm *vm);
+>  int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
+> +int vm_get_nr_vcpus(struct kvm_vm *vm);
+>  
+>  #endif /* SELFTEST_KVM_UTIL_H */
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 10a8ed691c66..1b5349b5132f 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -594,6 +594,7 @@ static void vm_vcpu_rm(struct kvm_vm *vm, struct vcpu *vcpu)
+>  
+>  	list_del(&vcpu->list);
+>  	free(vcpu);
+> +	vm->nr_vcpus--;
+>  }
+>  
+>  void kvm_vm_release(struct kvm_vm *vmp)
+> @@ -1143,6 +1144,7 @@ void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid)
+>  
+>  	/* Add to linked-list of VCPUs. */
+>  	list_add(&vcpu->list, &vm->vcpus);
+> +	vm->nr_vcpus++;
+>  }
+>  
+>  /*
+> @@ -2343,3 +2345,8 @@ int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid)
+>  
+>  	return ioctl(vcpu->fd, KVM_GET_STATS_FD, NULL);
+>  }
+> +
+> +int vm_get_nr_vcpus(struct kvm_vm *vm)
+> +{
+> +	return vm->nr_vcpus;
+> +}
 
-sorry for the late response.
+nr_vcpus looks like useful library internal information, since the only
+other way to get the number is to iterate the vcpu list. I'm not sure
+if we need this vm_get_nr_vcpus() accessor for tests yet though. Maybe
+it'll be more clear to me when I see how it's used.
 
-> Gesendet: Donnerstag, 09. September 2021 um 14:56 Uhr
-> Von: "Vladimir Oltean" <olteanv@gmail.com>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> Cc: p.rosenberger@kunbus.com, woojung.huh@microchip.com, UNGLinuxDriver@=
-microchip.com, andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.=
-com, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-k=
-ernel@vger.kernel.org
-> Betreff: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
->
-> On Thu, Sep 09, 2021 at 02:42:48PM +0300, Vladimir Oltean wrote:
-> > I feel that something is missing in your system. Is the device link
-> > created? Is it deleted before going into effect on shutdown?
->
-> So in case my questions were confusing, you can check the presence of
-> the device links via sysfs.
->
-> On my board, eno2 is the top-level DSA master, there is a switch which
-> is PCIe PF 0000:00:00.5 which is its consumer:
->
-> ls -la /sys/class/net/eno2/device/consumer\:pci\:0000\:00\:00.5
-> lrwxrwxrwx    1 root     root             0 Jan  1 00:00 /sys/class/net/=
-eno2/device/consumer:pci:0000:00:00.5 -> ../../../../../virtual/devlink/pc=
-i:0000:00:00.2--pci:0000:00:00.5
->
-> In turn, that switch is a DSA master on two ports for SPI-attached switc=
-hes:
->
-> ls -la /sys/class/net/swp0/device/consumer\:spi\:spi2.*
-> lrwxrwxrwx    1 root     root             0 Jan  1 00:04 /sys/class/net/=
-swp0/device/consumer:spi:spi2.0 -> ../../../../../virtual/devlink/pci:0000=
-:00:00.5--spi:spi2.0
-> lrwxrwxrwx    1 root     root             0 Jan  1 00:04 /sys/class/net/=
-swp0/device/consumer:spi:spi2.1 -> ../../../../../virtual/devlink/pci:0000=
-:00:00.5--spi:spi2.1
->
-> Do you see similar things on your 5.10 kernel?
+Thanks,
+drew
 
-For the master device is see
-
-lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consumer:=
-spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:spi=
-3.0
-
-
->
-> Please note that I don't think that particular patch with device links
-> was backported to v5.10, at least I don't see it when I run:
-
-
-> git tag --contains  07b90056cb15f
->
-> So how did it reach your tree?
->
-
-The kernel I use is the Raspberry Pi 5.10 kernel. The commit number in thi=
-s kernel is d0b97c8cd63e37e6d4dc9fefd6381b09f6c31a67
-
-Andrew: the switch is not on a hat, the device tree part I use is:
-
-
-
-       spi@7e204c00 {
-            cs-gpios =3D <0x0000000f 0x00000010 0x00000001 0x0000000f 0x00=
-000012 0x00000001>;
-            pinctrl-0 =3D <0x000000e5 0x000000e6>;
-            pinctrl-names =3D "default";
-            compatible =3D "brcm,bcm2835-spi";
-            reg =3D <0x7e204c00 0x00000200>;
-            interrupts =3D <0x00000000 0x00000076 0x00000004>;
-            clocks =3D <0x00000007 0x00000014>;
-            #address-cells =3D <0x00000001>;
-            #size-cells =3D <0x00000000>;
-            status =3D "okay";
-            phandle =3D <0x000000be>;
-            tpm@1 {
-                phandle =3D <0x000000ed>;
-                status =3D "okay";
-                interrupts =3D <0x0000000a 0x00000008>;
-                #interrupt-cells =3D <0x00000002>;
-                interrupt-parent =3D <0x0000000f>;
-                spi-max-frequency =3D <0x000f4240>;
-                reg =3D <0x00000001>;
-                pinctrl-0 =3D <0x000000e7>;
-                pinctrl-names =3D "default";
-                compatible =3D "infineon,slb9670";
-            };
-            ksz9897@0 {
-                phandle =3D <0x000000ec>;
-                status =3D "okay";
-                reset-gpios =3D <0x000000e1 0x0000000d 0x00000001>;
-                spi-cpol;
-                spi-cpha;
-                spi-max-frequency =3D <0x01f78a40>;
-                reg =3D <0x00000000>;
-                compatible =3D "microchip,ksz9897";
-                ports {
-                    #size-cells =3D <0x00000000>;
-                    #address-cells =3D <0x00000001>;
-                    port@2 {
-                        label =3D "piright";
-                        reg =3D <0x00000002>;
-                    };
-                    port@1 {
-                        label =3D "pileft";
-                        reg =3D <0x00000001>;
-                    };
-                    port@0 {
-                        ethernet =3D <0x000000d7>;
-                        label =3D "cpu";
-                        reg =3D <0x00000000>;
-                    };
-                };
-            };
-
-Regards,
-Lino
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> index a03febc24ba6..be4d852d2f3b 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> @@ -56,6 +56,7 @@ struct kvm_vm {
+>  	unsigned int va_bits;
+>  	uint64_t max_gfn;
+>  	struct list_head vcpus;
+> +	int nr_vcpus;
+>  	struct userspace_mem_regions regions;
+>  	struct sparsebit *vpages_valid;
+>  	struct sparsebit *vpages_mapped;
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
 
