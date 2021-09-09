@@ -2,84 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE726405E8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CFB405E9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347762AbhIIVGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        id S1344317AbhIIVLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348243AbhIIVGN (ORCPT
+        with ESMTP id S233991AbhIIVLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:06:13 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFA7C0613B8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:03:20 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so4270502otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:03:20 -0700 (PDT)
+        Thu, 9 Sep 2021 17:11:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4767FC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:10:32 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 124-20020a251182000000b005a027223ed9so4085362ybr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Inuz8zjQpJ8vk0GRKUjv4itxCxxuAm5ggH2rL74CYCo=;
-        b=d9PkoVnYvdQBvNX4WHkbuiSrkkvxhgvnV2vCdhmeeozkYSR6EGbZZ6ZUfJOxv/gfcS
-         y34dbvibMZcLJIylua/yfIqUF6zWfkxgUayXj+mXiVUyjAu/D55CAsJv/J0DNU4bQpJ5
-         tvOr8XKYcak6AFVcY31g0W5ngrW3+11dSwTkg=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EzCly2IhLub3yTPz+QJq5talI0o62yb80+Qjbtl+nGo=;
+        b=VcAtSABG8BEMujD8A4rqWdUl6SqduWjgen5J92loVfZupWYpQlz0dsarhBO6KFVas6
+         v3ANAk9xNSiT+NFdvJF/upmik7QwYCTyjX5kGkD5UV2Fj2q1adZyaZzZXGQRc8Q+l+Sb
+         SL9ajCFZvHvFmfaeNz9AePBWfrs6dmHz7GggB57OcsAhzEyQCsckw9EnkT4Gu5jM3bvY
+         U4lYzboNafeBs5xS2jI0jzoepEIfl3JwM3S8ks0+xRW5s77+UoQmKgYV5k5pjOKEaT3P
+         zI7hNX7fELKX29JtgK5jyjBLSX4x6ZkJchA9ybMb0XJLpWlXpKgmXiuZ4PF98SZiZxpi
+         wSvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Inuz8zjQpJ8vk0GRKUjv4itxCxxuAm5ggH2rL74CYCo=;
-        b=wntwIKw8WxGmqggkCplZCIsGs32C7vP5bOiEiNT5RlxNsK6i1JBT1Vtj8U2WnjGue3
-         M/sW77y/wT9EKpOWk9jy4xsDkzwJvNS2WJ5/GLEEsH3WswRr7mrDZPfiwyh67pyiN3nx
-         ZBBcbBLp7CAqe4f2e6i+Fe2vYy8x0fnrmbdeevmuqFKAIky+W5RPLBvxj9XL6WUOn4gF
-         V+rDWH0wUkUO1VbmbBw6Jv1chrGSviBbIdei7ArlYEqCDUIIN34jxdL/Az8c6sPvWeN3
-         wDD69uYExslJpFV44SiBTGIg0TqcdY2r9VoPxbJkdct9Pi5sOB2ufNvJ1vwEN4T5bp72
-         Zeow==
-X-Gm-Message-State: AOAM533/etxg7go+Ytm5D2UJX0+2N+Fs9KBmqb8tJdTxC7n7Ve0Ku3Im
-        3Ln9aJGnozDUPOTFGwBnebwwddWfZSwUUbLHpqF8rQ==
-X-Google-Smtp-Source: ABdhPJxzzYHJmjZxncLWDDGzJ6ALyyZzP3+wJ9In+ibvaJy4YpGmbTqacIrA8T+1HS5SfE/5dxVBYmb1wu2mA1UftOc=
-X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr1700256ote.126.1631221399723;
- Thu, 09 Sep 2021 14:03:19 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 9 Sep 2021 17:03:19 -0400
-MIME-Version: 1.0
-In-Reply-To: <1631216998-10049-1-git-send-email-khsieh@codeaurora.org>
-References: <1631216998-10049-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 9 Sep 2021 17:03:18 -0400
-Message-ID: <CAE-0n505ihV0eYsk2oyeeL8=DSCW-Uq=hVt_8BhVxusRq7R9NA@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: fix display port phy reg property
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
-        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EzCly2IhLub3yTPz+QJq5talI0o62yb80+Qjbtl+nGo=;
+        b=fwECHmWHAjHE8Ax0v5pMez5LRgKlh7bW97mGApjwr0r62Bj/uY5CxdZiF6BO/SDhkr
+         lW9CoUbOL6TGg50bYd/pyN90iG+deF/NUiyZ8SAJvNUp45Vv34D3FYmayUtRsN4/5IgX
+         T4JIYDlR40z1gFXwj4wnkBBV2vg/oVT7SQrAItX+imlfIgemwRnttcdj8B1aeiLxZ+Ko
+         zaRAncCLIlPxjYv16WgnSGX71HOZKZHMlhr4rucspfEeUQgN+Pw/+1LoMuOb5ZPJzUGP
+         VZlx0BjY29sv2siPSWi4/eN+0Zi/ZqOVir73W5pM6Jzq0Vrtli8RI7yv/pYzDM1SLnmb
+         N/Ow==
+X-Gm-Message-State: AOAM532KWPad1NXu6ZypuE4xNAJCYMN/9hrhkNkB6wIqaayRW/cLBGgS
+        IHmpLtiv8UF/6roPC3gCgvkuDBznDLc0lg==
+X-Google-Smtp-Source: ABdhPJxvK5ranT6MxNAe5Mc/fRvKp1dd0o1kpt1R3HDrhrsOWph308zl38W+FiemuvpLdabMCSteRpO/XcnWNA==
+X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:dee9:aec5:bbc1:a71e])
+ (user=mmandlik job=sendgmr) by 2002:a25:478b:: with SMTP id
+ u133mr6274796yba.532.1631221830276; Thu, 09 Sep 2021 14:10:30 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 14:10:23 -0700
+Message-Id: <20210909140945.v6.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v6] Bluetooth: Keep MSFT ext info throughout a hci_dev's life cycle
+From:   Manish Mandlik <mmandlik@google.com>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Manish Mandlik <mmandlik@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-09-09 12:49:58)
-> Existing display port phy reg property is derived from usb phy which
-> map display port phy pcs to wrong address which cause aux init
-> with wrong address and prevent both dpcd read and write from working.
-> Fix this problem by assigning correct pcs address to display port
-> phy reg property.
->
-> Changes in V2:
-> -- rewording the commit text
+From: Miao-chen Chou <mcchou@chromium.org>
 
-This Changes part can be put under the triple dash. This isn't drm tree
-material.
+This splits the msft_do_{open/close} to msft_do_{open/close} and
+msft_{register/unregister}. With this change it is possible to retain
+the MSFT extension info irrespective of controller power on/off state.
+This helps bluetoothd to report correct 'supported features' of the
+controller to the D-Bus clients event if the controller is off. It also
+re-reads the MSFT info upon every msft_do_open().
 
->
-> Fixes: 9886e8fd8438 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+The following test steps were performed.
+1. Boot the test device and verify the MSFT support debug log in syslog.
+2. Power off the controller and read the 'supported features', power on
+   and read again.
+3. Restart the bluetoothd and verify the 'supported features' value.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Manish Mandlik <mmandlik@google.com>
+---
+
+Changes in v6:
+- Split msft_do_{open/close} into msft_do_{open/close} and
+  msft_{register/unregister}
+
+Changes in v5:
+- Rebase on ToT and remove extra blank line
+
+Changes in v4:
+- Re-read the MSFT data instead of skipping if it's initiated already
+
+Changes in v3:
+- Remove the accepted commits from the series
+
+ net/bluetooth/hci_core.c |  3 +++
+ net/bluetooth/msft.c     | 55 +++++++++++++++++++++++++++++++++-------
+ net/bluetooth/msft.h     |  4 +++
+ 3 files changed, 53 insertions(+), 9 deletions(-)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index fb296478b86e..8af0ea0934fa 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3994,6 +3994,7 @@ int hci_register_dev(struct hci_dev *hdev)
+ 	queue_work(hdev->req_workqueue, &hdev->power_on);
+ 
+ 	idr_init(&hdev->adv_monitors_idr);
++	msft_register(hdev);
+ 
+ 	return id;
+ 
+@@ -4026,6 +4027,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 		cancel_work_sync(&hdev->suspend_prepare);
+ 	}
+ 
++	msft_unregister(hdev);
++
+ 	hci_dev_do_close(hdev);
+ 
+ 	if (!test_bit(HCI_INIT, &hdev->flags) &&
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index b4bfae41e8a5..21b1787e7893 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -184,28 +184,36 @@ static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle)
+ 
+ void msft_do_open(struct hci_dev *hdev)
+ {
+-	struct msft_data *msft;
++	struct msft_data *msft = hdev->msft_data;
+ 
+ 	if (hdev->msft_opcode == HCI_OP_NOP)
+ 		return;
+ 
++	if (!msft) {
++		bt_dev_err(hdev, "MSFT extension not registered");
++		return;
++	}
++
+ 	bt_dev_dbg(hdev, "Initialize MSFT extension");
+ 
+-	msft = kzalloc(sizeof(*msft), GFP_KERNEL);
+-	if (!msft)
+-		return;
++	/* Reset existing MSFT data before re-reading */
++	kfree(msft->evt_prefix);
++	msft->evt_prefix = NULL;
++	msft->evt_prefix_len = 0;
++	msft->features = 0;
+ 
+ 	if (!read_supported_features(hdev, msft)) {
++		hdev->msft_data = NULL;
+ 		kfree(msft);
+ 		return;
+ 	}
+ 
+-	INIT_LIST_HEAD(&msft->handle_map);
+-	hdev->msft_data = msft;
+-
+ 	if (msft_monitor_supported(hdev)) {
+ 		msft->reregistering = true;
+ 		msft_set_filter_enable(hdev, true);
++		/* Monitors get removed on power off, so we need to explicitly
++		 * tell the controller to re-monitor.
++		 */
+ 		reregister_monitor_on_restart(hdev, 0);
+ 	}
+ }
+@@ -221,8 +229,9 @@ void msft_do_close(struct hci_dev *hdev)
+ 
+ 	bt_dev_dbg(hdev, "Cleanup of MSFT extension");
+ 
+-	hdev->msft_data = NULL;
+-
++	/* The controller will silently remove all monitors on power off.
++	 * Therefore, remove handle_data mapping and reset monitor state.
++	 */
+ 	list_for_each_entry_safe(handle_data, tmp, &msft->handle_map, list) {
+ 		monitor = idr_find(&hdev->adv_monitors_idr,
+ 				   handle_data->mgmt_handle);
+@@ -233,6 +242,34 @@ void msft_do_close(struct hci_dev *hdev)
+ 		list_del(&handle_data->list);
+ 		kfree(handle_data);
+ 	}
++}
++
++void msft_register(struct hci_dev *hdev)
++{
++	struct msft_data *msft = NULL;
++
++	bt_dev_dbg(hdev, "Register MSFT extension");
++
++	msft = kzalloc(sizeof(*msft), GFP_KERNEL);
++	if (!msft) {
++		bt_dev_err(hdev, "Failed to register MSFT extension");
++		return;
++	}
++
++	INIT_LIST_HEAD(&msft->handle_map);
++	hdev->msft_data = msft;
++}
++
++void msft_unregister(struct hci_dev *hdev)
++{
++	struct msft_data *msft = hdev->msft_data;
++
++	if (!msft)
++		return;
++
++	bt_dev_dbg(hdev, "Unregister MSFT extension");
++
++	hdev->msft_data = NULL;
+ 
+ 	kfree(msft->evt_prefix);
+ 	kfree(msft);
+diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
+index 6e56d94b88d8..8018948c5975 100644
+--- a/net/bluetooth/msft.h
++++ b/net/bluetooth/msft.h
+@@ -13,6 +13,8 @@
+ #if IS_ENABLED(CONFIG_BT_MSFTEXT)
+ 
+ bool msft_monitor_supported(struct hci_dev *hdev);
++void msft_register(struct hci_dev *hdev);
++void msft_unregister(struct hci_dev *hdev);
+ void msft_do_open(struct hci_dev *hdev);
+ void msft_do_close(struct hci_dev *hdev);
+ void msft_vendor_evt(struct hci_dev *hdev, struct sk_buff *skb);
+@@ -31,6 +33,8 @@ static inline bool msft_monitor_supported(struct hci_dev *hdev)
+ 	return false;
+ }
+ 
++static inline void msft_register(struct hci_dev *hdev) {}
++static inline void msft_unregister(struct hci_dev *hdev) {}
+ static inline void msft_do_open(struct hci_dev *hdev) {}
+ static inline void msft_do_close(struct hci_dev *hdev) {}
+ static inline void msft_vendor_evt(struct hci_dev *hdev, struct sk_buff *skb) {}
+-- 
+2.33.0.309.g3052b89438-goog
+
