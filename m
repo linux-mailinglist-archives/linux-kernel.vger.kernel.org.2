@@ -2,177 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB46405C9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47877405C9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243102AbhIISJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231431AbhIISJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:09:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5804C610C9;
-        Thu,  9 Sep 2021 18:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631210897;
-        bh=rUgjo8lIkjG8VTsPFFj78gVWqfDjqFx80l5ivn3DkcU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fC933vyE/cBcM4YcmOg+DgH13xy31FrmuVVX3jvutEhRRXmQylLC+HDHkFxCH7XHw
-         5h8YbLstZ39heKg7+wKr90HLgqQkkl5O250x3VsWMY3ijIrzPi3VWy+zaXamYODfnR
-         SsItmcEZ+pMqc29dWZU2ET3FXmu3rFz1KY+2e7YpxPQqEcNoUXnE0O8ykO7MhplXh/
-         tA1OYUykv8MWwiAqGzZfa8ZLp0hHRUdbdEIAcEE9HHWzXIN2m+N41jgSRlzqQOGBEz
-         IsaOLE51CpdzB8Ku96fVHDZUqKJ+DPhiBYnpreSDx3opM9uqsNSj2F809nvNtb6e4r
-         tdcZ2ZYlUd50Q==
-Date:   Thu, 9 Sep 2021 13:08:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-Message-ID: <20210909180815.GA997402@bjorn-Precision-5520>
+        id S243341AbhIISJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhIISJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:09:54 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A58C061574;
+        Thu,  9 Sep 2021 11:08:44 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id r3so4353904ljc.4;
+        Thu, 09 Sep 2021 11:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xrhkwNFbE7CyeaYCdqoaVFTNPtiqwBmkiYhnEB4KRuk=;
+        b=NCWnT6TeOOcjemqLK2rjAdshV8YqvLkJZVnOfCAonFtKk6+9c6m0/yjkKNNQTjQO8W
+         XHyyzdsDv4iu1vTjGJPiMeyPJckL5XrOlDTWnTxpiPpdUbhFzc8T14syf3G9Aun7n5Yf
+         /DkaS/dkaLRw6tBSXWSBUfZ5qIbNodI3B2qvfhVqsfb9GTPNC8XciqBIISeqO06KT/IA
+         8KaX+gb01Bt0WpDfTRfug62bsalwc+AbzpfmOcSCNyPnDCVa8NdHDXWxA8B/9VoHH8S1
+         LEKeGnlCLvRsNc3216TZVysnPMHl7INP2Ap6DPQ+Yma695/GwmtZqUu9lzYPmx2s+5M9
+         Yx5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xrhkwNFbE7CyeaYCdqoaVFTNPtiqwBmkiYhnEB4KRuk=;
+        b=ftm6pKVOsawgkeOo49ITsYdYiPtZw9P37hzhAR9GohRrNrfHXPCAzwPpfcPJC/ULTe
+         3GkS67mT5BpQisyCqqliPnlgTYsVeqqN/is3sEUJ9CnuMbZee5fLhOv1EyKDp9pKqBAP
+         x3/2JCeOJ+TE1CEvPCnNtV3OlfE2jy7sod0iHzge2GiCL5eEIbpRp1zR1UeEgPdHn15Y
+         2B9c7DpW7o00Us5h58rr1CfyPOxPFkKFhHYSyJp/SPuGq5QOuqfbK6w7rD+JByhifBCx
+         JeXcFad+jq3oGXoBPh90v3l05E4iuxJYabLsw1ZPKPKD4696EFvo4StEYgKwXACuqDFT
+         h0RA==
+X-Gm-Message-State: AOAM530z1vM5/FPKzopye3hDjhCmF476mht7BoevTpXvB1ErZyGPuvvD
+        rG+6UrjnI0OqE7sM1ONtwcoQO+uOboJtBd4rTCP5unUR
+X-Google-Smtp-Source: ABdhPJy4eqa9jtOaa4xArzlQb4HOKplkxI+t5trsMjGV1U0zBR3oDobhEBCzDskkISuQ6M+shbgxL9pEJSiFOI2J+v4=
+X-Received: by 2002:a05:651c:4d4:: with SMTP id e20mr940782lji.402.1631210922576;
+ Thu, 09 Sep 2021 11:08:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5fae4f586edfde4f615a8ea6a309fbff@codeaurora.org>
+References: <20210909172555.435430-1-y.bas@phytec.de>
+In-Reply-To: <20210909172555.435430-1-y.bas@phytec.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 9 Sep 2021 15:08:31 -0300
+Message-ID: <CAOMZO5D6pt59PgNzdDYw2HrmG9Cjk--kcymp1KxeCHhhw6Bd9Q@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: imx6: phycore-som: Disable micro-SD write protection
+To:     Yunus Bas <y.bas@phytec.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:21:22PM +0530, Prasad Malisetty wrote:
-> On 2021-08-31 21:07, Bjorn Helgaas wrote:
-> > On Tue, Aug 31, 2021 at 12:07:30PM +0530, Prasad Malisetty wrote:
-> > > On 2021-08-26 18:07, Rob Herring wrote:
-> > > > On Thu, Aug 26, 2021 at 2:22 AM Prasad Malisetty
-> > > > <pmaliset@codeaurora.org> wrote:
-> > > > >
-> > > > > On 2021-08-26 02:55, Bjorn Helgaas wrote:
-> > > > > > [+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
-> > > > > >
-> > > > > > On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
-> > > > > >> Quoting Prasad Malisetty (2021-08-24 01:10:48)
-> > > > > >> > On 2021-08-17 22:56, Prasad Malisetty wrote:
-> > > > > >> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
-> > > > > >> > >> On the SC7280, By default the clock source for pcie_1_pipe is
-> > > > > >> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
-> > > > > >> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
-> > > > > >> > >>
-> > > > > >> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> > > > > >> > >> ---
-> > > > > >> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
-> > > > > >> > >>  1 file changed, 18 insertions(+)
-> > > > > >> > >>
-> > > > > >> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > >> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > >> > >> index 8a7a300..39e3b21 100644
-> > > > > >> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > >> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > >> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
-> > > > > >> > >>      struct regulator_bulk_data supplies[2];
-> > > > > >> > >>      struct reset_control *pci_reset;
-> > > > > >> > >>      struct clk *pipe_clk;
-> > > > > >> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
-> > > > > >> > >> +    struct clk *phy_pipe_clk;
-> > > > > >> > >>  };
-> > > > > >> > >>
-> > > > > >> > >>  union qcom_pcie_resources {
-> > > > > >> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
-> > > > > >> > >> qcom_pcie *pcie)
-> > > > > >> > >>      if (ret < 0)
-> > > > > >> > >>              return ret;
-> > > > > >> > >>
-> > > > > >> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> > > > > >> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> > > > > >> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> > > > > >> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> > > > > >> > >> +
-> > > > > >> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> > > > > >> > >> +            if (IS_ERR(res->phy_pipe_clk))
-> > > > > >> > >> +                    return PTR_ERR(res->phy_pipe_clk);
-> > > > > >> > >> +    }
-> > > > > >> > >
-> > > > > >> > > I would like to check is there any other better
-> > > > > >> > > approach instead of compatible method here as well or
-> > > > > >> > > is it fine to use compatible method.
-> > > > > >>
-> > > > > >> I'd prefer the compatible method. If nobody is responding
-> > > > > >> then it's best to just resend the patches with the
-> > > > > >> approach you prefer instead of waiting for someone to
-> > > > > >> respond to a review comment.
-> > > > > >
-> > > > > > I'm missing some context here, so I'm not exactly sure
-> > > > > > what your question is, Prasad, but IMO drivers generally
-> > > > > > should not need to use of_device_is_compatible() if
-> > > > > > they've already called of_device_get_match_data() (as
-> > > > > > qcom_pcie_probe() has).
-> > > > > >
-> > > > > > of_device_is_compatible() does basically the same work of
-> > > > > > looking for a match in qcom_pcie_match[] that
-> > > > > > of_device_get_match_data() does, so it seems pointless to
-> > > > > > repeat it.
-> > > >
-> > > > +1
-> > > >
-> > > > > > I am a little confused because while [1] adds "qcom,pcie-sc7280" to
-> > > > > > qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
-> > > >
-> > > > Either that's missing or there's a fallback to 8250 that's not
-> > > > documented.
-> > > >
-> > > > > I agree on your point, but the main reason is to use compatible in
-> > > > > get_resources_2_7_0 is same hardware version. For SM8250 & SC7280
-> > > > > platforms, the hw version is same. Since we can't have a separate ops
-> > > > > for SC7280, we are using compatible method in get_resources_2_7_0 to
-> > > > > differentiate SM8250 and SC7280.
-> > > >
-> > > > Then fix the match data to be not just ops, but ops and the flag you
-> > > > need here.
-> > > 
-> > > This difference is not universal across all the platforms but
-> > > instead this is specific to SC7280.  Hence it make sense to use
-> > > compatible other than going for a flag.
-> > 
-> > There's no reason your qcom_pcie_match[].data pointers need to be
-> > strictly based on the hardware version.
-> > 
-> > You can do something like what pcie-brcmstb.c does, e.g.,
-> > 
-> >   struct pcie_cfg_data {
-> >     struct qcom_pcie_ops *ops;
-> >     unsigned int pipe_mux:1;
-> >   };
-> > 
-> >   static const struct pcie_cfg_data sm8250_cfg = {
-> >     .ops = &ops_1_9_0,
-> >   };
-> > 
-> >   static const struct pcie_cfg_data sc7280_cfg = {
-> >     .ops = &ops_1_9_0,
-> >     .pipe_mux = 1,
-> >   };
-> > 
-> >   static const struct of_device_id qcom_pcie_match[] = {
-> >     { .compatible = "qcom,pcie-sm8250", .data = &sm8250_cfg },
-> >     { .compatible = "qcom,pcie-sc7280", .data = &sc7280_cfg },
-> >   };
-> 
-> I have one quick query, If we use above approach, we should change platform
-> data reading in PCIe probe to differentiate remaining platforms right.
-> expect SM8250 and SC7280 all other platforms are using same qcom_pcie_ops
-> structure pointer as data.
+Hi Yunus,
 
-Yes.  of_device_get_match_data() must return the same type of pointer
-(in the example above, "struct pcie_cfg_data *") for all platforms.
-So you would have to add a struct for each of them, and each struct
-would contain the ops pointer (&ops_1_0_0, &ops_2_1_0, etc).
+On Thu, Sep 9, 2021 at 2:25 PM Yunus Bas <y.bas@phytec.de> wrote:
+>
+> The micro-SD card doesn't feature a write-protect pin. Set the
+> corresponding property in the devicetree to handle this behavior
+> correctly and suppress driver warnings.
+>
+> Signed-off-by: Yunus Bas <y.bas@phytec.de>
 
-Thanks for working on this!
-
-Bjorn
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
