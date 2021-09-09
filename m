@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677854045D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7914045D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350868AbhIIGz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhIIGzY (ORCPT
+        id S1350904AbhIIG4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:56:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34364 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231176AbhIIG4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:55:24 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A787BC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:54:15 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id m9so966702wrb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PdyHdIGTIcExNI9r9vt6KvD+sKOV7iT7d1j4FssidJk=;
-        b=NEGnnOBV9RPUC15x/R1lIz4hVZL5OPCHBQAFWpmM/ROy7YTqLjYPBccHng0uAFC9nZ
-         YIVBE0eRwPBPhVcPMyv0sZ6Pra3+jQTN0duyhpRK8DI+VEgbMoBrSrq71HElVr4TY8tE
-         bX5Q7TsNXhmk7DrIrfhswRWxNZs702q45KCTHmVLRb7YU9ky0jkzfs6NL+3Xr0wuVgnc
-         Q9uAjZlAM58BupaV7tnSxeIwq0AZ19CHkDqLpJc//2CD6XxeEKdQQLZCph5h8Zax1Bi6
-         fzG4EmnbEwAuPeyVkO6dgrdvaEcrVq9RPZiXSnbH0qx11K4KSsgTpLED26jhZU2BbEyd
-         819g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PdyHdIGTIcExNI9r9vt6KvD+sKOV7iT7d1j4FssidJk=;
-        b=c0WKxzvwjLWQj86C/fmygbOy5j5Zb6EHWiKW36UnUSTlvS7nCe4z2CCyLpBKTnWf1H
-         8dGtsDDZFVW69v1AYFtR5ZkHl22XNgGtitusa4IzaOvS9pEae8qFDkh5ObxlmMwfELIs
-         FfD6fLSieFDFwJhIiG/tv5DMShGKPqSlISujkSHZMKtqg7DrB1toeulF5W11APSaaYfm
-         aVX8Krh/BkXmU1Zv2lTnZhXuAI+szkQAhk2iTaQjMOUsnJio4wnizUWpmXQbC1jG5cFa
-         h6XeLQLnAOvEvWMUnJhjAk54CSEvjMrHcALhc4xW3XYt0pmshphbyRhL5e4OaMGOHYPM
-         Rm5g==
-X-Gm-Message-State: AOAM530lsTVmNkkb9FanZ8QNrjCGJy7jtBVSe1QItnOIBGmBJ5rguZB+
-        xYVQAszZ2rWSLFrVYX0Loaa0JBIQ3C1w4in9L29sfw==
-X-Google-Smtp-Source: ABdhPJwcZ/XBoMS2ALZ03DQVCmLDUjaC4x3wXUJC1n95C3XNz8zT8/c9nIlkWSOZsk/IhbPSsRFa8FQV8P8Jtnaa8oQ=
-X-Received: by 2002:a5d:6909:: with SMTP id t9mr1639256wru.44.1631170454168;
- Wed, 08 Sep 2021 23:54:14 -0700 (PDT)
+        Thu, 9 Sep 2021 02:56:47 -0400
+X-UUID: b2aad2fe9f79486eacd995cca291d26e-20210909
+X-UUID: b2aad2fe9f79486eacd995cca291d26e-20210909
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1896985547; Thu, 09 Sep 2021 14:55:36 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 9 Sep 2021 14:55:35 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 9 Sep 2021 14:55:35 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <rdunlap@infradead.org>,
+        <geert@linux-m68k.org>, <wenst@chromium.org>,
+        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
+        <shane.chien@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: add required config dependency
+Date:   Thu, 9 Sep 2021 14:55:33 +0800
+Message-ID: <20210909065533.2114-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <1631165296-81082-1-git-send-email-xiyuyang19@fudan.edu.cn>
-In-Reply-To: <1631165296-81082-1-git-send-email-xiyuyang19@fudan.edu.cn>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 9 Sep 2021 14:54:03 +0800
-Message-ID: <CABVgOSkbmS_EHtTdzmk8CVY8Gm-M9hUWRuUBt+4ZLt2-txy_Aw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: fix reference count leak in kfree_at_end
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 1:28 PM 'Xiyu Yang' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> The reference counting issue happens in the normal path of
-> kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
-> function forgets to handle the returned resource object, whose refcount
-> increased inside, causing a refcount leak.
->
-> Fix this issue by calling kunit_put_resource() at the end of function.
->
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
+Because SND_SOC_MT8195 depends on COMPILE_TEST, it's possible to build
+MT8195 driver in many different config combinations.
+Add all dependent config for SND_SOC_MT8195 in case some errors happen
+when COMPILE_TEST is enabled.
 
-Thanks for looking into this.
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ sound/soc/mediatek/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-+ Daniel -- any thoughts?
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 5a2f4667d50b..81ad2dcee9eb 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config SND_SOC_MEDIATEK
+ 	tristate
++	select REGMAP_MMIO
+ 
+ config SND_SOC_MT2701
+ 	tristate "ASoC support for Mediatek MT2701 chip"
+@@ -188,7 +189,9 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+ config SND_SOC_MT8195
+ 	tristate "ASoC support for Mediatek MT8195 chip"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
++	depends on COMMON_CLK
+ 	select SND_SOC_MEDIATEK
++	select MFD_SYSCON if SND_SOC_MT6359
+ 	help
+ 	  This adds ASoC platform driver support for Mediatek MT8195 chip
+ 	  that can be used with other codecs.
+-- 
+2.18.0
 
->  lib/kunit/executor_test.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-> index cdbe54b16501..3af30abad826 100644
-> --- a/lib/kunit/executor_test.c
-> +++ b/lib/kunit/executor_test.c
-> @@ -113,11 +113,13 @@ static void kfree_res_free(struct kunit_resource *res)
->   */
->  static void kfree_at_end(struct kunit *test, const void *to_free)
->  {
-> +       struct kunit_resource *res;
->         /* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
->         if (IS_ERR_OR_NULL(to_free))
->                 return;
-> -       kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-> +       res = kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
->                                      (void *)to_free);
-> +       kunit_put_resource(res);
-
-Why not just change this to kunit_alloc_resource()?
-
->  }
->
->  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
-> --
-> 2.7.4
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/1631165296-81082-1-git-send-email-xiyuyang19%40fudan.edu.cn.
