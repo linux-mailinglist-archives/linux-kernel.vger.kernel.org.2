@@ -2,134 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B74404271
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9435404273
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348893AbhIIA4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348811AbhIIA4h (ORCPT
+        id S1349022AbhIIA5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:57:19 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:43744 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348847AbhIIA5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:56:37 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F48C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:55:28 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id n18so2365225plp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EAwI9xKTqeHWChHWhRhYTeBipS4ZF/kZaxQsB1p1X8Q=;
-        b=OibT8iqWnv9BI2GQFDg0FNJCIef2vX5j7r9atqElzLhKKnlOKXCxJHWsLuHsdjQtTn
-         lMKw88jZ5Pzft7mqJ6XUCoKEy+r50qK+nC0xKdA1d5Y6+yb6hjEasvXJ8BMOkpQr9h/H
-         PMWdO+/SEaqoGTwkl5AaOYk5WAOU7nV0/Zw30J/gZvv3qfkRcSBhsp1aShmMiNiIJ75G
-         0wlPgtsGqrxbe2tH+7wywKpkl6vW9sjbtHy4AsYcwLnb9ipxep24Q9XvB4oVB7DV5YtP
-         AgFHB1DtaeKfGG9JsWX7U1iifJ69dFWtGZGisP+Aoqn3bbOUuneXlt3/00zxTJdxRfY6
-         hHgA==
+        Wed, 8 Sep 2021 20:57:16 -0400
+Received: by mail-il1-f200.google.com with SMTP id i5-20020a056e0212c500b0022b41c6554bso301867ilm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:56:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EAwI9xKTqeHWChHWhRhYTeBipS4ZF/kZaxQsB1p1X8Q=;
-        b=r4rLarCN4PDQ4cHCOqUnBBc5NIyuVyt/W4kupKiqe4DVJ4VANvTX3o6bR4iAvc1D/X
-         V1GBt8/w/U8eOXFzUt+Ee4q5HTDmFcb9FEjmzwODsqecEnEYfZV+8qI4EMMxLXcd7P75
-         Tkje0wUkY6kDUDCGcZpW3FwVypcfijuSywFVEsYxzZFjwhZF7jPStgJFHOIDJqtf5+Tf
-         EuMapzRqdLO2qgg25VTuOQf+PaVstJxrfQ4loL4fCDLhstT/LzK6bjtfse4sNZ11m8DI
-         NYFsrs+okllBhuiRYDluR1STk8Q3lt17fpdwHWVbSjnysApFiBqsB3wwuQ+OiM1n2axq
-         7tkQ==
-X-Gm-Message-State: AOAM532wYtkdLrebzGm3ewwrUUvzQeLBYVpjsv4YVOjGD3Ta+GUQw/UF
-        62RDH32r545GnSi9nzMp8644xmIWqj2Mhg==
-X-Google-Smtp-Source: ABdhPJyPH0BiF68HweszYajAaQyBaXsTRL3oeWVKBFhlxm1Qrf3xmq+mF6xMbTEBWP26wts7TgHVhg==
-X-Received: by 2002:a17:90a:f18d:: with SMTP id bv13mr464518pjb.70.1631148927962;
-        Wed, 08 Sep 2021 17:55:27 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x189sm93375pfc.52.2021.09.08.17.55.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 17:55:27 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 00:55:23 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v2 2/3] KVM: x86: force PDPTRs reload on SMM exit
-Message-ID: <YTlbeylHFkr9/8ES@google.com>
-References: <20210823114618.1184209-1-mlevitsk@redhat.com>
- <20210823114618.1184209-3-mlevitsk@redhat.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=1rqEkrZfLlbZFMVjLu3WxnoW6fuQQaO6COqDb9D7ihA=;
+        b=ZXk6T3dmQm9QcnbZ6pG+ZVy9WV0HBW0g+XSnHVYvZiZScDAt4b+1DMpH7BcPva6Zh8
+         KBA/Y/pWBfpsvYk/kvtCysU2rVHITumxANQrxpzt51Njw5UmrzfVtwJDbA8i9GzIMofG
+         tKhR50CgAl6uj7TFjjdoKWpz4O4HPgid6zdGarLfLNl+XEFtjaIPo2h9W9qXfnFhqRIt
+         QWH8NaeCraX6WCN26WWXQ3eLveF3AQCS1B0L1oiBSstJNRNwVXXSYykulP8fl55cGQby
+         iV1rXijLZLazzSzPp4PwC03opSRcqYq0yLmP3pFnyzEPgopFv96ck2f27gYR/eAW1mhx
+         NHzg==
+X-Gm-Message-State: AOAM531eL4K3cMQDy2Gao/9YbOycGCvPCf6SZcX5xWU3Gg+83hTnH9Gt
+        IIqyAU38Zyd8O/gVlQQ44fmncuuFYYpmJKwc5gIRiOHpmF97
+X-Google-Smtp-Source: ABdhPJwrvx/OBoqSlMgQCtxiPhSXc/a63Cq70bYPiOz3kuHakcizjVsAXGVS1e5fCnNZ8t6xmOSAFultwQMqsqPwQ/EtD7w0Y/w9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823114618.1184209-3-mlevitsk@redhat.com>
+X-Received: by 2002:a02:630f:: with SMTP id j15mr357790jac.62.1631148967991;
+ Wed, 08 Sep 2021 17:56:07 -0700 (PDT)
+Date:   Wed, 08 Sep 2021 17:56:07 -0700
+In-Reply-To: <3ba69d23-26d0-9c94-bf9d-a0db2bef2ed4@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d0227205cb85760c@google.com>
+Subject: Re: [syzbot] WARNING in io_wq_submit_work (2)
+From:   syzbot <syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021, Maxim Levitsky wrote:
-> KVM_REQ_GET_NESTED_STATE_PAGES is also used with VM entries that happen
-> on exit from SMM mode, and in this case PDPTRS must be always reloaded.
-> 
-> Thanks to Sean Christopherson for pointing this out.
-> 
-> Fixes: 0f85722341b0 ("KVM: nVMX: delay loading of PDPTRs to KVM_REQ_GET_NESTED_STATE_PAGES")
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index fada1055f325..4194fbf5e5d6 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7504,6 +7504,13 @@ static int vmx_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  	}
->  
->  	if (vmx->nested.smm.guest_mode) {
-> +
-> +		/* Exit from the SMM to the non root mode also uses
+Hello,
 
-Just "Exit from SMM to non-root mode", i.e. drop the "the".
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Multi-line comments should look like:
+Reported-and-tested-by: syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com
 
-		/*
-		 * Exit from SMM ...
+Tested on:
 
-though oddly checkpatch doesn't complain about that.
+commit:         c57a91fb io_uring: fix missing mb() before waitqueue_a..
+git tree:       git://git.kernel.dk/linux-block io_uring-5.15
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bfda6f9dee77cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc2d90f602545761f287
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-That said, for the comment, it'd be more helpful to explain why the PDPTRs should
-not come from userspace.  Something like:
-
-		/*
-		 * Always reload the guest's version of the PDPTRs when exiting
-		 * from SMM to non-root.  If KVM_SET_SREGS2 stuffs PDPTRs while
-		 * SMM is active, that state is specifically for SMM context.
-		 * On RSM, all guest state is pulled from its architectural
-		 * location, whatever that may be.
-		 */
-
-Though typing that makes me wonder if this is fixing the wrong thing.  It seems
-like pdptrs_from_userspace shouldn't be set when SMM is active, though I suppose
-there's a potential ordering issue between KVM_SET_SREGS2 and KVM_SET_VCPU_EVENTS.
-Bummer.
-
-> +		 * the KVM_REQ_GET_NESTED_STATE_PAGES request,
-> +		 * but in this case the pdptrs must be always reloaded
-> +		 */
-> +		vcpu->arch.pdptrs_from_userspace = false;
-> +
->  		ret = nested_vmx_enter_non_root_mode(vcpu, false);
->  		if (ret)
->  			return ret;
-> -- 
-> 2.26.3
-> 
+Note: testing is done by a robot and is best-effort only.
