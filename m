@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4BB40593B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4C5405940
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbhIIOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S238874AbhIIOkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237947AbhIIOkE (ORCPT
+        with ESMTP id S1345692AbhIIOkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:40:04 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6535AC1A16FC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:56:05 -0700 (PDT)
+        Thu, 9 Sep 2021 10:40:24 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BD7C1A2712
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:57:49 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id c6so4033164ybm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:57:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=AS4GoMNuNsExioqPJiOWEVu+3vDbz3bR3P
-        ju384umbs=; b=Q0mP44lKzggbQhiTjNegXyJD4X+EDPSQAEquIo+Ib3iEGvj4eI
-        NDlzUEUFl04iFojHsp7XC7RKM482eu2GIYRg/tff3iXi74q9S2ba+HzQJ6gXRSWO
-        r5eWgt0Y+2rm5wn77BdY6ur8xEF2nuVkz08cGcd5L1JDelro1wRu7wE8k=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3fgJsEjphqk0PAA--.207S2;
-        Thu, 09 Sep 2021 21:55:56 +0800 (CST)
-Date:   Thu, 9 Sep 2021 21:49:29 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: enable GENERIC_FIND_FIRST_BIT
-Message-ID: <20210909214929.7c2b9ae0@xhacker>
-In-Reply-To: <bbd220c4-b535-d024-6bd3-b620b4702ed3@huawei.com>
-References: <20210718001423.6b8e1d23@xhacker>
-        <20210908230427.3a92fb87@xhacker>
-        <bbd220c4-b535-d024-6bd3-b620b4702ed3@huawei.com>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0EkCohunn/+mC/jSWBz15+/M/vV581iWFTVnfu3rN0g=;
+        b=MaQiTjjd6tqU3Ygf6YiUkneCJu9l9HASHDJr/IZplqp1CZptLIuTvRROIdruxn5843
+         X94MoAbD3WPlQNNgfYuEvRpczID3Vk8dezuz9z2zNzB0+o9sttFoqSLIfIzhKwGozY+G
+         PyxnuguAW5x+vyYHtsniBudhen0erbyHZ6jQB+nhi0TUkDtRxMdxnnktwstX9+rZ0MDp
+         SnCiZDEZ0oSiIUz1h6PYgVmv8R1VALwNlX7PRnAJIgctRnIAMhx+RktvtmDWUGwU7K0Q
+         Iz1RVDw094MizPepF88Ow/mwqV/dkOCXYmO1iWiplHzMo68pPt5JX0AcK9cDbbzW8WM5
+         unmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0EkCohunn/+mC/jSWBz15+/M/vV581iWFTVnfu3rN0g=;
+        b=nCinvk42vO43FKb12NUfHRSnsaUCXkB6dRmdgsAdysD2Re1wUoNnHnMs63AcYNpQRy
+         XIKUAezxqB+3oIg6xaJ+j63y27ZXDLCSAhrYjgB5dLineeZ1XvSB94hC3hBeaxFUTw3u
+         wpUom7poNFIJYYAVfPlJDiUjUaIXSiaIowhfTUtvHbtn1+GHP/+d9Kwl90R5/dl83io0
+         mlGWOQpwi99IaB6Y5j3LweGEv85tePdbaOPD1Qzzan4dl/19IoBbrxPE6x+AutsSbN5m
+         i2EuyJVujWcKrw7cmzw3mkzlc83wq8Gi0F1kCb7fhhwF4CUX4tjMpE/a3ZwcbIJfuq3t
+         F0Cg==
+X-Gm-Message-State: AOAM531G4pO6bRu5Xo4h5E55C9d3XNoCQyz2JTgsx1HJ5EdSXCw14LtU
+        qXNa/g9jD96w1i+r+YO6fQFbedtRKiY1rLk14zOZJQ==
+X-Google-Smtp-Source: ABdhPJwmx4mQgaDIpCS7abNgp+sVKS+DgAcvz59709nJwhMGU/y8N9IFYCwJS/hWTYCY8xMynKjIwx3nCh48RIZJ6BA=
+X-Received: by 2002:a25:5645:: with SMTP id k66mr3973824ybb.259.1631195868590;
+ Thu, 09 Sep 2021 06:57:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-2-mkoutny@suse.com>
+In-Reply-To: <20210819175034.4577-2-mkoutny@suse.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 9 Sep 2021 15:57:37 +0200
+Message-ID: <CAKfTPtDkOcAwQtfHhQ_OZH7UZ0fDuhqoNrGLPFO3ikkWMPuSFw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/5] sched/fair: Add ancestors of unthrottled
+ undecayed cfs_rq
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LkAmygB3fgJsEjphqk0PAA--.207S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF18GF4DJw1xZrW8Kr4xCrg_yoWkuFX_Wr
-        y0y3ykCw4UZrs7Aan8XayavFWqkF48W34ruw4jyrn8XrW3J3y8CF4kWF9aqayrCr40yF4U
-        KF9Iv3W5Xr97JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrAYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
-        JbIYCTnIWIevJa73UjIFyTuYvjxU2_HUDUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Sep 2021 08:58:31 +0800
-Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+On Thu, 19 Aug 2021 at 19:50, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> Since commit a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to
+> list on unthrottle") we add cfs_rqs with no runnable tasks but not fully
+> decayed into the load (leaf) list. We may ignore adding some ancestors
+> and therefore breaking tmp_alone_branch invariant. This broke LTP test
+> cfs_bandwidth01 and it was partially fixed in commit fdaba61ef8a2
+> ("sched/fair: Ensure that the CFS parent is added after unthrottling").
+>
+> I noticed the named test still fails even with the fix (but with low
+> probability, 1 in ~1000 executions of the test). The reason is when
+> bailing out of unthrottle_cfs_rq early, we may miss adding ancestors of
+> the unthrottled cfs_rq, thus, not joining tmp_alone_branch properly.
+>
+> Fix this by adding ancestors if we notice the unthrottled cfs_rq was
+> added to the load list.
+>
+> Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on un=
+throttle")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> ---
+>  kernel/sched/fair.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 44c452072a1b..2c41a9007928 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4898,8 +4898,16 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>         /* update hierarchical throttle state */
+>         walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)r=
+q);
+>
+> -       if (!cfs_rq->load.weight)
+> +       if (!cfs_rq->load.weight) {
+> +               /* Nothing to run but something to decay? Complete the br=
+anch */
+> +               if (cfs_rq->on_list)
 
-> On 2021/9/8 23:04, Jisheng Zhang wrote:
-> > Hi Palmer,
-> >
-> > On Sun, 18 Jul 2021 00:14:23 +0800
-> > Jisheng Zhang wrote:
-> > =20
-> >> From: Jisheng Zhang <jszhang@kernel.org>
-> >>
-> >> riscv doesn't implement architecture-optimized bitsearching functions
-> >> such as find_first_{zero}_bit() etc.
-> >>
-> >> When GENERIC_FIND_FIRST_BIT=3Dn, find_first_bit() is implemented with
-> >> find_next_bit() which is less efficient. Enable GENERIC_FIND_FIRST_BIT
-> >> for riscv to get more optimized find_first_bit() implementation, an
-> >> initial test(lib/find_bit_benchmark) shows find_first_bit() performance
-> >> is improved by nearly 32%. =20
-> > It seems this patch is missed. Is it possible to pick it up for 2nd 5.1=
-5-rc1 PR?
-> >
-> > Thanks =20
->=20
-> It is enabled unconditionally by following commit
->=20
-> commit dbbccfe505ef8fae804677abf0564c1e07479102
->=20
-> Author: Yury Norov <yury.norov@gmail.com>
-> Date:=C2=A0=C2=A0 Tue Aug 24 09:59:56 2021 +1000
->=20
->  =C2=A0=C2=A0=C2=A0 arch: remove GENERIC_FIND_FIRST_BIT entirely
->=20
+Could you use !cfs_rq_is decayed(cfs_rq) ?
 
-Aha, thanks for the information. After Yury's commit, this patch
-is useless now.
+> +                       for_each_sched_entity(se) {
+> +                               if (list_add_leaf_cfs_rq(group_cfs_rq(se)=
+))
+> +                                       break;
+> +                       }
+> +               assert_list_leaf_cfs_rq(rq);
 
-thanks
+Instead of adding  a loop here you should better jump to unthrottle_throttl=
+e ?
 
+>                 return;
+> +       }
+>
+>         task_delta =3D cfs_rq->h_nr_running;
+>         idle_task_delta =3D cfs_rq->idle_h_nr_running;
+> --
+> 2.32.0
+>
