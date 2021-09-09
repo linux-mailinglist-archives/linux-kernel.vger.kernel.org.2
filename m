@@ -2,131 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5C9405D30
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882E1405D3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238371AbhIITNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S244359AbhIITQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbhIITNt (ORCPT
+        with ESMTP id S237476AbhIITQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:13:49 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A22C061574;
-        Thu,  9 Sep 2021 12:12:39 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id y128so3899765oie.4;
-        Thu, 09 Sep 2021 12:12:39 -0700 (PDT)
+        Thu, 9 Sep 2021 15:16:14 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549FFC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 12:15:04 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so900868oon.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 12:15:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qPQHwAFiSYdLyleAbELrQZ2a09NIC4IXr92lC8k0Z2o=;
-        b=iP93NZjLCWK7wrqXWEzIuyPF1eZNfnZ3JjpCM3RA+qd12seWfFmLUQQbh+/RrxpGmj
-         ENQ8gOluBLG8GHQBb+a97ETd6UUMNun19AFQwNotAQqAdX27mfavG+nw0dNPuLCBqUnj
-         Slj6zu9FeZDMvZgcz51saRw1LklQCwZSjgoemHLLI6hM4s7/i75qfYjqhS+kY/kdG65l
-         a/EUPjXbQjZYFgENdYljH7VsPsAPkSdnX/JDpdMEO9TxVkMY1EDW12ESbmKouOuC4BG1
-         xwWKt8CWA5ypzZ8KgPSxKgDua/+uNGDAhtQsXwO9G5+SjqVMkgRPBCMsyS1PlTQHU7iE
-         m97A==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=X+D/zXC15Sztu7hCHCid5gnO02nMT90v2w2N9r6H9H0=;
+        b=JCFIqViuDyzXdeRbfp9b4Ps7xZlemQh7cNJH01qQyJpQ+uHiP42NjTE7oJPOKgOv1d
+         OZrcpohU2Orz5buQCTXiyrSyDWYPrjQuMB22LcyQ5ACX1jU7dP43JZ68z13z7EoSqVmP
+         DPF19ZZ9qfxEOi9nFNFpw4cRfuwDG6NGXoXac=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qPQHwAFiSYdLyleAbELrQZ2a09NIC4IXr92lC8k0Z2o=;
-        b=bUdSW1MsJpiTanugR1uY2Q73ijjrGtB3e1u5zWLh9DO+GkT4X86ZykKGNC6vGBZ8ze
-         njYVcTVM2ygdwP6Dp9IUUA0F/oaVwDb4td7i7k6OJn39jxj/Es7MEDm4YMlfVxt0qaWC
-         1zHcuXgPyn9dR4/1FmtStWDj7Np8MSBKYfdr02IL7+N57Ndp0P0fGqBs2YpJ4dK8GG6B
-         8yRDwVSv2gEKitXwDVfD9TT9zXDAOX4N4sNNtYNvWMzpxX+/iLyWU+eeJOcx3QXref5u
-         hMfHzgXawnDfOI1LhDtOZEbu56jGuv80uGsCboVEjC6M1NYLJkRzjYy9FCDNv4VB8E6+
-         7vbg==
-X-Gm-Message-State: AOAM531bai/98D8crKhr5cF/Nq3717AJ1BTHrTNbxFpnVCOrzWDDxCuM
-        /qvAZyaXELpOr3asIIsYI0o=
-X-Google-Smtp-Source: ABdhPJy+SBSctEcaaYBPlw3qORiGmzGEDUEjUOC7t0uGsaCXWESlSTjxPpHMdXVn+rNqPxve9DMoqQ==
-X-Received: by 2002:a05:6808:1481:: with SMTP id e1mr1037664oiw.5.1631214759289;
-        Thu, 09 Sep 2021 12:12:39 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:395a:c:3f8e:f434])
-        by smtp.googlemail.com with ESMTPSA id w1sm651917ott.21.2021.09.09.12.12.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 12:12:38 -0700 (PDT)
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any
- addr_gen_mode
-To:     Lorenzo Colitti <lorenzo@google.com>
-Cc:     Rocco Yue <rocco.yue@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        rocco.yue@gmail.com, chao.song@mediatek.com,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        =?UTF-8?B?Wmh1b2xpYW5nIFpoYW5nICjlvKDljZPkuq4p?= 
-        <zhuoliang.zhang@mediatek.com>
-References: <46a9dbf2-9748-330a-963e-57e615a15440@gmail.com>
- <20210701085117.19018-1-rocco.yue@mediatek.com>
- <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
- <CAKD1Yr2aijPe_aq+SRm-xv0ZPoz_gKjYrEX97R1NJyYpSnv4zg@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <6a8f0e91-225a-e2a8-3745-12ff1710a8df@gmail.com>
-Date:   Thu, 9 Sep 2021 13:12:37 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=X+D/zXC15Sztu7hCHCid5gnO02nMT90v2w2N9r6H9H0=;
+        b=dKoWJoerp5hSowcfBJ+wsEIUYZdivKspkbcE0kv5Tp4O3z6bip135ZSjlcz8LyT4dM
+         YZiL7Q0fVNoB5b4IE2npxhYpmDkXAp+7s904zv9X2I20n65OVYNE/NvAl/pDhuG6jWIX
+         W3m0AV8/30pD6OMaHJyXc+cudLmVanVNMDGEcu5EsAxY86GX/1umKXVd3R0yKeZUjPGX
+         0gaITDIHwy2nsulHWRzKqGfp/6wg0Lqvdx+c2xChpcFSmC5wK8ADyO7aipvV2l13vfQY
+         qxcFrjSB7EKTNRRi/KYjtwKtgaRAWdfz7FYbleRjjzh9xzHQtbirURX7RzY5zvv8UTPp
+         r8xw==
+X-Gm-Message-State: AOAM532jDpN0TZWCJgUSRjP5LngHDefdOs+aMqq72Iiek9OIV8UImsWo
+        mNn0RYm+W2UOeaCFPY3KKa9pAdjz6yu/WV+lLEW9wQ==
+X-Google-Smtp-Source: ABdhPJzq/dmil9c0cBFKt5jZ2mOaXCzoZ1B5mJ0oFBERA/8J3W9zfZf65TQivu70Se7KoS6Qf6CvICON8HB91vqxfWk=
+X-Received: by 2002:a4a:919e:: with SMTP id d30mr1195316ooh.8.1631214903510;
+ Thu, 09 Sep 2021 12:15:03 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 9 Sep 2021 12:15:02 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAKD1Yr2aijPe_aq+SRm-xv0ZPoz_gKjYrEX97R1NJyYpSnv4zg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1631209245-31256-3-git-send-email-pmaliset@codeaurora.org>
+References: <1631209245-31256-1-git-send-email-pmaliset@codeaurora.org> <1631209245-31256-3-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 9 Sep 2021 12:15:02 -0700
+Message-ID: <CAE-0n52ywAF_m7R4v_K6P=Z9=wgqXGscG4PXfPsDMOimdyS31w@mail.gmail.com>
+Subject: Re: [PATCH v6 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 12:20 AM, Lorenzo Colitti wrote:
->> I think another addr_gen_mode is better than a separate sysctl. It looks
->> like IN6_ADDR_GEN_MODE_STABLE_PRIVACY and IN6_ADDR_GEN_MODE_RANDOM are
->> the ones used for RAs, so add something like:
->>
->> IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
->> IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
-> 
-> I think the real requirement here (which wasn't clear in this thread)
-> is that the network needs to control the interface ID (i.e., the
-> bottom 64 bits) of the link-local address, but the device is free to
-> use whatever interface IDs to form global addresses. See:
-> https://www.etsi.org/deliver/etsi_ts/129000_129099/129061/15.03.00_60/ts_129061v150300p.pdf
-> 
-> How do you think that would best be implemented?
+Quoting Prasad Malisetty (2021-09-09 10:40:43)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 53a21d0..422c112 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -7,6 +7,7 @@
+>
+>  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/interconnect/qcom,sc7280.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+> @@ -586,6 +587,119 @@
+>                         qcom,bcm-voters = <&apps_bcm_voter>;
+>                 };
+>
+> +               pcie1: pci@1c08000 {
+> +                       compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250";
 
-There is an established paradigm for configuring how an IPv6 address is
-created or whether it is created at all - the IFLA_INET6_ADDR_GEN_MODE
-attribute.
+Can you please drop pcie-sm8250?
 
-> 
-> 1. The actual interface ID could be passed in using IFLA_INET6_TOKEN,
-> but there is only one token, so that would cause all future addresses
-> to use the token, disabling things like privacy addresses (bad).
-> 2. We could add new IN6_ADDR_GEN_MODE_STABLE_PRIVACY_LL_TOKEN,
-> IN6_ADDR_GEN_MODE_RANDOM_LL_TOKEN, etc., but we'd need to add one such
-> mode for every new mode we add.
-> 3. We could add a separate sysctl for the link-local address, but you
-> said that per-device sysctls aren't free.
+> +                       reg = <0 0x01c08000 0 0x3000>,
+> +                             <0 0x40000000 0 0xf1d>,
+> +                             <0 0x40000f20 0 0xa8>,
+> +                             <0 0x40001000 0 0x1000>,
+> +                             <0 0x40100000 0 0x100000>;
+> +
+> +                       reg-names = "parf", "dbi", "elbi", "atu", "config";
+> +                       device_type = "pci";
+> +                       linux,pci-domain = <1>;
+> +                       bus-range = <0x00 0xff>;
+> +                       num-lanes = <2>;
+> +                       pipe-clk-source-switch;
 
-per-device sysctl's are one of primary causes of per netdev memory usage.
+I thought this property was going away?
 
-Besides that there is no reason to add complexity by having a link
-attribute and a sysctl for this feature.
+> +
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +
+> +                       ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
+> +                                <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
+> +
+> +                       interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "msi";
+> +                       #interrupt-cells = <1>;
+> +                       interrupt-map-mask = <0 0 0 0x7>;
+> +                       interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +                       clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
+> +                                <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
+> +                                <&pcie1_lane 0>,
+> +                                <&rpmhcc RPMH_CXO_CLK>,
+> +                                <&gcc GCC_PCIE_1_AUX_CLK>,
+> +                                <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +                                <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
+> +                                <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
+> +                                <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
+> +                                <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
+> +                                <&gcc GCC_DDRSS_PCIE_SF_CLK>;
+> +
+> +                       clock-names = "pipe",
+> +                                     "pipe_mux",
+> +                                     "phy_pipe",
+> +                                     "ref",
+> +                                     "aux",
+> +                                     "cfg",
+> +                                     "bus_master",
+> +                                     "bus_slave",
+> +                                     "slave_q2a",
+> +                                     "tbu",
+> +                                     "ddrss_sf_tbu";
+> +
+> +                       assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
+> +                       assigned-clock-rates = <19200000>;
+> +
+> +                       resets = <&gcc GCC_PCIE_1_BCR>;
+> +                       reset-names = "pci";
+> +
+> +                       power-domains = <&gcc GCC_PCIE_1_GDSC>;
+> +
+> +                       phys = <&pcie1_lane>;
+> +                       phy-names = "pciephy";
+> +
+> +                       perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
 
-> 4. We could change the behaviour so that if the user configures a
-> token and then sets IN6_ADDR_GEN_MODE_*, then we use the token only
-> for the link-local address. But that would impact backwards
-> compatibility.
-> 
-> Thoughts?
+This should move to the board file because it's a plain old gpio.
 
-We can have up to 255 ADDR_GEN_MODEs (GEN_MODE is a u8). There is
-established code for handling the attribute and changes to it. Let's
-reuse it.
+> +                       pinctrl-names = "default";
+> +                       pinctrl-0 = <&pcie1_default_state>;
+> +
+> +                       iommus = <&apps_smmu 0x1c80 0x1>;
+> +
+> +                       iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+> +                                   <0x100 &apps_smmu 0x1c81 0x1>;
+> +
+> +                       status = "disabled";
+> +               };
+> +
+> +               pcie1_phy: phy@1c0e000 {
+> +                       compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
+
+sc7280-qmp-gen3x2-pcie-phy?
+
+> +                       reg = <0 0x01c0e000 0 0x1c0>;
+> +                       #address-cells = <2>;
+> +                       #size-cells = <2>;
+> +                       ranges;
+> +                       clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+> +                                <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +                                <&gcc GCC_PCIE_CLKREF_EN>,
+> +                                <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +                       clock-names = "aux", "cfg_ahb", "ref", "refgen";
+> +
+> +                       resets = <&gcc GCC_PCIE_1_PHY_BCR>;
+> +                       reset-names = "phy";
+> +
+> +                       assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +                       assigned-clock-rates = <100000000>;
+> +
+> +                       status = "disabled";
+> +
+> +                       pcie1_lane: lanes@1c0e200 {
+> +                               reg = <0 0x01c0e200 0 0x170>,
+> +                                     <0 0x01c0e400 0 0x200>,
+> +                                     <0 0x01c0ea00 0 0x1f0>,
+> +                                     <0 0x01c0e600 0 0x170>,
+> +                                     <0 0x01c0e800 0 0x200>,
+> +                                     <0 0x01c0ee00 0 0xf4>;
+> +                               clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +                               clock-names = "pipe0";
+> +
+> +                               #phy-cells = <0>;
+> +                               #clock-cells = <1>;
+> +                               clock-output-names = "pcie_1_pipe_clk";
+> +                       };
+> +               };
+> +
+>                 ipa: ipa@1e40000 {
+>                         compatible = "qcom,sc7280-ipa";
+>
+> @@ -1598,6 +1712,13 @@
+>                                         bias-bus-hold;
+>                                 };
+>                         };
+> +
+> +                       pcie1_default_state: pcie1-default-state {
+> +                               clkreq {
+
+Drop clkreq node and just put the pin and function directly inside
+please.
+
+> +                                       pins = "gpio79";
+> +                                       function = "pcie1_clkreqn";
+> +                               };
+> +                       };
+>                 };
+>
+>                 apps_smmu: iommu@15000000 {
