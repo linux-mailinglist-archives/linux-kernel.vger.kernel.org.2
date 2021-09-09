@@ -2,167 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF28B405EB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9655D405EB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346380AbhIIVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S1346523AbhIIVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232739AbhIIVVI (ORCPT
+        with ESMTP id S1346067AbhIIVWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:21:08 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C00C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:19:58 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x7so2885562pfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:19:58 -0700 (PDT)
+        Thu, 9 Sep 2021 17:22:34 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487CDC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:21:24 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id y6so5207427lje.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:21:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fVQsnA+/48NDgsa0ERzz48a22mi7/7hTiVzbzvzJrZA=;
-        b=gUjhO46jwOh1PpfmgdU9Us8fJSc9lrNtuZOLqMiM9G2X1/PAMrSshYzVWRuVWxEsWv
-         PowFsm89yC3Zhr8pijYn6se6qrPvDU+5w7H+B+KMy36hVsFpuMkPplFS6ARL+C+QJYxr
-         W471fmvuhi5s8whbOFk/t6OwgR8WEveOonw1lR3oCjmBf5z2o+dQKF5FFAj4oHIh7cAJ
-         +tj6stip6lUiOf1uWoaLC9zNbtKQ0qjF4RNfRfpVyqxy7a9v4/70at7EcMQGDHi8YVPh
-         f6jow8d7WJ0b+jJPmdyjy+UY46ljxWkyqm/f1ymCqOlzlRmFFPWZQD2JAX750iVOXz2n
-         V9BA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jo48A/6vEdhUXGvQfBk5fPhiOK0Nx5+tyVkiJQ9UE1A=;
+        b=SOUFGOJDCqE8hO3ROO4SYkOmMIL8xsiEijGi+FXXATaHL0N0/VyhBlza7lMIb0daoi
+         eGqc3PQJgmztEDAJ283dGh3s5kbIxOEy92htSTzslv7DtYXbiy7HR7wnSaDFSOuq7KTl
+         U6WvBRRF/mX41nyx/+5R/pKX0CwH2c5yrqHbco1QCnvUQb8OC/RB2p6AZHuOwbRo+bYG
+         uIO/fgZVTk2fXKVBRoJzzdEh2GpH3bdEeyudyzcVFtBkf2+NpswyPir1SpaB4hYKOrHu
+         1FRvm8YpSFKzFbAOAs5KK/S3GEeNmRthwxBhHSj4J0o74s7Yxo4vOqctbCgfwI+0Wd+o
+         MUpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fVQsnA+/48NDgsa0ERzz48a22mi7/7hTiVzbzvzJrZA=;
-        b=siYa/jvXmrEMMvTI1YeihUKqPZJzJb9UzGjiIEevKT/hb5AllCmgmKMn4XAF0ugPHF
-         T56g0fZSyc+TAKpukJqiS9m8Rr7nRuqrZ8l/z+iwV3QfYW/o7KVamnwgezf/MqTYyc0t
-         YShE8/MIMJAZJfTHlu9X5RSevHm12+ELtsSkZ+uxbNXN/FRiUyUPcWLHmySrkvPt0dRC
-         itAzKn9nzrE6dn7vWzoBT/BKWub6T+hcojVGMJfJ3B3V8cLNgPVbv6h9V0Nn0P7D/arh
-         2HY/F1WuldHHZpc/S0dXkR7yhEMflcIruX39FLZRZOccdkGWchyxtwjEx5cktGwTHECj
-         29+w==
-X-Gm-Message-State: AOAM531YwYXukNwr+uEsXCWqyETTN4TPf6ecLZi3i9hUO4mqfIzvIpHA
-        LzVBr0C2J0gg9gGoMhlFlvsYYA==
-X-Google-Smtp-Source: ABdhPJxsWbMsYjKdO1r8JFNw8Giqntq3LlooqZQwtpda9hxwo3o43bG9UP9clPaUbRGBK9gbDm843w==
-X-Received: by 2002:a65:62c1:: with SMTP id m1mr4515841pgv.339.1631222397876;
-        Thu, 09 Sep 2021 14:19:57 -0700 (PDT)
-Received: from ?IPv6:2600:380:496f:85f0:f855:eb52:c00a:147a? ([2600:380:496f:85f0:f855:eb52:c00a:147a])
-        by smtp.gmail.com with ESMTPSA id 138sm3090886pfz.187.2021.09.09.14.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 14:19:57 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
-Date:   Thu, 9 Sep 2021 15:19:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jo48A/6vEdhUXGvQfBk5fPhiOK0Nx5+tyVkiJQ9UE1A=;
+        b=KkzzoacVnYKWe2euHGnp18Qu6Ld/s6sl7OHsHsQVCYkVHAapVYzoUYIQFdafkbRxMk
+         kC6wD8O2ZTvGOlYJGC6IJWh/XszVnKbOXY7hI9xDNW5rQBLMrbdnNCOAuJ0Kv5aE60B3
+         S+BTd9L9gVxfnqCyLPLaDqyp3xQjFSix4v+tK+suyaJRFvDCCt6l3/Q8FD5+DUsDoOx/
+         YUTMTLaSC7Ri0Fi6z6RVRXDmH86tOtVFHiJrKAikww386iG8RwhPy6yvm/2zDFqXVpJl
+         uGbzE2+Jjnf7ZTAKP9DOClkE10m1oeujdChUpFT5CLClGUPbT2X1WtiOGeT1Qve5CZ6o
+         e2Tg==
+X-Gm-Message-State: AOAM533Aw6/MuVTu2jEAlh1t7vW3NXAnhCMRW1LMTeXTFvu5GvNIPBrB
+        aXmcRyA57iZBPQOb4p8dtrt9kOT+/+/Y6MuHfI2GLw==
+X-Google-Smtp-Source: ABdhPJxqwrJtXVgVcnK7CLGe9RMGTDbg9ItWrxypbspy4fHW2lO0d9u4QaAwddoTnFPMBXiw2rUdSE+1gAA6ImN599k=
+X-Received: by 2002:a2e:1508:: with SMTP id s8mr631481ljd.47.1631222482331;
+ Thu, 09 Sep 2021 14:21:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
+ <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com> <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
+In-Reply-To: <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 9 Sep 2021 23:20:55 +0200
+Message-ID: <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
+Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Andrei Vagin <avagin@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 1:37 PM, Linus Torvalds wrote:
-> On Wed, Sep 8, 2021 at 9:24 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>
->>         Fixes for io-uring handling of iov_iter reexpands
-> 
-> Ugh.
-> 
-> I have pulled this, because I understand what it does and I agree it
-> fixes a bug, but it really feels very very hacky and wrong to me.
-> 
-> It really smells like io-uring is doing a "iov_iter_revert()" using a
-> number that it pulls incorrectly out of its arse.
-> 
-> So when io-uring does that
-> 
->                 iov_iter_revert(iter, io_size - iov_iter_count(iter));
-> 
-> what it *really* wants to do is just basically "iov_iter_reset(iter)".
-> 
-> And that's basically what that addition of that "iov_iter_reexpand()"
-> tries to effectively do.
-> 
-> Wouldn't it be better to have a function that does exactly that?
+On Thu, Sep 9, 2021 at 9:07 PM Peter Oskolkov <posk@google.com> wrote:
+> On Wed, Sep 8, 2021 at 4:39 PM Jann Horn <jannh@google.com> wrote:
+>
+> Thanks a lot for the reviews, Jann!
+>
+> I understand how to address most of your comments. However, one issue
+> I'm not sure what to do about:
+>
+> [...]
+>
+> > If this function is not allowed to sleep, as the comment says...
+>
+> [...]
+>
+> > ... then I'm pretty sure you can't call fix_pagefault() here, which
+> > acquires the mmap semaphore (which may involve sleeping) and then goes
+> > through the pagefault handling path (which can also sleep for various
+> > reasons, like allocating memory for pagetables, loading pages from
+> > disk / NFS / FUSE, and so on).
+>
+> <quote from peterz@ from
+> https://lore.kernel.org/lkml/20210609125435.GA68187@worktop.programming.kicks-ass.net/>:
+>   So a PF_UMCG_WORKER would be added to sched_submit_work()'s PF_*_WORKER
+>   path to capture these tasks blocking. The umcg_sleeping() hook added
+>   there would:
+>
+>     put_user(BLOCKED, umcg_task->umcg_status);
+>     ...
+> </quote>
+>
+> Which is basically what I am doing here: in sched_submit_work() I need
+> to read/write to userspace; and we cannot sleep in
+> sched_submit_work(), I believe.
+>
+> If you are right that it is impossible to deal with pagefaults from
+> within non-sleepable contexts, I see two options:
+>
+> Option 1: as you suggest, pin pages holding struct umcg_task in sys_umcg_ctl;
 
-That might indeed be better. Alternatively, consumers that truncate
-should expand. Part of the problem here is the inconsistency in how they
-are consumed.
+FWIW, there is a variant on this that might also be an option:
 
-> Alternatively (and I'm cc'ing Jens) is is not possible for the
-> io-uring code to know how many bytes it *actually* used, rather than
-> saying that "ok, the iter originally had X bytes, now it has Y bytes,
-> so it must have used X-Y bytes" which was actively wrong for the case
-> where something ended up truncating the IO for some reason.
+You can create a new memory mapping from kernel code and stuff pages
+into it that were originally allocated as normal kernel pages. This is
+done in a bunch of places, e.g.:
 
-Not sure how we'd do that, outside of stupid tricks like copy the
-iov_iter before we pass it down. But that's obviously not going to be
-very efficient. Hence we're left with having some way to reset/reexpand,
-even in the presence of someone having done truncate on it.
+This has the advantage that it avoids pinning random pages that were
+originally allocated from ZONE_MOVABLE blocks. (Or pinning hugepages,
+or something like that.)
+The downsides are that it reduces userspace's freedom to place the
+UAPI structs wherever it wants (so userspace e.g. probably can't
+directly put the struct in thread-local storage, instead it has to
+store a pointer to the struct), and that you need to write a bunch of
+code to create the mapping and allocate slots in these pages for
+userspace threads.
 
-> Because I note that io-uring does that
-> 
->         /* may have left rw->iter inconsistent on -EIOCBQUEUED */
->         iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
-> 
-> in io_resubmit_prep() too, and that you guys missed that it's the
-> exact same issue, and needs that exact same iov_iter_reexpand().
+Maybe UMCG_CTL_REGISTER could do something vaguely like this (utterly
+untested, I just scribbled this down in my mail client)?
 
-I think you're right on that one, there's no difference between that use
-case and the other two...
 
-> That "req->result" is once again the *original* length, and the above
-> code once again mis-handles the case of "oh, the iov got truncated
-> because of some IO limit".
-> 
-> So I've pulled this, but I think it is
-> 
->  (a) ugly nasty
-> 
->  (b) incomplete and misses a case
-> 
-> and needs more thought. At the VERY least it needs that
-> iov_iter_reexpand() in io_resubmit_prep() too, I think.
-> 
-> I'd like the comments expanded too. In particular that
-> 
->                 /* some cases will consume bytes even on error returns */
+#define UMCG_TASKS_PER_PAGE (sizeof(struct umcg_task) / PAGE_SIZE)
+struct umcg_page {
+  struct page *page;
+  struct umcg_task *__user user_base;
+  struct vm_special_mapping special_mapping;
+  DECLARE_BITMAP(inuse_bits, UMCG_TASKS_PER_PAGE);
+ };
+struct mm_umcg {
+  struct umcg_page *slot_pages;
+  size_t slot_page_count;
+  size_t used_slots;
+};
+struct mm_struct {
+   ...
+#ifdef CONFIG_UMCG
+    struct mm_umcg umcg;
+#endif
+  ...
+};
 
-That comment is from me, and it goes back a few years. IIRC, it was the
-iomap or xfs code that I hit this with, but honestly I don't remember
-all the details at this point. I can try and play with it and see if it
-still reproduces.
+static int deny_mremap(struct vm_area_struct *new_vma)
+{
+  return -EINVAL;
+}
 
-> really should expand on the "some cases" thing, and why such an error
-> isn't fatal buye should be retried asynchronously blindly like this?
+BUILD_BUG_ON(UMCG_TASKS_PER_PAGE < 1);
+struct mm_struct *mm = current->mm;
+size_t page_idx, free_idx_in_page;
+if (!mmap_lock_killable(mm))
+  return -EINTR;
+if (mm->umcg.used_slots == mm->umcg.slot_page_count * UMCG_TASKS_PER_PAGE) {
+  unsigned long addr;
+  struct page *new_page;
+  struct umcg_page *slot_pages_new;
 
-That would certainly make it easier to handle, as we'd never need to
-care at that point. Ideally, return 'bytes_consumed' or error. It might
-have been a case of -EAGAIN after truncate, I'll have to dig a bit to
-find it again. Outside of that error, we don't retry as there's no point
-in doing so.
+  addr = get_unmapped_area(NULL, 0, PAGE_SIZE, 0, 0);
+  if (IS_ERR_VALUE(addr)) {
+    ret = addr;
+    goto unlock;
+  }
 
-> Because I think _that_ is part of the fundamental issue here - the
-> io_uring code tries to just blindly re-submit the whole thing, and it
-> does it very badly and actually incorrectly.
-> 
-> Or am I missing something?
+  slot_pages_new = krealloc_array(mm->umcg.slot_page_count + 1,
+sizeof(struct umcg_page), GFP_KERNEL);
+  if (!slot_pages_new) {
+    ret = -ENOMEM;
+    goto unlock;
+  }
+  mm->umcg.slot_pages = slot_pages_new;
+  new_page = alloc_page(GFP_USER | __GFP_ACCOUNT);
+  if (!new_page) {
+    ret = -ENOMEM;
+    goto unlock;
+  }
+  mm->umcg.slot_pages[mm->umcg.slot_page_count].page = new_page;
+  mm->umcg.slot_pages[mm->umcg.slot_page_count].user_base = addr;
+  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.name = "[umcg]";
+  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.pages
+= &mm->umcg.slot_pages[mm->umcg.slot_page_count].page;
+  mm->umcg.slot_pages[mm->umcg.slot_page_count].special_mapping.mremap
+= deny_mremap;
+  if (IS_ERR(_install_special_mapping(mm, addr, PAGE_SIZE,
+VM_READ|VM_WRITE|VM_MAYREAD|VM_MAYWRITE|VM_DONTCOPY,
+&new_page->special_mapping)))
+    ... free new_page and return error ...
+  mm->umcg.slot_page_count++;
+}
 
-I think the key point here is re-figuring out where the
-consumption-on-error comes from. If it just ends up being a truncated
-iov, that's all good and fine. If not, that feels like a bug somewhere
-else that needs fixing.
+for (page_idx = 0; 1; page_idx++) {
+  if (page_idx == mm->umcg->slot_page_count)
+    ... WARN() and bail out, shouldn't happen...
+  free_idx_in_page =
+find_first_zero_bit(mm->umcg->slot_pages[page_idx],
+UMCG_TASKS_PER_PAGE);
+  if (free_idx_in_page != UMCG_TASKS_PER_PAGE)
+    break;
+}
+set_bit(free_idx_in_page, mm->umcg->slot_pages[page_idx]);
+mm->umcg.used_slots++;
+current->umcg_user_mapping = mm->umcg->slot_pages[page_idx].user_base
++ free_idx_in_page;
+current->umcg_kernel_mapping = (struct umcg_task
+*)page_to_virt(mm->umcg->slot_pages[page_idx].page) +
+free_idx_in_page;
+current->umcg_index = page_idx * UMCG_TASKS_PER_PAGE + free_idx_in_page;
+unlock:
+mmap_unlock(mm);
 
--- 
-Jens Axboe
+... and then when a task exits, you'd pretty much just take the
+mmap_lock and do clear_bit(current->umcg_index % UMCG_TASKS_PER_PAGE,
+current->mm->umcg.slot_pages[current->umcg_index /
+UMCG_TASKS_PER_PAGE].inuse_bits)?
 
+The pages would stay allocated as long as the process is running, but
+given how fragmented those pages are going to get, that's probably
+inevitable. And when the process exits (more precisely, when the
+mm_struct is torn down), you could free all this stuff?
+
+Note that what I'm suggesting here is a bit unusual - normally only
+the vDSO is a "special mapping", other APIs tend to use mappings that
+are backed by files. But I think we probably don't want to have a file
+involved here...
+
+If you decide to go this route, you should probably CC
+linux-mm@kvack.org (for general memory management) and Andy Lutomirski
+(who has tinkered around in vDSO-related code a lot).
+
+> or
+>
+> Option 2: add more umcg-related kernel state to task_struct so that
+> reading/writing to userspace is not necessary in sched_submit_work().
+>
+> The first option sounds much better from the code simplicity point of
+> view, but I'm not sure if it is a viable approach, i.e. I'm afraid
+> we'll get a hard NACK here, as a non-privileged process will be able
+> to force the kernel to pin a page per task/thread.
+
+To clarify: It's entirely normal that userspace processes can force
+the kernel to hold on to some amounts of memory that can't be paged
+out - consider e.g. pagetables and kernel objects referenced by file
+descriptors. So an API that pins limited amounts of memory that are
+also mapped in userspace isn't inherently special. But pinning pages
+that were originally allocated as normal userspace memory can be more
+problematic because that memory might be hugepages, or file pages, or
+it might prevent the hugepaged from being able to defragment memory
+because the pinned page was allocated in ZONE_MOVABLE.
+
+
+> We may get around
+> it by first pinning a limited number of pages, then having the
+> userspace allocate structs umcg_task on those pages, so that a pinned
+> page would cover more than a single task/thread. And have a sysctl
+> that limits the number of pinned pages per MM.
+
+I think that you wouldn't necessarily need a sysctl for that if the
+kernel can enforce that you don't have more pages allocated than you
+need for the maximum number of threads that have ever been running
+under the process, and you also use __GFP_ACCOUNT so that cgroups can
+correctly attribute the memory usage.
+
+> Peter Z., could you, please, comment here? Do you think pinning pages
+> to hold structs umcg_task is acceptable?
