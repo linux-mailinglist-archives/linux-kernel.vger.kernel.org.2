@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED3C405BC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B9A405BAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240717AbhIIRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
+        id S240777AbhIIRDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240691AbhIIRJH (ORCPT
+        with ESMTP id S234524AbhIIRDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:09:07 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAF2C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:07:57 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id r3so4085634ljc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:07:57 -0700 (PDT)
+        Thu, 9 Sep 2021 13:03:47 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C865C061574;
+        Thu,  9 Sep 2021 10:02:37 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id k4so5011319lfj.7;
+        Thu, 09 Sep 2021 10:02:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=diTVsMYqliPsntfgupSiQvQMuF7KcKYQBTVusJZ/h/Y=;
-        b=VmEctbgHul4P8W8T9HtRUrO/mtlYhuO6qpGs6XmtXJRlio+QOUgKC049cxIiHSNiOg
-         djteLekmvDdQqPQ6855lV3YAT50gfrDu4zxrdCIqMc9YjrnuUc0+8CoJjrt7pKnfNz95
-         +qdw0ajYtXMBK2qlwtYipW05sjvaLD1bEgwoU=
+        bh=hIfAoo/G7Fm3X9NrBjLmLLwUCDjhAIFe7S1HChy8r6w=;
+        b=QDi8VF84qL0gTU0hXRG7TTZsVQnC9kV+gq5Zqn9AfAnhX0+OV+3lmh4BNhe+3fQTFP
+         nE3Gsvxq9GBhXO17w1yH0sOPKk+vKjKHXWxPVR2H0lhK9U/ROsbakAk//+sy+u7jyR2T
+         OxfVN0ERZ0iJUWoyMnnQ9wp77ZvhL7MMw0ZfeNiDdPgwTk7QnPit8aJov1qOa6HugRS7
+         Tt6J3fUZzfs+9GHbzQ18eyBVrX6nhxmsDjoP2NBet+amu6XLz5c5DbXgjDkdFy8TB7Zk
+         K69rOeyZOmJR496VrWiF7KfqzHC3mjed+TZeJWHUZULDSGDns8/hbl61+ljy27gfWJq+
+         Uo6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=diTVsMYqliPsntfgupSiQvQMuF7KcKYQBTVusJZ/h/Y=;
-        b=oaepj6GFGBXEeAl376kk1ICf/XckVE9mbWF7xfdq7vDi3PeMiuDU/zcCgrtHe9jUDo
-         HiXcjyKgz5ueeH5zWFmdmboJLupuOAzIXKGlvBKRbKiji2mjIb5+i9A1nZj1Otch1+Xd
-         MQGGkQemFoKMEO9Fd5nKX3QB0z4o8ZbUkvIV5i4c2plskrZClrfB1BRymFOV2xJKB/jA
-         zmwwMjeQqJ0eHP9PISE2wiplcUnIcUvobfkyWwvzbc3VCOywJlE/YaRNVd7A2YklgNaK
-         N2VyPCnG0vLvGaC7x33VNOg+YQQmP6eUeF12/T+u/qATHIpxS3PDB6NkMNnIcCbRQvgF
-         80ww==
-X-Gm-Message-State: AOAM531ewRKw5u7s5lukfsqq8jGoS1/NmzDr7UXpybIT0lvr3fI/GTIz
-        XXA3kde6Y5n3yZYhpOzhb4NZmE4a0gM5GOtHE10=
-X-Google-Smtp-Source: ABdhPJwhnAIHkKOj13gMAy6MrOjZmDjLRpTqfN/rxE32aXqFQB0Zhw413xsDDCDXwnsepwuC93luaA==
-X-Received: by 2002:a2e:9dca:: with SMTP id x10mr778331ljj.140.1631207275596;
-        Thu, 09 Sep 2021 10:07:55 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id y32sm254586lfa.171.2021.09.09.10.07.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 10:07:55 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id e23so5047974lfj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:07:55 -0700 (PDT)
-X-Received: by 2002:a05:6512:34c3:: with SMTP id w3mr626249lfr.173.1631206949455;
- Thu, 09 Sep 2021 10:02:29 -0700 (PDT)
+        bh=hIfAoo/G7Fm3X9NrBjLmLLwUCDjhAIFe7S1HChy8r6w=;
+        b=KiY97BcanYToJ6hsAdWp9MPshBZmNr6aNUxx5sOWFYxj7MfQ4in3uhYtSAr+dVE56A
+         SmB4I/PJ6cCJ4HWiWLRh3nK3A96jLl7KFF5f4R0njOjC+f+ECKK1KOr7KM7cf/QKJoYp
+         9tzj4DzsjqUXVwa4d2WNWOk1Nh1z/QX/RRKFUq/8/AN/2HSUiHsSRpu+bqCIfhf6DP/9
+         SyUIYixYTAcwPKBeHUc5tuks6ZX9lbrLaX1rNvZ8kfVn9q5pE7FyApRZvlAnWC1NfOJO
+         XmEPmVNV10Gx65Tpt6jIZlXvkCBCpOqUc7KfVPkO1zrxDrPkc+PeWnWfXrqq68Ymd/65
+         8gwQ==
+X-Gm-Message-State: AOAM531nnFQZQwoqVTRTW079OBtzCaLK4yXfRn8JkunbrQZiQEresJod
+        mYcxJNXEd4sy/sqf3DpV5CNSFlA74G+2lqgx0gHeC8RbYJ4=
+X-Google-Smtp-Source: ABdhPJzP+qiRIiROtZIfG+kvHtX+hjXAXXdSnX6Fw2qxDi389joenwUV15vAxO1x9CCCiIt5+HrBkmlEZ4vp5i267JU=
+X-Received: by 2002:a05:6512:ac4:: with SMTP id n4mr615817lfu.237.1631206955640;
+ Thu, 09 Sep 2021 10:02:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20180926182920.27644-2-paulmck@linux.ibm.com> <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net> <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu> <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
- <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net> <20210909133535.GA9722@willie-the-truck>
-In-Reply-To: <20210909133535.GA9722@willie-the-truck>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Sep 2021 10:02:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whULF=p-igDd-pvB+oqX-josNmbeBx2sTBA13t9UqcpQA@mail.gmail.com>
-Message-ID: <CAHk-=whULF=p-igDd-pvB+oqX-josNmbeBx2sTBA13t9UqcpQA@mail.gmail.com>
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-tip-commits@vger.kernel.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
+References: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
+ <20210904082330.14864-1-utkarshverma294@gmail.com>
+In-Reply-To: <20210904082330.14864-1-utkarshverma294@gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 9 Sep 2021 22:32:23 +0530
+Message-ID: <CABJPP5DyppeW=_XXJKn_NnQahOn=k0oBi-dDdcyxN8rygwusEw@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: checkpatch: Add SYMBOLIC_PERMS message
+To:     Utkarsh Verma <utkarshverma294@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:35 AM Will Deacon <will@kernel.org> wrote:
+On Sat, Sep 4, 2021 at 1:53 PM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
 >
-> I don't think we should require the accesses to the actual lockwords to
-> be ordered here, as it becomes pretty onerous for relaxed LL/SC
-> architectures where you'd end up with an extra barrier either after the
-> unlock() or before the lock() operation. However, I remain absolutely in
-> favour of strengthening the ordering of the _critical sections_ guarded by
-> the locks to be RCsc.
+> Add a new message type SYMBOLIC_PERMS under the 'Permissions'
+> subsection. Octal permission bits are easier to read and understand
+> instead of their symbolic macro names.
+>
+> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  Documentation/dev-tools/checkpatch.rst | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> index f0956e9ea2d8..41037594ec24 100644
+> --- a/Documentation/dev-tools/checkpatch.rst
+> +++ b/Documentation/dev-tools/checkpatch.rst
+> @@ -957,6 +957,17 @@ Permissions
+>      Permission bits should use 4 digit octal permissions (like 0700 or 0444).
+>      Avoid using any other base like decimal.
+>
+> +  **SYMBOLIC_PERMS**
+> +    Permission bits in the octal form are more readable and easier to
+> +    understand than their symbolic counterparts because many command-line
+> +    tools use this notation only. Experienced kernel developers have been using
 
-Ack. The actual locking operations themselves can obviously overlap,
-it's what they protect that should be ordered if at all possible.
+Let's remove "only".
 
-Because anything else will be too confusing for words, and if we have
-to add memory barriers *and* locking we're just screwed.
+> +    this traditional Unix permission bits for decades and so they find it
 
-Because I think it is entirely understandable for people to expect
-that sequence of two locked regions to be ordered wrt each other.
+Maybe you meant "these" here.
 
-While memory ordering is subtle and confusing, we should strive to
-make our "..but I used locks" to be as straightforward and as
-understandable to people who really really don't want to even think
-about memory order as at all reasonable.
+With these changes made,
+Acked-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-I think we should have a very strong reason for accepting unordered
-locked regions (with "strong reason" being defined as "on this
-architecture that is hugely important, anything else would slow down
-locks enormously").
-
-It sounds like no such architecture exists, much less is important.
-
-              Linus
+> +    easier to understand the octal notation than the symbolic macros.
+> +    For example, it is harder to read S_IWUSR|S_IRUGO than 0644, which
+> +    obscures the developer's intent rather than clarifying it.
+> +
+> +    See: https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
+> +
+>
+>  Spacing and Brackets
+>  --------------------
+> --
+> 2.25.1
+>
