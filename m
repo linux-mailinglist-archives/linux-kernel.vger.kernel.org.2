@@ -2,189 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2A740423B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C429A40423F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348509AbhIIAXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        id S1348661AbhIIAXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348278AbhIIAW7 (ORCPT
+        with ESMTP id S1348278AbhIIAXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:22:59 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB934C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:21:50 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id u17so99392ilm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:21:50 -0700 (PDT)
+        Wed, 8 Sep 2021 20:23:06 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E47C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:21:57 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so1370371ooh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nyyS/oElz6G47rTDzdZzhnO3VTNUt3aMfsrZJACLUK0=;
-        b=N5L/bm9EA0/nF7JHD2xJaQPzpZZRk1v2vACf8FEufoCSvSU8YbdLVMQPFyD2yH/Kak
-         dz6PQRrAd7YoMFKhmDZ3MbwuL6DsalNHyEkUKqDa3VgtdcagOJz49keEgGweFupudCpO
-         cdXd+GBZDP7gDDjrecBlYfx5cebdIHw4ckAdg=
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
+        b=l2zLirahIdKfjSNP4/FhmOaIxi6RGKTtg2W5yfzqga9z8DM7mF8KKLqdVBbe3EVQU8
+         B2mAb8Kiyg3jGUGCmKchEE2FUCQe8mgtNYWYqjHacr6zdJiQlA/FSaPoBXi+Hveldzji
+         yG8fvl3sD+03w4y0+gHlZYwwEFTawa1SZd9SM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nyyS/oElz6G47rTDzdZzhnO3VTNUt3aMfsrZJACLUK0=;
-        b=NPqMC24XgE9BErdkq6u0Af1kD/jAHHU9xr5C6fXZuFI5F/VzRFvkTnvAsoIPpBeHXE
-         veYBTOllTDI/chI1Cq3/AkK6aLIKZIGjDuElt4h2eWi+3YlQLp6NYC6xUeCe6d1zozCX
-         A4CwGitsv8eSpGI7q4WKgjGzMmYL2vbNfxPIUoa002u11yJ8Qua5VMLg7A0+I1AW5615
-         cRVXAOUroMREpoNtQGwOU61HmzD3n9sVN27tC86NJmF+tE9VdaZD1pStaENdXd+YRv1b
-         +PWrRx6EDgkAJRf935RqCZjT77LQO9hDN+1tBxGsfWXi6++46x1RSxfrjOC3APwL6kud
-         g2Og==
-X-Gm-Message-State: AOAM530JB3ptGcpbVsfn2qVnVWMPRPkNYLWMycq3hO+h2xXY+bH/tkPB
-        5FgPdhewwy8BgHDzVn6XGSVaxw==
-X-Google-Smtp-Source: ABdhPJzpWC0pzdmX5gNMr3VJ2rqQkrO6po6sn3W5LyaZHqAAKLZ5NTPksOm5CJRcgUWrCECVlXV6Gg==
-X-Received: by 2002:a92:c70e:: with SMTP id a14mr109747ilp.299.1631146909810;
-        Wed, 08 Sep 2021 17:21:49 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d14sm122508iod.18.2021.09.08.17.21.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 17:21:49 -0700 (PDT)
-Subject: Re: [PATCH 03/19] ACPI: CPPC: add cppc enable register function
-To:     Huang Rui <ray.huang@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        linux-pm@vger.kernel.org
-Cc:     Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-4-ray.huang@amd.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e23d49d3-1591-bd12-549a-efd2a1f28dea@linuxfoundation.org>
-Date:   Wed, 8 Sep 2021 18:21:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
+        b=32u56S76TEwywZLshsMb1L/+SUddydOGdmD/8QMhrYIHj6rIzVBPyCs6M5RmL5Wd2s
+         z/6aBzyLRfm1W2R1Kh7e+n/yVr4bf2P1VCT5r6wUS9dWjzFmtyLhOuD2fRnd2iFhDrie
+         IqOdvbNFxNRCc8mIyhVRtEy0TJEf8HRUy1sya1xyR7zkEPUUiTZhu83RMO6VjHMHiVR7
+         7SjR17kTyUlvtQfNON2xewwmWqGRbmD2p8koPQLIYYpmqscegtiNsVkrcxZR4iPA7kTX
+         k6USmMHvM5mdY3GVRORNfC3z757vKTFHkENqfL6nFyHED49cw04PD034KdU1UZmOcfMN
+         EJxA==
+X-Gm-Message-State: AOAM530fqFm7NbuCg7KIuz+1oxwAEPXWRZdKPypfERPzrOQ65sV2LzaG
+        BFIttmV7UiZ6yo7bGIwboloHOdMw5alyRdsHZa1Fcg==
+X-Google-Smtp-Source: ABdhPJxgF39MsLPy0LWbZeXGBUy3CFp7gIIfxNlCUhObTVORlW5XPn7pdgoxLbPwwQ0fUMnQfRUlseqsLjVZ7A4RYec=
+X-Received: by 2002:a4a:9211:: with SMTP id f17mr259723ooh.25.1631146917250;
+ Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 8 Sep 2021 17:21:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210908150001.3702552-4-ray.huang@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
+References: <20210905210400.1157870-1-swboyd@chromium.org> <YTe+a0Gu7O6MEy2d@google.com>
+ <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com> <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 8 Sep 2021 17:21:56 -0700
+Message-ID: <CAE-0n50RUGTA8sfK52YWXRkoi31XYnJkahy_MydRZ0zM1QXRQg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
+To:     Abhishek Kumar <kuabhs@chromium.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Youghandhar Chintala <youghand@codeaurora.org>,
+        Rakesh Pillai <pillair@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 8:59 AM, Huang Rui wrote:
-> From: Jinzhou Su <Jinzhou.Su@amd.com>
-> 
-> Export the cppc enable register function for future use.
+Quoting Abhishek Kumar (2021-09-08 15:37:07)
+>
+> Overall this change should fix the issue, additionally I have one
+> comment below and would like other reviewers views.
+>
+> >  #include <linux/regulator/consumer.h>
+> > +#include <linux/remoteproc/qcom_rproc.h>
+> >  #include <linux/of_address.h>
+> We are adding an external dependency here but since this is added in
+> snoc.c (which is for integrated solution only), I can expect if SNOC
+> is enabled, remote proc will be enabled as well, so it should be fine.
 
-This patch also adds a new function. How about saying something about
-adding a new function.
-
-> 
-> Signed-off-by: Jinzhou Su <Jinzhou.Su@amd.com>
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->   drivers/acpi/cppc_acpi.c | 42 ++++++++++++++++++++++++++++++++++++++++
->   include/acpi/cppc_acpi.h |  5 +++++
->   2 files changed, 47 insertions(+)
-> 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index a4d4eebba1da..de4b30545215 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1220,6 +1220,48 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->   }
->   EXPORT_SYMBOL_GPL(cppc_get_perf_ctrs);
->   
-> +/**
-> + * cppc_set_enable - Set to enable CPPC register.
-
-Please make this more descriptive - does it write to register
-What is the behavior in error paths etc.
-
-> + * @cpu: CPU for which to enable CPPC register.
-> + * @enable: enable field to write into share memory.
-
-What should this be? What are the valid values to write?
-Also aren't we adding this to header file where prtotype
-is defined these days?
-
-> + *
-> + * Return: 0 for success, -ERRNO otherwise.
-> + */
-> +int cppc_set_enable(int cpu, u32 enable)
-> +{
-> +	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
-> +	struct cpc_register_resource *enable_reg;
-> +	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-> +	struct cppc_pcc_data *pcc_ss_data = NULL;
-> +	int ret = -1;
-> +
-> +	if (!cpc_desc) {
-> +		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-> +		return -ENODEV;
-> +	}
-> +
-
-Don't we need to do some error checking on input args? What is the
-valid range for cpu and enbale?
-
-> +	enable_reg = &cpc_desc->cpc_regs[ENABLE];
-> +
-> +	if (CPC_IN_PCC(enable_reg)) {
-> +
-> +		if (pcc_ss_id < 0)
-> +			return -EIO;
-> +
-> +		ret = cpc_write(cpu, enable_reg, enable);
-> +		if (ret)
-> +			return ret;
-> +
-> +		pcc_ss_data = pcc_data[pcc_ss_id];
-> +
-> +		down_write(&pcc_ss_data->pcc_lock);
-> +		send_pcc_cmd(pcc_ss_id, CMD_WRITE);
-
-Could this fail?
-
-> +		up_write(&pcc_ss_data->pcc_lock);
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_set_enable);
-> +
->   /**
->    * cppc_set_perf - Set a CPU's performance controls.
->    * @cpu: CPU for which to set performance controls.
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 9f4985b4d64d..3fdae40a75fc 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -137,6 +137,7 @@ struct cppc_cpudata {
->   extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
->   extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs);
->   extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
-> +extern int cppc_set_enable(int cpu, u32 enable);
->   extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
->   extern bool acpi_cpc_valid(void);
->   extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *cpu_data);
-> @@ -157,6 +158,10 @@ static inline int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls)
->   {
->   	return -ENOTSUPP;
->   }
-> +static inline int cppc_set_enable(int cpu, u32 enable)
-> +{
-> +	return -ENOTSUPP;
-> +}
->   static inline int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps)
->   {
->   	return -ENOTSUPP;
-> 
-
-thanks,
--- Shuah
+There are stubs so that if it isn't enabled it won't do anything. But as
+you say SNOC relies on the modem to boot, so maybe CONFIG_ATH10K_SNOC
+should depend on some remoteproc config anyway? I'm not clear how probe
+ordering works but I think we'll want to make sure that we only register
+the notifier once the remoteproc driver for the modem adds itself to the
+list of available strings to look for.
