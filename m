@@ -2,108 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB2F40476E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE1340478A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhIIJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:00:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231825AbhIIJAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:00:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631177934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/XpMR8IW7n50hqBRiVqU8UBvztjlF9h6rtat9Sfp/0=;
-        b=aoFWILU3hUDOmlcdvoq2n9BEjwtVdaSCTvybAuVFnVu4SB7W7QwMavJMXcpzWvwLbIlvbv
-        +8tsrTgwK7P3RdTxYw0MDB67koCeThwUDzHfv/glZKfGDiKFel+Cli0l9Vcgy+Ga3ccU0X
-        mraHXOGiFTDpMkMl4G0vilCy+dOOyIQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-u1rBS1MhMpudenNhKLRu9w-1; Thu, 09 Sep 2021 04:58:52 -0400
-X-MC-Unique: u1rBS1MhMpudenNhKLRu9w-1
-Received: by mail-wm1-f70.google.com with SMTP id v21-20020a05600c215500b002fa7eb53754so453772wml.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 01:58:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=B/XpMR8IW7n50hqBRiVqU8UBvztjlF9h6rtat9Sfp/0=;
-        b=tX8ciev3tTuXBiRAucB6SdN4T+qb0/xzpfsoMsqHGDKYEJUViAWABQyZA70f2ZXyNq
-         G2MrJPLQQvyhU4XneGvkWjWJDk6+G2vyWzAmq2FykbEbbCZXe7ixbJx1B/iFEdliyukq
-         /GGgl8EzGGfYg1b97gxTa2E9eHa2My5aQxxOmzNYw/YKYNq42/FOvJkn10I4Wr8Nc7qh
-         0K+0AV85zTJwB2sgaFI/aTpqXZZRKEmMr1oe+jDRHAqXMAcH5UvXMHZF+Ue3k8KJ+OMB
-         mMACRaPuEAzLL7jX8v9+Qu3k/DTJhaEbFj/tjI2m4u27MevUvB2na49bfe0/vY7BwhCp
-         6thQ==
-X-Gm-Message-State: AOAM530gKJwkz1ggC9UEw1fXiJU59Rfp5AaiLuwP+PRN19V+QqOVuIwZ
-        UObuy1a6MqduPDVce/G8WuB8kuPGTK0uBj0T8fga4mGALQcSboadA9A96NFgov3YO8e7zoxV+Hr
-        aXVVIvlQK8CiISbisC8J5cUxn
-X-Received: by 2002:adf:e643:: with SMTP id b3mr2263871wrn.67.1631177931566;
-        Thu, 09 Sep 2021 01:58:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHd9tbvGHuH/vI+YA9CIrNsSVEbwqy9yOD6TU2JuSw3sjsuiEtnZ1Wqc75iLPK+6kOv9kJ0Q==
-X-Received: by 2002:adf:e643:: with SMTP id b3mr2263848wrn.67.1631177931410;
-        Thu, 09 Sep 2021 01:58:51 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23fe4.dip0.t-ipconnect.de. [79.242.63.228])
-        by smtp.gmail.com with ESMTPSA id y1sm1029619wmq.43.2021.09.09.01.58.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 01:58:50 -0700 (PDT)
-Subject: Re: [RFC PATCH] fs/exec: Add the support for ELF program's NUMA
- replication
-To:     Huang Shijie <shijie@os.amperecomputing.com>
-Cc:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        jlayton@kernel.org, bfields@fieldses.org,
-        torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com, patches@amperecomputing.com,
-        zwang@amperecomputing.com
-References: <20210906161613.4249-1-shijie@os.amperecomputing.com>
- <2cb841ca-2a04-f088-cee2-6c020ecc9508@redhat.com> <YTnX7IyC420MNBLq@hsj>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1c115101-a549-0e88-7bbb-1b0a19621504@redhat.com>
-Date:   Thu, 9 Sep 2021 10:58:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232375AbhIIJI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:08:56 -0400
+Received: from mail.katalix.com ([3.9.82.81]:36690 "EHLO mail.katalix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhIIJIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:08:55 -0400
+X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 05:08:54 EDT
+Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
+        (Authenticated sender: tom)
+        by mail.katalix.com (Postfix) with ESMTPSA id B9FBB8CBD2;
+        Thu,  9 Sep 2021 10:01:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
+        t=1631178116; bh=okMdj5wW2g7g3rGiQlLYxa8pZiyurtYAjC0aacXNqKI=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Disposition:In-Reply-To:From;
+        z=Date:=20Thu,=209=20Sep=202021=2010:01:56=20+0100|From:=20Tom=20Pa
+         rkin=20<tparkin@katalix.com>|To:=20Xiyu=20Yang=20<xiyuyang19@fudan
+         .edu.cn>|Cc:=20"David=20S.=20Miller"=20<davem@davemloft.net>,=0D=0
+         A=09Jakub=20Kicinski=20<kuba@kernel.org>,=0D=0A=09Cong=20Wang=20<c
+         ong.wang@bytedance.com>,=0D=0A=09Randy=20Dunlap=20<rdunlap@infrade
+         ad.org>,=0D=0A=09Xin=20Xiong=20<xiongx18@fudan.edu.cn>,=0D=0A=09"G
+         ong,=20Sishuai"=20<sishuai@purdue.edu>,=0D=0A=09Matthias=20Schiffe
+         r=20<mschiffer@universe-factory.net>,=0D=0A=09Bhaskar=20Chowdhury=
+         20<unixbhaskar@gmail.com>,=20netdev@vger.kernel.org,=0D=0A=09linux
+         -kernel@vger.kernel.org,=20yuanxzhang@fudan.edu.cn,=0D=0A=09Xin=20
+         Tan=20<tanxin.ctf@gmail.com>|Subject:=20Re:=20[PATCH]=20net/l2tp:=
+         20Fix=20reference=20count=20leak=20in=20l2tp_udp_recv_core|Message
+         -ID:=20<20210909090156.GA7098@katalix.com>|References:=20<16311619
+         30-77772-1-git-send-email-xiyuyang19@fudan.edu.cn>|MIME-Version:=2
+         01.0|Content-Disposition:=20inline|In-Reply-To:=20<1631161930-7777
+         2-1-git-send-email-xiyuyang19@fudan.edu.cn>;
+        b=1HNIYJhUPRg133/+QvThCjk6B7XJ2ylEMkyb0HnTtIA5c26GWw6hFY2Bih9nl+k/6
+         VojTjsEvt0fWxeoo8HTu6c9KdECItnLvitX0aAQwrnTr6RUX1Gp8EMB9lxGdOuK8vD
+         w1ARRE3M4P7o8VO53PlFEFwU13vvIo+7OybXaUIDx9zgRlr92uNQdlyJXjSMxDc0mK
+         77wICDFkW+kMCxLLdxXdt7shLrMXLQRuu8ZqqiApHjtrRAPZseMAzV+rwb+AWju34s
+         6ck8tokjOrivQKmcLWIhqDLFdAuvanUwcQTT1aWo/wRUcH9AFaMC0OIzCkDjkprTsM
+         zbTZtyuE0EvcQ==
+Date:   Thu, 9 Sep 2021 10:01:56 +0100
+From:   Tom Parkin <tparkin@katalix.com>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Xin Xiong <xiongx18@fudan.edu.cn>,
+        "Gong, Sishuai" <sishuai@purdue.edu>,
+        Matthias Schiffer <mschiffer@universe-factory.net>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
+Message-ID: <20210909090156.GA7098@katalix.com>
+References: <1631161930-77772-1-git-send-email-xiyuyang19@fudan.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <YTnX7IyC420MNBLq@hsj>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+In-Reply-To: <1631161930-77772-1-git-send-email-xiyuyang19@fudan.edu.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.09.21 11:46, Huang Shijie wrote:
-> On Mon, Sep 06, 2021 at 11:35:01AM +0200, David Hildenbrand wrote:
->> On 06.09.21 18:16, Huang Shijie wrote:
->>> This patch adds AT_NUMA_REPLICATION for execveat().
->>>
->>> If this flag is set, the kernel will trigger COW(copy on write)
->>> on the mmapped ELF binary. So the program will have a copied-page
->>> on its NUMA node, even if the original page in page cache is
->>> on other NUMA nodes.
->>
->> Am I missing something important or is this just absolutely not what we
->> want?
-> 
-> Please see the thread:
-> https://marc.info/?l=linux-kernel&m=163070220429222&w=2
-> 
-> Linus did not think it is a good choice to implement the "per-numa node page cache"
 
-That doesn't make this approach any better.
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't think we want this in the kernel. If user space wants to waste 
-memory, it can happily mmap() however it wants. The advisory is to not 
-do it.
+On  Thu, Sep 09, 2021 at 12:32:00 +0800, Xiyu Yang wrote:
+> The reference count leak issue may take place in an error handling
+> path. If both conditions of tunnel->version =3D=3D L2TP_HDR_VER_3 and the
+> return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
+> would directly jump to label invalid, without decrementing the reference
+> count of the l2tp_session object session increased earlier by
+> l2tp_tunnel_get_session(). This may result in refcount leaks.
 
--- 
-Thanks,
+I agree with your analysis.  Thanks for catching this!
 
-David / dhildenb
+>=20
+> Fix this issue by decrease the reference count before jumping to the
+> label invalid.
+>=20
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
+>  net/l2tp/l2tp_core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+> index 53486b162f01..93271a2632b8 100644
+> --- a/net/l2tp/l2tp_core.c
+> +++ b/net/l2tp/l2tp_core.c
+> @@ -869,8 +869,10 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tu=
+nnel, struct sk_buff *skb)
+>  	}
+> =20
+>  	if (tunnel->version =3D=3D L2TP_HDR_VER_3 &&
+> -	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
+> +	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
+> +		l2tp_session_dec_refcount(session);
+>  		goto invalid;
+> +	}
 
+The error paths in l2tp_udp_recv_core are a bit convoluted because of
+the check (!session || !session->recv_skb) which may or may not need
+to drop a session reference if triggered.
+
+I think it could be simplified since session->recv_skb is always set
+for all the current session types in the tree, but doing that is probably
+a little patch series on its own.
+
+> =20
+>  	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+>  	l2tp_session_dec_refcount(session);
+> --=20
+> 2.7.4
+>=20
+
+--=20
+Tom Parkin
+Katalix Systems Ltd
+https://katalix.com
+Catalysts for your Embedded Linux software development
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmE5zYAACgkQlIwGZQq6
+i9CbqggAmOhZ61q8R0jTs9/UVYQX7nzGjw7uvWdJ6E95jyoXQiZtEbBpgu3/xk1W
+cee4z1hc2X+QHIIa9W/IgwzNqu+k94hiTTX/h5/FxyJU0MN9/m1YL7DMjK2gdqml
+qO8AA2Hh3sgGdQTjAQBdubmDn6dYLc9gfUJtNuKAqwJL0cTINjSI7KMu05zewBbw
+NBW58oHP5DLZ1m9+KTZxuKdw5gOP+1yGHeX5rrZb/aGhrSv11WB65OQFHEg4AFAs
++fNfa1sIQWV45AcSIyTpb7sx2w+TfS4np+aplnTF2gq4c88V+zU+jlOcH1nRyoXL
+hKpRWORCQtn40JkzT2OBPPSOqCtv/A==
+=guAD
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
