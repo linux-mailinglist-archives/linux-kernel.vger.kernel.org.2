@@ -2,78 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4346405CD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75006405CDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244419AbhIISX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        id S236329AbhIISam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237172AbhIISX4 (ORCPT
+        with ESMTP id S229616AbhIISal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:23:56 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB71C061574;
-        Thu,  9 Sep 2021 11:22:46 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w8so2657632pgf.5;
-        Thu, 09 Sep 2021 11:22:46 -0700 (PDT)
+        Thu, 9 Sep 2021 14:30:41 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577BEC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:29:31 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id c6so5742732ybm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cS1iTpx2iIEsb5X2+pzRvzep4hwsHFWtChlzadUiG9I=;
-        b=bxRmxhOlHYKuobsxPOTAiq3+MtHyF2JYdf41wvryacSPL3lw0hXKl8NFRFNvZ9rYhu
-         PM0PQyjvJX3E0YFeewQAIJVKTMRGRtQVxiHuh2to+5R+7sb7+uNXqeDj3ONnqfWwV4uU
-         OQDHx/3G7zHs8T1iAz9a8ruINiZ7ue+3fsL4g1uEKZ53txJKPB8ceWj9V8OMfuqw772Z
-         9ILftWW0CiB8n4rpiQsEc8SmYOWzZuiJAxCZT0WiI/HjEW2EIJACuAu8tLVwcMP/rrg8
-         rA3NVcdfrmEKafMelBcriWjKm8SQhY10y1NF8eRq4P2zU+cI96CdbxledzSAKkSYrlgL
-         7ilQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sfi0O5z3YUYhbW7zXo4IckbIgfrbajr/CKgbbY2Zyf4=;
+        b=gj+1nfSfrs6Zv+O6sehty2rxFgfE2r+s0x7zwUZC+u+U0mXZzRWJkh+cB+Q5xjmkiO
+         3SRnImL9HDvlYj8Jfbm+DsrHk0TmO52i7ycoJnOA09deIWUfaE0JT1VtIggHWYd2/gFT
+         W6xXUfTP0KotOdpRwzeW++EQyn67B0RUZ+RsA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cS1iTpx2iIEsb5X2+pzRvzep4hwsHFWtChlzadUiG9I=;
-        b=cdTaWOuP9bKtDE6IIdIOGJ3ghWz+bo4xRMO7SvXP3qhmM5bzFzZvdcbPYuAYoUf9Kd
-         d5zUBQN6647ZlTQ9oCqf2ctOpRJefQUsIuWYUKw+7/SSmjqPO7oJWdl/4/ImZBLV6g79
-         7kmejvvd706OGGKVGhboSFNUp2nhQK+xfF3YiKPQNPBzQnkB3MuYaRppcJAaxIe5h4IZ
-         YIPEwj73Vc0k3s06T034UOHxuLSozJsw4t62ittXs8DNoPE0sWrLvoXUqfWXE/HePfTZ
-         wDFHjsiEql1P+EEcQcKE5DJx1e8R18cdwlFxU50sSgWCZiZKS8wOkCllcNG6fNLqVjTh
-         ONQg==
-X-Gm-Message-State: AOAM531Q6O7m+DwVCgPdScRPc6q7pieBo38CykHCS+wbxgEDwMdGJ8Ba
-        wBAjESN6UvOhm/0+G5s2wFA=
-X-Google-Smtp-Source: ABdhPJwLmIXWo3nwtew/RnVH4oYPEXF2Dglq2hOuAUcs7ibnTxReTPYMsA0w2diUTbVYQymmt/Bfvw==
-X-Received: by 2002:a63:f512:: with SMTP id w18mr3779280pgh.280.1631211766039;
-        Thu, 09 Sep 2021 11:22:46 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h4sm3364867pjc.28.2021.09.09.11.22.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:22:45 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Cai Huoqing <caihuoqing@baidu.com>
-Cc:     =?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <rafal@milecki.pl>,
-        linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] soc: bcm63xx-power: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Thu,  9 Sep 2021 11:22:44 -0700
-Message-Id: <20210909182244.3387118-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210908071417.494-2-caihuoqing@baidu.com>
-References: <20210908071417.494-1-caihuoqing@baidu.com> <20210908071417.494-2-caihuoqing@baidu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sfi0O5z3YUYhbW7zXo4IckbIgfrbajr/CKgbbY2Zyf4=;
+        b=YH2hqcG7VNZ1ZFyuWHi336ZZjIqMtq0R0WpWH9Z1dmZGVnzI12B/9KCAChFooUk5pJ
+         0HzoqrZeUCV5Lze7DAQ/1pwTcpQkajwBMBU35a008qkPxEOGLeyWkqyS7pHZpFKs/Ywj
+         Nv05JmR48l2+1kLncuYib3/zG0HuBcwu0nGbLaW57aPb4qixbJ5sVAbR14d6Bpu7cnWU
+         aJeSSlG2uOaD2OMvFZWci0L+mVuuYPpDULvltpu37JbNkKPlL7+lO1XMRTCPG6BrxZAE
+         tGt22gnJbpPIyVok2LHCKQi3mtPDkbQJ07gpGK3jmnCB200yKDYl6Ph/NlsYWNCWi0Rw
+         n6uQ==
+X-Gm-Message-State: AOAM533cyM8lhqfhgh1VG+jAXOszp8kV2D3UuV7MgF3LD4s1RA9QximG
+        zD7rSo/j3+0MqXbFrskZOA6V3/zl4iDwwkhPRmGitQ==
+X-Google-Smtp-Source: ABdhPJwKdoS+6eFhIHsa8XBFo0m3Sjd0aYt1yBdRfyKP2io/xudp0Anc9afhfFHCv162xklYocQOh3LGLI6ldwZFqqM=
+X-Received: by 2002:a25:478b:: with SMTP id u133mr5451813yba.532.1631212170654;
+ Thu, 09 Sep 2021 11:29:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
+ <CAE-0n52ia_Em6GYU-ketmzi4OQxcdux3uLjMGhzVTUJbC0Yz-Q@mail.gmail.com>
+In-Reply-To: <CAE-0n52ia_Em6GYU-ketmzi4OQxcdux3uLjMGhzVTUJbC0Yz-Q@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Thu, 9 Sep 2021 11:29:19 -0700
+Message-ID: <CA+cxXh=FJtvAzb0UeMXYs3PKxcdoR7hG23BJQ5Xtj_ywjLUQ_w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/bridge: parade-ps8640: Use regmap APIs
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021 15:14:16 +0800, Cai Huoqing <caihuoqing@baidu.com> wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
+Hi,
 
-Applied to https://github.com/Broadcom/stblinux/commits/drivers/next, thanks!
---
-Florian
+On Wed, Sep 8, 2021 at 2:54 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-09-08 11:18:05)
+> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > index 685e9c38b2db..a16725dbf912 100644
+> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > @@ -64,12 +65,29 @@ struct ps8640 {
+> >         struct drm_bridge *panel_bridge;
+> >         struct mipi_dsi_device *dsi;
+> >         struct i2c_client *page[MAX_DEVS];
+> > +       struct regmap   *regmap[MAX_DEVS];
+> >         struct regulator_bulk_data supplies[2];
+> >         struct gpio_desc *gpio_reset;
+> >         struct gpio_desc *gpio_powerdown;
+> >         bool powered;
+> >  };
+> >
+> > +static const struct regmap_range ps8640_volatile_ranges[] = {
+> > +       { .range_min = 0, .range_max = 0xff },
+>
+> Is the plan to fill this out later or is 0xff the max register? If it's
+> the latter then I think adding the max register to regmap_config is
+> simpler.
+It's the former.
+The real accessible register range is different per page, E.g.:
+- For page0, the register range is 0x00 - 0xbf.
+- For page1, the register range is 0x00 - 0xff.
+- For page2, the register range is 0x80 - 0xff.
+Even if we don't specify the accurate per-page register range later,
+the default register range here (0x00 - 0xff) can cover the available
+registers in each page.
+>
+> > +};
+> > +
+> > +static const struct regmap_access_table ps8640_volatile_table = {
+> > +       .yes_ranges = ps8640_volatile_ranges,
+> > +       .n_yes_ranges = ARRAY_SIZE(ps8640_volatile_ranges),
+> > +};
+> > +
+> > +static const struct regmap_config ps8640_regmap_config = {
+> > +       .reg_bits = 8,
+> > +       .val_bits = 8,
+> > +       .volatile_table = &ps8640_volatile_table,
+> > +       .cache_type = REGCACHE_NONE,
+> > +};
+> > +
+> >  static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+> >  {
+> >         return container_of(e, struct ps8640, bridge);
+> > @@ -78,13 +96,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+> >  static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+> >                                      const enum ps8640_vdo_control ctrl)
+> >  {
+> > -       struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
+> > -       u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
+> > +       struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
+> > +       u8 vdo_ctrl_buf[] = {VDO_CTL_ADD, ctrl};
+>
+> Nitpick: Add a space after { and before }.
+Thanks. Will fix this in the next version.
+>
+> >         int ret;
+> >
+> > -       ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
+> > -                                            sizeof(vdo_ctrl_buf),
+> > -                                            vdo_ctrl_buf);
+> > +       ret = regmap_bulk_write(map, PAGE3_SET_ADD,
+> > +                               vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
+> > +
+> >         if (ret < 0) {
+> >                 DRM_ERROR("failed to %sable VDO: %d\n",
+> >                           ctrl == ENABLE ? "en" : "dis", ret);
