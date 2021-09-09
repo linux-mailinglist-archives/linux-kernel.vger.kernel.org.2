@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40684046A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1263A4046A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhIIIAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        id S231354AbhIIIAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbhIIIAH (ORCPT
+        with ESMTP id S230120AbhIIIAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:00:07 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8ADC06179A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:58 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id e6-20020ac84e46000000b0029baad9aaa0so2646745qtw.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:58 -0700 (PDT)
+        Thu, 9 Sep 2021 04:00:11 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7776DC0612E7
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:59:00 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id g73-20020a379d4c000000b003d3ed03ca28so2348219qke.23
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:59:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=8in3eNvKM5bNosYyw6M888LU8jMRnNBshM+fnnuLh8c=;
-        b=knxMpAOztiiK7xjpLpYU/MIHLywg5ApNPRb4Zi/4A04IAwhqcFadN6s2wMfTMyghXX
-         jn9k/x6cAH9N21ATOMvLbadZd54XJ4hlWBHQ5k7unbxJIIt02wtEcU/0LnTx0Wofs7ED
-         7/RtO+DkMb+0mr7VDZv1n+YFjj21X8qGMPPjYn3L45ExuYvtPkLSl6ERB4IQh+yA2zl6
-         QPiUqJQRvggSm5ucd7RHH61ZvJPCl2k1cpCQtlhBz2CpmVskak4QuuSn9NptU0f4sO3h
-         ciyVWPUX1HRivPopWr7JBzGKumvbalLn586wonBFhKvsZ6rmDQAGOGYMMdvMvuRLmdaN
-         p9rA==
+        bh=BgSZ4vSJq8yMEzglfnZjYa+8waXeoxZVtlTqeFJqwWk=;
+        b=Wwf9fIqCnVY717dAREfz420rr5LxbSC0AT9GADAwJE1K1IMMORkr8RM3fXOfpR8V6I
+         WOc5sVHE5GyGKkl0MrMhdEKHSTIUxAmMpBy32KNJxrZtsKs12g+yZIUBNb28sWjTBaX5
+         Lek2LZm5d0biVht8EuJxSK0QaDiMKlVjvafLO2MERwvBStW1BU/VMsBjLWb0HzN4SVZ0
+         eNy4R4zwIiYiuZM7ljf4/2iuHbF6Rr/fJPmqwCnblQhvVR8EYAAaOgqI1hsv4KkZn8WH
+         wBIZ1ALgEzuWFWODjBn92UBHD1liv3JCtarHO+Ksl99QTm/MWGflwvcjE2CEyYOfebPS
+         aGbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8in3eNvKM5bNosYyw6M888LU8jMRnNBshM+fnnuLh8c=;
-        b=5JZwMLEG9fyi96XvIJ2cHNexoSSTECXhVV84QIvMnVvVsnbC0UsBD6GxUSxGkwe+ma
-         KlrqLnUd0Addge9hylUlPK5YgDabz/jxT5RgxJ/nZ9mCtMgXUXNaoJwhCTU3UB1zVQgY
-         VWZClEMuuDWFllmL3F673cfzHND6P1k0R3UmdtHvtHhVVtzYBybtDfAUZMtex1SguM33
-         pb5Bc7zVBYGsTRd22hWzFdw6IKzg+hJI8Gbha/9HwRMZclR8Yv/p48FZf7d07xGWIHRw
-         WybCHDeKHgbjS9r0MaZ0IEqSOV7puh3t0chRDr56+g2ziRXP4WXiRbc3u1OWQEkBg/SA
-         As+A==
-X-Gm-Message-State: AOAM531oJ9efilCBRZYA+saC+TWo9Ool+WF1yGZL30rQ/NsptMQnj0A7
-        YU6C6sbS6GsOAwUY8DutY0mOe+Db5GV49CUCCfpSImgH1J/5tfW9qg/2ZacN3cNJiFzJjjKGkZ1
-        oBMHyb1OQNlwGY9pfhCb78NsSrujqcLn0/k+6RymCPQalJZvlN6jFTbxjnii41v4UJ0Gq7XEv
-X-Google-Smtp-Source: ABdhPJwx16fXLEo1qUNzeVLG4/uTtMZ90O/HfTBkHzW+E0RS3aKXaaQceZfYz/mqKFFzCbBwjWHUQU9WeLZS
+        bh=BgSZ4vSJq8yMEzglfnZjYa+8waXeoxZVtlTqeFJqwWk=;
+        b=1vrIUoYZ0cOL+xDFM+FM7i/eRN3id1oKra9wR/YbuNBoi3CXiXnKiZm8TR5LHfWJ95
+         LwDHGYkD+00VQZSTBl0jvAL9hN8Mbrde2Ivz1VswFkApCAXkzkFRPJd9pEb7eVXdh2XS
+         wH2ruK9nXPLm2WzgCl8xX4iRdgfRLkUdJg54uWTIfCnfVzNiVIh4vYwy7rNB0+6P6mCk
+         0JE7glZrnQ3+03cYOOVi0ZOsdsyI8KVwX3j/wBZBQWGiRfinkx3silPMPa6x2hLJlH+H
+         rsg20Wvixe0BL0Eu/GCIbYWy9hnQjyekirL5CB65Uwwv1QBuBK2q26lt8az3J+6NvNbA
+         n4gg==
+X-Gm-Message-State: AOAM532lMt0wb/CMxEz/9X3iI9alvx89WogZLGv4m2u/40g4Ezqzbvz7
+        V89KfzfHnj18Cd8ZjNrofRm6KFCit80U5LoOuaDtMgECpaD0pGjA3i/MVjvydqQcd3VLIz8lcWR
+        HMGCZ1zKLyI0rcz6wX3ecadCyhIM4ht1I6dmvp8Rj96zbj2rpur5ViB3YX3/fO8Ifndllzl52
+X-Google-Smtp-Source: ABdhPJyGw6VBn/j/nJq44wF7m5Ue27usJr7V9UWJ7krWBOOatrFdLViEnuO+m2vyWpsm6A7agHEyKPW0ZcYq
 X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:f950:61f2:f1ec:ae8b])
- (user=eranian job=sendgmr) by 2002:a0c:c2c1:: with SMTP id
- c1mr1580685qvi.59.1631174337492; Thu, 09 Sep 2021 00:58:57 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 00:56:55 -0700
+ (user=eranian job=sendgmr) by 2002:a0c:d450:: with SMTP id
+ r16mr1588087qvh.30.1631174339626; Thu, 09 Sep 2021 00:58:59 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 00:56:56 -0700
 In-Reply-To: <20210909075700.4025355-1-eranian@google.com>
-Message-Id: <20210909075700.4025355-9-eranian@google.com>
+Message-Id: <20210909075700.4025355-10-eranian@google.com>
 Mime-Version: 1.0
 References: <20210909075700.4025355-1-eranian@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 08/13] perf/x86/core: add idle hooks
+Subject: [PATCH v1 09/13] perf/x86/amd: add idle hooks for branch sampling
 From:   Stephane Eranian <eranian@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
@@ -62,96 +62,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the perf idle hooks x86 idle routines.
+On AMD Fam19h Zen3, the branch sampling (BRS) feature must be disabled before entering low power
+and re-enabled (if was active) when returning from low power. Otherwise, the NMI interrupt may
+be held up for too long and cause problems. Stopping BRS will cause the NMI to be delivered if it
+was held up.
+
+This patch connects the branch sampling code to the perf_events idle callbacks.
 
 Signed-off-by: Stephane Eranian <eranian@google.com>
 ---
- arch/x86/include/asm/mwait.h |  6 +++++-
- kernel/sched/idle.c          | 12 ++++++++----
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ arch/x86/events/amd/brs.c    | 25 +++++++++++++++++++++++++
+ arch/x86/events/amd/core.c   |  4 ++++
+ arch/x86/events/perf_event.h |  1 +
+ 3 files changed, 30 insertions(+)
 
-diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
-index 29dd27b5a339..92080fdc1d2a 100644
---- a/arch/x86/include/asm/mwait.h
-+++ b/arch/x86/include/asm/mwait.h
-@@ -4,6 +4,7 @@
+diff --git a/arch/x86/events/amd/brs.c b/arch/x86/events/amd/brs.c
+index 23b969001857..7d27591ba537 100644
+--- a/arch/x86/events/amd/brs.c
++++ b/arch/x86/events/amd/brs.c
+@@ -146,6 +146,7 @@ void amd_brs_enable(void)
  
- #include <linux/sched.h>
- #include <linux/sched/idle.h>
-+#include <linux/perf_event.h>
- 
- #include <asm/cpufeature.h>
- #include <asm/nospec-branch.h>
-@@ -114,8 +115,11 @@ static inline void mwait_idle_with_hints(unsigned long eax, unsigned long ecx)
- 		}
- 
- 		__monitor((void *)&current_thread_info()->flags, 0, 0);
--		if (!need_resched())
-+		if (!need_resched()) {
-+			perf_lopwr_cb(true);
- 			__mwait(eax, ecx);
-+			perf_lopwr_cb(false);
-+		}
- 	}
- 	current_clr_polling();
+ 	/* Set enable bit */
+ 	set_debug_extn_cfg(cfg.val);
++	perf_lopwr_active_inc();
  }
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 14ce130aee1b..c0ddc3c32a33 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -179,7 +179,6 @@ static void cpuidle_idle_call(void)
- 	 */
- 	if (need_resched()) {
- 		local_irq_enable();
--		perf_lopwr_cb(false);
- 		return;
+ 
+ void amd_brs_disable(void)
+@@ -175,6 +176,7 @@ void amd_brs_disable(void)
+ 		cfg.brsmen = 0;
+ 		set_debug_extn_cfg(cfg.val);
  	}
++	perf_lopwr_active_dec();
+ }
  
-@@ -230,6 +229,9 @@ static void cpuidle_idle_call(void)
- 		tick_nohz_idle_stop_tick();
+ static bool amd_brs_match_plm(struct perf_event *event, u64 to)
+@@ -292,6 +294,29 @@ static void amd_brs_poison_buffer(void)
+ 	wrmsrl(brs_to(idx), BRS_POISON);
+ }
  
- 		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
-+		if (!cpu_idle_force_poll)
-+			perf_lopwr_cb(true);
++/*
++ * called indirectly with irqs masked from mwait_idle_*()
++ */
++void amd_pmu_brs_lopwr_cb(bool lopwr_in)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	union amd_debug_extn_cfg cfg;
 +
- 		call_cpuidle(drv, dev, next_state);
- 	} else {
- 		bool stop_tick = true;
-@@ -244,12 +246,17 @@ static void cpuidle_idle_call(void)
- 		else
- 			tick_nohz_idle_retain_tick();
- 
-+		if (!cpu_idle_force_poll)
-+			perf_lopwr_cb(true);
++	/*
++	 * on mwait in, we may end up in non C0 state.
++	 * we must disable branch sampling to avoid holding the NMI
++	 * for too long. We disable it in hardware but we
++	 * keep the state in cpuc, so we can re-enable.
++	 *
++	 * The hardware will deliver the NMI if needed when brsmen cleared
++	 */
++	if (cpuc->brs_active) {
++		cfg.val = get_debug_extn_cfg();
++		cfg.brsmen = !lopwr_in;
++		set_debug_extn_cfg(cfg.val);
++	}
++}
 +
- 		entered_state = call_cpuidle(drv, dev, next_state);
- 		/*
- 		 * Give the governor an opportunity to reflect on the outcome
+ /*
+  * On context switch in, we need to make sure no samples from previous user
+  * are left in the BRS.
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index d6d5119260a9..3e1985cd414d 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -1184,12 +1184,16 @@ static int __init amd_core_pmu_init(void)
+ 		 * invoked on context-switch in via sched_task_in(), so enable only when necessary
  		 */
- 		cpuidle_reflect(dev, entered_state);
+ 		if (!amd_brs_init()) {
++			struct pmu *pmu = x86_get_pmu(smp_processor_id());
+ 			x86_pmu.get_event_constraints = amd_get_event_constraints_f19h;
+ 			x86_pmu.sched_task = amd_pmu_sched_task;
+ 			/*
+ 			 * The put_event_constraints callback is shared with
+ 			 * Fam17h, set above
+ 			 */
++
++			/* branch sampling must be stopped when entering low power */
++			perf_register_lopwr_cb(pmu, amd_pmu_brs_lopwr_cb);
+ 		}
  	}
-+	if (!cpu_idle_force_poll)
-+		perf_lopwr_cb(false);
  
- exit_idle:
- 	__current_set_polling();
-@@ -259,7 +266,6 @@ static void cpuidle_idle_call(void)
- 	 */
- 	if (WARN_ON_ONCE(irqs_disabled())) {
- 		local_irq_enable();
--		perf_lopwr_cb(false);
- 	}
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index a275553e78b9..73eac9d34bd9 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1242,6 +1242,7 @@ static inline void amd_pmu_brs_del(struct perf_event *event)
  }
  
-@@ -293,8 +299,6 @@ static void do_idle(void)
- 	while (!need_resched()) {
- 		rmb();
+ void amd_pmu_brs_sched_task(struct perf_event_context *ctx, bool sched_in);
++void amd_pmu_brs_lopwr_cb(bool lopwr_in);
  
--		perf_lopwr_cb(true);
--
- 		local_irq_disable();
- 
- 		if (cpu_is_offline(cpu)) {
+ /*
+  * check if BRS is activated on the CPU
 -- 
 2.33.0.153.gba50c8fa24-goog
 
