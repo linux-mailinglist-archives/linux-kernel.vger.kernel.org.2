@@ -2,67 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0574D4043F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8960A4043F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349950AbhIID23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 23:28:29 -0400
-Received: from smtpbg704.qq.com ([203.205.195.105]:42014 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1350036AbhIID17 (ORCPT
+        id S1350017AbhIIDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 23:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244126AbhIIDcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 23:27:59 -0400
-X-QQ-mid: bizesmtp31t1631157944tj67lzfz
-Received: from localhost.localdomain (unknown [121.228.85.104])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Thu, 09 Sep 2021 11:25:29 +0800 (CST)
-X-QQ-SSF: 01400000002000E0K000B00A0000000
-X-QQ-FEAT: LE7C6P2vL8QdlG8W6D6RCL8Ec8cTgXKmpKclyKe1pLXCGz+7XNwPR8eZ8au5H
-        16qVc8hW6IQotYPtAZeH1zSmcNA4W1+YwTHWn5kn2wh4jwCBuDVKlc2t/wpA6LNPeIQEjS1
-        i5LPEqxu6YY30hbmVr4qvniOY/6MgsW2Fb1/RofqT2Iusb8izJznCHDURyv1tviUo0Etuxl
-        Bqw6aduAsPmdD2iORFdwF5/UC1qnFFL6YxPreT1ib1FDPQhtEjnnbvre2ni9neFlZZK5DZs
-        2NUo04riinuLSneGM3WJvuoTAD+0MuTv+MBn4kg/Yb6jjSP30Lz5us/53tkJ+p85dVFBekm
-        Nfs6F82uImaKucOUaI=
-X-QQ-GoodBg: 2
-From:   Wang Lu <wanglu@dapustor.com>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wang Lu <wanglu@dapustor.com>
-Subject: [PATCH] PCI/P2PDMA: fix the wrong dma address calculation when map sg
-Date:   Thu,  9 Sep 2021 11:25:28 +0800
-Message-Id: <20210909032528.24517-1-wanglu@dapustor.com>
-X-Mailer: git-send-email 2.17.1
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:dapustor.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        Wed, 8 Sep 2021 23:32:10 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63A3C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 20:31:01 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z5so1092030ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 20:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SKuiG7fSaLUtvrOY7AskCWh9YOWHRbtwHIiErMRt3Fo=;
+        b=q+i5ei6FXsm719Iu9GiQExVUePgwzXZb8Omuxge6SPboGL3SJUUyvX+hWHEHM55VxW
+         0ODi5fHeNhvwUnWHR1OfsWeuyKKBSt5PBZOsVYBKyDVtugD/lfnNrINchGccOGl+dk5r
+         ItHQuRTiEhofv3WtTa6MfLN+zhuRvLVHf2Mh5PutIS8kdunXD3w3yG+L2kFdZyblFuZR
+         sIdrQflGLYYTzYdRd0G/+9O4G1CGDGORrtEb8N2Md0RJy4a5qsx2vrw4MRGbt3hMsqn6
+         znvqu8KGkQKpJHs79XM9BXzUX2uudbKhdbcnvoTelIPDfVuplwwqFvD2oG0GVA6cBeUf
+         9ZIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SKuiG7fSaLUtvrOY7AskCWh9YOWHRbtwHIiErMRt3Fo=;
+        b=OzyK0MEpe4gHWJN5RVCKzC1187X6rG0u0inFZZiByvBvtL4Ca0o2HMh2LT4qdzUCDw
+         Kh0Z96F47wVzDPlDxRRfQHn49Hu4VOZmro/0CkUTUqqFYAkunIUUlPHtKIX1W+34A2bL
+         /G+Z3xrzux4ceD/CykTdSVq1gUfHcsnkVrlCEDRwpCzkfObV3aHuoZN5RK+bEffsXMx2
+         PZI7usla1ntJJrsM/XRDSLjA/VjgpOFj/qhS4oiGa5CTnqk0LfMus/PZXDbzEf1oPkFe
+         21DSIMtnE61/ZzAd4HzpBE1knqMyXtB2MbIREgOiKopG0Bk7jsmwE7qh5UNKKqVqQyOt
+         06lg==
+X-Gm-Message-State: AOAM531vQ8kQ/k0bKj8iXWwAU1WPFOif1b6AMnOia0mHIiTcrD0AwYcd
+        /Fg9KPn5JMXRWX/smZ7dHF/v0Monilye+cIq5rZnUw==
+X-Google-Smtp-Source: ABdhPJwhXa9uKVvpkTonPsJSkl25kEg1AeeAQozeAA4vApKSgEke+CqyqNJnFYaPY3f4KhX9hHc42qL1B4az4TeZF7c=
+X-Received: by 2002:a25:21c5:: with SMTP id h188mr930531ybh.23.1631158260632;
+ Wed, 08 Sep 2021 20:31:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
+ <20210816074619.177383-4-wangkefeng.wang@huawei.com> <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
+ <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
+ <ee649111-dc07-d6db-8872-dcb692802236@huawei.com> <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
+ <b5eb935f-26e1-6475-63af-e7f6101eb017@huawei.com> <CAGETcx9yaWZOzt=gcyNAshoHdPoYizhmrKS-kU9c2QM2+HqeEw@mail.gmail.com>
+ <df8e7756-8b0d-d7de-a9ff-3f6eb0ffa8a5@huawei.com> <CAGETcx-47yRUcBjEdWFBtroSEkHXRNrJ4zaD8WpE0DPEPp9NxQ@mail.gmail.com>
+ <85b28900-5f42-b997-2ded-0b952bc2a03e@huawei.com> <CAGETcx-N4+u0iw9n5ncx_9MNnTa3ViyesxsDD7xN3jtEPT-uBw@mail.gmail.com>
+ <265bb783-10da-a7c1-2625-055dec5643a3@huawei.com>
+In-Reply-To: <265bb783-10da-a7c1-2625-055dec5643a3@huawei.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 8 Sep 2021 20:30:24 -0700
+Message-ID: <CAGETcx9m4=7V25nvYa0030ChKeJw5bu3ogs6gjFpjNKdq+_B_Q@mail.gmail.com>
+Subject: Re: [BUG] amba: Remove deferred device addition
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bus offset is bus address - physical address,
-so the calculation in __pci_p2pdma_map_sg should be:
-bus address = physical address + bus offset.
+On Fri, Aug 27, 2021 at 6:09 PM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
+ote:
+>
+>
+> On 2021/8/28 3:09, Saravana Kannan wrote:
+> > On Fri, Aug 27, 2021 at 7:38 AM Kefeng Wang <wangkefeng.wang@huawei.com=
+> wrote:
+> >>
+> >> On 2021/8/27 8:04, Saravana Kannan wrote:
+> >>> On Thu, Aug 26, 2021 at 1:22 AM Kefeng Wang <wangkefeng.wang@huawei.c=
+om> wrote:
+> >>>>>>> Btw, I've been working on [1] cleaning up the one-off deferred pr=
+obe
+> >>>>>>> solution that we have for amba devices. That causes a bunch of ot=
+her
+> >>>>>>> headaches. Your patch 3/3 takes us further in the wrong direction=
+ by
+> >>>>>>> adding more reasons for delaying the addition of the device.
+> >>>> Hi Saravana, I try the link[1], but with it, there is a crash when b=
+oot
+> >>>> (qemu-system-arm -M vexpress-a15),
+> > I'm assuming it's this one?
+> > arch/arm/boot/dts/vexpress-v2p-ca15_a7.dts
+>
+> I use arch/arm/boot/dts/vexpress-v2p-ca15-tc1.dts.
+>
+> qemu-system-arm -M vexpress-a15 -dtb vexpress-v2p-ca15-tc1.dtb -cpu
+> cortex-a15 -smp 2 -m size=3D3G -kernel zImage -rtc base=3Dlocaltime -init=
+rd
+> initrd-arm32 -append 'console=3DttyAMA0 cma=3D0 kfence.sample_interval=3D=
+0
+> earlyprintk debug ' -device virtio-net-device,netdev=3Dnet8 -netdev
+> type=3Dtap,id=3Dnet8,script=3D/etc/qemu-ifup,downscript=3D/etc/qemu-ifdow=
+n
+> -nographic
+>
+> >
+> >>> Hi,
+> >>>
+> >>> It's hard to make sense of the logs. Looks like two different threads
+> >>> might be printing to the log at the same time? Can you please enable
+> >>> the config that prints the thread ID (forgot what it's called) and
+> >>> collect this again? With what I could tell the crash seems to be
+> >>> happening somewhere in platform_match(), but that's not related to
+> >>> this patch at all?
+> >> Can you reproduce it? it is very likely related(without your patch, th=
+e
+> >> boot is fine),
+> > Sorry, I haven't ever setup qemu and booted vexpress. Thanks for your h=
+elp.
+> >
+> >> the NULL ptr is about serio, it is registed from amba driver.
+> >>
+> >> ambakmi_driver_init
+> >>
+> >>    -- amba_kmi_probe
+> >>
+> >>      -- __serio_register_port
+> > Thanks for the pointer. I took a look at the logs and the code. It's
+> > very strange. As you can see from the backtrace, platform_match() is
+> > being called for the device_add() from serio_handle_event(). But the
+> > device that gets added there is on the serio_bus which obviously
+> > should be using the serio_bus_match.
+> Yes, I am confused too.
+> >
+> >> +Dmitry and input maillist, is there some known issue about serio ?
+> >>
+> >> I add some debug, the full log is attached.
+> >>
+> >> [    2.958355][   T41] input: AT Raw Set 2 keyboard as
+> >> /devices/platform/bus@8000000/bus@8000000:motherboard-bus/bus@8000000:=
+motherboard-bus:iofpga-bus@300000000/1c060000.kmi/serio0/input/input0
+> >> [    2.977441][   T41] serio serio1: pdev c1e05508, pdev->name (null),
+> >> drv c1090fc0, drv->name vexpress-reset
+> > Based on the logs you added, it's pretty clear we are getting to
+> > platform_match(). It's also strange that the drv->name is
+> > vexpress-reset
+> ...
+> >
+> >> [    3.003113][   T41] Backtrace:
+> >> [    3.003451][   T41] [<c0560bb4>] (strcmp) from [<c0646358>] (platfo=
+rm_match+0xdc/0xf0)
+> >> [    3.003963][   T41] [<c064627c>] (platform_match) from [<c06437d4>]=
+ (__device_attach_driver+0x3c/0xf4)
+> >> [    3.004769][   T41] [<c0643798>] (__device_attach_driver) from [<c0=
+641180>] (bus_for_each_drv+0x68/0xc8)
+> >> [    3.005481][   T41] [<c0641118>] (bus_for_each_drv) from [<c0642f40=
+>] (__device_attach+0xf0/0x16c)
+> >> [    3.006152][   T41] [<c0642e50>] (__device_attach) from [<c06439d4>=
+] (device_initial_probe+0x1c/0x20)
+> >> [    3.006853][   T41] [<c06439b8>] (device_initial_probe) from [<c064=
+2030>] (bus_probe_device+0x94/0x9c)
+> >> [    3.007259][   T41] [<c0641f9c>] (bus_probe_device) from [<c063f9cc=
+>] (device_add+0x408/0x8b8)
+> >> [    3.007900][   T41] [<c063f5c4>] (device_add) from [<c071c1cc>] (se=
+rio_handle_event+0x1b8/0x234)
+> >> [    3.008824][   T41] [<c071c014>] (serio_handle_event) from [<c01475=
+a4>] (process_one_work+0x238/0x594)
+> >> [    3.009737][   T41] [<c014736c>] (process_one_work) from [<c014795c=
+>] (worker_thread+0x5c/0x5f4)
+> >> [    3.010638][   T41] [<c0147900>] (worker_thread) from [<c014feb4>] =
+(kthread+0x178/0x194)
+> >> [    3.011496][   T41] [<c014fd3c>] (kthread) from [<c0100150>] (ret_f=
+rom_fork+0x14/0x24)
+> >> [    3.011860][   T41] Exception stack(0xc1675fb0 to 0xc1675ff8)
+> > But the platform_match() is happening for the device_add() from
+> > serio_event_handle() that's adding a device to the serio_bus and it
+> > should be using serio_bus_match().
+> >
+> > I haven't reached any conclusion yet, but my current thought process
+> > is that it's either:
+> > 1. My patch is somehow causing list corruption. But I don't directly
+> > touch any list in my change (other than deleting a list entirely), so
+> > it's not clear how that would be happening.
+>
+> Maybe some concurrent driver load=EF=BC=9F
+>
+> > 2. Without my patch, these AMBA device's probe would be delayed at
+> > least until 5 seconds or possibly later. I'm wondering if my patch is
+> > catching some bad timing assumptions in other code.
+>
+> After Rob's patch, It will retry soon.
+>
+> commit 039599c92d3b2e73689e8b6e519d653fd4770abb
+> Author: Rob Herring <robh@kernel.org>
+> Date:   Wed Apr 29 15:58:12 2020 -0500
+>
+>      amba: Retry adding deferred devices at late_initcall
+>
+>      If amba bus devices defer when adding, the amba bus code simply retr=
+ies
+>      adding the devices every 5 seconds. This doesn't work well as it
+>      completely unsynchronized with starting the init process which can
+>      happen in less than 5 secs. Add a retry during late_initcall. If the
+>      amba devices are added, then deferred probe takes over. If the
+>      dependencies have not probed at this point, then there's no improvem=
+ent
+>      over previous behavior. To completely solve this, we'd need to retry
+>      after every successful probe as deferred probe does.
+>
+>      The list_empty() check now happens outside the mutex, but the mutex
+>      wasn't necessary in the first place.
+>
+>      This needed to use deferred probe instead of fragile initcall orderi=
+ng
+>      on 32-bit VExpress systems where the apb_pclk has a number of probe
+>      dependencies (vexpress-sysregs, vexpress-config).
+>
+>
+> >
+> > You might be able to test out theory (2) by DEFERRED_DEVICE_TIMEOUT to
+> > a much smaller number. Say 500ms or 100ms. If it doesn't crash, it
+> > doesn't mean it's not (2), but if it does, then we know for sure it's
+> > (2).
+> ok, I will try this one, but due to above patch, it may not work.
 
-Signed-off-by: Wang Lu <wanglu@dapustor.com>
----
- drivers/pci/p2pdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Were you able to find anything more?
 
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 50cdde3e9a8b..327882638b30 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -874,7 +874,7 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
- 	int i;
- 
- 	for_each_sg(sg, s, nents, i) {
--		s->dma_address = sg_phys(s) - p2p_pgmap->bus_offset;
-+		s->dma_address = sg_phys(s) + p2p_pgmap->bus_offset;
- 		sg_dma_len(s) = s->length;
- 	}
- 
--- 
-2.17.1
-
-
-
+-Saravana
