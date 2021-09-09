@@ -2,137 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170D7405320
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2504053FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355859AbhIIMt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:49:58 -0400
-Received: from relay03.th.seeweb.it ([5.144.164.164]:35511 "EHLO
-        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354797AbhIIMjj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:39:39 -0400
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 024BB1FABE;
-        Thu,  9 Sep 2021 14:38:24 +0200 (CEST)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v2 4/4] arm64: dts: qcom: msm8998-fxtec-pro1: Add tlmm keyboard keys
-Date:   Thu,  9 Sep 2021 14:38:23 +0200
-Message-Id: <20210909123823.368199-4-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210909123823.368199-1-angelogioacchino.delregno@somainline.org>
-References: <20210909123823.368199-1-angelogioacchino.delregno@somainline.org>
+        id S1356806AbhIIMzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:55:54 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:34430 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354448AbhIIMmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:42:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ccslqbdbDMRBI5TMJhPLL0kOsQFJUv4TDelcaobks6E=; b=05fGKYQu2zD3ugpGX5N14Irr/u
+        4b2Xrw30clYSR6GzAqprkul/PZvrYUFHAsgBsUlQYPoAkIntZMzoEReouEB/rC5W9RMm/fJXufvNK
+        YRzOO15MAZywz9newS+wsM8iX2FIthUvRopVsx+PK+IdpiEK8tqC0PAbTvJ3aCpzGbJI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mOJMM-005uJ8-Ct; Thu, 09 Sep 2021 14:40:54 +0200
+Date:   Thu, 9 Sep 2021 14:40:54 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     olteanv@gmail.com, p.rosenberger@kunbus.com,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+Message-ID: <YToA1hf2/2KWoKxh@lunn.ch>
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device has a physical matrix keyboard, connected to a GPIO
-expander, for which there's still no support yet.
-Though, some of the keys are connected to the MSM8998 GPIOs and not
-as a matrix, so these can be added.
+On Thu, Sep 09, 2021 at 11:53:21AM +0200, Lino Sanfilippo wrote:
+> This patch series fixes a system hang I got each time i tried to shutdown
+> or reboot a system that uses a KSZ9897 as a DSA switch with a broadcom
+> GENET network device as the DSA master device. At the time the system hangs
+> the message "unregister_netdevice: waiting for eth0 to become free. Usage
+> count = 2." is dumped periodically to the console.
+> 
+> After some investigation I found the reason to be unreleased references to
+> the master device which are still held by the slave devices at the time the
+> system is shut down (I have two slave devices in use).
+> 
+> While these references are supposed to be released in ksz_switch_remove()
+> this function never gets the chance to be called due to the system hang at
+> the master device deregistration which happens before ksz_switch_remove()
+> is called.
+> 
+> The fix is to make sure that the master device references are already
+> released when the device is unregistered. For this reason PATCH1 provides
+> a new function dsa_tree_shutdown() that can be called by DSA drivers to
+> untear the DSA switch at shutdown. PATCH2 uses this function in a new
+> helper function for KSZ switches to properly shutdown the KSZ switch.
+> PATCH 3 uses the new helper function in the KSZ9477 shutdown handler.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- .../boot/dts/qcom/msm8998-fxtec-pro1.dts      | 64 +++++++++++++++++++
- 1 file changed, 64 insertions(+)
+I agree with Vladimir here. Shutdown works without issue on mv88e6xxx,
+i do it frequently. I'm sure other developers shutdown there devices
+at the end of the edit/compile/test cycle. If there was a generic
+problem, we would probably know about it. So it seems like there is
+something specific to your system which breaks the reference
+counting. We need to understand that first, then we can see how we fix
+it.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-index deabb00758e3..49705fe655ee 100644
---- a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-@@ -43,6 +43,62 @@ hall-sensor1 {
- 		};
- 	};
- 
-+	gpio-kb-extra-keys {
-+		compatible = "gpio-keys";
-+		input-name = "extra-kb-keys";
-+		label = "Keyboard extra keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_kb_pins_extra>;
-+
-+		home {
-+			label = "Home";
-+			gpios = <&tlmm 21 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_HOMEPAGE>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+
-+		super-l {
-+			label = "Super Left";
-+			gpios = <&tlmm 32 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_FN>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+
-+		super-r {
-+			label = "Super Right";
-+			gpios = <&tlmm 33 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_FN>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+
-+		shift {
-+			label = "Shift";
-+			gpios = <&tlmm 114 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_RIGHTSHIFT>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+
-+		ctrl {
-+			label = "Ctrl";
-+			gpios = <&tlmm 128 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_LEFTCTRL>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+
-+		alt {
-+			label = "Alt";
-+			gpios = <&tlmm 129 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_LEFTALT>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+		};
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 		input-name = "side-buttons";
-@@ -205,6 +261,14 @@ mdp_vsync_n: mdp-vsync-n {
- 		drive-strength = <2>;
- 	};
- 
-+	gpio_kb_pins_extra: gpio-kb-pins-extra {
-+		pins = "gpio21", "gpio32", "gpio33", "gpio114",
-+		       "gpio128", "gpio129";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
- 	ts_vio_default: ts-vio-def {
- 		pins = "gpio81";
- 		function = "gpio";
--- 
-2.32.0
+> 
+> Theses patches have been tested on a Raspberry PI 5.10 kernel with a
+> KSZ9897. The patches have been adjusted to apply against net-next and are
+> compile tested with next-next.
 
+Is the switch on a hat? Are you using DT overlays?
+
+   Andrew
