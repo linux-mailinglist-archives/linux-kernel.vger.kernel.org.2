@@ -2,169 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C924046B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8314046B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhIIIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:04:17 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56389 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229609AbhIIIDJ (ORCPT
+        id S229960AbhIIIGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:06:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61392 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230071AbhIIIFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:03:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnmQXzb_1631174516;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnmQXzb_1631174516)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 16:01:56 +0800
-Date:   Thu, 9 Sep 2021 16:01:57 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH 5/6] vdpa: add get_vq_num_unchangeable callback in
- vdpa_config_ops
-Message-ID: <20210909080157.GA17383@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <ebd83066e3897aae63e4b02f8729a73dd09931c6.1631101392.git.wuzongyong@linux.alibaba.com>
- <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com>
+        Thu, 9 Sep 2021 04:05:17 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1897ahcN114438;
+        Thu, 9 Sep 2021 04:03:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7NDctDKZ9OagMfyBYzyLTXP07dMs9RZei5vrG+DTorg=;
+ b=gTLK95O0Od3Njwkp39IElv0d82qsGxN1PnAh4Wed8Oss3na+9WDDnAz6let0FnIotJAL
+ YaYUkb6nJ0XbGRl+VzeLjL4Wk5D+1778oCrHND5HmXdvvG6XyM8BMReblmKJfRYZhLJp
+ GjDp2y/8EyfZZxI9dQAmg6M4Yla5GWm9HHjVO5TqIgAYVHRrlvF6UjtTHYxmqKB5zaV1
+ QMvKFb/zMk5F5TSlgvhMrzGObyL0+jIGCbCzLIGw8GSa9e6ksUTPlHZ1Fg0ckS3C5KGK
+ VwLAIgAseko9YwE2ZS7tLykO9RCZnIbxquDTYkGzCVzPnjv0Q0YFf+sY6Y0+4ULF5OJp UQ== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3axp75j9ed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 04:03:32 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1897vUnO005639;
+        Thu, 9 Sep 2021 08:03:30 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma03wdc.us.ibm.com with ESMTP id 3axcnpwx5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 08:03:30 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18983T6D46072196
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Sep 2021 08:03:29 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3002D13604F;
+        Thu,  9 Sep 2021 08:03:29 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 418F2136059;
+        Thu,  9 Sep 2021 08:03:24 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.32.15])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Sep 2021 08:03:23 +0000 (GMT)
+Subject: Re: [RESEND PATCH v4 4/4] powerpc/papr_scm: Document papr_scm sysfs
+ event format entries
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        maddy@linux.ibm.com, Santosh Sivaraj <santosh@fossix.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        atrajeev@linux.vnet.ibm.com, Thomas Gleixner <tglx@linutronix.de>,
+        rnsastry@linux.ibm.com
+References: <20210903050914.273525-1-kjain@linux.ibm.com>
+ <20210903050914.273525-5-kjain@linux.ibm.com>
+ <CAPcyv4h-MgZmteMSUfdeQL+XCxL5HvxK87HA3JYB0OoQUaPipQ@mail.gmail.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <09823156-2797-af1d-23ce-d31ae86770d9@linux.ibm.com>
+Date:   Thu, 9 Sep 2021 13:33:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAPcyv4h-MgZmteMSUfdeQL+XCxL5HvxK87HA3JYB0OoQUaPipQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: o7CiklJZumpKrb--ptNKPiFQhS6LFcUI
+X-Proofpoint-ORIG-GUID: o7CiklJZumpKrb--ptNKPiFQhS6LFcUI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-09_02:2021-09-07,2021-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ adultscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109090044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 10:55:03AM +0800, Jason Wang wrote:
-> On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > This new callback is used to indicate whether the vring size can be
-> > change or not. It is useful when we have a legacy virtio pci device as
-> > the vdpa device for there is no way to negotiate the vring num by the
-> > specification.
-> 
-> So I'm not sure it's worth bothering. E.g what if we just fail
-> VHOST_SET_VRING_NUM it the value doesn't match what hardware has?
-> 
-> Thanks
-> 
-I think we should not call VHOST_SET_VRING_NUM in that case.
 
-If the hardware reports that the virtqueue size cannot be changed, we
-should call VHOST_GET_VRING_NUM to get the static virtqueue size
-firstly, then allocate the same size memory for the virtqueues and write
-the address to hardware finally.
 
-For QEMU, we will ignore the properties rx/tx_queue_size and just get it
-from the hardware if this new callback return true.
+On 9/8/21 6:33 AM, Dan Williams wrote:
+> On Thu, Sep 2, 2021 at 10:11 PM Kajol Jain <kjain@linux.ibm.com> wrote:
+>>
+>> Details is added for the event, cpumask and format attributes
+>> in the ABI documentation.
+>>
+>> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+>> Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
+>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>> ---
+>>  Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
+>>  1 file changed, 31 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+>> index 95254cec92bf..4d86252448f8 100644
+>> --- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
+>> +++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+>> @@ -61,3 +61,34 @@ Description:
+>>                 * "CchRHCnt" : Cache Read Hit Count
+>>                 * "CchWHCnt" : Cache Write Hit Count
+>>                 * "FastWCnt" : Fast Write Count
+>> +
+>> +What:          /sys/devices/nmemX/format
+>> +Date:          June 2021
+>> +Contact:       linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
+>> +Description:   (RO) Attribute group to describe the magic bits
+>> +                that go into perf_event_attr.config for a particular pmu.
+>> +                (See ABI/testing/sysfs-bus-event_source-devices-format).
+>> +
+>> +                Each attribute under this group defines a bit range of the
+>> +                perf_event_attr.config. Supported attribute is listed
+>> +                below::
+>> +
+>> +                   event  = "config:0-4"  - event ID
+>> +
+>> +               For example::
+>> +                   noopstat = "event=0x1"
+>> +
+>> +What:          /sys/devices/nmemX/events
+> 
+> That's not a valid sysfs path. Did you mean /sys/bus/nd/devices/nmemX?
 
-What do you think?
-> >
-> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > ---
-> >  drivers/vhost/vdpa.c         | 19 +++++++++++++++++++
-> >  drivers/virtio/virtio_vdpa.c |  5 ++++-
-> >  include/linux/vdpa.h         |  4 ++++
-> >  include/uapi/linux/vhost.h   |  2 ++
-> >  4 files changed, 29 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index 9479f7f79217..2204d27d1e5d 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -350,6 +350,22 @@ static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
-> >         return 0;
-> >  }
-> >
-> > +static long vhost_vdpa_get_vring_num_unchangeable(struct vhost_vdpa *v,
-> > +                                                 u32 __user *argp)
-> > +{
-> > +       struct vdpa_device *vdpa = v->vdpa;
-> > +       const struct vdpa_config_ops *ops = vdpa->config;
-> > +       bool unchangeable = false;
-> > +
-> > +       if (ops->get_vq_num_unchangeable)
-> > +               unchangeable = ops->get_vq_num_unchangeable(vdpa);
-> > +
-> > +       if (copy_to_user(argp, &unchangeable, sizeof(unchangeable)))
-> > +               return -EFAULT;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
-> >                                    void __user *argp)
-> >  {
-> > @@ -487,6 +503,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
-> >         case VHOST_VDPA_GET_IOVA_RANGE:
-> >                 r = vhost_vdpa_get_iova_range(v, argp);
-> >                 break;
-> > +       case VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE:
-> > +               r = vhost_vdpa_get_vring_num_unchangeable(v, argp);
-> > +               break;
-> >         default:
-> >                 r = vhost_dev_ioctl(&v->vdev, cmd, argp);
-> >                 if (r == -ENOIOCTLCMD)
-> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > index 72eaef2caeb1..afb47465307a 100644
-> > --- a/drivers/virtio/virtio_vdpa.c
-> > +++ b/drivers/virtio/virtio_vdpa.c
-> > @@ -146,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >         struct vdpa_vq_state state = {0};
-> >         unsigned long flags;
-> >         u32 align, num;
-> > +       bool may_reduce_num = true;
-> >         int err;
-> >
-> >         if (!name)
-> > @@ -171,8 +172,10 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >
-> >         /* Create the vring */
-> >         align = ops->get_vq_align(vdpa);
-> > +       if (ops->get_vq_num_unchangeable)
-> > +               may_reduce_num = !ops->get_vq_num_unchangeable(vdpa);
-> >         vq = vring_create_virtqueue(index, num, align, vdev,
-> > -                                   true, true, ctx,
-> > +                                   true, may_reduce_num, ctx,
-> >                                     virtio_vdpa_notify, callback, name);
-> >         if (!vq) {
-> >                 err = -ENOMEM;
-> > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > index 35648c11e312..f809b7ada00d 100644
-> > --- a/include/linux/vdpa.h
-> > +++ b/include/linux/vdpa.h
-> > @@ -195,6 +195,9 @@ struct vdpa_iova_range {
-> >   *                             @vdev: vdpa device
-> >   *                             Returns the iova range supported by
-> >   *                             the device.
-> > + * @get_vq_num_unchangeable    Check if size of virtqueue is unchangeable (optional)
-> > + *                             @vdev: vdpa device
-> > + *                             Returns boolean: unchangeable (true) or not (false)
-> >   * @set_map:                   Set device memory mapping (optional)
-> >   *                             Needed for device that using device
-> >   *                             specific DMA translation (on-chip IOMMU)
-> > @@ -262,6 +265,7 @@ struct vdpa_config_ops {
-> >                            const void *buf, unsigned int len);
-> >         u32 (*get_generation)(struct vdpa_device *vdev);
-> >         struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
-> > +       bool (*get_vq_num_unchangeable)(struct vdpa_device *vdev);
-> >
-> >         /* DMA ops */
-> >         int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> > index c998860d7bbc..184f1f7f8498 100644
-> > --- a/include/uapi/linux/vhost.h
-> > +++ b/include/uapi/linux/vhost.h
-> > @@ -150,4 +150,6 @@
-> >  /* Get the valid iova range */
-> >  #define VHOST_VDPA_GET_IOVA_RANGE      _IOR(VHOST_VIRTIO, 0x78, \
-> >                                              struct vhost_vdpa_iova_range)
-> > +/* Check if the vring size can be change */
-> > +#define VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE _IOR(VHOST_VIRTIO, 0X79, bool)
-> >  #endif
-> > --
-> > 2.31.1
-> >
+Hi Dan,
+  Thanks, I will correct it and update it to `/sys/bus/event_source/devices/`
+where perf creates sysfs files for given pmu.
+
+> 
+>> +Date:          June 2021
+>> +Contact:       linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
+>> +Description:    (RO) Attribute group to describe performance monitoring
+>> +                events specific to papr-scm. Each attribute in this group describes
+>> +                a single performance monitoring event supported by this nvdimm pmu.
+>> +                The name of the file is the name of the event.
+>> +                (See ABI/testing/sysfs-bus-event_source-devices-events).
+> 
+> Given these events are in the generic namespace the ABI documentation
+> should be generic as well. So I think move these entries to
+> Documentation/ABI/testing/sysfs-bus-nvdimm directly.
+> 
+> You can still mention papr-scm, but I would expect something like:
+> 
+> What:           /sys/bus/nd/devices/nmemX/events
+> Date:           September 2021
+> KernelVersion:  5.16
+> Contact:        Kajol Jain <kjain@linux.ibm.com>
+> Description:
+>                 (RO) Attribute group to describe performance monitoring events
+>                 for the nvdimm memory device. Each attribute in this group
+>                 describes a single performance monitoring event supported by
+>                 this nvdimm pmu.  The name of the file is the name of the event.
+>                 (See ABI/testing/sysfs-bus-event_source-devices-events). A
+>                 listing of the events supported by a given nvdimm provider type
+>                 can be found in Documentation/driver-api/nvdimm/$provider, for
+>                 example: Documentation/driver-api/nvdimm/papr-scm.
+> 
+> 
+
+I will update it accordingly.
+
+> 
+>> +
+>> +What:          /sys/devices/nmemX/cpumask
+>> +Date:          June 2021
+>> +Contact:       linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
+>> +Description:   (RO) This sysfs file exposes the cpumask which is designated to make
+>> +                HCALLs to retrieve nvdimm pmu event counter data.
+> 
+> Seems this one would be provider generic, so no need to refer to PPC
+> specific concepts like HCALLs.
+> 
+
+Sure will update it.
+
+Thanks,
+Kajol Jain
