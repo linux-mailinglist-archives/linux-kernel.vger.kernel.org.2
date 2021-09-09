@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2E9405F00
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1965E405F08
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346415AbhIIVk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
+        id S1347083AbhIIVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233187AbhIIVk1 (ORCPT
+        with ESMTP id S231572AbhIIVnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:40:27 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:39:17 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m21-20020a17090a859500b00197688449c4so2498073pjn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:39:17 -0700 (PDT)
+        Thu, 9 Sep 2021 17:43:07 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B864AC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:41:57 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso2524979pjh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DYtvq+snIbKp4Lcx4I3hM4RZ/DAIBF8w4PBOFhnFfk8=;
-        b=ZtPvZQetKwcbR+FplMf8HaP38w4/ZzuU3YK/0x+w4t1qMS/jTYPikkbHFLpzC+qT6+
-         6Q/H9xr1fj4c++dH6JY9PINjLQZlLyWS0zrRLPFuhrk+6+mL8nazo7+av2vmxMm2s4Ew
-         l9OICkeFaAhnoHC2Dul6nGIdD2C/2yrhLXuDMSpny9qSE9WLnE2evjwaR1BLoCe4rTSU
-         llKi0NCsRxhDzZvwZoaSuT5CvmYMGWFm9A0e8u7US2j1YKzGJNlh8gvSRv0WWSSqeV7g
-         f0YOSLiWXamqPaIj3XuxE3qjTgRRvhFa6dGLQ9xiK4/Wpo1Zce6mX0u2AIScZoJjBI8w
-         nk1Q==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cmi7xVMJh51AjVg5ujaQ3w2M+HVnZy5yn09Ds7yQTCI=;
+        b=B1+ODwqLAvPfFWRXxuisetotF1uVlKSYT8OV6/JEXj/8fdsNjKuq4Rh8YuiI350OUo
+         xaQFo9bJROXJbhRHoeZZsuSPQ/U8fwHuD9gvnI8noMzMHxThDNdfuR9k4et+O4/IlzuB
+         Tfpbzoox009CzUY5nHcN1oxXigDn0Lo6I3jd3KhXq6jBvdaZaszU+GGDwXuVL0eFXRvX
+         q7Csh+I48IRHA5wGb88eV86ftte6HT4VW9K0hp8AmpD7qtNDpoYyc3RBgC1D9Hy04zbG
+         i67LLtFJqlJxgpz8JkGrK/zK0G/T8bL219wBjVVidvJ53KG+3dRbwi4vYXBBRI/yxgir
+         AR8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DYtvq+snIbKp4Lcx4I3hM4RZ/DAIBF8w4PBOFhnFfk8=;
-        b=D7Bav89+7f3FFrhLt0emJRw51Pl28ul1sqAyrWkucGjAwldLdpd0dKs09wzBQpQvpi
-         RWCwqK3j2bcOSvJYyHori/tAl/RSavXySFHs/qzjWrkmoLJe6YGLh51On5CM9dYS+j2a
-         f295gLUnATGTp124zat3SJLUD9zFIHiCd7Vsv8S3ARIVY+u3+bQd8qtIZOqxXHTofxqX
-         Xd25VuF6E/0y2H9PGOIyvHLIdbI9qY/KMoZXe9HyyYOLc2RsiSsop45uV50N4dkGlpdP
-         jF/v1puIqMb3MUzmgU0vMda6vy5NKm8uPCkMtYPASl8hnLPclXWbYUDGf6XeQRX+jDzk
-         vTfA==
-X-Gm-Message-State: AOAM531meARvy133zTaKY/bCGUOADwyDwrFyUREnBRG17kzf2kzQVxNz
-        rgUrFQSNBnel4QbMxCPhGAbb7w==
-X-Google-Smtp-Source: ABdhPJzQf3sFX91xTbQRqxoNcpNRrpYih2Pf76xgU/S+2XpBkXh06alBvvBHjke+0wjO01lCNC6XzQ==
-X-Received: by 2002:a17:90a:db85:: with SMTP id h5mr5745939pjv.213.1631223557305;
-        Thu, 09 Sep 2021 14:39:17 -0700 (PDT)
-Received: from ?IPv6:2600:380:496f:85f0:f855:eb52:c00a:147a? ([2600:380:496f:85f0:f855:eb52:c00a:147a])
-        by smtp.gmail.com with ESMTPSA id g3sm3052112pfi.197.2021.09.09.14.39.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 14:39:16 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
-Message-ID: <ebc6cc5e-dd43-6370-b462-228e142beacb@kernel.dk>
-Date:   Thu, 9 Sep 2021 15:39:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cmi7xVMJh51AjVg5ujaQ3w2M+HVnZy5yn09Ds7yQTCI=;
+        b=u5PEApo3aokAwQpTFVctXVU8UACkhGvVYPIPpAkulI5CngnP+zSsT9h07y0YI5bopH
+         fZnAl0pb9U2COhpgkpxY6ptlld4ddiEGQddL+zBBfYyJyfjn1XSjWNAWieKTvIOoADKE
+         IdOinLMfx+HPTAn6o/VvV/ELv92iA0t5zlU22NouhSy8CX8FNJeGfUnoDw5BjtF/FCA+
+         ZIo0FzXLLBw2X3wwVDMtprW3skrrJQjLnAs83+esElcCBak+Gcr6EVDua3bLB0pjIzCD
+         Pn4uY98+4OpTY/F2FPjv7v7UOag7sLsaSFrd5sC3f2qS9Axl9JDHTzHHr0Ejqnmm/HiA
+         rvgQ==
+X-Gm-Message-State: AOAM5313HSgdVLsU/dqbsqYNp8osY7XyBmT9Jls5v+na9UeUY1mbo42U
+        aL4SXvqgtjZ32vRn2Ss+wDVItA==
+X-Google-Smtp-Source: ABdhPJyNNEmvNXWXbLbpiwJCEkwrZPMI6ZxJQjILhKo2FNAMx+uP5cq72TUb0Q1WjyeGDsoEW94ZKQ==
+X-Received: by 2002:a17:90a:d789:: with SMTP id z9mr5962122pju.32.1631223717031;
+        Thu, 09 Sep 2021 14:41:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n9sm2973973pfu.152.2021.09.09.14.41.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 14:41:56 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 21:41:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
+Message-ID: <YTp/oGmiin19q4sQ@google.com>
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+ <20210827070249.924633-7-xiaoyao.li@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827070249.924633-7-xiaoyao.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 3:19 PM, Jens Axboe wrote:
->> That "req->result" is once again the *original* length, and the above
->> code once again mis-handles the case of "oh, the iov got truncated
->> because of some IO limit".
->>
->> So I've pulled this, but I think it is
->>
->>  (a) ugly nasty
->>
->>  (b) incomplete and misses a case
->>
->> and needs more thought. At the VERY least it needs that
->> iov_iter_reexpand() in io_resubmit_prep() too, I think.
->>
->> I'd like the comments expanded too. In particular that
->>
->>                 /* some cases will consume bytes even on error returns */
+On Fri, Aug 27, 2021, Xiaoyao Li wrote:
+> CPUID 0xD leaves reports the capabilities of Intel PT, e.g. it decides
+> which bits are valid to be set in MSR_IA32_RTIT_CTL, and reports the
+> number of PT ADDR ranges.
 > 
-> That comment is from me, and it goes back a few years. IIRC, it was the
-> iomap or xfs code that I hit this with, but honestly I don't remember
-> all the details at this point. I can try and play with it and see if it
-> still reproduces.
+> KVM needs to check that guest CPUID values set by userspace doesn't
+> enable any bit which is not supported by bare metal. Otherwise,
+> 1. it will trigger vm-entry failure if hardware unsupported bit is
+>    exposed to guest and set by guest.
+> 2. it triggers #GP when context switch PT MSRs if exposing more
+>    RTIT_ADDR* MSRs than hardware capacity.
+> 
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> ---
+> There is bit 31 of CPUID(0xD, 0).ECX that doesn't restrict any bit in
+> MSR_IA32_RTIT_CTL. If guest has different value than host, it won't
+> cause any vm-entry failure, but guest will parse the PT packet with
+> wrong format.
+> 
+> I also check it to be same as host to ensure the virtualization correctness.
+> 
+> Changes in v2:
+> - Call out that if configuring more PT ADDR MSRs than hardware, it can
+>   cause #GP when context switch.
+> ---
+>  arch/x86/kvm/cpuid.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 739be5da3bca..0c8e06a24156 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -76,6 +76,7 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
+>  static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+>  {
+>  	struct kvm_cpuid_entry2 *best;
+> +	u32 eax, ebx, ecx, edx;
+>  
+>  	/*
+>  	 * The existing code assumes virtual address is 48-bit or 57-bit in the
+> @@ -89,6 +90,30 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+>  			return -EINVAL;
+>  	}
+>  
+> +	/*
+> +	 * CPUID 0xD leaves tell Intel PT capabilities, which decides
 
-OK, one that I immediately found is just doing O_DIRECT to a block
-device or file on XFS. As pages are mapped and added, the iov_iter is
-advanced. If we then go and submit and get -EAGAIN, for example, then we
-return with what we mapped already consumed.
+CPUID.0xD is XSAVE state, CPUID.0x14 is Intel PT.  This series needs tests...
 
--- 
-Jens Axboe
+> +	 * pt_desc.ctl_bitmask in later update_intel_pt_cfg().
+> +	 *
+> +	 * pt_desc.ctl_bitmask decides the legal value for guest
+> +	 * MSR_IA32_RTIT_CTL. KVM cannot support PT capabilities beyond native,
+> +	 * otherwise it will trigger vm-entry failure if guest sets native
+> +	 * unsupported bits in MSR_IA32_RTIT_CTL.
+> +	 */
+> +	best = cpuid_entry2_find(entries, nent, 0xD, 0);
+> +	if (best) {
+> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
+> +		if (best->ebx & ~ebx || best->ecx & ~ecx)
+> +			return -EINVAL;
+> +	}
+> +	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+> +	if (best) {
+> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
+> +		if (((best->eax & 0x7) > (eax & 0x7)) ||
 
+Ugh, looking at the rest of the code, even this isn't sufficient because
+pt_desc.guest.addr_{a,b} are hardcoded at 4 entries, i.e. running KVM on hardware
+with >4 entries will lead to buffer overflows.
+
+One option would be to bump that to the theoretical max of 15, which doesn't seem
+too horrible, especially if pt_desc as a whole is allocated on-demand, which it
+probably should be since it isn't exactly tiny (nor ubiquitous)
+
+A different option would be to let userspace define whatever it wants for guest
+CPUID, and instead cap nr_addr_ranges at min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
+
+Letting userspace generate a bad MSR_IA32_RTIT_CTL is not problematic, there are
+plenty of ways userspace can deliberately trigger VM-Entry failure due to invalid
+guest state (even if this is a VM-Fail condition, it's not a danger to KVM).
+
+> +		    ((best->eax & ~eax) >> 16) ||
+> +		    (best->ebx & ~ebx))
+> +			return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.27.0
+> 
