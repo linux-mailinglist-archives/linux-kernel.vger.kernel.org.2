@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EDB4046FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715BB40470B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhIII0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:26:48 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:33189 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230250AbhIII0p (ORCPT
+        id S231304AbhIIIcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhIIIcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:26:45 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mOFNF-000FqC-RW; Thu, 09 Sep 2021 10:25:33 +0200
-Received: from p57bd9adf.dip0.t-ipconnect.de ([87.189.154.223] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mOFNF-001UAH-9r; Thu, 09 Sep 2021 10:25:33 +0200
-Message-ID: <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
-Date:   Thu, 9 Sep 2021 10:25:32 +0200
+        Thu, 9 Sep 2021 04:32:17 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EA1C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 01:31:08 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id rj12-20020a17090b3e8c00b001991428ded8so697241pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 01:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=Ub19d/9p0ySiiQaHlUmOKCZwKftnHq4j+eAR938tmJw=;
+        b=FLig8JEO2mMgwahgAmhqXZd6sw+AYxTW007E1Zzk7xYdDIaDq7J38KuxVznHxtTSoJ
+         9sdPRutBU/oFrVKvdxryNt84btBwAO/qvuaP3lbamerMZQED4R5+16o6bJVSCp7SUGoW
+         fqNOEGJexP7Si57m1TeSg2VH1P/stpXjcxiLe4CvZa1jTu0VWEtTCwqJhisEqgYhXcE7
+         E+z4WOiyLynxzkRUjyvhRu6s7Rkt6pzS4Vrzj7H24W0GTDXzBCcyzcxIhKyeiMLjc9Ef
+         b/Wr3s5otKZQaTFva5YPOvi6m9ThzlaBoyWmjhTA3EYqNFk+WsjPes8XlCvn1Gw/sB/2
+         i5iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=Ub19d/9p0ySiiQaHlUmOKCZwKftnHq4j+eAR938tmJw=;
+        b=H3hM2LEwp2xDKb82SgLajgIYyJlBwNjawXyrpoaMxQB6GKwS1mT7IEn8SJfUy6Nq0n
+         O2BHLYS6k6teMugPRazcaMTvW3Z7PPjn+KS6r0H1+doALLSBvzq7XjjredHBijnrMoqq
+         aww22hyFohz/Vc6eEGzpvfufnt9zL4xPEyXhmumzhHRImR7qAPvet4tTll6ETG2j+vyj
+         iNpEINBgeDsLGw54xNzkRoib4tVbZZ+TmAYfGU2RMbdh58r5tqOb+FjNaPNreotJDZfd
+         JWXM8v8M2RQQ0419lIzlbutMp+/7TrCcwXVUBHCRSJADzeJkrawAI5qDDQgaIxEPc2Tx
+         7d3A==
+X-Gm-Message-State: AOAM532l82XWrqbFFT2RJ6ugVh314q4+IiVRqFaNSmfP6DDEz7e7nANR
+        hbkSVoP45RXeHiftSVP7waQ=
+X-Google-Smtp-Source: ABdhPJy1cwy9BexKAcPbUujvep/KF1DZNeicUjTReZUr62XZTwLjUYRMylOXw5IMkMg0FkmpqzJF1g==
+X-Received: by 2002:a17:90a:7d05:: with SMTP id g5mr2334947pjl.14.1631176267586;
+        Thu, 09 Sep 2021 01:31:07 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id g18sm1295958pfj.80.2021.09.09.01.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 01:31:06 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] tools/bootconfig: Fix a compilation issue with
+ missing variable
+References: <20210907230710.1189193-1-punitagrawal@gmail.com>
+        <20210907202400.330f4ea4@rorschach.local.home>
+        <20210908094145.babedcd252d8e8caf0e2f2ad@kernel.org>
+        <20210907204502.26f0e833@rorschach.local.home>
+Date:   Thu, 09 Sep 2021 17:31:04 +0900
+In-Reply-To: <20210907204502.26f0e833@rorschach.local.home> (Steven Rostedt's
+        message of "Tue, 7 Sep 2021 20:45:02 -0400")
+Message-ID: <87a6kmb16f.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.154.223
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy!
+Hi Steve, Masami,
 
-On 9/8/21 22:19, Randy Dunlap wrote:
-> What is the status of arch/sh/ in general and
-> of these patches in particular?
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-I've also been trying to reach out to Yoshinori and Rich. I know that Yoshinori is
-currently busy with other work but he can be reached over Twitter [1]. I don't
-know about Rich though.
+> On Wed, 8 Sep 2021 09:41:45 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+>> Hi Steve,
+>> 
+>> I've investigated that why this happens here.
+>> 
+>> https://lore.kernel.org/all/20210831033256.5973-1-jcfaracco@gmail.com/T/#m52f43f6deb874ee726b10ce25ba53e44697a275a
+>> 
+>> This seems a timing issue. I acked a "simplify" patch April, and
+>> the I wrongly worked on the linus tree for "mixing a value and subkeys"
+>> and send it to you June. At last, those 2 conflicted on your branch and
+>> your merge script might just merge it.
+>> Actually, what Punit and Julio did is reverting 
+>> 
+>> commit 30d103f2d460 ("tools/bootconfig: Simplify expression")
+>
+> Yep, I came up with the same conclusion ;-)
 
-There are quite a number of patches on the mailing list that need reviewing and
-I fear if that doesn't happen in the foreseeable future, the SH port is being
-kicked out which would be a pity given that we're still maintaining the port in
-Debian and given that there is new hardware available with the J-Core board [2].
+Thanks for the quick response and looking into the underlying
+cause. Looks like it's all sorted now.
 
-Adrian
+If only I could as quickly get to the bottom of the network issue that
+triggered this [0]!
 
-> [1] https://twitter.com/ysat0/
-> [2] https://www.cnx-software.com/2017/03/13/turtle-board-is-a-raspberry-pi-2-like-fpga-board-for-j-core-j2-open-source-superh-sh2-soc/
+Thanks,
+Punit
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+[0] https://lore.kernel.org/all/CAGb2v67Duk_56fOKVwZsYn2HKJ99o8WJ+d4jetD2UjDsAt9BcA@mail.gmail.com/
