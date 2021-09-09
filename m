@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA05240469E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0924240469F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhIIH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 03:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S230234AbhIIH77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 03:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhIIH7u (ORCPT
+        with ESMTP id S230190AbhIIH7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 03:59:50 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A90C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:41 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r18-20020a056214069200b0037a291a6081so4502572qvz.18
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:41 -0700 (PDT)
+        Thu, 9 Sep 2021 03:59:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B930BC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:43 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 83-20020a251956000000b0059948f541cbso1426921ybz.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=rOMzaylhOjZPs4TPjzHhpfnCvQe9JwRgeH4yWWcvJZw=;
-        b=n0bWAuwScIFabiuD3QdztE96zt3y5wPiG8i+KrQISZ0VQblhmSVwx+AtWv9z2pm5uy
-         WzZtohORFxNJxeZad3GEfz+VKFVQKcs3f2pJBOv90hp5fjEWgMFRtKFPGK0ZOlg1BmyV
-         z0pJWpFMr8Ql7YxeNImqQYiFkOu5PTRg9/3Nt9bQcO1COrFYX/fQKwKfk2QNy4f6xT9z
-         8ZSXtz9mXA3Iwv/zrYWq/9o09gQgCxM/KqN7twJSPMYpAI1pnEO2ao0jGUWjACkUdLNd
-         ytpj8ODvWXQN8n8cNG1Sc8HkPClB/NGHAHbV1J5VDbdiu3q2qr11WxTlTYc4yxN3YP5h
-         +NLA==
+        bh=VV4e5cXq8IiLf604F5fMr/AHVRLEwRZwQ8HOpIWKAfs=;
+        b=W4MpQX2GWybdJ8Z8NEZyUiB6RAhU2gG2auoxVcT6YDOYp7m40/uzxzuSOQS462lre5
+         83+7jXv3PMNsdP8eYGyZLtMSNim2qI1ja49CxbwHX+kf8B83cvYYd43g14ihdd4za2Sj
+         hw7VVm7SiW088atTWfqDTTH/4OqmJxTfCABdXPtotKcSuNg7ofcRBIgWSOaJnK8SD9cU
+         polZFK0EGhw3iHA9mklaKyJeYC+4dTJNuF7u7+UJ05bCxNdInfEmG9MjxlUWlM5HWx8O
+         MQSXBAnb0F8O5rGX4mkMHO1Dx/lrdnMwo+lE/3WZeTE1hjPWzwAyL9YDrOsbGSx7v3YJ
+         eOeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=rOMzaylhOjZPs4TPjzHhpfnCvQe9JwRgeH4yWWcvJZw=;
-        b=FxTneuGIhW5VYqiLU11onUGA8siEExP/QVzs1ypM74u+GnbmCqilFvd1qdYZPFV4FF
-         roTUszD5cpgVCMzvSBfyJcJkMkhM0RHETk9h4jIIz+uXHb3YmrzFk0wZKbYf/2WqTq1J
-         B0CqB3V1uejAu/J9ZHpACvyw+pkcqpvJ9O1RtWuW57yxg+zQICvgX+aE1nX1ovRlXWeC
-         iZXBa05BuH4y6tDNP1w62Jh+B68X4rpDXyM1mIQD2AtEacRCMoNKOfD1H8BddtAIPYhx
-         OwNnWTmOgweTBNiO3zsU8TpM7mEUBk8Jt3jS/7jx3XqSEIpGPfwnzsUzybhsPrXU10dW
-         g/Tg==
-X-Gm-Message-State: AOAM533fNHohEy1jUTmNsaQgsPGx3A4urVQinzS3vWvjYPWpBoWyM/SZ
-        aTMWEAmURUeuRgPlDWASV6ugGKypBuZg3yGXrBp7Bc9CPG9mgOkwygj6lkQ+R7RRskrCuZ7UQ4e
-        jUOfMJPYTnSGzG/Unidb0eRHpWIZXntKqfLZfepA0XladoNCuHqTNjRK89uo0ex3+Tg0ZOKb9
-X-Google-Smtp-Source: ABdhPJw8zJki2ocaLrWDHpSyRA0j7AeDHlHQ8oUgUXmDeOSq0kA2eHu2Q9vURMcQoC2InXEhnriY4BOa4A7e
+        bh=VV4e5cXq8IiLf604F5fMr/AHVRLEwRZwQ8HOpIWKAfs=;
+        b=cnXO3Yge3YPcEoZjH827aV1sI55oCshqBDKATrXJaB6YoiCG2ZlJKmo+KSV2Dng9yS
+         ygx1oaATAeL5MU+YKZZUfTOSeL2GwZI1QDNnPKiGREAhZwZedAxAhcHS0WER1naFFz06
+         q9AGKdWWPQYM7Bsl2X6VnlNeAyct+5k5Z1hjiqHPf+qls5bcOGTbU4XkuHLbottncsuc
+         Ss8NpWsWkDwcs6oCUhdg/wf/iJyUlrSptrXHPgdJbNUyV+PJJMP/wE5EwYonpPhb47CQ
+         CsftnYwDydUPSwJVYdrvfJ7wS1YbunOqcTyt2g4PgPwYxCsv0TVJQOHSVtgRQN1FNXrN
+         WfgQ==
+X-Gm-Message-State: AOAM532QfMcoXf6XRhnWA3Ev/t1B1fd9Zj+7mIG4gvSfT1ktruP9DiTl
+        QNMyO1LnjeU6q0sIxt22nh7x7g+lyYwco55GKDmSkfQx4ULdkni2s3P1X9FlZb0tFGi/Q4Irttx
+        O4iBNNrorTQKdJDsSdz8nCsN48vH6frRPJ9opbV4ajY8FD4c4ZmYAUxEkl9VlmQfgUqv1Gn51
+X-Google-Smtp-Source: ABdhPJyfsM8G6IxgW9jWiMYzklpf9GomDXNh81MPwUotWSmry/8uqfsGY56JkcbG0mkFYG03yk/Y3WaHOAz5
 X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:f950:61f2:f1ec:ae8b])
- (user=eranian job=sendgmr) by 2002:ad4:46f0:: with SMTP id
- h16mr1703292qvw.0.1631174320320; Thu, 09 Sep 2021 00:58:40 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 00:56:48 -0700
+ (user=eranian job=sendgmr) by 2002:a25:d615:: with SMTP id
+ n21mr2692ybg.500.1631174322957; Thu, 09 Sep 2021 00:58:42 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 00:56:49 -0700
 In-Reply-To: <20210909075700.4025355-1-eranian@google.com>
-Message-Id: <20210909075700.4025355-2-eranian@google.com>
+Message-Id: <20210909075700.4025355-3-eranian@google.com>
 Mime-Version: 1.0
 References: <20210909075700.4025355-1-eranian@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+Subject: [PATCH v1 02/13] x86/cpufeatures: add AMD Fam19h Branch Sampling feature
 From:   Stephane Eranian <eranian@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
@@ -62,104 +62,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make it simpler to reset all the info fields on the perf_branch_entry in
-a single store, we use a union. This avoids missing some of the bitfields and
-improves generated code by minimizing the number of stores.
-
-Using an anonymous struct around the bitfields to guarantee field ordering.
-
-A single perf_branch_entry.val = 0 guarantees all fields are all zeroes on any arch.
+This patch adds a cpu feature for AMD Fam19h Branch Sampling feature as bit 31
+of EBX on CPUID leaf function 0x80000008.
 
 Signed-off-by: Stephane Eranian <eranian@google.com>
 ---
- arch/x86/events/intel/lbr.c     | 13 +++----------
- include/uapi/linux/perf_event.h | 19 ++++++++++++-------
- 2 files changed, 15 insertions(+), 17 deletions(-)
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 9e6d6eaeb4cb..27aa48cce3c6 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -801,15 +801,9 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index d0ce5cfd3ac1..74fd7ab7d74d 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -313,6 +313,7 @@
+ #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
+ #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
+ #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
++#define X86_FEATURE_AMD_BRS		(13*32+31) /* Branch Sampling available */
  
- 		rdmsrl(x86_pmu.lbr_from + lbr_idx, msr_lastbranch.lbr);
- 
-+		cpuc->lbr_entries[i].val	= 0;
- 		cpuc->lbr_entries[i].from	= msr_lastbranch.from;
- 		cpuc->lbr_entries[i].to		= msr_lastbranch.to;
--		cpuc->lbr_entries[i].mispred	= 0;
--		cpuc->lbr_entries[i].predicted	= 0;
--		cpuc->lbr_entries[i].in_tx	= 0;
--		cpuc->lbr_entries[i].abort	= 0;
--		cpuc->lbr_entries[i].cycles	= 0;
--		cpuc->lbr_entries[i].type	= 0;
--		cpuc->lbr_entries[i].reserved	= 0;
- 	}
- 	cpuc->lbr_stack.nr = i;
- 	cpuc->lbr_stack.hw_idx = tos;
-@@ -896,6 +890,7 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- 		if (abort && x86_pmu.lbr_double_abort && out > 0)
- 			out--;
- 
-+		cpuc->lbr_entries[out].val	 = 0;
- 		cpuc->lbr_entries[out].from	 = from;
- 		cpuc->lbr_entries[out].to	 = to;
- 		cpuc->lbr_entries[out].mispred	 = mis;
-@@ -903,8 +898,6 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- 		cpuc->lbr_entries[out].in_tx	 = in_tx;
- 		cpuc->lbr_entries[out].abort	 = abort;
- 		cpuc->lbr_entries[out].cycles	 = cycles;
--		cpuc->lbr_entries[out].type	 = 0;
--		cpuc->lbr_entries[out].reserved	 = 0;
- 		out++;
- 	}
- 	cpuc->lbr_stack.nr = out;
-@@ -966,6 +959,7 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 		to = rdlbr_to(i, lbr);
- 		info = rdlbr_info(i, lbr);
- 
-+		e->val		= 0;
- 		e->from		= from;
- 		e->to		= to;
- 		e->mispred	= get_lbr_mispred(info);
-@@ -974,7 +968,6 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 		e->abort	= !!(info & LBR_INFO_ABORT);
- 		e->cycles	= get_lbr_cycles(info);
- 		e->type		= get_lbr_br_type(info);
--		e->reserved	= 0;
- 	}
- 
- 	cpuc->lbr_stack.nr = i;
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index f92880a15645..eb11f383f4be 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -1329,13 +1329,18 @@ union perf_mem_data_src {
- struct perf_branch_entry {
- 	__u64	from;
- 	__u64	to;
--	__u64	mispred:1,  /* target mispredicted */
--		predicted:1,/* target predicted */
--		in_tx:1,    /* in transaction */
--		abort:1,    /* transaction abort */
--		cycles:16,  /* cycle count to last branch */
--		type:4,     /* branch type */
--		reserved:40;
-+	union {
-+		__u64	val;	    /* to make it easier to clear all fields */
-+		struct {
-+			__u64	mispred:1,  /* target mispredicted */
-+				predicted:1,/* target predicted */
-+				in_tx:1,    /* in transaction */
-+				abort:1,    /* transaction abort */
-+				cycles:16,  /* cycle count to last branch */
-+				type:4,     /* branch type */
-+				reserved:40;
-+		};
-+	};
- };
- 
- union perf_sample_weight {
+ /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
+ #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
 -- 
 2.33.0.153.gba50c8fa24-goog
 
