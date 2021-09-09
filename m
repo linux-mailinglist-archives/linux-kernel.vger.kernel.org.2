@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F289140476B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB2F40476E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhIII6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:58:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49197 "EHLO
+        id S232151AbhIIJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:00:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35865 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232065AbhIII6I (ORCPT
+        by vger.kernel.org with ESMTP id S231825AbhIIJAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:58:08 -0400
+        Thu, 9 Sep 2021 05:00:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631177818;
+        s=mimecast20190719; t=1631177934;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Liyit1fZs4HtPW9fq/QHYKo0y2hDYRFoca/MDgNxk68=;
-        b=amLvhMej1yhmZ57Kq73+CumsUbH3qhgTw4O7+oEyDyfd9OnU+rPJm+5laz9S4QR0bG1I/K
-        fyTrhD3r5EDvRJ0XZiYBtehrkbd10NfPb66j1XUfBPkhicpWkk/U8rfgbrofFjyo5J8TLB
-        0884Zme8p0n/JzO2SWBqSFPfYF81kQk=
+        bh=B/XpMR8IW7n50hqBRiVqU8UBvztjlF9h6rtat9Sfp/0=;
+        b=aoFWILU3hUDOmlcdvoq2n9BEjwtVdaSCTvybAuVFnVu4SB7W7QwMavJMXcpzWvwLbIlvbv
+        +8tsrTgwK7P3RdTxYw0MDB67koCeThwUDzHfv/glZKfGDiKFel+Cli0l9Vcgy+Ga3ccU0X
+        mraHXOGiFTDpMkMl4G0vilCy+dOOyIQ=
 Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
  [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-7qObJ9nzOYCJwnLcjJbtag-1; Thu, 09 Sep 2021 04:56:57 -0400
-X-MC-Unique: 7qObJ9nzOYCJwnLcjJbtag-1
-Received: by mail-wm1-f70.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so504153wmc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 01:56:57 -0700 (PDT)
+ us-mta-328-u1rBS1MhMpudenNhKLRu9w-1; Thu, 09 Sep 2021 04:58:52 -0400
+X-MC-Unique: u1rBS1MhMpudenNhKLRu9w-1
+Received: by mail-wm1-f70.google.com with SMTP id v21-20020a05600c215500b002fa7eb53754so453772wml.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 01:58:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Liyit1fZs4HtPW9fq/QHYKo0y2hDYRFoca/MDgNxk68=;
-        b=kKqNJIdyeGHNvBC1dQN5oib9UE0YVCmVOoshd/UN+ejBqqe456d2J56VJ9fK3bA/Z3
-         7U3oltcxSLz1sIURs7UyWR2a55NCeeSgJItdjcDMLKVCKshl5jSGGUabGPlsN8m+OtfZ
-         78hQ0Yhj+wFkY37HIg2sQaL+MBEgSrARx11/zd9p6XyXh6+3fVT3c3CQCDXBXnzOxtZ1
-         jT/L8hGQr548TWaWlr+6WQmEWCZVAP0ahge6nLKfdmiQ8Q1rPLbWPCmxuuxiGPHhA4lD
-         N++01aKtDFhhe/IabZzSzQ9OOuqbZgeUZKETOTpN9vcEvsnrZTtKRCKuHzIKcj/hkk5k
-         +q3w==
-X-Gm-Message-State: AOAM530AlpxXqRxH94s7YKkgrD/zoRefuE14snhwST8HQS0eh/mir7rg
-        mzSSb/0WfAWmEduY5ZHftQis9enIu/xFiS9OSoFEb+ftHaXr98KyoA9fMOhQuz0e5hZIyzw5SMB
-        D4kAwEVSX2VL6LtR0zpPFra+yVmTAmAxRnuYcZl5dwt9lJPOqHExws+hUyAxjLnTiVbORhhmW
-X-Received: by 2002:a7b:c959:: with SMTP id i25mr1785619wml.55.1631177816678;
-        Thu, 09 Sep 2021 01:56:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIKTQh8R6XWF4427CqE/HyWw/W0UYpYxbC/9ygvsBIHbeLbAGS5T8tINP+A29RFg+mzToWrA==
-X-Received: by 2002:a7b:c959:: with SMTP id i25mr1785595wml.55.1631177816408;
-        Thu, 09 Sep 2021 01:56:56 -0700 (PDT)
+        bh=B/XpMR8IW7n50hqBRiVqU8UBvztjlF9h6rtat9Sfp/0=;
+        b=tX8ciev3tTuXBiRAucB6SdN4T+qb0/xzpfsoMsqHGDKYEJUViAWABQyZA70f2ZXyNq
+         G2MrJPLQQvyhU4XneGvkWjWJDk6+G2vyWzAmq2FykbEbbCZXe7ixbJx1B/iFEdliyukq
+         /GGgl8EzGGfYg1b97gxTa2E9eHa2My5aQxxOmzNYw/YKYNq42/FOvJkn10I4Wr8Nc7qh
+         0K+0AV85zTJwB2sgaFI/aTpqXZZRKEmMr1oe+jDRHAqXMAcH5UvXMHZF+Ue3k8KJ+OMB
+         mMACRaPuEAzLL7jX8v9+Qu3k/DTJhaEbFj/tjI2m4u27MevUvB2na49bfe0/vY7BwhCp
+         6thQ==
+X-Gm-Message-State: AOAM530gKJwkz1ggC9UEw1fXiJU59Rfp5AaiLuwP+PRN19V+QqOVuIwZ
+        UObuy1a6MqduPDVce/G8WuB8kuPGTK0uBj0T8fga4mGALQcSboadA9A96NFgov3YO8e7zoxV+Hr
+        aXVVIvlQK8CiISbisC8J5cUxn
+X-Received: by 2002:adf:e643:: with SMTP id b3mr2263871wrn.67.1631177931566;
+        Thu, 09 Sep 2021 01:58:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHd9tbvGHuH/vI+YA9CIrNsSVEbwqy9yOD6TU2JuSw3sjsuiEtnZ1Wqc75iLPK+6kOv9kJ0Q==
+X-Received: by 2002:adf:e643:: with SMTP id b3mr2263848wrn.67.1631177931410;
+        Thu, 09 Sep 2021 01:58:51 -0700 (PDT)
 Received: from [192.168.3.132] (p4ff23fe4.dip0.t-ipconnect.de. [79.242.63.228])
-        by smtp.gmail.com with ESMTPSA id n20sm904818wms.15.2021.09.09.01.56.55
+        by smtp.gmail.com with ESMTPSA id y1sm1029619wmq.43.2021.09.09.01.58.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 01:56:55 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210904091839.20270-1-linmiaohe@huawei.com>
- <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
- <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
- <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
- <c60dc5e2-6f19-3be8-56be-555033cc9ca4@redhat.com>
- <b4615b3c-8217-9f32-39c7-b91c9ec3cccb@suse.cz>
- <80cfffdc-227e-c045-be74-1c08fb62c1e3@redhat.com>
- <febcceaa-7d94-c3a3-c683-7a8694981b47@nvidia.com>
+        Thu, 09 Sep 2021 01:58:50 -0700 (PDT)
+Subject: Re: [RFC PATCH] fs/exec: Add the support for ELF program's NUMA
+ replication
+To:     Huang Shijie <shijie@os.amperecomputing.com>
+Cc:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        jlayton@kernel.org, bfields@fieldses.org,
+        torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        song.bao.hua@hisilicon.com, patches@amperecomputing.com,
+        zwang@amperecomputing.com
+References: <20210906161613.4249-1-shijie@os.amperecomputing.com>
+ <2cb841ca-2a04-f088-cee2-6c020ecc9508@redhat.com> <YTnX7IyC420MNBLq@hsj>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-Message-ID: <efdab0d6-199a-1bb8-79bf-ea0a5b94c093@redhat.com>
-Date:   Thu, 9 Sep 2021 10:56:55 +0200
+Message-ID: <1c115101-a549-0e88-7bbb-1b0a19621504@redhat.com>
+Date:   Thu, 9 Sep 2021 10:58:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <febcceaa-7d94-c3a3-c683-7a8694981b47@nvidia.com>
+In-Reply-To: <YTnX7IyC420MNBLq@hsj>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,32 +78,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.09.21 00:42, John Hubbard wrote:
-> On 9/7/21 2:56 AM, David Hildenbrand wrote:
-> ...
->>> If this can be handled gracefully, then I'd rather go with VM_WARN_ON.
->>> Maybe even WARN_ON_ONCE?
+On 09.09.21 11:46, Huang Shijie wrote:
+> On Mon, Sep 06, 2021 at 11:35:01AM +0200, David Hildenbrand wrote:
+>> On 06.09.21 18:16, Huang Shijie wrote:
+>>> This patch adds AT_NUMA_REPLICATION for execveat().
 >>>
+>>> If this flag is set, the kernel will trigger COW(copy on write)
+>>> on the mmapped ELF binary. So the program will have a copied-page
+>>> on its NUMA node, even if the original page in page cache is
+>>> on other NUMA nodes.
 >>
->> I think either VM_BUG_ON() or VM_WARN_ON() -- compiling the runtime checks out -- should be good
->> enough.
->>
->> I'd just go with VM_BUG_ON(), because anybody messing with __isolate_free_page() should clearly spot
->> that we expect the current handling. But no strong opinion.
->>
+>> Am I missing something important or is this just absolutely not what we
+>> want?
 > 
-> If in doubt, WARN*() should be preferred over BUG*(). There's a pretty long
-> history of "don't kill the machine unless you have to" emails about this, let
-> me dig up one...OK, maybe not the best example, but the tip of the iceberg:
+> Please see the thread:
+> https://marc.info/?l=linux-kernel&m=163070220429222&w=2
+> 
+> Linus did not think it is a good choice to implement the "per-numa node page cache"
 
-Please note the subtle difference between BUG_ON and VM_BUG_ON. We 
-expect VM_BUG_ON to be compiled out on any production system. So it's 
-really only a mean to identify things that really shouldn't be like that 
-during debugging/testing.
+That doesn't make this approach any better.
 
-Using WARN... instead of VM_BUG_ON is even worse for production systems. 
-There are distros that set panic_on_warn, essentially converting WARN... 
-into BUG...
+I don't think we want this in the kernel. If user space wants to waste 
+memory, it can happily mmap() however it wants. The advisory is to not 
+do it.
 
 -- 
 Thanks,
