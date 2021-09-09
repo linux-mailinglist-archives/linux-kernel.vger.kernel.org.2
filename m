@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2C4404718
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8ED40471C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhIIIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhIIIfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:35:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889C6C061575;
-        Thu,  9 Sep 2021 01:34:44 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 08:34:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631176482;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=80QALolpCs7AaTRTKPDWXh+r0eyW85Gk82eTC53eMPI=;
-        b=WUCpLxMzdK3se/kKe+cGQdxJecKcpXqI/3a5bpJ6ab5CtD86aXHJ+wVL2s6iIhPsn1VIIf
-        hLjeuSW/5JjLfGcBUFMCA/ztYcmp1OvSmmMWxK7gj/3EU0KFuKKbhPYkRlH2/8LU0zgLqB
-        vOk7yOtb9iG956q+Un/q4n8mNr2R4xNpl+2jRTvZ9UMM3gKOjWZFpuIC+l8kZrDLA09Uvn
-        DbQvh8Vo5lQdfj9S3MWDUkTJQTEKvfxeYk65kYO8HhNHnMgcq/hs0lEQh+GA8N8PgxypwL
-        DrrmODycdhTsBsdEeQEMCbB5y02qqzT6dtRiBLpS/NJjyy28ti4ksi5dBCNk3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631176482;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=80QALolpCs7AaTRTKPDWXh+r0eyW85Gk82eTC53eMPI=;
-        b=AFZ5wdrtNb/depnNpKLuv0tU30vHuHBqydht30pbQqaBCPk542QrgSlWQ54c45FnOVr3A4
-        149EmsIc7zPm9tCA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/rtmutex: Fix ww_mutex deadlock check
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <YS9La56fHMiCCo75@hirez.programming.kicks-ass.net>
-References: <YS9La56fHMiCCo75@hirez.programming.kicks-ass.net>
+        id S231768AbhIIIiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:38:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61753 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231298AbhIIIiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:38:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631176631; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=giRwarU4s4LVrgcy91P0Aa74dAXsz7qKH3Vqj2XUaKM=; b=SB1AhrSUecY6Ctr00l6SuGFUuO+Qa83xYSTeO9W39RIix1SbEV8ubUliLuv+oqH1N048cj6b
+ eTheuyqx4i0NBWW2hFV6p6cW9cuOhUMLUiruMQQ+KoQ4XJ9CoOY4/NAEAtwJB0q78fflwYI6
+ 7X6H4ifZopTc4FLEwTQ5cJUD4/U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6139c7a9161bd38c427c1988 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 08:36:57
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0670DC43460; Thu,  9 Sep 2021 08:36:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [103.149.158.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A640BC4338F;
+        Thu,  9 Sep 2021 08:36:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A640BC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Rob Herring'" <robh@kernel.org>
+Cc:     <robh+dt@kernel.org>, <sibis@codeaurora.org>, <sboyd@kernel.org>,
+        <bjorn.andersson@linaro.org>, <agross@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <mpubbise@codeaurora.org>, <linux-arm-msm@vger.kernel.org>
+References: <1628618483-664-1-git-send-email-pillair@codeaurora.org> <1628618483-664-3-git-send-email-pillair@codeaurora.org> <1628702693.296189.3975938.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1628702693.296189.3975938.nullmailer@robh.at.kernel.org>
+Subject: RE: [PATCH v2 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+Date:   Thu, 9 Sep 2021 14:06:49 +0530
+Message-ID: <005a01d7a555$d888b4c0$899a1e40$@codeaurora.org>
 MIME-Version: 1.0
-Message-ID: <163117648132.25758.8161104732621115882.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQEJWhNIYLJ/66qBV2WYIx8eRMUiMwHxvUCCAmkU3e2tFSDU0A==
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
 
-Commit-ID:     e5480572706da1b2c2dc2c6484eab64f92b9263b
-Gitweb:        https://git.kernel.org/tip/e5480572706da1b2c2dc2c6484eab64f92b9263b
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 01 Sep 2021 11:44:11 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 09 Sep 2021 10:31:22 +02:00
 
-locking/rtmutex: Fix ww_mutex deadlock check
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Wednesday, August 11, 2021 10:55 PM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: robh+dt@kernel.org; sibis@codeaurora.org; sboyd@kernel.org;
+> bjorn.andersson@linaro.org; agross@kernel.org; linux-
+> kernel@vger.kernel.org; devicetree@vger.kernel.org;
+> mpubbise@codeaurora.org; linux-arm-msm@vger.kernel.org
+> Subject: Re: [PATCH v2 2/3] dt-bindings: remoteproc: qcom: Add SC7280
+> WPSS support
+> 
+> On Tue, 10 Aug 2021 23:31:22 +0530, Rakesh Pillai wrote:
+> > Add WPSS PIL loading support for SC7280 SoCs.
+> >
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > ---
+> >  .../bindings/remoteproc/qcom,hexagon-v56.yaml      | 79
+> ++++++++++++++++++++--
+> >  1 file changed, 74 insertions(+), 5 deletions(-)
+> >
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m
+> dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-
+> review/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-
+> v56.example.dt.yaml: remoteproc@17300000: 'power-domain-names' is a
+> required property
+> 	From schema: /builds/robherring/linux-dt-
+> review/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-
+> v56.yaml
+> 
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/patch/1515482
+> 
+> This check can fail if there are any dependencies. The base for a patch
+series
+> is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+error(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
 
-Dan reported that rt_mutex_adjust_prio_chain() can be called with
-.orig_waiter == NULL however commit a055fcc132d4 ("locking/rtmutex: Return
-success on deadlock for ww_mutex waiters") unconditionally dereferences it.
+Thanks Rob, I will submit next patchset for this and fix the issues.
 
-Since both call-sites that have .orig_waiter == NULL don't care for the
-return value, simply disable the deadlock squash by adding the NULL check.
 
-Notably, both callers use the deadlock condition as a termination condition
-for the iteration; once detected, it is sure that (de)boosting is done.
-Arguably step [3] would be a more natural termination point, but it's
-dubious whether adding a third deadlock detection state would improve the
-code.
-
-Fixes: a055fcc132d4 ("locking/rtmutex: Return success on deadlock for ww_mutex waiters")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/YS9La56fHMiCCo75@hirez.programming.kicks-ass.net
-
----
- kernel/locking/rtmutex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 8eabdc7..6bb116c 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -753,7 +753,7 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
- 		 * other configuration and we fail to report; also, see
- 		 * lockdep.
- 		 */
--		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter->ww_ctx)
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter && orig_waiter->ww_ctx)
- 			ret = 0;
- 
- 		raw_spin_unlock(&lock->wait_lock);
