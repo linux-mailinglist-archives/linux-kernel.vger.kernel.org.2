@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3274048D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D724048D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhIILBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234349AbhIILBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:01:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55ED561167
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631185243;
-        bh=q0jaemKaNpxivtuHJVN3sxGi68MjVqL99mYlZXXeAZI=;
+        id S234551AbhIILDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:03:15 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:57718 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234216AbhIILDO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:03:14 -0400
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 189B1nr9024809;
+        Thu, 9 Sep 2021 20:01:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 189B1nr9024809
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1631185310;
+        bh=nZfFg/JwDacjaTOLCboRuBQ6A+RYt6dHwDsyrC1BjG0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hHJKoNgkH8/igA8mIRS3lIuUeTLXcTZC+1DSY6sOpt50Cc3WpwUTvTnh/1FPRRi8r
-         0Vs7f5vHfPoSG+fzyOuQDSrOnhcMNDF8ii4p0MHgdNIXgvwypuYO5MY8dXdOhWgNJO
-         l41W2CHOYhIN7rTDJmhNdndV8iDc0k+71EnPXb4Hkxztk3ElYZlZZxS90P/9j7eX1A
-         MTYrG7IPALgtwsZEPstcM/v9XSp1C68Dl2rC+4P4ZfEIaVaRPKNHRQHlovAPeodguH
-         xTNQKbeXBfcqmwbLhkZj73EII8d3PTV+SM+lRFKaQxWFUDb4OD+t6maZjm1zDAHEBj
-         FX9aW8KR4x/wA==
-Received: by mail-wm1-f49.google.com with SMTP id i3so1045093wmq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:00:43 -0700 (PDT)
-X-Gm-Message-State: AOAM5316EIB/ZjuEfIfWmpRJfFgVOj52tlNP1WFPbd139WzW7N1H8VNy
-        Blj4bbH1VrZ26eY3Og5xjEfyDwIVYDf+2uEdDjA=
-X-Google-Smtp-Source: ABdhPJzXwyBVTWsO83az+CnqYKTmuJ+96XVP1jSzK/fPZCcrRA2zux6YoBG2oM4L6KntsYaUUUA2GKpxx8IgphoRzAg=
-X-Received: by 2002:a1c:4c14:: with SMTP id z20mr2344349wmf.82.1631185241984;
- Thu, 09 Sep 2021 04:00:41 -0700 (PDT)
+        b=gsGVGB59VhtqgkNoD6ckbHiPd97O406ngyVMGyakbRrILR6n1qazziSVIMrXNDwWP
+         cdWp3nwXqvVKmOjMggDRFgUhQaylFu7n2tYV3Ug4jeY2aebw144sH+gCRew8HX39Jn
+         8pjUlF4jArb82Y6/x9bhetRQBXr/fk81pY8PVv7crBrnV70IHvT3gC72mae+sIX6cM
+         hnBZyZRvs+a6GK4LKEISKv8ZkRJR60e74sS/DCmhqCCmwEhoNrRmJLQCBI0yIg2k7J
+         pfqI3JdgdRcKIz7DU/slolyS+ZruWfiQizTWbHcDn3/Cio19Xu8oukTuVJZEjxdY7a
+         kpv/xL9d47RmA==
+X-Nifty-SrcIP: [209.85.210.176]
+Received: by mail-pf1-f176.google.com with SMTP id m26so1454291pff.3;
+        Thu, 09 Sep 2021 04:01:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532lOqbxb0ebhVp8O9ns/Wcc+EJ9MNOhJyf19M3lADmzdHKdl5Cs
+        kic/t/4i91gflZmEC1zqwbkuFxd7VhKDlO1ljwg=
+X-Google-Smtp-Source: ABdhPJyw7Aayt9CY7VD9ORFmSgdPI2JfaYnLCELWBhkqW4xRoDatIy6RguQ8KldM3TDq1+wUZAQPMJYM66AGuzCxbm0=
+X-Received: by 2002:aa7:9e8d:0:b0:406:be8:2413 with SMTP id
+ p13-20020aa79e8d000000b004060be82413mr2637188pfq.66.1631185309107; Thu, 09
+ Sep 2021 04:01:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
- <YTkjJPCdR1VGaaVm@archlinux-ax161> <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
- <YTkyIAevt7XOd+8j@elver.google.com> <YTmidYBdchAv/vpS@infradead.org> <CANpmjNNCVu8uyn=8=5_8rLeKM5t3h7-KzVg1aCJASxF8u_6tEQ@mail.gmail.com>
-In-Reply-To: <CANpmjNNCVu8uyn=8=5_8rLeKM5t3h7-KzVg1aCJASxF8u_6tEQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 9 Sep 2021 13:00:25 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1W-13f-qCykaaAiXAr+P_F+VhjsU-9Uu=kTPUeB4b26Q@mail.gmail.com>
-Message-ID: <CAK8P3a1W-13f-qCykaaAiXAr+P_F+VhjsU-9Uu=kTPUeB4b26Q@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Marco Elver <elver@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
+References: <20210908032847.18683-1-kortanzh@gmail.com> <YTjt5C7xTqNLUSl/@archlinux-ax161>
+In-Reply-To: <YTjt5C7xTqNLUSl/@archlinux-ax161>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 9 Sep 2021 20:01:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATA2-4jSfOCmdtgQ+cuAyXhyLCBuVEZkZ3nONZFV8z3EA@mail.gmail.com>
+Message-ID: <CAK7LNATA2-4jSfOCmdtgQ+cuAyXhyLCBuVEZkZ3nONZFV8z3EA@mail.gmail.com>
+Subject: Re: [PATCH v2] gen_compile_commands: fix missing 'sys' package
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kortan <kortanzh@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        llvm@lists.linux.dev,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 12:54 PM Marco Elver <elver@google.com> wrote:
-> On Thu, 9 Sept 2021 at 07:59, Christoph Hellwig <hch@infradead.org> wrote:
-> > On Wed, Sep 08, 2021 at 11:58:56PM +0200, Marco Elver wrote:
-> > > It'd be good to avoid. It has helped uncover build issues with KASAN in
-> > > the past. Or at least make it dependent on the problematic architecture.
-> > > For example if arm is a problem, something like this:
+On Thu, Sep 9, 2021 at 2:07 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Wed, Sep 08, 2021 at 11:28:48AM +0800, Kortan wrote:
+> > We need to import the 'sys' package since the script has called
+> > sys.exit() method.
 > >
-> > I'm also seeing quite a few stack size warnings with KASAN on x86_64
-> > without COMPILT_TEST using gcc 10.2.1 from Debian.  In fact there are a
-> > few warnings without KASAN, but with KASAN there are a lot more.
-> > I'll try to find some time to dig into them.
+> > Signed-off-by: Kortan <kortanzh@gmail.com>
 >
-> Right, this reminded me that we actually at least double the real
-> stack size for KASAN builds, because it inherently requires more stack
-> space. I think we need Wframe-larger-than to match that, otherwise
-> we'll just keep having this problem:
+> Thank you for making those changes!
 >
-> https://lkml.kernel.org/r/20210909104925.809674-1-elver@google.com
+> I should have mentioned that this probably warrants a Fixes: tag, which
+> can be generated by running:
+>
+> $ git show -s --format='Fixes: %h ("%s")' 6ad7cbc01527223f3f92baac9b122f15651cf76b
+> Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
+>
+> as that was the patch that introduced this issue. I personally have a
+> git alias for this as it comes up enough.
+>
+> $ git config --get alias.fixes
+> show -s --format="Fixes: %h (\"%s\")"
+>
+> I do not think this warrants a v3, just something to keep in mind for
+> the future.
+>
+> Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-The problem with this is that it completely defeats the point of the
-stack size warnings in allmodconfig kernels when they have KASAN
-enabled and end up missing obvious code bugs in drivers that put
-large structures on the stack. Let's not go there.
 
-        Arnd
+Applied to linux-kbuild
+with Fixes and Nathan's Reviewed-by.
+Thanks.
+
+
+
+> > ---
+> > Changes v1 -> v2:
+> > * Fix commit title.
+> > * Improve commit message.
+> >
+> >  scripts/clang-tools/gen_compile_commands.py | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> > index 0033eedce003..1d1bde1fd45e 100755
+> > --- a/scripts/clang-tools/gen_compile_commands.py
+> > +++ b/scripts/clang-tools/gen_compile_commands.py
+> > @@ -13,6 +13,7 @@ import logging
+> >  import os
+> >  import re
+> >  import subprocess
+> > +import sys
+> >
+> >  _DEFAULT_OUTPUT = 'compile_commands.json'
+> >  _DEFAULT_LOG_LEVEL = 'WARNING'
+> > --
+> > 2.33.0
+> >
+> >
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
