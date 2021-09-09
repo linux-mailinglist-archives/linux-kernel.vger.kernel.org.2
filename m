@@ -2,148 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010284047B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84E24047B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhIIJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhIIJ2H (ORCPT
+        id S232842AbhIIJ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:29:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57941 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232262AbhIIJ3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:28:07 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C5C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 02:26:58 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id k18-20020a4abd92000000b002915ed21fb8so352679oop.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 02:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=d6F+Zj7MjB0XsuFv8vC0jvK+3NOF2gE3rZxZ5a2W05s=;
-        b=J/X/N7UJ24d0X+MJB3iWpT8oP9ex27IKpiWfr/Jx27AavQSVoRfCNadiY8Tceml6bm
-         HI2WYBgWX2XM3wHo57eMTlDym4BPrzY5TLENrL55Qc9/n3olMQTJMShp4hz7bFUJf20L
-         ah6eLcPl8rzddCItE/alxwf+7ve/nf4jaQP/Q=
+        Thu, 9 Sep 2021 05:29:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631179720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7MPTrkICD3dS44O34dSkNV5ikqasNKbp3eO9uY/CQQ=;
+        b=fE9tS3WrbBpAr2AccDZV/eBWI2x0RZFrKHJZaJH5q4y7TO9N2170EH8n6VIMDQQg0k5DZ8
+        Cef8BxVVnlTPikbZKvBktFLW2p30mYPUIxu3TbjrSy/5/93RVrZGprj7pSolM9uJJ3mTRq
+        yiQr1F0G11cczxTjZS2opzKHibc8nhw=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-PYxuWxCgM5KtN5a_rjX_Pw-1; Thu, 09 Sep 2021 05:28:39 -0400
+X-MC-Unique: PYxuWxCgM5KtN5a_rjX_Pw-1
+Received: by mail-lf1-f72.google.com with SMTP id n5-20020a19ef05000000b003e224cd5844so500385lfh.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 02:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=d6F+Zj7MjB0XsuFv8vC0jvK+3NOF2gE3rZxZ5a2W05s=;
-        b=Dh/4phhuA7lZIHagDqqo4bz8F3hHFTnCLNxs/APVbJ3u6NmutpF3MlG7JyXB0jCY4S
-         pG0NyedEVcMHHmhtiX6+xbjGoFRPbzePbYodp8ZiHDOOKefB+63sM+TZORcCpdqzYlBE
-         4WcFEWMq1OWRhL6C5hoGgDDvNVAXyc5YDkYNbSN7y8y2Cq22qOzIfFmqruvnSCC1RNgN
-         TqwPNkB2JGFdR6N/9d5CTnPC1jvaiRp1eJ6oBpErP7/M8VJGzzFocd492fvjMcZoaggL
-         Bbb1ENSiDNQx4V/PSh/D8x/fkU8oJhwi2Ue3x4pHMDKrF4+4oMjMU2yWzuwgkU57Hg6E
-         sskw==
-X-Gm-Message-State: AOAM531ga2w0GOGNVWjUd7fCmzT5bE96GDqecVbggqJe9Vx+LuRtpiOZ
-        lv9hFqQvZeKGZNNTWZWBS4R6mVl4lzHB6bg5hYZnpQ==
-X-Google-Smtp-Source: ABdhPJwptKVSDdb5MZuH2gAMae7SYaRhDjB7Yn7WTC2WufiW9ywCDqWj/hKzIPZ+IZhrS2BkldbXBFyfZg3QfJHHPmw=
-X-Received: by 2002:a4a:dc51:: with SMTP id q17mr1630242oov.10.1631179617509;
- Thu, 09 Sep 2021 02:26:57 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=E7MPTrkICD3dS44O34dSkNV5ikqasNKbp3eO9uY/CQQ=;
+        b=fbarEFCUB1aWpX1fWRZ1ARr3kCELDE4OIXgsCLYout5yXD3hbmrGZ4umE1p33LQD7Q
+         oieM+q3Z2yjbW6GtEK5QMuhUdzWPrIYTqodMz8DKWotkAJdXTsmyE0k5wUFrCFbi6EZN
+         7GLf7FCvtvxDPlWkHlFWx6mL2iWWWi4/pa1kod9Jfo3l1T7coMyzwl0w3EG1LOTk0Gxj
+         ann4/8poQCnchDh8tk/gj3bzKvQr4OGSLFklbBQ9xYSkIYutf/I0TFGx/yo+3VPkEjFK
+         ds5Ja4ejVssem0MhllLdX3tRX5/4GBbdSokpiOA3uVAk88IYqtyeCmFbt9aGPJQrTiOe
+         VJFg==
+X-Gm-Message-State: AOAM531t+u7Dl5be1pZiOmgypA/T1PoxeAB0Ys3vJcEUf4LZxGLattEb
+        s4O3VdN1UalYhQQM9h7dvVujF7LM7pNvRAmj8Iyg1oohE/Igmft0AYX3Igrcj8954eiwwTiH39c
+        bWIwnR6vg3cj7O93WfaUX17rw7sUC+R9623aNS9tQ
+X-Received: by 2002:a2e:7018:: with SMTP id l24mr1461010ljc.277.1631179717363;
+        Thu, 09 Sep 2021 02:28:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLAOA1/iZcBisp3OLHAaKuMI0vEZbcNqkyc6keR8qfvNJe7AcgB6OhwNXQTHhZBv1eG9RSF60gT08XaJ8Bxf4=
+X-Received: by 2002:a2e:7018:: with SMTP id l24mr1460994ljc.277.1631179717047;
+ Thu, 09 Sep 2021 02:28:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
- <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com> <20210908233354.GB3544071@ziepe.ca>
-In-Reply-To: <20210908233354.GB3544071@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 9 Sep 2021 11:26:46 +0200
-Message-ID: <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shunsuke Mie <mie@igel.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <ebd83066e3897aae63e4b02f8729a73dd09931c6.1631101392.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com> <20210909080157.GA17383@L-PF27918B-1352.localdomain>
+In-Reply-To: <20210909080157.GA17383@L-PF27918B-1352.localdomain>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 9 Sep 2021 17:28:26 +0800
+Message-ID: <CACGkMEsnp7-axbZWuB_w7ZkSWKa0Y+Ej-Kq0QSfO2-DNN=ShVA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] vdpa: add get_vq_num_unchangeable callback in vdpa_config_ops
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
-> > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.koenig@a=
-md.com> wrote:
-> > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hellw=
-ig <hch@infradead.org>:
-> > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> > > >>>> Thank you for your comment.
-> > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > > >>>>>> To share memory space using dma-buf, a API of the dma-buf requ=
-ires dma
-> > > >>>>>> device, but devices such as rxe do not have a dma device. For =
-those case,
-> > > >>>>>> change to specify a device of struct ib instead of the dma dev=
-ice.
-> > > >>>>> So if dma-buf doesn't actually need a device to dma map why do =
-we ever
-> > > >>>>> pass the dma_device here?  Something does not add up.
-> > > >>>> As described in the dma-buf api guide [1], the dma_device is use=
-d by dma-buf
-> > > >>>> exporter to know the device buffer constraints of importer.
-> > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%=
-3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian.koeni=
-g%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d99=
-4e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjA=
-wMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3DARwQ=
-yo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
-> > > >>> Which means for rxe you'd also have to pass the one for the under=
-lying
-> > > >>> net device.
-> > > >> I thought of that way too. In that case, the memory region is cons=
-trained by the
-> > > >> net device, but rxe driver copies data using CPU. To avoid the con=
-straints, I
-> > > >> decided to use the ib device.
-> > > > Well, that is the whole problem.
-> > > >
-> > > > We can't mix the dmabuf stuff people are doing that doesn't fill in
-> > > > the CPU pages in the SGL with RXE - it is simply impossible as thin=
-gs
-> > > > currently are for RXE to acess this non-struct page memory.
-> > >
-> > > Yeah, agree that doesn't make much sense.
-> > >
-> > > When you want to access the data with the CPU then why do you want to
-> > > use DMA-buf in the first place?
-> > >
-> > > Please keep in mind that there is work ongoing to replace the sg tabl=
-e
-> > > with an DMA address array and so make the underlying struct page
-> > > inaccessible for importers.
-> >
-> > Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
-> > for cpu access. Which intentionally does not require any device. No
-> > idea why there's a dma_buf_attach involved. Now not all exporters
-> > support this, but that's fixable, and you must call
-> > dma_buf_begin/end_cpu_access for cache management if the allocation
-> > isn't cpu coherent. But it's all there, no need to apply hacks of
-> > allowing a wrong device or other fun things.
+On Thu, Sep 9, 2021 at 4:02 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
 >
-> Can rxe leave the vmap in place potentially forever?
+> On Thu, Sep 09, 2021 at 10:55:03AM +0800, Jason Wang wrote:
+> > On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
+> > >
+> > > This new callback is used to indicate whether the vring size can be
+> > > change or not. It is useful when we have a legacy virtio pci device as
+> > > the vdpa device for there is no way to negotiate the vring num by the
+> > > specification.
+> >
+> > So I'm not sure it's worth bothering. E.g what if we just fail
+> > VHOST_SET_VRING_NUM it the value doesn't match what hardware has?
+> >
+> > Thanks
+> >
+> I think we should not call VHOST_SET_VRING_NUM in that case.
+>
+> If the hardware reports that the virtqueue size cannot be changed, we
+> should call VHOST_GET_VRING_NUM to get the static virtqueue size
+> firstly, then allocate the same size memory for the virtqueues and write
+> the address to hardware finally.
+>
+> For QEMU, we will ignore the properties rx/tx_queue_size and just get it
+> from the hardware if this new callback return true.
 
-Yeah, it's like perma-pinning the buffer into system memory for
-non-p2p dma-buf sharing. We just squint and pretend that can't be
-abused too badly :-) On 32bit you'll run out of vmap space rather
-quickly, but that's not something anyone cares about here either. We
-have a bunch of more sw modesetting drivers in drm which use
-dma_buf_vmap() like this, so it's all fine.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+This will break live migration. My understanding is that we can
+advertise those capability/limitation via the netlink management
+protocol then management layer can choose to use the correct queue
+size.
+
+Thanks
+
+>
+> What do you think?
+> > >
+> > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > ---
+> > >  drivers/vhost/vdpa.c         | 19 +++++++++++++++++++
+> > >  drivers/virtio/virtio_vdpa.c |  5 ++++-
+> > >  include/linux/vdpa.h         |  4 ++++
+> > >  include/uapi/linux/vhost.h   |  2 ++
+> > >  4 files changed, 29 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > > index 9479f7f79217..2204d27d1e5d 100644
+> > > --- a/drivers/vhost/vdpa.c
+> > > +++ b/drivers/vhost/vdpa.c
+> > > @@ -350,6 +350,22 @@ static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static long vhost_vdpa_get_vring_num_unchangeable(struct vhost_vdpa *v,
+> > > +                                                 u32 __user *argp)
+> > > +{
+> > > +       struct vdpa_device *vdpa = v->vdpa;
+> > > +       const struct vdpa_config_ops *ops = vdpa->config;
+> > > +       bool unchangeable = false;
+> > > +
+> > > +       if (ops->get_vq_num_unchangeable)
+> > > +               unchangeable = ops->get_vq_num_unchangeable(vdpa);
+> > > +
+> > > +       if (copy_to_user(argp, &unchangeable, sizeof(unchangeable)))
+> > > +               return -EFAULT;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+> > >                                    void __user *argp)
+> > >  {
+> > > @@ -487,6 +503,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+> > >         case VHOST_VDPA_GET_IOVA_RANGE:
+> > >                 r = vhost_vdpa_get_iova_range(v, argp);
+> > >                 break;
+> > > +       case VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE:
+> > > +               r = vhost_vdpa_get_vring_num_unchangeable(v, argp);
+> > > +               break;
+> > >         default:
+> > >                 r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+> > >                 if (r == -ENOIOCTLCMD)
+> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > index 72eaef2caeb1..afb47465307a 100644
+> > > --- a/drivers/virtio/virtio_vdpa.c
+> > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > @@ -146,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > >         struct vdpa_vq_state state = {0};
+> > >         unsigned long flags;
+> > >         u32 align, num;
+> > > +       bool may_reduce_num = true;
+> > >         int err;
+> > >
+> > >         if (!name)
+> > > @@ -171,8 +172,10 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > >
+> > >         /* Create the vring */
+> > >         align = ops->get_vq_align(vdpa);
+> > > +       if (ops->get_vq_num_unchangeable)
+> > > +               may_reduce_num = !ops->get_vq_num_unchangeable(vdpa);
+> > >         vq = vring_create_virtqueue(index, num, align, vdev,
+> > > -                                   true, true, ctx,
+> > > +                                   true, may_reduce_num, ctx,
+> > >                                     virtio_vdpa_notify, callback, name);
+> > >         if (!vq) {
+> > >                 err = -ENOMEM;
+> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > > index 35648c11e312..f809b7ada00d 100644
+> > > --- a/include/linux/vdpa.h
+> > > +++ b/include/linux/vdpa.h
+> > > @@ -195,6 +195,9 @@ struct vdpa_iova_range {
+> > >   *                             @vdev: vdpa device
+> > >   *                             Returns the iova range supported by
+> > >   *                             the device.
+> > > + * @get_vq_num_unchangeable    Check if size of virtqueue is unchangeable (optional)
+> > > + *                             @vdev: vdpa device
+> > > + *                             Returns boolean: unchangeable (true) or not (false)
+> > >   * @set_map:                   Set device memory mapping (optional)
+> > >   *                             Needed for device that using device
+> > >   *                             specific DMA translation (on-chip IOMMU)
+> > > @@ -262,6 +265,7 @@ struct vdpa_config_ops {
+> > >                            const void *buf, unsigned int len);
+> > >         u32 (*get_generation)(struct vdpa_device *vdev);
+> > >         struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
+> > > +       bool (*get_vq_num_unchangeable)(struct vdpa_device *vdev);
+> > >
+> > >         /* DMA ops */
+> > >         int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+> > > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> > > index c998860d7bbc..184f1f7f8498 100644
+> > > --- a/include/uapi/linux/vhost.h
+> > > +++ b/include/uapi/linux/vhost.h
+> > > @@ -150,4 +150,6 @@
+> > >  /* Get the valid iova range */
+> > >  #define VHOST_VDPA_GET_IOVA_RANGE      _IOR(VHOST_VIRTIO, 0x78, \
+> > >                                              struct vhost_vdpa_iova_range)
+> > > +/* Check if the vring size can be change */
+> > > +#define VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE _IOR(VHOST_VIRTIO, 0X79, bool)
+> > >  #endif
+> > > --
+> > > 2.31.1
+> > >
+>
+
