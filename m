@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A512405CA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD78405CA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244268AbhIISLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
+        id S243663AbhIISLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242897AbhIISLM (ORCPT
+        with ESMTP id S243634AbhIISLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:11:12 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308F8C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:10:02 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id l11so5420735lfe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:10:02 -0700 (PDT)
+        Thu, 9 Sep 2021 14:11:13 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EBBC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:10:03 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id t19so5351234lfe.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IudACyYdUqJ7gnt0VBJlepLQi1HYDs/W9JfdNcI6Qbw=;
-        b=NEGi3nHWsfQg+1RLKfc0kywSDw4++RzTTs2UlUBBrdQ3VPzSjxiKHQ0j8p9JIjAydy
-         iqFUV7kdLN7h2dYd+DI5Pv/uprCzhNmTayfGGNs8RXuCw8sN0uh2KYyqkjSnibLmCr09
-         RgeWYLzfh3O+DB63OcsQ2ZTUQNiBXZiYx5T6sq7FlCpRjM4o6pYztOkFYGqru1EdDlvY
-         76yafJ7u/yTPdNVc9g7RkBRbzAU+UAKbgpyfEwZjoC4K73YFExpxQrL0ZajdZaRiQ+xu
-         dVhpXshnSR9xOg3gBQhvDTHFvic/5mIeN9GrPtUHL5KR9oquTNlAUILp2QB/LsXfPBYi
-         odIQ==
+        bh=NV/0xR4Wd5a8K3rGYu9nrf5FiDiBhhqYO1ip2WBYO/k=;
+        b=D99cnNWLNyWiHSzCZ/jqvfEKRd5jra/f2uqsXAKoIwEJMIeEYimgEDnOBUTzPfGqRm
+         iLKM9aZCogvKt7kH4V1FGjCt2eGm4j7FC55Ftz1u8znjTv6PjdIcg2F7TVwpQMsSklHM
+         r5LqrbKFmYXusz/wEFDsaog7sur6mTCVW7oCCymehSb/4rU7DsRfytt9X9lyKcz02OxG
+         68JWS/DQxNrq8eKNGxP653mEnzcqQlH5HKBqvkyh0ZQRCHiaGa0In4shUGPw+3AGEOOq
+         rz34r1ox3fthZk7u7xa72cLqL+lkiFNal27qkIS959BCUvPXnk1ZjPjm9NLnObS2Yrxg
+         3EBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IudACyYdUqJ7gnt0VBJlepLQi1HYDs/W9JfdNcI6Qbw=;
-        b=mWDpMo7C0Qk/8cjbDFGPly23dp7R/JeNC8jWi/Uo+KTmrt564l6hNGtSYCn3HZ92e9
-         FhiVURIgu3XxxGhfmwy82XzBw38bobOyhrTJ7CslFMSmaHfo/PhZEkz2CKrQV2MmTzhO
-         00pX6iFHowWtUVLvL01v/AkGAhRd1PvOQhoh911MIEjgIxrul2ykCLmuCwudXMnZiwpZ
-         5OUS0Oq8ncI0RuLYcLOxfxW+gaLBAvFZVQPZSzZFn496d9FsFbm3hwvN87QHkw4fz+jm
-         zxyaF/yh5D22Xb2LgLbScKHpuXnLvgxxrdd+5J3U6ZNO8zggFjOVf8bPJ+xQvCRb66Cx
-         aVzw==
-X-Gm-Message-State: AOAM5337YIUMCu8ZEuW+Bhi8YsAfLzEXQM9SOhunDAPcx9NqwabWhJGr
-        vhHMwqCxU8K/VnHBwlQkzVU=
-X-Google-Smtp-Source: ABdhPJx8eDqX1tvtW/eN6WUxAqVJouZ5RSQZPsB2dAsBOIfznfCiN8DNeyZyOZL+ubLnLajOgtZrAw==
-X-Received: by 2002:a05:6512:39c9:: with SMTP id k9mr819851lfu.351.1631211000536;
-        Thu, 09 Sep 2021 11:10:00 -0700 (PDT)
+        bh=NV/0xR4Wd5a8K3rGYu9nrf5FiDiBhhqYO1ip2WBYO/k=;
+        b=V/ad0rstL4hsaKiHrXrKV4HDq6rC/bTWmVRpeyGM/EAu4LgCnqKWlP2K0KP0PQjbPv
+         aU+Gwr8OsjGKsHLoh5jeKMMM5mvb9lG9WXasgZdaZGIyodgs7AI65vdIyhrS9YWZIb+W
+         WOzIkwuc4YIw425jOeQuVq0pFUg1CiM7aUYo/GtuNwwZDPL7MbYvK+LWjW0AbSaO8Jfc
+         1N6/csk9l1IJHby0uuuuto/bF6Q0ry5QV4jyKMZj4uaAQdkQF6BWYXkBbPdyTTXWoWtn
+         9EjecyB3NunauxvXzSLk5VgKm5VuA4KISwRvNoo7xpO3Jlk+1zq8LYQqL0uILbmebuJH
+         6+QA==
+X-Gm-Message-State: AOAM533TU6U5eHFRJ12UeB4jSz0jPj5iLLdk1FC3rKNeCV/YfBgpQgBI
+        tQoGM7fOMrKgoPjf2INf89+wKVA4nkg=
+X-Google-Smtp-Source: ABdhPJzHoasyLk7GBFtx/ys/kNkLvNtfD0V582eAnm7zAjnnIfnmUObZDODDXUbt/cufc2vFzODknQ==
+X-Received: by 2002:ac2:592f:: with SMTP id v15mr822084lfi.73.1631211001745;
+        Thu, 09 Sep 2021 11:10:01 -0700 (PDT)
 Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id u2sm270276lff.238.2021.09.09.11.09.59
+        by smtp.gmail.com with ESMTPSA id u2sm270276lff.238.2021.09.09.11.10.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:10:00 -0700 (PDT)
+        Thu, 09 Sep 2021 11:10:01 -0700 (PDT)
 From:   Kari Argillander <kari.argillander@gmail.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         ntfs3@lists.linux.dev
 Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 06/11] fs/ntfs3: Use sb instead of sbi->sb in fill_super
-Date:   Thu,  9 Sep 2021 21:09:37 +0300
-Message-Id: <20210909180942.8634-7-kari.argillander@gmail.com>
+Subject: [PATCH 07/11] fs/ntfs3: Remove tmp var is_ro in ntfs_fill_super
+Date:   Thu,  9 Sep 2021 21:09:38 +0300
+Message-Id: <20210909180942.8634-8-kari.argillander@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210909180942.8634-1-kari.argillander@gmail.com>
 References: <20210909180942.8634-1-kari.argillander@gmail.com>
@@ -66,45 +66,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use sb instead of sbi->sb in fill_super. We have sb so why not use
-it. Also makes code more readable.
+We only use this in two places so we do not really need it. Also
+wrapper sb_rdonly() is pretty self explanatory. This will make little
+bit easier to read this super long variable list in the beginning of
+ntfs_fill_super().
 
 Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 ---
- fs/ntfs3/super.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ntfs3/super.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 2eb1227bbf5a..efe12c45e421 100644
+index efe12c45e421..8022149f6b88 100644
 --- a/fs/ntfs3/super.c
 +++ b/fs/ntfs3/super.c
-@@ -1012,7 +1012,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+@@ -889,7 +889,6 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	struct ATTR_DEF_ENTRY *t;
+ 	u16 *upcase;
+ 	u16 *shared;
+-	bool is_ro;
+ 	struct MFT_REF ref;
+ 
+ 	ref.high = 0;
+@@ -1012,16 +1011,14 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
  
  	iput(inode);
  
--	is_ro = sb_rdonly(sbi->sb);
-+	is_ro = sb_rdonly(sb);
- 
+-	is_ro = sb_rdonly(sb);
+-
  	if (sbi->flags & NTFS_FLAGS_NEED_REPLAY) {
- 		if (!is_ro) {
-@@ -1103,7 +1103,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 	/* Not necessary. */
- 	sbi->used.bitmap.set_tail = true;
--	err = wnd_init(&sbi->used.bitmap, sbi->sb, tt);
-+	err = wnd_init(&sbi->used.bitmap, sb, tt);
- 	if (err)
- 		goto out;
- 
-@@ -1117,7 +1117,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	/* Load $AttrDef. */
- 	ref.low = cpu_to_le32(MFT_REC_ATTR);
- 	ref.seq = cpu_to_le16(MFT_REC_ATTR);
--	inode = ntfs_iget5(sbi->sb, &ref, &NAME_ATTRDEF);
-+	inode = ntfs_iget5(sb, &ref, &NAME_ATTRDEF);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $AttrDef -> %d", err);
- 		return PTR_ERR(inode);
+-		if (!is_ro) {
++		if (!sb_rdonly(sb)) {
+ 			ntfs_warn(sb,
+ 				  "failed to replay log file. Can't mount rw!");
+ 			return -EINVAL;
+ 		}
+ 	} else if (sbi->volume.flags & VOLUME_FLAG_DIRTY) {
+-		if (!is_ro && !sbi->options->force) {
++		if (!sb_rdonly(sb) && !sbi->options->force) {
+ 			ntfs_warn(
+ 				sb,
+ 				"volume is dirty and \"force\" flag is not set!");
 -- 
 2.25.1
 
