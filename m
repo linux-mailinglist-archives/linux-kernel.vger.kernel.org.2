@@ -2,199 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0230405BBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F00405BC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240843AbhIIRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234524AbhIIRFx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:05:53 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06C5C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:04:43 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id t19so5002518lfe.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ElUi2zLG+FPdz2UbE6Ray8TiRA1vza4HIfAFJ/kfzDA=;
-        b=sBGGF2kG+kvjABV883GUjWQBbQ2wX1NxELksiUeFov5Sj5rAv40ysH20N7VQgc/5cg
-         DGTsfaPG76W7jKp6lCHQGpeb3qMg1jfkETHtMBdCxdXh5c2gOBgpg89a3WqziPY/83MM
-         Ot6A5TOx+m7J0m84VaOwWv6ZwAdoTewLWePlIxQIxd7apvaH1oIskbpkSd7PwYz6oOPl
-         JUmIjLWW1pLO63L6urfiluhdEyGC/ZeSUrpEqVBHtbdPaNCTONO5mm9fPOt/IiiZwOBJ
-         Lld0qL0BiHZq3hUIfIXyBjAJk7u3WMKgB/VkWdPuL7XN/co3wq76VPdvD4K2hf+3X2HV
-         lCVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ElUi2zLG+FPdz2UbE6Ray8TiRA1vza4HIfAFJ/kfzDA=;
-        b=l4vHsPfk6UbDCeEqzwTQF60fTutpi8ac8k/nuE3b+uj/HbAbKL1Xb1h4xqTO0UB5bX
-         zxBlYCO2zFqzpuRhSC6wiB/mJmMlyYL0a7PLHLOGsLv0m1U/7N4wsaSvbOD/BfM4JY5U
-         b4INaC3P1qykPaa2ujNJv2kU5FN7ZhbonDOS8elztzVbX8Ue8x6WZd9cyRlOxbUll4mv
-         tEdM+8u6WrlRxD+vnXknUyqSVNcyHBEeOdoCF9dB3Iu3dlj33dXy23z6CXM9cIoShvLt
-         JYSt+CxXXJfbqAcWVl0PulcbcFcn9B5+MwmNHneROGR7FeWjl+aDqggHdQRvb6/zEPx3
-         OpJg==
-X-Gm-Message-State: AOAM530z1hkkggY56HgAHzyf13jBSGlgQbL19oJX03FzWb2yxobbZVj0
-        n+/I1AxL8JnxyrEL6AxwWRREAuYZ4QhM0PoVrBLXWg==
-X-Google-Smtp-Source: ABdhPJzgsnReiX6zBBk7VBYxWyPOlu6Rnz6b1gSn1eWpE9n3+TwnrWeVYgZ5PlPI5XB3FPGSVGVg8crba8eh2NTMT9Y=
-X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr700974lfg.150.1631207081580;
- Thu, 09 Sep 2021 10:04:41 -0700 (PDT)
+        id S240552AbhIIRI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:08:57 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33729 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238789AbhIIRIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:08:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631207255;
+        bh=7tXlIisQeGNb3a+69zq/jRitSlcukCYGi6bCofviy1o=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=g9zG+taUK/r7/cYzokBzKdknjeiw8C3OKjsryHwJFCp/G3gruDN8Utpghty9TyLK0
+         GXljhlMRbrZA2HWxBDcgLS9Tb1FlvEiKRSAd1cywAnQft1mibshlKTElwFMSahKdEd
+         ibAboirmduLh6fn0cAVa23cdZHQRuKpyJTvOeTwQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgNh1-1mruFE0I1P-00hwys; Thu, 09
+ Sep 2021 19:07:35 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+ <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+ <20210909114248.aijujvl7xypkh7qe@skbuf>
+ <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+ <20210909154734.ujfnzu6omcjuch2a@skbuf>
+ <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
+ <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
+Date:   Thu, 9 Sep 2021 19:07:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-10-rananta@google.com>
- <YTmW7/pY0E9cHQ+c@google.com> <CAJHc60zk6vJg4dj4hm7sCHK08TEr=GtXemDJHb22mgvg2eUfXA@mail.gmail.com>
-In-Reply-To: <CAJHc60zk6vJg4dj4hm7sCHK08TEr=GtXemDJHb22mgvg2eUfXA@mail.gmail.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Thu, 9 Sep 2021 13:04:30 -0400
-Message-ID: <CAOQ_QsiBqfD+j9EpOxVFOg=YPdeUCZnkwBJHLv-ACcHevhpx0A@mail.gmail.com>
-Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AZqe644msIQ2+yFCv6yfolpB6piEgSat8/S6IXCnjN5BEGYYGE+
+ XeE9/5zLpg0tIQNRTIRz8OGaEiUShW+wow871ohkyQ18C+USwdqI5MgeM4ffw/tTws0Il/e
+ KlQPTn4lRkP9278/MPmYgQKgU0l6AE6KvtFu1xwsLSjBjTG6KWZ7nxemg2F33tV0P0iSabh
+ 63ITVXpOTGV0WOCLNwSQw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9y+zwzAVR+o=:gy1pR7V38xfzPfobWMGPq7
+ sdXcD6FKToLGtmw2DIOtH3WWzTi7gF3Eoh4fvJRqqKdwxUYJX7chbqi9zfMUbrvViawC+mQtD
+ AGwPn+wgrhViaUl1Ii0XcxYBg0LcxOrwxK7lFfpbwZoNMAm3vt3HG8aLEtoh3j5XPEuvgbsbE
+ lr1lNOTD4GOARbg/MmahqQJo6sWFBSqNZk8u+7Oe6AgXZM4E1kmarZ667cxHSuRZ/M5X0PL2E
+ WOCTqOOQU1e8kMwx2NggqP5xj59dislgc/kaL5WH6L7nrTDv0kiGyVicj/5heIIj+6/eshEAa
+ 8O0uqY3pj54b4DyCts0NUvOwgKJhvzTCsK4n0cK6kvt1amtI+BkyUhj//EbtG0eb68dB+VBIz
+ Uk2dCJoyGbTzKajKiEpEJhpa+ADephaH68/ImDklC3s3VwDA1uCS5T8/xj+4ud73gAzR5mIre
+ cdMXxRgEhhID+qobwNvdL9pQz2PXfONYQMiLXIRWVVAK0kuHzS1UVAvPBImdl+F8JDFPif4zp
+ 4Phgtq3u75muYWknvWxuQayFHbbCpEhtQn5HLknz2nOBlo2eQRwN3RFAATTojmihBKZsoBWSt
+ MD9JHYrc5CB1/W9VyQq/qOgISkd09vTXYWbTgAvBvZ4RFTCXS3ddY1BP+KeT843QygvAb9AyU
+ oHTORUPkHoTkB5/Y7QbC4MzuUdjWKyEp0ug0AJptfJXFDJXHi+oh9Mo7AOT3lZU513prbwKwc
+ YiEptxIatIf6j2mg+TPaYT5nkzXFB7SD4UXxrW5y11UUKRXhv1YxfecFEWbTSgDk7LElLUSlx
+ Oz7bdISFVfHPPXo2Zjbs4o/TyA8nyO8GtwYv57Juo/HoQk+4HG2dBdmTjClCF62aA7bqH4Xyi
+ wC+yqbp79OaHhtW7PzpI2Nb7EIOcm8UFbINnQVDJNX0cRj9II8sVHCh7TPlHCyI3LpoZFs3DW
+ U0d+LIx9ENn8nJjtlrgm4JO84O1hLtSnX1GbFbklI2JwYeIRoceU0gT8hiBbgXYy9Qc14oS8l
+ UpIw/a4sJWbRX4zGaGVm7FrUIkrI9hfuw/4LdunaGS7KU2PC+5mZihu6VrVvzF4EVHR0HQCsW
+ apZcvfgGNG9yII=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 12:59 PM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
+On 09.09.21 at 18:44, Florian Fainelli wrote:
 >
-> On Wed, Sep 8, 2021 at 10:09 PM Oliver Upton <oupton@google.com> wrote:
-> >
-> > On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
-> > > At times, such as when in the interrupt handler, the guest wants
-> > > to get the vcpuid that it's running on. As a result, introduce
-> > > get_vcpuid() that returns the vcpuid of the calling vcpu. At its
-> > > backend, the VMM prepares a map of vcpuid and mpidr during VM
-> > > initialization and exports the map to the guest for it to read.
-> > >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > ---
-> > >  .../selftests/kvm/include/aarch64/processor.h |  3 ++
-> > >  .../selftests/kvm/lib/aarch64/processor.c     | 46 +++++++++++++++++++
-> > >  2 files changed, 49 insertions(+)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > index b6088c3c67a3..150f63101f4c 100644
-> > > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > @@ -133,6 +133,7 @@ void vm_install_exception_handler(struct kvm_vm *vm,
-> > >               int vector, handler_fn handler);
-> > >  void vm_install_sync_handler(struct kvm_vm *vm,
-> > >               int vector, int ec, handler_fn handler);
-> > > +void vm_vcpuid_map_init(struct kvm_vm *vm);
-> > >
-> > >  static inline void cpu_relax(void)
-> > >  {
-> > > @@ -194,4 +195,6 @@ static inline void local_irq_disable(void)
-> > >       asm volatile("msr daifset, #3" : : : "memory");
-> > >  }
-> > >
-> > > +int get_vcpuid(void);
-> > > +
-> >
-> > I believe both of these functions could use some documentation. The
-> > former has implicit ordering requirements (can only be called after all
-> > vCPUs are created) and the latter can only be used within a guest.
-> >
-> > >  #endif /* SELFTEST_KVM_PROCESSOR_H */
-> > > diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > > index 632b74d6b3ca..9844b62227b1 100644
-> > > --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > > +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > > @@ -13,9 +13,17 @@
-> > >  #include "processor.h"
-> > >
-> > >  #define DEFAULT_ARM64_GUEST_STACK_VADDR_MIN  0xac0000
-> > > +#define VM_VCPUID_MAP_INVAL                  -1
-> > >
-> > >  static vm_vaddr_t exception_handlers;
-> > >
-> > > +struct vm_vcpuid_map {
-> > > +     uint64_t mpidr;
-> > > +     int vcpuid;
-> > > +};
-> > > +
-> > > +static struct vm_vcpuid_map vcpuid_map[KVM_MAX_VCPUS];
-> > > +
-> >
-> > Hmm.
-> >
-> > I'm not too big of a fan that the KVM_MAX_VCPUS macro is defined in the
-> > KVM selftests. Really, userspace should discover the limit from the
-> > kernel. Especially when we want to write tests that test behavior at
-> > KVM's limit.
-> >
-> > That being said, there are more instances of these static allocations in
-> > the selftests code, so you aren't to be blamed.
-> >
-> > Related: commit 074c82c8f7cf ("kvm: x86: Increase MAX_VCPUS to 1024")
-> > has raised this limit.
-> >
-> I'm not a fan of static allocations either, but the fact that
-> sync_global_to_guest() doesn't have a size argument (yet), makes me
-> want to take a shorter route. Anyway, if you want I can allocate it
-> dynamically and copy it to the guest's memory by hand, or come up with
-> a utility wrapper while I'm at it.
-> (Just wanted to make sure we are not over-engineering our needs here).
-
-No, please don't worry about it in your series. I'm just openly
-whining is all :-)
-
-> > >  static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
-> > >  {
-> > >       return (v + vm->page_size) & ~(vm->page_size - 1);
-> > > @@ -426,3 +434,41 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
-> > >       assert(vector < VECTOR_NUM);
-> > >       handlers->exception_handlers[vector][0] = handler;
-> > >  }
-> > > +
-> > > +void vm_vcpuid_map_init(struct kvm_vm *vm)
-> > > +{
-> > > +     int i = 0;
-> > > +     struct vcpu *vcpu;
-> > > +     struct vm_vcpuid_map *map;
-> > > +
-> > > +     list_for_each_entry(vcpu, &vm->vcpus, list) {
-> > > +             map = &vcpuid_map[i++];
-> > > +             map->vcpuid = vcpu->id;
-> > > +             get_reg(vm, vcpu->id,
-> > > +                     ARM64_SYS_KVM_REG(SYS_MPIDR_EL1), &map->mpidr);
-> > > +             map->mpidr &= MPIDR_HWID_BITMASK;
-> > > +     }
-> > > +
-> > > +     if (i < KVM_MAX_VCPUS)
-> > > +             vcpuid_map[i].vcpuid = VM_VCPUID_MAP_INVAL;
-> > > +
-> > > +     sync_global_to_guest(vm, vcpuid_map);
-> > > +}
-> > > +
-> > > +int get_vcpuid(void)
-> >
-> > nit: guest_get_vcpuid()
-> >
-> Sounds nice. Since we have a lot of guest utility functions now, I'm
-> fancying a world where we prefix guest_ with all of them to avoid
-> confusion.
 >
+> On 9/9/2021 9:37 AM, Lino Sanfilippo wrote:
+>> On 09.09.21 at 17:47, Vladimir Oltean wrote:
+>>> On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
+>>>>> Do you see similar things on your 5.10 kernel?
+>>>>
+>>>> For the master device is see
+>>>>
+>>>> lrwxrwxrwx 1 root root 0 Sep=C2=A0 9 14:10 /sys/class/net/eth0/device=
+/consumer:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.etherne=
+t--spi:spi3.0
+>>>
+>>> So this is the worst of the worst, we have a device link but it doesn'=
+t help.
+>>>
+>>> Where the device link helps is here:
+>>>
+>>> __device_release_driver
+>>> =C2=A0=C2=A0=C2=A0=C2=A0while (device_links_busy(dev))
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_links_unbind_consume=
+rs(dev);
+>>>
+>>> but during dev_shutdown, device_links_unbind_consumers does not get ca=
+lled
+>>> (actually I am not even sure whether it should).
+>>>
+>>> I've reproduced your issue by making this very simple change:
+>>>
+>>> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers=
+/net/ethernet/freescale/enetc/enetc_pf.c
+>>> index 60d94e0a07d6..ec00f34cac47 100644
+>>> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+>>> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+>>> @@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver =3D {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .id_table =3D enetc_pf_id_table,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .probe =3D enetc_pf_probe,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .remove =3D enetc_pf_remove,
+>>> +=C2=A0=C2=A0=C2=A0 .shutdown =3D enetc_pf_remove,
+>>> =C2=A0 #ifdef CONFIG_PCI_IOV
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .sriov_configure =3D enetc_sriov_config=
+ure,
+>>> =C2=A0 #endif
+>>>
+>>> on my DSA master driver. This is what the genet driver has "special".
+>>>
+>>
+>> Ah, that is interesting.
+>>
+>>> I was led into grave error by Documentation/driver-api/device_link.rst=
+,
+>>> which I've based my patch on, where it clearly says that device links
+>>> are supposed to help with shutdown ordering (how?!).
+>>>
+>>> So the question is, why did my DSA trees get torn down on shutdown?
+>>> Basically the short answer is that my SPI controller driver does
+>>> implement .shutdown, and calls the same code path as the .remove code,
+>>> which calls spi_unregister_controller which removes all SPI children..
+>>>
+>>> When I added this device link, one of the main objectives was to not
+>>> modify all DSA drivers. I was certain based on the documentation that
+>>> device links would help, now I'm not so sure anymore.
+>>>
+>>> So what happens is that the DSA master attempts to unregister its net
+>>> device on .shutdown, but DSA does not implement .shutdown, so it just
+>>> sits there holding a reference (supposedly via dev_hold, but where fro=
+m?!)
+>>> to the master, which makes netdev_wait_allrefs to wait and wait.
+>>>
+>>
+>> Right, that was also my conclusion.
+>>
+>>> I need more time for the denial phase to pass, and to understand what
+>>> can actually be done. I will also be away from the keyboard for the ne=
+xt
+>>> few days, so it might take a while. Your patches obviously offer a
+>>> solution only for KSZ switches, we need something more general. If I
+>>> understand your solution, it works not by virtue of there being any
+>>> shutdown ordering guarantee at all, but simply due to the fact that
+>>> DSA's .shutdown hook gets called eventually, and the reference to the
+>>> master gets freed eventually, which unblocks the unregister_netdevice
+>>> call from the master.
+>>
+>> Well actually the SPI shutdown hook gets called which then calls ksz947=
+7_shutdown
+>> (formerly ksz9477_reset_switch) which then shuts down the switch by
+>> stopping the worker thread and tearing down the DSA tree (via dsa_tree_=
+shutdown()).
+>>
+>> While it is right that the patch series only fixes the KSZ case for now=
+, the idea was that
+>> other drivers could use a similar approach in by calling the new functi=
+on dsa_tree_shutdown()
+>> in their shutdown handler to make sure that all refs to the master devi=
+ce are released.
+> It does not scale really well to have individual drivers call dsa_tree_s=
+hutdown() in their respective .shutdown callback, and in a multi-switch co=
+nfiguration, I am not sure what the results would look like.
+>
+> In premise, each driver ought to be able to call dsa_unregister_switch()=
+, along with all of the driver specific shutdown and eventually, given pro=
+per device ordering the DSA tree would get automatically torn down, and th=
+en the DSA master's .shutdown() callback would be called.
+>
+> FWIW, the reason why we call .shutdown() in bcmgenet is to turn off DMA =
+and clocks, which matters for kexec (DMA) as well as power savings (S5 mod=
+e).
 
-Sounds good to me!
+I agree with the scalability. Concerning the multi-switch case I dont know=
+ about the possible issues (I am quite new to working with DSA).
+So lets wait for Vladimirs solution.
 
---
-Thanks,
-Oliver
+Regards,
+Lino
