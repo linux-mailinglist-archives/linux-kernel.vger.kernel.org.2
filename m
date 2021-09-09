@@ -2,144 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC655404241
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CFB404229
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348664AbhIIAX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348278AbhIIAX6 (ORCPT
+        id S1348225AbhIIAR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:17:29 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:39696 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241998AbhIIAR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:23:58 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14B0C061575;
-        Wed,  8 Sep 2021 17:22:49 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so94949wmh.1;
-        Wed, 08 Sep 2021 17:22:49 -0700 (PDT)
+        Wed, 8 Sep 2021 20:17:26 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 188LUsXS031111;
+        Thu, 9 Sep 2021 00:16:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=vGolCZaIKZ2C6gxe+rx1Dpv+0MJKJS4f9RCK/5e0MO0=;
+ b=MP4/TW3SUqX+6JVYOCkmCl/q5NPQB1Z40+XTBQUdoTbPmXZ/VRUxNGPDV0MK/6cnAXbB
+ 07neb3bLgz/34tyuuXzENnOE9xOBUXWuLGdalM5YYkuQxZR0RxvpY9DoC1dTfGdwe5QO
+ 3TEA6dDNjC3+zsvjc2l/aeGec+/S7ndy2aJWQWWM+bZY4f98RL219O6w7DbM2Gaa2PUW
+ DWWW2Tn3Grz3b1vIBQjC2ZSxLCfjszECG+EFuAtsCua/inC1dvBuDu1v8/71Pxk3u9w1
+ OmN+hgqs5ND9a4rvGQ/RsQXB61tGE9lpFQjyvcpjym33jSjoXqhgfgdF1INM0joQKv27 Hw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=vGolCZaIKZ2C6gxe+rx1Dpv+0MJKJS4f9RCK/5e0MO0=;
+ b=Mi17g+crb4guuLYl8w0N/fDxrQ0tcEoVbOiJG4IzB2B5tGRc/OMCXa3naZN1ci2NfM04
+ y2+c0kzh3EplwqKDgDJXYdmbS4NjkwBGgqlAH+FJD9xHShtsR9nieJr/ZjE/yF2URMXP
+ Bzu+JNLGjfP9ZPRgTIHvgE3oGV5foDsmjsoWFcR9NgNKwKwZfxDXB5NUGethSGVZK4Xc
+ wj4Bhcl68OIHu7q3xD2v5VTBUBwk2uCVEbSzX9Yq9m3z3/C5hL4n0T4WGtLk9bq5lL2j
+ mhA/tREOxtDFL1dsngKwMETQM39011dKUZPEh42wfccsUE9Dt9ZvqfyMDfxLdrgehGCk fg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3axcw6chu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 00:16:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1890GEmT180423;
+        Thu, 9 Sep 2021 00:16:15 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2047.outbound.protection.outlook.com [104.47.51.47])
+        by aserp3030.oracle.com with ESMTP id 3axcppf5gy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 00:16:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ka3Rjib+pRSFc6jkH3Rq2oYdRLpPvtiSlyFGqSBbdzrbB7vkY//9RzXVt/PWKk7arBB2olPxMLswr5m5yibMryK2BVgrsAmtP/IOcs28FWJahQ6LO7L8aUA31TBw1Eok+caCn/nu6JedSP9hCp8fbjuPsQ5vuzTzWd4XDiUTI121wfuFIrm+4f3mNPlQWQ9KI0dypOu2pCbnru/N/9ScwsBzTPMXDZYmiXw9gb0BKLylSZ8N1fJk1yRwyVpYN7f57a3JhunEPt2ZwnD+E+jms50iqEyAyaf915OTqX2qwbw6mMKVtGzTyF5jRSpOnN7qca9OKRcYSx8vkwWLwtfbpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vGolCZaIKZ2C6gxe+rx1Dpv+0MJKJS4f9RCK/5e0MO0=;
+ b=gVbft20AO4ikKDWFTzoAsftAypTlWmYLAPPPG+QqCNA6KHmjIcK7qRlCuiq0+US0tahfENsedIoIKCi8ZlxtRE9BFP0PYK7N2NuA00JF65sRuQY6pJzcKHXLzWq5AbAqz3CieeKm0LfYpFoyQrJMLq2u51Q8dh76+t9pBAuy4G5cE3Oi9TWCV4OdJWShANaubvoMN7/w3a17cXnXPXV6HIqeC8tc+ygiUheyvwrtintNDMsUMxONmQJvg+11hLmNMJ+qIWBu3f49XmNeAFdvxNnndeA5W0C3n2JyC5vj9gFRfpR02R/ZrS4lfUmmEZmISaWUVuxUt9nhD7BdDZt0tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3bmDHztmN1bRB4M7GynQYPShvTahsoeCAXxI3yMeopA=;
-        b=WEi2pUtTuRJajbYr51bn/x+S21fhmlVXrZHo48MJE5tnNtlgJKr5JuEC6Twr1tubkQ
-         ZFU4iCai2BpcHbo5hcYQykf/4rTz3/nmu3OmQZYJyxejeEojai+mUKY0PDoOIbTcfRjs
-         I/Gd2U0XZ7sWyDOZ3TDS7RddCVwRQHp6eYF+KeLYh+zcqNmOVx++3IVcDzZW8rMRet50
-         IRGm67rAXPMBcjNJC/POvjTEuCDgNKOcykH4iH4xXTCgIKovjiYz9PJPzy1517AqSbca
-         gMzgJBNbSEHW6roG38M/AGqwpsZ7yLRRS7uWyrBTjJ6mmLvsD0cmcvS0A5z+9kz/BkmO
-         9OvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3bmDHztmN1bRB4M7GynQYPShvTahsoeCAXxI3yMeopA=;
-        b=76KZZELpuFkkGmwUb/ZAKe++HHqcCqoaSbDQ+IOc5IN8MONCznwaa0+72gNNLgXeTs
-         ohAZgHgz/8EbccfcDN7w4WwnFidefRq1e7F1/AXQ/jx+2kD6jlrKRLYr5KwhLhELYHTY
-         FtXIgVILtSUoGI+3BUjHudDbBs9q1wpMXpH9+7ql4y9BtBepDsnQtl39d66Rmh6Au5yj
-         fggXNV2ZFWW/v4UEKl4yrBFWyjkRsZogXjUoYNKkGMkJhKycBEhJQT7FcPPnBpG9dA6I
-         sE/n8PkCU+MfoWzZunVLDe2unu/xJcb6FOBbVVisiUyHEfYOWCsuQ8/OotAuyoWkb/Hu
-         gMMA==
-X-Gm-Message-State: AOAM5307Sh1xhl/6hoBrEzV9n3GVIgRMckfQwUDK7RpTrRiQm3oNYHGA
-        s7/yRZZkv+u+Z1sk5pv586M=
-X-Google-Smtp-Source: ABdhPJwCKDvm7y/uUAq4H3uB1yy8DmGUilbJLrmHeia9jx1A8Jf8ctgikq78+X4+Wuzyk0pYnBTfrg==
-X-Received: by 2002:a05:600c:364f:: with SMTP id y15mr59733wmq.193.1631146968598;
-        Wed, 08 Sep 2021 17:22:48 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.235.167])
-        by smtp.gmail.com with ESMTPSA id z19sm102328wma.0.2021.09.08.17.22.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 17:22:48 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_req_complete_post
-To:     syzbot <syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000006a0acd05cb84d626@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <a486fe70-68ac-2ecb-c5b4-08328aced022@gmail.com>
-Date:   Thu, 9 Sep 2021 01:22:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vGolCZaIKZ2C6gxe+rx1Dpv+0MJKJS4f9RCK/5e0MO0=;
+ b=j2rS1EBkcD7CeUs5+PYp7c441t4qAONjNhAslereT5MiXZElCTYCDB2RPq+ez1rLgG5JEofsAFAsGqHjf4I9YfNsc8DF5zfw2NgnJOFgIPTiYofw3nK6nzbXpRw7w+TrOsPtYB/Zfp55TuYhLsfUrWtXn/BncZYfaLKBBLaNsuI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2629.namprd10.prod.outlook.com (2603:10b6:a02:b7::24)
+ by BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Thu, 9 Sep
+ 2021 00:16:03 +0000
+Received: from BYAPR10MB2629.namprd10.prod.outlook.com
+ ([fe80::c9c2:64d4:c67f:6837]) by BYAPR10MB2629.namprd10.prod.outlook.com
+ ([fe80::c9c2:64d4:c67f:6837%7]) with mapi id 15.20.4478.025; Thu, 9 Sep 2021
+ 00:16:03 +0000
+From:   Prakash Sangappa <prakash.sangappa@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     mingo@redhat.com, prakash.sangappa@oracle.com
+Subject: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
+Date:   Wed,  8 Sep 2021 17:23:53 -0700
+Message-Id: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0171.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::26) To BYAPR10MB2629.namprd10.prod.outlook.com
+ (2603:10b6:a02:b7::24)
 MIME-Version: 1.0
-In-Reply-To: <0000000000006a0acd05cb84d626@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from pp-ThinkCentre-M82.us.oracle.com (2606:b400:8024:1010::13d2) by SJ0PR03CA0171.namprd03.prod.outlook.com (2603:10b6:a03:338::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4500.16 via Frontend Transport; Thu, 9 Sep 2021 00:16:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5d7ae6bf-1124-495e-a464-08d973270248
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB288855891B670F324AB064D6E4D59@BYAPR10MB2888.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FFiGGq6fljva+FD1yDsmLhqCxlEh50Ja1JJ0M6tlwDvUWh7mWVt4Jtn0tMe7OTXDIllLwrDEp4sSIJuKFmQqNYNFboF/XI9v4q6bulScx6AMvF1h7/hthbf4O98AU3q4prAMjfTZ0o+qcFGuFpzpZdfY1J3VFmcgSib8CMm4rcqSLVHXw+14B6FWiJaVtqBh/jRYGrFXCtA/YjwzCu2wT8S5XwpvzXAxyHPpf9My6siDjV3omwQ39kbiP70SCNFkUCr18TDj87hnYSY7YzkiGBroB+nHnHixqwyGrKMt6o2pW3AbyK+ZFgRbiUyF7sSP9dhPp02DjiRjScEZ1a5gnWlGu3Z42GrM6bpN7C9Ue10czwfrTPynUlWMKkZRrJtVX+K1dCMBq5DNB8txeP3rVLhhMu5EU8s+ITXUMbt+rdGSLvur7OGi5yyBrulx5ARayAK06Bn4fGGd/ovlhXhXjAfV2cTJv+mR9bSRHp8UT0REzyuE8CJ5opbFSZtTSpuYHo4OXX8T6D7o0B4jBb9Qj7EXqKn9WS+vi3wuSD9cWmT4V7CYBVoJdTVP2UnvswQ/SoQgb5KyqN0Rqtl3UdSzhPv+QjhyTNxiGHaVv6Pt1sFo1ySg93pFbzAlHhyceaNbosmKiocnjYHi9NtpX8MvBQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2629.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(396003)(39860400002)(346002)(8676002)(2616005)(8936002)(5660300002)(66476007)(6486002)(83380400001)(6666004)(7696005)(52116002)(44832011)(107886003)(316002)(186003)(66556008)(2906002)(66946007)(36756003)(38100700002)(478600001)(86362001)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AQsxKRk4CQZB9/2/Ratnqx+Y8cGVxmNpnR9alfQI+++OTJfgOYhor7ojIxEa?=
+ =?us-ascii?Q?+0BN7fy9GxhwXHujL3u09jV3yqeyV0u+Bp7uN+x7rqc2EXmrjstn9rg/TkrB?=
+ =?us-ascii?Q?Yc8rexF+V7LGN1Pjhe9Ap5zYl4h6M3iz8GV2O+csbjENsNXFASryWzmTW9KP?=
+ =?us-ascii?Q?wsWc7inMccqcO8zoRz5cy3eaHtZxtSZNgDdysting+LT01wPPr0CyHC/ROyV?=
+ =?us-ascii?Q?cDNJ9IYafYiF4mPpszbSKHhRa8zze/xxZooAtEmMjMl0iiCRzw3780hlnP2r?=
+ =?us-ascii?Q?5D27zEyc6RLOgdcY1y5mp/joxNfMxGwphFZQgJ96uq96rZ/6oveR8V6Haqja?=
+ =?us-ascii?Q?A+0/fZKG3bH+gdCnTHAWm2iemzbXEN6Z6mLMNVpuV8Jze1fMuSYkSWwrUC0n?=
+ =?us-ascii?Q?B0zRngHKeHvALyBOty7b/4TD0+k0HZ/UToITbSUHeUCgjBlK0FNbO1BBU97W?=
+ =?us-ascii?Q?as/d5fLdB/Rm57p6mIQQY5qeHRRoB3ABUUe+LjeCpFbHYMRM5emOnMNxMfT7?=
+ =?us-ascii?Q?OaNdjs/01j6PMuH/gPcIJrK66WttP+4gGhZMX9kIeYaSzKjbXil1AW2nODAi?=
+ =?us-ascii?Q?oUFv3Zp8YLfEgEPJtvTvSpvx4FeDihIpkTFS+3oD2TfXOR87ZVHEATKbrFqS?=
+ =?us-ascii?Q?4N3TYQaG5W5o6DH8orLbMtSAxdSvGE4FdiYjtSkcnpzZngx+o7Rl0Y1GIBoP?=
+ =?us-ascii?Q?PXBMAdE0qHkldg2O7qqI0DQI9E+RzS7YDnw3A2N+FoOZangdmEDVmgpuuEff?=
+ =?us-ascii?Q?ii3iCyHxzAR4VAgDOXKjWl09JAU0tW/SvaporFzyNqr/YMAXWNy8qR5HJ/Rl?=
+ =?us-ascii?Q?QNHymk0TSrLNOc0OhPM+ae4RgZWldJugr2UhpIZQq2MB9M6Jgd0M4LuuxI7e?=
+ =?us-ascii?Q?TlRzoNzphTUygxuqBEj277bzXDN0up46UhNbd+AeAUxeRvKAf+DHpcvKQ1Dm?=
+ =?us-ascii?Q?hGpd5j6dnbfvab9JxdZWOJFxl7t+yIetMNaK6Qd38fxlvxmM0QcZlt3ofNZv?=
+ =?us-ascii?Q?uILxoFOn56/lXtVZG0hYAJOxmKYQHH+thaHCDMpwqDEEDcmCSr5Mavx2k6/C?=
+ =?us-ascii?Q?TTJkNFpYFe4xL1cyvLRZ9xO32eJgMFZtNI8b1NDf4uTAvGmeUAJZ263WIZvl?=
+ =?us-ascii?Q?1rOSPkp7ATg5f8dNmTz198RGdMDULIKio6+7AzgMi+Lo6Jkr72BzkKNVPR0R?=
+ =?us-ascii?Q?c4DBvMXnqFOB/hkXC6CXaTCbYtTEnFsJJ+RiTns8CiKjy3r/hWo4+fnOaOdW?=
+ =?us-ascii?Q?kaHyZbuurynvHfG3B8LkYVrhLg7eCGOBDJQGlDIwBsiEMkRUYovsS85/OXCB?=
+ =?us-ascii?Q?Cev6xxcuePV6/WswfAyU4GXP4VDleK67zjsRBN09T43J/Q=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d7ae6bf-1124-495e-a464-08d973270248
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2629.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 00:16:03.0958
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YoDKDdNwHbXfOSYhyzbjbYqvszAQzaKeX+Z0A9SGUZ21HZZY5nfSz7Z6gtz4oe1pgrKuyoNRSrxNaQLio/Qs0cgzNvGvNEc3OBrqwZxnQlM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2888
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10101 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109090000
+X-Proofpoint-GUID: NKgD1KCXCl8KRPxtqspTiOSXlr_yUu8r
+X-Proofpoint-ORIG-GUID: NKgD1KCXCl8KRPxtqspTiOSXlr_yUu8r
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 1:11 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    b2bb710d34d5 Add linux-next specific files for 20210907
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14a956b3300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=457dbc3619116cdf
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a0516daac8b536b4b8c0
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com
+Including liunx-kernel..
 
-It's probably is a dup of "WARNING in io_wq_submit_work (2)",
-let see if it can find a reproducer.
+Resending RFC. This patchset is not final. I am looking for feedback on
+this proposal to share thread specific data for us in latency sensitive
+codepath.
 
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1151 [inline]
-> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1146 [inline]
-> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
-> Modules linked in:
-> CPU: 0 PID: 14536 Comm: syz-executor.3 Not tainted 5.14.0-next-20210907-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:req_ref_put_and_test fs/io_uring.c:1151 [inline]
-> RIP: 0010:req_ref_put_and_test fs/io_uring.c:1146 [inline]
-> RIP: 0010:io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
-> Code: e9 94 ff 48 8b 34 24 31 ff e8 76 ee 94 ff e9 6e fc ff ff e8 0c e9 94 ff 4c 89 ef e8 d4 c0 62 ff e9 38 f8 ff ff e8 fa e8 94 ff <0f> 0b e9 8a fb ff ff e8 ee e8 94 ff 49 8d 7e 58 31 c9 ba 01 00 00
-> RSP: 0018:ffffc9000bf6fda8 EFLAGS: 00010216
-> RAX: 000000000000ec57 RBX: ffff88806c12e000 RCX: ffffc9000fa5e000
-> RDX: 0000000000040000 RSI: ffffffff81e12466 RDI: 0000000000000003
-> RBP: ffff88801cfea000 R08: 000000000000007f R09: ffff88806c12e05f
-> R10: ffffffff81e11fed R11: 0000000000000000 R12: ffff88801cfea640
-> R13: ffff88806c12e05c R14: 000000000000007f R15: ffff88806c12e058
-> FS:  00007f03ce5d4700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f03ce5d4718 CR3: 00000000149d2000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  tctx_task_work+0x189/0x6c0 fs/io_uring.c:2158
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->  handle_signal_work kernel/entry/common.c:146 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665f9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f03ce5d4188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-> RAX: 0000000000000080 RBX: 000000000056c038 RCX: 00000000004665f9
-> RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
-> RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
-> R13: 00007ffde5bbb8df R14: 00007f03ce5d4300 R15: 0000000000022000
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+(patchset based on v5.14-rc7)
+
+Cover letter previously sent:
+----------------------------
+
+Some applications, like a Databases require reading thread specific stats
+frequently from the kernel in latency sensitive codepath. The overhead of
+reading stats from kernel using system call affects performance.
+One use case is reading thread's scheduler stats from /proc schedstat file
+(/proc/pid/schedstat) to collect time spent by a thread executing on the
+cpu(sum_exec_runtime), time blocked waiting on runq(run_delay). These
+scheduler stats, read several times per transaction in latency-sensitive
+codepath, are used to measure time taken by DB operations.
+
+This patch proposes to introduce a mechanism for kernel to share thread
+stats thru a per thread shared structure shared between userspace and
+kernel. The per thread shared structure is allocated on a page shared
+mapped between user space and kernel, which will provide a way for fast
+communication between user and kernel. Kernel publishes stats in this
+shared structure. Application thread can read from it in user space
+without requiring system calls.
+
+Similarly, there can be other use cases for such shared structure
+mechanism.
+
+Introduce 'off cpu' time:
+
+The time spent executing on a cpu(sum_exec_runtime) by a thread,
+currently available thru thread's schedstat file, can be shared thru
+the shared structure mentioned above. However, when a thread is running 
+on the cpu, this time gets updated periodically, can take upto 1ms or
+more as part of scheduler tick processing. If the application has to 
+measure cpu time consumed across some DB operations, using
+'sum_exec_runtime' will not be accurate. To address this the proposal
+is to introduce a thread's 'off cpu' time, which is measured at context
+switch, similar to time on runq(ie run_delay in schedstat file) is and
+should be more accurate. With that the application can determine cpu time
+consumed by taking the elapsed time and subtracting off cpu time. The
+off cpu time will be made available thru the shared structure along with
+the other schedstats from /proc/pid/schedstat file.
+
+The elapsed time itself can be measured using clock_gettime, which is
+vdso optimized and would be fast. The schedstats(runq time & off cpu time)
+published in the shared structure will be accumulated time, same as what
+is available thru schedstat file, all in units of nanoseconds. The
+application would take the difference of the values from before and after
+the operation for measurement.
+
+Preliminary results from a simple cached read Database workload shows
+performance benefit, when the database uses shared struct for reading
+stats vs reading from /proc directly.
+
+Implementation:
+
+A new system call is added to request use of shared structure by a user
+thread. Kernel will allocate page(s), shared mapped with user space in
+which per-thread shared structures will be allocated. These structures
+are padded to 128 bytes. This will contain struct members or nested
+structures corresponding to supported stats, like the thread's schedstats,
+published by the kernel for user space consumption. More struct members
+can be added as new feature support is implemented. Multiple such shared
+structures will be allocated from a page(upto 32 per 4k page) and avoid
+having to allocate one page per thread of a process. Although, will need
+optimizing for locality. Additional pages will be allocated as needed to
+accommodate more threads requesting use of shared structures. Aim is to
+not expose the layout of the shared structure itself to the application,
+which will allow future enhancements/changes without affecting the
+existing APIs.
+
+The system call will return a pointer(user space mapped address) to the per
+thread shared structure members. Application would save this per thread
+pointer in a TLS variable and reference it.
+
+The system call is of the form.
+int task_getshared(int option, int flags, void __user *uaddr)
+
+// Currently only TASK_SCHEDSTAT option is supported - returns pointer
+// to struct task_schedstat. The struct task_schedstat is nested within
+// the shared structure.
+
+struct task_schedstat {
+        volatile u64    sum_exec_runtime;
+        volatile u64    run_delay;
+        volatile u64    pcount;
+        volatile u64    off_cpu;
+};
+
+Usage:
+
+__thread struct task_schedstat *ts;
+task_getshared(TASK_SCHEDSTAT, 0, &ts);
+
+Subsequently the stats are accessed using the 'ts' pointer by the thread
+
+Prakash Sangappa (3):
+  Introduce per thread user-kernel shared structure
+  Publish tasks's scheduler stats thru the shared structure
+  Introduce task's 'off cpu' time
+
+ arch/x86/entry/syscalls/syscall_32.tbl |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+ include/linux/mm_types.h               |   2 +
+ include/linux/sched.h                  |   9 +
+ include/linux/syscalls.h               |   2 +
+ include/linux/task_shared.h            |  92 ++++++++++
+ include/uapi/asm-generic/unistd.h      |   5 +-
+ include/uapi/linux/task_shared.h       |  23 +++
+ kernel/fork.c                          |   7 +
+ kernel/sched/deadline.c                |   1 +
+ kernel/sched/fair.c                    |   1 +
+ kernel/sched/rt.c                      |   1 +
+ kernel/sched/sched.h                   |   1 +
+ kernel/sched/stats.h                   |  55 ++++--
+ kernel/sched/stop_task.c               |   1 +
+ kernel/sys_ni.c                        |   3 +
+ mm/Makefile                            |   2 +-
+ mm/task_shared.c                       | 314 +++++++++++++++++++++++++++++++++
+ 18 files changed, 501 insertions(+), 20 deletions(-)
+ create mode 100644 include/linux/task_shared.h
+ create mode 100644 include/uapi/linux/task_shared.h
+ create mode 100644 mm/task_shared.c
 
 -- 
-Pavel Begunkov
+2.7.4
+
