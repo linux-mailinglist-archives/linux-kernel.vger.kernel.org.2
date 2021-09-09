@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD9E405C3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FDD405C48
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242090AbhIIRmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:42:33 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39572 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241872AbhIIRm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:42:29 -0400
+        id S237236AbhIIRmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:42:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22678 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242040AbhIIRmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:42:49 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631209280; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1631209299; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=k/LT2XBjH8tBsKcJ0vItuEPWkjrv3NA5jpDO3SzneoI=; b=rsxZVZMyhY64KzA5rcOaVf5P4oUEpdE9a7VCxAB+SP80x/LudC0qm52aW99PsicbGJbs4yRC
- boia71wISPcsk5XKqYEqBMvbsqeFQinC9kdlIkLoFhASwKioT6ySns7xDWQiLzfdJPySUN1i
- 7okonmbJCfqG+8jtrPG0vn+cSCw=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ bh=MSqBzglIX9Ji1B2JsR7XcPOCuvkcT4shZgQ10Bd3KQw=; b=ekxDbgUH8m8vuM2oVzNys93j25l7qqCd0DNzvKB7YIyMxttcY6gsaI6BCo7LhZRIrDCekhlo
+ yUsUFqDUqUx8iYO/dpmmD3KnkLgx62R1HDYC5C6aMyJ84RFSdeSzjYsOV9+vd1RJl2DsCDxi
+ 04bzPcbqgzb0x1FxfYQofY054d0=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 613a473e91e8a6dde1998874 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 17:41:18
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 613a474437cdab60400f11cb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 17:41:24
  GMT
 Sender: pmaliset=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C67F1C4361B; Thu,  9 Sep 2021 17:41:17 +0000 (UTC)
+        id A1A24C4361C; Thu,  9 Sep 2021 17:41:23 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,9 +37,9 @@ Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C76C7C43618;
-        Thu,  9 Sep 2021 17:41:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C76C7C43618
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2DDFC43460;
+        Thu,  9 Sep 2021 17:41:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A2DDFC43460
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
 From:   Prasad Malisetty <pmaliset@codeaurora.org>
@@ -52,9 +51,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
         sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
         Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v6 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
-Date:   Thu,  9 Sep 2021 23:10:44 +0530
-Message-Id: <1631209245-31256-4-git-send-email-pmaliset@codeaurora.org>
+Subject: [PATCH v6 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
+Date:   Thu,  9 Sep 2021 23:10:45 +0530
+Message-Id: <1631209245-31256-5-git-send-email-pmaliset@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1631209245-31256-1-git-send-email-pmaliset@codeaurora.org>
 References: <1631209245-31256-1-git-send-email-pmaliset@codeaurora.org>
@@ -62,63 +61,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCIe and PHY nodes for sc7280 IDP board.
+On the SC7280, By default the clock source for pcie_1_pipe is
+TCXO for gdsc enable. But after the PHY is initialized, the clock
+source must be switched to gcc_pcie_1_pipe_clk from TCXO.
 
 Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 39 +++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 64fc22a..b249ca1 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -61,6 +61,45 @@
- 	modem-init;
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 8a7a300..db62b3c 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+ 	struct regulator_bulk_data supplies[2];
+ 	struct reset_control *pci_reset;
+ 	struct clk *pipe_clk;
++	struct clk *gcc_pcie_1_pipe_clk_src;
++	struct clk *phy_pipe_clk;
  };
  
-+&pcie1 {
-+	status = "okay";
+ union qcom_pcie_resources {
+@@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
++		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
++		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
++			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
 +
-+	vdda-supply = <&vreg_l10c_0p8>;
-+};
++		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
++		if (IS_ERR(res->phy_pipe_clk))
++			return PTR_ERR(res->phy_pipe_clk);
++	}
 +
-+&pcie1_phy {
-+	status = "okay";
+ 	res->pipe_clk = devm_clk_get(dev, "pipe");
+ 	return PTR_ERR_OR_ZERO(res->pipe_clk);
+ }
+@@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+ {
+ 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
++	struct dw_pcie *pci = pcie->pci;
++	struct device *dev = pci->dev;
++	struct device_node *node = dev->of_node;
 +
-+	vdda-phy-supply = <&vreg_l10c_0p8>;
-+	vdda-pll-supply = <&vreg_l6b_1p2>;
-+};
-+
-+&pcie1_default_state {
-+	clkreq {
-+		bias-pull-up;
-+	};
-+
-+	reset-n {
-+		pins = "gpio2";
-+		function = "gpio";
-+
-+		drive-strength = <16>;
-+		output-low;
-+		bias-disable;
-+	};
-+
-+	wake-n {
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
-+	nvme-n {
-+		pins = "gpio19";
-+		function = "gpio";
-+		bias-pull-up;
-+	};
-+};
-+
- &pmk8350_vadc {
- 	pmr735a_die_temp {
- 		reg = <PMR735A_ADC7_DIE_TEMP>;
++	if (res->gcc_pcie_1_pipe_clk_src != NULL)
++		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+ 
+ 	return clk_prepare_enable(res->pipe_clk);
+ }
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
