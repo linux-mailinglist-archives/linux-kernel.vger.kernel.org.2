@@ -2,109 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9258C40494B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067BA404953
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbhIILae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234507AbhIILac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:30:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3081161179
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631186963;
-        bh=B88nJMsUOPeeM3syqtdV2g1zTgLHqRhB/pjL3W3dR5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ghr7h04XfsU7LC6CWR2AjKsU9Oql04NG20NZ6j37l2kilK3XQLdNcbTZ6YG6x+e/d
-         jvLOQ2ez1lvxzTzXGSUF+Wh0uuGxeKZc1RNYGjN4LsNATulwv2IIqgRRm91mIAh08H
-         5FAFj0DQ4JDl7qMYdSmtxxRdl22DN7WUzxZl0H10p4nlPR6zyJbVMnbMhyunM8LISk
-         xtmgKDAPMgPHZ/8KzodxLurT+TqDj19uisrUT2SOkPTLbOfNm/WZ2Nh+VrbXsNuN5S
-         AsWLTeZ/FdZ2PXnGRuAPAEfZMsiHDKqXsk+jFwLmU8NrQhX16LFgrmw9Ot35yh+880
-         5+68F7QYrrwiA==
-Received: by mail-ot1-f42.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso2084743otu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:29:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530pb1vTJc5EeiWm/Bof/q6qP9pxxYCDvQhAB25IqK4miRA19Q5u
-        BHpu1+rlzelCroeYql/ihsxtuzKbr7XYSqctA5s=
-X-Google-Smtp-Source: ABdhPJz6gU2OA+HXzocssCGpcN9DU79PvRHUT66SBpt6BafNfEygcUGPpXMOd6nSxEK7EpqAZcYz1g29bDuvDl2lmAI=
-X-Received: by 2002:a9d:200b:: with SMTP id n11mr2023081ota.30.1631186962496;
- Thu, 09 Sep 2021 04:29:22 -0700 (PDT)
+        id S235585AbhIILdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234507AbhIILdC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:33:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46706C061575;
+        Thu,  9 Sep 2021 04:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BfKEljguWPXGr4e3LXDH03SVJxLaZjb+EKBRx/u+o70=; b=EwatQv8pZFD06Pjcvm9Srfbpyf
+        7yQTt9GjXjYiPICNt37b2mmQcExhyIkRlhUhtkBnEtH+9hUUhEIEb6H48USmxOGfbe0P/8dgOF7Il
+        Rl7Sw4l8LVK6tFFsnAR6Ddzzy581bGk9BIdKoVE6V2cuOUAyWlLgSL9YiWvCObd2GLi6csVj1Gvq4
+        LwyE9T+pNdLDopS66+PHKs0b74tGXRGnvMxdoKzeJoo0uPkeRXBPwoZGrycyke3wmtlrpYeDyRN9Q
+        n6LBpZItlDI292lHeaOkidFObb16Q64qUEGQ2heZDvnVgx6KRPKF6T9fDcLWAuCOAv6F0nWhcnmY/
+        WV2NfEUg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOIGT-009lZE-Mp; Thu, 09 Sep 2021 11:30:51 +0000
+Date:   Thu, 9 Sep 2021 12:30:45 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 16/19] iomap: Add done_before argument to iomap_dio_rw
+Message-ID: <YTnwZU8Q0eqBccmM@infradead.org>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-17-agruenba@redhat.com>
 MIME-Version: 1.0
-References: <20210907145652.63362-1-bert@biot.com>
-In-Reply-To: <20210907145652.63362-1-bert@biot.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 9 Sep 2021 13:29:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGej8Ps425A-UXmW19B45_EP89-YzpwdOYQ1C-DOVLvUg@mail.gmail.com>
-Message-ID: <CAMj1kXGej8Ps425A-UXmW19B45_EP89-YzpwdOYQ1C-DOVLvUg@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: decompress: Use /memreserve/ DTS nodes when
- validating memory
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827164926.1726765-17-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 16:57, Bert Vermeulen <bert@biot.com> wrote:
->
-> If the bootloader needs the start of memory to be preserved, for example
-> because it dropped the Trusted Firmware blob there, this chunk of memory
-> shouldn't be used by the kernel.
->
-> To avoid adding yet another SoC-specific text offset to arch/arm/Makefile,
-> this patch allows for a /memreserve/ entry in the DTS to mark off the
-> memory chunk instead.
->
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-
-Thanks for working on this - I hope this will allow us to phase out at
-least some of the existing text_offset hacks too.
-
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-
-> ---
->  arch/arm/boot/compressed/fdt_check_mem_start.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
-> index 62450d824c3c..1d47de1e860b 100644
-> --- a/arch/arm/boot/compressed/fdt_check_mem_start.c
-> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
-> @@ -64,7 +64,7 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
->         uint32_t addr_cells, size_cells, base;
->         uint32_t fdt_mem_start = 0xffffffff;
->         const fdt32_t *reg, *endp;
-> -       uint64_t size, end;
-> +       uint64_t rsvaddr, size, end;
->         const char *type;
->         int offset, len;
->
-> @@ -74,6 +74,19 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
->         if (fdt_magic(fdt) != FDT_MAGIC)
->                 return mem_start;
->
-> +       for (offset = fdt_off_mem_rsvmap(fdt); ; offset += 16) {
-> +               rsvaddr = get_val(fdt + offset, 2);
-> +               size = get_val(fdt + offset + 8, 2);
-> +
-> +               if (!rsvaddr && !size)
-> +                       break;
-> +
-> +               end = rsvaddr + size;
-> +               if (mem_start >= rsvaddr && mem_start <= end)
-> +                       /* Relocate past reserved block */
-> +                       mem_start = round_up(end, SZ_2M);
-> +       }
-> +
->         /* There may be multiple cells on LPAE platforms */
->         addr_cells = get_cells(fdt, "#address-cells");
->         size_cells = get_cells(fdt, "#size-cells");
-> --
-> 2.25.1
->
+What about just passing done_before as an argument to
+iomap_dio_complete? gfs2 would have to switch to __iomap_dio_rw +
+iomap_dio_complete instead of iomap_dio_rw for that, and it obviously
+won't work for async completions, but you force sync in this case
+anyway, right?
