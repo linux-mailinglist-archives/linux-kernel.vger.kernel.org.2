@@ -2,144 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBD3405D17
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EDF405D19
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237555AbhIITAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhIITAU (ORCPT
+        id S242233AbhIITAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:00:50 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:56163 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231422AbhIITAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:00:20 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDABC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:59:10 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id j2so1704531pll.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ivHQCNTMj8d081EaJs/OWp0rY18lxe7zmhcLzE6AV3M=;
-        b=YnjGjn+AKEmZ920Dc2yEn3vadOv8hGcIrIfrx+Lo4uwM1Pk4c793DAW101NoeUSTn/
-         bXl13y7V493cBm7h6LnfqQKWturRswUuWOmhxkK55I7p1EPKL33/ZvKQAQFueqCUqPHA
-         /6BoyCl++OiJb3DXF+UgfzFU2RyYxyddNk+PQ2SdRqDCgwC0uFE8BxiSNevMselh/ml2
-         +knI0+9D8zKLV5Hnq5izjaiHkCU5anlpAM35eEkW4QLHmDrlCznQ3wsm9eJbkXBudqKs
-         8YoMSJ20ZMc+eosSj85XHm/D2OqyTyBKVQrloLYlXSc7ZjdthMi7wlGNFfXJDmvsC63N
-         WFwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ivHQCNTMj8d081EaJs/OWp0rY18lxe7zmhcLzE6AV3M=;
-        b=q6WjvbDDVj3RNQNMzA6F4+iO766E/kfcyxnPDLnGBR1Kgwn5Cx+yd3pLqMKmOuTDu9
-         DsRMEASZcAhJYBwMt/Doo/ANfdCw9N6ppar6HTjk+Z18aNp5iecuQMiTlVAVVDiFZ1Is
-         A8pUjrE4RgxNn5l5nHF6Qg9cjXGt1JylHOLueKE77jzGL/Ne12AN4pnFB29isG/uWsRk
-         1PZMxiAsMDncluaSjR892BJOBE2tWlOep2ylzZDUT7lSlWQff5j1U9Z1oRAb2/smgiAg
-         2uKXSM9ajj3TtfZdzYcHJRfq9Os/PcXXH5KDbrH9Fhz54gS+JixeCF9S5yr5C0gI6O40
-         Urnw==
-X-Gm-Message-State: AOAM530qhMLACpU//9nmq65UOoOcmaFNcqvrtmlL7lxGx/oIrrTow90K
-        PIoY9t4VUScZE+PYeAKpM4msxQ==
-X-Google-Smtp-Source: ABdhPJzbuG9m75RBkmn+9LvIUiv0Yxgry2fXtBpxvZf91/vhVbV1zXHbF1aZnXw49a+ez/Aw4NJQ2A==
-X-Received: by 2002:a17:90a:f002:: with SMTP id bt2mr5227853pjb.207.1631213949990;
-        Thu, 09 Sep 2021 11:59:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u7sm3063969pjn.45.2021.09.09.11.59.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:59:09 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 18:59:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-Message-ID: <YTpZeVZb5tsscAmv@google.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
- <YTD4l7L0CKMCQwd5@google.com>
- <YTD9kIIzAz34Ieeu@google.com>
- <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
+        Thu, 9 Sep 2021 15:00:48 -0400
+Received: (qmail 13113 invoked by uid 1000); 9 Sep 2021 14:59:37 -0400
+Date:   Thu, 9 Sep 2021 14:59:37 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <20210909185937.GA12379@rowland.harvard.edu>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <CAHk-=whULF=p-igDd-pvB+oqX-josNmbeBx2sTBA13t9UqcpQA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
+In-Reply-To: <CAHk-=whULF=p-igDd-pvB+oqX-josNmbeBx2sTBA13t9UqcpQA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021, Xiaoyao Li wrote:
-> On 9/3/2021 12:36 AM, Sean Christopherson wrote:
-> > On Thu, Sep 02, 2021, Sean Christopherson wrote:
-> > > On Tue, Aug 03, 2021, Xiaoyao Li wrote:
-> > > > On 8/2/2021 11:46 PM, Sean Christopherson wrote:
-> > > > > > > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
-> > > > > > > >     	return 0;
-> > > > > > > >     }
-> > > > > > > > +static int handle_notify(struct kvm_vcpu *vcpu)
-> > > > > > > > +{
-> > > > > > > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
-> > > > > > > > +
-> > > > > > > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
-> > > > > > > 
-> > > > > > > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
-> > > > > > 
-> > > > > > It means whether the VM context is corrupted and not valid in the VMCS.
-> > > > > 
-> > > > > Well that's a bit terrifying.  Under what conditions can the VM context become
-> > > > > corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
-> > > > > then KVM needs to be ultra conservative as a false positive could be fatal to a
-> > > > > guest.
-> > > > > 
-> > > > 
-> > > > Short answer is no case will set the VM_CONTEXT_INVALID bit.
-> > > 
-> > > But something must set it, otherwise it wouldn't exist.
+On Thu, Sep 09, 2021 at 10:02:13AM -0700, Linus Torvalds wrote:
+> On Thu, Sep 9, 2021 at 6:35 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > I don't think we should require the accesses to the actual lockwords to
+> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
+> > architectures where you'd end up with an extra barrier either after the
+> > unlock() or before the lock() operation. However, I remain absolutely in
+> > favour of strengthening the ordering of the _critical sections_ guarded by
+> > the locks to be RCsc.
 > 
-> For existing Intel silicon, no case will set it. Maybe in the future new
-> case will set it.
+> Ack. The actual locking operations themselves can obviously overlap,
+> it's what they protect that should be ordered if at all possible.
 > 
-> > The condition(s) under
-> > > which it can be set matters because it affects how KVM should respond.  E.g. if
-> > > the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
-> > > it as a shutdown and reset the VMCS.
-> > 
-> > Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
-> > exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
-> > awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
-> > won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
-> > to handle that via an existing VM-Exit reason :-/
-> > 
-> > > But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
-> > > issue, then we can do:
-> > > 
-> > > 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
-> > > 		return -EIO;
-> > > 
-> > > Either way, to enable this by default we need some form of documentation that
-> > > describes what conditions lead to VM_CONTEXT_INVALID.
+> Because anything else will be too confusing for words, and if we have
+> to add memory barriers *and* locking we're just screwed.
 > 
-> I still don't know why the conditions lead to it matters. I think the
-> consensus is that once VM_CONTEXT_INVALID happens, the vcpu can no longer
-> run.
+> Because I think it is entirely understandable for people to expect
+> that sequence of two locked regions to be ordered wrt each other.
+> 
+> While memory ordering is subtle and confusing, we should strive to
+> make our "..but I used locks" to be as straightforward and as
+> understandable to people who really really don't want to even think
+> about memory order as at all reasonable.
+> 
+> I think we should have a very strong reason for accepting unordered
+> locked regions (with "strong reason" being defined as "on this
+> architecture that is hugely important, anything else would slow down
+> locks enormously").
+> 
+> It sounds like no such architecture exists, much less is important.
 
-Yes, and no longer being able to run the vCPU is precisely the problem.  The
-condition(s) matters because if there's a possibility, however small, that enabling
-NOTIFY_WINDOW can kill a well-behaved guest then it absolutely cannot be enabled by
-default.
+All right.
 
-> Either KVM_BUG_ON() or a specific EXIT to userspace should be OK?
+Currently the memory model has RCtso ordering of accesses in separate 
+critical sections for the same lock, as observed by other CPUs not 
+holding the lock.  Peter is proposing (and Linus agrees) to expand this 
+to cover critical sections for different locks, so long as both critical 
+sections are on the same CPU.  But he didn't propose strengthening the 
+ordering to RCsc, and I presume we don't want to do this because of the 
+slowdown it would incur on Power.
 
-Not if the VM_CONTEXT_INVALID happens while L2 is running.  If software can trigger
-VM_CONTEXT_INVALID at will, then killing the VM would open up the door to a
-malicious L2 killing L1 (which would be rather ironic since this is an anti-DoS
-feature).  IIUC, VM_CONTEXT_INVALID only means the current VMCS is garbage, thus
-an occurence while L2 is active means that vmcs02 is junk, but L1's state in vmcs01,
-vmcs12, etc... is still valid.
+Does everyone agree that this correctly summarizes the change to be made 
+to the memory model?
 
+Alan
