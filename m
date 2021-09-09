@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21E940492B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC347404929
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236283AbhIILVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S236368AbhIILU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236270AbhIILUz (ORCPT
+        with ESMTP id S236624AbhIILUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:20:55 -0400
+        Thu, 9 Sep 2021 07:20:42 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F375C06175F;
-        Thu,  9 Sep 2021 04:19:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1943BC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:19:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eBdVhI0kcw3JwSK5QRLhLU755/zLdNcWhAWcUbZ5EOw=; b=rL5ragHCDt81/zHRNRaEYSaweU
-        CSnmLghKvvYl4zCzMyryv/InNxXFGqJtCP+9EHkVwu7AfmGoU3jfX2eX0mVfzIVjzncHYfZVNKAuw
-        wxzv6Y0SskesZd5TiP1+OBXIRyu0Wk4ByswZYLOg/rl6pyynpS0KVtJJAchPr4uqrMrhV2pR/Eirf
-        qWP1sYj9LHbPSgdxeh+ZZM4h7HS3DMOyIoVessLMxaD0U8Gs2EByx5K+cdbOcqVEd5N1JCWTtMGoO
-        KPMUO5IyUCczwPotsN3jbcQEBcRl6vCPtLAnwXtrkIiYEnJH8F1iquIh5K0DvILwbhlAJCY0VbGT9
-        +gSxt8lg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOI46-009ktL-OB; Thu, 09 Sep 2021 11:18:02 +0000
-Date:   Thu, 9 Sep 2021 12:17:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v7 14/19] iomap: Fix iomap_dio_rw return value for user
- copies
-Message-ID: <YTntZj0T3pWhApoe@infradead.org>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-15-agruenba@redhat.com>
+        bh=jaJtesKRoklJVXwdW7zAa8t5N8UFqBRttpPsWpVpM7g=; b=uhx3f9eb+kolwaPTJucGoaE3Pf
+        pd0A6KagGUUL6kDPgjRDektEPVSPC/l1BWXWUEKn6bVwJVgcQpLiHibbBNifPocAHa0KbmdEW2qbK
+        HLf/c/QuUf2U2CN7/NBaSCxMXTipKGAO8614nGkr1woOkUiI1If/mDfW6ws/JzpGigNorOkDKg6ZW
+        4znqyoukhoSPH9jB3+/0vFS1IcepZOyyp5m0p6DCGzwHJcPoJbxvbmJUuCyXg0R9yuF2mHnpn801a
+        JEMV+B6bHcHyhwdGYWN8nGHSim2XWXdTny2TCZ7pACKVf6uz3TPvECH6Asi1fM1p2MiigRC9qM9JR
+        5mHFbDuw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOI4F-009ktt-Ie; Thu, 09 Sep 2021 11:18:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7DF2300047;
+        Thu,  9 Sep 2021 13:18:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 980E820C0903F; Thu,  9 Sep 2021 13:18:06 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 13:18:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Luming Yu <luming.yu@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Jinhua Wu <wujinhua@linux.alibaba.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        zelin.deng@linux.alibaba.com, jiayu.ni@linux.alibaba.com,
+        Andi Kleen <ak@linux.intel.com>,
+        Luming Yu <luming.yu@intel.com>, fan.du@intel.com,
+        artie.ding@linux.alibaba.com, "Luck, Tony" <tony.luck@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        pawan.kumar.gupta@linux.intel.com,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        ricardo.neri-calderon@linux.intel.com
+Subject: Re: [PATCH] perf: optimize clear page in Intel specified model with
+ movq instruction
+Message-ID: <YTntbmpzuVVYmyax@hirez.programming.kicks-ass.net>
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
+ <YTnWXIB42sCLbM2k@zn.tnic>
+ <CAJRGBZyQuQohbf8v3H19zo1mpbvDXrbNVXCJAUpCEmHgmqTYpg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827164926.1726765-15-agruenba@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAJRGBZyQuQohbf8v3H19zo1mpbvDXrbNVXCJAUpCEmHgmqTYpg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:21PM +0200, Andreas Gruenbacher wrote:
-> When a user copy fails in one of the helpers of iomap_dio_rw, fail with
-> -EFAULT instead of returning 0.  This matches what iomap_dio_bio_actor
-> returns when it gets an -EFAULT from bio_iov_iter_get_pages.  With these
-> changes, iomap_dio_actor now consistently fails with -EFAULT when a user
-> page cannot be faulted in.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> ---
->  fs/iomap/direct-io.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..8054f5d6c273 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -370,7 +370,7 @@ iomap_dio_hole_actor(loff_t length, struct iomap_dio *dio)
->  {
->  	length = iov_iter_zero(length, dio->submit.iter);
->  	dio->size += length;
-> -	return length;
-> +	return length ? length : -EFAULT;
+On Thu, Sep 09, 2021 at 06:34:40PM +0800, Luming Yu wrote:
 
-What's wrong with a good old:
+> do you mean jump label would not be replaced to nop when its key is enabled?
+> so we could not use it in certain functions?
 
-	if (!length)
-		return -EFAULT;
-	return length?
+But why add a jump label when you can make that alternative DTRT ?
 
-Besides this nit and the fact that the patch needs a reabse it looks
-good to me:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
