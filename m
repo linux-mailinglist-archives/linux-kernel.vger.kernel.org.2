@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BC44042B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668054042D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348949AbhIIBUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 21:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348988AbhIIBUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 21:20:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8030861166;
-        Thu,  9 Sep 2021 01:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631150361;
-        bh=tdVbevl+aDxkyATd4nlXrr1019b4HiAb+ZLlEGHbwho=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q1cyOUprqpdZbEvLayrMh+mgppIefqI49VWGrjQaxSkIo3p8edNilgRFSQ/PBay3g
-         RIZqxA7/faqLLgi6WzltBQq6k/FYcp1dZc/Dj6kLN1F5fS2s/CXhM/MfoK2i+0qLto
-         B8kaguNhOqUjr+uaARmTfKhUqFtWTNHHUPbHVUC8mfFC8Ix0y+zpmdB+pmzy8x9t6u
-         EDXVzVHCsojsJ/W9au+/pBYBIkosPdkcbY/GGGgAjS7wrVBF2g4sx9IvsbRUY7wrSz
-         PYku3jC5umtQkaYT79SNtPrPnzPPi+uN/MmmgOthkKCJCcenviiYho21+/buRiX0Us
-         B+krK1cbzsdLw==
-Received: by mail-lf1-f48.google.com with SMTP id n2so346146lfk.0;
-        Wed, 08 Sep 2021 18:19:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532xaZa8JrhU/3jS8+8ElQTFLX0Aq19vL+kTizqaZu8VK8daSAO2
-        mPBQpcu0gg+f2PIOdC2RLmX6+8SV29l5HsC+kOc=
-X-Google-Smtp-Source: ABdhPJzbQK5G5b2Cj872WktC8knYxqKRlLbs7wzoVrTt/pg7AKP6TRI9EoAf5LGLuAMBSVQjoANdrbJscEpZXpMnElY=
-X-Received: by 2002:a05:6512:3f9f:: with SMTP id x31mr401134lfa.233.1631150359914;
- Wed, 08 Sep 2021 18:19:19 -0700 (PDT)
+        id S1349153AbhIIBeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 21:34:11 -0400
+Received: from sonic314-20.consmr.mail.gq1.yahoo.com ([98.137.69.83]:41896
+        "EHLO sonic314-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236691AbhIIBeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 21:34:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1631151182; bh=C08fKdke0xrmWj9slXAe3LXit3kTtXHi+OOJDsIMfBg=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=EerTMdTv3N1isWugNxqUGhTSHQN/kyfZ18zQTnYN1AQSDO8Mb34chzV1DMY6KpKkkEoRSeJ0ksa01d+ev3/miLHiaIf3itzyNF+1GlbHzDKEJErWl/ulGgLVdOy/0L0EaSQuyaJMnoV7pD3JWdrjirMbxUqIfKt6MUbN0DSI7qI1Ora4kntaPEvMIZGpDs5hCP8FOBaIaw1iO7bkLPeH7ximyJEMFyHIBoMgsxuUTHtmYbPXvSytvEKa5JW0rCY65XnOkHolix8Jo2dldJfnP2CFdqBiZBJAKW+oB6Lbl6057WIcIJHALZJzj2bsGnfb8uhDHR9GdHPDpUcpWiCrNg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631151182; bh=u7k80D9av5n0td53q4iMwSr+UMghexIh13L3CZ3MBQb=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=EjdlsBwW59wFSBW7qR8t6aGJI66f3iW4Oa9JqHeJJ9YXTjt8s236FeahiPqmOMT1zvQXn2izDS0zXXEgCpUlEt6wFXh/cn056N1zKMQ1VOtlz+16hw7iJLuWze8nvECuEB4e6H+tApGIJdvay7QFKGr5hapM+RflVSQ5hetz5LS/Vuq1PifMrQmQmHaZZ9TX6ujmmX7+/YtUm7gpVkd/YNK/uAMqctwtTe7kekIa8JcQmG69e/Eh8pEarm3LgH7RgpPNH00Z9K1dGxgVlC4IDjK6ETFo8T5+EN/hyEfZBy6O4rkPRyNRc0f2ebxHmC5/iVp7yo4EvFS2C/E/0g5Fjg==
+X-YMail-OSG: 8ntCpTsVM1nJ1Rz7VeWkgtO9GCAc4XpWXPEXY3BtiaWi3ph2UVD_gC.FFgvY8B7
+ qy_Uzb0u1AIzrvw9.QBENTRO1HhBNQjBDVN961eXXe7_ZryBHy7rQIPupUwPK98AaBQPop4igaxQ
+ 7xYnnb2vT4c_ikUo0HKBxKHLe35EScyCP0zWT0uFoxJ3eeM78WLZsReixsPHhF0Gv4Dfi28fmkT0
+ VDL7Axe84_CQ2FtCddmfQts.fvdubuzAqWqqokMtHQdAvc2sdTGBqRgPw9RvGgxXOq1c.NCAZU_a
+ j3FtnBstwcTAHzRYk5_YYwz03iVKS_52aba9ga2002SEJ0gJC_DsfGE21ngmsAtOGK1XEscjVpJ9
+ i_BXVY8fRrJlWpab7b0ziG8XHLS_o412nLEB._VPsgT_sxValbsDjGb58MSgmWOp1okkDQKX7MOp
+ 2JemZmHbtGgfPLgCzgWg5UnIS4vYooV_Ydedrp8bT.aAzWT38WRgbu5ZV5nuzHqGBRbfksur7UbJ
+ p0bsxLWv5UT2f9uM.IQoz_wjnvpt3w_ULtqwjlvIyU8G.QQYnIzVIOF9AA6A11Yo528BL5Mtz84W
+ HUQSZLJ6x_.94VW68.HllEGRMPk7h9myzL76zPOi21iNCutZN3pFM9bEzA21ox4Pvpqr_x_wf2Xz
+ g3gyPiaXu_l_mpbmq5CvPhch6bBltovmyFEflhDs_s0MBzvVWDMY7UIz9qDCiggbOoxEhN0J6rp.
+ nwSUnrSGuftzv41RwKgtQPgeCnYaC2PsYuDO8iCJijlReekc3yUCk8Okh5lm4zz8cNgH0NX.3y2h
+ pJR.qciYtY5fzWjZlKI3KjkqbzHv3NxVafyr2HqdPCcFnFX1EF8OAD8cfA8KEJ3p9TBkeWCgYUTN
+ aEQIm2jopqWNMZokbtqRzjiOUC8SGRXe8kdR6KNoajpdjDjv4_1nyaN.DijMTg.3GXAK2G7toDk3
+ BawxORiZ6F9sa3_vCOiPbmp_PNmBAx7MXW3lCamfIEaPSl9FWTVxsGH6PuMvzpIYeB2_ZPRvWdBV
+ 3ysnf4tLrFRiCtIMPtoK2kszVgiimiVsmtk5cvP.03FB.w6ZebCt2IH9XSBWCdId1kAK5SPvMQOL
+ ID8B4L6cJCAEYcVGQmygsaGTkzTnQd5Tp8qRtMl2uqRv9RwwRbMFP0kxly_Vc__V2tTu9MPaEhXe
+ 5LbavALhdyF114FPt2IAFDvlG0c30dJ1PQwORPwv2n_TeNrhE6m4JN0lQ5B_S3dK.AdNEzKIbRNi
+ Xvxe66nzItYiHWsAHhFxMubnBmM62CZVjiLmJYkKeQ_CQv6WqGHus1eGIdNGUmfiGy3IgRRUTDQP
+ TmcmhNjgAy45cDM89uWatgnIE8N3ZcEgQ2TpjgrwnhjY3iAiDMLWnwZyyHHO9FdY1Rd8ax3JOEeH
+ yAZVWqzNnb7nHP4aWYPmt9M8XxpUyRgbV3XT0nTP9ItWzAkQ6f7bhbsYdeQ5F6_CFucPTc1u1gP6
+ fGSFEfF1jwLLN0nm19E9hd7GoCOyEj5G17HQiVgA.9EqC7ER4FHcrT3OE7iJzWnSU8nvuGYBMaWT
+ dwDI4VOsZmdjdffFXhm5b5f_a4KOmiG_WqYSXxGx4YYV3hMlxm5ntDoMJkWxSIfFaf3XcSXdNhdG
+ .pn.nuQjw5M3Eudpj_fZL50_7B4EHtcrWLILQ.cKrvDlyOihYiKzuYZJ13B.jtUgt6IAir2UBPWt
+ l2Sac8BI_jT4x5F7vsFZdykV4q7KXwfBFvzfeqM1dkqQ4UETmFRKZ6Rm6DDcnhm7bxG0DyvoXd5Z
+ jSF67V8mjc1z1Tam4.4t5VYcs9VtK7RauSmVmVvpgrHiUp7oU3Xhnt9m4SAN2cHAdBfPTokmAvFU
+ 9fOd22OfiwRo2fQKqo7Ul7yUmTA8wkJ3LTUig12TdGQXcNIgeR388SBk15biLe_aC1yCpRzYI_ax
+ WBSUphDHgRVQZWHWJRF38bE5U54.42iqJYla8yFhAvUjhB6ePOZpbvbhFt27BARRg3Y1ODnYugUN
+ PZgG0cWUuXvpoIcItN87hsbrbLRmR7IwiLmYRb_bmudIjHUYCpH8ACatwqHK7y3V1nkxbUVwvAET
+ mCMrFWDlVJ9ENEDX0jfA70qwcwgfKHpJdFfhcfa.P36X.IZfsF8ytwTORZ0apLBIgL6.Ce5t0epM
+ LLm.0oY7v_Lmq1XnUnyS.rGd0YF6mXZOf.Dcpby65D_M.EPQWZGL962uReiyajfjHMLQCbue1KF8
+ i_2GNZNJiqxvO_tSbLepgYgfD.iZl8A1FEuL1ulVkinOV1DBW_BLlL5pU1yEc6TXdSOWn_cwEKT6
+ ZKuclfnZ5kCKsOm7P9xzjwOpA_O_uvRLEGobsf2neTg--
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.gq1.yahoo.com with HTTP; Thu, 9 Sep 2021 01:33:02 +0000
+Received: by kubenode528.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 2ef029e8b92ceadaa8a8ceb4103cbf32;
+          Thu, 09 Sep 2021 01:32:56 +0000 (UTC)
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+To:     dri-devel@lists.freedesktop.org
+Cc:     ville.syrjala@linux.intel.com, linux-kernel@vger.kernel.org,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: [PATCH v2] drm/plane-helper: fix uninitialized variable reference
+Date:   Wed,  8 Sep 2021 21:32:47 -0400
+Message-Id: <20210909013247.32743-1-alex_y_xu@yahoo.ca>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <YTkCQCPwZPbhMfeF@phenom.ffwll.local>
+References: <YTkCQCPwZPbhMfeF@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <20210908030240.9007-1-samuel@sholland.org>
-In-Reply-To: <20210908030240.9007-1-samuel@sholland.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 9 Sep 2021 09:19:08 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ=RoXouwL75JfmxOFzj+x5bfTW=Ae_3Ufyg3ZDA_Qj+Q@mail.gmail.com>
-Message-ID: <CAJF2gTQ=RoXouwL75JfmxOFzj+x5bfTW=Ae_3Ufyg3ZDA_Qj+Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: net: sun8i-emac: Add compatible for D1
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>, netdev@vger.kernel.org,
-        linux-sunxi@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Samuel,
+drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
+drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
+  113 |         struct drm_plane_state plane_state = {
+      |                                ^~~~~~~~~~~
+drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
+  178 |         bool visible;
+      |              ^~~~~~~
+cc1: all warnings being treated as errors
 
-Acked-by: Guo Ren <guoren@kernel.org>
+visible is an output, not an input. in practice this use might turn out
+OK but it's still UB.
 
-On Wed, Sep 8, 2021 at 11:02 AM Samuel Holland <samuel@sholland.org> wrote:
->
-> The D1 SoC contains EMAC hardware which is compatible with the A64 EMAC.
-> Add the new compatible string, with the A64 as a fallback.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml    | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
-> index 7f2578d48e3f..9eb4bb529ad5 100644
-> --- a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
-> +++ b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
-> @@ -19,7 +19,9 @@ properties:
->        - const: allwinner,sun8i-v3s-emac
->        - const: allwinner,sun50i-a64-emac
->        - items:
-> -          - const: allwinner,sun50i-h6-emac
-> +          - enum:
-> +              - allwinner,sun20i-d1-emac
-> +              - allwinner,sun50i-h6-emac
->            - const: allwinner,sun50i-a64-emac
->
->    reg:
-> --
-> 2.31.1
->
+Fixes: df86af9133 ("drm/plane-helper: Add drm_plane_helper_check_state()")
+Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+---
+ drivers/gpu/drm/drm_plane_helper.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
+diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
+index 5b2d0ca03705..838b32b70bce 100644
+--- a/drivers/gpu/drm/drm_plane_helper.c
++++ b/drivers/gpu/drm/drm_plane_helper.c
+@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
+ 		.crtc_w = drm_rect_width(dst),
+ 		.crtc_h = drm_rect_height(dst),
+ 		.rotation = rotation,
+-		.visible = *visible,
+ 	};
+ 	struct drm_crtc_state crtc_state = {
+ 		.crtc = crtc,
 -- 
-Best Regards
- Guo Ren
+2.33.0
 
-ML: https://lore.kernel.org/linux-csky/
