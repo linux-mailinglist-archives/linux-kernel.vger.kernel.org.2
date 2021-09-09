@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD73F4059F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1D34059FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhIIPCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
+        id S239929AbhIIPDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239460AbhIIPCL (ORCPT
+        with ESMTP id S236843AbhIIPDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:02:11 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4935C061766
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:00:53 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id me10so4181883ejb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kOEKM8apY23QO5WjPDqYiCPgXqusPQ0AQaPDWhCWqiw=;
-        b=as6MCx/BHR+GaFFl9RE98WlTodY7u6iUbmNsJXbFqCar0yqK3yX0sQYGaRaQ84HzTh
-         kG64T1hcv1ntPFF0PyKft/hkB3XSTzPhp+sPh3ecyjp027RsWWn0Yg8nJe1++odzZPXo
-         z1SLarngeJi61KYtrEYKoXI/ccPmeCJ2imrNw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kOEKM8apY23QO5WjPDqYiCPgXqusPQ0AQaPDWhCWqiw=;
-        b=PsAE8i3Fm0wSCsnF4cRahjk8XX5ctI8cHEXTbX+dDpl5R89Q8iK581jhr2ILUiTUqx
-         C0vpj+3ibINZ/3Nx8t7iMkgC/LEqjKYiO1FxmjKb0VDq82Bo99s90pcNvl4JANAyN7UI
-         kSAVAz7ddmJ+Mw2s1M0bc5byEKUJ696H9U5+jQKfMEP6HCpXaNd05z6fFBdrYg6rYu8I
-         Is5jazLWfwM9u7eRIA0zPZcckN+JZr4E9BU2EUy+tzJM6Mx+LCt5QXO1E4yXVvpqGKLC
-         lWNbYHJ5FTSswq4HVIib2CUvIax/Rz1gl3b/AHyUpHGA3HYLOD3mheBrBjPkdbSIcEOO
-         4eMQ==
-X-Gm-Message-State: AOAM531SNMopflQdSelujRbGhQ9Si7zBRSNJDZT46UeJS2IYMZDwsXsr
-        SxvkfoXG1jiajCTJwNP9h7DAlw==
-X-Google-Smtp-Source: ABdhPJyEOipWECkGOxAB2/lIs59cDsRsl+cpDxrGrDLWlf00K0Zfhhr4Fh492s4VAKIMU2CgY1JJ7w==
-X-Received: by 2002:a17:906:b1d5:: with SMTP id bv21mr3931294ejb.346.1631199652378;
-        Thu, 09 Sep 2021 08:00:52 -0700 (PDT)
-Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id h8sm1139644ejj.22.2021.09.09.08.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 08:00:51 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 4/4] media: uvcvideo: Do not return positive errors in uvc_query_ctrl()
-Date:   Thu,  9 Sep 2021 17:00:46 +0200
-Message-Id: <20210909150046.57615-5-ribalda@chromium.org>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-In-Reply-To: <20210909150046.57615-1-ribalda@chromium.org>
-References: <20210909150046.57615-1-ribalda@chromium.org>
+        Thu, 9 Sep 2021 11:03:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DA0C061575;
+        Thu,  9 Sep 2021 08:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/Y5MADjdN8PfBLXXdisZCNOGIKICg1o3R1wg6sLA0F0=; b=n0r32pBAY1IV9h2w7DoeJMyOoS
+        H1Rzt3uYTOlPQMqb6PcKGFYj7Dny0GAtWGm26Cvk+BNSHpAHOF3wSOaZZ11F0o0NwUcE7iK/8RvIK
+        Fn5DWktzPwzi/oeVOBQpSB8Tdv5qwyzV/xovHdUrVgc0SfiL8IW7P+R8mN/zt0j6YNxV9IPLJabG+
+        zm0KJLt+3y/nrrW2G47diDSC8/AyVLeGM9AOzRZaNlYXIjq+FDt+dDpSXr/y50lfaqZ4B8moxgUm8
+        IcKz9DYX15I29Y/oPAv3iJ9SthEsSAlwNlzjphTEHQLrjb/MBthxEedADbaB7zuRmtsx4M551+6uL
+        Sm8VwI8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOLYc-001tWu-Rb; Thu, 09 Sep 2021 15:01:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7CA130004C;
+        Thu,  9 Sep 2021 17:01:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BFB5E20C09044; Thu,  9 Sep 2021 17:01:41 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 17:01:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 04/19] cpufreq: amd: introduce a new amd pstate driver to
+ support future processors
+Message-ID: <YToh1Vhei2PyhlW+@hirez.programming.kicks-ass.net>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-5-ray.huang@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908150001.3702552-5-ray.huang@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the returned size of the query does not match the expected size or it
-is zero, return -EPIPE instead of 0 or a positive value.
+On Wed, Sep 08, 2021 at 10:59:46PM +0800, Huang Rui wrote:
 
-Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/usb/uvc/uvc_video.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +struct amd_pstate_perf_funcs {
+> +	int (*enable)(bool enable);
+> +	int (*init_perf)(struct amd_cpudata *cpudata);
+> +	void (*update_perf)(struct amd_cpudata *cpudata,
+> +			    u32 min_perf, u32 des_perf,
+> +			    u32 max_perf, bool fast_switch);
+> +};
 
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 8423941cfc95..01b99da5e191 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -83,7 +83,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
- 		dev_err(&dev->udev->dev,
- 			"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
- 			uvc_query_name(query), cs, unit, ret, size);
--		return ret;
-+		return ret < 0 ? ret : -EPIPE;
- 	}
- 
- 	/* reuse data[0] to request the error code. */
--- 
-2.33.0.153.gba50c8fa24-goog
+> +static int
+> +amd_pstate_enable(struct amd_pstate_perf_funcs *funcs, bool enable)
+> +{
+> +	if (!funcs)
+> +		return -EINVAL;
+> +
+> +	return funcs->enable(enable);
+> +}
 
+> +static int amd_pstate_init_perf(struct amd_cpudata *cpudata)
+> +{
+> +	struct amd_pstate_perf_funcs *funcs = cpufreq_get_driver_data();
+> +
+> +	if (!funcs)
+> +		return -EINVAL;
+> +
+> +	return funcs->init_perf(cpudata);
+> +}
+
+> +static int
+> +amd_pstate_update_perf(struct amd_cpudata *cpudata, u32 min_perf,
+> +		       u32 des_perf, u32 max_perf, bool fast_switch)
+> +{
+> +	struct amd_pstate_perf_funcs *funcs = cpufreq_get_driver_data();
+> +
+> +	if (!funcs)
+> +		return -EINVAL;
+> +
+> +	funcs->update_perf(cpudata, min_perf, des_perf,
+> +			   max_perf, fast_switch);
+> +
+> +	return 0;
+> +}
+
+> +static struct amd_pstate_perf_funcs pstate_funcs = {
+> +	.enable = pstate_enable,
+> +	.init_perf = pstate_init_perf,
+> +	.update_perf = pstate_update_perf,
+> +};
+
+> +static int __init amd_pstate_init(void)
+> +{
+> +	int ret;
+> +	struct amd_pstate_perf_funcs *funcs;
+
+> +
+> +	funcs = &pstate_funcs;
+
+What is the purpose of this seemingly pointless indirection? Showing off
+how good AMD hardware is at doing retpolines or something?
