@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0618B4048E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3274048D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbhIILFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbhIILFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:05:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA05C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=HEAQV8cw3s94fNIlqXccLtXX8EcNZ0tXje0QER4MNNw=; b=VL2iJb1qxLq7rulJM5iRJlal1X
-        H4Jl0ncWLxdEpOsC8Jb9HDoFM03ipsQWZoZaWA81gdpqGHCnGpJXIpKCYriEGnq2Y2hZgeYS/8MHr
-        40yW02C1kuBfffkmGsD3oAHBTo+v+Bh9b22UWJ0exgnqwLDJbkOwjNiDPq0BMSAJDRxwoDk8uudOY
-        QN6pkrWkrmaBERqbnMMHhDmiwVep3E7kmwPDBvGxgVHiZipkiRgdjp4N+E47Xl0/D4sr1V4+6oUr8
-        Qj4JPGxmPnR5+jBJtAYk7bAF1XXlMKr3WScSOYEEyM3ZlGTFIyWhhRW2lzIplJ3lm15OaG8YkW5IQ
-        V4ZUH/rA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOHqF-001rBC-LG; Thu, 09 Sep 2021 11:03:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3E12300130;
-        Thu,  9 Sep 2021 13:03:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id BC0F02C3CBEF3; Thu,  9 Sep 2021 13:03:37 +0200 (CEST)
-Message-ID: <20210909110203.953991276@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 09 Sep 2021 12:59:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH 4/4] locking/rwbase: Take care of ordering guarantee for fastpath reader
-References: <20210909105915.757320973@infradead.org>
+        id S234534AbhIILBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:01:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234349AbhIILBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:01:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55ED561167
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631185243;
+        bh=q0jaemKaNpxivtuHJVN3sxGi68MjVqL99mYlZXXeAZI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hHJKoNgkH8/igA8mIRS3lIuUeTLXcTZC+1DSY6sOpt50Cc3WpwUTvTnh/1FPRRi8r
+         0Vs7f5vHfPoSG+fzyOuQDSrOnhcMNDF8ii4p0MHgdNIXgvwypuYO5MY8dXdOhWgNJO
+         l41W2CHOYhIN7rTDJmhNdndV8iDc0k+71EnPXb4Hkxztk3ElYZlZZxS90P/9j7eX1A
+         MTYrG7IPALgtwsZEPstcM/v9XSp1C68Dl2rC+4P4ZfEIaVaRPKNHRQHlovAPeodguH
+         xTNQKbeXBfcqmwbLhkZj73EII8d3PTV+SM+lRFKaQxWFUDb4OD+t6maZjm1zDAHEBj
+         FX9aW8KR4x/wA==
+Received: by mail-wm1-f49.google.com with SMTP id i3so1045093wmq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:00:43 -0700 (PDT)
+X-Gm-Message-State: AOAM5316EIB/ZjuEfIfWmpRJfFgVOj52tlNP1WFPbd139WzW7N1H8VNy
+        Blj4bbH1VrZ26eY3Og5xjEfyDwIVYDf+2uEdDjA=
+X-Google-Smtp-Source: ABdhPJzXwyBVTWsO83az+CnqYKTmuJ+96XVP1jSzK/fPZCcrRA2zux6YoBG2oM4L6KntsYaUUUA2GKpxx8IgphoRzAg=
+X-Received: by 2002:a1c:4c14:: with SMTP id z20mr2344349wmf.82.1631185241984;
+ Thu, 09 Sep 2021 04:00:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+ <YTkjJPCdR1VGaaVm@archlinux-ax161> <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
+ <YTkyIAevt7XOd+8j@elver.google.com> <YTmidYBdchAv/vpS@infradead.org> <CANpmjNNCVu8uyn=8=5_8rLeKM5t3h7-KzVg1aCJASxF8u_6tEQ@mail.gmail.com>
+In-Reply-To: <CANpmjNNCVu8uyn=8=5_8rLeKM5t3h7-KzVg1aCJASxF8u_6tEQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 9 Sep 2021 13:00:25 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1W-13f-qCykaaAiXAr+P_F+VhjsU-9Uu=kTPUeB4b26Q@mail.gmail.com>
+Message-ID: <CAK8P3a1W-13f-qCykaaAiXAr+P_F+VhjsU-9Uu=kTPUeB4b26Q@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Marco Elver <elver@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+On Thu, Sep 9, 2021 at 12:54 PM Marco Elver <elver@google.com> wrote:
+> On Thu, 9 Sept 2021 at 07:59, Christoph Hellwig <hch@infradead.org> wrote:
+> > On Wed, Sep 08, 2021 at 11:58:56PM +0200, Marco Elver wrote:
+> > > It'd be good to avoid. It has helped uncover build issues with KASAN in
+> > > the past. Or at least make it dependent on the problematic architecture.
+> > > For example if arm is a problem, something like this:
+> >
+> > I'm also seeing quite a few stack size warnings with KASAN on x86_64
+> > without COMPILT_TEST using gcc 10.2.1 from Debian.  In fact there are a
+> > few warnings without KASAN, but with KASAN there are a lot more.
+> > I'll try to find some time to dig into them.
+>
+> Right, this reminded me that we actually at least double the real
+> stack size for KASAN builds, because it inherently requires more stack
+> space. I think we need Wframe-larger-than to match that, otherwise
+> we'll just keep having this problem:
+>
+> https://lkml.kernel.org/r/20210909104925.809674-1-elver@google.com
 
-Readers of rwbase can lock and unlock without taking any inner lock, if
-that happens, we need the ordering provided by atomic operations to
-satisfy the ordering semantics of lock/unlock. Without that, considering
-the follow case:
+The problem with this is that it completely defeats the point of the
+stack size warnings in allmodconfig kernels when they have KASAN
+enabled and end up missing obvious code bugs in drivers that put
+large structures on the stack. Let's not go there.
 
-	{ X = 0 initially }
-
-	CPU 0			CPU 1
-	=====			=====
-				rt_write_lock();
-				X = 1
-				rt_write_unlock():
-				  atomic_add(READER_BIAS - WRITER_BIAS, ->readers);
-				  // ->readers is READER_BIAS.
-	rt_read_lock():
-	  if ((r = atomic_read(->readers)) < 0) // True
-	    atomic_try_cmpxchg(->readers, r, r + 1); // succeed.
-	  <acquire the read lock via fast path>
-
-	r1 = X;	// r1 may be 0, because nothing prevent the reordering
-	        // of "X=1" and atomic_add() on CPU 1.
-
-Therefore audit every usage of atomic operations that may happen in a
-fast path, and add necessary barriers.
-
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/locking/rwbase_rt.c |   21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
---- a/kernel/locking/rwbase_rt.c
-+++ b/kernel/locking/rwbase_rt.c
-@@ -41,6 +41,12 @@
-  * The risk of writer starvation is there, but the pathological use cases
-  * which trigger it are not necessarily the typical RT workloads.
-  *
-+ * Fast-path orderings:
-+ * The lock/unlock of readers can run in fast paths: lock and unlock are only
-+ * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
-+ * semantics of rwbase_rt. Atomic ops should thus provide _acquire()
-+ * and _release() (or stronger).
-+ *
-  * Common code shared between RT rw_semaphore and rwlock
-  */
- 
-@@ -53,6 +59,7 @@ static __always_inline int rwbase_read_t
- 	 * set.
- 	 */
- 	for (r = atomic_read(&rwb->readers); r < 0;) {
-+		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
- 		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
- 			return 1;
- 	}
-@@ -162,6 +169,8 @@ static __always_inline void rwbase_read_
- 	/*
- 	 * rwb->readers can only hit 0 when a writer is waiting for the
- 	 * active readers to leave the critical section.
-+	 *
-+	 * dec_and_test() is fully ordered, provides RELEASE.
- 	 */
- 	if (unlikely(atomic_dec_and_test(&rwb->readers)))
- 		__rwbase_read_unlock(rwb, state);
-@@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock
- {
- 	struct rt_mutex_base *rtm = &rwb->rtmutex;
- 
--	atomic_add(READER_BIAS - bias, &rwb->readers);
-+	/*
-+	 * _release() is needed in case that reader is in fast path, pairing
-+	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
-+	 */
-+	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
- 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
- 	rwbase_rtmutex_unlock(rtm);
- }
-@@ -201,7 +214,11 @@ static inline bool __rwbase_write_tryloc
- 	/* Can do without CAS because we're serialized by wait_lock. */
- 	lockdep_assert_held(&rwb->rtmutex.wait_lock);
- 
--	if (!atomic_read(&rwb->readers)) {
-+ 	/*
-+	 * _acquire is needed in case the reader is in the fast path, pairing
-+	 * with rwbase_read_unlock(), provides ACQUIRE.
-+	 */
-+	if (!atomic_read_acquire(&rwb->readers)) {
- 		atomic_set(&rwb->readers, WRITER_BIAS);
- 		return 1;
- 	}
-
-
+        Arnd
