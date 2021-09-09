@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3EF4046CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D044046D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhIIIN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:13:26 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43850 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231143AbhIIINV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:13:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnmES0O_1631175130;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnmES0O_1631175130)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 16:12:10 +0800
-Date:   Thu, 9 Sep 2021 16:12:11 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH 0/6] vDPA driver for legacy virtio-pci device
-Message-ID: <20210909081211.GB17383@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
+        id S231254AbhIIIPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229876AbhIIIO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:14:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B5E160FE3;
+        Thu,  9 Sep 2021 08:13:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631175230;
+        bh=MCd05u9z+cr1cwZljpMuCHpDxLmMpn+MkW/t1mn9uUw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pSneemarx+jHsqihej06zoNGFQUu2/DLRsEFYfL4J7F9nL1bm2jPKq8uouPpgMONf
+         O+0JdkiTZTq8+MecD22iU5FDzkHpzFgyrL/hTl0gSTiw2UWvLRzTZxMrHulZmJDIHN
+         Xuo0Q862T/nDsBb/9bWFiBa6bzi++zpzjS27BNP6tneoonEQMkxK2SUJkFkJ4Vlv6j
+         5YBJZJ2n9i60jMYg7UiXJfFjFshW+qrZGt6baSFvh1w3SgkQtedP1/Kt7S7g10DxiT
+         ahC4jA5gqibmdr3FzeNtb+6/n1IOk+go8niO0bayrk9E2mRLmoeynFUFy9hl7BXBOK
+         59Hm7rLYX26Ag==
+Received: by mail-wr1-f46.google.com with SMTP id i28so1255461wrb.2;
+        Thu, 09 Sep 2021 01:13:50 -0700 (PDT)
+X-Gm-Message-State: AOAM532PGD03ysRpL+8DO8b49o/E0/WgK9zOgrUuC8rwFPrjgX9jVdML
+        ali9w2UFixSrQdcrW4lgboB2zXXNqAubj0+UJpM=
+X-Google-Smtp-Source: ABdhPJxnLFlz+6nfZoHaQmZ1rMYPvah3+NPU0f+In9tfRpa8CeOCxjy0WwAF3wEuFaiYO1xg5YjG8ObVFnH+GMacA1U=
+X-Received: by 2002:adf:914e:: with SMTP id j72mr1987620wrj.428.1631175229042;
+ Thu, 09 Sep 2021 01:13:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210909050033.1564459-1-linux@roeck-us.net>
+In-Reply-To: <20210909050033.1564459-1-linux@roeck-us.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 9 Sep 2021 10:13:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0U-BxUfdTiwDRNHvGHetenF0zVObNVj0z67SqzzEeFyg@mail.gmail.com>
+Message-ID: <CAK8P3a0U-BxUfdTiwDRNHvGHetenF0zVObNVj0z67SqzzEeFyg@mail.gmail.com>
+Subject: Re: [PATCH] alpha: Declare virt_to_phys and virt_to_bus parameter as
+ pointer to volatile
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:05:06AM +0800, Jason Wang wrote:
-> On Wed, Sep 8, 2021 at 8:22 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > This series implements the vDPA driver for legacy virtio-pci device.
-> > Currently we already have the vDPA driver for modern virtio-pci device
-> > only, but there are some legacy virtio-pci devices conforming to the
-> > virtio-pci specifications of 0.9.x or older versions. For example,
-> > ENI(Elastic Network Interface) of Alibaba ECS baremetal instance is a
-> > hardware virtio network device which follows the Virtio PCI Card 0.9.5
-> > Draft specification. Such legacy virtio-pci devices have some
-> > inconsistent behaviour with modern virtio-pci devices, so some common
-> > codes are split out and modern device specific codes are moved to a
-> > separated file.
-> 
-> What worries me a little bit are:
-> 
-> 1) vDPA requires IOMMU_PLATFORM to be supported by the device to work,
-> if I understand ENI correctly, it's a legacy device so it can't
-> support ACCESS_PLATFORM. Or is it a legacy device that supports
-> ACCESS_PLATFORM implicitly.
-> 2) vDPA tries to present a 1.0 device, in this case the behavior could
-> be ruled by the spec. If we tries to present an 1.0 device on top of
-> legacy device we may suffer a lot of issues:
-> 
-> - endian issue: 1.0 use le but legacy may use native endian
-> - queue_enable semantic which is missed in the legacy
+On Thu, Sep 9, 2021 at 7:00 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Some drivers pass a pointer to volatile data to virt_to_bus() and
+> virt_to_phys(). One exception is alpha. This results in a number
+> of compile errors such as
+>
+> drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+> drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+>         passing argument 1 of 'virt_to_bus' discards 'volatile'
+>         qualifier from pointer target type
+>
+> drivers/atm/ambassador.c: In function 'do_loader_command':
+> drivers/atm/ambassador.c:1747:58: error:
+>         passing argument 1 of 'virt_to_bus' discards 'volatile'
+>         qualifier from pointer target type
+>
+> Declare the parameter of virt_to_phys and virt_to_bus as pointer to volatile
+> to fix the problem.
+>
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-Writting the queue_address is regarded as enable queue in the legacy.
-Right?
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-> - virtqueue size, as you mentioned below
-> 
-> I guess what the device(ENI) supports are:
-> 
-> 1) semantic of ACCESS_PLATFORM without a feature
-> 2) little endian
-> 3) but a legacy device
-> 
-> So I think it might be better:
-> 
-> 1) introduce the library for legacy as you did in this patch
-> 2) having a dedicated ENI vDPA driver
-> 
-> 3) live migration support, though it was not supported by the spec
-> yet, but we are working on the support, and we know legacy device can
-> support this.
-> 
-> Thanks
-> 
+> ---
+> We could instead try to modify the affected drivers, but both drivers
+> use the buffer to communicate with the chip, so that would require lots
+> of typecasts there. Another option would be to disable affected drivers
+> for alpha, but that seems undesirable.
+> Other ideas welcome.
 
-I agree.
-It's better to implement a dedicated vDPA driver for ENI only. ENI is
-not a standard legacy virtio-pci device.
+Your patch is the obvious workaround, as this makes alpha behave the
+same way as all the other architectures.
 
-> >
-> > For legacy devices, it is not supported to negotiate the virtqueue size
-> > by the specification. So a new callback get_vq_num_unchangeable is
-> > introduced to indicate user not to try change the virtqueue size of the
-> > legacy vdpa device. For example, QEMU should not allocate memory for
-> > virtqueue according to the properties tx_queue_size and rx_queue_size if
-> > we use legacy virtio-pci device as the vhost-vdpa backend. Instead, QEMU
-> > should use the new callback get_vq_num_unchangeable first to check if
-> > the vdpa device support to change virtqueue size. If not, QEMU should
-> > call the callback get_vq_num_max to get the static virtqueue size then
-> > allocate the same size memory for the virtqueue.
-> >
-> > This series have been tested with the ENI in Alibaba ECS baremetal
-> > instance.
-> >
-> > These patches may under consideration, welcome for comments.
-> >
-> >
-> > Wu Zongyong (6):
-> >   virtio-pci: introduce legacy device module
-> >   vdpa: fix typo
-> >   vp_vdpa: add vq irq offloading support
-> >   vp_vdpa: split out reusable and device specific codes to separate file
-> >   vdpa: add get_vq_num_unchangeable callback in vdpa_config_ops
-> >   vp_vdpa: introduce legacy virtio pci driver
-> >
-> >  drivers/vdpa/Kconfig                     |   7 +
-> >  drivers/vdpa/virtio_pci/Makefile         |   3 +
-> >  drivers/vdpa/virtio_pci/vp_vdpa.c        |   8 +
-> >  drivers/vdpa/virtio_pci/vp_vdpa_common.c | 220 ++++++++++++++
-> >  drivers/vdpa/virtio_pci/vp_vdpa_common.h |  67 +++++
-> >  drivers/vdpa/virtio_pci/vp_vdpa_legacy.c | 346 +++++++++++++++++++++++
-> >  drivers/vdpa/virtio_pci/vp_vdpa_modern.c | 327 +++++++++++++++++++++
-> >  drivers/vhost/vdpa.c                     |  19 ++
-> >  drivers/virtio/Kconfig                   |  10 +
-> >  drivers/virtio/Makefile                  |   1 +
-> >  drivers/virtio/virtio_pci_common.c       |  10 +-
-> >  drivers/virtio/virtio_pci_common.h       |   9 +-
-> >  drivers/virtio/virtio_pci_legacy.c       | 101 ++-----
-> >  drivers/virtio/virtio_pci_legacy_dev.c   | 220 ++++++++++++++
-> >  drivers/virtio/virtio_vdpa.c             |   5 +-
-> >  include/linux/vdpa.h                     |   6 +-
-> >  include/linux/virtio_pci_legacy.h        |  44 +++
-> >  include/uapi/linux/vhost.h               |   2 +
-> >  18 files changed, 1320 insertions(+), 85 deletions(-)
-> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.c
-> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.h
-> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
-> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_modern.c
-> >  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
-> >  create mode 100644 include/linux/virtio_pci_legacy.h
-> >
-> > --
-> > 2.31.1
-> >
+Drivers using virt_to_bus() are already nonportable, so we could also
+decide to go through all users to see which ones are ready to be
+retired, and go through the architectures to see which ones actually
+still require drivers that use virt_to_bus(), removing the interface from
+the others. The ones I see are
+
+arch/alpha/Kconfig:     select VIRT_TO_BUS
+arch/h8300/Kconfig:     select VIRT_TO_BUS
+arch/ia64/Kconfig:      select VIRT_TO_BUS
+arch/m68k/Kconfig:      select VIRT_TO_BUS
+arch/microblaze/Kconfig:        select VIRT_TO_BUS
+arch/mips/Kconfig:      select VIRT_TO_BUS
+arch/parisc/Kconfig:    select VIRT_TO_BUS
+arch/powerpc/Kconfig:   select VIRT_TO_BUS                      if !PPC64
+arch/x86/Kconfig:       select VIRT_TO_BUS
+arch/xtensa/Kconfig:    select VIRT_TO_BUS
+
+drivers/atm/Kconfig:    depends on PCI && VIRT_TO_BUS
+drivers/atm/Kconfig:    depends on PCI && VIRT_TO_BUS
+drivers/atm/Kconfig:    depends on PCI && VIRT_TO_BUS
+drivers/atm/Kconfig:    depends on PCI && VIRT_TO_BUS
+drivers/media/pci/sta2x11/Kconfig:      depends on PCI && VIDEO_V4L2
+&& VIRT_TO_BUS && I2C
+drivers/net/appletalk/Kconfig:  depends on DEV_APPLETALK && (ISA ||
+EISA) && ISA_DMA_API && VIRT_TO_BUS
+drivers/net/ethernet/dec/tulip/Kconfig: depends on VIRT_TO_BUS ||
+ALPHA || PPC || SPARC
+drivers/net/wan/Kconfig:        depends on ISA && m && ISA_DMA_API &&
+INET && HDLC && VIRT_TO_BUS
+drivers/net/wan/Kconfig:        depends on ISA && m && ISA_DMA_API &&
+HDLC && VIRT_TO_BUS
+drivers/net/wan/Kconfig:        depends on PCI && VIRT_TO_BUS && HDLC
+drivers/net/wan/Kconfig:        depends on ISA && m && ISA_DMA_API &&
+INET && HDLC && VIRT_TO_BUS
+drivers/scsi/Kconfig:   depends on SCSI && PCI && VIRT_TO_BUS
+drivers/scsi/Kconfig:   depends on PCI && SCSI && VIRT_TO_BUS
+drivers/vme/bridges/Kconfig:    depends on VIRT_TO_BUS
+
+I think we can drop VIRT_TO_BUS from everything other
+than x86-32, m68k and ppc32, and fix the tulip and xlr_net
+drivers to not use it.
+
+        Arnd
