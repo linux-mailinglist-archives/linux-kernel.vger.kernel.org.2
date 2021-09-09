@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAF24047AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010284047B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhIIJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:24:20 -0400
-Received: from mail-eopbgr60071.outbound.protection.outlook.com ([40.107.6.71]:16515
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232262AbhIIJYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:24:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TlfUBJzaf51KLzV3quvgkJ6ug5Gb0EP2UnXdVAa1JBQLByGlnXSpc3Wu70daE3N98otllXHd4QBcwuCmk8fw9o/bcNr/5TBXWhBwMesWcikr2e3+W1V3WsoofS3hIXEZ9jhcaYcfph1ZIrRYl06MKaMqsSe+ty3FaXCp5iTrqaTIWpBXfzkix24ifvmYvx6koYEv0KgC/ohBBkgwUMrpP2m+hsfXP23rN9H7IqEX8efDswKFa6c9a1uNmUhWmtFhAp6VKxSEEaNhEFm8wBUa0yHRtbvk8O/+8JBu8QI197rF/nLALYyHjDuJxGgDZOCFmOZ0htFDt7iJZcYhfsMX9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=dUStuCdpcsCKQemZ8w157CaHQvZ+LY+JxQEdui4Wryk=;
- b=I1y4xiYxbLJaKKETmuy9wPTBhTQ1tXkPEko9Ntw7OulTYaDWinhtAjG21CYVFCASgxd2hfvct2q4DBEXxCZ/ESD0aUYlaBExibiX8iYurn9peZnAfG9QTylofdIhduVy5aO3wp0kTLd+l3I6eof1dS0WQ+Z497eS+P0aYTy81JwBPvVIKxHFcEoMi9k8GIol5lAixnAMGP0tOEd/3vRiAo4lQRWw2scZjixeAm7/HUyf35PPldzk2xpUBi1rgYy0x9xW7gj4RSVZPqlqmcFvtBFnguTfrIEA/Iq5foqBwO3EVR89cemoIeUKEOZtBzFuiEj4rrb0Se/rHKE5m4RrcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dUStuCdpcsCKQemZ8w157CaHQvZ+LY+JxQEdui4Wryk=;
- b=JYlz36tDkzGg2WQbvn5495/+ftprpV6N343CAKaBIuk0P7S37YjAuCtL+9CorF4mAMXKQ2S43R+XTBv8EP29bfheYvhxGnG0nNSEyd3ryodKR54tHSso6ENGJICzjDAQIu4kvv4kNjLuRnac5pgsQhVBv1KDMBADMFED+0wVH0I=
-Authentication-Results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
- 2021 09:23:08 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4500.017; Thu, 9 Sep 2021
- 09:23:08 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: stmmac: platform: fix build warning when with !CONFIG_PM_SLEEP
-Date:   Thu,  9 Sep 2021 17:23:22 +0800
-Message-Id: <20210909092322.19825-1-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32)
- To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+        id S232725AbhIIJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232262AbhIIJ2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:28:07 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C5C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 02:26:58 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id k18-20020a4abd92000000b002915ed21fb8so352679oop.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 02:26:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=d6F+Zj7MjB0XsuFv8vC0jvK+3NOF2gE3rZxZ5a2W05s=;
+        b=J/X/N7UJ24d0X+MJB3iWpT8oP9ex27IKpiWfr/Jx27AavQSVoRfCNadiY8Tceml6bm
+         HI2WYBgWX2XM3wHo57eMTlDym4BPrzY5TLENrL55Qc9/n3olMQTJMShp4hz7bFUJf20L
+         ah6eLcPl8rzddCItE/alxwf+7ve/nf4jaQP/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=d6F+Zj7MjB0XsuFv8vC0jvK+3NOF2gE3rZxZ5a2W05s=;
+        b=Dh/4phhuA7lZIHagDqqo4bz8F3hHFTnCLNxs/APVbJ3u6NmutpF3MlG7JyXB0jCY4S
+         pG0NyedEVcMHHmhtiX6+xbjGoFRPbzePbYodp8ZiHDOOKefB+63sM+TZORcCpdqzYlBE
+         4WcFEWMq1OWRhL6C5hoGgDDvNVAXyc5YDkYNbSN7y8y2Cq22qOzIfFmqruvnSCC1RNgN
+         TqwPNkB2JGFdR6N/9d5CTnPC1jvaiRp1eJ6oBpErP7/M8VJGzzFocd492fvjMcZoaggL
+         Bbb1ENSiDNQx4V/PSh/D8x/fkU8oJhwi2Ue3x4pHMDKrF4+4oMjMU2yWzuwgkU57Hg6E
+         sskw==
+X-Gm-Message-State: AOAM531ga2w0GOGNVWjUd7fCmzT5bE96GDqecVbggqJe9Vx+LuRtpiOZ
+        lv9hFqQvZeKGZNNTWZWBS4R6mVl4lzHB6bg5hYZnpQ==
+X-Google-Smtp-Source: ABdhPJwptKVSDdb5MZuH2gAMae7SYaRhDjB7Yn7WTC2WufiW9ywCDqWj/hKzIPZ+IZhrS2BkldbXBFyfZg3QfJHHPmw=
+X-Received: by 2002:a4a:dc51:: with SMTP id q17mr1630242oov.10.1631179617509;
+ Thu, 09 Sep 2021 02:26:57 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 09:23:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d0ba1d6-0ee8-40f9-c1a4-08d973736f73
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6795:
-X-Microsoft-Antispam-PRVS: <DB8PR04MB6795F4217B6BA6C34C61F493E6D59@DB8PR04MB6795.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U13lrVtTMp7PTwQV12bv+uz2FmWk2+Q0nI9RqMmUVMGhCmBx1qJXCFBlS4ViB06NFjRFl3V5MqKVq7tixSkoMeJGr2uirKwoqfkmjEL9rFctxOQDKcI7TiroQJbuDYTtdxY5HoWJBJLEmKSyQTi+f0QHAn7UV5fsAvj6l0xQpR9r1vsN64UPEgZVNKUINy5DgOFHv/YtFi9OSvVI5NwNCASBf+aoeOqmO8hj4fp/HFl8xH1FT7LL6vC0LbQjJqls5FMAJx3lHTzcOGqRzPz+d/aKG2pqaRMEBihFRxid1gErshl7PlPzQnx2V3KtW0MMmX2qgpj4pXHaZFBiS+FlBmu60vO85LI2pa7hw+R1x1YMGJZkgRqHIo7HxnkCbruOA2OXvcpjeWruTPEPGo6KNVwHrI/UkjgYY5GoUgrhkkbgfCSE2C7H1WJs1ccVVyO2fPRoTVUVMwCzDjxauTdzc3VQDlbzhoVwcKb4Mzip10Ljd3W0pXTmulymLRXiQFYsT0V7YuKLN+yBYsLAkc/D4o6mQRKQVnhaeRahCXJ8QcXVV+fNlCNvHZ/iXIa3pMIF04F8+5MEVD465xzdcvFrz7LH+4Twf89RZqwjAtSsFeU9FIQzisCvPHaJTe3KOecEdc6Wd+gqS5FCUmuTR9RadXUbfPqh+B6dB/aFtxVgFcJeutpnd3qcAEqLnQjln3irDESg65ZWMeaXcEQKQi63nw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(366004)(6512007)(38350700002)(8676002)(2616005)(38100700002)(5660300002)(956004)(36756003)(4326008)(1076003)(316002)(6506007)(52116002)(2906002)(26005)(186003)(83380400001)(86362001)(8936002)(6486002)(66556008)(66476007)(66946007)(478600001)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E1Z+er3EWfy12RdEUD3xq9m37ijO7i9v2diG/5iSz2t/g65R3ycTop7PkXXx?=
- =?us-ascii?Q?Wq8qrJNVsfYLRnLmibGis99heVft/OCrupdX0YcQwjTifbmyxat261Iu6FaE?=
- =?us-ascii?Q?PCBaA5xUNqBI1Oea9rBNYEFmK6w6BeAiPMyg0VZylIBrtzdI8lcLscU0tbcr?=
- =?us-ascii?Q?ekBM3RHbq9ZMwmQhRpPSn1kAMNonh5CQKf791qvGmDA+mqTa+XaK1g3HFsZt?=
- =?us-ascii?Q?LyhD4+GpCmSIUkjucoiGV8m4Q3jo7iFPdqiM701i6Tzor+6W2W2yG8triyqk?=
- =?us-ascii?Q?d7gQ9MTF/hitwU+8YYTi9xbtrBPE/H1km2DTPaH7MfKqkAFFANUMWx8WNn8Q?=
- =?us-ascii?Q?2iGNSw88M0It4RuwCqPdUOfhTKNCVFVCAZdaBTYwCYvdNw+l8jgQJ5prN+OP?=
- =?us-ascii?Q?c2xeCFELQ+5AdfyKAdhCY4j0Wbqd2p4sL3jPDAMlYKMcl2L45+f6ABWblpii?=
- =?us-ascii?Q?BAVaJTT5huwoI9vhZPi+b4SJKuEFB95KrKW350IvL6bBXWFg8/J5+CAdWQR1?=
- =?us-ascii?Q?UTihjT/XpXEOaqT7Ylc+MIaqMoS557c6vEQNL3/kJq+4VWOuvbloPdMpypBc?=
- =?us-ascii?Q?tIpleBL91ztAznufksERxbLBQtW4kusXB1EMtuMnCsn8aLehjfgu+7a11qEA?=
- =?us-ascii?Q?w7MxFzrXM1oggd55ykp09A/gFyj4KzU03dBfTG1eSxfcQs40TAr0DWMpeSr8?=
- =?us-ascii?Q?+cNovpXUQdCNXUOaztTvVU9O3J46S15agPfb0eKHSvikLoVHue4aj8ForO6j?=
- =?us-ascii?Q?Ctr4mZ8Z2r6afLH4ZMAelALNXhLwLr5ECT4x5uqs3KpQc7pNGfe6QKqyLKiV?=
- =?us-ascii?Q?/Azc/+h0x/9VWHxHMh0ugUdLD50LhXj2doOcwoR7Io51oSyAePZtWDfboUZG?=
- =?us-ascii?Q?0fsrwjDqHyB37WBt8HNeXAaIbN7HUg4xXVCpFInNbmnc+Fw4zOEjAbaEnox1?=
- =?us-ascii?Q?sr8ieA35fXuiT9A89mWYbzBmC38DSKlLxQqALxQ1LkmCLS+vag9Zo7hSPY6K?=
- =?us-ascii?Q?br03v2tKp1K+9YxAbyWilnjMpjELEiI8LFFXSh/U+RaETmXhAESyAA78j9dv?=
- =?us-ascii?Q?Mv7Qijvw3AJqdkG377flCLnfk2Ma1K1RgcTSRlPG8D4K14KCEV97502oK2zg?=
- =?us-ascii?Q?zbUaPX74javl57ZPGFBCSnVIyQWqSAHZMLrqSJBW58ABWxHqTZymo4asEFcj?=
- =?us-ascii?Q?e57rnxqJc3/gt2IeTLGdoGWYXTPsDnyvEhA00tNWDVkrxuDIHisAsH1jBW5i?=
- =?us-ascii?Q?mi+r6g4WBOlgset3Ucgmlu/oXOFcJof8aKTb1AvGfiENrqWd4aHPcyu2X3dX?=
- =?us-ascii?Q?xDabPDMPOxJZLUeV3+QlDWCl?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d0ba1d6-0ee8-40f9-c1a4-08d973736f73
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 09:23:08.0495
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NDJcGnHSQFH+SpHgtMxZsMDhabiCZXvKuNVHA4wnQG9IOme94fjV73hude4LGPXUCCTBts+9CnrQmTUGV6Qxzw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6795
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+ <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com> <20210908233354.GB3544071@ziepe.ca>
+In-Reply-To: <20210908233354.GB3544071@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 9 Sep 2021 11:26:46 +0200
+Message-ID: <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shunsuke Mie <mie@igel.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __maybe_unused for noirq_suspend()/noirq_resume() hooks to avoid
-build warning with !CONFIG_PM_SLEEP:
+On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
+> > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.koenig@a=
+md.com> wrote:
+> > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
+> > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hellw=
+ig <hch@infradead.org>:
+> > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
+> > > >>>> Thank you for your comment.
+> > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
+> > > >>>>>> To share memory space using dma-buf, a API of the dma-buf requ=
+ires dma
+> > > >>>>>> device, but devices such as rxe do not have a dma device. For =
+those case,
+> > > >>>>>> change to specify a device of struct ib instead of the dma dev=
+ice.
+> > > >>>>> So if dma-buf doesn't actually need a device to dma map why do =
+we ever
+> > > >>>>> pass the dma_device here?  Something does not add up.
+> > > >>>> As described in the dma-buf api guide [1], the dma_device is use=
+d by dma-buf
+> > > >>>> exporter to know the device buffer constraints of importer.
+> > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%=
+3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian.koeni=
+g%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d99=
+4e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjA=
+wMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3DARwQ=
+yo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> > > >>> Which means for rxe you'd also have to pass the one for the under=
+lying
+> > > >>> net device.
+> > > >> I thought of that way too. In that case, the memory region is cons=
+trained by the
+> > > >> net device, but rxe driver copies data using CPU. To avoid the con=
+straints, I
+> > > >> decided to use the ib device.
+> > > > Well, that is the whole problem.
+> > > >
+> > > > We can't mix the dmabuf stuff people are doing that doesn't fill in
+> > > > the CPU pages in the SGL with RXE - it is simply impossible as thin=
+gs
+> > > > currently are for RXE to acess this non-struct page memory.
+> > >
+> > > Yeah, agree that doesn't make much sense.
+> > >
+> > > When you want to access the data with the CPU then why do you want to
+> > > use DMA-buf in the first place?
+> > >
+> > > Please keep in mind that there is work ongoing to replace the sg tabl=
+e
+> > > with an DMA address array and so make the underlying struct page
+> > > inaccessible for importers.
+> >
+> > Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
+> > for cpu access. Which intentionally does not require any device. No
+> > idea why there's a dma_buf_attach involved. Now not all exporters
+> > support this, but that's fixable, and you must call
+> > dma_buf_begin/end_cpu_access for cache management if the allocation
+> > isn't cpu coherent. But it's all there, no need to apply hacks of
+> > allowing a wrong device or other fun things.
+>
+> Can rxe leave the vmap in place potentially forever?
 
->> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c:796:12: error: 'stmmac_pltfr_noirq_resume' defined but not used [-Werror=unused-function]
-     796 | static int stmmac_pltfr_noirq_resume(struct device *dev)
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c:775:12: error: 'stmmac_pltfr_noirq_suspend' defined but not used [-Werror=unused-function]
-     775 | static int stmmac_pltfr_noirq_suspend(struct device *dev)
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-Fixes: 276aae377206 ("net: stmmac: fix system hang caused by eee_ctrl_timer during suspend/resume")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 4885f9ad1b1e..62cec9bfcd33 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -772,7 +772,7 @@ static int __maybe_unused stmmac_runtime_resume(struct device *dev)
- 	return stmmac_bus_clks_config(priv, true);
- }
- 
--static int stmmac_pltfr_noirq_suspend(struct device *dev)
-+static int __maybe_unused stmmac_pltfr_noirq_suspend(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct stmmac_priv *priv = netdev_priv(ndev);
-@@ -793,7 +793,7 @@ static int stmmac_pltfr_noirq_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int stmmac_pltfr_noirq_resume(struct device *dev)
-+static int __maybe_unused stmmac_pltfr_noirq_resume(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct stmmac_priv *priv = netdev_priv(ndev);
--- 
-2.17.1
-
+Yeah, it's like perma-pinning the buffer into system memory for
+non-p2p dma-buf sharing. We just squint and pretend that can't be
+abused too badly :-) On 32bit you'll run out of vmap space rather
+quickly, but that's not something anyone cares about here either. We
+have a bunch of more sw modesetting drivers in drm which use
+dma_buf_vmap() like this, so it's all fine.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
