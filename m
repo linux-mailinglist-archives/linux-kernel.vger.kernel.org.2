@@ -2,224 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D94C40458D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B2B404650
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352496AbhIIGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:21:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:54028 "EHLO mga01.intel.com"
+        id S1352678AbhIIHjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 03:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244314AbhIIGVl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:21:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="243004509"
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="243004509"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:20:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="479489279"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2021 23:20:28 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf list: Display pmu prefix for partially supported hybrid cache events
-Date:   Thu,  9 Sep 2021 14:18:44 +0800
-Message-Id: <20210909061844.10221-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232549AbhIIHjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 03:39:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9399660F11;
+        Thu,  9 Sep 2021 07:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631173081;
+        bh=BLlfDPerQHZHqOIxgrdyUbnhgCPzfv2cz4NmxD+JzOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QHmisJ7fUaWxVDE4dS5DkfSuEgfBmbBBJ82yIRyW68s92RMWQ1cM4yhSLvhLq6upp
+         Mk+JjszqrK7ZS2St9jTTqI4vf/NkacU6VyHGugC+0DGhbbqoD/VEWeyQKRWAysupyH
+         LE4RgbLBB09Kz8pMPve9TqjDR7zh38AEnMtH3+co=
+Date:   Thu, 9 Sep 2021 08:18:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: usb/qcom,dwc3: add ipq4019 compatible
+Message-ID: <YTmnU7mufgyhPLG8@kroah.com>
+References: <20210908193329.87992-1-david@ixit.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908193329.87992-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Part of hardware cache events are only available on one CPU PMU.
-For example, 'L1-dcache-load-misses' is only available on cpu_core.
-perf list should clearly report this info.
+On Wed, Sep 08, 2021 at 09:33:28PM +0200, David Heidelberg wrote:
+> Prequisite for getting rid of another warnings when building ipq4019.
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index e70afc40edb2..19641380f922 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -13,6 +13,7 @@ properties:
+>    compatible:
+>      items:
+>        - enum:
+> +          - qcom,ipq4019-dwc3
+>            - qcom,msm8996-dwc3
+>            - qcom,msm8998-dwc3
+>            - qcom,sc7180-dwc3
+> -- 
+> 2.33.0
+> 
 
-root@otcpl-adl-s-2:~# ./perf list
+Hi,
 
-Before:
-  L1-dcache-load-misses                              [Hardware cache event]
-  L1-dcache-loads                                    [Hardware cache event]
-  L1-dcache-stores                                   [Hardware cache event]
-  L1-icache-load-misses                              [Hardware cache event]
-  L1-icache-loads                                    [Hardware cache event]
-  LLC-load-misses                                    [Hardware cache event]
-  LLC-loads                                          [Hardware cache event]
-  LLC-store-misses                                   [Hardware cache event]
-  LLC-stores                                         [Hardware cache event]
-  branch-load-misses                                 [Hardware cache event]
-  branch-loads                                       [Hardware cache event]
-  dTLB-load-misses                                   [Hardware cache event]
-  dTLB-loads                                         [Hardware cache event]
-  dTLB-store-misses                                  [Hardware cache event]
-  dTLB-stores                                        [Hardware cache event]
-  iTLB-load-misses                                   [Hardware cache event]
-  node-load-misses                                   [Hardware cache event]
-  node-loads                                         [Hardware cache event]
-  node-store-misses                                  [Hardware cache event]
-  node-stores                                        [Hardware cache event]
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-After:
-  L1-dcache-loads                                    [Hardware cache event]
-  L1-dcache-stores                                   [Hardware cache event]
-  L1-icache-load-misses                              [Hardware cache event]
-  LLC-load-misses                                    [Hardware cache event]
-  LLC-loads                                          [Hardware cache event]
-  LLC-store-misses                                   [Hardware cache event]
-  LLC-stores                                         [Hardware cache event]
-  branch-load-misses                                 [Hardware cache event]
-  branch-loads                                       [Hardware cache event]
-  cpu_atom/L1-icache-loads/                          [Hardware cache event]
-  cpu_core/L1-dcache-load-misses/                    [Hardware cache event]
-  cpu_core/node-load-misses/                         [Hardware cache event]
-  cpu_core/node-loads/                               [Hardware cache event]
-  dTLB-load-misses                                   [Hardware cache event]
-  dTLB-loads                                         [Hardware cache event]
-  dTLB-store-misses                                  [Hardware cache event]
-  dTLB-stores                                        [Hardware cache event]
-  iTLB-load-misses                                   [Hardware cache event]
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Now we can clearly see 'L1-dcache-load-misses' is only available
-on cpu_core.
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
 
-If without pmu prefix, it indicates the event is available on both
-cpu_core and cpu_atom.
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/parse-events.c | 76 ++++++++++++++++++++++++++++++----
- 1 file changed, 68 insertions(+), 8 deletions(-)
+thanks,
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index e5eae23cfceb..579fd654cb11 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2704,7 +2704,7 @@ int is_valid_tracepoint(const char *event_string)
- 	return 0;
- }
- 
--static bool is_event_supported(u8 type, unsigned config)
-+static bool is_event_supported(u8 type, u64 config)
- {
- 	bool ret = true;
- 	int open_return;
-@@ -2824,10 +2824,18 @@ void print_sdt_events(const char *subsys_glob, const char *event_glob,
- 
- int print_hwcache_events(const char *event_glob, bool name_only)
- {
--	unsigned int type, op, i, evt_i = 0, evt_num = 0;
--	char name[64];
--	char **evt_list = NULL;
-+	unsigned int type, op, i, evt_i = 0, evt_num = 0, npmus = 0;
-+	char name[64], new_name[128];
-+	char **evt_list = NULL, **evt_pmus = NULL;
- 	bool evt_num_known = false;
-+	struct perf_pmu *pmu = NULL;
-+
-+	if (perf_pmu__has_hybrid()) {
-+		npmus = perf_pmu__hybrid_pmu_num();
-+		evt_pmus = zalloc(sizeof(char *) * npmus);
-+		if (!evt_pmus)
-+			goto out_enomem;
-+	}
- 
- restart:
- 	if (evt_num_known) {
-@@ -2843,20 +2851,61 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 				continue;
- 
- 			for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
-+				unsigned int hybrid_supported = 0, j;
-+				bool supported;
-+
- 				__evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
- 				if (event_glob != NULL && !strglobmatch(name, event_glob))
- 					continue;
- 
--				if (!is_event_supported(PERF_TYPE_HW_CACHE,
--							type | (op << 8) | (i << 16)))
--					continue;
-+				if (!perf_pmu__has_hybrid()) {
-+					if (!is_event_supported(PERF_TYPE_HW_CACHE,
-+								type | (op << 8) | (i << 16))) {
-+						continue;
-+					}
-+				} else {
-+					perf_pmu__for_each_hybrid_pmu(pmu) {
-+						if (!evt_num_known) {
-+							evt_num++;
-+							continue;
-+						}
-+
-+						supported = is_event_supported(
-+									PERF_TYPE_HW_CACHE,
-+									type | (op << 8) | (i << 16) |
-+									((__u64)pmu->type << PERF_PMU_TYPE_SHIFT));
-+						if (supported) {
-+							snprintf(new_name, sizeof(new_name), "%s/%s/",
-+								 pmu->name, name);
-+							evt_pmus[hybrid_supported] = strdup(new_name);
-+							hybrid_supported++;
-+						}
-+					}
-+
-+					if (hybrid_supported == 0)
-+						continue;
-+				}
- 
- 				if (!evt_num_known) {
- 					evt_num++;
- 					continue;
- 				}
- 
--				evt_list[evt_i] = strdup(name);
-+				if ((hybrid_supported == 0) ||
-+				    (hybrid_supported == npmus)) {
-+					evt_list[evt_i] = strdup(name);
-+					if (npmus > 0) {
-+						for (j = 0; j < npmus; j++)
-+							zfree(&evt_pmus[j]);
-+					}
-+				} else {
-+					for (j = 0; j < hybrid_supported; j++) {
-+						evt_list[evt_i++] = evt_pmus[j];
-+						evt_pmus[j] = NULL;
-+					}
-+					continue;
-+				}
-+
- 				if (evt_list[evt_i] == NULL)
- 					goto out_enomem;
- 				evt_i++;
-@@ -2868,6 +2917,13 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 		evt_num_known = true;
- 		goto restart;
- 	}
-+
-+	for (evt_i = 0; evt_i < evt_num; evt_i++) {
-+		if (!evt_list[evt_i])
-+			break;
-+	}
-+
-+	evt_num = evt_i;
- 	qsort(evt_list, evt_num, sizeof(char *), cmp_string);
- 	evt_i = 0;
- 	while (evt_i < evt_num) {
-@@ -2886,6 +2942,10 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 	for (evt_i = 0; evt_i < evt_num; evt_i++)
- 		zfree(&evt_list[evt_i]);
- 	zfree(&evt_list);
-+
-+	for (evt_i = 0; evt_i < npmus; evt_i++)
-+		zfree(&evt_pmus[evt_i]);
-+	zfree(&evt_pmus);
- 	return evt_num;
- 
- out_enomem:
--- 
-2.17.1
-
+greg k-h's patch email bot
