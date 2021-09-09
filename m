@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A179404498
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D61440449C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350473AbhIIErc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:47:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27821 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349701AbhIIErb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:47:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631162782; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=2aiD8EVkn8rCQHehlY7lNToGb+2zc8QVGnMllSyftjI=;
- b=EGx3Ph3zidI81WyCFHo9HtKss5hkvVM8KZd7dU/YCSy06IH78RvD6LzSNkckMSFHZQo7CXlJ
- 54JF3VVb1VLD5iS3lIQ4RJs/mlD1/YSr3VSVR7ASWbYHbb8V+QCfnC6oY9BHp25sl4A4/+Sg
- Tv6k6QSj6dfJHDCdrAHnLhPsZRs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6139918ce34848cb6aa98c85 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 04:46:04
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B0F32C4360D; Thu,  9 Sep 2021 04:46:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2171CC4338F;
-        Thu,  9 Sep 2021 04:46:04 +0000 (UTC)
+        id S1350487AbhIIEvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhIIEvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 00:51:06 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3941C061575;
+        Wed,  8 Sep 2021 21:49:57 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso1001882otu.0;
+        Wed, 08 Sep 2021 21:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zSdDJmykDz9RTad7mrV36cJkuuQOB/FNuOcap03OkbQ=;
+        b=WhMD+ExrGhJW1OHa5voKbQZpKXvfpplr6A2O+kLcKVPh9VhkAFPZdWQnSIfi1dO3Pc
+         IEYcRwc00hz+0TfbtGfjxrZfKqzx+1NnJIYUEadNVbHmrOOILrYtRsAz3SCTEvgSeOsI
+         Trk5CVsi3yC1NUko5efAQkZPA4ZwiOjviaiXSaeVdXM0RioH+wa/N7bSmgj8lJIyWbQ1
+         Mhw0o310t5SnQYzzxGa5q0d4jyyvVe1uPWU6z2+zcwgxDIm8EFgQhNlR7aWDfcvjP/wX
+         /RZoXYLsRjPzFR0HyVBnatWw13/bMe1SX0EGVJ61jkBaqkyDKRWF0MT/xm2E/0QBCq92
+         r05A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=zSdDJmykDz9RTad7mrV36cJkuuQOB/FNuOcap03OkbQ=;
+        b=e9nk4yAyKlrqM76zddkKYTnzg4ymmoPE5Leo9wQR1fzLTNSOASYdngSFFbEO5dm02+
+         PVStDlV9QVek1KQFF2k37RfcxTKfAq0gUFovj2uJOXjfI86yR3F72W4R6IjT+B8hvF+Q
+         1Em5qWZtFWr+VawfncmJFHHf2szxn5OqKDoaj+n4M8ysF3Me9TJIf2TiIolpBS0TjZz9
+         8tM3aKgYz9j9U8/c/9+4gV3c3uft5HWfs5U/tfoVXDqmzGTzcDKHakgli+bK5R8vU36l
+         ntPehnKdG1ezVqOZmM+6L0P1XvFdLMbNTqZD3aSVvfGCEE7HymJ1PM98AWE2MMmNcQdP
+         Q3gQ==
+X-Gm-Message-State: AOAM530gpjPzDGp0Mks456fYdE8oGMyA+WhMOJV3lukc20RChtVyLL/Z
+        sQmabP5SmRrg3YaRy5est6U6T8yjGTI=
+X-Google-Smtp-Source: ABdhPJwEm11UZMvKdp3qo1Wj2KPQIelfNBHGRzB8M6PTnjqGCcHcgmAXjNotYVd5/Wq9v0MYEEbwKA==
+X-Received: by 2002:a05:6830:2781:: with SMTP id x1mr927266otu.334.1631162997005;
+        Wed, 08 Sep 2021 21:49:57 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 97sm180427otv.26.2021.09.08.21.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 21:49:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH] net: ni65: Avoid typecast of pointer to u32
+Date:   Wed,  8 Sep 2021 21:49:53 -0700
+Message-Id: <20210909044953.1564070-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 09 Sep 2021 10:16:04 +0530
-From:   rajpat@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, sboyd@kernel.org, dianders@chromium.org
-Subject: Re: [PATCH V7 3/7] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
-In-Reply-To: <YTJOU/oVWSdxD1uz@google.com>
-References: <1630643340-10373-1-git-send-email-rajpat@codeaurora.org>
- <1630643340-10373-4-git-send-email-rajpat@codeaurora.org>
- <YTJOU/oVWSdxD1uz@google.com>
-Message-ID: <bfdccfc2e4362218fc8099dfe566bc1d@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-03 22:03, Matthias Kaehlcke wrote:
-> On Fri, Sep 03, 2021 at 09:58:56AM +0530, Rajesh Patil wrote:
->> From: Roja Rani Yarubandi <rojay@codeaurora.org>
->> 
->> Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
->> 
->> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 684 
->> ++++++++++++++++++++++++++++++++++-
->>  1 file changed, 682 insertions(+), 2 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 7ec9871..5c6a1d7 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> 
->> ...
->> 
->> +			qup_spi0_data_clk: qup-spi0-data-clk {
->> +				pins = "gpio0", "gpio1", "gpio2";
->> +				function = "qup00";
->> +			};
->> +
->> +			qup_spi0_cs: qup-spi0-cs {
->> +				pins = "gpio3";
->> +				function = "qup00";
->> +			};
-> 
-> 
-> I think we still want this for all SPI ports, which existed in previous
-> versions:
-> 
-> 			qup_spi0_cs_gpio: qup-spi0-cs-gpio {
-> 				pins = "gpio3";
-> 				function = "gpio";
-> 			};
-> 
-> It just shouldn't be selected together with 'qup_spiN_cs'.
-> 
-> Maybe a follow up patch would be good enough, so:
-> 
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Building alpha:allmodconfig results in the following error.
 
+drivers/net/ethernet/amd/ni65.c: In function 'ni65_stop_start':
+drivers/net/ethernet/amd/ni65.c:751:37: error:
+	cast from pointer to integer of different size
+		buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
 
-ok.shall we add qup_spiN_cs_gpio for all spi ports
+'buffer[]' is declared as unsigned long, so replace the typecast to u32
+with a typecast to unsigned long to fix the problem.
+
+Cc: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/net/ethernet/amd/ni65.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/amd/ni65.c b/drivers/net/ethernet/amd/ni65.c
+index b5df7ad5a83f..032e8922b482 100644
+--- a/drivers/net/ethernet/amd/ni65.c
++++ b/drivers/net/ethernet/amd/ni65.c
+@@ -748,7 +748,7 @@ static void ni65_stop_start(struct net_device *dev,struct priv *p)
+ #ifdef XMT_VIA_SKB
+ 			skb_save[i] = p->tmd_skb[i];
+ #endif
+-			buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
++			buffer[i] = (unsigned long)isa_bus_to_virt(tmdp->u.buffer);
+ 			blen[i] = tmdp->blen;
+ 			tmdp->u.s.status = 0x0;
+ 		}
+-- 
+2.33.0
+
