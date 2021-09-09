@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696954059C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409104059D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236474AbhIIO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:56:34 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56714 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232359AbhIIO4d (ORCPT
+        id S236219AbhIIPBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:01:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43700 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229709AbhIIPBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:56:33 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 189D2xEW008460;
-        Thu, 9 Sep 2021 16:55:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=6VSAWmEbCA5S7HOgjWSLJ/kPpl3J+ONHFObQga3sbMs=;
- b=DxjvpDNhQbI+8ALBOVh6BQr8y7I3ERUA/vovpMt5r1xyDkfeZMa3V2qHNM9orOKROz0p
- uXPHOZTOI1Xz5W2UsNrtzPsFCyOezEPwFPiXY8YFk6dRFjz5gx6r9BomV1O4jmrP8xik
- ArvtNeIIFzYASTDyY5/CU64kPmrzL6CiH65aRsXwDXKKfcyC5kMyhCDdlThciOef1YbY
- Br8MztS/PEpIdQc2FmTCJfmo8kHeI3CnNahH7/M25jld49XXeLt9LMwqJBYkSVD8hp2y
- KuX7woaezFAmYrwRIDsupPU5vMR5wqv8ssZsE/uWjeLfJPEqVlDzjZ7v/ae2zrRrPVJ4 Mg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3ayej6t7x1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 16:55:13 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 729BC10002A;
-        Thu,  9 Sep 2021 16:55:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node2.st.com [10.75.127.2])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4D8FC21FA84;
-        Thu,  9 Sep 2021 16:55:13 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG1NODE2.st.com (10.75.127.2)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 9 Sep 2021 16:55:12
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH] MAINTAINERS: fix update references to stm32 audio bindings
-Date:   Thu, 9 Sep 2021 16:54:49 +0200
-Message-ID: <20210909145449.24388-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 9 Sep 2021 11:01:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631199595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xs2SVTgBq7Vx1ySawCfwpzsExlEbPS/kiK1uV7V/sfI=;
+        b=gx7KgXi5nGh52w8CoZg1tZ6rCJBJbsGJsFlodpUvTwpEYTQYyXn8yShKnE1zA46Hs1dZm0
+        ioo0tcID959nh6aMMgphvShUgAAI/yDtWeqZ5dhNkEjlw/h2v4/ROEuKKko3gvWAfUdZ41
+        baTRv0SMejRgpILaNWIf39Oc6WuxhJM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-ItPiY0keN0C6pc0gHxBjsg-1; Thu, 09 Sep 2021 10:59:54 -0400
+X-MC-Unique: ItPiY0keN0C6pc0gHxBjsg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6CAD8145E7;
+        Thu,  9 Sep 2021 14:59:52 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.192.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9123869FAE;
+        Thu,  9 Sep 2021 14:59:46 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Subject: [PATCH RFC 0/9] s390: fixes, cleanups and optimizations for page table walkers
+Date:   Thu,  9 Sep 2021 16:59:36 +0200
+Message-Id: <20210909145945.12192-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE2.st.com
- (10.75.127.2)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-09_05,2021-09-09_01,2020-04-07_01
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 00d38fd8d2524 ("MAINTAINERS: update references to stm32 audio bindings")
-commit update the bindings reference, by
-removing bindings/sound/st,stm32-adfsdm.txt, to set the
-new reference to bindings/iio/adc/st,stm32-*.yaml.
+RFC because the patches are essentially untested and I did not actually
+try to trigger any of the things these patches are supposed to fix. It
+merely matches my current understanding (and what other code does :) ). I
+did compile-test as far as possible.
 
-This leads to "get_maintainer finds" the match for the
-Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml,
-but also to the IIO bindings
-Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+After learning more about the wonderful world of page tables and their
+interaction with the mmap_sem and VMAs, I spotted some issues in our
+page table walkers that allow user space to trigger nasty behavior when
+playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
+should be hard to trigger, others are fairly easy because we provide
+conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
 
-And The commit fixes only a part of the problem:
-Documentation/devicetree/bindings/sound/st,stm32-*.txt file have been
-also moved to yaml.
+Future work:
+- Don't use get_locked_pte() when it's not required to actually allocate
+  page tables -- similar to how storage keys are now handled. Examples are
+  get_pgste() and __gmap_zap.
+- Don't use get_locked_pte() and instead let page fault logic allocate page
+  tables when we actually do need page tables -- also, similar to how
+  storage keys are now handled. Examples are set_pgste_bits() and
+  pgste_perform_essa().
+- Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
+  __gmap_zap() that's very easy.
 
-Update references to include all stm32 audio bindings file and
-exclude the st,stm32-adc.yaml bindings file.
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Janosch Frank <frankja@linux.ibm.com>
+Cc: Cornelia Huck <cohuck@redhat.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
 
-cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Fixes: 0d38fd8d2524 ("MAINTAINERS: update references to stm32 audio bindings")
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+David Hildenbrand (9):
+  s390/gmap: validate VMA in __gmap_zap()
+  s390/gmap: don't unconditionally call pte_unmap_unlock() in
+    __gmap_zap()
+  s390/mm: validate VMA in PGSTE manipulation functions
+  s390/mm: fix VMA and page table handling code in storage key handling
+    functions
+  s390/uv: fully validate the VMA before calling follow_page()
+  s390/pci_mmio: fully validate the VMA before calling follow_pte()
+  s390/mm: no need for pte_alloc_map_lock() if we know the pmd is
+    present
+  s390/mm: optimize set_guest_storage_key()
+  s390/mm: optimize reset_guest_reference_bit()
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3a9a7cbf9456..3f6dc482660e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17886,7 +17886,8 @@ M:	Olivier Moysan <olivier.moysan@foss.st.com>
- M:	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/iio/adc/st,stm32-*.yaml
-+F:	Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-+F:	Documentation/devicetree/bindings/sound/st,stm32-*.yaml
- F:	sound/soc/stm/
- 
- STM32 TIMER/LPTIMER DRIVERS
+ arch/s390/kernel/uv.c    |   2 +-
+ arch/s390/mm/gmap.c      |  11 +++-
+ arch/s390/mm/pgtable.c   | 109 +++++++++++++++++++++++++++------------
+ arch/s390/pci/pci_mmio.c |   4 +-
+ 4 files changed, 89 insertions(+), 37 deletions(-)
+
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
 -- 
-2.17.1
+2.31.1
 
