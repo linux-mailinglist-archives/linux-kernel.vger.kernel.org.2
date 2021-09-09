@@ -2,147 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07F1404573
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE9E404578
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352191AbhIIGL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:11:59 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38754 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231438AbhIIGL5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:11:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UnlsHEw_1631167844;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UnlsHEw_1631167844)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 14:10:46 +0800
-Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
- perf_log_throttle
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
-Message-ID: <83859259-7597-460f-bc9b-487e4efa8ab7@linux.alibaba.com>
-Date:   Thu, 9 Sep 2021 14:10:44 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S1352344AbhIIGMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:12:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41460 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352156AbhIIGMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:12:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631167893; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Tu9VJTw14yYLG7InUDLYuIOAxq1clJaEA5jlZQFtMp0=;
+ b=qQ/2cFIg7o+JQuY3B9OlNolQ7JRX3EbX6QXMJOSD3n5K7G6bOs332TUuu6MlJ402YQYtgVDw
+ UUXjXPmKyFya27fUMh09JTe9opUihOS6ayVwWn/2YaJqDMd17kpQuRlMkeXi55sWdkEkof07
+ aQZZ7pHr2C6nZecYvJmApuI4FEA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6139a594ea875192307bb221 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 06:11:32
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E3D53C4360D; Thu,  9 Sep 2021 06:11:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB483C4338F;
+        Thu,  9 Sep 2021 06:11:29 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 09 Sep 2021 11:41:29 +0530
+From:   skakit@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, swboyd@chromium.org,
+        kgunda@codeaurora.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+In-Reply-To: <YTjuGVOmzkTot8z1@ripper>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
+ <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
+ <YTeskY7kXsdmvGPp@google.com>
+ <b10e5f36fb0216a4c951d752f5103099@codeaurora.org>
+ <YTjW9LAGhTuszoa4@google.com> <YTjuGVOmzkTot8z1@ripper>
+Message-ID: <667da76fe38a67af196e8dad00decd71@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reported-by: Abaci <abaci@linux.alibaba.com>
+On 2021-09-08 22:38, Bjorn Andersson wrote:
+> On Wed 08 Sep 08:29 PDT 2021, Matthias Kaehlcke wrote:
+> 
+>> On Wed, Sep 08, 2021 at 02:37:39PM +0530, skakit@codeaurora.org wrote:
+>> > On 2021-09-07 23:46, Matthias Kaehlcke wrote:
+>> > > On Mon, Sep 06, 2021 at 04:11:07PM +0530, satya priya wrote:
+>> > > > Add pwm support for PM8350C pmic.
+>> > > >
+>> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > > > ---
+>> > > >  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+>> > > >  1 file changed, 6 insertions(+)
+>> > > >
+>> > > > diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> > > > b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> > > > index e1b75ae..ecdae55 100644
+>> > > > --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> > > > +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> > > > @@ -29,6 +29,12 @@
+>> > > >  			interrupt-controller;
+>> > > >  			#interrupt-cells = <2>;
+>> > > >  		};
+>> > > > +
+>> > > > +		pm8350c_pwm4: pwm {
+>> > >
+>> > > What does the '4' represent, an internal channel number? It should
+>> > > probably be omitted if the PM8350 only has a single output PWM
+>> > > port.
+>> > >
+>> >
+>> > pm8350c has four PWMs, but I think we can drop the '4' here.
+>> 
+>> Why is only one PWM exposed if the PMIC has for of them? Why number 4
+>> and not one of the others?
+> 
 
-On 2021/9/9 上午11:13, 王贇 wrote:
-> When running with ftrace function enabled, we observed panic
-> as below:
+pwm4 is used for backlight support on kodiak crd board, so I mentioned 
+4, thinking 4 nodes should be present for 4 pwms.
+but I see that we need to represent all the four channels as one node. 
+will drop the '4' in next version.
+
+Thanks,
+Satya Priya
+
+> The node should represent all 4 channels, which ones the board uses is
+> captured in how they are bound to other clients - or defines as LEDs by
+> additional child nodes.
 > 
->   traps: PANIC: double fault, error_code: 0x0
->   [snip]
->   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
->   [snip]
->   Call Trace:
->    <NMI>
->    perf_trace_buf_alloc+0x26/0xd0
->    perf_ftrace_function_call+0x18f/0x2e0
->    kernelmode_fixup_or_oops+0x5/0x120
->    __bad_area_nosemaphore+0x1b8/0x280
->    do_user_addr_fault+0x410/0x920
->    exc_page_fault+0x92/0x300
->    asm_exc_page_fault+0x1e/0x30
->   RIP: 0010:__get_user_nocheck_8+0x6/0x13
->    perf_callchain_user+0x266/0x2f0
->    get_perf_callchain+0x194/0x210
->    perf_callchain+0xa3/0xc0
->    perf_prepare_sample+0xa5/0xa60
->    perf_event_output_forward+0x7b/0x1b0
->    __perf_event_overflow+0x67/0x120
->    perf_swevent_overflow+0xcb/0x110
->    perf_swevent_event+0xb0/0xf0
->    perf_tp_event+0x292/0x410
->    perf_trace_run_bpf_submit+0x87/0xc0
->    perf_trace_lock_acquire+0x12b/0x170
->    lock_acquire+0x1bf/0x2e0
->    perf_output_begin+0x70/0x4b0
->    perf_log_throttle+0xe2/0x1a0
->    perf_event_nmi_handler+0x30/0x50
->    nmi_handle+0xba/0x2a0
->    default_do_nmi+0x45/0xf0
->    exc_nmi+0x155/0x170
->    end_repeat_nmi+0x16/0x55
-> 
-> According to the trace we know the story is like this, the NMI
-> triggered perf IRQ throttling and call perf_log_throttle(),
-> which triggered the swevent overflow, and the overflow process
-> do perf_callchain_user() which triggered a user PF, and the PF
-> process triggered perf ftrace which finally lead into a suspected
-> stack overflow.
-> 
-> This patch marking the context as recursion during perf_log_throttle()
-> , so no more swevent during the process and no more panic.
-> 
-> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-> ---
->  kernel/events/core.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 744e872..6063443 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -8716,6 +8716,7 @@ static void perf_log_throttle(struct perf_event *event, int enable)
->  	struct perf_output_handle handle;
->  	struct perf_sample_data sample;
->  	int ret;
-> +	int rctx;
-> 
->  	struct {
->  		struct perf_event_header	header;
-> @@ -8738,14 +8739,17 @@ static void perf_log_throttle(struct perf_event *event, int enable)
-> 
->  	perf_event_header__init_id(&throttle_event.header, &sample, event);
-> 
-> +	rctx = perf_swevent_get_recursion_context();
->  	ret = perf_output_begin(&handle, &sample, event,
->  				throttle_event.header.size);
-> -	if (ret)
-> -		return;
-> +	if (!ret) {
-> +		perf_output_put(&handle, throttle_event);
-> +		perf_event__output_id_sample(event, &handle, &sample);
-> +		perf_output_end(&handle);
-> +	}
-> 
-> -	perf_output_put(&handle, throttle_event);
-> -	perf_event__output_id_sample(event, &handle, &sample);
-> -	perf_output_end(&handle);
-> +	if (rctx >= 0)
-> +		perf_swevent_put_recursion_context(rctx);
->  }
-> 
->  /*
-> 
+> Regards,
+> Bjorn
