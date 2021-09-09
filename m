@@ -2,208 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A382405B9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAEF405BA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239648AbhIIRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        id S239996AbhIIRBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234524AbhIIRAz (ORCPT
+        with ESMTP id S239827AbhIIRBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:00:55 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD688C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:59:45 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id r4so5253276ybp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:59:45 -0700 (PDT)
+        Thu, 9 Sep 2021 13:01:17 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC17C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:00:08 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id a13so3201347iol.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h4cQqQOplk8x725n2ey4+/+BvWdK0UMLhYf+SNIozPk=;
-        b=O4T0puoUdDmajej0EsClr36rF3VQEmHKZCjpSAvbYXv/PDlaYW5ih7hdSkYYVp7OFr
-         fSx1buxVk+fhg4K25HNQdnT/A9V+/xIYvYmFJarVLEcx5aWSBN4DZ6vh8mVVandRdCrU
-         n78NET/pRJfSbRKI/IBgztDqYkf6fmuwbmFxHkeKtxXTLc0OzyytfdT+28GXRIn6xG3d
-         xawbnTEJRRRmUO6dG1qqIDPyKZ7yIYhluR4mcoXhFrgxE6eUCAiTkSm2v9NcJ+YDXCpF
-         cW0PSEDndkk6pjoC0rCTTo6Ye+KEjIw5Ub2Au+s/+N0g+xnYoXjWOmpb83VnwNdi0Fej
-         /wCw==
+        bh=2paSwQM8zCxokyQ6GIbHK5N8e/MvXNOEn1+qQELdMbY=;
+        b=bUtpOWsfwWVZVVdqZQr4prAXWhLtnpDKnW1NVBf1elwFDXGPzH9pP5b1AYjXNpKW+u
+         KwAITZt6iBOVQ0ZTlqf5VFH27xIBISY6VkY3/Cq77PbQYov7Ve53nGSNZ6ULxrHajpy6
+         pPgp8UhXigGWsNhjl4CGV0pLgIinpslfZfcHqpgs6ZvgJCYkkIQxOBQRea3Sn9J6g2gq
+         pKoHiQn/cS+lp88/p6m3H17RLTBJb6y71UklEzwU5YUQJw/1G4eCjpRmqJfz1kp7aewE
+         SCC3wyxOtQxajE1y0Mkh1S9P/IO2dhn77Fa4rduKB3DBDg0DDp2OS99leBK9UCnD1fUM
+         6t2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h4cQqQOplk8x725n2ey4+/+BvWdK0UMLhYf+SNIozPk=;
-        b=pbzFO8tzY99PbFBnmQgqdOdXxd9ij6mIS55x///mcmcXYtgAYTZazIYrAfgi8sIX8w
-         KnpYkCb3njrGyx15Z0kwGMFZiPUUD9s1Ko/MqVITdKgzNHqMLFmRlWxMMdYf2p6Ckcdw
-         Zrwe/0Ql0+jkIDDdaeXf/hNoqA6YQG/NimkhZHoGWMXgeOEgCVkiUGvzxfMfKzxiaIPs
-         wmyjyr1QGt2mZzIqBcq1h3GKeJR7jGI7+kXO0vO1ST63ktf/awOhNEPup1xyM6xka8/j
-         FkblfOZor1B7VeFdWGNRQsJ6hLORXMMx+ahHCrkbJTzntKTZodRd9cdk9dUrFYAKv7nU
-         ShVg==
-X-Gm-Message-State: AOAM531Bo2tfGe433Vu34TADUToTGzzWlmTjdM9S12gfr6GtGxNULeQO
-        eRzp2ziPC3G5g5BxmrCcPrSlkai51m/55iziBRZktJDjvpi3+Q==
-X-Google-Smtp-Source: ABdhPJwD2J11x1YItUB+digmkHQyFDgrrRlsAAGKHfI7ALtSn12JHhwFekPsDwP18MY3PE58Vz8ZDU+XjV0cy/d+HSs=
-X-Received: by 2002:a25:cd82:: with SMTP id d124mr5190323ybf.491.1631206784899;
- Thu, 09 Sep 2021 09:59:44 -0700 (PDT)
+        bh=2paSwQM8zCxokyQ6GIbHK5N8e/MvXNOEn1+qQELdMbY=;
+        b=HaNO7b6h7/eOqycWl2gl0N4R3ueOWY7poDP4uHo/5Vuan5a+0lksGPCiHrWr2vFaKV
+         UuBiOATCgYOiVwKF1Hai8YdkPe+DsD8UG+D/pWVdeV1PFQ+M5DVFtj0mIYEE64GpMk6u
+         h3zwXES/XJ0tBIfIeMVdyoUg+cqTQrcEjH+YeHvxlu5J9fw8pjAepDUahjxyk/9Z569w
+         xQhPNRKraCa3UcrrF7gLxjOCT49CqrdGG3OU/gk6HNq/3ghME68rdXcZYcEyS5qDv9/l
+         Eyq76W4fwAl9vvKvoGjcOHsa7APDDdep/RDehnziNQOwogQhZEmszBklYm5KUgmiD40S
+         T19Q==
+X-Gm-Message-State: AOAM53271+1bjMRVfZwsq8l+2XldFqS9oYkTliLStT5K6R4TVZ6DCIMZ
+        s7LcXCEXOakjeJpw+PJtIVQsWvz1CnzPugjahUrvRw==
+X-Google-Smtp-Source: ABdhPJyvnDOMYLUfuOx8UO8RZc5WDLY8KKpV4m0wWiT2yrmOl6CNyM1Zix/Yg4swBUAJ7F2lxGiM6RMiJY9BpXXVE2s=
+X-Received: by 2002:a05:6602:38e:: with SMTP id f14mr3623809iov.62.1631206807352;
+ Thu, 09 Sep 2021 10:00:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-10-rananta@google.com>
- <YTmW7/pY0E9cHQ+c@google.com>
-In-Reply-To: <YTmW7/pY0E9cHQ+c@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 09:59:33 -0700
-Message-ID: <CAJHc60zk6vJg4dj4hm7sCHK08TEr=GtXemDJHb22mgvg2eUfXA@mail.gmail.com>
-Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-To:     Oliver Upton <oupton@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 9 Sep 2021 09:59:56 -0700
+Message-ID: <CAGS_qxp2e3pgZ6nGW+5=qneeVw_Pd_ex9kX4jZqA9bweoHXxFA@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: fix reference count leak in kfree_at_end
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:09 PM Oliver Upton <oupton@google.com> wrote:
+On Thu, Sep 9, 2021 at 12:26 AM 'Xiyu Yang' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
 >
-> On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
-> > At times, such as when in the interrupt handler, the guest wants
-> > to get the vcpuid that it's running on. As a result, introduce
-> > get_vcpuid() that returns the vcpuid of the calling vcpu. At its
-> > backend, the VMM prepares a map of vcpuid and mpidr during VM
-> > initialization and exports the map to the guest for it to read.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  .../selftests/kvm/include/aarch64/processor.h |  3 ++
-> >  .../selftests/kvm/lib/aarch64/processor.c     | 46 +++++++++++++++++++
-> >  2 files changed, 49 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > index b6088c3c67a3..150f63101f4c 100644
-> > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > @@ -133,6 +133,7 @@ void vm_install_exception_handler(struct kvm_vm *vm,
-> >               int vector, handler_fn handler);
-> >  void vm_install_sync_handler(struct kvm_vm *vm,
-> >               int vector, int ec, handler_fn handler);
-> > +void vm_vcpuid_map_init(struct kvm_vm *vm);
-> >
-> >  static inline void cpu_relax(void)
-> >  {
-> > @@ -194,4 +195,6 @@ static inline void local_irq_disable(void)
-> >       asm volatile("msr daifset, #3" : : : "memory");
-> >  }
-> >
-> > +int get_vcpuid(void);
-> > +
+> The reference counting issue happens in the normal path of
+> kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
+> function forgets to handle the returned resource object, whose refcount
+> increased inside, causing a refcount leak.
 >
-> I believe both of these functions could use some documentation. The
-> former has implicit ordering requirements (can only be called after all
-> vCPUs are created) and the latter can only be used within a guest.
+> Fix this issue by calling kunit_alloc_resource() instead of
+> kunit_alloc_and_get_resource().
 >
-> >  #endif /* SELFTEST_KVM_PROCESSOR_H */
-> > diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > index 632b74d6b3ca..9844b62227b1 100644
-> > --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> > @@ -13,9 +13,17 @@
-> >  #include "processor.h"
-> >
-> >  #define DEFAULT_ARM64_GUEST_STACK_VADDR_MIN  0xac0000
-> > +#define VM_VCPUID_MAP_INVAL                  -1
-> >
-> >  static vm_vaddr_t exception_handlers;
-> >
-> > +struct vm_vcpuid_map {
-> > +     uint64_t mpidr;
-> > +     int vcpuid;
-> > +};
-> > +
-> > +static struct vm_vcpuid_map vcpuid_map[KVM_MAX_VCPUS];
-> > +
->
-> Hmm.
->
-> I'm not too big of a fan that the KVM_MAX_VCPUS macro is defined in the
-> KVM selftests. Really, userspace should discover the limit from the
-> kernel. Especially when we want to write tests that test behavior at
-> KVM's limit.
->
-> That being said, there are more instances of these static allocations in
-> the selftests code, so you aren't to be blamed.
->
-> Related: commit 074c82c8f7cf ("kvm: x86: Increase MAX_VCPUS to 1024")
-> has raised this limit.
->
-I'm not a fan of static allocations either, but the fact that
-sync_global_to_guest() doesn't have a size argument (yet), makes me
-want to take a shorter route. Anyway, if you want I can allocate it
-dynamically and copy it to the guest's memory by hand, or come up with
-a utility wrapper while I'm at it.
-(Just wanted to make sure we are not over-engineering our needs here).
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-> >  static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
-> >  {
-> >       return (v + vm->page_size) & ~(vm->page_size - 1);
-> > @@ -426,3 +434,41 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
-> >       assert(vector < VECTOR_NUM);
-> >       handlers->exception_handlers[vector][0] = handler;
-> >  }
-> > +
-> > +void vm_vcpuid_map_init(struct kvm_vm *vm)
-> > +{
-> > +     int i = 0;
-> > +     struct vcpu *vcpu;
-> > +     struct vm_vcpuid_map *map;
-> > +
-> > +     list_for_each_entry(vcpu, &vm->vcpus, list) {
-> > +             map = &vcpuid_map[i++];
-> > +             map->vcpuid = vcpu->id;
-> > +             get_reg(vm, vcpu->id,
-> > +                     ARM64_SYS_KVM_REG(SYS_MPIDR_EL1), &map->mpidr);
-> > +             map->mpidr &= MPIDR_HWID_BITMASK;
-> > +     }
-> > +
-> > +     if (i < KVM_MAX_VCPUS)
-> > +             vcpuid_map[i].vcpuid = VM_VCPUID_MAP_INVAL;
-> > +
-> > +     sync_global_to_guest(vm, vcpuid_map);
-> > +}
-> > +
-> > +int get_vcpuid(void)
->
-> nit: guest_get_vcpuid()
->
-Sounds nice. Since we have a lot of guest utility functions now, I'm
-fancying a world where we prefix guest_ with all of them to avoid
-confusion.
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
-Regards,
-Raghavendra
-> > +{
-> > +     int i, vcpuid;
-> > +     uint64_t mpidr = read_sysreg(mpidr_el1) & MPIDR_HWID_BITMASK;
-> > +
-> > +     for (i = 0; i < KVM_MAX_VCPUS; i++) {
-> > +             vcpuid = vcpuid_map[i].vcpuid;
-> > +             GUEST_ASSERT_1(vcpuid != VM_VCPUID_MAP_INVAL, mpidr);
-> > +
-> > +             if (mpidr == vcpuid_map[i].mpidr)
-> > +                     return vcpuid;
-> > +     }
-> > +
-> > +     /* We should not be reaching here */
-> > +     GUEST_ASSERT_1(0, mpidr);
-> > +     return -1;
-> > +}
-> > --
-> > 2.33.0.153.gba50c8fa24-goog
-> >
+Ah, thanks for finding and fixing this!
+We really should have better documentation/otherwise make it clearer
+that people shouldn't use the "_and_get" version.
+
+I went and added some pr_info() calls to verify that these were being
+leaked before and they're fixed now.
+
+I copy-pasted this mistake into
+https://lore.kernel.org/linux-kselftest/20210831171926.3832806-2-dlatypov@google.com/.
+I'll send a v3 fix for that patch as well.
+
+> ---
+>  lib/kunit/executor_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> index cdbe54b16501..c2dcfb1f6e97 100644
+> --- a/lib/kunit/executor_test.c
+> +++ b/lib/kunit/executor_test.c
+> @@ -116,7 +116,7 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
+>         /* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
+>         if (IS_ERR_OR_NULL(to_free))
+>                 return;
+> -       kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+> +       kunit_alloc_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+>                                      (void *)to_free);
+>  }
+>
+> --
+> 2.7.4
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/1631172276-82914-1-git-send-email-xiyuyang19%40fudan.edu.cn.
