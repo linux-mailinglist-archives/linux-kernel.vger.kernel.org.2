@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97718404BEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0834404BF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240096AbhIILyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:54:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37719 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237988AbhIILvK (ORCPT
+        id S242219AbhIILyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:54:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33646 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242053AbhIILv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:51:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631188200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 9 Sep 2021 07:51:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D167A22379;
+        Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631188215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RKfLJTAdYC2Y9GCkgvCCUXZUeq0mgeJOjy8yY6oupzQ=;
-        b=UW6AKKbbUFLu7KJnjtdZoYnQPfHeJy5+sqEaCNp2H7o78x0cJWRhZBbUYCRtyoEa3U3ZHQ
-        RLb1/+VhJYmVgn1kKrUY5ZsJp3zZ6wUo9j5uvFY6jYD1CmACEaes+1KXCFycSI5BBndIHP
-        Pst+DKVLDlUcvSqNuN+D0Henh64uPTw=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-67hduSuBPCyQdVD5rR39jw-1; Thu, 09 Sep 2021 07:49:59 -0400
-X-MC-Unique: 67hduSuBPCyQdVD5rR39jw-1
-Received: by mail-lj1-f200.google.com with SMTP id w22-20020a2e9596000000b001ba46d9e54cso634693ljh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:49:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RKfLJTAdYC2Y9GCkgvCCUXZUeq0mgeJOjy8yY6oupzQ=;
-        b=SuLAMEW9BPvy/rXcp8s350NKMwGcy/bfzME18yvvxRm7ZeBMrYpx+dy0bTKCcvozyd
-         T4p+8zt9qa/1+p0dxyctPeJV+8oJ+vizR80PTHfGph3dgLbm852SPwkPHnaFEbCdcllf
-         KU3kQL5SmNLb4e5TfxFCQw9MgKYpD28nKsMZXc+SzkeTzH4d0ml0lBazA9hBy1iB2LCw
-         mXYfmeF8ZPjF+gTRu36JdCdhT5usXYClv0ekOj366FWVRl3Iac4zpLaJuB2OGdKhb3xR
-         UJ7T2UHnRI0swvr3WIHNYHMglo08++lGN89JYE9OuMrCExNIL71Cr9XRQIbNStbwTSKW
-         X51A==
-X-Gm-Message-State: AOAM532HRda6XaWZ+IWIau9pDgPRVDgqtL3tRHGQSgsM0l/SeDBcDYlS
-        x2t56adl9IsxnyDY9uvyllZeHNw/28bMRogcpPtCOBXk6/+5jFk07oCwTiZP8Cpjj03BbjayeNI
-        77edA/xbjtjVXvsXH/laxYxfk
-X-Received: by 2002:a2e:22c1:: with SMTP id i184mr1949070lji.89.1631188197671;
-        Thu, 09 Sep 2021 04:49:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz34yVkVFly2lKRUz3Skw91yuJ8Zn8SuJWptdAhy+rymLtvnXvn9lAbezazF8CfkxsLTbZMFQ==
-X-Received: by 2002:a2e:22c1:: with SMTP id i184mr1949056lji.89.1631188197447;
-        Thu, 09 Sep 2021 04:49:57 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id t30sm173712lfg.289.2021.09.09.04.49.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 04:49:56 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net 0/2] sfc: fallback for lack of xdp tx queues
-To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
-        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Toke Hoiland Jorgensen <toke@redhat.com>,
-        Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>
-References: <20210909092846.18217-1-ihuguet@redhat.com>
-Message-ID: <d36c51ae-1832-effa-ee5c-fdebdeec5c5c@redhat.com>
-Date:   Thu, 9 Sep 2021 13:49:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210909092846.18217-1-ihuguet@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
+        b=cyqFGhpECSHWqtUvsWZV/5lrWWrH8zR6sBwqGy5bVN/4fyJSS4gI10U0qIKr0j/r8FetLL
+        Cvp0QS8otNt/SMDnDJc5V9hMp8YSPQXJV3LPXecYOLDK6QR0UyTTh0emB11per5FbndkvG
+        O5dWYQI3A0jH0TskWBNR71FUAYwTfEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631188215;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
+        b=3GQqPmQxwLYIU4Xdtn24ECXbp16Kes+Bd1eoaCEinAynLXaJ19qmgsncrt66vsh0lqRS1r
+        PqxknUoxO4QArUCQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id CAD70A3BC6;
+        Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
+Date:   Thu, 09 Sep 2021 13:50:15 +0200
+Message-ID: <s5hr1dy7ytk.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH AUTOSEL 5.14 166/252] ALSA: hda: Drop workaround for a hang at shutdown again
+In-Reply-To: <20210909114106.141462-166-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
+        <20210909114106.141462-166-sashal@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 09 Sep 2021 13:39:40 +0200,
+Sasha Levin wrote:
+> 
+> From: Takashi Iwai <tiwai@suse.de>
+> 
+> [ Upstream commit 8fc8e903156f42c66245838441d03607e9067381 ]
+> 
+> The commit 0165c4e19f6e ("ALSA: hda: Fix hang during shutdown due to
+> link reset") modified the shutdown callback of the HD-audio controller
+> for working around a hang.  Meanwhile, the actual culprit of the hang
+> was identified to be the leftover active codecs that may interfere
+> with the powered down controller somehow, but we took a minimal fix
+> approach for 5.14, and that was the commit above.
+> 
+> Now, since the codec drivers go runtime-suspend at shutdown for 5.15,
+> we can revert the change and make sure that the full runtime-suspend
+> is performed at shutdown of HD-audio controller again.  This patch
+> essentially reverts the commit above to restore the behavior.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
+> Link: https://lore.kernel.org/r/20210817075630.7115-1-tiwai@suse.de
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Great work Huguet, patches LGTM, I would ACK but they have already been 
-applied:
-
-Here is the summary with links:
-   - [net,1/2] sfc: fallback for lack of xdp tx queues
-     https://git.kernel.org/netdev/net/c/415446185b93
-   - [net,2/2] sfc: last resort fallback for lack of xdp tx queues
-     https://git.kernel.org/netdev/net/c/6215b608a8c4
-
-Cloudflare (cc) heads-up for these improvements.
-
-And heads-up to Toke and Frey on patch 2/2, as it creates push-back via 
-TX queue stop/restart logic (see kernel API netif_tx_queue_stopped).
-XDP currently doesn't handle this well, but I hope to see XDP queueing 
-work from your side to improve the situation ;-)
+Please drop this, it's not for 5.14.
+As stated in the commit log, the fundamental fix was merged in 5.15
+that obsoletes the workaround, but it isn't included in 5.14.
 
 
-On 09/09/2021 11.28, Íñigo Huguet wrote:
-> If there are not enough hardware resources to allocate one tx queue per
-> CPU for XDP, XDP_TX and XDP_REDIRECT actions were unavailable, and using
-> them resulted each time with the packet being drop and this message in
-> the logs: XDP TX failed (-22)
-> 
-> These patches implement 2 fallback solutions for 2 different situations
-> that might happen:
-> 1. There are not enough free resources for all the tx queues, but there
->     are some free resources available
-> 2. There are not enough free resources at all for tx queues.
-> 
-> Both solutions are based in sharing tx queues, using __netif_tx_lock for
-> synchronization. In the second case, as there are not XDP TX queues to
-> share, network stack queues are used instead, but since we're taking
-> __netif_tx_lock, concurrent access to the queues is correctly protected.
-> 
-> The solution for this second case might affect performance both of XDP
-> traffic and normal traffice due to lock contention if both are used
-> intensively. That's why I call it a "last resort" fallback: it's not a
-> desirable situation, but at least we have XDP TX working.
-> 
-> Some tests has shown good results and indicate that the non-fallback
-> case is not being damaged by this changes. They are also promising for
-> the fallback cases. This is the test:
-> 1. From another machine, send high amount of packets with pktgen, script
->     samples/pktgen/pktgen_sample04_many_flows.sh
-> 2. In the tested machine, run samples/bpf/xdp_rxq_info with arguments
->     "-a XDP_TX --swapmac" and see the results
-> 3. In the tested machine, run also pktgen_sample04 to create high TX
->     normal traffic, and see how xdp_rxq_info results vary
-> 
-> Note that this test doesn't check the worst situations for the fallback
-> solutions because XDP_TX will only be executed from the same CPUs that
-> are processed by sfc, and not from every CPU in the system, so the
-> performance drop due to the highest locking contention doesn't happen.
-> I'd like to test that, as well, but I don't have access right now to a
-> proper environment.
-> 
-> Test results:
-> 
-> Without doing TX:
-> Before changes: ~2,900,000 pps
-> After changes, 1 queues/core: ~2,900,000 pps
-> After changes, 2 queues/core: ~2,900,000 pps
-> After changes, 8 queues/core: ~2,900,000 pps
-> After changes, borrowing from network stack: ~2,900,000 pps
-> 
-> With multiflow TX at the same time:
-> Before changes: ~1,700,000 - 2,900,000 pps
-> After changes, 1 queues/core: ~1,700,000 - 2,900,000 pps
-> After changes, 2 queues/core: ~1,700,000 pps
-> After changes, 8 queues/core: ~1,700,000 pps
-> After changes, borrowing from network stack: 1,150,000 pps
-> 
-> Sporadic "XDP TX failed (-5)" warnings are shown when running xdp program
-> and pktgen simultaneously. This was expected because XDP doesn't have any
-> buffering system if the NIC is under very high pressure. Thousands of
-> these warnings are shown in the case of borrowing net stack queues. As I
-> said before, this was also expected.
-> 
-> 
-> Íñigo Huguet (2):
->    sfc: fallback for lack of xdp tx queues
->    sfc: last resort fallback for lack of xdp tx queues
-> 
->   drivers/net/ethernet/sfc/efx_channels.c | 98 ++++++++++++++++++-------
->   drivers/net/ethernet/sfc/net_driver.h   |  8 ++
->   drivers/net/ethernet/sfc/tx.c           | 29 ++++++--
->   3 files changed, 99 insertions(+), 36 deletions(-)
-> 
+thanks,
 
+Takashi
