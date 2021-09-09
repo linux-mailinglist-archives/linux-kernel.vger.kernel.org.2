@@ -2,125 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FD8405C96
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB46405C9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242933AbhIISId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:08:33 -0400
-Received: from smtprelay07.ispgateway.de ([134.119.228.100]:12430 "EHLO
-        smtprelay07.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhIISIc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:08:32 -0400
-Received: from [87.92.210.171] (helo=lumip-notebook.fritz.box)
-        by smtprelay07.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <lumip@lumip.de>)
-        id 1mOOS6-0006Fa-1U; Thu, 09 Sep 2021 20:07:10 +0200
-From:   Lukas Prediger <lumip@lumip.de>
-To:     rdunlap@infradead.org
-Cc:     axboe@kernel.dk, hch@infradead.org, linux-kernel@vger.kernel.org,
-        lumip@lumip.de, phil@philpotter.co.uk
-Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change detection
-Date:   Thu,  9 Sep 2021 21:05:54 +0300
-Message-Id: <20210909180553.8299-1-lumip@lumip.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <409876e1-1293-932d-8d37-0211bef07749@infradead.org>
-References: <409876e1-1293-932d-8d37-0211bef07749@infradead.org>
+        id S243102AbhIISJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:09:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231431AbhIISJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:09:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5804C610C9;
+        Thu,  9 Sep 2021 18:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631210897;
+        bh=rUgjo8lIkjG8VTsPFFj78gVWqfDjqFx80l5ivn3DkcU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fC933vyE/cBcM4YcmOg+DgH13xy31FrmuVVX3jvutEhRRXmQylLC+HDHkFxCH7XHw
+         5h8YbLstZ39heKg7+wKr90HLgqQkkl5O250x3VsWMY3ijIrzPi3VWy+zaXamYODfnR
+         SsItmcEZ+pMqc29dWZU2ET3FXmu3rFz1KY+2e7YpxPQqEcNoUXnE0O8ykO7MhplXh/
+         tA1OYUykv8MWwiAqGzZfa8ZLp0hHRUdbdEIAcEE9HHWzXIN2m+N41jgSRlzqQOGBEz
+         IsaOLE51CpdzB8Ku96fVHDZUqKJ+DPhiBYnpreSDx3opM9uqsNSj2F809nvNtb6e4r
+         tdcZ2ZYlUd50Q==
+Date:   Thu, 9 Sep 2021 13:08:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+Message-ID: <20210909180815.GA997402@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5fae4f586edfde4f615a8ea6a309fbff@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Christoph, Phillip and Randy,
+On Thu, Sep 09, 2021 at 11:21:22PM +0530, Prasad Malisetty wrote:
+> On 2021-08-31 21:07, Bjorn Helgaas wrote:
+> > On Tue, Aug 31, 2021 at 12:07:30PM +0530, Prasad Malisetty wrote:
+> > > On 2021-08-26 18:07, Rob Herring wrote:
+> > > > On Thu, Aug 26, 2021 at 2:22 AM Prasad Malisetty
+> > > > <pmaliset@codeaurora.org> wrote:
+> > > > >
+> > > > > On 2021-08-26 02:55, Bjorn Helgaas wrote:
+> > > > > > [+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
+> > > > > >
+> > > > > > On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
+> > > > > >> Quoting Prasad Malisetty (2021-08-24 01:10:48)
+> > > > > >> > On 2021-08-17 22:56, Prasad Malisetty wrote:
+> > > > > >> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
+> > > > > >> > >> On the SC7280, By default the clock source for pcie_1_pipe is
+> > > > > >> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
+> > > > > >> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+> > > > > >> > >>
+> > > > > >> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> > > > > >> > >> ---
+> > > > > >> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+> > > > > >> > >>  1 file changed, 18 insertions(+)
+> > > > > >> > >>
+> > > > > >> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > > >> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > > >> > >> index 8a7a300..39e3b21 100644
+> > > > > >> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > > >> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > > >> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+> > > > > >> > >>      struct regulator_bulk_data supplies[2];
+> > > > > >> > >>      struct reset_control *pci_reset;
+> > > > > >> > >>      struct clk *pipe_clk;
+> > > > > >> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
+> > > > > >> > >> +    struct clk *phy_pipe_clk;
+> > > > > >> > >>  };
+> > > > > >> > >>
+> > > > > >> > >>  union qcom_pcie_resources {
+> > > > > >> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
+> > > > > >> > >> qcom_pcie *pcie)
+> > > > > >> > >>      if (ret < 0)
+> > > > > >> > >>              return ret;
+> > > > > >> > >>
+> > > > > >> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> > > > > >> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+> > > > > >> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+> > > > > >> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+> > > > > >> > >> +
+> > > > > >> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+> > > > > >> > >> +            if (IS_ERR(res->phy_pipe_clk))
+> > > > > >> > >> +                    return PTR_ERR(res->phy_pipe_clk);
+> > > > > >> > >> +    }
+> > > > > >> > >
+> > > > > >> > > I would like to check is there any other better
+> > > > > >> > > approach instead of compatible method here as well or
+> > > > > >> > > is it fine to use compatible method.
+> > > > > >>
+> > > > > >> I'd prefer the compatible method. If nobody is responding
+> > > > > >> then it's best to just resend the patches with the
+> > > > > >> approach you prefer instead of waiting for someone to
+> > > > > >> respond to a review comment.
+> > > > > >
+> > > > > > I'm missing some context here, so I'm not exactly sure
+> > > > > > what your question is, Prasad, but IMO drivers generally
+> > > > > > should not need to use of_device_is_compatible() if
+> > > > > > they've already called of_device_get_match_data() (as
+> > > > > > qcom_pcie_probe() has).
+> > > > > >
+> > > > > > of_device_is_compatible() does basically the same work of
+> > > > > > looking for a match in qcom_pcie_match[] that
+> > > > > > of_device_get_match_data() does, so it seems pointless to
+> > > > > > repeat it.
+> > > >
+> > > > +1
+> > > >
+> > > > > > I am a little confused because while [1] adds "qcom,pcie-sc7280" to
+> > > > > > qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
+> > > >
+> > > > Either that's missing or there's a fallback to 8250 that's not
+> > > > documented.
+> > > >
+> > > > > I agree on your point, but the main reason is to use compatible in
+> > > > > get_resources_2_7_0 is same hardware version. For SM8250 & SC7280
+> > > > > platforms, the hw version is same. Since we can't have a separate ops
+> > > > > for SC7280, we are using compatible method in get_resources_2_7_0 to
+> > > > > differentiate SM8250 and SC7280.
+> > > >
+> > > > Then fix the match data to be not just ops, but ops and the flag you
+> > > > need here.
+> > > 
+> > > This difference is not universal across all the platforms but
+> > > instead this is specific to SC7280.  Hence it make sense to use
+> > > compatible other than going for a flag.
+> > 
+> > There's no reason your qcom_pcie_match[].data pointers need to be
+> > strictly based on the hardware version.
+> > 
+> > You can do something like what pcie-brcmstb.c does, e.g.,
+> > 
+> >   struct pcie_cfg_data {
+> >     struct qcom_pcie_ops *ops;
+> >     unsigned int pipe_mux:1;
+> >   };
+> > 
+> >   static const struct pcie_cfg_data sm8250_cfg = {
+> >     .ops = &ops_1_9_0,
+> >   };
+> > 
+> >   static const struct pcie_cfg_data sc7280_cfg = {
+> >     .ops = &ops_1_9_0,
+> >     .pipe_mux = 1,
+> >   };
+> > 
+> >   static const struct of_device_id qcom_pcie_match[] = {
+> >     { .compatible = "qcom,pcie-sm8250", .data = &sm8250_cfg },
+> >     { .compatible = "qcom,pcie-sc7280", .data = &sc7280_cfg },
+> >   };
+> 
+> I have one quick query, If we use above approach, we should change platform
+> data reading in PCIe probe to differentiate remaining platforms right.
+> expect SM8250 and SC7280 all other platforms are using same qcom_pcie_ops
+> structure pointer as data.
 
-thanks to you all for your comments!
+Yes.  of_device_get_match_data() must return the same type of pointer
+(in the example above, "struct pcie_cfg_data *") for all platforms.
+So you would have to add a struct for each of them, and each struct
+would contain the ops pointer (&ops_1_0_0, &ops_2_1_0, etc).
 
->>>> +static int cdrom_ioctl_timed_media_change(struct cdrom_device_info *cdi,
->>>> +		unsigned long arg)
->>>> +{
->>>> +	int ret;
->>>> +	struct cdrom_timed_media_change_info __user *info;
->>>> +	struct cdrom_timed_media_change_info tmp_info;
->>>> +
->>>> +	if (!CDROM_CAN(CDC_MEDIA_CHANGED))
->>>> +		return -ENOSYS;
->>>> +
->>>> +	info = (struct cdrom_timed_media_change_info __user *)arg;
->>>> +	cd_dbg(CD_DO_IOCTL, "entering CDROM_TIMED_MEDIA_CHANGE\n");
->>>> +
->>>> +	ret = cdrom_ioctl_media_changed(cdi, CDSL_CURRENT);
->>>> +	if (ret < 0)
->>>> +		return ret;
->>>> +
->>>> +	if (copy_from_user(&tmp_info, info, sizeof(tmp_info)) != 0)
->>>> +		return -EFAULT;
->>>> +
->>>> +	tmp_info.has_changed = ((tmp_info.last_media_change - cdi->last_media_change_ms) < 0);
->>>
->>> Overly long line here, but more importantly this is much cleaner with
->>> a good old if:
->>>
->>>
->>> 	if (tmp_info.last_media_change - cdi->last_media_change_ms) < 0)
->>> 		tmp_info.has_changed = 1;
->>>
->> 
->> Whilst I don't disagree this is technically cleaner, the existing style
->> certainly read well to me. 
+Thanks for working on this!
 
-The if would additionally require to explicitly initialise .has_changed to
-zero for the else case, so I favored the single assignment that covers
-all cases. I don't have a strong opinion on this, though, so if the if variant
-is generally favored, I can change this. (And I will definitely fix the overlength).
-
->> In terms of line length, checkpatch doesn't
->> complain about it, so I guess you mean purely from a visual perspective?
->
-> Documentation/process/coding-style.rst says:
->
->    The preferred limit on the length of a single line is 80 columns.
->
-> checkpatch only checks lines > 100 columns since that is OK in a few
-> cases, like a long quoted string.
->
-> So try to limit line lengths to 80 columns unless there is some
-> other reason not to do that.
-
-I wasn't aware that checkpatch.pl does not complain if I exceed the 80 cols,
-have fixed those now for an upcoming resubmission.
-
->>> +{
->>> +	__s64	last_media_change;	/* Timestamp of the last detected media
->>> +					 * change in ms. May be set by caller, updated
->>> +					 * upon successful return of ioctl.
->>> +					 */
->>> +	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
->>>
->>> More overly long lines.  Also why is has_changed a u64 if it is used as
->>> a boolean flag?
->>
->> As this is not a packed struct, would not a smaller value still take up
->> the same space?
->
-> Might as well be explicit about it and also make it obvious that there
-> is some space available for other fields.
-
-I had this as a __u8 in the first submission but Jens asked me to change it.
-From his feedback on this:
-
-"The struct layout should be modified such that there are no holes or
-padding in it. Probably just make the has_changed a flags thing, and
-make it u64 as well. Then you can define bit 0 to be HAS_CHANGED, and
-that leaves you room to add more flags in the future."
-https://lore.kernel.org/lkml/6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk/
-
-I changed it to __u64 to address this. We could think about turning it
-back to a __u8 (or bool) and add some explicit padding members
-(a __u8 reserved[3]?), but honestly I don't see much real benefit in that
-compared to how it is now.
-
-Best regards,
-Lukas
+Bjorn
