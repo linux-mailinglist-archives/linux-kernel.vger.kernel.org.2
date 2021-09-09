@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6600F4058AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7C2405879
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345087AbhIIOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        id S244195AbhIIOED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353003AbhIIOKp (ORCPT
+        with ESMTP id S241151AbhIIOD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:10:45 -0400
-X-Greylist: delayed 937 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Sep 2021 05:13:22 PDT
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D8EC02F8A0
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=R6TIWkYcAfQALAg7PKFF5Ya+0Oy7Cs34bHultribBI0=; b=oj
-        +qcpuYN7CHDo0rlCVmmh+VleJuq/WNI6bS4W+MWEsKCeMYLvGOjfjNwn60RLxXGX5EdzXk/0v9knz
-        YkEoe21Ir8UoonbBBhmf8UCM9sGQ5goLDeUqJ6Ub6DljFnlj//Y7wwTjYaEF4vHzPCTSQPT+5GS3G
-        J/RZ+PQYztH2eIvH5fLJNq2EEtQL6ZTCPqgptre4Bygqi91HZurARnXAytgqop9zmYDnvH02GzkU0
-        SnifF5d0SkoCU5QBpquN2ZSaAWMDM1AJs4NMcShYdhVSApUgVUegcvCE47fLN0Zjdim0Xx60ZnJef
-        KUvHPhyRTd6qVUgdmPqoWoeKZnwcoa0Q==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mOIgW-0004tM-8E; Thu, 09 Sep 2021 12:57:40 +0100
-From:   John Keeping <john@metanate.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Keeping <john@metanate.com>
-Subject: [PATCH/RFC] tracing: make trace_marker{,_raw} stream-like
-Date:   Thu,  9 Sep 2021 12:57:34 +0100
-Message-Id: <20210909115734.3818711-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+        Thu, 9 Sep 2021 10:03:58 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E23C066426
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:00:42 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d17so901641plr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id;
+        bh=ZyboCNpRKmt5JAGuC0MIfoTudI4GGu+5XsEDI/iZI/k=;
+        b=heUheBnqCJS87W1YfFuV3bopChXvsZsJyAslanU5R2faeilg2Y2QfyPeSgQXo2nCcR
+         r1t2MnJDEUBWM8yiYsD6zqF5vVuM4Tnyuvh3nX0xk64YWJomDzDas3M/eZNOV/9EDb9Z
+         7RzD+8XVelmSNGrGwWu2c4f4WjqMYjxGzZzEx8fGXikL9rTLw+t4mXI2jSkCYdIWL1xV
+         7iFX5Bc36oaEJbDLwaTALZm3DRJV6RacT+gba+z2y7kPKdFTTpeLJzMhm9CqwIpncCEk
+         Y/iRNR8QPp5dme85wCCbTWN0rJExoJhUyOIvImZPwByI1/ffHp3YF2wZn5NqXvGrkv0M
+         kLkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=ZyboCNpRKmt5JAGuC0MIfoTudI4GGu+5XsEDI/iZI/k=;
+        b=uq/eS3DRWxN89DQZNbhWWxSM70m8JDa4/lHquiK6OT36EtcO1Z3GD1hNMDn51IAdMs
+         vzeuBkqANFmpVa0kMgCnp86aObwJfQVIXHMiR3FDNFRXzIuKcJTWNnPsscF0td6d3cYV
+         3Y3b5Ih7PcWlVWo08P/LpNczVAcHTlIXi1kw9NC9mMAQmDmL6oCP4CCtq2EPkJtHzrhW
+         XMQNKXJsejtojx3HLPHOcYJmDFTxwDG11EHs9eZdBUaR//cmqCx2jnb6PPJ++tfe/t1J
+         gqmY6C4L1ZPNVUhsou0jCi92lIr8wSrywE/16L+jCyAhqCmKD6QPgUokVu/fUHa+VSF1
+         pQeg==
+X-Gm-Message-State: AOAM5336snLBf0N/pSYYvcQogmucLni9NY4GXLBhD8jsvlxHa8gKf7Ur
+        qaYCl51mzzdZpsGnFW7oYJKFzlNDnic=
+X-Google-Smtp-Source: ABdhPJxbKK2BNr2HMUEo+ueZywAbPmd5BYIETKPzzMZ6FI1d+MKB+9k3K2jFd6Ak8DLepc5aKG9BsA==
+X-Received: by 2002:a17:902:a3c1:b0:13a:47a:1c5a with SMTP id q1-20020a170902a3c100b0013a047a1c5amr2412858plb.13.1631188841846;
+        Thu, 09 Sep 2021 05:00:41 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id c9sm2370123pgq.58.2021.09.09.05.00.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Sep 2021 05:00:41 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        ke.wang@unisoc.com
+Subject: [RFC PATCH] psi : calc psi memstall time more precisely
+Date:   Thu,  9 Sep 2021 20:00:24 +0800
+Message-Id: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tracing marker files are write-only streams with no meaningful
-concept of file position.  Using stream_open() to mark them as
-stream-link indicates this and has the added advantage that a single
-file descriptor can now be used from multiple threads without contention
-thanks to clearing FMODE_ATOMIC_POS.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Note that this has the potential to break existing userspace by since
-both lseek(2) and pwrite(2) will now return ESPIPE when previously lseek
-would have updated the stored offset and pwrite would have appended to
-the trace.  A survey of libtracefs and several other projects found to
-use trace_marker(_raw) [1][2][3] suggests that everyone limits
-themselves to calling write(2) and close(2) on these file descriptors so
-there is a good chance this will go unnoticed and the benefits of
-reduced overhead and lock contention seem worth the risk.
+psi's memstall time is counted as simple as exit - entry so far, which ignore
+the task's off cpu time. Fix it by calc the percentage of off time via task and
+rq's util and runq load.
 
-[1] https://github.com/google/perfetto
-[2] https://github.com/intel/media-driver/
-[3] https://w1.fi/cgit/hostap/
-
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 ---
-I'm marking this as RFC because it breaks the Prime Directive of Linux
-development, as explained above.  But I'm hoping this is one of the
-cases where we get away with it because this is a huge improvement for
-multi-threaded programs when doing the simple thing of opening a single
-trace_marker FD at startup and just writing to it from any thread.
+ kernel/sched/psi.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-After writing this, I realised that an alternative solution to my
-original problem would have been to use pwrite instead of write!  But I
-still think fixing this at the source would be better.
-
- kernel/trace/trace.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2dbf797aa133..251679846a1b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4834,6 +4834,12 @@ int tracing_open_generic_tr(struct inode *inode, struct file *filp)
- 	return 0;
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3c..6812c7e 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static unsigned long psi_memtime_fixup(u32 growth);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -492,6 +494,23 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
+ 	return growth;
  }
  
-+static int tracing_mark_open(struct inode *inode, struct file *filp)
++static unsigned long psi_memtime_fixup(u32 growth)
 +{
-+	stream_open(inode, filp);
-+	return tracing_open_generic_tr(inode, filp);
++	struct rq *rq = task_rq(current);
++	unsigned long growth_fixed = (unsigned long)growth;
++
++	if !(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH)
++		return growth_fixed;
++
++	if ((current->in_memstall)
++		&& (current->se.avg.util_avg <= rq->cfs.avg.util_avg)
++		&& current->se.avg.util_avg != 0)
++		growth_fixed = div64_ul((current->se.avg.util_avg + 1) * growth,
++			rq->cfs.avg.util_avg + rq->avg_rt.util_avg + 1);
++
++	return growth_fixed;
 +}
 +
- static int tracing_release(struct inode *inode, struct file *file)
+ static void init_triggers(struct psi_group *group, u64 now)
  {
- 	struct trace_array *tr = inode->i_private;
-@@ -7101,9 +7107,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	if (tt)
- 		event_triggers_post_call(tr->trace_marker_file, tt);
+ 	struct psi_trigger *t;
+@@ -658,6 +677,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+ 	}
  
--	if (written > 0)
--		*fpos += written;
--
- 	return written;
+ 	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
++		delta = psi_memtime_fixup(delta);
+ 		groupc->times[PSI_MEM_SOME] += delta;
+ 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
+ 			groupc->times[PSI_MEM_FULL] += delta;
+@@ -928,8 +948,8 @@ void psi_memstall_leave(unsigned long *flags)
+ 	 */
+ 	rq = this_rq_lock_irq(&rf);
+ 
+-	current->in_memstall = 0;
+ 	psi_task_change(current, TSK_MEMSTALL, 0);
++	current->in_memstall = 0;
+ 
+ 	rq_unlock_irq(rq, &rf);
  }
- 
-@@ -7162,9 +7165,6 @@ tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
- 
- 	__buffer_unlock_commit(buffer, event);
- 
--	if (written > 0)
--		*fpos += written;
--
- 	return written;
- }
- 
-@@ -7564,16 +7564,14 @@ static const struct file_operations tracing_free_buffer_fops = {
- };
- 
- static const struct file_operations tracing_mark_fops = {
--	.open		= tracing_open_generic_tr,
-+	.open		= tracing_mark_open,
- 	.write		= tracing_mark_write,
--	.llseek		= generic_file_llseek,
- 	.release	= tracing_release_generic_tr,
- };
- 
- static const struct file_operations tracing_mark_raw_fops = {
--	.open		= tracing_open_generic_tr,
-+	.open		= tracing_mark_open,
- 	.write		= tracing_mark_raw_write,
--	.llseek		= generic_file_llseek,
- 	.release	= tracing_release_generic_tr,
- };
- 
 -- 
-2.33.0
+1.9.1
 
