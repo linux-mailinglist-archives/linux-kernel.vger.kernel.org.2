@@ -2,512 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F51C40485E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAEF404863
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbhIIKXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233929AbhIIKXQ (ORCPT
+        id S233803AbhIIK0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:26:38 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:40804 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhIIK0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:23:16 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4BBC0613D9;
-        Thu,  9 Sep 2021 03:22:06 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id t19so2531335ejr.8;
-        Thu, 09 Sep 2021 03:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=B53gfshNRTzyBWrOCoClSQP+yUIwo1xeIXDLEls7ISA=;
-        b=HTzI77DtNGQrZn8adYFkxoJNCATZr84Gb3iJARYyCdmshlGVgiOBXJjq2rCOvhXRZe
-         v3INIGbVVM1weHIUiMyvVUjUKV7D+oZK13Q2X+qB+WRk1ArY1kblfm9DOlnEmW8YCUpo
-         udMKqzliGN2gUCoE4adQJnUkfJ3v0WZQRXLzHAOz0AdQUyIUUawPhoKms9AK7dfMpq64
-         d6l+od74aVfo7wMpqwJgY3bDhVyUuGDAM7mGmS0q7MVTYsroCqMEwbf6WovlKsdJlBg4
-         p5PaWFhd2NypYPUohAFhcZ4sRtgKVF4JdC3LMIsYderrHJucq7kzXu3J2NochGen+gAx
-         M17g==
+        Thu, 9 Sep 2021 06:26:35 -0400
+Received: by mail-wr1-f47.google.com with SMTP id q26so1786915wrc.7;
+        Thu, 09 Sep 2021 03:25:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=B53gfshNRTzyBWrOCoClSQP+yUIwo1xeIXDLEls7ISA=;
-        b=3PjelF6JcrmE7PuN6L5RLB5D9644uuloUWWQRGbTv+JkpzUdrxXcLdb+dK3rOSqeym
-         D6lBE4X6b41P48oUIpRvWLJty6kFE00fUoyt9noIfOti2kXjPCt7xX8wOSlvA3ZH4/se
-         jZwK2a4tUoH5qbNtNnxREyW9VVHj9+KG6wQYD7FGbQcBl+EJd8qqxxJa85TfGfDfqzdA
-         lf4jcJw28/PYLHL4HjtwSf2OTDZNS745/ZduiM/FMwjkLaV0p/7aaNf9FwAfgwgm+NDX
-         eLVJIhjnZDk8GyoykPx95SJwOHaKVXVKEeFc1yreuO8zL/9QvaKRt++29LakNtr2F1lV
-         8SIg==
-X-Gm-Message-State: AOAM533jgz7Mtv6MEIynY9UhTMoRv+9Ef08NP5xvyswXhgV/Tp23nnsk
-        rNtYgGPHvdc1KmSBb27FgTc=
-X-Google-Smtp-Source: ABdhPJx4tWCQ95tgcCrZu3CBj+bnvrkc6PcGPrLYcugoaqbub8T4PntaOTF0dwtES7Appk9l6bclEw==
-X-Received: by 2002:a17:906:d1d6:: with SMTP id bs22mr2652894ejb.554.1631182924457;
-        Thu, 09 Sep 2021 03:22:04 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id cn16sm808571edb.87.2021.09.09.03.22.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pQZwZsjIQ5Q/ho824nwsq8pKl7BJRI2ZqOu5uQ0Ypxc=;
+        b=nybk5nOfU76mlSt8V5DsNPIm9Ocrfq227x3LBImd1Vj57QUka4cqMzRWEZR5x/jzgy
+         WYRX3VEkecDulzgSib2JISdmbrI3bHfLm+yFjtIxyzpzDHPiMtGBFZY36nCRlHGybs7k
+         NfFTpt4tixwNTonDItYd2FJg3YwHkqZAAj8PipjEhBMpGG2uz/7ZIQ40eDAsyokjuKo/
+         /c2QUmS/kk1kKPZMykKMEC++kA5DlztrgRhx3Kdc1bqeQqTBF+1tl391ytWz59wK4qL8
+         UsEXFu+TS58wkwluD7qr/Y5EtP9I1ZXCG4auja80uq/Qqg6bTBM7NT+2SoSUEZxZNWih
+         dvYg==
+X-Gm-Message-State: AOAM530NBBw8PiWoFpXQUSWuWWu2Ycnn48OFbfPC4cUR3kOivd+xs3T+
+        rk9KpmWkFwaqelyANMMtL2s=
+X-Google-Smtp-Source: ABdhPJzmYcQPiiHR5bNZCWlq993uM8GJMIN2WQRwEmjcswqF2BgTtTFidVConaV+w/HBXZUCVAlHgQ==
+X-Received: by 2002:a05:6000:1569:: with SMTP id 9mr2698754wrz.242.1631183125246;
+        Thu, 09 Sep 2021 03:25:25 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o2sm1425734wrh.13.2021.09.09.03.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 03:22:03 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH v3 2/2] arm64: dts: amlogic: add support for Radxa Zero
-Date:   Thu,  9 Sep 2021 10:21:54 +0000
-Message-Id: <20210909102154.22710-3-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210909102154.22710-1-christianshewitt@gmail.com>
-References: <20210909102154.22710-1-christianshewitt@gmail.com>
+        Thu, 09 Sep 2021 03:25:24 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 10:25:23 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        sthemmin@microsoft.com, Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] asm-generic/hyperv: provide cpumask_to_vpset_noself
+Message-ID: <20210909102523.wvjy62jqsz7ixwop@liuwe-devbox-debian-v2>
+References: <20210908194243.238523-1-wei.liu@kernel.org>
+ <20210908194243.238523-2-wei.liu@kernel.org>
+ <871r5y48bv.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871r5y48bv.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Radxa Zero is a small form factor SBC based on the Amlogic S905Y2
-chipset that ships in a number of RAM/eMMC configurations:
+On Thu, Sep 09, 2021 at 07:38:28AM +0200, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+> 
+> > This is a new variant which removes `self' cpu from the vpset. It will
+> > be used in Hyper-V enlightened IPI code.
+> >
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> > Provide a new variant instead of adding a new parameter because it makes
+> > it easier to backport -- we don't need to fix the users of
+> > cpumask_to_vpset.
+> > ---
+> >  include/asm-generic/mshyperv.h | 20 ++++++++++++++++++--
+> >  1 file changed, 18 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+> > index 9a000ba2bb75..d89690ee95aa 100644
+> > --- a/include/asm-generic/mshyperv.h
+> > +++ b/include/asm-generic/mshyperv.h
+> > @@ -184,10 +184,12 @@ static inline int hv_cpu_number_to_vp_number(int cpu_number)
+> >  	return hv_vp_index[cpu_number];
+> >  }
+> >  
+> > -static inline int cpumask_to_vpset(struct hv_vpset *vpset,
+> > -				    const struct cpumask *cpus)
+> > +static inline int cpumask_to_vpset_ex(struct hv_vpset *vpset,
+> 
+> I'd suggest to avoid '_ex' suffix as we use it for 'extended hypercalls'
+> (e.g. __send_ipi_mask_ex). Assuming nobody needs to call
+> cpumask_to_vpset_ex() directly, should we just go with
+> __cpumask_to_vpset() instead?
 
-Boards with 512MB/1GB LPDDR4 RAM have no eMMC storage and BCM43436
-wireless (2.4GHz b/g/n) while 2GB/4GB boards have 8/16/32/64/128GB
-eMMC storage and BCM4345 wireless (2.4/5GHz a/b/g/n/ac).
+Sure. I'm not too fussed about the name.
 
-- Amlogic S905Y2 quad-core Cortex-A53
-- Mali G31-MP2 GPU
-- HDMI 2.1 output (micro)
-- 1x USB 2.0 port - Type C (OTG)
-- 1x USB 3.0 port - Type C (Host)
-- 1x micro SD Card slot
-- 40 Pin GPIO header
+I will wait a bit for other people to express their opinions.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../dts/amlogic/meson-g12a-radxa-zero.dts     | 405 ++++++++++++++++++
- 2 files changed, 406 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
+> 
+> > +				    const struct cpumask *cpus,
+> > +				    bool exclude_self)
+> >  {
+> >  	int cpu, vcpu, vcpu_bank, vcpu_offset, nr_bank = 1;
+> > +	int this_cpu = smp_processor_id();
+> >  
+> >  	/* valid_bank_mask can represent up to 64 banks */
+> >  	if (hv_max_vp_index / 64 >= 64)
+> > @@ -205,6 +207,8 @@ static inline int cpumask_to_vpset(struct hv_vpset *vpset,
+> >  	 * Some banks may end up being empty but this is acceptable.
+> >  	 */
+> >  	for_each_cpu(cpu, cpus) {
+> > +		if (exclude_self && cpu == this_cpu)
+> > +			continue;
+> >  		vcpu = hv_cpu_number_to_vp_number(cpu);
+> >  		if (vcpu == VP_INVAL)
+> >  			return -1;
+> > @@ -219,6 +223,18 @@ static inline int cpumask_to_vpset(struct hv_vpset *vpset,
+> >  	return nr_bank;
+> >  }
+> >  
+> > +static inline int cpumask_to_vpset(struct hv_vpset *vpset,
+> > +				    const struct cpumask *cpus)
+> > +{
+> > +	return cpumask_to_vpset_ex(vpset, cpus, false);
+> > +}
+> > +
+> > +static inline int cpumask_to_vpset_noself(struct hv_vpset *vpset,
+> > +				    const struct cpumask *cpus)
+> > +{
+> > +	return cpumask_to_vpset_ex(vpset, cpus, true);
+> 
+> 
+> We need to make sure this is called with preemption disabled. We
+> could've just swapped smp_processor_id() for get_cpu() in
+> cpumask_to_vpset_ex() but this is hardly a solution: we can get
+> preempted right after put_cpu() so it's really the caller of this
+> function which needs to be protected.
+> 
+> TL;DR: I suggest we add 'WARN_ON_ONCE(preemptible());' or something like
+> this here to catch wrong usage.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index faa0a79a34f5..be308361e2f1 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12a-radxa-zero.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
-new file mode 100644
-index 000000000000..e3bb6df42ff3
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
-@@ -0,0 +1,405 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2018 BayLibre SAS. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-g12a.dtsi"
-+#include <dt-bindings/gpio/meson-g12a-gpio.h>
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	compatible = "radxa,zero", "amlogic,g12a";
-+	model = "Radxa Zero";
-+
-+	aliases {
-+		serial0 = &uart_AO;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x40000000>;
-+	};
-+
-+	cvbs-connector {
-+		status = "disabled";
-+		compatible = "composite-video-connector";
-+
-+		port {
-+			cvbs_connector_in: endpoint {
-+				remote-endpoint = <&cvbs_vdac_out>;
-+			};
-+		};
-+	};
-+
-+	hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_12 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
-+		clocks = <&wifi32k>;
-+		clock-names = "ext_clock";
-+	};
-+
-+	ao_5v: regulator-ao_5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "AO_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_1v8: regulator-vcc_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_3v3: regulator-vcc_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	hdmi_pw: regulator-hdmi_pw {
-+		compatible = "regulator-fixed";
-+		regulator-name = "HDMI_PW";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&ao_5v>;
-+		regulator-always-on;
-+	};
-+
-+	vddao_1v8: regulator-vddao_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&ao_5v>;
-+		regulator-always-on;
-+	};
-+
-+	vddcpu: regulator-vddcpu {
-+		compatible = "pwm-regulator";
-+
-+		regulator-name = "VDDCPU";
-+		regulator-min-microvolt = <721000>;
-+		regulator-max-microvolt = <1022000>;
-+
-+		vin-supply = <&ao_5v>;
-+
-+		pwms = <&pwm_AO_cd 1 1250 0>;
-+		pwm-dutycycle-range = <100 0>;
-+
-+		regulator-boot-on;
-+		regulator-always-on;
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "RADXA-ZERO";
-+		audio-aux-devs = <&tdmout_b>;
-+		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+				  <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-3 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
-+			};
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+
-+	wifi32k: wifi32k {
-+		compatible = "pwm-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
-+	};
-+};
-+
-+&arb {
-+	status = "okay";
-+};
-+
-+&cec_AO {
-+	pinctrl-0 = <&cec_ao_a_h_pins>;
-+	pinctrl-names = "default";
-+	status = "disabled";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+&cecb_AO {
-+	pinctrl-0 = <&cec_ao_b_h_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+&clkc_audio {
-+	status = "okay";
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu1 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu2 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu3 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cvbs_vdac_port {
-+	cvbs_vdac_out: endpoint {
-+		remote-endpoint = <&cvbs_connector_in>;
-+	};
-+};
-+
-+&frddr_a {
-+	status = "okay";
-+};
-+
-+&frddr_b {
-+	status = "okay";
-+};
-+
-+&frddr_c {
-+	status = "okay";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+	pinctrl-0 = <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
-+	pinctrl-names = "default";
-+	hdmi-supply = <&hdmi_pw>;
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&ir {
-+	status = "disabled";
-+	pinctrl-0 = <&remote_input_ao_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&pwm_AO_cd {
-+	pinctrl-0 = <&pwm_ao_d_e_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin1";
-+	status = "okay";
-+};
-+
-+&pwm_ef {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_e_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin0";
-+};
-+
-+&saradc {
-+	status = "okay";
-+	vref-supply = <&vddao_1v8>;
-+};
-+
-+/* SDIO */
-+&sd_emmc_a {
-+	status = "okay";
-+	pinctrl-0 = <&sdio_pins>;
-+	pinctrl-1 = <&sdio_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr50;
-+	max-frequency = <100000000>;
-+
-+	non-removable;
-+	disable-wp;
-+
-+	/* WiFi firmware requires power to be kept while in suspend */
-+	keep-power-in-suspend;
-+
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddao_1v8>;
-+
-+	brcmf: wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+/* SD card */
-+&sd_emmc_b {
-+	status = "okay";
-+	pinctrl-0 = <&sdcard_c_pins>;
-+	pinctrl-1 = <&sdcard_clk_gate_c_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	max-frequency = <100000000>;
-+	disable-wp;
-+
-+	cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddao_3v3>;
-+};
-+
-+/* eMMC */
-+&sd_emmc_c {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+	max-frequency = <200000000>;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&vcc_1v8>;
-+};
-+
-+&tdmif_b {
-+	status = "okay";
-+};
-+
-+&tdmout_b {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
-+
-+&uart_A {
-+	status = "okay";
-+	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-+		max-speed = <2000000>;
-+		clocks = <&wifi32k>;
-+		clock-names = "lpo";
-+	};
-+};
-+
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb {
-+	status = "okay";
-+	dr_mode = "host";
-+};
--- 
-2.17.1
+Good suggestion. I can add this check to the noself variant. Or if
+people prefer, this check can also be moved into the leaf helper.
 
+Wei.
+
+> 
+> > +}
+> > +
+> >  void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die);
+> >  bool hv_is_hyperv_initialized(void);
+> >  bool hv_is_hibernation_supported(void);
+> 
+> -- 
+> Vitaly
+> 
