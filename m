@@ -2,84 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E0D404624
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDADC40461E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352646AbhIIH17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 03:27:59 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:45222
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1352644AbhIIH15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 03:27:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=l7LuoSO3cuCI59wQT6VhqxA3MY6wab/zAIpmw9ndC8o=; b=l
-        MR2G8j6UbksSBJzP1EfsqF6JHHHavsYc3yrkKVoQBlA/FiC6XAM54/0AltLNBI5V
-        kxAsBfRi65aTGLpQPj/BY2BOifD39TBd+HQZrsjFzdm5+zvkMz35gUL7cgMXpDgv
-        OoE1+RZip40ceo4fZ7dLElw+Qgq6lWh8NXjL5eD7Xg=
-Received: from localhost.localdomain (unknown [10.162.185.151])
-        by app1 (Coremail) with SMTP id XAUFCgCX+GXNtjlh574+AA--.2228S3;
-        Thu, 09 Sep 2021 15:25:27 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH v2] kunit: fix reference count leak in kfree_at_end
-Date:   Thu,  9 Sep 2021 15:24:36 +0800
-Message-Id: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgCX+GXNtjlh574+AA--.2228S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruryDtr1rArWxGFyDGw4fGrg_yoWkWrcEkF
-        4xuFn2vr97AF4jgw4UKr45AF4IkF4UJF95W3ZagFZ3Ka4jqr9rtr9xurn5WFW3WF43Cr9x
-        X39xGr4xAw1IvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjfUOlksUUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S1352582AbhIIH0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 03:26:43 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37307 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230424AbhIIH0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 03:26:41 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H4rBd5z43z9sWc;
+        Thu,  9 Sep 2021 09:25:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tI4gb1MB9n_o; Thu,  9 Sep 2021 09:25:29 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H4rBd4d9gz9sWb;
+        Thu,  9 Sep 2021 09:25:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 837618B77E;
+        Thu,  9 Sep 2021 09:25:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id D01rvl7fvhrg; Thu,  9 Sep 2021 09:25:29 +0200 (CEST)
+Received: from po9476vm.idsi0.si.c-s.fr (po22017.idsi0.si.c-s.fr [192.168.7.20])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CE478B77D;
+        Thu,  9 Sep 2021 09:25:27 +0200 (CEST)
+Subject: Re: [PATCH v3 8/8] treewide: Replace the use of mem_encrypt_active()
+ with cc_platform_has()
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Cc:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Will Deacon <will@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Ingo Molnar <mingo@redhat.com>, Dave Young <dyoung@redhat.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <46a18427dc4e9dda985b10e472965e3e4c769f1d.1631141919.git.thomas.lendacky@amd.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a9d9a6a7-b3b3-570c-ef3d-2f5f0b61eb0b@csgroup.eu>
+Date:   Thu, 9 Sep 2021 07:25:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <46a18427dc4e9dda985b10e472965e3e4c769f1d.1631141919.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference counting issue happens in the normal path of
-kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
-function forgets to handle the returned resource object, whose refcount
-increased inside, causing a refcount leak.
 
-Fix this issue by calling kunit_alloc_resource() instead of
-kunit_alloc_and_get_resource().
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- lib/kunit/executor_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 9/8/21 10:58 PM, Tom Lendacky wrote:
+> 
+> diff --git a/arch/powerpc/include/asm/mem_encrypt.h b/arch/powerpc/include/asm/mem_encrypt.h
+> index ba9dab07c1be..2f26b8fc8d29 100644
+> --- a/arch/powerpc/include/asm/mem_encrypt.h
+> +++ b/arch/powerpc/include/asm/mem_encrypt.h
+> @@ -10,11 +10,6 @@
+>   
+>   #include <asm/svm.h>
+>   
+> -static inline bool mem_encrypt_active(void)
+> -{
+> -	return is_secure_guest();
+> -}
+> -
+>   static inline bool force_dma_unencrypted(struct device *dev)
+>   {
+>   	return is_secure_guest();
+> diff --git a/arch/powerpc/platforms/pseries/svm.c b/arch/powerpc/platforms/pseries/svm.c
+> index 87f001b4c4e4..c083ecbbae4d 100644
+> --- a/arch/powerpc/platforms/pseries/svm.c
+> +++ b/arch/powerpc/platforms/pseries/svm.c
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/mm.h>
+>   #include <linux/memblock.h>
+> +#include <linux/cc_platform.h>
+>   #include <asm/machdep.h>
+>   #include <asm/svm.h>
+>   #include <asm/swiotlb.h>
+> @@ -63,7 +64,7 @@ void __init svm_swiotlb_init(void)
+>   
+>   int set_memory_encrypted(unsigned long addr, int numpages)
+>   {
+> -	if (!mem_encrypt_active())
+> +	if (!cc_platform_has(CC_ATTR_MEM_ENCRYPT))
+>   		return 0;
+>   
+>   	if (!PAGE_ALIGNED(addr))
+> @@ -76,7 +77,7 @@ int set_memory_encrypted(unsigned long addr, int numpages)
+>   
+>   int set_memory_decrypted(unsigned long addr, int numpages)
+>   {
+> -	if (!mem_encrypt_active())
+> +	if (!cc_platform_has(CC_ATTR_MEM_ENCRYPT))
+>   		return 0;
+>   
+>   	if (!PAGE_ALIGNED(addr))
 
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-index cdbe54b16501..c2dcfb1f6e97 100644
---- a/lib/kunit/executor_test.c
-+++ b/lib/kunit/executor_test.c
-@@ -116,7 +116,7 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
- 	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
- 	if (IS_ERR_OR_NULL(to_free))
- 		return;
--	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-+	kunit_alloc_resource(test, NULL, kfree_res_free, GFP_KERNEL,
- 				     (void *)to_free);
- }
- 
--- 
-2.7.4
+This change unnecessarily complexifies the two functions. This is due to 
+cc_platform_has() being out-line. It should really remain inline.
+
+Before the change we got:
+
+0000000000000000 <.set_memory_encrypted>:
+    0:	7d 20 00 a6 	mfmsr   r9
+    4:	75 29 00 40 	andis.  r9,r9,64
+    8:	41 82 00 48 	beq     50 <.set_memory_encrypted+0x50>
+    c:	78 69 04 20 	clrldi  r9,r3,48
+   10:	2c 29 00 00 	cmpdi   r9,0
+   14:	40 82 00 4c 	bne     60 <.set_memory_encrypted+0x60>
+   18:	7c 08 02 a6 	mflr    r0
+   1c:	7c 85 23 78 	mr      r5,r4
+   20:	78 64 85 02 	rldicl  r4,r3,48,20
+   24:	61 23 f1 34 	ori     r3,r9,61748
+   28:	f8 01 00 10 	std     r0,16(r1)
+   2c:	f8 21 ff 91 	stdu    r1,-112(r1)
+   30:	48 00 00 01 	bl      30 <.set_memory_encrypted+0x30>
+			30: R_PPC64_REL24	.ucall_norets
+   34:	60 00 00 00 	nop
+   38:	38 60 00 00 	li      r3,0
+   3c:	38 21 00 70 	addi    r1,r1,112
+   40:	e8 01 00 10 	ld      r0,16(r1)
+   44:	7c 08 03 a6 	mtlr    r0
+   48:	4e 80 00 20 	blr
+   50:	38 60 00 00 	li      r3,0
+   54:	4e 80 00 20 	blr
+   60:	38 60 ff ea 	li      r3,-22
+   64:	4e 80 00 20 	blr
+
+After the change we get:
+
+0000000000000000 <.set_memory_encrypted>:
+    0:	7c 08 02 a6 	mflr    r0
+    4:	fb c1 ff f0 	std     r30,-16(r1)
+    8:	fb e1 ff f8 	std     r31,-8(r1)
+    c:	7c 7f 1b 78 	mr      r31,r3
+   10:	38 60 00 00 	li      r3,0
+   14:	7c 9e 23 78 	mr      r30,r4
+   18:	f8 01 00 10 	std     r0,16(r1)
+   1c:	f8 21 ff 81 	stdu    r1,-128(r1)
+   20:	48 00 00 01 	bl      20 <.set_memory_encrypted+0x20>
+			20: R_PPC64_REL24	.cc_platform_has
+   24:	60 00 00 00 	nop
+   28:	2c 23 00 00 	cmpdi   r3,0
+   2c:	41 82 00 44 	beq     70 <.set_memory_encrypted+0x70>
+   30:	7b e9 04 20 	clrldi  r9,r31,48
+   34:	2c 29 00 00 	cmpdi   r9,0
+   38:	40 82 00 58 	bne     90 <.set_memory_encrypted+0x90>
+   3c:	38 60 00 00 	li      r3,0
+   40:	7f c5 f3 78 	mr      r5,r30
+   44:	7b e4 85 02 	rldicl  r4,r31,48,20
+   48:	60 63 f1 34 	ori     r3,r3,61748
+   4c:	48 00 00 01 	bl      4c <.set_memory_encrypted+0x4c>
+			4c: R_PPC64_REL24	.ucall_norets
+   50:	60 00 00 00 	nop
+   54:	38 60 00 00 	li      r3,0
+   58:	38 21 00 80 	addi    r1,r1,128
+   5c:	e8 01 00 10 	ld      r0,16(r1)
+   60:	eb c1 ff f0 	ld      r30,-16(r1)
+   64:	eb e1 ff f8 	ld      r31,-8(r1)
+   68:	7c 08 03 a6 	mtlr    r0
+   6c:	4e 80 00 20 	blr
+   70:	38 21 00 80 	addi    r1,r1,128
+   74:	38 60 00 00 	li      r3,0
+   78:	e8 01 00 10 	ld      r0,16(r1)
+   7c:	eb c1 ff f0 	ld      r30,-16(r1)
+   80:	eb e1 ff f8 	ld      r31,-8(r1)
+   84:	7c 08 03 a6 	mtlr    r0
+   88:	4e 80 00 20 	blr
+   90:	38 60 ff ea 	li      r3,-22
+   94:	4b ff ff c4 	b       58 <.set_memory_encrypted+0x58>
 
