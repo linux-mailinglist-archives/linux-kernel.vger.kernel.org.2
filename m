@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB812404713
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2C4404718
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhIIIdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:33:50 -0400
-Received: from mail-eopbgr1300090.outbound.protection.outlook.com ([40.107.130.90]:24757
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231634AbhIIIdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:33:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nv69fL0bCkWFz/4/ZNT7cfVssgySEsArgpi8HveC0/fLB62T9/C72lMgtF+BOxlHRipxSB5Ki2Ew410ba89djZGVo3SiyNnyhitilGIj5BWNbPDQFdCLTe63IKsC8quHoUyj6WLMlV0IHbiMHZpro8zDyZac3Vowpf/J1O/g1WxNOT7tFbC0gjc7zYB9/RXqWvPd+YdJiR4GI2I8fF8sFISqCp99ZD23cx25K9Fy3Oxtnmkq/XEMR4qh4VHNZ1wzbT0pVgNpBvNyjXgs5Cp7ix8PU8Wx35IposMJQ8UNVwafppTKCokJUGv75IGNnznH0BqFuClnE3on2ipfediCrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=hFAa+mK7cWTLZApJtC3iyIyQb+lbWxGMjYzrSH3daPU=;
- b=afi1RaMads7YnZt0UNK2uxVPQsMSjoL2SMpUyscV0d76Tv8JH+IixjfIXxqWo5i/EtdpQrQEoAENC4uQHbpF41B7Q57TS86D+5Tw3D2alnkthp2LbOWOh6maE3kieokBcqV5+p+vOmjGOHf6TH2QI1x6WWNlm2CPlCFLI0BZiObYQ4Pre6o4ztZNY1c6gWB+GE95zIauzkckiM5qZvPH05RGzdsevzQTnzq4/aGwkbtrY3hGftCUZ3w2CcQbZ3ldqfjOlJEyP+a56igjTCgRJrvYRUya3M29Tsuk209YsY0e9sSDk81jBgR49nEuahB5Bu6S/gxIdHhf0Trh9Fdbtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hFAa+mK7cWTLZApJtC3iyIyQb+lbWxGMjYzrSH3daPU=;
- b=G7AMuDvEDNrXa6WfeCTHx9C9fBHrrs962KIy3m0JCPlAlGEt0/cwAYgwz+VtfBw6p2oFmrQADRR7sg7M3yQFHRmIhwLTQHCxbnjmNRywbWr8zzvCSyJMcVQp52qHWQf/+htJjqqxnnXBx6WUO+coc7zYH7PdleHm9SNszzTd3/xyA1TcPopzDOsgW1DI7ewNoFGYOlNtkhbgTTkk9Ht2/uYca3iLYYq8HFQI5cQr2yhMYlYQaiyGXK5G6UI2BD3KJSqMfvj2GbXDajG4Oqey0Yj0cJqGQHB9eT2p1GmYT2fZxsjn+RuyuEwVEjszlTEVazVVUTXZCaCRidLlp+ypAw==
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK0PR06MB2963.apcprd06.prod.outlook.com (2603:1096:203:8a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Thu, 9 Sep
- 2021 08:32:34 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4457.026; Thu, 9 Sep 2021
- 08:32:34 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Lei Yu <yulei.sh@bytedance.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        Oskar Senft <osk@google.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        openbmc <openbmc@lists.ozlabs.org>
-Subject: RE: [External] [PATCH v2 0/3] arm: aspeed: Add UART routing support
-Thread-Topic: [External] [PATCH v2 0/3] arm: aspeed: Add UART routing support
-Thread-Index: AQHXn6Ep4pfNy4cUzEmFUBdsNZd0kqubTzKAgAAbnsA=
-Date:   Thu, 9 Sep 2021 08:32:34 +0000
-Message-ID: <HK0PR06MB3779FBC72887BCC2D915EBCA91D59@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
- <CAGm54UERFkOLXtG3wwL9x1-HAXjmRoaG4ZRbZZOLjP1bLZ=LSg@mail.gmail.com>
-In-Reply-To: <CAGm54UERFkOLXtG3wwL9x1-HAXjmRoaG4ZRbZZOLjP1bLZ=LSg@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none
- header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d88c9b67-02f5-4a52-3fc8-08d9736c5f73
-x-ms-traffictypediagnostic: HK0PR06MB2963:
-x-microsoft-antispam-prvs: <HK0PR06MB2963C3B5189679B60404B23B91D59@HK0PR06MB2963.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: u5ko+LYF5+K3Zn50PGnD67v87tdDsjm6H0/I7yysQdzprdfXAh4cxMI5hbKyYzZRvYfzqSCbTL2P0PsCh2WAnP3lsu82YcJmZ+R2CxlhfFQgc5mtkSCllVYUXJhD0JimvsDIxCotCA7FQYLDeblNhUErn+302FmAbh//T83SuuH+4INzZExYBu7q+pJzmST1F6Ak4oXR7v/DB3V7PmOHuXFQQhn3ovo7doj+1q7rXVBzlUhzx6z0qxJWI10MDDMu+vDcOcU/DbmYmA/p1209qZEyuXGRJGatoPghKEXf41ZvzxCnADDZwJoRIN686dw1Z5Ixk7C6LHFyVASMITUakelQIW4YrHv66X5wCXmWsK/e1gfCMLjS8EynDB4KHzuDUenij0EKkUMjrM9zgajWby2NINC0She4UhuVzvFg7iHtgoIa7ZVN+T+M+t/oBww1TL+DCEQNLq/cXQvjdfjaOASKiSKdJBUJ9SXUbitYn4K8PdSSmJe8SEp0Qbvvn1Xz3WaVTHy5r7CX/pnSYATJw+NFKp6vOYlmnxMJsdRoGN9LnMP5FdJF6GPT6f0/RqRmYhnRpBKZJ//gfSir+850w83Q25qh+TdLES0esTbXl2VeD4AGPRbB/Z/b42bQEfbDHqIxGgbhXNMFYXYceiDHGQ2qE5xTgKz8eQsrBtO83e8XnUSS18qbPldH3+2yw1LQZ3LvSM0jFZcuIN6EjM0T50uGQniBK3qXVwZF066spG3p9whpA/OE5ZCB/Jm4pF0QSj+QUvmzEyp2pQPc+2BPj5+80v5i9n9J0rXHvQanZLw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(366004)(346002)(39840400004)(7416002)(64756008)(66946007)(66476007)(66556008)(76116006)(52536014)(53546011)(6506007)(966005)(26005)(186003)(6916009)(8676002)(478600001)(55016002)(9686003)(66446008)(2906002)(316002)(7696005)(5660300002)(86362001)(71200400001)(38070700005)(83380400001)(8936002)(33656002)(38100700002)(4326008)(54906003)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N093L2pWajhadTBFdTd4M1VqZTAvR1dnbzFPR3Y1UTBnMDZ3Zi9UWWdYN254?=
- =?utf-8?B?emJDUXpJM29lcFZvcFNicDBwbUlEdjlWeVFNMkZxd0ZnWG1UbkI1eVR2SUEw?=
- =?utf-8?B?alcrUXg0Wm9Qd2IyUGZJTC85NkRyRjFrU2VuaS9vN3AxK2Qxak5JSGdLVytq?=
- =?utf-8?B?V0lEU1E1dG40OFRxNUhiOU5vdFY5dy9ZWXlkRFdyUW5GVk5TQnVWMURYaitW?=
- =?utf-8?B?MDBrcEJlTmpqRnNraXpTQ0FaWXBESlZnazhiYmM1WFBHTGVucTRJY1JFYVhI?=
- =?utf-8?B?U1RPVFZNT0ZVOGRVOWk0TUlSUkNzbGZDSm80VmU2cTdCMFg0MGJRZXV4MzVL?=
- =?utf-8?B?QW5sNEN4OGdoaHpzUXc3L0V3dGNmQXlWNVRiSTR3UVpwQTRQWEUxY3d4QThh?=
- =?utf-8?B?bEZuTmlIVUwwdC85aXkxZnRBd2ZPMXNoUzBYYW5mTkxkSnhaMFh4My83eS9M?=
- =?utf-8?B?SzQwZTJCbzd4RHNBTFBycFdWaTFRWjQzVmJCbnFXblhRTEpET0s5cExSeGxz?=
- =?utf-8?B?dlN1eTd3bGwyQmZaN01Va3Fyc0FFdURKRlhyZGJIT0NQdmZLR2ZZN0Q5bGNn?=
- =?utf-8?B?eUMxYkZ4dTVpRU9RU1JaL0F5Z1duU0YvTjdndUIvNnNKaUlBQXhPZ05sS2hq?=
- =?utf-8?B?ZG8rQWM3NEhlUlNZU0Z6aTdwajF6d1dEcVcvK1lYQU00N3VPeVRKUDBNVnJu?=
- =?utf-8?B?eDVENUtBMml0RXZoaURsQ09zQnNtT2lpMm9rQUkvUHhRSjdBVXBmUTBpcHFp?=
- =?utf-8?B?Y2k1SWo4ek9QOTdCZ0ViTkJKemhDaEtXNnVtMFZhOVZxa1UxcDFvcHpFWDdV?=
- =?utf-8?B?OXE2dDNGRTY3V0xxNUdBMTJac1Vzdm5tS1RlYzV3S1lwczBZQ2dhVmVqTWQ2?=
- =?utf-8?B?d1I1QW1KWmZPTnBobmEyVitkK1lnQXBDL0tLbUx1MVVVQlM1bHRTSFU5T0N2?=
- =?utf-8?B?cTJJZ1hKWkU4NUZCUFFEWkJJQWozcEtaVTJBeWxzUHE5TE5JVGVVcGk1ZlA0?=
- =?utf-8?B?SzVwKzJ3Q3RlcHJqNkp2UkpVNmRzZmM1Qk1RSzN5cUJSYXJrYkxMZUJVS0x0?=
- =?utf-8?B?cG8ydFdFYmovZzBvQXpPNHhwSmVJL083YlJGa0t2bWNrNzkwc0pWUzVxNnFx?=
- =?utf-8?B?QkREdDNxajlSUk9ubWJmMkdqaGUzM1VLMDRjVFlwd2hKcy9wWjlaSDBlNUNV?=
- =?utf-8?B?Y2tCRk9tZWdQNDlLQzh4a09rZzRrNU5BSTZYN3ViYzhGMVlkd1dLZkZoTlkv?=
- =?utf-8?B?RUp3STRqb3FWbmZONlFDT3VYcXdrOExHU2ZTSm13a1Z1akNTWkRLQ1BpQ2Fj?=
- =?utf-8?B?VU1GOGJWRjE3clArWitnQ0c4bXBXdEltVEFLR3J1SmRocUNCejBHMWsvRWND?=
- =?utf-8?B?QXNnWnF5cXRyeTVUWnZnRi94MUxMc1Y0aE11NlB1ZkRVMlBodXQ3TW1POWli?=
- =?utf-8?B?b2pRdTNJTkYxQXM4SzdHVnRiUit2dmhQSkRIeW5YRjBRYXdJbTFKamRBUEhi?=
- =?utf-8?B?dkx0N0k1NjlFS1Z6ekpFc3luNVBqL2JreXA0enlFbHBiNC84UjlpK29LTlE4?=
- =?utf-8?B?M1dhdzFOREd1R2w5R0JFM0l6aW1GZ3EvVURBeXpyeHVWTXlLYkNzTlpHSXVK?=
- =?utf-8?B?cnRmY3Ztc0ZuUWIzcVBQQnp2QStodDU2T2RVb2tuZVhMV0NMUklRSENCbGNo?=
- =?utf-8?B?cThBSEowL2IwRzIyT0RhR3I2NzE2N2xZVXpJd2VJcW9xY3U0R0Z0QjRDeHo1?=
- =?utf-8?Q?zezWiD5XG2qOr8H4VBUpoTzRnVIeCafrsjyzyhJ?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231734AbhIIIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhIIIfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:35:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889C6C061575;
+        Thu,  9 Sep 2021 01:34:44 -0700 (PDT)
+Date:   Thu, 09 Sep 2021 08:34:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631176482;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=80QALolpCs7AaTRTKPDWXh+r0eyW85Gk82eTC53eMPI=;
+        b=WUCpLxMzdK3se/kKe+cGQdxJecKcpXqI/3a5bpJ6ab5CtD86aXHJ+wVL2s6iIhPsn1VIIf
+        hLjeuSW/5JjLfGcBUFMCA/ztYcmp1OvSmmMWxK7gj/3EU0KFuKKbhPYkRlH2/8LU0zgLqB
+        vOk7yOtb9iG956q+Un/q4n8mNr2R4xNpl+2jRTvZ9UMM3gKOjWZFpuIC+l8kZrDLA09Uvn
+        DbQvh8Vo5lQdfj9S3MWDUkTJQTEKvfxeYk65kYO8HhNHnMgcq/hs0lEQh+GA8N8PgxypwL
+        DrrmODycdhTsBsdEeQEMCbB5y02qqzT6dtRiBLpS/NJjyy28ti4ksi5dBCNk3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631176482;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=80QALolpCs7AaTRTKPDWXh+r0eyW85Gk82eTC53eMPI=;
+        b=AFZ5wdrtNb/depnNpKLuv0tU30vHuHBqydht30pbQqaBCPk542QrgSlWQ54c45FnOVr3A4
+        149EmsIc7zPm9tCA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/rtmutex: Fix ww_mutex deadlock check
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <YS9La56fHMiCCo75@hirez.programming.kicks-ass.net>
+References: <YS9La56fHMiCCo75@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d88c9b67-02f5-4a52-3fc8-08d9736c5f73
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 08:32:34.4356
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hgn2dsqyFTomfbk1UOctf6OD/bxH1+1LOCup/Bs5YkGQKoe+OL+gMFCMnduD9jrM6XxUWx4ZaK9mQMAgV+xdLGnWGdc9EuuPginyRqZB5SU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2963
+Message-ID: <163117648132.25758.8161104732621115882.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGVpLA0KDQpUaGFua3MgZm9yIHRoZSBUZXN0ZWQtYnkgdGFnLg0KV2lsbCBpbmNsdWRlIGl0
-IGluIHRoZSB1cGNvbWluZyB2MyBwYXRjaC4NCg0KPiBGcm9tOiBMZWkgWXUgPHl1bGVpLnNoQGJ5
-dGVkYW5jZS5jb20+DQo+IFNlbnQ6IFRodXJzZGF5LCBTZXB0ZW1iZXIgOSwgMjAyMSAyOjUyIFBN
-DQo+IA0KPiBUaGUgcGF0Y2hlcyBhcmUgdGVzdGVkIG9uIG1ldGEtZzIyMGEgYnVpbGQgYW5kIGl0
-IHdvcmtzIGZpbmUgd2l0aCBzb21lDQo+IGNoYW5nZXMgaW4gdGhlIHN5c2ZzIHBhdGhbMV0uDQo+
-IA0KPiBUZXN0ZWQtYnk6IExlaSBZVSA8eXVsZWkuc2hAYnl0ZWRhbmNlLmNvbT4NCj4gDQo+IFsx
-XToNCj4gaHR0cHM6Ly9naXRodWIuY29tL29wZW5ibWMvbWV0YS1ieXRlZGFuY2UvYmxvYi9tYXN0
-ZXIvbWV0YS1nMjIwYS9yZWNpcA0KPiBlcy1waG9zcGhvci9jb25zb2xlL29ibWMtY29uc29sZS9v
-Ym1jLWNvbnNvbGUlNDAuc2VydmljZSNMNy1MMTANCj4gDQo+IE9uIFRodSwgU2VwIDIsIDIwMjEg
-YXQgMTA6MjAgQU0gQ2hpYS1XZWkgV2FuZw0KPiA8Y2hpYXdlaV93YW5nQGFzcGVlZHRlY2guY29t
-PiB3cm90ZToNCj4gPg0KPiA+IEFkZCBVQVJUIHJvdXRpbmcgZHJpdmVyIGFuZCB0aGUgZGV2aWNl
-IHRyZWUgbm9kZXMuDQo+ID4NCj4gPiB2MjoNCj4gPiAgLSBBZGQgZHQtYmluZGluZ3MNCj4gPiAg
-LSBBZGQgQUJJIGRvY3VtZW50cyBmb3IgdGhlIGV4cG9ydGVkIHN5c2ZzIGludGVyZmFjZQ0KPiA+
-ICAtIFJldmlzZSBkcml2ZXIgaW1wbGVtZW50YXRpb24gc3VnZ2VzdGVkIGJ5IEpvZWwNCj4gPg0K
-PiA+IENoaWEtV2VpIFdhbmcgKDMpOg0KPiA+ICAgZHQtYmluZGluZ3M6IGFzcGVlZC1scGM6IEFk
-ZCBVQVJUIHJvdXRpbmcgY29tcGF0aWJsZSBzdHJpbmcNCj4gPiAgIHNvYzogYXNwZWVkOiBBZGQg
-VUFSVCByb3V0aW5nIHN1cHBvcnQNCj4gPiAgIEFSTTogZHRzOiBhc3BlZWQ6IEFkZCB1YXJ0IHJv
-dXRpbmcgdG8gZGV2aWNlIHRyZWUNCj4gPg0KPiA+ICAuLi4vdGVzdGluZy9zeXNmcy1kcml2ZXIt
-YXNwZWVkLXVhcnQtcm91dGluZyAgfCAgMTUgKw0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5n
-cy9tZmQvYXNwZWVkLWxwYy50eHQgICAgfCAgMjIgKw0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9h
-c3BlZWQtZzUuZHRzaSAgICAgICAgICAgICAgfCAgIDYgKw0KPiA+ICBhcmNoL2FybS9ib290L2R0
-cy9hc3BlZWQtZzYuZHRzaSAgICAgICAgICAgICAgfCAgIDYgKw0KPiA+ICBkcml2ZXJzL3NvYy9h
-c3BlZWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgfCAgMTAgKw0KPiA+ICBkcml2ZXJzL3Nv
-Yy9hc3BlZWQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgfCAgIDkgKy0NCj4gPiAgZHJpdmVy
-cy9zb2MvYXNwZWVkL2FzcGVlZC11YXJ0LXJvdXRpbmcuYyAgICAgIHwgNjAxDQo+ICsrKysrKysr
-KysrKysrKysrKw0KPiA+ICA3IGZpbGVzIGNoYW5nZWQsIDY2NSBpbnNlcnRpb25zKCspLCA0IGRl
-bGV0aW9ucygtKSAgY3JlYXRlIG1vZGUNCj4gPiAxMDA2NDQgRG9jdW1lbnRhdGlvbi9BQkkvdGVz
-dGluZy9zeXNmcy1kcml2ZXItYXNwZWVkLXVhcnQtcm91dGluZw0KPiA+ICBjcmVhdGUgbW9kZSAx
-MDA2NDQgZHJpdmVycy9zb2MvYXNwZWVkL2FzcGVlZC11YXJ0LXJvdXRpbmcuYw0KPiA+DQo+ID4g
-LS0NCj4gPiAyLjE3LjENCj4gPg0KPiANCj4gDQo+IC0tDQo+IEJScywNCj4gTGVpIFlVDQo=
+The following commit has been merged into the locking/urgent branch of tip:
+
+Commit-ID:     e5480572706da1b2c2dc2c6484eab64f92b9263b
+Gitweb:        https://git.kernel.org/tip/e5480572706da1b2c2dc2c6484eab64f92b9263b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 01 Sep 2021 11:44:11 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 09 Sep 2021 10:31:22 +02:00
+
+locking/rtmutex: Fix ww_mutex deadlock check
+
+Dan reported that rt_mutex_adjust_prio_chain() can be called with
+.orig_waiter == NULL however commit a055fcc132d4 ("locking/rtmutex: Return
+success on deadlock for ww_mutex waiters") unconditionally dereferences it.
+
+Since both call-sites that have .orig_waiter == NULL don't care for the
+return value, simply disable the deadlock squash by adding the NULL check.
+
+Notably, both callers use the deadlock condition as a termination condition
+for the iteration; once detected, it is sure that (de)boosting is done.
+Arguably step [3] would be a more natural termination point, but it's
+dubious whether adding a third deadlock detection state would improve the
+code.
+
+Fixes: a055fcc132d4 ("locking/rtmutex: Return success on deadlock for ww_mutex waiters")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/YS9La56fHMiCCo75@hirez.programming.kicks-ass.net
+
+---
+ kernel/locking/rtmutex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 8eabdc7..6bb116c 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -753,7 +753,7 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 		 * other configuration and we fail to report; also, see
+ 		 * lockdep.
+ 		 */
+-		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter->ww_ctx)
++		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter && orig_waiter->ww_ctx)
+ 			ret = 0;
+ 
+ 		raw_spin_unlock(&lock->wait_lock);
