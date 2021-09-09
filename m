@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2DC40599E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003CC4059A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241473AbhIIOsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        id S243465AbhIIOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239137AbhIIOsJ (ORCPT
+        with ESMTP id S239137AbhIIOsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:48:09 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD28C0698DE;
-        Thu,  9 Sep 2021 07:39:20 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z4so2908640wrr.6;
-        Thu, 09 Sep 2021 07:39:20 -0700 (PDT)
+        Thu, 9 Sep 2021 10:48:20 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56798C066409
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:40:32 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id 6so2744706oiy.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 07:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nn30ccIH4JoWD6yLd4SqcwwQB1qB1pHSCA5yIkmN8mQ=;
-        b=fR1EXGC+uJQQ64WeKXfdo3uxWGtDr7y/vk/GRzYs3SYdxIkhM+8f2DoUN7ER/DckyK
-         fvnT7CeJxWFJ8fHx9EU4sPELcZfjZ6o3FSC1/4sq8ZJHV1xUY3QCX2N3XyHNhfWm5muB
-         OIPJwdaC6bFvjMynm7lm4UlqJgUGeZc3XcBYJGKJfLERneQX1l54SxFNtPW6d6Y4Ue5A
-         9K6E+i2btsG8QBgEOcaXJCMDvekIQf2sylYn4BQrfOa1yGRsFHxHxktEXeq22yDSiHlj
-         TwUMPjimUpMOWDVF3cdZ0DpmQxeJ9PKjLKjfFez2WtpQRAC3Udevzfv7ft84mrCNMk46
-         dW3g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Jtd5ppqH31n/KLK+cY13LK3FdPrs9pVeJq1VDs1R2lE=;
+        b=KKGZ29/Xf4HSszxMgUaFJTKQv3zzYHHXdnMRgFnoxoqoPD7+ujOeh8GPIkaQkGbDEv
+         7HbNKuK5n6DSdLkMCI5RlHARjoXk/UiZ0U03o12o5SKhmPAFoZSq17w3IeqdKHb10is+
+         kaBZIzzawugaqnYDsC78lTzTyXHSIBJ/QL2iPQQy2EnNmHEGr2kVwSOebIjBK9fx4UzQ
+         RGI82kI7ttS7zyzifIDV2llA0W6lNAE6dST0N9ucTKochfU/6mluLqffFMuyNU6mvy7i
+         ksnRAefIAVGqonBiCzBhPxEcbEfLTHDFiv1abbKMFayxCBycaDXp8BwhokWiqJFYYlp3
+         rxSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nn30ccIH4JoWD6yLd4SqcwwQB1qB1pHSCA5yIkmN8mQ=;
-        b=AZOWlVIUfihLI837B3qRhD0zUV7bk4pCa14+GkKeJqvkJs4W8fHWsjey7ZiZuPpl7i
-         2khQ9vtpoALz+9335MD2exvVvNLr888+JJGQSrjK+LutjteoxXxdORD5B9xmqGEmixW5
-         EhkbddNEgB3Xro/5tIwYKYgS73dz6gahMf30HI5k/JiL/KP2a4waQ8saI9A2TZMJI3Lm
-         SdjQDquTRNJB01/EJ/C7FCs5iTRUUk9zXxNDNtgMUkpmksGz+7m85dYBj4wIOqgPazz7
-         MY5M7WJpTGeIJxoGI7LQDIverTKOCxuq/byj+M3CXGyIoj/B7y2HJ0DYGbrO/E/Yq7kd
-         byWg==
-X-Gm-Message-State: AOAM532nWQj2XL0xbGvbqPhLlTbcKSFZOia3TWSmd4JfLbj3XPKj+q1J
-        gDIiXR8wSMQLWblL+sBsDtw4Qe3XAmKPAw==
-X-Google-Smtp-Source: ABdhPJwrxlwFsCmqwVWSXKZgDNYjJYVLduuehkklCjsdf37obwJjiX6yDFHueOSCYQQ/Q8IoMhNsmA==
-X-Received: by 2002:a5d:4488:: with SMTP id j8mr4044189wrq.260.1631198359342;
-        Thu, 09 Sep 2021 07:39:19 -0700 (PDT)
-Received: from [80.5.213.92] (cpc108963-cmbg20-2-0-cust347.5-4.cable.virginm.net. [80.5.213.92])
-        by smtp.gmail.com with ESMTPSA id n4sm1724249wme.31.2021.09.09.07.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 07:39:18 -0700 (PDT)
-Subject: Re: [PATCH net 0/2] sfc: fallback for lack of xdp tx queues
-To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
-        habetsm.xilinx@gmail.com, davem@davemloft.net, kuba@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20210909092846.18217-1-ihuguet@redhat.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <5233eedf-42a7-f938-67cd-e7acc5f3bbce@gmail.com>
-Date:   Thu, 9 Sep 2021 15:39:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Jtd5ppqH31n/KLK+cY13LK3FdPrs9pVeJq1VDs1R2lE=;
+        b=lViCQ2GKvxHvNVvNRKYtINc1w03A+JPcJ87MY/rvuzJwmLyeIRy1bjaVvyczPQAqqc
+         9GBrvOQWDWlKulG0uTzaIQUteZyy3VYqlyLdY4oW+mNglEC0EGhhrYw6e5cO+PEOCnhv
+         lkW3IfDtsPOIxdR4N1y8sqsdGPYALX1i+gj83XZGi6G3MdtjTNth/wzNSBPZy+l1bERu
+         s09W0yN5XUDgNSMQ1L0z48+0oty2VZzcwld/4RlntyPguokW5vt5gz33Kft1KU+tvBPh
+         NzQ9Yt/CIn0YmeqV3nyw79jD282v4E2ahvuLWnsF+uYqAvkTuMHuyPRaIiGQWOFFyKrt
+         Wrqw==
+X-Gm-Message-State: AOAM532Hv21mlaKKXtBzkVQxOtDkQBBp34AEU0Hbmja9kgbxMW8pH6Uz
+        H4JH/Ff+LWtb7H7QYtBCGaOuQk03Ke4AAauXVvE9Dw==
+X-Google-Smtp-Source: ABdhPJw/RybYhxhDG88FRwwrkzIYw9ZgM89JO9ORsmkh9M8pAyrNBjPnRbDyIPYQi1wnphI8HcR4jaSgn3BOjRFp/I0=
+X-Received: by 2002:a54:4f03:: with SMTP id e3mr93670oiy.32.1631198431526;
+ Thu, 09 Sep 2021 07:40:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210909092846.18217-1-ihuguet@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+ <20210902101634.827187-4-ulf.hansson@linaro.org> <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
+ <CAPDyKFr2oQnKOhKhWt_9VyBoe=HQ7Y0uZUMKTcZ05a7G9RaBYA@mail.gmail.com>
+ <1124dae5-478f-f0ca-ea91-b6945f7c9254@gmail.com> <CAPDyKFqE+thX0pLTg9d-ds7Tj3hsB78EmDB1Cryh26tN3kvQDA@mail.gmail.com>
+ <3d92711f-ce30-2c19-c6a4-bb77d32df2dd@gmail.com> <CAPDyKFpJU3g2OzJeR9KUdtN-8wJsDckqVAMQMHBV=enu=DfURg@mail.gmail.com>
+ <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com> <CAPDyKFqw2tp3-J8dW03Kqw9xC_gO7nWfEckMvT3=zB0AbR8jeA@mail.gmail.com>
+ <1ca9a2d5-e89a-5bbd-2ecc-01f1c4a820ae@gmail.com>
+In-Reply-To: <1ca9a2d5-e89a-5bbd-2ecc-01f1c4a820ae@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 9 Sep 2021 16:39:54 +0200
+Message-ID: <CAPDyKFoFCVcjrGXQ56y0iSNPhE8-orpZiHvnAQTQW1b8oW4f5A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
+ callback to genpd
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/09/2021 10:28, Íñigo Huguet wrote:
-> Íñigo Huguet (2):
->   sfc: fallback for lack of xdp tx queues
->   sfc: last resort fallback for lack of xdp tx queues
-Patches LGTM, thanks for working on this.
+On Thu, 9 Sept 2021 at 15:48, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 07.09.2021 12:57, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > I don't mind extending the genpd API, but it needs to serve a good purp=
+ose.
+> >
+> > As I said earlier, genpd doesn't know nor can control how the consumer
+> > driver deploys runtime PM. Unfortunately, that also includes genpd
+> > providers, as the behavior isn't a platform or PM domain specific
+> > thing. This means genpd needs to be generic enough so it works for all
+> > cases.
+> >
+> > In the $subject patch, we rely on the pm_runtime_suspended() check in
+> > dev_pm_genpd_set_performance_state(), which should work for all cases,
+> > even if it may be sub-optimal for some scenarios.
+> >
+> > Note that, in the approach your suggested [1],
+> > pm_runtime_status_suspended() is used instead. This doesn't work when
+> > a consumer driver doesn't enable runtime PM - or calls
+> > pm_runtime_set_active() during ->probe(), because
+> > genpd_runtime_resume() won't be invoked to restore the gpd->rpm_state.
+> >
+> > That said, I wouldn't mind to simply skip adding the
+> > ->dev_get_performance_state() all together, if that is what you
+> > prefer? In this way, it becomes the responsibility for the consumer
+> > driver to do right thing, with the cost of some boilerplate code added
+> > in its ->probe() routine.
+>
+> Until a day ago, it wasn't clear to me that consumer drivers now can set
+> up rpm_pstate during probe(), which is a cleaner solution that works
+> well. So let's skip adding the questionable ->dev_get_performance_state()=
+.
+>
+> The boilerplate code in the probe() is minimal in comparison to a
+> previous variant with the state-syncing done by rpm-resume callbacks of
+> consumer drivers, it's good enough.
 
-However, I would like to grumble a bit about process: firstly I would
- have thought this was more net-next than net material.
-Secondly and more importantly, I would really have liked to have had
- more than 72 minutes to review this before it was applied.  Dave, I
- realise you never sleep, but the rest of us occasionally have to :P
+Alright, that sounds good to me as well.
 
--ed
+I am happy to help with review of the consumer driver changes, just
+keep me posted.
+
+Thanks and kind regards
+Uffe
