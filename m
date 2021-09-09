@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CAD405E02
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDC7405E0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345365AbhIIU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345211AbhIIU3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:29:24 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2869AC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:28:15 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id j2so1862737pll.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 13:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KkIQUN6UVWVDGVs7gQUvenivKjOnMibWM6lN26FSefU=;
-        b=FVbJMuxsPdMboW3fGRpeknq9uQRgiNFYMkfTDCp+yIJU/r8SnfixFRLOMHCuS02TXV
-         RwGohEECz7j1XeRtYg7gQzlcG+vLV6rsHNncc7O4uYVacKrMziWXHeyXi3ToHSI5Krci
-         dAtD/keu37A2un94zex2UJJKhbPBH+ZA+1B3gpOkZmfN9W4RivrlV4R9/tQ/9cnZUrgu
-         RzQYH2dMHu7mQiJ40p9ZTab+fVOUV0+TFBglNS4NUUQKTHkf9HLIB/mCNlTcORWAPzSS
-         K/4cGRMB01MOZSLT6KTLNPsQp2b002EpBhgBufLFsJW1FvkHgofIBfja7U+61OoYFw47
-         vXng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KkIQUN6UVWVDGVs7gQUvenivKjOnMibWM6lN26FSefU=;
-        b=AnXWVcxX/YpkuQiAqa5qkcT5+UCNMJyQQuHdXko4ynbvPyVtYqaTDaPNp7N54KnQgV
-         jm8IEc1RXFsPW/REkBVq1jzQxDGT5T5lkscd4Sls9v8iVtP9wn/f+4feSAZWVRYgCR9C
-         DOd09u3GaVwBHhwnVjRSpbJTmZPe95KfkJCjkXvc2Y1slkOmi0qE0FsRzrhkmhvEG9kP
-         3qaMdZbkzOWLdzx1P8DL0DKgOl8oQHRWw4dmZH9UoJLLBzAYGi/mc6QQshyqUFrkX+sP
-         eQUzfo2JuMW/Zyz7UrMf5zstKsv7pBR4J+hFc724Vr/SmhpD8ta4DqSUbyfx3BPe2VSP
-         MBCg==
-X-Gm-Message-State: AOAM532EV8vx5/2iynEyn05fK2WjkfnBjGd/NTHjjId87tMaxY+oABvR
-        KpTvl1+FKPXtaG3GaduCy4Cqww==
-X-Google-Smtp-Source: ABdhPJyAc4CRr9tF0y4feLojYbdHTKlOemQgA2iiZMpEO+mvtfr+51OjqPfvtnvGWSxrmgXGK89LBw==
-X-Received: by 2002:a17:90a:428e:: with SMTP id p14mr5632154pjg.92.1631219294432;
-        Thu, 09 Sep 2021 13:28:14 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b4sm3124696pga.69.2021.09.09.13.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 13:28:14 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 20:28:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ehabkost@redhat.com,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH v2 5/6] kvm: allocate vcpu pointer array separately
-Message-ID: <YTpuWl3Uhu4qpC1U@google.com>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-6-jgross@suse.com>
- <871r65wwk7.wl-maz@kernel.org>
- <37699e98-9a47-732d-8522-daa90f35c52f@suse.com>
- <87eea2c9zu.wl-maz@kernel.org>
+        id S1344966AbhIIUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:34:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343998AbhIIUeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 16:34:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 187266113A;
+        Thu,  9 Sep 2021 20:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631219579;
+        bh=Od4Fq70WNP3iP34ZfifIEzSkTAKKdivcDjSccTDCtpQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S1EtcmenQYwvmsjH0Bj9pNuSkS12U9UghOifQEe0cHCbkMi1tefTN7yGhHc2zUKTj
+         NJRcuICrenALQ3hEUiN2AVL1/PJh9wH+UPZCQhi9LD4fMrxNzq97J05WATCXT13Q3Y
+         QVfGGR68cPq932RsX6h+NxgJ412EIPLak9fOsYPGjX4jhpG4qUaP6FVCUPcr8h5DdK
+         ATTkmmhJhXJDareS/2bjVlSIpxVU4BdrCFXgu1G5UY3tENRUQC/aLW0oM62GuRWusT
+         4tiFVd91Hm8G2PlJ0JCgulVbO97gesKU2biSAfMGDU9f9f+76O/bmtvuOyJFoajKo8
+         cUH7O1wEBu5OA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6EAE74038F; Thu,  9 Sep 2021 17:32:56 -0300 (-03)
+Date:   Thu, 9 Sep 2021 17:32:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, yao.jin@linux.intel.com, namhyung@kernel.org,
+        kim.phillips@amd.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf annotate: Add fusion logic for AMD microarchs
+Message-ID: <YTpveO0qqKFTaxTk@kernel.org>
+References: <20210906105640.1040-1-ravi.bangoria@amd.com>
+ <20210906105640.1040-2-ravi.bangoria@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87eea2c9zu.wl-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210906105640.1040-2-ravi.bangoria@amd.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021, Marc Zyngier wrote:
-> On Mon, 06 Sep 2021 05:33:35 +0100,
-> Juergen Gross <jgross@suse.com> wrote:
-> > 
-> > On 03.09.21 16:41, Marc Zyngier wrote:
-> >
-> > > At this stage, I really wonder why we are not using an xarray instead.
-> > > 
-> > > I wrote this [1] a while ago, and nothing caught fire. It was also a
-> > > net deletion of code...
-> > 
-> > Indeed, I'd prefer that solution!
-> > 
-> > Are you fine with me swapping my patch with yours in the series?
+Em Mon, Sep 06, 2021 at 04:26:40PM +0530, Ravi Bangoria escreveu:
+> AMD family 15h and above microarchs fuse a subset of cmp/test/ALU
+> instructions with branch instructions[1][2]. Add perf annotate
+> fused instruction support for these microarchs.
 > 
-> Of course, feel free to grab the whole series. You'll probably need
-> the initial patches to set the scene for this. On their own, they are
-> a nice cleanup, and I trust you can write a decent commit message for
-> the three patches affecting mips/s390/x86.
+> Before:
+>          │       testb  $0x80,0x51(%rax)
+>          │    ┌──jne    5b3
+>     0.78 │    │  mov    %r13,%rdi
+>          │    │→ callq  mark_page_accessed
+>     1.08 │5b3:└─→mov    0x8(%r13),%rax
+> 
+> After:
+>          │    ┌──testb  $0x80,0x51(%rax)
+>          │    ├──jne    5b3
+>     0.78 │    │  mov    %r13,%rdi
+>          │    │→ callq  mark_page_accessed
+>     1.08 │5b3:└─→mov    0x8(%r13),%rax
+> 
+> [1] https://bugzilla.kernel.org/attachment.cgi?id=298553
+> [2] https://bugzilla.kernel.org/attachment.cgi?id=298555
+> 
+> Reported-by: Kim Phillips <kim.phillips@amd.com>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> ---
+>  tools/perf/arch/x86/annotate/instructions.c | 37 ++++++++++++++++++++-
+>  tools/perf/util/annotate.c                  |  1 +
+>  2 files changed, 37 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/arch/x86/annotate/instructions.c b/tools/perf/arch/x86/annotate/instructions.c
+> index 24ea12ec7e02..46d7124cc4e1 100644
+> --- a/tools/perf/arch/x86/annotate/instructions.c
+> +++ b/tools/perf/arch/x86/annotate/instructions.c
+> @@ -144,8 +144,31 @@ static struct ins x86__instructions[] = {
+>  	{ .name = "xorps",	.ops = &mov_ops, },
+>  };
+>  
+> -static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
+> +static bool amd__ins_is_fused(struct arch *arch, const char *ins1,
+>  			      const char *ins2)
+> +{
+> +	if (strstr(ins2, "jmp"))
+> +		return false;
+> +
+> +	/* Family >= 15h supports cmp/test + branch fusion */
+> +	if (arch->family >= 0x15 && (strstarts(ins1, "test") ||
+> +	    (strstarts(ins1, "cmp") && !strstr(ins1, "xchg")))) {
+> +		return true;
+> +	}
+> +
+> +	/* Family >= 19h supports some ALU + branch fusion */
+> +	if (arch->family >= 0x19 && (strstarts(ins1, "add") ||
+> +	    strstarts(ins1, "sub") || strstarts(ins1, "and") ||
+> +	    strstarts(ins1, "inc") || strstarts(ins1, "dec") ||
+> +	    strstarts(ins1, "or") || strstarts(ins1, "xor"))) {
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static bool intel__ins_is_fused(struct arch *arch, const char *ins1,
+> +				const char *ins2)
+>  {
+>  	if (arch->family != 6 || arch->model < 0x1e || strstr(ins2, "jmp"))
+>  		return false;
+> @@ -172,6 +195,15 @@ static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
+>  	return false;
+>  }
+>  
+> +static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
+> +			      const char *ins2)
+> +{
+> +	if (strstarts(arch->vendor, "AuthenticAMD"))
+> +		return amd__ins_is_fused(arch, ins1, ins2);
+> +
+> +	return intel__ins_is_fused(arch, ins1, ins2);
+> +}
+> +
 
-It would also be a good idea to convert kvm_for_each_vcpu() to use xa_for_each(),
-I assume that's more performant than 2x atomic_read() + xa_load().  Unless I'm
-misreading the code, xa_for_each() is guaranteed to iterate in ascending index
-order, i.e. preserves the current vcpu0..vcpuN iteration order.
+Can we instead make x86__ins_is_fused be a pointer and instead of
+storing arch->vendor we set it to one of amd__ins_is_fused() or
+intel__ins_is_fused()?
+
+I.e. here:
+
+>  static int x86__cpuid_parse(struct arch *arch, char *cpuid)
+>  {
+>  	unsigned int family, model, stepping;
+> @@ -184,6 +216,9 @@ static int x86__cpuid_parse(struct arch *arch, char *cpuid)
+>  	if (ret == 3) {
+>  		arch->family = family;
+>  		arch->model = model;
+> +		arch->vendor = strndup(cpuid, 12);
+
+		x86__ins_is_fused = strstarts(cpuid, "AuthenticAMD") ?
+					amd__ins_is_fused :
+					intel__ins_is_fused;
+
+
+?
+
+> +		if (!arch->vendor)
+> +			return -1;
+>  		return 0;
+>  	}
+>  
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 0bae061b2d6d..88326bb990b5 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -77,6 +77,7 @@ struct arch {
+>  	bool		sorted_instructions;
+>  	bool		initialized;
+>  	void		*priv;
+> +	char		*vendor;
+>  	unsigned int	model;
+>  	unsigned int	family;
+>  	int		(*init)(struct arch *arch, char *cpuid);
+> -- 
+> 2.27.0
+
+-- 
+
+- Arnaldo
