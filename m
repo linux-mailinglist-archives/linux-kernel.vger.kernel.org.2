@@ -2,180 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F5D4046AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C924046B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhIIIBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:01:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhIIIBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4059960F11;
-        Thu,  9 Sep 2021 08:00:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631174401;
-        bh=/t1lB3Y3QLMGalzyaUsgE4tfQzVs2EheXt/DrAAb6/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vyifDwJv4Y0GkZgNLP3l9t+atA/xzu1InF6U4WuDL2WjrcxwllFqyM0uDxSD6dybz
-         kZ9TxQQM9QqRRpCBwqFAsCyksS00yVsNa+dfFGMysg4LSFYSDnqjhivwDXP3UTkcAV
-         dhqsN4LuIRn7nXPPp/boi/i2YnThYHBfoaIuMgXw=
-Date:   Thu, 9 Sep 2021 09:59:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Yu, Lang" <Lang.Yu@amd.com>
-Cc:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Message-ID: <YTm+/hPWXMeqcDte@kroah.com>
-References: <20210908120723.3920701-1-lang.yu@amd.com>
- <04b52ef5b63abf25e6d50fd5bdfa90727e100a09.camel@perches.com>
- <DM6PR12MB425005AE652C12F04E66B5B8FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
- <685524a360bc910210cbbb7b13a46ead26ed8a22.camel@perches.com>
- <DM6PR12MB4250AE8DF451484884B657C9FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTmksJ0Bq/fEmFQV@kroah.com>
- <MN2PR12MB42569A67079D3D9734805BD0FBD59@MN2PR12MB4256.namprd12.prod.outlook.com>
- <YTmrN2nuhlVBaAKN@kroah.com>
- <DM6PR12MB4250645F728F92C9BF2CECE7FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
+        id S229949AbhIIIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:04:17 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56389 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229609AbhIIIDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:03:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnmQXzb_1631174516;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnmQXzb_1631174516)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 09 Sep 2021 16:01:56 +0800
+Date:   Thu, 9 Sep 2021 16:01:57 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH 5/6] vdpa: add get_vq_num_unchangeable callback in
+ vdpa_config_ops
+Message-ID: <20210909080157.GA17383@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <ebd83066e3897aae63e4b02f8729a73dd09931c6.1631101392.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR12MB4250645F728F92C9BF2CECE7FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
+In-Reply-To: <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 07:48:38AM +0000, Yu, Lang wrote:
-> [Public]
+On Thu, Sep 09, 2021 at 10:55:03AM +0800, Jason Wang wrote:
+> On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
+> >
+> > This new callback is used to indicate whether the vring size can be
+> > change or not. It is useful when we have a legacy virtio pci device as
+> > the vdpa device for there is no way to negotiate the vring num by the
+> > specification.
 > 
+> So I'm not sure it's worth bothering. E.g what if we just fail
+> VHOST_SET_VRING_NUM it the value doesn't match what hardware has?
 > 
+> Thanks
 > 
-> >-----Original Message-----
-> >From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >Sent: Thursday, September 9, 2021 2:36 PM
-> >To: Yu, Lang <Lang.Yu@amd.com>
-> >Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
-> >linux-kernel@vger.kernel.org
-> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs_emit
-> >and sysfs_emit_at
-> >
-> >On Thu, Sep 09, 2021 at 06:22:54AM +0000, Yu, Lang wrote:
-> >> [Public]
-> >>
-> >>
-> >>
-> >> >-----Original Message-----
-> >> >From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >> >Sent: Thursday, September 9, 2021 2:08 PM
-> >> >To: Yu, Lang <Lang.Yu@amd.com>
-> >> >Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki
-> >> ><rafael@kernel.org>; linux-kernel@vger.kernel.org
-> >> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
-> >> >sysfs_emit and sysfs_emit_at
-> >> >
-> >> >On Thu, Sep 09, 2021 at 05:52:23AM +0000, Yu, Lang wrote:
-> >> >> [Public]
-> >> >>
-> >> >>
-> >> >>
-> >> >> >-----Original Message-----
-> >> >> >From: Joe Perches <joe@perches.com>
-> >> >> >Sent: Thursday, September 9, 2021 1:44 PM
-> >> >> >To: Yu, Lang <Lang.Yu@amd.com>; Greg Kroah-Hartman
-> >> >> ><gregkh@linuxfoundation.org>; Rafael J . Wysocki
-> >> >> ><rafael@kernel.org>;
-> >> >> >linux- kernel@vger.kernel.org
-> >> >> >Subject: Re: [PATCH] sysfs: Remove page boundary align limitation
-> >> >> >on sysfs_emit and sysfs_emit_at
-> >> >> >
-> >> >> >On Thu, 2021-09-09 at 05:27 +0000, Yu, Lang wrote:
-> >> >> >> [AMD Official Use Only]
-> >> >> >
-> >> >> >this is a public list and this marker is not appropriate.
-> >> >>
-> >> >> Sorry for that.
-> >> >> >
-> >> >> >> > -----Original Message-----
-> >> >> >> > From: Joe Perches <joe@perches.com> On Wed, 2021-09-08 at
-> >> >> >> > 20:07
-> >> >> >> > +0800, Lang Yu wrote:
-> >> >> >> > > The key purpose of sysfs_emit and sysfs_emit_at is to ensure
-> >> >> >> > > that no overrun is done. Make them more equivalent with scnprintf.
-> >> >> >> >
-> >> >> >> > I can't think of a single reason to do this.
-> >> >> >> > sysfs_emit and sysfs_emit_at are specific to sysfs.
-> >> >> >> >
-> >> >> >> > Use of these functions outside of sysfs is not desired or supported.
-> >> >> >> >
-> >> >> >> Thanks for your reply. But I'm still curious why you put such a limitation.
-> >> >> >> As "Documentation/filesystems/sysfs.rst" described, we can just
-> >> >> >> use scnprintf(buf, PAGE_SIZE, "%s\n", dev->name) in show
-> >> >> >> functions without such a limitation.
-> >> >> >
-> >> >> >There's nothing particularly wrong with the use of scnprintf as above.
-> >> >> >
-> >> >> >The only real reason that sysfs_emit exists is to be able to
-> >> >> >reduce the kernel treewide quantity of uses of the sprintf family
-> >> >> >of functions that need to be analyzed for possible buffer overruns.
-> >> >> >
-> >> >> >The issue there is that buf is already known to be both a
-> >> >> >PAGE_SIZE buffer and PAGE_SIZE aligned for sysfs show functions so
-> >> >> >there's no real reason to use scnprintf.
-> >> >> >
-> >> >> >sysfs_emit is a shorter/smaller function and using it could avoid
-> >> >> >some sprintf defects.
-> >> >> >
-> >> >> >> Some guys just try to replace scnprintf with sysfs_emit() or
-> >> >> >> sysfs_emit_at() per
-> >> >> >above documents.
-> >> >> >
-> >> >> >So don't do that.
-> >> >> >
-> >> >> >> But sprintf and sysfs_emit/sysfs_emit_at are not totally
-> >> >> >> equivalent(e.g., page
-> >> >> >boundary align).
-> >> >> >>
-> >> >> >> In my opinion, we add a new api and try to replace an old api.
-> >> >> >> Does we need to make it more compatible with old api?
-> >> >> >
-> >> >> >IMO: no.
-> >> >> >
-> >> >> But why you said " - show() should only use sysfs_emit() or
-> >> >> sysfs_emit_at() when formatting the value to be returned to user
-> >> >> space. " in
-> >> >Documentation/filesystems/sysfs.rst ?
-> >> >>
-> >> >> Obviously, sysfs_emit() and sysfs_emit_at()  can't cover all the
-> >> >> cases in show
-> >> >functions.
-> >> >
-> >> >Why not, what usage model can it not cover?
-> >>
-> >> Of course, we can modify driver code to obey sysfs_emit and sysfs_emit_at
-> >rules or just use scnprintf in show functions.
-> >
-> >Great, please do.
-> >
-> >> Now that you introduced them, why not make them more flexible like scnprintf
-> >family functions.
-> >
-> >Because that is not what they are for.
-> >
-> >> The page boundary align rule makes life hard and I don't like it : ). Many thanks
-> >for your explanations!
-> >
-> >Then fix your sysfs files to not violate the sysfs rules.
-> >
-> >Again, which files are having problems and need to be fixed?  I will be glad to do
-> >this for you.
-> 
-> Thanks. I can do it by myself instead of wasting your time... Many thanks!
+I think we should not call VHOST_SET_VRING_NUM in that case.
 
-When doing so, please switch to using DEVICE_ATTR_RO() instead of the
-"open coded" DEVICE_ATTR() usage in the driver.  That way we all "know"
-that these are read-only attributes.
+If the hardware reports that the virtqueue size cannot be changed, we
+should call VHOST_GET_VRING_NUM to get the static virtqueue size
+firstly, then allocate the same size memory for the virtqueues and write
+the address to hardware finally.
 
-thanks,
+For QEMU, we will ignore the properties rx/tx_queue_size and just get it
+from the hardware if this new callback return true.
 
-greg k-h
+What do you think?
+> >
+> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > ---
+> >  drivers/vhost/vdpa.c         | 19 +++++++++++++++++++
+> >  drivers/virtio/virtio_vdpa.c |  5 ++++-
+> >  include/linux/vdpa.h         |  4 ++++
+> >  include/uapi/linux/vhost.h   |  2 ++
+> >  4 files changed, 29 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > index 9479f7f79217..2204d27d1e5d 100644
+> > --- a/drivers/vhost/vdpa.c
+> > +++ b/drivers/vhost/vdpa.c
+> > @@ -350,6 +350,22 @@ static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
+> >         return 0;
+> >  }
+> >
+> > +static long vhost_vdpa_get_vring_num_unchangeable(struct vhost_vdpa *v,
+> > +                                                 u32 __user *argp)
+> > +{
+> > +       struct vdpa_device *vdpa = v->vdpa;
+> > +       const struct vdpa_config_ops *ops = vdpa->config;
+> > +       bool unchangeable = false;
+> > +
+> > +       if (ops->get_vq_num_unchangeable)
+> > +               unchangeable = ops->get_vq_num_unchangeable(vdpa);
+> > +
+> > +       if (copy_to_user(argp, &unchangeable, sizeof(unchangeable)))
+> > +               return -EFAULT;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+> >                                    void __user *argp)
+> >  {
+> > @@ -487,6 +503,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+> >         case VHOST_VDPA_GET_IOVA_RANGE:
+> >                 r = vhost_vdpa_get_iova_range(v, argp);
+> >                 break;
+> > +       case VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE:
+> > +               r = vhost_vdpa_get_vring_num_unchangeable(v, argp);
+> > +               break;
+> >         default:
+> >                 r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+> >                 if (r == -ENOIOCTLCMD)
+> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > index 72eaef2caeb1..afb47465307a 100644
+> > --- a/drivers/virtio/virtio_vdpa.c
+> > +++ b/drivers/virtio/virtio_vdpa.c
+> > @@ -146,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> >         struct vdpa_vq_state state = {0};
+> >         unsigned long flags;
+> >         u32 align, num;
+> > +       bool may_reduce_num = true;
+> >         int err;
+> >
+> >         if (!name)
+> > @@ -171,8 +172,10 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> >
+> >         /* Create the vring */
+> >         align = ops->get_vq_align(vdpa);
+> > +       if (ops->get_vq_num_unchangeable)
+> > +               may_reduce_num = !ops->get_vq_num_unchangeable(vdpa);
+> >         vq = vring_create_virtqueue(index, num, align, vdev,
+> > -                                   true, true, ctx,
+> > +                                   true, may_reduce_num, ctx,
+> >                                     virtio_vdpa_notify, callback, name);
+> >         if (!vq) {
+> >                 err = -ENOMEM;
+> > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > index 35648c11e312..f809b7ada00d 100644
+> > --- a/include/linux/vdpa.h
+> > +++ b/include/linux/vdpa.h
+> > @@ -195,6 +195,9 @@ struct vdpa_iova_range {
+> >   *                             @vdev: vdpa device
+> >   *                             Returns the iova range supported by
+> >   *                             the device.
+> > + * @get_vq_num_unchangeable    Check if size of virtqueue is unchangeable (optional)
+> > + *                             @vdev: vdpa device
+> > + *                             Returns boolean: unchangeable (true) or not (false)
+> >   * @set_map:                   Set device memory mapping (optional)
+> >   *                             Needed for device that using device
+> >   *                             specific DMA translation (on-chip IOMMU)
+> > @@ -262,6 +265,7 @@ struct vdpa_config_ops {
+> >                            const void *buf, unsigned int len);
+> >         u32 (*get_generation)(struct vdpa_device *vdev);
+> >         struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
+> > +       bool (*get_vq_num_unchangeable)(struct vdpa_device *vdev);
+> >
+> >         /* DMA ops */
+> >         int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+> > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> > index c998860d7bbc..184f1f7f8498 100644
+> > --- a/include/uapi/linux/vhost.h
+> > +++ b/include/uapi/linux/vhost.h
+> > @@ -150,4 +150,6 @@
+> >  /* Get the valid iova range */
+> >  #define VHOST_VDPA_GET_IOVA_RANGE      _IOR(VHOST_VIRTIO, 0x78, \
+> >                                              struct vhost_vdpa_iova_range)
+> > +/* Check if the vring size can be change */
+> > +#define VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE _IOR(VHOST_VIRTIO, 0X79, bool)
+> >  #endif
+> > --
+> > 2.31.1
+> >
