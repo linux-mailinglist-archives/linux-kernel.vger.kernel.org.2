@@ -2,142 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52923404215
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6110E404218
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348246AbhIIALk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:11:40 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:41949 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348007AbhIIALh (ORCPT
+        id S1348245AbhIIAMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347955AbhIIAMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:11:37 -0400
-Received: by mail-il1-f198.google.com with SMTP id l4-20020a92d8c40000b02902242b6ea4b3so150813ilo.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:10:28 -0700 (PDT)
+        Wed, 8 Sep 2021 20:12:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC10C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:11:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b84-20020a253457000000b0059e6b730d45so131760yba.6
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OkkMNftYlLqb51L3L87eZeReDTQzaYdqqe7hZPbzoyY=;
+        b=LZ1qPBu6YIlfQM30nXC0EsFQJ5WzJ3f4s3xQJ9b2am9gQeid8/VVtcHCmrVWgrlQGu
+         r5DHwP8wSmms4cUaLHQejnaK6tbNsWLyyNSi2rXrq8lmrdpuudlGHZrzHF6qYK5PBbXt
+         m1gLHROn4av2GRLyYf8Rn9ieF0N6IZAfxhqVmpQRSvqfwNkf/g8ULey8VZ3RgHi9FQuU
+         kuPOjmb2x94ofoVRPTG13fsMF2q3mv76ezvzy8/nF8SNYxbPwGfIZvNm1wPVkjth74iB
+         d/bVMWhWNX8keudOfJCYGFFkthPssVhzc/QfGzsMsHjeBW2Etm2V8xnnTvokfAvuDGMK
+         yEWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=efoBqDBB90Zo6KBGwOvcOUmrPC3kWtBAO4+aYll1It8=;
-        b=egxyb01wKp419k4Q1kVjZX6G8Kte/YcDdtf915HJ1Lwbx+rjSr/Agh/CkgOM5HkmYv
-         184WtgENLQbZoRYMS5Bj9SBp/j8COCqgtm7z0aBJjMi1AyQfEmWiMLPiNpivDbztzUlj
-         ZQrGtE6blcZtqrymLWgIV+Z6pUy0Ga/wZZMeMkLeLSUuqr23AE/oDEp0V65NqHb2tp3c
-         1yW+G0d3ldsLMWBAPND+VtlYxZCj2aheyIgL/A3Nkg6TC0/FUfSPkBlaxHkwyvlshDRl
-         1pQXhbMgYKnlZ6/NrwHNn0rpRugj1L9n70QjtGA2fGu+ec3wSaaVpvTCfYZSA4UjqupO
-         0APQ==
-X-Gm-Message-State: AOAM530GukHlRRftltD0D9IKi3mbL4B4Iq5Pzm9P8eScNm07mIpwKj9K
-        vWRwR9rawU7V3S2MIBgwl4/KnHrVQZLuPIm5JZAChz4F5qgg
-X-Google-Smtp-Source: ABdhPJz10IOR/DzL4piVzfvWlvIn/1eg9Ce7IdPfOkPYXWIzOOUWokUYnXL6+TYdlCFsSXl7dQtbpfiW5PEr1SbmuQucu7isb4+2
-MIME-Version: 1.0
-X-Received: by 2002:a02:9669:: with SMTP id c96mr192374jai.128.1631146228680;
- Wed, 08 Sep 2021 17:10:28 -0700 (PDT)
-Date:   Wed, 08 Sep 2021 17:10:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000898c7405cb84d309@google.com>
-Subject: [syzbot] possible deadlock in io_sq_thread
-From:   syzbot <syzbot+c9e7f2674197989e8afb@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OkkMNftYlLqb51L3L87eZeReDTQzaYdqqe7hZPbzoyY=;
+        b=cy6u0xr4AYej9+4APP970PjHHk+Yq6sPivuOX3/iNWL0lqQ50diueUYwbBQytk/LLs
+         6nxIyCsKzgSxroSPaAUOilBmyNT5WBnJ2aTt38t25hW/nJyO9HpTZvIf7KB26JZAlKAt
+         MSXriY8yvNp+NdsQpoo4LJ8mdcBy1G0p/wAAJOWPIliHJVdOV+L5IPnRn6FAZRLqgfrq
+         U7YNS4sSdO38yHLPxcBKbXwPBaVNMDBwEVmDX3lCH+GrWFF5/TE1xxIotZsjQi1t36xR
+         rNSmW1OLCFnFjnrQbzYDXl1dc2eqInUqW0FttvCjr3MlhCjTd1wCeWBso8Y817OIYZsN
+         0Mug==
+X-Gm-Message-State: AOAM531jSJd7KrISkYhtlq3HEn3p+CMk84GSUlGX07U58VEeMkQtkrrI
+        vve9JUGwyJbZGmOClzIKozTyIgXfnL9weA==
+X-Google-Smtp-Source: ABdhPJyZOGMNXmqx/HbgiN3pPnVsL5tAMKQwbrSFXwKag+rczy6YCcMIluafMqK94X2NnYDcAmeWOUufga2LSw==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:68b6:f792:6cb6:9052])
+ (user=dlatypov job=sendgmr) by 2002:a25:12c4:: with SMTP id
+ 187mr147543ybs.248.1631146266980; Wed, 08 Sep 2021 17:11:06 -0700 (PDT)
+Date:   Wed,  8 Sep 2021 17:10:34 -0700
+Message-Id: <20210909001037.2842954-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH 0/3] kunit: allow running test suites/cases individually
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    a2b28235335f Merge branch 'dmi-for-linus' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=175ec47d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5102874b5591af7
-dashboard link: https://syzkaller.appspot.com/bug?extid=c9e7f2674197989e8afb
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c9e7f2674197989e8afb@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-syzkaller #0 Not tainted
-------------------------------------------------------
-iou-sqp-17493/17496 is trying to acquire lock:
-ffff888084a320a8 (&ctx->uring_lock){+.+.}-{3:3}, at: __io_sq_thread fs/io_uring.c:7291 [inline]
-ffff888084a320a8 (&ctx->uring_lock){+.+.}-{3:3}, at: io_sq_thread+0x65a/0x1370 fs/io_uring.c:7368
-
-but task is already holding lock:
-ffff888012986870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread+0x20f/0x1370 fs/io_uring.c:7356
-
-which lock already depends on the new lock.
+Allow running each suite or each test case alone per kernel boot.
+The motivation for this is to debug "test hermeticity" issues.
+This new --run_isolated flag would be a good first step to try and
+narrow down root causes.
 
 
-the existing dependency chain (in reverse order) is:
+Context: sometimes tests pass/fail depending on what ran before them.
+Memory corruption errors in particular might only cause noticeable
+issues later on. But you can also have the opposite, where "fixing" one
+test causes another to start failing.
 
--> #1 (&sqd->lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       io_register_iowq_max_workers fs/io_uring.c:10551 [inline]
-       __io_uring_register fs/io_uring.c:10757 [inline]
-       __do_sys_io_uring_register+0x10aa/0x2e70 fs/io_uring.c:10792
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+Usage: 
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test example
 
--> #0 (&ctx->uring_lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       __io_sq_thread fs/io_uring.c:7291 [inline]
-       io_sq_thread+0x65a/0x1370 fs/io_uring.c:7368
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+The last one would provide output like
+  ======== [PASSED] example ========
+  [PASSED] example_simple_test
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
+  Starting KUnit Kernel (2/3)...
+  ============================================================
+  ======== [SKIPPED] example ========
+  [SKIPPED] example_skip_test # SKIP this test should be skipped
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 1 skipped.
+  Starting KUnit Kernel (3/3)...
+  ============================================================
+  ======== [SKIPPED] example ========
+  [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 1 skipped.
 
-other info that might help us debug this:
+See the last patch's description for a bit more detail.
 
- Possible unsafe locking scenario:
+Meta:
+The first patch is from another series with just a reworded commit
+message, https://lore.kernel.org/linux-kselftest/20210805235145.2528054-2-dlatypov@google.com/
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sqd->lock);
-                               lock(&ctx->uring_lock);
-                               lock(&sqd->lock);
-  lock(&ctx->uring_lock);
+This patch series is based on the 2 patches in
+https://lore.kernel.org/linux-kselftest/20210831171926.3832806-2-dlatypov@google.com/.
+(That's what adds support for us to run a single test case by itself).
 
- *** DEADLOCK ***
+Daniel Latypov (3):
+  kunit: add 'kunit.action' param to allow listing out tests
+  kunit: tool: factor exec + parse steps into a function
+  kunit: tool: support running each suite/test separately
 
-1 lock held by iou-sqp-17493/17496:
- #0: ffff888012986870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread+0x20f/0x1370 fs/io_uring.c:7356
+ lib/kunit/executor.c                   |  38 +++++++-
+ tools/testing/kunit/kunit.py           | 127 +++++++++++++++++--------
+ tools/testing/kunit/kunit_tool_test.py |  40 ++++++++
+ 3 files changed, 160 insertions(+), 45 deletions(-)
 
-stack backtrace:
-CPU: 0 PID: 17496 Comm: iou-sqp-17493 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
- __io_sq_thread fs/io_uring.c:7291 [inline]
- io_sq_thread+0x65a/0x1370 fs/io_uring.c:7368
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+base-commit: 23fdafa5ae209688d5d5253786bab666bdb07b69
+-- 
+2.33.0.309.g3052b89438-goog
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
