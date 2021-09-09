@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DD9405899
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02024058B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345871AbhIIOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
+        id S1353302AbhIIOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349786AbhIIOFQ (ORCPT
+        with ESMTP id S1347902AbhIIOMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:05:16 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522EDC0355D2
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:04:31 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id u16so2204309wrn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:04:31 -0700 (PDT)
+        Thu, 9 Sep 2021 10:12:31 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE6CC08EB2A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:17:52 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id b10so1970458ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DG4WjrG2U9ZoFQp1xyULSzVJPSO5ucdyPL6p6IGWPRU=;
-        b=Qxkkl2KhpwbDAZx0Gnsz6RpUvfEkmEfXmkp4w40xr7h+Vfh89qo3DZO54vTDwTHqFm
-         yeWUdkf1PhGZd7BupJm5KgR1MvJl8deL9OEQe9ayjypXZ8vZZd47GVmOgelNEL48MZw3
-         dZe54ZrZTUIa/K0OuekSNufMrZLpMj4hlZ9v/Fjs6+wIepQGbDuZKk+KIuLTShMiQl34
-         BB3VDmnwFCts3CQ3vo1vOS+Ct5cVCHDrrGPFAe2VtrKcOfMgN39cYdCEBLUIjCBcRej3
-         zbMQx+LrsoJJQpzb4fxeIm2xmuK8ltl2poFQlTQuB998U5XhZMaegVrGs349pciq0tgb
-         n2KQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rYmN9+Vy/Zm7v0RZi8m78PsGaMbXCo9rwM4fXnlFa0A=;
+        b=jw+iTpcLGi33/KUcEaVR3lYwDq9++0Zt56YuT9/orXgQXI25hLKmgRmzW2toJi7myz
+         JPbld8zzLLon+cNCj7SMJHWAl067f8z7RD/RvROUFdI3Ou9HjZc9T162pgu15ZOYJZWf
+         8l6XWBvHQpCKJinTzZt7rdtsbGzQav/fEejvqKQbrPDpfyb0sFGaBk0BRRnT7PFZbdPv
+         yDVqfSiMT2ie32yRsY5ei1vNEx8mK2qHqgyP2v9nXFZ+u09F6NjF7dVD9o9Dow2NTDdo
+         xk3EumusBusF2wvolA+8go4RMKS8aOVH48wEZotYmp2DTIahIZFdmmYTDp8UB7F2vQc+
+         wEzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DG4WjrG2U9ZoFQp1xyULSzVJPSO5ucdyPL6p6IGWPRU=;
-        b=sBk1cQLRh/1V2VthH2tfq3scchTZsKLpI9u01nYvmXzCXrYyFU3dkb57bYomwZ2NEz
-         QuGpxUCAnCQOWiXMmPfvVDY5JK/35o9zEjRYmWQ2li7B6Y19QMSQ5oLKeHxWnDOGx0L6
-         +WbYD6v4jTRPSbrsefact7NTEuqeYuqeZMYyRqcyCqJaqKJ2FtgKl+yoJeQTnSoRIqQw
-         CN6yWgGeATOm7CJBj1Bn79uMVMg/NyIStyor8y5n8+n7aoYa5Gn/unT6UUViTUoje/Rz
-         q0MQe2MxGyE7F6Thp9FDJ2cudux51B4uiy3HYoC0TUnogqjI9/MFhxwYBeP9DbVlCuw6
-         U/gw==
-X-Gm-Message-State: AOAM531RM6uVIdgXoA6a9z/eSQtq3Ipx0Sj7crTyEedRJ51WQH4OpcaL
-        tvH9nKGlBVsZv0oQEtW//JAFVw==
-X-Google-Smtp-Source: ABdhPJxq/6DPg25zdkas2ldaGJ/J1WTQ2g1Uy5Rguwp1JyKMhBCCkqRVDSX7l7HV/kt6rlEkJ4FySQ==
-X-Received: by 2002:adf:8b43:: with SMTP id v3mr3257793wra.248.1631189069909;
-        Thu, 09 Sep 2021 05:04:29 -0700 (PDT)
-Received: from localhost.localdomain ([95.148.6.201])
-        by smtp.gmail.com with ESMTPSA id n66sm1437498wmn.2.2021.09.09.05.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 05:04:29 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Elliot Berman <eberman@codeaurora.org>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH v2 3/3] power: reset: Enable tristate on restart power-off driver
-Date:   Thu,  9 Sep 2021 13:04:21 +0100
-Message-Id: <20210909120421.1313908-4-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-In-Reply-To: <20210909120421.1313908-1-lee.jones@linaro.org>
-References: <20210909120421.1313908-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rYmN9+Vy/Zm7v0RZi8m78PsGaMbXCo9rwM4fXnlFa0A=;
+        b=oYQfjbG5lM3sePfKHYXNQnZ8dZZwCOwitIYZVqFv2SbeDzze3cdZHpgxm9jhMMgZcd
+         jkfKKg4DmYCV/u/20c/cxm4fNY1npCarM1XwUI1vvHNha+rqVnIgc/PnoJRT5dcspvl5
+         x7spie4CXhMwa7OqBsyMi8h/FaC/9IJeNogl0wAoGG1H206d1LT9TIJIUl4YljjtYPVg
+         8B8nxxBKKOD4zOoiPaMv/ZA8eX8VTzOkq6LWVyMkLfcLe+pwMu3rEjcCnnKNFwm1Sckn
+         YwdDKBTRgp+XqkAYL4he4+YZ5EqgyaYDZBHqc/0rbKPAOESANA2zSgdu0C6uBGBZYrpw
+         PYQg==
+X-Gm-Message-State: AOAM530jh6bPE0wkhKxXFR5hT1aASe+XzQtt+JVDIK1w7gby3PxWUTuW
+        BnkDV2w5AsaP5cccDcDRbgo5RQhO9s+Sy2qMRhiQog==
+X-Google-Smtp-Source: ABdhPJzzGnEJRhZfFJ5kL+XJ9LhYV5UeHMmZWo/JVUq5RLvA5TfAvwZJL681YJ5O4yJaKOgNEx7M/kGJZcKwTSrjL5c=
+X-Received: by 2002:a6b:3f02:: with SMTP id m2mr2358919ioa.136.1631189872259;
+ Thu, 09 Sep 2021 05:17:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+ <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org> <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+ <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org> <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
+ <YTgeIuwumPoR9ZTE@ripper>
+In-Reply-To: <YTgeIuwumPoR9ZTE@ripper>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Thu, 9 Sep 2021 17:47:16 +0530
+Message-ID: <CAMi1Hd1TOFj5USToEhuvZz8vgboQbMWco7gN413-jHJp-A7Ozg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elliot Berman <eberman@codeaurora.org>
+On Wed, 8 Sept 2021 at 07:50, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
+>
+> > On 8/9/2021 9:48 PM, Caleb Connolly wrote:
+> > >
+> > >
+> > > On 09/08/2021 17:12, Rob Clark wrote:
+> > > > On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
+> > > > <akhilpo@codeaurora.org> wrote:
+> [..]
+> > > > > I am a bit confused. We don't define a power domain for gpu in dt,
+> > > > > correct? Then what exactly set_opp do here? Do you think this usleep is
+> > > > > what is helping here somehow to mask the issue?
+> > > The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
+> > > the GPU DT. For the sake of simplicity I'll refer to the lowest
+> > > frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
+> > > the "min" state, and the highest frequency (710000000) and OPP level
+> > > (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
+> > > sdm845.dtsi under the gpu node.
+> > >
+> > > The new devfreq behaviour unmasks what I think is a driver bug, it
+> > > inadvertently puts much more strain on the GPU regulators than they
+> > > usually get. With the new behaviour the GPU jumps from it's min state to
+> > > the max state and back again extremely rapidly under workloads as small
+> > > as refreshing UI. Where previously the GPU would rarely if ever go above
+> > > 342MHz when interacting with the device, it now jumps between min and
+> > > max many times per second.
+> > >
+> > > If my understanding is correct, the current implementation of the GMU
+> > > set freq is the following:
+> > >   - Get OPP for frequency to set
+> > >   - Push the frequency to the GMU - immediately updating the core clock
+> > >   - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
+> > > up somewhere in power management code and causes the gx regulator level
+> > > to be updated
+> >
+> > Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
+> > were using a different api earlier which got deprecated -
+> > dev_pm_opp_set_bw().
+> >
+>
+> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
+> I'm lucky I managed to hit a few keys before it crashes, so I spent a
+> few hours looking into this as well...
+>
+> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
+> The opp-level is just there for show and isn't used by anything, at
+> least not on 845.
+>
+> Further more, I'm missing something in my tree, so the interconnect
+> doesn't hit sync_state, and as such we're not actually scaling the
+> buses. So the problem is not that Linux doesn't turn on the buses in
+> time.
+>
+> So I suspect that the "AHB bus error" isn't saying that we turned off
+> the bus, but rather that the GPU becomes unstable or something of that
+> sort.
+>
+>
+> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
+> Aquarium for 20 minutes without a problem. I then switched the gpu
+> devfreq governor to "userspace" and ran the following:
+>
+> while true; do
+>   echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+>   echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+> done
+>
+> It took 19 iterations of this loop to crash the GPU.
 
-Since reboot_mode is an exported symbol, restart power-off driver can be
-compiled as module.
+Ack. With your above script, I can reproduce a crash too on db845c
+(A630) running v5.14. I didn't get any crash log though and device
+just rebooted to USB crash mode.
 
-Signed-off-by: Elliot Berman <eberman@codeaurora.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Acked-by: Sebastian Reichel <sre@kernel.org>
----
- drivers/power/reset/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And same crash on RB5 (A650) too https://hastebin.com/raw/ejutetuwun
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 4d1192062508d..e155b2e2a75c4 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -192,7 +192,7 @@ config POWER_RESET_REGULATOR
- 	  power regulator defined in the devicetree.
- 
- config POWER_RESET_RESTART
--	bool "Restart power-off driver"
-+	tristate "Restart power-off driver"
- 	help
- 	  Some boards don't actually have the ability to power off.
- 	  Instead they restart, and u-boot holds the SoC until the
--- 
-2.33.0.153.gba50c8fa24-goog
-
+>
+> So the problem doesn't seem to be Rob's change, it's just that prior to
+> it the chance to hitting it is way lower. Question is still what it is
+> that we're triggering.
+>
+> Regards,
+> Bjorn
