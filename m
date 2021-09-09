@@ -2,234 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55F9404236
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3571F404238
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348568AbhIIATl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:19:41 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:42722 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348117AbhIIATj (ORCPT
+        id S1348181AbhIIAUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241998AbhIIAUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:19:39 -0400
-Received: by mail-il1-f199.google.com with SMTP id p10-20020a92d28a000000b0022b5f9140f7so172979ilp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:18:30 -0700 (PDT)
+        Wed, 8 Sep 2021 20:20:40 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A025C061575;
+        Wed,  8 Sep 2021 17:19:32 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i28so5821711wrb.2;
+        Wed, 08 Sep 2021 17:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=XcKHjEYpeBmn/GpYA6v3ROuFWFvVZsiyemg5sDvtveA=;
+        b=XWJqvD8y38UjjldIYS0rVmpLK91ShJSXakxLXJO/WIGimblTch/MDHHimwL4SQUtkx
+         aiopYYKczcNqEUZIzEj/nJgXKgSjjbUm7wr/WNjX8FXxWNjSDzpf2HQlv/ll9pGzREJW
+         XQ59BhT90Nklj4tjp87fkDQnteigAfomJPst6AZbL1JOfICiw1enLrOSg9A2U3XeNc6a
+         iW9qyKnTeI1ZUjE1btPwO9CMVREc5groCRRQl1qPjWw71M1ZuLu4jOfMGyRe4gfkzVcX
+         7Y/eyLuGOEpLE8Idqk2hASDDbuUo7VjGS0aLYUzQgrVWT8d22RDWkLAmClxzOxria4+X
+         D//w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=A/1kDSniShDOX9suyirIVKJzPQerjbCabu1sZGx/q60=;
-        b=sdriltocUSEi2TjNNhFvI3dYPTSl+lakWlOz5Jb3OTsP9FK4MkD3WBtiJvTkpPIhyc
-         ccoyUb7/gZY+JNE81bzv/KUqoXB/HVV8mwPR8zDYuZR1SCCgnf83l23CI/BOiJddQoQ3
-         PfiK/WS4ENRCN41q6Wy53fGrXvCGa3p2isG4xcxif46ZNH5DThC3MJb6lNWcNCK26osX
-         +RgSn5TSttxnqHM1qzd8gVl34i212lyRHjaKYbywODEWBKgYnhNmnKpyyVkoTGOm67ic
-         XACuQ3LfjFT05buTLDh6AVsToT0f8YQYc9C1Gf05YMjbq75fJ8WbbmSZAs9ELNOLMpto
-         r+XA==
-X-Gm-Message-State: AOAM532/QckiuXLP5aKN4+/iNTw8HLc08zgmIt3KShazK8RKHHqNydwE
-        JgnPEmy07N2fgSjXDnd0siv+5S/8SUzq4ZB5LdRfw4twV/dm
-X-Google-Smtp-Source: ABdhPJzIJN34kHuwU4uhLfSbTpnynRNg4wcjQTV5gI0k5WL8R7hs5X90+w7QxCUg5zoClg4NWO0IIq9jaAFHRtKtkUGO70HAfX8G
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XcKHjEYpeBmn/GpYA6v3ROuFWFvVZsiyemg5sDvtveA=;
+        b=K5ayUJCt4OYGJcl98X6cpy2i5+LoQX/9WY4kw6BBHaG/z9SXbomln2qYfya9Q2KM0t
+         VwnaDvZ/Fhf4UW/pwLH0NP43wcg98YM1w0cMgxvZ5RDIrseGZUkLRheon5iVYzzGzOyn
+         gNrxbhQxYq38D/dTmqu2eEFV9lF7o4HtLRQykgkMastC4gmq7ABXiq9wmLo+zapzQWpn
+         C2SEJqzZ1DDmV9/gvkk+eJ1CLTK/u/8veOoZtFeEHT8zOdNwUwIfx8WNx5nNA/JhI6Ds
+         0EEXmKd5N0q/gIaBIX25zqIRbsXJVkNPDojMbVAfx0rI6R9BOwF+8bFyYZvVnAptue8+
+         6oWw==
+X-Gm-Message-State: AOAM5322dUap0Gk6U/BUpbF7eKiNR4crIWlRRXp00TEnvUCASvSV2uGo
+        VfmTSdPJXYOVnepo0ud02po=
+X-Google-Smtp-Source: ABdhPJyvXliUUQSlkMcJ3OmOLJI5r8IXOZS6TSnIRDP0goUFio8HYq/tdSHc5cdB+hFqCiw5aYHxTQ==
+X-Received: by 2002:a5d:6781:: with SMTP id v1mr269783wru.249.1631146770795;
+        Wed, 08 Sep 2021 17:19:30 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.235.167])
+        by smtp.gmail.com with ESMTPSA id d129sm82367wmd.23.2021.09.08.17.19.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 17:19:30 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_wq_submit_work (2)
+To:     syzbot <syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000004bda3905cb84cfc0@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <3ba69d23-26d0-9c94-bf9d-a0db2bef2ed4@gmail.com>
+Date:   Thu, 9 Sep 2021 01:18:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:cebc:: with SMTP id z28mr214201jaq.49.1631146710473;
- Wed, 08 Sep 2021 17:18:30 -0700 (PDT)
-Date:   Wed, 08 Sep 2021 17:18:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000041239905cb84f00b@google.com>
-Subject: [syzbot] possible deadlock in team_vlan_rx_add_vid (2)
-From:   syzbot <syzbot+8b158bd9e6ed497d8cfc@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jiri@resnulli.us, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0000000000004bda3905cb84cfc0@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/9/21 1:09 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4b93c544e90e thunderbolt: test: split up test cases in tb_..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10b7836d300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bc2d90f602545761f287
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e8ce0b300000
+> 
+> The issue was bisected to:
+> 
+> commit 3146cba99aa284b1d4a10fbd923df953f1d18035
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Wed Sep 1 17:20:10 2021 +0000
+> 
+>     io-wq: make worker creation resilient against signals
 
-syzbot found the following issue on:
+fixed today
 
-HEAD commit:    27151f177827 Merge tag 'perf-tools-for-v5.15-2021-09-04' o..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=131a147d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b158bd9e6ed497d8cfc
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+#syz test: git://git.kernel.dk/linux-block io_uring-5.15
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11098e0d300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13098e0d300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15098e0d300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com
+> Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 8804 at fs/io_uring.c:1164 req_ref_get fs/io_uring.c:1164 [inline]
+> WARNING: CPU: 1 PID: 8804 at fs/io_uring.c:1164 io_wq_submit_work+0x272/0x300 fs/io_uring.c:6731
+> Modules linked in:
+> CPU: 1 PID: 8804 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:req_ref_get fs/io_uring.c:1164 [inline]
+> RIP: 0010:io_wq_submit_work+0x272/0x300 fs/io_uring.c:6731
+> Code: e8 d3 21 91 ff 83 fb 7f 76 1b e8 89 1a 91 ff be 04 00 00 00 4c 89 ef e8 bc 62 d8 ff f0 ff 45 a4 e9 41 fe ff ff e8 6e 1a 91 ff <0f> 0b eb dc e8 65 1a 91 ff 4c 89 e7 e8 ad dc fb ff 48 85 c0 49 89
+> RSP: 0018:ffffc900027b7ae8 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 000000000000007f RCX: 0000000000000000
+> RDX: ffff8880209cb900 RSI: ffffffff81e506d2 RDI: 0000000000000003
+> RBP: ffff888071824978 R08: 000000000000007f R09: ffff88807182491f
+> R10: ffffffff81e506ad R11: 0000000000000000 R12: ffff8880718248c0
+> R13: ffff88807182491c R14: ffff888071824918 R15: 0000000000100000
+> FS:  0000000002b68400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055f33208ca50 CR3: 0000000071827000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  io_run_cancel fs/io-wq.c:809 [inline]
+>  io_acct_cancel_pending_work.isra.0+0x2a9/0x5e0 fs/io-wq.c:950
+>  io_wqe_cancel_pending_work+0x98/0x130 fs/io-wq.c:968
+>  io_wq_destroy fs/io-wq.c:1185 [inline]
+>  io_wq_put_and_exit+0x7d1/0xc70 fs/io-wq.c:1198
+>  io_uring_clean_tctx fs/io_uring.c:9607 [inline]
+>  io_uring_cancel_generic+0x5fe/0x740 fs/io_uring.c:9687
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x265/0x2a30 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  __do_sys_exit_group kernel/exit.c:933 [inline]
+>  __se_sys_exit_group kernel/exit.c:931 [inline]
+>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665f9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffdd0a294a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> RAX: ffffffffffffffda RBX: 000000000000001e RCX: 00000000004665f9
+> RDX: 000000000041940b RSI: ffffffffffffffbc RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000001b2be20070 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffdd0a295a0
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b158bd9e6ed497d8cfc@syzkaller.appspotmail.com
-
-8021q: adding VLAN 0 to HW filter on device team0
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.5/24836 is trying to acquire lock:
-ffff88802f4d6cf8 (team->team_lock_key#6){+.+.}-{3:3}, at: team_vlan_rx_add_vid+0x38/0x1e0 drivers/net/team/team.c:1887
-
-but task is already holding lock:
-ffff88803aca8cf8 (team->team_lock_key#8){+.+.}-{3:3}, at: team_add_slave+0x9f/0x1cc0 drivers/net/team/team.c:1966
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (team->team_lock_key#8){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       team_vlan_rx_add_vid+0x38/0x1e0 drivers/net/team/team.c:1887
-       vlan_add_rx_filter_info+0x149/0x1d0 net/8021q/vlan_core.c:211
-       __vlan_vid_add net/8021q/vlan_core.c:306 [inline]
-       vlan_vid_add+0x3f2/0x800 net/8021q/vlan_core.c:336
-       vlan_add_rx_filter_info+0x149/0x1d0 net/8021q/vlan_core.c:211
-       __vlan_vid_add net/8021q/vlan_core.c:306 [inline]
-       vlan_vid_add+0x3f2/0x800 net/8021q/vlan_core.c:336
-       vlan_device_event.cold+0x28/0x2d net/8021q/vlan.c:392
-       notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-       call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
-       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
-       call_netdevice_notifiers net/core/dev.c:2022 [inline]
-       dev_open net/core/dev.c:1525 [inline]
-       dev_open+0x132/0x150 net/core/dev.c:1513
-       team_port_add drivers/net/team/team.c:1210 [inline]
-       team_add_slave+0xaa4/0x1cc0 drivers/net/team/team.c:1967
-       do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2521
-       __rtnl_newlink+0x13a1/0x1750 net/core/rtnetlink.c:3475
-       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
-       rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-       netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (team->team_lock_key#6){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       team_vlan_rx_add_vid+0x38/0x1e0 drivers/net/team/team.c:1887
-       vlan_add_rx_filter_info+0x149/0x1d0 net/8021q/vlan_core.c:211
-       __vlan_vid_add net/8021q/vlan_core.c:306 [inline]
-       vlan_vid_add+0x3f2/0x800 net/8021q/vlan_core.c:336
-       vlan_device_event.cold+0x28/0x2d net/8021q/vlan.c:392
-       notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-       call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
-       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
-       call_netdevice_notifiers net/core/dev.c:2022 [inline]
-       dev_open net/core/dev.c:1525 [inline]
-       dev_open+0x132/0x150 net/core/dev.c:1513
-       team_port_add drivers/net/team/team.c:1210 [inline]
-       team_add_slave+0xaa4/0x1cc0 drivers/net/team/team.c:1967
-       do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2521
-       do_setlink+0x9f3/0x3970 net/core/rtnetlink.c:2726
-       __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
-       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
-       rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-       netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(team->team_lock_key#8);
-                               lock(team->team_lock_key#6);
-                               lock(team->team_lock_key#8);
-  lock(team->team_lock_key#6);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.5/24836:
- #0: ffffffff8d0ea4a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0ea4a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- #1: ffff88803aca8cf8 (team->team_lock_key#8){+.+.}-{3:3}, at: team_add_slave+0x9f/0x1cc0 drivers/net/team/team.c:1966
-
-stack backtrace:
-CPU: 1 PID: 24836 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
- team_vlan_rx_add_vid+0x38/0x1e0 drivers/net/team/team.c:1887
- vlan_add_rx_filter_info+0x149/0x1d0 net/8021q/vlan_core.c:211
- __vlan_vid_add net/8021q/vlan_core.c:306 [inline]
- vlan_vid_add+0x3f2/0x800 net/8021q/vlan_core.c:336
- vlan_device_event.cold+0x28/0x2d net/8021q/vlan.c:392
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
- call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
- call_netdevice_notifiers net/core/dev.c:2022 [inline]
- dev_open net/core/dev.c:1525 [inline]
- dev_open+0x132/0x150 net/core/dev.c:1513
- team_port_add drivers/net/team/team.c:1210 [inline]
- team_add_slave+0xaa4/0x1cc0 drivers/net/team/team.c:1967
- do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2521
- do_setlink+0x9f3/0x3970 net/core/rtnetlink.c:2726
- __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f88af71b188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000006
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
-R13: 00007ffc1ac8e84f R14: 00007f88af71b300 R15: 0000000000022000
-team1: Port device team0 added
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Pavel Begunkov
