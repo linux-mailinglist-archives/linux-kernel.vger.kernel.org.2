@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B06405D62
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C702405D57
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245585AbhIITez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:34:55 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:53292 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233984AbhIITez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:34:55 -0400
-X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 15:34:54 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 7D21E6169BC6;
-        Thu,  9 Sep 2021 21:27:58 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id JwTP0pnsNbI3; Thu,  9 Sep 2021 21:27:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1BA51616E131;
-        Thu,  9 Sep 2021 21:27:58 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gjqhGqfmAMoJ; Thu,  9 Sep 2021 21:27:58 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id E7FC66169BC6;
-        Thu,  9 Sep 2021 21:27:57 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 21:27:57 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-um <linux-um@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <547678000.58650.1631215677820.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.15
+        id S245488AbhIITaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235517AbhIIT3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 15:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA3B6103E;
+        Thu,  9 Sep 2021 19:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631215724;
+        bh=P1QW69W98o9fYQWfC2nvqxZ7tCZTgXSiiFrDQUDOq4g=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KCcBYkPN1YBlsfHI/xJgEAb+qWL9qW7neS03S58btYL5tyraju+1ILF33AqCqsh1v
+         2WetDPFkGrhIxe2biqouVvyezah4rzl06ZxNLFQfhzKLY7K1jAb0zbqLt7mtHpbC4j
+         fzLDa/UqdKy3IatHqdqWzp1zPSY5bqcWo91G7Gy00aUxhLH57QMmycBtm86RYToI6X
+         nrzqf3L7wMO6qb3rjR0GTc2LPCmRlMEQ2RW6P/asVf9P5CHOvpiKmguhXfGHCexJmC
+         SKtGAUt6NK1MPxPo8lqko1KFDvs3cFP7yIrzh+oQtIX3Pz+vj3didenCRaEu1lNrlm
+         9AkulQ5RyX6MA==
+Subject: Re: [PATCH v2] gen_compile_commands: fix missing 'sys' package
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kortan <kortanzh@gmail.com>
+Cc:     masahiroy@kernel.org, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+References: <20210908032847.18683-1-kortanzh@gmail.com>
+ <CAKwvOdnReHxf7ysorwTZtN65Hbw4dTk-z8fAQUaKCvEQ_a97eg@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <5fbef4f5-30bb-5cb7-71c5-ae6a48c1822a@kernel.org>
+Date:   Thu, 9 Sep 2021 12:28:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAKwvOdnReHxf7ysorwTZtN65Hbw4dTk-z8fAQUaKCvEQ_a97eg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
-Thread-Index: HCjvEwmbYcCV24Tzt2v5PymKE55a+Q==
-Thread-Topic: UML changes for v5.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7c60610d476766e128cc4284bb6349732cbd6606:
+On 9/9/2021 10:22 AM, 'Nick Desaulniers' via Clang Built Linux wrote:
+> On Tue, Sep 7, 2021 at 8:30 PM Kortan <kortanzh@gmail.com> wrote:
+>>
+>> We need to import the 'sys' package since the script has called
+>> sys.exit() method.
+>>
+>> Signed-off-by: Kortan <kortanzh@gmail.com>
+> 
+> I'm quite sure I've run this script before; how have we not noticed
+> such an issue before?
 
-  Linux 5.14-rc6 (2021-08-15 13:40:53 -1000)
+Nobody hitting the error paths in this script?
 
-are available in the Git repository at:
+$ cat test.py
+import sys
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.15-rc1
+if __name__ == '__main__':
+     a = int(sys.argv[1])
+     print("a = %d" % a)
+     if a == 2:
+         printf(os.uname())
 
-for you to fetch changes up to adf9ae0d159d3dc94f58d788fc4757c8749ac0df:
+$ python3 test.py 1
 
-  um: fix stub location calculation (2021-08-26 22:28:03 +0200)
+$ python3 test.py 2
+a = 2
+Traceback (most recent call last):
+   File "/home/nathan/test.py", line 7, in <module>
+     print(os.uname())
+NameError: name 'os' is not defined
 
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Support for VMAP_STACK
-- Support for splice_write in hostfs
-- Fixes for virt-pci
-- Fixes for virtio_uml
-- Various fixes
-
-----------------------------------------------------------------
-Johannes Berg (9):
-      um: make PCI emulation driver init/exit static
-      lib/logic_iomem: fix sparse warnings
-      um: virtio_uml: include linux/virtio-uml.h
-      um: virtio_uml: fix memory leak on init failures
-      hostfs: support splice_write
-      um: virt-pci: don't do DMA from stack
-      um: enable VMAP_STACK
-      um: virt-pci: fix uapi documentation
-      um: fix stub location calculation
-
- arch/um/Kconfig                     |   1 +
- arch/um/drivers/virt-pci.c          | 108 ++++++++++++++++++++++++++----------
- arch/um/drivers/virtio_uml.c        |   5 +-
- arch/um/kernel/skas/clone.c         |   3 +-
- arch/x86/um/shared/sysdep/stub_32.h |  12 ++++
- arch/x86/um/shared/sysdep/stub_64.h |  12 ++++
- arch/x86/um/stub_segv.c             |   3 +-
- fs/hostfs/hostfs_kern.c             |   1 +
- include/uapi/linux/virtio_pcidev.h  |   5 +-
- lib/logic_iomem.c                   |  16 +++---
- 10 files changed, 124 insertions(+), 42 deletions(-)
+>> ---
+>> Changes v1 -> v2:
+>> * Fix commit title.
+>> * Improve commit message.
+>>
+>>   scripts/clang-tools/gen_compile_commands.py | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+>> index 0033eedce003..1d1bde1fd45e 100755
+>> --- a/scripts/clang-tools/gen_compile_commands.py
+>> +++ b/scripts/clang-tools/gen_compile_commands.py
+>> @@ -13,6 +13,7 @@ import logging
+>>   import os
+>>   import re
+>>   import subprocess
+>> +import sys
+>>
+>>   _DEFAULT_OUTPUT = 'compile_commands.json'
+>>   _DEFAULT_LOG_LEVEL = 'WARNING'
+>> --
+>> 2.33.0
+>>
