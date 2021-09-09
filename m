@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582A040493B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C0140493D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhIIL0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S235815AbhIIL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235578AbhIILZ4 (ORCPT
+        with ESMTP id S235607AbhIIL0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:25:56 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9857BC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:24:47 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id q3so859542plx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:24:47 -0700 (PDT)
+        Thu, 9 Sep 2021 07:26:00 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5001C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:24:50 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id d5so1131865pjx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EqY9Du2dCXm5e2YFE5a0cZBsTxcPxVjIu2njFipHgHw=;
-        b=G19+y9z5CDEaaALpL+7ifsbNZytT/v8P3hpg3dUCiiVCfmZw0VBEFke0AEIHXHi69T
-         HlmygCNlKYwNR3cAN7M7qbkFHQaPxkMjNKCaVb4bj9/UI1hAx0LA7gdvVApClMET+aGk
-         G9hbhW3qX06ospNQ/xLRM0XJZIdGMLlzbN5VU=
+        bh=XfTVnM+Kdt1HMBYOgi0OID403DvPUnw+Oe4D7AokcIc=;
+        b=TXa6Dh43j/RiJZcZfGp/U/VMI+kPFpebUW9dJNRgCKOI8Rkz3AqIXHDOcLjE4jOHZU
+         zsG5+VjKHQpcIow4nejBjuuyDQJKo7pC/ClLLcCpI3wvY4p3IBlEGV4ZyHCVgkyj965P
+         BhrhuBZoTAhWscYuMsZE2jSZSbL/geboBEpxA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EqY9Du2dCXm5e2YFE5a0cZBsTxcPxVjIu2njFipHgHw=;
-        b=MvnM8NOS35U6ebgCg5f6P/y0w7TeKvcHCFuRGKamdh9n89fTq1wKRHigq9we1JFse7
-         b9Gnp4JLl5chBrWEWETGVngi3CTxV71jyttzQDv0FRh7U2puuu19k8ID/GaBuNjPCFTo
-         0OM8/D1E4WXEGOjqpc+vH/Gs+Qfkwd7OC3ONwC9LtOBuVjm86zNlFwID/3pG83JWcfsk
-         Qbn7Xcpy1VAfeoqWajydTTl8CvRJqcoERAQ2DTwG5wItWlurhfEp8yCw0FCr7uQHrhRS
-         aR9Ya4Hs7RoxfkXEhdtWNzRoTy8dafvntiGNx23FXgGmXBL3EvBG8ohbtdZ54ZYLUke3
-         kwug==
-X-Gm-Message-State: AOAM533WBd1ft8TZzF06etcwfwTdDPnzT3sR36aqp1cBDtf5M3ssl5yQ
-        loJOJz9FvKti6u1y/DsIF8vKVw==
-X-Google-Smtp-Source: ABdhPJxlLkIpJJ/qbHZRgkgC1g1sHHamTpvn45qjjIseTOO9naTPcSmT0PPgBb6eJsZzc2h4X1V0XQ==
-X-Received: by 2002:a17:90b:4b90:: with SMTP id lr16mr3053589pjb.210.1631186687142;
-        Thu, 09 Sep 2021 04:24:47 -0700 (PDT)
+        bh=XfTVnM+Kdt1HMBYOgi0OID403DvPUnw+Oe4D7AokcIc=;
+        b=1VCrWOfiMdmvVolGvbKyURoGzH647KbdnWGJNqtHXJ4I1lPu0eqEOOx+oOGQgufmh5
+         GliZZQjrDdsCZbxxzMUm8J0PRD9vLRl36dHsFBOKEpl0QNPBTTmzsFYn1ZtOX57WnYjS
+         N6ECe5azyOP+bdWl/WzYL7aC9tBuQupL4BnEziKX7AoR574aTzNbiF24SlFETvJomdJ1
+         k0UNnbtOOOnS5Qt3jZbEAoDRVsC+Oq5PzYk3gl8h0mPmpVhbBSFub99pXc+9ylEUARA0
+         el8N7o/2kgBqWpmxEYZ6ffHD+TqxHq2n7r6RR/wIoyIAm2ecvA/nhWu7socdAdKxJvBA
+         Qcnw==
+X-Gm-Message-State: AOAM531Sn/JMNEcU3qeI+/ONVmNNTQzxJzkXNnV4QIniVdzDMo//EVI4
+        L01eWKY3gm9wWBCif+ofzjMCqw==
+X-Google-Smtp-Source: ABdhPJyYcIxqMXzbTTXZ+BGYIqnO0OtUvhfEBnjB2NdtsZQsyV5eTybm60VfLtu7rj7YAHjskwgpXQ==
+X-Received: by 2002:a17:902:9008:b0:12d:8258:e07c with SMTP id a8-20020a170902900800b0012d8258e07cmr2304758plp.42.1631186690246;
+        Thu, 09 Sep 2021 04:24:50 -0700 (PDT)
 Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:166b:dcfc:dcf2:bbe2])
-        by smtp.gmail.com with ESMTPSA id 141sm2046860pgg.16.2021.09.09.04.24.44
+        by smtp.gmail.com with ESMTPSA id 141sm2046860pgg.16.2021.09.09.04.24.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 04:24:46 -0700 (PDT)
+        Thu, 09 Sep 2021 04:24:49 -0700 (PDT)
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Tomasz Figa <tfiga@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>
@@ -55,9 +55,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv6 3/8] videobuf2: split buffer cache_hints initialisation
-Date:   Thu,  9 Sep 2021 20:24:25 +0900
-Message-Id: <20210909112430.61243-4-senozhatsky@chromium.org>
+Subject: [PATCHv6 4/8] videobuf2: move cache_hints handling to allocators
+Date:   Thu,  9 Sep 2021 20:24:26 +0900
+Message-Id: <20210909112430.61243-5-senozhatsky@chromium.org>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
 In-Reply-To: <20210909112430.61243-1-senozhatsky@chromium.org>
 References: <20210909112430.61243-1-senozhatsky@chromium.org>
@@ -67,92 +67,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V4L2 is not the perfect place to manage vb2 buffer cache hints.
-It works for V4L2 users, but there are backends that use vb2 core
-and don't use V4L2. Factor out buffer cache hints initialisation
-and call it when we allocate vb2 buffer.
+This moves cache hints handling from the videobuf2 core down
+to the allocator's level, because allocators do the sync/flush
+caches eventually and may take better decisions. Besides,
+allocators already decide whether cache sync/flush should
+be done or can be skipped. This patch moves the scattered
+buffer cache sync logic to one common place.
 
 Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 22 +++++++++++++++++++
- .../media/common/videobuf2/videobuf2-v4l2.c   | 18 ---------------
- 2 files changed, 22 insertions(+), 18 deletions(-)
+ drivers/media/common/videobuf2/videobuf2-core.c       | 6 ------
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 6 ++++++
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 6 ++++++
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 9d57df348b5f..59bd781c9a34 100644
+index 59bd781c9a34..8fa9f92ed028 100644
 --- a/drivers/media/common/videobuf2/videobuf2-core.c
 +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -382,6 +382,27 @@ static void __setup_offsets(struct vb2_buffer *vb)
- 	}
+@@ -328,9 +328,6 @@ static void __vb2_buf_mem_prepare(struct vb2_buffer *vb)
+ 		return;
+ 
+ 	vb->synced = 1;
+-	if (vb->skip_cache_sync_on_prepare)
+-		return;
+-
+ 	for (plane = 0; plane < vb->num_planes; ++plane)
+ 		call_void_memop(vb, prepare, vb->planes[plane].mem_priv);
+ }
+@@ -347,9 +344,6 @@ static void __vb2_buf_mem_finish(struct vb2_buffer *vb)
+ 		return;
+ 
+ 	vb->synced = 0;
+-	if (vb->skip_cache_sync_on_finish)
+-		return;
+-
+ 	for (plane = 0; plane < vb->num_planes; ++plane)
+ 		call_void_memop(vb, finish, vb->planes[plane].mem_priv);
+ }
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index 019c3843dc6d..1e218bc440c6 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -101,6 +101,9 @@ static void vb2_dc_prepare(void *buf_priv)
+ 	struct vb2_dc_buf *buf = buf_priv;
+ 	struct sg_table *sgt = buf->dma_sgt;
+ 
++	if (buf->vb->skip_cache_sync_on_prepare)
++		return;
++
+ 	if (!sgt)
+ 		return;
+ 
+@@ -112,6 +115,9 @@ static void vb2_dc_finish(void *buf_priv)
+ 	struct vb2_dc_buf *buf = buf_priv;
+ 	struct sg_table *sgt = buf->dma_sgt;
+ 
++	if (buf->vb->skip_cache_sync_on_finish)
++		return;
++
+ 	if (!sgt)
+ 		return;
+ 
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+index 50265080cfc8..33ee63a99139 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+@@ -204,6 +204,9 @@ static void vb2_dma_sg_prepare(void *buf_priv)
+ 	struct vb2_dma_sg_buf *buf = buf_priv;
+ 	struct sg_table *sgt = buf->dma_sgt;
+ 
++	if (buf->vb->skip_cache_sync_on_prepare)
++		return;
++
+ 	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
  }
  
-+static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
-+{
-+	/*
-+	 * DMA exporter should take care of cache syncs, so we can avoid
-+	 * explicit ->prepare()/->finish() syncs. For other ->memory types
-+	 * we always need ->prepare() or/and ->finish() cache sync.
-+	 */
-+	if (q->memory == VB2_MEMORY_DMABUF) {
-+		vb->skip_cache_sync_on_finish = 1;
-+		vb->skip_cache_sync_on_prepare = 1;
-+		return;
-+	}
-+
-+	/*
-+	 * ->finish() cache sync can be avoided when queue direction is
-+	 * TO_DEVICE.
-+	 */
-+	if (q->dma_dir == DMA_TO_DEVICE)
-+		vb->skip_cache_sync_on_finish = 1;
-+}
-+
- /*
-  * __vb2_queue_alloc() - allocate videobuf buffer structures and (for MMAP type)
-  * video buffer memory for all buffers/planes on the queue and initializes the
-@@ -415,6 +436,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 		vb->index = q->num_buffers + buffer;
- 		vb->type = q->type;
- 		vb->memory = memory;
-+		init_buffer_cache_hints(q, vb);
- 		for (plane = 0; plane < num_planes; ++plane) {
- 			vb->planes[plane].length = plane_sizes[plane];
- 			vb->planes[plane].min_length = plane_sizes[plane];
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index 454d58268602..2fbae9bd7b52 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -345,17 +345,6 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
- 				   struct vb2_buffer *vb,
- 				   struct v4l2_buffer *b)
- {
--	/*
--	 * DMA exporter should take care of cache syncs, so we can avoid
--	 * explicit ->prepare()/->finish() syncs. For other ->memory types
--	 * we always need ->prepare() or/and ->finish() cache sync.
--	 */
--	if (q->memory == VB2_MEMORY_DMABUF) {
--		vb->skip_cache_sync_on_finish = 1;
--		vb->skip_cache_sync_on_prepare = 1;
--		return;
--	}
--
- 	if (!vb2_queue_allows_cache_hints(q)) {
- 		/*
- 		 * Clear buffer cache flags if queue does not support user
-@@ -367,13 +356,6 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
- 		return;
- 	}
+@@ -212,6 +215,9 @@ static void vb2_dma_sg_finish(void *buf_priv)
+ 	struct vb2_dma_sg_buf *buf = buf_priv;
+ 	struct sg_table *sgt = buf->dma_sgt;
  
--	/*
--	 * ->finish() cache sync can be avoided when queue direction is
--	 * TO_DEVICE.
--	 */
--	if (q->dma_dir == DMA_TO_DEVICE)
--		vb->skip_cache_sync_on_finish = 1;
--
- 	if (b->flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
- 		vb->skip_cache_sync_on_finish = 1;
++	if (buf->vb->skip_cache_sync_on_finish)
++		return;
++
+ 	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
+ }
  
 -- 
 2.33.0.153.gba50c8fa24-goog
