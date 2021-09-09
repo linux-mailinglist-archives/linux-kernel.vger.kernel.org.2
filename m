@@ -2,143 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B58405F2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6123E405F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245411AbhIIWCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244703AbhIIWCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:02:37 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E5C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:01:27 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id c10so3613153qko.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QZqkF9duxuzZ+biCr/DN+cOPkA95d4hYzGir/0bZtG8=;
-        b=n4Yox4FllS4gAcO35Nu8s/ilFPO82gh8Gm/P3mDRND5oe2rctlncS/tr0y85Fs8npP
-         98l5IbSFrFXrw+cwcb0zvs+hCkjsxur9V2MMDUGHT3XXfhEce73/5iWt2xplCy/3EJhh
-         +2prmzstXNUANrptayppa1LTU1dcLX//fY9en1mSyyXXReAarLHQYYJ/9PUblzzl32wE
-         WCEvZ5kvcljGt7MED2wLGtYBCaYZcdNBK5lTYlEhrMEneFSeEYCqWAkX/McDiRbDrXNq
-         5rDknVoSQRALljSxiiu1jfnqPspcTcube+E4KtX+IPf4QLINfIOzYrHc0ANRy6ZvMxWa
-         qOTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZqkF9duxuzZ+biCr/DN+cOPkA95d4hYzGir/0bZtG8=;
-        b=bg+5LroQbm/0tAM2Qqn0XA1bRRdCE/vJJ0C5czN45PyO+z/oVnK9LPhOwM9ET1PG87
-         TgNNdx3hKLQ7ClC8pFnGrgoUqEGWZdb+6XAUK/M/kMRDG7AeVajHun7OGziEMZIB+hZs
-         Z9FTZGM1fOpQLzgCwbCB3ngA+ARBiLTDZCg2BoISazmk+ZWYnTP9kO3DJ0MHhESnXZwO
-         0LHZHc6dvcPLbysy4XaMMMNKEjdVTTXlurk8CftfkDOLdHHxBBCwmk8x/YYqViONqDuL
-         uzX0bfQ5ctLTADDYq79rr+qJ1clLxclK7icKDRKsBUsE6nYV9EZ6R9dfD6rf6bQRizy2
-         +U6w==
-X-Gm-Message-State: AOAM532xf9p6xAoTS9nQzhI7L+/qqOXOR8dZXCGOXyBXKPO9+0eoCl3O
-        mzqgyGt8kn64zXZPU/kZ7imy80APWgTInA==
-X-Google-Smtp-Source: ABdhPJykIZNFvzFm3FAQRsJZQ2IJ7iZMncXFjisKzYimm3AW6YNhcKNTkQC8pRrSlAuvO/m/7fW51Q==
-X-Received: by 2002:a05:620a:2914:: with SMTP id m20mr5086687qkp.497.1631224886125;
-        Thu, 09 Sep 2021 15:01:26 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id s8sm1868997qta.48.2021.09.09.15.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 15:01:25 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 18:03:17 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YTqEpTIbwRJmwCwL@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YToBjZPEVN9Jmp38@infradead.org>
- <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
- <YTpPh2aaQMyHAi8m@cmpxchg.org>
- <YTpWBif8DCV5ovON@casper.infradead.org>
+        id S1343758AbhIIWJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:09:55 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:47923 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231819AbhIIWJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 18:09:54 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 189M8Rx1240627
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Thu, 9 Sep 2021 15:08:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 189M8Rx1240627
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631225314;
+        bh=z6l5KSYd2UWZHXazF9BmrbSsVpVuYtysUQylbL6UGpg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YCPqxJ2Hcn1AAXkLmlRJUTLG3Gx/wwnepYIVidE9ChSF8Ye9t4DuDx64BR0fVZ+uq
+         DX4cLDcx3HNUp6UX9kwvkIzO2JbjLHC7oILQ+DQ4GBGdHqumpv3etF1EyNPOeoEc58
+         NEg5HIcV7GKMIL4syuyLfxZO8Yinq8h4Af1TDKKgSTZKmieGniH0mcMDTnyKGZoJuQ
+         gohRYjuOBIcV3FqyOPbdRKAws5fnxodsWqYlnbZ4dZ6TZSkzn5KHJFyDpUu+EgNnjz
+         5wOrqCjibI8ztqrfb8TIWkjkqtxJAS0O/kUPxOnTG6CwmOUx6D8CF14FMPc/3W8TVi
+         NJmEx9BB32mLQ==
+From:   "H. Peter Anvin (Intel)" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        x86@kernel.org, "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Subject: [PATCH v2 0/2] x86/asm: avoid register pressure from static_cpu_has()
+Date:   Thu,  9 Sep 2021 15:08:16 -0700
+Message-Id: <20210909220818.417312-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210908171716.3340120-1-hpa@zytor.com>
+References: <20210908171716.3340120-1-hpa@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTpWBif8DCV5ovON@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 07:44:22PM +0100, Matthew Wilcox wrote:
-> On Thu, Sep 09, 2021 at 02:16:39PM -0400, Johannes Weiner wrote:
-> > My objection is simply to one shared abstraction for both. There is
-> > ample evidence from years of hands-on production experience that
-> > compound pages aren't the way toward scalable and maintainable larger
-> > page sizes from the MM side. And it's anything but obvious or
-> > self-evident that just because struct page worked for both roles that
-> > the same is true for compound pages.
-> 
-> I object to this requirement.  The folio work has been going on for almost
-> a year now, and you come in AT THE END OF THE MERGE WINDOW to ask for it
-> to do something entirely different from what it's supposed to be doing.
-> If you'd asked for this six months ago -- maybe.  But now is completely
-> unreasonable.
+gcc will sometimes manifest the address of boot_cpu_data in a register
+as part of constant propagation. When multiple static_cpu_has() are
+used this may foul the mainline code with a register load which will
+only be used on the fallback path, which is unused after
+initialization.
 
-I asked for exactly this exactly six months ago.
+Explicitly force gcc to use immediate (rip-relative) addressing for
+the fallback path, thus removing any possible register use from
+static_cpu_has().
 
-On March 22nd, I wrote this re: the filesystem interfacing:
+However, currently there is no convenient way to make gcc generate a
+%rip-relative immediate reference without splitting code into i386 and
+x86-64 versions, so add a new macro to <asm/asm.h> for this purpose.
 
-: So I think transitioning away from ye olde page is a great idea. I
-: wonder this: have we mapped out the near future of the VM enough to
-: say that the folio is the right abstraction?
-:
-: What does 'folio' mean when it corresponds to either a single page or
-: some slab-type object with no dedicated page?
-:
-: If we go through with all the churn now anyway, IMO it makes at least
-: sense to ditch all association and conceptual proximity to the
-: hardware page or collections thereof. Simply say it's some length of
-: memory, and keep thing-to-page translations out of the public API from
-: the start. I mean, is there a good reason to keep this baggage?
-
-It's not my fault you consistently dismissed and pushed past this
-question and then send a pull request anyway.
-
-> I don't think it's a good thing to try to do.  I think that your "let's
-> use slab for this" idea is bonkers and doesn't work.
-
-Based on what exactly?
-
-You can't think it's that bonkers when you push for replicating
-slab-like grouping in the page allocator.
-
-Anyway, it was never about how larger pages will pan out in MM. It was
-about keeping some flexibility around the backing memory for cache
-entries, given that this is still an unsolved problem. This is not a
-crazy or unreasonable request, it's the prudent thing to do given the
-amount of open-ended churn and disruptiveness of your patches.
-
-It seems you're not interested in engaging in this argument. You
-prefer to go off on tangents and speculations about how the page
-allocator will work in the future, with seemingly little production
-experience about what does and doesn't work in real life; and at the
-same time dismiss the experience of people that deal with MM problems
-hands-on on millions of machines & thousands of workloads every day.
-
-> And I really object to you getting in the way of my patchset which
-> has actual real-world performance advantages
-
-So? You've gotten in the way of patches that removed unnecessary
-compound_head() call and would have immediately provided some of these
-same advantages without hurting anybody - because the folio will
-eventually solve them all anyway.
-
-We all balance immediate payoff against what we think will be the
-right thing longer term.
-
-Anyway, if you think I'm bonkers, just ignore me. If not, maybe lay
-off the rhetorics, engage in a good-faith discussion and actually
-address my feedback?
+Changes in v2:
+--------------
+* Add new macro to <asm/asm.h>
+* *Actually* generate the %rip-relative addressing mode.
