@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD8B405BD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A36405BDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240539AbhIIRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237002AbhIIRRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:17:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4636061179;
-        Thu,  9 Sep 2021 17:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631207758;
-        bh=6MPSHzZT+wdjZOpnQ7K70UGKNWNw78Qt+uaALoiNHzs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ur2rhy1GxLjo187czO/UhbKA71WUYOuDssPXJbRQzb9xWT3LfpTZ3XwCFqaKDqm21
-         4vwEfcqbHjO+0SEwiwon8XkmM12vYOYvFu/WVOwLz40QfscvgnJCyIjEyCEs7Q/g9K
-         gnLnvGikDuTbyDA8V+H5Dvk9oMHLyeRTPifrwfd4xyx9Y3LRDvx9rPpCWbLyu7xPaE
-         nQKp9uyAJy4hZL4ovU+mbbwvd6SYbqeJOMrwhfx5Qm7WVk9rFYhZ7xOJliTXAgYAwX
-         0GCZjXlnfeRsVxcgvNJrMULFHMCtH/UqvYqSYGaiOfYlbq2HaVZdPOKaeEwZ7yISo1
-         FsT0I6dGJtk2A==
-Received: by mail-ed1-f42.google.com with SMTP id i6so3654863edu.1;
-        Thu, 09 Sep 2021 10:15:58 -0700 (PDT)
-X-Gm-Message-State: AOAM533aCY2h7c1aXJMQY3yuM1X2xoL10YJRE7PHQWh2C+n2v0MrYV6p
-        kJ0mciOYemNwMdv7+uoi/IIVLX2F1hUlvDeIMQ==
-X-Google-Smtp-Source: ABdhPJyM7KZ4cekZmGbkuYORGG988NU14THUy9AbIjOQ+isB8C7xXq78QJxJ1PLPFyvKtKN/u+ZYoeTozdmbIK+obJQ=
-X-Received: by 2002:a05:6402:1703:: with SMTP id y3mr4266246edu.355.1631207756787;
- Thu, 09 Sep 2021 10:15:56 -0700 (PDT)
+        id S240984AbhIIRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237002AbhIIRSn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:18:43 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6288C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:17:33 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id f2so4152059ljn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jlWzkECk20+XqmMBmmlhgHERfUmOY5RNnADt8Z36qog=;
+        b=EK8cd8m3N90BRu7k+tQtRObfDdPm0WNzqcuF6FrjTVlzmoTGEV2VxpLRUXVf9jH8aT
+         G4eBWVkI6uQCMRJzKE9fKssV/wmh8IHKnfFtSZCCFwM1RslKOwFVYeqDmIxarH/iLLjP
+         HwKvShhp9FmcqErZVIckI4ZtDeQufVRuWD4Zs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jlWzkECk20+XqmMBmmlhgHERfUmOY5RNnADt8Z36qog=;
+        b=aJmC1PcnAq0FVhTVYXidl3jsHgmm6PxWs57Z2F6YDWa6rONOBPR9eDzsNrTLntMUGZ
+         zcM1RePws1aVxmXG8WDMDglel/5O/wzBY0B7rTH5rKwrZT/e7cysuDt6DHCR6HpApD6W
+         +fvP0PL7kNk2SvrqHH2pfZ2zUNb24kjKqsoRF1+/MdTD4zZgkfmx1cquqExhjjqdU6XI
+         PX7AmpvaWpJks9Xx61XMSKrn7Q9eJsSdv8V4RNcXTVIlW3cPXqYaE/IqrwTqmHMxYozt
+         Z5Wkri7G+yvD34frX0cJB80o/rajT8BYrnz6VUSBSROR7CmM60niCnxwiupiyJotBk3v
+         jTxQ==
+X-Gm-Message-State: AOAM532sW7zut76V81v4YgDScAC8uUJMkl4N82D6KfB2gihbn9uZYOWM
+        4lI0h8p1uEHZW+xRSpX+Me0ohv21GWxr9O1OQZY=
+X-Google-Smtp-Source: ABdhPJzGLqlMs9b8WskgWFYlW8Sdf8nDapgyQni3UWyB43cLMLWL6LxbKmr1BVhGbTXfK6V0jRIQxA==
+X-Received: by 2002:a2e:9154:: with SMTP id q20mr729960ljg.455.1631207851497;
+        Thu, 09 Sep 2021 10:17:31 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id j3sm259020lfm.92.2021.09.09.10.17.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id j12so4097449ljg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
+X-Received: by 2002:a2e:8185:: with SMTP id e5mr734988ljg.31.1631207850194;
+ Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
- <20210903145340.225511-3-daniel.baluta@oss.nxp.com> <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
- <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
- <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com> <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
-In-Reply-To: <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 9 Sep 2021 12:15:45 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJd2AvBxRjHj=VZV2DH26tSNSX=5eEpc-HoFrc=dLxEFQ@mail.gmail.com>
-Message-ID: <CAL_JsqJd2AvBxRjHj=VZV2DH26tSNSX=5eEpc-HoFrc=dLxEFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
-To:     Daniel Baluta <daniel.baluta@gmail.com>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-18-agruenba@redhat.com>
+ <YTnxruxm/xA/BBmQ@infradead.org>
+In-Reply-To: <YTnxruxm/xA/BBmQ@infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 9 Sep 2021 10:17:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj4RER3XeG34nLH2PgvuRuj_NRgDx=wLTKv=jYaQnFe+Q@mail.gmail.com>
+Message-ID: <CAHk-=wj4RER3XeG34nLH2PgvuRuj_NRgDx=wLTKv=jYaQnFe+Q@mail.gmail.com>
+Subject: Re: [PATCH v7 17/19] gup: Introduce FOLL_NOFAULT flag to disable page faults
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
+        ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:21 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
+On Thu, Sep 9, 2021 at 4:36 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> > > The H/W block is controlled by the DSP firmware. So, we don't want
-> > > to use the Linux kernel driver (thus the H/W block device tree node).
-> >
-> > 'status' is how you disable a device to not be used by the OS.
-> >
-> > The information about that device's resources are already in DT, we
-> > don't need to duplicate that here. If you want a list of devices
-> > assigned to the DSP here, that would be okay.
+> On Fri, Aug 27, 2021 at 06:49:24PM +0200, Andreas Gruenbacher wrote:
+> > Introduce a new FOLL_NOFAULT flag that causes get_user_pages to return
+> > -EFAULT when it would otherwise trigger a page fault.  This is roughly
+> > similar to FOLL_FAST_ONLY but available on all architectures, and less
+> > fragile.
 >
-> Thanks! This is a very good idea. I was thinking at a totally different thing.
->
-> So having something like this:
->
-> dsp {
->
->
-> hw-block-list = <&sai1>, <&sai2>;
->
-> }
+> So, FOLL_FAST_ONLY only has one single user through
+> get_user_pages_fast_only (pin_user_pages_fast_only is entirely unused,
+> which makes totally sense given that give up on fault and pin are not
+> exactly useful semantics).
 
-Yes.
+So I think we should treat FOLL_FAST_ONLY as a special "internal to
+gup.c" flag, and perhaps not really compare it to the new
+FOLL_NOFAULT.
 
-> And then inside the DSP driver we can get access to sai1 clocks. Do
-> you know of any standard property name?
+In fact, maybe we could even just make FOLL_FAST_ONLY be the high bit,
+and not expose it in <linux/mm.h> and make it entirely private as a
+name in gup.c.
 
-There isn't. So it needs a vendor prefix.
+Because FOLL_FAST_ONLY really is meant more as a "this way we can
+share code easily inside gup.c, by having the internal helpers that
+*can* do everything, but not do it all when the user is one of the
+limited interfaces".
 
-There's been some discussions around 'system devicetree' where all
-processors (like the DSP) view of the system get represented. Device
-assignment is one of the issues to solve with that, but it's not
-anywhere close to having something to help here.
+Because we don't really expect people to use FOLL_FAST_ONLY externally
+- they'll use the explicit interfaces we have instead (ie
+"get_user_pages_fast()"). Those use-cases that want that fast-only
+thing really are so special that they need to be very explicitly so.
 
-Rob
+FOLL_NOFAULT is different, in that that is something an external user
+_would_ use.
+
+Admittedly we'd only have one single case for now, but I think we may
+end up with other filesystems - or other cases entirely - having that
+same kind of "I am holding locks, so I can't fault into the MM, but
+I'm otherwise ok with the immediate mmap_sem lock usage and sleeping".
+
+End result: FOLL_FAST_ONLY and FOLL_NOFAULT have some similarities,
+but at the same time I think they are fundamentally different.
+
+The FAST_ONLY is the very very special "I can't sleep, I can't even
+take the fundamental MM lock, and we export special interfaces because
+it's _so_ special and can be used in interrupts etc".
+
+In contrast, NOFAULT is not _that_ special. It's just another flag,
+and has generic use.
+
+               Linus
