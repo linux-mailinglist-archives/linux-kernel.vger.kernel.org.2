@@ -2,81 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E09405C6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE2D405C74
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242139AbhIIR7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:59:44 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35390 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237205AbhIIR7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:59:43 -0400
-Received: from zn.tnic (p200300ec2f0e45009795463d03f535a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4500:9795:463d:3f5:35a2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 48C2A1EC04D6;
-        Thu,  9 Sep 2021 19:58:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631210308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SAQ32i/uilW2AnN+2fKp4zP0VR9Mk/umGQrt9CT52ew=;
-        b=JGKcL1wEwc2cxYXvu+M/NENv4Yz2GKdaToYJeE4yFTiJeIcfkNewGXeZchxnuON6ZZ8FT0
-        soQu/nDGee05dSCkX754alY3Z+y8jp+DNJTSa4o0LpTQ0Un8v7RcU6G6Ud1gCMePqOw726
-        /uEIBYsZXjcZ6Vzy+l6VSme7/c4nHxg=
-Date:   Thu, 9 Sep 2021 19:58:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-pm@vger.kernel.org,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 01/19] x86/cpufreatures: add AMD CPPC extension feature
- flag
-Message-ID: <YTpLO6M2C0IqJ9XC@zn.tnic>
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-2-ray.huang@amd.com>
+        id S242598AbhIISBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237205AbhIISBK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:01:10 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17547C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:01 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id m21-20020a17090a859500b00197688449c4so2069805pjn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GNjXTY5duOz5iXe0iAVr/cU22eBlSdyUTm1y6N/AOUA=;
+        b=eZpkE8uHgyLVQ7ZYGW8+2OCnNwbPIVqjw1hB+TtE0X2wh3aOAZMYtxJALgcu59UIm+
+         2O5Sz1AezMZYIBCE8r37mHz4hY+fhnyEpkTFm3iH3REZI6b3NVK9nYcj4Rxed80hcbmC
+         xOCRj4kIKMgoXSp6GfiJz3GNmnDhGD1Lg2ms6Yt5rhJH+EoQ/50EHbpyVI4OK4CQeoK+
+         x36WAgbT5YcEdfmLGo44xZVaoNqP2NjhzZrRagk+bGDyr0F6mOBT30Dv5mze3IYpC9D2
+         j0J7nFL4iPUe1CkaPRHusbux4G8Ap1d5mZ8YQAYrBHkZ8fnXe4HmAKnjhQ4eZL56suOR
+         E2FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GNjXTY5duOz5iXe0iAVr/cU22eBlSdyUTm1y6N/AOUA=;
+        b=dse6Apv+iNsLAfQa0ZFUmff3fbmhY57R5wvGd2p28F23ulXuln8M/eVcM+8uHW5s3A
+         36ZG61CeCc2XzgdWqLU9qU8bVHoNcEdKUXldl/sz+/UnpYw3/U+y1qikQnZVuMAErScU
+         MVkJ9jyPK5nuhrC/UuOhJKPZd0FgQZBC2USA7wmwIoeLrsabKd4BPAfd8E8CmJL2bKdr
+         lbeNQvqbT0DTpSeGHhDJFMHIziibU7WD1nP2nKKzJCl2hbbfKdzU+3P4fXL/yeNfU81R
+         fqQ7Jy2tQYVdoy0NPrybOZbQzBns4VWLx7l1cNkAsgefUOwwZJn2aXRb5p6JDMmFFQly
+         daUg==
+X-Gm-Message-State: AOAM532E9ClWFzPO996inMqipCLKPrlJ6etmcqiB6lXnCPNL2KlGSCC3
+        NbMnN+sy85xG83YkEBPtsqFGFg==
+X-Google-Smtp-Source: ABdhPJy2TeUC8LicdPd0UfXbOjZP3tQWsUknqYL5wLhjjYBjKbVqO5zl7sVy7YNXIbHv5Rd5u8Bb9Q==
+X-Received: by 2002:a17:90a:8b84:: with SMTP id z4mr4863656pjn.60.1631210400447;
+        Thu, 09 Sep 2021 11:00:00 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id l22sm2812030pjz.54.2021.09.09.10.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 10:59:59 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 17:59:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
+Message-ID: <YTpLmxaR9zLbcyxx@google.com>
+References: <20210827085110.6763-1-chenyi.qiang@intel.com>
+ <YS/BrirERUK4uDaI@google.com>
+ <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210908150001.3702552-2-ray.huang@amd.com>
+In-Reply-To: <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:59:43PM +0800, Huang Rui wrote:
-> Add Collaborative Processor Performance Control Extension feature flag
-> for AMD processors.
+On Thu, Sep 02, 2021, Xiaoyao Li wrote:
+> On 9/2/2021 2:08 AM, Sean Christopherson wrote:
+> > On Fri, Aug 27, 2021, Chenyi Qiang wrote:
+> > > Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
+> > > VM exit, it will be directed to L1 VMM, which would cause unexpected
+> > > behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
+> > > 
+> > > Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
+> > > Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> > > ---
+> > >   arch/x86/kvm/vmx/nested.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > > index bc6327950657..754f53cf0f7a 100644
+> > > --- a/arch/x86/kvm/vmx/nested.c
+> > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
+> > >   	case EXIT_REASON_VMFUNC:
+> > >   		/* VM functions are emulated through L2->L0 vmexits. */
+> > >   		return true;
+> > > +	case EXIT_REASON_BUS_LOCK:
+> > > +		return true;
+> > 
+> > Hmm, unless there is zero chance of ever exposing BUS_LOCK_DETECTION to L1, it
+> > might be better to handle this in nested_vmx_l1_wants_exit(), e.g.
+> > 
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index b3f77d18eb5a..793534b7eaba 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -6024,6 +6024,8 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
+> >                          SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE);
+> >          case EXIT_REASON_ENCLS:
+> >                  return nested_vmx_exit_handled_encls(vcpu, vmcs12);
+> > +       case EXIT_REASON_BUS_LOCK:
+> > +               return nested_cpu_has2(vmcs12, SECONDARY_EXEC_BUS_LOCK_DETECTION);
 > 
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  1 file changed, 1 insertion(+)
+> yes, for now, it equals
 > 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index d0ce5cfd3ac1..f7aea50e3371 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -313,6 +313,7 @@
->  #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
->  #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
->  #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
-> +#define X86_FEATURE_AMD_CPPC_EXT	(13*32+27) /* Collaborative Processor Performance Control Extension */
+>                   return false;
+> 
+> because KVM doesn't expose it to L1.
+> 
+> >          default:
+> >                  return true;
+> >          }
+> > 
+> > It's a rather roundabout way of reaching the same result, but I'd prefer to limit
+> > nested_vmx_l0_wants_exit() to cases where L0 wants to handle the exit regardless
+> > of what L1 wants.  This kinda fits that model, but it's not really that L0 "wants"
+> > the exit, it's that L1 can't want the exit.  Does that make sense?
+> 
+> something like below has to be in nested_vmx_l0_wants_exit()
+> 
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu
+> *vcpu,
+>         case EXIT_REASON_VMFUNC:
+>                 /* VM functions are emulated through L2->L0 vmexits. */
+>                 return true;
+> +       case EXIT_REASON_BUS_LOCK:
+> +               return vcpu->kvm->arch.bus_lock_detection_enabled;
+>         default:
+>                 break;
+>         }
+> 
+> 
+> L0 wants this VM exit because it enables BUS LOCK VM exit, not because L1
+> doesn't enable it.
 
-Why not simply X86_FEATURE_AMD_CPPC ?
+No, nested_vmx_l0_wants_exit() is specifically for cases where L0 wants to handle
+the exit even if L1 also wants to handle the exit.  For cases where L0 is expected
+to handle the exit because L1 does _not_ want the exit, the intent is to not have
+an entry in nested_vmx_l0_wants_exit().  This is a bit of a grey area, arguably L0
+"wants" the exit because L0 knows BUS_LOCK cannot be exposed to L1.
 
--- 
-Regards/Gruss,
-    Boris.
+But if we go with that argument, then the original patch (with a comment), is correct.
+Conditioning L0's wants on bus_lock_detection_enabled is not correct because whether
+or not the feature is enabled by L0 does not affect whether or not it's exposed to L1.
+Obviously BUS_LOCK exits should not happen if bus_lock_detection_enabled==false, but
+that's not relevant for why L0 "wants" the exit.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+I'm not totally opposed to handling this in nested_vmx_l0_wants_exit(), but handling
+the check in nested_vmx_l1_wants_exit() has the advantage of being correct both now
+and in the future (if BUS_LOCK is ever exposed to L1).
