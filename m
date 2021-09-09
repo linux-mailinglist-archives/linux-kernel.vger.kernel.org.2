@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20474048ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAC7404901
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbhIILJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:09:50 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48793 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233990AbhIILJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:09:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631185707;
-        bh=AAIXTUSD2D+UBvM2ZbhnEuK+blZbIXOcoQG3/MEal9c=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=LCfkrbakCGoPJrMf8RHEpkgMV5b+E3D09/Pg2P1MUZSFFEMaSSZgltRyTPpxF6h2F
-         e+IOd/dFGn50ftH714QpkR44YqrXyQCiELHsslEDH0rjHlOyyxO4KA9VujhYbG7/cH
-         cPZ1fgbrnHXxHMb8AY1ALSQDWy2kVfGrr9tDmGDw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MacOQ-1mvgiv1erS-00c9cG; Thu, 09
- Sep 2021 13:08:27 +0200
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
-Date:   Thu, 9 Sep 2021 13:08:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234892AbhIILMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhIILMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:12:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D1C061575;
+        Thu,  9 Sep 2021 04:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Px05a8oX7TB9LNqdiKccha6Ty68j1DakKrgzz154FJ4=; b=uNC1B6KfWxZ5MirPlWNm0FWy1W
+        wHfgm7FiRVQ5r47H8bBJ57z3lfVyGRAv0ru1wioZNLUaxUPHqCKAUiiwa6FhAsOmi/4nZzsR+hhbC
+        2ugctxWgzI8wuQdUye0toOLXpg8X3uCCaLY3OvsWsQjp0NZAnDL0TBh782mwDHOIV5H9j5c/bESI/
+        frOJgEH0wbG/9NyP+IBioVw9xKmNaodJdzvLv1MGtJgqpbI4YcoaFe62C+ekKmTm+VdxT9vV5K3bG
+        KgzNXEJs2o4wi1ruyMpGYfMtrahoFFKMOyJNJteSjJX906JV1rnl0a899VcHRkUjSs8un3Ymq9/4R
+        WFuVfGng==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOHwN-009kWU-38; Thu, 09 Sep 2021 11:10:05 +0000
+Date:   Thu, 9 Sep 2021 12:09:59 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 01/19] iov_iter: Fix iov_iter_get_pages{,_alloc} page
+ fault return value
+Message-ID: <YTnrh2AUzActMoxl@infradead.org>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-2-agruenba@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210909101451.jhfk45gitpxzblap@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/wwtckDhDW6OpxHZAWeZEXMWVj4tAjKBl2xYBkDv++je5LVyan9
- o7dniwUh87k9qsx5pemOMg5DwMjmDYlHCYZFoLidJVHF3PDlHY4C5Fk6heaox7MuqKRmJG6
- 64JYZHL7q2FoJ/ZehVGnV50+SfDJMBT43Qwmiwi105qRGzoaanLmnC5AZQp6Sqz9/7zZF2e
- 2LYfHwQ4ry8REopuR00Vw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:N6VlbDoFWT8=:5hhJqPmPxuzwCWPyL0fWon
- vddAbhotSJBIPWiXLDF86CUJzkTc+yyQ9MhQFtbpUkEiwR87YAjE59YLfaJnMiA/yc37UsNhh
- aPAILjj8A2FoskO2N0oGSP18hpwrTx/MXWUiEZD/OsWWcC3cyDQbjTIy8CevngSwm9DpnarSK
- fORQ9GKPmXFs180y1r4DSd/LbATypPOVDWl0g3nQCB3QAYyUOV2+Pwk3MHpm/yJpYTJ/+Bgl6
- LPu3XfKBkB4IbIUovTFUpdZ22stvNjSREjHoX8TTN/oQzphmT66F+3MUui2pAO2KPhsRoJegX
- X026HXIz4CZJGYVI4syJoyVfjn4S40afBFCpPUwVe0wJtLcDIHShJKwUrbr8plzmGNWpU73Dq
- BxgE59YtSVcr/McecZCrCwE6DbAU3b5tYIq9jQbGyDCoxV1lyapR7KrhAbGrrXUTxZYFDMBzf
- fcAuXXY7JFE769LpPlu5BBql9uF7ww+wp7Jzd4CeUYgsbwkWX3ckZB5ZUQsL91oCt7t8IGyCk
- fRTiejOJVJQnUQr4+OKrcec6KS5gnqOogscdu9JdbH4eVF7kIiw+9ckr3a1HEzM4d79lIWHDI
- Gev0htMlxFfw8nPVvh6E5E+iOzt59C4P0eK/LCajSltFidcCwW1r1vBH9FpXw3+lkVsfF0pug
- sq4xX2UcEk43XxYBW/zvF+HxQTnG8xmRiZFXFfbPU1lwhBBkLbsdxgFDwHt9z3pH3MAP5w1wt
- xbmw0NjxetIhKIitUYaOphCb+ETTrCBaBfRhB7PaSFUfPx2MgkuqERRzKwdRkO5VjFmgPxLyG
- Rm5adkRxOpvtLwk3dAjEBN+KePb/Tq4IjX/Uq4Kos4NAeq8z5SiJhDxeOEva77Ml+jfmi/AkZ
- 7nVsepjwD9a3hlEg6dVWxKWNtvzsJrjCnl5LRS67Wfn1UduOvCKvM1aN2cgHPg0JgValsEhAy
- 03R07yCaPgY9dMwK1vDLB74lWIi4wzMe0KuJFo6I5mnIqZlDZQVtFqF2hqybbNSEuXxwr3QFn
- 9kavCjKNJuhVoFk4i53rz/akAkkWoMY/vnaWIHUGhhP9Amgayvn5xuhCyiGLommHWr9pf14jW
- mdw7WTp1zTpJcg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827164926.1726765-2-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 27, 2021 at 06:49:08PM +0200, Andreas Gruenbacher wrote:
+> Both iov_iter_get_pages and iov_iter_get_pages_alloc return the number
+> of bytes of the iovec they could get the pages for.  When they cannot
+> get any pages, they're supposed to return 0, but when the start of the
+> iovec isn't page aligned, the calculation goes wrong and they return a
+> negative value.  Fix both functions.
+> 
+> In addition, change iov_iter_get_pages_alloc to return NULL in that case
+> to prevent resource leaks.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 
-Hi,
+Looks good,
 
-On 09.09.21 at 12:14, Vladimir Oltean wrote:
->
-> Can you try this patch
->
-> commit 07b90056cb15ff9877dca0d8f1b6583d1051f724
-> Author: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Date:   Tue Jan 12 01:09:43 2021 +0200
->
->     net: dsa: unbind all switches from tree when DSA master unbinds
->
->     Currently the following happens when a DSA master driver unbinds whi=
-le
->     there are DSA switches attached to it:
->
-
-This patch is already part of the kernel which shows the described shutdow=
-n issues.
-
-Regards,
-Lino
+Reviewed-by: Christoph Hellwig <hch@lst.de>
