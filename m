@@ -2,420 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D1040601E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9E440602C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349746AbhIIXec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 19:34:32 -0400
-Received: from mga02.intel.com ([134.134.136.20]:8845 "EHLO mga02.intel.com"
+        id S230332AbhIIXkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 19:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244256AbhIIXeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 19:34:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="208167532"
-X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="208167532"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 16:33:08 -0700
-X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
-   d="scan'208";a="581098925"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.210.210])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 16:33:08 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v14 4/4] fpga: m10bmc-sec: add max10 secure update functions
-Date:   Thu,  9 Sep 2021 16:33:04 -0700
-Message-Id: <20210909233304.5650-5-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210909233304.5650-1-russell.h.weight@intel.com>
-References: <20210909233304.5650-1-russell.h.weight@intel.com>
+        id S232591AbhIIXiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 19:38:10 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AF536108D;
+        Thu,  9 Sep 2021 23:36:57 +0000 (UTC)
+Date:   Thu, 9 Sep 2021 19:36:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Weizhao Ouyang <o451686892@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v4] ftrace: Cleanup ftrace_dyn_arch_init()
+Message-ID: <20210909193655.7bc715af@gandalf.local.home>
+In-Reply-To: <20210909090216.1955240-1-o451686892@gmail.com>
+References: <20210909090216.1955240-1-o451686892@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invoke an instance of the FPGA Image Load driver and extend the MAX10
-BMC Secure Update driver to include the functions that enable secure
-updates of BMC images, FPGA images, etc.
+On Thu,  9 Sep 2021 17:02:16 +0800
+Weizhao Ouyang <o451686892@gmail.com> wrote:
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v14:
-  - Changed symbol names to reflect the renaming of the Security Manager
-    Class driver to FPGA Image Load.
-v13:
-  - No change
-v12:
-  - Updated Date and KernelVersion fields in ABI documentation
-  - Removed size parameter from the write_blk() op. m10bmc_sec_write_blk()
-    no longer has a size parameter, and the block size is determined
-    in this (the lower-level) driver.
-v11:
-  - No change
-v10:
-  - No change
-v9:
-  - No change
-v8:
-  - Previously patch 5/6, otherwise no change
-v7:
-  - No change
-v6:
-  - Changed (size / stride) calculation to ((size + stride - 1) / stride)
-    to ensure that the proper count is passed to regmap_bulk_write().
-  - Removed unnecessary call to rsu_check_complete() in
-    m10bmc_sec_poll_complete() and changed while loop to
-    do/while loop.
-v5:
-  - No change
-v4:
-  - No change
-v3:
-  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-  - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
-    driver"
-  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
-    underlying functions are now called directly.
-  - Changed calling functions of functions that return "enum fpga_sec_err"
-    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
-v2:
-  - Reworked the rsu_start_done() function to make it more readable
-  - Reworked while-loop condition/content in rsu_prog_ready()
-  - Minor code cleanup per review comments
-  - Added a comment to the m10bmc_sec_poll_complete() function to
-    explain the context (could take 30+ minutes to complete).
-  - Added m10bmc_ prefix to functions in m10bmc_iops structure
-  - Moved MAX10 BMC address and function definitions to a separate
-    patch.
----
- drivers/fpga/intel-m10-bmc-secure.c | 310 +++++++++++++++++++++++++++-
- 1 file changed, 309 insertions(+), 1 deletion(-)
+> Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
+> ftrace_dyn_arch_init() to cleanup them.
 
-diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-index ae1383d13bfc..025655684d00 100644
---- a/drivers/fpga/intel-m10-bmc-secure.c
-+++ b/drivers/fpga/intel-m10-bmc-secure.c
-@@ -181,7 +181,315 @@ static const struct attribute_group *m10bmc_sec_attr_groups[] = {
- 	NULL,
- };
- 
--static const struct fpga_image_load_ops m10bmc_lops = { };
-+static void log_error_regs(struct m10bmc_sec *sec, u32 doorbell)
-+{
-+	u32 auth_result;
-+
-+	dev_err(sec->dev, "RSU error status: 0x%08x\n", doorbell);
-+
-+	if (!m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result))
-+		dev_err(sec->dev, "RSU auth result: 0x%08x\n", auth_result);
-+}
-+
-+static enum fpga_image_err rsu_check_idle(struct m10bmc_sec *sec)
-+{
-+	u32 doorbell;
-+	int ret;
-+
-+	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	if (rsu_prog(doorbell) != RSU_PROG_IDLE &&
-+	    rsu_prog(doorbell) != RSU_PROG_RSU_DONE) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_BUSY;
-+	}
-+
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static inline bool rsu_start_done(u32 doorbell)
-+{
-+	u32 status, progress;
-+
-+	if (doorbell & DRBL_RSU_REQUEST)
-+		return false;
-+
-+	status = rsu_stat(doorbell);
-+	if (status == RSU_STAT_ERASE_FAIL || status == RSU_STAT_WEAROUT)
-+		return true;
-+
-+	progress = rsu_prog(doorbell);
-+	if (progress != RSU_PROG_IDLE && progress != RSU_PROG_RSU_DONE)
-+		return true;
-+
-+	return false;
-+}
-+
-+static enum fpga_image_err rsu_update_init(struct m10bmc_sec *sec)
-+{
-+	u32 doorbell, status;
-+	int ret;
-+
-+	ret = regmap_update_bits(sec->m10bmc->regmap,
-+				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
-+				 DRBL_RSU_REQUEST | DRBL_HOST_STATUS,
-+				 DRBL_RSU_REQUEST |
-+				 FIELD_PREP(DRBL_HOST_STATUS,
-+					    HOST_STATUS_IDLE));
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
-+				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
-+				       doorbell,
-+				       rsu_start_done(doorbell),
-+				       NIOS_HANDSHAKE_INTERVAL_US,
-+				       NIOS_HANDSHAKE_TIMEOUT_US);
-+
-+	if (ret == -ETIMEDOUT) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_TIMEOUT;
-+	} else if (ret) {
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+	}
-+
-+	status = rsu_stat(doorbell);
-+	if (status == RSU_STAT_WEAROUT) {
-+		dev_warn(sec->dev, "Excessive flash update count detected\n");
-+		return FPGA_IMAGE_ERR_WEAROUT;
-+	} else if (status == RSU_STAT_ERASE_FAIL) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_HW_ERROR;
-+	}
-+
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static enum fpga_image_err rsu_prog_ready(struct m10bmc_sec *sec)
-+{
-+	unsigned long poll_timeout;
-+	u32 doorbell, progress;
-+	int ret;
-+
-+	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	poll_timeout = jiffies + msecs_to_jiffies(RSU_PREP_TIMEOUT_MS);
-+	while (rsu_prog(doorbell) == RSU_PROG_PREPARE) {
-+		msleep(RSU_PREP_INTERVAL_MS);
-+		if (time_after(jiffies, poll_timeout))
-+			break;
-+
-+		ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+		if (ret)
-+			return FPGA_IMAGE_ERR_RW_ERROR;
-+	}
-+
-+	progress = rsu_prog(doorbell);
-+	if (progress == RSU_PROG_PREPARE) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_TIMEOUT;
-+	} else if (progress != RSU_PROG_READY) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_HW_ERROR;
-+	}
-+
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static enum fpga_image_err rsu_send_data(struct m10bmc_sec *sec)
-+{
-+	u32 doorbell;
-+	int ret;
-+
-+	ret = regmap_update_bits(sec->m10bmc->regmap,
-+				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
-+				 DRBL_HOST_STATUS,
-+				 FIELD_PREP(DRBL_HOST_STATUS,
-+					    HOST_STATUS_WRITE_DONE));
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
-+				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
-+				       doorbell,
-+				       rsu_prog(doorbell) != RSU_PROG_READY,
-+				       NIOS_HANDSHAKE_INTERVAL_US,
-+				       NIOS_HANDSHAKE_TIMEOUT_US);
-+
-+	if (ret == -ETIMEDOUT) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_TIMEOUT;
-+	} else if (ret) {
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+	}
-+
-+	switch (rsu_stat(doorbell)) {
-+	case RSU_STAT_NORMAL:
-+	case RSU_STAT_NIOS_OK:
-+	case RSU_STAT_USER_OK:
-+	case RSU_STAT_FACTORY_OK:
-+		break;
-+	default:
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_HW_ERROR;
-+	}
-+
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static int rsu_check_complete(struct m10bmc_sec *sec, u32 *doorbell)
-+{
-+	if (m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, doorbell))
-+		return -EIO;
-+
-+	switch (rsu_stat(*doorbell)) {
-+	case RSU_STAT_NORMAL:
-+	case RSU_STAT_NIOS_OK:
-+	case RSU_STAT_USER_OK:
-+	case RSU_STAT_FACTORY_OK:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (rsu_prog(*doorbell)) {
-+	case RSU_PROG_IDLE:
-+	case RSU_PROG_RSU_DONE:
-+		return 0;
-+	case RSU_PROG_AUTHENTICATING:
-+	case RSU_PROG_COPYING:
-+	case RSU_PROG_UPDATE_CANCEL:
-+	case RSU_PROG_PROGRAM_KEY_HASH:
-+		return -EAGAIN;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static enum fpga_image_err m10bmc_sec_prepare(struct fpga_image_load *imgld)
-+{
-+	struct m10bmc_sec *sec = imgld->priv;
-+	enum fpga_image_err ret;
-+
-+	if (imgld->remaining_size > M10BMC_STAGING_SIZE)
-+		return FPGA_IMAGE_ERR_INVALID_SIZE;
-+
-+	ret = rsu_check_idle(sec);
-+	if (ret != FPGA_IMAGE_ERR_NONE)
-+		return ret;
-+
-+	ret = rsu_update_init(sec);
-+	if (ret != FPGA_IMAGE_ERR_NONE)
-+		return ret;
-+
-+	return rsu_prog_ready(sec);
-+}
-+
-+#define WRITE_BLOCK_SIZE 0x4000 /* Update remaining_size every 0x4000 bytes */
-+
-+static enum fpga_image_err
-+m10bmc_sec_write_blk(struct fpga_image_load *imgld, u32 offset)
-+{
-+	struct m10bmc_sec *sec = imgld->priv;
-+	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-+	u32 doorbell, blk_size;
-+	int ret;
-+
-+	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+	if (ret) {
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+	} else if (rsu_prog(doorbell) != RSU_PROG_READY) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_HW_ERROR;
-+	}
-+
-+	blk_size = min_t(u32, imgld->remaining_size, WRITE_BLOCK_SIZE);
-+	ret = regmap_bulk_write(sec->m10bmc->regmap,
-+				M10BMC_STAGING_BASE + offset,
-+				(void *)imgld->data + offset,
-+				(blk_size + stride - 1) / stride);
-+
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	imgld->remaining_size -= blk_size;
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+/*
-+ * m10bmc_sec_poll_complete() is called after handing things off to
-+ * the BMC firmware. Depending on the type of update, it could be
-+ * 30+ minutes before the BMC firmware completes the update. The
-+ * imgld->driver_unload check allows the driver to be unloaded,
-+ * but the BMC firmware will continue the update and no further
-+ * secure updates can be started for this device until the update
-+ * is complete.
-+ */
-+static enum fpga_image_err m10bmc_sec_poll_complete(struct fpga_image_load *imgld)
-+{
-+	struct m10bmc_sec *sec = imgld->priv;
-+	unsigned long poll_timeout;
-+	enum fpga_image_err result;
-+	u32 doorbell;
-+	int ret;
-+
-+	result = rsu_send_data(sec);
-+	if (result != FPGA_IMAGE_ERR_NONE)
-+		return result;
-+
-+	poll_timeout = jiffies + msecs_to_jiffies(RSU_COMPLETE_TIMEOUT_MS);
-+	do {
-+		msleep(RSU_COMPLETE_INTERVAL_MS);
-+		ret = rsu_check_complete(sec, &doorbell);
-+		if (imgld->driver_unload)
-+			return FPGA_IMAGE_ERR_CANCELED;
-+	} while (ret == -EAGAIN && !time_after(jiffies, poll_timeout));
-+
-+	if (ret == -EAGAIN) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_TIMEOUT;
-+	} else if (ret == -EIO) {
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+	} else if (ret) {
-+		log_error_regs(sec, doorbell);
-+		return FPGA_IMAGE_ERR_HW_ERROR;
-+	}
-+
-+	return FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static enum fpga_image_err m10bmc_sec_cancel(struct fpga_image_load *imgld)
-+{
-+	struct m10bmc_sec *sec = imgld->priv;
-+	u32 doorbell;
-+	int ret;
-+
-+	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-+	if (ret)
-+		return FPGA_IMAGE_ERR_RW_ERROR;
-+
-+	if (rsu_prog(doorbell) != RSU_PROG_READY)
-+		return FPGA_IMAGE_ERR_BUSY;
-+
-+	ret = regmap_update_bits(sec->m10bmc->regmap,
-+				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
-+				 DRBL_HOST_STATUS,
-+				 FIELD_PREP(DRBL_HOST_STATUS,
-+					    HOST_STATUS_ABORT_RSU));
-+
-+	return ret ? FPGA_IMAGE_ERR_RW_ERROR : FPGA_IMAGE_ERR_NONE;
-+}
-+
-+static const struct fpga_image_load_ops m10bmc_lops = {
-+	.prepare = m10bmc_sec_prepare,
-+	.write_blk = m10bmc_sec_write_blk,
-+	.poll_complete = m10bmc_sec_poll_complete,
-+	.cancel = m10bmc_sec_cancel,
-+};
- 
- static int m10bmc_secure_probe(struct platform_device *pdev)
- {
--- 
-2.25.1
+FYI,
 
+I'm not ignoring this patch. I just wont be able to look at it until the
+merge window is over.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+> Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
+> Acked-by: Helge Deller <deller@gmx.de> (parisc)
+> 
+> ---
+> Changes in v4:
+> -- revert the generic declaration
+> 
+> Changes in v3:
+> -- fix unrecognized opcode on PowerPC
+> 
+> Changes in v2:
+> -- correct CONFIG_DYNAMIC_FTRACE on PowerPC
+> -- add Acked-by tag
+> 
+> ---
+>  arch/arm/kernel/ftrace.c        | 5 -----
+>  arch/arm64/kernel/ftrace.c      | 5 -----
+>  arch/csky/kernel/ftrace.c       | 5 -----
+>  arch/ia64/kernel/ftrace.c       | 6 ------
+>  arch/microblaze/kernel/ftrace.c | 5 -----
+>  arch/nds32/kernel/ftrace.c      | 5 -----
+>  arch/parisc/kernel/ftrace.c     | 5 -----
+>  arch/riscv/kernel/ftrace.c      | 5 -----
+>  arch/s390/kernel/ftrace.c       | 5 -----
+>  arch/sh/kernel/ftrace.c         | 5 -----
+>  arch/sparc/kernel/ftrace.c      | 5 -----
+>  arch/x86/kernel/ftrace.c        | 5 -----
+>  kernel/trace/ftrace.c           | 5 +++++
+>  13 files changed, 5 insertions(+), 61 deletions(-)
+> 
+>
