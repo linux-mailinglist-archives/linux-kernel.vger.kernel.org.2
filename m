@@ -2,101 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A134045C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B2B4045CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245155AbhIIGuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhIIGuS (ORCPT
+        id S1350746AbhIIGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:52:24 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33785 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232403AbhIIGwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:50:18 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79630C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:49:05 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id z18so1839043ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jvq1SkY9pwAOIMxBMn33QFKV8XgkS5RSkAbHTT9NPnc=;
-        b=zPNHmflQ+KK2aPPISKabIT/z6km+R2RESiZoHSRncKMphQza4olqur7NjrJcjL3ZRK
-         B2uuEfASpvnJ5rKUNVZJjMBCwV+308aCaadXEP+5Lkm6THswPSwZCd+Z3A3J9Ge+Nwaw
-         75uWRwxsd/XcCJ4C4xBzlfENUl4yaPmpN7gkty+vqkXaE5Y6llo18zVGWtbSS+lm2HZ4
-         z48TFZEaqQLTEJMNCEmy74PYNzjdFfZQHpYX2bhLkef9uTbXDvDPldtcy/Lxy1cQ8Sft
-         VNFJUHdYpazBlpcewEaGh/4/m1wJDdPv16hdD40aC9lR1my3J75jLxymT4aun03Uhz2K
-         oGOg==
+        Thu, 9 Sep 2021 02:52:23 -0400
+Received: by mail-il1-f197.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so1243089ilj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:51:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jvq1SkY9pwAOIMxBMn33QFKV8XgkS5RSkAbHTT9NPnc=;
-        b=f3M7ncZNAoqdclZ0hhdb3/lF1osEXIDUtpE0yDcGBFhSlUD/iCvFslkW61TAikicYm
-         xHzWglkMOlU7AQjGUVu/h4HVA+X9wVbYTE3NqmZyCmNWGqMRQX3FRCjhLoprxLQcHEEb
-         p1vunADEDpgn5fyBRibJICxnvdkNO42NyDWGiIXN6Pw49BRti6I1GGwxmvJXIRA8sNtG
-         Lfic6fiaWb4SIL4VnL7YRdpxivCQaTD1kmIf0GEdIUon4dWZFusNlZvlhL31uUFZu91Y
-         D9hhqmfnESC6j+jqoBXe+i/H/MDzlpNsfM238sU++6FxhfKr2N/ypfmjmBEmYfrf3fId
-         LuUg==
-X-Gm-Message-State: AOAM531Muri0QaZbjcMezjDWe9jvyBIKP2yRzmeQVfd8T//p6aw/AGIj
-        uPVvB+bdOF0VzgMm7MRQdcwQBPpWAtAxfCbWz186NA==
-X-Google-Smtp-Source: ABdhPJyJeMCHtdgCgrGmaCI+oCzAqtrmiQWfiPufs6oN0VW2hb96eJpM42vewETfOKt6pl1t0Vc5dWG7wcbxyZEKFxM=
-X-Received: by 2002:a25:1c09:: with SMTP id c9mr1960098ybc.350.1631170144556;
- Wed, 08 Sep 2021 23:49:04 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=kDkmBLWaDYRnrQjU0pW08RiRXMeXOiOOb1COf/LFO7U=;
+        b=V2z5L4SF8DZwLumdPff97fBzIYmsnroU6Q/bXe6IWncpeLFgHy6FN4XyErZt+Q3cyJ
+         M0M8zDoa4n0hk5YCPBr2P3imkascCCN2AInV+VVRomZucCs/sxK4OyrloQ5ILda857g7
+         RMh9AJlj8Xrbz1/kcAgVjiles0Qwv+Nk+q+6LwpWMMcfx17z07nF3hussYFc2NRAF5a3
+         Rq0luAdzkCPYAtuFIxp7r9zP0+VenEJa8nezFG5lrwf6TJY2BTZPlMDgNf7xVWS9mt0T
+         bSDF3nX3oxraHm0Ue55O0D38SZQzdsjuezGl4B47wy+SX/rQPrEh2NxGNKmgucsQo3qg
+         gwwQ==
+X-Gm-Message-State: AOAM532Ap9yBEnrGFS66Gtg2RYmNO1W/2PfQ1hEp+X/HfW33yuFMa3qh
+        jTwc/kB44bEn0/MWuyY50yemuqsG8ruHLCo0ltw1O3NIJTOW
+X-Google-Smtp-Source: ABdhPJzho46HFyo1dlf+WBjkzC2MnzGIgmkh9OHBrq8p1x32bpn2LBRKLLO/LQo4mQcInwQuDpOYrWCqCZfG3+LQIYK7sb2Q7O5E
 MIME-Version: 1.0
-References: <20210908203946.1261798-1-daniel.m.jordan@oracle.com>
-In-Reply-To: <20210908203946.1261798-1-daniel.m.jordan@oracle.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 9 Sep 2021 08:48:53 +0200
-Message-ID: <CAKfTPtArYGHgEaa3GEMeJWzk_n4BDk1SanjrDU_-3fn=okrDEg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix se_is_idle() for !FAIR_GROUP_SCHED
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Josh Don <joshdon@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a6b:e616:: with SMTP id g22mr1371654ioh.67.1631170274006;
+ Wed, 08 Sep 2021 23:51:14 -0700 (PDT)
+Date:   Wed, 08 Sep 2021 23:51:14 -0700
+In-Reply-To: <9bef8d9e-7378-62e6-b78c-af3fceab2e46@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c01ddd05cb8a6ca0@google.com>
+Subject: Re: [syzbot] INFO: task hung in io_wq_put_and_exit
+From:   syzbot <syzbot+f62d3e0a4ea4f38f5326@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sept 2021 at 22:40, Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
->
-> se_is_idle() unconditionally returns 0 for !FAIR_GROUP_SCHED.
->
-> Check whether the task is SCHED_IDLE instead so buddies aren't set for
-> such tasks, as was the behavior before 304000390f88.
->
-> Fixes: 304000390f88 ("sched: Cgroup SCHED_IDLE support")
-> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Hello,
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ff69f245b939..8b22665bc18e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -497,7 +497,7 @@ static int cfs_rq_is_idle(struct cfs_rq *cfs_rq)
->
->  static int se_is_idle(struct sched_entity *se)
->  {
-> -       return 0;
-> +       return task_has_idle_policy(task_of(se));
->  }
->
->  #endif /* CONFIG_FAIR_GROUP_SCHED */
->
-> base-commit: ac08b1c68d1b1ed3cebb218fc3ea2c07484eb07d
-> --
-> 2.32.0
->
+Reported-and-tested-by: syzbot+f62d3e0a4ea4f38f5326@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         3b33e3f4 io-wq: fix silly logic error in io_task_work_..
+git tree:       git://git.kernel.dk/linux-block io_uring-5.15
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bfda6f9dee77cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=f62d3e0a4ea4f38f5326
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Note: testing is done by a robot and is best-effort only.
