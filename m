@@ -2,171 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06ED404501
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06CA404505
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350762AbhIIFcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:32:52 -0400
-Received: from mail-co1nam11on2065.outbound.protection.outlook.com ([40.107.220.65]:27680
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1350686AbhIIFcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:32:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lg4Ml+1tl3weTQCdlVBxvlHtXNPVuDuotAzi84/gVERjTyEGnQRgg+KbepUM9JsE9DBvtvJN229qBDkbebEh7jVUEWX1gjKnA0WERxBolEj8sCBjRo0H8IXu/DvzYc/7sKqUg4b23HK01UsaPn1wLbfiF3L32GxeQJQBJfI7FAjOLN6ae5RiXVty1CdMQM3BaskVBpw2Y2e1lf3iSWK7JK3HmHpR4FAYN/OUPDV6sYDxpFVZeiq82omzwy1H6FRYS4PJiTC8fU5zd/YMf+pTye0L2uZqlj+tynQ83bOgAbiw7W28QL5nY1s/2fx7p+eXcIIB+Fd5KYZ8grEuui1mjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=uJB8Jh5AwtHI0E3goPjhHV8fQIeEFTXPlw94JkFaGHA=;
- b=bHOdt7stnxhFJ83IS5WHWq3dLrPcNG/ajctBvEF8SgJZzlFZj9vqUgckeCSyCJNz0HTKOkbZyCfK20hIuB68TDUaHHgFMCnLP48tk2sv1LEgQkuRkQqDIzb3JG2L0ickc4ZB4Nx4jHDys3QKwmOteMXtS0FGFSlrsUyeF1v/4hgIDKMuKdlHP0y9RRtNPGuOHucnGiKc+GjqkIkw8PbhZn68XQVuy7BqzTaXvBcJhnoY948krz5JQxPl1zLB/xMIkVuhS0O3eIT6lzGGk8qLqXhFvs9qoct2TLht7NS+3CeGvjVH4NfLXyU6Zxqle6ehka327F63NYYJMRD+30Ma+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uJB8Jh5AwtHI0E3goPjhHV8fQIeEFTXPlw94JkFaGHA=;
- b=Xv6vTagp5StRH2JuVW+SdT2DqpH0Lq5kOeFVm5Q5CK9KAIcxQ85jKrV1gXNVMnDYxuKBGlzCryiThv4oMqQfmf9NDMjvvB2IIW7+TRm/wW7mtSOZZDjNckhTWnYZPQuXWsSL/rkOf6Qpv2BgQ/d5/KJrH9BEfpxjLT+NuaMoqOg=
-Received: from DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) by
- DM6PR12MB3017.namprd12.prod.outlook.com (2603:10b6:5:3e::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4478.24; Thu, 9 Sep 2021 05:31:40 +0000
-Received: from DM6PR12MB4250.namprd12.prod.outlook.com
- ([fe80::899f:5742:e36e:b303]) by DM6PR12MB4250.namprd12.prod.outlook.com
- ([fe80::899f:5742:e36e:b303%9]) with mapi id 15.20.4478.027; Thu, 9 Sep 2021
- 05:31:40 +0000
-From:   "Yu, Lang" <Lang.Yu@amd.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Thread-Topic: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Thread-Index: AQHXpKowoLymFk5Tf0idLKRe5rRrP6uaEbwAgAAAhDCAAAhtAIAAAPuAgAALmYCAABYx4IAA7buAgAACWJA=
-Date:   Thu, 9 Sep 2021 05:31:40 +0000
-Message-ID: <DM6PR12MB4250DD8FBA99A7F78B247B17FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
-References: <20210908120723.3920701-1-lang.yu@amd.com>
- <YTitRjOZtWPTyRHd@kroah.com>
- <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTi0xkTVYqUpKXSt@kroah.com>
- <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTi/UxFCYKqdT34L@kroah.com>
- <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTmZXU7myBFjx8/y@kroah.com>
-In-Reply-To: <YTmZXU7myBFjx8/y@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-09-09T05:31:37Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=2d0e1333-1f2b-42c6-8395-c5cda3ec7c79;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0f4ad0ed-7632-4f65-ee02-08d9735319de
-x-ms-traffictypediagnostic: DM6PR12MB3017:
-x-microsoft-antispam-prvs: <DM6PR12MB3017DFEB9EC4CD819CD0E874FBD59@DM6PR12MB3017.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: r1yyUvfHmLNcFT09b2SyFilTTy/ibI6GA8xI+sX3JNszoeP5lUUEY1Hut8/rOtgN7TYgyDcqWfO/f7awOL7vAw/AlDuBU4rNzhVb2iVGFuoJd6Cf/kzR7Lm/bmKt0CYBUEVuaxiTX8FUkmXiqCMCazUwlIrUC0YdvlkxLWGRWd4bm8w+fQnlFdt2XmMHEQUTVLjWLtzm0AL0Tl5R+tpRnjAlKUkD2Ncfgo4K8REfYLM3ITBhWq/DCxAeY0aBxSU3JgHVnK16gLMWDpmN0q2UzjREZ+2NDQIhua96ESnJAMz/ryeCgrXqwKXJIuc/sNvI568Jd0WKA/Ty8lcZlWOn0IfwmQuz+w8OkLOvo/74AA0PVqQN9QDzM0oYYmW7NZ95u0rSBJgyep1S+RagXuqyPQk0+m8NAn8hgKycMa2bp3mhgJo4PLFwutrzh/zAMfjlAOCBBdoGwjQEzgblz6uv8zEK6+nuwGpRi8vXTkBYQsKzrF95gRn7pp7GQziVy/p/qO/0E3I8SfzOZo8icIWj/d/N/b1TevPEOShCOcBvf8cHzVY6FJg2zxurWZ2i7fAcSmY4DidIOanXZlljq5XINNVU/qnDgJzff9KqlNkROaxae7ngvxuCbNKTwdwl2nZIqGqB3PZOY39OTuOJrjPID1b4uOXeGHka9xwnAdn+BMdwl4anBI9WvvXQDzMVl5J5IY64sdp+LXgANNBIYd9hvw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4250.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(83380400001)(316002)(8936002)(26005)(6506007)(71200400001)(2906002)(64756008)(122000001)(52536014)(66946007)(66476007)(66556008)(76116006)(86362001)(66446008)(6916009)(38070700005)(8676002)(54906003)(4326008)(7696005)(33656002)(55016002)(9686003)(5660300002)(186003)(38100700002)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9wwxkelA8C96L92fDbBoEujgCaWVmOCnWwyz1TbA0yJZ+sYjr4NNMI2//XZq?=
- =?us-ascii?Q?RM+1nBzX9x2l+kokJ7x8ddExxCCPbt2Ix9cQ86qB5W7CWjM5lWwtfGGo84CB?=
- =?us-ascii?Q?DZPLpg75ZOgYEcU+qvdZ9zUD5oVAHBRszqT+sJM1dzvUFYT7yOv8u7G8mlK/?=
- =?us-ascii?Q?Bw33RZIEJOSAETP5K7Mwot1uHePcAREZKgi+6RXwGoPi6AUabHKXTrtbvhhC?=
- =?us-ascii?Q?bTzklKuF1THrxWCmodNxZQhgaZaNGjiqs/QNrFyFtmBWem/GSkSVa23C8j3j?=
- =?us-ascii?Q?h16mg6Twc9AjSfdTzCMIi+0eLDN4C8EvlVMQ7IB7au41tv2NuBBQIFz1hHFi?=
- =?us-ascii?Q?wdtcyJ5xrXc4gaKC+zDs17UfST4BKNiMV63TZzoKFlBpvqFg6OiSRAHBSyUj?=
- =?us-ascii?Q?yjNwKyvuZ5Mpw51gMET5mJk4FovCPyvXEEga1kYTSBPBvET7KWqNO9t6nbJd?=
- =?us-ascii?Q?wfIBlvT9Ejke2cgM28ojVY0oaVKqGaKQ1en6JYwxGuZedCyem8aNbVGoVVV3?=
- =?us-ascii?Q?soSwYv3l+WIoaMlrycHMERfY42rXlL2CulUw51toCjYV3c8iCayCkHkkDm0h?=
- =?us-ascii?Q?B4ncsGw6O9uk/z0equ5/aLFCqvT9PqgmyTS7xoM7WpRaCpsxI4xOJoSzx1Ll?=
- =?us-ascii?Q?ZIp19+sQrKawqb2wOHPBIQJi0DqGST2miAWDl1iWLXMFDNPrbUUE4onE9C3L?=
- =?us-ascii?Q?TM45f+wuB+QvihICIwTujaNm43cCLFJc6+2CW1Nuq9pATEHRFh/vYEUWYU78?=
- =?us-ascii?Q?0fmNCwpvRNGwiJIjVD6Jz3zeRg5x5i4juTMvkWN34dhMHR7TSr4qfBN1dPMg?=
- =?us-ascii?Q?dMmwiwoU+nC99Eu9yUR9YxYLT4DSCY0jKD/HBS7c52k+2uplP+9T44t8YZuv?=
- =?us-ascii?Q?lY2uYN0cPTqYTFr2Ptn1/FTmv+TmuTB+d6jauiNOKjeSDqUTjwbhdZB33dqY?=
- =?us-ascii?Q?flN/rRfGG7mRHsOjitgnXgZUa5RQ98vW2i3C83gJ6Y0LbUdDNgurQwKYPl5h?=
- =?us-ascii?Q?XDon53OgD1N5I8KKqkZ8S9LTLw61GD6QqfR5EO/VQ5AfTlL+H6ANrEtT7SsT?=
- =?us-ascii?Q?Acv+ADByggWGD9YGqGW+kflT0EIUDv+nEt4AbR+6xGGWGnqRIildHqidY472?=
- =?us-ascii?Q?xfhmYof26GvDfULT7v95r09OvkyJk9XvpjfuwfD1lv1SlKYigOWXfO/trsKr?=
- =?us-ascii?Q?MjL0paeFmD7zxS2/ZcHBSGLFgk/Bb/WYvEYEPyeF9W6S/1utZ3z1HAXI7jt8?=
- =?us-ascii?Q?Y3ogT0AXyfZyds0TubQuw35oyWY+pvgOGG33eqMt4mBfmGS8oKQKd7Scf1oM?=
- =?us-ascii?Q?gOL5ebXoSEtr09ieUoH7vGF9?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1350771AbhIIFd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350499AbhIIFd5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:33:57 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F13DC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 22:32:48 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id h29so742811ila.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uO4bsB+6h1SkfyOTxGvMYZkgzROJsoMx/H8JH87r7zc=;
+        b=OiARu9fb/JCEbCLzzQMjW6J0FA4zszahZpoHEclEKfKOaW6JuxVDZQrZrZf5QArzaB
+         iJ7MxeVrpRzpv9Lgd3NLOPc2d6qx/RC5je4AQHR/+3MWrXylJrWTiKEKMeIgJDFAC3Ia
+         slV3O6+G/0v1PHUg6nsVDdMsvb/l1pA6q2wergZMZMoM7fa2LVdtWK63nJhwG8wXxNP7
+         OpKsCaM+fldL6j9cOsYNYugGBd0N8OzDQ3myXGcLw650G2MqWgqhYRdXhPg1dMSw2sk3
+         J9cFaLtMqK/v6rkrVYJbp2AJEZfdD8XTio1HGx04p6wGSmsaLlk4wpVNfsgZOCASoMmL
+         Xx5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uO4bsB+6h1SkfyOTxGvMYZkgzROJsoMx/H8JH87r7zc=;
+        b=wT62Ix9mhyZXepe23CnKmWE/gqPySz/Px1URarxuMjfhCclXPrBmf4xqrhhU9WlJ0D
+         AhmHpfxkmekBhl+Vyfn78mKeQxNq3kc2LFcmKwQnpKIH4TRetqejPEU1VY3uo6tlM9JQ
+         7F+/RrPXv0w0bDrc1aWNENT5R2XSYUyJl5PQgMhc9dse6RhgwtUUvfyKIAW1LRmUglPi
+         YGU8KjpOIr+fTSlnrzk/7I4gdzBrgHoq2PWmds8y43tbuW/zoeBREp2VT4fOEbKz4HUG
+         TfArGBh3kz3Kveuoce5SofkYPqMztFxE9aDBobNuYUaPnKEq7b4x51Fi0EkgcwT6K5VB
+         HL4g==
+X-Gm-Message-State: AOAM533H5DXEl1hgWyfWCBL+HSJY98t5yvX9I+nF0Kz/K1qYSB2vHaNG
+        QZ1MHcETbJh5kihiNnybF1byTw==
+X-Google-Smtp-Source: ABdhPJyldUzCYnCEedSh69MH8LQDrdOIyzOvQZd+tpElsGAiCL1xslKOQtA3IhhJdQHw3TeuD9OZ+Q==
+X-Received: by 2002:a05:6e02:1a87:: with SMTP id k7mr1080474ilv.122.1631165567547;
+        Wed, 08 Sep 2021 22:32:47 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id t10sm418026iol.34.2021.09.08.22.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 22:32:47 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 05:32:43 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 14/18] KVM: arm64: selftests: Add host support for vGIC
+Message-ID: <YTmce6Xn+ymngA+r@google.com>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-15-rananta@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4250.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f4ad0ed-7632-4f65-ee02-08d9735319de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 05:31:40.2279
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tvReyjtkhCk4qWBH6wFDom2uJAMgXq2x+qR5rJdPYHUp1uihsWjwt9b8inkjgcJkKqG6yfRFhcC5rPh3NPgm4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3017
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909013818.1191270-15-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only]
+Hi Raghu,
 
+On Thu, Sep 09, 2021 at 01:38:14AM +0000, Raghavendra Rao Ananta wrote:
+> Implement a simple library to perform vGIC-v3 setup
+> from a host point of view. This includes creating a
+> vGIC device, setting up distributor and redistributor
+> attributes, and mapping the guest physical addresses.
+> 
+> The definition of REDIST_REGION_ATTR_ADDR is taken
+> from aarch64/vgic_init test.
+>
 
+Consider dropping the macro from vgic_init.c and have it just include
+vgic.h
 
->-----Original Message-----
->From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Sent: Thursday, September 9, 2021 1:19 PM
->To: Yu, Lang <Lang.Yu@amd.com>
->Cc: Joe Perches <joe@perches.com>; Rafael J . Wysocki <rafael@kernel.org>;
->linux-kernel@vger.kernel.org
->Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs=
-_emit
->and sysfs_emit_at
->
->On Wed, Sep 08, 2021 at 03:33:51PM +0000, Yu, Lang wrote:
->> >Please feel free to add better documentation for the functions if you
->> >feel people are getting confused, do not change the existing behavior
->> >of the code as it rightly caught it being misused.
->>
->> You can find many patches named "convert sysfs scnprintf/snprintf to
->syfs_emit/sysfs_emit_at".
->> or "use sysfs_emit/sysfs_emit_at in show functions". They may think
->> it's better to use syfs_emit/sysfs_emit_at given its overrun avoidance.
->
->Yes, and using that in sysfs functions is fine, there is nothing wrong wit=
-h this
->usage.
->
->> But there are still some corner cases(e.g., a non page boundary aligned =
-buf
->address : ).
->
->I need a specific example of where this has gone wrong.  Please provide a
->lore.kernel.org link as I fail to see the problem here.
->
->Are you sure that you are not just abusing sysfs and having more than one =
-value
->per file?  Does this mean I need to go audit all of the gpu sysfs file ent=
-ries?
->
-Indeed, the one value per file rule was broken... Thanks. =20
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |  2 +-
+>  .../selftests/kvm/include/aarch64/vgic.h      | 20 +++++++
+>  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 60 +++++++++++++++++++
+>  3 files changed, 81 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 5476a8ddef60..8342f65c1d96 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
+>  
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>  
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> new file mode 100644
+> index 000000000000..3a776af958a0
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) host specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_VGIC_H
+> +#define SELFTEST_KVM_VGIC_H
+> +
+> +#include <linux/kvm.h>
+> +
+> +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
+> +	(((uint64_t)(count) << 52) | \
+> +	((uint64_t)((base) >> 16) << 16) | \
+> +	((uint64_t)(flags) << 12) | \
+> +	index)
+> +
+> +int vgic_v3_setup(struct kvm_vm *vm,
+> +				uint64_t gicd_base_gpa, uint64_t gicr_base_gpa);
+> +
+> +#endif /* SELFTEST_KVM_VGIC_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> new file mode 100644
+> index 000000000000..2318912ab134
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 host support
+> + */
+> +
+> +#include <linux/kvm.h>
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +#include "vgic.h"
+> +
+> +#define VGIC_V3_GICD_SZ		(SZ_64K)
+> +#define VGIC_V3_GICR_SZ		(2 * SZ_64K)
 
-Regard,
-Lang
+These values are UAPI, consider dropping them in favor of the
+definitions from asm/kvm.h
 
->thanks,
->
->greg k-h
+> +
+> +/*
+> + * vGIC-v3 default host setup
+> + *
+> + * Input args:
+> + *	vm - KVM VM
+> + *	gicd_base_gpa - Guest Physical Address of the Distributor region
+> + *	gicr_base_gpa - Guest Physical Address of the Redistributor region
+> + *
+> + * Output args: None
+> + *
+> + * Return: GIC file-descriptor or negative error code upon failure
+> + *
+> + * The function creates a vGIC-v3 device and maps the distributor and
+> + * redistributor regions of the guest. Since it depends on the number of
+> + * vCPUs for the VM, it must be called after all the vCPUs have been created.
+
+You could avoid the ordering dependency by explicitly taking nr_vcpus as
+an arg. It would also avoid the need for 12/18.
+
+Also note the required alignment on the GPA arguments you're taking.
+
+> + */
+> +int vgic_v3_setup(struct kvm_vm *vm,
+> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
+> +{
+> +	uint64_t redist_attr;
+> +	int gic_fd, nr_vcpus;
+> +	unsigned int nr_gic_pages;
+> +
+> +	nr_vcpus = vm_get_nr_vcpus(vm);
+> +	TEST_ASSERT(nr_vcpus > 0, "Invalid number of CPUs: %u\n", nr_vcpus);
+> +
+> +	/* Distributor setup */
+> +	gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> +			KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
+> +	nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm), VGIC_V3_GICD_SZ);
+> +	virt_map(vm, gicd_base_gpa, gicd_base_gpa,  nr_gic_pages);
+> +
+> +	/* Redistributor setup */
+> +	redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> +			KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
+> +	nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm),
+> +						VGIC_V3_GICR_SZ * nr_vcpus);
+> +	virt_map(vm, gicr_base_gpa, gicr_base_gpa,  nr_gic_pages);
+> +
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
+> +				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
+> +
+> +	return gic_fd;
+> +}
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
