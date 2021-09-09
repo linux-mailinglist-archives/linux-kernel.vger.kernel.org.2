@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3933405AA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1970405AAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhIIQTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:19:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56418 "EHLO
+        id S236810AbhIIQVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:21:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36982 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230284AbhIIQTh (ORCPT
+        by vger.kernel.org with ESMTP id S233878AbhIIQVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:19:37 -0400
+        Thu, 9 Sep 2021 12:21:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631204307;
+        s=mimecast20190719; t=1631204441;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=MRfmvePdX8oOz9Q0DkpWLyNgQ3mcavCdz3BsSy6225Y=;
-        b=ChAq9KdTzXi3cR0Z9jSkwNjBKnUJkBGJhHb1gSFvuCHjoYp0zWdud9Mg2Tqa+oomeA2J9M
-        2JOt1+e+YNnXvfgs+9h3fYfBsUhHgkK53y02HgBDosP11a7EPyTWKUaigNEUMtx+qboFDE
-        D6pZGIn5kgRzW/W/LYrB3R4sJhuwIcw=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-EIgUeoy6N9u7zEK5dxp71Q-1; Thu, 09 Sep 2021 12:18:26 -0400
-X-MC-Unique: EIgUeoy6N9u7zEK5dxp71Q-1
-Received: by mail-il1-f200.google.com with SMTP id o12-20020a92dacc000000b00224baf7b16fso2500085ilq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:18:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MRfmvePdX8oOz9Q0DkpWLyNgQ3mcavCdz3BsSy6225Y=;
-        b=MZJyprvlFJ2zKxVjRPY8w/Qxwm74+HjRBUHiqykGjfLD1eWJfrdA5PMPv2C7SmK8Cu
-         7/yj8NBRnykl5MQ6hCeX/skocAEpCMp6omi2YIUGaYYMRx1pSuL3fmI+5RlGjd5sS/Xv
-         HacKfCk6DpqN5KvhkcZlYYif84yld0/M2rURJHqfZpB9fTmFtpL+M1W1fRC+PwBTbVO1
-         YHHMyKZY3qiNFSw2hZvzb/o49JtopAa78ym57XQT9jPCw7TXuGX23+knvcZ7b5jMJJPg
-         NNDzfwlPWu/XMqEIYPhHVlatGPccFKqAosRxrnA9+POrS7lpwM0CKscnhvpJlaiJEELp
-         kV5Q==
-X-Gm-Message-State: AOAM532hiIgAfHI0CCdvbL4Z4btyrJ89Ibm7e1IFD0PeeZiJdG/7ZGgr
-        UuL654lSz/NMMFOYqqdScpv9U0V326sEfxN8zgezf07aX7vn/IP8T40lFRKNHx8S/jh3J56sOHZ
-        2svphxTHYSS3sCXweuoQpOqie
-X-Received: by 2002:a02:5184:: with SMTP id s126mr566120jaa.126.1631204305160;
-        Thu, 09 Sep 2021 09:18:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTV5sPNo69aDUGVwR6HP9PiY2hvJRNRDm9IS1E+OzHIGLoDdng3A7p1Q5mQS2F7YBk3zRaRQ==
-X-Received: by 2002:a02:5184:: with SMTP id s126mr566106jaa.126.1631204304916;
-        Thu, 09 Sep 2021 09:18:24 -0700 (PDT)
-Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id k7sm1069698iok.22.2021.09.09.09.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 09:18:24 -0700 (PDT)
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     jbaron@akamai.com
-Cc:     linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH] dyndbg: make dyndbg a known cli param
-Date:   Thu,  9 Sep 2021 11:17:55 -0500
-Message-Id: <20210909161755.61743-1-ahalaney@redhat.com>
-X-Mailer: git-send-email 2.31.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5TVfEtg0caKFVLU4PORG/nOTi8TSVXlHDM/vmUHWN4s=;
+        b=I0xsEkqSD5VXiuD/EncdJESas/pUkhgEEG0zlTyUQ9ijB3m2BeUFFzccjCPwxmDVbPGEPk
+        g8DPCOwcu2S74avlY5bCBj/k6ngVk6bAyUXk0MpKDua1NQj8moQRbSUGFhSd2o0PEIO6yG
+        GOSSPkRB/faq4sZnmohVyRlGfHwIvoo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-jL2yk899M0yOud7RfMuEnA-1; Thu, 09 Sep 2021 12:20:37 -0400
+X-MC-Unique: jL2yk899M0yOud7RfMuEnA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 547BC10144F4;
+        Thu,  9 Sep 2021 16:20:35 +0000 (UTC)
+Received: from epyc.reserve.home (unknown [10.22.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FAFF1865D;
+        Thu,  9 Sep 2021 16:20:34 +0000 (UTC)
+From:   Bandan Das <bsd@redhat.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     "Moger, Babu" <bmoger@amd.com>, Babu Moger <babu.moger@amd.com>,
+        bp@alien8.de, corbet@lwn.net, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
+References: <20210812234440.tcssf2iqs435bgdo@treble>
+        <20210902181637.244879-1-babu.moger@amd.com>
+        <20210903000706.fb43tzhjanyg64cx@treble>
+        <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
+        <20210904172334.lfjyqi4qfzvbxef7@treble>
+Date:   Thu, 09 Sep 2021 12:20:32 -0400
+In-Reply-To: <20210904172334.lfjyqi4qfzvbxef7@treble> (Josh Poimboeuf's
+        message of "Sat, 4 Sep 2021 10:23:34 -0700")
+Message-ID: <jpgo891affz.fsf@linux.bootlegged.copy>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now dyndbg shows up as an unknown parameter if used on boot:
+Josh Poimboeuf <jpoimboe@redhat.com> writes:
 
-    Unknown command line parameters: dyndbg=module params +p ; module sys +p
+> On Fri, Sep 03, 2021 at 07:52:43PM -0500, Moger, Babu wrote:
+>> > BTW, is the list of PSF-affected CPUs the same as the list of
+>> > SSB-affected CPUs?  If there might be PSF CPUs which don't have SSB,
+>> > then more logic will need to be added to ensure a sensible default.
+>> I can't think of a scenario where it is not same on a system.
+>
+> To clarify, I'm asking about CPU capabilities.  Are there any AMD CPUs
+> with the PSF feature, which don't have SSB?
+>
+>> > On a related note, is there a realistic, non-hypothetical need to have
+>> > separate policies and cmdline options for both SSB and PSF?  i.e. is
+>> > there a real-world scenario where a user needs to disable PSF while
+>> > leaving SSB enabled?
+>>=20
+>> https://www.amd.com/system/files/documents/security-analysis-predictive-=
+store-forwarding.pdf <https://www.amd.com/system/files/documents/security-a=
+nalysis-predictive-store-forwarding.pdf>
+>> There are some examples in the document. Probably it is too soon to tell=
+ if
+>> those are real real-world scenarios as this feature is very new.
+>
+> I didn't see any actual examples.  Are you referring to this sentence?
+>
+>   "PSFD may be desirable for software which is concerned with the
+>    speculative behavior of PSF but desires a smaller performance impact
+>    than setting SSBD."
+>
+Sounds reasonable. It would have been good if the whitepaper mentioned
+any real examples which could benefit from selectively disabling psf.
+Generally speaking, as a user, I would either want to turn speculation
+entirely off or on which is what ssbd already does.
 
-That's because it is unknown, it doesn't sit in the __param
-section, so the processing done to warn users supplying an unknown
-parameter doesn't think it is legitimate.
-
-Install a dummy handler to register it. This was chosen instead of the
-approach the (deprecated) ddebug_query param takes, which is to
-have a real handler that copies the string taking up a KiB memory.
-
-Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
-
-This is the last valid param I know of that was getting flagged on boot
-if used correctly. Please let me know if the alternative approach of
-actually copying the string is preferred and I'll spin that up instead.
-
-Sort of an aside, but what's the policy for removing deprecated cli
-params? ddebug_query has been deprecated for a very long time now, but I
-am not sure if removing params like that is considered almost as bad as
-breaking userspace considering some systems might update their kernels
-but not the bootloader supplying the param.
-
- lib/dynamic_debug.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index cb5abb42c16a..84c16309cc63 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -761,6 +761,18 @@ static __init int ddebug_setup_query(char *str)
- 
- __setup("ddebug_query=", ddebug_setup_query);
- 
-+/*
-+ * Install a noop handler to make dyndbg look like a normal kernel cli param.
-+ * This avoids warnings about dyndbg being an unknown cli param when supplied
-+ * by a user.
-+ */
-+static __init int dyndbg_setup(char *str)
-+{
-+	return 1;
-+}
-+
-+__setup("dyndbg=", dyndbg_setup);
-+
- /*
-  * File_ops->write method for <debugfs>/dynamic_debug/control.  Gathers the
-  * command text from userspace, parses and executes it.
--- 
-2.31.1
+>> > Because trying to give them separate interfaces, when PSF disable is
+>> > intertwined with SSB disable in hardware, is awkward and confusing.  A=
+nd
+>> > the idea of adding another double-negative interface (disable=3Doff!),
+>> > just because a vulnerability is considered to be a CPU "feature", isn't
+>> > very appetizing.
+>> >=20
+>> > So instead of adding a new double-negative interface, which only *half*
+>> > works due to the ssb_disable dependency, and which is guaranteed to
+>> > further confuse users, and which not even be used in the real world
+>> > except possibly by confused users...
+>> >=20
+>> > I'm wondering if we can just start out with the simplest possible
+>> > approach: don't change any code and instead just document the fact that
+>> > "spec_store_bypass_disable=3D" also affects PSF.
+>> >=20
+>> > Then, later on, if a real-world need is demonstrated, actual code could
+>> > be added to support disabling PSF independently (but of course it would
+>> > never be fully independent since PSF disable is forced by SSB disable).
+>>=20
+>> Do you mean for now keep only 'on' and=C2=A0 'auto' and remove "off"?
+>
+> No, since PSF can already be mitigated with SSBD today, I'm suggesting
+> that all code be removed from the patch and instead just update the
+> documentation.
 
