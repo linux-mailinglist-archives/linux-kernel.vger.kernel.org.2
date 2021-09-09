@@ -2,145 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D413840467D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4748F404685
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352730AbhIIHmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 03:42:07 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:48261 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352790AbhIIHmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 03:42:05 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H4rXR0J6Pz9sWj;
-        Thu,  9 Sep 2021 09:40:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a3HcQ-GtdMPM; Thu,  9 Sep 2021 09:40:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H4rXQ622Pz9sWg;
-        Thu,  9 Sep 2021 09:40:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B7DF38B77E;
-        Thu,  9 Sep 2021 09:40:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id T3QWoD2RrUYV; Thu,  9 Sep 2021 09:40:54 +0200 (CEST)
-Received: from po9476vm.idsi0.si.c-s.fr (po22017.idsi0.si.c-s.fr [192.168.7.20])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92A3E8B77D;
-        Thu,  9 Sep 2021 09:40:53 +0200 (CEST)
-Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
- cc_platform_has()
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Cc:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Paul Mackerras <paulus@samba.org>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <b8a163b3-6357-45c9-f7ef-5d7e900b9ac8@csgroup.eu>
-Date:   Thu, 9 Sep 2021 07:40:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1352700AbhIIHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 03:44:03 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51510 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232549AbhIIHoC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 03:44:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UnmHPCV_1631173364;
+Received: from localhost(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UnmHPCV_1631173364)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 09 Sep 2021 15:42:51 +0800
+From:   ashimida <ashimida@linux.alibaba.com>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net, nathan@kernel.org,
+        ndesaulniers@google.com
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        ashimida <ashimida@linux.alibaba.com>
+Subject: [PATCH] [RFC] kbuild: add CLANG_TRIPLE to prevent clang from compiling with wrong --target
+Date:   Thu,  9 Sep 2021 15:42:43 +0800
+Message-Id: <1631173363-40160-1-git-send-email-ashimida@linux.alibaba.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kernel compiled with tool chain CROSS_COMPILE=aarch64-linux-android-
+will panic during the startup phase.
 
+Clang's --target option comes from $(CROSS_COMPILE). At the time
+-fstack-protector-strong is enabled, and compiled with command:
+make CC=clang HOSTCC=clang ARCH=arm64 CROSS_COMPILE=aarch64-linux-android-
 
-On 9/8/21 10:58 PM, Tom Lendacky wrote:
-> Introduce a powerpc version of the cc_platform_has() function. This will
-> be used to replace the powerpc mem_encrypt_active() implementation, so
-> the implementation will initially only support the CC_ATTR_MEM_ENCRYPT
-> attribute.
-> 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->   arch/powerpc/platforms/pseries/Kconfig       |  1 +
->   arch/powerpc/platforms/pseries/Makefile      |  2 ++
->   arch/powerpc/platforms/pseries/cc_platform.c | 26 ++++++++++++++++++++
->   3 files changed, 29 insertions(+)
->   create mode 100644 arch/powerpc/platforms/pseries/cc_platform.c
-> 
-> diff --git a/arch/powerpc/platforms/pseries/Kconfig b/arch/powerpc/platforms/pseries/Kconfig
-> index 5e037df2a3a1..2e57391e0778 100644
-> --- a/arch/powerpc/platforms/pseries/Kconfig
-> +++ b/arch/powerpc/platforms/pseries/Kconfig
-> @@ -159,6 +159,7 @@ config PPC_SVM
->   	select SWIOTLB
->   	select ARCH_HAS_MEM_ENCRYPT
->   	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
-> +	select ARCH_HAS_CC_PLATFORM
->   	help
->   	 There are certain POWER platforms which support secure guests using
->   	 the Protected Execution Facility, with the help of an Ultravisor
-> diff --git a/arch/powerpc/platforms/pseries/Makefile b/arch/powerpc/platforms/pseries/Makefile
-> index 4cda0ef87be0..41d8aee98da4 100644
-> --- a/arch/powerpc/platforms/pseries/Makefile
-> +++ b/arch/powerpc/platforms/pseries/Makefile
-> @@ -31,3 +31,5 @@ obj-$(CONFIG_FA_DUMP)		+= rtas-fadump.o
->   
->   obj-$(CONFIG_SUSPEND)		+= suspend.o
->   obj-$(CONFIG_PPC_VAS)		+= vas.o
-> +
-> +obj-$(CONFIG_ARCH_HAS_CC_PLATFORM)	+= cc_platform.o
-> diff --git a/arch/powerpc/platforms/pseries/cc_platform.c b/arch/powerpc/platforms/pseries/cc_platform.c
-> new file mode 100644
-> index 000000000000..e8021af83a19
-> --- /dev/null
-> +++ b/arch/powerpc/platforms/pseries/cc_platform.c
-> @@ -0,0 +1,26 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Confidential Computing Platform Capability checks
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
-> + */
-> +
-> +#include <linux/export.h>
-> +#include <linux/cc_platform.h>
-> +
-> +#include <asm/machdep.h>
-> +#include <asm/svm.h>
-> +
-> +bool cc_platform_has(enum cc_attr attr)
-> +{
+clang will insert code like:
+   mrs     x8, TPIDR_EL0	//default value is zero
+   str     x8, [sp]
+   ldr     x8, [x8, #40]	//access addr 0x40
 
-Please keep this function inline as mem_encrypt_active() is
+instead of the code that accesses __stack_chk_guard to get the
+canary, which will cause the kernel to crash due to 0x40
+address access.
 
+This patch (from android) is used to remind the user that current
+tool chain cannot be used as the "--target" of clang, the user
+should specify an additional "--target" through CLANG_TRIPLE.
 
-> +	switch (attr) {
-> +	case CC_ATTR_MEM_ENCRYPT:
-> +		return is_secure_guest();
-> +
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(cc_platform_has);
-> 
+Signed-off-by: ashimida <ashimida@linux.alibaba.com>
+---
+ Makefile                 | 6 +++++-
+ scripts/clang-android.sh | 4 ++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+ create mode 100755 scripts/clang-android.sh
+
+diff --git a/Makefile b/Makefile
+index 61741e9..09bb314 100644
+--- a/Makefile
++++ b/Makefile
+@@ -586,7 +586,11 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -
+ 
+ ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+ ifneq ($(CROSS_COMPILE),)
+-CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
++CLANG_TRIPLE    ?= $(CROSS_COMPILE)
++CLANG_FLAGS     += --target=$(notdir $(CLANG_TRIPLE:%-=%))
++ifeq ($(shell $(srctree)/scripts/clang-android.sh $(CC) $(CLANG_FLAGS)), y)
++$(error "Clang with Android --target detected. Did you specify CLANG_TRIPLE?")
++endif
+ endif
+ ifeq ($(LLVM_IAS),1)
+ CLANG_FLAGS	+= -integrated-as
+diff --git a/scripts/clang-android.sh b/scripts/clang-android.sh
+new file mode 100755
+index 0000000..9186c4f
+--- /dev/null
++++ b/scripts/clang-android.sh
+@@ -0,0 +1,4 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++$* -dM -E - </dev/null 2>&1 | grep -q __ANDROID__ && echo "y"
+-- 
+2.7.4
+
