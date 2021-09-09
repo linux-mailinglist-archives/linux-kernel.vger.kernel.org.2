@@ -2,179 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE05F405FCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B39405FCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347965AbhIIW7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S1348136AbhIIXBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 19:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347720AbhIIW73 (ORCPT
+        with ESMTP id S244621AbhIIXBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:59:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB07C061574;
-        Thu,  9 Sep 2021 15:58:19 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u16so4791269wrn.5;
-        Thu, 09 Sep 2021 15:58:19 -0700 (PDT)
+        Thu, 9 Sep 2021 19:01:42 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E76C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 16:00:32 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id z4so4790892wrr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 16:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nQIIbOTPU84wYixGqsJc2KwMpuc10heb+NPlS1k9aAw=;
-        b=WGOgkMn0LJB6V4vhSi38sJykkcVGiy/7Aw5L7AFp0YOXz1zBKGR22dfHPrsSXTZmyQ
-         J1h6MLoSuiK24iErqfTWPWQSQxpnDTUkNPzf8II2qHf+qU8G/3Kqj9eQRKC09I9IfwRW
-         oSTRNGFjReMkQnlbiW9TCD4LjJIl1WFzx/iqnAurSS7lBnnGKARsVa5LXpz0XLCl2HOP
-         tx8mGhPg8qnv66n8IrjN4A4HkFIx7Dxw64U911JTbuyNyxL7lX/XroaTtmsaepkHjxnA
-         LzoSQyytyk01clLneIcjL7b3/lYPBPBmJD2Iwhsk/1A8OoPuRpFRhPCqvI3pHQclM35h
-         9YQg==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RqlFooijnqgBWG+n4PheUUBY3UoPu5druSxjQVNP4pc=;
+        b=hOMBnlDSEDR7iy5R+ZtkYVvrSGdlNfwJFf7ywDphMox/DSdk7yBZ3TZqL8p4+ehChs
+         29wgkR4PCK6M+7KqMBIiYHjsEiekpQw4QJDtuRxrMq2o2o9GZTK7aAvHeOuwCXNhHqYn
+         e/lu5rCffUglGlQJwapgXHo/qpQOXfFNMMpHbclyie5P4NHoIM9L8l0TREOligfEq/Gf
+         aGuCG+zkTaQXe3wrBtnQmWoDGz/dsYKIXzqkyGlyldalsICpY9vPu+2v70swutX2q64I
+         PA1ySp+r0lDBNT6Dmnjp7hj4Fu9auQPtpOpk4YMldONK2MfxbY3zFT/xMIQhZdWLdo1F
+         W1jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nQIIbOTPU84wYixGqsJc2KwMpuc10heb+NPlS1k9aAw=;
-        b=7eCvwZTZ9GYZ9wlmdukqoqIhgh/geHr8HMu5sgKwm7KdqxnWkGM8y2SbT26X8j7Hav
-         GfS60ALzgUdpQhSI2F+4kTL5nSaMmM5QcYUhY1cK81Cz55ANlrIdtVx8tJXw7s5dj5tM
-         RRfnBAsWKdWKBbVUbp0l6QOCxLAuKqIvKlQyys/GeJWii+mhXUtZODvbFXoE4jplntSn
-         xgFs6ulOCKuok8Pv9/2FIzsCbKiVtf/o5CoLxrVt8HGsYE9fF9w1U74MDLtaZBOT3NVe
-         Gfvz4CL4BbiIDIipYrrMyMxumDaPpIiEcL2RQKQNtwaOL9U3zHOe4l0V1c+2QjcybLZm
-         wfew==
-X-Gm-Message-State: AOAM5322r59xpmtYYJJCKQYVPHR2K20qkv7MKda4PGp5V0T64IcsYVqC
-        6fOEq2rQL1UbDvc9lSuRN1+hUH+ylKc=
-X-Google-Smtp-Source: ABdhPJwGstaxInfY7Xs108Wuq4drePqRB/+fZwmYQPlln6Yt/M5T6PdPtopcp/tkfGZtYkMlRjfLIw==
-X-Received: by 2002:a05:6000:160c:: with SMTP id u12mr6301918wrb.100.1631228297661;
-        Thu, 09 Sep 2021 15:58:17 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.235.167])
-        by smtp.gmail.com with ESMTPSA id o10sm3360454wrc.16.2021.09.09.15.58.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 15:58:17 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <84c85780-fe43-e95b-312d-b7671c65a7aa@gmail.com>
-Message-ID: <4ba3123b-6437-74b8-8205-1466065b8252@gmail.com>
-Date:   Thu, 9 Sep 2021 23:57:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RqlFooijnqgBWG+n4PheUUBY3UoPu5druSxjQVNP4pc=;
+        b=osjp+AJHspjsiRZzPZic+HWkngxREP3XyjI9brSDYrFvZxscLjLA1BHoTw2Ymry8OE
+         af39IXyDw8UytZA/qWx+JNb5/ZNd9k5hsUutAg17tPaYcA2WcusO+EuAOFUYm+Z6H7yS
+         a0BYh8hRC60POvOONvd28qEycaZC2GhBMzuL2ziAnOekbA0UfIhjc+i//AO0sSbpkTpN
+         yLU5qWS608hlVVkSkWJhReO5DQOdIHrIG9lCiFVD8csWK7URVeDm9b8m1C+g+OmOeCxJ
+         er4IL8pRE6N0lOM0T37hEI93TVwdIXPDyOBgQzqt1KvNvUnH8RlZ1gvRZagr6Svu165n
+         wk1w==
+X-Gm-Message-State: AOAM530GzadI6Cqh7/EZ9u3YBlCjpz0fok+DSbPYJDilW3WLkxC6qIQ9
+        f7Ou1ZYE6ffwqEKmJJpxxQszNg==
+X-Google-Smtp-Source: ABdhPJxWt4e+LY4UUMeuzojh6FRWGxJqFBaTYQ3llxyKt+xTVT0/VVt/URICnQniJcCgsPMT0aDKeA==
+X-Received: by 2002:a5d:6750:: with SMTP id l16mr6265555wrw.174.1631228430980;
+        Thu, 09 Sep 2021 16:00:30 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id x9sm2593289wmi.30.2021.09.09.16.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 16:00:30 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 00:00:28 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     hch@infradead.org, axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        lumip@lumip.de, linux-block@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change
+ detection
+Message-ID: <YTqSDICXcjdrC+vt@equinox>
+References: <YTcILRYw/AKen0X4@infradead.org>
+ <20210909001721.2030-1-phil@philpotter.co.uk>
+ <409876e1-1293-932d-8d37-0211bef07749@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <84c85780-fe43-e95b-312d-b7671c65a7aa@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <409876e1-1293-932d-8d37-0211bef07749@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 11:54 PM, Pavel Begunkov wrote:
-> On 9/9/21 8:37 PM, Linus Torvalds wrote:
->> On Wed, Sep 8, 2021 at 9:24 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>>
->>>         Fixes for io-uring handling of iov_iter reexpands
->>
->> Ugh.
->>
->> I have pulled this, because I understand what it does and I agree it
->> fixes a bug, but it really feels very very hacky and wrong to me.
+On Wed, Sep 08, 2021 at 05:42:30PM -0700, Randy Dunlap wrote:
+> Documentation/process/coding-style.rst says:
 > 
-> Maybe was worded not too clearly, my apologies.
+>   The preferred limit on the length of a single line is 80 columns.
 > 
+> checkpatch only checks lines > 100 columns since that is OK in a few
+> cases, like a long quoted string.
 > 
->> It really smells like io-uring is doing a "iov_iter_revert()" using a
->> number that it pulls incorrectly out of its arse.
-> 
-> It's not invented by io_uring,
-> 
-> filemap.c : generic_file_direct_[write,read]()
-> 
-> do the same thing. Also, the block layer was not re-expanding before
-> ~5.12, so it looks it was possible to trigger a similar thing without
-> io_uring, but I haven't tried to reproduce. Was mentioned in the
-> cover-letter.
-> 
->> So when io-uring does that
->>
->>                 iov_iter_revert(iter, io_size - iov_iter_count(iter));
->>
->> what it *really* wants to do is just basically "iov_iter_reset(iter)".
->>
->> And that's basically what that addition of that "iov_iter_reexpand()"
->> tries to effectively do.
->>
->> Wouldn't it be better to have a function that does exactly that?
->>
->> Alternatively (and I'm cc'ing Jens) is is not possible for the
->> io-uring code to know how many bytes it *actually* used, rather than
->> saying that "ok, the iter originally had X bytes, now it has Y bytes,
->> so it must have used X-Y bytes" which was actively wrong for the case
->> where something ended up truncating the IO for some reason.
->>
->> Because I note that io-uring does that
->>
->>         /* may have left rw->iter inconsistent on -EIOCBQUEUED */
->>         iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
->>
->> in io_resubmit_prep() too, and that you guys missed that it's the
->> exact same issue, and needs that exact same iov_iter_reexpand().
-> 
-> Right. It was covered by v1-v2, which were failing requests with
-> additional fallback in v2 [1], but I dropped in v3 [2] because there
-> is a difference. Namely io_resubmit_prep() might be called deeply down
-> the stack, e.g. in the block layer.
-> 
-> It was intended to get fixed once the first part is merged, and I do
-> believe that was the right approach, because there were certain
-> communication delays. The first version was posted a month ago, but
-> we missed the merged window. It appeared to me that if we get anything
-> more complex 
-
-Dammit, apologies for the teared email.
-
-... It was intended to get fixed once the first part is merged, and I do
-believe that was the right approach, because there were certain
-communication delays. The first version was posted a month ago, but
-we missed the merged window. It appeared to me that if anything
-more complex is posted, it would take another window to get it done.
-
-
-> [1] https://lkml.org/lkml/2021/8/12/620
-> [2] https://lkml.org/lkml/2021/8/23/285
-> 
->>
->> That "req->result" is once again the *original* length, and the above
->> code once again mis-handles the case of "oh, the iov got truncated
->> because of some IO limit".
->>
->> So I've pulled this, but I think it is
->>
->>  (a) ugly nasty
->>
->>  (b) incomplete and misses a case
->>
->> and needs more thought. At the VERY least it needs that
->> iov_iter_reexpand() in io_resubmit_prep() too, I think.
->>
->> I'd like the comments expanded too. In particular that
->>
->>                 /* some cases will consume bytes even on error returns */
->>
->> really should expand on the "some cases" thing, and why such an error
->> isn't fatal buye should be retried asynchronously blindly like this?
->>
->> Because I think _that_ is part of the fundamental issue here - the
->> io_uring code tries to just blindly re-submit the whole thing, and it
->> does it very badly and actually incorrectly.
->>
->> Or am I missing something?
->>
->>            Linus
->>
+> So try to limit line lengths to 80 columns unless there is some
+> other reason not to do that.
 > 
 
--- 
-Pavel Begunkov
+Dear Randy,
+
+Thank you for clarifying this, appreciate it. Will try and bear it in
+mind in future :-)
+
+Regards,
+Phil
