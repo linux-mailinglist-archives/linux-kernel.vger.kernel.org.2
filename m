@@ -2,248 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0AD405BFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0020405BFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbhIIR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241139AbhIIR1K (ORCPT
+        id S240958AbhIIR0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:26:55 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:46064 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234709AbhIIR0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:27:10 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1A3C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:26:00 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id s16so5484253ybe.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:26:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JVEsJeL6D9X5QjMN9PXa+48oXTHXTq43/22SMlTMNnQ=;
-        b=Ec2zxk0h9f8q2blCfeHXIH5cZ4hlMlHiZj5QhBKpj5NmBYcAFw2WgZRE7lwNTIoiwI
-         DTMFgXfdv6qjgBCfzcDJ4P14KFAPdb0gYXy3eappj9n0sMDPOlVrwCkeTG3SABvvUyJS
-         sOqaxgpGWS/Dzkzj31Gs+FliXBqE1gF11xt2d2Zr3yrXnfsxVisesO4vzXujU0OMcguE
-         o5zjKTimyGZ+Y1nUQ8CoO0avHfyTWxDT7IcX1P2p9vYSL2lOFNKT0k5VEc4lvEJcrNzh
-         qw/pc6M/nPaGsnCZLulXhKTqwLZfyzppx0gdnlhKJcVeGC7KTMzOZR7nMtn/0p/03/i2
-         VCmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JVEsJeL6D9X5QjMN9PXa+48oXTHXTq43/22SMlTMNnQ=;
-        b=PRPWZo+th2jTRUwUSQJ9tiG5zfyduIWUKePRPl9QU64l7m2ukaAqAWO3FumXuSraFV
-         LVUcOOxPR08CJKeoizTf3jBTrBi9GPKmyeFZPhVMwGgBzKaugE/5cgk3RMDAINdIyqiy
-         K0Yr2vG1c97tYLbJx05dgBnChIJx8MO3ZLOjLp65ultwccY1IngwBZZ4ywnQWBWCpKAk
-         RDRwKPwFm4D5EbSqjgdFVJJ1tTQ5UZZRyVzWuS1ZMoF9QO/V1r8rpGaCgjamKj4LfWXk
-         gPC0mGZo/HAI+tznYuzSwidVzgeVR6+5AyLQvmtR7tEfWLs08pJvbYbmXKQ1v3JLThxD
-         d1/g==
-X-Gm-Message-State: AOAM533r3esctVBY8kIge8R09M1ejqh8gGaXXTeY9cVen1uKEiJKnynd
-        zv3cignx+zVy3+YZg+GBknobqXetfXdbR4sVBHE6xw==
-X-Google-Smtp-Source: ABdhPJwT4+E0jXvyHQvIQj+dAZBZB5xhW0l0CQVAti/qraDJbPO3HFvhBDZDVEFYAMJoW1YgJI/UNcRS2Ep/CO/KpPU=
-X-Received: by 2002:a25:21c5:: with SMTP id h188mr4939725ybh.23.1631208359719;
- Thu, 09 Sep 2021 10:25:59 -0700 (PDT)
+        Thu, 9 Sep 2021 13:26:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1631208342; x=1633800342;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jbbetMc7CUD8n/rThyOnLoq5J7Z1RxGeMpNl5X/TCdg=;
+        b=bP103GSntSORqfBR1JGFLA7wWyQcp3dNlF1nuvPBxSKWa+4iNE/g272sTVoRrwkQ
+        5+55B7dDRmoXZwqOsXw4hACa/ReZEYNVCI0RKUhankfN9Z7U4worzdBrfsWUiGV8
+        5WEyTUx96B1yq5ToU2obJk7I0lXKZEjb3KtI/iK4sl8=;
+X-AuditID: c39127d2-c63ec70000001d24-c6-613a4396dfa0
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id E1.31.07460.6934A316; Thu,  9 Sep 2021 19:25:42 +0200 (CEST)
+Received: from lws-ybas.phytec.de ([172.16.21.122])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021090919254195-1638982 ;
+          Thu, 9 Sep 2021 19:25:41 +0200 
+From:   Yunus Bas <y.bas@phytec.de>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     festevam@gmail.com, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ARM: dts: imx6: phycore-som: Disable micro-SD write protection
+Date:   Thu, 9 Sep 2021 19:25:55 +0200
+Message-Id: <20210909172555.435430-1-y.bas@phytec.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-15-rananta@google.com>
- <YTmce6Xn+ymngA+r@google.com> <20210909133421.rdkueb627glve6uz@gator>
-In-Reply-To: <20210909133421.rdkueb627glve6uz@gator>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 10:25:48 -0700
-Message-ID: <CAJHc60zMUS42+s9GG0qNeZeHOSC23yiUFje1Tz3PwZJM_fmfKw@mail.gmail.com>
-Subject: Re: [PATCH v4 14/18] KVM: arm64: selftests: Add host support for vGIC
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 09.09.2021 19:25:42,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 09.09.2021 19:25:42
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrILMWRmVeSWpSXmKPExsWyRoCBS3eas1WiwY/VAhbzj5xjtXh41d9i
+        0+NrrBaXd81hs2jde4Td4u/2TSwWL7aIO7B77Jx1l91j06pONo/NS+o9+v8aeHzeJBfAGsVl
+        k5Kak1mWWqRvl8CVsfLmcaaC5ZwV93ZuZ29g/MfexcjBISFgInHgaWEXIxeHkMA2RonNWyex
+        dTFyAjnnGSU+3bcDsdkEFCXO337LCmKLCNRK7N3+nB3EZhawkVj4t5ERZI6wgL/E0dM8IGEW
+        ARWJjfd2sYDYvAKmEndOnACzJQTkJY786mSGiAtKnJz5hAVkr4TAFUaJn9+a2CGKhCROLz7L
+        DDFfW2LZwtfMExj5ZiHpmYUktYCRaRWjUG5mcnZqUWa2XkFGZUlqsl5K6iZGYDAenqh+aQdj
+        3xyPQ4xMHIyHGCU4mJVEeE9ssEwU4k1JrKxKLcqPLyrNSS0+xCjNwaIkznu/hylRSCA9sSQ1
+        OzW1ILUIJsvEwSnVwMh2XV9K7QrLfbmSFLnFV/7du7j+nqRV4K+jrWc4J97IVOBzc3+/xkhB
+        xqwjpXVC796Pf2U9aj0FFyx98GZtq7+AxnQTQYPXua5r17+aeVbzREGwT1qw9+9LU3c3lyxZ
+        EpJaeJthybOX23vfCE2Ti/gRUbdIJJ4161u77JzfobwFZv9+b8ySN1diKc5INNRiLipOBAD2
+        Pqa3NAIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:34 AM Andrew Jones <drjones@redhat.com> wrote:
->
-> On Thu, Sep 09, 2021 at 05:32:43AM +0000, Oliver Upton wrote:
-> > Hi Raghu,
-> >
-> > On Thu, Sep 09, 2021 at 01:38:14AM +0000, Raghavendra Rao Ananta wrote:
-> > > Implement a simple library to perform vGIC-v3 setup
-> > > from a host point of view. This includes creating a
-> > > vGIC device, setting up distributor and redistributor
-> > > attributes, and mapping the guest physical addresses.
-> > >
-> > > The definition of REDIST_REGION_ATTR_ADDR is taken
-> > > from aarch64/vgic_init test.
-> > >
-> >
-> > Consider dropping the macro from vgic_init.c and have it just include
-> > vgic.h
->
-> Yes, I agree 18/18 should be squashed into this one.
->
-> >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > ---
-> > >  tools/testing/selftests/kvm/Makefile          |  2 +-
-> > >  .../selftests/kvm/include/aarch64/vgic.h      | 20 +++++++
-> > >  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 60 +++++++++++++++++++
-> > >  3 files changed, 81 insertions(+), 1 deletion(-)
-> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
-> > >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > > index 5476a8ddef60..8342f65c1d96 100644
-> > > --- a/tools/testing/selftests/kvm/Makefile
-> > > +++ b/tools/testing/selftests/kvm/Makefile
-> > > @@ -35,7 +35,7 @@ endif
-> > >
-> > >  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
-> > >  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> > > -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
-> > > +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
-> > >  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
-> > >
-> > >  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> > > diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> > > new file mode 100644
-> > > index 000000000000..3a776af958a0
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> > > @@ -0,0 +1,20 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +/*
-> > > + * ARM Generic Interrupt Controller (GIC) host specific defines
-> > > + */
-> > > +
-> > > +#ifndef SELFTEST_KVM_VGIC_H
-> > > +#define SELFTEST_KVM_VGIC_H
-> > > +
-> > > +#include <linux/kvm.h>
-> > > +
-> > > +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
-> > > +   (((uint64_t)(count) << 52) | \
-> > > +   ((uint64_t)((base) >> 16) << 16) | \
-> > > +   ((uint64_t)(flags) << 12) | \
-> > > +   index)
-> > > +
-> > > +int vgic_v3_setup(struct kvm_vm *vm,
-> > > +                           uint64_t gicd_base_gpa, uint64_t gicr_base_gpa);
-> > > +
-> > > +#endif /* SELFTEST_KVM_VGIC_H */
-> > > diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> > > new file mode 100644
-> > > index 000000000000..2318912ab134
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> > > @@ -0,0 +1,60 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * ARM Generic Interrupt Controller (GIC) v3 host support
-> > > + */
-> > > +
-> > > +#include <linux/kvm.h>
-> > > +#include <linux/sizes.h>
-> > > +
-> > > +#include "kvm_util.h"
-> > > +#include "vgic.h"
-> > > +
-> > > +#define VGIC_V3_GICD_SZ            (SZ_64K)
-> > > +#define VGIC_V3_GICR_SZ            (2 * SZ_64K)
-> >
-> > These values are UAPI, consider dropping them in favor of the
-> > definitions from asm/kvm.h
->
-> Yes, please.
->
-Huh, I wasn't aware of this. Thanks! Will drop.
-> >
-> > > +
-> > > +/*
-> > > + * vGIC-v3 default host setup
-> > > + *
-> > > + * Input args:
-> > > + * vm - KVM VM
-> > > + * gicd_base_gpa - Guest Physical Address of the Distributor region
-> > > + * gicr_base_gpa - Guest Physical Address of the Redistributor region
-> > > + *
-> > > + * Output args: None
-> > > + *
-> > > + * Return: GIC file-descriptor or negative error code upon failure
-> > > + *
-> > > + * The function creates a vGIC-v3 device and maps the distributor and
-> > > + * redistributor regions of the guest. Since it depends on the number of
-> > > + * vCPUs for the VM, it must be called after all the vCPUs have been created.
-> >
-> > You could avoid the ordering dependency by explicitly taking nr_vcpus as
-> > an arg. It would also avoid the need for 12/18.
->
-> All the vcpus need to be created prior to calling
-> KVM_DEV_ARM_VGIC_CTRL_INIT, so even though I don't disagree with
-> simply passing nr_vcpus to this function, we should still assert
-> if the VM's idea of the number doesn't match. But, this is a lib
-> file, so there's no reason not to do
->
-Okay, I'll include it back in the args.
+The micro-SD card doesn't feature a write-protect pin. Set the
+corresponding property in the devicetree to handle this behavior
+correctly and suppress driver warnings.
 
-> #include "../kvm_util_internal.h"
->
-> and just access the vcpu list to get the count or, if we add a
-> new internal nr_vcpus member, access it directly. IOW, so far
-> I don't believe we need vm_get_nr_vcpus().
->
-Sure, I'll get rid of it.
+Signed-off-by: Yunus Bas <y.bas@phytec.de>
+---
+ arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi | 1 +
+ arch/arm/boot/dts/imx6ul-phytec-segin.dtsi | 1 +
+ 2 files changed, 2 insertions(+)
 
-Regards,
-Raghavendra
-> >
-> > Also note the required alignment on the GPA arguments you're taking.
-> >
-> > > + */
-> > > +int vgic_v3_setup(struct kvm_vm *vm,
-> > > +           uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
-> > > +{
-> > > +   uint64_t redist_attr;
-> > > +   int gic_fd, nr_vcpus;
-> > > +   unsigned int nr_gic_pages;
-> > > +
-> > > +   nr_vcpus = vm_get_nr_vcpus(vm);
-> > > +   TEST_ASSERT(nr_vcpus > 0, "Invalid number of CPUs: %u\n", nr_vcpus);
-> > > +
-> > > +   /* Distributor setup */
-> > > +   gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> > > +                   KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
-> > > +   nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm), VGIC_V3_GICD_SZ);
-> > > +   virt_map(vm, gicd_base_gpa, gicd_base_gpa,  nr_gic_pages);
-> > > +
-> > > +   /* Redistributor setup */
-> > > +   redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
-> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> > > +                   KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
-> > > +   nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm),
-> > > +                                           VGIC_V3_GICR_SZ * nr_vcpus);
-> > > +   virt_map(vm, gicr_base_gpa, gicr_base_gpa,  nr_gic_pages);
-> > > +
-> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-> > > +                           KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-> > > +
-> > > +   return gic_fd;
-> > > +}
-> > > --
-> > > 2.33.0.153.gba50c8fa24-goog
-> > >
-> >
->
-> Thanks,
-> drew
->
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi b/arch/arm/boot/dts=
+/imx6qdl-phytec-mira.dtsi
+index 019938562aa9..0873f53ea275 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi
+@@ -256,6 +256,7 @@ &usdhc1 {
+ 	pinctrl-0 =3D <&pinctrl=5Fusdhc1>;
+ 	cd-gpios =3D <&gpio6 31 GPIO=5FACTIVE=5FLOW>;
+ 	no-1-8-v;
++	disable-wp;
+ 	status =3D "disabled";
+ };
+=20
+diff --git a/arch/arm/boot/dts/imx6ul-phytec-segin.dtsi b/arch/arm/boot/dts=
+/imx6ul-phytec-segin.dtsi
+index 95e4080dd0a6..0d4ba9494cf2 100644
+--- a/arch/arm/boot/dts/imx6ul-phytec-segin.dtsi
++++ b/arch/arm/boot/dts/imx6ul-phytec-segin.dtsi
+@@ -191,6 +191,7 @@ &usdhc1 {
+ 	no-1-8-v;
+ 	keep-power-in-suspend;
+ 	wakeup-source;
++	disable-wp;
+ 	status =3D "disabled";
+ };
+=20
+--=20
+2.33.0
+
