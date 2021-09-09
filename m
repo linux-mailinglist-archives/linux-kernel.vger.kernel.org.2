@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267E7404FA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E44E4051FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345903AbhIIMV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:21:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52734 "EHLO mail.kernel.org"
+        id S1354879AbhIIMjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348555AbhIIMMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA41661A4E;
-        Thu,  9 Sep 2021 11:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631188132;
-        bh=/QI+BRvDB+1wIbje5a8x8kgwfLi5dRyIuCwEUMJ67Uc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0rrCGvHzXq4q4P3wRbIPfFdZj9aoF9xeWh+QVHYOtkYUMxcQckD/vmyNkpTr8OuMG
-         33EhjEWIYevpzewX5QQtfFPAQYO0NpH30f/XC4si7SVH+pMmivhYpl2AYPpkA2z4FD
-         Zybdev5tXrSDqGn3sLsrHYRp1loN5/lRdWq4zVQ8=
-Date:   Thu, 9 Sep 2021 13:48:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Phillip Potter <phil@philpotter.co.uk>,
-        kernel test robot <lkp@intel.com>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH AUTOSEL 5.14 044/252] staging: rtl8188eu: remove
- rtw_wx_set_rate handler function
-Message-ID: <YTn0ofrVzKH/IuyV@kroah.com>
-References: <20210909114106.141462-1-sashal@kernel.org>
- <20210909114106.141462-44-sashal@kernel.org>
+        id S1353555AbhIIM1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:27:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E7E6135A;
+        Thu,  9 Sep 2021 11:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631188314;
+        bh=JU4iJc6oY871eBLmLglTyk8lAnK2nHC5KV9FVXhDFpo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tYndqQ8bjNQQBgaC54Z7B/Px8GzOFJ62iLDLmYrlskO4iR6OK5zhsUPk5PaljWD01
+         vw3fa8RomJWZzFJIoIB47vW7WzYea4t2ecxJHxKD59Z2mQWJwnS5H3tgDeTbmhtP0v
+         gv8pdZILbzlJ1O+P4F7reyYyTwJfjNoDb8A4c9lZsBNkf5Uq1U4iC/1cF0g0Jhv5E0
+         pmZ1wVIlYfQ4IcQPHXCeou1HkOR5o0c/YjdyPt0+G97jLz354mH1pioCu2A8JJeQwY
+         5tcSBPjUwapUVGlkbrEWx5H6FpDpeCPKEI4fkSDyso0lb/ixWMbOValfPtBUPp/FKP
+         o2V8zndVGQAbw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-staging@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.10 028/176] staging: board: Fix uninitialized spinlock when attaching genpd
+Date:   Thu,  9 Sep 2021 07:48:50 -0400
+Message-Id: <20210909115118.146181-28-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
+References: <20210909115118.146181-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909114106.141462-44-sashal@kernel.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 07:37:38AM -0400, Sasha Levin wrote:
-> From: Phillip Potter <phil@philpotter.co.uk>
-> 
-> [ Upstream commit ac5951a6e3d50cfa861ea83baa2ec15d994389cb ]
-> 
-> Remove rtw_wx_set_rate handler function, which currently handles the
-> SIOCSIWRATE wext ioctl. This function (although containing a lot of
-> code) set nothing outside its own local variables, and did nothing other
-> than call a now removed debugging statement repeatedly. Removing it and
-> leaving its associated entry in rtw_handlers as NULL is therefore the
-> better option. Removing this function also fixes a kernel test robot
-> warning.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> Link: https://lore.kernel.org/r/20210625191658.1299-1-phil@philpotter.co.uk
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 75 -------------------
->  1 file changed, 75 deletions(-)
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-This whole driver is now gone in 5.15-rc1, so no need for doing anything
-like this for older kernels.  Please drop this patch from all branches.
+[ Upstream commit df00609821bf17f50a75a446266d19adb8339d84 ]
 
-thanks,
+On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
 
-greg k-h
+    BUG: spinlock bad magic on CPU#0, swapper/1
+     lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+    CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
+    Hardware name: Generic R8A7740 (Flattened Device Tree)
+    [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
+    [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
+    [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
+    [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
+    [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
+    [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
+    [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
+
+of_genpd_add_device() is called before platform_device_register(), as it
+needs to attach the genpd before the device is probed.  But the spinlock
+is only initialized when the device is registered.
+
+Fix this by open-coding the spinlock initialization, cfr.
+device_pm_init_common() in the internal drivers/base code, and in the
+SuperH early platform code.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/57783ece7ddae55f2bda2f59f452180bff744ea0.1626257398.git.geert+renesas@glider.be
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/staging/board/board.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
+index cb6feb34dd40..f980af037345 100644
+--- a/drivers/staging/board/board.c
++++ b/drivers/staging/board/board.c
+@@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
+ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 					const char *domain)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct of_phandle_args pd_args;
+ 	struct device_node *np;
+ 
+@@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 	pd_args.np = np;
+ 	pd_args.args_count = 0;
+ 
+-	return of_genpd_add_device(&pd_args, &pdev->dev);
++	/* Initialization similar to device_pm_init_common() */
++	spin_lock_init(&dev->power.lock);
++	dev->power.early_init = true;
++
++	return of_genpd_add_device(&pd_args, dev);
+ }
+ #else
+ static inline int board_staging_add_dev_domain(struct platform_device *pdev,
+-- 
+2.30.2
+
