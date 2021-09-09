@@ -2,99 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0E9405AE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14C2405B02
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbhIIQcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbhIIQcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:32:15 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752C3C061574;
-        Thu,  9 Sep 2021 09:31:05 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id q11so3410029wrr.9;
-        Thu, 09 Sep 2021 09:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u+0jFX+c9As4mGNIOMW4VKBlVBkjOIBw3KEyFedYOaI=;
-        b=bbFcCygdOWBh3I3p1p2h3+WeDK8qco4C6NmJcfldjivlawaHz7aMOiMt8tR6Ty5xYr
-         vFIMdU+u7QOzp2X6Z7EGAQ/SFyr7BKtd5WYfUkWSQ2Ava5SM/tHdgE5fRjgJJxib5ke4
-         9QTWO2YtVY+iq1ykq9E9y12HG20+qdvptEv8mRNmSerDF70CMHafid7rHTLd9JDZOZXB
-         6poQ3PgFmrZnaIbAes1l1NiiSYSNzbSLSNRwGPZXLcF4SeIH/Gfp1VUnBYI1HTlW9398
-         R1Bc3c3BGH3fmESVlZvXOO+9UdyQJ6Kh+pj1aettYb/7OahVLOuhR2ooRP2zky/oQLsZ
-         TotA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u+0jFX+c9As4mGNIOMW4VKBlVBkjOIBw3KEyFedYOaI=;
-        b=tmzxHUFMeTQ9n8BBT90xLHPWbhEC3wao2cBeNLdOp9Ti+yXh757e+BNlVm0ud8bIYW
-         nZryyeMTNNUURG3fANgoZlxm62xw4opNkrhDmQPxgce60ngYaWQD4L7/9WjtYY6+5vPh
-         fcL3IBs71k6+F0kgCZk1V93QJddPDhbuutpE3c3R7MVmmnRUZHKsMv3m7Vpp+WAlqPLk
-         QmNce2wG5b2KT9azw7vq/YFIIsFDwVRL9vJNVLLE5g9t8cdyAtvGIodpu/Mr/e1TqE10
-         VMap9fS4L9EGgutIAaaehjsD6K/2/UZCnzblVp9f0ljlJkofX56bquR8H2y8mRjDh/H8
-         iB5g==
-X-Gm-Message-State: AOAM530V/VPYfQI559rguYD34v7oQHDG+yhNl/4tlti1CjE/uEqFXpWA
-        U7lOfFFFXvn5eVqSerpctykZlEuIvy9kDqfSCZM=
-X-Google-Smtp-Source: ABdhPJziNKyewTTtSu5pziJeaODH5nE8F9cT5n7HbZ3pWAcwqx9wKwmPdZrhzS9wqwHAw5W+ht5QMcC2TK8ie1veLgk=
-X-Received: by 2002:a5d:4488:: with SMTP id j8mr4732581wrq.260.1631205063988;
- Thu, 09 Sep 2021 09:31:03 -0700 (PDT)
+        id S237039AbhIIQjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:39:25 -0400
+Received: from mout.gmx.net ([212.227.17.20]:40991 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232192AbhIIQjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 12:39:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631205478;
+        bh=AcoWfISMmSRxRwrW9cBuZAkdzhm3K1/Gv0P6x1L+XXU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=jCP1dWITibONQMgaY41e8PfDw8mzAH7IBZlHdMQrWL6ohKWFY396nfFREtuPh94pX
+         TAr2SHVQ7lZ+ffxRl5x6pNrUVkwqUBULGpSc5We3BOKIdqZHfFSYpYykPTbXL4EBTe
+         UNT5Ks0z5jDT+Bqy2KqabmTxSo62fYZaBmukI3TQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUowb-1mXTqZ2Rrl-00QiOL; Thu, 09
+ Sep 2021 18:37:58 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+ <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+ <20210909114248.aijujvl7xypkh7qe@skbuf>
+ <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+ <20210909154734.ujfnzu6omcjuch2a@skbuf>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
+Date:   Thu, 9 Sep 2021 18:37:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <i-XmBd_5J3_d8cdm-IT6Ery2kHN0FPZCX968aU5idvxQxNlvDJguLLThtF2NF15LF8gGsH4uI2w0s0CL_39KGpzoGpuCgcz2_-4Wjf3AYEM=@emersion.fr>
-In-Reply-To: <i-XmBd_5J3_d8cdm-IT6Ery2kHN0FPZCX968aU5idvxQxNlvDJguLLThtF2NF15LF8gGsH4uI2w0s0CL_39KGpzoGpuCgcz2_-4Wjf3AYEM=@emersion.fr>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 9 Sep 2021 09:35:31 -0700
-Message-ID: <CAF6AEGuD2bnFpmSWtGxU5+AFj1HVKtnOZmLKRr-pDVbLn0nPVw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] dma-fence: Deadline awareness
-To:     Simon Ser <contact@emersion.fr>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Luben Tuikov <luben.tuikov@amd.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Steven Price <steven.price@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210909154734.ujfnzu6omcjuch2a@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1Ru23UaOAWy66EVAPf/EG78zT/yDgW/qqZe+D04/NG5EjM+hhfb
+ 8Uf8mADoUCPevy2o3gRRQragmd7OLCUME2bdom78LbVsTYHuISVO7Zfb2lF6ZzbOheQ+yXB
+ Rdpexglw/TpaXRBn5nS5voda6FOa7ZdOAJOlURynxql2SYPajZ0ql5Pd3t0nHLxGfG31TxN
+ sQ9YZbqP7xSmE5NWN4v7w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Rveiws+0Ppo=:4e808q+04uSjabpxw7g9ob
+ Lmwke7B7eahHpLF8qQbdlrwdD70kiDI/RwfkqMJqybYL0YRwMAPRVXkPO4o8vHEBKddQ7QxBI
+ m1SHcBWVaQgAN33dDFDpo9afUuyj9oPuzhK+dvrWViYXiKAbe5TOh/0B2K34YDe5cN6JN+ouN
+ 1sIPr0o7MKO1w9aZYsK3bOuKaAjX+C7OFq/hy6h5tAO5YydnrIau5E8dpu0PAwkEQCgWUV1Ly
+ MnXtLJ/ebuF0Fy8npIgrcv6ane53ZFYcM0n8jW7FM50g+6wMvYt9D/RlNTY7X0u+7UnJT6M8n
+ RNoHAWwLhpL2qo2lt0tyz+4B7SVWBGNg8M3OGKCa66OlCQNDhPEHAVmUIiMWJgPo2aZmt3Cp/
+ jT1wUqYHw13HBJeh9cBQM8sR2J6QfYI6FRZt3BhSO2tvYaFNQPuT3nhMyDXta3KW/1Gtbbs9h
+ gtBh1sdZ7jZG1Gqeqnkh94qhuIdpiZF0LJkzaf2G+u5XPJ1TkbyqVsZFJjjBTWp5FTblkaokk
+ 2lTe+QRg18a852sShXmlFmVX3C9/SJQVnV+EGfoVTMDsyCrRz56gCxt1TzQoKJpCLKuYB8YeV
+ MOQOF1bpmD9uhLMKwBdFTBzzzBKwD31R0abIfYX43yE41ke/rrAgZiotBitJrFvgAu7ZdCG0V
+ ErVU5SG3gYEazE0PZ6wVqBrVSThCv62/PkR3+FjU6rJZaArBIpEJBFiXiNcN2tSO15ldH0iEg
+ voL68huEY601OPjdoYQax4EA/rNKoUk4vegiz3O7kG2t0rpXDP32pecQi1Bv38uNKIEAvFFWw
+ DOxMs8xosW4hEPfu6kat6FSPoFzR3klZRy9vJ31pqWgVregqDxxDh5gAzuxCt572nng0eLx2b
+ +AzhAo3+RrLLR8S/LwslkpB+j8rWtyaumhrq62U/tIQOgFKG1EciDwkzMwNxu9bpRRfowmQCO
+ qCapUbu6q81pH4IFnqFTMmTUawU33BPtVWxCcRgvgK30ub2BO4jat3i9A1gIA8lw/El66GJ8c
+ 1L+ToMLj1BOTqChzK68LVOH4DgWLCf5xuGRFrb9yI0Yu+mvme8urQ5/tmReLJojbnoR0QcB+q
+ zpdanEXOKqUasg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 9:16 AM Simon Ser <contact@emersion.fr> wrote:
+On 09.09.21 at 17:47, Vladimir Oltean wrote:
+> On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
+>>> Do you see similar things on your 5.10 kernel?
+>>
+>> For the master device is see
+>>
+>> lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consum=
+er:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:=
+spi3.0
 >
-> Out of curiosity, would it be reasonable to allow user-space (more
-> precisely, the compositor) to set the deadline via an IOCTL without
-> actually performing an atomic commit with the FB?
+> So this is the worst of the worst, we have a device link but it doesn't =
+help.
 >
-> Some compositors might want to wait themselves for FB fence completions
-> to ensure a client doesn't block the whole desktop (by submitting a
-> very costly rendering job). In this case it would make sense for the
-> compositor to indicate that it intends to display the buffer on next
-> vblank if it's ready by that point, without queueing a page-flip yet.
+> Where the device link helps is here:
+>
+> __device_release_driver
+> 	while (device_links_busy(dev))
+> 		device_links_unbind_consumers(dev);
+>
+> but during dev_shutdown, device_links_unbind_consumers does not get call=
+ed
+> (actually I am not even sure whether it should).
+>
+> I've reproduced your issue by making this very simple change:
+>
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/n=
+et/ethernet/freescale/enetc/enetc_pf.c
+> index 60d94e0a07d6..ec00f34cac47 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> @@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver =3D {
+>  	.id_table =3D enetc_pf_id_table,
+>  	.probe =3D enetc_pf_probe,
+>  	.remove =3D enetc_pf_remove,
+> +	.shutdown =3D enetc_pf_remove,
+>  #ifdef CONFIG_PCI_IOV
+>  	.sriov_configure =3D enetc_sriov_configure,
+>  #endif
+>
+> on my DSA master driver. This is what the genet driver has "special".
+>
 
-Yes, I think it would.. and "dma-buf/sync_file: Add SET_DEADLINE
-ioctl" adds such an ioctl.. just for the benefit of igt tests at this
-point, but the thought was it would be also used by compositors that
-are doing such frame scheduling.  Ofc danvet is a bit grumpy that
-there isn't a more real (than igt) userspace for the ioctl yet ;-)
+Ah, that is interesting.
 
-BR,
--R
+> I was led into grave error by Documentation/driver-api/device_link.rst,
+> which I've based my patch on, where it clearly says that device links
+> are supposed to help with shutdown ordering (how?!).
+>
+> So the question is, why did my DSA trees get torn down on shutdown?
+> Basically the short answer is that my SPI controller driver does
+> implement .shutdown, and calls the same code path as the .remove code,
+> which calls spi_unregister_controller which removes all SPI children..
+>
+> When I added this device link, one of the main objectives was to not
+> modify all DSA drivers. I was certain based on the documentation that
+> device links would help, now I'm not so sure anymore.
+>
+> So what happens is that the DSA master attempts to unregister its net
+> device on .shutdown, but DSA does not implement .shutdown, so it just
+> sits there holding a reference (supposedly via dev_hold, but where from?=
+!)
+> to the master, which makes netdev_wait_allrefs to wait and wait.
+>
+
+Right, that was also my conclusion.
+
+> I need more time for the denial phase to pass, and to understand what
+> can actually be done. I will also be away from the keyboard for the next
+> few days, so it might take a while. Your patches obviously offer a
+> solution only for KSZ switches, we need something more general. If I
+> understand your solution, it works not by virtue of there being any
+> shutdown ordering guarantee at all, but simply due to the fact that
+> DSA's .shutdown hook gets called eventually, and the reference to the
+> master gets freed eventually, which unblocks the unregister_netdevice
+> call from the master.
+
+Well actually the SPI shutdown hook gets called which then calls ksz9477_s=
+hutdown
+(formerly ksz9477_reset_switch) which then shuts down the switch by
+stopping the worker thread and tearing down the DSA tree (via dsa_tree_shu=
+tdown()).
+
+While it is right that the patch series only fixes the KSZ case for now, t=
+he idea was that
+other drivers could use a similar approach in by calling the new function =
+dsa_tree_shutdown()
+in their shutdown handler to make sure that all refs to the master device =
+are released.
+
+
+Regards,
+Lino
