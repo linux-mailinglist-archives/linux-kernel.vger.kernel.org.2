@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CA84041F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 01:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310604041FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345334AbhIHXxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 19:53:42 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57307 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235669AbhIHXxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:53:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631145147;
-        bh=IoFdmKYfC04bEaRzyS8XgQ8xqNh9Bpk3DtROGNZjTNY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ks77Rf8d1vaMqgo2ptTBsXPzRNkZRfi4M0h65+SNxgVfdUj44KMBlhxV8uasPdFSV
-         awBTQA3r/W6664usHLNQtBI/BSntsJvH9RymBpY7stwwwL/anuKobGPQaSaJbFvnNU
-         liKjiGs3BSoGk6xDAuoSGUAT9hqoglbw1mg3gIRb5icpKpEc1SyrMRjAcbRsAnmVYg
-         JLIWIl4hS6GNfZXvK2mGQytaWpBWSe1eLCFni/xkiLUfaNakcQv+tw/Sj+tGOYxB8l
-         1bh+I5T00PETqOgkV1P8mOLbbfC+Jl1i9skIESp6Z+eSqUH/WTSVBmckBhUWDF8hkb
-         fdREB3tXo7nBQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H4f7t16Fnz9sW8;
-        Thu,  9 Sep 2021 09:52:26 +1000 (AEST)
-Date:   Thu, 9 Sep 2021 09:52:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greentime Hu <green.hu@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: linux-next: manual merge of the nds32 tree with Linus' tree
-Message-ID: <20210909095224.43f23be0@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6_IS6Y+aUTXzGI2m+woLB_v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1347272AbhIIACy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236059AbhIIACx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 20:02:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C8DC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:01:44 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso61428ybb.14
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=o8PDKzqZH5YnDx25CbdHIwEItPJ7rMvUJBtgP5mFYfg=;
+        b=FBFtm342q8giAehQf40xGgLSuw3lM1gsmX52JN146g5aDYG+WU0u7zAP026p6L3vZN
+         TKzeme4N56M2tzwWC6e3PgXW7e9e8G23Q5hx76eEOCVNcdb+IQUHLQGa60ObgmrnSZ6T
+         5mu2SWGpFVW0xCORrpU/KuWPVJVGS9uEtF9zmvUSuVpm00p5FB2bPOcZpLBLMfkjhjTX
+         HhUdycqqcXrNl24bmrWcOaTwRYFr5O1QXYwiN0BpeXHGhldehaSZ9b3UHgYj+NrT5hCo
+         mBGy2jc+xFbO3G3CK1hDX8C03catENyq9nSsADmQGkKEtmB7kjxlaI4Ml6eI8Oiqio2c
+         kr7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=o8PDKzqZH5YnDx25CbdHIwEItPJ7rMvUJBtgP5mFYfg=;
+        b=vN7x6teG9FCGSvu7NafpxxuioDu91oE95ASdTLGdQNhiHKvhfiXWgJDYev0KjuyywX
+         ohm2whcbPulznmwVmyqIA/E9Hmuv3NBwitWCgsKe6QAUOBsyOZViHuoalRwlSy7lTArF
+         wGR/ALDnOx/K2ovI9iKzIR9+nZp3aaizRJNj6vv9Rqhrg2eK0osqTR+9kUJa7ldQKaNP
+         YvUmfoF/z6+eiVh6KLSJSvkkIU0lwYYpvGjTNd66MSTwEAhSG0+7neHaP9IC8WKQWKr0
+         aTa13kpchzWqLTytCO6ekZ2DY7zz8var3smfc29OHq/A0Qywmr9Qw0qfwoZRSWXzAbyt
+         WxOg==
+X-Gm-Message-State: AOAM532HJ3PSebdGNmTb9l+K8mbiu+hU6Zvx0imkVHuLGkaqPOhO3MvJ
+        x4EXEFToenw0HSTielRECrMSKBRuQ1mpJiOVm4s=
+X-Google-Smtp-Source: ABdhPJwwkdww7Py5G40Xq57UJ6i+9ju3eG7gPNOGMVYD3lJJ85Sv7neRHNIbGG/yXsoWkR4T/pG+zWigQ7SoKaH6eek=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:73d2:a834:c835:2de6])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:47c4:: with SMTP id
+ u187mr82103yba.225.1631145703826; Wed, 08 Sep 2021 17:01:43 -0700 (PDT)
+Date:   Wed,  8 Sep 2021 17:01:41 -0700
+In-Reply-To: <20210908234751.GA8052@kernel.org>
+Message-Id: <20210909000141.3136241-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210908234751.GA8052@kernel.org>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+Subject: Re: [GIT PULL] Compiler Attributes for v5.15-rc1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     ojeda@kernel.org
+Cc:     elver@google.com, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6_IS6Y+aUTXzGI2m+woLB_v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-Today's linux-next merge of the nds32 tree got a conflict in:
-
-  arch/nds32/Kconfig
-
-between commit:
-
-  4aae683f1327 ("tracing: Refactor TRACE_IRQFLAGS_SUPPORT in Kconfig")
-
-from Linus' tree and commit:
-
-  36b9b1975393 ("nds32: add a Kconfig symbol for LOCKDEP_SUPPORT")
-
-from the nds32 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/nds32/Kconfig
-index aea26e739543,a20b42d4bdb6..000000000000
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@@ -63,6 -63,12 +62,9 @@@ config GENERIC_LOCKBREA
-  	def_bool y
-  	depends on PREEMPTION
- =20
-+ config LOCKDEP_SUPPORT
-+ 	def_bool y
-+=20
- -config TRACE_IRQFLAGS_SUPPORT
- -	def_bool y
- -
-  config STACKTRACE_SUPPORT
-  	def_bool y
- =20
-
---Sig_/6_IS6Y+aUTXzGI2m+woLB_v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE5TLgACgkQAVBC80lX
-0GxWZQgAkN7/nNmAZqM7560cYf2YSzqdUG3kQZEBFCrrp+PsVqbsB+wwDIl8TjTR
-4Gxzy05p1U/7obEGYl/9BO0IKcLoFI1N5RVgsg+kpwYw+ROknyxnxnh8MIuoMZjf
-DgX8HpfM2u0gzuDa9Mk/ZCFEuETsB9fBRKeK9ZLFhqHKL61AxQz9+r1JKU+G4b6q
-f23KMAwcTNeTTHqL7PPumET2YRZMGpXmKAlBD7Mo/xFZaUYSxjIMHAkkxDDAwklx
-v75iQTMpiEMYny9qGmT7CPgaSEFmpJ4P3c9dNwglNLfS9b9dEypG+MsYZLyf7jmJ
-VK07Rqk4Hdn4jQ3z8wrpsyQc/JIujg==
-=iAXx
------END PGP SIGNATURE-----
-
---Sig_/6_IS6Y+aUTXzGI2m+woLB_v--
+What about
+https://lore.kernel.org/lkml/20210802202326.1817503-1-ndesaulniers@google.com/
+(modified to mention clang-14 rather than clang-13)?
