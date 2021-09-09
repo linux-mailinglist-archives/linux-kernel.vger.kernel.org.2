@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9C64044E6
+	by mail.lfdr.de (Postfix) with ESMTP id BD3384044E7
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350688AbhIIFUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:20:36 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:51920 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350652AbhIIFUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:20:33 -0400
-Received: by mail-il1-f200.google.com with SMTP id r5-20020a92d985000000b002246fb2807cso1000351iln.18
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:19:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=f3hT4JE/CvcilmtBix+GJkLPDC0aJEDxVIYiUI/wdA8=;
-        b=QDVbpOdnkCbWeIAWZRNoIh1ofBBUlUWxfY95JLJxvK6SD9GxPGngzQqOmpiCuNljeb
-         wVG7Pde9C8YFW6WB5aso0NYtour28Q33DAHVmfYQEsjE3Qp6aJT+gYtqrSN0lP9wZvZu
-         sNuyEsX1pimxxrzJMRbvaliuYygf/6+wDoRZ+FqikM5dpcALOuPemjvlmfK4f8S3KJDc
-         OfMVGxJwIZTkLlNQtB1UeEWL8UHUqWiigP43GkZHSLomkT8Luc6Xo0t4jf1tI+vGKDO9
-         597WtX0n+qw1yIGIqCAPonOR8TVsMIUB4axvmMKCbuJcdWWIQLPUYMOK2HWyuuxTIgOJ
-         fQOw==
-X-Gm-Message-State: AOAM533x5UtVrU3Ol0g3tlQ/mMv3w/KY9A8DUdS2fSmTonisYV8Mxh3u
-        PjHvH1Si9igQaDKDDhbYJIlvYah/vtpt8lO7GGvJPXauNhcF
-X-Google-Smtp-Source: ABdhPJzbDwn39QD2pajtS0BqmGDWmZtqRx2uVNYFsfektWfDvS67tn9qgxfRmfFzU378bdyJkt+CMASHgEcycqPuk4LAwGuAvBOt
+        id S1350702AbhIIFU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:20:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350703AbhIIFU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:20:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E43C61139;
+        Thu,  9 Sep 2021 05:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631164787;
+        bh=B4SAHApMAPHV+o8srC8bZZpT4//0AtT8m/RZFLiyaRw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SHJrqFkZRuypi27v5wVFXNpmTNv75JMrJF2rODli0iDaH1xqgvAYb38+zL57xhjka
+         612kZDf0KZqLG0y5LUzAFBjm+mNmh3L/dHnz/Ulv5xmEbD1d3C+YZnW4yIn6RBT0Ee
+         1IHEraEKSCTqYCbYr2wKFt/j+UTHZyxdNp3IE3ak=
+Date:   Thu, 9 Sep 2021 07:19:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Yu, Lang" <Lang.Yu@amd.com>
+Cc:     Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Message-ID: <YTmZXU7myBFjx8/y@kroah.com>
+References: <20210908120723.3920701-1-lang.yu@amd.com>
+ <YTitRjOZtWPTyRHd@kroah.com>
+ <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTi0xkTVYqUpKXSt@kroah.com>
+ <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <YTi/UxFCYKqdT34L@kroah.com>
+ <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f214:: with SMTP id q20mr1142800ioh.84.1631164764876;
- Wed, 08 Sep 2021 22:19:24 -0700 (PDT)
-Date:   Wed, 08 Sep 2021 22:19:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006173bf05cb892427@google.com>
-Subject: [syzbot] WARNING: kmalloc bug in hash_ipport_create
-From:   syzbot <syzbot+a568bbab323b96631e61@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 08, 2021 at 03:33:51PM +0000, Yu, Lang wrote:
+> >Please feel free to add better documentation for the functions if you feel people
+> >are getting confused, do not change the existing behavior of the code as it rightly
+> >caught it being misused.
+> 
+> You can find many patches named "convert sysfs scnprintf/snprintf to syfs_emit/sysfs_emit_at".
+> or "use sysfs_emit/sysfs_emit_at in show functions". They may think it's better to use syfs_emit/sysfs_emit_at
+> given its overrun avoidance.
 
-syzbot found the following issue on:
+Yes, and using that in sysfs functions is fine, there is nothing wrong
+with this usage.
 
-HEAD commit:    626bf91a292e Merge tag 'net-5.15-rc1' of git://git.kernel...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=150107a5300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=16e23f04679ec35e
-dashboard link: https://syzkaller.appspot.com/bug?extid=a568bbab323b96631e61
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178b5d0d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fad1dd300000
+> But there are still some corner cases(e.g., a non page boundary aligned buf address : ).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a568bbab323b96631e61@syzkaller.appspotmail.com
+I need a specific example of where this has gone wrong.  Please provide
+a lore.kernel.org link as I fail to see the problem here.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8419 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-Modules linked in:
-CPU: 0 PID: 8419 Comm: syz-executor852 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-Code: 01 00 00 00 4c 89 e7 e8 3d 13 0d 00 49 89 c5 e9 69 ff ff ff e8 50 9d d0 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 3f 9d d0 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 26
-RSP: 0018:ffffc9000110f288 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc9000110f3a0 RCX: 0000000000000000
-RDX: ffff88807ad9d580 RSI: ffffffff81a57421 RDI: 0000000000000003
-RBP: 0000000000400dc0 R08: 000000007fffffff R09: ffff8880b9d3298b
-R10: ffffffff81a573de R11: 000000000000001f R12: 0000000200000018
-R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888027ea2a00
-FS:  0000000001147300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd51c03d0c8 CR3: 00000000726fe000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- hash_ipport_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
- ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
- nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f039
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff01c17cc8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f039
-RDX: 0000000000000000 RSI: 0000000020001080 RDI: 0000000000000003
-RBP: 0000000000403020 R08: 0000000000000009 R09: 0000000000400488
-R10: 0000000000000003 R11: 0000000000000246 R12: 00000000004030b0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+Are you sure that you are not just abusing sysfs and having more than
+one value per file?  Does this mean I need to go audit all of the gpu
+sysfs file entries?
 
+thanks,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+greg k-h
