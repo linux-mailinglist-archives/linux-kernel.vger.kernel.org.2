@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD498405B58
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67775405B2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240366AbhIIQxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237092AbhIIQxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:53:17 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689E0C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:52:07 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id a4so4958585lfg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6u9UXBJqq0DvpwbwzhX2UgLgOMc73mPLE0iuNkQUyLg=;
-        b=c3sO1BQBDxCW8APZUbAlW9nwWGjPxn+LQp0JgfliDLXRZzDRVo3j7/1R4pPWKE+xNx
-         UbgmU4XAmaM891Bx14LElamvax9VI3JEUCFywjuYbWwv0nvT93I+fRhltOoT4VSe8vnz
-         QPRBUEbBxEv21a9fqhAw650AWuxptlmMiPwqE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6u9UXBJqq0DvpwbwzhX2UgLgOMc73mPLE0iuNkQUyLg=;
-        b=G8cuW607K6KGROwNgMXfVk+pWIL2j/u/RuTT5Y8CZbBtWJguwW84cSU/cKg+0n0NYx
-         sYg6TC5vEy3lsQS3pHUb0c7AemX1ue4sC/JgHbxgJICCgE798TXG5fATXcgw+K7nZsax
-         8s5YyJujiplvsZqC1tr3B8MKYrPxtQKp5YKDjTI1Ihg4sey7MLlRS0KswV5wsO4Q3/Rk
-         TNxl/Yls3SbRgcCmXG99VRW/MF0l2ZSspp/ECPULyHzp5r0wB0fs1HHPbiITe8m8CUD2
-         drRIwK252/FKG3VaY6H6MFuIg9tWMkQ/25qX0EeviUPcHh3H7u4aQGPyQYoahS3GLvTB
-         JsWg==
-X-Gm-Message-State: AOAM531rJWbhiHILmisgm47tONHNtj5POHPE0FDVFRCnkn/1h00bOvD/
-        kDhN/JRaOBpk7wyWAkwqsbI4SIZh3vBjBB9sAhs=
-X-Google-Smtp-Source: ABdhPJxQuZDaugmf9/mbIpkV1V1SOvqbM0JezxH2NTao+LLODoBU1gHqUyhfHC6+NhI0sBR84jy+nA==
-X-Received: by 2002:a05:6512:2089:: with SMTP id t9mr568443lfr.529.1631206325406;
-        Thu, 09 Sep 2021 09:52:05 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id v22sm254297lfd.79.2021.09.09.09.52.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 09:52:05 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id m28so4980147lfj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:52:04 -0700 (PDT)
-X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr609222lfg.402.1631206001151;
- Thu, 09 Sep 2021 09:46:41 -0700 (PDT)
+        id S238637AbhIIQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:47:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45068 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhIIQrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 12:47:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="306413823"
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="306413823"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 09:46:35 -0700
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="470170226"
+Received: from gchen28-mobl2.ccr.corp.intel.com (HELO localhost) ([10.255.31.74])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 09:46:32 -0700
+Date:   Fri, 10 Sep 2021 00:46:29 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org
+Subject: Re: [PATCH] KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
+Message-ID: <20210909164629.7fufaejlpj6bl6vk@linux.intel.com>
+References: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
+ <YTo0U0ae3shRbUYC@google.com>
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
- <YTkjJPCdR1VGaaVm@archlinux-ax161> <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
- <YTkyIAevt7XOd+8j@elver.google.com> <YTmidYBdchAv/vpS@infradead.org>
-In-Reply-To: <YTmidYBdchAv/vpS@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Sep 2021 09:46:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whsicuPaicXWh5je6unQYRKwoazuNLzB-9PRXpSY3CZ-g@mail.gmail.com>
-Message-ID: <CAHk-=whsicuPaicXWh5je6unQYRKwoazuNLzB-9PRXpSY3CZ-g@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Marco Elver <elver@google.com>, Guenter Roeck <linux@roeck-us.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTo0U0ae3shRbUYC@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:59 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> While we're at it, with -Werror something like this is really futile:
+On Thu, Sep 09, 2021 at 04:20:35PM +0000, Sean Christopherson wrote:
+> On Thu, Sep 09, 2021, Yu Zhang wrote:
+> > From: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > 
+> > Currently, 'vmx->nested.vmxon_ptr' is not reset upon VMXOFF
+> > emulation. This is not a problem per se as we never access
+> > it when !vmx->nested.vmxon. But this should be done to avoid
+> > any issue in the future.
+> > 
+> > Also, initialize the vmxon_ptr when vcpu is created.
+> > 
+> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> > ---
+> >  arch/x86/kvm/vmx/nested.c | 1 +
+> >  arch/x86/kvm/vmx/vmx.c    | 1 +
+> >  2 files changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index 90f34f12f883..e4260f67caac 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -289,6 +289,7 @@ static void free_nested(struct kvm_vcpu *vcpu)
+> >  	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+> >  
+> >  	vmx->nested.vmxon = false;
+> > +	vmx->nested.vmxon_ptr = -1ull;
+> 
+> Looks like the "-1ull" comes from current_vmptr and friends, but using INVALID_GPA
+> is more appropriate.  It's the same value, but less arbitrary.  The other usage of
+> -1ull for guest physical addresses should really be cleaned up, too.
+> 
 
-Yeah, I'm thinking we could do
+Indeed. I guess many "-1ull"s will be replaced in nested.c.
 
- -Wno-error=cpp
+We need another cleanup patch for this cleanup patch, which comes from my
+first cleanup patch to just clean some comments.. :-) Anyway, thanks!
 
-to at least allow the cpp warnings to come through without being fatal.
+B.R.
+Yu
 
-Because while they can be annoying too, they are most definitely under
-our direct control, so..
-
-I didn't actually test that, but I think it should work.
-
-That said, maybe they should just be removed. They might be better off
-just as Kconfig rules, rather than as a "hey, you screwed up your
-Kconfig" warning after the fact.
-
-             Linus
