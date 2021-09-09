@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD7B405F29
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5708B405FA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242567AbhIIWC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242637AbhIIWC1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:02:27 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE02C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:01:17 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id v17so6910140ybs.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=QdBJVlss//XzBScuTpV91xFTADnF8vAZ2RqGRIzG/2w=;
-        b=nHTxAjB7QJRbT7Of6d8jRhlizXbJ6KET/MdG82n+54cP63QXArVqaOt/Tub30yxTue
-         mqsHFJBGF7n1PJT1nEtKwXCcOkPwu3peY/tjg5KAxc9gCdR41WerOjwqhEMM7Rg5jcj4
-         LMGy3pvJWORzuclKFqFtK/7djsswuUOTItfNCisesffW4r6GoiTvr48GX3kZEd6t5oiv
-         oSql2uat5863/WakS5IouBtaZbcKNhZl193AEN5ohqsOfZvtwhNpiohLoSnVdey2n+fP
-         s2g0mC1G+ZCoE5IVGv0DDWrIuqqS2/+6sPSxMRhy91JkrWboHeDAQaT5UL7GbJtLHhhZ
-         xxdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=QdBJVlss//XzBScuTpV91xFTADnF8vAZ2RqGRIzG/2w=;
-        b=0nCKS8gKqY5/ismuZiTfjaoegXS/XHvre2icz5o6k5OehgELjiBFcP6lO6iHraLcY/
-         gbDo1DtCbj70xCYN6pLYTA+57cXbscyS9rgWVTLkE3uCkIsnE5socOIeW0iTEOBEwvBw
-         77l5e9DlzaBRF1ogEZv9UE29x42F+rOwkxSfcsEz/9PNZDbcTh3yFL5Mqke2bi+Xrky4
-         WEDjmSizZb45cqttY/T1T/ogesp0Lgd4gBrTzJtD5buMa2raSRUwbABrk8m+caUt73D9
-         p7HMjA4kw3mmTwl1Tn5JA4YoVDdyXyz/0lbYWamHjJiHdU65CDPNMvvgUdTB0Clsz1Zm
-         aNBw==
-X-Gm-Message-State: AOAM5325oUU3SUBAYULFvIvdSZPooAnd127DapYWpbYrYLoqKTpUVqFy
-        BBM8D5mJHV0Uv6OapMvVd+VWbBBa5xIdoXTq2sU=
-X-Google-Smtp-Source: ABdhPJzaC6mT+LxetamrCMKiwovdzTKL3yuMF494CIY5lMqUbvy3FgNW3jthfLRw5HDy5soZMuCys776BmBu+DLZWrA=
-X-Received: by 2002:a25:55d6:: with SMTP id j205mr6649862ybb.395.1631224876380;
- Thu, 09 Sep 2021 15:01:16 -0700 (PDT)
+        id S1345556AbhIIWfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:35:31 -0400
+Received: from mga18.intel.com ([134.134.136.126]:4888 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237888AbhIIWfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 18:35:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="208037405"
+X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
+   d="scan'208";a="208037405"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 15:34:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,281,1624345200"; 
+   d="scan'208";a="466778996"
+Received: from dmert-dev.jf.intel.com ([10.166.241.5])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 15:33:59 -0700
+From:   Dave Ertman <david.m.ertman@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     yongxin.liu@windriver.com, shiraz.saleem@intel.com,
+        anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jesse.brandeburg@intel.com,
+        intel-wired-lan@lists.osuosl.org, leon@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@ziepe.ca, david.m.ertman@intel.com
+Subject: [PATCH RESEND net] ice: Correctly deal with PFs that do not support RDMA
+Date:   Thu,  9 Sep 2021 08:12:23 -0700
+Message-Id: <20210909151223.572918-1-david.m.ertman@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a25:53c5:0:0:0:0:0 with HTTP; Thu, 9 Sep 2021 15:01:15 -0700 (PDT)
-Reply-To: ant.madrigal@protonmail.com
-From:   Aahil Collins Madrigal <loregall59@gmail.com>
-Date:   Thu, 9 Sep 2021 15:01:15 -0700
-Message-ID: <CABNVVCew0ne2-HRMzqdPAfHXtVkFTnCYO9ZvU73c2PK2=4CULg@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There are two cases where the current PF does not support RDMA
+functionality.  The first is if the NVM loaded on the device is set
+to not support RDMA (common_caps.rdma is false).  The second is if
+the kernel bonding driver has included the current PF in an active
+link aggregate.
+
+When the driver has determined that this PF does not support RDMA, then
+auxiliary devices should not be created on the auxiliary bus.  Without
+a device on the auxiliary bus, even if the irdma driver is present, there
+will be no RDMA activity attempted on this PF.
+
+Currently, in the reset flow, an attempt to create auxiliary devices is
+performed without regard to the ability of the PF.  There needs to be a
+check in ice_aux_plug_dev (as the central point that creates auxiliary
+devices) to see if the PF is in a state to support the functionality.
+
+When disabling and re-enabling RDMA due to the inclusion/removal of the PF
+in a link aggregate, we also need to set/clear the bit which controls
+auxiliary device creation so that a reset recovery in a link aggregate
+situation doesn't try to create auxiliary devices when it shouldn't.
+
+Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
+Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice.h     | 2 ++
+ drivers/net/ethernet/intel/ice/ice_idc.c | 6 ++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index eadcb9958346..3c4f08d20414 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -695,6 +695,7 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
+ {
+ 	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+ 		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ 		ice_plug_aux_dev(pf);
+ 	}
+ }
+@@ -707,5 +708,6 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+ {
+ 	ice_unplug_aux_dev(pf);
+ 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ }
+ #endif /* _ICE_H_ */
+diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
+index 1f2afdf6cd48..adcc9a251595 100644
+--- a/drivers/net/ethernet/intel/ice/ice_idc.c
++++ b/drivers/net/ethernet/intel/ice/ice_idc.c
+@@ -271,6 +271,12 @@ int ice_plug_aux_dev(struct ice_pf *pf)
+ 	struct auxiliary_device *adev;
+ 	int ret;
+ 
++	/* if this PF doesn't support a technology that requires auxiliary
++	 * devices, then gracefully exit
++	 */
++	if (!ice_is_aux_ena(pf))
++		return 0;
++
+ 	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
+ 	if (!iadev)
+ 		return -ENOMEM;
 -- 
-Greetings My name is Barr. Aahil  Madrigal, I am a senior partner in
-the scot and co law firm, here in Madrid Spain, here's our website
-http://www.scotandco.com
+2.31.1
 
-We are conducting a standard process investigation on behalf of Scot
-and co law firm conglomerate  late client
-
-who fixed some money into his account on his behalf and I am his
-attorney and I found out that your name and with your email contact
-was written as a next of kin.
-
-You are ordered to write back for the transfer as soon as possible
-because the due time has passed.
-
-Thanks for your cooperation.
-
-Aahil Madrigal.
