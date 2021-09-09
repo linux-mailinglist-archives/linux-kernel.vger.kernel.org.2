@@ -2,195 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01458405DA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A597A405DB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344462AbhIITms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:42:48 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:37209 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245758AbhIITmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:42:43 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 189JfMs9013900
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Sep 2021 21:41:22 +0200
-Received: from md1f2u6c.ad001.siemens.net ([167.87.244.119])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 189JfIcX001594;
-        Thu, 9 Sep 2021 21:41:21 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH v3 5/5] arm64: dts: ti: iot2050: Add support for product generation 2 boards
-Date:   Thu,  9 Sep 2021 21:41:18 +0200
-Message-Id: <206d28002626bb9e2e0ac3f82d3c6f9fdbbfc984.1631216478.git.jan.kiszka@siemens.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631216478.git.jan.kiszka@siemens.com>
-References: <cover.1631216478.git.jan.kiszka@siemens.com>
+        id S1344702AbhIITnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344940AbhIITnC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 15:43:02 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF06C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 12:41:52 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id s10so5848923lfr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 12:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MiAwSJkdlM3q7lW+2NIC84mnJlfIO/+1BlMfwRFcbeE=;
+        b=J6FGIE9uwbqL0+rvyHSZgUsLZy+pRuAap5jTMgiujb4M3LUmi8mHutaAPxSCTMSL1o
+         phmkIqJVCwT62rAPr92VTQRpZapgWuL8kTorowvcKtvXLMsOYh2HHK2YZi36zROAidpW
+         GaQ7cWDOf/cROEeVmcFUg4BpmB3F39KDNox2g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MiAwSJkdlM3q7lW+2NIC84mnJlfIO/+1BlMfwRFcbeE=;
+        b=utH4lK/T5yOdgRuEybrfgq5Fk4E2VtVzSByBQv4fMPekzyoiC4bMmwMoDxqlxsOySV
+         i0lTjmlmZHQUmS027j9xvlhBmCV5OAODYDQ+KDGK/ueHVMV0omokFkMdn04FSlnylthM
+         ASob2DRDYDhJuRLS6BYAzFqD07/iAldQsPIacHyiSixO930OYZhHkdEXbnfW1Pip8BKj
+         PfqoY4c1SB+Q92BGnY0ExmLOFNioSUcxosN7GelCyuM5CTs8MCkQAaKJRh8i0fVZRq6f
+         diVBy8pHNKNvEZG9u35MDCu1KtSijbW3zDbv/Mp/ep1lUo8wIKHD8tysoQhq16uaJbYF
+         g6/Q==
+X-Gm-Message-State: AOAM531atTYraTT5sciLKxvcDamCR7CLHAc7I85n67xdDNP2AlEPqoVN
+        CTCNbF+c8FBRwthmMecwco0bNayoeHtw5c7CNgw=
+X-Google-Smtp-Source: ABdhPJz7+gHVD2tD3B0OJkCy0CWnKvCNq6p9zEcRscJ584f2PJ1UB1aNdIu4h51qxyvvK0/bxZIRdA==
+X-Received: by 2002:a05:6512:33d4:: with SMTP id d20mr1091006lfg.57.1631216510508;
+        Thu, 09 Sep 2021 12:41:50 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id d14sm293520lfl.148.2021.09.09.12.41.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 12:41:49 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id c8so5916201lfi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 12:41:49 -0700 (PDT)
+X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr1152936lfg.150.1631216509673;
+ Thu, 09 Sep 2021 12:41:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YTmNE6/yK5Q+OIAb@zeniv-ca.linux.org.uk>
+In-Reply-To: <YTmNE6/yK5Q+OIAb@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 9 Sep 2021 12:41:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjOch3=4Nh4tmiAO9UYJZVEeO0UUq8Hegh3JK+pnM9Upg@mail.gmail.com>
+Message-ID: <CAHk-=wjOch3=4Nh4tmiAO9UYJZVEeO0UUq8Hegh3JK+pnM9Upg@mail.gmail.com>
+Subject: Re: [git pull] gfs2 setattr patches
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Wed, Sep 8, 2021 at 9:27 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.gfs2
+>
+> for you to fetch changes up to d75b9fa053e4cd278281386d860c26fdbfbe9d03:
+>
+>   gfs2: Switch to may_setattr in gfs2_setattr (2021-08-13 00:41:05 -0400)
 
-This adds the devices trees for IOT2050 Product Generation 2 (PG2)
-boards. We have Basic and an Advanced variants again, differing in
-number of cores, RAM size, availability of eMMC and further details.
-The major difference to PG1 is the used silicon revision (SR2.x on
-PG2).
+Explanation for what this series actually does?
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  2 +
- .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
- .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
- .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+I can see the shortlog, I can look at the commits, but I really want a
+summary in the pull request.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d56c742f5a10..41a4bc96e6bd 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -8,7 +8,9 @@
- 
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
- 
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-new file mode 100644
-index 000000000000..2323628b0444
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2021
-+ *
-+ * Authors:
-+ *   Chao Zeng <chao.zeng@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * Common bits of the IOT2050 Basic and Advanced variants, PG2
-+ */
-+
-+&main_pmx0 {
-+	cp2102n_reset_pin_default: cp2102n_reset_pin_default {
-+		pinctrl-single,pins = <
-+			/* (AF12) GPIO1_24, used as cp2102 reset */
-+			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
-+		>;
-+	};
-+};
-+
-+&main_gpio1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp2102n_reset_pin_default>;
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "CP2102N-RESET";
-+};
-+
-+&dss {
-+	/* Workaround needed to get DP clock of 154Mhz */
-+	assigned-clocks = <&k3_clks 67 0>;
-+};
-+
-+&serdes0 {
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-+};
-+
-+&dwc3_0 {
-+	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-+				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-+	phys = <&serdes0 PHY_TYPE_USB3 0>;
-+	phy-names = "usb3-phy";
-+};
-+
-+&usb0_phy {
-+	maximum-speed = "super-speed";
-+	snps,dis-u1-entry-quirk;
-+	snps,dis-u2-entry-quirk;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-new file mode 100644
-index 000000000000..c62549a4b436
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
-+ * 1 GB RAM, no eMMC, main_uart0 on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6528-iot2050-basic-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Basic PG2";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-new file mode 100644
-index 000000000000..f00dc86d01b9
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
-+ * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Advanced PG2";
-+};
-+
-+&mcu_r5fss0 {
-+	/* lock-step mode not supported on this board */
-+	ti,cluster-mode = <0>;
-+};
--- 
-2.31.1
-
+                Linus
