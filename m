@@ -2,140 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811E4405BA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06B3405BA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238134AbhIIRCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:02:42 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55728 "EHLO mail.skyhub.de"
+        id S240601AbhIIRCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:02:53 -0400
+Received: from mga12.intel.com ([192.55.52.136]:32369 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237081AbhIIRCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:02:40 -0400
-Received: from zn.tnic (p200300ec2f0e45006cc97a4fa336fa6e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4500:6cc9:7a4f:a336:fa6e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9FFFF1EC02DD;
-        Thu,  9 Sep 2021 19:01:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631206884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=w4Y8bFgD3thTTfS6Bs/DTyzow70iN97zN1ZeyQrqs70=;
-        b=h9luuAqhcse44qP4s0R93oA2rvlPQ1+CMt4zScWRJ5kscAXvjSEVa/KlrCEqHlKvjtP3e5
-        YYWXzJMK5j427cdHrs8NIrhLLetRd+kuS5UkiiF2teC6pYfKhSaXWLMD4BDmoU1w6jGni5
-        x7U74azrkGokYpctJGoL8+HUi6fYQXs=
-Date:   Thu, 9 Sep 2021 19:01:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin (Intel)" <hpa@zytor.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/asm: pessimize the pre-initialization case in
- static_cpu_has()
-Message-ID: <YTo92+0ruBlkcaDf@zn.tnic>
-References: <20210908171716.3340120-1-hpa@zytor.com>
+        id S237081AbhIIRCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:02:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="200374834"
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="200374834"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 10:01:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="504529799"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 10:01:39 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mONQe-001iIr-S4;
+        Thu, 09 Sep 2021 20:01:36 +0300
+Date:   Thu, 9 Sep 2021 20:01:36 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     Bernhard Seibold <mail@bernhard-seibold.de>,
+        =?iso-8859-1?B?UORy?= Ekholm <pehlm@pekholm.org>,
+        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
+        Vittorio Roberto Alfieri <me@rebtoor.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] hwmon: (nct6775) Support access via Asus WMI (v2)
+Message-ID: <YTo98BIZjtlHtGrH@smile.fi.intel.com>
+References: <08262b12-4345-76a9-87be-66d630af3a59@roeck-us.net>
+ <20210908213605.9929-1-pauk.denis@gmail.com>
+ <20210908213605.9929-3-pauk.denis@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210908171716.3340120-1-hpa@zytor.com>
+In-Reply-To: <20210908213605.9929-3-pauk.denis@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 10:17:16AM -0700, H. Peter Anvin (Intel) wrote:
+On Thu, Sep 09, 2021 at 12:36:04AM +0300, Denis Pauk wrote:
+> Support accessing the NCT677x via Asus WMI functions.
+> 
+> On mainboards that support this way of accessing the chip,
+> the driver will usually not work without this option since
+> in these mainboards, ACPI will mark the I/O port as used.
 
-> Subject: Re: [PATCH] x86/asm: pessimize the pre-initialization case in static_cpu_has()
+...
 
-"pessimize" huh? :)
+> +static int asuswmi_evaluate_method(u32 method_id,
+> +		u8 bank, u8 reg, u8 val, u32 *retval)
 
-Why not simply
+Indentation can be better.
+Ditto for many lines in this change.
 
-"Do not waste registers in the pre-initialization case... "
+> +{
+> +	u32 args = bank | (reg << 8) | (val << 16);
+> +	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
+> +	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	acpi_status status;
+> +	union acpi_object *obj;
+> +	u32 tmp = 0;
+> +
+> +	status = wmi_evaluate_method(ASUSWMI_MGMT2_GUID, 0, method_id,
+> +				     &input, &output);
+> +
+> +	if (ACPI_FAILURE(status))
+> +		return -EIO;
 
-?
+> +	obj = (union acpi_object *)output.pointer;
 
-> gcc will sometimes manifest the address of boot_cpu_data in a register
-> as part of constant propagation. When multiple static_cpu_has() are
-> used this may foul the mainline code with a register load which will
-> only be used on the fallback path, which is unused after
-> initialization.
+Do you need casting?
 
-So a before-after thing looks like this here:
+> +	if (obj && obj->type == ACPI_TYPE_INTEGER)
+> +		tmp = (u32) obj->integer.value;
 
-before:
+Ditto.
 
-ffffffff89696517 <.altinstr_aux>:
-ffffffff89696517:       f6 05 cb 09 cb ff 80    testb  $0x80,-0x34f635(%rip)        # ffffffff89346ee9 <boot_cpu_data+0x69>
-ffffffff8969651e:       0f 85 fc 3e fb ff       jne    ffffffff8964a420 <intel_pmu_init+0x14e7>
-ffffffff89696524:       e9 ee 3e fb ff          jmp    ffffffff8964a417 <intel_pmu_init+0x14de>
-ffffffff89696529:       f6 45 6a 08             testb  $0x8,0x6a(%rbp)
-ffffffff8969652d:       0f 85 45 b9 97 f7       jne    ffffffff81011e78 <intel_pmu_lbr_filter+0x68>
-ffffffff89696533:       e9 95 b9 97 f7          jmp    ffffffff81011ecd <intel_pmu_lbr_filter+0xbd>
-ffffffff89696538:       41 f6 44 24 6a 08       testb  $0x8,0x6a(%r12)
-ffffffff8969653e:       0f 85 d3 bc 97 f7       jne    ffffffff81012217 <intel_pmu_store_lbr+0x77>
-ffffffff89696544:       e9 d9 bc 97 f7          jmp    ffffffff81012222 <intel_pmu_store_lbr+0x82>
-ffffffff89696549:       41 f6 44 24 6a 08       testb  $0x8,0x6a(%r12)
+> +	if (retval)
+> +		*retval = tmp;
+> +
+> +	kfree(obj);
+> +
+> +	if (tmp == ASUSWMI_UNSUPPORTED_METHOD)
+> +		return -ENODEV;
+> +	return 0;
+> +}
 
-after:
+...
 
-ffffffff89696517 <.altinstr_aux>:
-ffffffff89696517:       f6 04 25 e9 6e 34 89    testb  $0x80,0xffffffff89346ee9
-ffffffff8969651e:       80 
-ffffffff8969651f:       0f 85 fb 3e fb ff       jne    ffffffff8964a420 <intel_pmu_init+0x14e7>
-ffffffff89696525:       e9 ed 3e fb ff          jmp    ffffffff8964a417 <intel_pmu_init+0x14de>
-ffffffff8969652a:       f6 04 25 ea 6e 34 89    testb  $0x8,0xffffffff89346eea
-ffffffff89696531:       08 
-ffffffff89696532:       0f 85 37 b9 97 f7       jne    ffffffff81011e6f <intel_pmu_lbr_filter+0x5f>
-ffffffff89696538:       e9 89 b9 97 f7          jmp    ffffffff81011ec6 <intel_pmu_lbr_filter+0xb6>
-ffffffff8969653d:       f6 04 25 ea 6e 34 89    testb  $0x8,0xffffffff89346eea
-ffffffff89696544:       08 
-ffffffff89696545:       0f 85 b5 bc 97 f7       jne    ffffffff81012200 <intel_pmu_store_lbr+0x70>
-ffffffff8969654b:       e9 bb bc 97 f7          jmp    ffffffff8101220b <intel_pmu_store_lbr+0x7b>
-ffffffff89696550:       f6 04 25 ea 6e 34 89    testb  $0x8,0xffffffff89346eea
+> +static inline int
+> +nct6775_asuswmi_read(u8 bank, u8 reg, u8 *val)
 
-so you're basically forcing an immediate thing.
+One line.
 
-And you wanna get rid of the (%<reg>) relative addressing and force it
-to be rip-relative.
+> +{
+> +	u32 tmp;
+> +	int ret = asuswmi_evaluate_method(ASUSWMI_METHODID_RHWM, bank, reg, 0, &tmp);
 
-> Explicitly force gcc to use immediate (rip-relative) addressing for
+> +	*val = tmp & 0xff;
 
-Right, the rip-relative addressing doesn't happen here:
+Do you need  ' & 0xff' part?
 
---- /tmp/before	2021-09-09 18:18:28.693009433 +0200
-+++ /tmp/after	2021-09-09 18:19:06.285009113 +0200
-@@ -1,5 +1,5 @@
--# ./arch/x86/include/asm/cpufeature.h:179: 	asm_volatile_goto(
--# 179 "./arch/x86/include/asm/cpufeature.h" 1
-+# ./arch/x86/include/asm/cpufeature.h:184: 	asm_volatile_goto(
-+# 184 "./arch/x86/include/asm/cpufeature.h" 1
- 	# ALT: oldinstr2
- 661:
- 	jmp 6f
-@@ -29,12 +29,12 @@
- 	
- 6652:
- .popsection
--.section .altinstr_aux,"ax"
-+.pushsection .altinstr_aux,"ax"
- 6:
-- testb $1,boot_cpu_data+62(%rip)	#, MEM[(const char *)&boot_cpu_data + 62B]
-+ testb $1,boot_cpu_data+62	#,
-  jnz .L99	#
-  jmp .L100	#
--.previous
-+.popsection
- 
- # 0 "" 2
+> +	return ret;
+> +}
 
+...
 
-.vminstr_aux even on an allyesconfig build is solely immediate
-addressing in the TEST insn.
+> +	if (data->access == access_asuswmi) {
+> +		data->bank = bank;
+> +		return;
+> +	}
+
+It means you have to introduce a new callback ->set_bank() (in a separate change).
+
+...
+
+> +	if (data->access == access_asuswmi) {
+> +		nct6775_asuswmi_read(data->bank, reg, &tmp);
+> +		res = (tmp & 0xff);
+> +		if (word_sized) {
+> +			nct6775_asuswmi_read(data->bank,
+> +					(reg & 0xff) + 1, &tmp);
+> +			res = (res << 8) + (tmp & 0xff);
+> +		}
+> +		return res;
+> +	}
+
+Similar.
+
+...
+
+> +	if (data->access == access_asuswmi) {
+> +		if (word_sized) {
+> +			nct6775_asuswmi_write(data->bank, (reg & 0xff),
+> +					(value >> 8) & 0xff);
+> +			nct6775_asuswmi_write(data->bank, (reg & 0xff) + 1,
+> +					value & 0xff);
+> +		} else {
+> +			nct6775_asuswmi_write(data->bank, (reg & 0xff),
+> +					value);
+> +		}
+> +
+> +		return 0;
+> +	}
+
+Similar.
+
+...
+
+> +	if (sio_data->access == access_direct) {
+> +		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+> +		if (!res)
+> +			return -EBUSY;
+>  
+> -	if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
+> -				 DRVNAME))
+> -		return -EBUSY;
+> +		if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
+> +					 DRVNAME))
+> +			return -EBUSY;
+> +	}
+
+Maybe it should be part of some kind of ->setup()?
+
+...
+
+> +static const char * const asus_wmi_boards[] = {
+> +	"PRIME B460-PLUS",
+> +	"ROG CROSSHAIR VIII IMPACT",
+> +	"ROG STRIX B550-E GAMING",
+> +	"ROG STRIX B550-F GAMING (WI-FI)",
+> +	"ROG STRIX Z490-I GAMING",
+> +	"TUF GAMING B550M-PLUS",
+> +	"TUF GAMING B550M-PLUS (WI-FI)",
+> +	"TUF GAMING B550-PLUS",
+> +	"TUF GAMING X570-PLUS",
+
+> +	"TUF GAMING X570-PRO (WI-FI)"
+
++ comma at the end.
+
+> +};
+
+...
+
+> +		if (match_string(asus_wmi_boards,
+> +				ARRAY_SIZE(asus_wmi_boards), board_name) != -EINVAL) {
+
+	err = match_string(...);
+	if (err < 0) {
+		...
+	}
+
+> +			/* if reading chip id via WMI succeeds, use WMI */
+> +			if (!nct6775_asuswmi_read(0, NCT6775_REG_CHIPID, &tmp)) {
+> +				pr_info("Using Asus WMI to access chip\n");
+> +				access = access_asuswmi;
+> +			}
+> +		}
 
 -- 
-Regards/Gruss,
-    Boris.
+With Best Regards,
+Andy Shevchenko
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
