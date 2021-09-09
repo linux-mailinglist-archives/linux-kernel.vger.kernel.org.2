@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA824047E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7B24047E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhIIJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhIIJjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:39:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02033C061575;
-        Thu,  9 Sep 2021 02:38:37 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 09:38:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631180315;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lcNaP07PKMAmOJRYwyE4hu2hgVbleeLOp79xPo503QA=;
-        b=FnhyKhFH5VbglJwVrG886b43A+BIuM4Gs4i43SgnnD8RxLQIJtStnZPlyvz5MuudKysy6z
-        pIfg2ggyOZ0+A9A0+WIxltii5vYtXOokYqU+Vv3cyO7uLjJ5Jl/UGv97t04l02FudCgyfc
-        j7XuqG2ZT4KyFufuRGaB2QFs/DQ1GzSbiUx0lZPoPwVvYn0MAjJnWpPize25dw2yOM+UCm
-        FnTb1IDJ8FUBqhiHMzvNarY8BXd+hlN6qSFdvYPGpm6ll6mvgrsiPBejdGq0nfEYtBaAiF
-        xwAXp+nwJOlAUNCA2FpWKioZtAx2418qX4ayfyCNQ9dxnOVvAiq22Q9WOye6jQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631180315;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lcNaP07PKMAmOJRYwyE4hu2hgVbleeLOp79xPo503QA=;
-        b=emY8EWEWXfYbLaCfIQBpbkzvY4MF+U8nS/0zEkj9DaVZoWvkyHc4GUJOEOe7CPleBM5y3S
-        CimKJo6QSL7wDPCQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Prevent balance_push() on remote runqueues
-Cc:     Sebastian Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87zgt1hdw7.ffs@tglx>
-References: <87zgt1hdw7.ffs@tglx>
+        id S233002AbhIIJlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:41:05 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:47068 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhIIJlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:41:03 -0400
+Received: from zn.tnic (p200300ec2f0e450038bb8d0575207cd8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4500:38bb:8d05:7520:7cd8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 390D71EC04EC;
+        Thu,  9 Sep 2021 11:39:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631180389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=bnOSlvgwo3fcQLh9riyT6ozqojd3R2De1EiMDBDp+mE=;
+        b=lz6ZxGNWTQXEXVjbIOwGQdJS9eL6Oo/eyylPuVbtJg1UUgoWHJCH9DLPLv3vYI8SpieXLq
+        BgHd6YzJh6QvYvFEWm/K/gTIgbiXO52Yo119glP3CoVNf7cXU6coc2ZxvE3X9MSAgFPfPC
+        cbCP5j5uHQ6ar8e2jlvoDIETpkYvzyI=
+Date:   Thu, 9 Sep 2021 11:39:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jinhua Wu <wujinhua@linux.alibaba.com>
+Cc:     x86@kernel.org, zelin.deng@linux.alibaba.com,
+        jiayu.ni@linux.alibaba.com, ak@linux.intel.com,
+        luming.yu@intel.com, fan.du@intel.com,
+        artie.ding@linux.alibaba.com, tony.luck@intel.com,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
+        hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
+        peterz@infradead.org
+Subject: Re: [PATCH] perf: optimize clear page in Intel specified model with
+ movq instruction
+Message-ID: <YTnWXIB42sCLbM2k@zn.tnic>
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
 MIME-Version: 1.0
-Message-ID: <163118031401.25758.11404036783844944649.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On Thu, Sep 09, 2021 at 04:45:51PM +0800, Jinhua Wu wrote:
+> Clear page is the most time-consuming procedure in page fault handling.
+> Kernel use fast-string instruction to clear page. We found that in specified
+> Intel model such as CPX and ICX, the movq instruction perform much better
+> than fast-string instruction when corresponding page is not in cache.
+> But when the page is in cache, fast string perform better. We show the test
+> result in the following:
 
-Commit-ID:     868ad33bfa3bf39960982682ad3a0f8ebda1656e
-Gitweb:        https://git.kernel.org/tip/868ad33bfa3bf39960982682ad3a0f8ebda1656e
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 28 Aug 2021 15:55:52 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 09 Sep 2021 11:27:23 +02:00
+What you should do is show the extensive tests you've run with
+real-world benchmarks where you really can show 40% performance
+improvement.
 
-sched: Prevent balance_push() on remote runqueues
+Also, the static branch "approach" you're using ain't gonna happen. If
+anything, another X86_FEATURE_* bit.
 
-sched_setscheduler() and rt_mutex_setprio() invoke the run-queue balance
-callback after changing priorities or the scheduling class of a task. The
-run-queue for which the callback is invoked can be local or remote.
+Good luck.
 
-That's not a problem for the regular rq::push_work which is serialized with
-a busy flag in the run-queue struct, but for the balance_push() work which
-is only valid to be invoked on the outgoing CPU that's wrong. It not only
-triggers the debug warning, but also leaves the per CPU variable push_work
-unprotected, which can result in double enqueues on the stop machine list.
+-- 
+Regards/Gruss,
+    Boris.
 
-Remove the warning and validate that the function is invoked on the
-outgoing CPU.
-
-Fixes: ae7927023243 ("sched: Optimize finish_lock_switch()")
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/87zgt1hdw7.ffs@tglx
----
- kernel/sched/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f3b27c6..b21a185 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8523,7 +8523,6 @@ static void balance_push(struct rq *rq)
- 	struct task_struct *push_task = rq->curr;
- 
- 	lockdep_assert_rq_held(rq);
--	SCHED_WARN_ON(rq->cpu != smp_processor_id());
- 
- 	/*
- 	 * Ensure the thing is persistent until balance_push_set(.on = false);
-@@ -8531,9 +8530,10 @@ static void balance_push(struct rq *rq)
- 	rq->balance_callback = &balance_push_callback;
- 
- 	/*
--	 * Only active while going offline.
-+	 * Only active while going offline and when invoked on the outgoing
-+	 * CPU.
- 	 */
--	if (!cpu_dying(rq->cpu))
-+	if (!cpu_dying(rq->cpu) || rq != this_rq())
- 		return;
- 
- 	/*
+https://people.kernel.org/tglx/notes-about-netiquette
