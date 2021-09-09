@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD286405CBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FFF405CBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243875AbhIISOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244751AbhIISOT (ORCPT
+        id S244157AbhIISPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:15:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26700 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237297AbhIISO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:14:19 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF8DC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:13:09 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2060328pjx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oYzdplyM18KY0Rs8AvP7jRRMtS3fev77XkdskNX9cmc=;
-        b=ZR+lGDI9LQg3dBtisyxTNm+HrbpIznzitrU0/yGTRHNMwChDKiR/owHUXKZTFgn/DW
-         lDK+N+zsp3x/AcjIhqSh64wZcb/Fg4Um1uwRLHAf5ISFDW2KRa9ttt8Z1Rn4hqT9YX5c
-         6J6gFEa93O2XZ3gmgfvfHywZwVUHzwRmdCdHW2malFgfBuBU3FAhksfJZESzKGjpX11g
-         pJmYmOetRt5HuKgC+7I49jLfrUHg5jhqnRw0kiCmjldscemLhWTopFYo1Lbb3M9L7UUC
-         zwa+C/MspbQlDyNCK78koAsA4WHdGMom9cWg+O0zfZKB6oiwtXKK8rSJ/b73ojpVzwah
-         oTvg==
+        Thu, 9 Sep 2021 14:14:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631211225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RIWjeeOoa1VabWi3B7TlOtz3Y4ofdlgGcEa+gLerJBI=;
+        b=i6Pui8bj/iyI+VbNdm2sPK5s893npU84dCviXqjYBjEd3lWvL/OgAqFRu7GBAkw4wtt3MK
+        fo2LElPXP8KMLAcch8nY/FOeAAo2MRZ6r1wwA13qhpT968wPRP9ZO6L2RPmh+ok389+YKH
+        UeCuiZNlwuQyZdvmgVzHvLD+PBbJhyQ=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-18U08jF9Ozy_5I1pmKyJ0g-1; Thu, 09 Sep 2021 14:13:44 -0400
+X-MC-Unique: 18U08jF9Ozy_5I1pmKyJ0g-1
+Received: by mail-il1-f197.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso2820130ilv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:13:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oYzdplyM18KY0Rs8AvP7jRRMtS3fev77XkdskNX9cmc=;
-        b=M1vMRN3fS5RLtjgcux49cSP7C0nCueKiyPT+jcJi0nLvnhqlJ9fNLugzxZf43F8mkd
-         VtjdUXB8mipiXMmS/nrlEwoz/ceCTcEV2EDAHqUsjIGbrl26uR8QKP7IzuO8TMLEwF1S
-         C6DnCFwXp8ZUXdvpTS8hndXWIi8j4HSgwFL30IXMfCltNIOuBd3q17I30BbNNQrYHYm0
-         /HlNNXIINfuuJX8bwvYmn3hefXwiMnh/QXjdp5sMwDZDeyHFqlOlVQzW3rbBqGyrX8m/
-         sibntbYcDILQ+MASs+DXhjd1i4awmWFaqEZBJFqmwz2udxj1DFTGuTQAn5hVdM5TexsL
-         uZzQ==
-X-Gm-Message-State: AOAM531sm9FpPE+YfyHGcEuZn4wroNJQaNEvkXxwsvLJO0E/FExKmYcH
-        R349EbXv8pYboJvfMvoULXlrTQ==
-X-Google-Smtp-Source: ABdhPJwjxNZvs52Wb3cW5/9xyK/4w0Xli94hIemVpgz29jXOSyfDxRN91mAeYXb0+lxKj6DstTdWHg==
-X-Received: by 2002:a17:902:7c93:b0:13a:a1e:dd2d with SMTP id y19-20020a1709027c9300b0013a0a1edd2dmr3821810pll.12.1631211189217;
-        Thu, 09 Sep 2021 11:13:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h20sm2876865pfn.173.2021.09.09.11.13.08
+        bh=RIWjeeOoa1VabWi3B7TlOtz3Y4ofdlgGcEa+gLerJBI=;
+        b=hglmctgno+8lvhHVc3Qx0StiuBGwoLFl79AswQNvd489EEclZaYtF+KOAQJx3pfCO9
+         edW7kM6y88dqPZZqS3bgvvGgk5u2UyaFAY5Imra6+FToljGtjvbpVhORiLbJcsj6L/tU
+         ytOk3HVkYrCUPDHj94juo1i7FC4Ats5v2IfngjVi/zE4uCJAmtKUR29gJr/wiDYmJTaW
+         b98GeYD7nV/rO460ncqpBCrHlnyLGFdBQ6k5ArzqVV2nZ9QhzF40O14MsQXyLyLkGJc9
+         WTWhMuy2ApIN9792U7Nzx+lmtpYuQ2izprwt8C+Hda1wlxstrF0mCmwRNMwMDWSlxRgO
+         hxRw==
+X-Gm-Message-State: AOAM531OBrz+UPb6vUNkGzIhCdX2t0eryr8jvl3+W/jx88XqzSVJfcc4
+        CXx7D1Mm0XizYoA9g7JMM1gIzvUOm0iqGJnM9m3IBYiLetbDUunKqsKzQqb3T80b35wV69vBC47
+        /P1QRN91RyJp9H6x4t1xbaKlL
+X-Received: by 2002:a6b:7710:: with SMTP id n16mr3658165iom.101.1631211223657;
+        Thu, 09 Sep 2021 11:13:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzkCSATJElsUKeXdLlSO3aGUQTKN6vio39mP/DTTO36pPZKKiCNGeWvgE4VfkouIG8DfjqVg==
+X-Received: by 2002:a6b:7710:: with SMTP id n16mr3658143iom.101.1631211223417;
+        Thu, 09 Sep 2021 11:13:43 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id f3sm1177173ilu.85.2021.09.09.11.13.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:13:08 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 18:13:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Mingwei Zhang <mizhang@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alper Gun <alpergun@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Rienjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Vipin Sharma <vipinsh@google.com>
-Subject: Re: [PATCH v2 3/4] KVM: SVM: move sev_bind_asid to psp
-Message-ID: <YTpOsUAqHjQ9DDLd@google.com>
-References: <20210818053908.1907051-1-mizhang@google.com>
- <20210818053908.1907051-4-mizhang@google.com>
- <YTJ5wjNShaHlDVAp@google.com>
- <fcb83a85-8150-9617-01e6-c6bcc249c485@amd.com>
- <YTf3udAv1TZzW+xA@google.com>
- <8421f104-34e8-cc68-1066-be95254af625@amd.com>
+        Thu, 09 Sep 2021 11:13:42 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 14:13:40 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 3/5] mm: Drop first_index/last_index in zap_details
+Message-ID: <YTpO1P2MaYWaOc5Y@t490s>
+References: <20210908163516.214441-1-peterx@redhat.com>
+ <20210908163622.214951-1-peterx@redhat.com>
+ <20210909025417.occtqoo6l7x5tnuy@revolver>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8421f104-34e8-cc68-1066-be95254af625@amd.com>
+In-Reply-To: <20210909025417.occtqoo6l7x5tnuy@revolver>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021, Brijesh Singh wrote:
+On Thu, Sep 09, 2021 at 02:54:37AM +0000, Liam Howlett wrote:
+> > @@ -3390,17 +3393,17 @@ void unmap_mapping_page(struct page *page)
+> >  void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+> >  		pgoff_t nr, bool even_cows)
+> >  {
+> > +	pgoff_t	first_index = start, last_index = start + nr - 1;
 > 
-> On 9/7/21 6:37 PM, Sean Christopherson wrote:
-> > On Tue, Sep 07, 2021, Brijesh Singh wrote:
-> > > I have no strong preference for either of the abstraction approaches. The
-> > > sheer number of argument can also make some folks wonder whether such
-> > > abstraction makes it easy to read. e.g send-start may need up to 11.
-> > 
-> > Yeah, that's brutal, but IMO having a few ugly functions is an acceptable cost if
-> > it means the rest of the API is cleaner.  E.g. KVM is not the right place to
-> > implement sev_deactivate_lock, as any coincident DEACTIVATE will be problematic.
-> > The current code "works" because KVM is the only in-tree user, but even that's a
-> > bit of a grey area because sev_guest_deactivate() is exported.
-> > 
-> > If large param lists are problematic, one idea would be to reuse the sev_data_*
-> > structs for the API.  I still don't like the idea of exposing those structs
-> > outside of the PSP driver, and the potential user vs. kernel pointer confusion
-> > is more than a bit ugly.  On the other hand it's not exactly secret info,
-> > e.g. KVM's UAPI structs are already excrutiatingly close to sev_data_* structs.
-> > 
-> > For future ioctls(), KVM could even define UAPI structs that are bit-for-bit
-> > compatible with the hardware structs.  That would allow KVM to copy userspace's
-> > data directly into a "struct sev_data_*" and simply require the handle and any
-> > other KVM-defined params to be zero.  KVM could then hand the whole struct over
-> > to the PSP driver for processing.
+> Nit: If you respin, can first_index and last_index be two lines please?
+
+Sure.
+
 > 
-> Most of the address field in the "struct sev_data_*" are physical
-> addressess. The userspace will not be able to populate those fields.
+> >  	struct zap_details details = { };
+> >  
+> >  	details.check_mapping = even_cows ? NULL : mapping;
+> > -	details.first_index = start;
+> > -	details.last_index = start + nr - 1;
+> > -	if (details.last_index < details.first_index)
+> > -		details.last_index = ULONG_MAX;
+> 
+> Nit: Maybe throw a comment about this being overflow check, if you
+> respin.
 
-Yeah, that's my biggest hesitation to using struct sev_data_* in the API, it's
-both confusing and gross.  But it's also why I think these helpers belong in the
-PSP driver, KVM should not need to know the "on-the-wire" format for communicating
-with the PSP.
+It may not be "only" an overflow check, e.g., both unmap_mapping_range() and
+unmap_mapping_pages() allows taking the npages to be zero:
 
-> PSP or KVM may still need to assist filling the final hardware structure.
-> Some of fields in hardware structure must be zero, so we need to add checks
-> for it.
+For unmap_mapping_range:
 
-> I can try posting RFC post SNP series and we can see how it all looks.
+ * @holelen: size of prospective hole in bytes.  This will be rounded
+ * up to a PAGE_SIZE boundary.  A holelen of zero truncates to the
+ * end of the file.
 
-I'm a bit torn.  I completely understand the desire to get SNP support merged, but
-at the same time KVM has accrued a fair bit of technical debt for SEV and SEV-ES,
-and the lack of tests is also a concern.  I don't exactly love the idea of kicking
-those cans further down the road.
+For unmap_mapping_pages:
 
-Paolo, any thoughts?
+ * @nr: Number of pages to be unmapped.  0 to unmap to end of file.
+
+So we must set it to ULONG_MAX to make sure nr==0 will work like that.
+
+I won't bother adding a comment, but if to add it I'll probably also mention
+about that part on allowing a nr==0 use case, please let me know if you insist.
+
+> 
+> > +	if (last_index < first_index)
+> > +		last_index = ULONG_MAX;
+> >  
+> >  	i_mmap_lock_write(mapping);
+> >  	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
+> > -		unmap_mapping_range_tree(&mapping->i_mmap, &details);
+> > +		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
+> > +					 last_index, &details);
+> >  	i_mmap_unlock_write(mapping);
+> >  }
+> >  
+> > -- 
+> > 2.31.1
+> > 
+> 
+> Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+
+Thanks for reviewing.
+
+-- 
+Peter Xu
+
