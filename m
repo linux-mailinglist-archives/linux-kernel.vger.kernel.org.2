@@ -2,208 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD5E405A1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFDF405A24
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238147AbhIIPVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:21:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56564 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233473AbhIIPVk (ORCPT
+        id S238379AbhIIPXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:23:24 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:38849 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhIIPXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:21:40 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189F3FHX048023;
-        Thu, 9 Sep 2021 11:19:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=lpgD5vGEmIaRlhyfMXPRmGy9zj9rf8ajeuGtr4XPduY=;
- b=bw8f8en2UXaRxE+/+5vgFZJpeYlXD97XTnewnEK1ERTUvBPn0vx8hd4hQc6EmdtFYEJO
- goSChKyGUg1DjUSqKfglO3yL2gYJ7Y/d+veQJEgrSTR3Y4Y6IgRr1vjL/xP3EMQA/zgV
- SaI2JC0qovKkpX6alJpljFXapg6MfqJNJH+Jo8xLr349dZWrsM5GrhMwZ0nY72gxjVjh
- 4tkJV96edNg/P/PwUd77fYDbi+Apok4MRhaPkRIphmEf/EzHw6w7sxTo/OWa1YwXNiZh
- mWwwh7UdqlPou6l7eav8NpGdslgSRNAVL+rSLJIhjwo2c7BZZhDNyS7xrit/lJOviA9p oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ayhwr5jqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 11:19:55 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 189F4CKI052407;
-        Thu, 9 Sep 2021 11:19:54 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ayhwr5jpj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 11:19:54 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 189FIEn0025560;
-        Thu, 9 Sep 2021 15:19:52 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3axcnkew6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 15:19:52 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 189FFTKS14156272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Sep 2021 15:15:29 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 97F1D4204D;
-        Thu,  9 Sep 2021 15:19:49 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE4B842041;
-        Thu,  9 Sep 2021 15:19:44 +0000 (GMT)
-Received: from sig-9-65-72-231.ibm.com (unknown [9.65.72.231])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Sep 2021 15:19:44 +0000 (GMT)
-Message-ID: <02024a370f3180e5a6668282e5843ab58bf2a073.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 01/12] integrity: Introduce a Linux keyring called
- machine
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-Date:   Thu, 09 Sep 2021 11:19:43 -0400
-In-Reply-To: <20210907160110.2699645-2-eric.snowberg@oracle.com>
-References: <20210907160110.2699645-1-eric.snowberg@oracle.com>
-         <20210907160110.2699645-2-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wspITacEcQ5vvoXOSzWgB8P8y2gYDHE7
-X-Proofpoint-ORIG-GUID: TI866xkV7-3Gg1LO0soUIQh1MMBaIjNY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-09_05:2021-09-09,2021-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109090093
+        Thu, 9 Sep 2021 11:23:23 -0400
+Received: by mail-vk1-f178.google.com with SMTP id k124so845408vke.5;
+        Thu, 09 Sep 2021 08:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jMdZxCtACotNgu9fcSUDCRRpS8pLXrlQN9yO6urHYyg=;
+        b=w7+QDR7LdJfgxtECbMMqXzBUcJvueG743R0dwLScZiGXnLbTN869yZ2jpkbMC06QaK
+         ZiBbp/7NOeWhMxa69+xRohQQMdfm1E/QCjXLdxUhlyIJw28LNV4bwPvoH27tH7Hpb4xp
+         y04i9sHX8aNBzyIKx4HrnpHY6W52eQ+ZwjVbwruCukUgXJd9wtwscQCbRPnjoHZrMGW5
+         kevtVsWMd0f/AjBLo4w5gC93siiPVIIjZLdG3G+0H1/vUClhawh7D1XBlacCPHiEx3QX
+         fNkdzeeqkka/W7cFMR8mYIDIDKqsAO0n/LLoMQH24OfTxPzjV9VAZ8X+ya8fHS47XgTR
+         ZZ8w==
+X-Gm-Message-State: AOAM530ygaFR/a1e1XurGzFMapemUopC/+xVpjjKbTocvbZ8cj3j6/p7
+        5K5X8tPg1DnUE6FgyZuVZaMDfsyDXYhxY0FieDY=
+X-Google-Smtp-Source: ABdhPJy4AEeHXVpZsVsOzXcULq6QeeWxboOzc3kpSRyQieHqZC+uyu5zFuVnW1w0ubYQbeCDPw1BGP5cIZOPos8YxVI=
+X-Received: by 2002:a1f:2055:: with SMTP id g82mr1978381vkg.11.1631200933555;
+ Thu, 09 Sep 2021 08:22:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
+In-Reply-To: <20200624195811.435857-8-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 9 Sep 2021 17:22:01 +0200
+Message-ID: <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+To:     Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@arm.linux.org.uk>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 12:00 -0400, Eric Snowberg wrote:
-> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
-> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
-> Boot DB and MOK keys to validate the next step in the boot chain.  The
-> MOK facility can be used to import user generated keys.  These keys can
-> be used to sign an end-users development kernel build.  When Linux
-> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
-> .platform keyring.
-> 
-> Add a new Linux keyring called machine.  This keyring shall contain just
+Hi Marc, Russell,
 
-^Define
+On Wed, Jun 24, 2020 at 9:59 PM Marc Zyngier <maz@kernel.org> wrote:
+> The GIC driver uses a RMW sequence to update the affinity, and
+> relies on the gic_lock_irqsave/gic_unlock_irqrestore sequences
+> to update it atomically.
+>
+> But these sequences only expend into anything meaningful if
+> the BL_SWITCHER option is selected, which almost never happens.
+>
+> It also turns out that using a RMW and locks is just as silly,
+> as the GIC distributor supports byte accesses for the GICD_TARGETRn
+> registers, which when used make the update atomic by definition.
+>
+> Drop the terminally broken code and replace it by a byte write.
+>
+> Fixes: 04c8b0f82c7d ("irqchip/gic: Make locking a BL_SWITCHER only feature")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-> MOK CA keys and not the remaining keys in the platform keyring. This new
-> machine keyring will be used in follow on patches.  Unlike keys in the
-> platform keyring, keys contained in the machine keyring will be trusted
-> within the kernel if the end-user has chosen to do so.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
-> v1: Initial version
-> v2: Removed destory keyring code
-> v3: Unmodified from v2
-> v4: Add Kconfig, merged in "integrity: add add_to_mok_keyring" 
-> v5: Rename to machine keyring
-> ---
->  security/integrity/Kconfig                    | 11 +++++
->  security/integrity/Makefile                   |  1 +
->  security/integrity/digsig.c                   |  1 +
->  security/integrity/integrity.h                | 12 +++++-
->  .../platform_certs/machine_keyring.c          | 42 +++++++++++++++++++
->  5 files changed, 66 insertions(+), 1 deletion(-)
->  create mode 100644 security/integrity/platform_certs/machine_keyring.c
-> 
-> diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-> index 71f0177e8716..52193b86768a 100644
-> --- a/security/integrity/Kconfig
-> +++ b/security/integrity/Kconfig
-> @@ -62,6 +62,17 @@ config INTEGRITY_PLATFORM_KEYRING
->           provided by the platform for verifying the kexec'ed kerned image
->           and, possibly, the initramfs signature.
->  
-> +config INTEGRITY_MACHINE_KEYRING
-> +	bool "Provide a keyring to which CA Machine Owner Keys may be added"
-> +	depends on SECONDARY_TRUSTED_KEYRING
-> +	depends on INTEGRITY_ASYMMETRIC_KEYS
-> +	depends on SYSTEM_BLACKLIST_KEYRING
-> +	help
-> +	 If set, provide a keyring to which CA Machine Owner Keys (MOK) may
-> +	 be added. This keyring shall contain just CA MOK keys.  Unlike keys
-> +	 in the platform keyring, keys contained in the .machine keyring will
-> +	 be trusted within the kernel.
+Thanks for your patch, which is now commit 005c34ae4b44f085
+("irqchip/gic: Atomically update affinity"), to which I bisected a hard
+lock-up during boot on the Renesas EMMA Mobile EV2-based KZM-A9-Dual
+board, which has a dual Cortex-A9 with PL390.
 
-No sense in creating the ".machine" keyring, unless it is possible to
-safely load CA certificates on it.  At least for the time being, this
-should also be dependent on EFI.
+Despite the ARM Generic Interrupt Controller Architecture Specification
+(both version 1.0 and 2.0) stating that the Interrupt Processor Targets
+Registers are byte-accessible, the EMMA Mobile EV2 User's Manual
+states that the interrupt registers can be accessed via the APB bus,
+in 32-bit units.  Using byte accesses locks up the system.
 
-<snip>
+Unfortunately I only have remote access to the board showing the
+issue.  I did check that adding the writeb_relaxed() before the
+writel_relaxed() that was used before also causes a lock-up, so the
+issue is not an endian mismatch.
+Looking at the driver history, these registers have always been
+accessed using 32-bit accesses before.  As byte accesses lead
+indeed to simpler code, I'm wondering if they had been tried before,
+and caused issues before?
 
-> +++ b/security/integrity/platform_certs/machine_keyring.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Machine keyring routines.
-> + *
-> + * Copyright (c) 2021, Oracle and/or its affiliates.
-> + */
-> +
-> +#include "../integrity.h"
-> +
-> +static __init int machine_keyring_init(void)
-> +{
-> +	int rc;
-> +
-> +	rc = integrity_init_keyring(INTEGRITY_KEYRING_MACHINE);
-> +	if (rc)
-> +		return rc;
-> +
-> +	pr_notice("Machine keyring initialized\n");
-> +	return 0;
-> +}
-> +device_initcall(machine_keyring_init);
-> +
-> +void __init add_to_machine_keyring(const char *source, const void *data, size_t len)
-> +{
-> +	key_perm_t perm;
-> +	int rc;
-> +
-> +	perm = (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW;
-> +	rc = integrity_load_cert(INTEGRITY_KEYRING_MACHINE, source, data, len, perm);
-> +
-> +	/*
-> +	 * Some MOKList keys may not pass the machine keyring restrictions.
-> +	 * If the restriction check does not pass and the platform keyring
-> +	 * is configured, try to add it into that keyring instead.
-> +	 */
-> +	if (rc)
+Since you said the locking was bogus before, due to the reliance on
+the BL_SWITCHER option, I'm not suggesting a plain revert, but I'm
+wondering what kind of locking you suggest to use instead?
 
-In addition to the comment, also test to see if the ".platform" keyring
-is configured.
+Thanks for your comments!
 
-thanks,
+> --- a/drivers/irqchip/irq-gic.c
+> +++ b/drivers/irqchip/irq-gic.c
+> @@ -329,10 +329,8 @@ static int gic_irq_set_vcpu_affinity(struct irq_data *d, void *vcpu)
+>  static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+>                             bool force)
+>  {
+> -       void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + (gic_irq(d) & ~3);
+> -       unsigned int cpu, shift = (gic_irq(d) % 4) * 8;
+> -       u32 val, mask, bit;
+> -       unsigned long flags;
+> +       void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + gic_irq(d);
+> +       unsigned int cpu;
+>
+>         if (!force)
+>                 cpu = cpumask_any_and(mask_val, cpu_online_mask);
+> @@ -342,13 +340,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+>         if (cpu >= NR_GIC_CPU_IF || cpu >= nr_cpu_ids)
+>                 return -EINVAL;
+>
+> -       gic_lock_irqsave(flags);
+> -       mask = 0xff << shift;
+> -       bit = gic_cpu_map[cpu] << shift;
+> -       val = readl_relaxed(reg) & ~mask;
+> -       writel_relaxed(val | bit, reg);
+> -       gic_unlock_irqrestore(flags);
+> -
+> +       writeb_relaxed(gic_cpu_map[cpu], reg);
+>         irq_data_update_effective_affinity(d, cpumask_of(cpu));
+>
+>         return IRQ_SET_MASK_OK_DONE;
 
-Mimi
+Gr{oetje,eeting}s,
 
-> +		rc = integrity_load_cert(INTEGRITY_KEYRING_PLATFORM, source,
-> +					 data, len, perm);
-> +
-> +	if (rc)
-> +		pr_info("Error adding keys to machine keyring %s\n", source);
-> +}
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
