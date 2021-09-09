@@ -2,70 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6FC404517
+	by mail.lfdr.de (Postfix) with ESMTP id DFF8D404518
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350811AbhIIFiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:38:19 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38112 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350776AbhIIFiO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:38:14 -0400
-Received: from localhost.localdomain (unknown [171.61.210.53])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1E90A20B6C51;
-        Wed,  8 Sep 2021 22:37:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1E90A20B6C51
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1631165825;
-        bh=DgQXEsYLYwB5kRXEn217ARkxV0Yono9qI9u8Z8JlDp8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HkysfVKkXpHnxKBTmVjRD2DKcuGhQLIkIn6l1BXBZtYNMAqm/uWrOSWJhfjxiOS6e
-         no4QHsBU43vyF5FyqFNyKeRKO85iT+2JhRJKjoEaK8w39RikoHcRK46llottKqO0Y9
-         YQU/9Vro5RjNyv1wsyjaIRi6jQOdou44bmfyxkbE=
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk
-Subject: [PATCH] blk-mq: export blk_mq_submit_bio symbol
-Date:   Thu,  9 Sep 2021 11:06:53 +0530
-Message-Id: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        id S1350808AbhIIFjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:39:21 -0400
+Received: from mga05.intel.com ([192.55.52.43]:53754 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348026AbhIIFjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:39:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="306250160"
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="306250160"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 22:38:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="548340145"
+Received: from shishpan-mobl2.ccr.corp.intel.com (HELO [10.252.43.251]) ([10.252.43.251])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 22:38:08 -0700
+Subject: Re: [PATCH] kernel/locking: Add context to ww_mutex_trylock.
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
+ <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Message-ID: <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
+Date:   Thu, 9 Sep 2021 07:38:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are use-cases like replication where need to hook the blk I/O
-operations for devices and perform specific operation and fallback to
-its original I/O operations.
-Prior to v5.9 there was make_request_fn and then blk_mq_submit_bio
-exported apis, which provided infrastructure to drivers to develop these
-features. However in v5.10-rc1 with below commit the API was removed
-from the export list.
+Op 08-09-2021 om 12:14 schreef Peter Zijlstra:
+> On Tue, Sep 07, 2021 at 03:20:44PM +0200, Maarten Lankhorst wrote:
+>> i915 will soon gain an eviction path that trylock a whole lot of locks
+>> for eviction, getting dmesg failures like below:
+>>
+>> BUG: MAX_LOCK_DEPTH too low!
+>> turning off the locking correctness validator.
+>> depth: 48  max: 48!
+>> 48 locks held by i915_selftest/5776:
+>>  #0: ffff888101a79240 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x88/0x160
+>>  #1: ffffc900009778c0 (reservation_ww_class_acquire){+.+.}-{0:0}, at: i915_vma_pin.constprop.63+0x39/0x1b0 [i915]
+>>  #2: ffff88800cf74de8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_vma_pin.constprop.63+0x5f/0x1b0 [i915]
+>>  #3: ffff88810c7f9e38 (&vm->mutex/1){+.+.}-{3:3}, at: i915_vma_pin_ww+0x1c4/0x9d0 [i915]
+>>  #4: ffff88810bad5768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>>  #5: ffff88810bad60e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>> ...
+>>  #46: ffff88811964d768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>>  #47: ffff88811964e0e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+>> INFO: lockdep is turned off.
+>> As an intermediate solution, add an acquire context to ww_mutex_trylock,
+>> which allows us to do proper nesting annotations on the trylocks, making
+>> the above lockdep splat disappear.
+> Fair enough I suppose.
+>
+>> +/**
+>> + * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
+>> + * @lock: mutex to lock
+>> + * @ctx: optional w/w acquire context
+>> + *
+>> + * Trylocks a mutex with the optional acquire context; no deadlock detection is
+>> + * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
+>> + *
+>> + * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
+>> + * specified, -EALREADY and -EDEADLK handling may happen in calls to ww_mutex_lock.
+>> + *
+>> + * A mutex acquired with this function must be released with ww_mutex_unlock.
+>> + */
+>> +int __sched
+>> +ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ctx)
+>> +{
+>> +	bool locked;
+>> +
+>> +	if (!ctx)
+>> +		return mutex_trylock(&ww->base);
+>> +
+>> +#ifdef CONFIG_DEBUG_MUTEXES
+>> +	DEBUG_LOCKS_WARN_ON(ww->base.magic != &ww->base);
+>> +#endif
+>> +
+>> +	preempt_disable();
+>> +	locked = __mutex_trylock(&ww->base);
+>> +
+>> +	if (locked) {
+>> +		ww_mutex_set_context_fastpath(ww, ctx);
+>> +		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ctx->dep_map, _RET_IP_);
+>> +	}
+>> +	preempt_enable();
+>> +
+>> +	return locked;
+>> +}
+>> +EXPORT_SYMBOL(ww_mutex_trylock);
+> You'll need a similar hunk in ww_rt_mutex.c
 
-Previous commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.10-rc1&id=681cc5e8667e8579a2da8fa4090c48a2d73fc3bb
-
-This patch exports the blk_mq_submit_bio symbol to provide flexibility
-to the drivers.
-
-Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
----
- block/blk-mq.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 65d3a63aecc6..40a9b085f029 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2283,6 +2283,7 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
- 	blk_queue_exit(q);
- 	return BLK_QC_T_NONE;
- }
-+EXPORT_SYMBOL_GPL(blk_mq_submit_bio);
- 
- static size_t order_to_size(unsigned int order)
- {
--- 
-2.25.1
+What tree has that file?
 
