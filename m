@@ -2,479 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318AC404534
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7A8404535
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350905AbhIIFwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348026AbhIIFwc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:52:32 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79FAC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 22:51:23 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id i13so771784ilm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KRXuQBbGOZdnhL8mCDneScmauX8k4RjdUvz+VIMwq2w=;
-        b=BI+XgAFZ+35Jh6NgkZ7sIp/KQ7pUze4/ooglvOyOBQ/5gO1jspHiZqqS6uULwjV+jN
-         EaMnnFINhYh7wEUQwR6TroI9Tf9cDuhw37vNMi9bzSLDTDsfDNLrxALmtViCZE3sKqa6
-         EX9tRewfKy8pDrQ9ZyCPC+KuSN4UPs6kWiKpyOGEPmOWWHucUKnbqaKdbcgIf/JRyk89
-         Hy5QiunnaT9SN/VUu5t7su5Zhvcxaql4wSACdLTf8sLUg7jGVfRFO/5MYgmWPT4jc8JQ
-         CDYv59er80RfhwpYiBMPwYyYk2MiTaz64BYwrd6eTJYpgBKUAigt/LC3il7phTsBN108
-         bVGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KRXuQBbGOZdnhL8mCDneScmauX8k4RjdUvz+VIMwq2w=;
-        b=iVwEoVBUtMhgdbTaznWrok2rYwPjK49FnCGf5fc4l35+JnqgYOUwax93jdWSU8pKRM
-         ME35uI+kNoUGGUJ28p4p/vtxMRISxk4yZgKijfiVr8rOHl4zSAPDS4sXMS2dCRvym4gL
-         VFVNN6j/447rYMsq63my7tVGuVGLNKHOGKBUvN+rGv9m30cYkv1SLZ9gQkSSurc2FE6M
-         XfVJOKCi1cOUA98y2FIHp/ssDVNQ265JCqnNwGpUFThzDT9S5v28LhfZsZRB1fbYwrzY
-         QAwWZLlZvor6Hc+gAfh3RMIw5iF/tuzAu2iuROICcdjGh+jqhgU7/nZmq4+jv9f1PU2F
-         zq7A==
-X-Gm-Message-State: AOAM533fPJ9YdjjRqfZSB5s0vVmg3HHxeycvHhhajUmOJE4WZFAeAdny
-        huLEpFijmL4S4UrPMRakgeCFnw==
-X-Google-Smtp-Source: ABdhPJwKMcVSl3rWFq3w6Ojyrn8W6plvyjCxqSWtWoDgcFn8PM+nzCqe93KPbshaccYFkITUo31jig==
-X-Received: by 2002:a92:de51:: with SMTP id e17mr1104372ilr.188.1631166682829;
-        Wed, 08 Sep 2021 22:51:22 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id n11sm440271ilq.21.2021.09.08.22.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 22:51:22 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 05:51:18 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 15/18] KVM: arm64: selftests: Add arch_timer test
-Message-ID: <YTmg1i23taXTrOQS@google.com>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-16-rananta@google.com>
+        id S1350932AbhIIFxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:53:36 -0400
+Received: from mail-dm6nam10on2046.outbound.protection.outlook.com ([40.107.93.46]:9057
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348026AbhIIFxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:53:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BZDeBhk0EjODt+lALOidARGMN3l+TAmfBN1Mqp71Dwh/9ZD2uUdRJhUH8/+jqUWWrLdilm6DqUDIakxrHpIbXjbtKpWQLmjm/ua6/cKiVsbujXUFdAYB0vdZXwDPO0DJeWR3E5IVhN5bb7UTU94gMI/zOr6fFAlNlTtR3+tOrW4QFyWE+3rpZehpP2LUPEBXNLJgCZn2H4O1hTA80slQNzvkAGjR7PBj3vi0Unn7oe/f5j6pr4uNq6jtIJrc+VPAR92evAd1xoQeAuYM1P7mZ5fzU0SvaWogwn9vZEoCOHT2rwUEfG2447sfqxGhY0zEq7ifXe5n9pRRSphEeJGBtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=z79JnB/NAG1J9UgodFjTQCjX1nLPjme7M775zkyj9a0=;
+ b=AtEKqlKU6qB5lIAP+yqIaqHom5ZYQwslb9lQtUIcemIBlzEcmVlSBNd4J+fcBZHzXfgha6KlYp3xWIQCGOXEPJq+8U+bv9sOnrl/NJtj58niPKZm79nfBxdtr6DirH81IO9+0jlhAqF1aLVPDVUv4bbjEzbP8wawRXx8sDWG36LChrhV69TjttDgL20zws5P8UzaGEmKXOJ/LKDINzPqx9aGgAOYrBsmDN3APAQ9tlDpAFWfKCirjZ42JDPj5iFD/85dokGwqe2vpDkLNFGJZpa3/VdH1+5g9DT4t7I4Lro5fAelwCjw8j2DJqIXfxPJEex0jbGQZRRjmTL2HgSH7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z79JnB/NAG1J9UgodFjTQCjX1nLPjme7M775zkyj9a0=;
+ b=GivL3KAypq5ijMQ+/4dPwKGC5EQ3gauBO+p9qjq8rwPrMIOLnc8GxhuWMhjBef/3Qkb/quIA2v4eAzp4GxjVhxPrHE2UlzAIcE/QticKVYEedRREIVkT44zYFuKPUZa8fIH0EhVMNlywr1wmOj1oVverCeS5pc6lRXTkm7wBJnA=
+Received: from DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) by
+ DM5PR12MB2439.namprd12.prod.outlook.com (2603:10b6:4:b4::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4500.14; Thu, 9 Sep 2021 05:52:23 +0000
+Received: from DM6PR12MB4250.namprd12.prod.outlook.com
+ ([fe80::899f:5742:e36e:b303]) by DM6PR12MB4250.namprd12.prod.outlook.com
+ ([fe80::899f:5742:e36e:b303%9]) with mapi id 15.20.4478.027; Thu, 9 Sep 2021
+ 05:52:23 +0000
+From:   "Yu, Lang" <Lang.Yu@amd.com>
+To:     Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Thread-Topic: [PATCH] sysfs: Remove page boundary align limitation on
+ sysfs_emit and sysfs_emit_at
+Thread-Index: AQHXpKowoLymFk5Tf0idLKRe5rRrP6ubJ2WAgAAA8aCAAAnRgIAAAG7g
+Date:   Thu, 9 Sep 2021 05:52:23 +0000
+Message-ID: <DM6PR12MB4250AE8DF451484884B657C9FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
+References: <20210908120723.3920701-1-lang.yu@amd.com>
+         <04b52ef5b63abf25e6d50fd5bdfa90727e100a09.camel@perches.com>
+         <DM6PR12MB425005AE652C12F04E66B5B8FBD59@DM6PR12MB4250.namprd12.prod.outlook.com>
+ <685524a360bc910210cbbb7b13a46ead26ed8a22.camel@perches.com>
+In-Reply-To: <685524a360bc910210cbbb7b13a46ead26ed8a22.camel@perches.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2021-09-09T05:52:21Z;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP 2.0;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=18db461d-9623-414d-bf80-652b09a01093;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=1
+authentication-results: perches.com; dkim=none (message not signed)
+ header.d=none;perches.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d68a8c9a-82a2-4c93-926c-08d97355ff13
+x-ms-traffictypediagnostic: DM5PR12MB2439:
+x-microsoft-antispam-prvs: <DM5PR12MB243943FB6E8D186B80715B45FBD59@DM5PR12MB2439.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Z4mTqMXhU3O91ohnXLiwNI+XxQSxIFFA301jjJAZ5A2AraN1arI+E1bmq7MAHHXCJki7/c8MlFC8PcLD5LaSKXdC4H+w89waaNHku2dFVfJBQuQ8bqnzmcTLDVkPyoZPkLUsKZINcjEsx5JcqDWnWlbzGxFYBjOR08YJU/S+T+4xQruoOMXdlid6pzJO9pZWzUCUgE3qvOMDd96T30GF2nAcfDZzRaAyJZ+pWfRjzYxWhLWG/MED9cu39s8ZFrJEYAFIKPIKU/j0VtP5jBKE+ACvJ+NH98uaEFdtqAj+KrrWkLir32bp/3jVcouph9NkEfChUbiLHXRLC/NtElOj3nByjPg6eAwSEFjSm+E6IdcAeRISLosTtIyLEG3qQUDIaOijKyp/yVFXx6BUYGUXSPShVBSjAFYolvJ5f2DhfL1uAT1GTAlgLuTcZ7QJ3Wo1KPYCGJw6D+AsvkerQlTGDzIOHlhpaTuI0Fq2xaKbi+f0rVTY63sTkmXVa/QhfIffJnrkk4KJFRQ1PbIljaj1tRSAI6jhUQkZ8DhAvztupMtadq5fKVz38tB2n3b7hSBqDqJ43vJD0RCg8jAR+5dbFZx+ugIP3EDWYdSFAVW3rrhsMINGhpIMEMYp1f9qdxHgmn4fY2MgV5nOWbUj3MnTcdej5t+WCJ+6LR8WFWQvO5nwd9WPvahZvnugp3PTzJyjXH61yf96aQ+UVjukK9SfBA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4250.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(5660300002)(83380400001)(52536014)(2906002)(71200400001)(8936002)(6506007)(55016002)(9686003)(33656002)(110136005)(38100700002)(316002)(26005)(186003)(508600001)(86362001)(64756008)(66556008)(66476007)(66446008)(66946007)(76116006)(7696005)(38070700005)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FOQjlzPk5ymF21ZVUfp5EKO5vbUZFC1yrzFi+tCkhavT7noYKQuCeSpqvW2P?=
+ =?us-ascii?Q?0wveUdNfNMC762izJIX4i6eT4EWQtaAcrjipRtCZ79Z73R/ineVO2Q5oPlVd?=
+ =?us-ascii?Q?6pk9rKEAqE6SKbvBaGKPD0dCpNsP4dMGlTsYhaOLPuuYSBxAFODp5pNF3xZ1?=
+ =?us-ascii?Q?RKD3BGZQBKgu7HBqh9Y65xoKy/otRzAiIobNI/Bq9RbLGJ6AvHa6dufd12sk?=
+ =?us-ascii?Q?ISNzA13cCRfI9R8i1lNKy38+Bh+aiIiRGGSOA1suNrNwO5tr8ghpsasdNs++?=
+ =?us-ascii?Q?iB+dHGEkAHh75yzsKWxL/IUstFMsIBh8k8QSYyxpMzstL0r/MIWdGwxiURcO?=
+ =?us-ascii?Q?Z72OST4nyQ53psAzKvVxNoLeOtFvnLXU0qqxy3XlJ1loH5C0j3HqqNHlj89h?=
+ =?us-ascii?Q?SXvdr7uZ/OBELmc0VO7NTGdJJmU7SkzOVc4sUqA4GG3kQaXZyu6Dr9yiwoUr?=
+ =?us-ascii?Q?69+cx8V7c1sBfKW3c8Tq8qg4aScYlruM5nxV0yNhQcoyDpUCOr6znCqKOfX5?=
+ =?us-ascii?Q?zw6FUqfO27PIxRIx8u50zV4rNEZXUfmngWUHcOVfmtiO4EgX5VCNAptrabSv?=
+ =?us-ascii?Q?wfTREM0EFf/3bKDicWXm5BvFl9DAWLSiqagszqqN3d79V+eGKL5NvLFF/7Sj?=
+ =?us-ascii?Q?1EtJCT0bhZrCMu6DLUUkzzTQmS756/Bt+Vo6KpHP4zFN1Z4R//ETa4tF1zIR?=
+ =?us-ascii?Q?chtyuynlRd2H3NxHBBrTcMYLsBgzV6MVsLLrMjzs320uh1by5OvV+3NScx3g?=
+ =?us-ascii?Q?azNUlO0xwu7tsZdWX0W3MzOfKJaebHLCyxkXVHHKUrmtRivqvvJv38nkKPhe?=
+ =?us-ascii?Q?a+3r2IRnP7wrl6oy0RWCtQmzeQmCSihXtASyl+1cuhqaZG7HX/c4N8Ldp73I?=
+ =?us-ascii?Q?jES/Tl0rE/vkIbqVk0o16VQFkNvCvFJXOPfGG7dvX0osC/7eMjJoIRqfGlSR?=
+ =?us-ascii?Q?7gu1PYrEt/x7IDcoVxVgw9cWkP22uc1liHlpDriIFg748YrbHlioCB5QyZ/R?=
+ =?us-ascii?Q?thAF/WCABLo+SFyplYWyECFIVor8KfO+t3rPTjIL5AbM6OXkXLktmk20e8Nf?=
+ =?us-ascii?Q?5elg20nwEmGvkLjUX7mFlOPa8eY9syPNUuDdhOFJttagawekfBI0mAAazTqd?=
+ =?us-ascii?Q?ocA59Biv5EHvJ9xs++itywEzGtamfXtAqz1FJqXP0RhHTP6Eth/taO7Fsmbp?=
+ =?us-ascii?Q?XaMlIG6nvFpxPhidWBOlrNVQ5ww33QlgD1gyoYMjE3vOdhNtN36ZSu+QEsG4?=
+ =?us-ascii?Q?4AKm7CJg/KibADziALUk/ljs6y9j5YqShpH0cTIi2zUjpHRVtBabVI1NFlaS?=
+ =?us-ascii?Q?LzxbWO8Go429g7XvHnX4FOGv?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909013818.1191270-16-rananta@google.com>
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4250.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d68a8c9a-82a2-4c93-926c-08d97355ff13
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 05:52:23.7477
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MfLHL0xgCpDeLNf9Od6tibC0VQkVA10N/o+fyuC8vJ8H7pRICfTEXZmYjKAm+6S4YvXzXmxckQC7PFxMGXa/0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2439
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 01:38:15AM +0000, Raghavendra Rao Ananta wrote:
-> Add a KVM selftest to validate the arch_timer functionality.
-> Primarily, the test sets up periodic timer interrupts and
-> validates the basic architectural expectations upon its receipt.
-> 
-> The test provides command-line options to configure the period
-> of the timer, number of iterations, and number of vCPUs.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
-> ---
->  tools/testing/selftests/kvm/.gitignore        |   1 +
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../selftests/kvm/aarch64/arch_timer.c        | 351 ++++++++++++++++++
->  3 files changed, 353 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/aarch64/arch_timer.c
-> 
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index 98053d3afbda..c6058df0cd18 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -1,4 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> +/aarch64/arch_timer
->  /aarch64/debug-exceptions
->  /aarch64/get-reg-list
->  /aarch64/psci_cpu_on_test
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 8342f65c1d96..46d43e706b20 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -84,6 +84,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
->  TEST_GEN_PROGS_x86_64 += steal_time
->  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
->  
-> +TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
->  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
->  TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list
->  TEST_GEN_PROGS_aarch64 += aarch64/psci_cpu_on_test
-> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> new file mode 100644
-> index 000000000000..6141c387e6dc
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> @@ -0,0 +1,351 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * arch_timer.c - Tests the aarch64 timer IRQ functionality
-> + *
-> + * The test validates both the virtual and physical timer IRQs using
-> + * CVAL and TVAL registers. This consitutes the four stages in the test.
-> + * The guest's main thread configures the timer interrupt for a stage
-> + * and waits for it to fire, with a timeout equal to the timer period.
-> + * It asserts that the timeout doesn't exceed the timer period.
-> + *
-> + * On the other hand, upon receipt of an interrupt, the guest's interrupt
-> + * handler validates the interrupt by checking if the architectural state
-> + * is in compliance with the specifications.
-> + *
-> + * The test provides command-line options to configure the timer's
-> + * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> + *
-> + * Copyright (c) 2021, Google LLC.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <stdlib.h>
-> +#include <pthread.h>
-> +#include <linux/kvm.h>
-> +#include <linux/sizes.h>
-> +
-> +#include "kvm_util.h"
-> +#include "processor.h"
-> +#include "delay.h"
-> +#include "arch_timer.h"
-> +#include "gic.h"
-> +#include "vgic.h"
-> +
-> +#define NR_VCPUS_DEF			4
-> +#define NR_TEST_ITERS_DEF		5
-> +#define TIMER_TEST_PERIOD_MS_DEF	10
-> +#define TIMER_TEST_ERR_MARGIN_US	100
-> +
-> +struct test_args {
-> +	int nr_vcpus;
-> +	int nr_iter;
-> +	int timer_period_ms;
-> +};
-> +
-> +static struct test_args test_args = {
-> +	.nr_vcpus = NR_VCPUS_DEF,
-> +	.nr_iter = NR_TEST_ITERS_DEF,
-> +	.timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-> +};
-> +
-> +#define msecs_to_usecs(msec)		((msec) * 1000LL)
-> +
-> +#define VTIMER_IRQ			27
-> +#define PTIMER_IRQ			30
+[Public]
 
-I don't know if these are guaranteed, necessarily. Probably safest to
-determine the IRQ# from the KVM_ARM_VCPU_TIMER_IRQ_{P,V}TIMER vCPU
-device attributes. Either that or write these values to the attributes.
 
-> +#define GICD_BASE_GPA			0x8000000ULL
-> +#define GICR_BASE_GPA			0x80A0000ULL
-> +
-> +enum guest_stage {
-> +	GUEST_STAGE_VTIMER_CVAL = 1,
-> +	GUEST_STAGE_VTIMER_TVAL,
-> +	GUEST_STAGE_PTIMER_CVAL,
-> +	GUEST_STAGE_PTIMER_TVAL,
-> +	GUEST_STAGE_MAX,
-> +};
-> +
-> +/* Shared variables between host and guest */
-> +struct test_vcpu_shared_data {
-> +	int nr_iter;
-> +	enum guest_stage guest_stage;
-> +	uint64_t xcnt;
-> +};
-> +
-> +struct test_vcpu {
-> +	uint32_t vcpuid;
-> +	pthread_t pt_vcpu_run;
-> +	struct kvm_vm *vm;
-> +};
-> +
-> +static struct test_vcpu test_vcpu[KVM_MAX_VCPUS];
-> +static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
-> +
-> +static void
-> +guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
-> +{
-> +	switch (shared_data->guest_stage) {
-> +	case GUEST_STAGE_VTIMER_CVAL:
-> +		timer_set_next_cval_ms(VIRTUAL, test_args.timer_period_ms);
-> +		shared_data->xcnt = timer_get_cntct(VIRTUAL);
-> +		timer_set_ctl(VIRTUAL, CTL_ENABLE);
-> +		break;
-> +	case GUEST_STAGE_VTIMER_TVAL:
-> +		timer_set_next_tval_ms(VIRTUAL, test_args.timer_period_ms);
-> +		shared_data->xcnt = timer_get_cntct(VIRTUAL);
-> +		timer_set_ctl(VIRTUAL, CTL_ENABLE);
-> +		break;
-> +	case GUEST_STAGE_PTIMER_CVAL:
-> +		timer_set_next_cval_ms(PHYSICAL, test_args.timer_period_ms);
-> +		shared_data->xcnt = timer_get_cntct(PHYSICAL);
-> +		timer_set_ctl(PHYSICAL, CTL_ENABLE);
-> +		break;
-> +	case GUEST_STAGE_PTIMER_TVAL:
-> +		timer_set_next_tval_ms(PHYSICAL, test_args.timer_period_ms);
-> +		shared_data->xcnt = timer_get_cntct(PHYSICAL);
-> +		timer_set_ctl(PHYSICAL, CTL_ENABLE);
-> +		break;
-> +	default:
-> +		GUEST_ASSERT(0);
-> +	}
-> +}
-> +
-> +static void guest_validate_irq(unsigned int intid,
-> +				struct test_vcpu_shared_data *shared_data)
-> +{
-> +	enum guest_stage stage = shared_data->guest_stage;
-> +	uint64_t xcnt = 0, xcnt_diff_us, cval = 0;
-> +	unsigned long xctl = 0;
-> +	unsigned int timer_irq = 0;
-> +
-> +	if (stage == GUEST_STAGE_VTIMER_CVAL ||
-> +		stage == GUEST_STAGE_VTIMER_TVAL) {
-> +		xctl = timer_get_ctl(VIRTUAL);
-> +		timer_set_ctl(VIRTUAL, CTL_IMASK);
-> +		xcnt = timer_get_cntct(VIRTUAL);
-> +		cval = timer_get_cval(VIRTUAL);
-> +		timer_irq = VTIMER_IRQ;
-> +	} else if (stage == GUEST_STAGE_PTIMER_CVAL ||
-> +		stage == GUEST_STAGE_PTIMER_TVAL) {
-> +		xctl = timer_get_ctl(PHYSICAL);
-> +		timer_set_ctl(PHYSICAL, CTL_IMASK);
-> +		xcnt = timer_get_cntct(PHYSICAL);
-> +		cval = timer_get_cval(PHYSICAL);
-> +		timer_irq = PTIMER_IRQ;
-> +	} else {
-> +		GUEST_ASSERT(0);
-> +	}
-> +
-> +	xcnt_diff_us = cycles_to_usec(xcnt - shared_data->xcnt);
-> +
-> +	/* Make sure we are dealing with the correct timer IRQ */
-> +	GUEST_ASSERT_2(intid == timer_irq, intid, timer_irq);
-> +
-> +	/* Basic 'timer condition met' check */
-> +	GUEST_ASSERT_3(xcnt >= cval, xcnt, cval, xcnt_diff_us);
-> +	GUEST_ASSERT_1(xctl & CTL_ISTATUS, xctl);
-> +}
-> +
-> +static void guest_irq_handler(struct ex_regs *regs)
-> +{
-> +	unsigned int intid = gic_get_and_ack_irq();
-> +	uint32_t cpu = get_vcpuid();
-> +	struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[cpu];
-> +
-> +	guest_validate_irq(intid, shared_data);
-> +
-> +	WRITE_ONCE(shared_data->nr_iter, shared_data->nr_iter + 1);
-> +
-> +	gic_set_eoi(intid);
-> +}
-> +
-> +static void guest_run_stage(struct test_vcpu_shared_data *shared_data,
-> +				enum guest_stage stage)
-> +{
-> +	uint32_t irq_iter, config_iter;
-> +
-> +	shared_data->guest_stage = stage;
-> +	shared_data->nr_iter = 0;
-> +
-> +	for (config_iter = 0; config_iter < test_args.nr_iter; config_iter++) {
-> +		/* Setup the next interrupt */
-> +		guest_configure_timer_action(shared_data);
-> +
-> +		/* Setup a timeout for the interrupt to arrive */
-> +		udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> +			TIMER_TEST_ERR_MARGIN_US);
-> +
-> +		irq_iter = READ_ONCE(shared_data->nr_iter);
-> +		GUEST_ASSERT_2(config_iter + 1 == irq_iter,
-> +				config_iter + 1, irq_iter);
-> +	}
-> +}
-> +
-> +static void guest_code(void)
-> +{
-> +	uint32_t cpu = get_vcpuid();
-> +	struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[cpu];
-> +
-> +	local_irq_disable();
-> +
-> +	gic_init(GIC_V3, test_args.nr_vcpus,
-> +		(void *)GICD_BASE_GPA, (void *)GICR_BASE_GPA);
-> +
-> +	timer_set_ctl(VIRTUAL, CTL_IMASK);
-> +	timer_set_ctl(PHYSICAL, CTL_IMASK);
-> +
-> +	gic_irq_enable(VTIMER_IRQ);
-> +	gic_irq_enable(PTIMER_IRQ);
-> +	local_irq_enable();
-> +
-> +	guest_run_stage(shared_data, GUEST_STAGE_VTIMER_CVAL);
-> +	guest_run_stage(shared_data, GUEST_STAGE_VTIMER_TVAL);
-> +	guest_run_stage(shared_data, GUEST_STAGE_PTIMER_CVAL);
-> +	guest_run_stage(shared_data, GUEST_STAGE_PTIMER_TVAL);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void *test_vcpu_run(void *arg)
-> +{
-> +	struct ucall uc;
-> +	struct test_vcpu *vcpu = arg;
-> +	struct kvm_vm *vm = vcpu->vm;
-> +	uint32_t vcpuid = vcpu->vcpuid;
-> +	struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[vcpuid];
-> +
-> +	vcpu_run(vm, vcpuid);
-> +
-> +	switch (get_ucall(vm, vcpuid, &uc)) {
-> +	case UCALL_SYNC:
-> +	case UCALL_DONE:
-> +		break;
-> +	case UCALL_ABORT:
-> +		sync_global_from_guest(vm, *shared_data);
-> +		TEST_FAIL("%s at %s:%ld\n\tvalues: %lu, %lu; %lu, vcpu: %u; stage: %u; iter: %u",
-> +			(const char *)uc.args[0], __FILE__, uc.args[1],
-> +			uc.args[2], uc.args[3], uc.args[4], vcpuid,
-> +			shared_data->guest_stage, shared_data->nr_iter);
-> +		break;
-> +	default:
-> +		TEST_FAIL("Unexpected guest exit\n");
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void test_run(struct kvm_vm *vm)
-> +{
-> +	int i, ret;
-> +
-> +	for (i = 0; i < test_args.nr_vcpus; i++) {
-> +		ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
-> +				test_vcpu_run, &test_vcpu[i]);
-> +		TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
-> +	}
-> +
-> +	for (i = 0; i < test_args.nr_vcpus; i++)
-> +		pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
-> +}
-> +
-> +static struct kvm_vm *test_vm_create(void)
-> +{
-> +	struct kvm_vm *vm;
-> +	unsigned int i;
-> +	int nr_vcpus = test_args.nr_vcpus;
-> +
-> +	vm = vm_create_default_with_vcpus(nr_vcpus, 0, 0, guest_code, NULL);
-> +
-> +	vm_init_descriptor_tables(vm);
-> +	vm_install_exception_handler(vm, VECTOR_IRQ_CURRENT, guest_irq_handler);
-> +
-> +	for (i = 0; i < nr_vcpus; i++) {
-> +		vcpu_init_descriptor_tables(vm, i);
-> +
-> +		test_vcpu[i].vcpuid = i;
-> +		test_vcpu[i].vm = vm;
-> +	}
-> +
-> +	ucall_init(vm, NULL);
-> +	vm_vcpuid_map_init(vm);
-> +	vgic_v3_setup(vm, GICD_BASE_GPA, GICR_BASE_GPA);
-> +
-> +	/* Make all the test's cmdline args visible to the guest */
-> +	sync_global_to_guest(vm, test_args);
-> +
-> +	return vm;
-> +}
-> +
-> +static void test_print_help(char *name)
-> +{
-> +	pr_info("Usage: %s [-h] [-n nr_vcpus] [-i iterations] [-p timer_period_ms]\n",
-> +		name);
-> +	pr_info("\t-n: Number of vCPUs to configure (default: %u; max: %u)\n",
-> +		NR_VCPUS_DEF, KVM_MAX_VCPUS);
-> +	pr_info("\t-i: Number of iterations per stage (default: %u)\n",
-> +		NR_TEST_ITERS_DEF);
-> +	pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
-> +		TIMER_TEST_PERIOD_MS_DEF);
-> +	pr_info("\t-h: print this help screen\n");
-> +}
-> +
-> +static bool parse_args(int argc, char *argv[])
-> +{
-> +	int opt;
-> +
-> +	while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
-> +		switch (opt) {
-> +		case 'n':
-> +			test_args.nr_vcpus = atoi(optarg);
-> +			if (test_args.nr_vcpus <= 0) {
-> +				pr_info("Positive value needed for -n\n");
-> +				goto err;
-> +			} else if (test_args.nr_vcpus > KVM_MAX_VCPUS) {
-> +				pr_info("Max allowed vCPUs: %u\n",
-> +					KVM_MAX_VCPUS);
-> +				goto err;
-> +			}
-> +			break;
-> +		case 'i':
-> +			test_args.nr_iter = atoi(optarg);
-> +			if (test_args.nr_iter <= 0) {
-> +				pr_info("Positive value needed for -i\n");
-> +				goto err;
-> +			}
-> +			break;
-> +		case 'p':
-> +			test_args.timer_period_ms = atoi(optarg);
-> +			if (test_args.timer_period_ms <= 0) {
-> +				pr_info("Positive value needed for -p\n");
-> +				goto err;
-> +			}
-> +			break;
-> +		case 'h':
-> +		default:
-> +			goto err;
-> +		}
-> +	}
-> +
-> +	return true;
-> +
-> +err:
-> +	test_print_help(argv[0]);
-> +	return false;
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	struct kvm_vm *vm;
-> +
-> +	/* Tell stdout not to buffer its content */
-> +	setbuf(stdout, NULL);
-> +
-> +	if (!parse_args(argc, argv))
-> +		exit(KSFT_SKIP);
-> +
-> +	vm = test_vm_create();
-> +	test_run(vm);
-> +	kvm_vm_free(vm);
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
-> 
+
+>-----Original Message-----
+>From: Joe Perches <joe@perches.com>
+>Sent: Thursday, September 9, 2021 1:44 PM
+>To: Yu, Lang <Lang.Yu@amd.com>; Greg Kroah-Hartman
+><gregkh@linuxfoundation.org>; Rafael J . Wysocki <rafael@kernel.org>; linu=
+x-
+>kernel@vger.kernel.org
+>Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on sysfs=
+_emit
+>and sysfs_emit_at
+>
+>On Thu, 2021-09-09 at 05:27 +0000, Yu, Lang wrote:
+>> [AMD Official Use Only]
+>
+>this is a public list and this marker is not appropriate.
+
+Sorry for that.
+>
+>> > -----Original Message-----
+>> > From: Joe Perches <joe@perches.com>
+>> > On Wed, 2021-09-08 at 20:07 +0800, Lang Yu wrote:
+>> > > The key purpose of sysfs_emit and sysfs_emit_at is to ensure that
+>> > > no overrun is done. Make them more equivalent with scnprintf.
+>> >
+>> > I can't think of a single reason to do this.
+>> > sysfs_emit and sysfs_emit_at are specific to sysfs.
+>> >
+>> > Use of these functions outside of sysfs is not desired or supported.
+>> >
+>> Thanks for your reply. But I'm still curious why you put such a limitati=
+on.
+>> As "Documentation/filesystems/sysfs.rst" described, we can just  use
+>> scnprintf(buf, PAGE_SIZE, "%s\n", dev->name) in show functions without
+>> such a limitation.
+>
+>There's nothing particularly wrong with the use of scnprintf as above.
+>
+>The only real reason that sysfs_emit exists is to be able to reduce the ke=
+rnel
+>treewide quantity of uses of the sprintf family of functions that need to =
+be
+>analyzed for possible buffer overruns.
+>
+>The issue there is that buf is already known to be both a PAGE_SIZE buffer=
+ and
+>PAGE_SIZE aligned for sysfs show functions so there's no real reason to us=
+e
+>scnprintf.
+>
+>sysfs_emit is a shorter/smaller function and using it could avoid some spr=
+intf
+>defects.
+>
+>> Some guys just try to replace scnprintf with sysfs_emit() or sysfs_emit_=
+at() per
+>above documents.
+>
+>So don't do that.
+>
+>> But sprintf and sysfs_emit/sysfs_emit_at are not totally equivalent(e.g.=
+, page
+>boundary align).
+>>
+>> In my opinion, we add a new api and try to replace an old api. Does we
+>> need to make it more compatible with old api?
+>
+>IMO: no.
+>
+But why you said " - show() should only use sysfs_emit() or sysfs_emit_at()=
+ when formatting
+the value to be returned to user space. " in Documentation/filesystems/sysf=
+s.rst ?
+
+Obviously, sysfs_emit() and sysfs_emit_at()  can't cover all the cases in s=
+how functions.=20
+
+Regards,
+Lang
+
