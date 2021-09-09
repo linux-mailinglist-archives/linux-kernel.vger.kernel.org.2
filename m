@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D61440449C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F64B4044A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350487AbhIIEvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        id S1350500AbhIIE7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhIIEvG (ORCPT
+        with ESMTP id S230251AbhIIE7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:51:06 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3941C061575;
-        Wed,  8 Sep 2021 21:49:57 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso1001882otu.0;
-        Wed, 08 Sep 2021 21:49:57 -0700 (PDT)
+        Thu, 9 Sep 2021 00:59:06 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEAFC061575;
+        Wed,  8 Sep 2021 21:57:58 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id k65so1358987yba.13;
+        Wed, 08 Sep 2021 21:57:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zSdDJmykDz9RTad7mrV36cJkuuQOB/FNuOcap03OkbQ=;
-        b=WhMD+ExrGhJW1OHa5voKbQZpKXvfpplr6A2O+kLcKVPh9VhkAFPZdWQnSIfi1dO3Pc
-         IEYcRwc00hz+0TfbtGfjxrZfKqzx+1NnJIYUEadNVbHmrOOILrYtRsAz3SCTEvgSeOsI
-         Trk5CVsi3yC1NUko5efAQkZPA4ZwiOjviaiXSaeVdXM0RioH+wa/N7bSmgj8lJIyWbQ1
-         Mhw0o310t5SnQYzzxGa5q0d4jyyvVe1uPWU6z2+zcwgxDIm8EFgQhNlR7aWDfcvjP/wX
-         /RZoXYLsRjPzFR0HyVBnatWw13/bMe1SX0EGVJ61jkBaqkyDKRWF0MT/xm2E/0QBCq92
-         r05A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pDztYpdMgz+EivXrgs8mgs/VRszb49SOrCgwxm22Cv8=;
+        b=LML7pCD9Lmu+9xugohKKvI07uWANHAP6eRlisyGc8SmJj7iX+LM/KlxVbe59IeiH/i
+         0MI+q82Zum/ngTDfoL7nV3W9mi/8u6fcXLWHYjGuD+Mblz32xZlvP+PTPVa7XRXqqtXV
+         Na9fwnSHowMJZpAj/iAUMJdi+8h9qzmBC0DqEKRZH3GX5oJZCszW5JSLv/ktByFq1XZW
+         98v8OhY7G7OJydtxV3QnBcNIA+Dl2thSycb/89P7uVU/Ks/bokOpTI0ApbhxM3iadlP+
+         X9tUzHbOKq0bGUO16gf2uFP5bFSx6hzjtiq1KU9dnQNObBU4beOesIoFvMqXpDDUQNxp
+         aaTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=zSdDJmykDz9RTad7mrV36cJkuuQOB/FNuOcap03OkbQ=;
-        b=e9nk4yAyKlrqM76zddkKYTnzg4ymmoPE5Leo9wQR1fzLTNSOASYdngSFFbEO5dm02+
-         PVStDlV9QVek1KQFF2k37RfcxTKfAq0gUFovj2uJOXjfI86yR3F72W4R6IjT+B8hvF+Q
-         1Em5qWZtFWr+VawfncmJFHHf2szxn5OqKDoaj+n4M8ysF3Me9TJIf2TiIolpBS0TjZz9
-         8tM3aKgYz9j9U8/c/9+4gV3c3uft5HWfs5U/tfoVXDqmzGTzcDKHakgli+bK5R8vU36l
-         ntPehnKdG1ezVqOZmM+6L0P1XvFdLMbNTqZD3aSVvfGCEE7HymJ1PM98AWE2MMmNcQdP
-         Q3gQ==
-X-Gm-Message-State: AOAM530gpjPzDGp0Mks456fYdE8oGMyA+WhMOJV3lukc20RChtVyLL/Z
-        sQmabP5SmRrg3YaRy5est6U6T8yjGTI=
-X-Google-Smtp-Source: ABdhPJwEm11UZMvKdp3qo1Wj2KPQIelfNBHGRzB8M6PTnjqGCcHcgmAXjNotYVd5/Wq9v0MYEEbwKA==
-X-Received: by 2002:a05:6830:2781:: with SMTP id x1mr927266otu.334.1631162997005;
-        Wed, 08 Sep 2021 21:49:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 97sm180427otv.26.2021.09.08.21.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 21:49:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH] net: ni65: Avoid typecast of pointer to u32
-Date:   Wed,  8 Sep 2021 21:49:53 -0700
-Message-Id: <20210909044953.1564070-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pDztYpdMgz+EivXrgs8mgs/VRszb49SOrCgwxm22Cv8=;
+        b=U0gcnIuIrWhiMIcUPt4JqSWIc1tKwxpFqVyZS6jpSf0WyqD+bR7FeU3QwTXbqcCmRt
+         Cng5yoU/2/1t0aeC0+zEhzG4GCSl21/+Gpoa2eKnNh4KEeBeAY7g43wOBqfu59yW4IzD
+         dNEBXCW5R2XWwIXzCVVWTXbGQpDGjHO+0/p3P1nBocfYxrvxictGex4rqMsyvsWNNo+B
+         qftZrP22qquJpYDc1M0Ou47jjXuZgtk4TZFzwYmxUkH9Lahd4JBlfBtSNfreTJ7pcZ7+
+         0Pm3ZmCQ38DhjBYpnDyTsgby8Kq0NkZKz1GXM8UTve5ukOsAqkYY2vPqbInoCVIj9kXt
+         VPsg==
+X-Gm-Message-State: AOAM5310F59FfF8CU0+lfgkXY2i0WrXkobl9khRJ/01Fhb2U6HUrIC8E
+        ilR4VchzAScoY96yZegPNaVvYMTIVzjdMwhRfwz1BM2x
+X-Google-Smtp-Source: ABdhPJxMWUDMhDNrAgn9HgXkFBdLwntqSrpPQylsdSx0AouaW+gFSZUXvFY/k9vQ7JYs7UL769LqEKATyFqHptroy4A=
+X-Received: by 2002:a25:ef46:: with SMTP id w6mr1441432ybm.546.1631163477355;
+ Wed, 08 Sep 2021 21:57:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210907060040.36222-1-cuibixuan@huawei.com>
+In-Reply-To: <20210907060040.36222-1-cuibixuan@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Sep 2021 21:57:46 -0700
+Message-ID: <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
+Subject: Re: [PATCH -next] bpf: Add oversize check before call kvcalloc()
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building alpha:allmodconfig results in the following error.
+On Mon, Sep 6, 2021 at 11:04 PM Bixuan Cui <cuibixuan@huawei.com> wrote:
+>
+> Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
+> oversize check. When the allocation is larger than what kmalloc() supports,
+> the following warning triggered:
+>
+> WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
+> Modules linked in:
+> CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
+> Call Trace:
+>  kvmalloc include/linux/mm.h:806 [inline]
+>  kvmalloc_array include/linux/mm.h:824 [inline]
+>  kvcalloc include/linux/mm.h:829 [inline]
+>  check_btf_line kernel/bpf/verifier.c:9925 [inline]
+>  check_btf_info kernel/bpf/verifier.c:10049 [inline]
+>  bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
+>  bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
+>  __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
+>  __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+>  __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+>  kernel/bpf/verifier.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 047ac4b4703b..2a3955359156 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+>         nr_linfo = attr->line_info_cnt;
+>         if (!nr_linfo)
+>                 return 0;
+> +       if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)
+> +               return -EINVAL;
 
-drivers/net/ethernet/amd/ni65.c: In function 'ni65_stop_start':
-drivers/net/ethernet/amd/ni65.c:751:37: error:
-	cast from pointer to integer of different size
-		buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
+I might be missing something, but on 64-bit architecture this can't
+overflow (because u32 is multiplied by fixed small sizeof()). And on
+32-bit architecture if it overflows you won't catch it... So did you
+mean to do:
 
-'buffer[]' is declared as unsigned long, so replace the typecast to u32
-with a typecast to unsigned long to fix the problem.
+if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))
+    return -EINVAL;
 
-Cc: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/net/ethernet/amd/ni65.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+?
 
-diff --git a/drivers/net/ethernet/amd/ni65.c b/drivers/net/ethernet/amd/ni65.c
-index b5df7ad5a83f..032e8922b482 100644
---- a/drivers/net/ethernet/amd/ni65.c
-+++ b/drivers/net/ethernet/amd/ni65.c
-@@ -748,7 +748,7 @@ static void ni65_stop_start(struct net_device *dev,struct priv *p)
- #ifdef XMT_VIA_SKB
- 			skb_save[i] = p->tmd_skb[i];
- #endif
--			buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
-+			buffer[i] = (unsigned long)isa_bus_to_virt(tmdp->u.buffer);
- 			blen[i] = tmdp->blen;
- 			tmdp->u.s.status = 0x0;
- 		}
--- 
-2.33.0
-
+>
+>         rec_size = attr->line_info_rec_size;
+>         if (rec_size < MIN_BPF_LINEINFO_SIZE ||
+> --
+> 2.17.1
+>
