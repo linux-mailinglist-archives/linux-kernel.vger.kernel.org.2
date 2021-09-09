@@ -2,121 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D724048D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F774048D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbhIILDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:03:15 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:57718 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234216AbhIILDO (ORCPT
+        id S234628AbhIILDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234550AbhIILDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:03:14 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 189B1nr9024809;
-        Thu, 9 Sep 2021 20:01:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 189B1nr9024809
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631185310;
-        bh=nZfFg/JwDacjaTOLCboRuBQ6A+RYt6dHwDsyrC1BjG0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gsGVGB59VhtqgkNoD6ckbHiPd97O406ngyVMGyakbRrILR6n1qazziSVIMrXNDwWP
-         cdWp3nwXqvVKmOjMggDRFgUhQaylFu7n2tYV3Ug4jeY2aebw144sH+gCRew8HX39Jn
-         8pjUlF4jArb82Y6/x9bhetRQBXr/fk81pY8PVv7crBrnV70IHvT3gC72mae+sIX6cM
-         hnBZyZRvs+a6GK4LKEISKv8ZkRJR60e74sS/DCmhqCCmwEhoNrRmJLQCBI0yIg2k7J
-         pfqI3JdgdRcKIz7DU/slolyS+ZruWfiQizTWbHcDn3/Cio19Xu8oukTuVJZEjxdY7a
-         kpv/xL9d47RmA==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id m26so1454291pff.3;
-        Thu, 09 Sep 2021 04:01:49 -0700 (PDT)
-X-Gm-Message-State: AOAM532lOqbxb0ebhVp8O9ns/Wcc+EJ9MNOhJyf19M3lADmzdHKdl5Cs
-        kic/t/4i91gflZmEC1zqwbkuFxd7VhKDlO1ljwg=
-X-Google-Smtp-Source: ABdhPJyw7Aayt9CY7VD9ORFmSgdPI2JfaYnLCELWBhkqW4xRoDatIy6RguQ8KldM3TDq1+wUZAQPMJYM66AGuzCxbm0=
-X-Received: by 2002:aa7:9e8d:0:b0:406:be8:2413 with SMTP id
- p13-20020aa79e8d000000b004060be82413mr2637188pfq.66.1631185309107; Thu, 09
- Sep 2021 04:01:49 -0700 (PDT)
+        Thu, 9 Sep 2021 07:03:33 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CBDC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:02:24 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h1so2332922ljl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HqMw/0l1kESubu2uMBYTCMZr+nbcPkWmEaa8w30Z3Ss=;
+        b=xIwstDFqbjVnFK3QnzRTMN0EG2JKgfszQq2XLDgslizPmY4v6dP8UJZjjqlxKby6Mp
+         0KJgvLrdmrGWirG868pOOPdsvJJ3wvQn4HkuNGkCKL+5AK09jt8kwULq/1fFgbNj/zJh
+         DgiUwA+I9ht71YaJwD+/egwug7iP8l3WAL3uG8+63AzTHLyqAsK0emCtbiYDpHZ5RD8o
+         nXPP9ukAOMaLrge7iHJSN6pNxYP5rBChKHGsoNSvRzI8QMOaOhwGoS8IK0ywKlKMSqpt
+         Krk1MSkR/EWsz7PKnjgqn+kK5tJouOKWILi/kPWt0Bj3Mh1o2vgfuhf0SU8aRz5NPaNQ
+         j4AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HqMw/0l1kESubu2uMBYTCMZr+nbcPkWmEaa8w30Z3Ss=;
+        b=FieOvZv3MXTRtbKjmfLVKz6J1lPive4HN5ILfZsms44WX95heMWeT0pfXw+mfNt0Cu
+         aXFPukCn4v2jE+qy0x3tzeLwkW2x4dnNgbW5doyiNgc7lUBv1AnxVysRgFgAp0qIDa3s
+         RM6UTXOWJ7h87nLeYSKO8fppDQ1kcd/kEONsDW1nK/nDpW4fytBaEmSHz5foa2NVXFjR
+         Ew0EL/7C+b675RfV0YGWAUfwxDTt5RKiv7005iHxOmRbSc5XS608mU/oOiLfrrXo5ydp
+         /R3VdgliQ98UI0OiZuFDjwlwMAPafCYHwBxC+3N75sfxUwTXIj3xBwV7gxFrnfD0zEbj
+         tagQ==
+X-Gm-Message-State: AOAM532XY0Pk53O1pFjUdPNGdV/xN9XlxIu4iUbEB+1+IH2/97WuOW6l
+        E1YfCMp18CgPatXdLUQIBOf0qkNNdvAD27Wf6GNQPQ==
+X-Google-Smtp-Source: ABdhPJxQvRGdQcwMRyPKe/v7I+JRraf0+2CwO4dEv14CGJ8gaECBtDJTpCm9aPScDx10Jp9Ce7uZo62Ly4MHBeb1p0s=
+X-Received: by 2002:a2e:b610:: with SMTP id r16mr1746946ljn.367.1631185342288;
+ Thu, 09 Sep 2021 04:02:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210908032847.18683-1-kortanzh@gmail.com> <YTjt5C7xTqNLUSl/@archlinux-ax161>
-In-Reply-To: <YTjt5C7xTqNLUSl/@archlinux-ax161>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 9 Sep 2021 20:01:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATA2-4jSfOCmdtgQ+cuAyXhyLCBuVEZkZ3nONZFV8z3EA@mail.gmail.com>
-Message-ID: <CAK7LNATA2-4jSfOCmdtgQ+cuAyXhyLCBuVEZkZ3nONZFV8z3EA@mail.gmail.com>
-Subject: Re: [PATCH v2] gen_compile_commands: fix missing 'sys' package
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kortan <kortanzh@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210904000543.2019010-1-saravanak@google.com> <20210904000543.2019010-2-saravanak@google.com>
+In-Reply-To: <20210904000543.2019010-2-saravanak@google.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 9 Sep 2021 13:01:42 +0200
+Message-ID: <CAPDyKFqkvN=ZrfAnj4CqfjBu_Pj0YH9txnkP-1d=FhaEhbPrPA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-oxnas@groups.io,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 2:07 AM Nathan Chancellor <nathan@kernel.org> wrote:
+On Sat, 4 Sept 2021 at 02:05, Saravana Kannan <saravanak@google.com> wrote:
 >
-> On Wed, Sep 08, 2021 at 11:28:48AM +0800, Kortan wrote:
-> > We need to import the 'sys' package since the script has called
-> > sys.exit() method.
-> >
-> > Signed-off-by: Kortan <kortanzh@gmail.com>
+> fw_devlink could end up creating device links for bus only devices.
+> However, bus only devices don't get probed and can block probe() or
+> sync_state() [1] call backs of other devices. To avoid this, probe these
+> devices using the simple-pm-bus driver.
 >
-> Thank you for making those changes!
+> However, there are instances of devices that are not simple buses (they
+> get probed by their specific drivers) that also list the "simple-bus"
+> (or other bus only compatible strings) in their compatible property to
+> automatically populate their child devices. We still want these devices
+> to get probed by their specific drivers. So, we make sure this driver
+> only probes devices that are only buses.
 >
-> I should have mentioned that this probably warrants a Fixes: tag, which
-> can be generated by running:
->
-> $ git show -s --format='Fixes: %h ("%s")' 6ad7cbc01527223f3f92baac9b122f15651cf76b
-> Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
->
-> as that was the patch that introduced this issue. I personally have a
-> git alias for this as it comes up enough.
->
-> $ git config --get alias.fixes
-> show -s --format="Fixes: %h (\"%s\")"
->
-> I do not think this warrants a v3, just something to keep in mind for
-> the future.
->
-> Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Saravana Kannan <saravanak@google.com>
+
+Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
 
 
-Applied to linux-kbuild
-with Fixes and Nathan's Reviewed-by.
-Thanks.
-
-
-
-> > ---
-> > Changes v1 -> v2:
-> > * Fix commit title.
-> > * Improve commit message.
-> >
-> >  scripts/clang-tools/gen_compile_commands.py | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> > index 0033eedce003..1d1bde1fd45e 100755
-> > --- a/scripts/clang-tools/gen_compile_commands.py
-> > +++ b/scripts/clang-tools/gen_compile_commands.py
-> > @@ -13,6 +13,7 @@ import logging
-> >  import os
-> >  import re
-> >  import subprocess
-> > +import sys
-> >
-> >  _DEFAULT_OUTPUT = 'compile_commands.json'
-> >  _DEFAULT_LOG_LEVEL = 'WARNING'
-> > --
-> > 2.33.0
-> >
-> >
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> ---
+>  drivers/bus/simple-pm-bus.c | 32 +++++++++++++++++++++++++++++---
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> index 01a3d0cd08ed..3e086a9f34cb 100644
+> --- a/drivers/bus/simple-pm-bus.c
+> +++ b/drivers/bus/simple-pm-bus.c
+> @@ -13,11 +13,26 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>
+> -
+>  static int simple_pm_bus_probe(struct platform_device *pdev)
+>  {
+> -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> -       struct device_node *np = pdev->dev.of_node;
+> +       const struct device *dev = &pdev->dev;
+> +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> +       struct device_node *np = dev->of_node;
+> +       const struct of_device_id *match;
+> +
+> +       match = of_match_device(dev->driver->of_match_table, dev);
+> +
+> +       /*
+> +        * These are transparent bus devices (not simple-pm-bus matches) that
+> +        * have their child nodes populated automatically.  So, don't need to
+> +        * do anything more.
+> +        */
+> +       if (match && match->data) {
+> +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
+> +                       return 0;
+> +               else
+> +                       return -ENODEV;
+> +       }
+>
+>         dev_dbg(&pdev->dev, "%s\n", __func__);
+>
+> @@ -31,14 +46,25 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+>
+>  static int simple_pm_bus_remove(struct platform_device *pdev)
+>  {
+> +       const void *data = of_device_get_match_data(&pdev->dev);
+> +
+> +       if (data)
+> +               return 0;
+> +
+>         dev_dbg(&pdev->dev, "%s\n", __func__);
+>
+>         pm_runtime_disable(&pdev->dev);
+>         return 0;
+>  }
+>
+> +#define ONLY_BUS       ((void *) 1) /* Match if the device is only a bus. */
+> +
+>  static const struct of_device_id simple_pm_bus_of_match[] = {
+>         { .compatible = "simple-pm-bus", },
+> +       { .compatible = "simple-bus",   .data = ONLY_BUS },
+> +       { .compatible = "simple-mfd",   .data = ONLY_BUS },
+> +       { .compatible = "isa",          .data = ONLY_BUS },
+> +       { .compatible = "arm,amba-bus", .data = ONLY_BUS },
+>         { /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, simple_pm_bus_of_match);
+> --
+> 2.33.0.153.gba50c8fa24-goog
+>
