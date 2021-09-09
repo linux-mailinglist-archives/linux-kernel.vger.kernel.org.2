@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FD44042B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BC44042B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349127AbhIIBR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 21:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349086AbhIIBRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 21:17:54 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F51C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 18:16:45 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id f18so212143lfk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 18:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gvLyT4+7Aiymn6gXzNE4oKTpQfZnma/CF9vdVIrLCj0=;
-        b=loBPUFiJ17CJ4ZdjUsFhVmUZ8Cg018uO8pv3jVcFNEjIZVzht/g5phznAS6jMzVM7u
-         1b960PykAURWK6R1WWuzYsw1WW/rLiiB1NxXWRiQWasxgYExBxCr0g++4OVjJSsjh3SR
-         Atd5BJHlbFWfJE2Q91fduLBIh2jw6EkyO6aLkrNX5AOHzzR7mGXDFiy3btCQndztlZgc
-         wMW4aso3DZSP1xVwh53RCmETvnWLjxKzqi4PG3MtfJ/mBoRtUYpvQt2QP9HbAAok0SgT
-         j4GFArFfPaSYyAc0q8fUct1EMmVfzoYa1W89crrw9OsK17O+labUFu/nJOKRHk8tso4a
-         mcuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gvLyT4+7Aiymn6gXzNE4oKTpQfZnma/CF9vdVIrLCj0=;
-        b=s7rjVS5aw2pCgWhZXqYhwewK8CgaqufsU4TGyi4M65owCEWZO13KKKnpF33yTgsZpW
-         atnEQdniD9zvL2qDAZ163/AeRqV0orMqPHc0j+sS5Yh0+bv8BT3Elz03pIJ0YglM9GN3
-         q46yO3sH5T3cflGaBSau+xEs2szaTNKcPf5AobX1f6IhjQ026bQF8xGsJuRKqM4omZqS
-         uFfLfqg6h9i9QW/hURpGhvTreHqIl4Yc/cs+5+myL4WGyfQCHa/6HVLuKUHHPh/vRQaY
-         /i6EcxMA9+n4BwoPh4tIujkO+/GDqlWNZ5Cjbedivffu4yQfBkA7N2uiuyF0mC6QKJt8
-         XTig==
-X-Gm-Message-State: AOAM531piG7AubvOWMdfXxvXXFCwKbiwI2bE+Zc1lxvNJtIVa3JC4pug
-        1r0QGebMyPpKfdU2TuGProcVPqSe6GsS7WoQhooOPw==
-X-Google-Smtp-Source: ABdhPJysB844wVmbqvrXWaqDyoi57lhNAEbQuTWxjHVgx5kqArBdJnl+Uo9biEAEfd2Ku+wq/XpmEh5qIkX6IKdkir4=
-X-Received: by 2002:a05:6512:695:: with SMTP id t21mr365696lfe.157.1631150203757;
- Wed, 08 Sep 2021 18:16:43 -0700 (PDT)
+        id S1348949AbhIIBUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 21:20:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348988AbhIIBUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 21:20:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8030861166;
+        Thu,  9 Sep 2021 01:19:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631150361;
+        bh=tdVbevl+aDxkyATd4nlXrr1019b4HiAb+ZLlEGHbwho=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q1cyOUprqpdZbEvLayrMh+mgppIefqI49VWGrjQaxSkIo3p8edNilgRFSQ/PBay3g
+         RIZqxA7/faqLLgi6WzltBQq6k/FYcp1dZc/Dj6kLN1F5fS2s/CXhM/MfoK2i+0qLto
+         B8kaguNhOqUjr+uaARmTfKhUqFtWTNHHUPbHVUC8mfFC8Ix0y+zpmdB+pmzy8x9t6u
+         EDXVzVHCsojsJ/W9au+/pBYBIkosPdkcbY/GGGgAjS7wrVBF2g4sx9IvsbRUY7wrSz
+         PYku3jC5umtQkaYT79SNtPrPnzPPi+uN/MmmgOthkKCJCcenviiYho21+/buRiX0Us
+         B+krK1cbzsdLw==
+Received: by mail-lf1-f48.google.com with SMTP id n2so346146lfk.0;
+        Wed, 08 Sep 2021 18:19:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532xaZa8JrhU/3jS8+8ElQTFLX0Aq19vL+kTizqaZu8VK8daSAO2
+        mPBQpcu0gg+f2PIOdC2RLmX6+8SV29l5HsC+kOc=
+X-Google-Smtp-Source: ABdhPJzbQK5G5b2Cj872WktC8knYxqKRlLbs7wzoVrTt/pg7AKP6TRI9EoAf5LGLuAMBSVQjoANdrbJscEpZXpMnElY=
+X-Received: by 2002:a05:6512:3f9f:: with SMTP id x31mr401134lfa.233.1631150359914;
+ Wed, 08 Sep 2021 18:19:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
- <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
-In-Reply-To: <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 9 Sep 2021 03:16:17 +0200
-Message-ID: <CAG48ez3rRReCVpuhQu_-f_a0Yn=cUBqu1aNSG0JtHK8mjqzFsw@mail.gmail.com>
-Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
+References: <20210908030240.9007-1-samuel@sholland.org>
+In-Reply-To: <20210908030240.9007-1-samuel@sholland.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 9 Sep 2021 09:19:08 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQ=RoXouwL75JfmxOFzj+x5bfTW=Ae_3Ufyg3ZDA_Qj+Q@mail.gmail.com>
+Message-ID: <CAJF2gTQ=RoXouwL75JfmxOFzj+x5bfTW=Ae_3Ufyg3ZDA_Qj+Q@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: net: sun8i-emac: Add compatible for D1
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>, netdev@vger.kernel.org,
+        linux-sunxi@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 1:38 AM Jann Horn <jannh@google.com> wrote:
-> On Wed, Sep 8, 2021 at 8:49 PM Peter Oskolkov <posk@posk.io> wrote:
-> > Add helper functions to work atomically with userspace 32/64 bit values -
-> > there are some .*futex.* named helpers, but they are not exactly
-> > what is needed for UMCG; I haven't found what else I could use, so I
-> > rolled these.
-[...]
-> You of course won't be able to simply traverse userspace pointers in
-> such a situation, only access the specific userspace object that
-> you've prepared beforehand, but luckily it looks like:
->
->  * idle_server_tid_ptr is only accessed in get_idle_server()
->    -> which is used from process_waking_worker()
->      -> which runs in sleepable context
->  * idle_workers_ptr is accessed from:
->    -> enqueue_idle_worker
->      -> which is also used from process_waking_worker()
+Thx Samuel,
 
-Ah, I guess I got that wrong: process_waking_worker() is sleepable,
-but it might be holding the mmap lock, so it can't fault, right? Which
-means this would actually be problematic...
+Acked-by: Guo Ren <guoren@kernel.org>
+
+On Wed, Sep 8, 2021 at 11:02 AM Samuel Holland <samuel@sholland.org> wrote:
+>
+> The D1 SoC contains EMAC hardware which is compatible with the A64 EMAC.
+> Add the new compatible string, with the A64 as a fallback.
+>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml    | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
+> index 7f2578d48e3f..9eb4bb529ad5 100644
+> --- a/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
+> +++ b/Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml
+> @@ -19,7 +19,9 @@ properties:
+>        - const: allwinner,sun8i-v3s-emac
+>        - const: allwinner,sun50i-a64-emac
+>        - items:
+> -          - const: allwinner,sun50i-h6-emac
+> +          - enum:
+> +              - allwinner,sun20i-d1-emac
+> +              - allwinner,sun50i-h6-emac
+>            - const: allwinner,sun50i-a64-emac
+>
+>    reg:
+> --
+> 2.31.1
+>
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
