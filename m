@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB47405968
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C06840590B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239043AbhIIOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240915AbhIIOp0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:45:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6725C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QHDSNli7RKCrbt6ymGIACQkzBg5TAqwcFrAqbTxxIRo=; b=PsN03UhST2OVUWkEDs2AtHJBU2
-        TBY+x5o83x+C4+aeaExrm/5xhzQGuHbPzt8EY5QUy601u5SZQnS4PUMqICqegQMAcv+KyEUoK/OnN
-        Jt6pGcbZFZOZ5prW16viNoK/E9vJC9Pj0CXmJI+3iNlZVuIDRMk8ytMduOWFmPqR5WHgnj9JQkDEk
-        lFE9IVj/sZtRN1Lcrzg4wIgejixMGl7pAPLJqPcc24F3gLbpWkga0afM7jTs2VOsLydRUmp75dS7l
-        ExSnneCJeYQNgCtO0OolLZU2cOe49Er9ciIyO/73K1AkIwHP9pGqIUHh1bbTy5oqsFs3h2Ko5gN2y
-        tMsJtG2Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOL1p-001swp-Bk; Thu, 09 Sep 2021 14:27:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F0D3300094;
-        Thu,  9 Sep 2021 16:27:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F245620D13710; Thu,  9 Sep 2021 16:27:46 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 16:27:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
- current_save_and_set_rtlock_wait_state()
-Message-ID: <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
-References: <20210909105915.757320973@infradead.org>
- <20210909110203.767330253@infradead.org>
- <20210909134524.GB9722@willie-the-truck>
+        id S1343740AbhIIOad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:30:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:49729 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343552AbhIIOaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 10:30:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631197743;
+        bh=SrzovyttAcKVSAtr6u9eRl2MdXd1NuR4UoArSDLLiKQ=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=J17L7qNjeek5mC3sR8ASfIMZ6BAt1lJzG1HzFMdkTfsxXhnXKJZ39qXqhyhzYe3WR
+         8ebXve9Z5pryBHo/+U+AuWZ0DlZXMBHMq829/gG9UyTgxwLgS1j9VSO0AU0wwpAxyT
+         Ms+JbNMqS1mAST+Ikk1+A/eRex90QbN87IIIP/eI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2O2Q-1mMgLo434g-003vHN; Thu, 09
+ Sep 2021 16:29:03 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+ <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+ <20210909114248.aijujvl7xypkh7qe@skbuf>
+ <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+Message-ID: <781fe00f-046f-28e2-0e23-ea34c1432fd5@gmx.de>
+Date:   Thu, 9 Sep 2021 16:29:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909134524.GB9722@willie-the-truck>
+In-Reply-To: <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZIBNnfoGWY6mMPacP9U/QFdOPQ2ocSG3p43fN+MpQWVthy4sTYj
+ Hxw53BJXQBfgMSnbXC7OQSCerW8tcC5YtAryfF8mWylfF7rMP+Jc29NoWjP79BBCnVndbeY
+ OxgLNsBZlYEIj2SXYVMC/mC22/ZNIs0g8Eq0tIkSfeBniBJSLbX85kBn/KZsiB4mTMD5PQQ
+ Lf0EHoPlwpwjoUiIR0WGA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:But/oxILJJE=:RemG3C2oL84Ni6Jt/sAgJs
+ g5DPkW19rjxT25H6Gs89+hR77GY0D4NPXtS1N9gxTOsKMUOeUxy2KKQQBgjQ2a8vra+hte9O1
+ BPhRi2b4dguMEiNtZqBX0UyC8TV6SlivfVD/sCj7YtW9kdoCxiq2tSXKyw5xNcnhD9h+DHxrs
+ btG9/Tm/z4K2hMNvrMaGzlZ9gH2C9KSqkzRq8bUdjE1PvcESOMXvjNZxanf6ThDDfbtgpvQxE
+ fWoCTBL6fOR22r+6NJjIieKaCe/PvJe1/y5wlQfiCAnrl7hgd7+eqKsdU2GaTf+lYtqnuusFa
+ bPVngmElF5ajvs2+e/Rq7MrjS4xlN1x+bQkCrSRyaSWXZkDo/8fuK8uMqmi3ORyqhg/0Rml+D
+ FCAXtHtIBVQFgrU1yR1IQVziA5eO4wmqPfYWv4VcX65LyS+sgJB/s1vhRm+fQOyJGS0wMoQV/
+ hMh/lBs4wewV5ZPr+2HfiO7yNwSwU1s7V/CurGLTOzwCggRdWh+e2XEq0f5w291EwtFOl7qox
+ jD+CctG9FHTLAVpXwptb5XceaE4OKzaRUyKgswJuVlei13OlkoKgJ79MCeWLIWl38O0hr+gE8
+ bE+F3ujdiAzm1znN158dyWFwhhbj1g05mKybDG+FXLaL2QDMAJsoAPPHzAnwJJtWfcQa7duPC
+ NOziqf7GPab4yV3bpDIcgmjkNuhiygxQeO3ob+XaGKiqz/yDDtKQzjBJG90/rthUouv20VblQ
+ ejZYnq52z9KiACjBVF5tNckjnhfSqTN58drDpL9balNterf08VG7vWyMvO8LYtiepnK5BFL08
+ Ebm+s9t92DdIKFm8CIWK8lFY3nDeXt9ZHDU2TwKzG1E4oVosIzqUFUqzFxw4K/Z35HZSkjqN4
+ V5qTPyP7yHDuHZ06e9TyPK4w+pqGc4uYrtF4sn0VOGdy0FxhAMfDTXerWyMUIBP91mmt7HnVU
+ P5rlbTTKl7F9GEJAAWRPXN5TBURSwayisuUFnJjBviwMAbXOx3sJ7cmf4/b/xZOUG2kpBEmos
+ NqyKF7FcPd8gYVKfZikNqfaI78hOyZmr/O/NPWgjj+xc7o74K7K8Rq6cMp1RwlTRihrEKT5hc
+ haeydXTKn4oWy0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 02:45:24PM +0100, Will Deacon wrote:
-> On Thu, Sep 09, 2021 at 12:59:16PM +0200, Peter Zijlstra wrote:
-> > While looking at current_save_and_set_rtlock_wait_state() I'm thinking
-> > it really ought to use smp_store_mb(), because something like:
-> > 
-> > 	current_save_and_set_rtlock_wait_state();
-> > 	for (;;) {
-> > 		if (try_lock())
-> > 			break;
-> > 
-> > 		raw_spin_unlock_irq(&lock->wait_lock);
-> > 		schedule();
-> > 		raw_spin_lock_irq(&lock->wait_lock);
-> > 
-> > 		set_current_state(TASK_RTLOCK_WAIT);
-> > 	}
-> > 	current_restore_rtlock_saved_state();
-> > 
-> > which is the advertised usage in the comment, is actually broken,
-> > since trylock() will only need a load-acquire in general and that
-> > could be re-ordered against the state store, which could lead to a
-> > missed wakeup -> BAD (tm).
-> 
-> Why doesn't the UNLOCK of pi_lock in current_save_and_set_rtlock_wait_state()
-> order the state change before the successful try_lock? I'm just struggling
-> to envisage how this actually goes wrong.
+On 09.09.21 at 15:19, Lino Sanfilippo wrote:
 
-Moo yes, so the earlier changelog I wrote was something like:
+>>
+>
+> The kernel I use is the Raspberry Pi 5.10 kernel. The commit number in t=
+his kernel is d0b97c8cd63e37e6d4dc9fefd6381b09f6c31a67
+>
 
-	current_save_and_set_rtlock_wait_state();
-	for (;;) {
-		if (try_lock())
-			break;
+This is not correct. The kernel I use right now is based on Gregs stable l=
+inux-5.10.y.
+The commit number is correct here. Sorry for the confusion.
 
-		raw_spin_unlock_irq(&lock->wait_lock);
-		if (!cond)
-			schedule();
-		raw_spin_lock_irq(&lock->wait_lock);
-
-		set_current_state(TASK_RTLOCK_WAIT);
-	}
-	current_restore_rtlock_saved_state();
-
-which is more what the code looks like before these patches, and in that
-case the @cond load can be lifted before __state.
-
-It all sorta works in the current application because most things are
-serialized by ->wait_lock, but given the 'normal' wait pattern I got
-highly suspicious of there not being a full barrier around.
+Regards,
+Lino
