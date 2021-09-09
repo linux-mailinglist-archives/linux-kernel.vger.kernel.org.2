@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DB34044F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602E44044FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350741AbhIIF3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:29:46 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:50691
+        id S1350755AbhIIFaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:30:18 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:40200
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S230449AbhIIF3p (ORCPT
+        by vger.kernel.org with SMTP id S1350743AbhIIFaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:29:45 -0400
+        Thu, 9 Sep 2021 01:30:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=9JPa++8Fpv6wmMh9TaDlgej6CEF5c1q0a7YprztrmA8=; b=J
-        BjmvB/hGNF1Dl57R0AZASJlnVRFbck5I8ZfmH2c+JMUE3PaLaSN5cyzI7+swmor+
-        vuIVxnM02VidDNiQ7doXb1U6xzCIi9pF0PZjOgHmnhDG0NUT0W0E7IgytEj6j3+H
-        x3U7xLyo/qujYyRjECoTnIDp6zwbC1hzap751ISwx0=
+        Message-Id; bh=iomIBdm9KCZ3v1nV2oMmPk/i9SDrbS5PspJEA90KkE0=; b=i
+        Kbz3Zwyqu9wjqR0GyYII90HtkY03evfl36N0vbijp7MBQcc0Gx2R1mRawG/bbJtD
+        PdkbWzEEwxlTNGjoZpbiefAwnQnXvhbEyeFOLZmIcBJ+0nCOWVdmp4fsLJy6b/Ll
+        FOLgp4eLmhRtpoGikDS1sUSQ6wcXlVn9St8b3g3x9I=
 Received: from localhost.localdomain (unknown [10.162.127.118])
-        by app1 (Coremail) with SMTP id XAUFCgA3mGV0mzlh+N89AA--.2107S3;
-        Thu, 09 Sep 2021 13:28:20 +0800 (CST)
+        by app2 (Coremail) with SMTP id XQUFCgBnbqKXmzlh2k9GAA--.1546S3;
+        Thu, 09 Sep 2021 13:28:55 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] kunit: fix reference count leak in kfree_at_end
-Date:   Thu,  9 Sep 2021 13:28:16 +0800
-Message-Id: <1631165296-81082-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] scsi: mpt3sas: Fix sas_device refcount leak when add transport port failed
+Date:   Thu,  9 Sep 2021 13:28:52 +0800
+Message-Id: <1631165332-81143-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgA3mGV0mzlh+N89AA--.2107S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF13ur1xAw4kZrykuFy5CFg_yoW8Jw1fpF
-        4xGFy29a4YyF1xG395Ar48XF1xCa1xtr1S9rZ2g39a9anxJryYy3Z0vFWjgrW5XryxAF4a
-        yFyvvr48CF4DCFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: XQUFCgBnbqKXmzlh2k9GAA--.1546S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury3GrWkArWDZr4fWFykZrb_yoW8CF4Upa
+        9rGa4YkF98Gw42gr17Gw45Xr4rJ3W5G34DKFW0g3Z5CF4ktF93t3yI9rs8tFyUArZxJayU
+        XFWUtrs5uF4DCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUOlksUUUUU
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+        s7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUAkucUUUUU=
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference counting issue happens in the normal path of
-kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
-function forgets to handle the returned resource object, whose refcount
-increased inside, causing a refcount leak.
+The reference counting issue happens in several exception handling paths
+of mpt3sas_transport_port_add(). When those error scenarios occur such
+as allocating sas port failed, the function forgets to decrease the
+refcount of "sas_device" increased by mpt3sas_get_sdev_by_addr(),
+causing a refcount leak.
 
-Fix this issue by calling kunit_put_resource() at the end of function.
+Fix this issue by jumping to "out_device_put" label when error occurred.
 
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- lib/kunit/executor_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_transport.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-index cdbe54b16501..3af30abad826 100644
---- a/lib/kunit/executor_test.c
-+++ b/lib/kunit/executor_test.c
-@@ -113,11 +113,13 @@ static void kfree_res_free(struct kunit_resource *res)
-  */
- static void kfree_at_end(struct kunit *test, const void *to_free)
- {
-+	struct kunit_resource *res;
- 	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
- 	if (IS_ERR_OR_NULL(to_free))
- 		return;
--	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-+	res = kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
- 				     (void *)to_free);
-+	kunit_put_resource(res);
- }
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_transport.c b/drivers/scsi/mpt3sas/mpt3sas_transport.c
+index 0681daee6c14..089aa2321d0f 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_transport.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_transport.c
+@@ -782,13 +782,13 @@ mpt3sas_transport_port_add(struct MPT3SAS_ADAPTER *ioc, u16 handle,
+ 	if (!sas_node->parent_dev) {
+ 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+ 			__FILE__, __LINE__, __func__);
+-		goto out_fail;
++		goto out_device_put;
+ 	}
+ 	port = sas_port_alloc_num(sas_node->parent_dev);
+ 	if ((sas_port_add(port))) {
+ 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+ 			__FILE__, __LINE__, __func__);
+-		goto out_fail;
++		goto out_device_put;
+ 	}
  
- static struct kunit_suite *alloc_fake_suite(struct kunit *test,
+ 	list_for_each_entry(mpt3sas_phy, &mpt3sas_port->phy_list,
+@@ -855,6 +855,11 @@ mpt3sas_transport_port_add(struct MPT3SAS_ADAPTER *ioc, u16 handle,
+ 		    rphy_to_expander_device(rphy), hba_port->port_id);
+ 	return mpt3sas_port;
+ 
++ out_device_put:
++	if (mpt3sas_port->remote_identify.device_type == SAS_END_DEVICE) {
++		sas_device->pend_sas_rphy_add = 0;
++		sas_device_put(sas_device);
++	}
+  out_fail:
+ 	list_for_each_entry_safe(mpt3sas_phy, next, &mpt3sas_port->phy_list,
+ 	    port_siblings)
 -- 
 2.7.4
 
