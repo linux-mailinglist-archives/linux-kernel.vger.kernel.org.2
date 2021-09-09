@@ -2,58 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D150404848
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E107640484A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhIIKPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:15:51 -0400
-Received: from mx.msync.work ([95.217.65.204]:42616 "EHLO mx.msync.work"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhIIKPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:15:48 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 03914E3862;
-        Thu,  9 Sep 2021 10:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631182478; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         content-transfer-encoding:content-language:in-reply-to:references:
-         disposition-notification-to; bh=UtHV6Jt05brS9pYbB9Q5jpcPpg+KZYZgCFNAF9a2mPE=;
-        b=f8ONxOhCamFYg6dvg1zyPdFDJmmZRr6C+/E6DxpsIQLZp6yb2zt8Z+/tiDF21pArGTK5JO
-        owhllisCy7RkEbUUTpDO+MeK/cj6sUn2GaMf/oISh/iKEsGKgfKWv8dp+JiWupQ1SZ6Ueq
-        wWXvwSi27lWpBiK7m82MrvgQDQYwX/rGoGg8TuQ5ZVIJDvbhmjaGOnLXpUMR8+nH3OsGjl
-        FgMIK4CpvSLfvsH/6AHbdLI4qAYSkEwGij7LDX6sSsEDOzzqNDt2rzh+4UvXJGwowdkFyU
-        V32et9GsPEBlOlvGvz0BVEn9JPvXtEmJtl2lOmr36gYhEDCIFLH1ygzFHOVw6g==
-Subject: Re: [PATCH v4 4/4] arm64: dts: meson-axg: add support for JetHub D1
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210907095603.1520109-1-adeep@lexina.in>
- <20210907095603.1520109-5-adeep@lexina.in>
- <9c6b69e0-0c3b-c1b9-d74a-c66b7bc5b5c6@baylibre.com>
-From:   Vyacheslav <adeep@lexina.in>
-Message-ID: <5f0526f9-38a7-eb51-4e14-e9f931ad135b@lexina.in>
-Date:   Thu, 9 Sep 2021 13:14:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233750AbhIIKQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233654AbhIIKQE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 06:16:04 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871E5C06175F;
+        Thu,  9 Sep 2021 03:14:54 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id n27so2513299eja.5;
+        Thu, 09 Sep 2021 03:14:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ufx5aLQHEqxHso6qEYibiVseetvvPctAZYkyxXCLvhQ=;
+        b=ZYDWtwPAc2btsuzQvd5JTyajb4TE1k/rihy2b+cXjrqhsYP1QMpPXrtIVIbNKnV24S
+         99I6wAfbKjZKgCKvb8kX/KQBJMc+fdyhMIIVl/A2m7iz7BXxGpshCpj1iQjRwScXUcU7
+         8fRkFfz3FviniUtUQskIZzqIfn8gw4lu+bQ4jmbpiutKQX8YBu65pyWZ9/0TVRNjbvs0
+         u1VKkBImqCdozhYRq5yEWTtatafXkjHoLL2GyTuBbH+0eVDuR3yXuFTaZZ8Qym2q/Hdt
+         YmfA4NNTiqqpdzKgVenl6GDbHRc3UKMwaaFWONMl3lxVR7Ahz8QNyhv+SgXRolHli7iY
+         2maQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ufx5aLQHEqxHso6qEYibiVseetvvPctAZYkyxXCLvhQ=;
+        b=N8pGVzWw6pkMTnjyOIk39lSNxy8I6cBSHgTv3INtk3yhQFePfFpPaF6gmJ1bFDCXOz
+         fm2Y+KwZ1Cn1AZAMAuZ9aW/2/RVTS4lrxb5TH8xMUsneJsYRwCOzsRvA5OcsZ6zdJXGO
+         cCXdT+psEq6xBqQUIov1k/HpKCdlNqRswBNhlMDluwT83Oqosu31EezubqY5C9LFWwP8
+         yknJbY5bMfjhly28wngD+qprXqa59y8SRpMTjJySK791fFmqg8lkpwJVJmDW/g3nD7l9
+         /kxL5FG3jYQxVMfvK92PqH0GrhpNDcdESJUB2eTmtruY5KdHZ7XAjEPYMlp/sRGYN2ku
+         H3Xw==
+X-Gm-Message-State: AOAM532j+dkgSiyIBlR0jY/GaCpLbaXxH8536U+szOC85AzQiHns6Vk/
+        ql8cdRalc9Hu4dNLBrvSNTo=
+X-Google-Smtp-Source: ABdhPJzxwejgpFNfsrCjgyYmRLMeRrUV8+fyCS6p0G1uZkMZtJLPYU9TJ+d31Q82unEJHWJHkXdlsA==
+X-Received: by 2002:a17:906:c249:: with SMTP id bl9mr2543083ejb.225.1631182493135;
+        Thu, 09 Sep 2021 03:14:53 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id bj10sm689334ejb.17.2021.09.09.03.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 03:14:52 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 13:14:51 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+Message-ID: <20210909101451.jhfk45gitpxzblap@skbuf>
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <9c6b69e0-0c3b-c1b9-d74a-c66b7bc5b5c6@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.09.2021 09:56, Neil Armstrong wrote:
-> Hi,
+On Thu, Sep 09, 2021 at 11:53:21AM +0200, Lino Sanfilippo wrote:
+> This patch series fixes a system hang I got each time i tried to shutdown
+> or reboot a system that uses a KSZ9897 as a DSA switch with a broadcom
+> GENET network device as the DSA master device. At the time the system hangs
+> the message "unregister_netdevice: waiting for eth0 to become free. Usage
+> count = 2." is dumped periodically to the console.
 > 
-> On 07/09/2021 11:56, Vyacheslav Bocharov wrote:
->> JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
+> After some investigation I found the reason to be unreleased references to
+> the master device which are still held by the slave devices at the time the
+> system is shut down (I have two slave devices in use).
 > 
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> While these references are supposed to be released in ksz_switch_remove()
+> this function never gets the chance to be called due to the system hang at
+> the master device deregistration which happens before ksz_switch_remove()
+> is called.
 > 
-> Thanks,
-> Neil
+> The fix is to make sure that the master device references are already
+> released when the device is unregistered. For this reason PATCH1 provides
+> a new function dsa_tree_shutdown() that can be called by DSA drivers to
+> untear the DSA switch at shutdown. PATCH2 uses this function in a new
+> helper function for KSZ switches to properly shutdown the KSZ switch.
+> PATCH 3 uses the new helper function in the KSZ9477 shutdown handler.
+> 
+> Theses patches have been tested on a Raspberry PI 5.10 kernel with a
+> KSZ9897. The patches have been adjusted to apply against net-next and are
+> compile tested with next-next.
 
-Thanks.
+Can you try this patch
+
+commit 07b90056cb15ff9877dca0d8f1b6583d1051f724
+Author: Vladimir Oltean <vladimir.oltean@nxp.com>
+Date:   Tue Jan 12 01:09:43 2021 +0200
+
+    net: dsa: unbind all switches from tree when DSA master unbinds
+
+    Currently the following happens when a DSA master driver unbinds while
+    there are DSA switches attached to it:
