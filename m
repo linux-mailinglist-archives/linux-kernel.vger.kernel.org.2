@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D74058EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A194058F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345852AbhIIOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        id S1345993AbhIIOZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344809AbhIIOYq (ORCPT
+        with ESMTP id S237690AbhIIOZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:24:46 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15030C123EFB;
-        Thu,  9 Sep 2021 05:56:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id e21so3370611ejz.12;
-        Thu, 09 Sep 2021 05:56:09 -0700 (PDT)
+        Thu, 9 Sep 2021 10:25:26 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8ABC125127
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:57:27 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id x5so1794650ill.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:57:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gm+QJBmlGuYlJJE8NRvzi/wtEdQjvZ3XI6fMnIPTwsM=;
-        b=mzjv74D6M6QVTsFPXxAixI2KsNk3ufjg9B5h3dgFii5Gd7Vm3YqGoXK3DfX4h/q6m+
-         WFbEbuXjS4rPK8dOJc/deOFMc+TYFPb7NWqkXepqdaLa9fprAfDmMViXISbkJcdR/S1L
-         dbskrhDVQS26rGSJLcbJcAE/w9G/fOWF+YT/ZufEPE8HucBwVSBbBT0PiZApb4wTc4X0
-         /mK96mYE/NTANicat0I+CDAr7aCetk50V8rbmeSyfWmLMMWaFNIoJMujU2PtEjZVWbJ3
-         ENng2TlxwraFhPX67fNmND2I/JtIZZd3tKcesbAXy8D5GsKBVyS/+EI7/bGT2O3Mso5B
-         TQnQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VXBqdGZV180Tlah+cVQrTrUES/kEF10pr/rM/UOgwDw=;
+        b=ZmrWVy5URFDxQTuLq82DOsdwoy1iv6TWlp3VcRyKlMnmA+xJ9lImnUPPg81fQiu7cT
+         U7RaxGExbCGnUPjR6c9MeGu25BnjX0HYiCVwHiFeL1Cbm9TU73tEj5gNsrU/k+OQbmgN
+         SGv4KNaiNi77Yngsv0bU4XjFnDQazE3re6UBdhG12d2myTS6V7qnhaFBgYg4llFtQ1or
+         S2BaZTyq/0Tj4ufikxBPOq48N3q3ppHYA1Y8U1a7mUhGyts/T3oBAhqpfuwiupQUKgNL
+         rx2J62DFPcrW2AdaAMHznekwWft/lTclVyWyuKc5z2FxdmaquOIZ5Simzv/oovzeR68r
+         g3ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gm+QJBmlGuYlJJE8NRvzi/wtEdQjvZ3XI6fMnIPTwsM=;
-        b=kOA5Ac81q65YgGYOiLoTh6+62VJVlJpcxl2IA7UayZccP8B+At5vX4vxRdll4q+2WF
-         dOR3mQzkk3e3ML6yYWMTceUfs5c3GduaG9S6LgXOX+m6nPLMQaFJjR620PLZY4X4ACAO
-         0evkmJlHqBOFQL5HxyaU9Ir/DYlYba6jPkor++HePTz6dYve7L9PpvQlOJ8FbBhAGF5E
-         J+T0e2yQThjU64olbRiYzvmTrOiYCK15Z75DPGIiik3ANlKUA1X8fIjiCHBeR41IL2ED
-         U4RJCtHv7T+aWZnV1524IqUZFdSKauFK3srX23aMRq702mptbVqjIp/uQNDT96RMTyIn
-         Blug==
-X-Gm-Message-State: AOAM533MGHE4f8MqqEVcspyYoo339OvaDV7+r0DsvwKgfW7nmiUcb51U
-        MGKG+glqJFMi2lGk5Ik4pDw=
-X-Google-Smtp-Source: ABdhPJyYBboEmUp4wc4ia5ExKSuSpNUUvr9kqLHseEOaXLzq572y9He7G4it/sEtapDRACXroPqg8A==
-X-Received: by 2002:a17:906:d52:: with SMTP id r18mr3215518ejh.47.1631192167570;
-        Thu, 09 Sep 2021 05:56:07 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id l16sm966195eje.67.2021.09.09.05.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 05:56:07 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 15:56:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <20210909125606.giiqvil56jse4bjk@skbuf>
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VXBqdGZV180Tlah+cVQrTrUES/kEF10pr/rM/UOgwDw=;
+        b=tta994Ra7+74yTGPI/AxTSJUVKIS6M9WvfZwIbG9Drz4/zlgGsME6azGcPj9JNnF55
+         tNAUBly9/Ki4vmEfY2LMOROgKOcRUmR4RYIfhmPXmUGV+OFAw7H82qTh+cM1f9OojXG3
+         iPr32V7d69zAYAiTrsl+vxZCm8+3S2Re1k1eJ2yRqGdWdf7ZTNzbymzZwLIIgXY/rSXs
+         djNKXacSr9ft3lAKoZGEHBS0bUG9YyeI9XYZ2MYuTEzImnjE1mruourZzF1Asc2inekg
+         J66YkElurYl6yDzm5WsN6eeegoMopB8xr2EhL4J6DqLJShoO+SH6z9TyMfztlR8q6ZMk
+         DJwQ==
+X-Gm-Message-State: AOAM532Capu6QHHzE92lstBM/B0kFqGUYolpHMisIZR9bP8ARRlZRTOT
+        tNrkU4/wZqhfXIzMzyJIU6KyZWu9f/xWxQ==
+X-Google-Smtp-Source: ABdhPJzMLj4KMdCemWGoH+IWSUPRVWmC7R3qrA9F1/T2lw0L3YMR+f+YHVEmHvKE97nyAYiyue/00g==
+X-Received: by 2002:a92:cdac:: with SMTP id g12mr2082056ild.201.1631192246585;
+        Thu, 09 Sep 2021 05:57:26 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id o15sm859294ilo.73.2021.09.09.05.57.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 05:57:26 -0700 (PDT)
+Subject: Re: [PATCH] io-wq: fix memory leak in create_io_worker()
+To:     qiang.zhang@windriver.com, asml.silence@gmail.com
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210909115822.181188-1-qiang.zhang@windriver.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6ab6186c-1267-a8ac-9da1-3fc83be1f82e@kernel.dk>
+Date:   Thu, 9 Sep 2021 06:57:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909114248.aijujvl7xypkh7qe@skbuf>
+In-Reply-To: <20210909115822.181188-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 02:42:48PM +0300, Vladimir Oltean wrote:
-> I feel that something is missing in your system. Is the device link
-> created? Is it deleted before going into effect on shutdown?
+On 9/9/21 5:58 AM, qiang.zhang@windriver.com wrote:
+> From: "Qiang.zhang" <qiang.zhang@windriver.com>
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888126fcd6c0 (size 192):
+>   comm "syz-executor.1", pid 11934, jiffies 4294983026 (age 15.690s)
+>   backtrace:
+>     [<ffffffff81632c91>] kmalloc_node include/linux/slab.h:609 [inline]
+>     [<ffffffff81632c91>] kzalloc_node include/linux/slab.h:732 [inline]
+>     [<ffffffff81632c91>] create_io_worker+0x41/0x1e0 fs/io-wq.c:739
+>     [<ffffffff8163311e>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+>     [<ffffffff8163311e>] io_wqe_enqueue+0x1fe/0x330 fs/io-wq.c:866
+>     [<ffffffff81620b64>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+>     [<ffffffff8162c59c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6933
+>     [<ffffffff8162c7ab>] io_req_task_submit+0x4b/0xa0 fs/io_uring.c:2233
+>     [<ffffffff8162cb48>] io_async_task_func+0x108/0x1c0 fs/io_uring.c:5462
+>     [<ffffffff816259e3>] tctx_task_work+0x1b3/0x3a0 fs/io_uring.c:2158
+>     [<ffffffff81269b43>] task_work_run+0x73/0xb0 kernel/task_work.c:164
+>     [<ffffffff812dcdd1>] tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>     [<ffffffff812dcdd1>] handle_signal_work kernel/entry/common.c:146 [inline]
+>     [<ffffffff812dcdd1>] exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>     [<ffffffff812dcdd1>] exit_to_user_mode_prepare+0x151/0x180 kernel/entry/common.c:209
+>     [<ffffffff843ff25d>] __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>     [<ffffffff843ff25d>] syscall_exit_to_user_mode+0x1d/0x40 kernel/entry/common.c:302
+>     [<ffffffff843fa4a2>] do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>     [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> when create_io_thread() return error, and not retry, the worker object
+> need to be freed.
 
-So in case my questions were confusing, you can check the presence of
-the device links via sysfs.
+Thanks, this one looks complete.
 
-On my board, eno2 is the top-level DSA master, there is a switch which
-is PCIe PF 0000:00:00.5 which is its consumer:
+-- 
+Jens Axboe
 
-ls -la /sys/class/net/eno2/device/consumer\:pci\:0000\:00\:00.5
-lrwxrwxrwx    1 root     root             0 Jan  1 00:00 /sys/class/net/eno2/device/consumer:pci:0000:00:00.5 -> ../../../../../virtual/devlink/pci:0000:00:00.2--pci:0000:00:00.5
-
-In turn, that switch is a DSA master on two ports for SPI-attached switches:
-
-ls -la /sys/class/net/swp0/device/consumer\:spi\:spi2.*
-lrwxrwxrwx    1 root     root             0 Jan  1 00:04 /sys/class/net/swp0/device/consumer:spi:spi2.0 -> ../../../../../virtual/devlink/pci:0000:00:00.5--spi:spi2.0
-lrwxrwxrwx    1 root     root             0 Jan  1 00:04 /sys/class/net/swp0/device/consumer:spi:spi2.1 -> ../../../../../virtual/devlink/pci:0000:00:00.5--spi:spi2.1
-
-Do you see similar things on your 5.10 kernel?
-
-Please note that I don't think that particular patch with device links
-was backported to v5.10, at least I don't see it when I run:
-
-git tag --contains  07b90056cb15f
-
-So how did it reach your tree?
