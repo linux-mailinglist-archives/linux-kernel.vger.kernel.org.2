@@ -2,113 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362564058F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B399E4058F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242731AbhIIOZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
+        id S1346605AbhIIOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbhIIOZj (ORCPT
+        with ESMTP id S1344364AbhIIOZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:25:39 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4565C120D58;
-        Thu,  9 Sep 2021 05:57:49 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id i28so2836854ljm.7;
-        Thu, 09 Sep 2021 05:57:49 -0700 (PDT)
+        Thu, 9 Sep 2021 10:25:51 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A2AC120D7B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:58:16 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id m11so2127448ioo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yaXPdkw/Y9GdnRrZu+T/3Q1JexcjWMNdLrpPjZG0BhA=;
-        b=D2U7cycoQUakuVjq4AfwqLpDws5gRVABN3oZXOPsGA9tx1klPjt3fuGdthO9PRQyPj
-         JjTfsoFHoQytvwYxGWTUr0xt6onfHdJavozJVa55xU2HxhD2l1EFovVSZPWgNY2l+5RK
-         9Gufd6PR33/i4kY05o8oqmGhh/U8tmA2vLexbDBom+fOn1oWMvIx21lzAs/qSWeHAkFE
-         wnJR2zAOHONpcwfAsHW0phzKMPE3AFd3q7gyS0HDPZIve7L1pZc7fRauGRsNg4il4DN0
-         qB3Tf8KNgC6pzQpbMCiUeG8qDrJKrao7RX9AQ47CiuhyVkWYphxLO26DheX0FHpQCo8k
-         f0GQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xtXEmCkgLjj2ICcn/5G5ZZlK2SnZW1IcakfDyVuInEA=;
+        b=hB6xV2U22F35EshU9H4Y6s6DCeylbHAC/VYNgUqb5P03tlfg8suiMyms6Ulz+KWw7o
+         PGzgv8eA5+p9RnyJctVqWIv2Xyf++kBehqOOaYe34EIRSDjYzfjAwYE3HiYVyhQ9rHGU
+         boS/wzrrgtIefOtlhcfW/UrPgIZFc0qHYbxhFQF1HmcbKBGk5vTqPQBtLqHXV0Pd45IC
+         niqe22DM+7zzFfTjKljcBcDwdfJq1boitMqFKRGjL+tVpI8xaH8VYiHRnMcbSrt3Fj7g
+         ALLEfHozSHiTTSc6fvxJNa/e/ifhwub0NnAkAsAT1DcOUWiLPQW+vaBKX8V1oNghIb+5
+         90cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yaXPdkw/Y9GdnRrZu+T/3Q1JexcjWMNdLrpPjZG0BhA=;
-        b=GsKpJDez0Xijh0/odx1jwIYzXkhWkjv3DFXXnGpj6RMClcmTer0DjaYgwOkvj1jcEQ
-         U7o1nEyzA5z8brsBn+hQRY1ZRDQRKpYZY6xoQdsRhZhEOOWBr/ypTb0KbwVq9WXMEhCZ
-         pDzHjN/gkK8rmX4DFcBh6l1RS47D1jJ03tsidO0midlHqpDzMHO3NezdYlCiR5cnW0uI
-         XRP2sISqwuuuDpsfYHTy0l8+IRIn4M6BVM2Lw2CunI9DSbyWpmqEftSBAKM09QTfycFg
-         q2EM1kYL2UR/AN/d/cBWpA1vxAa0UZBIgtlrspWFCpJMWYnHBDYjazc0CE/JY0xWzr+m
-         dX6A==
-X-Gm-Message-State: AOAM532Ux0x0JtcqXpALR3WPha/GP6oCdQG4oMugrM7fNA53EOCP4OwD
-        eNcN5BY8yOTE5LqiQx7V3N0iMdTGGrE=
-X-Google-Smtp-Source: ABdhPJyoUGQQhyESyIlAvzDC1ZfD4wgWWHHcX2FtIYPuk2emCvOQAhNDUW3fyhSwACG6EDOJ10eYYQ==
-X-Received: by 2002:a2e:955:: with SMTP id 82mr2107879ljj.274.1631192268253;
-        Thu, 09 Sep 2021 05:57:48 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id b12sm185350ljf.62.2021.09.09.05.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 05:57:47 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 15:57:46 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/3] fs/ntfs3: Change max hardlinks limit to 4000
-Message-ID: <20210909125746.3io24xmh377ca4nh@kari-VirtualBox>
-References: <89127d37-a38a-d15c-36f1-62f2ac0f4507@paragon-software.com>
- <20210909123034.mlsq57bsjvonwwd2@kari-VirtualBox>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xtXEmCkgLjj2ICcn/5G5ZZlK2SnZW1IcakfDyVuInEA=;
+        b=K3+2S7i7PkkZATolP7ysLwXnTfhDL/U7AYq6xV64Z46E2O7kh3PQo7ZlUbpvL524ga
+         JU3EU9YrDyf4OUWYYlxJLiWbk3hjOeE114iCifWl1OEeF9jfQqNIF8lXVSaBXAuQgeX8
+         DJeJnvfG9NLupoEuicYGynErWoE+tbswUfBMwR7XsEvA1ugo0bM4ITIqqgOf6YkQe81P
+         7srWeeHwzxJZiX3vjciyHju8bg3IkRdM8fd2XhV6aX5A3obra2VA2Z/NkJRDpuRqCjLn
+         A12kucicAZDAKccbQ3s98rnByN65dlGFmV0yktFayVo3EwbzSKR+empV5f2ZaLaFraYt
+         nJpw==
+X-Gm-Message-State: AOAM532FJUhaXEUf5KEIfkqTwNRUl88v8EzCVqaUPYeoEEn9k2KkgWJX
+        GGBq2IMff0bK1a6Owslm8oRNeQ==
+X-Google-Smtp-Source: ABdhPJyC9BpbGwDqu0GxL7mOtDLS4R168asvGRVWOhfSos1bWN9ugSXqhGImveQTNEcWGV/AFqBQZg==
+X-Received: by 2002:a6b:905:: with SMTP id t5mr2566323ioi.209.1631192296197;
+        Thu, 09 Sep 2021 05:58:16 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id a4sm837736ioe.19.2021.09.09.05.58.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 05:58:15 -0700 (PDT)
+Subject: Re: [PATCH -next] io-wq: Fix memory leak in create_io_worker
+To:     Bixuan Cui <cuibixuan@huawei.com>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org
+Cc:     asml.silence@gmail.com, john.wanghui@huawei.com
+References: <20210909084919.29644-1-cuibixuan@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2a63f105-c2a9-7c57-3101-ba7779cccb6d@kernel.dk>
+Date:   Thu, 9 Sep 2021 06:58:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909123034.mlsq57bsjvonwwd2@kari-VirtualBox>
+In-Reply-To: <20210909084919.29644-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:30:34PM +0300, Kari Argillander wrote:
-> On Thu, Sep 09, 2021 at 01:58:04PM +0300, Konstantin Komarov wrote:
-> > xfstest 041 works with 3003, so we need to
+On 9/9/21 2:49 AM, Bixuan Cui wrote:
+> If io_should_retry_thread is false, free the worker before goto fails.
 
-And it would be good to write generic/041. This way grepping is little
-easier.
+This one is incomplete, see other postings.
 
-> > raise limit.
-> 
-> No need to linebreak.
-> 
-> > 
-> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> > ---
-> >  fs/ntfs3/ntfs.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
-> > index 6bb3e595263b..0006481db7fa 100644
-> > --- a/fs/ntfs3/ntfs.h
-> > +++ b/fs/ntfs3/ntfs.h
-> > @@ -21,7 +21,8 @@
-> >  #define NTFS_NAME_LEN 255
-> >  
-> >  /* ntfs.sys used 500 maximum links on-disk struct allows up to 0xffff. */
-> > -#define NTFS_LINK_MAX 0x400
-> > +/* xfstest 041 creates 3003 hardlinks. */
-> 
-> It think comment is unnecessary here. If you think this is necassarry
-> comment then please but it same comment block as last row.
-> 
-> > +#define NTFS_LINK_MAX 4000
-> 
-> What draw backs there is if this is 4000? We really do not care about
-> xfstests if we have some reason to not do this. This info can be but
-> to commit message.
-> 
-> >  //#define NTFS_LINK_MAX 0xffff
-> 
-> We can probably same time get rid of this.
-> 
-> >  
-> >  /*
-> > -- 
-> > 2.28.0
-> > 
-> 
+-- 
+Jens Axboe
+
