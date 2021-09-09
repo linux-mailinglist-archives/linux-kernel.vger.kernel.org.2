@@ -2,141 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D75C4059BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3784059C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbhIIOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        id S236319AbhIIO4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbhIIOyo (ORCPT
+        with ESMTP id S232656AbhIIO4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:54:44 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06194C061574;
-        Thu,  9 Sep 2021 07:53:34 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso2789527otv.12;
-        Thu, 09 Sep 2021 07:53:33 -0700 (PDT)
+        Thu, 9 Sep 2021 10:56:09 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DCAC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:54:59 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id e23so4256694lfj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 07:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TM4uR7MYSBmGP5NBL1zBrMe7eUBmghAcfkl2JUGwpAI=;
-        b=O10es/ON911runMDSkfuH0UU/Qc1B70lCG/VlA8X2egEqUF3DaobxWWLhSaxWcrkyd
-         Hx9itcKE7CFlcaKNJrW7kzDw6vq90btHnnui3yX/llEUYOZxBYhix1YZOw8uExbQITfA
-         rPfCeaM7T7j1yURY03JgBnAR+PSyzjQAjmlvhuFlNxnRYbYWKRywZzVAWX/jhLBI1uJD
-         KR0bq67fm5NwM4X1BGkYFvMIalTZEY9RA6Q+ll1OlY1d+c0Wf0CE04N3PCiqpz9u26On
-         Nc1ljwIGs9jn/z96fpr4t0a8Q9aMp81QrhNzthPMR2Ptrke1qHh2tgP6YAxdP3CRKah9
-         WG2w==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UXDQZf9GzYNTEO852SsaCLl2x7HS0RgCfhZ04IuDC2I=;
+        b=JmUdq4Wh16MijW68342W/rE/D7fXFeyOtoOKzi7u5wegZlDayNEemJqHGu5Pv9EMfv
+         O3yK5jfNQWOv+JhpDuIV1LnSI8PjS94xPdjGuAh6yNEjkIA3yAAuqUzLCjqCyFCcN6Xo
+         daekX6B2mNlFawoQnV15OrMMyQnvV/c8uxXZZHnLaac/lpU7GY10oJNGM/R0/6e+Y/gF
+         QEPBHJHHCWohS5g2kCmcODC7rfSbNA6i9Zm/KIuokcvwlMC0Yv1Py+laDT43vW6WiH4I
+         VHVpfJDllRA41xwd+PYM8PhubIV9K0ym+dGqP0Yv3CvIE0iosrl1Xz/C/NAcPMAeBjK+
+         IsqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TM4uR7MYSBmGP5NBL1zBrMe7eUBmghAcfkl2JUGwpAI=;
-        b=ftwb6lbitd0FGH9rd8seK69swAXkzNRcfVJMzobW7ZPq3i/yaGYm63hgnaTUokBU0R
-         tGgcSWlB9y33Ws5uFrOVr1PWIoS2VB/RrSdwGNW+itQXNS3KhOV9epQYUB2eUyrQpnr+
-         fGt1hCk0swAC09wuhOkIRs4lyoZX/Y5qooMjIhbTkkz0nE0IdGbhJ52FqI3jplrkHGxt
-         FICjhuc93EyWDF06CfFC3JA1xPdozJp1NBlbP7h6UGi0t26Obx0WiVcKfv6OsXaQzrQ6
-         K5V1vPTmgJcNJ3C3gPtu4N80+KB31qXRs8ED9uLCAyk6+D2+j/QIcBulWU3IMqd9q3aZ
-         jrNQ==
-X-Gm-Message-State: AOAM530ASCSlUHOqv243k63v9QyZWvUjzKZK1hQO0VT46MjaEcSXeYez
-        Ghk+i/kfrhWp+uOSclXkLNs+UP8Ygs0=
-X-Google-Smtp-Source: ABdhPJwI837/3QsXonMBsK8Rc1vgjHn+HG+E2WgueUDEQgrBOixmYLFaLMsKnIJqpTiq3E6qBuP3ag==
-X-Received: by 2002:a05:6830:13c4:: with SMTP id e4mr250251otq.58.1631199213050;
-        Thu, 09 Sep 2021 07:53:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s17sm487211otr.51.2021.09.09.07.53.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 07:53:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     ajk@comnets.uni-bremen.de, kuba@kernel.org,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210909035743.1247042-1-linux@roeck-us.net>
- <20210909.123442.1648633411296774237.davem@davemloft.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] net: 6pack: Fix tx timeout and slot time
-Message-ID: <751f5079-2da1-187e-573c-d7d2d6743bbf@roeck-us.net>
-Date:   Thu, 9 Sep 2021 07:53:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UXDQZf9GzYNTEO852SsaCLl2x7HS0RgCfhZ04IuDC2I=;
+        b=GtBSFfixe/tJi+z1/qTzHKwCdBR1cgcFZ5KUsFOnjmI1IGIvsdy02E0xbAPGXXThBB
+         205bELEdkbjgOvstJCwjouLUNvIq75xs25aM5Ql9Klf4GJkkokAPvknvhUMF/TP4n2hw
+         4IPNZkakCspAyymIkqEdeiuOiaquAUC5FE84ssdSSF80DsUGX0v9cNRySIDjHYp6aDmU
+         I0Y872vCcgOP8fe55/kF+YhhmdhsUqg4ej+TGz7G4+p5Ld3NstVvcePIg88UQfX2cZ2C
+         5BKp6z8SK6sH8Aq3prJ98KXnt4gZfgGKYn+7mSfRkFPSN6hwqttx8ejvirsfWGW0eiEq
+         NAJQ==
+X-Gm-Message-State: AOAM530vKmeBF6jRedR7p41CniFY8FCIG+JoTyVgMgcHTMibJJIryHci
+        MbtzxyFJmEP7IZxyXivNE2jUlBiJUx1+E0IANheMjw==
+X-Google-Smtp-Source: ABdhPJzVlDJrIFcJ2i81VlE5b1q6SgGaZDssMEI+LEFLRhNJoDi+tgy/aITWYuMKp0ppmEZ9S1Cumb8525ItJFbkX28=
+X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr204163lfg.402.1631199297810;
+ Thu, 09 Sep 2021 07:54:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210909.123442.1648633411296774237.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210820151933.22401-1-brijesh.singh@amd.com> <20210820151933.22401-35-brijesh.singh@amd.com>
+In-Reply-To: <20210820151933.22401-35-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Thu, 9 Sep 2021 08:54:46 -0600
+Message-ID: <CAMkAt6qQOgZVEMQdMXqvs2s8pELnAFV-Msgc2_MC5WOYf8oAiQ@mail.gmail.com>
+Subject: Re: [PATCH Part1 v5 34/38] x86/sev: Add snp_msg_seqno() helper
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        Marc Orr <marcorr@google.com>,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 4:34 AM, David Miller wrote:
-> From: Guenter Roeck <linux@roeck-us.net>
-> Date: Wed,  8 Sep 2021 20:57:43 -0700
-> 
->> tx timeout and slot time are currently specified in units of HZ.
->> On Alpha, HZ is defined as 1024. When building alpha:allmodconfig,
->> this results in the following error message.
->>
->> drivers/net/hamradio/6pack.c: In function 'sixpack_open':
->> drivers/net/hamradio/6pack.c:71:41: error:
->> 	unsigned conversion from 'int' to 'unsigned char'
->> 	changes value from '256' to '0'
->>
->> In the 6PACK protocol, tx timeout is specified in units of 10 ms
->> and transmitted over the wire. Defining a value dependent on HZ
->> doesn't really make sense. Assume that the intent was to set tx
->> timeout and slot time based on a HZ value of 100 and use constants
->> instead of values depending on HZ for SIXP_TXDELAY and SIXP_SLOTTIME.
->>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->> No idea if this is correct or even makes sense. Compile tested only.
-> 
-> These are timer offsets so they have to me HZ based.  Better to make the
-> structure members unsigned long, I think.
-> 
+On Fri, Aug 20, 2021 at 9:22 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+> The SNP guest request message header contains a message count. The
+> message count is used while building the IV. The PSP firmware increments
+> the message count by 1, and expects that next message will be using the
+> incremented count. The snp_msg_seqno() helper will be used by driver to
+> get the message sequence counter used in the request message header,
+> and it will be automatically incremented after the request is successful.
+> The incremented value is saved in the secrets page so that the kexec'ed
+> kernel knows from where to begin.
+>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kernel/sev.c     | 79 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/sev-guest.h | 37 ++++++++++++++++++
+>  2 files changed, 116 insertions(+)
+>
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index 319a40fc57ce..f42cd5a8e7bb 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -51,6 +51,8 @@ static struct ghcb boot_ghcb_page __bss_decrypted __aligned(PAGE_SIZE);
+>   */
+>  static struct ghcb __initdata *boot_ghcb;
+>
+> +static u64 snp_secrets_phys;
+> +
+>  /* #VC handler runtime per-CPU data */
+>  struct sev_es_runtime_data {
+>         struct ghcb ghcb_page;
+> @@ -2030,6 +2032,80 @@ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
+>                 halt();
+>  }
+>
+> +static struct snp_secrets_page_layout *snp_map_secrets_page(void)
+> +{
+> +       u16 __iomem *secrets;
+> +
+> +       if (!snp_secrets_phys || !sev_feature_enabled(SEV_SNP))
+> +               return NULL;
+> +
+> +       secrets = ioremap_encrypted(snp_secrets_phys, PAGE_SIZE);
+> +       if (!secrets)
+> +               return NULL;
+> +
+> +       return (struct snp_secrets_page_layout *)secrets;
+> +}
+> +
+> +static inline u64 snp_read_msg_seqno(void)
+> +{
+> +       struct snp_secrets_page_layout *layout;
+> +       u64 count;
+> +
+> +       layout = snp_map_secrets_page();
+> +       if (!layout)
+> +               return 0;
+> +
+> +       /* Read the current message sequence counter from secrets pages */
+> +       count = readl(&layout->os_area.msg_seqno_0);
+> +
+> +       iounmap(layout);
+> +
+> +       /* The sequence counter must begin with 1 */
+> +       if (!count)
+> +               return 1;
+> +
+> +       return count + 1;
+> +}
+> +
+> +u64 snp_msg_seqno(void)
+> +{
+> +       u64 count = snp_read_msg_seqno();
+> +
+> +       if (unlikely(!count))
+> +               return 0;
+> +
+> +       /*
+> +        * The message sequence counter for the SNP guest request is a
+> +        * 64-bit value but the version 2 of GHCB specification defines a
+> +        * 32-bit storage for the it.
+> +        */
+> +       if (count >= UINT_MAX)
+> +               return 0;
+> +
+> +       return count;
+> +}
+> +EXPORT_SYMBOL_GPL(snp_msg_seqno);
 
-Hmm, ok. Both tx_delay and slottime are updated in sp_encaps(), though,
-from data in the transmit buffer. The KISS protocol description states
-that the values are in units of 10ms; that is where my assumption
-came from.
+Do we need some sort of get sequence number, then ack that sequence
+number was used API? Taking your host changes in Part2 V5 as an
+example. If 'snp_setup_guest_buf' fails the given sequence number is
+never actually used by a message to the PSP. So the guest will have
+the wrong current sequence number, an off by 1 error, right?
 
-Command        Function         Comments
-    0           Data frame       The  rest  of the frame is data to
-                                 be sent on the HDLC channel.
+Also it seems like there is a concurrency error waiting to happen
+here. If 2 callers call snp_msg_seqno() before either actually places
+a call to the PSP, if the first caller's request doesn't reach the PSP
+before the second caller's request both calls will fail. And again I
+think the sequence numbers in the guest will be incorrect and
+unrecoverable.
 
-    1           TXDELAY          The next  byte  is  the  transmitter
-                                 keyup  delay  in  10 ms units.
-                 		The default start-up value is 50
-                                 (i.e., 500 ms).
-
-    2           P                The next byte  is  the  persistence
-                                 parameter,  p, scaled to the range
-                                 0 - 255 with the following
-                                 formula:
-
-                                          P = p * 256 - 1
-
-                                 The  default  value  is  P  =  63
-                                 (i.e.,  p  =  0.25).
-
-    3           SlotTime         The next byte is the slot interval
-                                 in 10 ms units.
-                                 The default is 10 (i.e., 100ms).
-
-But then slottime is indeed used with jiffies, which is odd.
-
-tx_delay is used (before it is updated) in encode_sixpack()
-and added to a character buffer. I thought that was the value sent
-on the wire (which would again be supposed to be in 10ms units).
-I don't see where else it is used, but I may be missing it.
-That means though it can not easily be changed to anything
-but unsigned char.
-
-Anyway, I am inclined to just mark the protocol as dependent on
-!ALPHA. Would you accept that ?
-
-Thanks,
-Guenter
+> +
+> +static void snp_gen_msg_seqno(void)
+> +{
+> +       struct snp_secrets_page_layout *layout;
+> +       u64 count;
+> +
+> +       layout = snp_map_secrets_page();
+> +       if (!layout)
+> +               return;
+> +
+> +       /*
+> +        * The counter is also incremented by the PSP, so increment it by 2
+> +        * and save in secrets page.
+> +        */
+> +       count = readl(&layout->os_area.msg_seqno_0);
+> +       count += 2;
+> +
+> +       writel(count, &layout->os_area.msg_seqno_0);
+> +       iounmap(layout);
+> +}
+> +
+>  int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsigned long *fw_err)
+>  {
+>         struct ghcb_state state;
+> @@ -2077,6 +2153,9 @@ int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsi
+>                 ret = -EIO;
+>         }
+>
+> +       /* The command was successful, increment the sequence counter */
+> +       snp_gen_msg_seqno();
+> +
+>  e_put:
+>         __sev_put_ghcb(&state);
+>  e_restore_irq:
+> diff --git a/include/linux/sev-guest.h b/include/linux/sev-guest.h
+> index 24dd17507789..16b6af24fda7 100644
+> --- a/include/linux/sev-guest.h
+> +++ b/include/linux/sev-guest.h
+> @@ -20,6 +20,41 @@ enum vmgexit_type {
+>         GUEST_REQUEST_MAX
+>  };
+>
+> +/*
+> + * The secrets page contains 96-bytes of reserved field that can be used by
+> + * the guest OS. The guest OS uses the area to save the message sequence
+> + * number for each VMPCK.
+> + *
+> + * See the GHCB spec section Secret page layout for the format for this area.
+> + */
+> +struct secrets_os_area {
+> +       u32 msg_seqno_0;
+> +       u32 msg_seqno_1;
+> +       u32 msg_seqno_2;
+> +       u32 msg_seqno_3;
+> +       u64 ap_jump_table_pa;
+> +       u8 rsvd[40];
+> +       u8 guest_usage[32];
+> +} __packed;
+> +
+> +#define VMPCK_KEY_LEN          32
+> +
+> +/* See the SNP spec for secrets page format */
+> +struct snp_secrets_page_layout {
+> +       u32 version;
+> +       u32 imien       : 1,
+> +           rsvd1       : 31;
+> +       u32 fms;
+> +       u32 rsvd2;
+> +       u8 gosvw[16];
+> +       u8 vmpck0[VMPCK_KEY_LEN];
+> +       u8 vmpck1[VMPCK_KEY_LEN];
+> +       u8 vmpck2[VMPCK_KEY_LEN];
+> +       u8 vmpck3[VMPCK_KEY_LEN];
+> +       struct secrets_os_area os_area;
+> +       u8 rsvd3[3840];
+> +} __packed;
+> +
+>  /*
+>   * The error code when the data_npages is too small. The error code
+>   * is defined in the GHCB specification.
+> @@ -36,6 +71,7 @@ struct snp_guest_request_data {
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  int snp_issue_guest_request(int vmgexit_type, struct snp_guest_request_data *input,
+>                             unsigned long *fw_err);
+> +u64 snp_msg_seqno(void);
+>  #else
+>
+>  static inline int snp_issue_guest_request(int type, struct snp_guest_request_data *input,
+> @@ -43,6 +79,7 @@ static inline int snp_issue_guest_request(int type, struct snp_guest_request_dat
+>  {
+>         return -ENODEV;
+>  }
+> +static inline u64 snp_msg_seqno(void) { return 0; }
+>
+>  #endif /* CONFIG_AMD_MEM_ENCRYPT */
+>  #endif /* __LINUX_SEV_GUEST_H__ */
+> --
+> 2.17.1
+>
+>
