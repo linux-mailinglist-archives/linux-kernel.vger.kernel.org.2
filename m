@@ -2,92 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBD9404589
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D94C40458D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352414AbhIIGSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhIIGSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:18:45 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A0FC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:17:35 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s12so1299098ljg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6jMBpmkSePi8Q+tjzlzHAw91s1TP7X0CnXJ0KmdHirc=;
-        b=YWfZixjdK1spTMoY+DKK2RVGNam+gDZa9XXZshjr8WkTud98VrUKcYg2mpsfUQhRUJ
-         NeS8wAb4xR+CeiY7S7YWeJs1n2F1rmwgzA5H8uzLe/rJ3o/x9lonfs5N5cFQUypUI61r
-         j8Pj1ul2MQB1PTPl7qW41rkgoGLsiS0Vt4TojJiytNUsfKgeHqXFkfZpBE9OdGDtbQjd
-         rWbfESzJJXasSBa4Wu/WrYPFs95c/+L7s4Wb6JNtUNQQN2lPLYFCbXS2UPCZ6I2qUh4Y
-         ijCZ9tj4njnbZ7a7URbk1p/lT604hsUiLgQfiPkE5eKyJo1q3wXUuy2ptWYvtuxFXsJ0
-         1fRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6jMBpmkSePi8Q+tjzlzHAw91s1TP7X0CnXJ0KmdHirc=;
-        b=sI3QhDmG4BXmUD5Dy+xWuatWUBIKpODlxZgcVeC0FKJ0K68lgue14aeIP4Ct4yIYnW
-         Ob+qvY2kSEc0r+05FQ0S1vM4BhE++19J+UEmfmDgXgnSTQxWjgxeIgx7fTuRFU9xZ3gL
-         WrcJIAm7fcLg6fBmd30mdyuQRaJjW5SwZKWrUsv39G/XT3cYnf+qHM/fGbPT8pPW4ZWG
-         Vfh+Q4v6P3+qLaHtFtjUV/wDYrqjw4c7ktSGS5GPppE7c4xooOpdEMZIw3Axh6WvMku1
-         g+6i6h+HQeyOX1VJHLsaCKfKiBoG/BIqnk5MmPMRRTohEBLE0o4GH74rII74A2Scpk3w
-         Yqsw==
-X-Gm-Message-State: AOAM531lt2sDzOKcnUHWdSBHN4NA1FvMyXwITTmiDQB+Bzgwk+sfcDgC
-        wshWh2++XP/8gQRliDdgYbb0tA==
-X-Google-Smtp-Source: ABdhPJzb79sYeiW67woAU2L4IduTt4NiWhx/bQpljHERdeUzxLeeTCJBcOMp98yo0hN7hHObtp3r6A==
-X-Received: by 2002:a2e:824e:: with SMTP id j14mr954387ljh.65.1631168254321;
-        Wed, 08 Sep 2021 23:17:34 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y9sm87502ljm.5.2021.09.08.23.17.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 23:17:33 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id AA213102F11; Thu,  9 Sep 2021 09:17:32 +0300 (+03)
-Date:   Thu, 9 Sep 2021 09:17:32 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Liu Yuntao <liuyuntao10@huawei.com>
-Cc:     akpm@linux-foundation.org, hughd@google.com,
-        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, liusirui@huawei.com, windspectator@gmail.com,
-        wuxu.wu@huawei.com
-Subject: Re: [PATCH v2] fix judgment error in shmem_is_huge()
-Message-ID: <20210909061732.2zalspiyfoevd7ea@box.shutemov.name>
-References: <20210909032007.18353-1-liuyuntao10@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909032007.18353-1-liuyuntao10@huawei.com>
+        id S1352496AbhIIGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:21:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:54028 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244314AbhIIGVl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:21:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="243004509"
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="243004509"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:20:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="479489279"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2021 23:20:28 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf list: Display pmu prefix for partially supported hybrid cache events
+Date:   Thu,  9 Sep 2021 14:18:44 +0800
+Message-Id: <20210909061844.10221-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:20:07AM +0800, Liu Yuntao wrote:
-> In the case of SHMEM_HUGE_WITHIN_SIZE, the page index is not rounded
-> up correctly. When the page index points to the first page in a huge
-> page, round_up() cannot bring it to the end of the huge page, but
-> to the end of the previous one.
-> 
-> an example:
-> HPAGE_PMD_NR on my machine is 512(2 MB huge page size).
-> After allcoating a 3000 KB buffer, I access it at location 2050 KB.
-> In shmem_is_huge(), the corresponding index happens to be 512.
-> After rounded up by HPAGE_PMD_NR, it will still be 512 which is
-> smaller than i_size, and shmem_is_huge() will return true.
-> As a result, my buffer takes an additional huge page, and that
-> shouldn't happen when shmem_enabled is set to within_size.
-> 
-> Fixes: f3f0e1d2150b2b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> Signed-off-by: Liu Yuntao <liuyuntao10@huawei.com>
+Part of hardware cache events are only available on one CPU PMU.
+For example, 'L1-dcache-load-misses' is only available on cpu_core.
+perf list should clearly report this info.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+root@otcpl-adl-s-2:~# ./perf list
 
+Before:
+  L1-dcache-load-misses                              [Hardware cache event]
+  L1-dcache-loads                                    [Hardware cache event]
+  L1-dcache-stores                                   [Hardware cache event]
+  L1-icache-load-misses                              [Hardware cache event]
+  L1-icache-loads                                    [Hardware cache event]
+  LLC-load-misses                                    [Hardware cache event]
+  LLC-loads                                          [Hardware cache event]
+  LLC-store-misses                                   [Hardware cache event]
+  LLC-stores                                         [Hardware cache event]
+  branch-load-misses                                 [Hardware cache event]
+  branch-loads                                       [Hardware cache event]
+  dTLB-load-misses                                   [Hardware cache event]
+  dTLB-loads                                         [Hardware cache event]
+  dTLB-store-misses                                  [Hardware cache event]
+  dTLB-stores                                        [Hardware cache event]
+  iTLB-load-misses                                   [Hardware cache event]
+  node-load-misses                                   [Hardware cache event]
+  node-loads                                         [Hardware cache event]
+  node-store-misses                                  [Hardware cache event]
+  node-stores                                        [Hardware cache event]
 
+After:
+  L1-dcache-loads                                    [Hardware cache event]
+  L1-dcache-stores                                   [Hardware cache event]
+  L1-icache-load-misses                              [Hardware cache event]
+  LLC-load-misses                                    [Hardware cache event]
+  LLC-loads                                          [Hardware cache event]
+  LLC-store-misses                                   [Hardware cache event]
+  LLC-stores                                         [Hardware cache event]
+  branch-load-misses                                 [Hardware cache event]
+  branch-loads                                       [Hardware cache event]
+  cpu_atom/L1-icache-loads/                          [Hardware cache event]
+  cpu_core/L1-dcache-load-misses/                    [Hardware cache event]
+  cpu_core/node-load-misses/                         [Hardware cache event]
+  cpu_core/node-loads/                               [Hardware cache event]
+  dTLB-load-misses                                   [Hardware cache event]
+  dTLB-loads                                         [Hardware cache event]
+  dTLB-store-misses                                  [Hardware cache event]
+  dTLB-stores                                        [Hardware cache event]
+  iTLB-load-misses                                   [Hardware cache event]
+
+Now we can clearly see 'L1-dcache-load-misses' is only available
+on cpu_core.
+
+If without pmu prefix, it indicates the event is available on both
+cpu_core and cpu_atom.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/parse-events.c | 76 ++++++++++++++++++++++++++++++----
+ 1 file changed, 68 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index e5eae23cfceb..579fd654cb11 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -2704,7 +2704,7 @@ int is_valid_tracepoint(const char *event_string)
+ 	return 0;
+ }
+ 
+-static bool is_event_supported(u8 type, unsigned config)
++static bool is_event_supported(u8 type, u64 config)
+ {
+ 	bool ret = true;
+ 	int open_return;
+@@ -2824,10 +2824,18 @@ void print_sdt_events(const char *subsys_glob, const char *event_glob,
+ 
+ int print_hwcache_events(const char *event_glob, bool name_only)
+ {
+-	unsigned int type, op, i, evt_i = 0, evt_num = 0;
+-	char name[64];
+-	char **evt_list = NULL;
++	unsigned int type, op, i, evt_i = 0, evt_num = 0, npmus = 0;
++	char name[64], new_name[128];
++	char **evt_list = NULL, **evt_pmus = NULL;
+ 	bool evt_num_known = false;
++	struct perf_pmu *pmu = NULL;
++
++	if (perf_pmu__has_hybrid()) {
++		npmus = perf_pmu__hybrid_pmu_num();
++		evt_pmus = zalloc(sizeof(char *) * npmus);
++		if (!evt_pmus)
++			goto out_enomem;
++	}
+ 
+ restart:
+ 	if (evt_num_known) {
+@@ -2843,20 +2851,61 @@ int print_hwcache_events(const char *event_glob, bool name_only)
+ 				continue;
+ 
+ 			for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
++				unsigned int hybrid_supported = 0, j;
++				bool supported;
++
+ 				__evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
+ 				if (event_glob != NULL && !strglobmatch(name, event_glob))
+ 					continue;
+ 
+-				if (!is_event_supported(PERF_TYPE_HW_CACHE,
+-							type | (op << 8) | (i << 16)))
+-					continue;
++				if (!perf_pmu__has_hybrid()) {
++					if (!is_event_supported(PERF_TYPE_HW_CACHE,
++								type | (op << 8) | (i << 16))) {
++						continue;
++					}
++				} else {
++					perf_pmu__for_each_hybrid_pmu(pmu) {
++						if (!evt_num_known) {
++							evt_num++;
++							continue;
++						}
++
++						supported = is_event_supported(
++									PERF_TYPE_HW_CACHE,
++									type | (op << 8) | (i << 16) |
++									((__u64)pmu->type << PERF_PMU_TYPE_SHIFT));
++						if (supported) {
++							snprintf(new_name, sizeof(new_name), "%s/%s/",
++								 pmu->name, name);
++							evt_pmus[hybrid_supported] = strdup(new_name);
++							hybrid_supported++;
++						}
++					}
++
++					if (hybrid_supported == 0)
++						continue;
++				}
+ 
+ 				if (!evt_num_known) {
+ 					evt_num++;
+ 					continue;
+ 				}
+ 
+-				evt_list[evt_i] = strdup(name);
++				if ((hybrid_supported == 0) ||
++				    (hybrid_supported == npmus)) {
++					evt_list[evt_i] = strdup(name);
++					if (npmus > 0) {
++						for (j = 0; j < npmus; j++)
++							zfree(&evt_pmus[j]);
++					}
++				} else {
++					for (j = 0; j < hybrid_supported; j++) {
++						evt_list[evt_i++] = evt_pmus[j];
++						evt_pmus[j] = NULL;
++					}
++					continue;
++				}
++
+ 				if (evt_list[evt_i] == NULL)
+ 					goto out_enomem;
+ 				evt_i++;
+@@ -2868,6 +2917,13 @@ int print_hwcache_events(const char *event_glob, bool name_only)
+ 		evt_num_known = true;
+ 		goto restart;
+ 	}
++
++	for (evt_i = 0; evt_i < evt_num; evt_i++) {
++		if (!evt_list[evt_i])
++			break;
++	}
++
++	evt_num = evt_i;
+ 	qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+ 	evt_i = 0;
+ 	while (evt_i < evt_num) {
+@@ -2886,6 +2942,10 @@ int print_hwcache_events(const char *event_glob, bool name_only)
+ 	for (evt_i = 0; evt_i < evt_num; evt_i++)
+ 		zfree(&evt_list[evt_i]);
+ 	zfree(&evt_list);
++
++	for (evt_i = 0; evt_i < npmus; evt_i++)
++		zfree(&evt_pmus[evt_i]);
++	zfree(&evt_pmus);
+ 	return evt_num;
+ 
+ out_enomem:
 -- 
- Kirill A. Shutemov
+2.17.1
+
