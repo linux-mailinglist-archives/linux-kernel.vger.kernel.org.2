@@ -2,353 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4405640421D
+	by mail.lfdr.de (Postfix) with ESMTP id 453E940421E
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348468AbhIIAM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348377AbhIIAMX (ORCPT
+        id S1348535AbhIIAMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:12:32 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:37667 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348430AbhIIAMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:12:23 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196E9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:11:15 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso96097ybb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=p+2wsvetj5UtuL8uRpzcfKCWjv9f6yatx39Qfr7ll3s=;
-        b=OsAUyDM1X5XXMqdRY+EZdqcHS3MVLY2RF2tHxMPOaUs9AAce+MM3oZu2K9zZdErAaf
-         DaI1JiAC6nXr+8mzFBhhHjHzEHZsxERJG7TrDAUC2VTskllUQJeIlS0pAQa/Ip7wGsdv
-         N+uUTBb7tJYAxC61PP/1jNU8eekaeZNfkuRL/I9Lb4RMYVDb/tz09/Nv2jiHGd13cYA7
-         DFwO+m5htNVHBlp7vEA5BcGlt0XOuWtuwPaeuwSUM4sKiyBbAeH28Y6xPquj+/0mZumE
-         28WM1MyWqGxWhmLySGuQZMgD6Bjk34XY1FAYeTWS7qgILgvsOyvVqcsfQ7Xk9EcUNmGJ
-         JSHQ==
+        Wed, 8 Sep 2021 20:12:25 -0400
+Received: by mail-il1-f199.google.com with SMTP id w12-20020a92ad0c000000b00227fc2e6eaeso167312ilh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:11:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=p+2wsvetj5UtuL8uRpzcfKCWjv9f6yatx39Qfr7ll3s=;
-        b=cAloe/p1QDKZH4oHVpGutHonnbcN0PPTex0YbYPA2rBclAU5O3BIiNBjBIURf7usuk
-         NIc2/u9KVg5H0JvpK2fWMPOuhr8tCASKS+V9kU4n2veHr2yCmSQYMXGqrkJj+WwUwaj8
-         0BQ5fx8v5NDC7bwsklTmiW8/080z08eYzBqJZDcDvp5+rQJUtWrGaHbicI2Sm0FYNydi
-         OA/H9m6lS+uJJDf2oSJM6koM//4sqRjBkpsroAFrWvdH/z/2/bh/g+grGUbYBcVhclRv
-         N3gz2ygCDSS8kNv8fbTl/3iEI/uxDKwgMlRbQYit70/ngQoA2bcTd672kI4dfIxl/XOX
-         wF7A==
-X-Gm-Message-State: AOAM533GWz+eFXw6tEajvEsUX/4FZR5GHncNQSMHpxxdvppkJMuSVg8W
-        syyoO47nkaf67eDrOsNItBkRcxOYR+D7JA==
-X-Google-Smtp-Source: ABdhPJx1auokodHC/QZJJPkw7wTRCjDxlRpXQgPwicV7NU0CRp02TsxXV9tF4QxBIiYAVU4K+MsHFC+s1t9Zow==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:68b6:f792:6cb6:9052])
- (user=dlatypov job=sendgmr) by 2002:a25:5243:: with SMTP id
- g64mr161375ybb.278.1631146274326; Wed, 08 Sep 2021 17:11:14 -0700 (PDT)
-Date:   Wed,  8 Sep 2021 17:10:37 -0700
-In-Reply-To: <20210909001037.2842954-1-dlatypov@google.com>
-Message-Id: <20210909001037.2842954-4-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210909001037.2842954-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH 3/3] kunit: tool: support running each suite/test separately
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HPCfgBq/8lv91SsfidmQBovpBZFgQI+XnFeRrNlG13U=;
+        b=EC+P29u8N8LvYVxdfftOlHv2JgS7rUKQnBAUQMGPDFxklUc4uFVv6vLE5HoOub0+R1
+         L9aMp1Vbxbl97W5Wt0Kl5C8XnvaRvJRRZty6id1zApGQFimUJLxBzv1i0zZuC+8KpZWW
+         sa39yCDLd67O8BqL81rUu5ERpXYdNHOwC5v/Ubu7LD02hZE/4zNrTjccmbmCnl/FTGDe
+         syASnmuzHJk2oAWjDeqqEbExmiO12SaWjav4Dps2CnlTMPK7eRLunJjbICJT3qX/a36/
+         t0WJd1gNfXcGbaTKJRqphKAQKI0rr9gmmfgWQL6ZLNW9VQgM02mVhs+DrqRSQL9nU+kU
+         9UXA==
+X-Gm-Message-State: AOAM530x3kCfb97SeQtbH9sEWjsa06ygmzPBYBo0w2Pyt9Eff0FE45cM
+        msHOII8Hm844JpJGtvnyKMpT/+aiQEe2fIzbrQgZQ8I4xqP/
+X-Google-Smtp-Source: ABdhPJzbjMIbjbQkLWgtrtNr0hKjxAUoRSLaLx0mcz8q2Bu2hYOZbveYf6RF7iZnXArE4Yz9EDFrmOQDwazZSjpKYvtlrhaVaVW7
+MIME-Version: 1.0
+X-Received: by 2002:a6b:e604:: with SMTP id g4mr186815ioh.148.1631146276946;
+ Wed, 08 Sep 2021 17:11:16 -0700 (PDT)
+Date:   Wed, 08 Sep 2021 17:11:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a0acd05cb84d626@google.com>
+Subject: [syzbot] WARNING in io_req_complete_post
+From:   syzbot <syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new --run_isolated flag makes the tool boot the kernel once per
-suite or test, preventing leftover state from one suite to impact the
-other. This can be useful as a starting point to debugging test
-hermeticity issues.
+Hello,
 
-Note: it takes a lot longer, so people should not use it normally.
+syzbot found the following issue on:
 
-Consider the following very simplified example:
+HEAD commit:    b2bb710d34d5 Add linux-next specific files for 20210907
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a956b3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=457dbc3619116cdf
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0516daac8b536b4b8c0
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-  bool disable_something_for_test = false;
-  void function_being_tested() {
-    ...
-    if (disable_something_for_test) return;
-    ...
-  }
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  static void test_before(struct kunit *test)
-  {
-    disable_something_for_test = true;
-    function_being_tested();
-    /* oops, we forgot to reset it back to false */
-  }
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com
 
-  static void test_after(struct kunit *test)
-  {
-    /* oops, now "fixing" test_before can cause test_after to fail! */
-    function_being_tested();
-  }
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1151 [inline]
+WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1146 [inline]
+WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
+Modules linked in:
+CPU: 0 PID: 14536 Comm: syz-executor.3 Not tainted 5.14.0-next-20210907-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:req_ref_put_and_test fs/io_uring.c:1151 [inline]
+RIP: 0010:req_ref_put_and_test fs/io_uring.c:1146 [inline]
+RIP: 0010:io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
+Code: e9 94 ff 48 8b 34 24 31 ff e8 76 ee 94 ff e9 6e fc ff ff e8 0c e9 94 ff 4c 89 ef e8 d4 c0 62 ff e9 38 f8 ff ff e8 fa e8 94 ff <0f> 0b e9 8a fb ff ff e8 ee e8 94 ff 49 8d 7e 58 31 c9 ba 01 00 00
+RSP: 0018:ffffc9000bf6fda8 EFLAGS: 00010216
+RAX: 000000000000ec57 RBX: ffff88806c12e000 RCX: ffffc9000fa5e000
+RDX: 0000000000040000 RSI: ffffffff81e12466 RDI: 0000000000000003
+RBP: ffff88801cfea000 R08: 000000000000007f R09: ffff88806c12e05f
+R10: ffffffff81e11fed R11: 0000000000000000 R12: ffff88801cfea640
+R13: ffff88806c12e05c R14: 000000000000007f R15: ffff88806c12e058
+FS:  00007f03ce5d4700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f03ce5d4718 CR3: 00000000149d2000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ tctx_task_work+0x189/0x6c0 fs/io_uring.c:2158
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+ handle_signal_work kernel/entry/common.c:146 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f03ce5d4188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: 0000000000000080 RBX: 000000000056c038 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+R13: 00007ffde5bbb8df R14: 00007f03ce5d4300 R15: 0000000000022000
 
-Presented like this, the issues are obvious, but it gets a lot more
-complicated to track down as the amount of test setup and helper
-functions increases.
 
-Another use case is memory corruption. It might not be surface as an
-failure/crash in the test case or suite that caused it. I've noticed in
-kunit's own unit tests, the 3rd suite after might be the one to finally
-crash after an out-of-bounds write, for example.
-
-Example usage:
-
-Per suite:
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
-...
-Starting KUnit Kernel (1/7)...
-============================================================
-======== [PASSED] kunit_executor_test ========
-....
-Testing complete. 5 tests run. 0 failed. 0 crashed. 0 skipped.
-Starting KUnit Kernel (2/7)...
-============================================================
-======== [PASSED] kunit-try-catch-test ========
-...
-
-Per test:
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
-Starting KUnit Kernel (1/23)...
-============================================================
-======== [PASSED] kunit_executor_test ========
-[PASSED] parse_filter_test
-============================================================
-Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
-Starting KUnit Kernel (2/23)...
-============================================================
-======== [PASSED] kunit_executor_test ========
-[PASSED] filter_subsuite_test
-...
-
-It works with filters as well:
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite example
-...
-Starting KUnit Kernel (1/1)...
-============================================================
-======== [PASSED] example ========
-...
-
-It also handles test filters, '*.*skip*' runs these 3 tests:
-  kunit_status.kunit_status_mark_skipped_test
-  example.example_skip_test
-  example.example_mark_skipped_test
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- tools/testing/kunit/kunit.py           | 91 ++++++++++++++++++++------
- tools/testing/kunit/kunit_tool_test.py | 40 +++++++++++
- 2 files changed, 112 insertions(+), 19 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 55c25f7a715c..060655d60533 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
- 
- from collections import namedtuple
- from enum import Enum, auto
--from typing import Iterable
-+from typing import Iterable, List
- 
- import kunit_config
- import kunit_json
-@@ -31,13 +31,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
- 			       ['jobs', 'build_dir', 'alltests',
- 				'make_options'])
- KunitExecRequest = namedtuple('KunitExecRequest',
--                              ['timeout', 'build_dir', 'alltests',
--                               'filter_glob', 'kernel_args'])
-+			      ['timeout', 'build_dir', 'alltests',
-+			       'filter_glob', 'kernel_args', 'run_isolated'])
- KunitParseRequest = namedtuple('KunitParseRequest',
- 			       ['raw_output', 'build_dir', 'json'])
- KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
- 					   'build_dir', 'alltests', 'filter_glob',
--					   'kernel_args', 'json', 'make_options'])
-+					   'kernel_args', 'run_isolated', 'json', 'make_options'])
- 
- KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
- 
-@@ -91,21 +91,66 @@ def build_tests(linux: kunit_kernel.LinuxSourceTree,
- 			   'built kernel successfully',
- 			   build_end - build_start)
- 
--def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
--	       parse_request: KunitParseRequest) -> KunitResult:
--	kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
--	test_start = time.time()
--	run_result = linux.run_kernel(
--		args=request.kernel_args,
--		timeout=None if request.alltests else request.timeout,
--		filter_glob=request.filter_glob,
--		build_dir=request.build_dir)
-+def _list_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest) -> List[str]:
-+	args = ['kunit.action=list']
-+	if request.kernel_args:
-+		args.extend(request.kernel_args)
-+
-+	output = linux.run_kernel(args=args,
-+			   timeout=None if request.alltests else request.timeout,
-+			   filter_glob=request.filter_glob,
-+			   build_dir=request.build_dir)
-+	output = kunit_parser.extract_tap_lines(output)
-+	# Hack! Drop the TAP version header and top-level test plan.
-+	output.pop()
-+	output.pop()
-+	return list(output)
-+
-+def _suites_from_test_list(tests: List[str]) -> List[str]:
-+	"""Extracts all the suites from an ordered list of tests."""
-+	suites = []  # type: List[str]
-+	for t in tests:
-+		parts = t.split('.', maxsplit=2)
-+		if len(parts) != 2:
-+			raise ValueError(f'internal KUnit error, test name should be of the form "<suite>.<test>", got "{t}"')
-+		suite, case = parts
-+		if not suites or suites[-1] != suite:
-+			suites.append(suite)
-+	return suites
-+
- 
--	test_end = time.time()
--	exec_time = test_end - test_start
- 
--	# Named tuples are immutable, so we rebuild them here manually
--	result = parse_tests(parse_request, run_result)
-+def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
-+	       parse_request: KunitParseRequest) -> KunitResult:
-+	filter_globs = [request.filter_glob]
-+	if request.run_isolated:
-+		tests = _list_tests(linux, request)
-+		if request.run_isolated == 'test':
-+			filter_globs = tests
-+		if request.run_isolated == 'suite':
-+			filter_globs = _suites_from_test_list(tests)
-+			# Apply the test-part of the user's glob, if present.
-+			if '.' in request.filter_glob:
-+				test_glob = request.filter_glob.split('.', maxsplit=2)[1]
-+				filter_globs = [g + '.'+ test_glob for g in filter_globs]
-+
-+	overall_status = kunit_parser.TestStatus.SUCCESS
-+	exec_time = 0
-+	for i, filter_glob in enumerate(filter_globs):
-+		kunit_parser.print_with_timestamp('Starting KUnit Kernel ({}/{})...'.format(i+1, len(filter_globs)))
-+
-+		test_start = time.time()
-+		run_result = linux.run_kernel(
-+			args=request.kernel_args,
-+			timeout=None if request.alltests else request.timeout,
-+			filter_glob=filter_glob,
-+			build_dir=request.build_dir)
-+
-+		test_end = time.time()
-+		exec_time += test_end - test_start
-+
-+		result = parse_tests(parse_request, run_result)
-+		overall_status = kunit_parser.max_status(overall_status, result.status)
- 
- 	return KunitResult(status=result.status, result=result.result, elapsed_time=exec_time)
- 
-@@ -166,7 +211,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 
- 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
- 				 request.alltests, request.filter_glob,
--				 request.kernel_args)
-+				 request.kernel_args, request.run_isolated)
- 	parse_request = KunitParseRequest(request.raw_output,
- 					  request.build_dir,
- 					  request.json)
-@@ -251,6 +296,12 @@ def add_exec_opts(parser) -> None:
- 	parser.add_argument('--kernel_args',
- 			    help='Kernel command-line parameters. Maybe be repeated',
- 			     action='append')
-+	parser.add_argument('--run_isolated', help='If set, boot the kernel for each '
-+			    'individual suite/test. This is can be useful for debugging '
-+			    'a non-hermetic test, one that might pass/fail based on '
-+			    'what ran before it.',
-+			    type=str,
-+			    choices=['suite', 'test']),
- 
- def add_parse_opts(parser) -> None:
- 	parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
-@@ -324,6 +375,7 @@ def main(argv, linux=None):
- 				       cli_args.alltests,
- 				       cli_args.filter_glob,
- 				       cli_args.kernel_args,
-+				       cli_args.run_isolated,
- 				       cli_args.json,
- 				       cli_args.make_options)
- 		result = run_tests(linux, request)
-@@ -379,7 +431,8 @@ def main(argv, linux=None):
- 						cli_args.build_dir,
- 						cli_args.alltests,
- 						cli_args.filter_glob,
--						cli_args.kernel_args)
-+						cli_args.kernel_args,
-+						cli_args.run_isolated)
- 		parse_request = KunitParseRequest(cli_args.raw_output,
- 						  cli_args.build_dir,
- 						  cli_args.json)
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..bcfdc6664c9d 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -477,6 +477,46 @@ class KUnitMainTest(unittest.TestCase):
- 		      args=['a=1','b=2'], build_dir='.kunit', filter_glob='', timeout=300)
- 		self.print_mock.assert_any_call(StrContains('Testing complete.'))
- 
-+	def test_list_tests(self):
-+		want = ['suite.test1', 'suite.test2', 'suite2.test1']
-+		self.linux_source_mock.run_kernel.return_value = ['TAP version 14', '1..0'] + want
-+
-+		got = kunit._list_tests(self.linux_source_mock,
-+				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'suite'))
-+
-+		self.assertEqual(got, want)
-+		# Should respect the user's filter glob when listing tests.
-+		self.linux_source_mock.run_kernel.assert_called_once_with(
-+			args=['kunit.action=list'], build_dir='.kunit', filter_glob='suite*', timeout=300)
-+
-+
-+	@mock.patch.object(kunit, '_list_tests')
-+	def test_run_isolated_by_suite(self, mock_tests):
-+		mock_tests.return_value = ['suite.test1', 'suite.test2', 'suite2.test1']
-+		kunit.main(['exec', '--run_isolated=suite', 'suite*.test*'], self.linux_source_mock)
-+
-+		# Should respect the user's filter glob when listing tests.
-+		mock_tests.assert_called_once_with(mock.ANY,
-+				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*.test*', None, 'suite'))
-+		self.linux_source_mock.run_kernel.assert_has_calls([
-+			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test*', timeout=300),
-+			mock.call(args=None, build_dir='.kunit', filter_glob='suite2.test*', timeout=300),
-+		])
-+
-+	@mock.patch.object(kunit, '_list_tests')
-+	def test_run_isolated_by_test(self, mock_tests):
-+		mock_tests.return_value = ['suite.test1', 'suite.test2', 'suite2.test1']
-+		kunit.main(['exec', '--run_isolated=test', 'suite*'], self.linux_source_mock)
-+
-+		# Should respect the user's filter glob when listing tests.
-+		mock_tests.assert_called_once_with(mock.ANY,
-+				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'test'))
-+		self.linux_source_mock.run_kernel.assert_has_calls([
-+			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test1', timeout=300),
-+			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test2', timeout=300),
-+			mock.call(args=None, build_dir='.kunit', filter_glob='suite2.test1', timeout=300),
-+		])
-+
- 
- if __name__ == '__main__':
- 	unittest.main()
--- 
-2.33.0.309.g3052b89438-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
