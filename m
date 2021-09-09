@@ -2,85 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C429A40423F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC655404241
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348661AbhIIAXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
+        id S1348664AbhIIAX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348278AbhIIAXG (ORCPT
+        with ESMTP id S1348278AbhIIAX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:23:06 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E47C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:21:57 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so1370371ooh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
+        Wed, 8 Sep 2021 20:23:58 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14B0C061575;
+        Wed,  8 Sep 2021 17:22:49 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so94949wmh.1;
+        Wed, 08 Sep 2021 17:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
-        b=l2zLirahIdKfjSNP4/FhmOaIxi6RGKTtg2W5yfzqga9z8DM7mF8KKLqdVBbe3EVQU8
-         B2mAb8Kiyg3jGUGCmKchEE2FUCQe8mgtNYWYqjHacr6zdJiQlA/FSaPoBXi+Hveldzji
-         yG8fvl3sD+03w4y0+gHlZYwwEFTawa1SZd9SM=
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=3bmDHztmN1bRB4M7GynQYPShvTahsoeCAXxI3yMeopA=;
+        b=WEi2pUtTuRJajbYr51bn/x+S21fhmlVXrZHo48MJE5tnNtlgJKr5JuEC6Twr1tubkQ
+         ZFU4iCai2BpcHbo5hcYQykf/4rTz3/nmu3OmQZYJyxejeEojai+mUKY0PDoOIbTcfRjs
+         I/Gd2U0XZ7sWyDOZ3TDS7RddCVwRQHp6eYF+KeLYh+zcqNmOVx++3IVcDzZW8rMRet50
+         IRGm67rAXPMBcjNJC/POvjTEuCDgNKOcykH4iH4xXTCgIKovjiYz9PJPzy1517AqSbca
+         gMzgJBNbSEHW6roG38M/AGqwpsZ7yLRRS7uWyrBTjJ6mmLvsD0cmcvS0A5z+9kz/BkmO
+         9OvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
-        b=32u56S76TEwywZLshsMb1L/+SUddydOGdmD/8QMhrYIHj6rIzVBPyCs6M5RmL5Wd2s
-         z/6aBzyLRfm1W2R1Kh7e+n/yVr4bf2P1VCT5r6wUS9dWjzFmtyLhOuD2fRnd2iFhDrie
-         IqOdvbNFxNRCc8mIyhVRtEy0TJEf8HRUy1sya1xyR7zkEPUUiTZhu83RMO6VjHMHiVR7
-         7SjR17kTyUlvtQfNON2xewwmWqGRbmD2p8koPQLIYYpmqscegtiNsVkrcxZR4iPA7kTX
-         k6USmMHvM5mdY3GVRORNfC3z757vKTFHkENqfL6nFyHED49cw04PD034KdU1UZmOcfMN
-         EJxA==
-X-Gm-Message-State: AOAM530fqFm7NbuCg7KIuz+1oxwAEPXWRZdKPypfERPzrOQ65sV2LzaG
-        BFIttmV7UiZ6yo7bGIwboloHOdMw5alyRdsHZa1Fcg==
-X-Google-Smtp-Source: ABdhPJxgF39MsLPy0LWbZeXGBUy3CFp7gIIfxNlCUhObTVORlW5XPn7pdgoxLbPwwQ0fUMnQfRUlseqsLjVZ7A4RYec=
-X-Received: by 2002:a4a:9211:: with SMTP id f17mr259723ooh.25.1631146917250;
- Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 8 Sep 2021 17:21:56 -0700
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3bmDHztmN1bRB4M7GynQYPShvTahsoeCAXxI3yMeopA=;
+        b=76KZZELpuFkkGmwUb/ZAKe++HHqcCqoaSbDQ+IOc5IN8MONCznwaa0+72gNNLgXeTs
+         ohAZgHgz/8EbccfcDN7w4WwnFidefRq1e7F1/AXQ/jx+2kD6jlrKRLYr5KwhLhELYHTY
+         FtXIgVILtSUoGI+3BUjHudDbBs9q1wpMXpH9+7ql4y9BtBepDsnQtl39d66Rmh6Au5yj
+         fggXNV2ZFWW/v4UEKl4yrBFWyjkRsZogXjUoYNKkGMkJhKycBEhJQT7FcPPnBpG9dA6I
+         sE/n8PkCU+MfoWzZunVLDe2unu/xJcb6FOBbVVisiUyHEfYOWCsuQ8/OotAuyoWkb/Hu
+         gMMA==
+X-Gm-Message-State: AOAM5307Sh1xhl/6hoBrEzV9n3GVIgRMckfQwUDK7RpTrRiQm3oNYHGA
+        s7/yRZZkv+u+Z1sk5pv586M=
+X-Google-Smtp-Source: ABdhPJwCKDvm7y/uUAq4H3uB1yy8DmGUilbJLrmHeia9jx1A8Jf8ctgikq78+X4+Wuzyk0pYnBTfrg==
+X-Received: by 2002:a05:600c:364f:: with SMTP id y15mr59733wmq.193.1631146968598;
+        Wed, 08 Sep 2021 17:22:48 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.235.167])
+        by smtp.gmail.com with ESMTPSA id z19sm102328wma.0.2021.09.08.17.22.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 17:22:48 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_req_complete_post
+To:     syzbot <syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000006a0acd05cb84d626@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <a486fe70-68ac-2ecb-c5b4-08328aced022@gmail.com>
+Date:   Thu, 9 Sep 2021 01:22:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
-References: <20210905210400.1157870-1-swboyd@chromium.org> <YTe+a0Gu7O6MEy2d@google.com>
- <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com> <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 8 Sep 2021 17:21:56 -0700
-Message-ID: <CAE-0n50RUGTA8sfK52YWXRkoi31XYnJkahy_MydRZ0zM1QXRQg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
-To:     Abhishek Kumar <kuabhs@chromium.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Youghandhar Chintala <youghand@codeaurora.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0000000000006a0acd05cb84d626@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Abhishek Kumar (2021-09-08 15:37:07)
->
-> Overall this change should fix the issue, additionally I have one
-> comment below and would like other reviewers views.
->
-> >  #include <linux/regulator/consumer.h>
-> > +#include <linux/remoteproc/qcom_rproc.h>
-> >  #include <linux/of_address.h>
-> We are adding an external dependency here but since this is added in
-> snoc.c (which is for integrated solution only), I can expect if SNOC
-> is enabled, remote proc will be enabled as well, so it should be fine.
+On 9/9/21 1:11 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    b2bb710d34d5 Add linux-next specific files for 20210907
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14a956b3300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=457dbc3619116cdf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a0516daac8b536b4b8c0
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a0516daac8b536b4b8c0@syzkaller.appspotmail.com
 
-There are stubs so that if it isn't enabled it won't do anything. But as
-you say SNOC relies on the modem to boot, so maybe CONFIG_ATH10K_SNOC
-should depend on some remoteproc config anyway? I'm not clear how probe
-ordering works but I think we'll want to make sure that we only register
-the notifier once the remoteproc driver for the modem adds itself to the
-list of available strings to look for.
+It's probably is a dup of "WARNING in io_wq_submit_work (2)",
+let see if it can find a reproducer.
+
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1151 [inline]
+> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 req_ref_put_and_test fs/io_uring.c:1146 [inline]
+> WARNING: CPU: 0 PID: 14536 at fs/io_uring.c:1151 io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
+> Modules linked in:
+> CPU: 0 PID: 14536 Comm: syz-executor.3 Not tainted 5.14.0-next-20210907-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:req_ref_put_and_test fs/io_uring.c:1151 [inline]
+> RIP: 0010:req_ref_put_and_test fs/io_uring.c:1146 [inline]
+> RIP: 0010:io_req_complete_post+0x946/0xa50 fs/io_uring.c:1794
+> Code: e9 94 ff 48 8b 34 24 31 ff e8 76 ee 94 ff e9 6e fc ff ff e8 0c e9 94 ff 4c 89 ef e8 d4 c0 62 ff e9 38 f8 ff ff e8 fa e8 94 ff <0f> 0b e9 8a fb ff ff e8 ee e8 94 ff 49 8d 7e 58 31 c9 ba 01 00 00
+> RSP: 0018:ffffc9000bf6fda8 EFLAGS: 00010216
+> RAX: 000000000000ec57 RBX: ffff88806c12e000 RCX: ffffc9000fa5e000
+> RDX: 0000000000040000 RSI: ffffffff81e12466 RDI: 0000000000000003
+> RBP: ffff88801cfea000 R08: 000000000000007f R09: ffff88806c12e05f
+> R10: ffffffff81e11fed R11: 0000000000000000 R12: ffff88801cfea640
+> R13: ffff88806c12e05c R14: 000000000000007f R15: ffff88806c12e058
+> FS:  00007f03ce5d4700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f03ce5d4718 CR3: 00000000149d2000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  tctx_task_work+0x189/0x6c0 fs/io_uring.c:2158
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>  handle_signal_work kernel/entry/common.c:146 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665f9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f03ce5d4188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+> RAX: 0000000000000080 RBX: 000000000056c038 RCX: 00000000004665f9
+> RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
+> RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+> R13: 00007ffde5bbb8df R14: 00007f03ce5d4300 R15: 0000000000022000
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+
+-- 
+Pavel Begunkov
