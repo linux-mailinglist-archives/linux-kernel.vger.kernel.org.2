@@ -2,158 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FA240489F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565AA40489C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhIIKlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:41:21 -0400
-Received: from relay06.th.seeweb.it ([5.144.164.167]:36567 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbhIIKlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:41:16 -0400
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 017B33F219;
-        Thu,  9 Sep 2021 12:40:04 +0200 (CEST)
-Subject: Re: [PATCH 1/7] arm64: dts: qcom: Introduce support for MSM8998 Sony
- Yoshino platform
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org
-References: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
- <YTdjX2/XGZYQQRDW@ripper>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <2e9270dd-759e-9ebf-71dd-a15fecd611ca@somainline.org>
-Date:   Thu, 9 Sep 2021 12:40:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234284AbhIIKlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229980AbhIIKlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 06:41:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 25F976115A;
+        Thu,  9 Sep 2021 10:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631184006;
+        bh=r1AotUpmZiFC/bmXCaB1Q+D/THLHiQoIH8gZ+gjQ/as=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HUmO1lDqUtnKogFEh0Qvo4fMddTwfwDwJ9WueYDZs5kI8APRXfKQ1gI3FcHbeXFuB
+         G/Dvo/CdflRXfa00dd6PmNsED0c03B+7kCQ/EhfvQyaHHU5W0nxax68otbwy71V058
+         zYaLM+3fIWA/E+C4cSKV3gxx5lVi6awhS3VYkLrrj5uHsfy5RRicQqfpjIHKWYkPhd
+         TbN1hlpI3k9QvlZyI/fRAT0tWmU3sGFhqY3CvCc4isjH4rcZy0tbGH/AhdrbgPhIqX
+         DmWAJddoA3a8Fn2iMI7BccZI8nfrH16yp9DKH2/fPfzbZeUN7mt6NsXgwesoIbVJAP
+         X97WLwQZIaOfQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1428C609CC;
+        Thu,  9 Sep 2021 10:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YTdjX2/XGZYQQRDW@ripper>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: ni65: Avoid typecast of pointer to u32
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163118400607.20005.10171091198714542576.git-patchwork-notify@kernel.org>
+Date:   Thu, 09 Sep 2021 10:40:06 +0000
+References: <20210909044953.1564070-1-linux@roeck-us.net>
+In-Reply-To: <20210909044953.1564070-1-linux@roeck-us.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 07/09/21 15:04, Bjorn Andersson ha scritto:
-> On Fri 03 Sep 11:09 PDT 2021, AngeloGioacchino Del Regno wrote:
-> 
->> This commit introduces support for the Sony Yoshino platform, using
->> the MSM8998 SoC, including:
->> - Sony Xperia XZ1 (codename Poplar),
->> - Sony Xperia XZ1 Compact (codename Lilac),
->> - Sony Xperia XZ Premium (codename Maple).
->>
-> 
-> Nice!
-> 
->> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> [..]
->> +	vph_pwr: vph-pwr-regulator {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "vph_pwr";
->> +		regulator-always-on;
->> +		regulator-boot-on;
->> +	};
->> +
->> +	gpio_keys {
-> 
-> Please don't use '_' in node names.
-> 
+Hello:
 
-Sorry, all of that is fixed.
+This patch was applied to netdev/net.git (refs/heads/master):
 
->> +	reserved-memory {
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		hyp_mem: memory@85800000 {
->> +			reg = <0x0 0x85800000 0x0 0x3700000>;
->> +			no-map;
->> +		};
->> +
->> +		cont_splash_mem: cont-splash-region@9d400000 {
+On Wed,  8 Sep 2021 21:49:53 -0700 you wrote:
+> Building alpha:allmodconfig results in the following error.
 > 
-> Is there any reason for not just naming this "memory"?
+> drivers/net/ethernet/amd/ni65.c: In function 'ni65_stop_start':
+> drivers/net/ethernet/amd/ni65.c:751:37: error:
+> 	cast from pointer to integer of different size
+> 		buffer[i] = (u32) isa_bus_to_virt(tmdp->u.buffer);
 > 
+> [...]
 
-No, there's no reason. Changed to 'memory'.
+Here is the summary with links:
+  - net: ni65: Avoid typecast of pointer to u32
+    https://git.kernel.org/netdev/net/c/e011912651bd
 
->> +			compatible = "shared-dma-pool";
->> +			reg = <0x0 0xf6400000 0x0 0x2000>;
->> +			no-map;
->> +		};
->> +
-> [..]
->> +&rpm_requests {
->> +	pm8998-regulators {
->> +		compatible = "qcom,rpm-pm8998-regulators";
->> +
-> [..]
->> +		vreg_lvs1a_1p8: lvs1 { };
->> +		vreg_lvs2a_1p8: lvs2 { };
->> +
-> 
-> Blank line.
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Done.
-
-Also, we had a better internal review of the 8998 dt patches, so in the
-next version there will be even more cleanups.
-
->> +	};
->> +
->> +	pmi8998-regulators {
->> +		compatible = "qcom,rpm-pmi8998-regulators";
->> +
->> +		vdd_bob-supply = <&vph_pwr>;
->> +
->> +		vreg_bob: bob {
->> +			regulator-min-microvolt = <3312000>;
->> +			regulator-max-microvolt = <3600000>;
->> +		};
->> +	};
->> +};
->> +
->> +&sdhc2 {
->> +	status = "okay";
->> +	cd-gpios = <&tlmm 95 GPIO_ACTIVE_HIGH>;
->> +
->> +	vmmc-supply = <&vreg_l21a_2p95>;
->> +	vqmmc-supply = <&vreg_l13a_2p95>;
->> +
->> +	pinctrl-names = "default", "sleep";
->> +	pinctrl-0 = <&sdc2_clk_on  &sdc2_cmd_on  &sdc2_data_on  &sdc2_cd_on>;
->> +	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
-> 
-> How about grouping these various pins as "sdc2_default_state" and
-> "sdc2_sleep_state"?
-> 
-
-I agree with you on the fact that groping these pins would look way better,
-but I'm inheriting the sdc2 pinctrl from msm8998.dtsi and... all of the msm8998
-boards, including msm8998-mtp and msm8998-clamshell (and whatever else inherits
-these) are doing the same as what I am doing here.
-
-That said, are you proposing to change 'em all?
-
-Cheers,
-- Angelo
-
->> +};
->> +
-> Regards,
-> Bjorn
-> 
 
