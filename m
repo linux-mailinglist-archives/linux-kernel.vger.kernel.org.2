@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69118405BF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4196E405BF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhIIRXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S241151AbhIIRY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240761AbhIIRXs (ORCPT
+        with ESMTP id S237002AbhIIRYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:23:48 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF619C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:22:38 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id h16so5107910lfk.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:22:38 -0700 (PDT)
+        Thu, 9 Sep 2021 13:24:25 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B6C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:23:15 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s3so4126373ljp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:23:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pf0sRl8GXCP8dz4WMUu5tGxz1KupPTUSRLTXOLgH9SU=;
-        b=daKTLDBvTN5qMOW0vOaEkHQg4/ZsrtihPsz6YVNP0kYXHwUiYsbXYMn5llV712jFEs
-         ZOfDTsSc3X+W8b0ARaG41CZ7yM1F4kQJvfjfPIynsgelm+Qi2jJbS+UKD93oh9dHk54v
-         /Ce0lj2gwvzaRE2LZQM69aFFd/Y9x7Rfpgy5s3lL+R6HZ0LH71fmVYi7K5RNPEP1Cmgk
-         Gb1avWRyW13ODPiwB4R586e12yqY1QSBx7BLX8EC03SQeKvOLtV4+yE3anQK+R5cVENa
-         m0OxekpciEuc3h395jhA1GSXpVRhKd+XqjHVggplMObVpgKpn/cvVA45k81c9iHt62sr
-         T+9w==
+        bh=p6IJpdyTV9RM1+HAVghvZCBeKL8NDMdT8/thsJ+vYl0=;
+        b=d/Cm/SAUhDwf7DCQEkoVrmFkB/9CL0b8pA5PmPS8EU77HXDdzgEOXRUTwEK6IETgXK
+         d7dwkAqlP05KbPlW3NS8FI7pi0/wpcu8lpfbqGzYvk5d/J1P80i0uY894FNCjnJ99IT7
+         Z/LeSXzV7P3I2yGkUEJbF3lmaMHtRIQBM+ljk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pf0sRl8GXCP8dz4WMUu5tGxz1KupPTUSRLTXOLgH9SU=;
-        b=twKiyaYlenOQUuN/+p58r45S/VvqQGboahc8iCgR1obRpB8wLA3i2QzPlPxE/sLQ2T
-         /Ju9XoOKRbhnX7DPqMa0TRgVIacBk328dTNi+de6ZLMbSAaTRoIw/Nics0wQq0SYnQQr
-         nUjUkAIMj2OQUoOsi5/ItpWiHvcTkqFiQ20ifojKIhOX5blbypn2R0zZa+mte2XVCFn9
-         6FJAYHmw4Ni8G5v0gAkIhpNML4r+jS2fUo4VV6d0QbcjJ1JqjVHLNh4gpG2j0hcqaC/K
-         MlIAakTtta3EtiLuhgW1Qn0rWC/DlZIz74/Su8T6MH8loC3NyOKK+kYSAncCWx/MbcLJ
-         2rCw==
-X-Gm-Message-State: AOAM532NIgdQXYszGhJAqt4t3N+CKfKRz4Bgmu8ch9mPOHZAsxA3vENe
-        Nu7f4Gr8V6EE0EC5d0Pl/UFiP08gOopgn5vO64TiOw==
-X-Google-Smtp-Source: ABdhPJxPnUFGnHCFACHUOS5JkTg4Je24SkkSbC9505ix4KQDPJriLY181s+I1NSidhRL8eaex1JEKrBepc6IZqYy9P8=
-X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr649503lfa.523.1631208157162;
- Thu, 09 Sep 2021 10:22:37 -0700 (PDT)
+        bh=p6IJpdyTV9RM1+HAVghvZCBeKL8NDMdT8/thsJ+vYl0=;
+        b=tvFGORIJb0PM1nhcAWZ9kjVy2TufsPAsr+mKoAOMYupM0wr9ULFMk8OhgVDLtuzWou
+         PfWaGEHrkBGfmLZemU4dWnPF7X7FPAITQ8r/Be9cFJvKCasn68dVdbGQoqB2YXgeSNYP
+         XEJehCyY27M94eA9gOGK1MmCWUkL0JXR5VcQH9QtTZ/KvJlgvrI0HxyLCazG27ahojsv
+         wrIkZ8K8LPIvTVZzTIjNsgIMtvk4k3w8q+tgjvWnXL7UwInsV9YF6/ZfUvtqKVv5dxcc
+         oVtteJfLEULS10J2QpR19SQ1iffJl9s77/HrcrTqM+sFQJx5Csu/Q1iX2yyfLPl6GQIO
+         LN3Q==
+X-Gm-Message-State: AOAM530mDcgmJ84T5o2bCYqpeMLCiGGuXTj3BnshSCyQIkwTuwaMNGSe
+        LAFfKzdBbxAMtQ3Mv0eGuV7xJq4kpnVcSc/M+U0=
+X-Google-Smtp-Source: ABdhPJzb9amopsqcNZhs3nFWn4WRfh1Bs0c0o5AKRAlibBUt3+mMLLZKQW43t0WnKk/EoPqKiDGofA==
+X-Received: by 2002:a05:651c:512:: with SMTP id o18mr781886ljp.199.1631208193395;
+        Thu, 09 Sep 2021 10:23:13 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id z7sm266591ljh.59.2021.09.09.10.23.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id g14so4152444ljk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
+X-Received: by 2002:a2e:a363:: with SMTP id i3mr806608ljn.56.1631208192152;
+ Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210908032847.18683-1-kortanzh@gmail.com>
-In-Reply-To: <20210908032847.18683-1-kortanzh@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 9 Sep 2021 10:22:26 -0700
-Message-ID: <CAKwvOdnReHxf7ysorwTZtN65Hbw4dTk-z8fAQUaKCvEQ_a97eg@mail.gmail.com>
-Subject: Re: [PATCH v2] gen_compile_commands: fix missing 'sys' package
-To:     Kortan <kortanzh@gmail.com>
-Cc:     nathan@kernel.org, masahiroy@kernel.org,
-        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-17-agruenba@redhat.com>
+ <YTnwZU8Q0eqBccmM@infradead.org>
+In-Reply-To: <YTnwZU8Q0eqBccmM@infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 9 Sep 2021 10:22:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
+Message-ID: <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
+Subject: Re: [PATCH v7 16/19] iomap: Add done_before argument to iomap_dio_rw
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:30 PM Kortan <kortanzh@gmail.com> wrote:
+On Thu, Sep 9, 2021 at 4:31 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> We need to import the 'sys' package since the script has called
-> sys.exit() method.
->
-> Signed-off-by: Kortan <kortanzh@gmail.com>
+> What about just passing done_before as an argument to
+> iomap_dio_complete? gfs2 would have to switch to __iomap_dio_rw +
+> iomap_dio_complete instead of iomap_dio_rw for that, and it obviously
+> won't work for async completions, but you force sync in this case
+> anyway, right?
 
-I'm quite sure I've run this script before; how have we not noticed
-such an issue before?
+I think you misunderstand.
 
-> ---
-> Changes v1 -> v2:
-> * Fix commit title.
-> * Improve commit message.
->
->  scripts/clang-tools/gen_compile_commands.py | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> index 0033eedce003..1d1bde1fd45e 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -13,6 +13,7 @@ import logging
->  import os
->  import re
->  import subprocess
-> +import sys
->
->  _DEFAULT_OUTPUT = 'compile_commands.json'
->  _DEFAULT_LOG_LEVEL = 'WARNING'
-> --
-> 2.33.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210908032847.18683-1-kortanzh%40gmail.com.
+Or maybe I do.
 
+It very much doesn't force sync in this case. It did the *first* part
+of it synchronously, but then it wants to continue with that async
+part for the rest, and very much do that async completion.
 
+And that's why it wants to add that "I already did X much of the
+work", exactly so that the async completion can report the full end
+result.
 
--- 
-Thanks,
-~Nick Desaulniers
+But maybe now it's me who is misunderstanding.
+
+          Linus
