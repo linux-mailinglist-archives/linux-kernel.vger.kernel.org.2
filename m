@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914B4405A3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B9E405A43
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhIIPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhIIPib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:38:31 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31933C061574;
-        Thu,  9 Sep 2021 08:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=F73x7V3d25UjGf7zf/PPlbbc+cYf+/nqqVeEZWo13SE=; b=Cm6MI7CiUa/dp8wnVLYXEEu18x
-        drH9hdKleBUpv6awCYZzVsWfntCJUQIl1sku82key36p8QR5laJs32LdWmZgBE2SGflBuqw8dqLpv
-        IW53hKQzfvsLdyVlGrRKlclscA7IWhrFgTPihWc2AflEijeC9ZFp6jcMH838BK0NLrrWSldWFrFjC
-        MS7sCTgAlEoDcrB03qSVZ4iLbvq4UDjfff+AFexeS3K+XM+spiFHNy9VOZRkemqmaWGivr8iNfh+p
-        QbIxszILfFhtIgIU7xCENPxOm0VWiR6sTfNUyKSY6lS6zp0+6YRtKDPskXGHsOI9txrHiRcSxEPgr
-        CLoiF+oQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45018)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mOM6t-0006iP-WB; Thu, 09 Sep 2021 16:37:06 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mOM6p-0006P9-2l; Thu, 09 Sep 2021 16:37:03 +0100
-Date:   Thu, 9 Sep 2021 16:37:03 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Android Kernel Team <kernel-team@android.com>,
-        stable <stable@vger.kernel.org>,
-        Magnus Damm <damm+renesas@opensource.se>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
-Message-ID: <YToqH4phGwq4/MPQ@shell.armlinux.org.uk>
-References: <20200624195811.435857-1-maz@kernel.org>
- <20200624195811.435857-8-maz@kernel.org>
- <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+        id S233663AbhIIPko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232707AbhIIPki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 11:40:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAB4761101;
+        Thu,  9 Sep 2021 15:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631201968;
+        bh=tkOzf4SWBI/A4DwsroAtEgpaaPJWTwSJSjBkhkWXmMA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nJhV9fvfNFeICwBDTUrqTTlfXKOrQ7ggctzbNDG8N1pai6ZW3kD0BiudT68fNafJ0
+         nw+xWdmdXcE/rZOTItwmQZFMTEAuN9XPe0Ckvo5A1kA/s1H1yJS9SntciWBfQkscju
+         t+Ejk5J2dwsBrLywTaXg5yjTdnM3se9sNUk6vX0QMpFtj9LuqT6D/JOkNsTOOOrUyK
+         Sgk4A1T23zChKVB/1ZRKW5/L3v8q3gxB2jedgFRX6/huZlSRKVo1crlbFfTECMegYv
+         d0oo1//1Mk4qEJf3d3ZXyEXrb1pynXGWlAzm0P+cnBgUQtezcL/sKMsGN5U5FJzbnA
+         a27MmWQhZkD2A==
+From:   Mark Brown <broonie@kernel.org>
+To:     tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>,
+        matthias.bgg@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, wenst@chromium.org,
+        linux-mediatek@lists.infradead.org, rdunlap@infradead.org,
+        jiaxin.yu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        shane.chien@mediatek.com, alsa-devel@alsa-project.org,
+        bicycle.tsai@mediatek.com, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: mediatek: add required config dependency
+Date:   Thu,  9 Sep 2021 16:38:49 +0100
+Message-Id: <163120168199.50116.8060254144301490373.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210909065533.2114-1-trevor.wu@mediatek.com>
+References: <20210909065533.2114-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 05:22:01PM +0200, Geert Uytterhoeven wrote:
-> Despite the ARM Generic Interrupt Controller Architecture Specification
-> (both version 1.0 and 2.0) stating that the Interrupt Processor Targets
-> Registers are byte-accessible, the EMMA Mobile EV2 User's Manual
-> states that the interrupt registers can be accessed via the APB bus,
-> in 32-bit units.  Using byte accesses locks up the system.
-
-Fun. Seems someone can't read ARMs documentation. Even the old
-ARM IHI 0048B.b document I have for the GIC from 2013 states
-"In addition, the GICD_IPRIORITYRn, GICD_ITARGETSRn, GICD_CPENDSGIRn,
-and GICD_SPENDSGIRn registers support byte accesses."
-
-However, this kind of thing is sadly not uncommon. There's been a
-similar issue with the PL011 UART driver as well - some platforms
-require 16-bit accesses instead of normal 32-bit accesses.
-
-> Unfortunately I only have remote access to the board showing the
-> issue.  I did check that adding the writeb_relaxed() before the
-> writel_relaxed() that was used before also causes a lock-up, so the
-> issue is not an endian mismatch.
-> Looking at the driver history, these registers have always been
-> accessed using 32-bit accesses before.  As byte accesses lead
-> indeed to simpler code, I'm wondering if they had been tried before,
-> and caused issues before?
+On Thu, 9 Sep 2021 14:55:33 +0800, Trevor Wu wrote:
+> Because SND_SOC_MT8195 depends on COMPILE_TEST, it's possible to build
+> MT8195 driver in many different config combinations.
+> Add all dependent config for SND_SOC_MT8195 in case some errors happen
+> when COMPILE_TEST is enabled.
 > 
-> Since you said the locking was bogus before, due to the reliance on
-> the BL_SWITCHER option, I'm not suggesting a plain revert, but I'm
-> wondering what kind of locking you suggest to use instead?
+> 
 
-If byte accesses are not going to be workable, then the only
-answer _is_ a read-modify-write with working locking.
+Applied to
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: mediatek: add required config dependency
+      commit: 5a80dea93191d55840f42252ed3e4565a125a514
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
