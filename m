@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215C84047AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAF24047AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhIIJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:22:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59365 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232262AbhIIJWQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:22:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631179266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=04XyEftP8B2cwyDDczs6wy9wXoFSsdoEGB0DdA8URak=;
-        b=OsihiTBz08uuro15DIi+Qg7Z8yFYJKU5dNTYsK1ZHyjGR420Rq+wsBINjmnzR77NozREMA
-        VjeVNktGvVI6LhE6eE/RLI6huhU4gQNNCaHlvLKNxF41sEw691nTdEwD9/7WdwSFACab4p
-        atjBnFwEYHpGwyeLNfSlP6EBN1hWGZ0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-xJQpxtSkOF2r26i8_KHfKw-1; Thu, 09 Sep 2021 05:21:06 -0400
-X-MC-Unique: xJQpxtSkOF2r26i8_KHfKw-1
-Received: by mail-wm1-f72.google.com with SMTP id m16-20020a7bca50000000b002ee5287d4bfso469527wml.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 02:21:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=04XyEftP8B2cwyDDczs6wy9wXoFSsdoEGB0DdA8URak=;
-        b=K+KfX9sbMV33D6JHvroaAG4VJebudxErkkaxf3ZkUVOTR0dW2WH1vi8x8pqODy9sPa
-         Ixl3BD6aMvH7MgXwVXq/H+92SmjXcw4IGY5wE9ORB2Z6R8LmEMzgDlTNrVddnoNNvzBf
-         w1jKpwacRH78yBzJegPe1DRqpNCEIIAQW+G1BRSh9Kj4246rzLtZsUzKnmfKJPyaCcxr
-         sb/NM9AiivQ2jwUcd2nCQFdqYcn97QqycblqV22CnTJP2irggREFoHB9WLhtMGmA9YjK
-         C8vsJstaDER4D+fskaaLl3jrsREMuPK97b3fokGjzxb4rZbZ5tAMcadMT8nqYIo8FMpf
-         U8hw==
-X-Gm-Message-State: AOAM531YjwyQU1u3l9RMD8rziaypxyRxVVFjZy+4fbhMMuw9fwKe7QH7
-        vUgyBhZ8tqueu1s29GVwwTFLGfDDXeAFnrQ1LdzJeKwQAyPGBKNewnDakumw1RMXup1eAdigmrv
-        TY1JIxytm/iLC7r6adpZj/4jm
-X-Received: by 2002:a1c:192:: with SMTP id 140mr1853783wmb.101.1631179264534;
-        Thu, 09 Sep 2021 02:21:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzH3E9jPavsm71ebZFBPTANtCVc1EXdmI5W8Sdc21rVamcMC90TidgLKRIzdbEGe5wv156Esw==
-X-Received: by 2002:a1c:192:: with SMTP id 140mr1853766wmb.101.1631179264375;
-        Thu, 09 Sep 2021 02:21:04 -0700 (PDT)
-Received: from redhat.com ([2a10:8000:cbff::13])
-        by smtp.gmail.com with ESMTPSA id v9sm999187wml.46.2021.09.09.02.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 02:21:03 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 05:21:01 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH 0/6] vDPA driver for legacy virtio-pci device
-Message-ID: <20210909051936-mutt-send-email-mst@kernel.org>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
+        id S232792AbhIIJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:24:20 -0400
+Received: from mail-eopbgr60071.outbound.protection.outlook.com ([40.107.6.71]:16515
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232262AbhIIJYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:24:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TlfUBJzaf51KLzV3quvgkJ6ug5Gb0EP2UnXdVAa1JBQLByGlnXSpc3Wu70daE3N98otllXHd4QBcwuCmk8fw9o/bcNr/5TBXWhBwMesWcikr2e3+W1V3WsoofS3hIXEZ9jhcaYcfph1ZIrRYl06MKaMqsSe+ty3FaXCp5iTrqaTIWpBXfzkix24ifvmYvx6koYEv0KgC/ohBBkgwUMrpP2m+hsfXP23rN9H7IqEX8efDswKFa6c9a1uNmUhWmtFhAp6VKxSEEaNhEFm8wBUa0yHRtbvk8O/+8JBu8QI197rF/nLALYyHjDuJxGgDZOCFmOZ0htFDt7iJZcYhfsMX9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=dUStuCdpcsCKQemZ8w157CaHQvZ+LY+JxQEdui4Wryk=;
+ b=I1y4xiYxbLJaKKETmuy9wPTBhTQ1tXkPEko9Ntw7OulTYaDWinhtAjG21CYVFCASgxd2hfvct2q4DBEXxCZ/ESD0aUYlaBExibiX8iYurn9peZnAfG9QTylofdIhduVy5aO3wp0kTLd+l3I6eof1dS0WQ+Z497eS+P0aYTy81JwBPvVIKxHFcEoMi9k8GIol5lAixnAMGP0tOEd/3vRiAo4lQRWw2scZjixeAm7/HUyf35PPldzk2xpUBi1rgYy0x9xW7gj4RSVZPqlqmcFvtBFnguTfrIEA/Iq5foqBwO3EVR89cemoIeUKEOZtBzFuiEj4rrb0Se/rHKE5m4RrcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dUStuCdpcsCKQemZ8w157CaHQvZ+LY+JxQEdui4Wryk=;
+ b=JYlz36tDkzGg2WQbvn5495/+ftprpV6N343CAKaBIuk0P7S37YjAuCtL+9CorF4mAMXKQ2S43R+XTBv8EP29bfheYvhxGnG0nNSEyd3ryodKR54tHSso6ENGJICzjDAQIu4kvv4kNjLuRnac5pgsQhVBv1KDMBADMFED+0wVH0I=
+Authentication-Results: st.com; dkim=none (message not signed)
+ header.d=none;st.com; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 09:23:08 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4500.017; Thu, 9 Sep 2021
+ 09:23:08 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: stmmac: platform: fix build warning when with !CONFIG_PM_SLEEP
+Date:   Thu,  9 Sep 2021 17:23:22 +0800
+Message-Id: <20210909092322.19825-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 09:23:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5d0ba1d6-0ee8-40f9-c1a4-08d973736f73
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6795:
+X-Microsoft-Antispam-PRVS: <DB8PR04MB6795F4217B6BA6C34C61F493E6D59@DB8PR04MB6795.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U13lrVtTMp7PTwQV12bv+uz2FmWk2+Q0nI9RqMmUVMGhCmBx1qJXCFBlS4ViB06NFjRFl3V5MqKVq7tixSkoMeJGr2uirKwoqfkmjEL9rFctxOQDKcI7TiroQJbuDYTtdxY5HoWJBJLEmKSyQTi+f0QHAn7UV5fsAvj6l0xQpR9r1vsN64UPEgZVNKUINy5DgOFHv/YtFi9OSvVI5NwNCASBf+aoeOqmO8hj4fp/HFl8xH1FT7LL6vC0LbQjJqls5FMAJx3lHTzcOGqRzPz+d/aKG2pqaRMEBihFRxid1gErshl7PlPzQnx2V3KtW0MMmX2qgpj4pXHaZFBiS+FlBmu60vO85LI2pa7hw+R1x1YMGJZkgRqHIo7HxnkCbruOA2OXvcpjeWruTPEPGo6KNVwHrI/UkjgYY5GoUgrhkkbgfCSE2C7H1WJs1ccVVyO2fPRoTVUVMwCzDjxauTdzc3VQDlbzhoVwcKb4Mzip10Ljd3W0pXTmulymLRXiQFYsT0V7YuKLN+yBYsLAkc/D4o6mQRKQVnhaeRahCXJ8QcXVV+fNlCNvHZ/iXIa3pMIF04F8+5MEVD465xzdcvFrz7LH+4Twf89RZqwjAtSsFeU9FIQzisCvPHaJTe3KOecEdc6Wd+gqS5FCUmuTR9RadXUbfPqh+B6dB/aFtxVgFcJeutpnd3qcAEqLnQjln3irDESg65ZWMeaXcEQKQi63nw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(366004)(6512007)(38350700002)(8676002)(2616005)(38100700002)(5660300002)(956004)(36756003)(4326008)(1076003)(316002)(6506007)(52116002)(2906002)(26005)(186003)(83380400001)(86362001)(8936002)(6486002)(66556008)(66476007)(66946007)(478600001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E1Z+er3EWfy12RdEUD3xq9m37ijO7i9v2diG/5iSz2t/g65R3ycTop7PkXXx?=
+ =?us-ascii?Q?Wq8qrJNVsfYLRnLmibGis99heVft/OCrupdX0YcQwjTifbmyxat261Iu6FaE?=
+ =?us-ascii?Q?PCBaA5xUNqBI1Oea9rBNYEFmK6w6BeAiPMyg0VZylIBrtzdI8lcLscU0tbcr?=
+ =?us-ascii?Q?ekBM3RHbq9ZMwmQhRpPSn1kAMNonh5CQKf791qvGmDA+mqTa+XaK1g3HFsZt?=
+ =?us-ascii?Q?LyhD4+GpCmSIUkjucoiGV8m4Q3jo7iFPdqiM701i6Tzor+6W2W2yG8triyqk?=
+ =?us-ascii?Q?d7gQ9MTF/hitwU+8YYTi9xbtrBPE/H1km2DTPaH7MfKqkAFFANUMWx8WNn8Q?=
+ =?us-ascii?Q?2iGNSw88M0It4RuwCqPdUOfhTKNCVFVCAZdaBTYwCYvdNw+l8jgQJ5prN+OP?=
+ =?us-ascii?Q?c2xeCFELQ+5AdfyKAdhCY4j0Wbqd2p4sL3jPDAMlYKMcl2L45+f6ABWblpii?=
+ =?us-ascii?Q?BAVaJTT5huwoI9vhZPi+b4SJKuEFB95KrKW350IvL6bBXWFg8/J5+CAdWQR1?=
+ =?us-ascii?Q?UTihjT/XpXEOaqT7Ylc+MIaqMoS557c6vEQNL3/kJq+4VWOuvbloPdMpypBc?=
+ =?us-ascii?Q?tIpleBL91ztAznufksERxbLBQtW4kusXB1EMtuMnCsn8aLehjfgu+7a11qEA?=
+ =?us-ascii?Q?w7MxFzrXM1oggd55ykp09A/gFyj4KzU03dBfTG1eSxfcQs40TAr0DWMpeSr8?=
+ =?us-ascii?Q?+cNovpXUQdCNXUOaztTvVU9O3J46S15agPfb0eKHSvikLoVHue4aj8ForO6j?=
+ =?us-ascii?Q?Ctr4mZ8Z2r6afLH4ZMAelALNXhLwLr5ECT4x5uqs3KpQc7pNGfe6QKqyLKiV?=
+ =?us-ascii?Q?/Azc/+h0x/9VWHxHMh0ugUdLD50LhXj2doOcwoR7Io51oSyAePZtWDfboUZG?=
+ =?us-ascii?Q?0fsrwjDqHyB37WBt8HNeXAaIbN7HUg4xXVCpFInNbmnc+Fw4zOEjAbaEnox1?=
+ =?us-ascii?Q?sr8ieA35fXuiT9A89mWYbzBmC38DSKlLxQqALxQ1LkmCLS+vag9Zo7hSPY6K?=
+ =?us-ascii?Q?br03v2tKp1K+9YxAbyWilnjMpjELEiI8LFFXSh/U+RaETmXhAESyAA78j9dv?=
+ =?us-ascii?Q?Mv7Qijvw3AJqdkG377flCLnfk2Ma1K1RgcTSRlPG8D4K14KCEV97502oK2zg?=
+ =?us-ascii?Q?zbUaPX74javl57ZPGFBCSnVIyQWqSAHZMLrqSJBW58ABWxHqTZymo4asEFcj?=
+ =?us-ascii?Q?e57rnxqJc3/gt2IeTLGdoGWYXTPsDnyvEhA00tNWDVkrxuDIHisAsH1jBW5i?=
+ =?us-ascii?Q?mi+r6g4WBOlgset3Ucgmlu/oXOFcJof8aKTb1AvGfiENrqWd4aHPcyu2X3dX?=
+ =?us-ascii?Q?xDabPDMPOxJZLUeV3+QlDWCl?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d0ba1d6-0ee8-40f9-c1a4-08d973736f73
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 09:23:08.0495
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NDJcGnHSQFH+SpHgtMxZsMDhabiCZXvKuNVHA4wnQG9IOme94fjV73hude4LGPXUCCTBts+9CnrQmTUGV6Qxzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6795
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:05:06AM +0800, Jason Wang wrote:
-> On Wed, Sep 8, 2021 at 8:22 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > This series implements the vDPA driver for legacy virtio-pci device.
-> > Currently we already have the vDPA driver for modern virtio-pci device
-> > only, but there are some legacy virtio-pci devices conforming to the
-> > virtio-pci specifications of 0.9.x or older versions. For example,
-> > ENI(Elastic Network Interface) of Alibaba ECS baremetal instance is a
-> > hardware virtio network device which follows the Virtio PCI Card 0.9.5
-> > Draft specification. Such legacy virtio-pci devices have some
-> > inconsistent behaviour with modern virtio-pci devices, so some common
-> > codes are split out and modern device specific codes are moved to a
-> > separated file.
-> 
-> What worries me a little bit are:
-> 
-> 1) vDPA requires IOMMU_PLATFORM to be supported by the device to work,
-> if I understand ENI correctly, it's a legacy device so it can't
-> support ACCESS_PLATFORM. Or is it a legacy device that supports
-> ACCESS_PLATFORM implicitly.
-> 2) vDPA tries to present a 1.0 device, in this case the behavior could
-> be ruled by the spec. If we tries to present an 1.0 device on top of
-> legacy device we may suffer a lot of issues:
-> 
-> - endian issue: 1.0 use le but legacy may use native endian
-> - queue_enable semantic which is missed in the legacy
-> - virtqueue size, as you mentioned below
+Use __maybe_unused for noirq_suspend()/noirq_resume() hooks to avoid
+build warning with !CONFIG_PM_SLEEP:
 
-So this all kind of works when guest and host are
-strongly ordered and LE. Case in point x86.
-Question is how do we limit this to an x86 guest?
-Add a new ioctl declaring that this is the case?
+>> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c:796:12: error: 'stmmac_pltfr_noirq_resume' defined but not used [-Werror=unused-function]
+     796 | static int stmmac_pltfr_noirq_resume(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c:775:12: error: 'stmmac_pltfr_noirq_suspend' defined but not used [-Werror=unused-function]
+     775 | static int stmmac_pltfr_noirq_suspend(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
+Fixes: 276aae377206 ("net: stmmac: fix system hang caused by eee_ctrl_timer during suspend/resume")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 4885f9ad1b1e..62cec9bfcd33 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -772,7 +772,7 @@ static int __maybe_unused stmmac_runtime_resume(struct device *dev)
+ 	return stmmac_bus_clks_config(priv, true);
+ }
+ 
+-static int stmmac_pltfr_noirq_suspend(struct device *dev)
++static int __maybe_unused stmmac_pltfr_noirq_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
+@@ -793,7 +793,7 @@ static int stmmac_pltfr_noirq_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int stmmac_pltfr_noirq_resume(struct device *dev)
++static int __maybe_unused stmmac_pltfr_noirq_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
 -- 
-MST
+2.17.1
 
