@@ -2,195 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B79040584F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782AF405853
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245095AbhIIN5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349110AbhIINza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:55:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F710611CB
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631195660;
-        bh=wxBTAJeOQ7MeLpizJg2FKExj67MUK1RXo6sqqLtc3Xo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=acXhtfwZLRSW++s4vpRVkF8y9kGQij45KNFpPpoi3BnAZr4lrhG+Oy5Z2XS/AeRaN
-         X7bYJVU48OIgxCgsocHrl9UDINq/5OP4QWaRB60wYgBNY3RlpZk9tIAOZSSs1tn5ts
-         KpFBvjv4n59oqvyWlx+9Zxbn5dct054ZxnmbZP/yvqoTvMNb9uZ6VgqNlFVKutyNkn
-         N2r2NLgKyZ3a9JzoxYettAzxVgHN3lzZtRMmD6EYiypbs3JQAlw+VjhLjhPK3GPMJF
-         5v/OZwiolP34hpPi1RYwrF1wtM2JJlColdtMRBh8nsVroLCCDA1xOoyS1uMBqP5bW2
-         ZVD4xKp4bRILg==
-Received: by mail-ot1-f43.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so2553569otq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:54:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533K/rgncKzJNFn6xr/2+Nevi95UzCBriTSdVS/pdZbn+nvT/XEJ
-        LkqDF2R1LPrHXXmADrVzCjbvg9u457kJY5i82wE=
-X-Google-Smtp-Source: ABdhPJwTAIJ7a6Q8xfcCOYf16QFYVRJbMmyw75DbA9S8CvOrm7ZEqo6hO/7Ut+wiBW/tBTix5EXK4xui6c5FyG2orZY=
-X-Received: by 2002:a05:6830:603:: with SMTP id w3mr2540426oti.147.1631195659768;
- Thu, 09 Sep 2021 06:54:19 -0700 (PDT)
+        id S1351152AbhIIN5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:57:09 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:48423 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237351AbhIINzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:55:47 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id F0498320090C;
+        Thu,  9 Sep 2021 09:54:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 09 Sep 2021 09:54:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=e
+        2NWabPI043cjZ/MxTPxc2aylv7yormTp/tno/siWdw=; b=jwaBzV+ErWAx8Tt31
+        l6FIAZqzIZQNZGmFS5n7idDfw88RasWwfuLisxlPsDYx0aJ3b+XBN/3GOhd9e+6k
+        VqtcHO/0WZMmfdt64Cl4D7yYsBWZ1YaJzxP5nSWRl+4vxwz/7qXTWmKodZtsK4Wq
+        oHHn3+IYj+BYa1I/ija9PWS0DxofPTpACallovMS7WEj0GTEErP/GehfPRLenuVh
+        5E46G19DdP6pMaq0QrUhaZSaBG7amoS2XWXpa8nFPATzEP9lSpReEm6qwOfI4gY8
+        Uv0tBqUYiuxGzin7M1ZLa8RGT8DtY0xNab5fc82BBBH4wLBCI+Yx/4rLJUeJtvkl
+        1SlOw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=e2NWabPI043cjZ/MxTPxc2aylv7yormTp/tno/siW
+        dw=; b=HdSTnZpVCo++0uwD0eTCXpXhMt9jD/WziufMvXSu4FeQaZpB/lBeNEdtm
+        XW8P3XUJ4ONoMEwH0LfGG1GO8J0sp/QnH+oDYaAR8iN5StIrtlAD8EyXNS1NjXwO
+        gNlLk69pnCYqHOenk0c/Fy7EiIL0GVStPJ1ZBJQmSnsMo0rhB9/1IFsmqp5XXBGP
+        LiACrb6zVP0rg/R/ko4zMVBsfeCKH/XBvnTP5WiVdtyUSq0gOqQ038Ja7wJT6DdQ
+        SBkuBP0lFXHFjsI8kOegp5wjIRbYLyqhPs6+D3Ir1I2MxXtcG8LISObvexif4Vtl
+        dxKS4vWtcdLqYajaUV5NXydE6Vouw==
+X-ME-Sender: <xms:FRI6YTTFh1cQ0goHIKTFyUOEaVK15mENL9AJSaXhtFwp8qm0opS-1g>
+    <xme:FRI6YUzL4Wu_VoIq7BW4SRLaxHBa9eQHvNvtCsPV68HD6DN1f_3wXoEiqKvFgEt1P
+    ucybRwjudmYIlPVPQ>
+X-ME-Received: <xmr:FRI6YY0vOhWW9W3e1vQHOrjUQzJwQW8NHan8z9mQqDTPDjsZ35Dt-Hkh5vqdLEx8Mn-5nkAVYPXXkXx41B5YtBLXOhr1Mx0EzX4yH-c5dYoWQ-qBDSLkrqrAsQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefledgjedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
+    hedtfeevuedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:FRI6YTBZXrGx7EzPVkyNdM_VMqriBDTb47Z8GL7LXuvi-8sqQYMahA>
+    <xmx:FRI6Ycjd0F0DT6Ml9jp1HkWdGNyIkuaBoFl2--pNR2FxgqjlVXY4aw>
+    <xmx:FRI6YXq6dv5TnlbJDe3ff4WGjDu_UlntgEBK0KFp1yiLaQRqjZh7Eg>
+    <xmx:FhI6YVUVuHtKWwcOyPIejmOvc0I90HMn9FtgbR3f5b8uixL3iXVuGg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Sep 2021 09:54:29 -0400 (EDT)
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210902234228.32223-1-samuel@sholland.org>
+ <20210902234228.32223-2-samuel@sholland.org>
+ <20210903103638.5yhuvkyf62i3rp6a@gilmour>
+ <70c76fe4-41e4-7232-c961-785193a68859@sholland.org>
+ <20210909113628.ojbtbao7jlb6ophy@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH 2/2] leds: sunxi: New driver for the R329/D1 LED
+ controller
+Message-ID: <a890e40a-7fed-de1f-ef6a-6fab414fd7ca@sholland.org>
+Date:   Thu, 9 Sep 2021 08:54:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210904060908.1310204-1-keithp@keithp.com> <20210907220038.91021-1-keithpac@amazon.com>
- <20210907220038.91021-6-keithpac@amazon.com>
-In-Reply-To: <20210907220038.91021-6-keithpac@amazon.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 9 Sep 2021 15:54:08 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG-cWAVn7MinFFEOiG2F-bdQ+TqgSuV0rfXz75Vh2Y7SQ@mail.gmail.com>
-Message-ID: <CAMj1kXG-cWAVn7MinFFEOiG2F-bdQ+TqgSuV0rfXz75Vh2Y7SQ@mail.gmail.com>
-Subject: Re: [PATCH 5/7] ARM: Stop using TPIDRPRW to hold per_cpu_offset
-To:     Keith Packard <keithpac@amazon.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christoph Lameter <cl@linux.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210909113628.ojbtbao7jlb6ophy@gilmour>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sept 2021 at 00:00, Keith Packard <keithpac@amazon.com> wrote:
->
-> We're going to store TPIDRPRW here instead
->
+On 9/9/21 6:36 AM, Maxime Ripard wrote:
+> Hi,
+> 
+> On Sun, Sep 05, 2021 at 11:17:19PM -0500, Samuel Holland wrote:
+>> Hi,
+>>
+>> On 9/3/21 5:36 AM, Maxime Ripard wrote:
+>>> On Thu, Sep 02, 2021 at 06:42:28PM -0500, Samuel Holland wrote:
+>>>> Some Allwinner sunxi SoCs, starting with the R329, contain an LED
+>>>> controller designed to drive RGB LED pixels. Add a driver for it using
+>>>> the multicolor LED framework, and with LEDs defined in the device tree.
+>>>>
+>>>> Signed-off-by: Samuel Holland <samuel@sholland.org>
+>>>> ---
+>>>>  drivers/leds/Kconfig      |   8 +
+>>>>  drivers/leds/Makefile     |   1 +
+>>>>  drivers/leds/leds-sunxi.c | 562 ++++++++++++++++++++++++++++++++++++++
+>>>>  3 files changed, 571 insertions(+)
+>>>>  create mode 100644 drivers/leds/leds-sunxi.c
+>>>>
+>>>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+>>>> index ed800f5da7d8..559d2ca0a7f4 100644
+>>>> --- a/drivers/leds/Kconfig
+>>>> +++ b/drivers/leds/Kconfig
+>>>> @@ -297,6 +297,14 @@ config LEDS_SUNFIRE
+>>>>  	  This option enables support for the Left, Middle, and Right
+>>>>  	  LEDs on the I/O and CPU boards of SunFire UltraSPARC servers.
+>>>>  
+>>>> +config LEDS_SUNXI
+>>>> +	tristate "LED support for Allwinner sunxi LED controller"
+>>>> +	depends on LEDS_CLASS
+>>>> +	depends on ARCH_SUNXI || COMPILE_TEST
+>>>> +	help
+>>>> +	  This option enables support for the LED controller provided in
+>>>> +	  some Allwinner sunxi SoCs.
+>>>> +
+>>>
+>>> Same comment for the name
+>>
+>> Are you concerned about the help text only, or do you also want me to rename the
+>> Kconfig symbol?
+> 
+> The driver, the driver symbols and the Kconfig symbol would be nice
+> 
+>> I am happy to change the help text to something like: "This option enables
+>> support for the LED controller provided in the Allwinner R329 and D1 SoCs."
+>>
+>> But I don't know of any satisfying way to rename the Kconfig symbol. There is no
+>> general category name for "R329 and D1."
+> 
+> Yeah, this is not ideal, but the issue is that nothing is telling us
+> whether or not it will support *only* the R329 and D1. Chances are it's
+> going to be featured in a number of other SoCs in the future, so if we
+> were to have the entire list of supported SoCs in the Kconfig symbol and
+> driver name, we'd have to always change them everytime a new SoC support
+> is introduced.
 
-?
+This is why I named it LEDS_SUNXI: until and unless a "v2" hardware
+block shows up, this is the LED controller in all sunxi SoCs [that have
+an LED controller at all]. And at that point, naming the new driver
+LEDS_SUNXI_V2 makes more sense to me than trying to guess the pattern
+for SoC support, where there likely is no pattern.
 
-> Signed-off-by: Keith Packard <keithpac@amazon.com>
+> It would be a pain, and it's pretty much guaranteed that someone is
+> going to forget at some point. To mitigate this, we took the approach to
+> use the same semantic than the DT compatible: the driver name doesn't
+> really define the list of all the SoCs supported but matches every SoC
+> (more or less) compatible with that SoC.
 
-I'd much prefer to keep using TPIDIRPRW for the per-CPU offsets, and
-use the user space TLS register for current.
+Ok, but this still doesn't tell me what you expect the driver to be
+named. Again, there is no general name for "every SoC (more or less)
+compatible with R329".
 
-There are several reasons for this:
-- arm64 does the same - as someone who still cares about ARM while
-many have moved on to arm64 or RISC-V, I am still trying to maintain
-parity between ARM and arm64 where possible.
-- efficiency: loading the per-CPU offset using a CPU id stored in
-memory, which is then used to index the per-CPU offsets array in
-memory adds two additional loads to every load/store of a per-CPU
-variable
-- 'current' usually does not change value under the code's feet,
-whereas per-CPU offsets might change at any time. Given the fact that
-the CPU offset load is visible to the compiler as a memory access, I
-suppose this should be safe, but I would still prefer per-CPU access
-to avoid going via current if possible.
+We tried to guess the pattern around the time H6 came out, and named a
+bunch of things "sun50i" (like the IOMMU driver) that are now showing up
+on sun8i (A50) and sun20i (D1) SoCs. And it turns out most of the
+changes were not even new for H6 (sun50iw6), but already present in the
+A63 (sun50iw3).
 
-> ---
->  arch/arm/include/asm/percpu.h | 31 -------------------------------
->  arch/arm/kernel/setup.c       |  7 -------
->  arch/arm/kernel/smp.c         |  3 ---
->  3 files changed, 41 deletions(-)
->
-> diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
-> index e2fcb3cfd3de..eeafcd6a3e01 100644
-> --- a/arch/arm/include/asm/percpu.h
-> +++ b/arch/arm/include/asm/percpu.h
-> @@ -7,37 +7,6 @@
->
->  register unsigned long current_stack_pointer asm ("sp");
->
-> -/*
-> - * Same as asm-generic/percpu.h, except that we store the per cpu offset
-> - * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
-> - */
-> -#if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
-> -static inline void set_my_cpu_offset(unsigned long off)
-> -{
-> -       /* Set TPIDRPRW */
-> -       asm volatile("mcr p15, 0, %0, c13, c0, 4" : : "r" (off) : "memory");
-> -}
-> -
-> -static inline unsigned long __my_cpu_offset(void)
-> -{
-> -       unsigned long off;
-> -
-> -       /*
-> -        * Read TPIDRPRW.
-> -        * We want to allow caching the value, so avoid using volatile and
-> -        * instead use a fake stack read to hazard against barrier().
-> -        */
-> -       asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off)
-> -               : "Q" (*(const unsigned long *)current_stack_pointer));
-> -
-> -       return off;
-> -}
-> -#define __my_cpu_offset __my_cpu_offset()
-> -#else
-> -#define set_my_cpu_offset(x)   do {} while(0)
-> -
-> -#endif /* CONFIG_SMP */
-> -
->  #include <asm-generic/percpu.h>
->
->  #endif /* _ASM_ARM_PERCPU_H_ */
-> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-> index ca0201635fac..d0dc60afe54f 100644
-> --- a/arch/arm/kernel/setup.c
-> +++ b/arch/arm/kernel/setup.c
-> @@ -590,13 +590,6 @@ void __init smp_setup_processor_id(void)
->         for (i = 1; i < nr_cpu_ids; ++i)
->                 cpu_logical_map(i) = i == cpu ? 0 : i;
->
-> -       /*
-> -        * clear __my_cpu_offset on boot CPU to avoid hang caused by
-> -        * using percpu variable early, for example, lockdep will
-> -        * access percpu variable inside lock_release
-> -        */
-> -       set_my_cpu_offset(0);
-> -
->         pr_info("Booting Linux on physical CPU 0x%x\n", mpidr);
->  }
->
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index 5e999f1f1aea..8ccf10b34f08 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -410,8 +410,6 @@ asmlinkage void secondary_start_kernel(unsigned int cpu, struct task_struct *tas
->  {
->         struct mm_struct *mm = &init_mm;
->
-> -       set_my_cpu_offset(per_cpu_offset(cpu));
-> -
->         secondary_biglittle_init();
->
->         /*
-> @@ -495,7 +493,6 @@ void __init smp_cpus_done(unsigned int max_cpus)
->
->  void __init smp_prepare_boot_cpu(void)
->  {
-> -       set_my_cpu_offset(per_cpu_offset(smp_processor_id()));
->  }
->
->  void __init smp_prepare_cpus(unsigned int max_cpus)
-> --
-> 2.33.0
->
+I'm in sort of the same situation here. I know the hardware exists on
+the R329 (sun50iw11); and from looking at the A100 (sun50iw10) pinctrl
+driver, I know some LED controller exists there as well. But I don't
+have a manual for the A100 to verify that LED controller is compatible.
+So I don't even know if R329 is the first supported SoC.
+
+To be clear: do you want me to name the driver "sun50i_r329_ledc"?
+
+Or maybe "sun50i_a100_ledc", since that came first and it is most likely
+compatible?
+
+Regards,
+Samuel
+
+> If you want to have the entire list in the Kconfig help though, I don't
+> see anything wrong with that. Even if it goes unmaintained, it wouldn't
+> really be a big deal.
+> 
+> Maxime
+> 
+
