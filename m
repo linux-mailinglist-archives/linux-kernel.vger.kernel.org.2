@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA9B40425A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3935D40425B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348765AbhIIAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S1348791AbhIIAnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236691AbhIIAnA (ORCPT
+        with ESMTP id S236691AbhIIAnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:43:00 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F695C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:41:49 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1631148106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=94smKPWchJmt0EJiRX/rpG0azVUWj24jfiMTAEmZ7PA=;
-        b=qqgHCMtmuJKnvaVyMJolFE5kNnZdm/KHwvgvyk7UC/yqCMiZiq8amUqfSwj5nZ2SUccpXr
-        F/rEQTqeGyuZWX78WQG+kbjbdzXr7FNA6tWKEvitRW9uZwTRusmv/NszQXcTs5zAty2wox
-        Lf49g9HZKDU1Xb/8tLZYVb4dt5hMosU=
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mm, hwpoison: add is_free_buddy_page() in HWPoisonHandlable()
-Date:   Thu,  9 Sep 2021 09:41:31 +0900
-Message-Id: <20210909004131.163221-1-naoya.horiguchi@linux.dev>
+        Wed, 8 Sep 2021 20:43:45 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6256C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=UyZp0+zAOHeNysC0aX+TXmqkFvNwx4DwRQjTipWMm38=; b=TYQdbYheGkCpzn06LKNWV+Ujo4
+        XYuzzuyznYl5EdNWdfx4ujOtPdY6jqbwhcooezcqYAYdzX/QoxNXIqmItl4txwWENj+CXMVbSjJnd
+        6hJxSQWLP3uuwqdaZZTvJ1f0nB6j4l6umMrxZdZZ4HQccZbL/X0kCy91NqGxuImlSGVyZtLQICAzz
+        cfJrRTSrLqtO5JLcCdc0y+qsnqp4gJADQF2Ad04RT3DY+SrIzWc3nSFRqQ0D0KneQqgPAupSC5Cps
+        XYSEyE2CXn/YSa07Hk1Ohn9fmrFgWEaWQZKdOVKyE89j38q1PFvfxAF+qrGq7eJVXFQCtLi+qppOR
+        ZUwzc/og==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mO899-007ryW-F2; Thu, 09 Sep 2021 00:42:31 +0000
+Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change
+ detection
+To:     Phillip Potter <phil@philpotter.co.uk>, hch@infradead.org
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, lumip@lumip.de
+References: <YTcILRYw/AKen0X4@infradead.org>
+ <20210909001721.2030-1-phil@philpotter.co.uk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <409876e1-1293-932d-8d37-0211bef07749@infradead.org>
+Date:   Wed, 8 Sep 2021 17:42:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+In-Reply-To: <20210909001721.2030-1-phil@philpotter.co.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On 9/8/21 5:17 PM, Phillip Potter wrote:
+>>> +static int cdrom_ioctl_timed_media_change(struct cdrom_device_info *cdi,
+>>> +		unsigned long arg)
+>>> +{
+>>> +	int ret;
+>>> +	struct cdrom_timed_media_change_info __user *info;
+>>> +	struct cdrom_timed_media_change_info tmp_info;
+>>> +
+>>> +	if (!CDROM_CAN(CDC_MEDIA_CHANGED))
+>>> +		return -ENOSYS;
+>>> +
+>>> +	info = (struct cdrom_timed_media_change_info __user *)arg;
+>>> +	cd_dbg(CD_DO_IOCTL, "entering CDROM_TIMED_MEDIA_CHANGE\n");
+>>> +
+>>> +	ret = cdrom_ioctl_media_changed(cdi, CDSL_CURRENT);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +
+>>> +	if (copy_from_user(&tmp_info, info, sizeof(tmp_info)) != 0)
+>>> +		return -EFAULT;
+>>> +
+>>> +	tmp_info.has_changed = ((tmp_info.last_media_change - cdi->last_media_change_ms) < 0);
+>>
+> Dear Christoph,
+> 
+> Sorry didn't see this e-mail before I replied to Lukas, so I hope you
+> don't think I was ignoring you :-)
+> 
+>> Overly long line here, but more importantly this is much cleaner with
+>> a good old if:
+>>
+>>
+>> 	if (tmp_info.last_media_change - cdi->last_media_change_ms) < 0)
+>> 		tmp_info.has_changed = 1;
+>>
+> 
+> Whilst I don't disagree this is technically cleaner, the existing style
+> certainly read well to me. In terms of line length, checkpatch doesn't
+> complain about it, so I guess you mean purely from a visual perspective?
 
-commit fcc00621d88b ("mm/hwpoison: retry with shake_page() for
-unhandlable pages") changes the return value of __get_hwpoison_page() to
-retry for transiently unhandlable cases.  However, __get_hwpoison_page()
-currently fails to properly judge buddy pages as handlable, so hard/soft
-offline for buddy pages always fail as "unhandlable page".  This is
-totally regrettable.
+Documentation/process/coding-style.rst says:
 
-So let's add is_free_buddy_page() in HWPoisonHandlable(), so that
-__get_hwpoison_page() returns different return values between buddy
-pages and unhandlable pages as intended.
+   The preferred limit on the length of a single line is 80 columns.
 
-Fixes: fcc00621d88b ("mm/hwpoison: retry with shake_page() for unhandlable pages")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- mm/memory-failure.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+checkpatch only checks lines > 100 columns since that is OK in a few
+cases, like a long quoted string.
 
-diff --git v5.14-rc7-mmotm-2021-08-23-16-42/mm/memory-failure.c v5.14-rc7-mmotm-2021-08-23-16-42_patched/mm/memory-failure.c
-index 60df8fcd0444..3416c55be810 100644
---- v5.14-rc7-mmotm-2021-08-23-16-42/mm/memory-failure.c
-+++ v5.14-rc7-mmotm-2021-08-23-16-42_patched/mm/memory-failure.c
-@@ -1126,7 +1126,7 @@ static int page_action(struct page_state *ps, struct page *p,
-  */
- static inline bool HWPoisonHandlable(struct page *page)
- {
--	return PageLRU(page) || __PageMovable(page);
-+	return PageLRU(page) || __PageMovable(page) || is_free_buddy_page(page);
- }
- 
- static int __get_hwpoison_page(struct page *page)
+So try to limit line lengths to 80 columns unless there is some
+other reason not to do that.
+
+>>> +{
+>>> +	__s64	last_media_change;	/* Timestamp of the last detected media
+>>> +					 * change in ms. May be set by caller, updated
+>>> +					 * upon successful return of ioctl.
+>>> +					 */
+>>> +	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
+>>
+>> More overly long lines.  Also why is has_changed a u64 if it is used as
+>> a boolean flag?
+
+Might as well be explicit about it and also make it obvious that there
+is some space available for other fields.
+
+thanks.
 -- 
-2.25.1
+~Randy
 
