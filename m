@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7B7404406
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE2B404409
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350237AbhIIDmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 23:42:38 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:45377 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhIIDmf (ORCPT
+        id S1350270AbhIIDoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 23:44:11 -0400
+Received: from ds9.troy.rollo.name ([208.77.100.199]:40006 "EHLO
+        ds9.troy.rollo.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhIIDoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 23:42:35 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 64D1F2B00A33;
-        Wed,  8 Sep 2021 23:41:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 08 Sep 2021 23:41:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=0iHpfybu+k8g/sNOBSyHwGQalkKV65EYj9rHzeXx+ow=; b=BCvo56Sx
-        UrJ3W8KC+mKIdDhUxQ/z1PZT5RlCmQM5D6w24P5nouSYC9rH6oRYUJVfhE3X9uML
-        +8tS0mZyuE0WRdG4g/Fm6w3aVmcXSxPw73DJtpOo7C70rPocQnoTPDbJwq5itSfy
-        tfHTogjNSboyIvHM8OA93LPZNv4dLizPJqkVr9lKAOE28k29T9GUmwXUs+3Zdnyx
-        p5Mt53lNGo0Qcy/uRQLVVrT1q47b/bR5D0EG0uN4dkJgw+DNLCZQGS8ai19wcvZY
-        ZT3md1sjZkYLR8uc7xz+ID4yUE1MO2MyhKjcFCS52Fq/L85Ndtg4gt6XyntMo2ZL
-        Popbx7iMQuo7SQ==
-X-ME-Sender: <xms:Y4I5YW42G_b0zOzTbXuFP6r1O8-nJG3jJcHzdF3N81EqQjrhcjTxMg>
-    <xme:Y4I5Yf4c2xXUIlk42mKG9Cm32HOwBizi_JKo_xK7Gj-_ZavyAKfKD65Ajl_oa9QV6
-    IA2jus4PINaoqKtNHw>
-X-ME-Received: <xmr:Y4I5YVfk3x-qPpDGvNNELQVvWGApuO9UhCEWhLxjoDPnFYa4Mx-RZCD9MnxzQOyupMyFLtGhEiyZb85O2SAcLzyInD3-wQe8ce54ZQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefkedgjeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gohfhorhgsihguuggvnhfjughrucdlhedttddmnecujfgurhepvffkhffuffestddtredt
-    tddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmh
-    eikehkrdhorhhgqeenucfhohhrsghiugguvghnjfgurhepvffkhffuffestddtredttddt
-    pdfvkffhufffsedttdertddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Y4I5YTLPkfALfKhX0Rk-ASVbGSkS7UOj0SxtJ4RGBF5MHExBWba-Kw>
-    <xmx:Y4I5YaLolwgVxEFW0OsO0uAWLwp5G9g__G1Xg9CCaNlyKY3X38g7cA>
-    <xmx:Y4I5YUw17pUAQOYgAT0WdA4OG0THUUPjMS5ot_D7AIg66DgCbSgpQg>
-    <xmx:ZYI5YW14cxST_-o05vSgzdo80uRdZe-m86Ar3pL3V-ngbUUHUfqhjUv324s>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Sep 2021 23:41:22 -0400 (EDT)
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Ali Akcaagac" <aliakc@web.de>,
-        "Jamie Lenehan" <lenehan@twibble.org>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] MAINTAINERS: Remove obsolete e-mail addresses
-Date:   Thu, 09 Sep 2021 13:33:41 +1000
+        Wed, 8 Sep 2021 23:44:10 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Sep 2021 23:44:09 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=troy.rollo.name; s=20151118; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=j2j3MTw71ZEkYRpbLc8Pg5oSXM260GcG2SLR09JDvek=; b=oZJyiy/9v1gswawAECMyPRMm+5
+        ncbXn4s63XrLL2epr4Cg74g7PzFATD6nyL0/iUN6FFsBfhL/RGLzgVIuFjvwMDADAi3z6AKV+Csh2
+        fXnrJaXJFuZqX1cUisL9Sk+BXqH4vrOxtYm0NJ4GC0UXxIvqu9POwagzC4rJ1oWe40jk=;
+Received: from enterprise.troy.rollo.name ([202.153.212.77] helo=enterprise)
+        by ds9.troy.rollo.name with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <troy@troy.rollo.name>)
+        id 1mOApg-0004Ek-51; Thu, 09 Sep 2021 13:34:36 +1000
+Received: from troy by enterprise with local (Exim 4.94.2)
+        (envelope-from <troy@enterprise.troy.rollo.name>)
+        id 1mOAq8-008Mwu-Gf; Thu, 09 Sep 2021 13:35:04 +1000
+From:   Troy Rollo <linux2021@troy.rollo.name>
+To:     Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Troy Rollo <linux2021@troy.rollo.name>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Process tablet mode events on Dell Inspiron 2n1
+Date:   Thu,  9 Sep 2021 13:35:01 +1000
+Message-Id: <20210909033502.1994749-1-linux2021@troy.rollo.name>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These e-mail addresses bounced.
-
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- MAINTAINERS | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/platform/x86/dell/dell-wmi-base.c | 36 ++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d7b4f32875a9..690539b2705c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5138,10 +5138,8 @@ S:	Maintained
- F:	drivers/scsi/am53c974.c
+diff --git a/drivers/platform/x86/dell/dell-wmi-base.c b/drivers/platform/x86/dell/dell-wmi-base.c
+index 089c125e18f7..474ca05055ab 100644
+--- a/drivers/platform/x86/dell/dell-wmi-base.c
++++ b/drivers/platform/x86/dell/dell-wmi-base.c
+@@ -309,6 +309,9 @@ static const struct key_entry dell_wmi_keymap_type_0010[] = {
+  * Keymap for WMI events of type 0x0011
+  */
+ static const struct key_entry dell_wmi_keymap_type_0011[] = {
++	/* Reflex keyboard switch on 2n1 devices */
++	{ KE_VSW,    0xe070, { .sw  = { SW_TABLET_MODE } } },
++
+ 	/* Battery unplugged */
+ 	{ KE_IGNORE, 0xfff0, { KEY_RESERVED } },
  
- DC395x SCSI driver
--M:	Oliver Neukum <oliver@neukum.org>
- M:	Ali Akcaagac <aliakc@web.de>
- M:	Jamie Lenehan <lenehan@twibble.org>
--L:	dc395x@twibble.org
- S:	Maintained
- W:	http://twibble.org/dist/dc395x/
- W:	http://lists.twibble.org/mailman/listinfo/dc395x/
+@@ -344,17 +347,19 @@ static const struct key_entry dell_wmi_keymap_type_0012[] = {
+ 	{ KE_IGNORE, 0xe035, { KEY_RESERVED } },
+ };
  
+-static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
++static int dell_wmi_process_key(struct wmi_device *wdev, int type, int code, u16 *buffer, int remaining)
+ {
+ 	struct dell_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+ 	const struct key_entry *key;
++	int used = 0;
++	int value = 1;
+ 
+ 	key = sparse_keymap_entry_from_scancode(priv->input_dev,
+ 						(type << 16) | code);
+ 	if (!key) {
+ 		pr_info("Unknown key with type 0x%04x and code 0x%04x pressed\n",
+ 			type, code);
+-		return;
++		return 0;
+ 	}
+ 
+ 	pr_debug("Key with type 0x%04x and code 0x%04x pressed\n", type, code);
+@@ -363,16 +368,22 @@ static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
+ 	if ((key->keycode == KEY_BRIGHTNESSUP ||
+ 	     key->keycode == KEY_BRIGHTNESSDOWN) &&
+ 	    acpi_video_handles_brightness_key_presses())
+-		return;
++		return 0;
+ 
+ 	if (type == 0x0000 && code == 0xe025 && !wmi_requires_smbios_request)
+-		return;
++		return 0;
+ 
+-	if (key->keycode == KEY_KBDILLUMTOGGLE)
++	if (key->keycode == KEY_KBDILLUMTOGGLE) {
+ 		dell_laptop_call_notifier(
+ 			DELL_LAPTOP_KBD_BACKLIGHT_BRIGHTNESS_CHANGED, NULL);
++	} else if (type == 0x0011 && code == 0xe070 && remaining > 0) {
++		value = !buffer[0];
++		used = 1;
++	}
++
++	sparse_keymap_report_entry(priv->input_dev, key, value, true);
+ 
+-	sparse_keymap_report_entry(priv->input_dev, key, 1, true);
++	return used;
+ }
+ 
+ static void dell_wmi_notify(struct wmi_device *wdev,
+@@ -430,21 +441,26 @@ static void dell_wmi_notify(struct wmi_device *wdev,
+ 		case 0x0000: /* One key pressed or event occurred */
+ 			if (len > 2)
+ 				dell_wmi_process_key(wdev, buffer_entry[1],
+-						     buffer_entry[2]);
++						     buffer_entry[2],
++						     buffer_entry + 3,
++						     len - 3);
+ 			/* Extended data is currently ignored */
+ 			break;
+ 		case 0x0010: /* Sequence of keys pressed */
+ 		case 0x0011: /* Sequence of events occurred */
+ 			for (i = 2; i < len; ++i)
+-				dell_wmi_process_key(wdev, buffer_entry[1],
+-						     buffer_entry[i]);
++				i += dell_wmi_process_key(wdev, buffer_entry[1],
++							  buffer_entry[i],
++							  buffer_entry + i,
++							  len - i - 1);
+ 			break;
+ 		case 0x0012:
+ 			if ((len > 4) && dell_privacy_process_event(buffer_entry[1], buffer_entry[3],
+ 								    buffer_entry[4]))
+ 				/* dell_privacy_process_event has handled the event */;
+ 			else if (len > 2)
+-				dell_wmi_process_key(wdev, buffer_entry[1], buffer_entry[2]);
++				dell_wmi_process_key(wdev, buffer_entry[1], buffer_entry[2],
++						     buffer_entry + 3, len - 3);
+ 			break;
+ 		default: /* Unknown event */
+ 			pr_info("Unknown WMI event type 0x%x\n",
 -- 
-2.26.3
+2.30.2
 
