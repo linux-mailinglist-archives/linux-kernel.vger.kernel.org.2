@@ -2,409 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B4B405FAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE43F405FAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344005AbhIIWjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
+        id S1345132AbhIIWn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhIIWjT (ORCPT
+        with ESMTP id S234805AbhIIWny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:39:19 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D77BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:38:09 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id f6so4488500iox.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:38:09 -0700 (PDT)
+        Thu, 9 Sep 2021 18:43:54 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B59C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:42:44 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id b200so4437667iof.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8DdnJaARMEXFCIn1ATv21wXbd/Uac08dgF8Zs8aP5u4=;
-        b=KShW6PSZpMMowvh+hPwcoBd/fd6EOqqzSKX3TdzcGp2yr4Og82KjBHEFc2GMvmN73y
-         Ppru/RZzIagm4DhQhBGwdKIqsFXCMBCKgWawWrY5Z7h/ezJ7/mFwn/ROqNiam/00ee53
-         nFVHj1lulNT1Kdo4r415KAq/JPYfIbIYPbNM6d6GGGXIV0uovrgMVpCsMFXgpo0FGFUA
-         YK/q0BXYhPYlCwjN2y10/AzyRmIKxJ+uBWsMqi1worc+beiXE2gsDzRGFItt8tvBu5G5
-         Bf8qhOE26diPIF5LsjNIbKwDe+0VKV0mFmyG2/2fQL4qsULVMiHRuShrNMlajymIi3b9
-         PKsA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=27EJBxNByVMaIOhiQ4RS8Rx68zs0wGuV8TsYtfLLWyI=;
+        b=SDNCGPOMMjutZfwbBziAByHqaPe2pUbC3sPYO6PVP+MFbIVfRVXKTdLHijGD/F+CLs
+         VdzllVG1oBJhAJFBGaj8R8ePQkoraIZG8kaYZwHqXSoboL9yLTXVDXfQBTwRWa2mV6HP
+         dUSMq0S+LtTIHLkiF5qqpmJGsi8IudKlk04l4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8DdnJaARMEXFCIn1ATv21wXbd/Uac08dgF8Zs8aP5u4=;
-        b=1q+yuDQXO1n9rFWKuQLe2lt1/xSkdCrjUfS/9mUEdc3HB9A1yVIKcH28GLH+P2zNYD
-         D803b+f5r8qRplqyGSGmbqY8OBjdkcbXblifBIfEDsnHxN3JM73/4flafbwpgI9YDxnD
-         yA1yi00Aveyf88ZD2cvwMd5C6AXFtZ9GF+9Ehj/M7GeZ/Rs56Kyz65G/4oSI81Owe5Eb
-         1/7FDuS9OO10iyQsc1qI/Ey/Obo+7e3jaruBQazsj/q4DX6gFcGqY5s3GL60mElUTJVV
-         LMK+ncpAy0pkrK9hARdCLsgCXOO4G9jIh6MfcxT7e15GR8/jBMBMkIPL2aCB8W/Bc6ck
-         GZiw==
-X-Gm-Message-State: AOAM532f/heDm9y8TGACi/w0G6kJFnCsmQgGoBnQUEtzRA44bW9UNpUG
-        hUzr65tngtFs4zBnCzf3WGNQf+SOpEj+FIqHJcwjlg==
-X-Google-Smtp-Source: ABdhPJwCJ/BzLRv1xCS5t0zNBA5heGYxiSlS15b3zjtB1oWJQYb7dbQ+5qV58qeFHYmUwAtubbSsO0xrHPfO1SVGC0w=
-X-Received: by 2002:a5d:9253:: with SMTP id e19mr4568535iol.35.1631227088205;
- Thu, 09 Sep 2021 15:38:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=27EJBxNByVMaIOhiQ4RS8Rx68zs0wGuV8TsYtfLLWyI=;
+        b=oJr8MkEAiEm27stXFzZvVZe+wyR57d0S/7H8sozQpKdwx2PsW6/8K/L+oVODOX669X
+         gSjMGdUxthW1UUQPPAsCeaRQjvD9yYRSSLhNUmOxLZ9DGfzpRcHjdB6OLvICRFck9lhP
+         SgJPJBZEEnOQNY132+uOr5t+KsPE/kaAUNeIkNsjw1HyAD0xMpSeBQgjimPm5xcTCPtX
+         OtlZDEJCrVXfHQE8qpK5U1qFbnb/KmHolP75n9YAI5AsKmxZbKm4OHuyuzCHUq6+SZIL
+         IAxni7Oaju3iBysM79wpMY8c6RvFDn3dHX+ilZdPbZ4z64AUxlWYmMS+7dtA8OxWDlFD
+         Gl0g==
+X-Gm-Message-State: AOAM531xV5tw8jKVdu7d2GRdzv3+zvGKZkbyy3akn1vfe8Lr9hB0rvzJ
+        /Kq1XA5xjoozoFMa6rJy0+WkfA==
+X-Google-Smtp-Source: ABdhPJwL362K7wfEkXWaWYHsO4Yxg/X+l/q0Wl/eEDIqmfyVMpmeugtypP4lwD1nxy7eX2UMnotN7Q==
+X-Received: by 2002:a05:6638:2150:: with SMTP id z16mr1834981jaj.146.1631227363371;
+        Thu, 09 Sep 2021 15:42:43 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c4sm1588237ioo.2.2021.09.09.15.42.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 15:42:43 -0700 (PDT)
+Subject: Re: [PATCH 16/19] cpupower: enable boost state support for amd-pstate
+ module
+To:     Huang Rui <ray.huang@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        linux-pm@vger.kernel.org
+Cc:     Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-17-ray.huang@amd.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ed2906aa-d898-9d3a-ed04-7ad0ecc51f96@linuxfoundation.org>
+Date:   Thu, 9 Sep 2021 16:42:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210903025239.22754-1-yao.jin@linux.intel.com>
-In-Reply-To: <20210903025239.22754-1-yao.jin@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 9 Sep 2021 15:37:56 -0700
-Message-ID: <CAP-5=fVT6G6Ysdd39O3XROyKUxAs6uQVeO8mnbsy-Oy5VqujrA@mail.gmail.com>
-Subject: Re: [PATCH v2] perf list: Display hybrid pmu events with cpu type
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210908150001.3702552-17-ray.huang@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 7:54 PM Jin Yao <yao.jin@linux.intel.com> wrote:
->
-> Add a new option '--cputype' to perf-list to display core-only pmu events
-> or atom-only pmu events.
->
-> Each hybrid pmu event has been assigned with a pmu name, this patch
-> compares the pmu name before listing the result.
+On 9/8/21 8:59 AM, Huang Rui wrote:
+> The AMD P-state boost API is different from ACPI hardware P-states, so
+> implement the support for amd-pstate kernel module.
+> 
 
-Would this work more broadly for any PMU type? If so perhaps pmu
-rather than cputype is a more appropriate option name?
+This commit log doesn't make sense. If these sysfs entries are used
+for amd-pstate kernel module, why are they defined here.
 
-Thanks,
-Ian
+Describe how these are used and the relationship between these defines
+and the amd-pstate kernel module
 
-> For example,
->
-> perf list --cputype atom
-> ...
-> cache:
->   core_reject_l2q.any
->        [Counts the number of request that were not accepted into the L2Q because the L2Q is FULL. Unit: cpu_atom]
-> ...
->
-> The "Unit: cpu_atom" is displayed in the brief description section
-> to indicate this is an atom event.
->
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
 > ---
-> v2:
->  - Rebase to perf/core branch.
->
->  tools/perf/Documentation/perf-list.txt |  4 +++
->  tools/perf/builtin-list.c              | 42 ++++++++++++++++++--------
->  tools/perf/util/metricgroup.c          |  7 ++++-
->  tools/perf/util/metricgroup.h          |  2 +-
->  tools/perf/util/parse-events.c         |  8 +++--
->  tools/perf/util/parse-events.h         |  3 +-
->  tools/perf/util/pmu.c                  | 29 +++++++++++++++---
->  tools/perf/util/pmu.h                  |  2 +-
->  8 files changed, 73 insertions(+), 24 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
-> index 4c7db1da8fcc..4dc8d0af19df 100644
-> --- a/tools/perf/Documentation/perf-list.txt
-> +++ b/tools/perf/Documentation/perf-list.txt
-> @@ -39,6 +39,10 @@ any extra expressions computed by perf stat.
->  --deprecated::
->  Print deprecated events. By default the deprecated events are hidden.
->
-> +--cputype::
-> +Print events applying cpu with this type for hybrid platform
-> +(e.g. --cputype core or --cputype atom)
+>   tools/power/cpupower/lib/cpufreq.c        | 20 ++++++++++++++++++++
+>   tools/power/cpupower/lib/cpufreq.h        |  3 +++
+>   tools/power/cpupower/utils/helpers/misc.c |  7 +++++++
+>   3 files changed, 30 insertions(+)
+> 
+> diff --git a/tools/power/cpupower/lib/cpufreq.c b/tools/power/cpupower/lib/cpufreq.c
+> index 3f92ddadaad2..37da87bdcfb1 100644
+> --- a/tools/power/cpupower/lib/cpufreq.c
+> +++ b/tools/power/cpupower/lib/cpufreq.c
+> @@ -790,3 +790,23 @@ unsigned long cpufreq_get_transitions(unsigned int cpu)
+>   {
+>   	return sysfs_cpufreq_get_one_value(cpu, STATS_NUM_TRANSITIONS);
+>   }
 > +
->  [[EVENT_MODIFIERS]]
->  EVENT MODIFIERS
->  ---------------
-> diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> index 10ab5e40a34f..468958154ed9 100644
-> --- a/tools/perf/builtin-list.c
-> +++ b/tools/perf/builtin-list.c
-> @@ -12,6 +12,7 @@
->
->  #include "util/parse-events.h"
->  #include "util/pmu.h"
-> +#include "util/pmu-hybrid.h"
->  #include "util/debug.h"
->  #include "util/metricgroup.h"
->  #include <subcmd/pager.h>
-> @@ -20,13 +21,15 @@
->
->  static bool desc_flag = true;
->  static bool details_flag;
-> +static const char *hybrid_type;
->
->  int cmd_list(int argc, const char **argv)
->  {
-> -       int i;
-> +       int i, ret = 0;
->         bool raw_dump = false;
->         bool long_desc_flag = false;
->         bool deprecated = false;
-> +       char *pmu_name = NULL;
->         struct option list_options[] = {
->                 OPT_BOOLEAN(0, "raw-dump", &raw_dump, "Dump raw events"),
->                 OPT_BOOLEAN('d', "desc", &desc_flag,
-> @@ -37,6 +40,9 @@ int cmd_list(int argc, const char **argv)
->                             "Print information on the perf event names and expressions used internally by events."),
->                 OPT_BOOLEAN(0, "deprecated", &deprecated,
->                             "Print deprecated events."),
-> +               OPT_STRING(0, "cputype", &hybrid_type, "hybrid cpu type",
-> +                          "Print events applying cpu with this type for hybrid platform "
-> +                          "(e.g. core or atom)"),
->                 OPT_INCR(0, "debug", &verbose,
->                              "Enable debugging output"),
->                 OPT_END()
-> @@ -56,10 +62,16 @@ int cmd_list(int argc, const char **argv)
->         if (!raw_dump && pager_in_use())
->                 printf("\nList of pre-defined events (to be used in -e):\n\n");
->
-> +       if (hybrid_type) {
-> +               pmu_name = perf_pmu__hybrid_type_to_pmu(hybrid_type);
-> +               if (!pmu_name)
-> +                       pr_warning("WARNING: hybrid cputype is not supported!\n");
-> +       }
+> +int amd_pstate_boost_support(unsigned int cpu)
+> +{
+> +	unsigned int highest_perf, nominal_perf;
 > +
->         if (argc == 0) {
->                 print_events(NULL, raw_dump, !desc_flag, long_desc_flag,
-> -                               details_flag, deprecated);
-> -               return 0;
-> +                               details_flag, deprecated, pmu_name);
-> +               goto out;
->         }
->
->         for (i = 0; i < argc; ++i) {
-> @@ -82,25 +94,27 @@ int cmd_list(int argc, const char **argv)
->                 else if (strcmp(argv[i], "pmu") == 0)
->                         print_pmu_events(NULL, raw_dump, !desc_flag,
->                                                 long_desc_flag, details_flag,
-> -                                               deprecated);
-> +                                               deprecated, pmu_name);
->                 else if (strcmp(argv[i], "sdt") == 0)
->                         print_sdt_events(NULL, NULL, raw_dump);
->                 else if (strcmp(argv[i], "metric") == 0 || strcmp(argv[i], "metrics") == 0)
-> -                       metricgroup__print(true, false, NULL, raw_dump, details_flag);
-> +                       metricgroup__print(true, false, NULL, raw_dump, details_flag, pmu_name);
->                 else if (strcmp(argv[i], "metricgroup") == 0 || strcmp(argv[i], "metricgroups") == 0)
-> -                       metricgroup__print(false, true, NULL, raw_dump, details_flag);
-> +                       metricgroup__print(false, true, NULL, raw_dump, details_flag, pmu_name);
->                 else if ((sep = strchr(argv[i], ':')) != NULL) {
->                         int sep_idx;
->
->                         sep_idx = sep - argv[i];
->                         s = strdup(argv[i]);
-> -                       if (s == NULL)
-> -                               return -1;
-> +                       if (s == NULL) {
-> +                               ret = -1;
-> +                               goto out;
-> +                       }
->
->                         s[sep_idx] = '\0';
->                         print_tracepoint_events(s, s + sep_idx + 1, raw_dump);
->                         print_sdt_events(s, s + sep_idx + 1, raw_dump);
-> -                       metricgroup__print(true, true, s, raw_dump, details_flag);
-> +                       metricgroup__print(true, true, s, raw_dump, details_flag, pmu_name);
->                         free(s);
->                 } else {
->                         if (asprintf(&s, "*%s*", argv[i]) < 0) {
-> @@ -116,12 +130,16 @@ int cmd_list(int argc, const char **argv)
->                         print_pmu_events(s, raw_dump, !desc_flag,
->                                                 long_desc_flag,
->                                                 details_flag,
-> -                                               deprecated);
-> +                                               deprecated,
-> +                                               pmu_name);
->                         print_tracepoint_events(NULL, s, raw_dump);
->                         print_sdt_events(NULL, s, raw_dump);
-> -                       metricgroup__print(true, true, s, raw_dump, details_flag);
-> +                       metricgroup__print(true, true, s, raw_dump, details_flag, pmu_name);
->                         free(s);
->                 }
->         }
-> -       return 0;
+> +	highest_perf = sysfs_cpufreq_get_one_value(cpu, AMD_PSTATE_HIGHEST_PERF);
+> +	nominal_perf = sysfs_cpufreq_get_one_value(cpu, AMD_PSTATE_NOMINAL_PERF);
 > +
-> +out:
-> +       free(pmu_name);
-> +       return ret;
->  }
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 99d047c5ead0..ad2587079689 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -11,6 +11,7 @@
->  #include "evsel.h"
->  #include "strbuf.h"
->  #include "pmu.h"
-> +#include "pmu-hybrid.h"
->  #include "expr.h"
->  #include "rblist.h"
->  #include <string.h>
-> @@ -616,7 +617,7 @@ static int metricgroup__print_sys_event_iter(struct pmu_event *pe, void *data)
->  }
->
->  void metricgroup__print(bool metrics, bool metricgroups, char *filter,
-> -                       bool raw, bool details)
-> +                       bool raw, bool details, const char *pmu_name)
->  {
->         struct pmu_events_map *map = pmu_events_map__find();
->         struct pmu_event *pe;
-> @@ -642,6 +643,10 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
->                         break;
->                 if (!pe->metric_expr)
->                         continue;
-> +               if (pmu_name && perf_pmu__is_hybrid(pe->pmu) &&
-> +                   strcmp(pmu_name, pe->pmu)) {
-> +                       continue;
-> +               }
->                 if (metricgroup__print_pmu_event(pe, metricgroups, filter,
->                                                  raw, details, &groups,
->                                                  metriclist) < 0)
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-> index cc4a92492a61..9deee6691f2e 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -53,7 +53,7 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
->                                    struct rblist *metric_events);
->
->  void metricgroup__print(bool metrics, bool groups, char *filter,
-> -                       bool raw, bool details);
-> +                       bool raw, bool details, const char *pmu_name);
->  bool metricgroup__has_metric(const char *metric);
->  int arch_get_runtimeparam(struct pmu_event *pe __maybe_unused);
->  void metricgroup__rblist_exit(struct rblist *metric_events);
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index e5eae23cfceb..f36e748ad715 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -2995,7 +2995,8 @@ void print_symbol_events(const char *event_glob, unsigned type,
->   * Print the help text for the event symbols:
->   */
->  void print_events(const char *event_glob, bool name_only, bool quiet_flag,
-> -                       bool long_desc, bool details_flag, bool deprecated)
-> +                       bool long_desc, bool details_flag, bool deprecated,
-> +                       const char *pmu_name)
->  {
->         print_symbol_events(event_glob, PERF_TYPE_HARDWARE,
->                             event_symbols_hw, PERF_COUNT_HW_MAX, name_only);
-> @@ -3007,7 +3008,7 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
->         print_hwcache_events(event_glob, name_only);
->
->         print_pmu_events(event_glob, name_only, quiet_flag, long_desc,
-> -                       details_flag, deprecated);
-> +                       details_flag, deprecated, pmu_name);
->
->         if (event_glob != NULL)
->                 return;
-> @@ -3033,7 +3034,8 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
->
->         print_sdt_events(NULL, NULL, name_only);
->
-> -       metricgroup__print(true, true, NULL, name_only, details_flag);
-> +       metricgroup__print(true, true, NULL, name_only, details_flag,
-> +                          pmu_name);
->
->         print_libpfm_events(name_only, long_desc);
->  }
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index bf6e41aa9b6a..ce0c910163d1 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -219,7 +219,8 @@ void parse_events_evlist_error(struct parse_events_state *parse_state,
->                                int idx, const char *str);
->
->  void print_events(const char *event_glob, bool name_only, bool quiet,
-> -                 bool long_desc, bool details_flag, bool deprecated);
-> +                 bool long_desc, bool details_flag, bool deprecated,
-> +                 const char *pmu_name);
->
->  struct event_symbol {
->         const char      *symbol;
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 6cdbee8a12e7..77204c5af29c 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1577,6 +1577,7 @@ static int cmp_sevent(const void *a, const void *b)
->  {
->         const struct sevent *as = a;
->         const struct sevent *bs = b;
-> +       int ret;
->
->         /* Put extra events last */
->         if (!!as->desc != !!bs->desc)
-> @@ -1592,7 +1593,13 @@ static int cmp_sevent(const void *a, const void *b)
->         if (as->is_cpu != bs->is_cpu)
->                 return bs->is_cpu - as->is_cpu;
->
-> -       return strcmp(as->name, bs->name);
-> +       ret = strcmp(as->name, bs->name);
-> +       if (!ret) {
-> +               if (as->pmu && bs->pmu)
-> +                       return strcmp(as->pmu, bs->pmu);
-> +       }
+> +	return highest_perf > nominal_perf ? 1 : 0;
+> +}
 > +
-> +       return ret;
->  }
->
->  static void wordwrap(char *s, int start, int max, int corr)
-> @@ -1622,7 +1629,8 @@ bool is_pmu_core(const char *name)
->  }
->
->  void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
-> -                       bool long_desc, bool details_flag, bool deprecated)
-> +                       bool long_desc, bool details_flag, bool deprecated,
-> +                       const char *pmu_name)
->  {
->         struct perf_pmu *pmu;
->         struct perf_pmu_alias *alias;
-> @@ -1648,10 +1656,16 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
->         pmu = NULL;
->         j = 0;
->         while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-> +               if (pmu_name && perf_pmu__is_hybrid(pmu->name) &&
-> +                   strcmp(pmu_name, pmu->name)) {
-> +                       continue;
-> +               }
+> +int amd_pstate_boost_enabled(unsigned int cpu)
+> +{
+> +	unsigned int cpuinfo_max, amd_pstate_max;
 > +
->                 list_for_each_entry(alias, &pmu->aliases, list) {
->                         char *name = alias->desc ? alias->name :
->                                 format_alias(buf, sizeof(buf), pmu, alias);
-> -                       bool is_cpu = is_pmu_core(pmu->name);
-> +                       bool is_cpu = is_pmu_core(pmu->name) ||
-> +                                     perf_pmu__is_hybrid(pmu->name);
->
->                         if (alias->deprecated && !deprecated)
->                                 continue;
-> @@ -1699,8 +1713,13 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
->         qsort(aliases, len, sizeof(struct sevent), cmp_sevent);
->         for (j = 0; j < len; j++) {
->                 /* Skip duplicates */
-> -               if (j > 0 && !strcmp(aliases[j].name, aliases[j - 1].name))
-> -                       continue;
-> +               if (j > 0 && !strcmp(aliases[j].name, aliases[j - 1].name)) {
-> +                       if (!aliases[j].pmu || !aliases[j - 1].pmu ||
-> +                           !strcmp(aliases[j].pmu, aliases[j - 1].pmu)) {
-> +                               continue;
-> +                       }
-> +               }
+> +	cpuinfo_max = sysfs_cpufreq_get_one_value(cpu, CPUINFO_MAX_FREQ);
+> +	amd_pstate_max = sysfs_cpufreq_get_one_value(cpu, AMD_PSTATE_MAX_FREQ);
 > +
->                 if (name_only) {
->                         printf("%s ", aliases[j].name);
->                         continue;
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 033e8211c025..91fc0de892f5 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -108,7 +108,7 @@ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
->  bool is_pmu_core(const char *name);
->  void print_pmu_events(const char *event_glob, bool name_only, bool quiet,
->                       bool long_desc, bool details_flag,
-> -                     bool deprecated);
-> +                     bool deprecated, const char *pmu_name);
->  bool pmu_have_event(const char *pname, const char *name);
->
->  int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt, ...) __scanf(3, 4);
-> --
-> 2.27.0
->
+> +	return cpuinfo_max == amd_pstate_max ? 1 : 0;
+> +}
+
+Why are these amd specific routines added to common file.
+Why not add them to tools/power/cpupower/utils/helpers/amd.c?
+
+> diff --git a/tools/power/cpupower/lib/cpufreq.h b/tools/power/cpupower/lib/cpufreq.h
+> index 95f4fd9e2656..d54d02a7a4f4 100644
+> --- a/tools/power/cpupower/lib/cpufreq.h
+> +++ b/tools/power/cpupower/lib/cpufreq.h
+> @@ -203,6 +203,9 @@ int cpufreq_modify_policy_governor(unsigned int cpu, char *governor);
+>   int cpufreq_set_frequency(unsigned int cpu,
+>   				unsigned long target_frequency);
+>   
+> +int amd_pstate_boost_support(unsigned int cpu);
+> +int amd_pstate_boost_enabled(unsigned int cpu);
+> +
+>   #ifdef __cplusplus
+>   }
+>   #endif
+> diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+> index 07d80775fb68..aba979320760 100644
+> --- a/tools/power/cpupower/utils/helpers/misc.c
+> +++ b/tools/power/cpupower/utils/helpers/misc.c
+> @@ -10,6 +10,7 @@
+>   #if defined(__i386__) || defined(__x86_64__)
+>   
+>   #include "cpupower_intern.h"
+> +#include "cpufreq.h"
+>   
+>   #define MSR_AMD_HWCR	0xc0010015
+>   
+> @@ -39,6 +40,12 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+>   	
+
+This logic here calls amd_pci_get_num_boost_states() ---
+There is another routine called decode_pstates() in
+tools/power/cpupower/utils/helpers/amd.c
+
+		if (ret)
+>   				return ret;
+>   		}
+> +	} if ((cpupower_cpu_info.caps & CPUPOWER_CAP_AMD_PSTATE) &&
+> +	      amd_pstate_boost_support(cpu)) {
+
+Coupled with the above routines, the naming amd_pstate_boost_support()
+is rather confusing.
+
+Also why is this amd_pstate_boost_support() added to
+> +		*support = 1;
+> +
+> +		if (amd_pstate_boost_enabled(cpu))
+> +			*active = 1;
+>   	} else if (cpupower_cpu_info.caps & CPUPOWER_CAP_INTEL_IDA)
+>   		*support = *active = 1;
+>   	return 0;
+> 
+
+thanks,
+-- Shuah
