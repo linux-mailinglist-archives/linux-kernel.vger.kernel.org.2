@@ -2,164 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B8540448E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE5D404492
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350427AbhIIElo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:41:44 -0400
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:56402 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350305AbhIIEln (ORCPT
+        id S242372AbhIIEp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:45:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:35042 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhIIEpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:41:43 -0400
-Date:   Thu, 09 Sep 2021 04:40:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1631162432;
-        bh=DEgAtGRzyS7Mb3drXU2SHdsqwxbA8corBcPdlYX6sy8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=SxxM2a5HtOkvy4pfl/W5Quaa2bzGQcydgo9p/RGOaTfCsgZom2SshF2DQ0JiWT3Gn
-         qviAlp0H9o7Lc9Rbv8QTE1K+aU/yw7Q5vWQBr1LzkRJjSCDmtGpww8/eVaxJciutmK
-         6pFrcwyqB4Xa8e2zyzPIacUXW2HcvDWNGpv2s3NA=
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v2 2/2] dt-bindings: display: Add binding for LG.Philips SW43101
-Message-ID: <20210909043904.12982-3-y.oudjana@protonmail.com>
-In-Reply-To: <20210909043904.12982-1-y.oudjana@protonmail.com>
-References: <20210909043904.12982-1-y.oudjana@protonmail.com>
+        Thu, 9 Sep 2021 00:45:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631162655; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=v320XhZj9gyFcrPASJLLRDE9pWMYLXWJMVo7lM5KMZ0=;
+ b=ClyWQFU3QQv6rHNfvoqsxm214lpeb/TSbxfm+nhjKv8/hcLm2v6xxysA/KQDelsRxffIa/xU
+ xk4B7Eig+0slrZdBapZkVyxf+lmcE/74GkVdsNAQb1hOnTxuqtbSib/pFbA8UTs+sVUuZ3c+
+ DrWhyOS/VN2QXF8AeRtcWneB/JQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61399110161bd38c42275d4c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 04:44:00
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2448CC4360C; Thu,  9 Sep 2021 04:44:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F75EC4338F;
+        Thu,  9 Sep 2021 04:43:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 09 Sep 2021 10:13:58 +0530
+From:   rajpat@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, robh+dt@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        mka@chromium.org, dianders@chromium.org
+Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
+In-Reply-To: <YPXbw6a4+B5TBD0W@yoga>
+References: <20210604135439.19119-1-rojay@codeaurora.org>
+ <20210604135439.19119-2-rojay@codeaurora.org> <YLxHTDxVcSvVxsd5@builder.lan>
+ <98befc79fc039496b0c12d7983319c92@codeaurora.org>
+ <2ad7a00924b5065bf61c47e8b6d24339@codeaurora.org>
+ <CAE-0n51NfHSwRQvG0HnTcHBkv=Huy-CXEwJCxLG03MN3dSe5kA@mail.gmail.com>
+ <498a2359eec36c6a0b811337ee187df8@codeaurora.org> <YPXbw6a4+B5TBD0W@yoga>
+Message-ID: <b67133f1a12ff0cce1114b10ebc6d6e7@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree binding for LG.Philips SW43101.
+On 2021-07-20 01:38, Bjorn Andersson wrote:
+> On Wed 14 Jul 02:47 CDT 2021, rojay@codeaurora.org wrote:
+> 
+>> On 2021-07-09 06:26, Stephen Boyd wrote:
+>> > Quoting rojay@codeaurora.org (2021-07-06 02:19:27)
+>> > > On 2021-06-08 13:37, rojay@codeaurora.org wrote:
+>> > > > On 2021-06-06 09:25, Bjorn Andersson wrote:
+>> > > >> On Fri 04 Jun 08:54 CDT 2021, Roja Rani Yarubandi wrote:
+>> > > >>
+>> > > >>> Add QSPI DT node for SC7280 SoC.
+>> > > >>>
+>> > > >>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> > > >>> ---
+>> > > >>> Changes in V3:
+>> > > >>>  - Broken the huge V2 patch into 3 smaller patches.
+>> > > >>>    1. QSPI DT nodes
+>> > > >>>    2. QUP wrapper_0 DT nodes
+>> > > >>>    3. QUP wrapper_1 DT nodes
+>> > > >>>
+>> > > >>> Changes in V2:
+>> > > >>>  - As per Doug's comments removed pinmux/pinconf subnodes.
+>> > > >>>  - As per Doug's comments split of SPI, UART nodes has been done.
+>> > > >>>  - Moved QSPI node before aps_smmu as per the order.
+>> > > >>>
+>> > > >>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 29 ++++++++++++
+>> > > >>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 61
+>> > > >>> +++++++++++++++++++++++++
+>> > > >>>  2 files changed, 90 insertions(+)
+>> > > >>>
+>> > > >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > >>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > >>> index 3900cfc09562..d0edffc15736 100644
+>> > > >>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > >>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > >>> @@ -268,6 +268,22 @@ pmr735b_die_temp {
+>> > > >>>             };
+>> > > >>>  };
+>> > > >>>
+>> > > >>> +&qspi {
+>> > > >>> +   status = "okay";
+>> > > >>> +   pinctrl-names = "default";
+>> > > >>> +   pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
+>> > > >>> +
+>> > > >>> +   flash@0 {
+>> > > >>> +           compatible = "jedec,spi-nor";
+>> > > >>> +           reg = <0>;
+>> > > >>> +
+>> > > >>> +           /* TODO: Increase frequency after testing */
+>> > > >>> +           spi-max-frequency = <25000000>;
+>> > > >>> +           spi-tx-bus-width = <2>;
+>> > > >>> +           spi-rx-bus-width = <2>;
+>> > > >>> +   };
+>> > > >>> +};
+>> > > >>> +
+>> > > >>>  &qupv3_id_0 {
+>> > > >>>     status = "okay";
+>> > > >>>  };
+>> > > >>> @@ -278,6 +294,19 @@ &uart5 {
+>> > > >>>
+>> > > >>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> > > >>>
+>> > > >>> +&qspi_cs0 {
+>> > > >>> +   bias-disable;
+>> > > >>> +};
+>> > > >>> +
+>> > > >>> +&qspi_clk {
+>> > > >>> +   bias-disable;
+>> > > >>> +};
+>> > > >>> +
+>> > > >>> +&qspi_data01 {
+>> > > >>> +   /* High-Z when no transfers; nice to park the lines */
+>> > > >>> +   bias-pull-up;
+>> > > >>> +};
+>> > > >>> +
+>> > > >>>  &qup_uart5_default {
+>> > > >>>     tx {
+>> > > >>>             pins = "gpio46";
+>> > > >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > >>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > >>> index 6c9d5eb93f93..3047ab802cd2 100644
+>> > > >>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > >>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > >>> @@ -1061,6 +1061,42 @@ apss_merge_funnel_in: endpoint {
+>> > > >>>                     };
+>> > > >>>             };
+>> > > >>>
+>> > > >>> +           qspi_opp_table: qspi-opp-table {
+>> > > >>
+>> > > >> This node doesn't represents anything on the mmio bus, so it shouldn't
+>> > > >> live in in /soc. Can't you move it into &qspi?
+>> > > >>
+>> > > >> Regards,
+>> > > >> Bjorn
+>> > > >>
+>> > > >
+>> > > > Sure, will move it into qspi node.
+>> > > >
+>> > > > Thanks,
+>> > > > Roja
+>> > > >
+>> > >
+>> > > Hi Bjorn,
+>> > >
+>> > > Moving "qspi_opp_table" inside &qspi node causing this warning:
+>> > > arch/arm64/boot/dts/qcom/sc7280.dtsi:1055.35-1072.6: Warning
+>> > > (spi_bus_reg): /soc@0/spi@88dc000/qspi-opp-table: missing or empty reg
+>> > > property
+>> >
+>> > If DT folks are OK I think we should hard-code 'opp-table' as not a
+>> > device for spi to populate on the spi bus and relax the warning in the
+>> > devicetree compiler (see [1] for more details). Technically, nodes that
+>> > are bus controllers assume all child nodes are devices on that bus.  In
+>> > this case, we want to stick the opp table as a child of the spi node so
+>> > that it can be called 'opp-table' and not be a node in the root of DT.
+>> >
+>> > >
+>> > > Shall I keep the qspi-opp-table out of &qspi node?
+>> > >
+>> >
+>> > If you do, please move it to / instead of putting it under /soc as it
+>> > doesn't have an address or a reg property.
+>> >
+>> 
+>> Hi Bjorn, Rob
+>> 
+>> Can we move this "qspi_opp_table" to / from /soc?
+>> 
+> 
+> If you have made a proper attempt to convince Rob and Mark that
+> a child "opp-table" in a SPI master is not a SPI device - and the
+> conclusion is that this is not a good idea...then yes it should live
+> outside /soc.
+> 
+> Thanks,
+> Bjorn
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
-Changes since v1:
- - Add regulator support.
- - Add MAINTAINERS entry.
- - Dual-license DT binding.
+Hi Rob/Mark,
 
- .../display/panel/lgphilips,sw43101.yaml      | 75 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 76 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/lgphili=
-ps,sw43101.yaml
+adding "qspi_opp_table" inside &qspi node causing warning
+we are getting "empty reg warning". qspi_opp_table contain
+frequencies for qspi and i think putting "opp-table" under qspi node is 
+not a
+good idea because if we put under qspi it will treat "opp-table" as a 
+device on the bus.
+in this scenario "opp-table" is not a device on the bus. so we moved 
+qspi_opp_table from /soc to /.
+please give your inputs about this.
 
-diff --git a/Documentation/devicetree/bindings/display/panel/lgphilips,sw43=
-101.yaml b/Documentation/devicetree/bindings/display/panel/lgphilips,sw4310=
-1.yaml
-new file mode 100644
-index 000000000000..6f67130bab8b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yam=
-l
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/lgphilips,sw43101.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LG.Philips SW43101 1080x1920 OLED panel
-+
-+maintainers:
-+  - Yassine Oudjana <y.oudjana@protonmail.com>
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: lgphilips,sw43101
-+
-+  reg: true
-+  reset-gpios: true
-+
-+  vdd-supply:
-+    description: Digital power supply
-+
-+  avdd-supply:
-+    description: Analog power supply
-+
-+  elvdd-supply:
-+    description: Positive electroluminescence power supply
-+
-+  elvss-supply:
-+    description: Negative electroluminescence power supply
-+
-+  port: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reset-gpios
-+  - vdd-supply
-+  - avdd-supply
-+  - elvdd-supply
-+  - elvss-supply
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    dsi {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        panel@0 {
-+            compatible =3D "lgphilips,sw43101";
-+            reg =3D <0>;
-+
-+            reset-gpios =3D <&msmgpio 8 GPIO_ACTIVE_LOW>;
-+
-+            vdd-supply =3D <&vreg_l14a_1p8>;
-+            avdd-supply =3D <&vlin1_7v3>;
-+            elvdd-supply =3D <&elvdd>;
-+            elvss-supply =3D <&elvss>;
-+
-+            port {
-+                panel_in: endpoint {
-+                    remote-endpoint =3D <&dsi_out>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 46431e8ad373..aab9f057e8d7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5902,6 +5902,7 @@ F:=09include/uapi/drm/i810_drm.h
- DRM DRIVER FOR LG.PHILIPS SW43101 PANEL
- M:=09Yassine Oudjana <y.oudjana@protonmail.com>
- S:=09Maintained
-+F:=09Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yam=
-l
- F:=09drivers/gpu/drm/panel/panel-lgphilips-sw43101.c
-=20
- DRM DRIVER FOR LVDS PANELS
---=20
-2.33.0
-
-
+Thanks and Regards,
+Rajesh
