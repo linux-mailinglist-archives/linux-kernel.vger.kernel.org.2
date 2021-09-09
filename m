@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6DE4059FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5F4405A07
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239373AbhIIPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:03:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41744 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236545AbhIIPC6 (ORCPT
+        id S236710AbhIIPGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhIIPGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:02:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 9 Sep 2021 11:06:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFF3C061575;
+        Thu,  9 Sep 2021 08:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XatBdf6kvwVA+XoD7v6XgWyLVTuT1t7NiBgGj7BPRz4=; b=fVfKmjXsBlDx/NmKPltkuBLD68
+        74R78+5rvHbUz+2liXm+xSAeny4dVvaSyJs6hGhvfe21kbTEYOtpZt4QuTkal1W/vn3RSlYOr22Oa
+        XCm8R42DpeKvfgDCC/1Y2sSJPUkepf9knmd93wegg5wNwa67utvKFHvw1xCl6zhFsHi0cj4F1TVv6
+        RnEq4nAf3HxOG+4pZPLOP4LSMHkVL0hcNvx2VPw1Z7mVGe7LwWo4OQI5nUeH/5288XEPTTwDu5I+3
+        9xvSspaGoxFhDYO+pivk3SoSx8KycZ0wZdlQnAwl6Gch8RjVt73M8NQF+e54QCPli6hrbvYTtJ9X3
+        zot/pIog==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOLal-00A8Cr-7E; Thu, 09 Sep 2021 15:04:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D088922334;
-        Thu,  9 Sep 2021 15:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631199707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7YDXHPzZgNhxK+JqlG9HXkSUyEV8IJc2b4TuXsz5yH0=;
-        b=kRRhZmQ3mqVSek9+0O4cHQ+rYzMVNOxaruVMvb1v75PP9GurRgzsXJuC+mknsmdvE8YkvW
-        Zb3LnQ3XGdB56U8spoEpjD4a2QLYTxaQiq0o27yIjFzfZdz3biJUxxSO3DHXksyCYs62PA
-        HwqjlBP1xSO36QTsp9qKWvwqz6leJmo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B427213C53;
-        Thu,  9 Sep 2021 15:01:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F1QlK9shOmFYSAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 15:01:47 +0000
-Date:   Thu, 9 Sep 2021 17:01:46 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, vipinsh@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <20210909150146.GA18171@blackbody.suse.cz>
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
- <20210824164423.GA11859@blackbody.suse.cz>
- <YSVDwc/1sEmXdOK9@slm.duckdns.org>
- <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
- <20210826112954.GD4520@blackbody.suse.cz>
- <49057879-92a9-958a-ac30-057ceabd1b7f@gmail.com>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D1E75300094;
+        Thu,  9 Sep 2021 17:03:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA39720D13711; Thu,  9 Sep 2021 17:03:54 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 17:03:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 04/19] cpufreq: amd: introduce a new amd pstate driver to
+ support future processors
+Message-ID: <YToiWpGxHV5oE2z8@hirez.programming.kicks-ass.net>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-5-ray.huang@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49057879-92a9-958a-ac30-057ceabd1b7f@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210908150001.3702552-5-ray.huang@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On Wed, Sep 08, 2021 at 10:59:46PM +0800, Huang Rui wrote:
 
-On Wed, Sep 08, 2021 at 01:29:18PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> I have sentout misc_cgroup events and events.local related patches.
-> I want to make corresponding changes to pids cgroup by the way. Do
-> you think it is ok?
+> +static int pstate_init_perf(struct amd_cpudata *cpudata)
+> +{
+> +	u64 cap1;
+> +
+> +	int ret = rdmsrl_safe_on_cpu(cpudata->cpu, MSR_AMD_CPPC_CAP1,
+> +				     &cap1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Some AMD processors has specific power features that the cppc entry
+> +	 * doesn't indicate the highest performance. It will introduce the
+> +	 * feature in following days.
+> +	 */
 
-The pids controller is longer out there, so some changes should be more
-careful (e.g. I wouldn't drop the log message).
+Wrong comment style; also imagine reading this comment half a year from
+now...
 
-Also, you can base it on [1] (there should be just missing the
-.local/hierarchical event files separation).
-
-HTH,
-Michal
-
-[1] https://lore.kernel.org/lkml/20200205134426.10570-1-mkoutny@suse.com/
+> +	WRITE_ONCE(cpudata->highest_perf, amd_get_highest_perf());
+> +
+> +	WRITE_ONCE(cpudata->nominal_perf, CAP1_NOMINAL_PERF(cap1));
+> +	WRITE_ONCE(cpudata->lowest_nonlinear_perf, CAP1_LOWNONLIN_PERF(cap1));
+> +	WRITE_ONCE(cpudata->lowest_perf, CAP1_LOWEST_PERF(cap1));
+> +
+> +	return 0;
+> +}
