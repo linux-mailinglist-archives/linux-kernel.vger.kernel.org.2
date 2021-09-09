@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E54E405BD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD8B405BD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240250AbhIIRQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237002AbhIIRQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:16:53 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E48C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:15:43 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id y18so3296137ioc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t6R8eEc3dAmoTOcAlSBC8/eAMhoLiJ9o2v0ZjAH+j7w=;
-        b=Xuzpdlgy0Mglp2Q6DiZ1UcVdF1mmB7GMVukvfDl4CXkDoEzbMmbpuglVHmcZh/2QAC
-         I2ipMBRcXuKGt7eD6A/VQMYeUpg3XsJVENqX10CT5SEFLzRouH2a0g/gHKkoY1MsX2nS
-         pzoVHk9LtWqs8bUyJR3JVmxhwGBzMQMjDYgaQYrCyLH9kCOIN7Bzuyb3klX9ndOwuUVo
-         HIsaoSW22mzzvOSDvzK8v/QTmTdKE/7ZTwKjI2t+jEh5KOWSZ2m4Xa4vydDh/5CHIJ5u
-         0qxEJE1F4LJtI0ufVNhOO2ratIshIVh6vOSC2m1xAlx1exjIBD+0J8o+s7KweaTCQ2Za
-         ANYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t6R8eEc3dAmoTOcAlSBC8/eAMhoLiJ9o2v0ZjAH+j7w=;
-        b=tVBR2rfKiXBHKA47LFHer8Q2e/OKBUYBbtuA+vP2NrZZVfDCtIl8/ZZLuetTYVIRvF
-         53d4m9yGAIrJC/OS8qgG/TuGQHCFI0qD7zUez4BxXPSACYOXWtYzxtByc1Q7dZjgyDH6
-         rGeu9JBuUnMhd3W8G558W5J5yru887JiGBriWtufMIqvjM07DRzgupOXQtRq+/uzRmcv
-         UkNGvDkUeGW2dnlWwP8JSZxAsaiO39gycQC594kKOqFw6IBWIjXcgP23Z0gbHCUnokJF
-         CGjstjHlzsBmBOYg+gGpF3L/8TB+/ATHYIBCelR2bHw4SUrB00FSTvI7Y8K0z3cz5tMP
-         OZKg==
-X-Gm-Message-State: AOAM5335PsccJw3UL2irKNHASLiorH6y8HJemXTYLJGRMpUE/fsnNh2X
-        dklswEe5Te/HwnPaOV+4UcAhc1xEIx+eNAgvtJcQ4Q==
-X-Google-Smtp-Source: ABdhPJy/giURPU4TNqNc4CQwQjjwPmZA3FmLT05wdI6roGPG9gWBK7SXhsDFBbuxRIeTAPiMuV9yJHR+I8oXQtssFm0=
-X-Received: by 2002:a5d:9da4:: with SMTP id ay36mr3685386iob.153.1631207742866;
- Thu, 09 Sep 2021 10:15:42 -0700 (PDT)
+        id S240539AbhIIRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237002AbhIIRRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:17:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4636061179;
+        Thu,  9 Sep 2021 17:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631207758;
+        bh=6MPSHzZT+wdjZOpnQ7K70UGKNWNw78Qt+uaALoiNHzs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ur2rhy1GxLjo187czO/UhbKA71WUYOuDssPXJbRQzb9xWT3LfpTZ3XwCFqaKDqm21
+         4vwEfcqbHjO+0SEwiwon8XkmM12vYOYvFu/WVOwLz40QfscvgnJCyIjEyCEs7Q/g9K
+         gnLnvGikDuTbyDA8V+H5Dvk9oMHLyeRTPifrwfd4xyx9Y3LRDvx9rPpCWbLyu7xPaE
+         nQKp9uyAJy4hZL4ovU+mbbwvd6SYbqeJOMrwhfx5Qm7WVk9rFYhZ7xOJliTXAgYAwX
+         0GCZjXlnfeRsVxcgvNJrMULFHMCtH/UqvYqSYGaiOfYlbq2HaVZdPOKaeEwZ7yISo1
+         FsT0I6dGJtk2A==
+Received: by mail-ed1-f42.google.com with SMTP id i6so3654863edu.1;
+        Thu, 09 Sep 2021 10:15:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533aCY2h7c1aXJMQY3yuM1X2xoL10YJRE7PHQWh2C+n2v0MrYV6p
+        kJ0mciOYemNwMdv7+uoi/IIVLX2F1hUlvDeIMQ==
+X-Google-Smtp-Source: ABdhPJyM7KZ4cekZmGbkuYORGG988NU14THUy9AbIjOQ+isB8C7xXq78QJxJ1PLPFyvKtKN/u+ZYoeTozdmbIK+obJQ=
+X-Received: by 2002:a05:6402:1703:: with SMTP id y3mr4266246edu.355.1631207756787;
+ Thu, 09 Sep 2021 10:15:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn> <CAGS_qxp2e3pgZ6nGW+5=qneeVw_Pd_ex9kX4jZqA9bweoHXxFA@mail.gmail.com>
-In-Reply-To: <CAGS_qxp2e3pgZ6nGW+5=qneeVw_Pd_ex9kX4jZqA9bweoHXxFA@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 9 Sep 2021 10:15:31 -0700
-Message-ID: <CAGS_qxqFY3oaUC=m_5nDtozgBPgqU9zdiB3=7h5QPF0HBaLaqw@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: fix reference count leak in kfree_at_end
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>
+References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
+ <20210903145340.225511-3-daniel.baluta@oss.nxp.com> <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
+ <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
+ <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com> <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
+In-Reply-To: <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 9 Sep 2021 12:15:45 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJd2AvBxRjHj=VZV2DH26tSNSX=5eEpc-HoFrc=dLxEFQ@mail.gmail.com>
+Message-ID: <CAL_JsqJd2AvBxRjHj=VZV2DH26tSNSX=5eEpc-HoFrc=dLxEFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 9:59 AM Daniel Latypov <dlatypov@google.com> wrote:
+On Thu, Sep 9, 2021 at 6:21 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
 >
-> On Thu, Sep 9, 2021 at 12:26 AM 'Xiyu Yang' via KUnit Development
-> <kunit-dev@googlegroups.com> wrote:
+> > > The H/W block is controlled by the DSP firmware. So, we don't want
+> > > to use the Linux kernel driver (thus the H/W block device tree node).
 > >
-> > The reference counting issue happens in the normal path of
-> > kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
-> > function forgets to handle the returned resource object, whose refcount
-> > increased inside, causing a refcount leak.
+> > 'status' is how you disable a device to not be used by the OS.
 > >
-> > Fix this issue by calling kunit_alloc_resource() instead of
-> > kunit_alloc_and_get_resource().
-> >
-> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> > The information about that device's resources are already in DT, we
+> > don't need to duplicate that here. If you want a list of devices
+> > assigned to the DSP here, that would be okay.
 >
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
+> Thanks! This is a very good idea. I was thinking at a totally different thing.
 >
-> Ah, thanks for finding and fixing this!
-> We really should have better documentation/otherwise make it clearer
-> that people shouldn't use the "_and_get" version.
+> So having something like this:
 >
-> I went and added some pr_info() calls to verify that these were being
-> leaked before and they're fixed now.
+> dsp {
 >
-> I copy-pasted this mistake into
-> https://lore.kernel.org/linux-kselftest/20210831171926.3832806-2-dlatypov@google.com/.
-> I'll send a v3 fix for that patch as well.
+>
+> hw-block-list = <&sai1>, <&sai2>;
+>
+> }
 
-Fixed that patch:
-https://lore.kernel.org/linux-kselftest/20210909171052.3192326-2-dlatypov@google.com/
+Yes.
 
-I assume this patch and that one shouldn't have merge conflicts, so we
-don't need these to be applied in any specific order.
+> And then inside the DSP driver we can get access to sai1 clocks. Do
+> you know of any standard property name?
 
->
-> > ---
-> >  lib/kunit/executor_test.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-> > index cdbe54b16501..c2dcfb1f6e97 100644
-> > --- a/lib/kunit/executor_test.c
-> > +++ b/lib/kunit/executor_test.c
-> > @@ -116,7 +116,7 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
-> >         /* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
-> >         if (IS_ERR_OR_NULL(to_free))
-> >                 return;
-> > -       kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-> > +       kunit_alloc_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-> >                                      (void *)to_free);
-> >  }
-> >
-> > --
-> > 2.7.4
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/1631172276-82914-1-git-send-email-xiyuyang19%40fudan.edu.cn.
+There isn't. So it needs a vendor prefix.
+
+There's been some discussions around 'system devicetree' where all
+processors (like the DSP) view of the system get represented. Device
+assignment is one of the issues to solve with that, but it's not
+anywhere close to having something to help here.
+
+Rob
