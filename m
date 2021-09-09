@@ -2,169 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341540539F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA21404D65
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355380AbhIIMxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:53:51 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39218 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351358AbhIIMk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:40:57 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2B57B2214F;
-        Mon,  6 Sep 2021 20:38:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630960699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Qtuu4/ZPScsVk6rGAAsM4l/yhJ6XWgzmUIpitKEkZE=;
-        b=bwx6AwVxePnGeA6sHWnTWHmHziRJ7BLWg+YFvI43c+9oIARjqF2O0sdzks5278D3uRNkfg
-        1HuKMeucmzCYtRxdLhx4Xp7IFJRicVs5xWrHRu/WNlGPAZgs8paH+BAZ1cf/VvTgeoTwn0
-        PPOtI3GCs+KtyHDZE2ND9WN5p+QWavM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630960699;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Qtuu4/ZPScsVk6rGAAsM4l/yhJ6XWgzmUIpitKEkZE=;
-        b=KS0j4zjdKNgfJDJQBZd5xPEIT3ALT8vriz2BhZFM1uLDD+j3XcneLhcPFc7nA0mXk+le66
-        WEu5tg/L+FwByNDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7ADCE13313;
-        Mon,  6 Sep 2021 20:38:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id LbxWHDp8NmHHIwAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Mon, 06 Sep 2021 20:38:18 +0000
-Message-ID: <11f8b913-1057-7d30-e936-f27483f9a6e2@suse.de>
-Date:   Mon, 6 Sep 2021 22:38:18 +0200
+        id S1344276AbhIIMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239669AbhIIL4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:56:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7013613C8;
+        Thu,  9 Sep 2021 11:45:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631187918;
+        bh=Q7+PDq3PcKfGT0wocrGwCTzWvfRbCJ1Xva38avQb21A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=K8cIkzSflDmK/l7N0q06BZBUakJvGZ403/4zn2t75dWGT+LhjyZmV1uuJXaPM+a1r
+         uLgcTr/kYkRMh7iIYCskpaqVWh5qiH8L8F6xza85rFUoK+PxeBy34br7nK2CQZGZVR
+         Kh3pKZBu2Kwwp9gCwJd4nugqiDnsLsJW30qdKuwNEvBBK06K9BM+B57ivi5CYV50XJ
+         BJ8VeBdZ2KZ/TBSLc+K3BW8Dy8j2OumKAFcYwGN/UeiLEJevaHOJ39GvrOcFOJF6Kg
+         2jwlcGB3vdFg49/PJrGcXDxr73QtJ4Ry97LHgvJYR+/1eKq2EtjuugZo9ymgGAM74o
+         AEF9tdArE3kFQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 193/252] btrfs: grab correct extent map for subpage compressed extent read
+Date:   Thu,  9 Sep 2021 07:40:07 -0400
+Message-Id: <20210909114106.141462-193-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
-Content-Language: en-US
-To:     Chester Lin <clin@suse.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Rob Herring <robh@kernel.org>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-2-clin@suse.com> <YRaxt1LCF+hWaMJU@robh.at.kernel.org>
- <YR0akXYPYthDuvCh@linux-8mug>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-In-Reply-To: <YR0akXYPYthDuvCh@linux-8mug>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chester,
+From: Qu Wenruo <wqu@suse.com>
 
-On 18.08.21 16:34, Chester Lin wrote:
-> On Fri, Aug 13, 2021 at 12:53:59PM -0500, Rob Herring wrote:
->> On Thu, Aug 05, 2021 at 02:54:22PM +0800, Chester Lin wrote:
->>> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
->>> design 2 board ( S32G-VNP-RDB2).
->>>
->>> Signed-off-by: Chester Lin <clin@suse.com>
->>> ---
->>>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
->>>  1 file changed, 7 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> index e2097011c4b0..3914aa09e503 100644
->>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
->>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> @@ -983,6 +983,13 @@ properties:
->>>            - const: solidrun,lx2160a-cex7
->>>            - const: fsl,lx2160a
->>>  
->>> +      - description: S32G2 based Boards
->>> +        items:
->>> +          - enum:
->>> +              - fsl,s32g274a-evb
->>> +              - fsl,s32g274a-rdb2
->>> +          - const: fsl,s32g2
->>
->> Given this is an entirely different family from i.MX and new?, shouldn't 
->> it use 'nxp' instead of 'fsl'? Either way,
-> 
-> It sounds good and Radu from NXP has mentioned a similar idea for the
-> compatible string of linflexuart. To keep the naming consistency, should we
-> change all 'fsl' to 'nxp' as well?
+[ Upstream commit 557023ea9f06baf2659b232b08b8e8711f7001a6 ]
 
-I assume that question was just unclearly phrased, so for the record:
+[BUG]
+When subpage compressed read write support is enabled, btrfs/038 always
+fails with EIO.
 
-ABI stability rules forbid us from changing "all 'fsl'" in compatible
-strings or property names.
+A simplified script can easily trigger the problem:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/ABI.rst
+  mkfs.btrfs -f -s 4k $dev
+  mount $dev $mnt -o compress=lzo
 
-Deployed firmware providing mainline-merged platforms with DTBs using
-fsl prefix (e.g., the quoted LX2160A) needs to continue working with
-newer drivers, and deployed mainline Linux should continue working after
-firmware updates that modify the DTB provided to Linux.
+  xfs_io -f -c "truncate 118811" $mnt/foo
+  xfs_io -c "pwrite -S 0x0d -b 39987 92267 39987" $mnt/foo > /dev/null
 
-So, if NXP wants to use nxp prefix for new S32G bindings, you can do
-that for your additions only, but for LINFlexD UART (3/8) you will still
-need to use fsl for the "historical" S32V binding used as fallback.
+  sync
+  btrfs subvolume snapshot -r $mnt $mnt/mysnap1
 
-Please keep S32G consistent with itself - so if we decide on nxp here,
-we should apply it to SoC, boards, LINFlexD and any future peripherals.
+  xfs_io -c "pwrite -S 0x3e -b 80000 200000 80000" $mnt/foo > /dev/null
+  sync
 
-> For example, we could rename the fsl.yaml
-> to nxp.yaml.
+  xfs_io -c "pwrite -S 0xdc -b 10000 250000 10000" $mnt/foo > /dev/null
+  xfs_io -c "pwrite -S 0xff -b 10000 300000 10000" $mnt/foo > /dev/null
 
-Since other people might be contributing i.MX boards etc. to that file,
-better not make your patch series conflict with other people's patches,
-so that it can get merged and we can move on to the next patchsets.
+  sync
+  btrfs subvolume snapshot -r $mnt $mnt/mysnap2
 
-The schema filename is not ABI, so it can be renamed later.
+  cat $mnt/mysnap2/foo
+  # Above cat will fail due to EIO
 
-The .dtb path may become ABI (e.g., U-Boot $fdtfile), thus my comment
-about consciously deciding between freescale/ vs. nxp/ subdirectory.
+[CAUSE]
+The problem is in btrfs_submit_compressed_read().
 
-> However, changing all of them would cause some impacts, which will
-> need more verifications on new strings. Otherwise we would have to tolerate the
-> naming differences only used by s32g2.
+When it tries to grab the extent map of the read range, it uses the
+following call:
 
-I fear tolerating the mess one way or another is the only viable way.
-Otherwise both bindings and drivers would need duplication for backwards
-compatibility, for no good reason - Freescale was acquired back in 2015.
+	em = lookup_extent_mapping(em_tree,
+  				   page_offset(bio_first_page_all(bio)),
+				   fs_info->sectorsize);
 
-Cheers,
-Andreas
+The problem is in the page_offset(bio_first_page_all(bio)) part.
 
+The offending inode has the following file extent layout
+
+        item 10 key (257 EXTENT_DATA 131072) itemoff 15639 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 13680640 nr 4096
+                extent data offset 0 nr 4096 ram 4096
+                extent compression 0 (none)
+        item 11 key (257 EXTENT_DATA 135168) itemoff 15586 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 0 nr 0
+        item 12 key (257 EXTENT_DATA 196608) itemoff 15533 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 13676544 nr 4096
+                extent data offset 0 nr 53248 ram 86016
+                extent compression 2 (lzo)
+
+And the bio passed in has the following parameters:
+
+page_offset(bio_first_page_all(bio))	= 131072
+bio_first_bvec_all(bio)->bv_offset	= 65536
+
+If we use page_offset(bio_first_page_all(bio) without adding bv_offset,
+we will get an extent map for file offset 131072, not 196608.
+
+This means we read uncompressed data from disk, and later decompression
+will definitely fail.
+
+[FIX]
+Take bv_offset into consideration when trying to grab an extent map.
+
+And add an ASSERT() to ensure we're really getting a compressed extent.
+
+Thankfully this won't affect anything but subpage, thus we only need to
+ensure this patch get merged before we enabled basic subpage support.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/compression.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 30d82cdf128c..ad700cf287c9 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -673,6 +673,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	struct page *page;
+ 	struct bio *comp_bio;
+ 	u64 cur_disk_byte = bio->bi_iter.bi_sector << 9;
++	u64 file_offset;
+ 	u64 em_len;
+ 	u64 em_start;
+ 	struct extent_map *em;
+@@ -682,15 +683,17 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 
+ 	em_tree = &BTRFS_I(inode)->extent_tree;
+ 
++	file_offset = bio_first_bvec_all(bio)->bv_offset +
++		      page_offset(bio_first_page_all(bio));
++
+ 	/* we need the actual starting offset of this extent in the file */
+ 	read_lock(&em_tree->lock);
+-	em = lookup_extent_mapping(em_tree,
+-				   page_offset(bio_first_page_all(bio)),
+-				   fs_info->sectorsize);
++	em = lookup_extent_mapping(em_tree, file_offset, fs_info->sectorsize);
+ 	read_unlock(&em_tree->lock);
+ 	if (!em)
+ 		return BLK_STS_IOERR;
+ 
++	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
+ 	compressed_len = em->block_len;
+ 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+ 	if (!cb)
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+2.30.2
+
