@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880BF4046A2
+	by mail.lfdr.de (Postfix) with ESMTP id D6BC14046A3
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhIIIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
+        id S231325AbhIIIAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbhIIH75 (ORCPT
+        with ESMTP id S230283AbhIIIAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 03:59:57 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87FEC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 63-20020a250d42000000b0059dc43162c9so1344602ybn.23
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:48 -0700 (PDT)
+        Thu, 9 Sep 2021 04:00:00 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F65BC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:51 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f8-20020a2585480000b02905937897e3daso1441964ybn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=KujjUUPlr+tuE5rUahYPqg4eiHhp2n+Zb/NK/Myctvg=;
-        b=F067E2gt15Rj9kESLRbDsD5mAp/sNjHr/BJ3HrwEiDLBp0ES7eEhUiV+YoKBFAMpkH
-         qCMYHYJ8aMyrQLcN4/9YFaD0ls3jnm0wF71RpdN1/UKpqsxCXu4pfhGIBv2aWGeGQUnA
-         6AG6RBnk0PWFyl6yUmxaL8u9kf8a6uYryUYGqggYWc0lAKidfRpdP2NMKkaqalpwYX9p
-         LhllN3xj47s7ohO4xPxBZzoukwzk/eBtkXwicFzRJWlaMi6QrusLKZcq5D1v74Zkc2MJ
-         l45EbMfWPcfW5xM6vTl8XZPDaebRXLGkVI5xIzdYOxiso7o/+mkeX/ZCbMOimBT0fS4C
-         LgxQ==
+        bh=6Ldm7rOr6cPWy6VdSTV6Dek8K97Lju1gAu8+gD97c5A=;
+        b=gJIp86Bm3AjRMR+5uf6Mx4PcWUqg08fuXVTo4AqsDCVb/gVZIDhZ02hjtU0+J5YbQ9
+         5WAL0ZfaBmgCjtVg2bYeU0Qspt2fp75iVbLnH0U2rTyvhIH4PHoeMdbevwr4pOqhgTR8
+         vQfYOrq4/nDYdggoVTwkIXEnw5BOGsvAm+ggnEeRtYUPTtjtkDXRbKyL4tUAjhaunM63
+         jEEBPRblQC0VVlP0sHPTa/xHmMQ8eO6pdRORWsPZosluK0ItDY6frDSk492fzfpwoA9f
+         K6NxyilPJ90YpENKWG+PgTjjpjlCMXZ+C8TvsYKpDEiF39Slx5HXQOdB43cLaDQ+ebek
+         JctQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=KujjUUPlr+tuE5rUahYPqg4eiHhp2n+Zb/NK/Myctvg=;
-        b=oz+7b/D/atwcEqOJ7ToGliRW1hxNJhfkhvcOMsSihLyT087SQDHDVFtmPeYuRqcH8n
-         kAXCIHCKXzPtoqoiBRoClsUG0B689Dm8/Is2YqnMru2/UfyKgjNHqcJjobDTN4eGqm02
-         e9kQIEKHFD5nPRqLJUeKMck4cAYppegOxSpWyCydaaxMiPHasiK2/yzT4+uPbcbWaF5Y
-         umhu1y65ILijz4s6TDCgSXq7djmFZWilWP4l4ZW7ihDGgpd8Gi6YP+XJZNafXZvcxfr8
-         FUljeuDdbGiMKAu+GkUbwQQ5Py5ASeRXNDMuPmr7yNZmil2sKVm8sNMXFpAAzAx98ST8
-         /9Rg==
-X-Gm-Message-State: AOAM531qq5yzuF7zCh6HDQOoWpBFdqhroqg1kQrQkg58O0iOfP5jy1rj
-        2x/4YUpsDL3fFAg3loS6PCAaekX/9pQa8I7bdViGohhx3BXDGpEKfjpuIDPHhZaYOFYvAgWCc5U
-        KSaT80R1LGwre+UmX0E+qaemxPhwxLEKmEVdeaAIs9Yu2N8vGD23FdhX2dLN7F0oeYDi+DZ5i
-X-Google-Smtp-Source: ABdhPJw07XX+MtdYPwA+Q3Ijeyxm2zgkVGU/Z4kNSvmDhdUx3R9o77fAfpodb0uH/+aZcI1Fq70B/pWpEs9P
+        bh=6Ldm7rOr6cPWy6VdSTV6Dek8K97Lju1gAu8+gD97c5A=;
+        b=ZCQyxpeVR0wpV7y00mpdzEJiVp9L1eW0w41YC/jh2ttEqdqdXTKHmmf+fDJRb4OKBx
+         bfA4XvDjsUhnpiPuktZu6PX3Vy8kSBcgliUoNduL8WPjsaYIXMjBOY3JJjfNmh5cWlMQ
+         BONWzz2wlpws78Cje3yNZPEi7H8RoTKcdAPtI5MoxWmN1yQZBoQygpObN2NqZb10U0uY
+         KQ5mISheVJ7zO/jlqmZp4OLDJfo++leATFNy98F1kXJSNTTOewsk/Hg1tESkvd6GheWp
+         hG9/Q7I+1lzaznWDlyk4ZnKydYW2iM35wsxgC5+CF0n5TaehNW8dBq/4Hcg6I5XiaeVj
+         /B5A==
+X-Gm-Message-State: AOAM530iwdU0oacjPQ6dwzAjTTSFFPYGn55qTdTK3zj/aYigcwaFisDN
+        glIxfUVDJGvEmqDYXknPK8lR3+8oaQM2A1wo4c3/p9yZOhzlMphnxL2VJq9xSbKsYn2xGvqydrc
+        3fycPIdVd4bYB6hC3lC0e4uPKwIJuo9Axpn6Q5O71uIxDC2Bi6L3G8+U9OHVqyBnBhsJhOCsZ
+X-Google-Smtp-Source: ABdhPJz3/lZZSxM9ga7XgyT86Nw0nvepuwbEsIXOfvpv/DGs0ZiIZoZdl/zSbdRvUOV23N2yI0LJm2FKcf2i
 X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:f950:61f2:f1ec:ae8b])
- (user=eranian job=sendgmr) by 2002:a25:ad52:: with SMTP id
- l18mr2106490ybe.453.1631174327886; Thu, 09 Sep 2021 00:58:47 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 00:56:51 -0700
+ (user=eranian job=sendgmr) by 2002:a25:d04a:: with SMTP id
+ h71mr2372733ybg.418.1631174330436; Thu, 09 Sep 2021 00:58:50 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 00:56:52 -0700
 In-Reply-To: <20210909075700.4025355-1-eranian@google.com>
-Message-Id: <20210909075700.4025355-5-eranian@google.com>
+Message-Id: <20210909075700.4025355-6-eranian@google.com>
 Mime-Version: 1.0
 References: <20210909075700.4025355-1-eranian@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 04/13] perf/x86/amd: add branch-brs helper event for Fam19h BRS
+Subject: [PATCH v1 05/13] perf/x86/amd: enable branch sampling priv level filtering
 From:   Stephane Eranian <eranian@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
@@ -62,46 +62,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a pseudo event called branch-brs to help use the FAM Fam19h Branch
-Sampling feature (BRS). BRS samples taken branches, so it is best used when sampling
-on a retired taken branch event (0xc4) which is what BRS captures.
-Instead of trying to remember the event code or actual event name, users can simply do:
-
-$ perf record -b -e cpu/branch-brs/ -c 1000037 .....
+The AMD Branch Sampling features does not provide hardware filtering
+by privilege level. The associated PMU counter does but not the branch
+sampling by itself. Given how BRS operates there is a possibility that
+BRS captures kernel level branches even though the event is programmed to
+count only at the user level. This patch implements a workaround in software
+by removing the branches which belong to the wrong privilege level. The privilege
+level is evaluated on the target of the branch and not the source so as to be
+compatible with other architectures. As a consequence of this patch, the number
+of entries in the PERF_RECORD_BRANCH_STACK buffer may be less than the maximum (16).
+It could even be zero. Another consequence is that consecutive entries in the
+branch stack may not reflect actual code path and may have discontinuities,
+in case kernel branches were suppressed. But this is no different than what
+happens on other architectures.
 
 Signed-off-by: Stephane Eranian <eranian@google.com>
 ---
- arch/x86/events/amd/core.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/x86/events/amd/brs.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index 86adb0e879c6..d6d5119260a9 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -1106,8 +1106,24 @@ static struct attribute_group group_caps_amd_brs = {
- 	.is_visible = amd_brs_is_visible,
- };
+diff --git a/arch/x86/events/amd/brs.c b/arch/x86/events/amd/brs.c
+index 86dbc6d06815..23b969001857 100644
+--- a/arch/x86/events/amd/brs.c
++++ b/arch/x86/events/amd/brs.c
+@@ -92,10 +92,6 @@ int amd_brs_setup_filter(struct perf_event *event)
+ 	if ((type & ~PERF_SAMPLE_BRANCH_PLM_ALL) != PERF_SAMPLE_BRANCH_ANY)
+ 		return -EINVAL;
  
-+#define AMD_FAM19H_BRS_EVENT 0xc4 /* Fam19h RETIRED_TAKEN_BRANCH_INSTRUCTIONS */
-+EVENT_ATTR_STR(branch-brs, amd_branch_brs,
-+	       "event=" __stringify(AMD_FAM19H_BRS_EVENT)"\n");
+-	/* can only capture at all priv levels due to the way BRS works */
+-	if ((type & PERF_SAMPLE_BRANCH_PLM_ALL) != PERF_SAMPLE_BRANCH_PLM_ALL)
+-		return -EINVAL;
+-
+ 	return 0;
+ }
+ 
+@@ -181,6 +177,21 @@ void amd_brs_disable(void)
+ 	}
+ }
+ 
++static bool amd_brs_match_plm(struct perf_event *event, u64 to)
++{
++	int type = event->attr.branch_sample_type;
++	int plm_k = PERF_SAMPLE_BRANCH_KERNEL | PERF_SAMPLE_BRANCH_HV;
++	int plm_u = PERF_SAMPLE_BRANCH_USER;
 +
-+static struct attribute *amd_brs_events_attrs[] = {
-+	EVENT_PTR(amd_branch_brs),
-+	NULL,
-+};
++	if (!(type & plm_k) && kernel_ip(to))
++		return 0;
 +
-+static struct attribute_group group_events_amd_brs = {
-+	.name       = "events",
-+	.attrs      = amd_brs_events_attrs,
-+	.is_visible = amd_brs_is_visible,
-+};
++	if (!(type & plm_u) && !kernel_ip(to))
++		return 0;
 +
- static const struct attribute_group *amd_attr_update[] = {
- 	&group_caps_amd_brs,
-+	&group_events_amd_brs,
- 	NULL,
- };
++	return 1;
++}
++
+ /*
+  * Caller must ensure amd_brs_inuse() is true before calling
+  * return:
+@@ -237,8 +248,6 @@ void amd_brs_drain(void)
+ 		if (to == BRS_POISON)
+ 			break;
+ 
+-		rdmsrl(brs_from(brs_idx), from);
+-
+ 		/*
+ 		 * Sign-extend SAMP_BR_TO to 64 bits, bits 61-63 are reserved.
+ 		 * Necessary to generate proper virtual addresses suitable for
+@@ -246,6 +255,11 @@ void amd_brs_drain(void)
+ 		 */
+ 		to = (u64)(((s64)to << shift) >> shift);
+ 
++		if (!amd_brs_match_plm(event, to))
++			continue;
++
++		rdmsrl(brs_from(brs_idx), from);
++
+ 		cpuc->lbr_entries[nr].from = from;
+ 		cpuc->lbr_entries[nr].to   = to;
  
 -- 
 2.33.0.153.gba50c8fa24-goog
