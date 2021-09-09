@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091C4404882
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348C6404887
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhIIKdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:33:21 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50930 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233895AbhIIKdU (ORCPT
+        id S234025AbhIIKgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233370AbhIIKgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:33:20 -0400
-Received: by mail-il1-f198.google.com with SMTP id x4-20020a92b004000000b0022b3cb3b4deso1537634ilh.17
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 03:32:11 -0700 (PDT)
+        Thu, 9 Sep 2021 06:36:03 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78CCC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 03:34:53 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 93so805057qva.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 03:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QGMqJnOir1+cYUQY5iIAYPXDmHOFVbSMzDJHUxueGwM=;
+        b=hqfKwhuHkAWwH9oxhi0FYe+K6nDsG4IXbVo+4X85g4XEiHHBugH2qjKt4D8NH3UvGC
+         v3f711yie0mGm9guPptXEFy8Oh1vpiH0SfWA+Zr6ZKE6q0nhtbTFLEazsUeV0inqSDif
+         ag63Ho4LtG2Zzfk0Stz9yDUcjOm7Ffo4a6VnMSCAl6AQntRl13oXX24mzDofUPOOpTt6
+         E0DxoKdkrFi00/HNXZZDYW4vE+eaTyNRtI57p/zIbJxQp0BHyO014LD7bJJXBJiyKmD4
+         N+IBhSegd7nH6mWWAKumrx8rVkhh5s7Q9pPfqVgB6CPE1bdMsdUQY6VeIouzlJpvSJF9
+         37vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wYGQ6jwHlyJRKwQ0wASVxdo20+iSeZwpNWcEYrVI0Mg=;
-        b=ZBgkTo28WjMtdh8TWyJbceeHOaOoDPSLpQTtjLJnGJzMsf8dJJb8wZFaWq4b0oMjsQ
-         CVlk7zkwXD+vroSfHXi7YwXXgkG+tGMR9C9WjXtgNBfixRjSQdeENIBxDn9128c14yXe
-         GB4bm36F5i4E7zF2yL8HyBngTBxHs8+B9TgO0KHfUk8Sxxcl/9FMfyPUZVGZxN3C8UUC
-         WtD43PvIIHWRyN9C5R6SoRVQwj+tIW7m+kh8gjDJVby8lOwu6XtVKqPeeV5ZUO0Yiao+
-         9SgzMWlFWBNSt2M34xYfhF1Ka9Yo6+iuwr0JeGyuFwJWv/pD7Ov2onyDOe4ZUA5blIvX
-         my/Q==
-X-Gm-Message-State: AOAM531TqTqxbRcxIuYR/VkQry7VQvA64noujj4aZye/mZd8Gemt1FKR
-        o3CSZ2H8c9u6VU0EWRhVcou2pyDOTMrOAUaeHnpZ0NN2QCW8
-X-Google-Smtp-Source: ABdhPJyLqRh/TbRtIHt72BPFNapbFg9OeSZoFGu+kZ/Sb6A9wM8KjD+jiurXOZXjz8P6xfgVBECN1lEOE5FmMsE/lX8rlWQ2Uj5i
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QGMqJnOir1+cYUQY5iIAYPXDmHOFVbSMzDJHUxueGwM=;
+        b=7YS6gswA3B3FTE4L9ml4KQ+M0TLYzLVlhViACY6snELpvmHzelJs9tWmTnVhwGfL4P
+         cIa7b20vOlB1tg3V5wxQsIpmYfmBxneS2Jqvqml8Yz/BkFSJEvSMYetvWv+3ejI2W19+
+         ad1+YSBCgHufcfcN+zJ5CgzTJEaMkKlME9/f6iMS3aZohQlid7thT5dY7XigtjK35dUC
+         tCpGBCrSJ+dSqrx8+5ZiO3BrhTnr4VeGTFrzWqzOKgS+lLygGzhTg9RLiUGgps27JwZ1
+         FeCIfs94fyZtBerUK1NCMUeZRP7x8n90tLtGfhKGKdMAvfuu8Wrppc0dODEz9C/ac+z1
+         Kq9A==
+X-Gm-Message-State: AOAM530ENFgiPZkPp/oVfIQhjy0ellnYICO5WTqfJSDoNxWgxdzz2/Sc
+        zBtnKpglLsEDASRdUIM8aUlxjv0dX/3xWlEIGft5QiF1
+X-Google-Smtp-Source: ABdhPJymjxFd2a+n5NsJma4qk5NVz1PCiu+Fy3tKRxgB069yWNsNec/+2HNh3LyKp9hRKhSmMQDxfTSfZFdEhpkjEv8=
+X-Received: by 2002:a0c:9103:: with SMTP id q3mr2137963qvq.36.1631183693146;
+ Thu, 09 Sep 2021 03:34:53 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:ba1a:: with SMTP id z26mr2259499jan.98.1631183531325;
- Thu, 09 Sep 2021 03:32:11 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 03:32:11 -0700
-In-Reply-To: <0000000000006173bf05cb892427@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f2bcea05cb8d8266@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in hash_ipport_create
-From:   syzbot <syzbot+a568bbab323b96631e61@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, w@1wt.eu
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com> <YTnWXIB42sCLbM2k@zn.tnic>
+In-Reply-To: <YTnWXIB42sCLbM2k@zn.tnic>
+From:   Luming Yu <luming.yu@gmail.com>
+Date:   Thu, 9 Sep 2021 18:34:40 +0800
+Message-ID: <CAJRGBZyQuQohbf8v3H19zo1mpbvDXrbNVXCJAUpCEmHgmqTYpg@mail.gmail.com>
+Subject: Re: [PATCH] perf: optimize clear page in Intel specified model with
+ movq instruction
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jinhua Wu <wujinhua@linux.alibaba.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        zelin.deng@linux.alibaba.com, jiayu.ni@linux.alibaba.com,
+        Andi Kleen <ak@linux.intel.com>,
+        Luming Yu <luming.yu@intel.com>, fan.du@intel.com,
+        artie.ding@linux.alibaba.com, "Luck, Tony" <tony.luck@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        pawan.kumar.gupta@linux.intel.com,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        ricardo.neri-calderon@linux.intel.com,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Thu, Sep 9, 2021 at 5:41 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, Sep 09, 2021 at 04:45:51PM +0800, Jinhua Wu wrote:
+> > Clear page is the most time-consuming procedure in page fault handling.
+> > Kernel use fast-string instruction to clear page. We found that in specified
+> > Intel model such as CPX and ICX, the movq instruction perform much better
+> > than fast-string instruction when corresponding page is not in cache.
+> > But when the page is in cache, fast string perform better. We show the test
+> > result in the following:
+>
+> What you should do is show the extensive tests you've run with
+> real-world benchmarks where you really can show 40% performance
+> improvement.
+>
+> Also, the static branch "approach" you're using ain't gonna happen. If
+> anything, another X86_FEATURE_* bit.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
-
-    mm: don't allow oversized kvmalloc() calls
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15bb0a93300000
-start commit:   626bf91a292e Merge tag 'net-5.15-rc1' of git://git.kernel...
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17bb0a93300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13bb0a93300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=16e23f04679ec35e
-dashboard link: https://syzkaller.appspot.com/bug?extid=a568bbab323b96631e61
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178b5d0d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fad1dd300000
-
-Reported-by: syzbot+a568bbab323b96631e61@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+do you mean jump label would not be replaced to nop when its key is enabled?
+so we could not use it in certain functions?
+I don't understand exactly what "ain't  gonna happen"
+>
+> Good luck.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
