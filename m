@@ -2,100 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27941405EB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF28B405EB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346703AbhIIVVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S1346380AbhIIVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346473AbhIIVVN (ORCPT
+        with ESMTP id S232739AbhIIVVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:21:13 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8025C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:20:02 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id t18so4526926wrb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:20:02 -0700 (PDT)
+        Thu, 9 Sep 2021 17:21:08 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C00C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 14:19:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x7so2885562pfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 14:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IjVEcRwSUp15VhRofJDWnHv3EIrC+ItI8VvG9mNn4Is=;
-        b=bxU+T2wvN6781GavtovvUr9Lj3oaqHmLstpWaGelZ9C25kkLW5gF/2WhvtOGEfVgJ+
-         F6CXVpk9+36JHYHbhIjYyn0pOy2sRanBnmWL5XjHm6ULMawIrkh1Esd4r5mLPek3d1lI
-         3kUhNYPdlCBB46cMt/ddzvcOY392dMlES4hlx2u468MWKqRKATZl4gvuGg8Mc/CwonDC
-         6CK7nXuOCRt6uR8aQnqMIRoKIX1vSASAuZd+UMzjDkiBWmDzEYTrKS/936urn3Nllhba
-         F+W8XD2DDnYRxMEY2TaWkRNoh9cQehyRBhSqd8sbjZe3PzOcT5abmtEIY1+dk4PlYKSy
-         BPlw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fVQsnA+/48NDgsa0ERzz48a22mi7/7hTiVzbzvzJrZA=;
+        b=gUjhO46jwOh1PpfmgdU9Us8fJSc9lrNtuZOLqMiM9G2X1/PAMrSshYzVWRuVWxEsWv
+         PowFsm89yC3Zhr8pijYn6se6qrPvDU+5w7H+B+KMy36hVsFpuMkPplFS6ARL+C+QJYxr
+         W471fmvuhi5s8whbOFk/t6OwgR8WEveOonw1lR3oCjmBf5z2o+dQKF5FFAj4oHIh7cAJ
+         +tj6stip6lUiOf1uWoaLC9zNbtKQ0qjF4RNfRfpVyqxy7a9v4/70at7EcMQGDHi8YVPh
+         f6jow8d7WJ0b+jJPmdyjy+UY46ljxWkyqm/f1ymCqOlzlRmFFPWZQD2JAX750iVOXz2n
+         V9BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IjVEcRwSUp15VhRofJDWnHv3EIrC+ItI8VvG9mNn4Is=;
-        b=5S29NmLuAaVXaVcd1lB/lROKTVnMavjnQFVpUf0ZsVpebqvFfrYEUc2gZYtML6jZBh
-         /NwJ4eJ+O2Qipm7CO69Kb70dGFyx2pP7ADuT3M9VxXIblXVEtte0C7AUrZzjIR9P6hjk
-         7mgJxW2h9DskbC/QXlzBDbRXSfRudbCK3502nvzSrNapeotGJ9A4EPM/9yVtPy9YhCvp
-         6J2rNPHxyKlgOT2aB8+ofrGoPZaQh7Oz8opnJ1W/8yPCn/bM1N+mbyDO6klH9gN4Pdts
-         eYg2PI4sx3W1kP0YWYNqlztZjw66yIJqgOzSBJGaQoai0IhtbzB24h2aQgHW3IARLerv
-         rCfg==
-X-Gm-Message-State: AOAM531sgSJixRNKacMQtkXfr1nxz6sr1lFNojm/G2rC6OCc3CMKXAO7
-        O51/UA/hKtIGl/wVwfh3h48=
-X-Google-Smtp-Source: ABdhPJwxXGWNK1YLaOUsud7PSKcuxnzCNFBthMoYkcjNXjtHTvKKPE+Kp8EDuBRlQ8dkKOMhSifyyg==
-X-Received: by 2002:adf:f48e:: with SMTP id l14mr6166207wro.109.1631222401550;
-        Thu, 09 Sep 2021 14:20:01 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id n5sm2511973wmd.29.2021.09.09.14.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 14:20:00 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: remove unused macros from ioctl_linux.c
-Date:   Thu,  9 Sep 2021 23:19:22 +0200
-Message-Id: <20210909211922.24872-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        bh=fVQsnA+/48NDgsa0ERzz48a22mi7/7hTiVzbzvzJrZA=;
+        b=siYa/jvXmrEMMvTI1YeihUKqPZJzJb9UzGjiIEevKT/hb5AllCmgmKMn4XAF0ugPHF
+         T56g0fZSyc+TAKpukJqiS9m8Rr7nRuqrZ8l/z+iwV3QfYW/o7KVamnwgezf/MqTYyc0t
+         YShE8/MIMJAZJfTHlu9X5RSevHm12+ELtsSkZ+uxbNXN/FRiUyUPcWLHmySrkvPt0dRC
+         itAzKn9nzrE6dn7vWzoBT/BKWub6T+hcojVGMJfJ3B3V8cLNgPVbv6h9V0Nn0P7D/arh
+         2HY/F1WuldHHZpc/S0dXkR7yhEMflcIruX39FLZRZOccdkGWchyxtwjEx5cktGwTHECj
+         29+w==
+X-Gm-Message-State: AOAM531YwYXukNwr+uEsXCWqyETTN4TPf6ecLZi3i9hUO4mqfIzvIpHA
+        LzVBr0C2J0gg9gGoMhlFlvsYYA==
+X-Google-Smtp-Source: ABdhPJxsWbMsYjKdO1r8JFNw8Giqntq3LlooqZQwtpda9hxwo3o43bG9UP9clPaUbRGBK9gbDm843w==
+X-Received: by 2002:a65:62c1:: with SMTP id m1mr4515841pgv.339.1631222397876;
+        Thu, 09 Sep 2021 14:19:57 -0700 (PDT)
+Received: from ?IPv6:2600:380:496f:85f0:f855:eb52:c00a:147a? ([2600:380:496f:85f0:f855:eb52:c00a:147a])
+        by smtp.gmail.com with ESMTPSA id 138sm3090886pfz.187.2021.09.09.14.19.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 14:19:57 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+Date:   Thu, 9 Sep 2021 15:19:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These macros are not used in the driver, remove them.
-Found with GCC -Wunused-macros.
+On 9/9/21 1:37 PM, Linus Torvalds wrote:
+> On Wed, Sep 8, 2021 at 9:24 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>
+>>         Fixes for io-uring handling of iov_iter reexpands
+> 
+> Ugh.
+> 
+> I have pulled this, because I understand what it does and I agree it
+> fixes a bug, but it really feels very very hacky and wrong to me.
+> 
+> It really smells like io-uring is doing a "iov_iter_revert()" using a
+> number that it pulls incorrectly out of its arse.
+> 
+> So when io-uring does that
+> 
+>                 iov_iter_revert(iter, io_size - iov_iter_count(iter));
+> 
+> what it *really* wants to do is just basically "iov_iter_reset(iter)".
+> 
+> And that's basically what that addition of that "iov_iter_reexpand()"
+> tries to effectively do.
+> 
+> Wouldn't it be better to have a function that does exactly that?
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 14 --------------
- 1 file changed, 14 deletions(-)
+That might indeed be better. Alternatively, consumers that truncate
+should expand. Part of the problem here is the inconsistency in how they
+are consumed.
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index 908022a17b3f..27fb1be036b8 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -15,20 +15,6 @@
- 
- #define RTL_IOCTL_WPA_SUPPLICANT	(SIOCIWFIRSTPRIV+30)
- 
--#define SCAN_ITEM_SIZE 768
--#define MAX_CUSTOM_LEN 64
--#define RATE_COUNT 4
--
--/*  combo scan */
--#define WEXT_CSCAN_HEADER		"CSCAN S\x01\x00\x00S\x00"
--#define WEXT_CSCAN_HEADER_SIZE		12
--#define WEXT_CSCAN_SSID_SECTION		'S'
--#define WEXT_CSCAN_CHANNEL_SECTION	'C'
--#define WEXT_CSCAN_ACTV_DWELL_SECTION	'A'
--#define WEXT_CSCAN_PASV_DWELL_SECTION	'P'
--#define WEXT_CSCAN_HOME_DWELL_SECTION	'H'
--#define WEXT_CSCAN_TYPE_SECTION		'T'
--
- static int wpa_set_auth_algs(struct net_device *dev, u32 value)
- {
- 	struct adapter *padapter = rtw_netdev_priv(dev);
+> Alternatively (and I'm cc'ing Jens) is is not possible for the
+> io-uring code to know how many bytes it *actually* used, rather than
+> saying that "ok, the iter originally had X bytes, now it has Y bytes,
+> so it must have used X-Y bytes" which was actively wrong for the case
+> where something ended up truncating the IO for some reason.
+
+Not sure how we'd do that, outside of stupid tricks like copy the
+iov_iter before we pass it down. But that's obviously not going to be
+very efficient. Hence we're left with having some way to reset/reexpand,
+even in the presence of someone having done truncate on it.
+
+> Because I note that io-uring does that
+> 
+>         /* may have left rw->iter inconsistent on -EIOCBQUEUED */
+>         iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
+> 
+> in io_resubmit_prep() too, and that you guys missed that it's the
+> exact same issue, and needs that exact same iov_iter_reexpand().
+
+I think you're right on that one, there's no difference between that use
+case and the other two...
+
+> That "req->result" is once again the *original* length, and the above
+> code once again mis-handles the case of "oh, the iov got truncated
+> because of some IO limit".
+> 
+> So I've pulled this, but I think it is
+> 
+>  (a) ugly nasty
+> 
+>  (b) incomplete and misses a case
+> 
+> and needs more thought. At the VERY least it needs that
+> iov_iter_reexpand() in io_resubmit_prep() too, I think.
+> 
+> I'd like the comments expanded too. In particular that
+> 
+>                 /* some cases will consume bytes even on error returns */
+
+That comment is from me, and it goes back a few years. IIRC, it was the
+iomap or xfs code that I hit this with, but honestly I don't remember
+all the details at this point. I can try and play with it and see if it
+still reproduces.
+
+> really should expand on the "some cases" thing, and why such an error
+> isn't fatal buye should be retried asynchronously blindly like this?
+
+That would certainly make it easier to handle, as we'd never need to
+care at that point. Ideally, return 'bytes_consumed' or error. It might
+have been a case of -EAGAIN after truncate, I'll have to dig a bit to
+find it again. Outside of that error, we don't retry as there's no point
+in doing so.
+
+> Because I think _that_ is part of the fundamental issue here - the
+> io_uring code tries to just blindly re-submit the whole thing, and it
+> does it very badly and actually incorrectly.
+> 
+> Or am I missing something?
+
+I think the key point here is re-figuring out where the
+consumption-on-error comes from. If it just ends up being a truncated
+iov, that's all good and fine. If not, that feels like a bug somewhere
+else that needs fixing.
+
 -- 
-2.33.0
+Jens Axboe
 
