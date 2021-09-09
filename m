@@ -2,165 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64168405C77
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1035405C79
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242802AbhIISBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:01:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237205AbhIISBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:01:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F19D6610C9;
-        Thu,  9 Sep 2021 18:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631210406;
-        bh=GHZCW8HUw7/KGu0uSODqmPQAEJcMv82slvw8vvRuROY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NS/cWWKTrVi3QTkJnuhBSR0/wCFTcxu0VpStcAAB7t3bGFvq8A3vMK1XyeSjm1zS7
-         D5PJtib1nYiZ3hv1jf0u9zrHms9Jvv/QXYeYYVVmDCNBcoc2A6n3hsYG/tfqfIu3as
-         BJzEV0FB8LocUY2jUujyQdjb0V2WInBj9SjdzqiJMhsZU31OyiIEFGgjmwTreW/VAK
-         G0asbgTo55x95u0KjGZvnpZ2dvlxKDCJ+8ddAAc0Z4CuPTPZBnjkFyxPUmoDi+XzIf
-         QDo1wu/kN23eikPBu+xolUuoksJs7TEu8pfoMULGwE7gsyg0HsNlq8iPUFlNK7UfH9
-         ALZidXSKPR7fg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BDCCE5C0DC8; Thu,  9 Sep 2021 11:00:05 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 11:00:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dan Lustig <dlustig@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mpe@ellerman.id.au
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-Message-ID: <20210909180005.GA2230712@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20180926182920.27644-2-paulmck@linux.ibm.com>
- <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
- <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu>
- <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
- <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
- <20210909133535.GA9722@willie-the-truck>
- <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+        id S242862AbhIISCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237300AbhIISCJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:02:09 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A9FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:59 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 95A573EBAE;
+        Thu,  9 Sep 2021 20:00:57 +0200 (CEST)
+Subject: Re: [Freedreno] [PATCH 2/3] drm/msm/dpu1: Add MSM8998 to hw catalog
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org, DTML <devicetree@vger.kernel.org>
+References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
+ <20210901181138.1052653-2-angelogioacchino.delregno@somainline.org>
+ <CAOCk7NoOdjxp0vxu9XJzYsi7a04kpqpTOZHm42ApAN3MqkqtDw@mail.gmail.com>
+ <CAA8EJpp6tj10A0QUR1E75t7BZf2Y3jHUyVNniYhEUd9rXj8Vrg@mail.gmail.com>
+ <CAOCk7NqhuCJqh-u6ke=Mn=EPgHnc7C2RS_X1nSCg_Nc8An=yPA@mail.gmail.com>
+ <2d25526f-dd9c-e336-970d-e8882f848d65@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <dcae0f15-8568-0b13-9d3c-b5641bdade10@somainline.org>
+Date:   Thu, 9 Sep 2021 20:00:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+In-Reply-To: <2d25526f-dd9c-e336-970d-e8882f848d65@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 01:03:18PM -0400, Dan Lustig wrote:
-> On 9/9/2021 9:35 AM, Will Deacon wrote:
-> > [+Palmer, PaulW, Daniel and Michael]
-> > 
-> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
-> >> On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
-> >>
-> >>> So if this is purely a RISC-V thing,
-> >>
-> >> Just to clarify, I think the current RISC-V thing is stonger than
-> >> PowerPC, but maybe not as strong as say ARM64, but RISC-V memory
-> >> ordering is still somewhat hazy to me.
-> >>
-> >> Specifically, the sequence:
-> >>
-> >> 	/* critical section s */
-> >> 	WRITE_ONCE(x, 1);
-> >> 	FENCE RW, W
-> >> 	WRITE_ONCE(s.lock, 0);		/* store S */
-> >> 	AMOSWAP %0, 1, r.lock		/* store R */
-> >> 	FENCE R, RW
-> >> 	WRITE_ONCE(y, 1);
-> >> 	/* critical section r */
-> >>
-> >> fully separates section s from section r, as in RW->RW ordering
-> >> (possibly not as strong as smp_mb() though), while on PowerPC it would
-> >> only impose TSO ordering between sections.
-> >>
-> >> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
-> >> similarly it marches the R from the R->RW fence, yielding an:
-> >>
-> >> 	RW->  W
-> >> 	    RmW
-> >> 	    R  ->RW
-> >>
-> >> ordering. It's the stores S and R that can be re-ordered, but not the
-> >> sections themselves (same on PowerPC and many others).
-> >>
-> >> Clarification from a RISC-V enabled person would be appreciated.
-> 
-> To first order, RISC-V's memory model is very similar to ARMv8's.  It
-> is "other-multi-copy-atomic", unlike Power, and respects dependencies.
-> It also has AMOs and LR/SC with optional RCsc acquire or release
-> semantics.  There's no need to worry about RISC-V somehow pushing the
-> boundaries of weak memory ordering in new ways.
-> 
-> The tricky part is that unlike ARMv8, RISC-V doesn't have load-acquire
-> or store-release opcodes at all.  Only AMOs and LR/SC have acquire or
-> release options.  That means that while certain operations like swap
-> can be implemented with native RCsc semantics, others like store-release
-> have to fall back on fences and plain writes.
-> 
-> That's where the complexity came up last time this was discussed, at
-> least as it relates to RISC-V: how to make sure the combination of RCsc
-> atomics and plain operations+fences gives the semantics everyone is
-> asking for here.  And to be clear there, I'm not asking for LKMM to
-> weaken anything about critical section ordering just for RISC-V's sake.
-> TSO/RCsc ordering between critical sections is a perfectly reasonable
-> model in my opinion.  I just want to make sure RISC-V gets it right
-> given whatever the decision is.
-> 
-> >>> then I think it's entirely reasonable to
-> >>>
-> >>>         spin_unlock(&r);
-> >>>         spin_lock(&s);
-> >>>
-> >>> cannot be reordered.
-> >>
-> >> I'm obviously completely in favour of that :-)
-> > 
-> > I don't think we should require the accesses to the actual lockwords to
-> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
-> > architectures where you'd end up with an extra barrier either after the
-> > unlock() or before the lock() operation. However, I remain absolutely in
-> > favour of strengthening the ordering of the _critical sections_ guarded by
-> > the locks to be RCsc.
-> 
-> I agree with Will here.  If the AMOSWAP above is actually implemented with
-> a RISC-V AMO, then the two critical sections will be separated as if RW,RW,
-> as Peter described.  If instead it's implemented using LR/SC, then RISC-V
-> gives only TSO (R->R, R->W, W->W), because the two pieces of the AMO are
-> split, and that breaks the chain.  Getting full RW->RW between the critical
-> sections would therefore require an extra fence.  Also, the accesses to the
-> lockwords themselves would not be ordered without an extra fence.
-> 
-> > Last time this came up, I think the RISC-V folks were generally happy to
-> > implement whatever was necessary for Linux [1]. The thing that was stopping
-> > us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
-> > Michael saw quite a bit of variety in the impact on benchmarks [2] across
-> > different machines. So the question is whether newer Power machines are less
-> > affected to the degree that we could consider making this change again.
-> 
-> Yes, as I said above, RISC-V will implement what is needed to make this work.
+Il 09/09/21 15:46, Dmitry Baryshkov ha scritto:
+> On 08/09/2021 17:22, Jeffrey Hugo wrote:
+>> On Wed, Sep 8, 2021 at 2:26 AM Dmitry Baryshkov
+>> <dmitry.baryshkov@linaro.org> wrote:
+>>>
+>>> Hi,
+>>>
+>>> On Tue, 7 Sept 2021 at 22:13, Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
+>>>>
+>>>> On Wed, Sep 1, 2021 at 12:11 PM AngeloGioacchino Del Regno
+>>>> <angelogioacchino.delregno@somainline.org> wrote:
+>>>>>
+>>>>> Bringup functionality for MSM8998 in the DPU, driver which is mostly
+>>>>> the same as SDM845 (just a few variations).
+>>>>>
+>>>>> Signed-off-by: AngeloGioacchino Del Regno 
+>>>>> <angelogioacchino.delregno@somainline.org>
+>>>>
+>>>> I don't seem to see a cover letter for this series.
+>>>>
+>>>> Eh, there are a fair number of differences between the MDSS versions
+>>>> for 8998 and 845.
+>>>>
+>>>> Probably a bigger question, why extend the DPU driver for 8998, when
+>>>> the MDP5 driver already supports it[1]?  The MDP/DPU split is pretty
+>>>> dumb, but I don't see a valid reason for both drivers supporting the
+>>>> same target/display revision.  IMO, if you want this support in DPU,
+>>>> remove it from MDP5.
+>>>>
+>>>> [1] 
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.14&id=d6c7b2284b14c66a268a448a7a8d54f585d38785 
+>>>>
+>>>
+>>> I don't think that we should enforce such requirements. Having support
+>>> both in MDP5 and DPU would allow one to compare those two drivers,
+>>> performance, features, etc.
+>>> It might be that all MDP5-supported hardware would be also supported
+>>> by DPU, thus allowing us to remove the former driver. But until that
+>>> time I'd suggest leaving support in place.
+>>
+>> Well, then you have a host of problems to solve.
+>>
+>> Lets ignore the code duplication for a minute and assume we've gone
+>> with this grand experiment.  Two drivers enter, one leaves the victor.
+>>
 
-Boqun, I vaguely remember a suggested change from you along these lines,
-but now I cannot find it.  Could you please send it as a formal patch
-if you have not already done so or point me at it if you have?
+I know you said let's ignore - but anyway, the code duplication is already
+there: DPU1 supports most of the features that are supported by the MDP5
+driver *anyway*, lacking support for the very very old hardware.
 
-							Thanx, Paul
+>> How are the clients supposed to pick which driver to use in the mean
+>> time?  We already have one DT binding for 8998 (which the MDP5 driver
+>> services).  This series proposes a second.  If we go forward with what
+>> you propose, we'll have two bindings for the same hardware, which IMO
+>> doesn't make sense in the context of DT, and the reason for that is to
+>> select which driver is "better".  Driver selection is not supposed to
+>> be tied to DT like this.
+>>
+>> So, some boards think MDP5 is better, and some boards think DPU is
+>> better.  At some point, we decide one of the drivers is the clear
+>> winner (lets assume DPU).  Then what happens to the existing DTs that
+>> were using the MDP5 description?  Are they really compatible with DPU?
+>>
+
+I don't see any MSM8998 dts/dtsi file using mdp5 upstream anyway, so we wouldn't
+even need to convert anything to using dpu1.
+
+>>  From a DT perspective, there should be one description, but then how
+>> do you pick which driver to load?  Both can't bind on the single
+>> description, and while you could argue that the users should build one
+>> driver or the other, but not both (thus picking which one at build
+>> time), that doesn't work for distros that want to build both drivers
+>> so that they can support all platforms with a single build (per arch).
+> 
+> Yep, the DT issue wasn't thought about from my side at the review time. I 
+> considered qcom,msm8998-dpu as an extension/upgrade of bare qcom,mdp5 compatibility 
+> string (as we usually add chip-specific compatibilities).
+> 
+> In fact using just 'qcom,mdp5' prevents us from having such kind of driver upgrades.
+> 
+> What I'd propose if everybody else agrees on moving 8998 (and maybe others later) 
+> from MDP5 to DPU would be to continue supporting qcom,mdp5 binding in the mdp5 
+> driver and to add qcom,msm8998-dpu binding used by the DPU driver. Maybe with the 
+> warning telling to update the binding. Then at some point if all the MDP5-supported 
+> hardware is supported by the DPU we can drop the MDP5 driver and implement required 
+> bindings compatibility in the DPU.
+> 
+
+Since there's no upstream dtsi using mdp5, this problem practically does not exist.
+In any case, removing MSM8998 support from mdp5 is probably a good idea.. dpu1 is
+"more featureful" already, so it wouldn't really make sense to use mdp5 for a 8998
+board right now.
+I've also validated this on different 8998 devices with both command mode and video
+mode panels (cmd on Sony Yoshino, video on FxTec Pro1) and they both work fine.
+
+>>
+>>  From where I sit, your position starts with a good idea, but isn't
+>> fully thought out and leads to problems.
+>>
+>> If there is some reason why DPU is better for 8998, please enumerate
+>> it.  Does DPU support some config that MDP5 doesn't, which is valuable
+>> to you? 
+> 
+> The DPU receives more attention from both Qualcomm and Linaro, so it will continue 
+> acquiring features (which MDP5 might not have at the moment).
+> 
+> For example consider the SmartDMA (multirect) support. For now the multirect 
+> patchset it is limited to newer versions, but it might be extended to support older 
+> chips (in the DPU) too. We did not have plans to backport SmartDMA v1 support to MDP5.
+> 
+> Writeback also has more chances to be supported in the DPU rather than in the MDP5 
+> driver (I remember Rob's patches for the MDP5, but they never actually landed 
+> upstream).
+> 
+
+Not to mention the probably coming PCC support (since DSPP is already supported on
+DPU), and the fact that there's Display Stream Compression (DSC) support in the
+works (I saw some patches around on LKML), which is actually needed by at least the
+Sony Xperia XZ Premium (1080p scaled no dsc, or 4k non-scaled but needs dsc).
+
+> Last but not least at this moment DPU has bandwidth scaling support, while MDP5 
+> does not. I've sent a patch for MDP5 earlier, which then got reverted because of 
+> armv7 support. At this moment I did not resend it since we found some underrun 
+> issues on resume or when quickly changing bw down and up.
+> 
+>> I'm ok with ripping out the MDP5 support, the reason I didn't
+>> go with DPU was that the DPU driver was clearly written only for 845
+>> at the time, and needed significant rework to "downgrade" to an
+>> earlier hardware.  However, the "reason" DPU exists separate from MDP5
+>> is the claim that the MDP hardware underwent a significant
+>> rearchitecture, and thus it was too cumbersome to extend MDP5.  While
+>> I disagree with the premise, that "rearch" started with 8998.
+> 
+> Just checked, the SDE, the origin (or parent) of the DPU driver starts it's support 
+> from the 8996 and 8998.
+> 
+> 
+> 
+> 
+
+Yes you are correct, I saw the same downstream, even though I've never tried SDE on
+MSM8996, on Sony downstream kernels we successfully use SDE on MSM8998 since we did
+the porting on the newer kernel (not sure, I think that was 3.18).
+
+
+Also, sorry for not being immediately ready to reply to my own patch series, my
+days are a bit messy, currently.
+
+Cheers,
+- Angelo
