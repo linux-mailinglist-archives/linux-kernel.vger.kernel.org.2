@@ -2,144 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FFF405CBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5662F405CC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244157AbhIISPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:15:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26700 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237297AbhIISO4 (ORCPT
+        id S243544AbhIISQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242867AbhIISQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:14:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631211225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RIWjeeOoa1VabWi3B7TlOtz3Y4ofdlgGcEa+gLerJBI=;
-        b=i6Pui8bj/iyI+VbNdm2sPK5s893npU84dCviXqjYBjEd3lWvL/OgAqFRu7GBAkw4wtt3MK
-        fo2LElPXP8KMLAcch8nY/FOeAAo2MRZ6r1wwA13qhpT968wPRP9ZO6L2RPmh+ok389+YKH
-        UeCuiZNlwuQyZdvmgVzHvLD+PBbJhyQ=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-18U08jF9Ozy_5I1pmKyJ0g-1; Thu, 09 Sep 2021 14:13:44 -0400
-X-MC-Unique: 18U08jF9Ozy_5I1pmKyJ0g-1
-Received: by mail-il1-f197.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso2820130ilv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:13:44 -0700 (PDT)
+        Thu, 9 Sep 2021 14:16:48 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C79C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:15:38 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id c6so5669149ybm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DLULdAoTyNVxT3GTeYOIML5OrBg4cI4yg/Mz7NY7nSQ=;
+        b=RNm82nkHCcZY9Kkl2/aNxd1ooJTfrtR1tu8EWCRY3yskLsoP+D/DgshisoyB89KVO4
+         gdNBnyrbzoAB0xSVejuWXOtvWKx8CWRXLl/Q2r0tzRVNIneFEU9SOXd3dzQ7b5Yg1ct7
+         2E4Ttl7K/mcGjNrU9oZa7tTftQQKc4mJBQqWk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RIWjeeOoa1VabWi3B7TlOtz3Y4ofdlgGcEa+gLerJBI=;
-        b=hglmctgno+8lvhHVc3Qx0StiuBGwoLFl79AswQNvd489EEclZaYtF+KOAQJx3pfCO9
-         edW7kM6y88dqPZZqS3bgvvGgk5u2UyaFAY5Imra6+FToljGtjvbpVhORiLbJcsj6L/tU
-         ytOk3HVkYrCUPDHj94juo1i7FC4Ats5v2IfngjVi/zE4uCJAmtKUR29gJr/wiDYmJTaW
-         b98GeYD7nV/rO460ncqpBCrHlnyLGFdBQ6k5ArzqVV2nZ9QhzF40O14MsQXyLyLkGJc9
-         WTWhMuy2ApIN9792U7Nzx+lmtpYuQ2izprwt8C+Hda1wlxstrF0mCmwRNMwMDWSlxRgO
-         hxRw==
-X-Gm-Message-State: AOAM531OBrz+UPb6vUNkGzIhCdX2t0eryr8jvl3+W/jx88XqzSVJfcc4
-        CXx7D1Mm0XizYoA9g7JMM1gIzvUOm0iqGJnM9m3IBYiLetbDUunKqsKzQqb3T80b35wV69vBC47
-        /P1QRN91RyJp9H6x4t1xbaKlL
-X-Received: by 2002:a6b:7710:: with SMTP id n16mr3658165iom.101.1631211223657;
-        Thu, 09 Sep 2021 11:13:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzkCSATJElsUKeXdLlSO3aGUQTKN6vio39mP/DTTO36pPZKKiCNGeWvgE4VfkouIG8DfjqVg==
-X-Received: by 2002:a6b:7710:: with SMTP id n16mr3658143iom.101.1631211223417;
-        Thu, 09 Sep 2021 11:13:43 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id f3sm1177173ilu.85.2021.09.09.11.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:13:42 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 14:13:40 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH v3 3/5] mm: Drop first_index/last_index in zap_details
-Message-ID: <YTpO1P2MaYWaOc5Y@t490s>
-References: <20210908163516.214441-1-peterx@redhat.com>
- <20210908163622.214951-1-peterx@redhat.com>
- <20210909025417.occtqoo6l7x5tnuy@revolver>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DLULdAoTyNVxT3GTeYOIML5OrBg4cI4yg/Mz7NY7nSQ=;
+        b=sugFED9Sj3sOOaagHUx5HOtsg3YoAv7+T+KKAF6gXKQMY6J1TWFX1qCN+2HOdv1vfz
+         tZvJU7M3Q4K/rxBEQS/GS5VMU3KFlNN4lA5CgnaQR4+A7Bi19Fv5l+TEHrO0PQnDt54l
+         0AahG5WTpmQXUEsDFEBGG2fKZKoCt13MkpNtn7MdSrQQs9fffJzHL7+BGQoBl569o6YC
+         iKAmxXQP+MlCy3RgaWZcOFhla0nOorGBgSybd5093aB9i2hT3vbyieMj2bZvqttXDcNh
+         SaCAk0Y8Q/61bVGBrpvKWFM4n7jOCd6Nc8w9zzQ/uICMqRP31VyDlKGbOSyb8/9T8R92
+         eI3g==
+X-Gm-Message-State: AOAM531dwfK14FHYc3fQ38j8jXIvFONfuydR71tsgf22Kq78618s2YcE
+        szCdJueh2cWziO1R5YebZxgcwvCEJzp9N2TWnRL89A==
+X-Google-Smtp-Source: ABdhPJyT4+l6lEe4pNgJ/Z7iaJiRYceSDmbdnzbKl+Noln6iNuOUKovYS6NO15WGhrLlDWLYXOg+VkiGPjMn9BoSqZY=
+X-Received: by 2002:a25:b94:: with SMTP id 142mr5432760ybl.508.1631211337634;
+ Thu, 09 Sep 2021 11:15:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210909025417.occtqoo6l7x5tnuy@revolver>
+References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
+ <20210908111500.2.Iac57921273b27d7f7d65e12ff7be169657f4c1eb@changeid> <CAE-0n50mp5F79iJ+zVrbt4ZP7V+UUOcVQe9H3TwEcFFyZWMoNA@mail.gmail.com>
+In-Reply-To: <CAE-0n50mp5F79iJ+zVrbt4ZP7V+UUOcVQe9H3TwEcFFyZWMoNA@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Thu, 9 Sep 2021 11:15:27 -0700
+Message-ID: <CA+cxXhnPd1Z_HVjgM8b0wskASF-ZGuvYDh0quiVMwKFhKVx-JA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 02:54:37AM +0000, Liam Howlett wrote:
-> > @@ -3390,17 +3393,17 @@ void unmap_mapping_page(struct page *page)
-> >  void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
-> >  		pgoff_t nr, bool even_cows)
-> >  {
-> > +	pgoff_t	first_index = start, last_index = start + nr - 1;
-> 
-> Nit: If you respin, can first_index and last_index be two lines please?
+Hi,
 
-Sure.
-
-> 
-> >  	struct zap_details details = { };
-> >  
-> >  	details.check_mapping = even_cows ? NULL : mapping;
-> > -	details.first_index = start;
-> > -	details.last_index = start + nr - 1;
-> > -	if (details.last_index < details.first_index)
-> > -		details.last_index = ULONG_MAX;
-> 
-> Nit: Maybe throw a comment about this being overflow check, if you
-> respin.
-
-It may not be "only" an overflow check, e.g., both unmap_mapping_range() and
-unmap_mapping_pages() allows taking the npages to be zero:
-
-For unmap_mapping_range:
-
- * @holelen: size of prospective hole in bytes.  This will be rounded
- * up to a PAGE_SIZE boundary.  A holelen of zero truncates to the
- * end of the file.
-
-For unmap_mapping_pages:
-
- * @nr: Number of pages to be unmapped.  0 to unmap to end of file.
-
-So we must set it to ULONG_MAX to make sure nr==0 will work like that.
-
-I won't bother adding a comment, but if to add it I'll probably also mention
-about that part on allowing a nr==0 use case, please let me know if you insist.
-
-> 
-> > +	if (last_index < first_index)
-> > +		last_index = ULONG_MAX;
-> >  
-> >  	i_mmap_lock_write(mapping);
-> >  	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
-> > -		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-> > +		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-> > +					 last_index, &details);
-> >  	i_mmap_unlock_write(mapping);
+On Wed, Sep 8, 2021 at 3:27 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-09-08 11:18:06)
+> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > index a16725dbf912..3f0241a60357 100644
+> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > @@ -93,6 +115,102 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+> >         return container_of(e, struct ps8640, bridge);
 > >  }
-> >  
-> > -- 
-> > 2.31.1
-> > 
-> 
-> Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-
-Thanks for reviewing.
-
--- 
-Peter Xu
-
+> >
+> > +static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
+> > +{
+> > +       return container_of(aux, struct ps8640, aux);
+> > +}
+> > +
+> > +static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+> > +                                  struct drm_dp_aux_msg *msg)
+> > +{
+> > +       struct ps8640 *ps_bridge = aux_to_ps8640(aux);
+> > +       struct i2c_client *client = ps_bridge->page[PAGE0_DP_CNTL];
+> > +       struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
+> > +       unsigned int len = msg->size;
+> > +       unsigned int data;
+> > +       int ret;
+> > +       u8 request = msg->request &
+> > +                    ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
+> > +       u8 *buf = msg->buffer;
+> > +       bool is_native_aux = false;
+> > +
+> > +       if (len > DP_AUX_MAX_PAYLOAD_BYTES)
+> > +               return -EINVAL;
+> > +
+> > +       pm_runtime_get_sync(&client->dev);
+>
+> Is this driver using runtime PM? Probably can't add this until it is
+> actually runtime PM enabled.
+Thanks - I think this driver doesn't enable runtime PM yet.
+I'll remove all of the pm_runtime_* calls for now.
+>
+> > +
+> > +       switch (request) {
+> > +       case DP_AUX_NATIVE_WRITE:
+> > +       case DP_AUX_NATIVE_READ:
+> > +               is_native_aux = true;
+> > +       case DP_AUX_I2C_WRITE:
+> > +       case DP_AUX_I2C_READ:
+> > +               regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
+> > +               break;
+> > +       default:
+> > +               ret = -EINVAL;
+> > +               goto exit;
+> > +       }
+> > +
+> > +       /* Assume it's good */
+> > +       msg->reply = 0;
+> > +
+> > +       data = ((request << 4) & AUX_CMD_MASK) |
+> > +              ((msg->address >> 16) & AUX_ADDR_19_16_MASK);
+> > +       regmap_write(map, PAGE0_AUX_ADDR_23_16, data);
+> > +       data = (msg->address >> 8) & 0xff;
+> > +       regmap_write(map, PAGE0_AUX_ADDR_15_8, data);
+> > +       data = msg->address & 0xff;
+> > +       regmap_write(map, PAGE0_AUX_ADDR_7_0, msg->address & 0xff);
+>
+> Can we pack this into a three byte buffer and write it in one
+> regmap_bulk_write()? That would be nice because it looks like the
+> addresses are all next to each other in the i2c address space.
+Sure, I will address this in the next version.
+>
+> > +
+> > +       data = (len - 1) & AUX_LENGTH_MASK;
+> > +       regmap_write(map, PAGE0_AUX_LENGTH, data);
+> > +
+> > +       if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE) {
+> > +               ret = regmap_noinc_write(map, PAGE0_AUX_WDATA, buf, len);
+> > +               if (ret < 0) {
+> > +                       DRM_ERROR("failed to write PAGE0_AUX_WDATA");
+>
+> Needs a newline.
+Adding an empty line here doesn't look like a common Linux style?
+Could you point me to any similar instances in the Linux codebase?
+>
+> > +                       goto exit;
+> > +               }
+> > +       }
+> > +
+> > +       regmap_write(map, PAGE0_AUX_CTRL, AUX_START);
+> > +
+> > +       regmap_read(map, PAGE0_AUX_STATUS, &data);
+> > +       switch (data & AUX_STATUS_MASK) {
+> > +       case AUX_STATUS_DEFER:
+> > +               if (is_native_aux)
+> > +                       msg->reply |= DP_AUX_NATIVE_REPLY_DEFER;
+> > +               else
+> > +                       msg->reply |= DP_AUX_I2C_REPLY_DEFER;
+> > +               goto exit;
+> > +       case AUX_STATUS_NACK:
+> > +               if (is_native_aux)
+> > +                       msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
+> > +               else
+> > +                       msg->reply |= DP_AUX_I2C_REPLY_NACK;
+> > +               goto exit;
+> > +       case AUX_STATUS_TIMEOUT:
+> > +               ret = -ETIMEDOUT;
+> > +               goto exit;
+> > +       }
+> > +
+> > +       if (request == DP_AUX_NATIVE_READ || request == DP_AUX_I2C_READ) {
+> > +               ret = regmap_noinc_read(map, PAGE0_AUX_RDATA, buf, len);
+> > +               if (ret < 0)
+> > +                       DRM_ERROR("failed to read PAGE0_AUX_RDATA");
+>
+> Needs a newline.
+>
+> > +       }
+> > +
+> > +exit:
+> > +       pm_runtime_mark_last_busy(&client->dev);
+> > +       pm_runtime_put_autosuspend(&client->dev);
+> > +
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       return len;
+> > +}
+> > +
+> >  static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+> >                                      const enum ps8640_vdo_control ctrl)
+> >  {
