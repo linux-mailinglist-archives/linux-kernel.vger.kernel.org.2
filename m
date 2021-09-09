@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849CD4059B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF004059B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbhIIOxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhIIOxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:53:18 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC4AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:52:09 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id s15so1612817qta.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 07:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LWnxOkinOj0Rv/WgMSK/DhHIhMThEl0qiXZwPb4IXXs=;
-        b=S1a2pKZ/j23obfbT+v4H2TZwSB21CQkMZtmMzMv52dlOmL0qPrF2haw+LRlHhvAlhK
-         sYRavalsQfQGcKfRld8BKUaBSMHac4/VOMUglKK/sRnPdTt0EWD4RT4n7Z5Ufn8hgnkO
-         /WkBmZs68e6QFr0TBIswqncFibAnTn7ONSywSPi8CDgxNOI2kPD+M7BPyDumFWVfZZHD
-         nItaRuHbvlPsmaUP7O+mQWzDJRH4nSLF5Xkm23W34R1pIhjhqb8VWYwZZ9b13BU36v5j
-         280dIOCxpjz9mFh6UWRupSV8lN7om/3JY58SG9Mmbm9URCoVpRT0weRBKAA9kWtObkV4
-         98bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LWnxOkinOj0Rv/WgMSK/DhHIhMThEl0qiXZwPb4IXXs=;
-        b=iMpymSzdziOr1ZDj8GTkFQ1P5fmGY9rs/3WqY0twducH2lq9W741xfSiIMw1gs1efy
-         JQUTEwNBAUNMOps1Lb8KLUHLXpkke/VFsuod6Ej4/3Vtsv7a207HBo7qpRyMzFizH9EE
-         H+6dAuAyl8KUtLrt9txRXJx0/wWeIdmoHsXzvfDYjepIm/lIgCzPzzDc1k0We8mmBPZ0
-         qwAxKPrxvHmnYDJC0yHBdfk0A/I58eehQApJ7bgP0GrdEvyYNp1+ytkfmHWEPfYJwRlu
-         JdH9A0/naeHWGSs9CwMO9xGOg75XxpCmzUwdhSUWjbC1eYkNhEVfb4LkGQsf4DgJ8aSr
-         bBCw==
-X-Gm-Message-State: AOAM530cpaqe0iafFihdS5rjXtq2iyNpks+hvTOyTn330u/TFlpN3Gg/
-        TitTFuu0AiAHhxOYDcSmBehweBQcax1RE5NmzJU=
-X-Google-Smtp-Source: ABdhPJxWZIbXAUjD9Pp5Wc7TSwzLmUAe1aESKVwTRaeiWG0XCn1mvfHxKEUxfsrkNNiTTn2nsiozBa4te2GqkfHTni4=
-X-Received: by 2002:ac8:4d41:: with SMTP id x1mr3184655qtv.283.1631199128562;
- Thu, 09 Sep 2021 07:52:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
- <YTnWXIB42sCLbM2k@zn.tnic> <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
- <YTnq/3rzmD6ADyZm@zn.tnic>
-In-Reply-To: <YTnq/3rzmD6ADyZm@zn.tnic>
-From:   Luming Yu <luming.yu@gmail.com>
-Date:   Thu, 9 Sep 2021 22:51:56 +0800
-Message-ID: <CAJRGBZxHQ3tPrvWWoz9xb0pf=tZ0vrrQYX-Tjr5c=UbxntPtew@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_=E5=9B=9E=E5=A4=8D=EF=BC=9A=5BPATCH=5D_perf=3A_optimize_clear_page_in_In?=
-        =?UTF-8?Q?tel_specified_model_with_movq_instruction?=
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     wujinhua <wujinhua@linux.alibaba.com>, x86 <x86@kernel.org>,
-        "zelin.deng" <zelin.deng@linux.alibaba.com>,
-        "jiayu.ni" <jiayu.ni@linux.alibaba.com>, ak <ak@linux.intel.com>,
-        "luming.yu" <luming.yu@intel.com>, "fan.du" <fan.du@intel.com>,
-        "artie.ding" <artie.ding@linux.alibaba.com>,
-        "tony.luck" <tony.luck@intel.com>, tglx <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "pawan.kumar.gupta" <pawan.kumar.gupta@linux.intel.com>,
-        "fenghua.yu" <fenghua.yu@intel.com>, hpa <hpa@zytor.com>,
-        "ricardo.neri-calderon" <ricardo.neri-calderon@linux.intel.com>,
-        peterz <peterz@infradead.org>
+        id S236356AbhIIOyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:54:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59540 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236798AbhIIOyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 10:54:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="220486530"
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="220486530"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 07:53:02 -0700
+X-IronPort-AV: E=Sophos;i="5.85,280,1624345200"; 
+   d="scan'208";a="450002774"
+Received: from njani-mobl1.gar.corp.intel.com ([10.213.113.5])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 07:52:57 -0700
+Message-ID: <9586d66802138dc144836b310ef5b20394c59695.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP
+ forced by BIOS
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Date:   Thu, 09 Sep 2021 07:52:54 -0700
+In-Reply-To: <CAAYoRsVX76Ey9FHhZXdwKWiMdmf0Oi6SKrP2J=XnNgB92sZW1A@mail.gmail.com>
+References: <20210909034802.1708-1-dsmythies@telus.net>
+         <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+         <CAAYoRsVX76Ey9FHhZXdwKWiMdmf0Oi6SKrP2J=XnNgB92sZW1A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 7:08 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Sep 09, 2021 at 07:02:08PM +0800, wujinhua wrote:
-> > I provide three tests and result for you. All the tests run in Intel
-> > CPX.
->
-> I said
->
-> "What you should do is show the extensive tests you've run with
-> real-world benchmarks..."
->
-> Are your tests real-world benchmarks?
->
-> IOW, no microbenchmarks please.
+On Thu, 2021-09-09 at 06:30 -0700, Doug Smythies wrote:
+> On Wed, Sep 8, 2021 at 11:33 PM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > 
+> > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > > If HWP has been already been enabled by BIOS, it may be
+> > > necessary to override some kernel command line parameters.
+> > > Once it has been enabled it requires a reset to be disabled.
+> > > 
+> > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > ---
+> > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> > >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > b/drivers/cpufreq/intel_pstate.c
+> > > index bb4549959b11..073bae5d4498 100644
+> > > --- a/drivers/cpufreq/intel_pstate.c
+> > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> > >                  */
+> > >                 if ((!no_hwp &&
+> > > boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> > >                     intel_pstate_hwp_is_enabled()) {
+> > > -                       hwp_active++;
+> > > +                       hwp_active = 1;
+> > Why this change?
+> 
+> It was just to keep it at 1, but I agree not absolutely needed.
+> 
+> > 
+> > >                         hwp_mode_bdw = id->driver_data;
+> > >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> > > 
+> > >  static int __init intel_pstate_setup(char *str)
+> > >  {
+> > > +       /*
+> > > +        * If BIOS is forcing HWP, then parameter
+> > > +        * overrides might be needed. Only print
+> > > +        * the message once, and regardless of
+> > > +        * any overrides.
+> > > +        */
+> > > +       if(!hwp_active
+> > This part of code is from early_param, Is it possible that
+> > hwp_active is not 0?
+> 
+> Not at this point, in any testing I did.
+> But I do not know the authoritative answer
+> to your question.
+> 
+But as you explained you want to prevent repeated print of
+"HWP enabled by BIOS". So you need this.
 
-In theory, I thought it should help system boot time , app/dock launch
-time as well
-as some customer specific marco benchmarks.
+> > 
+> > > && boot_cpu_has(X86_FEATURE_HWP))
+> > > +               if(intel_pstate_hwp_is_enabled()){
+> > > +                       pr_info("HWP enabled by BIOS\n");
+> > > +                       hwp_active = 1;
+> > > +               }
+> > >         if (!str)
+> > >                 return -EINVAL;
+> > > 
+> > > -       if (!strcmp(str, "disable"))
+> > > +       if (!strcmp(str, "disable") && !hwp_active)
+> > >                 no_load = 1;
+> > > -       else if (!strcmp(str, "active"))
+> > > +       if (!strcmp(str, "active"))
+> > >                 default_driver = &intel_pstate;
+> > > -       else if (!strcmp(str, "passive"))
+> > > +       if (!strcmp(str, "passive"))
+> > >                 default_driver = &intel_cpufreq;
+> > 
+> > Why "else if" changed to "if" ?
+> 
+> Because it doesn't matter anyway and I would
+> have had to figure out another qualifier.
+> This way, and given that this executes once per
+> intel_pstate command line parameter, the code
+> executes the way it used to, overall.
+If someone specified intel_pstate=active, it will also compare with
+"passive" with this change.
 
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Srinivas
+
+> 
+> > 
+> > 
+> > Thanks,
+> > Srinivas
+> > 
+> > > -
+> > > -       if (!strcmp(str, "no_hwp")) {
+> > > +       if (!strcmp(str, "no_hwp") && !hwp_active) {
+> > >                 pr_info("HWP disabled\n");
+> > >                 no_hwp = 1;
+> > >         }
+> > 
+> > 
+
+
