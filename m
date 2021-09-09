@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14C2405B02
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044EC405B07
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237039AbhIIQjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:39:25 -0400
-Received: from mout.gmx.net ([212.227.17.20]:40991 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232192AbhIIQjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:39:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631205478;
-        bh=AcoWfISMmSRxRwrW9cBuZAkdzhm3K1/Gv0P6x1L+XXU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jCP1dWITibONQMgaY41e8PfDw8mzAH7IBZlHdMQrWL6ohKWFY396nfFREtuPh94pX
-         TAr2SHVQ7lZ+ffxRl5x6pNrUVkwqUBULGpSc5We3BOKIdqZHfFSYpYykPTbXL4EBTe
-         UNT5Ks0z5jDT+Bqy2KqabmTxSo62fYZaBmukI3TQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUowb-1mXTqZ2Rrl-00QiOL; Thu, 09
- Sep 2021 18:37:58 +0200
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
- <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <20210909154734.ujfnzu6omcjuch2a@skbuf>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
-Date:   Thu, 9 Sep 2021 18:37:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237830AbhIIQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237302AbhIIQkS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 12:40:18 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F37BC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:39:09 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id v17so5087683ybs.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z6S9aCreq/0VGuneRW3q7amVuNejEfZAPRbvdWpbNPQ=;
+        b=m6C+xr8tBL6hn8M8cZtiWUFtOEKpLOROHS4EvWaOJSbMPA7AjRIRr1vjbiUaLXdHri
+         9bChgFEoA7TNwaIB2TxgMA7wdFDJ9wlKq71tu4BLkfkS5MTzQ26PFHISd9tpV4M3imSE
+         QGv01Iujhkw0xNImfBFO/zLPR8xyfFHJs5LYzOtGCVPAXXaOpZrLqwu9aW7BDbNX1jF9
+         bZyN/dJlHSEnfAZJhYmTl2j93j7oCs4u4IJoQL2RBGzQ3SrLvdei7URfW3nBY/I+KbnI
+         2fXNMFhGYk7bOI8C9+qndcbxbrCBqkwBQkMwJmF07nSgKWQvjwdtAF5XbVnq7umSh8Mf
+         /Rvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z6S9aCreq/0VGuneRW3q7amVuNejEfZAPRbvdWpbNPQ=;
+        b=I4p4ec/uiCBa81vmio1mqrhObgbElMcwYMX4PBMky/QOrviBVk5VxPihNPzDXlJKv3
+         lROLh1B7OzyDTQc4W08sl/bEcE1XOYEUlMdDKPQCu7AyWk8/htVW/Vc4KXUUo4yNavCv
+         4V2rmWZj7HHWNWKiTnJDlIE74CmpyHAk4h44gAK6uoXJUYMNUlkE6jLA5Vms3GBqUx8E
+         QDya54y8C8A28KBnerTRSsLe9gpxbM8zb76UrrTIn1bVohD85qkVLM4Vm+KNWoX6REz9
+         3ZnRKXFiZ1VRwj1yPbxIDKtxgAKj7fr54zB9KkDWJpmR2AHbF1t45yUFKXc1MtxVReIR
+         fYmA==
+X-Gm-Message-State: AOAM531LNDR55YckMxsFSEKdOKnRsTAm+/QgpZd3RZ+ah5Mv4D2+VAmj
+        YQ+Idr5hm8Kn/X70kQkAuHzrhMtNEXPE2SxVsgTUUQ==
+X-Google-Smtp-Source: ABdhPJzQhQS8ZeN1ti9BJ6nGicAZyMX4s6L1J/GWjGE8KzWUlbKpTmRa1mxRjjyzjuZ9X5UHGcqUo+phpbusAExxylk=
+X-Received: by 2002:a25:21c5:: with SMTP id h188mr4685737ybh.23.1631205548028;
+ Thu, 09 Sep 2021 09:39:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210909154734.ujfnzu6omcjuch2a@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1Ru23UaOAWy66EVAPf/EG78zT/yDgW/qqZe+D04/NG5EjM+hhfb
- 8Uf8mADoUCPevy2o3gRRQragmd7OLCUME2bdom78LbVsTYHuISVO7Zfb2lF6ZzbOheQ+yXB
- Rdpexglw/TpaXRBn5nS5voda6FOa7ZdOAJOlURynxql2SYPajZ0ql5Pd3t0nHLxGfG31TxN
- sQ9YZbqP7xSmE5NWN4v7w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Rveiws+0Ppo=:4e808q+04uSjabpxw7g9ob
- Lmwke7B7eahHpLF8qQbdlrwdD70kiDI/RwfkqMJqybYL0YRwMAPRVXkPO4o8vHEBKddQ7QxBI
- m1SHcBWVaQgAN33dDFDpo9afUuyj9oPuzhK+dvrWViYXiKAbe5TOh/0B2K34YDe5cN6JN+ouN
- 1sIPr0o7MKO1w9aZYsK3bOuKaAjX+C7OFq/hy6h5tAO5YydnrIau5E8dpu0PAwkEQCgWUV1Ly
- MnXtLJ/ebuF0Fy8npIgrcv6ane53ZFYcM0n8jW7FM50g+6wMvYt9D/RlNTY7X0u+7UnJT6M8n
- RNoHAWwLhpL2qo2lt0tyz+4B7SVWBGNg8M3OGKCa66OlCQNDhPEHAVmUIiMWJgPo2aZmt3Cp/
- jT1wUqYHw13HBJeh9cBQM8sR2J6QfYI6FRZt3BhSO2tvYaFNQPuT3nhMyDXta3KW/1Gtbbs9h
- gtBh1sdZ7jZG1Gqeqnkh94qhuIdpiZF0LJkzaf2G+u5XPJ1TkbyqVsZFJjjBTWp5FTblkaokk
- 2lTe+QRg18a852sShXmlFmVX3C9/SJQVnV+EGfoVTMDsyCrRz56gCxt1TzQoKJpCLKuYB8YeV
- MOQOF1bpmD9uhLMKwBdFTBzzzBKwD31R0abIfYX43yE41ke/rrAgZiotBitJrFvgAu7ZdCG0V
- ErVU5SG3gYEazE0PZ6wVqBrVSThCv62/PkR3+FjU6rJZaArBIpEJBFiXiNcN2tSO15ldH0iEg
- voL68huEY601OPjdoYQax4EA/rNKoUk4vegiz3O7kG2t0rpXDP32pecQi1Bv38uNKIEAvFFWw
- DOxMs8xosW4hEPfu6kat6FSPoFzR3klZRy9vJ31pqWgVregqDxxDh5gAzuxCt572nng0eLx2b
- +AzhAo3+RrLLR8S/LwslkpB+j8rWtyaumhrq62U/tIQOgFKG1EciDwkzMwNxu9bpRRfowmQCO
- qCapUbu6q81pH4IFnqFTMmTUawU33BPtVWxCcRgvgK30ub2BO4jat3i9A1gIA8lw/El66GJ8c
- 1L+ToMLj1BOTqChzK68LVOH4DgWLCf5xuGRFrb9yI0Yu+mvme8urQ5/tmReLJojbnoR0QcB+q
- zpdanEXOKqUasg=
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-12-rananta@google.com>
+ <YTmZPSEm3Fj6l1PN@google.com>
+In-Reply-To: <YTmZPSEm3Fj6l1PN@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 9 Sep 2021 09:38:56 -0700
+Message-ID: <CAJHc60x_r46W+81=A76zC=zW_3xqmvMWf3CspiQKVVnPA0TtTA@mail.gmail.com>
+Subject: Re: [PATCH v4 11/18] KVM: arm64: selftests: Add basic GICv3 support
+To:     Oliver Upton <oupton@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.09.21 at 17:47, Vladimir Oltean wrote:
-> On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
->>> Do you see similar things on your 5.10 kernel?
->>
->> For the master device is see
->>
->> lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consum=
-er:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:=
-spi3.0
+On Wed, Sep 8, 2021 at 10:18 PM Oliver Upton <oupton@google.com> wrote:
 >
-> So this is the worst of the worst, we have a device link but it doesn't =
-help.
+> On Thu, Sep 09, 2021 at 01:38:11AM +0000, Raghavendra Rao Ananta wrote:
+> > Add basic support for ARM Generic Interrupt Controller v3.
+> > The support provides guests to setup interrupts.
+> >
+> > The work is inspired from kvm-unit-tests and the kernel's
+> > GIC driver (drivers/irqchip/irq-gic-v3.c).
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > Reviewed-by: Andrew Jones <drjones@redhat.com>
+> > ---
+> >  tools/testing/selftests/kvm/Makefile          |   2 +-
+> >  .../selftests/kvm/include/aarch64/gic.h       |  21 ++
+> >  tools/testing/selftests/kvm/lib/aarch64/gic.c |  93 +++++++
+> >  .../selftests/kvm/lib/aarch64/gic_private.h   |  21 ++
+> >  .../selftests/kvm/lib/aarch64/gic_v3.c        | 240 ++++++++++++++++++
+> >  .../selftests/kvm/lib/aarch64/gic_v3.h        |  70 +++++
+> >  6 files changed, 446 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
+> >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
+> >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+> >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+> >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> >
 >
-> Where the device link helps is here:
+> [...]
 >
-> __device_release_driver
-> 	while (device_links_busy(dev))
-> 		device_links_unbind_consumers(dev);
+> > +static void
+> > +gic_dist_init(enum gic_type type, unsigned int nr_cpus, void *dist_base)
+> > +{
+> > +     const struct gic_common_ops *gic_ops;
 >
-> but during dev_shutdown, device_links_unbind_consumers does not get call=
-ed
-> (actually I am not even sure whether it should).
+> does this need to be initialized? I haven't tried compiling, but it
+> seems it should trigger a compiler warning as it is only initialized if
+> type == GIC_V3.
 >
-> I've reproduced your issue by making this very simple change:
->
-> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/n=
-et/ethernet/freescale/enetc/enetc_pf.c
-> index 60d94e0a07d6..ec00f34cac47 100644
-> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> @@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver =3D {
->  	.id_table =3D enetc_pf_id_table,
->  	.probe =3D enetc_pf_probe,
->  	.remove =3D enetc_pf_remove,
-> +	.shutdown =3D enetc_pf_remove,
->  #ifdef CONFIG_PCI_IOV
->  	.sriov_configure =3D enetc_sriov_configure,
->  #endif
->
-> on my DSA master driver. This is what the genet driver has "special".
->
-
-Ah, that is interesting.
-
-> I was led into grave error by Documentation/driver-api/device_link.rst,
-> which I've based my patch on, where it clearly says that device links
-> are supposed to help with shutdown ordering (how?!).
->
-> So the question is, why did my DSA trees get torn down on shutdown?
-> Basically the short answer is that my SPI controller driver does
-> implement .shutdown, and calls the same code path as the .remove code,
-> which calls spi_unregister_controller which removes all SPI children..
->
-> When I added this device link, one of the main objectives was to not
-> modify all DSA drivers. I was certain based on the documentation that
-> device links would help, now I'm not so sure anymore.
->
-> So what happens is that the DSA master attempts to unregister its net
-> device on .shutdown, but DSA does not implement .shutdown, so it just
-> sits there holding a reference (supposedly via dev_hold, but where from?=
-!)
-> to the master, which makes netdev_wait_allrefs to wait and wait.
->
-
-Right, that was also my conclusion.
-
-> I need more time for the denial phase to pass, and to understand what
-> can actually be done. I will also be away from the keyboard for the next
-> few days, so it might take a while. Your patches obviously offer a
-> solution only for KSZ switches, we need something more general. If I
-> understand your solution, it works not by virtue of there being any
-> shutdown ordering guarantee at all, but simply due to the fact that
-> DSA's .shutdown hook gets called eventually, and the reference to the
-> master gets freed eventually, which unblocks the unregister_netdevice
-> call from the master.
-
-Well actually the SPI shutdown hook gets called which then calls ksz9477_s=
-hutdown
-(formerly ksz9477_reset_switch) which then shuts down the switch by
-stopping the worker thread and tearing down the DSA tree (via dsa_tree_shu=
-tdown()).
-
-While it is right that the patch series only fixes the KSZ case for now, t=
-he idea was that
-other drivers could use a similar approach in by calling the new function =
-dsa_tree_shutdown()
-in their shutdown handler to make sure that all refs to the master device =
-are released.
-
+Huh, I thought I had a default case covering this (must have gone lost
+during code reorg).
+Nice catch though! Surprisingly, the compiler never warned. I'm not
+sure if its smart
+enough to figure out that the caller of this function had
+GUEST_ASSERT(type < GIC_TYPE_MAX);
+Anyway, I'll clean it up.
 
 Regards,
-Lino
+Raghavendra
+
+> > +     spin_lock(&gic_lock);
+> > +
+> > +     /* Distributor initialization is needed only once per VM */
+> > +     if (gic_common_ops) {
+> > +             spin_unlock(&gic_lock);
+> > +             return;
+> > +     }
+> > +
+> > +     if (type == GIC_V3)
+> > +             gic_ops = &gicv3_ops;
+> > +
+> > +     gic_ops->gic_init(nr_cpus, dist_base);
+> > +     gic_common_ops = gic_ops;
+> > +
+> > +     /* Make sure that the initialized data is visible to all the vCPUs */
+> > +     dsb(sy);
+> > +
+> > +     spin_unlock(&gic_lock);
+> > +}
+>
