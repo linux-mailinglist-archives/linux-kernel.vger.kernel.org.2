@@ -2,210 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726C340585E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A53405862
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354531AbhIIN6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:58:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43335 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355436AbhIIN5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631195775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=FJ3vx9ItWF84RR27z81TE9j4hUoJb+a4RSamUREx5R8=;
-        b=dn05rc+PBT7TETFotzbxttrddwrDru9isvwU9Ms1pjh5HYouKcFep9EbXwV6rA34jZf7F1
-        mLfhGjLm4cXsWsGsdi850s6GQ/f8U4cjvt2nigXQ0ODQ9JeOZS15zFGjey4g5nGZ38aDNY
-        jUI9X75y+AfbzsCiFMZusy/dTphbH0o=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-ZzUFtTw-MlODeq6nH2AZ9g-1; Thu, 09 Sep 2021 09:56:13 -0400
-X-MC-Unique: ZzUFtTw-MlODeq6nH2AZ9g-1
-Received: by mail-ej1-f69.google.com with SMTP id gw26-20020a170906f15a00b005c48318c60eso863636ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:56:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FJ3vx9ItWF84RR27z81TE9j4hUoJb+a4RSamUREx5R8=;
-        b=I63YCp62nqRSyzoyukVo637/KhaNMcOhf4Xw6eAcoi8S2vp7l557/ysBYXpxTGZ7R5
-         6oVSLo7N1Z1tuv3dchrHdUUJ28tBTynt9n+dZOqmOOiWQlIv3cz2Z1wRTH5FJYsPcbed
-         yng46uFnV7kU4V13s+0bVQkfrzxxX4FqjB6z2EpKB7lAn01JxSyUQzSFWWdO8K6trS8M
-         ppjrHyOTuKF5QGcFKlFHZtQZqgJJZ3S2XrXpAAZLcIshZGCsrUeMOhLcqoPaPrNJb4u+
-         Qq8dJqjkSYUIrHZ0heWKLGL1t2tCZ/5yJP3Tvq9pIFsfQyTjfm5ILpKcK6j6jMP/uDlu
-         ZZgw==
-X-Gm-Message-State: AOAM531geMh7qB2ewnq/o0AgmcXCl/2woJ66eJYgKPruTK1kfI7QDNJi
-        IxCNxHlcRGapRLEbqCI5y+3DMBH/TKwnZR8jTvU/Vj4V4JKs8A/w+xua7Bn1qq3SFruYhS/r3zM
-        UtSKCjJbSOYrgNOWpVsrdNq/2
-X-Received: by 2002:a17:906:12c8:: with SMTP id l8mr3453434ejb.515.1631195772675;
-        Thu, 09 Sep 2021 06:56:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4tBPafNVgPmrZd3KYi1ABh5Zl7/eVhQcwR6Yr2RpP9yEYDIYrmgjs2t9Ub19JNtKWg/PAtg==
-X-Received: by 2002:a17:906:12c8:: with SMTP id l8mr3453415ejb.515.1631195772487;
-        Thu, 09 Sep 2021 06:56:12 -0700 (PDT)
-Received: from redhat.com ([2.55.145.189])
-        by smtp.gmail.com with ESMTPSA id t19sm987072ejb.115.2021.09.09.06.56.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 06:56:11 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 09:56:08 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arseny.krasnov@kaspersky.com, caihuoqing@baidu.com,
-        elic@nvidia.com, jasowang@redhat.com, lingshan.zhu@intel.com,
-        mgurtovoy@nvidia.com, mst@redhat.com, viresh.kumar@linaro.org,
-        will@kernel.org, wsa@kernel.org, xianting.tian@linux.alibaba.com,
-        xieyongji@bytedance.com
-Subject: [GIT PULL] virtio,vdpa,vhost: features, fixes
-Message-ID: <20210909095608-mutt-send-email-mst@kernel.org>
+        id S237159AbhIIN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356170AbhIIN6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:58:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF2EE6128A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631195825;
+        bh=T8eEC4VlAnmQzr4A0O6Cb8mjrZVgtCAsJbuVf4DzPTw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hEMbdQmNpAOUoZY/aFFlw0lJHKFgX5ffO3zmwalVZrJOzvYRHn/F2kPP8TuPOSou7
+         ntJKm2e/5MZD9Amlp4UwJ2iaD2cq54qwPyyBS2utBGQH5YYU3rHE8qF1wVyutAkZHM
+         1vQwuDQntiXvimsy37HjiB1Igw4WVWV5+eV6DAjRNOcKM7Zh1+VR5ngetn2eG136L5
+         ekZNg8oXblZmdKOMPz+MWqozMV25QFO4nf3G9p2u3eUDBX7tZlhSQUyYHUF++iVvsc
+         f+kJ1ESSsD67w8+PX+qG9HInsELCfVAsQvjbinQRyBXwDkvXQwV+1Uv0hZeH0ZpeD+
+         zca0nJ6J57gyA==
+Received: by mail-oi1-f177.google.com with SMTP id w144so2544474oie.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:57:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530l5ZBfkGtdKBY2BgJJTwOHN6u49BgwcB83tTBR55XCfjyDX3rw
+        ZTro22wQ4FfxsdYijbM3KKFLWbhbIuVv7LwcRzs=
+X-Google-Smtp-Source: ABdhPJw60+N+F5krOYjvR1hLOtqcIqePw0+biTSlhBaPRNjrWU7OZywSyHwuqqen6leysbJDlch7KP7NnchLtJDSsGQ=
+X-Received: by 2002:a54:418e:: with SMTP id 14mr2062038oiy.174.1631195824114;
+ Thu, 09 Sep 2021 06:57:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+References: <20210904060908.1310204-1-keithp@keithp.com> <20210907220038.91021-1-keithpac@amazon.com>
+ <20210907220038.91021-7-keithpac@amazon.com>
+In-Reply-To: <20210907220038.91021-7-keithpac@amazon.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 9 Sep 2021 15:56:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE+eMfFgfXeaB2zaWvXYO7wuZCav4vB1BXpVx2eTCju1w@mail.gmail.com>
+Message-ID: <CAMj1kXE+eMfFgfXeaB2zaWvXYO7wuZCav4vB1BXpVx2eTCju1w@mail.gmail.com>
+Subject: Re: [PATCH 6/7] ARM: Use TPIDRPRW for current
+To:     Keith Packard <keithpac@amazon.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
+On Wed, 8 Sept 2021 at 00:00, Keith Packard <keithpac@amazon.com> wrote:
+>
+> Store current task pointer in CPU thread ID register TPIDRPRW so that
+> accessing it doesn't depend on being able to locate thread_info off of
+> the kernel stack pointer.
+>
+> Signed-off-by: Keith Packard <keithpac@amazon.com>
+> ---
+>  arch/arm/Kconfig                 |  4 +++
+>  arch/arm/include/asm/assembler.h |  8 +++++
+>  arch/arm/include/asm/current.h   | 52 ++++++++++++++++++++++++++++++++
+>  arch/arm/kernel/entry-armv.S     |  4 +++
+>  arch/arm/kernel/setup.c          |  1 +
+>  arch/arm/kernel/smp.c            |  1 +
+>  6 files changed, 70 insertions(+)
+>  create mode 100644 arch/arm/include/asm/current.h
+>
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 24804f11302d..414fe23fd5ac 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -1172,6 +1172,10 @@ config SMP_ON_UP
+>
+>           If you don't know what to do here, say Y.
+>
+> +config CURRENT_POINTER_IN_TPIDRPRW
+> +       def_bool y
+> +       depends on (CPU_V6K || CPU_V7) && !CPU_V6
+> +
+>  config ARM_CPU_TOPOLOGY
+>         bool "Support cpu topology definition"
+>         depends on SMP && CPU_V7
+> diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/asse=
+mbler.h
+> index e2b1fd558bf3..ea12fe3bb589 100644
+> --- a/arch/arm/include/asm/assembler.h
+> +++ b/arch/arm/include/asm/assembler.h
+> @@ -209,6 +209,14 @@
+>         mov     \rd, \rd, lsl #THREAD_SIZE_ORDER + PAGE_SHIFT
+>         .endm
+>
+> +/*
+> + * Set current task_info
+> + * @src: Source register containing task_struct pointer
+> + */
+> +       .macro  set_current src : req
+> +       mcr     p15, 0, \src, c13, c0, 4
+> +       .endm
+> +
+>  /*
+>   * Increment/decrement the preempt count.
+>   */
+> diff --git a/arch/arm/include/asm/current.h b/arch/arm/include/asm/curren=
+t.h
+> new file mode 100644
+> index 000000000000..153a2ea18747
+> --- /dev/null
+> +++ b/arch/arm/include/asm/current.h
+> @@ -0,0 +1,52 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright =C2=A9 2021 Keith Packard <keithp@keithp.com>
+> + */
+> +
+> +#ifndef _ASM_ARM_CURRENT_H_
+> +#define _ASM_ARM_CURRENT_H_
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +register unsigned long current_stack_pointer asm ("sp");
+> +
+> +/*
+> + * Same as asm-generic/current.h, except that we store current
+> + * in TPIDRPRW. TPIDRPRW only exists on V6K and V7
+> + */
+> +#ifdef CONFIG_CURRENT_POINTER_IN_TPIDRPRW
+> +
+> +struct task_struct;
+> +
+> +static inline void set_current(struct task_struct *tsk)
+> +{
+> +       /* Set TPIDRPRW */
+> +       asm volatile("mcr p15, 0, %0, c13, c0, 4" : : "r" (tsk) : "memory=
+");
+> +}
+> +
+> +static __always_inline struct task_struct *get_current(void)
+> +{
+> +       struct task_struct *tsk;
+> +
+> +       /*
+> +        * Read TPIDRPRW.
+> +        * We want to allow caching the value, so avoid using volatile an=
+d
+> +        * instead use a fake stack read to hazard against barrier().
+> +        */
+> +       asm("mrc p15, 0, %0, c13, c0, 4" : "=3Dr" (tsk)
+> +               : "Q" (*(const unsigned long *)current_stack_pointer));
+> +
+> +       return tsk;
+> +}
+> +#define current get_current()
+> +#else
+> +
+> +#define set_current(tsk) do {} while (0)
+> +
+> +#include <asm-generic/current.h>
+> +
+> +#endif /* CONFIG_SMP */
+> +
+> +#endif /* __ASSEMBLY__ */
+> +
+> +#endif /* _ASM_ARM_CURRENT_H_ */
+> diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
+> index 0ea8529a4872..db3947ee9c3e 100644
+> --- a/arch/arm/kernel/entry-armv.S
+> +++ b/arch/arm/kernel/entry-armv.S
+> @@ -761,6 +761,10 @@ ENTRY(__switch_to)
+>         ldr     r6, [r2, #TI_CPU_DOMAIN]
+>  #endif
+>         switch_tls r1, r4, r5, r3, r7
+> +#ifdef CONFIG_CURRENT_POINTER_IN_TPIDRPRW
+> +       ldr     r7, [r2, #TI_TASK]
+> +       set_current r7
+> +#endif
 
-  Linux 5.14 (2021-08-29 15:04:50 -0700)
+This is too early: this will cause the thread notification hooks to be
+called with current pointing to the new task instead of the old one.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 7bc7f61897b66bef78bb5952e3d1e9f3aaf9ccca:
-
-  Documentation: Add documentation for VDUSE (2021-09-06 07:20:58 -0400)
-
-----------------------------------------------------------------
-virtio,vdpa,vhost: features, fixes
-
-vduse driver supporting blk
-virtio-vsock support for end of record with SEQPACKET
-vdpa: mac and mq support for ifcvf and mlx5
-vdpa: management netlink for ifcvf
-virtio-i2c, gpio dt bindings
-
-misc fixes, cleanups
-
-NB: when merging this with
-b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
-from Linus' tree, replace eventfd_signal_count with
-eventfd_signal_allowed, and drop the export of eventfd_wake_count from
-("eventfd: Export eventfd_wake_count to modules").
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Arseny Krasnov (6):
-      virtio/vsock: rename 'EOR' to 'EOM' bit.
-      virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
-      vhost/vsock: support MSG_EOR bit processing
-      virtio/vsock: support MSG_EOR bit processing
-      af_vsock: rename variables in receive loop
-      vsock_test: update message bounds test for MSG_EOR
-
-Cai Huoqing (2):
-      vhost scsi: Convert to SPDX identifier
-      vdpa: Make use of PFN_PHYS/PFN_UP/PFN_DOWN helper macro
-
-Eli Cohen (6):
-      vdpa/mlx5: Remove redundant header file inclusion
-      vdpa/mlx5: function prototype modifications in preparation to control VQ
-      vdpa/mlx5: Decouple virtqueue callback from struct mlx5_vdpa_virtqueue
-      vdpa/mlx5: Ensure valid indices are provided
-      vdpa/mlx5: Add support for control VQ and MAC setting
-      vdpa/mlx5: Add multiqueue support
-
-Max Gurtovoy (1):
-      virtio-blk: remove unneeded "likely" statements
-
-Viresh Kumar (5):
-      dt-bindings: virtio: Add binding for virtio devices
-      dt-bindings: i2c: Add bindings for i2c-virtio
-      dt-bindings: gpio: Add bindings for gpio-virtio
-      uapi: virtio_ids: Sync ids with specification
-      virtio: Bind virtio device to device-tree node
-
-Xianting Tian (1):
-      virtio-balloon: Use virtio_find_vqs() helper
-
-Xie Yongji (14):
-      vdpa_sim: Use iova_shift() for the size passed to alloc_iova()
-      iova: Export alloc_iova_fast() and free_iova_fast()
-      eventfd: Export eventfd_wake_count to modules
-      file: Export receive_fd() to modules
-      vdpa: Fix some coding style issues
-      vdpa: Add reset callback in vdpa_config_ops
-      vhost-vdpa: Handle the failure of vdpa_reset()
-      vhost-iotlb: Add an opaque pointer for vhost IOTLB
-      vdpa: Add an opaque pointer for vdpa_config_ops.dma_map()
-      vdpa: factor out vhost_vdpa_pa_map() and vhost_vdpa_pa_unmap()
-      vdpa: Support transferring virtual addressing during DMA mapping
-      vduse: Implement an MMU-based software IOTLB
-      vduse: Introduce VDUSE - vDPA Device in Userspace
-      Documentation: Add documentation for VDUSE
-
-Zhu Lingshan (4):
-      vDPA/ifcvf: introduce get_dev_type() which returns virtio dev id
-      vDPA/ifcvf: implement management netlink framework for ifcvf
-      vDPA/ifcvf: detect and use the onboard number of queues directly
-      vDPA/ifcvf: enable multiqueue and control vq
-
- .../devicetree/bindings/gpio/gpio-virtio.yaml      |   59 +
- .../devicetree/bindings/i2c/i2c-virtio.yaml        |   51 +
- Documentation/devicetree/bindings/virtio/mmio.yaml |    3 +-
- .../devicetree/bindings/virtio/virtio-device.yaml  |   41 +
- Documentation/userspace-api/index.rst              |    1 +
- Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
- Documentation/userspace-api/vduse.rst              |  233 +++
- drivers/block/virtio_blk.c                         |    4 +-
- drivers/iommu/iova.c                               |    2 +
- drivers/vdpa/Kconfig                               |   11 +
- drivers/vdpa/Makefile                              |    1 +
- drivers/vdpa/ifcvf/ifcvf_base.c                    |    8 +-
- drivers/vdpa/ifcvf/ifcvf_base.h                    |   25 +-
- drivers/vdpa/ifcvf/ifcvf_main.c                    |  257 ++-
- drivers/vdpa/mlx5/core/mlx5_vdpa.h                 |   26 +-
- drivers/vdpa/mlx5/core/mr.c                        |   81 +-
- drivers/vdpa/mlx5/core/resources.c                 |   35 +
- drivers/vdpa/mlx5/net/mlx5_vnet.c                  |  555 ++++++-
- drivers/vdpa/vdpa.c                                |    9 +-
- drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   29 +-
- drivers/vdpa/vdpa_user/Makefile                    |    5 +
- drivers/vdpa/vdpa_user/iova_domain.c               |  545 +++++++
- drivers/vdpa/vdpa_user/iova_domain.h               |   73 +
- drivers/vdpa/vdpa_user/vduse_dev.c                 | 1641 ++++++++++++++++++++
- drivers/vdpa/virtio_pci/vp_vdpa.c                  |   17 +-
- drivers/vhost/iotlb.c                              |   20 +-
- drivers/vhost/scsi.c                               |   14 +-
- drivers/vhost/vdpa.c                               |  188 ++-
- drivers/vhost/vsock.c                              |   28 +-
- drivers/virtio/virtio.c                            |   57 +-
- drivers/virtio/virtio_balloon.c                    |    4 +-
- fs/eventfd.c                                       |    1 +
- fs/file.c                                          |    6 +
- include/linux/file.h                               |    7 +-
- include/linux/vdpa.h                               |   62 +-
- include/linux/vhost_iotlb.h                        |    3 +
- include/uapi/linux/vduse.h                         |  306 ++++
- include/uapi/linux/virtio_ids.h                    |   12 +
- include/uapi/linux/virtio_vsock.h                  |    3 +-
- net/vmw_vsock/af_vsock.c                           |   10 +-
- net/vmw_vsock/virtio_transport_common.c            |   23 +-
- tools/testing/vsock/vsock_test.c                   |    8 +-
- 42 files changed, 4136 insertions(+), 329 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
- create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
- create mode 100644 Documentation/userspace-api/vduse.rst
- create mode 100644 drivers/vdpa/vdpa_user/Makefile
- create mode 100644 drivers/vdpa/vdpa_user/iova_domain.c
- create mode 100644 drivers/vdpa/vdpa_user/iova_domain.h
- create mode 100644 drivers/vdpa/vdpa_user/vduse_dev.c
- create mode 100644 include/uapi/linux/vduse.h
-
+>  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_SMP)
+>         ldr     r7, [r2, #TI_TASK]
+>         ldr     r8, =3D__stack_chk_guard
+> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+> index d0dc60afe54f..2fdf8c31d6c9 100644
+> --- a/arch/arm/kernel/setup.c
+> +++ b/arch/arm/kernel/setup.c
+> @@ -586,6 +586,7 @@ void __init smp_setup_processor_id(void)
+>         u32 mpidr =3D is_smp() ? read_cpuid_mpidr() & MPIDR_HWID_BITMASK =
+: 0;
+>         u32 cpu =3D MPIDR_AFFINITY_LEVEL(mpidr, 0);
+>
+> +       set_current(&init_task);
+>         cpu_logical_map(0) =3D cpu;
+>         for (i =3D 1; i < nr_cpu_ids; ++i)
+>                 cpu_logical_map(i) =3D i =3D=3D cpu ? 0 : i;
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index 8ccf10b34f08..09771916442a 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -410,6 +410,7 @@ asmlinkage void secondary_start_kernel(unsigned int c=
+pu, struct task_struct *tas
+>  {
+>         struct mm_struct *mm =3D &init_mm;
+>
+> +       set_current(task);
+>         secondary_biglittle_init();
+>
+>         /*
+> --
+> 2.33.0
+>
