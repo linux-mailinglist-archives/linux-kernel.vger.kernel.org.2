@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C497405D10
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D36405D12
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344145AbhIIS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:57:27 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:65520 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbhIIS50 (ORCPT
+        id S1344258AbhIIS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:57:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45312 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235271AbhIIS53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:57:26 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 309e9d24b06a21dc; Thu, 9 Sep 2021 20:56:14 +0200
-Received: from kreacher.localnet (unknown [213.134.181.77])
+        Thu, 9 Sep 2021 14:57:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 37A2666A4BC;
-        Thu,  9 Sep 2021 20:56:14 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Len Brown <len.brown@intel.com>,
-        Bob Moore <robert.moore@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ACPICA: Update the list of maintainers
-Date:   Thu, 09 Sep 2021 20:56:13 +0200
-Message-ID: <2610743.mvXUDI8C0e@kreacher>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 64F872233B;
+        Thu,  9 Sep 2021 18:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631213778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7t8ztgYZsndp44kDdVFUqlrz/Zoxo2W/1YXS7ePODV0=;
+        b=RhFaxjaP0kRFSHZmQkLTUH3usxdlgA4J91/Herg20j4L7sLvgpQ3JuSnllPZKyRxRfc+GE
+        jUQP2aFo5A7rEO5JhhZx+eP5RNM5w37gbXoODJX03b45gvkpVwvKIF75IbQuFknN/IVq0A
+        MbKJUW3joiEwGySf/L0DeqEspo5mdYs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F7AE13ACF;
+        Thu,  9 Sep 2021 18:56:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8YVSCtJYOmFBLwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 18:56:18 +0000
+Date:   Thu, 9 Sep 2021 20:56:16 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     brookxu <brookxu.cn@gmail.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
+Message-ID: <YTpY0G3+IJYmGbdd@blackbook>
+References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
+ <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
+ <20210909143720.GA14709@blackbody.suse.cz>
+ <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.181.77
-X-CLIENT-HOSTNAME: 213.134.181.77
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudefledgudefudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrddukedurdejjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukedurdejjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghnrdgsrhhofihnsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Sep 09, 2021 at 09:49:56AM -0700, Vipin Sharma <vipinsh@google.com> wrote:
+> We are adding two files in this patch series, misc.events and
+> misc.events.local. I think "fail" should go in misc.events.local and
+> its name should be changed to "max".
 
-Erik Kaneda will not be maintaining ACPICA any more, so drop his
-address (which doesn't work any more anyway) from the maintainer
-list.
+I consider the max vs fail orthogonal to local vs hierarchical. I.e.
+both entries can be in both files:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- MAINTAINERS |    1 -
- 1 file changed, 1 deletion(-)
+(1) misc.events.local:max	number of times the cgroup's misc.max was hit
+(2) misc.events.local:fail	number of times operation failed in the cgroup
+(3) misc.events:max		number of times the cgroup's misc.max was hit in the subtree
+(4) misc.events:fail		number of times operation failed in the subtree
 
-Index: linux-pm/MAINTAINERS
-===================================================================
---- linux-pm.orig/MAINTAINERS
-+++ linux-pm/MAINTAINERS
-@@ -364,7 +364,6 @@ F:	drivers/acpi/apei/
- 
- ACPI COMPONENT ARCHITECTURE (ACPICA)
- M:	Robert Moore <robert.moore@intel.com>
--M:	Erik Kaneda <erik.kaneda@intel.com>
- M:	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
- L:	linux-acpi@vger.kernel.org
- L:	devel@acpica.org
+Is that too many? Admittedly, I assume (1) and (4) will be the more useful ones.
+However, I'm afraid overloading "max" as suggested might be (more)
+confusing. ('subtree' above := self or descendant)
 
-
-
+Michal
