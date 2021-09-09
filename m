@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4048540440F
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C7404411
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350211AbhIIDsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 23:48:33 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:57967 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhIIDsc (ORCPT
+        id S1350291AbhIIDt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 23:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhIIDtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 23:48:32 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 66DCE320025E;
-        Wed,  8 Sep 2021 23:47:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 08 Sep 2021 23:47:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=iBT825
-        z+NyUW7N7rDllP1vENTbXXnYYWdNX40tkfrqM=; b=ZzxB0ie4DZAwQo4qTXTzz4
-        /cincDRVzMkm0iJ0FQ5nE/IGsgzJDJAdHD+hqtNRngdUeDdIf+zkTsQ76YpeaeAQ
-        qeBxNFua+36/zJzxd/5ZWfbyd0cBhtkbPlb3syujTWxQ4JXUq1ld2nuvxltFmaVw
-        bm+tZa2qQrRYRestoHzzxSOTqiWV/VJfRqUCmfB4rnhmSJVblO7ggBCVdTBBBWDL
-        aevVhjOKsWzU4WbcljLa/bA69BJj8wPJ6kGYTvbGQH6yaDk4Ak7upnTwKh0ZzMDg
-        85rBaWzcQM6Vg/A2Ssa4hq6Kf/5REQseXXXBvV7Ow3nJqxDdxvNsskBvRnQn4YFg
-        ==
-X-ME-Sender: <xms:yoM5YdVCS3n6YSIMU5qRmotZj7l2KcUEw4rq5ku4u2enbXeo8KEZOQ>
-    <xme:yoM5YdnuaN0bZZE4rF2SiGWiCX_nfLq3aMarFAHtz0KZ5WA6I-1FQHrjv3u-AEE4l
-    Gy_OY5HthayWRiNr-g>
-X-ME-Received: <xmr:yoM5YZYAseHxyGIB2-mu-oak0aUXRyBxDdQKhoJaVdasrwGKU7Jhg737dk9ZZ93x2ISuN6yvyDyi1q8EXHgX8sV8DmdvcXN_RyAFsw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefkedgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepieeuffduudejueehteefgfevgeejtddvveekvdehfefgvefhteehudekhffg
-    fedtnecuffhomhgrihhnpehtfihisggslhgvrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
-    khdrohhrgh
-X-ME-Proxy: <xmx:yoM5YQVwDwJD2lTGh-rX1mjTTtbgFn5k1mv2lLY_Hce6npRlCA-0YQ>
-    <xmx:yoM5YXn0FpYo5v0NDp1CoeTma23dw2WqGwn058t6rOrsaKcqGeX15Q>
-    <xmx:yoM5Yddp3VWUfeRQthHC0XMla75YTAomidUY0PUflYFAHBz3r7vUkw>
-    <xmx:y4M5YQBsLczEsaI7Ounl5pcb4wP-_JD-gLqhG5IlTr1k3Fb6ZPE22Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Sep 2021 23:47:20 -0400 (EDT)
-Date:   Thu, 9 Sep 2021 13:47:12 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Oliver Neukum <oneukum@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Ali Akcaagac <aliakc@web.de>,
-        Jamie Lenehan <lenehan@twibble.org>
-cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove obsolete e-mail addresses
-In-Reply-To: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org>
-Message-ID: <b270d7a-10d4-810-3027-eeb824e646c8@linux-m68k.org>
-References: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org>
+        Wed, 8 Sep 2021 23:49:24 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4563C061575;
+        Wed,  8 Sep 2021 20:48:15 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id e7so464550pgk.2;
+        Wed, 08 Sep 2021 20:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y/WLSgOpfX2HTAAFSy41d9N/Nx3WgxZrgw34NFl7Pyk=;
+        b=WEpx8gdhjWkgjEgy6QJdqDX/SJmY8aoekT3/QHpqD0N7BGhrnbmsWUBZ4CbKyAv0n6
+         9u9e0iq0uE+ErvS+uifc8GkhJxyX/kcv0DLUoI3M3eUpnlwr2lptHcRRHOj/DGyqOlLY
+         EZgYw1Re00fxrIYhCtvsgVhZJFO7fIfq/atvc0dMO5zhSGqwMTpJMY0PF612pfjRaPWr
+         /CsHwzwf0v6JIyykcFiYgSs1dl1W9LACFs0ntOQQkvRul4lnIFFlwBcwoVDoPjeBeby8
+         y6QnuGtwQoUqopkYyGksk5NnAsq9UrggYgypglyunJWDyYwC+8wWprKLEuL0fJ1r+Yua
+         fsCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y/WLSgOpfX2HTAAFSy41d9N/Nx3WgxZrgw34NFl7Pyk=;
+        b=FqsjFJthwi818+9Ec5ep+zBo9aVK6de8PkHzXlypncNRbOR3te3C0w7kVF2EGTxs2k
+         +p+CCwQ8FTHLK/kUUIbIxO1/X08KhLkmUzhh4vTb9XO9VJeiX9MpoIeNDyWgwBbwCATq
+         TkPXg19c4tRUi8IuYMMjdqKyreCvzv3Sx8E61spT5iEvp3e9w+2mcH51KXkIUsK9ogwB
+         H/onqcmrqQgjy/d5UABver3tq4bAyQQ8Mv1Ci+OuA7zMESNcuRcetkdmM4otaHx3QgWQ
+         lgeff9IJx0x1yOjoHYB9xArIBaWPAx9YQsLOFXA8mKQL/YMaoX5yQ9abQo3C/60HMaGT
+         seAg==
+X-Gm-Message-State: AOAM5304f4Qoq0YEPZW7a5UEdfVkQP5SuY/KSvJisTCohKXZFP6HUQO1
+        7iJTv22+W1vrQ5z6uBAAYs8=
+X-Google-Smtp-Source: ABdhPJxl3OjM6Pkzb/siLHawQc6x1AHV0Ukpbs4WQ5/MI7Ob2/fFSuGKE0/BcDaZ8FczdMZaHW42aQ==
+X-Received: by 2002:a63:bf07:: with SMTP id v7mr742651pgf.333.1631159295250;
+        Wed, 08 Sep 2021 20:48:15 -0700 (PDT)
+Received: from s19.smythies.com ([173.180.45.4])
+        by smtp.gmail.com with ESMTPSA id v13sm361881pfm.16.2021.09.08.20.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 20:48:14 -0700 (PDT)
+From:   Doug Smythies <doug.smythies@gmail.com>
+X-Google-Original-From: Doug Smythies <dsmythies@telus.net>
+To:     srinivas.pandruvada@linux.intel.com, rafael@kernel.org,
+        len.brown@intel.com
+Cc:     dsmythies@telus.net, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced by BIOS
+Date:   Wed,  8 Sep 2021 20:48:02 -0700
+Message-Id: <20210909034802.1708-1-dsmythies@telus.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If HWP has been already been enabled by BIOS, it may be
+necessary to override some kernel command line parameters.
+Once it has been enabled it requires a reset to be disabled.
 
-[I just found Oliver Neukum <oneukum@suse.com> in 'git log'. I've now 
-added that address to recipients.]
+Signed-off-by: Doug Smythies <dsmythies@telus.net>
+---
+ drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-On Thu, 9 Sep 2021, Finn Thain wrote:
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index bb4549959b11..073bae5d4498 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+ 		 */
+ 		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+ 		    intel_pstate_hwp_is_enabled()) {
+-			hwp_active++;
++			hwp_active = 1;
+ 			hwp_mode_bdw = id->driver_data;
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.attr = hwp_cpufreq_attrs;
+@@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+ 
+ static int __init intel_pstate_setup(char *str)
+ {
++	/*
++	 * If BIOS is forcing HWP, then parameter
++	 * overrides might be needed. Only print
++	 * the message once, and regardless of
++	 * any overrides.
++	 */
++	if(!hwp_active && boot_cpu_has(X86_FEATURE_HWP))
++		if(intel_pstate_hwp_is_enabled()){
++			pr_info("HWP enabled by BIOS\n");
++			hwp_active = 1;
++		}
+ 	if (!str)
+ 		return -EINVAL;
+ 
+-	if (!strcmp(str, "disable"))
++	if (!strcmp(str, "disable") && !hwp_active)
+ 		no_load = 1;
+-	else if (!strcmp(str, "active"))
++	if (!strcmp(str, "active"))
+ 		default_driver = &intel_pstate;
+-	else if (!strcmp(str, "passive"))
++	if (!strcmp(str, "passive"))
+ 		default_driver = &intel_cpufreq;
+-
+-	if (!strcmp(str, "no_hwp")) {
++	if (!strcmp(str, "no_hwp") && !hwp_active) {
+ 		pr_info("HWP disabled\n");
+ 		no_hwp = 1;
+ 	}
+-- 
+2.25.1
 
-> These e-mail addresses bounced.
-> 
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
->  MAINTAINERS | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d7b4f32875a9..690539b2705c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5138,10 +5138,8 @@ S:	Maintained
->  F:	drivers/scsi/am53c974.c
->  
->  DC395x SCSI driver
-> -M:	Oliver Neukum <oliver@neukum.org>
->  M:	Ali Akcaagac <aliakc@web.de>
->  M:	Jamie Lenehan <lenehan@twibble.org>
-> -L:	dc395x@twibble.org
->  S:	Maintained
->  W:	http://twibble.org/dist/dc395x/
->  W:	http://lists.twibble.org/mailman/listinfo/dc395x/
->  
-> 
