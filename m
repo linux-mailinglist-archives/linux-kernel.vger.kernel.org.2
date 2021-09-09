@@ -2,164 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62982404948
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9258C40494B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbhIIL1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:27:10 -0400
-Received: from m-r2.th.seeweb.it ([5.144.164.171]:60571 "EHLO
-        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbhIIL1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:27:08 -0400
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 1F0413EEA8;
-        Thu,  9 Sep 2021 13:25:58 +0200 (CEST)
-Subject: Re: [PATCH 2/7] arm64: dts: qcom: msm8998-xperia: Add RMI4
- touchscreen support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org
-References: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
- <20210903180924.1006044-2-angelogioacchino.delregno@somainline.org>
- <YTdsBg78ErgxqFXy@ripper>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <8c817fed-ebc3-c269-ee00-bdef12f707af@somainline.org>
-Date:   Thu, 9 Sep 2021 13:25:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235393AbhIILae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234507AbhIILac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:30:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3081161179
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631186963;
+        bh=B88nJMsUOPeeM3syqtdV2g1zTgLHqRhB/pjL3W3dR5U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ghr7h04XfsU7LC6CWR2AjKsU9Oql04NG20NZ6j37l2kilK3XQLdNcbTZ6YG6x+e/d
+         jvLOQ2ez1lvxzTzXGSUF+Wh0uuGxeKZc1RNYGjN4LsNATulwv2IIqgRRm91mIAh08H
+         5FAFj0DQ4JDl7qMYdSmtxxRdl22DN7WUzxZl0H10p4nlPR6zyJbVMnbMhyunM8LISk
+         xtmgKDAPMgPHZ/8KzodxLurT+TqDj19uisrUT2SOkPTLbOfNm/WZ2Nh+VrbXsNuN5S
+         AsWLTeZ/FdZ2PXnGRuAPAEfZMsiHDKqXsk+jFwLmU8NrQhX16LFgrmw9Ot35yh+880
+         5+68F7QYrrwiA==
+Received: by mail-ot1-f42.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso2084743otu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:29:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530pb1vTJc5EeiWm/Bof/q6qP9pxxYCDvQhAB25IqK4miRA19Q5u
+        BHpu1+rlzelCroeYql/ihsxtuzKbr7XYSqctA5s=
+X-Google-Smtp-Source: ABdhPJz6gU2OA+HXzocssCGpcN9DU79PvRHUT66SBpt6BafNfEygcUGPpXMOd6nSxEK7EpqAZcYz1g29bDuvDl2lmAI=
+X-Received: by 2002:a9d:200b:: with SMTP id n11mr2023081ota.30.1631186962496;
+ Thu, 09 Sep 2021 04:29:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTdsBg78ErgxqFXy@ripper>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210907145652.63362-1-bert@biot.com>
+In-Reply-To: <20210907145652.63362-1-bert@biot.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 9 Sep 2021 13:29:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGej8Ps425A-UXmW19B45_EP89-YzpwdOYQ1C-DOVLvUg@mail.gmail.com>
+Message-ID: <CAMj1kXGej8Ps425A-UXmW19B45_EP89-YzpwdOYQ1C-DOVLvUg@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: decompress: Use /memreserve/ DTS nodes when
+ validating memory
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 07/09/21 15:41, Bjorn Andersson ha scritto:
-> On Fri 03 Sep 11:09 PDT 2021, AngeloGioacchino Del Regno wrote:
-> 
->> All of the devices in the Sony Yoshino platform are using a Synaptics
->> RMI4-compatible touch IC with identical pins and supplies: enable the
->> I2C-5 bus and add the rmi4-i2c node along with the required pin
->> configurations.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
->> ---
->>   .../dts/qcom/msm8998-sony-xperia-yoshino.dtsi | 60 +++++++++++++++++++
->>   1 file changed, 60 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
->> index b07cbc759807..2fe53e4675d5 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
->> @@ -30,6 +30,15 @@ board_vbat: vbat-regulator {
->>   		regulator-boot-on;
->>   	};
->>   
->> +	touch_vddio_vreg: touch-vddio-vreg {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "touch_vddio_vreg";
->> +		startup-delay-us = <10000>;
->> +		gpio = <&tlmm 133 GPIO_ACTIVE_HIGH>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&ts_vddio_en>;
->> +	};
->> +
->>   	vph_pwr: vph-pwr-regulator {
->>   		compatible = "regulator-fixed";
->>   		regulator-name = "vph_pwr";
->> @@ -134,6 +143,42 @@ ramoops@ffc00000 {
->>   	};
->>   };
->>   
->> +&blsp1_i2c5 {
->> +	status = "okay";
->> +	clock-frequency = <355000>;
->> +
->> +	touchscreen: synaptics-rmi4-i2c@2c {
-> 
-> "touchscreen" sounds like a better "generic name" for the node.
-> 
-> Haven't checked the following patches yet, do you need the label?
-> 
+On Tue, 7 Sept 2021 at 16:57, Bert Vermeulen <bert@biot.com> wrote:
+>
+> If the bootloader needs the start of memory to be preserved, for example
+> because it dropped the Trusted Firmware blob there, this chunk of memory
+> shouldn't be used by the kernel.
+>
+> To avoid adding yet another SoC-specific text offset to arch/arm/Makefile,
+> this patch allows for a /memreserve/ entry in the DTS to mark off the
+> memory chunk instead.
+>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 
-Thank you, I forgot to remove the label after a cleanup.
-Also, node name changed.
+Thanks for working on this - I hope this will allow us to phase out at
+least some of the existing text_offset hacks too.
 
-Cheers,
-- Angelo
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-> Regards,
-> Bjorn
-> 
->> +		compatible = "syna,rmi4-i2c";
->> +		reg = <0x2c>;
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +		interrupts-extended = <&tlmm 125 IRQ_TYPE_EDGE_FALLING>;
->> +
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&ts_int_n>;
->> +
->> +		vdd-supply = <&vreg_l28_3p0>;
->> +		vio-supply = <&touch_vddio_vreg>;
->> +
->> +		syna,reset-delay-ms = <220>;
->> +		syna,startup-delay-ms = <1000>;
->> +
->> +		rmi4-f01@1 {
->> +			reg = <0x01>;
->> +			syna,nosleep-mode = <1>;
->> +		};
->> +
->> +		rmi4-f11@11 {
->> +			reg = <0x11>;
->> +			syna,sensor-type = <1>;
->> +		};
->> +	};
->> +};
->> +
->> +&blsp1_i2c5_sleep {
->> +	bias-disable;
->> +};
->> +
->>   &blsp2_uart1 {
->>   	status = "okay";
->>   };
->> @@ -448,6 +493,21 @@ hall_sensor0_default: acc-cover-open {
->>   		drive-strength = <2>;
->>   		input-enable;
->>   	};
->> +
->> +	ts_int_n: ts-int-n {
->> +		pins = "gpio125";
->> +		function = "gpio";
->> +		drive-strength = <8>;
->> +		bias-pull-up;
->> +	};
->> +
->> +	ts_vddio_en: ts-vddio-en-default {
->> +		pins = "gpio133";
->> +		function = "gpio";
->> +		bias-disable;
->> +		drive-strength = <2>;
->> +		output-low;
->> +	};
->>   };
->>   
->>   /*
->> -- 
->> 2.32.0
->>
-
+> ---
+>  arch/arm/boot/compressed/fdt_check_mem_start.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> index 62450d824c3c..1d47de1e860b 100644
+> --- a/arch/arm/boot/compressed/fdt_check_mem_start.c
+> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> @@ -64,7 +64,7 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         uint32_t addr_cells, size_cells, base;
+>         uint32_t fdt_mem_start = 0xffffffff;
+>         const fdt32_t *reg, *endp;
+> -       uint64_t size, end;
+> +       uint64_t rsvaddr, size, end;
+>         const char *type;
+>         int offset, len;
+>
+> @@ -74,6 +74,19 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         if (fdt_magic(fdt) != FDT_MAGIC)
+>                 return mem_start;
+>
+> +       for (offset = fdt_off_mem_rsvmap(fdt); ; offset += 16) {
+> +               rsvaddr = get_val(fdt + offset, 2);
+> +               size = get_val(fdt + offset + 8, 2);
+> +
+> +               if (!rsvaddr && !size)
+> +                       break;
+> +
+> +               end = rsvaddr + size;
+> +               if (mem_start >= rsvaddr && mem_start <= end)
+> +                       /* Relocate past reserved block */
+> +                       mem_start = round_up(end, SZ_2M);
+> +       }
+> +
+>         /* There may be multiple cells on LPAE platforms */
+>         addr_cells = get_cells(fdt, "#address-cells");
+>         size_cells = get_cells(fdt, "#size-cells");
+> --
+> 2.25.1
+>
