@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2F34046C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3EF4046CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhIIIM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhIIIM3 (ORCPT
+        id S231146AbhIIIN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:13:26 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43850 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231143AbhIIINV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:12:29 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3661C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 01:11:19 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id z9-20020a7bc149000000b002e8861aff59so785066wmi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 01:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=x+UCdF8srfyBKX6sfJVqLuvAmV+5/qlEuc9NYz72bcA=;
-        b=e5f9kT8LiALpuvmnMLUmybaZW/m/RI5WHQ52WYwEauYWGqSWiE3jq6LkqNtoXJgIwb
-         X6CCkEqttt8VGVKxf2C4O4EKFGvhg3NMM1FRJETjNKEYWqef0BTHtWXlmqqIZNiD8l1L
-         iney65/enD3ELEJ9x4Zs0QW1cFP8i9QqAhtppOtbvhV7gC4m16GF1ErxeDnWBRSWs4qD
-         BbvJOX4YQNMLqy5xHZbROj5AXRVQ08p9gTNZ02uuG0dy4k6yw/mKK8hoD0yr9fWr1FPs
-         Dv7Vfqa2MbW0gv8oACNeGqIBP0kJKQtAV6fEdviFMtJWnXRVcfTOnEXcLm5XLdcyV5nF
-         cS9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x+UCdF8srfyBKX6sfJVqLuvAmV+5/qlEuc9NYz72bcA=;
-        b=TmAVTEHg8w1he5/3ZpzhtI9N2sVTXOW+xT0tK8uE1tJGMB5iyKT0/f4j1ePynjYKxI
-         5MsPoaKBd5W3sOeBw1XAaSFNyGA2/DpUzbZFM4rwP1mHBUyhWl4Dmzqp4eaSplQ4c+9E
-         vw0LG13IIGBtuVAr/if9RC3DPpXJhmYsjEBdopsNJdMeBJPmq6JhSOxjCsvaVPPDaIVK
-         +vGH1cfWzcjuA49SuymgD6Qis6QulzNn/KeqwPzgZ6aGZ9B7qGzXN3Hb1umt64rUOUT9
-         ZXpPCWV5prFmCYdObJi3Z/CsaxQ1Pl8DP/2JBuXfw+bcU2wh7COFgVWsTiyzZpehDYg/
-         Mc6Q==
-X-Gm-Message-State: AOAM533VvkL5mSfGZmXsOB0cSLoXlvKmF5vrZvKZsj+D9SmzCabC+ZYn
-        pdfMIaj3K64MFJpy1ufevRsKIDuVzWk=
-X-Google-Smtp-Source: ABdhPJzFN2mN44wxp+Ep1uZCy3ljqboEsD1ioq89wIJhUlVHLAv3fGZLty3BK5lZyq5tvkXu6srDtQ==
-X-Received: by 2002:a1c:9d4d:: with SMTP id g74mr1565305wme.14.1631175078413;
-        Thu, 09 Sep 2021 01:11:18 -0700 (PDT)
-Received: from localhost.localdomain ([37.163.141.235])
-        by smtp.gmail.com with ESMTPSA id v10sm1019813wrg.15.2021.09.09.01.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 01:11:17 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH v3 3/3] staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
-Date:   Thu, 09 Sep 2021 10:11:10 +0200
-Message-ID: <10808398.E1SmXddD8m@localhost.localdomain>
-In-Reply-To: <5a359f20e80341c9910ecc6286eb0aec@AcuMS.aculab.com>
-References: <20210904220048.12822-1-fmdefrancesco@gmail.com> <20210904220048.12822-4-fmdefrancesco@gmail.com> <5a359f20e80341c9910ecc6286eb0aec@AcuMS.aculab.com>
+        Thu, 9 Sep 2021 04:13:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnmES0O_1631175130;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnmES0O_1631175130)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 09 Sep 2021 16:12:10 +0800
+Date:   Thu, 9 Sep 2021 16:12:11 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH 0/6] vDPA driver for legacy virtio-pci device
+Message-ID: <20210909081211.GB17383@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEuEwbDQUtYHz=0O4pQcb6ibY0MAT7hLDjN=Okw8c9CZGA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, September 7, 2021 12:10:19 PM CEST David Laight wrote:
-> From: Fabio M. De Francesco
-> > Sent: 04 September 2021 23:01
+On Thu, Sep 09, 2021 at 11:05:06AM +0800, Jason Wang wrote:
+> On Wed, Sep 8, 2021 at 8:22 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
 > >
-> > Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
-> > For this purpose unify the four usb_write8/16/32/N() into the new
-> > usb_write(); make the latter parameterizable with 'size'; embed most of
-> > the code of usbctrl_vendorreq() into usb_write() and use in it the new
-> > usb_control_msg_send() API of USB Core.
-> > 
-> ...
-> > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/
-staging/r8188eu/hal/usb_ops_linux.c
-> > index f9c4fd5a2c53..e31d1b1fdb12 100644
-> > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > @@ -8,76 +8,51 @@
-> >  #include "../include/recv_osdep.h"
-> >  #include "../include/rtl8188e_hal.h"
-> > 
-> > -static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void 
-*pdata, u16 len, u8
-> > requesttype)
-> > +static int usb_read(struct intf_hdl *intfhdl, u32 addr, void *data, u8 
-size)
-> >  {
-> > -	struct adapter	*adapt = pintfhdl->padapter;
-> > -	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
-> > +	u16 value = (u16)(addr & 0x0000ffff);
-> > +	struct adapter *adapt = intfhdl->padapter;
-> > +	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
-> >  	struct usb_device *udev = dvobjpriv->pusbdev;
-> > -	unsigned int pipe;
-> > -	int status = 0;
-> > -	u8 *pIo_buf;
-> > +	int status;
-> > +	u8 *io_buf;
+> > This series implements the vDPA driver for legacy virtio-pci device.
+> > Currently we already have the vDPA driver for modern virtio-pci device
+> > only, but there are some legacy virtio-pci devices conforming to the
+> > virtio-pci specifications of 0.9.x or older versions. For example,
+> > ENI(Elastic Network Interface) of Alibaba ECS baremetal instance is a
+> > hardware virtio network device which follows the Virtio PCI Card 0.9.5
+> > Draft specification. Such legacy virtio-pci devices have some
+> > inconsistent behaviour with modern virtio-pci devices, so some common
+> > codes are split out and modern device specific codes are moved to a
+> > separated file.
 > 
-> Some of these changes are whitespace or renames.
-> They ought to be in a different patch.
-
-Dear David,
-
-No, they are not.
-
-I guess you were misled by the structure of the patches. There is nothing I 
-can do about it. Please notice that usb_read() is created in 2/3, and I'm 
-free to use the name of the variables I like in new functions. Furthermore, 
-usb_read() is untouched in 3/3. I can see why you thought they are renames :)
-
+> What worries me a little bit are:
 > 
-> I think you'll need 'reverse xmas tree' ordering as well.
+> 1) vDPA requires IOMMU_PLATFORM to be supported by the device to work,
+> if I understand ENI correctly, it's a legacy device so it can't
+> support ACCESS_PLATFORM. Or is it a legacy device that supports
+> ACCESS_PLATFORM implicitly.
+> 2) vDPA tries to present a 1.0 device, in this case the behavior could
+> be ruled by the spec. If we tries to present an 1.0 device on top of
+> legacy device we may suffer a lot of issues:
+> 
+> - endian issue: 1.0 use le but legacy may use native endian
+> - queue_enable semantic which is missed in the legacy
+
+Writting the queue_address is regarded as enable queue in the legacy.
+Right?
+
+> - virtqueue size, as you mentioned below
+> 
+> I guess what the device(ENI) supports are:
+> 
+> 1) semantic of ACCESS_PLATFORM without a feature
+> 2) little endian
+> 3) but a legacy device
+> 
+> So I think it might be better:
+> 
+> 1) introduce the library for legacy as you did in this patch
+> 2) having a dedicated ENI vDPA driver
+> 
+> 3) live migration support, though it was not supported by the spec
+> yet, but we are working on the support, and we know legacy device can
+> support this.
+> 
+> Thanks
 > 
 
-I didn't know this rule, but I must agree that this style is horrible. I'll 
-change the order of variables declaration for the purpose of fixing this 
-ugly "reverse Xmas tree".
+I agree.
+It's better to implement a dedicated vDPA driver for ENI only. ENI is
+not a standard legacy virtio-pci device.
 
-Thanks for your review.
-
-Regards,
-
-Fabio
-
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 
-1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-> 
-
-
-
-
+> >
+> > For legacy devices, it is not supported to negotiate the virtqueue size
+> > by the specification. So a new callback get_vq_num_unchangeable is
+> > introduced to indicate user not to try change the virtqueue size of the
+> > legacy vdpa device. For example, QEMU should not allocate memory for
+> > virtqueue according to the properties tx_queue_size and rx_queue_size if
+> > we use legacy virtio-pci device as the vhost-vdpa backend. Instead, QEMU
+> > should use the new callback get_vq_num_unchangeable first to check if
+> > the vdpa device support to change virtqueue size. If not, QEMU should
+> > call the callback get_vq_num_max to get the static virtqueue size then
+> > allocate the same size memory for the virtqueue.
+> >
+> > This series have been tested with the ENI in Alibaba ECS baremetal
+> > instance.
+> >
+> > These patches may under consideration, welcome for comments.
+> >
+> >
+> > Wu Zongyong (6):
+> >   virtio-pci: introduce legacy device module
+> >   vdpa: fix typo
+> >   vp_vdpa: add vq irq offloading support
+> >   vp_vdpa: split out reusable and device specific codes to separate file
+> >   vdpa: add get_vq_num_unchangeable callback in vdpa_config_ops
+> >   vp_vdpa: introduce legacy virtio pci driver
+> >
+> >  drivers/vdpa/Kconfig                     |   7 +
+> >  drivers/vdpa/virtio_pci/Makefile         |   3 +
+> >  drivers/vdpa/virtio_pci/vp_vdpa.c        |   8 +
+> >  drivers/vdpa/virtio_pci/vp_vdpa_common.c | 220 ++++++++++++++
+> >  drivers/vdpa/virtio_pci/vp_vdpa_common.h |  67 +++++
+> >  drivers/vdpa/virtio_pci/vp_vdpa_legacy.c | 346 +++++++++++++++++++++++
+> >  drivers/vdpa/virtio_pci/vp_vdpa_modern.c | 327 +++++++++++++++++++++
+> >  drivers/vhost/vdpa.c                     |  19 ++
+> >  drivers/virtio/Kconfig                   |  10 +
+> >  drivers/virtio/Makefile                  |   1 +
+> >  drivers/virtio/virtio_pci_common.c       |  10 +-
+> >  drivers/virtio/virtio_pci_common.h       |   9 +-
+> >  drivers/virtio/virtio_pci_legacy.c       | 101 ++-----
+> >  drivers/virtio/virtio_pci_legacy_dev.c   | 220 ++++++++++++++
+> >  drivers/virtio/virtio_vdpa.c             |   5 +-
+> >  include/linux/vdpa.h                     |   6 +-
+> >  include/linux/virtio_pci_legacy.h        |  44 +++
+> >  include/uapi/linux/vhost.h               |   2 +
+> >  18 files changed, 1320 insertions(+), 85 deletions(-)
+> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.c
+> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_common.h
+> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
+> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_modern.c
+> >  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
+> >  create mode 100644 include/linux/virtio_pci_legacy.h
+> >
+> > --
+> > 2.31.1
+> >
