@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3119C4048B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DF44048B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbhIIKwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:52:36 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:14326 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232903AbhIIKwf (ORCPT
+        id S234393AbhIIKyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232903AbhIIKyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:52:35 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1896onVx002355;
-        Thu, 9 Sep 2021 05:51:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=vV2E/bPOCiDXIXiqkPzy5Kt8Vs/IvVSFsRIuqXLKxFM=;
- b=Zi3ZOHlhXIMKHtWoluEvl5r/O6KDehvSF4IeYn92I4aqALLZ6EbaFQxPZf255JFdXfQr
- YhNMRLOCJ0ba9XYImKxI9M5KEL32Esahuqwi65UQq8m21VBvw8IrRRYDNevg95FaNaM8
- HsoMVs2ttqCTn4ARVXF8EhNYwhYgUtZ5wFVdXRM5qJG0pbUOXc0+i9/3bABrHfYdffPJ
- qvumz9yOpFYMywHT/IU8EpuktezzEbOR5tvCBI0u8lpnqP218T3ag2HHCyvgIe6YwDjO
- Lj+i+IEtesZMD4BIQ5nIToSoncWah9Au3aOYmEXSZD47IACbDuVaSvsb8JLaFjxct7jq cw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3ay8n60dna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 09 Sep 2021 05:51:23 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 9 Sep
- 2021 11:51:21 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Thu, 9 Sep 2021 11:51:21 +0100
-Received: from [198.61.64.231] (unknown [198.61.64.231])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 565E3478;
-        Thu,  9 Sep 2021 10:51:21 +0000 (UTC)
-Subject: Re: [PATCH 03/10] spi: Add flag for no TX after a RX in the same Chip
- Select
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
- <20210908113450.788452-4-tanureal@opensource.cirrus.com>
- <20210908123734.GF4112@sirena.org.uk>
-From:   Lucas tanure <tanureal@opensource.cirrus.com>
-Message-ID: <7dc20785-95da-6599-49dc-8e5f805d6a14@opensource.cirrus.com>
-Date:   Thu, 9 Sep 2021 11:51:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 9 Sep 2021 06:54:24 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BBCC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 03:53:15 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n27so2003387oij.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 03:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fU5ufvRRjTtfwnNvK13MR5zMOLz3I8fk1OzlUMqINLQ=;
+        b=svEsGSMujFvTtR4UMtARJNXuZvz+U/550aXRIc+7UMzXzxYASPNNCNz75C6NHgXQGg
+         dVJIPTelpAL58scaurL0kBQOQTMznlEy8QRnyHQfYxdvgW794LiM1IeQsfZLCEJ22GDQ
+         qeYJDSw9yib0rswsAY4EiMIpR09/rniDzcmwUBU47L1cdLS7q206vZncbq5ddz/unqpR
+         JjT6q7GZ3YxYt0F0WB2frZxiJ2+sILr+1ax6Ri2HSHO4/nyZOnqbiOVisCjJQDDu6QAo
+         hcv1jpLE7VOWgiP2TLIVuvoIKnrgb/YQjoBfw63Ub7F4cpzR210zw6O/4AgWl9NTv+i7
+         YCmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fU5ufvRRjTtfwnNvK13MR5zMOLz3I8fk1OzlUMqINLQ=;
+        b=c3c2LU4qn6C3EsI3Moeav3RxnMf01jh7y4t60nK5iWeLxwt+SL/WeiEyBknjGZKYYi
+         paShmYt038N2nDCfh/AIE8ikOf8l26e3KDfULJ95Onm99+gKW/Pv7oYjm1qtlzM5N62X
+         tRRgqlFC/mEIPoZYRV8z84YMAnLFaSLTWCTSuqXoXUumDvx22NXqxqs9wTEPQIcDW0RP
+         XbJJypLE38z6VkKg585ms9q2q7fZHc5eRxCrUvWnez7z08CHl80f0WC+AkcfZs/PYbyQ
+         u8xPrXdPwr2fi85xd6VJ+Y5om1Vy3Hc+tiLOjgALzHVcrnx4cpLVZYliaRLzDHHMRhrX
+         vvLQ==
+X-Gm-Message-State: AOAM531qTS3BYtyTDdPm1p5BgR70Ke22lyMYb6O/kX/57c5LaGHN41kl
+        qxScVsEgkh/nL+yrUUkOJ+nbilFL0wjJ/0215H3l0Q==
+X-Google-Smtp-Source: ABdhPJypirAM1jjdo9XWTXuE1r/IYJFmD049z7WphsmfidtaQM2qvedJJrF7FPI9vKRmcHUWVT9heQSyJAVB96uljac=
+X-Received: by 2002:a05:6808:21a5:: with SMTP id be37mr1443831oib.172.1631184794726;
+ Thu, 09 Sep 2021 03:53:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210908123734.GF4112@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: Pmt-t4LicdzZ8Q9yaFx4gS45mSJbI8b2
-X-Proofpoint-GUID: Pmt-t4LicdzZ8Q9yaFx4gS45mSJbI8b2
-X-Proofpoint-Spam-Reason: safe
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+ <YTkjJPCdR1VGaaVm@archlinux-ax161> <75a10e8b-9f11-64c4-460b-9f3ac09965e2@roeck-us.net>
+ <YTkyIAevt7XOd+8j@elver.google.com> <YTmidYBdchAv/vpS@infradead.org>
+In-Reply-To: <YTmidYBdchAv/vpS@infradead.org>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 9 Sep 2021 12:53:03 +0200
+Message-ID: <CANpmjNNCVu8uyn=8=5_8rLeKM5t3h7-KzVg1aCJASxF8u_6tEQ@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 1:37 PM, Mark Brown wrote:
-> On Wed, Sep 08, 2021 at 12:34:44PM +0100, Lucas Tanure wrote:
->> Some controllers can't write to the bus after a read without
->> releasing the chip select, so add flag and a check in spi core
-> 
-> Nothing you've added ever reads this flag and I'm not sure what anything
-> would be able to constructively do with it so why add the flag?  I don't
-> understand what the use case is.
-> 
-__spi_validate checks this flag and makes sure the message can be 
-received by the controller.
-__spi_validate can't fix the message, so it only rejects the message.
+On Thu, 9 Sept 2021 at 07:59, Christoph Hellwig <hch@infradead.org> wrote:
+> On Wed, Sep 08, 2021 at 11:58:56PM +0200, Marco Elver wrote:
+> > It'd be good to avoid. It has helped uncover build issues with KASAN in
+> > the past. Or at least make it dependent on the problematic architecture=
+.
+> > For example if arm is a problem, something like this:
+>
+> I'm also seeing quite a few stack size warnings with KASAN on x86_64
+> without COMPILT_TEST using gcc 10.2.1 from Debian.  In fact there are a
+> few warnings without KASAN, but with KASAN there are a lot more.
+> I'll try to find some time to dig into them.
+
+Right, this reminded me that we actually at least double the real
+stack size for KASAN builds, because it inherently requires more stack
+space. I think we need Wframe-larger-than to match that, otherwise
+we'll just keep having this problem:
+
+https://lkml.kernel.org/r/20210909104925.809674-1-elver@google.com
+
+> While we're at it, with -Werror something like this is really futile:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_object.c: In function =E2=80=98amdgpu_b=
+o_support_uswc=E2=80=99:
+> drivers/gpu/drm/amd/amdgpu/amdgpu_object.c:493:2: warning: #warning
+> Please enable CONFIG_MTRR and CONFIG_X86_PAT for better performance thank=
+s to write-combining [-Wcpp
+>   493 | #warning Please enable CONFIG_MTRR and CONFIG_X86_PAT for better =
+performance \
+>       |  ^~~~~~~
