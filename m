@@ -2,143 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF2840574B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879C44056D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357918AbhIINdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:33:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53256 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357117AbhIINIz (ORCPT
+        id S1357229AbhIINYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:24:09 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60698 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1358864AbhIINJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:08:55 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 906B51FDEE;
-        Thu,  9 Sep 2021 13:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631192865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q8fvni01MBJWcxrLzPbIsAKIM37aJ2JiDCm9M8IpR/A=;
-        b=hUdo2nR0EawMEn0tCZz+eb71l9bIv1JtCOFAj8A2+hXlZhAa4O+py+YtLLNnAk4TnGT9xI
-        YwfNirztdFcoTpYCI19/BIn+OF+r95Qf8Jw4u4BGR3aczZ4wQgdvygzDe1vhAcjtaMPEjQ
-        qDzDYz3a25yrSpOJMap6kcybalH5W0k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631192865;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q8fvni01MBJWcxrLzPbIsAKIM37aJ2JiDCm9M8IpR/A=;
-        b=qFUIIgpaFwTDAOHvTpPWClu4gbEPsEJxT6SkoKJI/Y9FtFtvC6hOb8sPcS18GVhtwSvy8A
-        9KL1z7kUf6GQteDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DA0B13B36;
-        Thu,  9 Sep 2021 13:07:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wkMdGiEHOmEzDAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 09 Sep 2021 13:07:45 +0000
-Message-ID: <0f55d19c-9c96-1251-58b5-4cd96a49bc6d@suse.cz>
-Date:   Thu, 9 Sep 2021 15:07:44 +0200
+        Thu, 9 Sep 2021 09:09:49 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1899nKOw011941;
+        Thu, 9 Sep 2021 15:08:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=0h6LGpjEEk31pGIeJNfLae2R0C+9agXmaUSCwB2Bnks=;
+ b=VKroyFG258TOB2ODpltjzUUgcbYlQd1yUtX6n8elNAVQAn/xpLxu2t8GODbvPtCr1iB5
+ wlHalxMGuGFLbpInvhOzcwenqJQRM7GzMxa3y1rkn8DaqutE+DMbeKSqqLM/kuKr1UdK
+ 3Vy3wU8y9/XxOt7K21l5D5yPD4e22eaPv/ZDOrYdJ2fGJzOaW82enSpDBEmzrlj1GZSa
+ 8vExjV+7OVb8Bzff+k6PEFiaiNVOpueLNSz8QkNVxvZwxJRIVv5dmXbG2HMXhi9stacl
+ YitqLBsIGVqFCQI8UPHdTV7euYxrLxsLyPHeNp+7uzf0FtNxJ2YgUwhM91pZWWcLVAnq rg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3ay86m3hfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 15:08:23 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C813610003D;
+        Thu,  9 Sep 2021 15:08:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8A0D821B302;
+        Thu,  9 Sep 2021 15:08:15 +0200 (CEST)
+Received: from lmecxl0993.lme.st.com (10.75.127.51) by SFHDAG1NODE3.st.com
+ (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 9 Sep
+ 2021 15:08:14 +0200
+Subject: Re: [PATCH v2] drm/stm: ltdc: attach immutable zpos property to
+ planes
+To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Yannick Fertre <yannick.fertre@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Raphael Gallais-Pou <raphael.gallais-pou@st.com>
+References: <20210907151323.5850-1-raphael.gallais-pou@foss.st.com>
+From:   Philippe CORNU <philippe.cornu@foss.st.com>
+Message-ID: <b3f0b75f-10c5-72f2-be85-8d8ee7c80f6b@foss.st.com>
+Date:   Thu, 9 Sep 2021 15:08:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
+In-Reply-To: <20210907151323.5850-1-raphael.gallais-pou@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To:     Huangzhaoyang <huangzhaoyang@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
-        ke.wang@unisoc.com
-References: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH] psi : calc psi memstall time more precisely
-In-Reply-To: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-09_04,2021-09-09_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 14:00, Huangzhaoyang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+
+
+On 9/7/21 5:13 PM, Raphael Gallais-Pou wrote:
+> Defines plane ordering by hard-coding an immutable Z position from the
+> first plane, used as primary layer, to the next ones as overlay in order
+> of instantiation.
 > 
-> psi's memstall time is counted as simple as exit - entry so far, which ignore
-> the task's off cpu time. Fix it by calc the percentage of off time via task and
-> rq's util and runq load.
-
-Wouldn't this also filter out IO wait time as that means sleeping, thus
-again defeat the purpose of observing real stalls due to memory shortage?
-If cpu starvation (due to overcommited system?) affects pci memstall
-accuracy then that's suboptimal, but IMHO fixing it this way would do more
-harm than good?
-
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> This zpos is only an information as it is not possible to modify it,
+> blending operations are still applied from the top to the bottom layer.
+> 
+> This patch helps to remove a warning message from the Android
+> Hardware Composer.
+> 
+> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> Acked-by: Yannick Fertre <yannick.fertre@foss.st.com>
+> Reviewed-by: Yannick Fertre <yannick.fertre@foss.st.com>
 > ---
->  kernel/sched/psi.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
+>   drivers/gpu/drm/stm/ltdc.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index cc25a3c..6812c7e 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -182,6 +182,8 @@ struct psi_group psi_system = {
->  
->  static void psi_avgs_work(struct work_struct *work);
->  
-> +static unsigned long psi_memtime_fixup(u32 growth);
+> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+> index 195de30eb90c..bd603ef5e935 100644
+> --- a/drivers/gpu/drm/stm/ltdc.c
+> +++ b/drivers/gpu/drm/stm/ltdc.c
+> @@ -1024,6 +1024,8 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+>   		return -EINVAL;
+>   	}
+>   
+> +	drm_plane_create_zpos_immutable_property(primary, 0);
 > +
->  static void group_init(struct psi_group *group)
->  {
->  	int cpu;
-> @@ -492,6 +494,23 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
->  	return growth;
->  }
->  
-> +static unsigned long psi_memtime_fixup(u32 growth)
-> +{
-> +	struct rq *rq = task_rq(current);
-> +	unsigned long growth_fixed = (unsigned long)growth;
-> +
-> +	if !(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH)
-> +		return growth_fixed;
-> +
-> +	if ((current->in_memstall)
-> +		&& (current->se.avg.util_avg <= rq->cfs.avg.util_avg)
-> +		&& current->se.avg.util_avg != 0)
-> +		growth_fixed = div64_ul((current->se.avg.util_avg + 1) * growth,
-> +			rq->cfs.avg.util_avg + rq->avg_rt.util_avg + 1);
-> +
-> +	return growth_fixed;
-> +}
-> +
->  static void init_triggers(struct psi_group *group, u64 now)
->  {
->  	struct psi_trigger *t;
-> @@ -658,6 +677,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
->  	}
->  
->  	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
-> +		delta = psi_memtime_fixup(delta);
->  		groupc->times[PSI_MEM_SOME] += delta;
->  		if (groupc->state_mask & (1 << PSI_MEM_FULL))
->  			groupc->times[PSI_MEM_FULL] += delta;
-> @@ -928,8 +948,8 @@ void psi_memstall_leave(unsigned long *flags)
->  	 */
->  	rq = this_rq_lock_irq(&rf);
->  
-> -	current->in_memstall = 0;
->  	psi_task_change(current, TSK_MEMSTALL, 0);
-> +	current->in_memstall = 0;
->  
->  	rq_unlock_irq(rq, &rf);
->  }
+>   	ret = drm_crtc_init_with_planes(ddev, crtc, primary, NULL,
+>   					&ltdc_crtc_funcs, NULL);
+>   	if (ret) {
+> @@ -1046,6 +1048,7 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+>   			DRM_ERROR("Can not create overlay plane %d\n", i);
+>   			goto cleanup;
+>   		}
+> +		drm_plane_create_zpos_immutable_property(overlay, i);
+>   	}
+>   
+>   	return 0;
 > 
 
+Applied on drm-misc-next.
+Many thanks for your patch,
+Philippe :-)
