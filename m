@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE894048B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3119C4048B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhIIKuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233990AbhIIKus (ORCPT
+        id S234327AbhIIKwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 06:52:36 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:14326 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232903AbhIIKwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:50:48 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF922C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 03:49:38 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id r3-20020a05600c35c300b002fbb0888a42so591080wmq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 03:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=JKG2Csw+REpqX6pYLoajkSbStNWY+2P13qnXNLcGPTo=;
-        b=oVBgZSF0f7gZb8HxrZbIdXzorsMl6/30hQtezrkGiG8Mjm7GMEenEEeX5JUiCbYIgx
-         Doy4WrNjWdwiqs8RasWNSvfZMqCqnH3qDP5QY3UwDBgMIVon3xP9XEhsjAd1s9G2oe3x
-         RiqzigUTJHbCf4sZNRHKAS30r6yHw0KBwy5YQPG1DjBL3/6mFcF5IBV5cgzgfseyw+lr
-         N53YN3j9A/2jMxFze4B4nunFb0XIP42E5YN4mAKc7Ck8rGjvakkPbQCWqASi8Y3uDwYC
-         thMRP3jA2e6aXbyMrjruuJeGvI7gZjIhXqKuZKJDaRFVke0PxsNbBzmW77HK7kksfQ58
-         J8nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=JKG2Csw+REpqX6pYLoajkSbStNWY+2P13qnXNLcGPTo=;
-        b=5jU4F8wa09S9HBRcLkgTB2Yr2dLzrTwSN06Dqac08Saki/ggbcu3ipXwoLrGTBJewH
-         c/dzn6EPWslKW5PAvJEvP72lX4deuDvxQH5UY/JK60v0aTlhFYYW/XVfVqEvhO4PKT5S
-         XOQVO2hAXndHBcNhSZD1coBPNpYNhAZf8chA4d9K/K9ipDc93Ft0b5/qxYToOmtw5KSB
-         SUg4ivqvj5lIfjLEkqWKvcSrHDLCjGu5LCnwpAVl0OPHgFc43Jw39iwLmKW13+Jn/xD9
-         k336B/1hJ3QT+qqSjHuPfzDAMUPgLF4TVViiL9+VZy5KoFOegN/2i3XzuXCZZEoYcUnH
-         s7aA==
-X-Gm-Message-State: AOAM531ImA81ZRJfn9v+CwMeU2w9SMPur+KZPGaVcsKaqUseUo4eXoLb
-        wd0jRu1jxITqHNa1sdi9oBhybSnhtw==
-X-Google-Smtp-Source: ABdhPJzkOAvHKQVqCuqxsCtyM6C/PyG02n+39nThS1IWFPChq3RDEGCJm3IbSKaPCz97WE1D6JAp5UuEWQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:98f9:2b1c:26b6:bc81])
- (user=elver job=sendgmr) by 2002:a05:600c:b4e:: with SMTP id
- k14mr2206453wmr.151.1631184577256; Thu, 09 Sep 2021 03:49:37 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 12:49:25 +0200
-Message-Id: <20210909104925.809674-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH] kasan: double -Wframe-larger-than threshold if KASAN
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Arnd Bergmann <arnd@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Taras Madan <tarasmadan@google.com>, linux-mm@kvack.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 9 Sep 2021 06:52:35 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1896onVx002355;
+        Thu, 9 Sep 2021 05:51:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=vV2E/bPOCiDXIXiqkPzy5Kt8Vs/IvVSFsRIuqXLKxFM=;
+ b=Zi3ZOHlhXIMKHtWoluEvl5r/O6KDehvSF4IeYn92I4aqALLZ6EbaFQxPZf255JFdXfQr
+ YhNMRLOCJ0ba9XYImKxI9M5KEL32Esahuqwi65UQq8m21VBvw8IrRRYDNevg95FaNaM8
+ HsoMVs2ttqCTn4ARVXF8EhNYwhYgUtZ5wFVdXRM5qJG0pbUOXc0+i9/3bABrHfYdffPJ
+ qvumz9yOpFYMywHT/IU8EpuktezzEbOR5tvCBI0u8lpnqP218T3ag2HHCyvgIe6YwDjO
+ Lj+i+IEtesZMD4BIQ5nIToSoncWah9Au3aOYmEXSZD47IACbDuVaSvsb8JLaFjxct7jq cw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3ay8n60dna-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 09 Sep 2021 05:51:23 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 9 Sep
+ 2021 11:51:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Thu, 9 Sep 2021 11:51:21 +0100
+Received: from [198.61.64.231] (unknown [198.61.64.231])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 565E3478;
+        Thu,  9 Sep 2021 10:51:21 +0000 (UTC)
+Subject: Re: [PATCH 03/10] spi: Add flag for no TX after a RX in the same Chip
+ Select
+To:     Mark Brown <broonie@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
+ <20210908113450.788452-4-tanureal@opensource.cirrus.com>
+ <20210908123734.GF4112@sirena.org.uk>
+From:   Lucas tanure <tanureal@opensource.cirrus.com>
+Message-ID: <7dc20785-95da-6599-49dc-8e5f805d6a14@opensource.cirrus.com>
+Date:   Thu, 9 Sep 2021 11:51:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210908123734.GF4112@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: Pmt-t4LicdzZ8Q9yaFx4gS45mSJbI8b2
+X-Proofpoint-GUID: Pmt-t4LicdzZ8Q9yaFx4gS45mSJbI8b2
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All architectures at least double stack size when using one of the KASAN
-software modes that rely on compiler instrumentation.
-
-Until now, warnings emitted by -Wframe-larger-than could easily be
-ignored, as we would still get a working kernel.
-
-However, with the introduction of -Werror (CONFIG_WERROR=y), it makes
-sense to at least double the -Wframe-larger-than threshold for
-software-based KASAN modes to reflect the already increased stack sizes
-when building a kernel with KASAN enabled.
-
-Link: https://lkml.kernel.org/r/YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain
-Signed-off-by: Marco Elver <elver@google.com>
----
- lib/Kconfig.debug | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ed4a31e34098..2055bbb6724a 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -345,6 +345,8 @@ endif # DEBUG_INFO
- config FRAME_WARN
- 	int "Warn for stack frames larger than"
- 	range 0 8192
-+	default 4096 if 64BIT && (KASAN_GENERIC || KASAN_SW_TAGS)
-+	default 2048 if !64BIT && (KASAN_GENERIC || KASAN_SW_TAGS)
- 	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
- 	default 1536 if (!64BIT && PARISC)
- 	default 1024 if (!64BIT && !PARISC)
--- 
-2.33.0.153.gba50c8fa24-goog
-
+On 9/8/21 1:37 PM, Mark Brown wrote:
+> On Wed, Sep 08, 2021 at 12:34:44PM +0100, Lucas Tanure wrote:
+>> Some controllers can't write to the bus after a read without
+>> releasing the chip select, so add flag and a check in spi core
+> 
+> Nothing you've added ever reads this flag and I'm not sure what anything
+> would be able to constructively do with it so why add the flag?  I don't
+> understand what the use case is.
+> 
+__spi_validate checks this flag and makes sure the message can be 
+received by the controller.
+__spi_validate can't fix the message, so it only rejects the message.
