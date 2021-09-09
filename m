@@ -2,146 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C844044DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DAE4044E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350674AbhIIFQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:16:32 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:29468 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350499AbhIIFQb (ORCPT
+        id S1350634AbhIIFUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350542AbhIIFUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:16:31 -0400
-X-Greylist: delayed 93880 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 01:16:31 EDT
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1895EtRZ031230;
-        Thu, 9 Sep 2021 14:14:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1895EtRZ031230
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631164495;
-        bh=ghCcarr3Wa8g2fBREVBbfn3a3wQyCXTSnt9W+mVN4Mw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rGqgIpLlT7n/rxTXzUo+6MUEomBhjVrmkJT2P1Im6Y/S1T9ntkNciz/Qymu546Q/J
-         6bFNFQz5G2o3Ez4a2w3Kck8x9R2Vfg9mdsssZNfYlhvCOjS2euWNZPgoz6/FwQ3PBZ
-         BgeWVPb39rsU7WA9lXdR5mdukFPrv3xEXjA0ePLlrHvB0PPcGWvNRgplB5fDiD1y2B
-         g3CB35uBI0PeWaBpym9q/TOCGxmEG0VtiVZvQLSL4YgTpp2JCQBmwKVOKvGj6E9hDa
-         cSBK2wIGgqkoZxrmPMDZ3RZe1GRdVlDrQv/pvE8Yd/GV7b2MOQoyGkOYJr/Kwvqltz
-         WYKLNTbB9MbiA==
-X-Nifty-SrcIP: [209.85.216.46]
-Received: by mail-pj1-f46.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so565225pjx.5;
-        Wed, 08 Sep 2021 22:14:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532YT1HxsNSNtDpcdJDdQFNZjYWhD/6W+vXuvWiNoj4mJy4InI4+
-        +j7TQkR8mqB+5BcsBgtGOb8W9YT2i26hNGa53Ng=
-X-Google-Smtp-Source: ABdhPJwZNsMXFApjgplVXDMFN/yESX/46Fzfe2Fjn/3/fRjwdi4HheLFDoRreqN1vd/j/Idb5fi7KFiatlzL1Zk90CU=
-X-Received: by 2002:a17:902:6b42:b0:13a:54d0:39c4 with SMTP id
- g2-20020a1709026b4200b0013a54d039c4mr1244141plt.42.1631164494718; Wed, 08 Sep
- 2021 22:14:54 -0700 (PDT)
+        Thu, 9 Sep 2021 01:20:10 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EADBC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 22:18:58 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id b200so740031iof.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+CYFnjvQGu3qEtGCtuJvH4Bp2b8Zt/XnVuPY3zDRm/4=;
+        b=iASH6O9lWrdEVAkELUB1zBmanzld5X4HWNeQXJAqq4lnMka+pE0wihP0EZNLG+Dy+8
+         W6SPfpydSSrMwC1ldEnMQcQ2aAfiXV9pjugauT1C/yeoYYfo3z39B/61zOyQLd17GKJP
+         6Dv57E9J6sge/+PgOd3g6uDp+SypcWMPm2LBSXk9qCCHQr0UhKzxV4+t2+IISw3gLV/c
+         6a0a5VVclG8dgvz5n5ud8UQ/AjDjXL/wrCPHtQk0u5w0X/1JPM67/pV79+7NFP6DCyWT
+         oEuKEMfPe7ohxC+nb3cByLN2hAZCwAPuUYSf90DB6qFu6yUErJA6M6iNesHjRNL6mZSs
+         V4Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+CYFnjvQGu3qEtGCtuJvH4Bp2b8Zt/XnVuPY3zDRm/4=;
+        b=Xh0HlQOxISzVZH1FYj6TsBBV47Y6yOrzik8fUfu22KOHWm79wQxN3UXaQmc9GgjUe3
+         syw5TImbV9THxX9Irm0QzigYLasJDjpk4JiZzmlxdN7WX0U7LrIchI8bzfSni77E+1vk
+         k0A5hfVWUp03BL+S6aIUVP7t47AkRfqzlOcXOkzRrKiRZ0xbHUP/FNaK9V1/yjk4fhkI
+         bLXATY3KoWfEdUO1Cl5H3uiohrUOYl3rQvk54LA+wL9Z7bUcd5CD5Pov0b9MKmK1ChSC
+         L2iTdguQze1bqW8lL+xoLUCMOkm9MvLSdXde8GuwUpauOQX1jCXlzzEO6AOLivdTayEC
+         W22Q==
+X-Gm-Message-State: AOAM532qISiUTgMNueJ3Na2We+h0Jncll8QIxGdS6/mNl7G3e7uT+Mo6
+        Z/trHUG/KaouYgc7ML/n4coYqQ==
+X-Google-Smtp-Source: ABdhPJzq92DTfukBJOnIWgAl3htCHd8+vLrGENISalBbgwBC7v97HZRdGs9hOdm2RvVO8uV/scNEeg==
+X-Received: by 2002:a6b:8f4e:: with SMTP id r75mr1131550iod.172.1631164737554;
+        Wed, 08 Sep 2021 22:18:57 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id z26sm426323iol.6.2021.09.08.22.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 22:18:56 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 05:18:53 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 11/18] KVM: arm64: selftests: Add basic GICv3 support
+Message-ID: <YTmZPSEm3Fj6l1PN@google.com>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-12-rananta@google.com>
 MIME-Version: 1.0
-References: <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com>
- <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com>
- <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com>
- <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org>
- <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com>
- <20210906215218.GA920497@tucnak> <20210907145247.GH1583@gate.crashing.org>
-In-Reply-To: <20210907145247.GH1583@gate.crashing.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 9 Sep 2021 14:14:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATNZRbdxCkdu=+wW1bcyoX0YcZYRTSW129n7AnnLyKbWg@mail.gmail.com>
-Message-ID: <CAK7LNATNZRbdxCkdu=+wW1bcyoX0YcZYRTSW129n7AnnLyKbWg@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909013818.1191270-12-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 11:54 PM Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
->
-> On Mon, Sep 06, 2021 at 11:52:18PM +0200, Jakub Jelinek wrote:
-> > On Mon, Sep 06, 2021 at 02:08:58PM -0700, Linus Torvalds wrote:
-> > There is a stddef.h include too and that's it
-> > (I must say I don't see the reason for that include though).
->
-> Yeah me neither.  Maybe the header used NULL before?
->
-> > Other compiler provided headers (not talking about C++ now) also have no
-> > or very limited includes, including stddef.h, stdarg.h, stdatomic.h, etc.
-> > The only exceptions are tgmath.h which isn't usable without libc
-> > math.h/complex.h,
->
-> <tgmath.h> is only for hosted environments.  That requires a C library
-> for GCC (we do not implement this stuff ourselves).  The compiler and
-> the C library have to work together to get this done, and the relation
-> between GCC and Glibc has been a bit too tight for this, it is true.
->
-> But a kernel build is not in a hosted environment.
->
-> > in some cases stdint.h and limits.h which are in some
-> > configurations provided both by the C library and the compiler and include
-> > each other in that case (but e.g. stdint.h has an alternate version that
-> > only uses compiler provided builtin macros) and openacc.h.
->
-> On what targets is <stdint.h> still problematic?  And <limits.h>?
+On Thu, Sep 09, 2021 at 01:38:11AM +0000, Raghavendra Rao Ananta wrote:
+> Add basic support for ARM Generic Interrupt Controller v3.
+> The support provides guests to setup interrupts.
+> 
+> The work is inspired from kvm-unit-tests and the kernel's
+> GIC driver (drivers/irqchip/irq-gic-v3.c).
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   2 +-
+>  .../selftests/kvm/include/aarch64/gic.h       |  21 ++
+>  tools/testing/selftests/kvm/lib/aarch64/gic.c |  93 +++++++
+>  .../selftests/kvm/lib/aarch64/gic_private.h   |  21 ++
+>  .../selftests/kvm/lib/aarch64/gic_v3.c        | 240 ++++++++++++++++++
+>  .../selftests/kvm/lib/aarch64/gic_v3.h        |  70 +++++
+>  6 files changed, 446 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> 
 
+[...]
 
-Since commit 0c79a8e29b5fcbcbfd611daf9d500cfad8370fcf
-all architectures in the kernel space use the same fixed-width
-types, which are defined by
-include/uapi/asm-generic/int-ll64.h
+> +static void
+> +gic_dist_init(enum gic_type type, unsigned int nr_cpus, void *dist_base)
+> +{
+> +	const struct gic_common_ops *gic_ops;
 
-So, u32 is always 'unsigned int',
-and u64 is always 'unsigned long long'.
+does this need to be initialized? I haven't tried compiling, but it
+seems it should trigger a compiler warning as it is only initialized if
+type == GIC_V3.
 
-It is convenient for printk() in common code
-because we can always use the 'll' prefix for u64.
+> +	spin_lock(&gic_lock);
+> +
+> +	/* Distributor initialization is needed only once per VM */
+> +	if (gic_common_ops) {
+> +		spin_unlock(&gic_lock);
+> +		return;
+> +	}
+> +
+> +	if (type == GIC_V3)
+> +		gic_ops = &gicv3_ops;
+> +
+> +	gic_ops->gic_init(nr_cpus, dist_base);
+> +	gic_common_ops = gic_ops;
+> +
+> +	/* Make sure that the initialized data is visible to all the vCPUs */
+> +	dsb(sy);
+> +
+> +	spin_unlock(&gic_lock);
+> +}
 
-
-  u32 foo = 1;
-  u64 bar = 1;
-
-  printk("foo = %u\n", foo);
-  printk("bar = %llu\n, bar);
-
-
-
-If we use compiler-provided <stdint.h>,
-it is not convenient for printk() because
-uint64_t is 'unsigned long' on some compilers
-and 'unsigned long long' on others.
-
-<intypes.h> provides macros such as PRIx64
-
-    uint32_t foo = 1;
-    uint64_t bar = 1;
-
-    printk("foo = %" PRIu32 "\n", foo);
-    printk("bar = %" PRIu64 "\n", bar);
-
-
-This works, but ends up with ugly code,
-which I want to avoid.
-
-
-
-
-
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
