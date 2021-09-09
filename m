@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58917405146
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A42405147
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354021AbhIIMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:35:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34546 "EHLO mail.kernel.org"
+        id S1354102AbhIIMfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:35:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352567AbhIIM0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD9361269;
-        Thu,  9 Sep 2021 11:51:51 +0000 (UTC)
+        id S1353533AbhIIM0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:26:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F8160698;
+        Thu,  9 Sep 2021 11:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188311;
-        bh=wb0vY1I/LJsIEVsnaF93j3dbSb5rsRNBhEY+WdFPy2M=;
+        s=k20201202; t=1631188313;
+        bh=ei9+rvRbmfFyYLzz70tRzEyrFIUp1vtpS67bRJuwIWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=thRyvjgwZ8hbe6Hfp0VdT25TIOFWRHskodvp9DZ/BS9R/EWdL7XvQR++vvqEO5MMu
-         /zW0Y+tkUGTMECmwqKg39rY698uh8+U50gA3Mr7KDc2FWWgTFm/wRrFeYsPGTf/3GO
-         fXpXQ9CwA04aF/77iTE+UBbp0ThQnPaCU0x5OFwNZm8Zq9qU4XT51bmln2MF9Wpglp
-         WW3og9mS4c5VNpnly1kb8q4W47vYjrYelMXGOodvdOUqwnc702aWGvXjsVHbs4RuSl
-         /qwDrm1Yjj59MUiEe0f1YutJbWC0TefQ6x/RXvHb2YqCdGJFgdVRcG9BI7KZAHpPFa
-         TPPY4xqmvZ0Vw==
+        b=riE5a4NOnysZprXPZo7jUbm4I8AL2EF3khkJCX1e+lFC/e1H3CqhEFCItz1CMHn0F
+         ImpwYj05MlQ0kI+vobq77EQ/wQUlWBc6/TuMbVUKa39+crX7a7ERdkByr40H5bCBYR
+         QKueFRmjuqN80Q/7gnsFhcOjC20MR+vVidtZIGbL34bHcy9ZVmT2xG++4bBNjivSR3
+         W6uCneS2qWDCKXzuTXptorGqg4g/eRWV8ozRJsZEut/QBJVyv4qEOQ5IV33QW7kX9h
+         hXXRi4dZKRKWv8QaKAzEAVFBlw6ZjVcqXU4mr1ZKLg8TItsrKMwIUzah01YQacYtrf
+         4Rhb9FGXvoJrQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Alan Stern <stern@rowland.harvard.edu>,
+Cc:     Jack Pham <jackp@codeaurora.org>,
+        Ronak Vijay Raheja <rraheja@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 026/176] USB: EHCI: ehci-mv: improve error handling in mv_ehci_enable()
-Date:   Thu,  9 Sep 2021 07:48:48 -0400
-Message-Id: <20210909115118.146181-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 027/176] usb: gadget: composite: Allow bMaxPower=0 if self-powered
+Date:   Thu,  9 Sep 2021 07:48:49 -0400
+Message-Id: <20210909115118.146181-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
 References: <20210909115118.146181-1-sashal@kernel.org>
@@ -43,69 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 61136a12cbed234374ec6f588af57c580b20b772 ]
+[ Upstream commit bcacbf06c891374e7fdd7b72d11cda03b0269b43 ]
 
-mv_ehci_enable() did not disable and unprepare clocks in case of
-failures of phy_init(). Besides, it did not take into account failures
-of ehci_clock_enable() (in effect, failures of clk_prepare_enable()).
-The patch fixes both issues and gets rid of redundant wrappers around
-clk_prepare_enable() and clk_disable_unprepare() to simplify this a bit.
+Currently the composite driver encodes the MaxPower field of
+the configuration descriptor by reading the c->MaxPower of the
+usb_configuration only if it is non-zero, otherwise it falls back
+to using the value hard-coded in CONFIG_USB_GADGET_VBUS_DRAW.
+However, there are cases when a configuration must explicitly set
+bMaxPower to 0, particularly if its bmAttributes also has the
+Self-Powered bit set, which is a valid combination.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+This is specifically called out in the USB PD specification section
+9.1, in which a PDUSB device "shall report zero in the bMaxPower
+field after negotiating a mutually agreeable Contract", and also
+verified by the USB Type-C Functional Test TD.4.10.2 Sink Power
+Precedence Test.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Link: https://lore.kernel.org/r/20210708083056.21543-1-novikov@ispras.ru
+The fix allows the c->MaxPower to be used for encoding the bMaxPower
+even if it is 0, if the self-powered bit is also set.  An example
+usage of this would be for a ConfigFS gadget to be dynamically
+updated by userspace when the Type-C connection is determined to be
+operating in Power Delivery mode.
+
+Co-developed-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20210720080907.30292-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-mv.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ drivers/usb/gadget/composite.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index cffdc8d01b2a..8fd27249ad25 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -42,26 +42,25 @@ struct ehci_hcd_mv {
- 	int (*set_vbus)(unsigned int vbus);
- };
- 
--static void ehci_clock_enable(struct ehci_hcd_mv *ehci_mv)
-+static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
+diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+index 1a556a628971..3ffa939678d7 100644
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -481,7 +481,7 @@ static u8 encode_bMaxPower(enum usb_device_speed speed,
  {
--	clk_prepare_enable(ehci_mv->clk);
--}
-+	int retval;
+ 	unsigned val;
  
--static void ehci_clock_disable(struct ehci_hcd_mv *ehci_mv)
--{
--	clk_disable_unprepare(ehci_mv->clk);
--}
-+	retval = clk_prepare_enable(ehci_mv->clk);
-+	if (retval)
-+		return retval;
+-	if (c->MaxPower)
++	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
+ 		val = c->MaxPower;
+ 	else
+ 		val = CONFIG_USB_GADGET_VBUS_DRAW;
+@@ -905,7 +905,11 @@ static int set_config(struct usb_composite_dev *cdev,
+ 	}
  
--static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
--{
--	ehci_clock_enable(ehci_mv);
--	return phy_init(ehci_mv->phy);
-+	retval = phy_init(ehci_mv->phy);
-+	if (retval)
-+		clk_disable_unprepare(ehci_mv->clk);
+ 	/* when we return, be sure our power usage is valid */
+-	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
++	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
++		power = c->MaxPower;
++	else
++		power = CONFIG_USB_GADGET_VBUS_DRAW;
 +
-+	return retval;
- }
- 
- static void mv_ehci_disable(struct ehci_hcd_mv *ehci_mv)
- {
- 	phy_exit(ehci_mv->phy);
--	ehci_clock_disable(ehci_mv);
-+	clk_disable_unprepare(ehci_mv->clk);
- }
- 
- static int mv_ehci_reset(struct usb_hcd *hcd)
+ 	if (gadget->speed < USB_SPEED_SUPER)
+ 		power = min(power, 500U);
+ 	else
 -- 
 2.30.2
 
