@@ -2,106 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E474405F40
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B90405F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbhIIWL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
+        id S1344590AbhIIWRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbhIIWLX (ORCPT
+        with ESMTP id S1343920AbhIIWRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:11:23 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72988C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:10:13 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id l10so6656856lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:10:13 -0700 (PDT)
+        Thu, 9 Sep 2021 18:17:33 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75CCC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:16:23 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id b4so3565266ilr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0wi+3EaAjTlirAetzelnksxkE4SBKzh2dQ06WhITDfE=;
-        b=FZjb4etGZ3GPE6MwPDx+C7u7Dozy6NrY5vjn+dOX7byAjbvApFp5MBe3v+1MW7ZDCm
-         zZzsG17wPJzKzQMbauzktXuwW3EsFcewl0phgk3gihWWHwaJ7iKZJ7+SPLoB8CsOhL3j
-         RtklJLzuJJ2hWJjaI7NhqcSw1HxEHAVDIhsqx4ZaE57poP5rfa9kcxCn6eswj1Obq/tr
-         Js8g+x456ENf+fD7t0e/eZ95JNjilLJ1SmOhy3SN3UMzUjfOw77F56Qrpp+Fk55OmHf2
-         t/5DX4yAZjcK/20vPJl4PoRL/z2hRjhxDHEMvmWgglihkIcVigfLdSOlSmRfAlIJ0trB
-         p28g==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zM0IXLI05yVZi63Lak4d4tbjRWxjsfvz5YtFG0Gz+D8=;
+        b=Klq23GFlF4B4Y5HCGn+DgkvtGBGsBjnEbsQnRQ/RRIpOlGNqGJZRa4rs0KRwaBu5fG
+         GiY+fkfvWlriXkhiqXGrVy6nGM9+olox9Mlmhl/X9GlX4Fxd+h356qCcvDF4TJiZUfnF
+         KkggHo5WpqhZDM/J0d7ef8l8qGeNiIsXAXEPw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0wi+3EaAjTlirAetzelnksxkE4SBKzh2dQ06WhITDfE=;
-        b=QAa/amqtjpAIAtODVcibt9QjvV4SpmJ7+yuXjjLVjq/kFfGrpsyyn1SMWSUiTi0di3
-         RMd9SEwm01T2y7bS/YyYDNgtECJ1I5+TR23iZafJzoPkxL1uPEVhbdUmzjDreK2b/hq6
-         rcB5gKBKb8w1+OkTjgIFUnAKAVq3+hdlrQ2Yfl3XMHkumblBbA5BjhKqvav7/Fg+LFh9
-         SAuRz6nda1SLBsI29AEy+0mayMq8hPMb9qDp6q+ElyKL4zTFsR8EJAelDe0eVGlFEQHo
-         MNuxHOvOupDLNxdC7v9aZeTc5aikJ3xMwTrGMZMCaYeNmr839ICXTATYwwPfDc5oi0iw
-         ne3w==
-X-Gm-Message-State: AOAM5325WMEZxDGsAhmQ+XceDFBWBayK3aGHYc9avThSxpQ94V8llnyr
-        99dAqzzfnrdLrGSZdoynsJN93bhELqNKMSfrAX8SCA==
-X-Google-Smtp-Source: ABdhPJwbWpl8KwLW02YtE5vs8E2iNxEfy4WpQ3ZYQUd1fK19n5IYgTY13l/REJAlap3+B7TdnC6mDNw3X/+JSgVQ7/Q=
-X-Received: by 2002:a05:6512:1518:: with SMTP id bq24mr1554159lfb.232.1631225411416;
- Thu, 09 Sep 2021 15:10:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zM0IXLI05yVZi63Lak4d4tbjRWxjsfvz5YtFG0Gz+D8=;
+        b=KIhbavynsPHnE2hsqPlCJQU1cWEgifOnyF5hMT/g4zeFcSZpXhjQyRldqogepb+pQo
+         pKO9kLWKzYpXLL2kSxFDFQYCwsxHlEPFVmGrsBCIR2Lvx2QBN8gqloSwb9GwrKjG1Lsg
+         JT/71upiNlYm3DX07cShKsFmHFZgOAahek4XxbOTPMtIU/6U/f8nUk/JAx4VfAaN+qge
+         p4nutXy4ayUtydwIocW12OEU4ruKElEdjN7bnHFGt9QIRydcBK98Q1qeCEv92CdlAW+0
+         vuXtatTp2fOe4LnFVX4I//lCBgXFGICQmnmcK/kF3worCLngFZjsf0L3KzxG85lbChce
+         5AFA==
+X-Gm-Message-State: AOAM531dFnkr6T9q/0XLzoUW5zdOpqmI6FCfCaT+h3lzVVG0J7R9Z7iC
+        H2A5TvEZfm4X8FVlgkucDR5QJfndbFxXKQ==
+X-Google-Smtp-Source: ABdhPJwUEtutory+onldo0x1TGixN2zRXjY9H9kTOfyV/3nXFsbLE/x47ySFF9yVejeK5EGLipjhww==
+X-Received: by 2002:a05:6e02:5a3:: with SMTP id k3mr3856271ils.283.1631225783245;
+        Thu, 09 Sep 2021 15:16:23 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id b19sm1543257ile.88.2021.09.09.15.16.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 15:16:22 -0700 (PDT)
+Subject: Re: [PATCH 13/19] cpupower: add the function to check amd-pstate
+ enabled
+To:     Huang Rui <ray.huang@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        linux-pm@vger.kernel.org
+Cc:     Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-14-ray.huang@amd.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <50412248-179d-3548-aeb0-d912a14a152f@linuxfoundation.org>
+Date:   Thu, 9 Sep 2021 16:16:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-3-posk@google.com>
- <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
- <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com> <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
-In-Reply-To: <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Thu, 9 Sep 2021 15:09:59 -0700
-Message-ID: <CAPNVh5eF6x8e4Lp=ZDOspwrbRYNOEyjeNW4WC99jCAZyeKLGww@mail.gmail.com>
-Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
-To:     Jann Horn <jannh@google.com>
-Cc:     Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Andrei Vagin <avagin@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210908150001.3702552-14-ray.huang@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 2:21 PM Jann Horn <jannh@google.com> wrote:
->
+On 9/8/21 8:59 AM, Huang Rui wrote:
+> Introduce the cpupower_amd_pstate_enabled() to check whether the kernel
+> mode enables amd-pstate.
+> 
 
-[...]
+What does "kernel mode" mean? Are you referring to kernel vs.
+firmware mode?
 
-> >
-> > Option 1: as you suggest, pin pages holding struct umcg_task in sys_umcg_ctl;
->
-> FWIW, there is a variant on this that might also be an option:
->
-> You can create a new memory mapping from kernel code and stuff pages
-> into it that were originally allocated as normal kernel pages. This is
-> done in a bunch of places, e.g.:
->
-> This has the advantage that it avoids pinning random pages that were
-> originally allocated from ZONE_MOVABLE blocks. (Or pinning hugepages,
-> or something like that.)
-> The downsides are that it reduces userspace's freedom to place the
-> UAPI structs wherever it wants (so userspace e.g. probably can't
-> directly put the struct in thread-local storage, instead it has to
-> store a pointer to the struct), and that you need to write a bunch of
-> code to create the mapping and allocate slots in these pages for
-> userspace threads.
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> ---
+>   tools/power/cpupower/utils/helpers/helpers.h |  5 +++++
+>   tools/power/cpupower/utils/helpers/misc.c    | 20 ++++++++++++++++++++
+>   2 files changed, 25 insertions(+)
+> 
+> diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
+> index b4813efdfb00..eb43c14d1728 100644
+> --- a/tools/power/cpupower/utils/helpers/helpers.h
+> +++ b/tools/power/cpupower/utils/helpers/helpers.h
+> @@ -136,6 +136,11 @@ extern int decode_pstates(unsigned int cpu, int boost_states,
+>   
+>   extern int cpufreq_has_boost_support(unsigned int cpu, int *support,
+>   				     int *active, int * states);
+> +
+> +/* AMD PSTATE enabling **************************/
+> +
+> +extern unsigned long cpupower_amd_pstate_enabled(unsigned int cpu);
+> +
+>   /*
+>    * CPUID functions returning a single datum
+>    */
+> diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+> index fc6e34511721..07d80775fb68 100644
+> --- a/tools/power/cpupower/utils/helpers/misc.c
+> +++ b/tools/power/cpupower/utils/helpers/misc.c
+> @@ -83,6 +83,26 @@ int cpupower_intel_set_perf_bias(unsigned int cpu, unsigned int val)
+>   	return 0;
+>   }
+>   
+> +unsigned long cpupower_amd_pstate_enabled(unsigned int cpu)
+> +{
+> +	char linebuf[MAX_LINE_LEN];
+> +	char path[SYSFS_PATH_MAX];
+> +	unsigned long val;
+> +	char *endp;
+> +
+> +	snprintf(path, sizeof(path),
+> +		 PATH_TO_CPU "cpu%u/cpufreq/is_amd_pstate_enabled", cpu);
+> +
+> +	if (cpupower_read_sysfs(path, linebuf, MAX_LINE_LEN) == 0)
+> +		return 0;
+> +
+> +	val = strtoul(linebuf, &endp, 0);
+> +	if (endp == linebuf || errno == ERANGE)
+> +		return 0;
+> +
+> +	return val;
+> +}
+> +
+>   #endif /* #if defined(__i386__) || defined(__x86_64__) */
+>   
+>   /* get_cpustate
+> 
 
-Thanks again, Jann! Why do you think using custom mapping like this is
-preferable to doing just kzalloc(size, GFP_USER), or maybe
-alloc_page(GFP_USER)?
-
-The documentation here
-https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
-says:
-
-"GFP_USER means that the allocated memory is not movable and it must
-be directly accessible by the kernel", which sounds exactly what we
-need here.
-
-[...]
