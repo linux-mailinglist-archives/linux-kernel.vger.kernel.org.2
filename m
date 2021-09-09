@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3384044E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A784044E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350702AbhIIFU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350703AbhIIFU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:20:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E43C61139;
-        Thu,  9 Sep 2021 05:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631164787;
-        bh=B4SAHApMAPHV+o8srC8bZZpT4//0AtT8m/RZFLiyaRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SHJrqFkZRuypi27v5wVFXNpmTNv75JMrJF2rODli0iDaH1xqgvAYb38+zL57xhjka
-         612kZDf0KZqLG0y5LUzAFBjm+mNmh3L/dHnz/Ulv5xmEbD1d3C+YZnW4yIn6RBT0Ee
-         1IHEraEKSCTqYCbYr2wKFt/j+UTHZyxdNp3IE3ak=
-Date:   Thu, 9 Sep 2021 07:19:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Yu, Lang" <Lang.Yu@amd.com>
-Cc:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sysfs: Remove page boundary align limitation on
- sysfs_emit and sysfs_emit_at
-Message-ID: <YTmZXU7myBFjx8/y@kroah.com>
-References: <20210908120723.3920701-1-lang.yu@amd.com>
- <YTitRjOZtWPTyRHd@kroah.com>
- <DM6PR12MB4250302F4EB80233D5807CB6FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTi0xkTVYqUpKXSt@kroah.com>
- <DM6PR12MB4250080A69BD3E2DB0050273FBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
- <YTi/UxFCYKqdT34L@kroah.com>
- <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+        id S1350714AbhIIFVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:21:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24322 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350685AbhIIFVH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:21:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631164797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SRkJG9EGhC8VgYdl6gsAldPi2RC6qHvYq1zbEFWdBEM=;
+        b=S5j/53HwI+W5xUWgmFm1tk8FyNPo4Ej2YWgsEZQeFR1AHryJYpz4W8fU8taw6zFmB7l/M9
+        oeRNT37dlWopf9u3wrWJC7T7qTxRpoD+J8oKoPUlB6ZNZe2LqUvjizypIG3UimXUFQTeZl
+        Lthdlsjjt1eWDkcSVQ9n+fvQqxesAEY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-TxHAfsiXN2e7nWYBp2bkCA-1; Thu, 09 Sep 2021 01:19:56 -0400
+X-MC-Unique: TxHAfsiXN2e7nWYBp2bkCA-1
+Received: by mail-wr1-f72.google.com with SMTP id u2-20020adfdd42000000b001579f5d6779so120079wrm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 22:19:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=SRkJG9EGhC8VgYdl6gsAldPi2RC6qHvYq1zbEFWdBEM=;
+        b=1rX0/dFIGphSyyZmhoJ6AcTb25BkSxmS1ueuCLebg/vDW4NbOQYFo0Srw/jUlBTAmC
+         MxWJhbc9NGgucFEBpTXo6ibweG5gRN5KWekhO9YlLocKfG634FfsDWJjzpmidBmE6Vww
+         voHGCZ0Bms3ah9br2lTeGWnjSEQ5I+kkezEAWGZdsDZh+XSLPMmARwk8GYoJ0FsX+fQi
+         EX/Wn9aXkTCM3OnpMwOz7L5ih+ZWJBwxJKJun/TfWO5H9/oeZoh56e2U49dnDmFjWR8H
+         Yup3L092dzeZSkBK512s4w3klmbtpmfKWpCFdx0Xd2h2gxoGP3oV3HqdJMPpKHxVvN0G
+         xj0w==
+X-Gm-Message-State: AOAM531h60CYkA5QUBto37EvzSe9aLe1nJMXpzgQPaaYLE6qwNc7sNp2
+        8rgHjkKDii8f4yvzdirT0ac43SmzKcYthrwHXAoWENUZaI5Dqg+9z/kqH78VabhYPW3ue2Yo4Zu
+        bW4/Ry3i64KqUvnCH1+LExwG7
+X-Received: by 2002:adf:d191:: with SMTP id v17mr1195124wrc.345.1631164795424;
+        Wed, 08 Sep 2021 22:19:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwWu7mHKu8Bu/+CN9d6SsQc3M72VjMeAtWgfEflP6tjJsSvyBKJOOGDH6D6mh8Lte/+vUA/LQ==
+X-Received: by 2002:adf:d191:: with SMTP id v17mr1195110wrc.345.1631164795270;
+        Wed, 08 Sep 2021 22:19:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id g5sm611728wrq.80.2021.09.08.22.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 22:19:54 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com,
+        pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
+Subject: Re: [PATCH] KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
+In-Reply-To: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
+References: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
+Date:   Thu, 09 Sep 2021 07:19:53 +0200
+Message-ID: <874kau496u.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB425003383BBF9FB949D48B0FFBD49@DM6PR12MB4250.namprd12.prod.outlook.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 03:33:51PM +0000, Yu, Lang wrote:
-> >Please feel free to add better documentation for the functions if you feel people
-> >are getting confused, do not change the existing behavior of the code as it rightly
-> >caught it being misused.
-> 
-> You can find many patches named "convert sysfs scnprintf/snprintf to syfs_emit/sysfs_emit_at".
-> or "use sysfs_emit/sysfs_emit_at in show functions". They may think it's better to use syfs_emit/sysfs_emit_at
-> given its overrun avoidance.
+Yu Zhang <yu.c.zhang@linux.intel.com> writes:
 
-Yes, and using that in sysfs functions is fine, there is nothing wrong
-with this usage.
+> From: Vitaly Kuznetsov <vkuznets@redhat.com>
+>
+> Currently, 'vmx->nested.vmxon_ptr' is not reset upon VMXOFF
+> emulation. This is not a problem per se as we never access
+> it when !vmx->nested.vmxon. But this should be done to avoid
+> any issue in the future.
+>
+> Also, initialize the vmxon_ptr when vcpu is created.
+>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-> But there are still some corner cases(e.g., a non page boundary aligned buf address : ).
+Thanks but even Suggested-by: would be enough :-)
 
-I need a specific example of where this has gone wrong.  Please provide
-a lore.kernel.org link as I fail to see the problem here.
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 1 +
+>  arch/x86/kvm/vmx/vmx.c    | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 90f34f12f883..e4260f67caac 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -289,6 +289,7 @@ static void free_nested(struct kvm_vcpu *vcpu)
+>  	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+>  
+>  	vmx->nested.vmxon = false;
+> +	vmx->nested.vmxon_ptr = -1ull;
+>  	vmx->nested.smm.vmxon = false;
+>  	free_vpid(vmx->nested.vpid02);
+>  	vmx->nested.posted_intr_nv = -1;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0c2c0d5ae873..9a3e35c038f2 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6886,6 +6886,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  
+>  	vcpu_setup_sgx_lepubkeyhash(vcpu);
+>  
+> +	vmx->nested.vmxon_ptr = -1ull;
+>  	vmx->nested.posted_intr_nv = -1;
+>  	vmx->nested.current_vmptr = -1ull;
+>  	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
 
-Are you sure that you are not just abusing sysfs and having more than
-one value per file?  Does this mean I need to go audit all of the gpu
-sysfs file entries?
+-- 
+Vitaly
 
-thanks,
-
-greg k-h
