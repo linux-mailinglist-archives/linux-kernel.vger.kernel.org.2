@@ -2,185 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC87540427C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D913240427D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 03:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348500AbhIIBBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 21:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbhIIBA7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 21:00:59 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E2AC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:59:50 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id g14so268947pfm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+skelFXIoWIkrKLr6CZhOX3+XRhfx0jAypY81q8tXes=;
-        b=bDXtLAxc0QTEGwuPB4BpV5MwfOExqCh6SOcn6sl78G0rk2KyS/7t/43bkeMa42c7hT
-         WS5wDE+COtY9/oeShxIinKm/YYKeBosOPiq33KYtUsGH1/wfHqGRHAivyzCWPSGSsvIs
-         ogAUuO8rIqac1QwMasp/Uyd923UlRu2mLxHnX97Uo+aGfnFs79fvBtD+e6soYgRTPHyL
-         XtEMYM3n6Su4mpgA1x2UC67i8YguJEE09sAYwGP5fqo9gqnfgOziwSp1ro+On5Cr+wAm
-         bwUZReVStJwa0+YinWRK3IQQy8Z4KSmp3SEZsiH6GHpFCj/ZQ39uzhRC3F4mMqg+KLBM
-         1lfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+skelFXIoWIkrKLr6CZhOX3+XRhfx0jAypY81q8tXes=;
-        b=mKWO5GQx5iQRqsJxtZEF/d98Ofto+A0f9m59a7nvexBqhz/OnuF8eXTYoyLGJHcSoZ
-         7VKiLSRgCBvSiwdrUUwEvx/+Qk0qy21OVwo1POEzGqyiYFoMVbRsjvNrgGPCxPARDR5h
-         052TrUWJbR2lbFcGmL8k3RsSgu0QqLiIzcaY7wZnnHvwjztnuixmjrboh1dAdH2sUuGx
-         HeiS4ch29y8YuWRuEnqAY1LWgy4SAbQm0SDZu2B8tZ8WxKg3xjW5tAI1kL7u70+PPAwe
-         yG9/D8OBvXrUKMNVOrQWRTgW2M9I3a01dhH/x9w7PN1QvYyKQ71LaRJvqiwCk00MiNRc
-         MM9g==
-X-Gm-Message-State: AOAM530Hgj8sEx7sjLXtqALgbwEeoaoYnnIrCr2zcigx6c+tsYelLaSl
-        h61kgNvIhfkEblTfpdb3vsPnrQ==
-X-Google-Smtp-Source: ABdhPJzFGMI7uROSNy8dgOLtor1ehcyy8X2z5pKcJg5Vnt52TiX0g1lTWhuXMIAx3VAns+bYKPHe2w==
-X-Received: by 2002:a62:76c8:0:b0:3f2:6a5:b8eb with SMTP id r191-20020a6276c8000000b003f206a5b8ebmr480442pfc.58.1631149189425;
-        Wed, 08 Sep 2021 17:59:49 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h191sm96640pfe.78.2021.09.08.17.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 17:59:48 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 00:59:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v2 3/3] KVM: nSVM: call KVM_REQ_GET_NESTED_STATE_PAGES on
- exit from SMM mode
-Message-ID: <YTlcgQHLmkjtvVks@google.com>
-References: <20210823114618.1184209-1-mlevitsk@redhat.com>
- <20210823114618.1184209-4-mlevitsk@redhat.com>
+        id S1348865AbhIIBBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 21:01:39 -0400
+Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:61888
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233710AbhIIBBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 21:01:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cw3tDu6rU82+ez9DYzSbLBaqqlS7dNZtHUhm4feEe73bJtYUntH70Yz69cIc7npxXeXKyISkPi9xmwPgtYMAcLh/3Y0XeitSVcBzcZBGa2B+JsAArp4Gtn9ajXlnsmvexvoZAzxrAZx+3McR5fBBIN9A55p2jTMHyHLLCwzTD3Y0VaRijpOjl/yMxKtjOgyxHCTgUpS5FprKOp6MupLwqyhLxipfo+O1zpIlquOVsEAwUAziz4xEN6HeI4QnKbo7mX92clZUGqnvE5vSBLLQtQ1n0Jr5XXbbDBinpBxNu7/U7ZNbtPZCNfjeUIvXcT5qEtunbASd9tkmQY90Z6e43A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=0wzsCw4OTMJwXSin/7Bj9UKzF0GoJeDZdXYfl86vZMo=;
+ b=XFQ1Lx2/3OESX+lwi10r5tClRPpklACNpUuTS3wqmUWiK8CJWkJYTEkX03tP0XLquugW9Wl3/dUNl6ELougp4+Zzj50SLek4UjJ0yompWYMXEaSNCml5f92YkEn0iGFjgVJyfmmGMd9ejJpay9DVEaGcG+B4Ga0It3I4Rb/v7Nju6QuDYEwtYpQdjRRt3z8NioLjhciQXfD43nA6o6E3wPANx1ydC5j95jQmheHQMy9SwuAbLJqwd6dtlWD2nGsRReUgvbgBrWvut1SFkycGmt9pW9Zn0NTDAKEihEnMfQlSdiXfcW25DOu5hG3OpohkFvrTaBZvqetoKYiI+EkDQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0wzsCw4OTMJwXSin/7Bj9UKzF0GoJeDZdXYfl86vZMo=;
+ b=XoKgvRnc8hbVz2WcZ1ZZphm9X5SbKYT7zP1chiGIuOTYWE60L+5WBo+xTzzNLDSwdk9yYfbJufYPu/0JfXgUZqSeYjrstv4QoS4ml4Q5YhwCG1k7ewTc2a0V8fSiAwPlGVvwMP7evNXqnkkt7KQDr1tP19H4BFSVdJ2v3w0P9So=
+Received: from CO2PR04CA0122.namprd04.prod.outlook.com (2603:10b6:104:7::24)
+ by CH2PR12MB3959.namprd12.prod.outlook.com (2603:10b6:610:28::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 01:00:27 +0000
+Received: from CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:7:cafe::3e) by CO2PR04CA0122.outlook.office365.com
+ (2603:10b6:104:7::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Thu, 9 Sep 2021 01:00:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT046.mail.protection.outlook.com (10.13.174.203) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 01:00:27 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 8 Sep 2021
+ 20:00:26 -0500
+Received: from hwentlanryzen.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
+ Transport; Wed, 8 Sep 2021 20:00:25 -0500
+From:   Harry Wentland <harry.wentland@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     <ndesaulniers@google.com>, <torvalds@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <arnd@kernel.org>,
+        <sunpeng.li@amd.com>, <alexander.deucher@amd.com>,
+        <christian.koenig@amd.com>, <Xinhui.Pan@amd.com>,
+        <nathan@kernel.org>, <linux@roeck-us.net>, <llvm@lists.linux.dev>,
+        Harry Wentland <harry.wentland@amd.com>
+Subject: [PATCH 0/4] Fix stack usage of DML
+Date:   Wed, 8 Sep 2021 21:00:19 -0400
+Message-ID: <20210909010023.29110-1-harry.wentland@amd.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823114618.1184209-4-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95d374e3-1f0d-4933-3945-08d9732d3676
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3959:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB3959F568E4130D92CB39D3888CD59@CH2PR12MB3959.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 69lCgGItnd7oRuA+g4q86/nPBKHUFPSODeQ2hT3auiYoEVbjRBOt5cWxfRd0IVbuvRLjOQCrc0vdXWfAmLSsk2sbRCZzGJhSklEbuQed3dU+dea/6fWofk73OvicNO/bYtC3kyOZc4BUP1mLPaS7MMnavwl5P4XTWv++nx43RimmoiGvia/uCa5w/11sCh5AI5VaUU5zFek7W4UsHEs6rtXFFm6gb4T9YantxYfzyd//FY1zlKeuqk61Nb4iXU6p9rPEH2bTJ3UD8cVzcM00719v3gN6IU5S4RY4GH9u1cyQhi4xueUSfYeJPxk5yOiH+ZZGNmxIW/oxlOlu6Ln3PMJLoYpcGiMdC50kCVkLA0rpqj3Zfws7t90pp47DGeWXnOO+hlOAKZAbZCowjJrsP5uqbybSKDSk13uPAaMWNDghiGlsFlzl9KGr4O8FSB6vMO+9pEdyDw6yTS3o2+3QQhDDObV7xCCsHlRzVsw82FarKvLlkWETyKnVAx63//60A8bHlVfQVL/TORakhWtx3UCk7Gep8q4KesZu3BB0bR8sAbV3z3/7+ydgnW8tZoiupMcwbPuqprrjD8bp+LrdG75zjigmfK4IG4z6jMXFns4j6nalfdYoqj5qfs8yL9PCJgUrUnL4//OoKLl0URjCMEUpZhd0vHX4jZ4DVRntnPa8iRZoET72EjSmajBO3WGbDsH3NImZOebtnXL5zDyxsQHz+U2H5Vr6xBSf6SVXgks=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(46966006)(36840700001)(8936002)(6666004)(7696005)(478600001)(86362001)(70206006)(8676002)(2906002)(54906003)(356005)(316002)(36756003)(2616005)(1076003)(6916009)(36860700001)(426003)(47076005)(26005)(4326008)(44832011)(186003)(336012)(81166007)(83380400001)(82740400003)(82310400003)(70586007)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 01:00:27.2197
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95d374e3-1f0d-4933-3945-08d9732d3676
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3959
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021, Maxim Levitsky wrote:
-> This allows nested SVM code to be more similar to nested VMX code.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 9 ++++++---
->  arch/x86/kvm/svm/svm.c    | 8 +++++++-
->  arch/x86/kvm/svm/svm.h    | 3 ++-
->  3 files changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 5e13357da21e..678fd21f6077 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -572,7 +572,7 @@ static void nested_svm_copy_common_state(struct vmcb *from_vmcb, struct vmcb *to
->  }
->  
->  int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
-> -			 struct vmcb *vmcb12)
-> +			 struct vmcb *vmcb12, bool from_entry)
+With the '-Werror' enablement patch the amdgpu build was failing
+on clang builds because a bunch of functions were blowing past
+the 1024 byte stack frame default. Due to this we also noticed
+that a lot of functions were passing large structs by value
+instead of by pointer.
 
-from_vmrun would be a better name.  VMX uses the slightly absstract from_vmentry
-because of the VMLAUNCH vs. VMRESUME silliness.  If we want to explicitly follow
-VMX then from_vmentry would be more appropriate, but I don't see any reason not
-to be more precise.
+This series attempts to fix this.
 
->  {
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  	int ret;
-> @@ -602,13 +602,16 @@ int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
->  	nested_vmcb02_prepare_save(svm, vmcb12);
->  
->  	ret = nested_svm_load_cr3(&svm->vcpu, vmcb12->save.cr3,
-> -				  nested_npt_enabled(svm), true);
-> +				  nested_npt_enabled(svm), from_entry);
->  	if (ret)
->  		return ret;
->  
->  	if (!npt_enabled)
->  		vcpu->arch.mmu->inject_page_fault = svm_inject_page_fault_nested;
->  
-> +	if (!from_entry)
-> +		kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
-> +
->  	svm_set_gif(svm, true);
->  
->  	return 0;
-> @@ -674,7 +677,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
->  
->  	svm->nested.nested_run_pending = 1;
->  
-> -	if (enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12))
-> +	if (enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, true))
->  		goto out_exit_err;
->  
->  	if (nested_svm_vmrun_msrpm(svm))
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index ea7a4dacd42f..76ee15af8c48 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4354,6 +4354,12 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  			if (svm_allocate_nested(svm))
->  				return 1;
->  
-> +			/* Exit from the SMM to the non root mode also uses
-> +			 * the KVM_REQ_GET_NESTED_STATE_PAGES request,
-> +			 * but in this case the pdptrs must be always reloaded
-> +			 */
-> +			vcpu->arch.pdptrs_from_userspace = false;
+There is still one remaining function that blows the 1024 limit by 40 bytes:
 
-Hmm, I think this belongs in the previous patch.  And I would probably go so far
-as to say it belongs in emulator_leave_smm(), i.e. pdptrs_from_userspace should
-be cleared on RSM regardless of what mode is being resumed.
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:3397:6:
+ 
+error: stack frame size of 1064 bytes in function 
+'dml21_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than=]
 
-> +
->  			/*
->  			 * Restore L1 host state from L1 HSAVE area as VMCB01 was
->  			 * used during SMM (see svm_enter_smm())
-> @@ -4368,7 +4374,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  
->  			vmcb12 = map.hva;
->  			nested_load_control_from_vmcb12(svm, &vmcb12->control);
-> -			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12);
-> +			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, false);
->  
->  			kvm_vcpu_unmap(vcpu, &map, true);
->  			kvm_vcpu_unmap(vcpu, &map_save, true);
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 524d943f3efc..51ffa46ab257 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -459,7 +459,8 @@ static inline bool nested_exit_on_nmi(struct vcpu_svm *svm)
->  	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_NMI);
->  }
->  
-> -int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb_gpa, struct vmcb *vmcb12);
-> +int enter_svm_guest_mode(struct kvm_vcpu *vcpu,
-> +		u64 vmcb_gpa, struct vmcb *vmcb12, bool from_entry);
+This will be a slightly more challenging fix but I'll see if we can get it
+below 1024 by breaking it into smaller functions.
 
-Alignment is funky, it can/should match the definition, e.g.
+With this series I can build amdgpu with CC=clang and a stack frame limit of 
+1064.
 
-int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
-			 struct vmcb *vmcb12, bool from_entry);
+This series boots on a Radeon RX 5500 XT.
 
->  void svm_leave_nested(struct vcpu_svm *svm);
->  void svm_free_nested(struct vcpu_svm *svm);
->  int svm_allocate_nested(struct vcpu_svm *svm);
-> -- 
-> 2.26.3
-> 
+Harry Wentland (4):
+  drm/amd/display: Pass display_pipe_params_st as const in DML
+  drm/amd/display: Pass all structs in display_rq_dlg_helpers by pointer
+  drm/amd/display: Fix rest of pass-by-value structs in DML
+  drm/amd/display: Allocate structs needed by dcn_bw_calc_rq_dlg_ttu in
+    pipe_ctx
+
+ .../gpu/drm/amd/display/dc/calcs/dcn_calcs.c  |  55 ++--
+ .../drm/amd/display/dc/dcn20/dcn20_resource.c |   2 +-
+ .../dc/dml/dcn20/display_rq_dlg_calc_20.c     | 158 +++++------
+ .../dc/dml/dcn20/display_rq_dlg_calc_20.h     |   4 +-
+ .../dc/dml/dcn20/display_rq_dlg_calc_20v2.c   | 156 +++++------
+ .../dc/dml/dcn20/display_rq_dlg_calc_20v2.h   |   4 +-
+ .../dc/dml/dcn21/display_rq_dlg_calc_21.c     | 156 +++++------
+ .../dc/dml/dcn21/display_rq_dlg_calc_21.h     |   4 +-
+ .../dc/dml/dcn30/display_rq_dlg_calc_30.c     | 132 ++++-----
+ .../dc/dml/dcn30/display_rq_dlg_calc_30.h     |   4 +-
+ .../dc/dml/dcn31/display_rq_dlg_calc_31.c     | 166 ++++++------
+ .../dc/dml/dcn31/display_rq_dlg_calc_31.h     |   4 +-
+ .../drm/amd/display/dc/dml/display_mode_lib.h |   4 +-
+ .../display/dc/dml/display_rq_dlg_helpers.c   | 256 +++++++++---------
+ .../display/dc/dml/display_rq_dlg_helpers.h   |  20 +-
+ .../display/dc/dml/dml1_display_rq_dlg_calc.c | 246 ++++++++---------
+ .../display/dc/dml/dml1_display_rq_dlg_calc.h |  10 +-
+ .../gpu/drm/amd/display/dc/inc/core_types.h   |   3 +
+ 18 files changed, 695 insertions(+), 689 deletions(-)
+
+-- 
+2.33.0
+
