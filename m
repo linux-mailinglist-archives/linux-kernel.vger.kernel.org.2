@@ -2,293 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EB1405875
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AA3405878
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242251AbhIIODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:03:34 -0400
-Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:41189
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240296AbhIIODA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:03:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c+sxcEnApXKsrSShs+lp5J5au1NMPcAVO617FHFulc4vxvfpl6d1qqJWIHHLvF197n46HApVwB029D8+qS/y2O9kpDbIa4mEHIWjehGqEGiHeO0++e8zU/H3o6OSqGarHhhnpnlaDR1Ys6LeZkBNSSpN0axG/NZTwf1mS44mfbRKyDLdFHSmjLqPKVYJQYTzq5GpLbiEBcYhP2OYkljcgfDHlVUusA689WcEgiDu+Rm5TMfCURqwymURzca/ZARvrTDNTpFPLVzgYz+x3ql3IRuMXGtf6Guxd+1hwQw/F/eW84CKioj+7EJTx5XF6X4kg2QhPefWfICvHF27wdCOGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=bOkCo2L4qk//CLErrI0oPSB37vB+kdr+Mfk9xnYCQ54=;
- b=l3X/U84RRm4K8IiySzHQxDoyg6tpscYIY5/9kqyjpgH8GgAH2wTXWYYpQod53miF1wC8v4gQTCu+jeAtQ+TG/EAHt6Oh7lmnr2F4zXGqoYVzs3fPFHMFEsORv+RVGtHSm/BPatruvgdWXhrtq00oeSZYjq8KDpq72rezvqLU4qAbjD3x8nwwF7MJpkHDnT1/sG4hiTjxkDZdHyjPnqI7hHk63Q0waUYOV+++x1ZiRFyhffBggRC3+yLTwpA12xo1+tyBKE0iSUoeHDIIcSw1J/afJcoSjte905cBlyxAtCW0ane1vAKjUPJkQWibc8x8UEOwNWuJDt8FI1tkh98AeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bOkCo2L4qk//CLErrI0oPSB37vB+kdr+Mfk9xnYCQ54=;
- b=NJ5d/5x/AAx0WRP2vm1sxxOTLwYSqGFssfCM8NivrKqV6kiMXwAZ1RskuhiyDbM/0fSZzePWh9YpU4WTmiOJptPSZ0qCNyTuNu9KhXbftRXRFWbw5zQMJzC70mkDlOtCamy4I2fvMQclw6wXBBziBuT+/F0cfEJG15MDvot5T1w=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR04MB4653.eurprd04.prod.outlook.com (2603:10a6:803:70::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.24; Thu, 9 Sep
- 2021 14:01:47 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::10e6:799c:9d34:fc2d]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::10e6:799c:9d34:fc2d%6]) with mapi id 15.20.4478.019; Thu, 9 Sep 2021
- 14:01:47 +0000
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
- <YPF40t5bhgTFM2wK@smile.fi.intel.com>
- <CABdtJHuKyybhJazpAc8KT54ELtZ319rdb6CbSH6zB5x3NhgtAw@mail.gmail.com>
- <bb009f85-687e-d560-9cc5-1ac4f586a6bd@nxp.com>
- <YPVufjevu5WaaIxQ@smile.fi.intel.com>
- <2a0f7fa6-b164-eeb4-118a-acd57d79a484@nxp.com>
- <CAHp75VcYt+VQq4jp9JdkA4EpGqtks2sP-NRkfSbGj+-Vn5ke=g@mail.gmail.com>
- <c2186f2c-8be0-6f44-e442-8cb8cbd5f2c2@nxp.com>
- <2485ac73-6df6-3939-5ee5-ef650d951054@nxp.com>
- <YTn6dx2rRsLZ6GDJ@kuha.fi.intel.com> <YTn7G/Mgm18JfV9k@kuha.fi.intel.com>
-From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Message-ID: <ffe89a41-59c3-499b-1553-0c15f386df01@nxp.com>
-Date:   Thu, 9 Sep 2021 17:01:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <YTn7G/Mgm18JfV9k@kuha.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR04CA0059.eurprd04.prod.outlook.com
- (2603:10a6:208:1::36) To VI1PR0402MB3405.eurprd04.prod.outlook.com
- (2603:10a6:803:3::26)
+        id S245395AbhIIODy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:03:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244381AbhIIODJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 10:03:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D84610CE;
+        Thu,  9 Sep 2021 14:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631196120;
+        bh=VfcMtzFJq+x3oimwRfSGM3+HsOCz4ZFSYvliKSNFghI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Cx7dqUh6Rl0fzneeoP+NmUqbIDdjyAemDWc6Jz7FofANtXhofVIvSsPKycqctmSdv
+         1E7CJgPH/X94KjMai9+YdZieMvE7BK1JD0r0Vte/0F348TXS+QNE1Kc4VyrscCCzc/
+         2BCZGWPU8W7i0o2IvR83sqra3mifDTURtrqSNf0KPtgfgJf3Id4HqV/OuNoFUC42fN
+         AgetbUvQWd5xPZeG7zNcSOpg1T/omv30wsORVp7jSucX8mkEhD6cN7qHdlEWRbiUVN
+         T2Rr5IliCvvYno/AofHkbu9lsHxzqmkjHQqHpEXfJlyDoHSwXk8lOvYOABnZuxBlkl
+         6Zd0wKZYDwNCw==
+Received: by mail-ed1-f49.google.com with SMTP id 9so2797368edx.11;
+        Thu, 09 Sep 2021 07:01:59 -0700 (PDT)
+X-Gm-Message-State: AOAM533KYHXGUZZ99CUGDLB9e9YKF2T3i8m5MDZdxZsIb7LCH/sVKB2x
+        pmWaxCiSgCrXLeZ9RXa0KKYdH8XcQglD/YIwMQ==
+X-Google-Smtp-Source: ABdhPJwlfbFsgaLlLSIuNjQjq2JLgFOQzN2NxKhZEqmEPXIEG/ydouVOBI9d0WFnAhc3n78EUwntrE8dU1HlVQySAz0=
+X-Received: by 2002:aa7:d645:: with SMTP id v5mr3380474edr.145.1631196118501;
+ Thu, 09 Sep 2021 07:01:58 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.103] (79.113.48.144) by AM0PR04CA0059.eurprd04.prod.outlook.com (2603:10a6:208:1::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 14:01:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 22429fb5-0811-40de-5d4b-08d9739a5d37
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4653:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4653750CB1538D83E30F59F6ECD59@VI1PR04MB4653.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V11Em9qI0gfxFkKhziMzmpmf7V21y7TEcynR/FOe5yrZCBaJktOLyinZcKwbUYvdgzUFvxKb4f1NEM17/wFLw4snjshCTZeE7xUV6Z2Nfco6gk8C7wpuEGpqB+bdkGXTTseD8xM1J3Uv0AOC5x60xn6iyCuqG/Vda8frz/6qlfDeDYBo+fi3ujiU8Qf2MgKAFtRMJMLx12c0H+T+yKeNJDHPU9gXG74Byt+wu/FBK+RYm9CsqOUUc8UDxxJ32qWj2f5IR9k/e1MzZe+WbbHFx+BSMyEmIy06Gn3qadyp9P9yoRcbIQVgtQuZFBnSHRjdXrK3KJMH62KzCbnUv/qxSWPHEvec28PkbHbPOe028VDjkryCfAB0M7PI4JCEpuP9I7ANBZQ9rE0HT+B04VZ7Li0ZuCbfaZyiwnsk7FUIRhfyJq8fxRA16ayvu7zj9WyCtVmOElGbo+yiL2ikKLMojaMTOAuY+HpH0aYYxptKjWcOvv0mwEDhImtgbxbJFK6JCVwavHxVdYPHO6BOt2Eq+2Fgutrz9n15Bqy3EvPKcbQyXJ48ParfrALtN84xRbZLGPLoy61StxCz2AKz9cR4m1CU3C8J4J446z8hNffP0ZURYyy0oIIME5bpVoSPYi0uXpPmr0vuklDITgCnc7Z5eGd2bjZql6LV6CENlrwrP9YO8K2fUYVe0wAzrpAIIS4Dw2wnJeQlsiwAY3pswl/ZuurF4uZBKpZGoogb50doDXe9MftDk8Bi0fodwneTl9WvujE1qt08VbDAQDzhCTk7eQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(66946007)(316002)(86362001)(66556008)(38100700002)(6916009)(83380400001)(52116002)(6486002)(4326008)(16576012)(31696002)(8936002)(44832011)(54906003)(53546011)(36756003)(26005)(5660300002)(31686004)(186003)(66476007)(508600001)(956004)(2616005)(8676002)(38350700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SHI1dE5IQS82YktTOTdRY1lzdkFobEVJYmVZM244RWNvbVVDSll2anV2M2dT?=
- =?utf-8?B?N2RMT2RQSE5tTThieW92UVVOd2pSSmJReDVQUjJxWWxpdmpRUncrcityZXZ0?=
- =?utf-8?B?WCsxZVVuRFlCOEt2b3gvN3BIYjJKWHl3NXNKSm5QempNYnZ5R1RvdkRlR1Bu?=
- =?utf-8?B?ZW55bWZrdWVONEgvd09TMUxXOTZBUWtYWWs3SW5HcXM5aFlOMXpibG1KZWhj?=
- =?utf-8?B?cG9BdTY1UzBiTnVtWlRvbUwzM29rdkhyajF1VnlsVHZXT1p6WlR5T0lQTkZn?=
- =?utf-8?B?TVlWWnN5SVhRVlU2SSsrNEtZTGNxejF3aUNuUmp4aFV1c3hERkpqUzhiV3Vp?=
- =?utf-8?B?Njk4RGVydHZYM0dITmlINDBWbVgxcFFVditERjRVcTFmTDBTTUEycDVuaEdE?=
- =?utf-8?B?aDA0Rlk3a2dhQXh4dVpLaGY5MnArdDhxbkpPZXdHUCtYbmh3eUdKWkMvbzUr?=
- =?utf-8?B?Skgyd1lkOSsxRld5YWwwTlpsTXQvdWFKbjZSc1ZaL3lmWU9LalBSK3hJYlI4?=
- =?utf-8?B?NmpoMzc5RHpxb3lpcmlhdkQyL1NvMWFRT1kyUnRZNFkyT0liL1k4V2RZblMy?=
- =?utf-8?B?MWd1RG03cjNXeUdWMVJnVzFkM3hVQ0ZqdFdqY2s5K0R0cTBOaHJvd1oydms1?=
- =?utf-8?B?WjVTUjhDVU14YjdvMXZKS0pvRlhmREYrdFpoeXg5cTNLN01RQm5kczc5MmpK?=
- =?utf-8?B?WEZoclZZMEJCWGtpV1pkUElldWVtY2xCREZKTCtOM0pESGFrYnNqNG5qeWdp?=
- =?utf-8?B?dGtNNVJuVlZCcGNNcHB1aEViZGp3eVFaSFFpTHloMzZxV2lKY1hzQWRnMmpm?=
- =?utf-8?B?WFROZ21UbTlNTjliZUdhWE14SGdTU1RJOU9SV0pxWFZUQ2dTdmt4d2U5eGJh?=
- =?utf-8?B?NmtkL3dKNFJnYmk3dy9vOVRjMy9oSmF0bTVrZEp2em5KY1lodGVWNGFEc1NV?=
- =?utf-8?B?YkFsMmNNbWNGMXZOOCtvY1VWUTg0eXZhQXhNVjFqYmVaMXRxTC9UK0lpRnQ2?=
- =?utf-8?B?TWFpUmpHR3JLN3kxbHhmNVZRNXFvWWlHRXc4M0E4Rm5EcFlROVJmMFo3NmVK?=
- =?utf-8?B?d0k0YUpyOGxoOUlaT1piRHkyM0MvRUQ4OXIrSTJxNnBTSjd6WTk0b0dTU3pP?=
- =?utf-8?B?MlE5dmFIcmMvQWF1TVpvSmhoSytwQnZxY2FqRXpJMHE3UDBCTEdmbHVUc1pG?=
- =?utf-8?B?eVhtM2YwY05iZHVkRVV1RU9EQzVJbmU0MGNsRXRSanRFNlBUZ2s0enZDVEtr?=
- =?utf-8?B?TzREV1RnaXlBcFBDdDRUZ0x1MzhiN1lvYnh1RlBBREdTcEdkb0VNdENtOFlp?=
- =?utf-8?B?aXBkZy84OFdwbVlXL0xYUWJBRWM2K3JraHdJemlrRURJU0lEWWlnTlp1cHo1?=
- =?utf-8?B?L0dRUks3SERtakNMVktuRy9mMjRrRVdOSmovZjc3ZXVJV1Q3SFllb3l1WWxq?=
- =?utf-8?B?bnd6ZHlSSzQ5QjQ0MkVvNHhFTWd4Z0xXcmpiRG5jYTg3aWI2eFQwVk83UFlM?=
- =?utf-8?B?dUt5VEJ3bXpqcVhqbGRCaTlyR0pYclZqaExQZWNsMFdRRnczSnZzc1o3QlRS?=
- =?utf-8?B?QTlFUmptMjZPb3VhdFJpY2tLMzJOVFdza3dsL01mbzlNQWRYQjJMWmx0Ry9G?=
- =?utf-8?B?aTRoM3RZeXgyQUJmODJRRTRNYnpKa3dUd0VQcnVpSmxHK3c5S0tuV2lNbTlQ?=
- =?utf-8?B?VUdac3BEekRoTTkvSFlvOEdrSzBFV016dzVPVERjZXRjekFmQitZMUpxN2Zq?=
- =?utf-8?Q?Pvj0oT1VZlyQ+t4xLcSKhgBrTJ850KBo95NUVCJ?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22429fb5-0811-40de-5d4b-08d9739a5d37
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 14:01:47.6982
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aqaUeiJ/+fA9SAn4LNn3MnP0np8YsZDQcm+gMcRxEH+a53eA6+QpKbJukS4Z/y/afdKwRfzK1LMkQJGO6LOHaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4653
+References: <20210904000543.2019010-1-saravanak@google.com>
+ <20210904000543.2019010-2-saravanak@google.com> <CAMuHMdUhZy7W_HLtNJ2ECK5uQV5xHV7pDk5BXfNUpW9L68G5Aw@mail.gmail.com>
+ <CAGETcx_7N3gtaT-YHGaGL+Qtkv=JOhgPcPF1A+kQ4aaDoetvSA@mail.gmail.com>
+ <CAL_Jsq+-DAz+80QtpX5obWWcy=MAyxmTb262VAgMiKwnn=hfxQ@mail.gmail.com> <CAGETcx_=8yX6ObaEJk8QNSaWQPdFHsw4R74JrDFKqOL0AN-gLw@mail.gmail.com>
+In-Reply-To: <CAGETcx_=8yX6ObaEJk8QNSaWQPdFHsw4R74JrDFKqOL0AN-gLw@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 9 Sep 2021 09:01:46 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJVsEj=rmExYHtphfxw_W6cq8WU45SSuYi_g2_KiUaFsg@mail.gmail.com>
+Message-ID: <CAL_JsqJVsEj=rmExYHtphfxw_W6cq8WU45SSuYi_g2_KiUaFsg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-oxnas@groups.io,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 8, 2021 at 7:58 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Wed, Sep 8, 2021 at 5:16 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Tue, Sep 7, 2021 at 2:01 AM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Mon, Sep 6, 2021 at 12:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > >
+> > > > Hi Saravana,
+> > > >
+> > > > Thanks for your patch!
+> > > >
+> > > > CC linux-pm, Lee (mfd)
+> > > >
+> > > > On Sat, Sep 4, 2021 at 2:05 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > fw_devlink could end up creating device links for bus only devices.
+> > > > > However, bus only devices don't get probed and can block probe() or
+> > > > > sync_state() [1] call backs of other devices. To avoid this, probe these
+> > > > > devices using the simple-pm-bus driver.
+> > > > >
+> > > > > However, there are instances of devices that are not simple buses (they
+> > > > > get probed by their specific drivers) that also list the "simple-bus"
+> > > > > (or other bus only compatible strings) in their compatible property to
+> > > > > automatically populate their child devices. We still want these devices
+> > > > > to get probed by their specific drivers. So, we make sure this driver
+> > > > > only probes devices that are only buses.
+> > > >
+> > > > Note that this can also be the case for buses declaring compatibility
+> > > > with "simple-pm-bus".  However, at the moment, none of such device
+> > > > nodes in upstream DTS files have device-specific drivers.
+> > >
+> > > Not sure about mfd, but I want to make sure we don't confuse busses
+> > > (which are typically added to a class) with these "simple bus" devices
+> > > that are added to platform_bus. Also if these other buses are actually
+> > > causing an issue, then then should implement their own stub driver or
+> > > use try patch[2] if they are added to classes (devices on classes
+> > > don't probe)
+> > >
+> > > [2] - https://lore.kernel.org/lkml/20210831224510.703253-1-saravanak@google.com/
+> > >
+> > > >
+> > > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > Tested-by: Saravana Kannan <saravanak@google.com>
+> > > >
+> > > > > --- a/drivers/bus/simple-pm-bus.c
+> > > > > +++ b/drivers/bus/simple-pm-bus.c
+> > > > > @@ -13,11 +13,26 @@
+> > > > >  #include <linux/platform_device.h>
+> > > > >  #include <linux/pm_runtime.h>
+> > > > >
+> > > > > -
+> > > > >  static int simple_pm_bus_probe(struct platform_device *pdev)
+> > > > >  {
+> > > > > -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> > > > > -       struct device_node *np = pdev->dev.of_node;
+> > > > > +       const struct device *dev = &pdev->dev;
+> > > > > +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> > > > > +       struct device_node *np = dev->of_node;
+> > > > > +       const struct of_device_id *match;
+> > > > > +
+> > > > > +       match = of_match_device(dev->driver->of_match_table, dev);
+> > > > > +
+> > > > > +       /*
+> > > > > +        * These are transparent bus devices (not simple-pm-bus matches) that
+> > > > > +        * have their child nodes populated automatically.  So, don't need to
+> > > > > +        * do anything more.
+> > > > > +        */
+> > > > > +       if (match && match->data) {
+> > > > > +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
+> > > >
+> > > > Does this work as expected? Having multiple compatible values in a
+> > > > device node does not guarantee there exist a separate driver for any
+> > > > of the device-specific compatible values.
+> > >
+> > > Right, and if they are platform devices that are equivalent to
+> > > simple-bus (meaning, they don't do anything in Linux and just have
+> > > their devices populated) we can add those to this list too.
+> >
+> > I think this needs to be a list of compatibles we have drivers for
+> > instead.
+>
+> I don't think a "denylist" (devices we shouldn't probe with this
+> driver) would be a short list. As of today, literally any device that
+> has children could add a "simple-bus" to the compatible property and
+> get its child devices populated for free. If we use a denylist, we'll
+> have to update it every time someone adds "simple-bus" as a general
+> match to a DT node (new or otherwise) that isn't in the denylist. The
+> list would blow up and be a maintenance headache.
+>
+> Also, a denylist won't capture any DT that isn't part of the kernel
+> repo but depends on "simple-bus" to populate the device's child nodes.
+> Keep in mind this could be true even for completely upstream drivers
+> today. And on top of that, this will also break for downstream drivers
+> and platforms in the development stage.
+
+You've got this all backwards. The list would be compatibles for which
+they have their own driver. If they have their own driver, we know
+that because there is a driver in the kernel. If you have an out of
+tree bus driver, then I guess you shouldn't be claiming compatibility
+with 'simple-bus'.
+
+> The allowlist is much smaller and manageable.
+
+I count 140 cases of 'simple-bus' with another compatible. I find
+roughly 24 of those under drivers/ that have a driver (and look,
+there's at91 pinctrl/gpio). There's some more under arch/, but I'm not
+sure if they are drivers. This is what I ran:
+
+git grep -ho '".*", "simple-bus"' -- arch/ | cut -d' ' -f1 | grep -oE
+'".+"' | grep -v '"syscon"' | sort -u > buses.txt
+git grep -f buses.txt -- drivers/
+
+I haven't looked at 'simple-mfd', but that was supposed to always mean
+'no driver'.
+
+To put it another way, let's look at 3 possibilities:
+
+'simple-bus'
+'foo,has-no-driver', 'simple-bus'
+'foo,has-a-driver', 'simple-bus'
+
+The first case is easy. The last 2 cases are not. We have no way to
+handle them differently without a list.
+
+> > A more specific compatible that the OS doesn't understand
+> > shouldn't cause a change in behavior and adding one would.
+
+Again, if a dt is modified from case 1 to case 2, there should not be
+a change in behavior. Presumably if Ulf changed his test in this way,
+it would again fail, right?
 
 
-On 9/9/2021 3:16 PM, Heikki Krogerus wrote:
-> On Thu, Sep 09, 2021 at 03:13:47PM +0300, Heikki Krogerus wrote:
->> On Tue, Sep 07, 2021 at 06:59:18PM +0300, Laurentiu Tudor wrote:
->>>
->>>
->>> On 7/26/2021 10:59 AM, Laurentiu Tudor wrote:
->>>>
->>>>
->>>> On 7/20/2021 1:27 PM, Andy Shevchenko wrote:
->>>>> On Tue, Jul 20, 2021 at 12:22 PM Laurentiu Tudor
->>>>> <laurentiu.tudor@nxp.com> wrote:
->>>>>> On 7/19/2021 3:22 PM, Andy Shevchenko wrote:
->>>>>>> On Mon, Jul 19, 2021 at 03:00:17PM +0300, Laurentiu Tudor wrote:
->>>>>>>> On 7/16/2021 8:21 PM, Jon Nettleton wrote:
->>>>>>>>> On Fri, Jul 16, 2021 at 2:17 PM Andy Shevchenko
->>>>>>>>> <andriy.shevchenko@linux.intel.com> wrote:
->>>>>>>>>>
->>>>>>>>>> On Fri, Jul 16, 2021 at 01:16:02PM +0300, laurentiu.tudor@nxp.com wrote:
->>>>>>>>>>> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
->>>>>>>>>>>
->>>>>>>>>>> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
->>>>>>>>>>> software nodes, thus leading to underflow errors. Balance the refcount by
->>>>>>>>>>> bumping it in the device_create_managed_software_node() function.
->>>>>>>>>>>
->>>>>>>>>>> The error [1] was encountered after adding a .shutdown() op to our
->>>>>>>>>>> fsl-mc-bus driver.
->>>>>>>>>>
->>>>>>>>>> Looking into the history of adding ->shutdown() to dwc3 driver (it got reverted
->>>>>>>>>> later on), I can tell that probably something is wrong in the ->shutdown()
->>>>>>>>>> method itself.
->>>>>>>>>
->>>>>>>>> Isn't the other alternative to just remove the second kobject_put from
->>>>>>>>> KOBJ_REMOVE ?
->>>>>>>>
->>>>>>>> Or maybe on top of Heikki's suggestion, replace the calls to
->>>>>>>> sysfs_create_link() from KOBJ_ADD with sysfs_create_link_nowarn()?
->>>>>>>
->>>>>>> _noearn will hide the problem. It was there, it was removed from there.
->>>>>>> Perhaps we have to understand the root cause better (some specific flow?).
->>>>>>>
->>>>>>> Any insight from you on the flow when the issue appears? I.o.w. what happened
->>>>>>> on the big picture that we got into the warning you see?
->>>>>>
->>>>>> I encountered the initial issue when trying to shut down a system booted
->>>>>> with ACPI but only after adding a .shutdown() callback to our bus driver
->>>>>> so that the devices are properly taken down. The problem was that
->>>>>> software_node_notify(), on KOBJ_REMOVE was dropping the reference count
->>>>>> twice leading to an underflow error. My initial proposal was to just
->>>>>> bump the refcount in device_create_managed_software_node(). The device
->>>>>> properties that triggered the problem are created here [1].
->>>>>>
->>>>>> Heikko suggested that instead of manually incrementing the refcount to
->>>>>> use software_node_notify(KOBJ_ADD). This triggered the second issue, a
->>>>>> duplicated sysfs entry warning originating in the usb subsystem:
->>>>>> device_create_managed_software_node() ends up being called twice, once
->>>>>> here [2] and secondly, the place I previous mentioned [1].
->>>>>
->>>>> This [3] is what I have reported against DWC3 when ->shutdown() has
->>>>> been added there. And here [4] is another thread about the issue with
->>>>> that callback. The ->release() callback is called at put_device() [5]
->>>>> and ->shutdown() is called before that [6]. That said, can you inspect
->>>>> your ->shutdown() implementation once more time and perhaps see if
->>>>> there is anything that can be amended?
->>>>>
->>>>
->>>> Will do, thanks for the pointers. It could be that we mess something out
->>>> in how we use the driver model.
->>>>
->>>
->>> Quick (and late, sorry) update from my side. I've spent time on
->>> debugging our bus, did found some issues but, at least for now, none are
->>> related to sw node.
->>> In the mean time, I noticed in the swnode code that
->>> device_add_software_node() calls software_node_notify(KOBJ_ADD) while
->>> device_create_managed_software_node() doesn't. Updating [1] the later
->>> with the call to software_node_notify(KOBJ_ADD) does seem to fix the
->>> issue I'm seeing.
->>>
->>> Could this be a problem? Any comments appreciated.
->>>
->>> One more thing perhaps worth mentioning is that, at least for now, there
->>> are few uses for this device_create_managed_software_node() api,
->>> mentioning here a couple of them:
->>>  - arm64 iort code - this seems to be triggering the issue i'm getting
->>>  - dwc3 usb - Andy reported similar issues here, maybe the issue is common?
->>>
->>> [1]
->>> @@ -1113,6 +1125,15 @@ int device_create_managed_software_node(struct
->>> device *dev,
->>>         to_swnode(fwnode)->managed = true;
->>>         set_secondary_fwnode(dev, fwnode);
->>>
->>> +       /*
->>> +        * If the device has been fully registered by the time this
->>> function is
->>> +        * called, software_node_notify() must be called separately so
->>> that the
->>> +        * symlinks get created and the reference count of the node is
->>> kept in
->>> +        * balance.
->>> +        */
->>> +       if (device_is_registered(dev))
->>> +               software_node_notify(dev, KOBJ_ADD);
->>> +
->>>         return 0;
->>>  }
->>
->> That should be fixed indeed. Please send that after -rc1 is out.
-> 
-> I mean, resend :-)
-> 
+> I think the amount of specific compatible strings that'll be added,
+> but won't have drivers added to Linux AND would want to boot with
+> Linux is much less likely than the amount of times we'd have to update
+> a denylist.
+>
+> Also, if we do hit the cases you mention and we want those devices to
+> get probed anyway, with my current allowlist approach, we could use
+> "driver_override" to force this driver to match them. If you use a
+> denylist like you said, there's no way you can get the simple-pm-bus
+> to unbind and let the more specific driver to bind.
 
-Right, actually I just noticed that this is the fix you suggested last
-time we discussed. :-) I forgot about it, sorry.
-There's still the WARN_ON() [1] triggered by the usb subsys, apparently
-happening only (!) in ACPI boot scenario, so +Lorenzo.
-I'll delay the sending a bit to try to understand what's going on.
+Where would we set "driver_override"? Aren't we going to end up with a
+driver_override list?
 
-[1]
-[   11.760346] sysfs: cannot create duplicate filename
-'/devices/platform/808622B7:01/xhci-hcd.2.auto/software_node'
-[   11.770612] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G        W
- 5.14.0-rc1-00214-gbf7f1083ebd3-dirty #62
-[   11.780611] Hardware name: NXP NXP LX2160ARDB Platform, BIOS EDK II
-Apr 16 2021
-[   11.787913] Call trace:
-[   11.790351]  dump_backtrace+0x0/0x2a4
-[   11.794017]  show_stack+0x1c/0x30
-[   11.797331]  dump_stack_lvl+0x68/0x84
-[   11.800991]  dump_stack+0x20/0x3c
-[   11.804302]  sysfs_warn_dup+0x88/0xac
-[   11.807965]  sysfs_do_create_link_sd+0xf8/0x100
-[   11.812492]  sysfs_create_link+0x48/0x80
-[   11.816411]  software_node_notify+0x1a8/0x35c
-[   11.820769]  device_create_managed_software_node+0x158/0x1b0
-[   11.826428]  iort_named_component_init+0xe0/0x140
-[   11.831131]  iort_iommu_configure_id+0xf4/0x270
-[   11.835660]  acpi_dma_configure_id+0x160/0x200
-[   11.840101]  platform_dma_configure+0xa0/0xa4
-[   11.844457]  really_probe.part.0+0x84/0x480
-[   11.848639]  __driver_probe_device+0xd4/0x180
-[   11.852994]  driver_probe_device+0xf8/0x1e0
-[   11.857174]  __driver_attach+0x108/0x220
-[   11.861095]  bus_for_each_dev+0xe4/0x154
-[   11.865014]  driver_attach+0x38/0x50
-[   11.868587]  bus_add_driver+0x1bc/0x2c4
-[   11.872419]  driver_register+0xf0/0x210
-[   11.876253]  __platform_driver_register+0x48/0x60
-[   11.880956]  xhci_plat_init+0x34/0x40
-[   11.884616]  do_one_initcall+0xa8/0x270
-[   11.888449]  kernel_init_freeable+0x2c0/0x348
-[   11.892806]  kernel_init+0x28/0x140
-[   11.896295]  ret_from_fork+0x10/0x18
-[   11.900062] xhci-hcd xhci-hcd.2.auto: Adding to iommu group 6
-[   11.906044] xhci-hcd xhci-hcd.2.auto: xHCI Host Controller
-[   11.911566] xhci-hcd xhci-hcd.2.auto: new USB bus registered,
-assigned bus number 3
-[   11.919702] xhci-hcd xhci-hcd.2.auto: hcc params 0x0220f66d hci
-version 0x100 quirks 0x0000000000010010
-[   11.929187] xhci-hcd xhci-hcd.2.auto: irq 106, io mem 0x03110000
+[...]
 
----
-Best Regards, Laurentiu
+> > > > [*] Especially if "simple-pm-bus" and "simple-bus" would be treated
+> > > >     the same.
+> > >
+> > > They are not treated the same way.
+> >
+> > I think it would be better if they were. IOW, the core code stops
+> > descending into simple-bus, etc. nodes and they are populated here.
+> > Then we just get rid of of_default_bus_match_table.
+>
+> Right, I would if we could. But we can't simply stop descending the
+> simple-bus nodes in the core code because all the specific drivers
+> that used to have their child devices populated automatically would
+> stop working and would need to be updated to populate their child
+> devices. And I'm sure there are a ton more downstream kernels and
+> downstream DTs (that use upstream kernels) that we would break.
+>
+> If you really want to do that go for it, but I'd rather not do all
+> this as part of trying to fix the issue Ulf reported that needs
+> simple-bus only devices probed.
+
+Agreed.
+
+> > That could cause some issues with init ordering. As I recall the at91
+> > gpio and pinctrl drivers are sensitive to this. The default call to
+> > of_platform_populate doesn't work on those systems because the devices
+> > get created later than when their machine specific call happens. It
+> > may have been a case of a parent probe assuming a child probe
+> > completed after of_platform_populate returns (also a problem for Qcom
+> > with DWC3). There's a fix for at91 somewhere in the git history after
+> > I broke it. I started trying to untangle things with at91, but never
+> > finished that.
+>
+> I think it'll cause a lot of issues if we stop descending simple-bus
+> nodes in the core code. We're just scratching the surface here.
+
+Perhaps, but if there's cases which are that fragile, we should fix them.
+
+Rob
