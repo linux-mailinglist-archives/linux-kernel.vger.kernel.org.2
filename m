@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1826405C68
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E09405C6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242608AbhIIR4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:56:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35182 "EHLO vps0.lunn.ch"
+        id S242139AbhIIR7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:59:44 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35390 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237254AbhIIR4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:56:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1UWlNkIF4/UMRB1ZyeAZe5VS1c7OZjo4kDlZHIcxZoQ=; b=DuLHRghbg6cQ0z9uqyjy2SwKh1
-        RdMn1VMSB9aolUNTsdIIya54TuNOSvXh5fObFlroiLQ1nuYxY2w66h9egToVCZZQJtpaVio89+2e9
-        S6G2Dq7qyxeDo2Jcd6821Lp48VsNfIwKb7JkntUBHY9NjkjlitLHNuVeYibmwouHOQ6A=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mOOGL-005wn8-KZ; Thu, 09 Sep 2021 19:55:01 +0200
-Date:   Thu, 9 Sep 2021 19:55:01 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, p.rosenberger@kunbus.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <YTpKddrZVDsGlhRn@lunn.ch>
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
- <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <YTokNsh6mohaWvH0@lunn.ch>
- <8d168388-4388-c0ec-7cfa-5757bf5b0c24@gmx.de>
+        id S237205AbhIIR7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:59:43 -0400
+Received: from zn.tnic (p200300ec2f0e45009795463d03f535a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4500:9795:463d:3f5:35a2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 48C2A1EC04D6;
+        Thu,  9 Sep 2021 19:58:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631210308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SAQ32i/uilW2AnN+2fKp4zP0VR9Mk/umGQrt9CT52ew=;
+        b=JGKcL1wEwc2cxYXvu+M/NENv4Yz2GKdaToYJeE4yFTiJeIcfkNewGXeZchxnuON6ZZ8FT0
+        soQu/nDGee05dSCkX754alY3Z+y8jp+DNJTSa4o0LpTQ0Un8v7RcU6G6Ud1gCMePqOw726
+        /uEIBYsZXjcZ6Vzy+l6VSme7/c4nHxg=
+Date:   Thu, 9 Sep 2021 19:58:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-pm@vger.kernel.org,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 01/19] x86/cpufreatures: add AMD CPPC extension feature
+ flag
+Message-ID: <YTpLO6M2C0IqJ9XC@zn.tnic>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-2-ray.huang@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8d168388-4388-c0ec-7cfa-5757bf5b0c24@gmx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908150001.3702552-2-ray.huang@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 06:46:49PM +0200, Lino Sanfilippo wrote:
-> On 09.09.21 at 17:11, Andrew Lunn wrote:
-> >> Andrew: the switch is not on a hat, the device tree part I use is:
-> >
-> > And this is not an overlay. It is all there at boot?
-> >
+On Wed, Sep 08, 2021 at 10:59:43PM +0800, Huang Rui wrote:
+> Add Collaborative Processor Performance Control Extension feature flag
+> for AMD processors.
 > 
-> Well actually we DO use an overlay. The dev tree snipped I posted was an excerpt form
-> fdtdump. The concerning fragment looks like this in the overlay file:
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index d0ce5cfd3ac1..f7aea50e3371 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -313,6 +313,7 @@
+>  #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
+>  #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
+>  #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
+> +#define X86_FEATURE_AMD_CPPC_EXT	(13*32+27) /* Collaborative Processor Performance Control Extension */
 
-Thanks for the information. Good to know somebody is using DSA like
-this. The device tree description can be quite complex, especially for
-some of the other switches.
+Why not simply X86_FEATURE_AMD_CPPC ?
 
-> But probably this does not matter any more now that Vladimir was
-> able to reproduce the issue.
+-- 
+Regards/Gruss,
+    Boris.
 
-Agreed.
-
-	Andrew
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
