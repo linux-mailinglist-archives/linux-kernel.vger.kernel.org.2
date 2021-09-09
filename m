@@ -2,207 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84E24047B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3E84047BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhIIJ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:29:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57941 "EHLO
+        id S232950AbhIIJaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:30:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32008 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232262AbhIIJ3t (ORCPT
+        by vger.kernel.org with ESMTP id S232859AbhIIJaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:29:49 -0400
+        Thu, 9 Sep 2021 05:30:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631179720;
+        s=mimecast20190719; t=1631179744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E7MPTrkICD3dS44O34dSkNV5ikqasNKbp3eO9uY/CQQ=;
-        b=fE9tS3WrbBpAr2AccDZV/eBWI2x0RZFrKHJZaJH5q4y7TO9N2170EH8n6VIMDQQg0k5DZ8
-        Cef8BxVVnlTPikbZKvBktFLW2p30mYPUIxu3TbjrSy/5/93RVrZGprj7pSolM9uJJ3mTRq
-        yiQr1F0G11cczxTjZS2opzKHibc8nhw=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-PYxuWxCgM5KtN5a_rjX_Pw-1; Thu, 09 Sep 2021 05:28:39 -0400
-X-MC-Unique: PYxuWxCgM5KtN5a_rjX_Pw-1
-Received: by mail-lf1-f72.google.com with SMTP id n5-20020a19ef05000000b003e224cd5844so500385lfh.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 02:28:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E7MPTrkICD3dS44O34dSkNV5ikqasNKbp3eO9uY/CQQ=;
-        b=fbarEFCUB1aWpX1fWRZ1ARr3kCELDE4OIXgsCLYout5yXD3hbmrGZ4umE1p33LQD7Q
-         oieM+q3Z2yjbW6GtEK5QMuhUdzWPrIYTqodMz8DKWotkAJdXTsmyE0k5wUFrCFbi6EZN
-         7GLf7FCvtvxDPlWkHlFWx6mL2iWWWi4/pa1kod9Jfo3l1T7coMyzwl0w3EG1LOTk0Gxj
-         ann4/8poQCnchDh8tk/gj3bzKvQr4OGSLFklbBQ9xYSkIYutf/I0TFGx/yo+3VPkEjFK
-         ds5Ja4ejVssem0MhllLdX3tRX5/4GBbdSokpiOA3uVAk88IYqtyeCmFbt9aGPJQrTiOe
-         VJFg==
-X-Gm-Message-State: AOAM531t+u7Dl5be1pZiOmgypA/T1PoxeAB0Ys3vJcEUf4LZxGLattEb
-        s4O3VdN1UalYhQQM9h7dvVujF7LM7pNvRAmj8Iyg1oohE/Igmft0AYX3Igrcj8954eiwwTiH39c
-        bWIwnR6vg3cj7O93WfaUX17rw7sUC+R9623aNS9tQ
-X-Received: by 2002:a2e:7018:: with SMTP id l24mr1461010ljc.277.1631179717363;
-        Thu, 09 Sep 2021 02:28:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLAOA1/iZcBisp3OLHAaKuMI0vEZbcNqkyc6keR8qfvNJe7AcgB6OhwNXQTHhZBv1eG9RSF60gT08XaJ8Bxf4=
-X-Received: by 2002:a2e:7018:: with SMTP id l24mr1460994ljc.277.1631179717047;
- Thu, 09 Sep 2021 02:28:37 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UJFJy/0BaHlqH2c/JRnf3STy2KHZHL1KbjWxtW7U0ZQ=;
+        b=hjW9UcTbcpUgwlkhfMldglBKv859RBhN4igD6T8Zbl8hVCRZwFF8+9NdvGKRz+i8PyfF63
+        XSny1Do2VkmYSmpde2SITCg1I2ga4qm7HUt20R4LKifk9xS3IQoYRAgI15aAsa9ulrA+of
+        3t5LVXGh9TUT+n1cspqj5ATlDaXN09I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-Oim_kd1VMBiqgQPgoIWmcg-1; Thu, 09 Sep 2021 05:29:03 -0400
+X-MC-Unique: Oim_kd1VMBiqgQPgoIWmcg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8311E1030C23;
+        Thu,  9 Sep 2021 09:29:01 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBA87177F1;
+        Thu,  9 Sep 2021 09:28:58 +0000 (UTC)
+From:   =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+Subject: [PATCH net 0/2] sfc: fallback for lack of xdp tx queues
+Date:   Thu,  9 Sep 2021 11:28:44 +0200
+Message-Id: <20210909092846.18217-1-ihuguet@redhat.com>
 MIME-Version: 1.0
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <ebd83066e3897aae63e4b02f8729a73dd09931c6.1631101392.git.wuzongyong@linux.alibaba.com>
- <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com> <20210909080157.GA17383@L-PF27918B-1352.localdomain>
-In-Reply-To: <20210909080157.GA17383@L-PF27918B-1352.localdomain>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 9 Sep 2021 17:28:26 +0800
-Message-ID: <CACGkMEsnp7-axbZWuB_w7ZkSWKa0Y+Ej-Kq0QSfO2-DNN=ShVA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] vdpa: add get_vq_num_unchangeable callback in vdpa_config_ops
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:02 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
->
-> On Thu, Sep 09, 2021 at 10:55:03AM +0800, Jason Wang wrote:
-> > On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> > >
-> > > This new callback is used to indicate whether the vring size can be
-> > > change or not. It is useful when we have a legacy virtio pci device as
-> > > the vdpa device for there is no way to negotiate the vring num by the
-> > > specification.
-> >
-> > So I'm not sure it's worth bothering. E.g what if we just fail
-> > VHOST_SET_VRING_NUM it the value doesn't match what hardware has?
-> >
-> > Thanks
-> >
-> I think we should not call VHOST_SET_VRING_NUM in that case.
->
-> If the hardware reports that the virtqueue size cannot be changed, we
-> should call VHOST_GET_VRING_NUM to get the static virtqueue size
-> firstly, then allocate the same size memory for the virtqueues and write
-> the address to hardware finally.
->
-> For QEMU, we will ignore the properties rx/tx_queue_size and just get it
-> from the hardware if this new callback return true.
+If there are not enough hardware resources to allocate one tx queue per
+CPU for XDP, XDP_TX and XDP_REDIRECT actions were unavailable, and using
+them resulted each time with the packet being drop and this message in
+the logs: XDP TX failed (-22)
 
-This will break live migration. My understanding is that we can
-advertise those capability/limitation via the netlink management
-protocol then management layer can choose to use the correct queue
-size.
+These patches implement 2 fallback solutions for 2 different situations
+that might happen:
+1. There are not enough free resources for all the tx queues, but there
+   are some free resources available
+2. There are not enough free resources at all for tx queues.
 
-Thanks
+Both solutions are based in sharing tx queues, using __netif_tx_lock for
+synchronization. In the second case, as there are not XDP TX queues to
+share, network stack queues are used instead, but since we're taking
+__netif_tx_lock, concurrent access to the queues is correctly protected.
 
->
-> What do you think?
-> > >
-> > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > ---
-> > >  drivers/vhost/vdpa.c         | 19 +++++++++++++++++++
-> > >  drivers/virtio/virtio_vdpa.c |  5 ++++-
-> > >  include/linux/vdpa.h         |  4 ++++
-> > >  include/uapi/linux/vhost.h   |  2 ++
-> > >  4 files changed, 29 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > > index 9479f7f79217..2204d27d1e5d 100644
-> > > --- a/drivers/vhost/vdpa.c
-> > > +++ b/drivers/vhost/vdpa.c
-> > > @@ -350,6 +350,22 @@ static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
-> > >         return 0;
-> > >  }
-> > >
-> > > +static long vhost_vdpa_get_vring_num_unchangeable(struct vhost_vdpa *v,
-> > > +                                                 u32 __user *argp)
-> > > +{
-> > > +       struct vdpa_device *vdpa = v->vdpa;
-> > > +       const struct vdpa_config_ops *ops = vdpa->config;
-> > > +       bool unchangeable = false;
-> > > +
-> > > +       if (ops->get_vq_num_unchangeable)
-> > > +               unchangeable = ops->get_vq_num_unchangeable(vdpa);
-> > > +
-> > > +       if (copy_to_user(argp, &unchangeable, sizeof(unchangeable)))
-> > > +               return -EFAULT;
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > >  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
-> > >                                    void __user *argp)
-> > >  {
-> > > @@ -487,6 +503,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
-> > >         case VHOST_VDPA_GET_IOVA_RANGE:
-> > >                 r = vhost_vdpa_get_iova_range(v, argp);
-> > >                 break;
-> > > +       case VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE:
-> > > +               r = vhost_vdpa_get_vring_num_unchangeable(v, argp);
-> > > +               break;
-> > >         default:
-> > >                 r = vhost_dev_ioctl(&v->vdev, cmd, argp);
-> > >                 if (r == -ENOIOCTLCMD)
-> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > > index 72eaef2caeb1..afb47465307a 100644
-> > > --- a/drivers/virtio/virtio_vdpa.c
-> > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > @@ -146,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >         struct vdpa_vq_state state = {0};
-> > >         unsigned long flags;
-> > >         u32 align, num;
-> > > +       bool may_reduce_num = true;
-> > >         int err;
-> > >
-> > >         if (!name)
-> > > @@ -171,8 +172,10 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >
-> > >         /* Create the vring */
-> > >         align = ops->get_vq_align(vdpa);
-> > > +       if (ops->get_vq_num_unchangeable)
-> > > +               may_reduce_num = !ops->get_vq_num_unchangeable(vdpa);
-> > >         vq = vring_create_virtqueue(index, num, align, vdev,
-> > > -                                   true, true, ctx,
-> > > +                                   true, may_reduce_num, ctx,
-> > >                                     virtio_vdpa_notify, callback, name);
-> > >         if (!vq) {
-> > >                 err = -ENOMEM;
-> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > > index 35648c11e312..f809b7ada00d 100644
-> > > --- a/include/linux/vdpa.h
-> > > +++ b/include/linux/vdpa.h
-> > > @@ -195,6 +195,9 @@ struct vdpa_iova_range {
-> > >   *                             @vdev: vdpa device
-> > >   *                             Returns the iova range supported by
-> > >   *                             the device.
-> > > + * @get_vq_num_unchangeable    Check if size of virtqueue is unchangeable (optional)
-> > > + *                             @vdev: vdpa device
-> > > + *                             Returns boolean: unchangeable (true) or not (false)
-> > >   * @set_map:                   Set device memory mapping (optional)
-> > >   *                             Needed for device that using device
-> > >   *                             specific DMA translation (on-chip IOMMU)
-> > > @@ -262,6 +265,7 @@ struct vdpa_config_ops {
-> > >                            const void *buf, unsigned int len);
-> > >         u32 (*get_generation)(struct vdpa_device *vdev);
-> > >         struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
-> > > +       bool (*get_vq_num_unchangeable)(struct vdpa_device *vdev);
-> > >
-> > >         /* DMA ops */
-> > >         int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> > > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> > > index c998860d7bbc..184f1f7f8498 100644
-> > > --- a/include/uapi/linux/vhost.h
-> > > +++ b/include/uapi/linux/vhost.h
-> > > @@ -150,4 +150,6 @@
-> > >  /* Get the valid iova range */
-> > >  #define VHOST_VDPA_GET_IOVA_RANGE      _IOR(VHOST_VIRTIO, 0x78, \
-> > >                                              struct vhost_vdpa_iova_range)
-> > > +/* Check if the vring size can be change */
-> > > +#define VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE _IOR(VHOST_VIRTIO, 0X79, bool)
-> > >  #endif
-> > > --
-> > > 2.31.1
-> > >
->
+The solution for this second case might affect performance both of XDP
+traffic and normal traffice due to lock contention if both are used
+intensively. That's why I call it a "last resort" fallback: it's not a
+desirable situation, but at least we have XDP TX working.
+
+Some tests has shown good results and indicate that the non-fallback
+case is not being damaged by this changes. They are also promising for
+the fallback cases. This is the test:
+1. From another machine, send high amount of packets with pktgen, script
+   samples/pktgen/pktgen_sample04_many_flows.sh
+2. In the tested machine, run samples/bpf/xdp_rxq_info with arguments
+   "-a XDP_TX --swapmac" and see the results
+3. In the tested machine, run also pktgen_sample04 to create high TX
+   normal traffic, and see how xdp_rxq_info results vary
+
+Note that this test doesn't check the worst situations for the fallback
+solutions because XDP_TX will only be executed from the same CPUs that
+are processed by sfc, and not from every CPU in the system, so the
+performance drop due to the highest locking contention doesn't happen.
+I'd like to test that, as well, but I don't have access right now to a
+proper environment.
+
+Test results:
+
+Without doing TX:
+Before changes: ~2,900,000 pps
+After changes, 1 queues/core: ~2,900,000 pps
+After changes, 2 queues/core: ~2,900,000 pps
+After changes, 8 queues/core: ~2,900,000 pps
+After changes, borrowing from network stack: ~2,900,000 pps
+
+With multiflow TX at the same time:
+Before changes: ~1,700,000 - 2,900,000 pps
+After changes, 1 queues/core: ~1,700,000 - 2,900,000 pps
+After changes, 2 queues/core: ~1,700,000 pps
+After changes, 8 queues/core: ~1,700,000 pps
+After changes, borrowing from network stack: 1,150,000 pps
+
+Sporadic "XDP TX failed (-5)" warnings are shown when running xdp program
+and pktgen simultaneously. This was expected because XDP doesn't have any
+buffering system if the NIC is under very high pressure. Thousands of
+these warnings are shown in the case of borrowing net stack queues. As I
+said before, this was also expected.
+
+
+Íñigo Huguet (2):
+  sfc: fallback for lack of xdp tx queues
+  sfc: last resort fallback for lack of xdp tx queues
+
+ drivers/net/ethernet/sfc/efx_channels.c | 98 ++++++++++++++++++-------
+ drivers/net/ethernet/sfc/net_driver.h   |  8 ++
+ drivers/net/ethernet/sfc/tx.c           | 29 ++++++--
+ 3 files changed, 99 insertions(+), 36 deletions(-)
+
+-- 
+2.31.1
 
