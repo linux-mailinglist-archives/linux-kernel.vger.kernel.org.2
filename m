@@ -2,210 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1035405C79
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EBB405C81
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242862AbhIISCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        id S242921AbhIISDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237300AbhIISCJ (ORCPT
+        with ESMTP id S241914AbhIISDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:02:09 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A9FC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:59 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 95A573EBAE;
-        Thu,  9 Sep 2021 20:00:57 +0200 (CEST)
-Subject: Re: [Freedreno] [PATCH 2/3] drm/msm/dpu1: Add MSM8998 to hw catalog
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org, DTML <devicetree@vger.kernel.org>
-References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
- <20210901181138.1052653-2-angelogioacchino.delregno@somainline.org>
- <CAOCk7NoOdjxp0vxu9XJzYsi7a04kpqpTOZHm42ApAN3MqkqtDw@mail.gmail.com>
- <CAA8EJpp6tj10A0QUR1E75t7BZf2Y3jHUyVNniYhEUd9rXj8Vrg@mail.gmail.com>
- <CAOCk7NqhuCJqh-u6ke=Mn=EPgHnc7C2RS_X1nSCg_Nc8An=yPA@mail.gmail.com>
- <2d25526f-dd9c-e336-970d-e8882f848d65@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <dcae0f15-8568-0b13-9d3c-b5641bdade10@somainline.org>
-Date:   Thu, 9 Sep 2021 20:00:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 9 Sep 2021 14:03:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51169C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:02:03 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id g184so2598619pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dJQXSJ02QMh+Wh7r1j+JbzURrGUV/gl8Hy7GcnqmOCI=;
+        b=l/yR86TfFYKMMSesXKkjFyGszNrXtteqULk8eK5GjHYPDdsbR43JcpmjHS1f3NAmxD
+         QD3Kol0cxHDikvOQDK8v2qEPw0Vn9VNa4YmNhlWEoUTOGgv33+lmPPQ16WHIzgQB1oAC
+         Xo+RE0uy9dyt2wsE7qbPMXw5wC3k2KHgExJYHuC/awA9XMW4mRr6uOYeve7AVPgpuZra
+         1RAa6h5XYx99F+k3uOLWAbU4AQk1NTUUTsSZ++QA5GUjwsCn//HxcjTSDfyBHE8iZ8TK
+         8zW2z9RSxQnvnljsOM4mws/JI1THcrY+J5isVCIuudNuF8zzfU/ORIpWBbMlR3lGfasV
+         h+IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dJQXSJ02QMh+Wh7r1j+JbzURrGUV/gl8Hy7GcnqmOCI=;
+        b=wudnvcqfzdAOG4sh4dp125rn4r0BA/NcnLOFxHAEgFEH3prYyzTXvn56KWuc4vKnF8
+         0+n3oE7d25WMdjpTEGpbH76U+WFzhUki+Dad+Pk28W8rdeCivrR1EUIlZPCPUcfwNpwl
+         c9m3WLjPSphOy69bWKq1eKtVVu3WNeuvkLGndlPurc/UJFvrYIsLhb7Gn64t9lpsGG7B
+         CZD2sLrvyDMVQt1QZso9tY/e4acBDhaSYVEcxoExQHro28mxOg1v2aSDTqY3hvstR6vj
+         2Z+sTSQIz2AFpCmi9XbVtoygahaQ0JvPq72TQhDHn9DFjEQoQxsyC9IoC++AfS9APAf5
+         U/lg==
+X-Gm-Message-State: AOAM5337e12JQwMvDGKP7m6aoBKSGjfqVsw0RldFHHxDx6QJIiWQhAsv
+        H7/uYMYk3Z/FYnf5S4sYJ58TaA==
+X-Google-Smtp-Source: ABdhPJypPX2nDxAW3yVEJa6gTathAPgYr+otR+hNxtAmfzad85U54J1YqFfluXKmhDFTlwErlZGh5w==
+X-Received: by 2002:aa7:8617:0:b0:3f2:3cb2:33bc with SMTP id p23-20020aa78617000000b003f23cb233bcmr4338983pfn.36.1631210522767;
+        Thu, 09 Sep 2021 11:02:02 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p12sm2788993pff.106.2021.09.09.11.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 11:02:01 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 12:01:59 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        james.quinlan@broadcom.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: Fix a memory leak in an error handling path
+ in 'rproc_handle_vdev()'
+Message-ID: <20210909180159.GA1388472@p14s>
+References: <e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <2d25526f-dd9c-e336-970d-e8882f848d65@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 09/09/21 15:46, Dmitry Baryshkov ha scritto:
-> On 08/09/2021 17:22, Jeffrey Hugo wrote:
->> On Wed, Sep 8, 2021 at 2:26 AM Dmitry Baryshkov
->> <dmitry.baryshkov@linaro.org> wrote:
->>>
->>> Hi,
->>>
->>> On Tue, 7 Sept 2021 at 22:13, Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
->>>>
->>>> On Wed, Sep 1, 2021 at 12:11 PM AngeloGioacchino Del Regno
->>>> <angelogioacchino.delregno@somainline.org> wrote:
->>>>>
->>>>> Bringup functionality for MSM8998 in the DPU, driver which is mostly
->>>>> the same as SDM845 (just a few variations).
->>>>>
->>>>> Signed-off-by: AngeloGioacchino Del Regno 
->>>>> <angelogioacchino.delregno@somainline.org>
->>>>
->>>> I don't seem to see a cover letter for this series.
->>>>
->>>> Eh, there are a fair number of differences between the MDSS versions
->>>> for 8998 and 845.
->>>>
->>>> Probably a bigger question, why extend the DPU driver for 8998, when
->>>> the MDP5 driver already supports it[1]?  The MDP/DPU split is pretty
->>>> dumb, but I don't see a valid reason for both drivers supporting the
->>>> same target/display revision.  IMO, if you want this support in DPU,
->>>> remove it from MDP5.
->>>>
->>>> [1] 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.14&id=d6c7b2284b14c66a268a448a7a8d54f585d38785 
->>>>
->>>
->>> I don't think that we should enforce such requirements. Having support
->>> both in MDP5 and DPU would allow one to compare those two drivers,
->>> performance, features, etc.
->>> It might be that all MDP5-supported hardware would be also supported
->>> by DPU, thus allowing us to remove the former driver. But until that
->>> time I'd suggest leaving support in place.
->>
->> Well, then you have a host of problems to solve.
->>
->> Lets ignore the code duplication for a minute and assume we've gone
->> with this grand experiment.  Two drivers enter, one leaves the victor.
->>
+On Sat, Sep 04, 2021 at 01:37:32PM +0200, Christophe JAILLET wrote:
+> If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
+> Move the 'copy_dma_range_map()' call after the device registration so
+> that 'rproc_rvdev_release()' can be called to free some resources.
+> 
+> Also, branch to the error handling path if 'copy_dma_range_map()' instead
+> of a direct return to avoid some other leaks.
+> 
+> Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Compile tested only.
+> Review with care. I don't like to move code around because of possible
+> side-effect.
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 502b6604b757..775df165eb45 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -556,9 +556,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  	/* Initialise vdev subdevice */
+>  	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+>  	rvdev->dev.parent = &rproc->dev;
+> -	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+> -	if (ret)
+> -		return ret;
+>  	rvdev->dev.release = rproc_rvdev_release;
+>  	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+>  	dev_set_drvdata(&rvdev->dev, rvdev);
+> @@ -568,6 +565,11 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  		put_device(&rvdev->dev);
+>  		return ret;
+>  	}
+> +
+> +	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+> +	if (ret)
+> +		goto free_rvdev;
+> +
 
-I know you said let's ignore - but anyway, the code duplication is already
-there: DPU1 supports most of the features that are supported by the MDP5
-driver *anyway*, lacking support for the very very old hardware.
+Good catch.
 
->> How are the clients supposed to pick which driver to use in the mean
->> time?  We already have one DT binding for 8998 (which the MDP5 driver
->> services).  This series proposes a second.  If we go forward with what
->> you propose, we'll have two bindings for the same hardware, which IMO
->> doesn't make sense in the context of DT, and the reason for that is to
->> select which driver is "better".  Driver selection is not supposed to
->> be tied to DT like this.
->>
->> So, some boards think MDP5 is better, and some boards think DPU is
->> better.  At some point, we decide one of the drivers is the clear
->> winner (lets assume DPU).  Then what happens to the existing DTs that
->> were using the MDP5 description?  Are they really compatible with DPU?
->>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-I don't see any MSM8998 dts/dtsi file using mdp5 upstream anyway, so we wouldn't
-even need to convert anything to using dpu1.
-
->>  From a DT perspective, there should be one description, but then how
->> do you pick which driver to load?  Both can't bind on the single
->> description, and while you could argue that the users should build one
->> driver or the other, but not both (thus picking which one at build
->> time), that doesn't work for distros that want to build both drivers
->> so that they can support all platforms with a single build (per arch).
+>  	/* Make device dma capable by inheriting from parent's capabilities */
+>  	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+>  
+> -- 
+> 2.30.2
 > 
-> Yep, the DT issue wasn't thought about from my side at the review time. I 
-> considered qcom,msm8998-dpu as an extension/upgrade of bare qcom,mdp5 compatibility 
-> string (as we usually add chip-specific compatibilities).
-> 
-> In fact using just 'qcom,mdp5' prevents us from having such kind of driver upgrades.
-> 
-> What I'd propose if everybody else agrees on moving 8998 (and maybe others later) 
-> from MDP5 to DPU would be to continue supporting qcom,mdp5 binding in the mdp5 
-> driver and to add qcom,msm8998-dpu binding used by the DPU driver. Maybe with the 
-> warning telling to update the binding. Then at some point if all the MDP5-supported 
-> hardware is supported by the DPU we can drop the MDP5 driver and implement required 
-> bindings compatibility in the DPU.
-> 
-
-Since there's no upstream dtsi using mdp5, this problem practically does not exist.
-In any case, removing MSM8998 support from mdp5 is probably a good idea.. dpu1 is
-"more featureful" already, so it wouldn't really make sense to use mdp5 for a 8998
-board right now.
-I've also validated this on different 8998 devices with both command mode and video
-mode panels (cmd on Sony Yoshino, video on FxTec Pro1) and they both work fine.
-
->>
->>  From where I sit, your position starts with a good idea, but isn't
->> fully thought out and leads to problems.
->>
->> If there is some reason why DPU is better for 8998, please enumerate
->> it.  Does DPU support some config that MDP5 doesn't, which is valuable
->> to you? 
-> 
-> The DPU receives more attention from both Qualcomm and Linaro, so it will continue 
-> acquiring features (which MDP5 might not have at the moment).
-> 
-> For example consider the SmartDMA (multirect) support. For now the multirect 
-> patchset it is limited to newer versions, but it might be extended to support older 
-> chips (in the DPU) too. We did not have plans to backport SmartDMA v1 support to MDP5.
-> 
-> Writeback also has more chances to be supported in the DPU rather than in the MDP5 
-> driver (I remember Rob's patches for the MDP5, but they never actually landed 
-> upstream).
-> 
-
-Not to mention the probably coming PCC support (since DSPP is already supported on
-DPU), and the fact that there's Display Stream Compression (DSC) support in the
-works (I saw some patches around on LKML), which is actually needed by at least the
-Sony Xperia XZ Premium (1080p scaled no dsc, or 4k non-scaled but needs dsc).
-
-> Last but not least at this moment DPU has bandwidth scaling support, while MDP5 
-> does not. I've sent a patch for MDP5 earlier, which then got reverted because of 
-> armv7 support. At this moment I did not resend it since we found some underrun 
-> issues on resume or when quickly changing bw down and up.
-> 
->> I'm ok with ripping out the MDP5 support, the reason I didn't
->> go with DPU was that the DPU driver was clearly written only for 845
->> at the time, and needed significant rework to "downgrade" to an
->> earlier hardware.  However, the "reason" DPU exists separate from MDP5
->> is the claim that the MDP hardware underwent a significant
->> rearchitecture, and thus it was too cumbersome to extend MDP5.  While
->> I disagree with the premise, that "rearch" started with 8998.
-> 
-> Just checked, the SDE, the origin (or parent) of the DPU driver starts it's support 
-> from the 8996 and 8998.
-> 
-> 
-> 
-> 
-
-Yes you are correct, I saw the same downstream, even though I've never tried SDE on
-MSM8996, on Sony downstream kernels we successfully use SDE on MSM8998 since we did
-the porting on the newer kernel (not sure, I think that was 3.18).
-
-
-Also, sorry for not being immediately ready to reply to my own patch series, my
-days are a bit messy, currently.
-
-Cheers,
-- Angelo
