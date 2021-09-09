@@ -2,72 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9332C404843
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08814404842
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhIIKNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:13:53 -0400
-Received: from mx.msync.work ([95.217.65.204]:41830 "EHLO mx.msync.work"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhIIKNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233436AbhIIKNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 9 Sep 2021 06:13:51 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1CFA7E380B;
-        Thu,  9 Sep 2021 10:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631182358; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding:in-reply-to:references;
-        bh=rYcxstF7M6GvEU4BC2Fn3rACJTfIsjKUu2jpC7WXlQs=;
-        b=DDDwvohDTp0F4Z+dsZTEkO5/GRP18FE6KJEMbssKTSru2uRnJw0Au3uEP7WiayHD6b2Q2Z
-        Hb4cccTh7ZsUTnozPnZo5XuUym8BC7TiQsX5zspqxpzgE8BoWXAqrSV/UX934aS9K0pGcp
-        vyh6GamTHKLqXRvCTzqVrBGW2QWW7c1UMm455j8ZbdDDck00bsZhJ7AruSf+sp7Vgh96kz
-        NLuY2Mnh5Rv3+fprKJ16FWNH+6cQfPi2kLCdlZLuDXGKT3KrE6apbczvrAtqsf6J7oA/6p
-        0cMLujmZv8VXopN41/o3gS/qEzDgm6qlfnhbbaN1p2Prp9sgQfXnss32zLjDSA==
-From:   Vyacheslav Bocharov <adeep@lexina.in>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Rob Herring <robh+dh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Vyacheslav Bocharov <devel@lexina.in>
-Subject: Resend: [PATCH v4 2/4] dt-bindings: vendor-prefixes: add jethome prefix
-Date:   Thu,  9 Sep 2021 13:11:57 +0300
-Message-Id: <20210909101158.362075-2-adeep@lexina.in>
-In-Reply-To: <20210907095603.1520109-1-adeep@lexina.in>
-References: <20210907095603.1520109-1-adeep@lexina.in>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230509AbhIIKNu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 06:13:50 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4848CC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 03:12:41 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z18so2768941ybg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 03:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=B1swTUzeJfz81+Omg0FKdab363Lc48XPKQB8wcmQ9sYHBq1nyTU86q2ZjxyCdcauaw
+         n2QLU7ehhnWdUS51CcVd22ZlygdV8zrwIWhKoooDqhJxexFlpdrxgDOHlbrvp29jgimY
+         hxbiaU874nYZToD50s+jXMb+0YO/wajPv1IJ9irCMJnw4DNvIBhfotNaqtOX4/vRzQu5
+         Cj0Z9F+eAf1NxNTIeUHGQSDO043yxZJO/5orCk8RcEGGvmNTIQ225Euoi4RjRwlHANo9
+         6tPdR9BwS21y6dg0nLo1h5JgzFYR9mO4JZmXcYC2md+Y4PVTlTDJ7Jb2QrrMr7QpSxho
+         Up8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=XDobKrigw7F/TILt32Sm0cBxTXd1X3WGqLKVRv0R5TD9QXF1bKBlAcsvVzIi0Q6wiM
+         zvEJV88ACHRaGyDdQTbrDXtqNMVImikMwPLREMO3c1OZfD0jAL91fjYS6E7VW/hvcE+8
+         KpWEBBgS3yAIYaGazFqGaLgKRuDPPz4A05hEd7BgQKO0lmUnT9JsZpfHsWebrhC/W7Fy
+         YVWiBJsHMPU1yN/3Fsy5eyNE0M5GiAMEnEI3Hxet4QEL+Fe9eZi9MVWoVZbRYOeqzghe
+         uQArGZWewMrbYeFEzCPRjVHuL5AkPaFn20v0rFRVbwMdOxSgk/TMqPhkN/bg/6WXghB9
+         pg1Q==
+X-Gm-Message-State: AOAM532HqJYb3Gu6AQs5lWmhs9LReHBTAbeGN/6ka3y+qkQ1Wsizt/Jr
+        dZMew9JN62LHzfNj3dBTzIOsSHW1f/cseBIJ/5Y=
+X-Google-Smtp-Source: ABdhPJx+eMpFUafU3HgfQvUQ/qkd+Ho+abSEO5wXLgeYA4SmCX64iqlKYoBI/UhW/rHQbsQXZSrkfnxADCWJpW8vSbY=
+X-Received: by 2002:a25:6b4d:: with SMTP id o13mr2591032ybm.241.1631182360638;
+ Thu, 09 Sep 2021 03:12:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Received: by 2002:a05:6918:b489:b0:59:3207:eb7 with HTTP; Thu, 9 Sep 2021
+ 03:12:40 -0700 (PDT)
+Reply-To: kaylamanthey022@gmail.com
+From:   Kayla Manthey <johnsodavidn44@gmail.com>
+Date:   Thu, 9 Sep 2021 10:12:40 +0000
+Message-ID: <CAGsdk1E8smoD-O+y2z-EZ9rNOYFwnap=f1rn1iP7q7va0qBV9g@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vyacheslav Bocharov <devel@lexina.in>
-
-JetHome is trademark of IP Sokolov P.A., manufacturer of home automation
-devices.
-
-Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index a867f7102c35..c52f0d3261bb 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -577,6 +577,8 @@ patternProperties:
-     description: JEDEC Solid State Technology Association
-   "^jesurun,.*":
-     description: Shenzhen Jesurun Electronics Business Dept.
-+  "^jethome,.*":
-+    description: JetHome (IP Sokolov P.A.)
-   "^jianda,.*":
-     description: Jiandangjing Technology Co., Ltd.
-   "^kam,.*":
--- 
-2.30.2
-
+Greetings, My name is Kayla Manthey, please reply me back?
