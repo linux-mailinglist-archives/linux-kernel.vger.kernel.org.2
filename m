@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FAA404211
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7F4404210
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348213AbhIIAKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:10:36 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36766 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348020AbhIIAK0 (ORCPT
+        id S1348170AbhIIAKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:10:34 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35450 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348007AbhIIAK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Sep 2021 20:10:26 -0400
-Received: by mail-il1-f200.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso157474ilv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:09:18 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id g14-20020a6be60e000000b005b62a0c2a41so84210ioh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:09:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=E6ifD+DxBrKIc0PmerbZr6KIS62In3l8PDO6Br/j8+M=;
-        b=U5l46lSSC3WSwy/tQz46zJxsdWbAFoOP3PpSjge6cjFU92za06DMs3C9dPQZeydz1p
-         mOgaiDlcOuK+K12O+kBBvBQ4QiD/9I0YFyZ0tR9y4L+QsvU56LOd+CJFtfs2cNcjd4QT
-         35frUbwklZ1vxTRF3RObAmWcWC2izuX2fGfP1f0ByyAHplXnvsikkZtTjl3AgoGKtQpW
-         bI0Uwbj0OZR5DuLDYJjwSEuBTCruw9opTrSQg2lhZgIZRSZA9mBb6kBpFHJX2WwtMS0S
-         uoSq6I70MyEECMbFh0cbrCRbIYSfl/i1Ztl533cxGpC5Zxi+uroeMuD+/IoZynWRmW37
-         lcmg==
-X-Gm-Message-State: AOAM5309KdaY5gzQ9dgvY6IIvXxVbPD3jeO2HNrNFZojyUTwZ7fYRRuC
-        DDfywKE1m82nPHfoQfkDncswr7FjMcjPU4aF16FeR9KcAyQw
-X-Google-Smtp-Source: ABdhPJygVe0H6BfQEZ6XB2+96sBIZBndxK95aym50XDhgRIeaOCpepNct4z3XC33RSygyODIBzzAYMiYTlGAO0UXA33ZvXnRXl/5
+        bh=QPkkC/1Bh97x6PmNJUT4Hxi4h89kOXJouRdSjI8zf0Y=;
+        b=tEJHb34C8q5GEsdTqlWVcpL16SCQrCf52z/dI/+d09ekzd1WRW5tHREV3pNqFdgaSE
+         0dJp/RXBNmJyUj5V6QtOTxnwJfXyfV2ULRrnQJLENTbN0Tl+34lp/v5aIEHCD8Q48uwC
+         +jBW9UDg/0BE8ydT1EIpFVLJRz751hY0v48wQ9S8+v1CCFUxeTVkGvk4znnJOx3jRwU7
+         hzwKoj2bYfTJo/GXMPcpW336mOd7MZklavnojYc48hqv+zBoKGFvQhqVx6XBpetvoV4j
+         vG1s4hUgFOmxpBFp29dm/KD3xMVLAw8BRFYGGqo08aQOX+Nc62yndRdz4W+oKRg8MFop
+         IVHg==
+X-Gm-Message-State: AOAM5338XnoEmJVcPcTp6bCR03yR0xDebtMbesA5URtoUV0b6wAAfm5G
+        sJxuJKB8LUe7FGhOr2QsB59J2WTaLDnFpLbvoo+xhbvnhYjx
+X-Google-Smtp-Source: ABdhPJyIRrR7Hdh76tEY/CQM34AZbdIzkcE2dCcxDMT8REmvqwSZmWUL0+MwVYvj7CDDhTO1UpGXgtA61SS7uhITCwSXAc5H4RRX
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20cd:: with SMTP id 13mr123218ilq.156.1631146157792;
+X-Received: by 2002:a02:cebc:: with SMTP id z28mr185001jaq.49.1631146157527;
  Wed, 08 Sep 2021 17:09:17 -0700 (PDT)
 Date:   Wed, 08 Sep 2021 17:09:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004fe6b105cb84cf1e@google.com>
-Subject: [syzbot] memory leak in create_io_worker
-From:   syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>
+Message-ID: <0000000000004bda3905cb84cfc0@google.com>
+Subject: [syzbot] WARNING in io_wq_submit_work (2)
+From:   syzbot <syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com>
 To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -47,48 +47,75 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    0bcfe68b8767 Revert "memcg: enable accounting for pollfd a..
+HEAD commit:    4b93c544e90e thunderbolt: test: split up test cases in tb_..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=152ccba3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c2f4c21cbd29de3d
-dashboard link: https://syzkaller.appspot.com/bug?extid=65454c239241d3d647da
+console output: https://syzkaller.appspot.com/x/log.txt?x=10b7836d300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc2d90f602545761f287
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123d31b3300000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e8ce0b300000
+
+The issue was bisected to:
+
+commit 3146cba99aa284b1d4a10fbd923df953f1d18035
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Wed Sep 1 17:20:10 2021 +0000
+
+    io-wq: make worker creation resilient against signals
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11098e0d300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13098e0d300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15098e0d300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com
+Reported-by: syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com
+Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
 
-2021/09/08 01:29:02 executed programs: 33
-2021/09/08 01:29:08 executed programs: 42
-2021/09/08 01:29:15 executed programs: 62
-2021/09/08 01:29:21 executed programs: 82
-BUG: memory leak
-unreferenced object 0xffff888126fcd6c0 (size 192):
-  comm "syz-executor.1", pid 11934, jiffies 4294983026 (age 15.690s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81632c91>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff81632c91>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff81632c91>] create_io_worker+0x41/0x1e0 fs/io-wq.c:739
-    [<ffffffff8163311e>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff8163311e>] io_wqe_enqueue+0x1fe/0x330 fs/io-wq.c:866
-    [<ffffffff81620b64>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162c59c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6933
-    [<ffffffff8162c7ab>] io_req_task_submit+0x4b/0xa0 fs/io_uring.c:2233
-    [<ffffffff8162cb48>] io_async_task_func+0x108/0x1c0 fs/io_uring.c:5462
-    [<ffffffff816259e3>] tctx_task_work+0x1b3/0x3a0 fs/io_uring.c:2158
-    [<ffffffff81269b43>] task_work_run+0x73/0xb0 kernel/task_work.c:164
-    [<ffffffff812dcdd1>] tracehook_notify_signal include/linux/tracehook.h:212 [inline]
-    [<ffffffff812dcdd1>] handle_signal_work kernel/entry/common.c:146 [inline]
-    [<ffffffff812dcdd1>] exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
-    [<ffffffff812dcdd1>] exit_to_user_mode_prepare+0x151/0x180 kernel/entry/common.c:209
-    [<ffffffff843ff25d>] __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
-    [<ffffffff843ff25d>] syscall_exit_to_user_mode+0x1d/0x40 kernel/entry/common.c:302
-    [<ffffffff843fa4a2>] do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8804 at fs/io_uring.c:1164 req_ref_get fs/io_uring.c:1164 [inline]
+WARNING: CPU: 1 PID: 8804 at fs/io_uring.c:1164 io_wq_submit_work+0x272/0x300 fs/io_uring.c:6731
+Modules linked in:
+CPU: 1 PID: 8804 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:req_ref_get fs/io_uring.c:1164 [inline]
+RIP: 0010:io_wq_submit_work+0x272/0x300 fs/io_uring.c:6731
+Code: e8 d3 21 91 ff 83 fb 7f 76 1b e8 89 1a 91 ff be 04 00 00 00 4c 89 ef e8 bc 62 d8 ff f0 ff 45 a4 e9 41 fe ff ff e8 6e 1a 91 ff <0f> 0b eb dc e8 65 1a 91 ff 4c 89 e7 e8 ad dc fb ff 48 85 c0 49 89
+RSP: 0018:ffffc900027b7ae8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000000000007f RCX: 0000000000000000
+RDX: ffff8880209cb900 RSI: ffffffff81e506d2 RDI: 0000000000000003
+RBP: ffff888071824978 R08: 000000000000007f R09: ffff88807182491f
+R10: ffffffff81e506ad R11: 0000000000000000 R12: ffff8880718248c0
+R13: ffff88807182491c R14: ffff888071824918 R15: 0000000000100000
+FS:  0000000002b68400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f33208ca50 CR3: 0000000071827000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_run_cancel fs/io-wq.c:809 [inline]
+ io_acct_cancel_pending_work.isra.0+0x2a9/0x5e0 fs/io-wq.c:950
+ io_wqe_cancel_pending_work+0x98/0x130 fs/io-wq.c:968
+ io_wq_destroy fs/io-wq.c:1185 [inline]
+ io_wq_put_and_exit+0x7d1/0xc70 fs/io-wq.c:1198
+ io_uring_clean_tctx fs/io_uring.c:9607 [inline]
+ io_uring_cancel_generic+0x5fe/0x740 fs/io_uring.c:9687
+ io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+ do_exit+0x265/0x2a30 kernel/exit.c:780
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdd0a294a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 000000000000001e RCX: 00000000004665f9
+RDX: 000000000041940b RSI: ffffffffffffffbc RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000001b2be20070 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffdd0a295a0
 
 
 ---
@@ -98,5 +125,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
