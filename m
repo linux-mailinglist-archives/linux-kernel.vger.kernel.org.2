@@ -2,75 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D36405D12
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE55405D15
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344258AbhIIS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:57:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45312 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbhIIS53 (ORCPT
+        id S239647AbhIIS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:58:58 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:65140 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235271AbhIIS64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:57:29 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 9 Sep 2021 14:58:56 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id d43d481c64ac2b61; Thu, 9 Sep 2021 20:57:45 +0200
+Received: from kreacher.localnet (unknown [213.134.181.77])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 64F872233B;
-        Thu,  9 Sep 2021 18:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631213778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7t8ztgYZsndp44kDdVFUqlrz/Zoxo2W/1YXS7ePODV0=;
-        b=RhFaxjaP0kRFSHZmQkLTUH3usxdlgA4J91/Herg20j4L7sLvgpQ3JuSnllPZKyRxRfc+GE
-        jUQP2aFo5A7rEO5JhhZx+eP5RNM5w37gbXoODJX03b45gvkpVwvKIF75IbQuFknN/IVq0A
-        MbKJUW3joiEwGySf/L0DeqEspo5mdYs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F7AE13ACF;
-        Thu,  9 Sep 2021 18:56:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8YVSCtJYOmFBLwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 18:56:18 +0000
-Date:   Thu, 9 Sep 2021 20:56:16 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     brookxu <brookxu.cn@gmail.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-Message-ID: <YTpY0G3+IJYmGbdd@blackbook>
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
- <20210909143720.GA14709@blackbody.suse.cz>
- <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id 260B266A4C2;
+        Thu,  9 Sep 2021 20:57:45 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] MAINTAINERS: Change Rafael's e-mail address
+Date:   Thu, 09 Sep 2021 20:57:44 +0200
+Message-ID: <5509701.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.181.77
+X-CLIENT-HOSTNAME: 213.134.181.77
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudefledgudefudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffekteethfdvhfefgffhueefleehudeihedujeeutddvfeekvdehtdetteeuieehnecuffhomhgrihhnpegrrhhmrdgtohhmpdhophgvnhhlihhnuhigrdhorhhgpdhkrghnughordhhuhdpkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddukedurdejjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukedurdejjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
+ gh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 09:49:56AM -0700, Vipin Sharma <vipinsh@google.com> wrote:
-> We are adding two files in this patch series, misc.events and
-> misc.events.local. I think "fail" should go in misc.events.local and
-> its name should be changed to "max".
+From: Rafael J. Wysocki <rafael@kernel.org>
 
-I consider the max vs fail orthogonal to local vs hierarchical. I.e.
-both entries can be in both files:
+I have been slow to respond to messages going to rjw@rjwysocki.net
+recently, so change it to rafael@kernel.org (which works better for
+me) in MAINTAINERS.
 
-(1) misc.events.local:max	number of times the cgroup's misc.max was hit
-(2) misc.events.local:fail	number of times operation failed in the cgroup
-(3) misc.events:max		number of times the cgroup's misc.max was hit in the subtree
-(4) misc.events:fail		number of times operation failed in the subtree
+Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+ MAINTAINERS |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Is that too many? Admittedly, I assume (1) and (4) will be the more useful ones.
-However, I'm afraid overloading "max" as suggested might be (more)
-confusing. ('subtree' above := self or descendant)
+Index: linux-pm/MAINTAINERS
+===================================================================
+--- linux-pm.orig/MAINTAINERS
++++ linux-pm/MAINTAINERS
+@@ -333,7 +333,7 @@ S:	Maintained
+ F:	drivers/platform/x86/acer-wmi.c
+ 
+ ACPI
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Len Brown <lenb@kernel.org>
+ L:	linux-acpi@vger.kernel.org
+ S:	Supported
+@@ -354,7 +354,7 @@ F:	include/linux/fwnode.h
+ F:	tools/power/acpi/
+ 
+ ACPI APEI
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Len Brown <lenb@kernel.org>
+ R:	James Morse <james.morse@arm.com>
+ R:	Tony Luck <tony.luck@intel.com>
+@@ -402,7 +402,7 @@ S:	Maintained
+ F:	drivers/platform/x86/i2c-multi-instantiate.c
+ 
+ ACPI PMIC DRIVERS
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Len Brown <lenb@kernel.org>
+ R:	Andy Shevchenko <andy@kernel.org>
+ R:	Mika Westerberg <mika.westerberg@linux.intel.com>
+@@ -4797,7 +4797,7 @@ W:	http://www.arm.com/products/processor
+ F:	drivers/cpufreq/vexpress-spc-cpufreq.c
+ 
+ CPU FREQUENCY SCALING FRAMEWORK
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Viresh Kumar <viresh.kumar@linaro.org>
+ L:	linux-pm@vger.kernel.org
+ S:	Maintained
+@@ -4815,7 +4815,7 @@ F:	kernel/sched/cpufreq*.c
+ F:	tools/testing/selftests/cpufreq/
+ 
+ CPU IDLE TIME MANAGEMENT FRAMEWORK
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Daniel Lezcano <daniel.lezcano@linaro.org>
+ L:	linux-pm@vger.kernel.org
+ S:	Maintained
+@@ -7525,7 +7525,7 @@ W:	ftp://ftp.openlinux.org/pub/people/hc
+ F:	fs/freevxfs/
+ 
+ FREEZER
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Pavel Machek <pavel@ucw.cz>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+@@ -7778,7 +7778,7 @@ S:	Supported
+ F:	drivers/i2c/muxes/i2c-demux-pinctrl.c
+ 
+ GENERIC PM DOMAINS
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Kevin Hilman <khilman@kernel.org>
+ M:	Ulf Hansson <ulf.hansson@linaro.org>
+ L:	linux-pm@vger.kernel.org
+@@ -8244,7 +8244,7 @@ W:	http://drama.obuda.kando.hu/~fero/cgi
+ F:	drivers/video/fbdev/hgafb.c
+ 
+ HIBERNATION (aka Software Suspend, aka swsusp)
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Pavel Machek <pavel@ucw.cz>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+@@ -14838,7 +14838,7 @@ F:	kernel/time/*timer*
+ F:	kernel/time/namespace.c
+ 
+ POWER MANAGEMENT CORE
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+ B:	https://bugzilla.kernel.org
+@@ -17775,7 +17775,7 @@ F:	arch/sh/
+ F:	drivers/sh/
+ 
+ SUSPEND TO RAM
+-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
++M:	"Rafael J. Wysocki" <rafael@kernel.org>
+ M:	Len Brown <len.brown@intel.com>
+ M:	Pavel Machek <pavel@ucw.cz>
+ L:	linux-pm@vger.kernel.org
 
-Michal
+
+
