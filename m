@@ -2,247 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4F84057A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5264057A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358562AbhIINjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:39:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32903 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377053AbhIINfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:35:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631194466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Q7pFBb41mM6ea1MZnjVghiyEWdoCaTiHYJmPRbmHnQ=;
-        b=Z8aDLShh1s0kRe4EiMauK5n6/U7dtFYZDLpJUc/ytFT+9DI3losV71SF/KH158S1VVZjGc
-        yGyLnrQV7X1CkhZF8TLPAwoLO86y9VazRljPvKbgkFqAcsInX4U6NMoGSeaRbbdra5d2wD
-        MAb+L1iCTHsfg8/gc6loRi+TbQc1VmY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-HBhK2sTNPm6ZOmaU73i1JA-1; Thu, 09 Sep 2021 09:34:25 -0400
-X-MC-Unique: HBhK2sTNPm6ZOmaU73i1JA-1
-Received: by mail-wr1-f71.google.com with SMTP id y13-20020adfe6cd000000b00159694c711dso514114wrm.17
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:34:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Q7pFBb41mM6ea1MZnjVghiyEWdoCaTiHYJmPRbmHnQ=;
-        b=BHhja2N32ln0VH7RlwTVn7VlTGTnUC8lViDoM5Vt/l5bT8+k1U7NpBySVVV7Zs0pl9
-         xIPzIjpTlZNv6O5sLTLL/Klzg9WCDA+09XOO6zPdBTwBFcxR540SKmW8e1+ExFtM4CuC
-         vaTSCLiwo2rYcfaweCW/KZ5KZUwuppJv7ntBB4OxwJ4PpO2A9vD3taXFvhoStMHu4Wl1
-         QlXDvK22KBgOUsWOAVWfhQuk857R8n5aFU0DIo4EXUo9xu3kQx3GQyq3RLvRizKskYSv
-         QbP7HakmVS7Ql8dkYcOawqMG9AFiqMe7Y7MEtS7ZG21iZtzoot1VnOM2iP1HAigmlx7Y
-         /vZw==
-X-Gm-Message-State: AOAM533Yo2dZWynhY5YfxphboywlFoY4W/cGk924yvEnWXV6M5Z3vMcm
-        3a53vo/Xb20hMoAWPA8cOz2ZOq1ZJQzsVxPEvMhkmBdG/goncynP3EvDWBGcY7jHgsrQE95ZeJ7
-        ituvOGC8P0PwgPfHaekeAwSs0
-X-Received: by 2002:adf:b60f:: with SMTP id f15mr3664994wre.257.1631194463930;
-        Thu, 09 Sep 2021 06:34:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAa/35Y8EeWRcAEuDGOq75zQKTD2hppp6pTHEcWPqQ1zyn1QeYm1M8X/dALPxOElMhuVHRDQ==
-X-Received: by 2002:adf:b60f:: with SMTP id f15mr3664972wre.257.1631194463710;
-        Thu, 09 Sep 2021 06:34:23 -0700 (PDT)
-Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id o10sm2053571wrc.16.2021.09.09.06.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 06:34:23 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 15:34:21 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Oliver Upton <oupton@google.com>
-Cc:     Raghavendra Rao Ananta <rananta@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 14/18] KVM: arm64: selftests: Add host support for vGIC
-Message-ID: <20210909133421.rdkueb627glve6uz@gator>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-15-rananta@google.com>
- <YTmce6Xn+ymngA+r@google.com>
+        id S1348174AbhIINkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357477AbhIINgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:36:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4407C60F4A;
+        Thu,  9 Sep 2021 13:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631194542;
+        bh=iGb3aFTZvFrFF1Dl9Z7zCVV2Bug7d35snwFG0aHedNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aP8tZaoZM3Wip4ZzCWZQVmJOOKX7L75vvouB4d7ONzfcI91TX7xdbisH6/BA6ezhz
+         hxo6F1Gt9KbDsxkXRnSAudKZkWkZpMJ7Oq9VjWzEvwUC2rBxa3ABKEcC/rwRGSTyzS
+         36lbVYKa2XmribZNnCxwoLx/AiW9e8rN6nsrib0veAK2FMwKMiwAif6N+CiaHcyznG
+         BZsnv3Tjtxz/FnI+l7qrmVUB+DX22P7lnBtN3tLZDzmhp3KIaOHp85VKEIVt4XuyXK
+         kIecqRveGrFBDSSYiVXDHgmTQ1x/QP5vjTd3FXSVnhTSuP6lcmwPiaL/mDwe3Od4lJ
+         t/UCz/3HiZOzA==
+Date:   Thu, 9 Sep 2021 14:35:36 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, dlustig@nvidia.com, mpe@ellerman.id.au
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <20210909133535.GA9722@willie-the-truck>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTmce6Xn+ymngA+r@google.com>
+In-Reply-To: <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 05:32:43AM +0000, Oliver Upton wrote:
-> Hi Raghu,
+[+Palmer, PaulW, Daniel and Michael]
+
+On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
 > 
-> On Thu, Sep 09, 2021 at 01:38:14AM +0000, Raghavendra Rao Ananta wrote:
-> > Implement a simple library to perform vGIC-v3 setup
-> > from a host point of view. This includes creating a
-> > vGIC device, setting up distributor and redistributor
-> > attributes, and mapping the guest physical addresses.
+> > So if this is purely a RISC-V thing,
+> 
+> Just to clarify, I think the current RISC-V thing is stonger than
+> PowerPC, but maybe not as strong as say ARM64, but RISC-V memory
+> ordering is still somewhat hazy to me.
+> 
+> Specifically, the sequence:
+> 
+> 	/* critical section s */
+> 	WRITE_ONCE(x, 1);
+> 	FENCE RW, W
+> 	WRITE_ONCE(s.lock, 0);		/* store S */
+> 	AMOSWAP %0, 1, r.lock		/* store R */
+> 	FENCE R, RW
+> 	WRITE_ONCE(y, 1);
+> 	/* critical section r */
+> 
+> fully separates section s from section r, as in RW->RW ordering
+> (possibly not as strong as smp_mb() though), while on PowerPC it would
+> only impose TSO ordering between sections.
+> 
+> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
+> similarly it marches the R from the R->RW fence, yielding an:
+> 
+> 	RW->  W
+> 	    RmW
+> 	    R  ->RW
+> 
+> ordering. It's the stores S and R that can be re-ordered, but not the
+> sections themselves (same on PowerPC and many others).
+> 
+> Clarification from a RISC-V enabled person would be appreciated.
+> 
+> > then I think it's entirely reasonable to
 > > 
-> > The definition of REDIST_REGION_ATTR_ADDR is taken
-> > from aarch64/vgic_init test.
-> >
-> 
-> Consider dropping the macro from vgic_init.c and have it just include
-> vgic.h
-
-Yes, I agree 18/18 should be squashed into this one.
-
-> 
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  tools/testing/selftests/kvm/Makefile          |  2 +-
-> >  .../selftests/kvm/include/aarch64/vgic.h      | 20 +++++++
-> >  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 60 +++++++++++++++++++
-> >  3 files changed, 81 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
-> >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> >         spin_unlock(&r);
+> >         spin_lock(&s);
 > > 
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > index 5476a8ddef60..8342f65c1d96 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -35,7 +35,7 @@ endif
-> >  
-> >  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
-> >  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> > -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
-> > +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
-> >  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
-> >  
-> >  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> > diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> > new file mode 100644
-> > index 000000000000..3a776af958a0
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> > @@ -0,0 +1,20 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * ARM Generic Interrupt Controller (GIC) host specific defines
-> > + */
-> > +
-> > +#ifndef SELFTEST_KVM_VGIC_H
-> > +#define SELFTEST_KVM_VGIC_H
-> > +
-> > +#include <linux/kvm.h>
-> > +
-> > +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
-> > +	(((uint64_t)(count) << 52) | \
-> > +	((uint64_t)((base) >> 16) << 16) | \
-> > +	((uint64_t)(flags) << 12) | \
-> > +	index)
-> > +
-> > +int vgic_v3_setup(struct kvm_vm *vm,
-> > +				uint64_t gicd_base_gpa, uint64_t gicr_base_gpa);
-> > +
-> > +#endif /* SELFTEST_KVM_VGIC_H */
-> > diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> > new file mode 100644
-> > index 000000000000..2318912ab134
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> > @@ -0,0 +1,60 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * ARM Generic Interrupt Controller (GIC) v3 host support
-> > + */
-> > +
-> > +#include <linux/kvm.h>
-> > +#include <linux/sizes.h>
-> > +
-> > +#include "kvm_util.h"
-> > +#include "vgic.h"
-> > +
-> > +#define VGIC_V3_GICD_SZ		(SZ_64K)
-> > +#define VGIC_V3_GICR_SZ		(2 * SZ_64K)
+> > cannot be reordered.
 > 
-> These values are UAPI, consider dropping them in favor of the
-> definitions from asm/kvm.h
+> I'm obviously completely in favour of that :-)
 
-Yes, please.
+I don't think we should require the accesses to the actual lockwords to
+be ordered here, as it becomes pretty onerous for relaxed LL/SC
+architectures where you'd end up with an extra barrier either after the
+unlock() or before the lock() operation. However, I remain absolutely in
+favour of strengthening the ordering of the _critical sections_ guarded by
+the locks to be RCsc.
 
-> 
-> > +
-> > +/*
-> > + * vGIC-v3 default host setup
-> > + *
-> > + * Input args:
-> > + *	vm - KVM VM
-> > + *	gicd_base_gpa - Guest Physical Address of the Distributor region
-> > + *	gicr_base_gpa - Guest Physical Address of the Redistributor region
-> > + *
-> > + * Output args: None
-> > + *
-> > + * Return: GIC file-descriptor or negative error code upon failure
-> > + *
-> > + * The function creates a vGIC-v3 device and maps the distributor and
-> > + * redistributor regions of the guest. Since it depends on the number of
-> > + * vCPUs for the VM, it must be called after all the vCPUs have been created.
-> 
-> You could avoid the ordering dependency by explicitly taking nr_vcpus as
-> an arg. It would also avoid the need for 12/18.
+Last time this came up, I think the RISC-V folks were generally happy to
+implement whatever was necessary for Linux [1]. The thing that was stopping
+us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
+Michael saw quite a bit of variety in the impact on benchmarks [2] across
+different machines. So the question is whether newer Power machines are less
+affected to the degree that we could consider making this change again.
 
-All the vcpus need to be created prior to calling
-KVM_DEV_ARM_VGIC_CTRL_INIT, so even though I don't disagree with
-simply passing nr_vcpus to this function, we should still assert
-if the VM's idea of the number doesn't match. But, this is a lib
-file, so there's no reason not to do
+Will
 
-#include "../kvm_util_internal.h"
-
-and just access the vcpu list to get the count or, if we add a
-new internal nr_vcpus member, access it directly. IOW, so far
-I don't believe we need vm_get_nr_vcpus().
-
-> 
-> Also note the required alignment on the GPA arguments you're taking.
-> 
-> > + */
-> > +int vgic_v3_setup(struct kvm_vm *vm,
-> > +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
-> > +{
-> > +	uint64_t redist_attr;
-> > +	int gic_fd, nr_vcpus;
-> > +	unsigned int nr_gic_pages;
-> > +
-> > +	nr_vcpus = vm_get_nr_vcpus(vm);
-> > +	TEST_ASSERT(nr_vcpus > 0, "Invalid number of CPUs: %u\n", nr_vcpus);
-> > +
-> > +	/* Distributor setup */
-> > +	gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-> > +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> > +			KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
-> > +	nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm), VGIC_V3_GICD_SZ);
-> > +	virt_map(vm, gicd_base_gpa, gicd_base_gpa,  nr_gic_pages);
-> > +
-> > +	/* Redistributor setup */
-> > +	redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
-> > +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> > +			KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
-> > +	nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm),
-> > +						VGIC_V3_GICR_SZ * nr_vcpus);
-> > +	virt_map(vm, gicr_base_gpa, gicr_base_gpa,  nr_gic_pages);
-> > +
-> > +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-> > +				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-> > +
-> > +	return gic_fd;
-> > +}
-> > -- 
-> > 2.33.0.153.gba50c8fa24-goog
-> > 
->
-
-Thanks,
-drew 
-
+[1] https://lore.kernel.org/lkml/11b27d32-4a8a-3f84-0f25-723095ef1076@nvidia.com/
+[2] https://lore.kernel.org/lkml/87tvp3xonl.fsf@concordia.ellerman.id.au/
