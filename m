@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE9E405922
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E159540598C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242332AbhIIOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:36:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240410AbhIIOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:36:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13949610FF;
-        Thu,  9 Sep 2021 14:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631198140;
-        bh=3WvRIwVpeyfq0j1sXzeynJnZRS8SyezNEtQxr3hPK38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qqgdmDBG/Fns3u1i7A0XzFuTXxpYaXKQucLMx76M7+ZqS1ktKmorYCP/i/SZxgy0l
-         UmydXrFPcVWfv4ao+ygwl3W+/lQYA7tXNdikrmZ/Odzrg4Pu7X9e7Gix/fOmWeezUd
-         cNhUAhkIAdwQgUY5KzTdbmSwOCc7RxusBIiG+R+iK9zaHeLBUUyu5tMP+qkiQU2r9Z
-         MWNdRl6O90c8eghjehJiZqda/6LOs6Rx3kWnNNHIdhSWjSEbmDLWkjERmFMkEbIGib
-         FoVJAGgPdFEP4SB9Ryjxu8Ri0dMYlyk6/ZY359neTF1AUyXBZ3yMS28xSJOnyTUdKv
-         +IBfEjWgUfa8A==
-Date:   Thu, 9 Sep 2021 16:35:37 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Ulrich Hecht <uli+renesas@fpond.eu>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        geert@linux-m68k.org, yoshihiro.shimoda.uh@renesas.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: sh-sci: fix break handling for sysrq
-Message-ID: <YTobuY6QL9e7dyIK@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        linux-renesas-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        geert@linux-m68k.org, yoshihiro.shimoda.uh@renesas.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210816162201.28801-1-uli+renesas@fpond.eu>
+        id S240638AbhIIOrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230399AbhIIOrc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 10:47:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A462C04CC25;
+        Thu,  9 Sep 2021 07:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=miXXbNQp7caQxshcYtg01AumgMhcOjaj3/whiABmZ9w=; b=KE8n8IolslkEzrZGA5k4fhia4/
+        1+5m+Aymfe1VeQT9vjj17rJoJ2zZ75I3vM7dg/Bemu6d66krYhf8TND3wPCbj/cVYN9x5rdomH/rI
+        G//1dQ4M2YKdkWIpYvjzA6SrnVAljknsqq6dq5JdvPGWHCWCbUzoMf3iDfDohROi9nKfTQx9NW5MR
+        DDDU1mbZ4P+sKN8/SvbfWutM60cttZ0fJPya+8nKMLOO/PGya5vuB5nuglLmQmJLZyQMU4blv4Vjn
+        ZIjlkkQ0tgYG+RXrykuhE7UIukgt5pAMK5n2JwERzDeseNUuGKOyu9TfZ2MSgnH5e13khcd61LbEI
+        kRINjKNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOLAX-001t5Y-BC; Thu, 09 Sep 2021 14:36:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 020CB300094;
+        Thu,  9 Sep 2021 16:36:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B1C6420D13710; Thu,  9 Sep 2021 16:36:47 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 16:36:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Kajol Jain <kjain@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        rnsastry@linux.ibm.com, yao.jin@linux.intel.com, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        kan.liang@linux.intel.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, paulus@samba.org
+Subject: Re: [PATCH 1/3] perf: Add macros to specify onchip L2/L3 accesses
+Message-ID: <YTob/xfn1gt901K4@hirez.programming.kicks-ass.net>
+References: <20210904064932.307610-1-kjain@linux.ibm.com>
+ <87ilzbmt7i.fsf@mpe.ellerman.id.au>
+ <YTiBqbxe7ieqY2OE@hirez.programming.kicks-ass.net>
+ <87czphnchp.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="J8NgKiLIdiyTObQC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816162201.28801-1-uli+renesas@fpond.eu>
+In-Reply-To: <87czphnchp.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 09, 2021 at 10:45:54PM +1000, Michael Ellerman wrote:
 
---J8NgKiLIdiyTObQC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > The 'new' composite doesnt have a hops field because the hardware that
+> > nessecitated that change doesn't report it, but we could easily add a
+> > field there.
+> >
+> > Suppose we add, mem_hops:3 (would 6 hops be too small?) and the
+> > corresponding PERF_MEM_HOPS_{NA, 0..6}
+> 
+> It's really 7 if we use remote && hop = 0 to mean the first hop.
 
-On Mon, Aug 16, 2021 at 06:22:01PM +0200, Ulrich Hecht wrote:
-> This fixes two issues that cause the sysrq sequence to be inadvertently
-> aborted on SCIF serial consoles:
->=20
-> - a NUL character remains in the RX queue after a break has been detected,
->   which is then passed on to uart_handle_sysrq_char()
-> - the break interrupt is handled twice on controllers with multiplexed ERI
->   and BRI interrupts
->=20
-> Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+I don't think we can do that, becaus of backward compat. Currently:
 
-For the record:
+  lvl_num=DRAM, remote=1
 
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+denites: "Remote DRAM of any distance". Effectively it would have the new
+hops field filled with zeros though, so if you then decode with the hops
+field added it suddenly becomes:
 
+ lvl_num=DRAM, remote=1, hops=0
 
---J8NgKiLIdiyTObQC
-Content-Type: application/pgp-signature; name="signature.asc"
+and reads like: "Remote DRAM of 0 hops" which is quite daft. Therefore 0
+really must denote a 'N/A'.
 
------BEGIN PGP SIGNATURE-----
+> If we're wanting to use some of the hop levels to represent
+> intra-chip/package hops then we could possibly use them all on a really
+> big system.
+> 
+> eg. you could imagine something like:
+> 
+>  L2 | 		        - local L2
+>  L2 | REMOTE | HOPS_0	- L2 of neighbour core
+>  L2 | REMOTE | HOPS_1	- L2 of near core on same chip (same 1/2 of chip)
+>  L2 | REMOTE | HOPS_2	- L2 of far core on same chip (other 1/2 of chip)
+>  L2 | REMOTE | HOPS_3	- L2 of sibling chip in same package
+>  L2 | REMOTE | HOPS_4	- L2 on separate package 1 hop away
+>  L2 | REMOTE | HOPS_5	- L2 on separate package 2 hops away
+>  L2 | REMOTE | HOPS_6	- L2 on separate package 3 hops away
+> 
+> 
+> Whether it's useful to represent all those levels I'm not sure, but it's
+> probably good if we have the ability.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmE6G7QACgkQFA3kzBSg
-KbbTbg//SBsGYNRxfyZXzrX2V0ZjytLsziaOOE61d2ipc+1hSPR6bwCWiV/g0QIb
-otdJozr4RJonEOaqHN2yGjTK8EwrJjGKtaBhSPyJRu8A1G0h/63hkZ8CRKNb4yV9
-Y91Wk16/NFuKedaof8l3VI86b5vAhSS5wmN1Iyh16gOzghmgo5eqOCukJmCb1Awu
-h5YNYskA1M+sEPQ2IbhlWzUWXOhFiniiWsQnyUMehreXOkYhC9CofqO8CBnIA2Xd
-KvrWvVxrgmZ0Y2gAUlzizo6jHUKCawmt1EjEJnWZSmOAsguFhtsaIdVKsi5Bw7na
-VC9gjM+etaVYGVlNU8VcKyNb1scaJ5FAg7wo8mKVS3CnuZMqY+ksRADHbo4OObVl
-3FS7jFF6sGvBBqOCfrFV6aXpZ++Llt/1XyPFrn8ASFUqGPIGM5KtWR011NfwVhsf
-nH11bzWYgfBCPYA7AupC5pwIIkq3U917PDQSwHpvFIAwGFirPKbQAfZoXmqYOYps
-hzK+I81XFGhn+XqPyLN3oYcrxhvQBoplQZtrgGEyhArzMYWOFU3We6OooIDGoVQn
-KU9tQ97UmduI8GhFaq3fc+bYj/7qimCCFSl2dg91fPL2c1elcZ+Tw4KQMZIrsdzp
-Q/QNm6BcvZZohyzM00T733nXnqB0DCYuG736H7LzMKntmyAu2D0=
-=NyQP
------END PGP SIGNATURE-----
+I'm thinking we ought to keep hops as steps along the NUMA fabric, with
+0 hops being the local node. That only gets us:
 
---J8NgKiLIdiyTObQC--
+ L2, remote=0, hops=HOPS_0 -- our L2
+ L2, remote=1, hops=HOPS_0 -- L2 on the local node but not ours
+ L2, remote=1, hops!=HOPS_0 -- L2 on a remote node
+
+> I guess I'm 50/50 on whether that's enough levels, or whether we want
+> another bit to allow for future growth.
+
+Right, possibly safer to add one extra bit while we can.... I suppose.
+
