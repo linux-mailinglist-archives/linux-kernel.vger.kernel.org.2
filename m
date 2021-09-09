@@ -2,159 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAA3405A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD5E405A1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237898AbhIIPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 11:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236448AbhIIPTt (ORCPT
+        id S238147AbhIIPVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:21:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56564 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233473AbhIIPVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:19:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA1FC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:18:40 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id u9so3086628wrg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBA3frC1peSMpXkdRxoXGSwcQST+Z0JE3+yWnniewqQ=;
-        b=MSDYMf8xVE/k8UvmjEeaoYZko+7eM782tCQpQznij2I3CRvTJu1BWp4Uy2F3vudhtN
-         MWq2nmhhJiMRXVMckwtTOq7kEUYo/xYJZqhj+jhkFzo5fpq+W5euc3BfE92Mwv5MG6Dr
-         c+vzjT55wLu8R/o+SXoWcpQL/2l8VvbTVjFbw4NvOcpsBRddmlkhr10dfWyV/wsr2X4X
-         VgrqfUK+buh1GbgtKis1nkoSRu65yG/fnr4L1Q+IXHGcmS7LTxlsOHrjotXO5TuBgi5P
-         gR4XILt+eO4ulV4iCHADSRAwaN0FVjxeA8MwCoJDzqgeIpi9QrN2lFGVzX01YnCLycwY
-         NTCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBA3frC1peSMpXkdRxoXGSwcQST+Z0JE3+yWnniewqQ=;
-        b=2rLVKYnDBYpvHB+74l1CixiD8BD95ulm5eChtGgEPfAnHNuEa/9FWcm15LCan5V7Ix
-         UGSW5GSmIb+W/YuzUfzQbq3APSA2AgctGGM/LejRlQgNUCgiPqy9t+KyUbNpvvu66fii
-         ua6PStGxuSBTCHJyUZ+ocvDzat/d2Bg2M6FpbIXtrSCYYXnLmdpqI/p3io1RaWWnmD5j
-         5acEje/FFZqQ+AdCuT0c7W5PnjfY11kO/+0xWuJSUrUeeDcBcFbr1Ye19J2ZYSli3wMb
-         dMdV2u+X+WzV33TasomPnp65GznlBwPmfL8EoGq9CRrJAy1qeUVdtgTdZMJBeFDQcY9b
-         rJ7w==
-X-Gm-Message-State: AOAM5321yW3/BwYLC2Ji/qNFefOY1pkyj1Hffiur5OeK6DWpBNXXlel2
-        +0ycqalK0po4a2A2VBssV2U=
-X-Google-Smtp-Source: ABdhPJyfwQ6e928TELH8c6+9FGB9QmPtC1dkAqRIxsnRzJASZBnfNWAK/nqYkDKHEmnwHYBx8Ga7JA==
-X-Received: by 2002:adf:c54a:: with SMTP id s10mr4279568wrf.405.1631200718840;
-        Thu, 09 Sep 2021 08:18:38 -0700 (PDT)
-Received: from agape ([5.171.80.178])
-        by smtp.gmail.com with ESMTPSA id i11sm2047158wrb.48.2021.09.09.08.18.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 08:18:38 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH] extcon: extcon-axp288: use low level P-Unit semaphore lock for axp288 register accesses
-Date:   Thu,  9 Sep 2021 17:18:20 +0200
-Message-Id: <20210909151820.5303-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 9 Sep 2021 11:21:40 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189F3FHX048023;
+        Thu, 9 Sep 2021 11:19:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=lpgD5vGEmIaRlhyfMXPRmGy9zj9rf8ajeuGtr4XPduY=;
+ b=bw8f8en2UXaRxE+/+5vgFZJpeYlXD97XTnewnEK1ERTUvBPn0vx8hd4hQc6EmdtFYEJO
+ goSChKyGUg1DjUSqKfglO3yL2gYJ7Y/d+veQJEgrSTR3Y4Y6IgRr1vjL/xP3EMQA/zgV
+ SaI2JC0qovKkpX6alJpljFXapg6MfqJNJH+Jo8xLr349dZWrsM5GrhMwZ0nY72gxjVjh
+ 4tkJV96edNg/P/PwUd77fYDbi+Apok4MRhaPkRIphmEf/EzHw6w7sxTo/OWa1YwXNiZh
+ mWwwh7UdqlPou6l7eav8NpGdslgSRNAVL+rSLJIhjwo2c7BZZhDNyS7xrit/lJOviA9p oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ayhwr5jqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 11:19:55 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 189F4CKI052407;
+        Thu, 9 Sep 2021 11:19:54 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ayhwr5jpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 11:19:54 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 189FIEn0025560;
+        Thu, 9 Sep 2021 15:19:52 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 3axcnkew6n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 15:19:52 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 189FFTKS14156272
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Sep 2021 15:15:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 97F1D4204D;
+        Thu,  9 Sep 2021 15:19:49 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE4B842041;
+        Thu,  9 Sep 2021 15:19:44 +0000 (GMT)
+Received: from sig-9-65-72-231.ibm.com (unknown [9.65.72.231])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Sep 2021 15:19:44 +0000 (GMT)
+Message-ID: <02024a370f3180e5a6668282e5843ab58bf2a073.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 01/12] integrity: Introduce a Linux keyring called
+ machine
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, scott.branden@broadcom.com,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Date:   Thu, 09 Sep 2021 11:19:43 -0400
+In-Reply-To: <20210907160110.2699645-2-eric.snowberg@oracle.com>
+References: <20210907160110.2699645-1-eric.snowberg@oracle.com>
+         <20210907160110.2699645-2-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wspITacEcQ5vvoXOSzWgB8P8y2gYDHE7
+X-Proofpoint-ORIG-GUID: TI866xkV7-3Gg1LO0soUIQh1MMBaIjNY
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-09_05:2021-09-09,2021-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use low level P-Unit semaphore lock for axp288 register
-accesses directly and for more than one access a time,
-to reduce the number of times this semaphore is locked
-and released which is an expensive operation.
+On Tue, 2021-09-07 at 12:00 -0400, Eric Snowberg wrote:
+> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
+> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
+> Boot DB and MOK keys to validate the next step in the boot chain.  The
+> MOK facility can be used to import user generated keys.  These keys can
+> be used to sign an end-users development kernel build.  When Linux
+> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
+> .platform keyring.
+> 
+> Add a new Linux keyring called machine.  This keyring shall contain just
 
-i2c-bus to the XPower is shared between the kernel and the
-SoCs P-Unit. The P-Unit has a semaphore wich the kernel must
-lock for axp288 register accesses. When the P-Unit semaphore
-is locked CPU and GPU power states cannot change or the system
-will freeze.
+^Define
 
-The P-Unit semaphore lock is already managed inside the regmap
-access logic, but for each access the semaphore is locked and
-released. So use directly iosf_mbi_(un)block_punit_i2c_access(),
-we are safe in doing so because nested calls to the same
-semaphore are turned to nops.
+> MOK CA keys and not the remaining keys in the platform keyring. This new
+> machine keyring will be used in follow on patches.  Unlike keys in the
+> platform keyring, keys contained in the machine keyring will be trusted
+> within the kernel if the end-user has chosen to do so.
+> 
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> ---
+> v1: Initial version
+> v2: Removed destory keyring code
+> v3: Unmodified from v2
+> v4: Add Kconfig, merged in "integrity: add add_to_mok_keyring" 
+> v5: Rename to machine keyring
+> ---
+>  security/integrity/Kconfig                    | 11 +++++
+>  security/integrity/Makefile                   |  1 +
+>  security/integrity/digsig.c                   |  1 +
+>  security/integrity/integrity.h                | 12 +++++-
+>  .../platform_certs/machine_keyring.c          | 42 +++++++++++++++++++
+>  5 files changed, 66 insertions(+), 1 deletion(-)
+>  create mode 100644 security/integrity/platform_certs/machine_keyring.c
+> 
+> diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+> index 71f0177e8716..52193b86768a 100644
+> --- a/security/integrity/Kconfig
+> +++ b/security/integrity/Kconfig
+> @@ -62,6 +62,17 @@ config INTEGRITY_PLATFORM_KEYRING
+>           provided by the platform for verifying the kexec'ed kerned image
+>           and, possibly, the initramfs signature.
+>  
+> +config INTEGRITY_MACHINE_KEYRING
+> +	bool "Provide a keyring to which CA Machine Owner Keys may be added"
+> +	depends on SECONDARY_TRUSTED_KEYRING
+> +	depends on INTEGRITY_ASYMMETRIC_KEYS
+> +	depends on SYSTEM_BLACKLIST_KEYRING
+> +	help
+> +	 If set, provide a keyring to which CA Machine Owner Keys (MOK) may
+> +	 be added. This keyring shall contain just CA MOK keys.  Unlike keys
+> +	 in the platform keyring, keys contained in the .machine keyring will
+> +	 be trusted within the kernel.
 
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/extcon/extcon-axp288.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+No sense in creating the ".machine" keyring, unless it is possible to
+safely load CA certificates on it.  At least for the time being, this
+should also be dependent on EFI.
 
-diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
-index fdb31954cf2b..460402b14ef2 100644
---- a/drivers/extcon/extcon-axp288.c
-+++ b/drivers/extcon/extcon-axp288.c
-@@ -24,6 +24,7 @@
- 
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
-+#include <asm/iosf_mbi.h>
- 
- /* Power source status register */
- #define PS_STAT_VBUS_TRIGGER		BIT(0)
-@@ -215,6 +216,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
- 	unsigned int cable = info->previous_cable;
- 	bool vbus_attach = false;
- 
-+	iosf_mbi_block_punit_i2c_access();
-+
- 	vbus_attach = axp288_get_vbus_attach(info);
- 	if (!vbus_attach)
- 		goto no_vbus;
-@@ -253,6 +256,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
- 	}
- 
- no_vbus:
-+	iosf_mbi_unblock_punit_i2c_access();
-+
- 	extcon_set_state_sync(info->edev, info->previous_cable, false);
- 	if (info->previous_cable == EXTCON_CHG_USB_SDP)
- 		extcon_set_state_sync(info->edev, EXTCON_USB, false);
-@@ -275,6 +280,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
- 	return 0;
- 
- dev_det_ret:
-+	iosf_mbi_unblock_punit_i2c_access();
-+
- 	if (ret < 0)
- 		dev_err(info->dev, "failed to detect BC Mod\n");
- 
-@@ -307,11 +314,14 @@ static irqreturn_t axp288_extcon_isr(int irq, void *data)
- 
- static void axp288_extcon_enable(struct axp288_extcon_info *info)
- {
-+	iosf_mbi_block_punit_i2c_access();
- 	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
- 						BC_GLOBAL_RUN, 0);
- 	/* Enable the charger detection logic */
- 	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
- 					BC_GLOBAL_RUN, BC_GLOBAL_RUN);
-+
-+	iosf_mbi_unblock_punit_i2c_access();
- }
- 
- static void axp288_put_role_sw(void *data)
-@@ -384,10 +394,14 @@ static int axp288_extcon_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	iosf_mbi_block_punit_i2c_access();
-+
- 	info->vbus_attach = axp288_get_vbus_attach(info);
- 
- 	axp288_extcon_log_rsi(info);
- 
-+	iosf_mbi_unblock_punit_i2c_access();
-+
- 	/* Initialize extcon device */
- 	info->edev = devm_extcon_dev_allocate(&pdev->dev,
- 					      axp288_extcon_cables);
--- 
-2.20.1
+<snip>
+
+> +++ b/security/integrity/platform_certs/machine_keyring.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Machine keyring routines.
+> + *
+> + * Copyright (c) 2021, Oracle and/or its affiliates.
+> + */
+> +
+> +#include "../integrity.h"
+> +
+> +static __init int machine_keyring_init(void)
+> +{
+> +	int rc;
+> +
+> +	rc = integrity_init_keyring(INTEGRITY_KEYRING_MACHINE);
+> +	if (rc)
+> +		return rc;
+> +
+> +	pr_notice("Machine keyring initialized\n");
+> +	return 0;
+> +}
+> +device_initcall(machine_keyring_init);
+> +
+> +void __init add_to_machine_keyring(const char *source, const void *data, size_t len)
+> +{
+> +	key_perm_t perm;
+> +	int rc;
+> +
+> +	perm = (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW;
+> +	rc = integrity_load_cert(INTEGRITY_KEYRING_MACHINE, source, data, len, perm);
+> +
+> +	/*
+> +	 * Some MOKList keys may not pass the machine keyring restrictions.
+> +	 * If the restriction check does not pass and the platform keyring
+> +	 * is configured, try to add it into that keyring instead.
+> +	 */
+> +	if (rc)
+
+In addition to the comment, also test to see if the ".platform" keyring
+is configured.
+
+thanks,
+
+Mimi
+
+> +		rc = integrity_load_cert(INTEGRITY_KEYRING_PLATFORM, source,
+> +					 data, len, perm);
+> +
+> +	if (rc)
+> +		pr_info("Error adding keys to machine keyring %s\n", source);
+> +}
+
 
