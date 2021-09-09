@@ -2,97 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4196E405BF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0AD405BFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241151AbhIIRY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
+        id S234709AbhIIR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237002AbhIIRYZ (ORCPT
+        with ESMTP id S241139AbhIIR1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:24:25 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B6C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:23:15 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s3so4126373ljp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:23:15 -0700 (PDT)
+        Thu, 9 Sep 2021 13:27:10 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1A3C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:26:00 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id s16so5484253ybe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p6IJpdyTV9RM1+HAVghvZCBeKL8NDMdT8/thsJ+vYl0=;
-        b=d/Cm/SAUhDwf7DCQEkoVrmFkB/9CL0b8pA5PmPS8EU77HXDdzgEOXRUTwEK6IETgXK
-         d7dwkAqlP05KbPlW3NS8FI7pi0/wpcu8lpfbqGzYvk5d/J1P80i0uY894FNCjnJ99IT7
-         Z/LeSXzV7P3I2yGkUEJbF3lmaMHtRIQBM+ljk=
+        bh=JVEsJeL6D9X5QjMN9PXa+48oXTHXTq43/22SMlTMNnQ=;
+        b=Ec2zxk0h9f8q2blCfeHXIH5cZ4hlMlHiZj5QhBKpj5NmBYcAFw2WgZRE7lwNTIoiwI
+         DTMFgXfdv6qjgBCfzcDJ4P14KFAPdb0gYXy3eappj9n0sMDPOlVrwCkeTG3SABvvUyJS
+         sOqaxgpGWS/Dzkzj31Gs+FliXBqE1gF11xt2d2Zr3yrXnfsxVisesO4vzXujU0OMcguE
+         o5zjKTimyGZ+Y1nUQ8CoO0avHfyTWxDT7IcX1P2p9vYSL2lOFNKT0k5VEc4lvEJcrNzh
+         qw/pc6M/nPaGsnCZLulXhKTqwLZfyzppx0gdnlhKJcVeGC7KTMzOZR7nMtn/0p/03/i2
+         VCmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p6IJpdyTV9RM1+HAVghvZCBeKL8NDMdT8/thsJ+vYl0=;
-        b=tvFGORIJb0PM1nhcAWZ9kjVy2TufsPAsr+mKoAOMYupM0wr9ULFMk8OhgVDLtuzWou
-         PfWaGEHrkBGfmLZemU4dWnPF7X7FPAITQ8r/Be9cFJvKCasn68dVdbGQoqB2YXgeSNYP
-         XEJehCyY27M94eA9gOGK1MmCWUkL0JXR5VcQH9QtTZ/KvJlgvrI0HxyLCazG27ahojsv
-         wrIkZ8K8LPIvTVZzTIjNsgIMtvk4k3w8q+tgjvWnXL7UwInsV9YF6/ZfUvtqKVv5dxcc
-         oVtteJfLEULS10J2QpR19SQ1iffJl9s77/HrcrTqM+sFQJx5Csu/Q1iX2yyfLPl6GQIO
-         LN3Q==
-X-Gm-Message-State: AOAM530mDcgmJ84T5o2bCYqpeMLCiGGuXTj3BnshSCyQIkwTuwaMNGSe
-        LAFfKzdBbxAMtQ3Mv0eGuV7xJq4kpnVcSc/M+U0=
-X-Google-Smtp-Source: ABdhPJzb9amopsqcNZhs3nFWn4WRfh1Bs0c0o5AKRAlibBUt3+mMLLZKQW43t0WnKk/EoPqKiDGofA==
-X-Received: by 2002:a05:651c:512:: with SMTP id o18mr781886ljp.199.1631208193395;
-        Thu, 09 Sep 2021 10:23:13 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id z7sm266591ljh.59.2021.09.09.10.23.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id g14so4152444ljk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
-X-Received: by 2002:a2e:a363:: with SMTP id i3mr806608ljn.56.1631208192152;
- Thu, 09 Sep 2021 10:23:12 -0700 (PDT)
+        bh=JVEsJeL6D9X5QjMN9PXa+48oXTHXTq43/22SMlTMNnQ=;
+        b=PRPWZo+th2jTRUwUSQJ9tiG5zfyduIWUKePRPl9QU64l7m2ukaAqAWO3FumXuSraFV
+         LVUcOOxPR08CJKeoizTf3jBTrBi9GPKmyeFZPhVMwGgBzKaugE/5cgk3RMDAINdIyqiy
+         K0Yr2vG1c97tYLbJx05dgBnChIJx8MO3ZLOjLp65ultwccY1IngwBZZ4ywnQWBWCpKAk
+         RDRwKPwFm4D5EbSqjgdFVJJ1tTQ5UZZRyVzWuS1ZMoF9QO/V1r8rpGaCgjamKj4LfWXk
+         gPC0mGZo/HAI+tznYuzSwidVzgeVR6+5AyLQvmtR7tEfWLs08pJvbYbmXKQ1v3JLThxD
+         d1/g==
+X-Gm-Message-State: AOAM533r3esctVBY8kIge8R09M1ejqh8gGaXXTeY9cVen1uKEiJKnynd
+        zv3cignx+zVy3+YZg+GBknobqXetfXdbR4sVBHE6xw==
+X-Google-Smtp-Source: ABdhPJwT4+E0jXvyHQvIQj+dAZBZB5xhW0l0CQVAti/qraDJbPO3HFvhBDZDVEFYAMJoW1YgJI/UNcRS2Ep/CO/KpPU=
+X-Received: by 2002:a25:21c5:: with SMTP id h188mr4939725ybh.23.1631208359719;
+ Thu, 09 Sep 2021 10:25:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-17-agruenba@redhat.com>
- <YTnwZU8Q0eqBccmM@infradead.org>
-In-Reply-To: <YTnwZU8Q0eqBccmM@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Sep 2021 10:22:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
-Message-ID: <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
-Subject: Re: [PATCH v7 16/19] iomap: Add done_before argument to iomap_dio_rw
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-15-rananta@google.com>
+ <YTmce6Xn+ymngA+r@google.com> <20210909133421.rdkueb627glve6uz@gator>
+In-Reply-To: <20210909133421.rdkueb627glve6uz@gator>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 9 Sep 2021 10:25:48 -0700
+Message-ID: <CAJHc60zMUS42+s9GG0qNeZeHOSC23yiUFje1Tz3PwZJM_fmfKw@mail.gmail.com>
+Subject: Re: [PATCH v4 14/18] KVM: arm64: selftests: Add host support for vGIC
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:31 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Thu, Sep 9, 2021 at 6:34 AM Andrew Jones <drjones@redhat.com> wrote:
 >
-> What about just passing done_before as an argument to
-> iomap_dio_complete? gfs2 would have to switch to __iomap_dio_rw +
-> iomap_dio_complete instead of iomap_dio_rw for that, and it obviously
-> won't work for async completions, but you force sync in this case
-> anyway, right?
+> On Thu, Sep 09, 2021 at 05:32:43AM +0000, Oliver Upton wrote:
+> > Hi Raghu,
+> >
+> > On Thu, Sep 09, 2021 at 01:38:14AM +0000, Raghavendra Rao Ananta wrote:
+> > > Implement a simple library to perform vGIC-v3 setup
+> > > from a host point of view. This includes creating a
+> > > vGIC device, setting up distributor and redistributor
+> > > attributes, and mapping the guest physical addresses.
+> > >
+> > > The definition of REDIST_REGION_ATTR_ADDR is taken
+> > > from aarch64/vgic_init test.
+> > >
+> >
+> > Consider dropping the macro from vgic_init.c and have it just include
+> > vgic.h
+>
+> Yes, I agree 18/18 should be squashed into this one.
+>
+> >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile          |  2 +-
+> > >  .../selftests/kvm/include/aarch64/vgic.h      | 20 +++++++
+> > >  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 60 +++++++++++++++++++
+> > >  3 files changed, 81 insertions(+), 1 deletion(-)
+> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
+> > >  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index 5476a8ddef60..8342f65c1d96 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -35,7 +35,7 @@ endif
+> > >
+> > >  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+> > >  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> > > -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
+> > > +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
+> > >  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+> > >
+> > >  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> > > diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> > > new file mode 100644
+> > > index 000000000000..3a776af958a0
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> > > @@ -0,0 +1,20 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +/*
+> > > + * ARM Generic Interrupt Controller (GIC) host specific defines
+> > > + */
+> > > +
+> > > +#ifndef SELFTEST_KVM_VGIC_H
+> > > +#define SELFTEST_KVM_VGIC_H
+> > > +
+> > > +#include <linux/kvm.h>
+> > > +
+> > > +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
+> > > +   (((uint64_t)(count) << 52) | \
+> > > +   ((uint64_t)((base) >> 16) << 16) | \
+> > > +   ((uint64_t)(flags) << 12) | \
+> > > +   index)
+> > > +
+> > > +int vgic_v3_setup(struct kvm_vm *vm,
+> > > +                           uint64_t gicd_base_gpa, uint64_t gicr_base_gpa);
+> > > +
+> > > +#endif /* SELFTEST_KVM_VGIC_H */
+> > > diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> > > new file mode 100644
+> > > index 000000000000..2318912ab134
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> > > @@ -0,0 +1,60 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * ARM Generic Interrupt Controller (GIC) v3 host support
+> > > + */
+> > > +
+> > > +#include <linux/kvm.h>
+> > > +#include <linux/sizes.h>
+> > > +
+> > > +#include "kvm_util.h"
+> > > +#include "vgic.h"
+> > > +
+> > > +#define VGIC_V3_GICD_SZ            (SZ_64K)
+> > > +#define VGIC_V3_GICR_SZ            (2 * SZ_64K)
+> >
+> > These values are UAPI, consider dropping them in favor of the
+> > definitions from asm/kvm.h
+>
+> Yes, please.
+>
+Huh, I wasn't aware of this. Thanks! Will drop.
+> >
+> > > +
+> > > +/*
+> > > + * vGIC-v3 default host setup
+> > > + *
+> > > + * Input args:
+> > > + * vm - KVM VM
+> > > + * gicd_base_gpa - Guest Physical Address of the Distributor region
+> > > + * gicr_base_gpa - Guest Physical Address of the Redistributor region
+> > > + *
+> > > + * Output args: None
+> > > + *
+> > > + * Return: GIC file-descriptor or negative error code upon failure
+> > > + *
+> > > + * The function creates a vGIC-v3 device and maps the distributor and
+> > > + * redistributor regions of the guest. Since it depends on the number of
+> > > + * vCPUs for the VM, it must be called after all the vCPUs have been created.
+> >
+> > You could avoid the ordering dependency by explicitly taking nr_vcpus as
+> > an arg. It would also avoid the need for 12/18.
+>
+> All the vcpus need to be created prior to calling
+> KVM_DEV_ARM_VGIC_CTRL_INIT, so even though I don't disagree with
+> simply passing nr_vcpus to this function, we should still assert
+> if the VM's idea of the number doesn't match. But, this is a lib
+> file, so there's no reason not to do
+>
+Okay, I'll include it back in the args.
 
-I think you misunderstand.
+> #include "../kvm_util_internal.h"
+>
+> and just access the vcpu list to get the count or, if we add a
+> new internal nr_vcpus member, access it directly. IOW, so far
+> I don't believe we need vm_get_nr_vcpus().
+>
+Sure, I'll get rid of it.
 
-Or maybe I do.
-
-It very much doesn't force sync in this case. It did the *first* part
-of it synchronously, but then it wants to continue with that async
-part for the rest, and very much do that async completion.
-
-And that's why it wants to add that "I already did X much of the
-work", exactly so that the async completion can report the full end
-result.
-
-But maybe now it's me who is misunderstanding.
-
-          Linus
+Regards,
+Raghavendra
+> >
+> > Also note the required alignment on the GPA arguments you're taking.
+> >
+> > > + */
+> > > +int vgic_v3_setup(struct kvm_vm *vm,
+> > > +           uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
+> > > +{
+> > > +   uint64_t redist_attr;
+> > > +   int gic_fd, nr_vcpus;
+> > > +   unsigned int nr_gic_pages;
+> > > +
+> > > +   nr_vcpus = vm_get_nr_vcpus(vm);
+> > > +   TEST_ASSERT(nr_vcpus > 0, "Invalid number of CPUs: %u\n", nr_vcpus);
+> > > +
+> > > +   /* Distributor setup */
+> > > +   gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
+> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> > > +                   KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
+> > > +   nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm), VGIC_V3_GICD_SZ);
+> > > +   virt_map(vm, gicd_base_gpa, gicd_base_gpa,  nr_gic_pages);
+> > > +
+> > > +   /* Redistributor setup */
+> > > +   redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
+> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> > > +                   KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
+> > > +   nr_gic_pages = vm_calc_num_guest_pages(vm_get_mode(vm),
+> > > +                                           VGIC_V3_GICR_SZ * nr_vcpus);
+> > > +   virt_map(vm, gicr_base_gpa, gicr_base_gpa,  nr_gic_pages);
+> > > +
+> > > +   kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
+> > > +                           KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
+> > > +
+> > > +   return gic_fd;
+> > > +}
+> > > --
+> > > 2.33.0.153.gba50c8fa24-goog
+> > >
+> >
+>
+> Thanks,
+> drew
+>
