@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89893405B1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E2C405B1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239434AbhIIQoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S237680AbhIIQoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238914AbhIIQnh (ORCPT
+        with ESMTP id S234862AbhIIQoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:43:37 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E634EC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:42:27 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id z18so5117841ybg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:42:27 -0700 (PDT)
+        Thu, 9 Sep 2021 12:44:54 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1D1C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:43:44 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z18so5128356ybg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BrZuPjCWVQei2hd5TDze97f6NPaJL6ui4tNC7eiVKwg=;
-        b=jGcmb5hbR4l+02tTppChZrB5upTNg//Nka7dpsrOEijk0J1X2X+D/NqH66FmMzewXT
-         OJWjExeSkG1Hy6H9vzjhlErhjmpKe4y83gbr20jwrR6r7dlISolwMNML2hd5PNE1uBuD
-         bQ4X3mgbfSsVUu8/hAY3BY6plretWRWi7U8EzbkxjEC+BZ6Yr5GDLDGi4OEYBQkj0fxZ
-         WhBGCoX3mtKxn8yDhth/YJVISfiBUVOBHrSiZWG8RLsb64wBybXnoEzboBQ+fkNngvZZ
-         s7kq04sSh9lLJpbBWPoRRkuIDnniaDVgXZQEP7A5TwEimgeeRN6ZIhq1ZhRK61BwF1lK
-         sZ7A==
+        bh=8rBbbtBdxJo/z24uZXVl1WsJ9x865p3tX3wOkYNw8zI=;
+        b=CxwyPEJx4brKYyNJfKH8xuVZVHNOb+imoHwqrC+m2OvLlX1CF4dc26BHqiDbb0sFdk
+         FmFt0zmLzKgCa1DNQCsc6xZr9y3Z4pPNnzfIhUb3+16a9bNWy6ONfjK/aT8G5S4TT4x2
+         SkyR9dYU1Bc3NWOfR/N8Xx4cdUqvv0TI5ThmKPXKlq0Dk9Zn2TJzowps8qXs4ziXJamP
+         twWLDiVKUzt9dDskgQnZ+tuA0VajMO+0ZZb02gUUe6KXZatND7/Lkxi5UJx9cL/zyBl2
+         9opFUHOSodvBlEv+qiApY+wGv/xCn72PWdKYkA+dJ2BOP4oZE/fSnYIKWCoQG3Sc2S3C
+         kONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BrZuPjCWVQei2hd5TDze97f6NPaJL6ui4tNC7eiVKwg=;
-        b=rGpFriLUyEypfeSWNGv3Z8MLklngKK6KEqV0baW9Nt//lXndXJSXQhuowGndWXmUS8
-         Hv0yb5FqJmVH0WuP0VLpXSiSjMaV6ro0Xf/jQ3aztq7j4p6I4J79M2Faf8dqSaAEPYwE
-         7A9CFhVBaE0yVbVaLF2j25ynQTKAFnt8zHkp+L6qoG4/Wpb+2YIhE+Dbs/by0G10cbzV
-         B+t1lpCiomeIjVGc5+AE2zbrKDnvJlA0rwQSUs6ELqsrrzETu+xZotUB/JOd3vrW1l+I
-         oYQnfzmF2eNklYrXcz/oLc417MGHay3bG3b3PpNhwALJJUsdZ5biBGqN5D3c8yJ5nZzB
-         SqDA==
-X-Gm-Message-State: AOAM532UQBZAPaDSzQdStBb0+D/ROwFqxQliTp3hKM92XKJVaoJ+SfuX
-        eQ7hW19TlPapRsrs3QzCOVKXkRo6N7mOuLZdGcqeHg==
-X-Google-Smtp-Source: ABdhPJxUfv2OiYmJzLbjvFvpiM3on92xSiPiWN63qMNZXpuT/lL9Yvzo1kzzotX3Jfc71OoRLpnPsZqr+apdMwCxiAk=
-X-Received: by 2002:a25:424a:: with SMTP id p71mr5281009yba.243.1631205747023;
- Thu, 09 Sep 2021 09:42:27 -0700 (PDT)
+        bh=8rBbbtBdxJo/z24uZXVl1WsJ9x865p3tX3wOkYNw8zI=;
+        b=0AYRtLfFWBE8zb67d3wZTjQ9YzG5oOM60KoabPlpwvvyKGHgA4QJtWRbb07DS5X1jv
+         lES5ibNykaWdF/ohrMgTudsILhwEKPEkamn7RPSLqWhMRLi448pgo1bZRYXCrHoWFocR
+         WgPNGBxV4hMcMlo0kIPDANccWJDB1PlSRn0CXuwd5no1hSy3X1ajczBtir98Z1Jq9ihQ
+         PPrk1JJhpqQ92VSTgONFnQLDsXNV2MZRxQ54Rj3b8cXBMAep/WYxbvsbkCReB8xELOHS
+         Wg8mZaOS8tASTvYRRkD56/mJQcOpvmnaUnjLJgxLlY6kUs/PXqukS+DVNDax81akpEww
+         z1eQ==
+X-Gm-Message-State: AOAM530CHTm0wDNfrojTBPnxr1LCbqWc/HTFHxHhomUYmoMKtPdhB+a0
+        luNPGyny8YcCe5k9b3k/ujnPwdXnvjdxxMz9t8RSDQ==
+X-Google-Smtp-Source: ABdhPJxK5TixXHGpQ0HcjLdTV1bZ1SKePd5PRIPCrE5JXb/3IBGHK3nqLVQvIpatA9h6OifefO1lBmdtxEyNyano2rg=
+X-Received: by 2002:a25:cd82:: with SMTP id d124mr5096262ybf.491.1631205823874;
+ Thu, 09 Sep 2021 09:43:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-3-rananta@google.com>
- <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com> <20210909065338.ulh32fqi4e6gnh2o@gator>
-In-Reply-To: <20210909065338.ulh32fqi4e6gnh2o@gator>
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-4-rananta@google.com>
+ <20210909065612.d36255fur5alf6sl@gator>
+In-Reply-To: <20210909065612.d36255fur5alf6sl@gator>
 From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 09:42:15 -0700
-Message-ID: <CAJHc60zoCVpG+zx_G8fSCcg+wXaigFZFGA=wLZCAsETag+YJfA@mail.gmail.com>
-Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+Date:   Thu, 9 Sep 2021 09:43:32 -0700
+Message-ID: <CAJHc60y2i9AT5rEat0pK-h2BsNjzp_1tbqGAM5Lx=V3WfBBaMA@mail.gmail.com>
+Subject: Re: [PATCH v4 03/18] KVM: arm64: selftests: Use read/write
+ definitions from sysreg.h
 To:     Andrew Jones <drjones@redhat.com>
-Cc:     Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
         Alexandru Elisei <alexandru.elisei@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
         Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
         Reiji Watanabe <reijiw@google.com>,
         Jing Zhang <jingzhangos@google.com>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
@@ -71,33 +71,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 11:53 PM Andrew Jones <drjones@redhat.com> wrote:
+On Wed, Sep 8, 2021 at 11:56 PM Andrew Jones <drjones@redhat.com> wrote:
 >
-> On Wed, Sep 08, 2021 at 10:47:31PM -0400, Oliver Upton wrote:
-> > Hi Raghu,
+> On Thu, Sep 09, 2021 at 01:38:03AM +0000, Raghavendra Rao Ananta wrote:
+> > Make use of the register read/write definitions from
+> > sysreg.h, instead of the existing definitions. A syntax
+> > correction is needed for the files that use write_sysreg()
+> > to make it compliant with the new (kernel's) syntax.
 > >
-> > On Wed, Sep 8, 2021 at 9:38 PM Raghavendra Rao Ananta
-> > <rananta@google.com> wrote:
-> > >
-> > > Bring-in the kernel's arch/arm64/include/asm/sysreg.h
-> > > into selftests to make use of all the standard
-> > > register definitions in consistence with the kernel.
-> > >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > ---
-> > >  .../selftests/kvm/include/aarch64/sysreg.h    | 1278 +++++++++++++++++
-> > >  1 file changed, 1278 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
-> >
-> > This belongs in tools/arch/arm64/include/asm/sysreg.h, I believe.
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  .../selftests/kvm/aarch64/debug-exceptions.c  | 28 +++++++++----------
+> >  .../selftests/kvm/include/aarch64/processor.h | 13 +--------
+> >  2 files changed, 15 insertions(+), 26 deletions(-)
 > >
 >
-> Yes, that's also where I expected it to land.
+> Same comment as Oliver, otherwise
 >
-Sure, that makes sense. I'll move it there.
+Will fix.
 
 Regards,
 Raghavendra
-> Thanks,
-> drew
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
 >
