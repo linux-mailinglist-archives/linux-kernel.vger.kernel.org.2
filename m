@@ -2,118 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27625404388
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 04:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB00040438B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 04:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349651AbhIICVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 22:21:37 -0400
-Received: from out1.migadu.com ([91.121.223.63]:43867 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241774AbhIICVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 22:21:34 -0400
-Subject: Re: [PATCH -next 2/6] ext4: introduce last_check_time record previous
- check time
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1631154023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IeoyoE9nFc/8AJQHWEf/XYpBZje7kZZE7EX8W6rfGjg=;
-        b=RmdY+cIxfIOwQ3zyK++oDwDDsCi3JUNnNhKXAV7x5UQQe4+lNv1PzneVIawfLxyoJR7T5C
-        WzKG70apqu3nySSDVh+iEZ70etsEpG0gMgtOjMfOo3jhQT0NuRoxgMIVnatDjQA640cVEJ
-        JfRt1KcJFTfl2jnYbPOzRDLcJIHkxZw=
-To:     Ye Bin <yebin10@huawei.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jack@suse.cz
-References: <20210906144754.2601607-1-yebin10@huawei.com>
- <20210906144754.2601607-3-yebin10@huawei.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <03bd0982-f0ad-78b4-7b98-cbfdbab9deec@linux.dev>
-Date:   Thu, 9 Sep 2021 10:20:17 +0800
+        id S241774AbhIICV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 22:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348921AbhIICVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 22:21:55 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261C3C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 19:20:47 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id n4so87799plh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 19:20:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=IAfEpqoGn5FhStESKZaKaDUjCrQlR5OZFuiaBUrglls=;
+        b=jJmJTCtfPAKF991YiwhZ2iuFcRvrCaPxQ1lZfOk1extXuMMmVAhSL90s/OVbdW8Sxn
+         DhrNhzgi4cKOEUCONL3oi4UGm3kjzozY07CHS+4zQlFwCOf2mshbsVeL5swtaFYTPNFW
+         upX559upPQOsY09pAoXcsyBWBCJG8h9hzOFcIoAA9BX14BVYj5IMQwhJ+8KZMRyXuhLB
+         kUWSGt1gZuXwPLj3r+J6rdUga3MJL5NhGRF4+Db74BIOuWdodfGhpjnw224u+rC99ypI
+         8vL/bIR3o/qXf/SDkQGIfCAEk+mRX6atIqo0Dvv9QY0ULM3rhRg/Ur8tMuTG/gOOfj0B
+         FjFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=IAfEpqoGn5FhStESKZaKaDUjCrQlR5OZFuiaBUrglls=;
+        b=QeXfnf/uwqx1kSLlVRIu4XE9jjBSsr7904l+cveHPNAW5cNRicMHWW/nGx5Qnk8xu5
+         BRpcXyeZZIk1IuBV7tMPQ0mtv9z1ShK4wHliyt0WQmiGyhr5/Xbs4MFz35xUjY2uodAC
+         t+8B3/q0kK2Wb0CGyVc7/K85fVsUZFAEQb4K/IaYyaszOzjsfwEm1i+BmL6M2VUAcKdH
+         I8BuINuRT7Cn5a/BhMIslUrGBJSLiHSnFH3+EElxmjL2ETO4QpXY24Csj/gTEeeo5llo
+         pLhEzaY+ZxYnwqkog+lwjjS/v3mDYAbnocl0qSOfzFumSTa4pTkFGfQHd5xpPcIunzv0
+         n++g==
+X-Gm-Message-State: AOAM532gKzNhChVN1mpyWJxpW56TwuQDKUG3gNzsCBkgsfvGEOICAEgY
+        RjBEfbPdw1fCynUTSuHR2ZXjjg==
+X-Google-Smtp-Source: ABdhPJwYF4Xh93yfTGLpHTHkwGPubew671yHD4XOKaor4DCc/1m70ThjbGoaTcW7EHsW5Ds41hu40w==
+X-Received: by 2002:a17:902:778a:b0:13a:bfd:94ed with SMTP id o10-20020a170902778a00b0013a0bfd94edmr511368pll.24.1631154046606;
+        Wed, 08 Sep 2021 19:20:46 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id v25sm183290pfm.202.2021.09.08.19.20.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 08 Sep 2021 19:20:45 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 10:20:37 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Soeren Moch <smoch@web.de>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev
+ as fallback
+Message-ID: <20210909022033.GC25255@dragon>
+References: <20210425110200.3050-1-shawn.guo@linaro.org>
+ <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
+ <20210908010057.GB25255@dragon>
+ <100f5bef-936c-43f1-9b3e-a477a0640d84@web.de>
 MIME-Version: 1.0
-In-Reply-To: <20210906144754.2601607-3-yebin10@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: guoqing.jiang@linux.dev
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <100f5bef-936c-43f1-9b3e-a477a0640d84@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 08, 2021 at 07:08:06AM +0200, Soeren Moch wrote:
+> Hi Shawn,
+> 
+> On 08.09.21 03:00, Shawn Guo wrote:
+> > Hi Soeren,
+> >
+> > On Tue, Sep 07, 2021 at 09:22:52PM +0200, Soeren Moch wrote:
+> >> On 25.04.21 13:02, Shawn Guo wrote:
+> >>> Instead of aborting country code setup in firmware, use ISO3166 country
+> >>> code and 0 rev as fallback, when country_codes mapping table is not
+> >>> configured.  This fallback saves the country_codes table setup for recent
+> >>> brcmfmac chipsets/firmwares, which just use ISO3166 code and require no
+> >>> revision number.
+> >> This patch breaks wireless support on RockPro64. At least the access
+> >> point is not usable, station mode not tested.
+> >>
+> >> brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4359/9 wl0: Mar  6 2017
+> >> 10:16:06 version 9.87.51.7 (r686312) FWID 01-4dcc75d9
+> >>
+> >> Reverting this patch makes the access point show up again with linux-5.14 .
+> > Sorry for breaking your device!
+> >
+> > So it sounds like you do not have country_codes configured for your
+> > BCM4359/9 device, while it needs particular `rev` setup for the ccode
+> > you are testing with.  It was "working" likely because you have a static
+> > `ccode` and `regrev` setting in nvram file.
+> It always has been a mystery to me how country codes are configured for
+> this device. Before I read your patch I did not even know that a
+> translation table is required. Is there some documentation how this is
+> supposed to work? Not sure if this makes a difference, BCM4359/9 is a
+> Cypress device I think, I added mainline support for it some time ago.
 
+One way to add the translation table is using DT.  You can find more
+info and example in following commits:
 
-On 9/6/21 10:47 PM, Ye Bin wrote:
-> kmmpd:
-> ...
->      diff = jiffies - last_update_time;
->      if (diff > mmp_check_interval * HZ) {
-> ...
-> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
-> than 'mmp_update_interval', so there will never trigger detection.
-> Introduce last_check_time record previous check time.
->
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->   fs/ext4/mmp.c | 14 +++++++++-----
->   1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 12af6dc8457b..89797f12a815 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
->   	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->   	unsigned mmp_check_interval;
->   	unsigned long last_update_time;
-> +	unsigned long last_check_time;
->   	unsigned long diff;
->   	int retval = 0;
->   
-> @@ -170,6 +171,7 @@ static int kmmpd(void *data)
->   
->   	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
->   	       sizeof(mmp->mmp_nodename));
-> +	last_update_time = jiffies;
->   
->   	while (!kthread_should_stop() && !sb_rdonly(sb)) {
->   		if (!ext4_has_feature_mmp(sb)) {
-> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
->   		}
->   
->   		diff = jiffies - last_update_time;
-> -		if (diff < mmp_update_interval * HZ)
-> +		if (diff < mmp_update_interval * HZ) {
->   			schedule_timeout_interruptible(mmp_update_interval *
->   						       HZ - diff);
-> +			diff = jiffies - last_update_time;
-> +		}
->   
->   		/*
->   		 * We need to make sure that more than mmp_check_interval
-> -		 * seconds have not passed since writing. If that has happened
-> -		 * we need to check if the MMP block is as we left it.
-> +		 * seconds have not passed since check. If that has happened
-> +		 * we need to check if the MMP block is as we write it.
->   		 */
-> -		diff = jiffies - last_update_time;
-> -		if (diff > mmp_check_interval * HZ) {
-> +		if (jiffies - last_check_time > mmp_check_interval * HZ) {
+b41936227078 ("dt-bindings: bcm4329-fmac: add optional brcm,ccode-map")
+1a3ac5c651a0 ("brcmfmac: support parse country code map from DT")
 
-Before the above checking, seems last_check_time is not initialized yet.
->   			struct buffer_head *bh_check = NULL;
->   			struct mmp_struct *mmp_check;
->   
-> @@ -234,6 +237,7 @@ static int kmmpd(void *data)
->   				goto wait_to_exit;
->   			}
->   			put_bh(bh_check);
-> +			last_check_time = jiffies;
->   		}
->   
->   		 /*
+> 
+> I have installed different firmware files, brcmfmac4359-sdio.clm_blob,
+> brcmfmac4359-sdio.bin, brcmfmac4359-sdio.txt, the latter also linked as
+> brcmfmac4359-sdio.pine64,rockpro64-2.1.txt. This probably is the nvram
+> file. ccode and regrev are set to zero, which probably means
+> 'international save settings".
 
-Thanks,
-Guoqing
+I'm not sure how this 'international save settings' works for brcmfmac
+devices.  Do you have more info or any pointers?
+
+> > But roaming to a different
+> > region will mostly get you a broken WiFi support.  Is it possible to set
+> > up the country_codes for your device to get it work properly?
+> In linux-5.13 it worked, probably with save settings (not all channels
+> selectable, limited tx power), with linux-5.14 it stopped working, so it
+> is a regression.
+> I personally would like to learn how all this is configured properly.
+> For general use I think save settings are better than no wifi at all
+> with this patch. This fallback to ISO CC seams to work with newer
+> (Synaptics?) devices only.
+
+I do not mind you send a reverting if you have problem to add a proper
+translation table for your device.  But that would mean I have to add
+a pretty "meaningless" translation table for my devices :(
+
+Shawn
