@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B9E405E25
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87444405E3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345603AbhIIUnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        id S245521AbhIIUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245195AbhIIUnV (ORCPT
+        with ESMTP id S233573AbhIIUzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:43:21 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209C7C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:42:12 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id a22so4046168iok.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 13:42:12 -0700 (PDT)
+        Thu, 9 Sep 2021 16:55:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7ADC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:53:58 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id t20so2241846pju.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 13:53:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VMwlM4GyMZLXj8Fib8keX4XRi0UDBn+ujtEneqseAMU=;
-        b=jDwT6b38OSIO6dlAh50hbay4fjrqkM8GLiVdhZTZXBBlD7OdbOkbGoLZo0uUvA463U
-         7N1kBmkmWqrazTDs9egtgdslGoFE+huJQCrJ/MIe9VQfm1jWhLplnQ8xzUXbvoB8RKWm
-         doKi9I2kCw0tCx+7g2+JZitd5Akx+ZWofu8RJMti8mc0H+v/d6AXK00/TIwSPJKvvtHg
-         J8nTf7SG/xOvND0trDnMzMvgWsVnFuPpfnbrXXDDwYrQHr6S+cRPxdwIO3L9d93Y8N5q
-         okBjG3D/4ZUiPNCO6cQRG7g2GdxEWJ36Yzpdy5N7d4BT6ipCrrO5pIywyf4A/L/KgOz2
-         nW6A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FTXjmRnVh0AWFmD0C2i93mdE+aZFUcGRZVLlt4s8n9Y=;
+        b=OhG+pWKst3E+Zw2mm2Uo8a8KMFQHCgO3R4jnMcjUih6JySF2ZFiRErhvUxZnuAJeXL
+         nKjfbx9KitEtX2Y/fw4VacFgmEiuATD0w/3bVvTLI953fbyet2G/v6ZcKKb3tZgtvpNx
+         m4R+dXz/Qa4SeGnhthj47CHw7d5Qbp8Ba0apo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VMwlM4GyMZLXj8Fib8keX4XRi0UDBn+ujtEneqseAMU=;
-        b=UzQzH19Hdk4uvsIYStrxCD20Tkc8/vZ418om87ZUMQxhqnzAl2Le1IHJYZp5KewIQZ
-         lNSRzgybKwKEyI6q0vXSRkVF2lDDPoEryp1eZI4BcDJPrctlnubTrpY1GgIRyAczoj17
-         52swSdsyzayvJ0FKVsN3Lduw3QPpP0Go0u2XFjj2ffOfoZCB7rCAPWpdYuK0HkfW/ZGN
-         ef8jUFQ/KOku+uwCNuj2W8awBkZIDL7lGqrUanCAHJ0iIJ9V/77BQj1fg4AZX07auitv
-         e49SpJf11i8PEtouLM0uOxfs6/IATVHEnGHQJo60GSODmBCZ4SCo1gPzp4ZxTDzQcfue
-         Ya5w==
-X-Gm-Message-State: AOAM531xpJ+L7gZBVtFCLH9DIXZ3Tuqpets1bTxn5KVsptshyc0EpjeY
-        lMYwkOxbm/pi99F0isuJEK/MCy1QVRuZE5CohKU=
-X-Google-Smtp-Source: ABdhPJx5/GznvKhLT6rvGZ+4I8MGwh86gDp/0GuBtqVrWW7mCTLsptR8tMOZ/TBavfaj2qmNZbCtgg==
-X-Received: by 2002:a05:6638:d11:: with SMTP id q17mr1496935jaj.63.1631220131553;
-        Thu, 09 Sep 2021 13:42:11 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id f3sm1339667ilu.85.2021.09.09.13.42.10
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FTXjmRnVh0AWFmD0C2i93mdE+aZFUcGRZVLlt4s8n9Y=;
+        b=QUHQzGdaxFyiuRbOR3FSYuIGPLkHPpl2viPFJvc9kiRTy2ECGYDBO7sKOEIHgd7B5K
+         HMidoY3PBT+ZHljcJIekb0i+4nAEdkVqlCZtZxs3Nczg1oQTcATrHDd3LziPrzObvxFf
+         F+Eq7L/F+EY1q4z0l4SHg51ccBv+BwVbY56w3VczRV5zEgIjeEmQPMlGgOnOjrHX+QQF
+         iwCOB27IZixp1wybYBPQgWIQAnx0SzM2PRQ4pJGlc52KWoR69vnr+fIUOSRHyUTPTHby
+         rGwtfY2gi2vB30GyJY3p3GIdL4cGMDrrzCB3CKuBmuJ0bWXmOPwvGvEnwERLMpsYUC8i
+         ywGg==
+X-Gm-Message-State: AOAM532tURfHW9R4qHqaOYxQQ1DpdFVU8/Hn0k8HUbcYpkQOgNa+VQWU
+        6gc/v1r85F9co/IuS/gsaDnrRDTKqP+clQ==
+X-Google-Smtp-Source: ABdhPJxV4jSDWWIxrBSLhFUqurmgK0cBeJEuAxuaJ2DNXZk5DVxm3ga5owt54LPnxfF+2W6dEDaHIQ==
+X-Received: by 2002:a17:90b:3583:: with SMTP id mm3mr5573458pjb.75.1631220837377;
+        Thu, 09 Sep 2021 13:53:57 -0700 (PDT)
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com. [209.85.210.180])
+        by smtp.gmail.com with ESMTPSA id g18sm3358418pge.33.2021.09.09.13.53.57
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 13:42:11 -0700 (PDT)
-Subject: Re: [PATCH] scsi: bsg: Fix device unregistration
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Zenghui Yu <yuzenghui@huawei.com>, linux-scsi@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     fujita.tomonori@lab.ntt.co.jp, martin.petersen@oracle.com,
-        hch@lst.de, gregkh@linuxfoundation.org, wanghaibin.wang@huawei.com
-References: <20210909034608.1435-1-yuzenghui@huawei.com>
- <78c3c08b-ebba-8d46-7eae-f82d0b1c50fe@kernel.dk>
-Message-ID: <ac61cf8b-061e-dd96-1730-edec5a886c62@kernel.dk>
-Date:   Thu, 9 Sep 2021 14:42:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 09 Sep 2021 13:53:57 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id m26so2847330pff.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 13:53:57 -0700 (PDT)
+X-Received: by 2002:a05:6602:1346:: with SMTP id i6mr4202804iov.128.1631220520134;
+ Thu, 09 Sep 2021 13:48:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <78c3c08b-ebba-8d46-7eae-f82d0b1c50fe@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210901201934.1084250-1-dianders@chromium.org> <20210901131531.v3.4.Ib2bdeceb8ce45d36c09f5d1ae62a2263276a0605@changeid>
+In-Reply-To: <20210901131531.v3.4.Ib2bdeceb8ce45d36c09f5d1ae62a2263276a0605@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 9 Sep 2021 13:48:28 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XuABPeHXaCrSb+KDX-5CEgnmZFJSJF8nGg5b58-ySWkw@mail.gmail.com>
+Message-ID: <CAD=FV=XuABPeHXaCrSb+KDX-5CEgnmZFJSJF8nGg5b58-ySWkw@mail.gmail.com>
+Subject: Re: [PATCH v3 04/16] drm/panel-simple: Reorder logicpd_type_28 / mitsubishi_aa070mc01
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 2:40 PM, Jens Axboe wrote:
-> On 9/8/21 9:46 PM, Zenghui Yu wrote:
->> We use device_initialize() to take refcount for the device but forget to
->> put_device() on device teardown, which ends up leaking private data of the
->> driver core, dev_name(), etc. This is reported by kmemleak at boot time if
->> we compile kernel with DEBUG_TEST_DRIVER_REMOVE.
->>
->> Note that adding the missing put_device() is _not_ sufficient to fix device
->> unregistration. As we don't provide the .release() method for device, which
->> turned out to be typically wrong and will be complained loudly by the
->> driver core.
->>
->> Fix both of them.
-> 
-> Applied, thanks.
+Hi,
 
-Actually, let's move this through the SCSI tree, as the offending patch
-went that way (and my branches are behind that point).
+On Wed, Sep 1, 2021 at 1:20 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The "logicpd_type_28" panel data was splitting up the
+> mitsubishi_aa070mc01 panel data. Reorganize it so that the panel descs
+> and modes are kept together.
+>
+> This is a no-op code-cleanup change, found by code inspection.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v3:
+> - ("Reorder logicpd_type_28...") patch new for v3.
+>
+>  drivers/gpu/drm/panel/panel-simple.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 
--- 
-Jens Axboe
+I've pushed just this one patch (with Sam's Ack from the cover letter)
+just to simplify future posts. It's pretty much a no-brainer patch and
+there are no dependencies anywhere for it.
 
+c8527b9ad3cf (drm-misc/drm-misc-next) drm/panel-simple: Reorder
+logicpd_type_28 / mitsubishi_aa070mc01
+
+
+-Doug
