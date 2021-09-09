@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69154059B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849CD4059B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237419AbhIIOwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S234241AbhIIOxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236615AbhIIOwR (ORCPT
+        with ESMTP id S229709AbhIIOxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:52:17 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A49C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:51:08 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so2780831otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 07:51:08 -0700 (PDT)
+        Thu, 9 Sep 2021 10:53:18 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC4AC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 07:52:09 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id s15so1612817qta.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 07:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JHiuE2OiEXe434H1xcWuo0fgF0pvMhHeANpuYRG86uk=;
-        b=TJZR5fyjjKCP6sE6kBKth3oqDI5bvePDlzAtu3WZ/DUz8oxFyLNKUc+8ldEWbsB20m
-         VjMZNdVvacpdvJtxqP5++lHldHQVQjqaNyR+YXw0b1DFKtQcSQE3JKNs/sZLX3sWNp7k
-         FCyYZVkz37NfwGvmi0J19R1aK4CUzn9QKipk6gVo14kDzhPmIGm66ElWNyDUrazoPfsN
-         Pag04bnAIk0i4fBikT79Z5WJTSQrYkB+LaLHNg6hvKgX45T/Wy5r2jBp26huJcbpR5g5
-         /YXT8PsaW6C/RenNWjhbfMrYQON/pu8onVPkQoy8S7LGrcN7P6cHEBiUyFtLuftedf1E
-         k4YQ==
+        bh=LWnxOkinOj0Rv/WgMSK/DhHIhMThEl0qiXZwPb4IXXs=;
+        b=S1a2pKZ/j23obfbT+v4H2TZwSB21CQkMZtmMzMv52dlOmL0qPrF2haw+LRlHhvAlhK
+         sYRavalsQfQGcKfRld8BKUaBSMHac4/VOMUglKK/sRnPdTt0EWD4RT4n7Z5Ufn8hgnkO
+         /WkBmZs68e6QFr0TBIswqncFibAnTn7ONSywSPi8CDgxNOI2kPD+M7BPyDumFWVfZZHD
+         nItaRuHbvlPsmaUP7O+mQWzDJRH4nSLF5Xkm23W34R1pIhjhqb8VWYwZZ9b13BU36v5j
+         280dIOCxpjz9mFh6UWRupSV8lN7om/3JY58SG9Mmbm9URCoVpRT0weRBKAA9kWtObkV4
+         98bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JHiuE2OiEXe434H1xcWuo0fgF0pvMhHeANpuYRG86uk=;
-        b=UhBjDdJY1lN/egJZb5IC9mGpqK8ZYifLUQ3lVkGIrEfdU1AKNz9zSwEW66WFX+UZPY
-         XbDoUvT8GfHyb0kIJmOXRefpaSom+xrMmrz2LaruzEOegq1Y7v1ZBAnaTlG95K6R8kkR
-         QC81mxLyE8ZzP4npMorILy7JmRicDtvUuHDYIUXPyTW4V3ZAwdpPhiBp/hPSEcm97aRN
-         A6xyAFzTiUI7MDp4gHXPbs3Dz5Ee66xyaVEWMIlcLw6fd6k9owJAts+YGV7SbuoSf//L
-         iLThYVawwOpU6/sfhemR/2JJogk2pkshODf1+5cEE+RXcxoUMxyTHHMHu5xBPMuWkRcK
-         wOYg==
-X-Gm-Message-State: AOAM532fdOjKPjYuNXpu9EEM6qNncL57r+Bh+M70codL8NRaxu2L3kCZ
-        J9oQtj4hXS21J+iUMUU98TsPIU2HMySDHLtXpFIPhqYTGB8=
-X-Google-Smtp-Source: ABdhPJweezDPGeY3ZyJBi0eplFeYrpL4I+fJ1nvgj7GoFMZNLvwoyIoq/QtEUcmQvRXlPHkn02d9XTMwWqoUV8oZEIg=
-X-Received: by 2002:a9d:17c5:: with SMTP id j63mr231177otj.208.1631199067794;
- Thu, 09 Sep 2021 07:51:07 -0700 (PDT)
+        bh=LWnxOkinOj0Rv/WgMSK/DhHIhMThEl0qiXZwPb4IXXs=;
+        b=iMpymSzdziOr1ZDj8GTkFQ1P5fmGY9rs/3WqY0twducH2lq9W741xfSiIMw1gs1efy
+         JQUTEwNBAUNMOps1Lb8KLUHLXpkke/VFsuod6Ej4/3Vtsv7a207HBo7qpRyMzFizH9EE
+         H+6dAuAyl8KUtLrt9txRXJx0/wWeIdmoHsXzvfDYjepIm/lIgCzPzzDc1k0We8mmBPZ0
+         qwAxKPrxvHmnYDJC0yHBdfk0A/I58eehQApJ7bgP0GrdEvyYNp1+ytkfmHWEPfYJwRlu
+         JdH9A0/naeHWGSs9CwMO9xGOg75XxpCmzUwdhSUWjbC1eYkNhEVfb4LkGQsf4DgJ8aSr
+         bBCw==
+X-Gm-Message-State: AOAM530cpaqe0iafFihdS5rjXtq2iyNpks+hvTOyTn330u/TFlpN3Gg/
+        TitTFuu0AiAHhxOYDcSmBehweBQcax1RE5NmzJU=
+X-Google-Smtp-Source: ABdhPJxWZIbXAUjD9Pp5Wc7TSwzLmUAe1aESKVwTRaeiWG0XCn1mvfHxKEUxfsrkNNiTTn2nsiozBa4te2GqkfHTni4=
+X-Received: by 2002:ac8:4d41:: with SMTP id x1mr3184655qtv.283.1631199128562;
+ Thu, 09 Sep 2021 07:52:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907025940.1535-1-caihuoqing@baidu.com>
-In-Reply-To: <20210907025940.1535-1-caihuoqing@baidu.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 9 Sep 2021 16:50:31 +0200
-Message-ID: <CAPDyKFrWdXBc8WncS=8AeoAGLeEUjbnOsG0cmimTz46GCn2C5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: omap_hsmmc: Make use of the helper macro SET_RUNTIME_PM_OPS()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
+ <YTnWXIB42sCLbM2k@zn.tnic> <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
+ <YTnq/3rzmD6ADyZm@zn.tnic>
+In-Reply-To: <YTnq/3rzmD6ADyZm@zn.tnic>
+From:   Luming Yu <luming.yu@gmail.com>
+Date:   Thu, 9 Sep 2021 22:51:56 +0800
+Message-ID: <CAJRGBZxHQ3tPrvWWoz9xb0pf=tZ0vrrQYX-Tjr5c=UbxntPtew@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_=E5=9B=9E=E5=A4=8D=EF=BC=9A=5BPATCH=5D_perf=3A_optimize_clear_page_in_In?=
+        =?UTF-8?Q?tel_specified_model_with_movq_instruction?=
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     wujinhua <wujinhua@linux.alibaba.com>, x86 <x86@kernel.org>,
+        "zelin.deng" <zelin.deng@linux.alibaba.com>,
+        "jiayu.ni" <jiayu.ni@linux.alibaba.com>, ak <ak@linux.intel.com>,
+        "luming.yu" <luming.yu@intel.com>, "fan.du" <fan.du@intel.com>,
+        "artie.ding" <artie.ding@linux.alibaba.com>,
+        "tony.luck" <tony.luck@intel.com>, tglx <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "pawan.kumar.gupta" <pawan.kumar.gupta@linux.intel.com>,
+        "fenghua.yu" <fenghua.yu@intel.com>, hpa <hpa@zytor.com>,
+        "ricardo.neri-calderon" <ricardo.neri-calderon@linux.intel.com>,
+        peterz <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 04:59, Cai Huoqing <caihuoqing@baidu.com> wrote:
+On Thu, Sep 9, 2021 at 7:08 PM Borislav Petkov <bp@alien8.de> wrote:
 >
-> Use the helper macro SET_RUNTIME_PM_OPS() instead of the verbose
-> operators ".runtime_suspend/.runtime_resume", because the
-> SET_RUNTIME_PM_OPS() is a nice helper macro that could be brought
-> in to make code a little more concise.
+> On Thu, Sep 09, 2021 at 07:02:08PM +0800, wujinhua wrote:
+> > I provide three tests and result for you. All the tests run in Intel
+> > CPX.
 >
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> I said
+>
+> "What you should do is show the extensive tests you've run with
+> real-world benchmarks..."
+>
+> Are your tests real-world benchmarks?
+>
+> IOW, no microbenchmarks please.
 
-Queued for v5.16 on the temporary devel branch, thanks!
+In theory, I thought it should help system boot time , app/dock launch
+time as well
+as some customer specific marco benchmarks.
 
-Kind regards
-Uffe
-
-
-> ---
-> v1->v2: *Add "#ifdef CONFIG_PM" around runtime_suspend|resume().
->         *Remove the unused implementation of omap_hsmmc_context_restore()
 >
->  drivers/mmc/host/omap_hsmmc.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-> index 2f8038d69f67..7a29ad542e4a 100644
-> --- a/drivers/mmc/host/omap_hsmmc.c
-> +++ b/drivers/mmc/host/omap_hsmmc.c
-> @@ -702,11 +702,6 @@ static void omap_hsmmc_context_save(struct omap_hsmmc_host *host)
->
->  #else
->
-> -static int omap_hsmmc_context_restore(struct omap_hsmmc_host *host)
-> -{
-> -       return 0;
-> -}
-> -
->  static void omap_hsmmc_context_save(struct omap_hsmmc_host *host)
->  {
->  }
-> @@ -2086,6 +2081,7 @@ static int omap_hsmmc_resume(struct device *dev)
->  }
->  #endif
->
-> +#ifdef CONFIG_PM
->  static int omap_hsmmc_runtime_suspend(struct device *dev)
->  {
->         struct omap_hsmmc_host *host;
-> @@ -2153,11 +2149,11 @@ static int omap_hsmmc_runtime_resume(struct device *dev)
->         spin_unlock_irqrestore(&host->irq_lock, flags);
->         return 0;
->  }
-> +#endif
->
->  static const struct dev_pm_ops omap_hsmmc_dev_pm_ops = {
->         SET_SYSTEM_SLEEP_PM_OPS(omap_hsmmc_suspend, omap_hsmmc_resume)
-> -       .runtime_suspend = omap_hsmmc_runtime_suspend,
-> -       .runtime_resume = omap_hsmmc_runtime_resume,
-> +       SET_RUNTIME_PM_OPS(omap_hsmmc_runtime_suspend, omap_hsmmc_runtime_resume, NULL)
->  };
->
->  static struct platform_driver omap_hsmmc_driver = {
 > --
-> 2.25.1
+> Regards/Gruss,
+>     Boris.
 >
+> https://people.kernel.org/tglx/notes-about-netiquette
