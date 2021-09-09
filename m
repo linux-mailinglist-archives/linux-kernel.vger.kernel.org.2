@@ -2,482 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817C6405C87
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEBC405C8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242950AbhIISEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237271AbhIISEv (ORCPT
+        id S243111AbhIISFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:05:50 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46034 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234493AbhIISFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:04:51 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7FCC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:03:41 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id k65so5587033yba.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:03:41 -0700 (PDT)
+        Thu, 9 Sep 2021 14:05:48 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 189HiAVt024931;
+        Thu, 9 Sep 2021 18:04:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ subject : from : in-reply-to : date : cc : content-transfer-encoding :
+ message-id : references : to : mime-version; s=corp-2021-07-09;
+ bh=WakdN0Otp3Z6T3yq3lPqAuc0lF2tt+1ruxmRGl/EeME=;
+ b=aCiTq/qgO8oSmFBFHk5Un6Rk9BFOzj3MeD8tebjzW7rFrhzguK7VKi5H25BoXA/YmvtL
+ QD+OTBiWnNEagDeai+uhMP81/TMT4uFauyYGqVu6uXMdj0ytdL2589lsv278qsWli/0t
+ kGSBTyktiaajU+0dUGdBxRLiBovfYngZ0r/H4rrGchdICNrRI6nfQAyclDrUB9Ga/mT5
+ JAMs8Fe8+2p2nkh+iWiO3tzRXrPMogatNym+z23gx2SQBVt8j+iziWdu3mG8rV6gmwNG
+ ZdARXceS7dHvbpEn01M2moAEfynzAOnrrhcP4F623XxTUJ3EDxeIKONYzjZNZhyaaU41 oA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ subject : from : in-reply-to : date : cc : content-transfer-encoding :
+ message-id : references : to : mime-version; s=corp-2020-01-29;
+ bh=WakdN0Otp3Z6T3yq3lPqAuc0lF2tt+1ruxmRGl/EeME=;
+ b=JfyzqejUzp90g6mbozROUUe1wU/fj1y1jIPj1K1Q8admQBK4YL6kgL18aC13IXSt5Z6A
+ dXzmetEAT3NdSVvJusvw7JfeN8sfZkZXYGeVys6ZPdkEy6KWaeAn++DVTKCzavL9zsxG
+ qzQlbrBF6DzjIZKPkoF0LgjnTBfQlUWJ7PrrH/qq3HMiqJOCjNmDAXQEGpyXzd0zlesW
+ sSXcwlg2h/miXPhCfszJfwWgrgy/LzCamleHat+vtevGHMD9d62rkwBjMkYlnnPZWzkx
+ UkFpBBhh6C/G1VLTFVlyRO3MoczM9IarHMnEIBbKxETh/aOJIUxDaIgjR2kSBTXMrIDT 5A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ayfrpsfaf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 18:04:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 189Ht9uF176344;
+        Thu, 9 Sep 2021 18:04:13 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+        by userp3030.oracle.com with ESMTP id 3axcq3bfpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 18:04:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kjaMVqugnQ6PeCwbI8qZCCBrMCDJICvorF/knUJdcB4HXP9n93YWgyQ+/cRj5+N2Sx7OJrJylEG0aBOrF3RU86AyoBwUs3rwnqO7nf0ZbLJ+z7P75Cw8fCj4tKVJ17HIyGRRFcOCUbEACMaxsiD2M8V4vwoIyv1HQ7UGxz+LbIp69kuodNdKLlD8581j98HC/i1Zk/DjKrF5/uR4eAEOiBuHKBuzJK6CKYcszodUCPZCQ6DeHpmbbwQD3S3d5/xXK/a2w6l72BWyVWLSjOZzudZZDIJHGVh/gd9jO/IyRVAtwunJt9KVrOdFbiKbvL/XfDKnf10KdNGFoHndxtLIkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WakdN0Otp3Z6T3yq3lPqAuc0lF2tt+1ruxmRGl/EeME=;
+ b=bgOPt1rSpghrDsQmo7lgv5OavGkEeOPzq4rPM/UcTNuZAT4XxaAbkP0zloU9WxZw4LCloWbWsdH1IUVKYrdGRFBsy+VGYsyzLmtiCheqKQc2DzbrPmrIhR1ATMnPlomQVTmP6yBLJw90dVO7grp4sZ84EQrl68v6pF0Do/DlgPR+sXzOEQ5+ytXnGi80QHutZ3gKXvJhWii7k3WzvfjqEOwNPA2kmg89heKUMgfu34LROVCtfxz11G/cX4svaH339vGHh5CFp2DZNA3K1NdtX8+bfyXAYva14V3C5nPQKYZTwKNMK217lHC13Rc8GVmRF88lfyrhlqX17VwQd6d/PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dWL21g/rXe18UfESw/aaz44TTu3ssz4XBLjDX0WcUyk=;
-        b=d+94kHs+4IZjViu0Pw4WlubOZd+QVd/+0eYHqky/a/P+T2HE53UG5u7HCW9sXGAsBd
-         XhY9d1nkotc/j6dCyNZV+CxQDD3voftkf5lGhgqHYq+hkM8JCM+hDN3hizxPu9xrwgi7
-         mxMyOhbEN9Q9+Ffy3NJ20L8OotiUn87KAa+sLn6ELUMotiL9j3vNYkpQZnbkIi8SS2uK
-         6R/+y1Jm4f3BWuGw7SeG6k8ePXSVIHmyU8omq5kpU9OD0kKolhVTIHOggCcyD1d0W//a
-         h3JezLaBCRTBuZ/xVk9cwCiwQlzugV2GQ6Is+MJw8Ts2h+3ZuxnEUMvnVXFFdxOCoON3
-         ipYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dWL21g/rXe18UfESw/aaz44TTu3ssz4XBLjDX0WcUyk=;
-        b=IDrkRKPrFCnu0lgy+rLy0doJb2w0T8C44uxWs6mUKaP79AR14JB05FeyzObwFzYFIo
-         86GyS4AQJJkDqCKTU7WKKfk7iocMyO9W74TL3IIuQCq/56/PC3Gh71JxTwCcSqQTW+mB
-         4xY9bO/Byc8dS0vbwCkrdlWcRCkEQYas26J5IGwmHP6cdgNF/Jy6WZk/dlUxGHDEFsEz
-         6tFBVcKARdY5LCFpFTNWVm86uBe7z9AqncdTtAG4aTG95D6rLvf2oFjt915pik2v9xlR
-         aEWXq32YucgQ3GEaUKWMRW6Ij63QphZH/a9vy2xbEDLlkhRdSPGnlvB1pd3gVoGjacBz
-         bVBw==
-X-Gm-Message-State: AOAM531VwKVQUwPwoRjyRfJMgX4khfhlWAt81mKOHUxY0uJKp+DDABWE
-        WOuv7RtVRSVEDMu4kc7uKdOQkgXeKm7R5P5bIyv3Vg==
-X-Google-Smtp-Source: ABdhPJyXn5O0sf6dFHJNLFcOUg+mANyRxY78u6mwTtzf7t5Ikb3iVfFm5DDcyg386Swn8J8qYJw1LQjSo1YiRjJXpGo=
-X-Received: by 2002:a25:1c09:: with SMTP id c9mr5756013ybc.350.1631210620661;
- Thu, 09 Sep 2021 11:03:40 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WakdN0Otp3Z6T3yq3lPqAuc0lF2tt+1ruxmRGl/EeME=;
+ b=uuUQDITkULJXbGXVP3kxyp+3VrFwvHpsk4gr9AGHX/vE8LHEBZuIxMGGjU0EWS9FpsAD0Ufo+qOJI4uRdCHaqBnW3+zhilHxDcsGNPuF0VIdiIvEJWXzjQEuOh8EvXdWoNXaOXCJIIJtkx7Dm7o3NIfjrfCc1HRqX4aYAs1By5w=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by CH0PR10MB4857.namprd10.prod.outlook.com (2603:10b6:610:c2::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 18:04:11 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::340c:c4d9:1efa:5bc7]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::340c:c4d9:1efa:5bc7%8]) with mapi id 15.20.4500.016; Thu, 9 Sep 2021
+ 18:04:11 +0000
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: [PATCH v5 07/12] KEYS: Introduce link restriction to include
+ builtin, secondary and machine keys
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+In-Reply-To: <b8ba9facf525c60760b49da6cea50d701ad5613d.camel@linux.ibm.com>
+Date:   Thu, 9 Sep 2021 12:03:58 -0600
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6BD395AE-2549-4E33-8F4F-34B3BDB0649A@oracle.com>
+References: <20210907160110.2699645-1-eric.snowberg@oracle.com>
+ <20210907160110.2699645-8-eric.snowberg@oracle.com>
+ <b8ba9facf525c60760b49da6cea50d701ad5613d.camel@linux.ibm.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+X-Mailer: Apple Mail (2.3273)
+X-ClientProxiedBy: SJ0PR13CA0020.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::25) To CH2PR10MB4150.namprd10.prod.outlook.com
+ (2603:10b6:610:ac::13)
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-16-rananta@google.com>
- <YTmg1i23taXTrOQS@google.com>
-In-Reply-To: <YTmg1i23taXTrOQS@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 11:03:29 -0700
-Message-ID: <CAJHc60zk1Nfnn=ajboB+9tW47kDrmGHCMssV=uk6u-+zEof2uw@mail.gmail.com>
-Subject: Re: [PATCH v4 15/18] KVM: arm64: selftests: Add arch_timer test
-To:     Oliver Upton <oupton@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Received: from [IPv6:2606:b400:2001:91:8000::70a] (2606:b400:8024:1010::17c6) by SJ0PR13CA0020.namprd13.prod.outlook.com (2603:10b6:a03:2c0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.8 via Frontend Transport; Thu, 9 Sep 2021 18:04:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2bf3039-2f08-48b2-8ec6-08d973bc39b7
+X-MS-TrafficTypeDiagnostic: CH0PR10MB4857:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH0PR10MB485713852AABEB3571541F6C87D59@CH0PR10MB4857.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vClP9aqWSQfUYpHsQLS5JgwiRlFuHIqacEHdCA4lEOJIqeyp7kFjBwQLyKleYQ5NFTif9mg4MEFkavaROg8h4REqoU5kldNln2Jh5WB0rbrQuGKWsbKOjgnF+/PntC1uUPIhUWp7G2tsMneQfwj3/9Vd7O2PiGgf8I5UpD0k3oMqD2upYrc+xpsNy+KrfeE1tpfJ7/Yq5GiMV6TB8oRN7QJsGPRWIakdp3bgTP/MHxNpPSOm944UyVUEBNvxg6QEoD5kcaM9ya0ZLBLmNjT0mEVuOH5jL6pqDKjmHjgs4WujnNcAA2Y6lXmfQqyXq1luz85h9bEujStTKsLQDpEpwadBrxwStwlQKPCYDoBSAbFWhgzUyi2Wdwy/ER+3gHGnWaJh9MpVJu+U2Tx+Rf0M9s1nkzYkThTaOIqJ0bYxWL/ZpiDgUgf5n9US9wXP0TkchlTN7XNXDA5OFkNACg2gdxyZKAbDo7fMAavIFjjNtNethr6gyFTmDJeBQ3eupK2XWwd9aFmJvwjtVeTRAf/Q9EWHaseLUWjMm+EIBW7XyoA1GNNWCb2P3/C3FUR1rK5WjbbcFRIP5M1nHnE9ihRWfM8y3XIpsI3DIE2Jb9MLk+220RYwBDQNqxva9ZR9aPhdZwYaekwvLJbeXqcr5UChxwpti+yHlAprX8u5hpcJZjj/Woa5iMB7IqkQraZOeh3ywRwWGAwFFc6zyCYNugNX1A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(66946007)(66476007)(53546011)(8936002)(6666004)(107886003)(66556008)(2616005)(186003)(6486002)(52116002)(316002)(38100700002)(6916009)(2906002)(54906003)(44832011)(4326008)(36756003)(508600001)(86362001)(33656002)(7416002)(5660300002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qDY76nrjFS3pjodntc+HWt99eRQ2868wBu4+d+TRk4zaZKROo/WUXLHLLekV?=
+ =?us-ascii?Q?Xuxmzoey5Zae/ka6Lpdu5MPrha4GuTVnLS3fVKB1bI4lW5UOvwRzr9usjdAm?=
+ =?us-ascii?Q?Ln79xHZ2H3WUCUEQLO/BvfAmIGzCD5AlA39KmH5N9SYiuTeKMhzmnpmyKnIT?=
+ =?us-ascii?Q?Lc765Om2diyhwwRLi5E4tyiN4esolRh8tRc3ZmQD5Ui3sRQbZrfinrATSrPy?=
+ =?us-ascii?Q?Sul0/9dO0oxgvKpG6MX9TRe7fuu/VV5Gzis0a52bq5BYyP6yXIW3V7Y+STXj?=
+ =?us-ascii?Q?WxxiSS+k9J/voaCEC8t8xwLtq9rM8tI9DWIqCq/AdzwhcbyPhyboBj0e6n0S?=
+ =?us-ascii?Q?7OeXnIo4twsT0mlnxfmC93v0VL4eSNA3V74vxWtemFvO2+JT3mMlz27Gf0Q4?=
+ =?us-ascii?Q?EaYz87xAm1N1sA7N2Lr3BJj8QIgMg33PyLf9GXg+PGei89VrvYwthXX54tM+?=
+ =?us-ascii?Q?QNqpdYC20BmGXzYtNK9foL1OC/gN8JOfqSsg1rLrLomElcD202KNlGtPGLaG?=
+ =?us-ascii?Q?kbzXpKE5Fmjug2uIAwIcWrETlNMCExYyfmM8IqkbYQwvXNlBUZTFPwQkc4Hc?=
+ =?us-ascii?Q?7ydArpjA1W2Ct0TgXVyqiiD/du+v+Gb7SsmQPgnLmCRTAbAIroPpj9JZnV5U?=
+ =?us-ascii?Q?i/aGOUr/B3WtrJMZk50l5jq+bPq0IZar5++WmvmpgYp5IyD8fF5f+itNRGzc?=
+ =?us-ascii?Q?0L3WlWVvxay6HiNAnu+qNmmOOZp4kWKHqiE41XHopxCQGrdTwSAnsxHR9i34?=
+ =?us-ascii?Q?jHMVZQvvQv5cKWznLEr+mFfyD0FklRSt0ZvBLHLJyg9WpUeNmo4fKK/INSl9?=
+ =?us-ascii?Q?OemIHNRSERsvV8h8OPJrW3IQaCwhiGrUe3Xjl+X7CHAXo9UqdB6DQQicEPFU?=
+ =?us-ascii?Q?fcMQRh7OjMoPpqIUrJbEgmcz/tiwHnhYkQ4f3AFhYUieC0UtzJARWGMydwS1?=
+ =?us-ascii?Q?63R9fLMKjnYrZhOFnI96/E+03UIIajOpuPiEgKPgi7O5lhZIc+jmZmWkOKcK?=
+ =?us-ascii?Q?kKAHC2RY114JMqzSUqS0pFY+KgWZjBHR1Df5tkdUfFfGUS9geagkHRq3APxu?=
+ =?us-ascii?Q?b2o/2FglA+rmYs2GxdpOSEycMTlCM0KoUHkxquUw9kGi0tQBo27K44tbWLlK?=
+ =?us-ascii?Q?iLy9GLQdtEXEJnqXJqzGYDeJ54xcGPK0DvAoeT2efbAohegaNSpiFHk8waBP?=
+ =?us-ascii?Q?DpmU/831k+NcpKI/+QCxyCgDNsrd99FtsBY0tgyOV+81jbmgNKw3dtmT8ZYp?=
+ =?us-ascii?Q?V0dKmK2WUF+0TqrDnYzc2BIifYyvwq3kYKRlFKZcVrt31e1yEMWcB2osSJIO?=
+ =?us-ascii?Q?Eg3+k8ZZeZZsy5OSnnIZG2mtC7V3Ow7UCV0sJSoqD5PZDA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2bf3039-2f08-48b2-8ec6-08d973bc39b7
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 18:04:11.0645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f3tnOIKBd+nMz9FgSugDFX20yWDnfVya9gC91QY2EUBLpVVn1hygIRtK153KAgfwglss+t0kjhT9NbUvW0CEjYGP1bXsxo1VZX75mCOubIM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4857
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10102 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090109
+X-Proofpoint-GUID: zCJYT9VWCxcWey2pueBKeH46QIBXRYEl
+X-Proofpoint-ORIG-GUID: zCJYT9VWCxcWey2pueBKeH46QIBXRYEl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:51 PM Oliver Upton <oupton@google.com> wrote:
->
-> On Thu, Sep 09, 2021 at 01:38:15AM +0000, Raghavendra Rao Ananta wrote:
-> > Add a KVM selftest to validate the arch_timer functionality.
-> > Primarily, the test sets up periodic timer interrupts and
-> > validates the basic architectural expectations upon its receipt.
-> >
-> > The test provides command-line options to configure the period
-> > of the timer, number of iterations, and number of vCPUs.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > Reviewed-by: Andrew Jones <drjones@redhat.com>
-> > ---
-> >  tools/testing/selftests/kvm/.gitignore        |   1 +
-> >  tools/testing/selftests/kvm/Makefile          |   1 +
-> >  .../selftests/kvm/aarch64/arch_timer.c        | 351 ++++++++++++++++++
-> >  3 files changed, 353 insertions(+)
-> >  create mode 100644 tools/testing/selftests/kvm/aarch64/arch_timer.c
-> >
-> > diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> > index 98053d3afbda..c6058df0cd18 100644
-> > --- a/tools/testing/selftests/kvm/.gitignore
-> > +++ b/tools/testing/selftests/kvm/.gitignore
-> > @@ -1,4 +1,5 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> > +/aarch64/arch_timer
-> >  /aarch64/debug-exceptions
-> >  /aarch64/get-reg-list
-> >  /aarch64/psci_cpu_on_test
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > index 8342f65c1d96..46d43e706b20 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -84,6 +84,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
-> >  TEST_GEN_PROGS_x86_64 += steal_time
-> >  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
-> >
-> > +TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
-> >  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
-> >  TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list
-> >  TEST_GEN_PROGS_aarch64 += aarch64/psci_cpu_on_test
-> > diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > new file mode 100644
-> > index 000000000000..6141c387e6dc
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > @@ -0,0 +1,351 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * arch_timer.c - Tests the aarch64 timer IRQ functionality
-> > + *
-> > + * The test validates both the virtual and physical timer IRQs using
-> > + * CVAL and TVAL registers. This consitutes the four stages in the test.
-> > + * The guest's main thread configures the timer interrupt for a stage
-> > + * and waits for it to fire, with a timeout equal to the timer period.
-> > + * It asserts that the timeout doesn't exceed the timer period.
-> > + *
-> > + * On the other hand, upon receipt of an interrupt, the guest's interrupt
-> > + * handler validates the interrupt by checking if the architectural state
-> > + * is in compliance with the specifications.
-> > + *
-> > + * The test provides command-line options to configure the timer's
-> > + * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> > + *
-> > + * Copyright (c) 2021, Google LLC.
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +
-> > +#include <stdlib.h>
-> > +#include <pthread.h>
-> > +#include <linux/kvm.h>
-> > +#include <linux/sizes.h>
-> > +
-> > +#include "kvm_util.h"
-> > +#include "processor.h"
-> > +#include "delay.h"
-> > +#include "arch_timer.h"
-> > +#include "gic.h"
-> > +#include "vgic.h"
-> > +
-> > +#define NR_VCPUS_DEF                 4
-> > +#define NR_TEST_ITERS_DEF            5
-> > +#define TIMER_TEST_PERIOD_MS_DEF     10
-> > +#define TIMER_TEST_ERR_MARGIN_US     100
-> > +
-> > +struct test_args {
-> > +     int nr_vcpus;
-> > +     int nr_iter;
-> > +     int timer_period_ms;
-> > +};
-> > +
-> > +static struct test_args test_args = {
-> > +     .nr_vcpus = NR_VCPUS_DEF,
-> > +     .nr_iter = NR_TEST_ITERS_DEF,
-> > +     .timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-> > +};
-> > +
-> > +#define msecs_to_usecs(msec)         ((msec) * 1000LL)
-> > +
-> > +#define VTIMER_IRQ                   27
-> > +#define PTIMER_IRQ                   30
->
-> I don't know if these are guaranteed, necessarily. Probably safest to
-> determine the IRQ# from the KVM_ARM_VCPU_TIMER_IRQ_{P,V}TIMER vCPU
-> device attributes. Either that or write these values to the attributes.
->
-Correct me if I'm wrong, but aren't these the default INTIDs? And I
-believe KVM follows the same. Or are you just concerned since these
-are not defined as a part of UAPI, and have a potential to change?
 
-Regards,
-Raghavendra
-> > +#define GICD_BASE_GPA                        0x8000000ULL
-> > +#define GICR_BASE_GPA                        0x80A0000ULL
-> > +
-> > +enum guest_stage {
-> > +     GUEST_STAGE_VTIMER_CVAL = 1,
-> > +     GUEST_STAGE_VTIMER_TVAL,
-> > +     GUEST_STAGE_PTIMER_CVAL,
-> > +     GUEST_STAGE_PTIMER_TVAL,
-> > +     GUEST_STAGE_MAX,
-> > +};
-> > +
-> > +/* Shared variables between host and guest */
-> > +struct test_vcpu_shared_data {
-> > +     int nr_iter;
-> > +     enum guest_stage guest_stage;
-> > +     uint64_t xcnt;
-> > +};
-> > +
-> > +struct test_vcpu {
-> > +     uint32_t vcpuid;
-> > +     pthread_t pt_vcpu_run;
-> > +     struct kvm_vm *vm;
-> > +};
-> > +
-> > +static struct test_vcpu test_vcpu[KVM_MAX_VCPUS];
-> > +static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
-> > +
-> > +static void
-> > +guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
-> > +{
-> > +     switch (shared_data->guest_stage) {
-> > +     case GUEST_STAGE_VTIMER_CVAL:
-> > +             timer_set_next_cval_ms(VIRTUAL, test_args.timer_period_ms);
-> > +             shared_data->xcnt = timer_get_cntct(VIRTUAL);
-> > +             timer_set_ctl(VIRTUAL, CTL_ENABLE);
-> > +             break;
-> > +     case GUEST_STAGE_VTIMER_TVAL:
-> > +             timer_set_next_tval_ms(VIRTUAL, test_args.timer_period_ms);
-> > +             shared_data->xcnt = timer_get_cntct(VIRTUAL);
-> > +             timer_set_ctl(VIRTUAL, CTL_ENABLE);
-> > +             break;
-> > +     case GUEST_STAGE_PTIMER_CVAL:
-> > +             timer_set_next_cval_ms(PHYSICAL, test_args.timer_period_ms);
-> > +             shared_data->xcnt = timer_get_cntct(PHYSICAL);
-> > +             timer_set_ctl(PHYSICAL, CTL_ENABLE);
-> > +             break;
-> > +     case GUEST_STAGE_PTIMER_TVAL:
-> > +             timer_set_next_tval_ms(PHYSICAL, test_args.timer_period_ms);
-> > +             shared_data->xcnt = timer_get_cntct(PHYSICAL);
-> > +             timer_set_ctl(PHYSICAL, CTL_ENABLE);
-> > +             break;
-> > +     default:
-> > +             GUEST_ASSERT(0);
-> > +     }
-> > +}
-> > +
-> > +static void guest_validate_irq(unsigned int intid,
-> > +                             struct test_vcpu_shared_data *shared_data)
-> > +{
-> > +     enum guest_stage stage = shared_data->guest_stage;
-> > +     uint64_t xcnt = 0, xcnt_diff_us, cval = 0;
-> > +     unsigned long xctl = 0;
-> > +     unsigned int timer_irq = 0;
-> > +
-> > +     if (stage == GUEST_STAGE_VTIMER_CVAL ||
-> > +             stage == GUEST_STAGE_VTIMER_TVAL) {
-> > +             xctl = timer_get_ctl(VIRTUAL);
-> > +             timer_set_ctl(VIRTUAL, CTL_IMASK);
-> > +             xcnt = timer_get_cntct(VIRTUAL);
-> > +             cval = timer_get_cval(VIRTUAL);
-> > +             timer_irq = VTIMER_IRQ;
-> > +     } else if (stage == GUEST_STAGE_PTIMER_CVAL ||
-> > +             stage == GUEST_STAGE_PTIMER_TVAL) {
-> > +             xctl = timer_get_ctl(PHYSICAL);
-> > +             timer_set_ctl(PHYSICAL, CTL_IMASK);
-> > +             xcnt = timer_get_cntct(PHYSICAL);
-> > +             cval = timer_get_cval(PHYSICAL);
-> > +             timer_irq = PTIMER_IRQ;
-> > +     } else {
-> > +             GUEST_ASSERT(0);
-> > +     }
-> > +
-> > +     xcnt_diff_us = cycles_to_usec(xcnt - shared_data->xcnt);
-> > +
-> > +     /* Make sure we are dealing with the correct timer IRQ */
-> > +     GUEST_ASSERT_2(intid == timer_irq, intid, timer_irq);
-> > +
-> > +     /* Basic 'timer condition met' check */
-> > +     GUEST_ASSERT_3(xcnt >= cval, xcnt, cval, xcnt_diff_us);
-> > +     GUEST_ASSERT_1(xctl & CTL_ISTATUS, xctl);
-> > +}
-> > +
-> > +static void guest_irq_handler(struct ex_regs *regs)
-> > +{
-> > +     unsigned int intid = gic_get_and_ack_irq();
-> > +     uint32_t cpu = get_vcpuid();
-> > +     struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[cpu];
-> > +
-> > +     guest_validate_irq(intid, shared_data);
-> > +
-> > +     WRITE_ONCE(shared_data->nr_iter, shared_data->nr_iter + 1);
-> > +
-> > +     gic_set_eoi(intid);
-> > +}
-> > +
-> > +static void guest_run_stage(struct test_vcpu_shared_data *shared_data,
-> > +                             enum guest_stage stage)
-> > +{
-> > +     uint32_t irq_iter, config_iter;
-> > +
-> > +     shared_data->guest_stage = stage;
-> > +     shared_data->nr_iter = 0;
-> > +
-> > +     for (config_iter = 0; config_iter < test_args.nr_iter; config_iter++) {
-> > +             /* Setup the next interrupt */
-> > +             guest_configure_timer_action(shared_data);
-> > +
-> > +             /* Setup a timeout for the interrupt to arrive */
-> > +             udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> > +                     TIMER_TEST_ERR_MARGIN_US);
-> > +
-> > +             irq_iter = READ_ONCE(shared_data->nr_iter);
-> > +             GUEST_ASSERT_2(config_iter + 1 == irq_iter,
-> > +                             config_iter + 1, irq_iter);
-> > +     }
-> > +}
-> > +
-> > +static void guest_code(void)
-> > +{
-> > +     uint32_t cpu = get_vcpuid();
-> > +     struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[cpu];
-> > +
-> > +     local_irq_disable();
-> > +
-> > +     gic_init(GIC_V3, test_args.nr_vcpus,
-> > +             (void *)GICD_BASE_GPA, (void *)GICR_BASE_GPA);
-> > +
-> > +     timer_set_ctl(VIRTUAL, CTL_IMASK);
-> > +     timer_set_ctl(PHYSICAL, CTL_IMASK);
-> > +
-> > +     gic_irq_enable(VTIMER_IRQ);
-> > +     gic_irq_enable(PTIMER_IRQ);
-> > +     local_irq_enable();
-> > +
-> > +     guest_run_stage(shared_data, GUEST_STAGE_VTIMER_CVAL);
-> > +     guest_run_stage(shared_data, GUEST_STAGE_VTIMER_TVAL);
-> > +     guest_run_stage(shared_data, GUEST_STAGE_PTIMER_CVAL);
-> > +     guest_run_stage(shared_data, GUEST_STAGE_PTIMER_TVAL);
-> > +
-> > +     GUEST_DONE();
-> > +}
-> > +
-> > +static void *test_vcpu_run(void *arg)
-> > +{
-> > +     struct ucall uc;
-> > +     struct test_vcpu *vcpu = arg;
-> > +     struct kvm_vm *vm = vcpu->vm;
-> > +     uint32_t vcpuid = vcpu->vcpuid;
-> > +     struct test_vcpu_shared_data *shared_data = &vcpu_shared_data[vcpuid];
-> > +
-> > +     vcpu_run(vm, vcpuid);
-> > +
-> > +     switch (get_ucall(vm, vcpuid, &uc)) {
-> > +     case UCALL_SYNC:
-> > +     case UCALL_DONE:
-> > +             break;
-> > +     case UCALL_ABORT:
-> > +             sync_global_from_guest(vm, *shared_data);
-> > +             TEST_FAIL("%s at %s:%ld\n\tvalues: %lu, %lu; %lu, vcpu: %u; stage: %u; iter: %u",
-> > +                     (const char *)uc.args[0], __FILE__, uc.args[1],
-> > +                     uc.args[2], uc.args[3], uc.args[4], vcpuid,
-> > +                     shared_data->guest_stage, shared_data->nr_iter);
-> > +             break;
-> > +     default:
-> > +             TEST_FAIL("Unexpected guest exit\n");
-> > +     }
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> > +static void test_run(struct kvm_vm *vm)
-> > +{
-> > +     int i, ret;
-> > +
-> > +     for (i = 0; i < test_args.nr_vcpus; i++) {
-> > +             ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
-> > +                             test_vcpu_run, &test_vcpu[i]);
-> > +             TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
-> > +     }
-> > +
-> > +     for (i = 0; i < test_args.nr_vcpus; i++)
-> > +             pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
-> > +}
-> > +
-> > +static struct kvm_vm *test_vm_create(void)
-> > +{
-> > +     struct kvm_vm *vm;
-> > +     unsigned int i;
-> > +     int nr_vcpus = test_args.nr_vcpus;
-> > +
-> > +     vm = vm_create_default_with_vcpus(nr_vcpus, 0, 0, guest_code, NULL);
-> > +
-> > +     vm_init_descriptor_tables(vm);
-> > +     vm_install_exception_handler(vm, VECTOR_IRQ_CURRENT, guest_irq_handler);
-> > +
-> > +     for (i = 0; i < nr_vcpus; i++) {
-> > +             vcpu_init_descriptor_tables(vm, i);
-> > +
-> > +             test_vcpu[i].vcpuid = i;
-> > +             test_vcpu[i].vm = vm;
-> > +     }
-> > +
-> > +     ucall_init(vm, NULL);
-> > +     vm_vcpuid_map_init(vm);
-> > +     vgic_v3_setup(vm, GICD_BASE_GPA, GICR_BASE_GPA);
-> > +
-> > +     /* Make all the test's cmdline args visible to the guest */
-> > +     sync_global_to_guest(vm, test_args);
-> > +
-> > +     return vm;
-> > +}
-> > +
-> > +static void test_print_help(char *name)
-> > +{
-> > +     pr_info("Usage: %s [-h] [-n nr_vcpus] [-i iterations] [-p timer_period_ms]\n",
-> > +             name);
-> > +     pr_info("\t-n: Number of vCPUs to configure (default: %u; max: %u)\n",
-> > +             NR_VCPUS_DEF, KVM_MAX_VCPUS);
-> > +     pr_info("\t-i: Number of iterations per stage (default: %u)\n",
-> > +             NR_TEST_ITERS_DEF);
-> > +     pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
-> > +             TIMER_TEST_PERIOD_MS_DEF);
-> > +     pr_info("\t-h: print this help screen\n");
-> > +}
-> > +
-> > +static bool parse_args(int argc, char *argv[])
-> > +{
-> > +     int opt;
-> > +
-> > +     while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
-> > +             switch (opt) {
-> > +             case 'n':
-> > +                     test_args.nr_vcpus = atoi(optarg);
-> > +                     if (test_args.nr_vcpus <= 0) {
-> > +                             pr_info("Positive value needed for -n\n");
-> > +                             goto err;
-> > +                     } else if (test_args.nr_vcpus > KVM_MAX_VCPUS) {
-> > +                             pr_info("Max allowed vCPUs: %u\n",
-> > +                                     KVM_MAX_VCPUS);
-> > +                             goto err;
-> > +                     }
-> > +                     break;
-> > +             case 'i':
-> > +                     test_args.nr_iter = atoi(optarg);
-> > +                     if (test_args.nr_iter <= 0) {
-> > +                             pr_info("Positive value needed for -i\n");
-> > +                             goto err;
-> > +                     }
-> > +                     break;
-> > +             case 'p':
-> > +                     test_args.timer_period_ms = atoi(optarg);
-> > +                     if (test_args.timer_period_ms <= 0) {
-> > +                             pr_info("Positive value needed for -p\n");
-> > +                             goto err;
-> > +                     }
-> > +                     break;
-> > +             case 'h':
-> > +             default:
-> > +                     goto err;
-> > +             }
-> > +     }
-> > +
-> > +     return true;
-> > +
-> > +err:
-> > +     test_print_help(argv[0]);
-> > +     return false;
-> > +}
-> > +
-> > +int main(int argc, char *argv[])
-> > +{
-> > +     struct kvm_vm *vm;
-> > +
-> > +     /* Tell stdout not to buffer its content */
-> > +     setbuf(stdout, NULL);
-> > +
-> > +     if (!parse_args(argc, argv))
-> > +             exit(KSFT_SKIP);
-> > +
-> > +     vm = test_vm_create();
-> > +     test_run(vm);
-> > +     kvm_vm_free(vm);
-> > +
-> > +     return 0;
-> > +}
-> > --
-> > 2.33.0.153.gba50c8fa24-goog
-> >
+> On Sep 9, 2021, at 11:26 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+>=20
+> Hi Eric,
+>=20
+> The subject line above is too long.   According to
+> Documentation/process/submitting-patches.rst the "the ``summary`` must
+> be no more than 70-75 characters".
+>=20
+> On Tue, 2021-09-07 at 12:01 -0400, Eric Snowberg wrote:
+>> Introduce a new link restriction that includes the trusted builtin,
+>> secondary and machine keys. The restriction is based on the key to be ad=
+ded
+>> being vouched for by a key in any of these three keyrings.
+>>=20
+>> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+>> ---
+>> v3: Initial version
+>> v4: moved code under CONFIG_INTEGRITY_MOK_KEYRING
+>> v5: Rename to machine keyring
+>> ---
+>> certs/system_keyring.c        | 23 +++++++++++++++++++++++
+>> include/keys/system_keyring.h |  6 ++++++
+>> 2 files changed, 29 insertions(+)
+>>=20
+>> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+>> index 08ea542c8096..955bd57815f4 100644
+>> --- a/certs/system_keyring.c
+>> +++ b/certs/system_keyring.c
+>> @@ -99,6 +99,29 @@ void __init set_machine_trusted_keys(struct key *keyr=
+ing)
+>> {
+>> 	machine_trusted_keys =3D keyring;
+>> }
+>> +
+>> +/**
+>> + * restrict_link_by_builtin_secondary_and_ca_trusted
+>=20
+> Sorry for the patch churn.  With the keyring name change to ".machine",
+> the restriction name should also reflect this change.
+
+Yes, I can change that. Should it be renamed to=20
+restrict_link_by_builtin_secondary_and_machine_trusted? That seems a little
+long though.  Thanks.
+
+
