@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9E404578
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B54B40457A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352344AbhIIGMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:12:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41460 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352156AbhIIGMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:12:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631167893; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Tu9VJTw14yYLG7InUDLYuIOAxq1clJaEA5jlZQFtMp0=;
- b=qQ/2cFIg7o+JQuY3B9OlNolQ7JRX3EbX6QXMJOSD3n5K7G6bOs332TUuu6MlJ402YQYtgVDw
- UUXjXPmKyFya27fUMh09JTe9opUihOS6ayVwWn/2YaJqDMd17kpQuRlMkeXi55sWdkEkof07
- aQZZ7pHr2C6nZecYvJmApuI4FEA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6139a594ea875192307bb221 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 06:11:32
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E3D53C4360D; Thu,  9 Sep 2021 06:11:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB483C4338F;
-        Thu,  9 Sep 2021 06:11:29 +0000 (UTC)
+        id S1352340AbhIIGON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352491AbhIIGOL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:14:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AD1C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L3wM+n0HjcXR+5rq2TCpv3fE1OymWFI2TAvgga/hDCE=; b=Xw39TMHR90bPyTmyfzGtLeJg4i
+        bh/x1Er9+r0bzRBmBB1HU65DAzY2lUua3FHaklD3yGF4aaDlPrtsR0E2dJozvuvUCBSPhaiitAxv2
+        ZbZBAmu1Cg/nbmQ8jCTOqbaBjfH8vetiV6gOcrGJZFb9ZDNSzyis9ufH9f1uMGxRcjllKqH8DpwNr
+        pPYtBR3QC57ieJZDjd818pN//eV4ixXDMAGR/zlgqsqGma+6PVyEEXTu2Woutqm2IYol4tTj3nx8w
+        7HrGcsxeOn7DwXU61khTL0xuwhvORlsW+Jscx7l23/Ma9/BIej0J0sYUuga6jJBRgQP23tt1I0p0A
+        GViGrung==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mODIH-009XC3-Sz; Thu, 09 Sep 2021 06:12:27 +0000
+Date:   Thu, 9 Sep 2021 07:12:17 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, vincent.chen@sifive.com
+Subject: Re: [RFC PATCH v8 15/21] riscv: Add vector extension XOR
+ implementation
+Message-ID: <YTmlwTlSX94tltyV@infradead.org>
+References: <cover.1631121222.git.greentime.hu@sifive.com>
+ <33c485ee595aff1e19a0e43074da59779f58d105.1631121222.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 09 Sep 2021 11:41:29 +0530
-From:   skakit@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, swboyd@chromium.org,
-        kgunda@codeaurora.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
-In-Reply-To: <YTjuGVOmzkTot8z1@ripper>
-References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
- <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
- <YTeskY7kXsdmvGPp@google.com>
- <b10e5f36fb0216a4c951d752f5103099@codeaurora.org>
- <YTjW9LAGhTuszoa4@google.com> <YTjuGVOmzkTot8z1@ripper>
-Message-ID: <667da76fe38a67af196e8dad00decd71@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33c485ee595aff1e19a0e43074da59779f58d105.1631121222.git.greentime.hu@sifive.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-08 22:38, Bjorn Andersson wrote:
-> On Wed 08 Sep 08:29 PDT 2021, Matthias Kaehlcke wrote:
-> 
->> On Wed, Sep 08, 2021 at 02:37:39PM +0530, skakit@codeaurora.org wrote:
->> > On 2021-09-07 23:46, Matthias Kaehlcke wrote:
->> > > On Mon, Sep 06, 2021 at 04:11:07PM +0530, satya priya wrote:
->> > > > Add pwm support for PM8350C pmic.
->> > > >
->> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
->> > > > ---
->> > > >  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
->> > > >  1 file changed, 6 insertions(+)
->> > > >
->> > > > diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
->> > > > b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
->> > > > index e1b75ae..ecdae55 100644
->> > > > --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
->> > > > +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
->> > > > @@ -29,6 +29,12 @@
->> > > >  			interrupt-controller;
->> > > >  			#interrupt-cells = <2>;
->> > > >  		};
->> > > > +
->> > > > +		pm8350c_pwm4: pwm {
->> > >
->> > > What does the '4' represent, an internal channel number? It should
->> > > probably be omitted if the PM8350 only has a single output PWM
->> > > port.
->> > >
->> >
->> > pm8350c has four PWMs, but I think we can drop the '4' here.
->> 
->> Why is only one PWM exposed if the PMIC has for of them? Why number 4
->> and not one of the others?
-> 
+On Thu, Sep 09, 2021 at 01:45:27AM +0800, Greentime Hu wrote:
+> +extern void xor_regs_2_(unsigned long bytes, unsigned long *p1,
+> +			unsigned long *p2);
+> +extern void xor_regs_3_(unsigned long bytes, unsigned long *p1,
+> +			unsigned long *p2, unsigned long *p3);
+> +extern void xor_regs_4_(unsigned long bytes, unsigned long *p1,
+> +			unsigned long *p2, unsigned long *p3,
+> +			unsigned long *p4);
+> +extern void xor_regs_5_(unsigned long bytes, unsigned long *p1,
+> +			unsigned long *p2, unsigned long *p3, unsigned long *p4,
+> +			unsigned long *p5);
 
-pwm4 is used for backlight support on kodiak crd board, so I mentioned 
-4, thinking 4 nodes should be present for 4 pwms.
-but I see that we need to represent all the four channels as one node. 
-will drop the '4' in next version.
+There is no need for externs on function declarations ever.
 
-Thanks,
-Satya Priya
+> +static void xor_rvv_2(unsigned long bytes, unsigned long *p1, unsigned long *p2)
+> +{
+> +	kernel_rvv_begin();
+> +	xor_regs_2_(bytes, p1, p2);
+> +	kernel_rvv_end();
+> +}
 
-> The node should represent all 4 channels, which ones the board uses is
-> captured in how they are bound to other clients - or defines as LEDs by
-> additional child nodes.
-> 
-> Regards,
-> Bjorn
+This looks strange.  Why these wrappers?
