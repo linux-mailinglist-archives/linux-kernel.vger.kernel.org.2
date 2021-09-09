@@ -2,309 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35789405CB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30C9405CB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243087AbhIISNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243659AbhIISMx (ORCPT
+        id S243599AbhIISOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:14:08 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45106 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237265AbhIISOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:12:53 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E630C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:11:43 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id c206so5637784ybb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u6kdTLP4blcA8sJPI1Kt/GVyajBThh78ApUdpd9ltlU=;
-        b=AsFqgOO8KmUumO6ItaywSLlxAXP7p9MKiCWzAihV0/B5H1ngf6FHVgn2/n2kkNklRF
-         SF5YhVNAq93bp+GtO0emLbCyrMxAfgtSE+MTQx94CJT2vycSho58La+8e+P7h2iqSONL
-         nOvFXKGLQ8NPjAv4+6jiaqIz4p10A1VJbHt3HXqhifyUdAhyg0EFwTTterdAiidZcKD/
-         3uUDZc9en3Ihfm7Lqd9q93brsPwtkjexmpr/IbV7Yei1SO5oTx3wGqq+y3jTy6qNMSwc
-         Cn6axisXoFdplCF28TL3WDIRT5zDWfveV70s8ucczMq7+0xRqdsVFYy2SknZ7dIMjHIP
-         dgDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6kdTLP4blcA8sJPI1Kt/GVyajBThh78ApUdpd9ltlU=;
-        b=kEklZa/2NugpD0WwVjSS83iSW3EhYKfthHyb7oNSbtIdE2Jq8bk0ur0asASloNQqLo
-         E3Kdr0pG/kT+URhOgeGKmKgzixYJo+iwtdOU+hE5rCCFu1QCsebKFIGIZC5aL2hfQjJD
-         uQfCtGO+bNTesAqZVZy+MIwyqIb+DvLfdna+GLgDBzlxOSFRR9hSw11zW/hl5E8w3aPr
-         iEoc6XNgIf1C27r72EWMcKvGYsUgvFuba3Jpi3/ByOoj5/ar9kshFpD3eRXo+2KVG0e2
-         I6n0xvbFLAMDmK40aWe7+itZlX9UboPo1u818RZcqhPG8Gr08ABDfUxJWFPiOuoUDmm6
-         kh/g==
-X-Gm-Message-State: AOAM53027wR4B/XW2YnNAW/L3CeXTqkBiL6d0Prxdz06aPvwvIHKoevm
-        DXc9E2XLC8csI7QsaYHP0FhYhZorZca0n6Hct7kZoQ==
-X-Google-Smtp-Source: ABdhPJyJsamDjgGMpayoYeRjf3elvWjSUFpFFtJQK0sADqZTc/zflkV0d5YsP2LDr13d9Wig/b32oUJdcrFb16qSG4g=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr5409913ybl.508.1631211101608;
- Thu, 09 Sep 2021 11:11:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210904000543.2019010-1-saravanak@google.com>
- <20210904000543.2019010-2-saravanak@google.com> <CAMuHMdUhZy7W_HLtNJ2ECK5uQV5xHV7pDk5BXfNUpW9L68G5Aw@mail.gmail.com>
- <CAGETcx_7N3gtaT-YHGaGL+Qtkv=JOhgPcPF1A+kQ4aaDoetvSA@mail.gmail.com>
- <CAL_Jsq+-DAz+80QtpX5obWWcy=MAyxmTb262VAgMiKwnn=hfxQ@mail.gmail.com>
- <CAGETcx_=8yX6ObaEJk8QNSaWQPdFHsw4R74JrDFKqOL0AN-gLw@mail.gmail.com> <CAL_JsqJVsEj=rmExYHtphfxw_W6cq8WU45SSuYi_g2_KiUaFsg@mail.gmail.com>
-In-Reply-To: <CAL_JsqJVsEj=rmExYHtphfxw_W6cq8WU45SSuYi_g2_KiUaFsg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 9 Sep 2021 11:11:05 -0700
-Message-ID: <CAGETcx8WqGN6Dt1snbR0D7yLfAwWjhRawfX3is_xrExP3_tY1g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
+        Thu, 9 Sep 2021 14:14:06 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 189IBrJ0059511;
+        Thu, 9 Sep 2021 13:11:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631211113;
+        bh=cxuf1yCKJhWJMvOQO6JBFWdwMfc6/w+BZAbQKRdDsnw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Vnzu3W1MhRrWkGzUBORcEIStrc4d4pU5ZtMj2u1pJd0tdJkTnS0a3YCeJO87Erz2o
+         dv4KhYJgVKndGFYmkUTCbAsAPhXAKaHTQY6QksMVhR3AIjiSoKEEd75e6XEMbq62JH
+         NmbFSfHIgDvOh+1FRHfu2HBrSqlzDAGOc7+Ctlog=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 189IBrlI081442
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 9 Sep 2021 13:11:53 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
+ Sep 2021 13:11:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 9 Sep 2021 13:11:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 189IBq1a104877;
+        Thu, 9 Sep 2021 13:11:52 -0500
+Date:   Thu, 9 Sep 2021 23:41:51 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Benoit Parrot <bparrot@ti.com>,
+        Bert Vermeulen <bert@biot.com>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Martina Krasteva <martinax.krasteva@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-oxnas@groups.io,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Qiushi Wu <wu000273@umn.edu>, Raag Jadav <raagjadav@gmail.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v3 00/11] CSI2RX support on J721E
+Message-ID: <20210909181149.a5i46sfs4rskuqhk@ti.com>
+References: <20210624192200.22559-1-p.yadav@ti.com>
+ <dd3b13ec-a883-5b22-47ce-d6e591b674aa@ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <dd3b13ec-a883-5b22-47ce-d6e591b674aa@ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 7:02 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Wed, Sep 8, 2021 at 7:58 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Sep 8, 2021 at 5:16 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > On Tue, Sep 7, 2021 at 2:01 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Mon, Sep 6, 2021 at 12:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > >
-> > > > > Hi Saravana,
-> > > > >
-> > > > > Thanks for your patch!
-> > > > >
-> > > > > CC linux-pm, Lee (mfd)
-> > > > >
-> > > > > On Sat, Sep 4, 2021 at 2:05 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > fw_devlink could end up creating device links for bus only devices.
-> > > > > > However, bus only devices don't get probed and can block probe() or
-> > > > > > sync_state() [1] call backs of other devices. To avoid this, probe these
-> > > > > > devices using the simple-pm-bus driver.
-> > > > > >
-> > > > > > However, there are instances of devices that are not simple buses (they
-> > > > > > get probed by their specific drivers) that also list the "simple-bus"
-> > > > > > (or other bus only compatible strings) in their compatible property to
-> > > > > > automatically populate their child devices. We still want these devices
-> > > > > > to get probed by their specific drivers. So, we make sure this driver
-> > > > > > only probes devices that are only buses.
-> > > > >
-> > > > > Note that this can also be the case for buses declaring compatibility
-> > > > > with "simple-pm-bus".  However, at the moment, none of such device
-> > > > > nodes in upstream DTS files have device-specific drivers.
-> > > >
-> > > > Not sure about mfd, but I want to make sure we don't confuse busses
-> > > > (which are typically added to a class) with these "simple bus" devices
-> > > > that are added to platform_bus. Also if these other buses are actually
-> > > > causing an issue, then then should implement their own stub driver or
-> > > > use try patch[2] if they are added to classes (devices on classes
-> > > > don't probe)
-> > > >
-> > > > [2] - https://lore.kernel.org/lkml/20210831224510.703253-1-saravanak@google.com/
-> > > >
-> > > > >
-> > > > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > Tested-by: Saravana Kannan <saravanak@google.com>
-> > > > >
-> > > > > > --- a/drivers/bus/simple-pm-bus.c
-> > > > > > +++ b/drivers/bus/simple-pm-bus.c
-> > > > > > @@ -13,11 +13,26 @@
-> > > > > >  #include <linux/platform_device.h>
-> > > > > >  #include <linux/pm_runtime.h>
-> > > > > >
-> > > > > > -
-> > > > > >  static int simple_pm_bus_probe(struct platform_device *pdev)
-> > > > > >  {
-> > > > > > -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
-> > > > > > -       struct device_node *np = pdev->dev.of_node;
-> > > > > > +       const struct device *dev = &pdev->dev;
-> > > > > > +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
-> > > > > > +       struct device_node *np = dev->of_node;
-> > > > > > +       const struct of_device_id *match;
-> > > > > > +
-> > > > > > +       match = of_match_device(dev->driver->of_match_table, dev);
-> > > > > > +
-> > > > > > +       /*
-> > > > > > +        * These are transparent bus devices (not simple-pm-bus matches) that
-> > > > > > +        * have their child nodes populated automatically.  So, don't need to
-> > > > > > +        * do anything more.
-> > > > > > +        */
-> > > > > > +       if (match && match->data) {
-> > > > > > +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
-> > > > >
-> > > > > Does this work as expected? Having multiple compatible values in a
-> > > > > device node does not guarantee there exist a separate driver for any
-> > > > > of the device-specific compatible values.
-> > > >
-> > > > Right, and if they are platform devices that are equivalent to
-> > > > simple-bus (meaning, they don't do anything in Linux and just have
-> > > > their devices populated) we can add those to this list too.
-> > >
-> > > I think this needs to be a list of compatibles we have drivers for
-> > > instead.
-> >
-> > I don't think a "denylist" (devices we shouldn't probe with this
-> > driver) would be a short list. As of today, literally any device that
-> > has children could add a "simple-bus" to the compatible property and
-> > get its child devices populated for free. If we use a denylist, we'll
-> > have to update it every time someone adds "simple-bus" as a general
-> > match to a DT node (new or otherwise) that isn't in the denylist. The
-> > list would blow up and be a maintenance headache.
-> >
-> > Also, a denylist won't capture any DT that isn't part of the kernel
-> > repo but depends on "simple-bus" to populate the device's child nodes.
-> > Keep in mind this could be true even for completely upstream drivers
-> > today. And on top of that, this will also break for downstream drivers
-> > and platforms in the development stage.
->
-> You've got this all backwards.
+Hi Tomi,
 
-I don't think so. I got what you are saying.
+On 01/07/21 10:56AM, Tomi Valkeinen wrote:
+> Hi Pratyush,
+> 
+> On 24/06/2021 22:21, Pratyush Yadav wrote:
+> > Hi,
+> > 
+> > This series adds support for CSI2 capture on J721E. It includes some
+> > fixes to the Cadence CSI2RX driver, adds runtime PM support to OV5640
+> > driver, and finally adds the TI CSI2RX wrapper driver.
+> > 
+> > This series used to include the DPHY and DMA engine patches as well, but
+> > they have been split off to facilitate easier merging. Patch 3 is
+> > build-dependent on the DPHY series [0].
+> > 
+> > The DMA engine patch [1] can go in any order since that is only a run
+> > time dependency. Things probably won't work without it but it will still
+> > build fine.
+> > 
+> > Tested on TI's J721E with OV5640 sensor.
+> 
+> I applied these (csi-2 rx, phy, dma-engine) to linux-media/master, and added dts changes to add the csi2-rx. When sending the series, can you also push the branch you use for testing, as the posted patches do not include everything needed?
+> 
+> Here are some notes from quick tests:
+> 
+> Capture works, but the fps is ~28.98. I would expect it to be closer to 30. Are the clocks configured correctly?
+> 
+> When I load the modules, I get:
+> 
+> [  237.322258] platform 4504000.csi-bridge: Fixing up cyclic dependency with 9-003c
 
-> The list would be compatibles for which
-> they have their own driver. If they have their own driver, we know
-> that because there is a driver in the kernel. If you have an out of
-> tree bus driver, then I guess you shouldn't be claiming compatibility
-> with 'simple-bus'.
+I see this with CAL's OV5640 overlay as well. I think this is caused by 
+the endpoint nodes on csi-bridge and sensor pointing to each other. I 
+can't quite understand any bad implications of this warning since 
+everything seems to work correctly.
 
-But it isn't just out of tree drivers though. Take for example (a
-random compatible string with a driver in upstream)
-"qcom,sdm845-gpucc" that has DT nodes in a couple of DTS files. It's
-perfectly valid today today to add child nodes under it and have the
-child nodes get populated by making the compatible property:
-"qcom,sdm845-gpucc", "simple-bus"
+Should we model the connections between the sensor and CSI bridge 
+differently to not cause a cycle in the graph? Or can we just ignore 
+this warning since things seem to work fine despite it?
 
-The only thing not upstreamed in that case is the DT file. And I'm
-fairly certain our position is not "if your DT isn't in the kernel
-repo we won't support it". In this situation we have no way of knowing
-we need to add "qcom,sdm845-gpucc" to the "it has a driver, don't
-probe it" list. And even if they upstream it, this list is going to
-blow up. And we are breaking backward compatibility that can't be
-fixed without a kernel update (no runtime fixes possible).
+> 
+> I get a warning from DMA-API debug:
+> 
+> [  298.774236] ------------[ cut here ]------------
+> [  298.779109] DMA-API: ti-udma 31150000.dma-controller: mapping sg segment longer than device claims to support [len=1900544] [max=65536]
+> [  298.791331] WARNING: CPU: 1 PID: 605 at kernel/dma/debug.c:1172 debug_dma_map_sg+0x304/0x390
+> [  298.799764] Modules linked in: ov5640 j721e_csi2rx cdns_csi2rx cdns_dphy v4l2_fwnode v4l2_async tidss ti_tfp410 tc358767 display_connector cdns_mhdp8546 panel_simple
+>  drm_kms_helper drm drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea phy_j721e_wiz phy_cadence_torrent
+> [  298.824656] CPU: 1 PID: 605 Comm: cam-mplex.py Not tainted 5.13.0-rc4-00417-g3331992006e9 #3
+> [  298.833079] Hardware name: Texas Instruments K3 J721E SoC (DT)
+> [  298.838900] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [  298.844895] pc : debug_dma_map_sg+0x304/0x390
+> [  298.849245] lr : debug_dma_map_sg+0x304/0x390
+> [  298.853593] sp : ffff800014dcf730
+> [  298.856899] x29: ffff800014dcf730 x28: ffff00080154a880 x27: ffffffffffffffff
+> [  298.864032] x26: 0000000000000000 x25: 0000000000000002 x24: 0000000000000001
+> [  298.871164] x23: ffff80001163abe0 x22: 0000000000000000 x21: 0000000000000001
+> [  298.878295] x20: ffff000801fa3010 x19: ffff000807585300 x18: 0000000000000000
+> [  298.885426] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000030
+> [  298.892558] x14: 6e61687420726567 x13: 6e6f6c20746e656d x12: ffff800011a91578
+> [  298.899689] x11: 00000000000c0000 x10: ffff8000116b18f8 x9 : ffff8000100eabe0
+> [  298.906820] x8 : ffff8000116598f8 x7 : ffff8000116b18f8 x6 : 0000000000000001
+> [  298.913951] x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff800011260000
+> [  298.921082] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00080673b000
+> [  298.928214] Call trace:
+> [  298.930653]  debug_dma_map_sg+0x304/0x390
+> [  298.934655]  dma_map_sg_attrs+0x70/0xb0
+> [  298.938487]  drm_gem_map_dma_buf+0x6c/0xf0 [drm]
 
-> > The allowlist is much smaller and manageable.
->
-> I count 140 cases of 'simple-bus' with another compatible. I find
-> roughly 24 of those under drivers/ that have a driver (and look,
-> there's at91 pinctrl/gpio). There's some more under arch/, but I'm not
-> sure if they are drivers. This is what I ran:
->
-> git grep -ho '".*", "simple-bus"' -- arch/ | cut -d' ' -f1 | grep -oE
-> '".+"' | grep -v '"syscon"' | sort -u > buses.txt
-> git grep -f buses.txt -- drivers/
->
-> I haven't looked at 'simple-mfd', but that was supposed to always mean
-> 'no driver'.
->
-> To put it another way, let's look at 3 possibilities:
->
-> 'simple-bus'
-> 'foo,has-no-driver', 'simple-bus'
-> 'foo,has-a-driver', 'simple-bus'
->
-> The first case is easy. The last 2 cases are not. We have no way to
-> handle them differently without a list.
->
-> > > A more specific compatible that the OS doesn't understand
-> > > shouldn't cause a change in behavior and adding one would.
->
-> Again, if a dt is modified from case 1 to case 2, there should not be
-> a change in behavior.
+I still can't reproduce this, and I think this might be why. I am saving 
+the stream to a file and then replaying on my PC. You seem to be sending 
+it to a display. The DMA warning looks to be coming from DRM side, not 
+CSI.
 
-My point is that if DT is modified from 1 to 2, we'll need to add
-"foo,has-no-driver" to the list we'll maintain. That preserves
-backward compatibility with existing DTs and if someone modifies the
-DT it's more likely that they can modify the kernel too. See more
-below.
+Anyway, I think this is not a big problem. The UDMA driver simply does 
+not populate max_segment_size, so dma_get_max_seg_size() returns 64 KiB 
+as default. The hardware can actually support virtually unlimited 
+segment size for TR mode and 2^27 bytes for packet mode. CSI uses TR 
+mode so it can certainly handle more than 64 KiB long segments. I am not 
+sure which mode DRM uses but 2^27 is still much bigger than 1900544.
 
-> Presumably if Ulf changed his test in this way,
-> it would again fail, right?
->
->
-> > I think the amount of specific compatible strings that'll be added,
-> > but won't have drivers added to Linux AND would want to boot with
-> > Linux is much less likely than the amount of times we'd have to update
-> > a denylist.
-> >
-> > Also, if we do hit the cases you mention and we want those devices to
-> > get probed anyway, with my current allowlist approach, we could use
-> > "driver_override" to force this driver to match them. If you use a
-> > denylist like you said, there's no way you can get the simple-pm-bus
-> > to unbind and let the more specific driver to bind.
->
-> Where would we set "driver_override"? Aren't we going to end up with a
-> driver_override list?
+Long story short, this warning has little to do with the CSI patches 
+here and can be safely ignored IMO.
 
-I'm not saying we maintain a list in the kernel. I'm saying if someone
-changed their DT to add 'foo,has-no-driver', but hit the unlikely case
-where they can update the DT but not the kernel, they can still get
-the 'foo,has-no-driver' to probe by using the driver_override file for
-that device in sysfs. TLDR: they can still get it to work without
-having to modify the kernel.
+> [  298.943185]  __map_dma_buf+0x28/0x80
+> [  298.946756]  dma_buf_map_attachment+0xe4/0x220
+> [  298.951191]  vb2_dc_map_dmabuf+0x3c/0x150
+> [  298.955194]  __prepare_dmabuf+0x1dc/0x514
+> [  298.959197]  __buf_prepare+0x1a0/0x25c
+> [  298.962938]  vb2_core_qbuf+0x3d4/0x72c
+> [  298.966679]  vb2_qbuf+0x9c/0xf4
+> [  298.969814]  vb2_ioctl_qbuf+0x68/0x7c
+> [  298.973468]  v4l_qbuf+0x54/0x70
+> [  298.976603]  __video_do_ioctl+0x194/0x400
+> [  298.980603]  video_usercopy+0x374/0xa14
+> [  298.984431]  video_ioctl2+0x24/0x4c
+> [  298.987912]  v4l2_ioctl+0x4c/0x70
+> [  298.991222]  __arm64_sys_ioctl+0xb4/0xfc
+> [  298.995138]  invoke_syscall+0x50/0x120
+> [  298.998885]  el0_svc_common.constprop.0+0x68/0x104
+> [  299.003667]  do_el0_svc+0x30/0x9c
+> [  299.006976]  el0_svc+0x2c/0x54
+> [  299.010025]  el0_sync_handler+0x1a8/0x1ac
+> [  299.014025]  el0_sync+0x198/0x1c0
+> [  299.017333] irq event stamp: 98582
+> [  299.020727] hardirqs last  enabled at (98581): [<ffff8000100ec2bc>] console_unlock+0x53c/0x6b4
+> [  299.029325] hardirqs last disabled at (98582): [<ffff800010be4bd4>] el1_dbg+0x24/0xa0
+> [  299.037144] softirqs last  enabled at (98568): [<ffff800010010ba0>] __do_softirq+0x500/0x6bc
+> [  299.045565] softirqs last disabled at (98413): [<ffff80001005d504>] __irq_exit_rcu+0x1d4/0x1e0
+> [  299.054164] ---[ end trace bfe019acb2a9a04f ]---
+> 
+> I get a warning from media graph walk:
 
->
-> [...]
->
-> > > > > [*] Especially if "simple-pm-bus" and "simple-bus" would be treated
-> > > > >     the same.
-> > > >
-> > > > They are not treated the same way.
-> > >
-> > > I think it would be better if they were. IOW, the core code stops
-> > > descending into simple-bus, etc. nodes and they are populated here.
-> > > Then we just get rid of of_default_bus_match_table.
-> >
-> > Right, I would if we could. But we can't simply stop descending the
-> > simple-bus nodes in the core code because all the specific drivers
-> > that used to have their child devices populated automatically would
-> > stop working and would need to be updated to populate their child
-> > devices. And I'm sure there are a ton more downstream kernels and
-> > downstream DTs (that use upstream kernels) that we would break.
-> >
-> > If you really want to do that go for it, but I'd rather not do all
-> > this as part of trying to fix the issue Ulf reported that needs
-> > simple-bus only devices probed.
->
-> Agreed.
+Fixed this one. It was caused by the graph_mutex not being held.
 
-I'm confused. So you are okay with this patch to merge now?
+> 
+> [  299.066357] WARNING: CPU: 1 PID: 605 at drivers/media/mc/mc-entity.c:343 media_graph_walk_next+0x268/0x2cc
+> [  299.076005] Modules linked in: ov5640 j721e_csi2rx cdns_csi2rx cdns_dphy v4l2_fwnode v4l2_async tidss ti_tfp410 tc358767 display_connector cdns_mhdp8546 panel_simple
+>  drm_kms_helper drm drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea phy_j721e_wiz phy_cadence_torrent
+> [  299.100889] CPU: 1 PID: 605 Comm: cam-mplex.py Tainted: G        W         5.13.0-rc4-00417-g3331992006e9 #3
+> [  299.110698] Hardware name: Texas Instruments K3 J721E SoC (DT)
+> [  299.116518] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [  299.122513] pc : media_graph_walk_next+0x268/0x2cc
+> [  299.127295] lr : media_graph_walk_next+0x264/0x2cc
+> [  299.132076] sp : ffff800014dcfa40
+> [  299.135382] x29: ffff800014dcfa40 x28: 0000000000000000 x27: 0000000040045612
+> [  299.142514] x26: 0000000000000001 x25: ffff800010d890f0 x24: ffff0008055c8148
+> [  299.149645] x23: ffff0008055c8148 x22: ffff80001182bc40 x21: ffff80001163e2e8
+> [  299.156776] x20: ffff80001182bbd0 x19: ffff0008055c8cb8 x18: 0000000000000000
+> [  299.163907] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000028
+> [  299.171037] x14: 0000000000000002 x13: 0000000000007e6f x12: 0000000000000002
+> [  299.178169] x11: 0000000000040464 x10: 00000000916d3a5c x9 : ffff8000093110c0
+> [  299.185301] x8 : ffff000807583d88 x7 : 0000000000000000 x6 : ffff00080673b900
+> [  299.192431] x5 : 000000000000000a x4 : ffff000807583d80 x3 : ffff800011260000
+> [  299.199562] x2 : 00000000000000c0 x1 : 00000000000000c0 x0 : 0000000000000000
+> [  299.206693] Call trace:
+> [  299.209133]  media_graph_walk_next+0x268/0x2cc
+> [  299.213568]  ti_csi2rx_start_streaming+0xe0/0x5c8 [j721e_csi2rx]
+> [  299.219569]  vb2_start_streaming+0x70/0x160
+> [  299.223745]  vb2_core_streamon+0x9c/0x1a0
+> [  299.227745]  vb2_ioctl_streamon+0x68/0xbc
+> [  299.231747]  v4l_streamon+0x30/0x40
+> [  299.235230]  __video_do_ioctl+0x194/0x400
+> [  299.239230]  video_usercopy+0x374/0xa14
+> [  299.243058]  video_ioctl2+0x24/0x4c
+> [  299.246539]  v4l2_ioctl+0x4c/0x70
+> [  299.249847]  __arm64_sys_ioctl+0xb4/0xfc
+> [  299.253764]  invoke_syscall+0x50/0x120
+> [  299.257508]  el0_svc_common.constprop.0+0x68/0x104
+> [  299.262291]  do_el0_svc+0x30/0x9c
+> [  299.265599]  el0_svc+0x2c/0x54
+> [  299.268648]  el0_sync_handler+0x1a8/0x1ac
+> [  299.272647]  el0_sync+0x198/0x1c0
+> [  299.275956] irq event stamp: 98754
+> [  299.279349] hardirqs last  enabled at (98753): [<ffff800010bf216c>] _raw_spin_unlock_irqrestore+0x9c/0xc0
+> [  299.288900] hardirqs last disabled at (98754): [<ffff800010be4bd4>] el1_dbg+0x24/0xa0
+> [  299.296716] softirqs last  enabled at (98606): [<ffff800010010ba0>] __do_softirq+0x500/0x6bc
+> [  299.305138] softirqs last disabled at (98585): [<ffff80001005d504>] __irq_exit_rcu+0x1d4/0x1e0
+> 
+> Unloading the modules gives me:
 
-> > > That could cause some issues with init ordering. As I recall the at91
-> > > gpio and pinctrl drivers are sensitive to this. The default call to
-> > > of_platform_populate doesn't work on those systems because the devices
-> > > get created later than when their machine specific call happens. It
-> > > may have been a case of a parent probe assuming a child probe
-> > > completed after of_platform_populate returns (also a problem for Qcom
-> > > with DWC3). There's a fix for at91 somewhere in the git history after
-> > > I broke it. I started trying to untangle things with at91, but never
-> > > finished that.
-> >
-> > I think it'll cause a lot of issues if we stop descending simple-bus
-> > nodes in the core code. We're just scratching the surface here.
->
-> Perhaps, but if there's cases which are that fragile, we should fix them.
+Fixed this too. Both cdns-csi2rx and j721e-csi2rx share the same power 
+domain, but only j721e-csi2rx contains the power-domains property. If 
+you load cdns-csi2rx before j721e-csi2rx then the PD is not active and 
+register access causes an abort. Fixed by adding power-domains to the 
+csi-bridge node.
 
-Sure, but I'm not sure I want to open that can of works,
+> 
+> ERROR:   Unhandled External Abort received on 0x80000001 from S-EL1
+> ERROR:   exception reason=0 syndrome=0xbf000000
+> Unhandled Exception from EL1
+[...]
 
--Saravana
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
