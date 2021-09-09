@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B869A4048E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BC34048E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhIILGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234216AbhIILGm (ORCPT
+        id S234682AbhIILIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:08:19 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34861 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234216AbhIILIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:06:42 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486F2C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:05:33 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id s25so2153987edw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I7xGDBdz64wmEzOneTZADBd1QDtzlZv4vk2FOyjlh/4=;
-        b=MeqHvM0PrVC2fWIc1pNOHOwKVAOufi/brwvOBCw6klHF9cJQ03rAfdJe09jm3VvKqk
-         NvPONbHgmT3n93U977Egcm1tesnF7+sgUW6iJOPLuES3Pk279DuTeCJYNIPfE9XDSvDD
-         rnIBOe2CEOEKlFE/r8iavtTMvSiZYuMQSugSFGfL2VgChPVif/t1d9ek7lXvnlR68Y5f
-         A5QlpqKi6t4DoD+Ll6LTIE3fHxSesABasIsu6jBn0BtKvpWsSQ5yvNiUY+WYJLwi7Jvv
-         LPnyjNLQGhYLUCoiVccLxHZTTNKowKIdKuz0ilj7WlJVE80G890do5G7aYKhOhmB8Or/
-         Vs7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I7xGDBdz64wmEzOneTZADBd1QDtzlZv4vk2FOyjlh/4=;
-        b=PMlbRDamMq9glA9o/wcPVnXIggFxGoelrG0bn1IChzPdB7Rf1vBfhu3fRUrZXjsMtj
-         fYzQm2WnMCjyPglWkjpz981RZAhTpNU6yG4g5iTYASSWAFJu9k8kRo9fYyxt7kmzIsoD
-         jfGcKs3ZhuiurLj6SeztrFSkltppu5bzPiK9i5LmYqrt1vtbWvtOItu3CgTMI6zbeWJY
-         w5dfdqeLxChWKGOKoAR+kSrYkeM4GkfMix3omYlQ4Hhp56malMnM1H+eiu821pScXQ4X
-         KELMMPa/ZYyD6GUxd0OfK748tiYL7fxSkBUgEY3DGsMGNUhRiVfwuqtLe091HTjzByc3
-         Seew==
-X-Gm-Message-State: AOAM533IdEgUeBw2ti9H1EVHyEei/giSp1PuXFOQIQEl/rYhqWvzgKct
-        Zaf6O3ilPdxtUq0llCjw5YM=
-X-Google-Smtp-Source: ABdhPJwRK9B7E3eQNxRZEQ9Y/3PSW4oHHGD36jxRVY6zpXr600GahEmUHyg44d0ZFDs7JQdcmzGckA==
-X-Received: by 2002:a50:ec0d:: with SMTP id g13mr2578628edr.233.1631185531863;
-        Thu, 09 Sep 2021 04:05:31 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::dc38])
-        by smtp.gmail.com with ESMTPSA id g9sm883373edk.54.2021.09.09.04.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 04:05:31 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove unused macro READ_AND_CONFIG_TC
-Date:   Thu,  9 Sep 2021 13:05:17 +0200
-Message-Id: <20210909110517.15243-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 9 Sep 2021 07:08:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UnnI-.j_1631185626;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UnnI-.j_1631185626)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 09 Sep 2021 19:07:07 +0800
+Subject: Re: [Ocfs2-devel] [PATCH v2] ocfs2: Fix handle refcount leak in two
+ exception handling paths
+To:     Wengang Wang <wen.gang.wang@oracle.com>
+Cc:     Chenyuan Mi <cymi20@fudan.edu.cn>,
+        akpm <akpm@linux-foundation.org>, Xin Tan <tanxin.ctf@gmail.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+References: <20210908102055.10168-1-cymi20@fudan.edu.cn>
+ <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
+ <6018AF95-3613-4D43-A3E6-7BAA0E0BE009@oracle.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <c48fb54e-0dd9-42c7-f53d-2ea58fb97255@linux.alibaba.com>
+Date:   Thu, 9 Sep 2021 19:07:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <6018AF95-3613-4D43-A3E6-7BAA0E0BE009@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro READ_AND_CONFIG_TC is not used, remove it.
-Found with GCC -Wunused-macros.
+Hi Wengang,
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/odm_HWConfig.c | 1 -
- 1 file changed, 1 deletion(-)
+On 9/9/21 1:12 AM, Wengang Wang wrote:
+> Hi,
+> 
+> Sorry for late involving, but this doesn’t look right to me.
+> 
+>> On Sep 8, 2021, at 3:51 AM, Joseph Qi <joseph.qi@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 9/8/21 6:20 PM, Chenyuan Mi wrote:
+>>> The reference counting issue happens in two exception handling paths
+>>> of ocfs2_replay_truncate_records(). When executing these two exception
+>>> handling paths, the function forgets to decrease the refcount of handle
+>>> increased by ocfs2_start_trans(), causing a refcount leak.
+>>>
+>>> Fix this issue by using ocfs2_commit_trans() to decrease the refcount
+>>> of handle in two handling paths.
+>>>
+>>> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
+>>> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+>>> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+>>
+>> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+>>> ---
+>>> fs/ocfs2/alloc.c | 2 ++
+>>> 1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+>>> index f1cc8258d34a..b05fde7edc3a 100644
+>>> --- a/fs/ocfs2/alloc.c
+>>> +++ b/fs/ocfs2/alloc.c
+>>> @@ -5940,6 +5940,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+>>> 		status = ocfs2_journal_access_di(handle, INODE_CACHE(tl_inode), tl_bh,
+>>> 						 OCFS2_JOURNAL_ACCESS_WRITE);
+>>> 		if (status < 0) {
+>>> +			ocfs2_commit_trans(osb, handle);
+>>> 			mlog_errno(status);
+>>> 			goto bail;
+>>> 		}
+>>> @@ -5964,6 +5965,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+>>> 						     data_alloc_bh, start_blk,
+>>> 						     num_clusters);
+>>> 			if (status < 0) {
+>>> +				ocfs2_commit_trans(osb, handle);
+> 
+> As a transaction, stuff expected to be in the same handle should be treated as atomic.
+> Here the stuff includes the tl_bh and other metadata block which will be modified in ocfs2_free_clusters().
+> Coming here, some of related meta blocks may be in the handle but others are not due to the error happened.
+> If you do a commit, partial meta blocks are committed to log. — that breaks the atomic idea, it will cause FS inconsistency.
+> So what’s reason you want to commit the meta block changes, which is not all of expected, in this handle to journal log?
+> 
+> Do you really see a hit on the failure? or just you detected the refcount leak by code review?
+> 
+> You may want to look at ocfs2_journal_dirty() for the error handling part.
+> 
 
-diff --git a/drivers/staging/r8188eu/hal/odm_HWConfig.c b/drivers/staging/r8188eu/hal/odm_HWConfig.c
-index ada22a526fee..058d04f6aa58 100644
---- a/drivers/staging/r8188eu/hal/odm_HWConfig.c
-+++ b/drivers/staging/r8188eu/hal/odm_HWConfig.c
-@@ -6,7 +6,6 @@
- #define READ_AND_CONFIG     READ_AND_CONFIG_MP
- 
- #define READ_AND_CONFIG_MP(ic, txt) (ODM_ReadAndConfig##txt##ic(dm_odm))
--#define READ_AND_CONFIG_TC(ic, txt) (ODM_ReadAndConfig_TC##txt##ic(dm_odm))
- 
- static u8 odm_QueryRxPwrPercentage(s8 AntPower)
- {
--- 
-2.33.0
+For the first error handling, since we don't call ocfs2_journal_dirty()
+yet, so won't be a problem.
+For the second error handling, I think we don't have a better way. Look
+at other callers of ocfs2_free_clusters(), we simply ignore the error
+code.
+Anyway, we should commit transaction if starts, otherwise journal will
+be abnormal.
+
+Thanks,
+Joseph
 
