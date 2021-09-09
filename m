@@ -2,172 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC7405E0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2050405E15
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344966AbhIIUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:34:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34992 "EHLO mail.kernel.org"
+        id S1345270AbhIIUit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:38:49 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35280 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343998AbhIIUeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:34:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 187266113A;
-        Thu,  9 Sep 2021 20:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631219579;
-        bh=Od4Fq70WNP3iP34ZfifIEzSkTAKKdivcDjSccTDCtpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S1EtcmenQYwvmsjH0Bj9pNuSkS12U9UghOifQEe0cHCbkMi1tefTN7yGhHc2zUKTj
-         NJRcuICrenALQ3hEUiN2AVL1/PJh9wH+UPZCQhi9LD4fMrxNzq97J05WATCXT13Q3Y
-         QVfGGR68cPq932RsX6h+NxgJ412EIPLak9fOsYPGjX4jhpG4qUaP6FVCUPcr8h5DdK
-         ATTkmmhJhXJDareS/2bjVlSIpxVU4BdrCFXgu1G5UY3tENRUQC/aLW0oM62GuRWusT
-         4tiFVd91Hm8G2PlJ0JCgulVbO97gesKU2biSAfMGDU9f9f+76O/bmtvuOyJFoajKo8
-         cUH7O1wEBu5OA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6EAE74038F; Thu,  9 Sep 2021 17:32:56 -0300 (-03)
-Date:   Thu, 9 Sep 2021 17:32:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, yao.jin@linux.intel.com, namhyung@kernel.org,
-        kim.phillips@amd.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf annotate: Add fusion logic for AMD microarchs
-Message-ID: <YTpveO0qqKFTaxTk@kernel.org>
-References: <20210906105640.1040-1-ravi.bangoria@amd.com>
- <20210906105640.1040-2-ravi.bangoria@amd.com>
+        id S245195AbhIIUis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 16:38:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=mM50TrfQqQvdPGgFlZnAt32dDbSDk7TXR1qkzbZPrRI=; b=cO
+        M4N/paCpnShAZbECOOAcisClegFIIIrUT7K0atK3lxh4SBwKqpJiURyIl0yI68ennqVQC1qT7OEQm
+        yeHd42Rab44gCIf2Penp6PjuTqTEJheV/QLZGugT+qK0uv0bda8XANPmj0Eg6Qf7CWBozlJO8QvjN
+        V0f/GfvTXanYrY4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mOQnd-005xdu-5o; Thu, 09 Sep 2021 22:37:33 +0200
+Date:   Thu, 9 Sep 2021 22:37:33 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Modi, Geet" <geet.modi@ti.com>
+Cc:     "Nagalla, Hari" <hnagalla@ti.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sharma, Vikram" <vikram.sharma@ti.com>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy: dp83tc811:
+ modify list of interrupts enabled at initialization
+Message-ID: <YTpwjWEUmJWo0mwr@lunn.ch>
+References: <20210902190944.4963-1-hnagalla@ti.com>
+ <YTFc6pyEtlRO/4r/@lunn.ch>
+ <99232B33-1C2F-45AF-A259-0868AC7D3FBC@ti.com>
+ <YTdxBMVeqZVyO4Tf@lunn.ch>
+ <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210906105640.1040-2-ravi.bangoria@amd.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 06, 2021 at 04:26:40PM +0530, Ravi Bangoria escreveu:
-> AMD family 15h and above microarchs fuse a subset of cmp/test/ALU
-> instructions with branch instructions[1][2]. Add perf annotate
-> fused instruction support for these microarchs.
+> I am planning to have following commit msg;
 > 
-> Before:
->          │       testb  $0x80,0x51(%rax)
->          │    ┌──jne    5b3
->     0.78 │    │  mov    %r13,%rdi
->          │    │→ callq  mark_page_accessed
->     1.08 │5b3:└─→mov    0x8(%r13),%rax
-> 
-> After:
->          │    ┌──testb  $0x80,0x51(%rax)
->          │    ├──jne    5b3
->     0.78 │    │  mov    %r13,%rdi
->          │    │→ callq  mark_page_accessed
->     1.08 │5b3:└─→mov    0x8(%r13),%rax
-> 
-> [1] https://bugzilla.kernel.org/attachment.cgi?id=298553
-> [2] https://bugzilla.kernel.org/attachment.cgi?id=298555
-> 
-> Reported-by: Kim Phillips <kim.phillips@amd.com>
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
-> ---
->  tools/perf/arch/x86/annotate/instructions.c | 37 ++++++++++++++++++++-
->  tools/perf/util/annotate.c                  |  1 +
->  2 files changed, 37 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/arch/x86/annotate/instructions.c b/tools/perf/arch/x86/annotate/instructions.c
-> index 24ea12ec7e02..46d7124cc4e1 100644
-> --- a/tools/perf/arch/x86/annotate/instructions.c
-> +++ b/tools/perf/arch/x86/annotate/instructions.c
-> @@ -144,8 +144,31 @@ static struct ins x86__instructions[] = {
->  	{ .name = "xorps",	.ops = &mov_ops, },
->  };
 >  
-> -static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
-> +static bool amd__ins_is_fused(struct arch *arch, const char *ins1,
->  			      const char *ins2)
-> +{
-> +	if (strstr(ins2, "jmp"))
-> +		return false;
-> +
-> +	/* Family >= 15h supports cmp/test + branch fusion */
-> +	if (arch->family >= 0x15 && (strstarts(ins1, "test") ||
-> +	    (strstarts(ins1, "cmp") && !strstr(ins1, "xchg")))) {
-> +		return true;
-> +	}
-> +
-> +	/* Family >= 19h supports some ALU + branch fusion */
-> +	if (arch->family >= 0x19 && (strstarts(ins1, "add") ||
-> +	    strstarts(ins1, "sub") || strstarts(ins1, "and") ||
-> +	    strstarts(ins1, "inc") || strstarts(ins1, "dec") ||
-> +	    strstarts(ins1, "or") || strstarts(ins1, "xor"))) {
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static bool intel__ins_is_fused(struct arch *arch, const char *ins1,
-> +				const char *ins2)
->  {
->  	if (arch->family != 6 || arch->model < 0x1e || strstr(ins2, "jmp"))
->  		return false;
-> @@ -172,6 +195,15 @@ static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
->  	return false;
->  }
->  
-> +static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
-> +			      const char *ins2)
-> +{
-> +	if (strstarts(arch->vendor, "AuthenticAMD"))
-> +		return amd__ins_is_fused(arch, ins1, ins2);
-> +
-> +	return intel__ins_is_fused(arch, ins1, ins2);
-> +}
-> +
+> 
+> “This feature is not used by our mainstream customers as they have additional
 
-Can we instead make x86__ins_is_fused be a pointer and instead of
-storing arch->vendor we set it to one of amd__ins_is_fused() or
-intel__ins_is_fused()?
+As i said, this is not your driver, for you customers. It is the Linux
+kernel driver. Please drop all references to your customers. If you
+need to address anybody, it should be the Linux community as a whole,
+or maybe the users of this driver.
 
-I.e. here:
+> mechanism to monitor the supply at System level as accuracy requirements are
+> different for each application.  The device is designed with inbuilt monitor
+> with interrupt disabled by default and let user choose if they want to exercise
+> the monitor. However, the driver had this interrupt enabled, the request here
+> is disable it by default in driver however not change in datasheet.  Let user
+> of the driver review the accuracy offered by monitor and if meets the
+> expectation, they can always enable it.”
+ 
+I would much more prefer something like...
 
->  static int x86__cpuid_parse(struct arch *arch, char *cpuid)
->  {
->  	unsigned int family, model, stepping;
-> @@ -184,6 +216,9 @@ static int x86__cpuid_parse(struct arch *arch, char *cpuid)
->  	if (ret == 3) {
->  		arch->family = family;
->  		arch->model = model;
-> +		arch->vendor = strndup(cpuid, 12);
+The over voltage interrupt is enabled, but if it every occurs, there is
+no code to make use of it. So remove the pointless enabling of it. It
+can re-enabled when HWMON support is added. For the same reason,
+enabling of the interrupts DP83811_RX_ERR_HF_INT_EN,
+DP83811_MS_TRAINING_INT_EN, DP83811_ESD_EVENT_INT_EN,
+DP83811_ENERGY_DET_INT_EN, DP83811_LINK_QUAL_INT_EN,
+DP83811_JABBER_DET_INT_EN, DP83811_POLARITY_INT_EN,
+DP83811_SLEEP_MODE_INT_EN, DP83811_OVERTEMP_INT_EN,
+DP83811_UNDERVOLTAGE_INT_EN is also removed, since there is no code
+which acts on these interrupts.
 
-		x86__ins_is_fused = strstarts(cpuid, "AuthenticAMD") ?
-					amd__ins_is_fused :
-					intel__ins_is_fused;
+And update the patch to fit.
 
-
-?
-
-> +		if (!arch->vendor)
-> +			return -1;
->  		return 0;
->  	}
->  
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 0bae061b2d6d..88326bb990b5 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -77,6 +77,7 @@ struct arch {
->  	bool		sorted_instructions;
->  	bool		initialized;
->  	void		*priv;
-> +	char		*vendor;
->  	unsigned int	model;
->  	unsigned int	family;
->  	int		(*init)(struct arch *arch, char *cpuid);
-> -- 
-> 2.27.0
-
--- 
-
-- Arnaldo
+      Andrew
