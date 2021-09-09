@@ -2,74 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F284A405F0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874C7405F0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhIIVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:43:23 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:48728 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347347AbhIIVnT (ORCPT
+        id S1347518AbhIIVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:48:06 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40510 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232371AbhIIVsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:43:19 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 0D78D1B9E7B;
-        Fri, 10 Sep 2021 07:42:06 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mORo5-00Ad4S-EJ; Fri, 10 Sep 2021 07:42:05 +1000
-Date:   Fri, 10 Sep 2021 07:42:05 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [git pull] iov_iter fixes
-Message-ID: <20210909214205.GH1756565@dread.disaster.area>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+        Thu, 9 Sep 2021 17:48:06 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 013BE1FE36;
+        Thu,  9 Sep 2021 21:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631224015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KYEQfeb7GpLEDCgtN3fdOhil68NMIoT4dUWx2CTUaOM=;
+        b=mwMdgObUrMFZuMH9wqCZ9lISzl9lK1Y0hbHv++uVjawAgYLlNI0XNt1Dz0h3ndDAeH0r3t
+        tcEjX9lb3w2exIv3bRLS8QgPa/tyLSdwZRCgC55v77nVTktzU/9JMBEA4qkS9dUOBc+0Jj
+        DNw7dfW383AesXmiJ7UjCiECRX+V9BI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631224015;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KYEQfeb7GpLEDCgtN3fdOhil68NMIoT4dUWx2CTUaOM=;
+        b=4YH6kkMWx6y1VDuFj5jpY4ZACjleOt5hnhQ+r+csyCYbHdrqNQdFQF/xVswSadDeshciNc
+        NcCbO0zK2vS8ldDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87A9113CDF;
+        Thu,  9 Sep 2021 21:46:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id csSOFM6AOmGAbwAAMHmgww
+        (envelope-from <ematsumiya@suse.de>); Thu, 09 Sep 2021 21:46:54 +0000
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     linux-cifs@vger.kernel.org
+Cc:     pc@cjr.nz, Enzo Matsumiya <ematsumiya@suse.de>,
+        Steve French <sfrench@samba.org>,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cifs: properly invalidate cached root handle when closing it
+Date:   Thu,  9 Sep 2021 18:46:45 -0300
+Message-Id: <20210909214646.8790-1-ematsumiya@suse.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=JUD6rjD155hWDKwpWEIA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:19:56PM -0600, Jens Axboe wrote:
-> On 9/9/21 1:37 PM, Linus Torvalds wrote:
-> > I'd like the comments expanded too. In particular that
-> > 
-> >                 /* some cases will consume bytes even on error returns */
-> 
-> That comment is from me, and it goes back a few years. IIRC, it was the
-> iomap or xfs code that I hit this with, but honestly I don't remember
-> all the details at this point. I can try and play with it and see if it
-> still reproduces.
+Cached root file was not being completely invalidated sometimes.
 
-You might well be thinking of the problem fixed by commit
-883a790a8440 ("xfs: don't allow NOWAIT DIO across extent
-boundaries").
+Reproducing:
+- With a DFS share with 2 targets, one disabled and one enabled
+- start some I/O on the mount
+  # while true; do ls /mnt/dfs; done
+- at the same time, disable the enabled target and enable the disabled
+  one
+- wait for DFS cache to expire
+- on reconnect, the previous cached root handle should be invalid, but
+  open_cached_dir_by_dentry() will still try to use it, but throws a
+  use-after-free warning (kref_get())
 
-This fix was indicative of a whole class of issues with IOCB_NOWAIT
-being used for multi-IO operations at the filesystem level and being
-applied to each sub-segment of the IO that was constructed, rather
-than the IO as a whole. Hence a failure on the second or subsequent
-segments could return -EAGAIN (and potentially other errors) to the
-caller after the segments we successfully submitted consumed part of
-the iov...
+Make smb2_close_cached_fid() invalidate all fields every time, but only
+send an SMB2_close() when the entry is still valid.
 
-Cheers,
+Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+---
+ fs/cifs/smb2ops.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-Dave.
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index 2dfd0d8297eb..1b9de38a136a 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -689,13 +689,19 @@ smb2_close_cached_fid(struct kref *ref)
+ 		cifs_dbg(FYI, "clear cached root file handle\n");
+ 		SMB2_close(0, cfid->tcon, cfid->fid->persistent_fid,
+ 			   cfid->fid->volatile_fid);
+-		cfid->is_valid = false;
+-		cfid->file_all_info_is_valid = false;
+-		cfid->has_lease = false;
+-		if (cfid->dentry) {
+-			dput(cfid->dentry);
+-			cfid->dentry = NULL;
+-		}
++	}
++
++	/*
++	 * We only check validity above to send SMB2_close,
++	 * but we still need to invalidate these entries
++	 * when this function is called
++	 */
++	cfid->is_valid = false;
++	cfid->file_all_info_is_valid = false;
++	cfid->has_lease = false;
++	if (cfid->dentry) {
++		dput(cfid->dentry);
++		cfid->dentry = NULL;
+ 	}
+ }
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.33.0
+
