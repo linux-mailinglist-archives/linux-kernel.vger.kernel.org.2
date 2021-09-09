@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F684045CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0AE4045D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350859AbhIIGxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350839AbhIIGxi (ORCPT
+        id S1350672AbhIIGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:54:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20331 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231176AbhIIGyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:53:38 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16741C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:52:29 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id bd1so1303297oib.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n/dbtsQItzFXG3VUtr5tpCtogf60jhbRfY1HqI+6zeg=;
-        b=gyFgjz4/3LjQCakqfOSTVUCjrvKZcjbZHuTwspXxUdu8JCq0c29GPSXdlOJKg8kEX/
-         whefJmwhR4dTsN+4Gtszow3uSHaLa5N4E7aWgjz+fNO0IEHOy7H0M4nx65A/RsyTaZOd
-         bFa5if1a/nFRzVskAHrouMI9W4Vnu7ZFnuBB87FdKR5L0hsBQlzU0YTb2e3JofdAJqy1
-         byh6cJb/po6bcwbieRkpagopbAf7WGXNJVdA8iTq3Q3KX+yphpw35xa2wVt9WnPNA9xT
-         i4CI2w7tN6MPiCB+aeM+VQefMXj5aKzAEQSX6vvBYMNa7rfqiB2GgaLjhYbOhkOVqtET
-         o5Jg==
+        Thu, 9 Sep 2021 02:54:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631170423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lVJoPeTJ14ks4lQWKf8FQkfVIx9pT4lGJxslkRQboLs=;
+        b=HvsfbpsSV3PFD8ErzwcbMuqLQHHAc5I5xzLc9pIXp1BKDOSVFN+8fFIJVEAxNNIntZxrIA
+        K9LMKfYPl7R03Xm3JFzGeyAHlA7PcB3APADd3QyfZxD2rGtt0Bs53fuIwrVwxDlCdyCrSD
+        NGx6gGw4QwKOQnum/pNv76h1FISl8Us=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-HRTzxroPNrmXQnWX8-frjw-1; Thu, 09 Sep 2021 02:53:42 -0400
+X-MC-Unique: HRTzxroPNrmXQnWX8-frjw-1
+Received: by mail-ej1-f69.google.com with SMTP id n18-20020a170906089200b005dc91303dfeso305410eje.15
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:53:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n/dbtsQItzFXG3VUtr5tpCtogf60jhbRfY1HqI+6zeg=;
-        b=yAW/WyuHaPMpovKljzp3rToRzVCXasA+VHelu95IjbI+Wi9EhvsUuBq6xtDqvLawIF
-         reqJLrB88H0HAry+3IIlhNB6RMzJUiwyNmERlVXEw1saI0pPrl4VxaILDP5bE/GwPF5Z
-         KRTYuS1FnrhQdt65RcLo3Qy21AOpZa1CvZoPByBdvgYCkGV0wm/211jsTG4Cc+SngPx/
-         6QqSyoi6d3ueZ0lBobMq6esiTeDTxMQTdoPh2jeha8BZkTj03zRRuLQY/6Ptu5fUgsV1
-         8UhSNSYa4JRnmoe1oFpf1QhhJTzfgSO1yTTvqiImqYfABUIOnt5AIAeOBiB/Dj/rhzir
-         Pohg==
-X-Gm-Message-State: AOAM532euONT1XmpHzEPidcfMSAV1LUXYN+aNEsw1SSagkp5QvGR+Ozo
-        E0ejWspuDiCU8S3CtnSetV39qoFe1XkFHyixmWMxFg==
-X-Google-Smtp-Source: ABdhPJxYlOZA1Z3SpX9pxnUob+P/iJhoYZcvVtQEHgSSu3BJmDqo3PtVCpNE/CpESGExUkz55CWZKfuAz539Xbp3cZY=
-X-Received: by 2002:a05:6808:1294:: with SMTP id a20mr962310oiw.4.1631170348266;
- Wed, 08 Sep 2021 23:52:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lVJoPeTJ14ks4lQWKf8FQkfVIx9pT4lGJxslkRQboLs=;
+        b=nftHz6Y2O470Ah111UH3cjKII3wtYfajM0Ud7Pqlju7elm0Dpnjdt3RqmGnx/T4ky/
+         OBNR3MyQQhH46CK0pRZlVT4DkwqSyz9w3xHsPeE82g1fdo3Np+o8R/TX3ZHBPHFZ6OD8
+         dZoOmEnRmPHgy+/Ov7TKcYj1K8jvK6mIapeka2ByZ53FBDOBqoqRcAo2eegZJeoWeTXR
+         WRePj/vaXCviGvoMiwC35bKliclggTkhJ5ncg6P6ShVl2NS6rVbaQCvHq6vs+dc77VZg
+         LkravHwT0gT6tH1pv1inYkviIxczSvBz2Gi649ZZYuw+S+HJmMAscrr4gMJwMErBI62d
+         Qs4A==
+X-Gm-Message-State: AOAM532KscyuMXkB4hO6uZlIOqRbMft/WLOyUNp6CGJoZwpgJDQl7IdU
+        nNXpaIHwDYeBiM3R9eiIgmmc2FwWo3I4JcBcjbet9ymI8lMWvXrpDwW+xRElOCFAD3rpqbIncvg
+        U3OCzhCM5XzZ7GexHiWpET9KL
+X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr1558610edp.373.1631170421273;
+        Wed, 08 Sep 2021 23:53:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzT2kVMpMwhqwvnc4mwNm5O0NWY9+knRg4l5/t0Fuho97if+WNms/fZtVChK5kAL+kRk5zWw==
+X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr1558597edp.373.1631170421138;
+        Wed, 08 Sep 2021 23:53:41 -0700 (PDT)
+Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id bs13sm378308ejb.98.2021.09.08.23.53.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 23:53:40 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 08:53:38 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Raghavendra Rao Ananta <rananta@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+Message-ID: <20210909065338.ulh32fqi4e6gnh2o@gator>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-3-rananta@google.com>
+ <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
-In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
-From:   Lei Yu <yulei.sh@bytedance.com>
-Date:   Thu, 9 Sep 2021 14:52:17 +0800
-Message-ID: <CAGm54UERFkOLXtG3wwL9x1-HAXjmRoaG4ZRbZZOLjP1bLZ=LSg@mail.gmail.com>
-Subject: Re: [External] [PATCH v2 0/3] arm: aspeed: Add UART routing support
-To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, lee.jones@linaro.org,
-        Oskar Senft <osk@google.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        openbmc <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patches are tested on meta-g220a build and it works fine with some
-changes in the sysfs path[1].
-
-Tested-by: Lei YU <yulei.sh@bytedance.com>
-
-[1]: https://github.com/openbmc/meta-bytedance/blob/master/meta-g220a/recipes-phosphor/console/obmc-console/obmc-console%40.service#L7-L10
-
-On Thu, Sep 2, 2021 at 10:20 AM Chia-Wei Wang
-<chiawei_wang@aspeedtech.com> wrote:
->
-> Add UART routing driver and the device tree nodes.
->
-> v2:
->  - Add dt-bindings
->  - Add ABI documents for the exported sysfs interface
->  - Revise driver implementation suggested by Joel
->
-> Chia-Wei Wang (3):
->   dt-bindings: aspeed-lpc: Add UART routing compatible string
->   soc: aspeed: Add UART routing support
->   ARM: dts: aspeed: Add uart routing to device tree
->
->  .../testing/sysfs-driver-aspeed-uart-routing  |  15 +
->  .../devicetree/bindings/mfd/aspeed-lpc.txt    |  22 +
->  arch/arm/boot/dts/aspeed-g5.dtsi              |   6 +
->  arch/arm/boot/dts/aspeed-g6.dtsi              |   6 +
->  drivers/soc/aspeed/Kconfig                    |  10 +
->  drivers/soc/aspeed/Makefile                   |   9 +-
->  drivers/soc/aspeed/aspeed-uart-routing.c      | 601 ++++++++++++++++++
->  7 files changed, 665 insertions(+), 4 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
->  create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
->
-> --
-> 2.17.1
+On Wed, Sep 08, 2021 at 10:47:31PM -0400, Oliver Upton wrote:
+> Hi Raghu,
+> 
+> On Wed, Sep 8, 2021 at 9:38 PM Raghavendra Rao Ananta
+> <rananta@google.com> wrote:
+> >
+> > Bring-in the kernel's arch/arm64/include/asm/sysreg.h
+> > into selftests to make use of all the standard
+> > register definitions in consistence with the kernel.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  .../selftests/kvm/include/aarch64/sysreg.h    | 1278 +++++++++++++++++
+> >  1 file changed, 1278 insertions(+)
+> >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
+> 
+> This belongs in tools/arch/arm64/include/asm/sysreg.h, I believe.
 >
 
+Yes, that's also where I expected it to land.
 
--- 
-BRs,
-Lei YU
+Thanks,
+drew 
+
