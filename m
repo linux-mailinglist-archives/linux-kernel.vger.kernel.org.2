@@ -2,331 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC1E4046AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130F540469A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhIIIAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbhIIIAX (ORCPT
+        id S230125AbhIIH6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 03:58:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59298 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhIIH6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:00:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D9FC0612A8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:59:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 83-20020a251956000000b0059948f541cbso1428091ybz.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=gE4uVfhDugLzYc0pIoIUdagQib6Kqx2xSpoUyEmbWSI=;
-        b=csodqxV/LdjbkoOcBBOF8yYtI6Zd6+l+hImxPNWG0Gx70wbEWSFvM1xn1VUveOG0p8
-         2IEWBwidf5aTsiktaqlCBRvfuCqIzv5bzB7rcRflDn+Jbs+t0s6aqePyzfBnEch0hM53
-         CL9J67N+AorI9MfAJrNuMuutMdd6Qwoq+nBdt2WbJqXbySUkfhe+cyElSOAbP8wxDcl1
-         pPbmKGlU4PYQknk/txOHCsKkGIQ7i0ScsOKVN8mSxN7BCaUf8jyyYL9K3GgKDyzAS+MN
-         5CzzTp3zJctuIAfkiIar8lnc7OQXDAhHVdcjs2BI2WFKqhEHcwtryGDNerdF5g6K9vGK
-         eB0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=gE4uVfhDugLzYc0pIoIUdagQib6Kqx2xSpoUyEmbWSI=;
-        b=Bjcj72srulgVviJg9RVzCeKMEyvTzdpOavBrh7Ozdi/sZnOQ/3Y6yuyexU6khU5IEy
-         vYwNOi7X1CIL6FW+Ovtl+hMOYQUFawBtPfqUwMlZ5upvY6m6QKzmaS2Ht9JLEfmv0dxl
-         0EQ03Gt7oDycJou3ZeUjDmm/5leCQUenpQPSk5NCZpLRR/c4jebAvWsoSTdX0kjSSois
-         VToeo6+8+07UXJkTzlyIOJIBZSGn8dfjlCprW6zigUgSb4rYbv+CoRCmQc4m37anEz56
-         8WzAkyt2oFCRNWzfHaKwRguINd8ZKu6zSLPe/VKJ7YA4ufM3iCFjunY81VufaR2t9NV4
-         L7hQ==
-X-Gm-Message-State: AOAM533mQykY2WVVsXjzLKuD5uLxbaXEuCJMQ4gNIuZ7DfJ185xLEaFH
-        AaJvRYLenAyEXutVfRMa7iX09MHdHOuyASG1x6j6JqxFJ3LuQdDkEGhZ7X0a9RSDz34zjwwYPhI
-        BZTYp+tRDmI/0QuVLZ3f+5P3VzHVg0WyFjTjmhVyCpR8lN+N2+gwb+pUP5Ro9LSxGrEbC7Jt1
-X-Google-Smtp-Source: ABdhPJxq6KiDFlQ2aYVE1EVlLNgYWlmmGsc6RoiJh1/2A2YUJi9W9Er+WBYdbmlbQicNVZ7fE0hC7byK1vE4
-X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:f950:61f2:f1ec:ae8b])
- (user=eranian job=sendgmr) by 2002:a25:ad97:: with SMTP id
- z23mr2234790ybi.412.1631174349502; Thu, 09 Sep 2021 00:59:09 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 00:57:00 -0700
-In-Reply-To: <20210909075700.4025355-1-eranian@google.com>
-Message-Id: <20210909075700.4025355-14-eranian@google.com>
-Mime-Version: 1.0
-References: <20210909075700.4025355-1-eranian@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 13/13] perf report: add addr_from/addr_to sort dimensions
-From:   Stephane Eranian <eranian@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 9 Sep 2021 03:58:47 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mOEvf-0001T3-P1; Thu, 09 Sep 2021 09:57:03 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mOEvf-000H3n-3x; Thu, 09 Sep 2021 09:57:03 +0200
+Subject: Re: [PATCH bpf-next] bpf: Change value of MAX_TAIL_CALL_CNT from 32
+ to 33
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Paul Chaignon <paul@cilium.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
+References: <1631158350-3661-1-git-send-email-yangtiezhu@loongson.cn>
+ <CAEf4BzZqoVZ7keWCLmC=A5oPPwj_xMNRWDkJUcjWn9yE_z1gSg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e9063116-617a-5916-bc6f-a1e917776bd7@iogearbox.net>
+Date:   Thu, 9 Sep 2021 09:57:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzZqoVZ7keWCLmC=A5oPPwj_xMNRWDkJUcjWn9yE_z1gSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26288/Wed Sep  8 10:22:21 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new pair of sorting dimensions used with branch sampling.
-With the existing symbol_from/symbol_to, branches captured in the same function
-would be collapsed into a single function if the latency (cycles) was all the same.
-That is the case on Intel Broadwell for instance. Since Intel Skylake, the latency
-is captured by hardware and therefore is used to disambiguate branches.
+On 9/9/21 7:50 AM, Andrii Nakryiko wrote:
+> On Wed, Sep 8, 2021 at 8:33 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>> In the current code, the actual max tail call count is 33 which is greater
+>> than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consistent
+>> with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need to
+>> spend some time to think the reason at the first glance.
+> 
+> think *about* the reason
+> 
+>> We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
+>> bpf programs to tail-call other bpf programs") and commit f9dabe016b63
+>> ("bpf: Undo off-by-one in interpreter tail call count limit").
+>>
+>> In order to avoid changing existing behavior, the actual limit is 33 now,
+>> this is resonable.
+> 
+> typo: reasonable
+> 
+>> After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we can
+>> see there exists failed testcase.
+>>
+>> On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+>>   # echo 0 > /proc/sys/net/core/bpf_jit_enable
+>>   # modprobe test_bpf
+>>   # dmesg | grep -w FAIL
+>>   Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+>>
+>> On some archs:
+>>   # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>>   # modprobe test_bpf
+>>   # dmesg | grep -w FAIL
+>>   Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+>>
+>> So it is necessary to change the value of MAX_TAIL_CALL_CNT from 32 to 33,
+>> then do some small changes of the related code.
+>>
+>> With this patch, it does not change the current limit, MAX_TAIL_CALL_CNT
+>> can reflect the actual max tail call count, and the above failed testcase
+>> can be fixed.
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+> 
+> This change breaks selftests ([0]), please fix them at the same time
+> as you are changing the kernel behavior:
 
-This patch adds addr_from/addr_to sort dimensions that will sort branches based on
-their addresses and not the function there are in. The output is still the function
-name but the offset within the function is provided to uniquely identify each branch.
-These new sort dimensions also help with annotate because they create different entries
-in the histogram which, in turn, generates proper branch annotation.
+The below selftests shouldn't have to change given there is no change in
+behavior intended (MAX_TAIL_CALL_CNT is bumped to 33 but counter inc'ed
+prior to the comparison). It just means that /all/ JITs must be changed
+and in particular properly _tested_.
 
-Here is an example using AMD's branch sampling:
-
-$ perf record -a -b -c 1000037 -e cpu/branch-brs/ test_prg
-
-$ perf report
-Samples: 6M of event 'cpu/branch-brs/', Event count (approx.): 6901276
-Overhead  Command          Source Shared Object  Source Symbol                                   Target Symbol                                   Basic Block Cycle
-  99.65%  test_prg	   test_prg              [.] test_thread                                 [.] test_thread                                 -
-   0.02%  test_prg         [kernel.vmlinux]      [k] asm_sysvec_apic_timer_interrupt             [k] error_entry                                 -
-
-$ perf report -F overhead,comm,dso,addr_from,addr_to
-Samples: 6M of event 'cpu/branch-brs/', Event count (approx.): 6901276
-Overhead  Command          Shared Object     Source Address          Target Address
-   4.22%  test_prg         test_prg          [.] test_thread+0x3c    [.] test_thread+0x4
-   4.13%  test_prg         test_prg          [.] test_thread+0x4     [.] test_thread+0x3a
-   4.09%  test_prg         test_prg          [.] test_thread+0x3a    [.] test_thread+0x6
-   4.08%  test_prg         test_prg          [.] test_thread+0x2     [.] test_thread+0x3c
-   4.06%  test_prg         test_prg          [.] test_thread+0x3e    [.] test_thread+0x2
-   3.87%  test_prg         test_prg          [.] test_thread+0x6     [.] test_thread+0x38
-   3.84%  test_prg         test_prg          [.] test_thread         [.] test_thread+0x3e
-   3.76%  test_prg         test_prg          [.] test_thread+0x1e    [.] test_thread
-   3.76%  test_prg         test_prg          [.] test_thread+0x38    [.] test_thread+0x8
-   3.56%  test_prg         test_prg          [.] test_thread+0x22    [.] test_thread+0x1e
-   3.54%  test_prg         test_prg          [.] test_thread+0x8     [.] test_thread+0x36
-   3.47%  test_prg         test_prg          [.] test_thread+0x1c    [.] test_thread+0x22
-   3.45%  test_prg         test_prg          [.] test_thread+0x36    [.] test_thread+0xa
-   3.28%  test_prg         test_prg          [.] test_thread+0x24    [.] test_thread+0x1c
-   3.25%  test_prg         test_prg          [.] test_thread+0xa     [.] test_thread+0x34
-   3.24%  test_prg         test_prg          [.] test_thread+0x1a    [.] test_thread+0x24
-   3.20%  test_prg         test_prg          [.] test_thread+0x34    [.] test_thread+0xc
-   3.04%  test_prg         test_prg          [.] test_thread+0x26    [.] test_thread+0x1a
-   3.01%  test_prg         test_prg          [.] test_thread+0xc     [.] test_thread+0x32
-   2.98%  test_prg         test_prg          [.] test_thread+0x18    [.] test_thread+0x26
-   2.94%  test_prg         test_prg          [.] test_thread+0x32    [.] test_thread+0xe
-   2.76%  test_prg         test_prg          [.] test_thread+0x28    [.] test_thread+0x18
-   2.73%  test_prg         test_prg          [.] test_thread+0xe     [.] test_thread+0x30
-   2.67%  test_prg         test_prg          [.] test_thread+0x30    [.] test_thread+0x10
-   2.67%  test_prg         test_prg          [.] test_thread+0x16    [.] test_thread+0x28
-   2.46%  test_prg         test_prg          [.] test_thread+0x10    [.] test_thread+0x2e
-   2.44%  test_prg         test_prg          [.] test_thread+0x2a    [.] test_thread+0x16
-   2.38%  test_prg         test_prg          [.] test_thread+0x14    [.] test_thread+0x2a
-   2.32%  test_prg         test_prg          [.] test_thread+0x2e    [.] test_thread+0x12
-   2.28%  test_prg         test_prg          [.] test_thread+0x12    [.] test_thread+0x2c
-   2.16%  test_prg         test_prg          [.] test_thread+0x2c    [.] test_thread+0x14
-   0.02%  test_prg         [kernel.vmlinux]  [k] asm_sysvec_apic_ti+0x5  [k] error_entry
-
-Signed-off-by: Stephane Eranian <eranian@google.com>
----
- tools/perf/util/hist.c |   2 +
- tools/perf/util/hist.h |   2 +
- tools/perf/util/sort.c | 128 +++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/sort.h |   2 +
- 4 files changed, 134 insertions(+)
-
-diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-index 65fe65ba03c2..39924202568f 100644
---- a/tools/perf/util/hist.c
-+++ b/tools/perf/util/hist.c
-@@ -124,6 +124,7 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
- 		} else {
- 			symlen = unresolved_col_width + 4 + 2;
- 			hists__new_col_len(hists, HISTC_SYMBOL_FROM, symlen);
-+			hists__new_col_len(hists, HISTC_ADDR_FROM, symlen);
- 			hists__set_unres_dso_col_len(hists, HISTC_DSO_FROM);
- 		}
- 
-@@ -138,6 +139,7 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
- 		} else {
- 			symlen = unresolved_col_width + 4 + 2;
- 			hists__new_col_len(hists, HISTC_SYMBOL_TO, symlen);
-+			hists__new_col_len(hists, HISTC_ADDR_TO, symlen);
- 			hists__set_unres_dso_col_len(hists, HISTC_DSO_TO);
- 		}
- 
-diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-index 5343b62476e6..9592853fab73 100644
---- a/tools/perf/util/hist.h
-+++ b/tools/perf/util/hist.h
-@@ -76,6 +76,8 @@ enum hist_column {
- 	HISTC_LOCAL_INS_LAT,
- 	HISTC_GLOBAL_INS_LAT,
- 	HISTC_P_STAGE_CYC,
-+	HISTC_ADDR_FROM,
-+	HISTC_ADDR_TO,
- 	HISTC_NR_COLS, /* Last entry */
- };
- 
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index 568a88c001c6..e5be5e24f9c5 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -990,6 +990,128 @@ struct sort_entry sort_sym_to = {
- 	.se_width_idx	= HISTC_SYMBOL_TO,
- };
- 
-+static int _hist_entry__addr_snprintf(struct map_symbol *ms,
-+				     u64 ip, char level, char *bf, size_t size,
-+				     unsigned int width)
-+{
-+	struct symbol *sym = ms->sym;
-+	struct map *map = ms->map;
-+	size_t ret = 0, offs;
-+
-+	ret += repsep_snprintf(bf + ret, size - ret, "[%c] ", level);
-+	if (sym && map) {
-+		if (sym->type == STT_OBJECT) {
-+			ret += repsep_snprintf(bf + ret, size - ret, "%s", sym->name);
-+			ret += repsep_snprintf(bf + ret, size - ret, "+0x%llx",
-+					ip - map->unmap_ip(map, sym->start));
-+		} else {
-+			ret += repsep_snprintf(bf + ret, size - ret, "%.*s",
-+					       width - ret,
-+					       sym->name);
-+			offs = ip - sym->start;
-+			if (offs)
-+				ret += repsep_snprintf(bf + ret, size - ret, "+0x%llx", offs);
-+		}
-+	} else {
-+		size_t len = BITS_PER_LONG / 4;
-+		ret += repsep_snprintf(bf + ret, size - ret, "%-#.*llx",
-+				       len, ip);
-+	}
-+
-+	return ret;
-+}
-+
-+static int hist_entry__addr_from_snprintf(struct hist_entry *he, char *bf,
-+					 size_t size, unsigned int width)
-+{
-+	if (he->branch_info) {
-+		struct addr_map_symbol *from = &he->branch_info->from;
-+
-+		return _hist_entry__addr_snprintf(&from->ms, from->al_addr,
-+						 he->level, bf, size, width);
-+	}
-+
-+	return repsep_snprintf(bf, size, "%-*.*s", width, width, "N/A");
-+}
-+
-+static int hist_entry__addr_to_snprintf(struct hist_entry *he, char *bf,
-+				       size_t size, unsigned int width)
-+{
-+	if (he->branch_info) {
-+		struct addr_map_symbol *to = &he->branch_info->to;
-+
-+		return _hist_entry__addr_snprintf(&to->ms, to->al_addr,
-+						 he->level, bf, size, width);
-+	}
-+
-+	return repsep_snprintf(bf, size, "%-*.*s", width, width, "N/A");
-+}
-+
-+static int64_t
-+sort__addr_from_cmp(struct hist_entry *left, struct hist_entry *right)
-+{
-+	struct addr_map_symbol *from_l;
-+	struct addr_map_symbol *from_r;
-+	int64_t ret;
-+
-+	if (!left->branch_info || !right->branch_info)
-+		return cmp_null(left->branch_info, right->branch_info);
-+
-+	from_l = &left->branch_info->from;
-+	from_r = &right->branch_info->from;
-+
-+	/*
-+	 * comparing symbol address alone is not enough since it's a
-+	 * relative address within a dso.
-+	 */
-+	ret = _sort__dso_cmp(from_l->ms.map, from_r->ms.map);
-+	if (ret != 0)
-+		return ret;
-+
-+	return _sort__addr_cmp(from_l->addr, from_r->addr);
-+}
-+
-+static int64_t
-+sort__addr_to_cmp(struct hist_entry *left, struct hist_entry *right)
-+{
-+	struct addr_map_symbol *to_l;
-+	struct addr_map_symbol *to_r;
-+	int64_t ret;
-+
-+	if (!left->branch_info || !right->branch_info)
-+		return cmp_null(left->branch_info, right->branch_info);
-+
-+	to_l = &left->branch_info->to;
-+	to_r = &right->branch_info->to;
-+
-+	/*
-+	 * comparing symbol address alone is not enough since it's a
-+	 * relative address within a dso.
-+	 */
-+	ret = _sort__dso_cmp(to_l->ms.map, to_r->ms.map);
-+	if (ret != 0)
-+		return ret;
-+
-+	return _sort__addr_cmp(to_l->addr, to_r->addr);
-+}
-+
-+struct sort_entry sort_addr_from = {
-+	.se_header	= "Source Address",
-+	.se_cmp		= sort__addr_from_cmp,
-+	.se_snprintf	= hist_entry__addr_from_snprintf,
-+	.se_filter	= hist_entry__sym_from_filter, /* shared with sym_from */
-+	.se_width_idx	= HISTC_ADDR_FROM,
-+};
-+
-+struct sort_entry sort_addr_to = {
-+	.se_header	= "Target Address",
-+	.se_cmp		= sort__addr_to_cmp,
-+	.se_snprintf	= hist_entry__addr_to_snprintf,
-+	.se_filter	= hist_entry__sym_to_filter, /* shared with sym_to */
-+	.se_width_idx	= HISTC_ADDR_TO,
-+};
-+
-+
- static int64_t
- sort__mispredict_cmp(struct hist_entry *left, struct hist_entry *right)
- {
-@@ -1897,6 +2019,8 @@ static struct sort_dimension bstack_sort_dimensions[] = {
- 	DIM(SORT_SRCLINE_FROM, "srcline_from", sort_srcline_from),
- 	DIM(SORT_SRCLINE_TO, "srcline_to", sort_srcline_to),
- 	DIM(SORT_SYM_IPC, "ipc_lbr", sort_sym_ipc),
-+	DIM(SORT_ADDR_FROM, "addr_from", sort_addr_from),
-+	DIM(SORT_ADDR_TO, "addr_to", sort_addr_to),
- };
- 
- #undef DIM
-@@ -3128,6 +3252,10 @@ static bool get_elide(int idx, FILE *output)
- 		return __get_elide(symbol_conf.dso_from_list, "dso_from", output);
- 	case HISTC_DSO_TO:
- 		return __get_elide(symbol_conf.dso_to_list, "dso_to", output);
-+	case HISTC_ADDR_FROM:
-+		return __get_elide(symbol_conf.sym_from_list, "addr_from", output);
-+	case HISTC_ADDR_TO:
-+		return __get_elide(symbol_conf.sym_to_list, "addr_to", output);
- 	default:
- 		break;
- 	}
-diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-index b67c469aba79..571f6745dced 100644
---- a/tools/perf/util/sort.h
-+++ b/tools/perf/util/sort.h
-@@ -250,6 +250,8 @@ enum sort_type {
- 	SORT_SRCLINE_FROM,
- 	SORT_SRCLINE_TO,
- 	SORT_SYM_IPC,
-+	SORT_ADDR_FROM,
-+	SORT_ADDR_TO,
- 
- 	/* memory mode specific sort keys */
- 	__SORT_MEMORY_MODE,
--- 
-2.33.0.153.gba50c8fa24-goog
+>    test_tailcall_2:PASS:tailcall 128 nsec
+>    test_tailcall_2:PASS:tailcall 128 nsec
+>    test_tailcall_2:FAIL:tailcall err 0 errno 2 retval 4
+>    #135/2 tailcalls/tailcall_2:FAIL
+>    test_tailcall_3:PASS:tailcall 128 nsec
+>    test_tailcall_3:FAIL:tailcall count err 0 errno 2 count 34
+>    test_tailcall_3:PASS:tailcall 128 nsec
+>    #135/3 tailcalls/tailcall_3:FAIL
+>    #135/4 tailcalls/tailcall_4:OK
+>    #135/5 tailcalls/tailcall_5:OK
+>    #135/6 tailcalls/tailcall_bpf2bpf_1:OK
+>    test_tailcall_bpf2bpf_2:PASS:tailcall 128 nsec
+>    test_tailcall_bpf2bpf_2:FAIL:tailcall count err 0 errno 2 count 34
+>    test_tailcall_bpf2bpf_2:PASS:tailcall 128 nsec
+>    #135/7 tailcalls/tailcall_bpf2bpf_2:FAIL
+>    #135/8 tailcalls/tailcall_bpf2bpf_3:OK
+>    test_tailcall_bpf2bpf_4:PASS:tailcall 54 nsec
+>    test_tailcall_bpf2bpf_4:FAIL:tailcall count err 0 errno 2 count 32
+>    #135/9 tailcalls/tailcall_bpf2bpf_4:FAIL
+>    test_tailcall_bpf2bpf_4:PASS:tailcall 54 nsec
+>    test_tailcall_bpf2bpf_4:FAIL:tailcall count err 0 errno 2 count 32
+>    #135/10 tailcalls/tailcall_bpf2bpf_5:FAIL
+>    #135 tailcalls:FAIL
+> 
+>    [0] https://github.com/kernel-patches/bpf/pull/1747/checks?check_run_id=3552002906
+> 
+>>   arch/arm/net/bpf_jit_32.c         | 11 ++++++-----
+>>   arch/arm64/net/bpf_jit_comp.c     |  7 ++++---
+>>   arch/mips/net/ebpf_jit.c          |  4 ++--
+>>   arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
+>>   arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++------
+>>   arch/riscv/net/bpf_jit_comp32.c   |  4 ++--
+>>   arch/riscv/net/bpf_jit_comp64.c   |  4 ++--
+>>   arch/sparc/net/bpf_jit_comp_64.c  |  8 ++++----
+>>   include/linux/bpf.h               |  2 +-
+>>   kernel/bpf/core.c                 |  4 ++--
+>>   10 files changed, 31 insertions(+), 29 deletions(-)
+>>
+> 
+> [...]
+> 
 
