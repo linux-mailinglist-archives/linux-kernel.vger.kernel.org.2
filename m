@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC16404930
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FF9404935
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbhIILWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        id S235367AbhIILZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbhIILWO (ORCPT
+        with ESMTP id S234507AbhIILZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:22:14 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE42EC061575;
-        Thu,  9 Sep 2021 04:21:04 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id u16so2021987wrn.5;
-        Thu, 09 Sep 2021 04:21:04 -0700 (PDT)
+        Thu, 9 Sep 2021 07:25:47 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF9AC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:24:37 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t1so1459110pgv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:24:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=boyHz0uurKLDf0rs+5Mtb8FIKhFhQqkLeE6SMQCQ7Mw=;
-        b=XnCBIstlrTZ42iymgvoBMiytRwCAZOvCGFqcobFEjL6BQGw42EonvQXM5RgMH9LTJ7
-         AYF9hLzT6IJOSg0HNMbCOr4NidieAAdYQyDATpCiOZ8aq9RLs4vJ0jIM7NdtcmqYLgmF
-         CT7DnEwASSFwTDZ8t5c+SM9hH3SovzxrY8IhfdhBnlycryy+clKHd4XnIP1uEce5eYqL
-         nNDBylJX6e+ass/kk2XEXn6HhL2W8vKn+zeqADxoRttdR32Mff3FzRko+qVD7wixQW2d
-         l7ea+rb6xQ7n8p6VmUjo74NJqq/B4jTzOA+Qk5b7yicP/zHXg4bcLCO8GYmp1JBtiQtW
-         JjTA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hnlMYFtuS5udBmQ6DYQS75PP75aNeIqLijfz/ObR/fk=;
+        b=CaAvlyAKTD6htP2F1nBChs45nV2YE/sgriDjrk3oOhhJ0DfoFm0PTlc/39m7fGI3is
+         AOHw4wxXBi3MIedUxP5E2fBruDs6Ts4oOKUYGAk7s2UFGnuER6WkmgJElte1qvNvfFB+
+         443DmhaqkwvRuhMQV3HUR5IPTbjf68z5uECOw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boyHz0uurKLDf0rs+5Mtb8FIKhFhQqkLeE6SMQCQ7Mw=;
-        b=pVopGbQh8hBMV3VWTkiTW+m3e/pbcTUi28JPIfwkOzLmpvnR0hCuFuKzEFDe7i0ePq
-         do81TM9QTtJPN0PEZV1OT8vVkv8Fn8D/GxU3YU8658u+Girznqomeu/Ujm85dclMahHZ
-         EYtkjSXw9Gi2867d/hHdpDflrC8qLGAf8+9hp+d/xR2SvFW4zN8D8VWHbzmUs7foDZ46
-         LE4grIne9o0zHpMhj4J1vhy4TRnPeuKChZycJz3D2STf/pdbUuuHZbLAqk6aAuMD+/Wx
-         2r2qUAZd0LjEe8CewDRGCUp246nUJ929BwlNgpuE1afuvuFiLTwtMp0yzW4Nf3Ue/rup
-         xn1A==
-X-Gm-Message-State: AOAM532Z6HCarrTNrj5htbLPkC/AgHy/1QF3v0SgFaMQ1g80ld6FvPoN
-        Re2/jiPH+afQ51jr0jC0/4JLr6+NSb+77yHMR8s=
-X-Google-Smtp-Source: ABdhPJyWEp4sWX1UjZpYHyCBI2jXJGww22+s01hZJHFPIzOhSQ5OOQWblTaDxzYLJN7KUGOTHPIGmmBBAlGPubdqG9Y=
-X-Received: by 2002:adf:d20f:: with SMTP id j15mr2922294wrh.255.1631186463282;
- Thu, 09 Sep 2021 04:21:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hnlMYFtuS5udBmQ6DYQS75PP75aNeIqLijfz/ObR/fk=;
+        b=qkbsL4zXfYdbhPwB8IVB64f/xzuzHizJiksEE/tK6XvcWzpC17K9N/G/+gtASVcg0p
+         5+zIJtZx17YIgV7rXUTzvrX//ZeQSrI/fZvvUX1NtS12PYctZIkjqA/aL3XAioR6nF2a
+         K63yDNZF5Ly+FvT1yD/jtX83Ascbi4rqrocPqPMDUDomTGu+nhhr0ocb6WaHTpoBOhmD
+         jWmmMJ3P67eKz/4Lbgk+SRfphvr2GvhpeUHXjcsg7uvyMwOw4ijtMk86EI6ehctQjyk0
+         jZPXP3xNfs2hrns3AMvVfSZU51TY2UyY4scbXpjjJwFvqyDrGHuf3g4FALtNAsm6mgbq
+         xHwA==
+X-Gm-Message-State: AOAM53056zqL9yWBxZACWRrWN+wP2r7dVnFaVAp9BCm0xF+1M0QZgSuz
+        lhcjGI5HrDfj9LnWr6iHB35S3w==
+X-Google-Smtp-Source: ABdhPJxoU91HTa4hlNWlktOs3O0yqCB9tNHblL0pQ+92przwwe9ILO+wosdQdS5y/1BVw1V2hJvOWQ==
+X-Received: by 2002:aa7:8702:0:b0:414:8789:12dc with SMTP id b2-20020aa78702000000b00414878912dcmr2723186pfo.28.1631186677485;
+        Thu, 09 Sep 2021 04:24:37 -0700 (PDT)
+Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:166b:dcfc:dcf2:bbe2])
+        by smtp.gmail.com with ESMTPSA id 141sm2046860pgg.16.2021.09.09.04.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 04:24:36 -0700 (PDT)
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCHv6 0/8] videobuf2: support new noncontiguous DMA API
+Date:   Thu,  9 Sep 2021 20:24:22 +0900
+Message-Id: <20210909112430.61243-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
 MIME-Version: 1.0
-References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
- <20210903145340.225511-3-daniel.baluta@oss.nxp.com> <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
- <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com> <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-In-Reply-To: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Thu, 9 Sep 2021 14:20:51 +0300
-Message-ID: <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The H/W block is controlled by the DSP firmware. So, we don't want
-> > to use the Linux kernel driver (thus the H/W block device tree node).
->
-> 'status' is how you disable a device to not be used by the OS.
->
-> The information about that device's resources are already in DT, we
-> don't need to duplicate that here. If you want a list of devices
-> assigned to the DSP here, that would be okay.
+Hello,
 
-Thanks! This is a very good idea. I was thinking at a totally different thing.
+        The series adds support for noncontiguous DMA API and
+V4L2_MEMORY_FLAG_NON_COHERENT UAPI.
 
-So having something like this:
+v5:
 
-dsp {
+https://lore.kernel.org/lkml/20210823122235.116189-1-senozhatsky@chromium.org/
 
+-- addressed feedback (Tomasz)
+-- reworked prepare/finish functions (Tomasz)
 
-hw-block-list = <&sai1>, <&sai2>;
+Sergey Senozhatsky (8):
+  videobuf2: rework vb2_mem_ops API
+  videobuf2: inverse buffer cache_hints flags
+  videobuf2: split buffer cache_hints initialisation
+  videobuf2: move cache_hints handling to allocators
+  videobuf2: add V4L2_MEMORY_FLAG_NON_COHERENT flag
+  videobuf2: add queue memory coherency parameter
+  videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT flag
+  videobuf2: handle non-contiguous DMA allocations
 
-}
+ .../userspace-api/media/v4l/buffer.rst        |  40 +++-
+ .../media/v4l/vidioc-create-bufs.rst          |   7 +-
+ .../media/v4l/vidioc-reqbufs.rst              |  16 +-
+ .../media/common/videobuf2/videobuf2-core.c   | 126 +++++++----
+ .../common/videobuf2/videobuf2-dma-contig.c   | 195 ++++++++++++++----
+ .../media/common/videobuf2/videobuf2-dma-sg.c |  39 ++--
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  59 +++---
+ .../common/videobuf2/videobuf2-vmalloc.c      |  30 +--
+ drivers/media/dvb-core/dvb_vb2.c              |   2 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |   9 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   4 +-
+ include/media/videobuf2-core.h                |  59 +++---
+ include/uapi/linux/videodev2.h                |  11 +-
+ 13 files changed, 411 insertions(+), 186 deletions(-)
 
-And then inside the DSP driver we can get access to sai1 clocks. Do
-you know of any standard property name?
+-- 
+2.33.0.153.gba50c8fa24-goog
 
-
->
-> > The only thing that we cannot control from the DSP firmware are the clocks
-> > hence we handle them in the DSP node.
-> >
-> > We moved the DAI clocks under the DSP node as I think you suggested here:
-> >
-> > https://www.lkml.org/lkml/2020/3/12/969
->
-> No, that's certainly not what I was suggesting. The resources in the
-> DSP node should be the h/w resources of the DSP itself.
-
-I see thanks!
