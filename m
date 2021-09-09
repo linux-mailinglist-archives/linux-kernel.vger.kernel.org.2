@@ -2,121 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E2A404585
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD2C40458C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352504AbhIIGQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:16:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56612 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352448AbhIIGQY (ORCPT
+        id S1352468AbhIIGTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244314AbhIIGTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:16:24 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18963cdb004569;
-        Thu, 9 Sep 2021 02:14:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=cPUonm5kJsYc2X/GGy0xJ2tmTzDsookwnNtXApmtolc=;
- b=NrJLNRL4xEjUp1z+/jRe3yFzuigHc03eaOxwwrifihwsN+sqwlBg5anjhndNmZhJuGrX
- zp7VBDPyu6dMj8amk4nETdtLln66fP0tplxQAuQB/WA2sT0SyesvaCIxzq2xqvGUqm09
- FmJlvYRX2SIKAK7g1vS+dof5/8Cyxic2YCAulXMVh8uLUsUM3mFioi5QfMr0+goLF+4J
- joRGTbx0+e3qYUH/ds+jOC6DgM8NpcQnMNtCRDjnfKtk5KoUGTcq0YOLqv79g4njT3qw
- f2uQDrt/1Sc22wnHlB77aYvioOoWnWwwrqFgZN8djBgmUMtAaKRCfcKb2ckkS6ZKeLWw RQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3axmeqtg97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 02:14:57 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1896CAlI007700;
-        Thu, 9 Sep 2021 06:14:55 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 3axcnk87vk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 06:14:54 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1896EpGp46661900
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Sep 2021 06:14:52 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D918B42041;
-        Thu,  9 Sep 2021 06:14:51 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DBB794203F;
-        Thu,  9 Sep 2021 06:14:50 +0000 (GMT)
-Received: from [9.171.14.134] (unknown [9.171.14.134])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Sep 2021 06:14:50 +0000 (GMT)
-Subject: Re: [PATCH v2 60/63] net/af_iucv: Use struct_group() to zero struct
- iucv_sock region
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-61-keescook@chromium.org>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-Message-ID: <19ff61a0-0cda-6000-ce56-dc6b367c00d6@linux.ibm.com>
-Date:   Thu, 9 Sep 2021 08:14:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 9 Sep 2021 02:19:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB2FC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+rDn9niI6auN6DppWd/XkbmHQC+Jn0nMdhztebELsuk=; b=Oo0TzY1jbokYJR0ingKXUhlq6l
+        UhWoACOhKO3V2VZGvwjL51JDFzJRPk+o+2nnaef6hBL+emIGtvU9NAN7yjygkSixKAeg7uUhf0MnB
+        lU7P0lofWAlu5PdTtWalAJDMW+c3QttSNMxJam2jdRpi/UzDCZxU1PSi8if2fP53CvsBSk7G5NWKj
+        HizrY6mokzKL/Oh14aB2oQzPvqfz0pgP+6jcdEzRiV9qOqBmA9cJ+IJzjSP5RRRdy0ToQHGW9elwI
+        DVBQXxZKSGBTGg17K/fBWyTRlRkX8TQnU0yul+xHTQYhY+Aj8Pdn6FOkmOSZ/AL6CoOLhicL78A3s
+        2dGRvgVw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mODNK-009XPU-0N; Thu, 09 Sep 2021 06:17:40 +0000
+Date:   Thu, 9 Sep 2021 07:17:29 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, vincent.chen@sifive.com
+Subject: Re: [RFC PATCH v8 13/21] riscv: Add support for kernel mode vector
+Message-ID: <YTmm+ewo0WDHH9hF@infradead.org>
+References: <cover.1631121222.git.greentime.hu@sifive.com>
+ <e3d94eee049fe9f3b6597e21748efbb1d4eb81de.1631121222.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
-In-Reply-To: <20210818060533.3569517-61-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oFVZQt8pTzxySj5pZJpy_ghkEsh5Wye4
-X-Proofpoint-ORIG-GUID: oFVZQt8pTzxySj5pZJpy_ghkEsh5Wye4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-09_01:2021-09-07,2021-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- phishscore=0 adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=968
- priorityscore=1501 clxscore=1011 lowpriorityscore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109090035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3d94eee049fe9f3b6597e21748efbb1d4eb81de.1631121222.git.greentime.hu@sifive.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 08:05, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Add struct_group() to mark the region of struct iucv_sock that gets
-> initialized to zero. Avoid the future warning:
-> 
-> In function 'fortify_memset_chk',
->     inlined from 'iucv_sock_alloc' at net/iucv/af_iucv.c:476:2:
-> ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
->   199 |    __write_overflow_field(p_size_field, size);
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Cc: Julian Wiedmann <jwi@linux.ibm.com>
-> Cc: Karsten Graul <kgraul@linux.ibm.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-s390@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/net/iucv/af_iucv.h | 10 ++++++----
->  net/iucv/af_iucv.c         |  2 +-
->  2 files changed, 7 insertions(+), 5 deletions(-)
+On Thu, Sep 09, 2021 at 01:45:25AM +0800, Greentime Hu wrote:
+> +obj-$(CONFIG_VECTOR)		+= kernel_mode_vector.o
+> +riscv-march-cflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
+> +riscv-march-cflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
+> +riscv-march-cflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-cflags-y)c
+> +riscv-march-cflags-$(CONFIG_VECTOR)		:= $(riscv-march-cflags-y)v
+> +CFLAGS_kernel_mode_vector.o	+= -march=$(riscv-march-cflags-y)
 
-No objections.
-Acked-by: Karsten Graul <kgraul@linux.ibm.com>
+Do we need a helper in arch/riscv/Makefile to define the vector flags
+instead of open coding them where used?  Also I think the variable
+name should include vector in it.
 
-Thank you.
+
+> +EXPORT_SYMBOL(kernel_rvv_begin);
+
+> +EXPORT_SYMBOL(kernel_rvv_end);
+
+This needs to be EXPORT_SYMBOL_GPL just like x86 kernel_fpu_begin/end
