@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F18A4045A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5CE4045A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhIIGee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:34:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:55353 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229605AbhIIGec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:34:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="207930752"
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="207930752"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:33:23 -0700
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="693882541"
-Received: from jax-mobl.gar.corp.intel.com ([10.213.103.124])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:33:20 -0700
-Message-ID: <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP
- forced by BIOS
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Doug Smythies <doug.smythies@gmail.com>, rafael@kernel.org,
-        len.brown@intel.com
-Cc:     dsmythies@telus.net, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Date:   Wed, 08 Sep 2021 23:33:17 -0700
-In-Reply-To: <20210909034802.1708-1-dsmythies@telus.net>
-References: <20210909034802.1708-1-dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S1352593AbhIIGgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:36:19 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:25535 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352517AbhIIGgS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:36:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631169309; x=1662705309;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6Szz45xnYb/E2zF+G7svDhiYLqm5PULqroK9cBEAk4g=;
+  b=V8zngHYF2emnnKckI2QY42sHltcacMuwxTKyl01koi9Snjma6JtDuFTT
+   /OMpvFXwXEIebU6OlRnBIBBPWv3hQ+YJSnvjgiIa9Bll8IDEAPmcW+Hiu
+   g5HQVkDPkpiRRDK1HabSFCvtiLvbPDx1dfEFR19Vjn0Iif8SatyRnIHsG
+   9Slte4l94tciglFbWakNi/EpL8P2tC+d5Vw19CBPLTRPZYCsY4eqHuZ01
+   M/+xktysHfGOrfBTLLRhdrP9idOmdi3PAe/5O+U+/s6B077YZPpOTWGwJ
+   bMHQbu4BpAzQhkNQsCDBr1DvhOkh7BMTTUVRgd/R6/NbGA14PbuzH8w21
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,279,1624291200"; 
+   d="scan'208";a="179551093"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Sep 2021 14:35:07 +0800
+IronPort-SDR: 4U6oN3BLV1OfBLZaIQheGHFHkv15ilcjViaZeSqrrFQo7TiihfQt/Z4tRUszSx5GIAIcor9ZEF
+ Zl8mziT6v2jr6+pIL4drUscUeF2Yl7HQYKyxgBxfQL5l2oE90etRxZKzqbDQ6WxJQ+0v9CHVc+
+ Tk2n3WO9nIC3KuJA/fd6UCRDF/dkkw9ekMU4DP4AiDJj5evpOdjfQbqkZOWlYicNqR9s7j1U0v
+ c38k8GuTKQOygbsoWCsDSF00bzFBNz7OI77QzZiaIKjT2nVoFfGKVLVRliw4XANfqYvyI2Jh2G
+ b8WVvgyDAc7Bd+qf5JKTPOf9
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:11:43 -0700
+IronPort-SDR: TxjQRD4kOHIMHWI+jbQmptf1qaZZilWCwiv54Waw2WZ+5hH6CFDl4j4PWQtzVAKnu60temN9Rb
+ Vk3ShzcvXAzqwcL3oD+ME2xkXxrxATU3W+cLO1Y5g0twoddaPZn2/RJ7Rv9TlYtPaBr3kn4+kR
+ 2uZBwRc5Wq2fYUiERJKvgVAFQu8OFRCHMBQ14gsjA+SYTa3X5WjZWvaDx4uI4jh+1qNYh/rcLg
+ DjhZN9AXx7KS+ED7k7t+TIJkn9/t+yBCXw73xuCt0E5mJdRSWKec6ZykG+3Viesyd2rhzOYBG6
+ k0o=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com (HELO BXYGM33.ad.shared) ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 08 Sep 2021 23:35:04 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v2 0/2] Add temperature notification support
+Date:   Thu,  9 Sep 2021 09:34:42 +0300
+Message-Id: <20210909063444.22407-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
-> If HWP has been already been enabled by BIOS, it may be
-> necessary to override some kernel command line parameters.
-> Once it has been enabled it requires a reset to be disabled.
-> 
-> Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> ---
->  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/intel_pstate.c
-> b/drivers/cpufreq/intel_pstate.c
-> index bb4549959b11..073bae5d4498 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
->                  */
->                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
->                     intel_pstate_hwp_is_enabled()) {
-> -                       hwp_active++;
-> +                       hwp_active = 1;
-Why this change?
+v1 -> v2:
+ - Add a hw monitor device if both the platform & the device support it
+ - Remove the sysfs patch: no need to duplicate /sys/class/hwmon
 
->                         hwp_mode_bdw = id->driver_data;
->                         intel_pstate.attr = hwp_cpufreq_attrs;
->                         intel_cpufreq.attr = hwp_cpufreq_attrs;
-> @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
->  
->  static int __init intel_pstate_setup(char *str)
->  {
-> +       /*
-> +        * If BIOS is forcing HWP, then parameter
-> +        * overrides might be needed. Only print
-> +        * the message once, and regardless of
-> +        * any overrides.
-> +        */
-> +       if(!hwp_active 
-This part of code is from early_param, Is it possible that 
-hwp_active is not 0?
+UFS3.0 allows using the ufs device as a temperature sensor. The purpose
+of this optional feature is to provide notification to the host of the
+UFS device case temperature. It allows reading of a rough estimate
+(+-10 degrees centigrade) of the current case temperature, and setting a
+lower and upper temperature bounds, in which the device will trigger an
+applicable exception event.
 
-> && boot_cpu_has(X86_FEATURE_HWP))
-> +               if(intel_pstate_hwp_is_enabled()){
-> +                       pr_info("HWP enabled by BIOS\n");
-> +                       hwp_active = 1;
-> +               }
->         if (!str)
->                 return -EINVAL;
->  
-> -       if (!strcmp(str, "disable"))
-> +       if (!strcmp(str, "disable") && !hwp_active)
->                 no_load = 1; 
-> -       else if (!strcmp(str, "active"))
-> +       if (!strcmp(str, "active"))
->                 default_driver = &intel_pstate;
-> -       else if (!strcmp(str, "passive"))
-> +       if (!strcmp(str, "passive"))
->                 default_driver = &intel_cpufreq;
-
-Why "else if" changed to "if" ?
-
+A previous attempt [1] tried a comprehensive approach.  Still, it was
+unsuccessful. Here is a more modest approach that introduces just the
+bare minimum to support temperature notification.
 
 Thanks,
-Srinivas
+Avri
 
-> -
-> -       if (!strcmp(str, "no_hwp")) {
-> +       if (!strcmp(str, "no_hwp") && !hwp_active) {
->                 pr_info("HWP disabled\n");
->                 no_hwp = 1;
->         }
+[1] https://lore.kernel.org/lkml/1582450522-13256-1-git-send-email-avi.shchislowski@wdc.com/
 
+Avri Altman (2):
+  scsi: ufs: Probe for temperature notification support
+  scsi: ufs: Add temperature notification exception handling
+
+ drivers/scsi/ufs/Kconfig     |  10 ++
+ drivers/scsi/ufs/Makefile    |   1 +
+ drivers/scsi/ufs/ufs-hwmon.c | 180 +++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs.h       |   8 ++
+ drivers/scsi/ufs/ufshcd.c    |  46 +++++++++
+ drivers/scsi/ufs/ufshcd.h    |  18 ++++
+ 6 files changed, 263 insertions(+)
+ create mode 100644 drivers/scsi/ufs/ufs-hwmon.c
+
+-- 
+2.17.1
 
