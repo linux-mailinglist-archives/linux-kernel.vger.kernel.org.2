@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874C7405F0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E9E405F13
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 23:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347518AbhIIVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 17:48:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40510 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbhIIVsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 17:48:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 013BE1FE36;
-        Thu,  9 Sep 2021 21:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631224015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KYEQfeb7GpLEDCgtN3fdOhil68NMIoT4dUWx2CTUaOM=;
-        b=mwMdgObUrMFZuMH9wqCZ9lISzl9lK1Y0hbHv++uVjawAgYLlNI0XNt1Dz0h3ndDAeH0r3t
-        tcEjX9lb3w2exIv3bRLS8QgPa/tyLSdwZRCgC55v77nVTktzU/9JMBEA4qkS9dUOBc+0Jj
-        DNw7dfW383AesXmiJ7UjCiECRX+V9BI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631224015;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KYEQfeb7GpLEDCgtN3fdOhil68NMIoT4dUWx2CTUaOM=;
-        b=4YH6kkMWx6y1VDuFj5jpY4ZACjleOt5hnhQ+r+csyCYbHdrqNQdFQF/xVswSadDeshciNc
-        NcCbO0zK2vS8ldDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87A9113CDF;
-        Thu,  9 Sep 2021 21:46:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id csSOFM6AOmGAbwAAMHmgww
-        (envelope-from <ematsumiya@suse.de>); Thu, 09 Sep 2021 21:46:54 +0000
-From:   Enzo Matsumiya <ematsumiya@suse.de>
-To:     linux-cifs@vger.kernel.org
-Cc:     pc@cjr.nz, Enzo Matsumiya <ematsumiya@suse.de>,
-        Steve French <sfrench@samba.org>,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] cifs: properly invalidate cached root handle when closing it
-Date:   Thu,  9 Sep 2021 18:46:45 -0300
-Message-Id: <20210909214646.8790-1-ematsumiya@suse.de>
-X-Mailer: git-send-email 2.33.0
+        id S1347878AbhIIVtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 17:49:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232371AbhIIVtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 17:49:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB10B61131;
+        Thu,  9 Sep 2021 21:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631224115;
+        bh=zgld0ENlJlel6GXYsTEi10TI+j+hHy9GAC9tRdTbpmU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s3gSANa5PaatYRdPl+UZjLCJtfDR2TSj6pSaJjtIlpqFpTh7mRBJ0nFYPxnZAZa/E
+         yQgCacQlbxweBMAFDhnqZGG9shtUowlzinoR/oZ6TYrlzs6BuKAQVeJJVINzvnWqbl
+         ElhkbozbzU4QKe1dXqRQtiUym0TDJD/2Y1vDx7yQlQeVJD+HOVNYsuXlZKi6rSFPLk
+         YigZKx02u/D8BEaU0qB9hyx5JG4xn9ZvaIg5+fxQG3NbqBwtMUKb4gRKfUY2rE+EXk
+         rQwInkOSDr6KsxM5E3kSfPAy0gPKuFSL516hQ6wVZslpnln6Qv6PwkJ0YNPhILyye4
+         KJeCyvCrW4hjw==
+Date:   Thu, 9 Sep 2021 14:48:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dave Ertman <david.m.ertman@intel.com>
+Cc:     davem@davemloft.net, yongxin.liu@windriver.com,
+        shiraz.saleem@intel.com, anthony.l.nguyen@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jesse.brandeburg@intel.com, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net] ice: Correctly deal with PFs that do not support
+ RDMA
+Message-ID: <20210909144833.2ca0069d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210909085612.570229-1-david.m.ertman@intel.com>
+References: <20210909085612.570229-1-david.m.ertman@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cached root file was not being completely invalidated sometimes.
+On Thu,  9 Sep 2021 01:56:12 -0700 Dave Ertman wrote:
+> There are two cases where the current PF does not support RDMA
+> functionality.  The first is if the NVM loaded on the device is set
+> to not support RDMA (common_caps.rdma is false).  The second is if
+> the kernel bonding driver has included the current PF in an active
+> link aggregate.
+> 
+> When the driver has determined that this PF does not support RDMA, then
+> auxiliary devices should not be created on the auxiliary bus.  Without
+> a device on the auxiliary bus, even if the irdma driver is present, there
+> will be no RDMA activity attempted on this PF.
+> 
+> Currently, in the reset flow, an attempt to create auxiliary devices is
+> performed without regard to the ability of the PF.  There needs to be a
+> check in ice_aux_plug_dev (as the central point that creates auxiliary
+> devices) to see if the PF is in a state to support the functionality.
+> 
+> When disabling and re-enabling RDMA due to the inclusion/removal of the PF
+> in a link aggregate, we also need to set/clear the bit which controls
+> auxiliary device creation so that a reset recovery in a link aggregate
+> situation doesn't try to create auxiliary devices when it shouldn't.
+> 
+> Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
+> Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 
-Reproducing:
-- With a DFS share with 2 targets, one disabled and one enabled
-- start some I/O on the mount
-  # while true; do ls /mnt/dfs; done
-- at the same time, disable the enabled target and enable the disabled
-  one
-- wait for DFS cache to expire
-- on reconnect, the previous cached root handle should be invalid, but
-  open_cached_dir_by_dentry() will still try to use it, but throws a
-  use-after-free warning (kref_get())
-
-Make smb2_close_cached_fid() invalidate all fields every time, but only
-send an SMB2_close() when the entry is still valid.
-
-Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
----
- fs/cifs/smb2ops.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 2dfd0d8297eb..1b9de38a136a 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -689,13 +689,19 @@ smb2_close_cached_fid(struct kref *ref)
- 		cifs_dbg(FYI, "clear cached root file handle\n");
- 		SMB2_close(0, cfid->tcon, cfid->fid->persistent_fid,
- 			   cfid->fid->volatile_fid);
--		cfid->is_valid = false;
--		cfid->file_all_info_is_valid = false;
--		cfid->has_lease = false;
--		if (cfid->dentry) {
--			dput(cfid->dentry);
--			cfid->dentry = NULL;
--		}
-+	}
-+
-+	/*
-+	 * We only check validity above to send SMB2_close,
-+	 * but we still need to invalidate these entries
-+	 * when this function is called
-+	 */
-+	cfid->is_valid = false;
-+	cfid->file_all_info_is_valid = false;
-+	cfid->has_lease = false;
-+	if (cfid->dentry) {
-+		dput(cfid->dentry);
-+		cfid->dentry = NULL;
- 	}
- }
- 
--- 
-2.33.0
-
+Why CC lkml but not CC RDMA or Leon?
