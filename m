@@ -2,254 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D44404903
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B597E404908
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbhIILNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:13:47 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:40548 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234473AbhIILNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:13:45 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 189AgCOc013638;
-        Thu, 9 Sep 2021 11:12:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=s5YNY0McrCKxdw78+dPxUNdahNLiiatDXOEv5KptOi0=;
- b=mu8hzqO/8mihBepPdyiduiGcWr360XKbfCBX0XS7+ZcVHKcJq/Cqm7c07lGcV+OFi4jp
- gXpGtJXCN/hPzpqdRSpZLuGdhTIpObDLVGKhNPVZdgqxwPNicEvUuzlCS0Lw++v858bp
- HEgCmlzo1bWYe3Me/iDRSm0EN7rRnJXVtv16Z7pxYCfYP0Yu6icMJEV0bXD77o3KYk74
- A69+vakUAeVUoyG3OFUgtCY2SjzMmiG5xs2JSVpbajvrfSiJiAG5JRa8Gzj55mpDt4wi
- xNw15OzuW0N1w7TgXBe+JEZGm7dZXtByXpufwXyjH4UXQtDCmxuj89HU1L9MYlekMTes vA== 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2042.outbound.protection.outlook.com [104.47.74.42])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3ayaf2r7w6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Sep 2021 11:12:31 +0000
+        id S235211AbhIILO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:14:29 -0400
+Received: from mail-eopbgr1310101.outbound.protection.outlook.com ([40.107.131.101]:47232
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234871AbhIILO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:14:28 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S6qhM5vQcXEsD2fCWdHqKsU0Qqn65nPgn4MCCaDOUUeW7CvsMqMqMPxvEOyamj2wuGHvb8Dd6Qb1ZnFKCgp7TNnHDHQZdYFqv3ldgRPgTeKjpE2nh4+YUQb6fqnTGqujGzVtxve9yDvIau65SjYfk+6wwOyEkS4Z+KQb5/EfoesW5OvqRcFhUnXNZsyDmNzGRx4c0a31mQgGwBzkWoqUucnIPb+hdYWZrXXsB9Fqpv3Y+7G51NmWx6MzujrskUn1B4D645n5WIUja5hiX5wqpKcG1F+kH3mea1nWJ2AtkwcoQds6j4yQYhNSQsb/ITZvGMw8FkTvF1+oj8IXYe5zfQ==
+ b=lttUntgyn0d/3lg/qolQwWAtJqtiFPAGCHtUxJDoC1YxsCT2k5E6z9lbmkKC6xAoHAxkqBWp5clXzqADNdXH1OTFJkIHf7DfVmeF4lMbuX/9kkJjI495HndIwBMbZIb2rLlP5hGupMM1E6R7wus4l65euThKn7NX3yr2qQmPsrOxeAyz7GJRTdof85BGKWMfIFzhMbCchrP1Zqsa/VRCq8GNOd0CW8+m59Qfy2UzV7V+3Y+ljPCSXl80TMhSpjZiuAolN8MZlaPa38CNJvQmF4vK4Va5X5UPdT0HIANJLgLP1e7S/19z0+8hLqJBk7TOTtkBtvTcjqHVa4KeTw3PFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=s5YNY0McrCKxdw78+dPxUNdahNLiiatDXOEv5KptOi0=;
- b=PWHgS2Vdxi99JoLjxAjc4ADSic8GKf3EGR51mrdP2MAqQNP4CY+6i1XF0W91afnHvA8E+ndiEgmXVbDohAO8Yb9zedHUWQB1uqIBy+WcW6lHKIABOoOzqmqWfsDPCR/kam39WuVIQh2cLLmv2194NHO3TvlcV7khU32Jzk+vmbvTSd3GB7fnwAZCsSmKtueAUiv55JFH5OziOMAQiOYTnGcVrA6eZ2ukVLXgmtPAtxvzpIYUMk1yeJoXm4UfI93K+DKMhgp3P+Jr4xFASyb56Dj1GDY8FutjVtVaTT9rPb/Vi+1FsGMf8UNif64E0hs8hV0gJUoF1apGcKhzqj6S+g==
+ bh=dqzHRQfMortu4DdLYW+4tZ7+lguBz0pGBRV+QuyHANU=;
+ b=fC7afgNFbL+5afoxVyZBpEgyAAwETCklU8S797Jwq10y2rLZrmr6kJhyHirJlm844PnNill7ROJCwlm9rG8iXEsR1jsEfQmLtfkKKXVwyif0AHP7EPn4yrgjUnLuQJmN7Cz7w3ISISGo4Cxoq49s0X2XT4oUL8m5M1etitWJPETaHe0Hy+gBep7g4JXZUYlQ/Qg9m54HsCmNytKg8ypmrbcclSojaq+FdvJqEhSKkbDuG883wKIV3EwddEOXkzrR2rYpLDi7GA1uY7bx3yQeUVuXSfDaUEkiwd3raWQU6YvfcmYLMIGFEqcU6ZQS5P54ZOuroOKF+k7uKnpoMO5ISg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12)
- by BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12) with
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dqzHRQfMortu4DdLYW+4tZ7+lguBz0pGBRV+QuyHANU=;
+ b=Ngv5fON5RMyv2IMUJd4p0CSLqfokRhCVCLDK5/xAMvlXgAJfsipS42AGJQEQzXKnzfEsiRVWfac/VZUvj8jnfWJfFVOZbn3wLwrzj90VZczfYI/wdnS3lkFf4vujtwMNol83z5oj1Bxvr6QYc4F9R1b9UarzjwyaWAOiPG51Wb1OqGSQu8kOgwWyVrNUijbpmiUN7bY0YJfgcWzgBm0n1Xc8HdHj812EEXifwfBom4KiTwrTxfYrKxweB2gG9DQodLjG87ja2Pv4/fz976l9Ie+ze4VZ7nqaDi/kDPPnkgfAvyoDBJp8mk/H7SxhY77hUnNHAV1DzAcUojMxog0RUA==
+Received: from HK0PR06MB3202.apcprd06.prod.outlook.com (2603:1096:203:87::17)
+ by HK0PR06MB2579.apcprd06.prod.outlook.com (2603:1096:203:6f::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.25; Thu, 9 Sep
- 2021 11:12:30 +0000
-Received: from BL1PR11MB5478.namprd11.prod.outlook.com
- ([fe80::19db:ee0e:abd0:df6d]) by BL1PR11MB5478.namprd11.prod.outlook.com
- ([fe80::19db:ee0e:abd0:df6d%8]) with mapi id 15.20.4478.025; Thu, 9 Sep 2021
- 11:12:30 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 11:13:15 +0000
+Received: from HK0PR06MB3202.apcprd06.prod.outlook.com
+ ([fe80::e129:fce0:90bf:3c79]) by HK0PR06MB3202.apcprd06.prod.outlook.com
+ ([fe80::e129:fce0:90bf:3c79%3]) with mapi id 15.20.4478.026; Thu, 9 Sep 2021
+ 11:13:15 +0000
+From:   Neal Liu <neal_liu@aspeedtech.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] memory leak in create_io_worker
-Thread-Topic: [syzbot] memory leak in create_io_worker
-Thread-Index: AQHXpQ74hjG4Ai1gV0euxmu1iU3xwaubi3YW
-Date:   Thu, 9 Sep 2021 11:12:29 +0000
-Message-ID: <BL1PR11MB5478F0F0CD982C78CA72C0EFFFD59@BL1PR11MB5478.namprd11.prod.outlook.com>
-References: <0000000000004fe6b105cb84cf1e@google.com>
-In-Reply-To: <0000000000004fe6b105cb84cf1e@google.com>
-Accept-Language: en-001, zh-CN, en-US
-Content-Language: aa
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Tao Ren <rentao.bupt@gmail.com>, BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH v3] usb: ehci: handshake CMD_RUN instead of STS_HALT
+Thread-Topic: [PATCH v3] usb: ehci: handshake CMD_RUN instead of STS_HALT
+Thread-Index: AQHXpUTHQLNMzg5Z5UqQTztzogOWBqubP/yAgABJ3iA=
+Date:   Thu, 9 Sep 2021 11:13:15 +0000
+Message-ID: <HK0PR06MB32027203A59270D0A30A855680D59@HK0PR06MB3202.apcprd06.prod.outlook.com>
+References: <20210909063652.17282-1-neal_liu@aspeedtech.com>
+ <YTmr1TCOhV39WQXQ@kroah.com>
+In-Reply-To: <YTmr1TCOhV39WQXQ@kroah.com>
+Accept-Language: en-US
+Content-Language: zh-TW
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: 09c6136c-d499-684e-4eb6-b29cef889fee
-authentication-results: syzkaller.appspotmail.com; dkim=none (message not
- signed) header.d=none;syzkaller.appspotmail.com; dmarc=none action=none
- header.from=windriver.com;
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=aspeedtech.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 04cf3819-9a7e-42bd-d427-08d97382b6e1
-x-ms-traffictypediagnostic: BL1PR11MB5478:
-x-microsoft-antispam-prvs: <BL1PR11MB5478E6641EF60906F1B09776FFD59@BL1PR11MB5478.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-office365-filtering-correlation-id: 2090bdfa-a867-40ab-eae2-08d97382d223
+x-ms-traffictypediagnostic: HK0PR06MB2579:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0PR06MB2579E55DB54F1E4483E737D580D59@HK0PR06MB2579.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9ZvsshFpW7s+aVo89OLN4uTRfIEt6vlQqFHX2TKobE/DZ5W1DuVKN8wCjzn5IV0RDKDxtmYsQIZczaAxmEvv9uA1vAs47lLoYc98sOMJou6qNOjGwB6o74or8bbBjrrEJ2nXPldbu5/UeP8IGhKfeeHOCs87r3EIXl1FK8rRQDmaG17a/JBBzT+dHhQBbrgT5ntgkYVhFadejwsLPMRd+O7YHktd/XD9QERhT9OBeGgz0VCbLy76DE04x5400xz8AWpDs5LqLTjt0DAqGeCu+9ftdx4+SNLT/4lB5SwewnNlbe1Vix7S5FMqwV1F+jo2Mw4qwEIgtqerKZq4nfj60T+AkVFNZ4iNxjNcG70JoZoQiaVmslN+ISI+H0hCgzhOMcmjZcrSYqQWNZPZzzyBxqUB4RyPsXSLz9A6fsUDpf68kCS7Xm0Og0NHaD1Aduaz/uiXNmhOzIEslRI643kpwzMh+08y1URyF7UpRMHme0BwgCDOlueZKhQuroLcpA2ScEfdhHpImcEAm/Q8H6zQtEY/nEVvOZ+TinzeTonqnmmBHUdSqnzV6Wfnv4TxWfDtag9nVj2+BP4kktBzgSsl24dOP4U5ytBb0vW0RvC5QEhfSrGwOtiMA92nsyC9P/N7Tz4ctERmh20wFfYWIl1i7lQ0HQ4JhYOkiCixAFRElz2OInyuUOuncFmAEhhiQSUsNoyXcyLJ7pmfHpWAl4Cdj32if8uPBz51Vw7gUB7UK6uqmcndogYHDi7GXph+xGHEs5BKij8Ufiu6+02d0VX6cHrRVWGLstIFfEgHR5Jodf6Xf5RUnBJsgwKLzp8DiPiO+XDFs4bso9ZKAzkGIonJOWyKQrs2vV5vW5s65pyhnDKnXV9u1DYYkKp4grGbAcTxvoJ1M/J0GG9A6vm4MjSnyQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5478.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39850400004)(376002)(346002)(71200400001)(966005)(478600001)(8936002)(6506007)(53546011)(66476007)(38100700002)(52536014)(186003)(91956017)(64756008)(66556008)(86362001)(9686003)(38070700005)(8676002)(110136005)(33656002)(316002)(122000001)(76116006)(7696005)(55016002)(66946007)(5660300002)(83380400001)(66446008)(2906002)(586874002)(99710200001)(505234006);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: KD1jRIr373laEX+ol4MUdkLKSO1KQJVYNoozJlnBpexzHp77JI1ep5NKpTIrFYNR4c0hJcWpF3LtOqM2GPDeA/SYj53wP0CPZw2dqAQ+Fdc3z0+Ryyw7I2Vyq+/Hvu8MHCBtIKlOmphDBr6iVlkX3IS8b2b+QL0Hu4M/kW8Yie65kdlrDX55exP/vyfpr/376rF6Yn3kYN6S2xOvrVkJIh9eAua3nSHkF2x2ELCaB5ZVyXG/Y2lqmJYO2bn705C1i1/BzUrsciqfm8SRn5bJASm0KzRf5yiq0/qIA9yNnFXtWdGoNiH5h+5jQUlXhZThIEO83dbtMK+bVqzTrK3hi0fpahChHRUZI7/OALFI0pjh274BfumiWHc4BVbAynsmSt2MZIMGHvG42vJQAXZFcwvdotk1Pu7Dt5kLOc2senUCD4LW/jHndDP/6tA333N0wz3is5DGYN+vtO9FKeOk4oZ8d/XWnv0djd16dSNkq3vk05EYXS2Povqk15xRWG0GAFxbAagC+d5GWV4Xtc+oUplyuDTCeIiw/1EI4c+TAvPiLAcsUbSZcevq28Jvuxy6B/fuziharPuzHz6orZ2AzwkwDCo9/Y64CNLkgMyTLDhu5HcT+Vpwg6bHwxWTKrVHPYzi69JKwQkSANrlRH4+PA1z0i3JM3cGWUHLymho/A1vAbuYGhjLM2O1y9RK+3csvwKIdCP2J6quLz7nvwqdUw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3202.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(376002)(396003)(346002)(366004)(136003)(83380400001)(7696005)(186003)(33656002)(38100700002)(52536014)(5660300002)(4326008)(86362001)(53546011)(6506007)(26005)(8676002)(55016002)(71200400001)(122000001)(6916009)(107886003)(9686003)(38070700005)(66446008)(64756008)(66946007)(66476007)(478600001)(66556008)(76116006)(316002)(54906003)(8936002)(2906002);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FpaxHUIIInA7UC9YiZP1OTSYwmDTRbTW5NsUTs0ETyBV07hb8hWvk4uuGIie?=
- =?us-ascii?Q?d+OOSeJuIwD3VjHdFBQcv/b0sKFT+WgHZIarkxMbaxIgE3J4z3ExWqDxCXFT?=
- =?us-ascii?Q?uS6u3w7ia4poLXWfGosfDBHOvwV/0q1/MtXG57Aig34WoQE1ZFXbH8xPR91k?=
- =?us-ascii?Q?3fGE6dY3FTnxKSQV8Ega8XKTssTam+ulL4fmdXvsn4C33m89K44Z8tB89ZAj?=
- =?us-ascii?Q?AkhksR8pbnrszFYpH+FfnzJrP4Td+s0InS51t/rEALzh63xPT7+dHB0fvZAO?=
- =?us-ascii?Q?OIIwCJkiaAkqkPs2YpVzYkZQZHUXPhCxgZKvWcBjlHSmCbMccQIo3YvpPxy5?=
- =?us-ascii?Q?UhlkBvAdB9eZyzvkZXBvATffg5yXAmv4jvou3ALZtywxDzpb+/m5/qO6see3?=
- =?us-ascii?Q?DjBTrwjda5x4sxqTgHtosARiQebJ3+siudVnWyVWXwTetXY1RuyV/xY31TBY?=
- =?us-ascii?Q?Y13Y1PzA1+q1oOSFyn46Z5M8/lv4qcidCkWggpSfynf9c9UuoNFyQCpRbA1q?=
- =?us-ascii?Q?S2sul49Sfw2CWvRFCykBSqbPYL4enulYh5/HZpLZZRMTMiuMkbzAzmTzOtdY?=
- =?us-ascii?Q?oJAWa98dVH8+9qKdzRl9AHWtZvZSpYsfJ2jUokmViv5kSaIu3y7mGLzGAsnY?=
- =?us-ascii?Q?dPUtHytvQ5zAGa5Rp9BdLvgy2zMnlDc2biYndZyeu+NQiKEJUUVZ0Quv4Jm8?=
- =?us-ascii?Q?Q8vB+NrwhKXTa3OyK9Y+bMTPMPnGIUodrNG84B9WfkHsY/uywQzJnDe3aOMl?=
- =?us-ascii?Q?KgWEvw0PegZdR90kD13J9hOdpTGDzWXunfcR3kfSH6SWzaUs7uqrtmdIQkq0?=
- =?us-ascii?Q?UogbGrOf3u/qbRARQLw6PUZk/FIsCuhhoPOH80TRfTiezsX/hDquRv++fsvu?=
- =?us-ascii?Q?MlTXwsmjgiTBhGpkjTcOnNAkFd0coFTL6UV9aMrkdX92m21kA/59SKzPwsp3?=
- =?us-ascii?Q?iOSziH94vkk7c/e9t1JXynGczHMnuYyvh0kAcvWVNzr7UI+5HhHOdFmWF8H8?=
- =?us-ascii?Q?009Lnk+ZAhysJM63yxV7KTZ6HHznfCqn76tzlHFCIDxsDLHHHWnBQIXONnw/?=
- =?us-ascii?Q?VsibJ3IawJSrnzfyhyxD4G4byRwZA3yRJdV+v6IAjmMDbrTdduObxQOwQaUa?=
- =?us-ascii?Q?Dj/AfBSOZO4o1zWcUDZwlilej9vbXr5qLXGVza2XppnAc6/M8jsCiE4Gae7R?=
- =?us-ascii?Q?iV70JjcX+JDOIM8D/9aQ0PrmAEFzD50L3kYmSgMed1wDvzjuDUyZSQ2b+mR1?=
- =?us-ascii?Q?nkUzum6wnI1jVlabxOLpgkgv6CAlC4Exss+sqsQ+CatHI0/rf9Izf864mlyj?=
- =?us-ascii?Q?URKwMYVPBMNJEyP4GNlnEsJ4YFz03xbJxn5qAmnc26zx4xhngcOVRuVFMnaQ?=
- =?us-ascii?Q?XinmSIQ=3D?=
-x-ms-exchange-transport-forked: True
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZWXjV5QSNIt0LAngwAQA0wUWSHBaHphFZkVlMmJiIP8Os+5KmGA1S23QJtdL?=
+ =?us-ascii?Q?vQvuhVA+wWXcmBrt0s/ska8PX/7yPrAwdAdR+a4hYyS2wbD1TFGv0ZfTktja?=
+ =?us-ascii?Q?SuXCMEKboyPk/fE+ZQnRGZINs/I5DhADXGECNNf2xjcXtgh/cjYYkVfNCvyD?=
+ =?us-ascii?Q?S/yr9FHXJ++v3z514ba2pJ5ZmRlqXMi89BLiRVOKxZtHQaYaRV7Jv8xFEBdQ?=
+ =?us-ascii?Q?DNx29aqY2UgfvblujFtmCgjkroUzaLdOwEK3ibRzJpZGDdJL4cOBs2xuuYeB?=
+ =?us-ascii?Q?lRNkO2QyMq0Zar/acPNT803PkVeZk6ULa6VcP7r8bwC2KCJpSEQcX7NtngdE?=
+ =?us-ascii?Q?oEeyv9vIglr0yjuvNuOzRYEDvdoQsuiNGWiofVhWppa02j4+K9oqi1tBr8mB?=
+ =?us-ascii?Q?yUkxRGnQFlW2UgQ985LwL6sAzTvQd2JNj8GYxu6msOrVXDqwxrYVgK60Qs34?=
+ =?us-ascii?Q?BGqiWYY+31hYkvMq8mHECwqTgsmXYqIlCjMl1aBUvSDUF1ett4QOYIlOqDXk?=
+ =?us-ascii?Q?oCDUV54MTX67xpwzbQ4KTU7zXxgY5SJy2FxZHGrsAmhynqFxTd2p5O+k99z5?=
+ =?us-ascii?Q?6K5R0fUxDrVqWHPX5mArvA8zA/1loOOglyHDET2riHoZ/1YM1KA+SByXsj49?=
+ =?us-ascii?Q?K5k0aoESLc6X9zSm3oJLNxF+G4Ii2MjkW0Rs1MAfcUJgPv+T2q2PS4uI2lev?=
+ =?us-ascii?Q?lPe6ITj3wzB3/JLvVzkof68GZuTvpBRV/kt7Rot58B+sDzMROS6VoblYka5v?=
+ =?us-ascii?Q?lDF/+MdgDesdJj3HtLwDFPBbRGyt7S3zwChg7opbdU9fzaj3f/EttR5GqJDz?=
+ =?us-ascii?Q?l/eOTU/KePOSM+dbVueBkUpL+0fZUsBEr7MKVymXq0eENgQ1wdF2qNrhY1yA?=
+ =?us-ascii?Q?41AS6CNTCDUpo2zsF3ESJcNmKlW8lJE8AcL/vlSacNHfM4xF9qe3T26mgMKg?=
+ =?us-ascii?Q?B6Iyl/SOsdaVBVut8wQxKCm85iYKzUE+w/jfFglTC4LO36mPHmvVSiEaxays?=
+ =?us-ascii?Q?u1KJwzvXur51PlZ768q+DtjX1/J0cse8EZde20ZGosQu++T3N+530yI2HoA5?=
+ =?us-ascii?Q?/scVsq5DLfuR2P4l6U+HN5JERnNUoeZMT6yWH5P6kvj2Er0ajThBvgGFeorr?=
+ =?us-ascii?Q?BE0N+QaUcFwIVO/1spI0DQrZ42J/u9v7ZOfYOZe3854WGbGVsRzWkZUn6yTr?=
+ =?us-ascii?Q?jG0zhceVRlHTj437ZFgeVaffNDg8kE+aSfDGHnprbCLZxilgqtF3B+O2l8vq?=
+ =?us-ascii?Q?m91QweERMzWDXFrzwxOqm0CrXVyH+AWYupkG3/5+vEEdZQFlUvfLJ/mDVCVG?=
+ =?us-ascii?Q?Lv8pdX59pf3uvYzhPUxDaiqL?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
+X-OriginatorOrg: aspeedtech.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5478.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04cf3819-9a7e-42bd-d427-08d97382b6e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 11:12:29.8472
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3202.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2090bdfa-a867-40ab-eae2-08d97382d223
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 11:13:15.6099
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: X/9H+QfqhVpvxgQF1LZFY+yR+l0ZgUIjwI/ny77FWK9S7swI4ciFtzngLIy4rWITOGC7DhoEIPn8n/b1YT8cAw6FUZxVRreJv6iJ5IqXnc8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5478
-X-Proofpoint-GUID: 17A6z4WXGANFx2a0NfL-OaHlndIF7ADK
-X-Proofpoint-ORIG-GUID: 17A6z4WXGANFx2a0NfL-OaHlndIF7ADK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-09_03,2021-09-09_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0 priorityscore=1501
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109090068
+X-MS-Exchange-CrossTenant-userprincipalname: bbeWmiCn6Z6S/RJFy077BUfsjV/qXXfKMVp8iqy9syN6HsK9g7Gr4lCqN0jHl0mwTENBOCms1IOEkPJEtFgcng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2579
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=0A=
-=0A=
-________________________________________=0A=
-From: syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>=0A=
-Sent: Thursday, 9 September 2021 08:09=0A=
-To: asml.silence@gmail.com; axboe@kernel.dk; io-uring@vger.kernel.org; linu=
-x-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com=0A=
-Subject: [syzbot] memory leak in create_io_worker=0A=
-=0A=
-[Please note: This e-mail is from an EXTERNAL e-mail address]=0A=
-=0A=
-Hello,=0A=
-=0A=
-syzbot found the following issue on:=0A=
-=0A=
-HEAD commit:    0bcfe68b8767 Revert "memcg: enable accounting for pollfd a.=
-.=0A=
-git tree:       upstream=0A=
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D152ccba3300000=
-=0A=
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc2f4c21cbd29de3=
-d=0A=
-dashboard link: https://syzkaller.appspot.com/bug?extid=3D65454c239241d3d64=
-7da=0A=
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils=
- for Debian) 2.35.1=0A=
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D123d31b330000=
-0=0A=
-=0A=
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:=0A=
-Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com=0A=
-=0A=
-2021/09/08 01:29:02 executed programs: 33=0A=
-2021/09/08 01:29:08 executed programs: 42=0A=
-2021/09/08 01:29:15 executed programs: 62=0A=
-2021/09/08 01:29:21 executed programs: 82=0A=
-BUG: memory leak=0A=
-unreferenced object 0xffff888126fcd6c0 (size 192):=0A=
-  comm "syz-executor.1", pid 11934, jiffies 4294983026 (age 15.690s)=0A=
-  hex dump (first 32 bytes):=0A=
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................=0A=
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................=0A=
-  backtrace:=0A=
-    [<ffffffff81632c91>] kmalloc_node include/linux/slab.h:609 [inline]=0A=
-    [<ffffffff81632c91>] kzalloc_node include/linux/slab.h:732 [inline]=0A=
-    [<ffffffff81632c91>] create_io_worker+0x41/0x1e0 fs/io-wq.c:739=0A=
-    [<ffffffff8163311e>] io_wqe_create_worker fs/io-wq.c:267 [inline]=0A=
-    [<ffffffff8163311e>] io_wqe_enqueue+0x1fe/0x330 fs/io-wq.c:866=0A=
-    [<ffffffff81620b64>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473=
-=0A=
-    [<ffffffff8162c59c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6933=0A=
-    [<ffffffff8162c7ab>] io_req_task_submit+0x4b/0xa0 fs/io_uring.c:2233=0A=
-    [<ffffffff8162cb48>] io_async_task_func+0x108/0x1c0 fs/io_uring.c:5462=
-=0A=
-    [<ffffffff816259e3>] tctx_task_work+0x1b3/0x3a0 fs/io_uring.c:2158=0A=
-    [<ffffffff81269b43>] task_work_run+0x73/0xb0 kernel/task_work.c:164=0A=
-    [<ffffffff812dcdd1>] tracehook_notify_signal include/linux/tracehook.h:=
-212 [inline]=0A=
-    [<ffffffff812dcdd1>] handle_signal_work kernel/entry/common.c:146 [inli=
-ne]=0A=
-    [<ffffffff812dcdd1>] exit_to_user_mode_loop kernel/entry/common.c:172 [=
-inline]=0A=
-    [<ffffffff812dcdd1>] exit_to_user_mode_prepare+0x151/0x180 kernel/entry=
-/common.c:209=0A=
-    [<ffffffff843ff25d>] __syscall_exit_to_user_mode_work kernel/entry/comm=
-on.c:291 [inline]=0A=
-    [<ffffffff843ff25d>] syscall_exit_to_user_mode+0x1d/0x40 kernel/entry/c=
-ommon.c:302=0A=
-    [<ffffffff843fa4a2>] do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86=
-=0A=
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae=0A=
-=0A=
-=0A=
-=0A=
-Hello Pavel=0A=
-=0A=
-This looks like  io-worker create fail trigger memleak. =0A=
-=0A=
-diff --git a/fs/io-wq.c b/fs/io-wq.c=0A=
-index 35e7ee26f7ea..27fa0506c1a6 100644=0A=
---- a/fs/io-wq.c=0A=
-+++ b/fs/io-wq.c=0A=
-@@ -709,6 +709,7 @@ static void create_worker_cont(struct callback_head *cb=
-)=0A=
-                }=0A=
-                raw_spin_unlock(&wqe->lock);=0A=
-                io_worker_ref_put(wqe->wq);=0A=
-+               kfree(worker);=0A=
-                return;=0A=
-        }=0A=
-=0A=
-@@ -725,6 +726,7 @@ static void io_workqueue_create(struct work_struct *wor=
-k)=0A=
-        if (!io_queue_worker_create(worker, acct, create_worker_cont)) {=0A=
-                clear_bit_unlock(0, &worker->create_state);=0A=
-                io_worker_release(worker);=0A=
-+               kfree(worker);=0A=
-        }=0A=
- }=0A=
-=0A=
-@@ -759,6 +761,7 @@ static bool create_io_worker(struct io_wq *wq, struct i=
-o_wqe *wqe, int index)=0A=
-        if (!IS_ERR(tsk)) {=0A=
-                io_init_new_worker(wqe, worker, tsk);=0A=
-        } else if (!io_should_retry_thread(PTR_ERR(tsk))) {=0A=
-+               kfree(worker);=0A=
-=0A=
-=0A=
-=0A=
-=0A=
-=0A=
----=0A=
-This report is generated by a bot. It may contain errors.=0A=
-See https://goo.gl/tpsmEJ for more information about syzbot.=0A=
-syzbot engineers can be reached at syzkaller@googlegroups.com.=0A=
-=0A=
-syzbot will keep track of this issue. See:=0A=
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.=0A=
-syzbot can test patches for this issue, for details see:=0A=
-https://goo.gl/tpsmEJ#testing-patches=0A=
+> -----Original Message-----
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Sent: Thursday, September 9, 2021 2:38 PM
+> To: Neal Liu <neal_liu@aspeedtech.com>
+> Cc: Alan Stern <stern@rowland.harvard.edu>; Tony Prisk
+> <linux@prisktech.co.nz>; linux-usb@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Tao R=
+en
+> <rentao.bupt@gmail.com>; BMC-SW <BMC-SW@aspeedtech.com>
+> Subject: Re: [PATCH v3] usb: ehci: handshake CMD_RUN instead of STS_HALT
+>=20
+> On Thu, Sep 09, 2021 at 02:36:52PM +0800, Neal Liu wrote:
+
+Fix STS_HALT handshake failure for Aspeed 2500/2600 platform.
+
+Change since v2:
+- Use my "real" name for both the Signed-off-by: line and the From: line.
+
+Change since v1:
+- Handshake CMD_RUN status on startup instead of easily skip it.
+
+---
+> > For Aspeed, HCHalted status depends on not only Run/Stop but also
+> > ASS/PSS status.
+> > Handshake CMD_RUN on startup instead.
+> >
+> > Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
+> > Acked-by: Alan Stern <stern@rowland.harvard.edu>
+> > Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+> > Tested-by: Tao Ren <rentao.bupt@gmail.com>
+> >
+> > ---
+> >  drivers/usb/host/ehci-hcd.c      | 11 ++++++++++-
+> >  drivers/usb/host/ehci-platform.c |  6 ++++++
+> >  drivers/usb/host/ehci.h          |  1 +
+> >  3 files changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+> > index 10b0365f3439..01c022e46aa2 100644
+> > --- a/drivers/usb/host/ehci-hcd.c
+> > +++ b/drivers/usb/host/ehci-hcd.c
+> > @@ -634,7 +634,16 @@ static int ehci_run (struct usb_hcd *hcd)
+> >  	/* Wait until HC become operational */
+> >  	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
+> >  	msleep(5);
+> > -	rc =3D ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1=
+000);
+> > +
+> > +	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
+> > +	 * Skip this check on startup.
+> > +	 */
+> > +	if (ehci->is_aspeed)
+> > +		rc =3D ehci_handshake(ehci, &ehci->regs->command, CMD_RUN,
+> > +				    1, 100 * 1000);
+> > +	else
+> > +		rc =3D ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
+> > +				    0, 100 * 1000);
+> >
+> >  	up_write(&ehci_cf_port_reset_rwsem);
+> >
+> > diff --git a/drivers/usb/host/ehci-platform.c
+> > b/drivers/usb/host/ehci-platform.c
+> > index c70f2d0b4aaf..c3dc906274d9 100644
+> > --- a/drivers/usb/host/ehci-platform.c
+> > +++ b/drivers/usb/host/ehci-platform.c
+> > @@ -297,6 +297,12 @@ static int ehci_platform_probe(struct
+> platform_device *dev)
+> >  					  "has-transaction-translator"))
+> >  			hcd->has_tt =3D 1;
+> >
+> > +		if (of_device_is_compatible(dev->dev.of_node,
+> > +					    "aspeed,ast2500-ehci") ||
+> > +		    of_device_is_compatible(dev->dev.of_node,
+> > +					    "aspeed,ast2600-ehci"))
+> > +			ehci->is_aspeed =3D 1;
+> > +
+> >  		if (soc_device_match(quirk_poll_match))
+> >  			priv->quirk_poll =3D true;
+> >
+> > diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h index
+> > 80bb823aa9fe..fdd073cc053b 100644
+> > --- a/drivers/usb/host/ehci.h
+> > +++ b/drivers/usb/host/ehci.h
+> > @@ -219,6 +219,7 @@ struct ehci_hcd {			/* one per controller */
+> >  	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
+> >  	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
+> >  	unsigned		spurious_oc:1;
+> > +	unsigned		is_aspeed:1;
+> >
+> >  	/* required for usb32 quirk */
+> >  	#define OHCI_CTRL_HCFS          (3 << 6)
+> > --
+> > 2.17.1
+> >
+>=20
+> Hi,
+>=20
+> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> a patch that has triggered this response.  He used to manually respond
+> to these common problems, but in order to save his sanity (he kept
+> writing the same thing over and over, yet to different people), I was
+> created.  Hopefully you will not take offence and will fix the problem
+> in your patch and resubmit it so that it can be accepted into the Linux
+> kernel tree.
+>=20
+> You are receiving this message because of the following common error(s)
+> as indicated below:
+>=20
+> - You did not specify a description of why the patch is needed, or
+>   possibly, any description at all, in the email body.  Please read the
+>   section entitled "The canonical patch format" in the kernel file,
+>   Documentation/SubmittingPatches for what is needed in order to
+>   properly describe the change.
+>=20
+> - This looks like a new version of a previously submitted patch, but you
+>   did not list below the --- line any changes from the previous version.
+>   Please read the section entitled "The canonical patch format" in the
+>   kernel file, Documentation/SubmittingPatches for what needs to be done
+>   here to properly describe this.
+>=20
+> If you wish to discuss this problem further, or you have questions about
+> how to resolve this issue, please feel free to respond to this email and
+> Greg will reply once he has dug out from the pending patches received
+> from other developers.
+>=20
+> thanks,
+>=20
+> greg k-h's patch email bot
+
+Do you prefer fixing canonical patch format inline or sending new patch v4?
+I added more description and the changes from previous version.
+
+Thanks
+
+-Neal
