@@ -2,84 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F9405C8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2071F405C92
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242736AbhIISGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:06:17 -0400
-Received: from smtprelay07.ispgateway.de ([134.119.228.97]:11510 "EHLO
-        smtprelay07.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237229AbhIISGQ (ORCPT
+        id S243363AbhIISGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:06:31 -0400
+Received: from relay05.th.seeweb.it ([5.144.164.166]:42819 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243307AbhIISG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:06:16 -0400
-Received: from [87.92.210.171] (helo=lumip-notebook.fritz.box)
-        by smtprelay07.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <lumip@lumip.de>)
-        id 1mOOPx-0004df-UV; Thu, 09 Sep 2021 20:04:58 +0200
-From:   Lukas Prediger <lumip@lumip.de>
-To:     phil@philpotter.co.uk
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lumip@lumip.de
-Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change detection
-Date:   Thu,  9 Sep 2021 21:04:28 +0300
-Message-Id: <20210909180427.8100-1-lumip@lumip.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YTlMnjyIMHHIGiPe@equinox>
-References: <YTlMnjyIMHHIGiPe@equinox>
+        Thu, 9 Sep 2021 14:06:29 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 409213EBAE;
+        Thu,  9 Sep 2021 20:05:13 +0200 (CEST)
+Subject: Re: [PATCH v2] arm64: dts: qcom: pmi8998: Add node for WLED
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org
+References: <20210909123628.365968-1-angelogioacchino.delregno@somainline.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <562d931e-b267-89e5-3c8f-1f075897bed4@somainline.org>
+Date:   Thu, 9 Sep 2021 20:05:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
+In-Reply-To: <20210909123628.365968-1-angelogioacchino.delregno@somainline.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Phil,
-
-thanks for taking the time to look at this and give feedback.
-
-> Dear Lukas,
->
-> Thank you for the patch, much appreciated and looks great. One very
-> minor thing though has jumped out at me after running checkpatch though:
->
-> > --- a/include/uapi/linux/cdrom.h
-> > +++ b/include/uapi/linux/cdrom.h
-> > @@ -147,6 +147,8 @@
-> >  #define CDROM_NEXT_WRITABLE  0x5394  /* get next writable block */
-> >  #define CDROM_LAST_WRITTEN   0x5395  /* get last block written on disc */
-> >
-> > +#define CDROM_TIMED_MEDIA_CHANGE   0x5396  /* get the timestamp of the last media change */
-> > +
-> >  /*******************************************************
-> >   * CDROM IOCTL structures
-> >   *******************************************************/
-> > @@ -295,6 +297,19 @@ struct cdrom_generic_command
-> >       };
-> >  };
-> >
-> > +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
-> > +struct cdrom_timed_media_change_info
-> > +{
->
-> This opening brace should be on the same line as the struct definition
-> as per current style rules.
-
-I also noted that checkpatch reported this and that it is technically a style breach,
-however I kept the brace in the newline to be consistent with all the other
-cdrom ioctl structs defined above this in the same file for consistency.
-I have no strong feelings about this, though, so we could change this.
-
-> I also got a checkpatch warning about ENOSYS being used as an error
-> value, but I can see this usage is standard in the driver and not a
-> problem so no issue with that.
+Il 09/09/21 14:36, AngeloGioacchino Del Regno ha scritto:
+> The PMI8998 PMIC has a WLED backlight controller, which is used on
+> most MSM8998 and SDM845 based devices: add a base configuration for
+> it and keep it disabled.
 > 
-> I will review and test properly after work tomorrow (being new to the
-> role I'd like to make sure I'm taking the proper time), but I have no
-> doubt it will work fine. Assuming it does I will be happy to accept the
-> patch with the above brace change. Thanks again.
-> Regards,
-> Phil
+> This contains only the PMIC specific configuration that does not
+> change across boards; parameters like number of strings, OVP and
+> current limits are product specific and shall be specified in the
+> product DT in order to achieve functionality.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-Best regards,
-Lukas
+P.S.: I forgot to add a note to this patch. The reason for sending a v2
+is that in v1 I had a bad signoff (was using my old email).
+
