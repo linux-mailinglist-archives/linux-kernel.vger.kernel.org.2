@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B2F40495A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59CE404961
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhIILgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S235895AbhIILi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhIILf7 (ORCPT
+        with ESMTP id S234507AbhIILi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:35:59 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870DCC061575;
-        Thu,  9 Sep 2021 04:34:50 -0700 (PDT)
-Received: from localhost (unknown [149.11.102.75])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 74FA34F288FA9;
-        Thu,  9 Sep 2021 04:34:47 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 12:34:42 +0100 (BST)
-Message-Id: <20210909.123442.1648633411296774237.davem@davemloft.net>
-To:     linux@roeck-us.net
-Cc:     ajk@comnets.uni-bremen.de, kuba@kernel.org,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: 6pack: Fix tx timeout and slot time
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210909035743.1247042-1-linux@roeck-us.net>
-References: <20210909035743.1247042-1-linux@roeck-us.net>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 09 Sep 2021 04:34:48 -0700 (PDT)
+        Thu, 9 Sep 2021 07:38:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6464AC061575;
+        Thu,  9 Sep 2021 04:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fPS8ABV3p1/Cc6qzU5y4vmmF2vrRk2q/3Li1BJ3OVOY=; b=H+oBGp3JjF8wCD9YKCIWRjD64D
+        c60kA8H4/8JfQVuMOPr92UZYsMgK52eScn3cIUBTeoQegGP9sC+esrf01Ayo532kOnaRWDsJfxX34
+        tQYy9TkblQiC3kXLfKE4W0NHrOuZU1vDOmi3lKigJ4Dk8VFULHA5N/FFYfQc4vZWozbvNcRRIybaV
+        BIW6H8sO1w4QetEH/L5auibNq8VcVVWR6NYM0x31uxGCIot9ez9zRri0dmFrj9LfGnPqsfvmONPgf
+        EqlbuknP5VNqDpcMZWYZ+hyTF8H3hBNHcpd9AlkLwkYE/8cRbPdxd5mVc1xKKMSdT9oxesP+cN5BE
+        KAB524LA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOILm-009lu0-R5; Thu, 09 Sep 2021 11:36:19 +0000
+Date:   Thu, 9 Sep 2021 12:36:14 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 17/19] gup: Introduce FOLL_NOFAULT flag to disable
+ page faults
+Message-ID: <YTnxruxm/xA/BBmQ@infradead.org>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-18-agruenba@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827164926.1726765-18-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Wed,  8 Sep 2021 20:57:43 -0700
+On Fri, Aug 27, 2021 at 06:49:24PM +0200, Andreas Gruenbacher wrote:
+> Introduce a new FOLL_NOFAULT flag that causes get_user_pages to return
+> -EFAULT when it would otherwise trigger a page fault.  This is roughly
+> similar to FOLL_FAST_ONLY but available on all architectures, and less
+> fragile.
 
-> tx timeout and slot time are currently specified in units of HZ.
-> On Alpha, HZ is defined as 1024. When building alpha:allmodconfig,
-> this results in the following error message.
-> 
-> drivers/net/hamradio/6pack.c: In function 'sixpack_open':
-> drivers/net/hamradio/6pack.c:71:41: error:
-> 	unsigned conversion from 'int' to 'unsigned char'
-> 	changes value from '256' to '0'
-> 
-> In the 6PACK protocol, tx timeout is specified in units of 10 ms
-> and transmitted over the wire. Defining a value dependent on HZ
-> doesn't really make sense. Assume that the intent was to set tx
-> timeout and slot time based on a HZ value of 100 and use constants
-> instead of values depending on HZ for SIXP_TXDELAY and SIXP_SLOTTIME.
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> No idea if this is correct or even makes sense. Compile tested only.
+So, FOLL_FAST_ONLY only has one single user through
+get_user_pages_fast_only (pin_user_pages_fast_only is entirely unused,
+which makes totally sense given that give up on fault and pin are not
+exactly useful semantics).
 
-These are timer offsets so they have to me HZ based.  Better to make the
-structure members unsigned long, I think.
+But it looks like they want to call it from atomic context, so we can't
+really share it.  Sight, I hate all these single-user FOLL flags that
+make gup.c a complete mess.
 
-Thanks.
-
+But otherwise this looks fine.
