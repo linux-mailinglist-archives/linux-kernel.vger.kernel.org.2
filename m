@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A929404264
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B74404271
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348911AbhIIAul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        id S1348893AbhIIA4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348785AbhIIAue (ORCPT
+        with ESMTP id S1348811AbhIIA4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:50:34 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A47C061575;
-        Wed,  8 Sep 2021 17:49:25 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id v123so224288pfb.11;
-        Wed, 08 Sep 2021 17:49:25 -0700 (PDT)
+        Wed, 8 Sep 2021 20:56:37 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F48C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:55:28 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id n18so2365225plp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:55:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=jygdQMiPw131dCidRv/jbT/kjv2witVO1njP9GetZBY=;
-        b=ZU8FJrSTcKYVKDe1tUi6qYJRXLs5jeU0/VwMq3Nyy1VWNS8ZTcEuz2gI5M8h6Qvt6e
-         xUMN6ndZ9wvLcwulHqVnV0OB92+VVZaYzndh9j0D1IhbYPoIbMgTkzd5IbPvd9/NU3l7
-         8JeKMKdygrfcaFuIY6s0RQwoqiERSBUAMmLWeoepRNey/pXInd1ktZ+1O63P5fcdIRBD
-         AWaGlIGuco0uW+kKFy7KUTiZtiCj7WgoduM3KFFBF2S40rPJt2IwSlv8dyrE4GKnh03r
-         dEKOTPuxjpDR9VUpwFse6wtH2y6ExUyD+CG0bJCJ168O5gjfW31oWwDhcKHVnJy1vMZ1
-         Ri3A==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EAwI9xKTqeHWChHWhRhYTeBipS4ZF/kZaxQsB1p1X8Q=;
+        b=OibT8iqWnv9BI2GQFDg0FNJCIef2vX5j7r9atqElzLhKKnlOKXCxJHWsLuHsdjQtTn
+         lMKw88jZ5Pzft7mqJ6XUCoKEy+r50qK+nC0xKdA1d5Y6+yb6hjEasvXJ8BMOkpQr9h/H
+         PMWdO+/SEaqoGTwkl5AaOYk5WAOU7nV0/Zw30J/gZvv3qfkRcSBhsp1aShmMiNiIJ75G
+         0wlPgtsGqrxbe2tH+7wywKpkl6vW9sjbtHy4AsYcwLnb9ipxep24Q9XvB4oVB7DV5YtP
+         AgFHB1DtaeKfGG9JsWX7U1iifJ69dFWtGZGisP+Aoqn3bbOUuneXlt3/00zxTJdxRfY6
+         hHgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jygdQMiPw131dCidRv/jbT/kjv2witVO1njP9GetZBY=;
-        b=FYnW0GwFDhKyQfOciI885y2ttbCrK4zhEKuvsAqMkwLUNs+tOrmtZCO54Tr9jHXi8I
-         KbZJ+T5vx+mtphvftGeS0GQZhRlQ89/4bE/PZ2cKPdvykWghk3UCwt4jXRCyM60FL5uy
-         r44oJWIW4pqUOkvpREe1N1hORvXZigvyVn/wLIsMj2Mw4sI/C2pmdVlyeyvuGFfOiM5U
-         V4wxyLm5qoI3Wy8MgIzrCkPYYYsd3Mvj562PcOli76wXetKy3InBr1npvgQH/tlx1v3x
-         WYNBb7wpGagElc3HeTPgkGRokQrhjo3qHTEw9y5bCicH2OWSE1vqW3ieaujU3EDbxUs/
-         cujQ==
-X-Gm-Message-State: AOAM533GPbiA7L0yIEF3EqUGGsveI5M6qmssHIyQZsoTSGPFDaALvpD5
-        TV/iSytN6abb/5eoyKzsfNQ=
-X-Google-Smtp-Source: ABdhPJwQ+TEB1BgDArhmskEEy0wdi/R4u1f+o1NxVCZqbwAWoua+WjrLwCkiUC3Ae7n3FWbTogDH4w==
-X-Received: by 2002:a63:2047:: with SMTP id r7mr183578pgm.398.1631148565119;
-        Wed, 08 Sep 2021 17:49:25 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y11sm77788pfl.198.2021.09.08.17.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 17:49:23 -0700 (PDT)
-Message-ID: <7e59ae19-ffba-9515-c6a9-c413bb89d240@gmail.com>
-Date:   Wed, 8 Sep 2021 17:49:17 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EAwI9xKTqeHWChHWhRhYTeBipS4ZF/kZaxQsB1p1X8Q=;
+        b=r4rLarCN4PDQ4cHCOqUnBBc5NIyuVyt/W4kupKiqe4DVJ4VANvTX3o6bR4iAvc1D/X
+         V1GBt8/w/U8eOXFzUt+Ee4q5HTDmFcb9FEjmzwODsqecEnEYfZV+8qI4EMMxLXcd7P75
+         Tkje0wUkY6kDUDCGcZpW3FwVypcfijuSywFVEsYxzZFjwhZF7jPStgJFHOIDJqtf5+Tf
+         EuMapzRqdLO2qgg25VTuOQf+PaVstJxrfQ4loL4fCDLhstT/LzK6bjtfse4sNZ11m8DI
+         NYFsrs+okllBhuiRYDluR1STk8Q3lt17fpdwHWVbSjnysApFiBqsB3wwuQ+OiM1n2axq
+         7tkQ==
+X-Gm-Message-State: AOAM532wYtkdLrebzGm3ewwrUUvzQeLBYVpjsv4YVOjGD3Ta+GUQw/UF
+        62RDH32r545GnSi9nzMp8644xmIWqj2Mhg==
+X-Google-Smtp-Source: ABdhPJyPH0BiF68HweszYajAaQyBaXsTRL3oeWVKBFhlxm1Qrf3xmq+mF6xMbTEBWP26wts7TgHVhg==
+X-Received: by 2002:a17:90a:f18d:: with SMTP id bv13mr464518pjb.70.1631148927962;
+        Wed, 08 Sep 2021 17:55:27 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x189sm93375pfc.52.2021.09.08.17.55.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 17:55:27 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 00:55:23 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jim Mattson <jmattson@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v2 2/3] KVM: x86: force PDPTRs reload on SMM exit
+Message-ID: <YTlbeylHFkr9/8ES@google.com>
+References: <20210823114618.1184209-1-mlevitsk@redhat.com>
+ <20210823114618.1184209-3-mlevitsk@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Circular dependency between DSA switch driver and tagging
- protocol driver
-Content-Language: en-US
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210908220834.d7gmtnwrorhharna@skbuf>
- <e0567cfe-d8b6-ed92-02c6-e45dd108d7d7@gmail.com>
- <20210909002601.mtesy27atk7cuyeo@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210909002601.mtesy27atk7cuyeo@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823114618.1184209-3-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/8/2021 5:26 PM, Vladimir Oltean wrote:
-> On Wed, Sep 08, 2021 at 03:14:51PM -0700, Florian Fainelli wrote:
->>> Where is the problem?
->>
->> I'd say with 994d2cbb08ca, since the tagger now requires visibility into
->> sja1105_switch_ops which is not great, to say the least. You could solve
->> this by:
->>
->> - splitting up the sja1150 between a library that contains
->> sja1105_switch_ops and does not contain the driver registration code
+On Mon, Aug 23, 2021, Maxim Levitsky wrote:
+> KVM_REQ_GET_NESTED_STATE_PAGES is also used with VM entries that happen
+> on exit from SMM mode, and in this case PDPTRS must be always reloaded.
 > 
-> I've posted patches which more or less cheat the dependency by creating
-> a third module, as you suggest. The tagging protocol still depends on
-> the main module, now sans the call to dsa_register_switch, that is
-> provided by the third driver, sja1105_probe.ko, which as the name
-> suggests probes the hardware. The sja1105_probe.ko also depends on
-> sja1105.ko, so the insmod order needs to be:
+> Thanks to Sean Christopherson for pointing this out.
 > 
-> insmod sja1105.ko
-> insmod tag_sja1105.ko
-> insmod sja1105_probe.ko
+> Fixes: 0f85722341b0 ("KVM: nVMX: delay loading of PDPTRs to KVM_REQ_GET_NESTED_STATE_PAGES")
 > 
-> I am not really convinced that this change contributes to the overall
-> code organization and structure.
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index fada1055f325..4194fbf5e5d6 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7504,6 +7504,13 @@ static int vmx_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+>  	}
+>  
+>  	if (vmx->nested.smm.guest_mode) {
+> +
+> +		/* Exit from the SMM to the non root mode also uses
 
-Yes, I don't really like it either, maybe we do need to resolve the 
-other dependency created with 566b18c8b752 with a function 
-pointer/indirect call that gets resolved at run-time, assuming the 
-overhead is acceptable.
+Just "Exit from SMM to non-root mode", i.e. drop the "the".
 
-> 
->> - finding a different way to do a dsa_switch_ops pointer comparison, by
->> e.g.: maintaining a boolean in dsa_port that tracks whether a particular
->> driver is backing that port
-> 
-> Maybe I just don't see how this would scale. So to clarify, are you
-> suggesting to add a struct dsa_port :: bool is_sja1105, which the
-> sja1105 driver would set to true in sja1105_setup?
+Multi-line comments should look like:
 
-Not necessarily something that is sja1105 specific, but something that 
-indicates whether the tagger is operating with its intended switch 
-driver, or with a "foreign" switch driver (say: dsa_loop for instance).
+		/*
+		 * Exit from SMM ...
 
-> 
-> If this was not a driver I would be maintaining, just watching as a
-> reviewer, I believe "no" is what I would say to that.
-> 
+though oddly checkpatch doesn't complain about that.
 
--- 
-Florian
+That said, for the comment, it'd be more helpful to explain why the PDPTRs should
+not come from userspace.  Something like:
+
+		/*
+		 * Always reload the guest's version of the PDPTRs when exiting
+		 * from SMM to non-root.  If KVM_SET_SREGS2 stuffs PDPTRs while
+		 * SMM is active, that state is specifically for SMM context.
+		 * On RSM, all guest state is pulled from its architectural
+		 * location, whatever that may be.
+		 */
+
+Though typing that makes me wonder if this is fixing the wrong thing.  It seems
+like pdptrs_from_userspace shouldn't be set when SMM is active, though I suppose
+there's a potential ordering issue between KVM_SET_SREGS2 and KVM_SET_VCPU_EVENTS.
+Bummer.
+
+> +		 * the KVM_REQ_GET_NESTED_STATE_PAGES request,
+> +		 * but in this case the pdptrs must be always reloaded
+> +		 */
+> +		vcpu->arch.pdptrs_from_userspace = false;
+> +
+>  		ret = nested_vmx_enter_non_root_mode(vcpu, false);
+>  		if (ret)
+>  			return ret;
+> -- 
+> 2.26.3
+> 
