@@ -2,198 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2D6405C2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE37405C31
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242133AbhIIRfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242053AbhIIRfg (ORCPT
+        id S241335AbhIIRiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:38:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25171 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236506AbhIIRit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:35:36 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB59C061574;
-        Thu,  9 Sep 2021 10:34:26 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v10so3696433wrd.4;
-        Thu, 09 Sep 2021 10:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8KLun7Ei+AEx9Vr5QQ/kMvRq0vvOfJOr5R+Gkw8p2Xc=;
-        b=NH3wiBIt1oeM7w7zRzQdTqXaZsvgnyhiF0yawGMNafy6xHr5GslmvsHdEywkf6mQnX
-         BrLuFDsWpOrX/vaUMnTbBAlCoXNO/H47VkwSzTDTs24OUfC6Sek5AiqlS+WvjwIaXDbS
-         jTmBJL2OcfjiaGTwLdE9E0R7s3tCKsFATpDjydN46/uFM/wP620J7N3nDBG2GTka+AFY
-         mBE0+4q9bQes7RA9WWVBg8QWp/o5u09H9jH6qRqiHenvfX+UNlO/mUqUlp3ZLYRzwdKY
-         5UvK1d62XROS7QiX/sgZi5sW1XuPMyJt9uttLPcR1hcKCxSRP8r0Q550RRS15i4C6IgR
-         k23g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8KLun7Ei+AEx9Vr5QQ/kMvRq0vvOfJOr5R+Gkw8p2Xc=;
-        b=ORaiaDKAhoc/FJ3S0CfcYLIRpO+1bhE7cAdTKE7ZoWhKv4m72Hv5LXJCXt+10cJss+
-         GoZ7/XhfTAHSCYfyioCuH8izrkXc++SoFh59fTRGMWNDjPXwB3N/hNKG119CZNdpIIY9
-         3RIjgWLjoEWo282JCGYWZUmW7UtYHLpaY/P7A8rr5NhF8pTAnx77JqYhhTVC3EQf55bT
-         qSaUvSuBNq8ZUUQm+N2OLOt/NqnJLnKLMqNJyNfeIlJGIPgeSBSt/PyHG/II3Bj9xPL0
-         4tNfFBkZuztHZpxjT8Vv4UMMYsbuRbsFs/KzuD/XIN2QAvHSsf8cRu3t33QNyDKvROPx
-         aNjQ==
-X-Gm-Message-State: AOAM532QEtzsg3IgOQTWhzpHef+OIg7b5KhKKAx8rGB+zhvt3ZRo8Slv
-        ALzFGp/lDDftuk5zGF4c2YnqtZ43mQc=
-X-Google-Smtp-Source: ABdhPJzEijmbnKeGcQ5049hWwwmLcVwXqgP65w8g6NW08SoxEfFjN8r/OF/H1lSmCRdYIVDjEyE/hw==
-X-Received: by 2002:adf:dd10:: with SMTP id a16mr5142993wrm.281.1631208865084;
-        Thu, 09 Sep 2021 10:34:25 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id s15sm2287670wrb.22.2021.09.09.10.34.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 10:34:24 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] pwm: Changes for v5.15-rc1
-Date:   Thu,  9 Sep 2021 19:34:20 +0200
-Message-Id: <20210909173420.3551559-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 9 Sep 2021 13:38:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631209060; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=PTKwND18GTvzMXMd9Pj/sAGi6KOZ6yqrs5Kgcg+92QE=; b=Ntr5CVIDP4iK4q0nqUZ+kIy97zwJvvH6EmoLTrPbeCT3xtARZy9/hToaifZJuA3X/EXANJvB
+ fs74uOvBrvvf5KzH8NMxQ2ylsXJPVlSrgVUZsqJynCu0RymTFPVv0mCbNKEOlze7t5ymJOp3
+ g2IIBB85sjFMcIRGEFxlnsa3IL0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 613a4649aa8996eab70cee37 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 17:37:13
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 50E10C43618; Thu,  9 Sep 2021 17:37:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6290C4338F;
+        Thu,  9 Sep 2021 17:37:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B6290C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Date:   Thu, 9 Sep 2021 10:37:09 -0700
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Benson Leung <bleung@google.com>
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-pm@vger.kernel.org, bleung@chromium.org,
+        heikki.krogerus@linux.intel.com, badhri@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [RFC PATCH 1/3] usb: pd: Increase max PDO objects to 13
+Message-ID: <20210909173709.GB20111@jackp-linux.qualcomm.com>
+References: <20210902213500.3795948-1-pmalani@chromium.org>
+ <20210902213500.3795948-2-pmalani@chromium.org>
+ <20210903064701.GA3515@jackp-linux.qualcomm.com>
+ <YTf1tTvfEMzTawwK@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTf1tTvfEMzTawwK@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Benson,
 
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
+On Tue, Sep 07, 2021 at 04:28:53PM -0700, Benson Leung wrote:
+> Hi Jack,
+> 
+> On Thu, Sep 02, 2021 at 11:47:01PM -0700, Jack Pham wrote:
+> > Hi Prashant,
+> > 
+> > On Thu, Sep 02, 2021 at 02:34:58PM -0700, Prashant Malani wrote:
+> > > Increase the max number of PDO objects to 13, to accommodate the extra
+> > > PDOs added as a part of EPR (Extended Power Range) operation introduced
+> > > in the USB PD Spec Rev 3.1, v 1.0. See Figure 6-54 for details.
+> > > 
+> > > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > > ---
+> > >  include/linux/usb/pd.h | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
+> > > index 96b7ff66f074..7e8bdca1ce6e 100644
+> > > --- a/include/linux/usb/pd.h
+> > > +++ b/include/linux/usb/pd.h
+> > > @@ -201,7 +201,13 @@ struct pd_message {
+> > >  } __packed;
+> > >  
+> > >  /* PDO: Power Data Object */
+> > > -#define PDO_MAX_OBJECTS		7
+> > > +
+> > > +/*
+> > > + * The EPR (Extended Power Range) structure is a superset of the SPR (Standard Power Range)
+> > > + * capabilities structure, so set the max number of PDOs to 13 instead of 7. On SPR-only systems,
+> > > + * objects 8 through 13 will just be empty.
+> > > + */
+> > > +#define PDO_MAX_OBJECTS		13
+> > 
+> > Hmm this might break the recent change I made to UCSI in commit
+> > 1f4642b72be7 ("usb: typec: ucsi: Retrieve all the PDOs instead of just
+> > the first 4").
+> > 
+> >  520 static void ucsi_get_src_pdos(struct ucsi_connector *con, int is_partner)
+> >  521 {
+> >  522         int ret;
+> >  523
+> >  524         /* UCSI max payload means only getting at most 4 PDOs at a time */
+> >  525         ret = ucsi_get_pdos(con, 1, con->src_pdos, 0, UCSI_MAX_PDOS);
+> >  526         if (ret < 0)
+> >  527                 return;
+> >  528
+> >  529         con->num_pdos = ret / sizeof(u32); /* number of bytes to 32-bit PDOs */
+> >  530         if (con->num_pdos < UCSI_MAX_PDOS)
+> >  531                 return;
+> >  532
+> >  533         /* get the remaining PDOs, if any */
+> >  534         ret = ucsi_get_pdos(con, 1, con->src_pdos, UCSI_MAX_PDOS,
+> >  535                             PDO_MAX_OBJECTS - UCSI_MAX_PDOS);
+> > 				 ^^^^^^^^^^^^^^^
+> > This routine calls the UCSI GET_PDOS command for up to 4 PDOs at a time
+> > since that's the most the return payload can carry.  Currently this
+> > assumes that we'd only need to request the PPM at most twice to retrieve
+> > all the PDOs for up to a maximum of 7 (first request for 4 then again if
+> > needed for the remaining 3).  I'm not sure if any existing UCSI FW would
+> > be updatable to support more than 7 PDOs in the future, much less
+> > support EPR.  In fact, current UCSI 1.2 spec [1] Table 4-34 mentions PDO
+> > offset valid values are 0-7 and anything else "shall not be used", so I
+> > don't know how UCSI will eventually cope with EPR without a spec update.
+> > 
+> 
+> I've had a conversation with Dmitriy Berchanskiy at Intel (the UCSI WG Chair)
+> about this, and it sounds like the UCSI spec is planned on being revved
+> (post R2.0) in order to support the additional messages and expanded structures
+> of USB PD R3.1 around EPR.
 
-  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
+Good to know! Look forward to seeing it once it's ready.
 
-are available in the Git repository at:
+I've access to the current R2.0 draft as well, and it looks like there's
+gonna be a bit of work to update this driver to support it.  The big
+standout is the data structure format change to accommodate much larger
+payloads.  So I guess that bridge will be constructed when we get there,
+both for 2.0 and later for EPR.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.15-rc1
+> > So if this macro changes to 13 then this call would result in a call to
+> > the UCSI GET_PDOS command passing num_pdos == 13-4 = 9 which would
+> > probably result in an error from the PPM FW.  So we might need to retain
+> > the maximum value of 7 PDOs at least for UCSI here.  Maybe that means
+> > this UCSI driver needs to carry its own definition of
+> > UCSI_MAX_TOTAL_PDOS=7 instead of using PDO_MAX_OBJECTS?
+> > 
+> 
+> Prashant mentioned this as well, but maybe it makes sense to define a separate
+> EPR_PDO_MAX_OBJECTS to handle the EPR case, as there are completely separate
+> underlying PD messages (EPR_Source_Capabilities) where we expect up to 13
+> objects, and the classic SPR Source and Sink capabilities will still have the
+> 7 object limit.
 
-for you to fetch changes up to 3f2b16734914fa7c53ef7f8a10a63828890dbd37:
-
-  pwm: mtk-disp: Implement atomic API .get_state() (2021-09-02 22:27:46 +0200)
+Sounds good to me FWIW.  Plus this will even avoid unnecessarily
+bloating TCPM's internal {source,sink}_caps and {src,snk}_pdo arrays
+(an additional 96 bytes) prematurely before that driver is ready to be
+updated to handle EPR with all the new messages and states needed.
 
 Thanks,
-Thierry
-
-----------------------------------------------------------------
-pwm: Changes for v5.15-rc1
-
-The changes this time around are mostly janitorial in nature. A lot of
-this is simplifications of drivers using device-managed functions and
-improving compilation coverage.
-
-The Mediatek display PWM driver now supports the atomic API.
-
-Cleanups and minor fixes make up the remainder of this set.
-
-----------------------------------------------------------------
-Jitao Shi (4):
-      pwm: mtk-disp: Adjust the clocks to avoid them mismatch
-      pwm: mtk-disp: Implement atomic API .apply()
-      pwm: mtk-disp: Fix overflow in period and duty calculation
-      pwm: mtk-disp: Implement atomic API .get_state()
-
-Liang Chen (1):
-      dt-bindings: pwm: rockchip: Add description for rk3568
-
-Uwe Kleine-König (49):
-      pwm: atmel: Rework tracking updates pending in hardware
-      pwm: ab8500: Fix register offset calculation to not depend on probe order
-      pwm: lpc32xx: Don't modify HW state in .probe() after the PWM chip was registered
-      pwm: mxs: Don't modify HW state in .probe() after the PWM chip was registered
-      pwm: img: Don't modify HW state in .remove() callback
-      pwm: rockchip: Don't modify HW state in .remove() callback
-      pwm: stm32-lp: Don't modify HW state in .remove() callback
-      pwm: hibvt: Disable the clock only after the PWM was unregistered
-      pwm: rockchip: Unprepare clocks only after the PWM was unregistered
-      pwm: tiehrpwm: Unprepare clock only after the PWM was unregistered
-      pwm: ntxec: Drop useless assignment to struct pwmchip::base
-      pwm: jz4740: Improve compile coverage by allowing to enable on !MIPS
-      pwm: keembay: Improve compile coverage by allowing to enable on !ARM64
-      pwm: ab8500: Simplify using devm_pwmchip_add()
-      pwm: bcm-kona: Simplify using devm_pwmchip_add()
-      pwm: ep93xx: Simplify using devm_pwmchip_add()
-      pwm: fsl-ftm: Simplify using devm_pwmchip_add()
-      pwm: imx27: Simplify using devm_pwmchip_add()
-      pwm: intel-lgm: Simplify using devm_pwmchip_add()
-      pwm: iqs620a: Simplify using devm_pwmchip_add()
-      pwm: jz4740: Simplify using devm_pwmchip_add()
-      pwm: keembay: Simplify using devm_pwmchip_add()
-      pwm: lp3943: Simplify using devm_pwmchip_add()
-      pwm: lpc32xx: Simplify using devm_pwmchip_add()
-      pwm: mediatek: Simplify using devm_pwmchip_add()
-      pwm: mxs: Simplify using devm_pwmchip_add()
-      pwm: ntxec: Simplify using devm_pwmchip_add()
-      pwm: pxa: Simplify using devm_pwmchip_add()
-      pwm: raspberrypi-poe: Simplify using devm_pwmchip_add()
-      pwm: sl28cpld: Simplify using devm_pwmchip_add()
-      pwm: stm32-lp: Simplify using devm_pwmchip_add()
-      pwm: tiecap: Simplify using devm_pwmchip_add()
-      pwm: twl-led: Simplify using devm_pwmchip_add()
-      pwm: twl: Simplify using devm_pwmchip_add()
-      pwm: atmel-hlcdc: Don't check the return code of pwmchip_remove()
-      pwm: atmel-tcb: Don't check the return code of pwmchip_remove()
-      pwm: brcmstb: Don't check the return code of pwmchip_remove()
-      pwm: cros-ec: Don't check the return code of pwmchip_remove()
-      pwm: img: Don't check the return code of pwmchip_remove()
-      pwm: imx-tpm: Don't check the return code of pwmchip_remove()
-      pwm: mtk-disp: Don't check the return code of pwmchip_remove()
-      pwm: omap-dmtimer: Don't check the return code of pwmchip_remove()
-      pwm: pca9685: Don't check the return code of pwmchip_remove()
-      pwm: rcar: Don't check the return code of pwmchip_remove()
-      pwm: renesas-tpu: Don't check the return code of pwmchip_remove()
-      pwm: samsung: Don't check the return code of pwmchip_remove()
-      pwm: sifive: Don't check the return code of pwmchip_remove()
-      pwm: sun4i: Don't check the return code of pwmchip_remove()
-      pwm: Make pwmchip_remove() return void
-
- .../devicetree/bindings/pwm/pwm-rockchip.yaml      |   1 +
- drivers/pwm/Kconfig                                |   5 +-
- drivers/pwm/core.c                                 |   4 +-
- drivers/pwm/pwm-ab8500.c                           |  35 ++---
- drivers/pwm/pwm-atmel-hlcdc.c                      |   5 +-
- drivers/pwm/pwm-atmel-tcb.c                        |   5 +-
- drivers/pwm/pwm-atmel.c                            | 102 +++++++++---
- drivers/pwm/pwm-bcm-kona.c                         |  12 +-
- drivers/pwm/pwm-brcmstb.c                          |   5 +-
- drivers/pwm/pwm-cros-ec.c                          |   4 +-
- drivers/pwm/pwm-ep93xx.c                           |  11 +-
- drivers/pwm/pwm-fsl-ftm.c                          |  10 +-
- drivers/pwm/pwm-hibvt.c                            |   4 +-
- drivers/pwm/pwm-img.c                              |  20 +--
- drivers/pwm/pwm-imx-tpm.c                          |   5 +-
- drivers/pwm/pwm-imx27.c                            |  14 +-
- drivers/pwm/pwm-intel-lgm.c                        |  12 +-
- drivers/pwm/pwm-iqs620a.c                          |  16 +-
- drivers/pwm/pwm-jz4740.c                           |  12 +-
- drivers/pwm/pwm-keembay.c                          |  12 +-
- drivers/pwm/pwm-lp3943.c                           |  12 +-
- drivers/pwm/pwm-lpc32xx.c                          |  22 +--
- drivers/pwm/pwm-mediatek.c                         |  12 +-
- drivers/pwm/pwm-mtk-disp.c                         | 174 ++++++++++++---------
- drivers/pwm/pwm-mxs.c                              |  25 +--
- drivers/pwm/pwm-ntxec.c                            |  14 +-
- drivers/pwm/pwm-omap-dmtimer.c                     |   5 +-
- drivers/pwm/pwm-pca9685.c                          |   5 +-
- drivers/pwm/pwm-pxa.c                              |  13 +-
- drivers/pwm/pwm-raspberrypi-poe.c                  |  12 +-
- drivers/pwm/pwm-rcar.c                             |   5 +-
- drivers/pwm/pwm-renesas-tpu.c                      |   5 +-
- drivers/pwm/pwm-rockchip.c                         |  16 +-
- drivers/pwm/pwm-samsung.c                          |   5 +-
- drivers/pwm/pwm-sifive.c                           |   6 +-
- drivers/pwm/pwm-sl28cpld.c                         |  12 +-
- drivers/pwm/pwm-stm32-lp.c                         |  12 +-
- drivers/pwm/pwm-sun4i.c                            |   5 +-
- drivers/pwm/pwm-tiecap.c                           |   6 +-
- drivers/pwm/pwm-tiehrpwm.c                         |   4 +-
- drivers/pwm/pwm-twl-led.c                          |  17 +-
- drivers/pwm/pwm-twl.c                              |  17 +-
- include/linux/pwm.h                                |   2 +-
- 43 files changed, 260 insertions(+), 440 deletions(-)
+Jack
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
