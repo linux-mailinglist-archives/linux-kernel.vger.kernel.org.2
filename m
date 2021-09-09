@@ -2,645 +2,464 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB412404440
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0363840443E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhIIEWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:22:48 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57682 "EHLO mga17.intel.com"
+        id S230270AbhIIEWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:22:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:55906 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229466AbhIIEWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:22:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="200872194"
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="gz'50?scan'50,208,50";a="200872194"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 21:21:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="gz'50?scan'50,208,50";a="548311125"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Sep 2021 21:21:28 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOBZ1-0002wG-NN; Thu, 09 Sep 2021 04:21:27 +0000
-Date:   Thu, 9 Sep 2021 12:20:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joseph Hwang <josephsih@chromium.org>,
-        linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com, pali@kernel.org
-Cc:     kbuild-all@lists.01.org,
-        chromeos-bluetooth-upstreaming@chromium.org, josephsih@google.com,
-        Joseph Hwang <josephsih@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] Bluetooth: hci_qca: Set up Qualcomm WCN399x for
- Android BQR commands
-Message-ID: <202109091232.pmkPHZ1X-lkp@intel.com>
-References: <20210908191915.v2.2.Ie2014b5e6ed62dee26015805cf9c9b00d8dc64e5@changeid>
+        id S229466AbhIIEWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 00:22:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BD2731B;
+        Wed,  8 Sep 2021 21:20:53 -0700 (PDT)
+Received: from [10.163.72.152] (unknown [10.163.72.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4998C3F73D;
+        Wed,  8 Sep 2021 21:20:48 -0700 (PDT)
+Subject: Re: [PATCH 08/10] coresight: trbe: Workaround TRBE errat overwrite in
+ FILL mode
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-9-suzuki.poulose@arm.com>
+ <7edeb6de-5de6-e9b1-c684-a7f5782d9a7b@arm.com>
+ <ede246ee-6648-bb32-57b5-4a983d983736@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <3b20c016-446a-1556-745f-7d8a6a2c47e3@arm.com>
+Date:   Thu, 9 Sep 2021 09:51:51 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="wac7ysb48OaltWcw"
-Content-Disposition: inline
-In-Reply-To: <20210908191915.v2.2.Ie2014b5e6ed62dee26015805cf9c9b00d8dc64e5@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ede246ee-6648-bb32-57b5-4a983d983736@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---wac7ysb48OaltWcw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Hi Joseph,
+On 9/7/21 3:28 PM, Suzuki K Poulose wrote:
+> On 03/08/2021 11:25, Anshuman Khandual wrote:
+>>
+>>
+>> On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+>>> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
+>>> an erratum, which when triggered, might cause the TRBE to overwrite
+>>> the trace data already collected in FILL mode, in the event of a WRAP.
+>>> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
+>>> and could write upto 3 cache line size worth trace. Thus, this could
+>>> corrupt the trace at the "BASE" pointer.
+>>>
+>>> The workaround is to program the write pointer 256bytes from the
+>>> base, such that if the erratum is triggered, it doesn't overwrite
+>>> the trace data that was captured. This skipped region could be
+>>> padded with ignore packets at the end of the session, so that
+>>> the decoder sees a continuous buffer with some padding at the
+>>> beginning. The trace data written at the base is considered
+>>> lost as the limit could have been in the middle of the perf
+>>> ring buffer, and jumping to the "base" is not acceptable.
+>>
+>> If the write pointer is guaranteed to have always started beyond
+>> [base + 256] and then wraps around. Why cannot the initial trace
+>> at [base .. base + 256] not to be considered for perf ?
+> 
+> Remember that we could be dealing with a region within the larger
+> ring buffer.
+> 
+> Ring buffer
+> 
+>                | write (head + 256)
+>                v
+>  \---------xxxxx----------------------------------/
+>            ^                 ^                   ^
+>       head |                 | Limit             Ring buffer end
+> 
+> In this case, you are talking about the area marked as
+> "xxx", which ideally should be appearing just after Limit,
+> in the normal course of the trace without the erratum.
 
-Thank you for the patch! Yet something to improve:
+Right.
 
-[auto build test ERROR on bluetooth-next/master]
-[also build test ERROR on next-20210908]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> 
+> Thus leaving the data at [base.. base+256] should
+> be ideally moved to the end (after limit ptr). And :
+> 
+> 1) We don't always have space after the "limit" in the ring buffer.
+> 2) We don't know if the erratum was triggered at all, under the
+>    micro architectural conditions.
+> 
+> So, it is ideal to live with this ignoring the trace for now.
 
-url:    https://github.com/0day-ci/linux/commits/Joseph-Hwang/Bluetooth-btandroid-Support-Android-Bluetooth-Quality-Report/20210908-192118
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git master
-config: hexagon-buildonly-randconfig-r004-20210908 (attached as .config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 9c476172b93367d2cb88d7d3f4b1b5b456fa6020)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/0d4d42904b8f0e73fef4d95c76688c57fc7ed7d0
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Joseph-Hwang/Bluetooth-btandroid-Support-Android-Bluetooth-Quality-Report/20210908-192118
-        git checkout 0d4d42904b8f0e73fef4d95c76688c57fc7ed7d0
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=hexagon SHELL=/bin/bash
+But could not we just do something like this instead.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+- While re-configuring and before starting the trace, pad the entire
+  area i.e [base .. base + 256] with ignore packets.
 
-All errors (new ones prefixed by >>):
+- After an wrap event, push [base .. base + 256] into the perf ring
+  buffer via perf_aux_output_begin()/end() just after normal trace
+  data capture (perf ring buffer indices would have got adjusted to
+  accept some new buffer data).
 
->> ld.lld: error: undefined symbol: btandroid_set_quality_report
-   >>> referenced by hci_qca.c
-   >>>               bluetooth/hci_qca.o:(qca_setup) in archive drivers/built-in.a
-   >>> referenced by hci_qca.c
-   >>>               bluetooth/hci_qca.o:(qca_setup) in archive drivers/built-in.a
+Afterwards, if the erratum is triggered, real trace is captured. But
+otherwise, there is always ignore packets for the decoder to parse.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+>>
+>>> We set the flags already to indicate that some amount of trace
+>>> was lost during the FILL event IRQ. So this is fine.
+>>
+>> Right, from perf data flag point of view it is not a problem.
+>> But I am still wondering why cannot the trace at the base can
+>> not be consumed by perf.
+>>
+> 
+> Please see above.
+> 
+>>>
+>>> One important change with the work around is, we program the
+>>> TRBBASER_EL1 to current page where we are allowed to write.
+>>> Otherwise, it could overwrite a region that may be consumed
+>>> by the perf. Towards this, we always make sure that the
+>>
+>> While enabling TRBE after required reconfiguration, this will
+>> cause both TRBBASER_EL1 and TRBPTR_EL1 to change each time
+>> around (basically TRBBASER_EL1 follows handle->head) ?
+> 
+> Yes. This is to ensure that the TRBE doesn't corrupt the "trace
+> data" at the "start" of the actual ring buffer (not the area
+> that we are allowed to write). In a nutshell, TRBE is only allowed
+> to write within the area [head ... head + size].
 
---wac7ysb48OaltWcw
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+Okay.
 
-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
-Ge4rOVrFAQA=
+> 
+>>
+>>> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
+>>> so that we can set the BASE to the PAGE base and move the
+>>> TRBPTR to the 256bytes offset.
+>>
+>> Now that base needs to follow handle->head, both needs to be
+>> PAGE_SIZE aligned (including the write pointer) because base
+>> pointer needs to be PAGE_SIZE aligned ?
+> 
+> Base must always be page aligned for TRBE. Now, with the erratum,
+> the Base must be within [ head ... head + size ]. Thus we cannot
+> put TRBPTR (write ptr) outside [TRBBASER ... TRBLIMITR], the
+> write ptr follows the base and it is shifted by 256byte to allow
+> the scratch space for overwrite, when the erratum triggers.
 
---wac7ysb48OaltWcw--
+Okay.
+
+> 
+>>
+>>>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-trbe.c | 111 +++++++++++++++++--
+>>>   1 file changed, 102 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>>> index 9ea28813182b..cd997ed5d918 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>>> @@ -17,6 +17,7 @@
+>>>     #include <asm/barrier.h>
+>>>   #include <asm/cputype.h>
+>>> +#include <asm/cpufeature.h>
+>>>     #include "coresight-self-hosted-trace.h"
+>>>   #include "coresight-trbe.h"
+>>> @@ -84,9 +85,17 @@ struct trbe_buf {
+>>>    * per TRBE instance, we keep track of the list of errata that
+>>>    * affects the given instance of the TRBE.
+>>>    */
+>>> -#define TRBE_ERRATA_MAX            0
+>>> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE    0
+>>> +#define TRBE_ERRATA_MAX                1
+>>
+>> Although I am not sure how to achieve it, TRBE_ERRATA_MAX should be
+>> derived from errata cpucap start and end markers which identify all
+>> TRBE specific erratas. The hard coding above could be avoided.
+> 
+> This lets us hand pick the TRBE errata and avoid having to do
+> something you say is hard to achieve. What do you think is
+> problematic with this approach ?
+
+No problem as such.
+
+Now that we know the arm64 erratums are not linear and might also
+have non-TRBE erratums in-between its range. Hence there might not
+be any ARM64_TRBE_ERRATA_START and ARM64_TRBE_ERRATA_END markers,
+which I was hoping for. The original thought was those potential
+markers could have helped derive TRBE_ERRATA_MAX automatically.
+
+> 
+>>
+>>> +
+>>> +/*
+>>> + * Safe limit for the number of bytes that may be overwritten
+>>> + * when the erratum is triggered.
+>>
+>> Specify which errata ?
+> 
+> There are two distinct CPU errata. I will try to make it a bit more
+> clear.
+> 
+>>
+>>> + */
+>>> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP    256
+>>
+>> Needs to have _BYTES. TRBE_ERRATA_OVERWRITE_FILL_MODE_SKIP_BYTES ?
+>>
+>>>     static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+>>> +    [TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
+>>
+>> s/TRBE_WORKAROUND_OVERWRITE_FILL_MODE/TRBE_ERRATA_OVERWRITE_FILL_MODE instead ?
+>>
+>> ARM64_WORKAROUND_TRBE_XXX -----> TRBE_ERRATA_XXX
+> 
+> I think WORKAROUND still makes it clear, and is inline with what we follow in generic arm64 and I would prefer to keep that.
+
+Sure.
+
+> 
+>>
+>>>   };
+>>>     /*
+>>> @@ -531,10 +540,13 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>>>       if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+>>>           return TRBE_FAULT_ACT_FATAL;
+>>>   -    if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+>>> -        if (get_trbe_write_pointer() == get_trbe_base_pointer())
+>>> -            return TRBE_FAULT_ACT_WRAP;
+>>> -    }
+>>> +    /*
+>>> +     * It is not necessary to verify the TRBPTR == TRBBASER to detect
+>>> +     * a FILL event. Moreover, CPU errata could make this check invalid.
+>>> +     */
+>>
+>> Why should the check be dropped for CPU instances which dont have the errata ?
+> 
+> Good point.  On the other hand, if the TRBPTR != TRBBASER, that indicates a TRBE erratum. So, I don't see too much value in it. I could
+> keep that back in bypassed by the erratum check.
+
+If (TRBPTR != TRBBASER) is a definitive indicator for the erratum's presence
+this could also be used for capturing [base .. base + 256] in the perf ring
+buffer as mentioned before.
+
+> 
+>>
+>>> +    if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED))
+>>> +        return TRBE_FAULT_ACT_WRAP;
+>>> +
+>>>       return TRBE_FAULT_ACT_SPURIOUS;
+>>>   }
+>>>   @@ -544,6 +556,7 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>>>   {
+>>>       u64 write;
+>>>       u64 start_off, end_off;
+>>> +    u64 size;
+>>>         /*
+>>>        * If the TRBE has wrapped around the write pointer has
+>>> @@ -559,7 +572,18 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>>>         if (WARN_ON_ONCE(end_off < start_off))
+>>>           return 0;
+>>> -    return (end_off - start_off);
+>>> +
+>>> +    size = end_off - start_off;
+>>> +    /*
+>>> +     * If the TRBE is affected by the following erratum, we must fill
+>>> +     * the space we skipped with IGNORE packets. And we are always
+>>> +     * guaranteed to have at least a PAGE_SIZE space in the buffer.
+>>> +     */
+>>> +    if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata) &&
+>>> +        !WARN_ON(size < TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP))
+>>
+>> Why warn here ? The skid can some times be less than 256 bytes. OR because
+>> now write pointer alignment is PAGE_SIZE (from later code), size too needs
+>> to be always a PAGE_SIZE multiple ?
+> 
+> Because, we expect at least a page size worth space before we run.
+> (Since BASE, WRITE and LIMIT are page aligned). If that guarantee is broken, we have serious problem with the size calculation logic.
+
+Okay.
+
+> 
+>>
+>>> +        __trbe_pad_buf(buf, start_off, TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP);
+>>> +
+>>> +    return size;
+>>>   }
+>>>     static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+>>> @@ -704,20 +728,73 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>>>       return size;
+>>>   }
+>>>   +
+>>> +static int trbe_apply_work_around_before_enable(struct trbe_buf *buf)
+>>> +{
+>>> +    /*
+>>> +     * TRBE_WORKAROUND_OVERWRITE_FILL_MODE causes the TRBE to overwrite a few cache
+>>> +     * line size from the "TRBBASER_EL1" in the event of a "FILL".
+>>> +     * Thus, we could loose some amount of the trace at the base.
+>>> +     *
+>>> +     * To work around this:
+>>> +     * - Software must leave 256bytes of space from the base, so that
+>>> +     *   the trace collected now is not overwritten.
+>>> +     * - Fill the first 256bytes with IGNORE packets for the decoder
+>>> +     *   to ignore at the end of the session, so that the decoder ignores
+>>> +     *   this gap.
+>>> +     *
+>>> +     * This also means that, the TRBE driver must set the TRBBASER_EL1
+>>> +     * such that, when the erratum is triggered, it doesn't overwrite
+>>> +     * the "area" outside the area marked by (handle->head, +size).
+>>> +     * So, we make sure that the handle->head is always PAGE aligned,
+>>> +     * by tweaking the required alignment for the TRBE (trbe_align).
+>>> +     * And when we enable the TRBE,
+>>> +     *
+>>> +     *   - move the TRBPTR_EL1 to 256bytes past the starting point.
+>>> +     *     So that any trace collected in this run is not overwritten.
+>>> +     *
+>>> +     *   - set the TRBBASER_EL1 to the original trbe_write. This will
+>>> +     *     ensure that, if the TRBE hits the erratum, it would only
+>>> +     *     write within the region allowed for the TRBE.
+>>> +     *
+>>> +     * At the trace collection time, we always pad the skipped bytes
+>>> +     * with IGNORE packets to make sure the decoder doesn't see any
+>>> +     * overwritten packets.
+>>> +     */
+>>> +    if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata)) {
+>>> +        if (WARN_ON(!IS_ALIGNED(buf->trbe_write, PAGE_SIZE)))
+>>> +            return -EINVAL;
+>>> +        buf->trbe_hw_base = buf->trbe_write;
+>>> +        buf->trbe_write += TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP;
+>>
+>> Not sure if I really understood this correctly, but would not the
+>> above keep on reducing the usable buffer space for TRBE each time
+>> around ? BTW buffer adjustment complexity here requires a proper
+> 
+> Yes, unfortunately, we have to make sure every time the TRBE is
+> turned ON, we leave this space. We always recaculate the offsets
+> anyway, before turning it ON and this additional step makes sure that
+> the WRITE ptr is moved 256bytes (and also the BASE is moved to the
+> "head").
+> 
+> I don't think this adjustment changes much. It is only shifting the
+> write pointer within the region [head ... limit]. The calculation
+> of the head and the limit still remains the same.
+
+Okay, got it.
+
+> 
+>> ASCII diagram based illustration like before.
+>>
+>>> +    }
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   static int __arm_trbe_enable(struct trbe_buf *buf,
+>>>                    struct perf_output_handle *handle)
+>>>   {
+>>> +    int ret = 0;
+>>> +
+>>>       buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>>>       buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>>>       if (buf->trbe_limit == buf->trbe_base) {
+>>> -        trbe_stop_and_truncate_event(handle);
+>>> -        return -ENOSPC;
+>>> +        ret = -ENOSPC;
+>>> +        goto err;
+>>>       }
+>>>       /* Set the base of the TRBE to the buffer base */
+>>>       buf->trbe_hw_base = buf->trbe_base;
+>>> +
+>>> +    ret = trbe_apply_work_around_before_enable(buf);
+>>> +    if (ret)
+>>> +        goto err;
+>>> +
+>>>       *this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+>>>       trbe_enable_hw(buf);
+>>>       return 0;
+>>> +err:
+>>> +    trbe_stop_and_truncate_event(handle);
+>>> +    return ret;
+>>>   }
+>>>     static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
+>>> @@ -1003,7 +1080,23 @@ static void arm_trbe_probe_cpu(void *info)
+>>>           pr_err("Unsupported alignment on cpu %d\n", cpu);
+>>>           goto cpu_clear;
+>>>       }
+>>> -    cpudata->trbe_align = cpudata->trbe_hw_align;
+>>> +
+>>> +    /*
+>>> +     * If the TRBE is affected by erratum TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
+>>
+>> Better to address it with the original errata name i.e
+>> ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE instead. But not a big issue
+>> though.
+> 
+> We deal with the TRBE_xx name everywhere, for even checking the erratum,
+> so using the other one is going to confuse the code reading.
+
+Okay.
+
+> 
+>>
+>>> +     * we must always program the TBRPTR_EL1, 256bytes from a page
+>>> +     * boundary, with TRBBASER_EL1 set to the page, to prevent
+>>> +     * TRBE over-writing 256bytes at TRBBASER_EL1 on FILL event.
+>>> +     *
+>>> +     * Thus make sure we always align our write pointer to a PAGE_SIZE,
+>>> +     * which also guarantees that we have at least a PAGE_SIZE space in
+>>> +     * the buffer (TRBLIMITR is PAGE aligned) and thus we can skip
+>>> +     * the required bytes at the base.
+>>> +     */
+>>
+>> Should not TRBPTR_EL1 be aligned to 256 bytes instead, as TRBBASER_EL1 is
+>> always at PAGE_SIZE boundary. Hence TRBPTR_EL1 could never be in between
+>> base and [base + 256 bytes]. Why alignment needs to go all the way upto
+>> PAGE_SIZE instead ? OR am I missing something here ?
+> 
+> Please see the diagram above. When the TRBE wraps, it jumps to the
+> TRBBASER, and if that is outside the region permitted for TRBE, i.e [head... head + size], we risk corrupting data potentially consumed by
+> the userspace. So, we must make sure that the TRBBASER is within the
+> [head...head+size], which is why we update the hw_base accordingly
+> when we detect the erratum.
+
+Okay, got it.
+
+> 
+>>
+>>> +    if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, cpudata))
+>>> +        cpudata->trbe_align = PAGE_SIZE;
+>>> +    else
+>>> +        cpudata->trbe_align = cpudata->trbe_hw_align;
+>>> +
+>>>       cpudata->trbe_flag = get_trbe_flag_update(trbidr);
+>>>       cpudata->cpu = cpu;
+>>>       cpudata->drvdata = drvdata;
+>>>
+>>
+>> I will visit this patch again. Not sure if I really understand all this
+>> changes correctly enough.
+> 
+> Please let me know if you have further questions.
+
+Sure, will do.
+
+> 
+> Thanks for taking a look
+> 
+> Suzuki
+>>
+> 
