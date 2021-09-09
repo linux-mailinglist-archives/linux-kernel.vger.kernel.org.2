@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82C5405B0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C3C405B0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237415AbhIIQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhIIQmX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:42:23 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB5C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:41:13 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id y16so5138608ybm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rkaCWrw71p3Bwx6Ujv9uVMcrBmBnNtWcMasEZoICUtg=;
-        b=dk7XG+iTfUp9mJk61u0tbmxR8do9bhReeJEjxKWTkr7mk6yTeOo7oOAKTzW88D5oFt
-         xB3/uaxC9EeaQ6xD311r2INEWMUDkeiAuOB+xS8kTK3BZlL9vZg+qv11MC8fIYro0Y4+
-         WfNT0EiCYoxOUvMMnieVkaTDR7VLJRWw+bB15aRVuHemdxOCnanUy2kYvJuB9NIKfh4o
-         yda8xdXzMwYTPZic6D+AD0ISZbeH/iymz9UQLkkpW2qaQZb1K7fQEC6ak7TXPknEKug/
-         3XeamAAIRYw/SneBt3ifDaLJvdeuAZPpwlrp1gEJMOdbHBkld1bFwMCm5ZjFc+k35XgZ
-         1W6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rkaCWrw71p3Bwx6Ujv9uVMcrBmBnNtWcMasEZoICUtg=;
-        b=fsRwX95My/khwQ3tEIas4HFGffLJap1O7s73s0MDwzui8xIJa2agUJm+sJgrvX+uNc
-         5R/GcJzmQ5fhjf/sWYrk683Jpaq07gYrHnRe9jidRSw7WA1R9PUWipNXpdPSvSimSvbF
-         S4p6AHmq7yQ4dsEa2pZhJT640VdUfTxO5R0sH15Er3ezzkBVGihtWYqR6NqSonvmyh8w
-         0ZpJErolcHwLnpL0hrLPkYZphbP+MPzPaaxix/B54/oZB/qHmCwwtzibtgsm0JdT6tUg
-         WJ6h75kw9QqydnpGS2ra4x1AlWNCi++Fa1HP0FJsM8FUTY4iLa0zGfL8Acp0ToA7a+1q
-         cGXg==
-X-Gm-Message-State: AOAM53274qc+tYcM3NNIGBGl6jdL8ZKX7+Jv9UPtNEmh6fLObkiQIeIg
-        oSdP1RVEUAIZ6IVsZ7RMnDk5+GPU3dzj/2bdSIeesw==
-X-Google-Smtp-Source: ABdhPJxOb0z3ulldpbOkQOCns5TrLa7bWBtK5lyZgAwd9CnftUY48Lnurh5DsoueF+EhVX32OlwRpYEDMSkKxKNuJeE=
-X-Received: by 2002:a25:8093:: with SMTP id n19mr5184637ybk.414.1631205672615;
- Thu, 09 Sep 2021 09:41:12 -0700 (PDT)
+        id S238268AbhIIQnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:43:05 -0400
+Received: from mout.gmx.net ([212.227.17.22]:35371 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhIIQnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 12:43:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631205701;
+        bh=h/v38rNzaDLQNDF7y73gnxHUtL/pa2yJs0+Gdx5wD0w=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ctlwwM1wjCuaOSIsmUhYRT6ulGgHwH+8zPlmAf/ZwDbnMqr646e8XHi8X1Od+XZz+
+         Hs3gClzVUIZ3nfPT2KH/2f8SF11cs/byG0t+k6rAKC8ziu0+kZ5tXYJwPOdAVx4DQE
+         pHCQ0beDdyofLItl2GY89vdhiQRFjvsEqPgUUsro=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWzjt-1mQr1Q2LPd-00XKFe; Thu, 09
+ Sep 2021 18:41:41 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, p.rosenberger@kunbus.com,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+ <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+ <20210909114248.aijujvl7xypkh7qe@skbuf>
+ <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+ <781fe00f-046f-28e2-0e23-ea34c1432fd5@gmx.de> <YToleWF8XjHjgh1S@lunn.ch>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <e3e50f74-ea20-3d7e-fc5b-1ac0b3d110fd@gmx.de>
+Date:   Thu, 9 Sep 2021 18:41:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-19-rananta@google.com>
- <YTmdUEcbvf/7mkOw@google.com>
-In-Reply-To: <YTmdUEcbvf/7mkOw@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 09:41:00 -0700
-Message-ID: <CAJHc60yi8Dk8d67Gd=_UJRz+71vz0LZZC_TrCE5=kqyRTwBKoA@mail.gmail.com>
-Subject: Re: [PATCH v4 18/18] KVM: selftests: vgic_init: Pull
- REDIST_REGION_ATTR_ADDR from vgic.h
-To:     Oliver Upton <oupton@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YToleWF8XjHjgh1S@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0LWLBevOY8PJ7cwKe9Kz5Pop82TimLzku0Fjeato935rbAiOJ5o
+ kAf5dYWGsxuvo0nLs5XGIAiINoQeXU7yxO6KeGDotXxzWaJA9UZsvcFfQYfixzf0EtZXcFR
+ WWUAMJmBp928y8doZIv6wDQZB716koeCOx9YFS50FPGkm58gw4hIajktgE6G9ckukpcYsYC
+ t7YQIdzgilbZdIZRiO6Sw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sBBRrTFNvJk=:Vi1ljG6dNfFNjRZA2ZivgT
+ Hsdurgee+Gsqse5p3uKE8o80opZPkt/HcDTxJaptAoNO63xnrl+SGwwULc0b7x8meeATWHtm+
+ G5Z2GXclnoYsKVOsOXqFThCmz+vSTJLQS9MphcRfKjrFMbOy62/I2Znm3lrqPXbUw5DktABFM
+ iytVo6UW6u2FakVoReOathjLUuA/PFzzFzWZaDE6LU0nUZJjSVuzkhWzAUievf0Ah2UxoEBen
+ NHQqQ42k73zF0/kn/C31BtJC6t+OTYko5bapCNsSmw1W66I6kXOuvPPyQQWN0nbS0wGRyc7/m
+ 4i9t9OH9iHidtE+BWHaqTSDUqTIscsxTedJawKphFRw7H6Tj3tv1ENZdS5kDINj1RnTD0d3ec
+ lfUfUtBj2d4atR05TwqfKrdOQ8zU3t3p3DLg/Oj1YC+ac/TW5vCqa7avpPr3VQR3NoqpxBhqo
+ Dm3xuLaCADXRGq+2HSNa5YkCwJPSWkx/opkQ9LSPJ4QlomTfvQgCSZcK0t69+PzTmIhBej9FQ
+ QrrIthwoL9koSWrUnVHKSgeXvPEmpJzHjt2128E5wiWtlk4lKGlV0RNqIt3mJKb81mjlnFXb/
+ N/9PVd0jHdQi2LJQ1gcGr06EzT//cpYWk3xCyNJA4N1XlGjsCmwVoShbrr/QnGIH9KZCp2DDg
+ 9rWHePH396xaEcvJrTv6DeJrIGu4QzbIAbk847qeCkZ/2HTgW0q4qR6MFifsP+UHdDWXGT4h4
+ 4qlgRuhtJYw98P2AxpCsD0ETAgJMvcv1ZOr6n+cU+JenDTl8WYu5q5IipTBmhN5jtc9cwMVLz
+ F4fM/vwcO0HT/OXZjpaLFYL0bHH/bkWcnEA94fkKNWxB0gm9JguuolYClq/1sC8vriBhK0fZE
+ go+7ZnuF74L+VNRYqJaU+hTvsc2OTBJtGyG0gWY0rcb/1Wx+GLdajpbF1R1RnG5XkTYyPQdOQ
+ v7rY5CV2obylMPP7m6E/bTJakM6lu2JPiQ3SUud/W6grpRK29HYFRytAbO2BnOpSULpc68UVx
+ QOp/ItFpXUJqLS7hJJEWm4z4oHHq1sNVOSX7Ka5bZAkpXjwm2zVo2yl2ROC6IWfOlX8y/6b62
+ 0zx0Sofy685x/k=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:36 PM Oliver Upton <oupton@google.com> wrote:
+On 09.09.21 at 17:17, Andrew Lunn wrote:
+>> This is not correct. The kernel I use right now is based on Gregs stabl=
+e linux-5.10.y.
+>> The commit number is correct here. Sorry for the confusion.
 >
-> On Thu, Sep 09, 2021 at 01:38:18AM +0000, Raghavendra Rao Ananta wrote:
-> > Pull the definition of REDIST_REGION_ATTR_ADDR from vgic.h.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  tools/testing/selftests/kvm/aarch64/vgic_init.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> Can you use 5.14.2?
 >
-> Just squash this into the commit where you hoist it into vgic.h. It is
-> fine to glob it together with the other vgic changes since you're
-> dropping it into a completely new header file.
+> When we understand the problem, the fixes will need to be for
+> net-next, which will be based on 5.15-rcX. They will then be
+> backported to 5.10. So you need to do some testing on a newer
+> kernel. Such testing will also help us figure out if it is a new
+> problem, or a backporting problem.
 >
-Sure, I'll squash it.
+> 	 Andrew
+>
+
+
+You are right, I will try to switch to a newer kernel to test future DSA i=
+ssue like that
+(I have the impression that DSA is an area in which a lot of progress is d=
+one from
+one kernel version to the next).
 
 Regards,
-Raghavendra
-> --
-> Thanks,
-> Oliver
+Lino
