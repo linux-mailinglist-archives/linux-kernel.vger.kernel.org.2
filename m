@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CD6404DA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C7F404D3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344084AbhIIMEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:04:08 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41937 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238185AbhIIL4k (ORCPT
+        id S245211AbhIIMBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:01:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34140 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244499AbhIIL4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:56:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnnR9si_1631188527;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UnnR9si_1631188527)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 09 Sep 2021 19:55:27 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT))
-Subject: [PATCH v2 2/3] kvm: x86: Refactor kvm_emulate_hypercall() to no skip instruction
-Date:   Thu,  9 Sep 2021 19:55:24 +0800
-Message-Id: <87b4d982f134b83132867cfcf840f8b0cdb454be.1631188011.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
-References: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
+        Thu, 9 Sep 2021 07:56:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 76B2D2237B;
+        Thu,  9 Sep 2021 11:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631188542;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gucfR41ZNYofZRePSg4Gem34U0V1tJWGUzF/9j8oAeA=;
+        b=AfDBhpYb8lclMlTe0ydAXUsJ+cVpQacHUyhvu+NKPPCOeAcphXbDOyE3cjIiHOLKtFdiRi
+        osdtCPVHddPAyPRGTHs2HFxipvH1PXMr93X9TOr+7mxaPSlX5FIwbC0dhrWZ3DbTkBuZ6+
+        /0yonPkL50Oh7uNv2nbMuNcEcjpoIsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631188542;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gucfR41ZNYofZRePSg4Gem34U0V1tJWGUzF/9j8oAeA=;
+        b=0x5CRTsxK9OnpjJVlNqP8vgZsVUGTV5/oqvYWXtLnCINJ+7m8RF6CrNXDC4xoT8TQezpm0
+        FEcpLFXtaDytxYDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6EA40A3EEA;
+        Thu,  9 Sep 2021 11:55:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 70FCFDA7A9; Thu,  9 Sep 2021 13:55:37 +0200 (CEST)
+Date:   Thu, 9 Sep 2021 13:55:37 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 194/252] btrfs: subpage: fix race between
+ prepare_pages() and btrfs_releasepage()
+Message-ID: <20210909115537.GD15306@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Ritesh Harjani <riteshh@linux.ibm.com>,
+        Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210909114106.141462-1-sashal@kernel.org>
+ <20210909114106.141462-194-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909114106.141462-194-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor kvm_emulate_hypercall() to no skip instruction, it can
-be used in next patch for emulating hypercall in instruction
-emulation.
+On Thu, Sep 09, 2021 at 07:40:08AM -0400, Sasha Levin wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> [ Upstream commit e0467866198f7f536806f39e5d0d91ae8018de08 ]
 
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
----
- arch/x86/kvm/x86.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4e2836b94a01..b8d799e1c57c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8636,17 +8636,11 @@ static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
- 	return kvm_skip_emulated_instruction(vcpu);
- }
- 
--int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-+static int kvm_emulate_hypercall_noskip(struct kvm_vcpu *vcpu)
- {
- 	unsigned long nr, a0, a1, a2, a3, ret;
- 	int op_64_bit;
- 
--	if (kvm_xen_hypercall_enabled(vcpu->kvm))
--		return kvm_xen_hypercall(vcpu);
--
--	if (kvm_hv_hypercall_enabled(vcpu))
--		return kvm_hv_hypercall(vcpu);
--
- 	nr = kvm_rax_read(vcpu);
- 	a0 = kvm_rbx_read(vcpu);
- 	a1 = kvm_rcx_read(vcpu);
-@@ -8664,11 +8658,6 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 		a3 &= 0xFFFFFFFF;
- 	}
- 
--	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
--		static_call(kvm_x86_handle_hypercall_fail)(vcpu);
--		return 1;
--	}
--
- 	ret = -KVM_ENOSYS;
- 
- 	switch (nr) {
-@@ -8733,7 +8722,28 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 	kvm_rax_write(vcpu, ret);
- 
- 	++vcpu->stat.hypercalls;
--	return kvm_skip_emulated_instruction(vcpu);
-+	return 1;
-+}
-+
-+int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-+{
-+	int ret;
-+
-+	if (kvm_xen_hypercall_enabled(vcpu->kvm))
-+		return kvm_xen_hypercall(vcpu);
-+
-+	if (kvm_hv_hypercall_enabled(vcpu))
-+		return kvm_hv_hypercall(vcpu);
-+
-+	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
-+		static_call(kvm_x86_handle_hypercall_fail)(vcpu);
-+		return 1;
-+	}
-+
-+	ret = kvm_emulate_hypercall_noskip(vcpu);
-+	if (ret)
-+		return kvm_skip_emulated_instruction(vcpu);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
- 
--- 
-2.31.1
-
+Please drop this patch from stable queue, thanks.
