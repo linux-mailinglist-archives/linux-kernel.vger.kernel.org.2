@@ -2,146 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9C9404906
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D44404903
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhIILOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:14:03 -0400
-Received: from mail-vi1eur05on2080.outbound.protection.outlook.com ([40.107.21.80]:29280
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234953AbhIILOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:14:02 -0400
+        id S234864AbhIILNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:13:47 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:40548 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234473AbhIILNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:13:45 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 189AgCOc013638;
+        Thu, 9 Sep 2021 11:12:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=PPS06212021;
+ bh=s5YNY0McrCKxdw78+dPxUNdahNLiiatDXOEv5KptOi0=;
+ b=mu8hzqO/8mihBepPdyiduiGcWr360XKbfCBX0XS7+ZcVHKcJq/Cqm7c07lGcV+OFi4jp
+ gXpGtJXCN/hPzpqdRSpZLuGdhTIpObDLVGKhNPVZdgqxwPNicEvUuzlCS0Lw++v858bp
+ HEgCmlzo1bWYe3Me/iDRSm0EN7rRnJXVtv16Z7pxYCfYP0Yu6icMJEV0bXD77o3KYk74
+ A69+vakUAeVUoyG3OFUgtCY2SjzMmiG5xs2JSVpbajvrfSiJiAG5JRa8Gzj55mpDt4wi
+ xNw15OzuW0N1w7TgXBe+JEZGm7dZXtByXpufwXyjH4UXQtDCmxuj89HU1L9MYlekMTes vA== 
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2042.outbound.protection.outlook.com [104.47.74.42])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3ayaf2r7w6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 11:12:31 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dyTzRhz710sYqMGfYtNoTyW4Ferlc32LzPlT9PlitRKTogIXAMSsw07W2z1rihhq4cJe2YUdCd4DqSESmgmsMs0mMRb1ruosUrP1lgsD1rfj6OErN2lLdoKx8m0KD4jKBYCNsepU7y8BHkKI1otMC1Jw07f1jZAL1VvTsVSMYiLkJ/SlHINiz8IETQxtLbSpw6I51ItVLu7A5QRbAp3IcqoZgWQlFr/Rfwcji2hzB+qFkgI2WpDnOBU/QApDpooaovBJTzXRViVYjhgSi85xBgJUGA1mmQcBJa4Fch2k4Se/UzIIGLRFy/t7xaBS+5OwzogiA9dLnhpm7TrM+G7eFg==
+ b=S6qhM5vQcXEsD2fCWdHqKsU0Qqn65nPgn4MCCaDOUUeW7CvsMqMqMPxvEOyamj2wuGHvb8Dd6Qb1ZnFKCgp7TNnHDHQZdYFqv3ldgRPgTeKjpE2nh4+YUQb6fqnTGqujGzVtxve9yDvIau65SjYfk+6wwOyEkS4Z+KQb5/EfoesW5OvqRcFhUnXNZsyDmNzGRx4c0a31mQgGwBzkWoqUucnIPb+hdYWZrXXsB9Fqpv3Y+7G51NmWx6MzujrskUn1B4D645n5WIUja5hiX5wqpKcG1F+kH3mea1nWJ2AtkwcoQds6j4yQYhNSQsb/ITZvGMw8FkTvF1+oj8IXYe5zfQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=wjfNttf9jRAgIYFPA4VnxGHOZlXsjHNOe33kPGGIxXs=;
- b=A/gjuQQmMJ8NqUbchjcnCwRmBity2xE8qqrG4Le8W8JFjjrnA9FQjoefss5rutHsKSmIp+hicVTU4FhDN/pyxWWZ2VwqMwL7qXL+Yk0bof8aLamD+EQ86MeBhvdGJQ7M3dNrXA3LgkbpcsK37tWRyXHsfBeTMYWCxHJHDpKDRUbcFouXEREegD6n8LXFECRLbSeENaWv5GxLqZ1l5i7cEQ/lUQ8qjQubKoMVcufwj61OLvw5kTRRmFbaI0inZRNaBGArOOsO2heuhrA4eJhYyHXBzGrlj25SHGoWfOKVJCkTSWTUR+2TdzI5qD6IuK2+2r+uKBWSrW+9uVcdmpb8Ag==
+ bh=s5YNY0McrCKxdw78+dPxUNdahNLiiatDXOEv5KptOi0=;
+ b=PWHgS2Vdxi99JoLjxAjc4ADSic8GKf3EGR51mrdP2MAqQNP4CY+6i1XF0W91afnHvA8E+ndiEgmXVbDohAO8Yb9zedHUWQB1uqIBy+WcW6lHKIABOoOzqmqWfsDPCR/kam39WuVIQh2cLLmv2194NHO3TvlcV7khU32Jzk+vmbvTSd3GB7fnwAZCsSmKtueAUiv55JFH5OziOMAQiOYTnGcVrA6eZ2ukVLXgmtPAtxvzpIYUMk1yeJoXm4UfI93K+DKMhgp3P+Jr4xFASyb56Dj1GDY8FutjVtVaTT9rPb/Vi+1FsGMf8UNif64E0hs8hV0gJUoF1apGcKhzqj6S+g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wjfNttf9jRAgIYFPA4VnxGHOZlXsjHNOe33kPGGIxXs=;
- b=rU7FE8BsHJUilDmnXnSHIvrxtzEJO5ToMcrXwmrnxyjurpyVYfod2JylxqElFn/TQdSWPUCBy6v/Fklxeff0E+E7nnCIm/IyCo7mk2tVbnvKhSg522G2aya/hzwXqTLgKOUSEE9NguHZCUWbOWguub86ChpUiH9/SDWBauYO6JM=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from AS8PR04MB8466.eurprd04.prod.outlook.com (2603:10a6:20b:349::7)
- by AS8PR04MB9009.eurprd04.prod.outlook.com (2603:10a6:20b:42d::19) with
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12)
+ by BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Thu, 9 Sep
- 2021 11:12:51 +0000
-Received: from AS8PR04MB8466.eurprd04.prod.outlook.com
- ([fe80::414f:6546:f3d9:2651]) by AS8PR04MB8466.eurprd04.prod.outlook.com
- ([fe80::414f:6546:f3d9:2651%5]) with mapi id 15.20.4500.015; Thu, 9 Sep 2021
- 11:12:51 +0000
-From:   Kuldeep Singh <kuldeep.singh@nxp.com>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: [PATCH] arm64: dts: ls1012a: Add serial alias for ls1012a-rdb
-Date:   Thu,  9 Sep 2021 16:42:29 +0530
-Message-Id: <20210909111229.2444950-1-kuldeep.singh@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0050.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::19)
- To AS8PR04MB8466.eurprd04.prod.outlook.com (2603:10a6:20b:349::7)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.25; Thu, 9 Sep
+ 2021 11:12:30 +0000
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::19db:ee0e:abd0:df6d]) by BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::19db:ee0e:abd0:df6d%8]) with mapi id 15.20.4478.025; Thu, 9 Sep 2021
+ 11:12:30 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>,
+        "asml.silence@gmail.com" <asml.silence@gmail.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] memory leak in create_io_worker
+Thread-Topic: [syzbot] memory leak in create_io_worker
+Thread-Index: AQHXpQ74hjG4Ai1gV0euxmu1iU3xwaubi3YW
+Date:   Thu, 9 Sep 2021 11:12:29 +0000
+Message-ID: <BL1PR11MB5478F0F0CD982C78CA72C0EFFFD59@BL1PR11MB5478.namprd11.prod.outlook.com>
+References: <0000000000004fe6b105cb84cf1e@google.com>
+In-Reply-To: <0000000000004fe6b105cb84cf1e@google.com>
+Accept-Language: en-001, zh-CN, en-US
+Content-Language: aa
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 09c6136c-d499-684e-4eb6-b29cef889fee
+authentication-results: syzkaller.appspotmail.com; dkim=none (message not
+ signed) header.d=none;syzkaller.appspotmail.com; dmarc=none action=none
+ header.from=windriver.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 04cf3819-9a7e-42bd-d427-08d97382b6e1
+x-ms-traffictypediagnostic: BL1PR11MB5478:
+x-microsoft-antispam-prvs: <BL1PR11MB5478E6641EF60906F1B09776FFD59@BL1PR11MB5478.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9ZvsshFpW7s+aVo89OLN4uTRfIEt6vlQqFHX2TKobE/DZ5W1DuVKN8wCjzn5IV0RDKDxtmYsQIZczaAxmEvv9uA1vAs47lLoYc98sOMJou6qNOjGwB6o74or8bbBjrrEJ2nXPldbu5/UeP8IGhKfeeHOCs87r3EIXl1FK8rRQDmaG17a/JBBzT+dHhQBbrgT5ntgkYVhFadejwsLPMRd+O7YHktd/XD9QERhT9OBeGgz0VCbLy76DE04x5400xz8AWpDs5LqLTjt0DAqGeCu+9ftdx4+SNLT/4lB5SwewnNlbe1Vix7S5FMqwV1F+jo2Mw4qwEIgtqerKZq4nfj60T+AkVFNZ4iNxjNcG70JoZoQiaVmslN+ISI+H0hCgzhOMcmjZcrSYqQWNZPZzzyBxqUB4RyPsXSLz9A6fsUDpf68kCS7Xm0Og0NHaD1Aduaz/uiXNmhOzIEslRI643kpwzMh+08y1URyF7UpRMHme0BwgCDOlueZKhQuroLcpA2ScEfdhHpImcEAm/Q8H6zQtEY/nEVvOZ+TinzeTonqnmmBHUdSqnzV6Wfnv4TxWfDtag9nVj2+BP4kktBzgSsl24dOP4U5ytBb0vW0RvC5QEhfSrGwOtiMA92nsyC9P/N7Tz4ctERmh20wFfYWIl1i7lQ0HQ4JhYOkiCixAFRElz2OInyuUOuncFmAEhhiQSUsNoyXcyLJ7pmfHpWAl4Cdj32if8uPBz51Vw7gUB7UK6uqmcndogYHDi7GXph+xGHEs5BKij8Ufiu6+02d0VX6cHrRVWGLstIFfEgHR5Jodf6Xf5RUnBJsgwKLzp8DiPiO+XDFs4bso9ZKAzkGIonJOWyKQrs2vV5vW5s65pyhnDKnXV9u1DYYkKp4grGbAcTxvoJ1M/J0GG9A6vm4MjSnyQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5478.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39850400004)(376002)(346002)(71200400001)(966005)(478600001)(8936002)(6506007)(53546011)(66476007)(38100700002)(52536014)(186003)(91956017)(64756008)(66556008)(86362001)(9686003)(38070700005)(8676002)(110136005)(33656002)(316002)(122000001)(76116006)(7696005)(55016002)(66946007)(5660300002)(83380400001)(66446008)(2906002)(586874002)(99710200001)(505234006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FpaxHUIIInA7UC9YiZP1OTSYwmDTRbTW5NsUTs0ETyBV07hb8hWvk4uuGIie?=
+ =?us-ascii?Q?d+OOSeJuIwD3VjHdFBQcv/b0sKFT+WgHZIarkxMbaxIgE3J4z3ExWqDxCXFT?=
+ =?us-ascii?Q?uS6u3w7ia4poLXWfGosfDBHOvwV/0q1/MtXG57Aig34WoQE1ZFXbH8xPR91k?=
+ =?us-ascii?Q?3fGE6dY3FTnxKSQV8Ega8XKTssTam+ulL4fmdXvsn4C33m89K44Z8tB89ZAj?=
+ =?us-ascii?Q?AkhksR8pbnrszFYpH+FfnzJrP4Td+s0InS51t/rEALzh63xPT7+dHB0fvZAO?=
+ =?us-ascii?Q?OIIwCJkiaAkqkPs2YpVzYkZQZHUXPhCxgZKvWcBjlHSmCbMccQIo3YvpPxy5?=
+ =?us-ascii?Q?UhlkBvAdB9eZyzvkZXBvATffg5yXAmv4jvou3ALZtywxDzpb+/m5/qO6see3?=
+ =?us-ascii?Q?DjBTrwjda5x4sxqTgHtosARiQebJ3+siudVnWyVWXwTetXY1RuyV/xY31TBY?=
+ =?us-ascii?Q?Y13Y1PzA1+q1oOSFyn46Z5M8/lv4qcidCkWggpSfynf9c9UuoNFyQCpRbA1q?=
+ =?us-ascii?Q?S2sul49Sfw2CWvRFCykBSqbPYL4enulYh5/HZpLZZRMTMiuMkbzAzmTzOtdY?=
+ =?us-ascii?Q?oJAWa98dVH8+9qKdzRl9AHWtZvZSpYsfJ2jUokmViv5kSaIu3y7mGLzGAsnY?=
+ =?us-ascii?Q?dPUtHytvQ5zAGa5Rp9BdLvgy2zMnlDc2biYndZyeu+NQiKEJUUVZ0Quv4Jm8?=
+ =?us-ascii?Q?Q8vB+NrwhKXTa3OyK9Y+bMTPMPnGIUodrNG84B9WfkHsY/uywQzJnDe3aOMl?=
+ =?us-ascii?Q?KgWEvw0PegZdR90kD13J9hOdpTGDzWXunfcR3kfSH6SWzaUs7uqrtmdIQkq0?=
+ =?us-ascii?Q?UogbGrOf3u/qbRARQLw6PUZk/FIsCuhhoPOH80TRfTiezsX/hDquRv++fsvu?=
+ =?us-ascii?Q?MlTXwsmjgiTBhGpkjTcOnNAkFd0coFTL6UV9aMrkdX92m21kA/59SKzPwsp3?=
+ =?us-ascii?Q?iOSziH94vkk7c/e9t1JXynGczHMnuYyvh0kAcvWVNzr7UI+5HhHOdFmWF8H8?=
+ =?us-ascii?Q?009Lnk+ZAhysJM63yxV7KTZ6HHznfCqn76tzlHFCIDxsDLHHHWnBQIXONnw/?=
+ =?us-ascii?Q?VsibJ3IawJSrnzfyhyxD4G4byRwZA3yRJdV+v6IAjmMDbrTdduObxQOwQaUa?=
+ =?us-ascii?Q?Dj/AfBSOZO4o1zWcUDZwlilej9vbXr5qLXGVza2XppnAc6/M8jsCiE4Gae7R?=
+ =?us-ascii?Q?iV70JjcX+JDOIM8D/9aQ0PrmAEFzD50L3kYmSgMed1wDvzjuDUyZSQ2b+mR1?=
+ =?us-ascii?Q?nkUzum6wnI1jVlabxOLpgkgv6CAlC4Exss+sqsQ+CatHI0/rf9Izf864mlyj?=
+ =?us-ascii?Q?URKwMYVPBMNJEyP4GNlnEsJ4YFz03xbJxn5qAmnc26zx4xhngcOVRuVFMnaQ?=
+ =?us-ascii?Q?XinmSIQ=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03378.swis.in-blr01.nxp.com (14.142.151.118) by SG2P153CA0050.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.8 via Frontend Transport; Thu, 9 Sep 2021 11:12:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 66c7d51d-d075-4133-0b23-08d97382c374
-X-MS-TrafficTypeDiagnostic: AS8PR04MB9009:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AS8PR04MB9009C4D4C00E9D846FAB1E2AE0D59@AS8PR04MB9009.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FANcZnzIY4fGeZd9I32HCjxY1lpSa/0QszCIXuVqof08q1va7anIBh6JiFxYd5Lpe+26Cj2wSbiJl1T1gLbhh7b+EtHJPjXzPnYTNQ1boYSz8IJovcU7e/fElfzx+siJtUJ8xmSYPY+twJSECra2sSvn61yky4coy+8d0aFk0IKhlFlDQmm+PHemFn+hvRLEeiprwhlSnKzdr8ROV/T2sNyLoW2q1QZ1MTiRIdCHQRa4fI0+BWIaUDSVrQxsuejw1dhMVLNvnn2nEmy/G5zqmLguJ7LPB8Sd19+JesueNqFlaBfsT7wf2wKqjYRpXSPSwSDAk/ysQtuyBWAFzbsIRTMSXcG8eTogQQYoLtgtFz10zUc0OPlj1sNTt9CqCeGUeYSH+wT2baDFBQJ5aO8tXvyCdZM7JMzRuS1zF7WIta5PkxPHzBr0baKrR9AMr2xjspueDA1fnm7jwLIzdRGVPCJ5ZrVvlJeR8fxDhyPpzvHN/Jhgy2fodunGbv9oSndDLwVBDCCRWcH0qwkEHTc3Fepx3DW/SkBPK6/Nz4tpVd7sNBi2snB0iVamq479atmDbLkGGhWemN7NNGLF1UGnvpNZ6dldGOfHiUwhOvLlet3vmolO5T5nIyAU+A2ynO1sW58+UQmZPqzjh2qD94m3vjenedh06EVsiRh2D8NHCWShWqbo0xifKL0FrfwNjiNYLZA9XEIFKzpYDDNL70xiZTL13VuzaDnJTW22TdthnJ0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8466.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(8936002)(55236004)(2616005)(66946007)(1076003)(6486002)(478600001)(4326008)(2906002)(956004)(7696005)(8676002)(186003)(26005)(5660300002)(6666004)(66556008)(66476007)(1006002)(36756003)(316002)(44832011)(83380400001)(54906003)(52116002)(86362001)(38100700002)(38350700002)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Uu2NkV74EFWxjxD4Ru5McjQlc46+il419fyx78nDgxBlkpAqtO+GO1vi+RC4?=
- =?us-ascii?Q?jBgRIclmncCmWvWpGQSJTCRz5berAS6lBRGf3Jwrkk2V4cHcQipe3C4LAwm8?=
- =?us-ascii?Q?mbxv6uYv097FoIU2BpwKy1fIRPJ/X+Bpl3/7YgntnRWN4ys6ddboYcMaxhJL?=
- =?us-ascii?Q?itWoHXir16BAwUV2+3zaFlrJST6r98SWCKbDfJSUdvorhXgic7/p+UgXrU6i?=
- =?us-ascii?Q?owERw/pHvX3PZLMU5swPPtwS3xGL3yFjuUtHLdnP3PAWrNpoaB0+s6pj4qXv?=
- =?us-ascii?Q?MzPHlXoK1p5pRfs8QpybS90ZZvbwpy8TwEppbxbqbCDUs1/T361aZOT0496x?=
- =?us-ascii?Q?Jd6s2WsFIqoHFkw8F/c5QGzMSQkg4vzOMOi/5tafxk42n7ipbD5TFFuJrsVY?=
- =?us-ascii?Q?rJjPPezJWgWsYHopswNgOvUdph+7tyIkZs+YvNVMpNIrEf/IRXgI4wvyDzv4?=
- =?us-ascii?Q?Egcx6WVbnvVyFX84RbEiVxcLxix0glNmS3YqYErMCiqTph+wQRWPd+MIp0Mj?=
- =?us-ascii?Q?ITVu0EJ1Jn/TW9R1QrNgOY7KaoHsTjg5mTIn0FSKuzGRK8C2teu/9MTRqsvV?=
- =?us-ascii?Q?rc8M9MzE7HLuC9Qs8nBIS0dSamPwO2fvQY8Da4RjbQV2cak2ThoH0UfwBwUq?=
- =?us-ascii?Q?5vsvIWMNj9Hgr+d6qZtvrdck3h7GomiltsaBtptU8vrc4DzQ+vfUAJxR7fCj?=
- =?us-ascii?Q?hL7KhAZYohyjCitw2VkekmF28roVdW0OgrkmW4+/sNz1tbhffDHrIPECZWXz?=
- =?us-ascii?Q?vY8xo+kpiSD1xaQjgb4OgOlL9ftsnv77Mud4TgGSvjQyRLcieW0DUqpozLcQ?=
- =?us-ascii?Q?VJDMFMB0dyySLWiPID1VapS4b9JrBPMnu9dv/7VwiNMDqCtm8ciYJT6co2kQ?=
- =?us-ascii?Q?2KCdkT8lIEbM2STeqkpaFGtpVaX+ZnObG+tm0B19djBsFoWN1BeFtgV1s8t9?=
- =?us-ascii?Q?dS0+MBOtSkY12U/yaxmNU6UczrJzHLdcNcjZyRziam107Q8QIVthbsyYMLZr?=
- =?us-ascii?Q?jaQkQsrgKFfGW575H9YAMJxJez/d91f6j8Hp07yLPTzGYrvfZI1rZCeUkU3T?=
- =?us-ascii?Q?5YvNJepAoVbhKoTMYpH0IjEUMShClwc6z6ZpzI35V7E/BHQuON1LC5t5ZFTw?=
- =?us-ascii?Q?v+cq06ZM5n4y0vI9iXVRLiLkyTeIIwI4STjad0SmTQWjUd8WrbqVEgW3UkgX?=
- =?us-ascii?Q?dypwC2VxSfPiAxs3Cdl/nhGtZddDKoOFwtHefKOyESiIh2VsK8VQeAWbDWxs?=
- =?us-ascii?Q?EwRFY+2B+5u3TL5lMkVP8ySVR4Y4Id8mcc4SoYcj5W0ObYDsbYRVFWINc1C9?=
- =?us-ascii?Q?uQR0IcHdiaXmAODvxgx3c6gr?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66c7d51d-d075-4133-0b23-08d97382c374
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8466.eurprd04.prod.outlook.com
+X-OriginatorOrg: windriver.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 11:12:51.4876
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5478.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04cf3819-9a7e-42bd-d427-08d97382b6e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 11:12:29.8472
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7rT23YzqHiP2P4rhw2F306+rnrL5J1aN2NixePnYjG5uW4ViZZ0zhzLcPNdKf4MKBsMIyBz0flAOIJksZFbYug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9009
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X/9H+QfqhVpvxgQF1LZFY+yR+l0ZgUIjwI/ny77FWK9S7swI4ciFtzngLIy4rWITOGC7DhoEIPn8n/b1YT8cAw6FUZxVRreJv6iJ5IqXnc8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5478
+X-Proofpoint-GUID: 17A6z4WXGANFx2a0NfL-OaHlndIF7ADK
+X-Proofpoint-ORIG-GUID: 17A6z4WXGANFx2a0NfL-OaHlndIF7ADK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-09_03,2021-09-09_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U-boot atempts to read serial alias value for ls1012a-rdb but couldn't
-do so as it is not initialised and thus, FDT_ERR_NOTFOUND error is
-reported while booting linux.
-
-Loading fdt from FIT Image at a0000000 ...
-   Description:  ls1012ardb-dtb
-     Type:         Flat Device Tree
-     Data Start:   0xab111474
-     Data Size:    11285 Bytes = 11 KiB
-     Architecture: AArch64
-     Load Address: 0x90000000
-   Loading fdt from 0xab111474 to 0x90000000
-   Booting using the fdt blob at 0x90000000
-   Uncompressing Kernel Image
-   Loading Device Tree to 000000008fffa000, end 000000008ffffc14 ... OK
-WARNING: fdt_fixup_stdout: could not read serial0 alias: FDT_ERR_NOTFOUND
-NOTICE:  RNG: INSTANTIATED
-
-Starting kernel ...
-
-Fix the above error by specifying serial value to duart.
-
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-index 79f155dedb2d..e662677a6e28 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-@@ -15,6 +15,7 @@ / {
- 	compatible = "fsl,ls1012a-rdb", "fsl,ls1012a";
- 
- 	aliases {
-+		serial0 = &duart0;
- 		mmc0 = &esdhc0;
- 		mmc1 = &esdhc1;
- 	};
--- 
-2.25.1
-
+=0A=
+=0A=
+________________________________________=0A=
+From: syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>=0A=
+Sent: Thursday, 9 September 2021 08:09=0A=
+To: asml.silence@gmail.com; axboe@kernel.dk; io-uring@vger.kernel.org; linu=
+x-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com=0A=
+Subject: [syzbot] memory leak in create_io_worker=0A=
+=0A=
+[Please note: This e-mail is from an EXTERNAL e-mail address]=0A=
+=0A=
+Hello,=0A=
+=0A=
+syzbot found the following issue on:=0A=
+=0A=
+HEAD commit:    0bcfe68b8767 Revert "memcg: enable accounting for pollfd a.=
+.=0A=
+git tree:       upstream=0A=
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D152ccba3300000=
+=0A=
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc2f4c21cbd29de3=
+d=0A=
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D65454c239241d3d64=
+7da=0A=
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils=
+ for Debian) 2.35.1=0A=
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D123d31b330000=
+0=0A=
+=0A=
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:=0A=
+Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com=0A=
+=0A=
+2021/09/08 01:29:02 executed programs: 33=0A=
+2021/09/08 01:29:08 executed programs: 42=0A=
+2021/09/08 01:29:15 executed programs: 62=0A=
+2021/09/08 01:29:21 executed programs: 82=0A=
+BUG: memory leak=0A=
+unreferenced object 0xffff888126fcd6c0 (size 192):=0A=
+  comm "syz-executor.1", pid 11934, jiffies 4294983026 (age 15.690s)=0A=
+  hex dump (first 32 bytes):=0A=
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................=0A=
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................=0A=
+  backtrace:=0A=
+    [<ffffffff81632c91>] kmalloc_node include/linux/slab.h:609 [inline]=0A=
+    [<ffffffff81632c91>] kzalloc_node include/linux/slab.h:732 [inline]=0A=
+    [<ffffffff81632c91>] create_io_worker+0x41/0x1e0 fs/io-wq.c:739=0A=
+    [<ffffffff8163311e>] io_wqe_create_worker fs/io-wq.c:267 [inline]=0A=
+    [<ffffffff8163311e>] io_wqe_enqueue+0x1fe/0x330 fs/io-wq.c:866=0A=
+    [<ffffffff81620b64>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473=
+=0A=
+    [<ffffffff8162c59c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6933=0A=
+    [<ffffffff8162c7ab>] io_req_task_submit+0x4b/0xa0 fs/io_uring.c:2233=0A=
+    [<ffffffff8162cb48>] io_async_task_func+0x108/0x1c0 fs/io_uring.c:5462=
+=0A=
+    [<ffffffff816259e3>] tctx_task_work+0x1b3/0x3a0 fs/io_uring.c:2158=0A=
+    [<ffffffff81269b43>] task_work_run+0x73/0xb0 kernel/task_work.c:164=0A=
+    [<ffffffff812dcdd1>] tracehook_notify_signal include/linux/tracehook.h:=
+212 [inline]=0A=
+    [<ffffffff812dcdd1>] handle_signal_work kernel/entry/common.c:146 [inli=
+ne]=0A=
+    [<ffffffff812dcdd1>] exit_to_user_mode_loop kernel/entry/common.c:172 [=
+inline]=0A=
+    [<ffffffff812dcdd1>] exit_to_user_mode_prepare+0x151/0x180 kernel/entry=
+/common.c:209=0A=
+    [<ffffffff843ff25d>] __syscall_exit_to_user_mode_work kernel/entry/comm=
+on.c:291 [inline]=0A=
+    [<ffffffff843ff25d>] syscall_exit_to_user_mode+0x1d/0x40 kernel/entry/c=
+ommon.c:302=0A=
+    [<ffffffff843fa4a2>] do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86=
+=0A=
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae=0A=
+=0A=
+=0A=
+=0A=
+Hello Pavel=0A=
+=0A=
+This looks like  io-worker create fail trigger memleak. =0A=
+=0A=
+diff --git a/fs/io-wq.c b/fs/io-wq.c=0A=
+index 35e7ee26f7ea..27fa0506c1a6 100644=0A=
+--- a/fs/io-wq.c=0A=
++++ b/fs/io-wq.c=0A=
+@@ -709,6 +709,7 @@ static void create_worker_cont(struct callback_head *cb=
+)=0A=
+                }=0A=
+                raw_spin_unlock(&wqe->lock);=0A=
+                io_worker_ref_put(wqe->wq);=0A=
++               kfree(worker);=0A=
+                return;=0A=
+        }=0A=
+=0A=
+@@ -725,6 +726,7 @@ static void io_workqueue_create(struct work_struct *wor=
+k)=0A=
+        if (!io_queue_worker_create(worker, acct, create_worker_cont)) {=0A=
+                clear_bit_unlock(0, &worker->create_state);=0A=
+                io_worker_release(worker);=0A=
++               kfree(worker);=0A=
+        }=0A=
+ }=0A=
+=0A=
+@@ -759,6 +761,7 @@ static bool create_io_worker(struct io_wq *wq, struct i=
+o_wqe *wqe, int index)=0A=
+        if (!IS_ERR(tsk)) {=0A=
+                io_init_new_worker(wqe, worker, tsk);=0A=
+        } else if (!io_should_retry_thread(PTR_ERR(tsk))) {=0A=
++               kfree(worker);=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+---=0A=
+This report is generated by a bot. It may contain errors.=0A=
+See https://goo.gl/tpsmEJ for more information about syzbot.=0A=
+syzbot engineers can be reached at syzkaller@googlegroups.com.=0A=
+=0A=
+syzbot will keep track of this issue. See:=0A=
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.=0A=
+syzbot can test patches for this issue, for details see:=0A=
+https://goo.gl/tpsmEJ#testing-patches=0A=
