@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B093F4045BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A134045C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350777AbhIIGnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:43:33 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37366 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350854AbhIIGn2 (ORCPT
+        id S245155AbhIIGuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232403AbhIIGuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:43:28 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1896gFWC057035;
-        Thu, 9 Sep 2021 01:42:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631169735;
-        bh=wLtrwmO0KBTWvlGY6UVPf2jvdy+hEiVk6Rtto3aVzfU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=DWrGqNCi+X/qlxOjfC+pw16TZ4HdikDxqjN1y82Mmcq5cRfrhWnFVZzVBn/s1nvV/
-         qDnDynupjjKGXo6r6JZTaUBiN+mtV24Q2NFxTH9CHsZZeZA96ikqsU3m7VavDFYKWB
-         s8Rb5069VtVBS5ZssiP16Em9lBFuzc/lWmHYMD+w=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1896gFgr029618
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 9 Sep 2021 01:42:15 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
- Sep 2021 01:42:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 9 Sep 2021 01:42:15 -0500
-Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1896g04S062945;
-        Thu, 9 Sep 2021 01:42:12 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chris.chiu@canonical.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        <lokeshvutla@ti.com>
-Subject: [PATCH v4 3/3] usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
-Date:   Thu, 9 Sep 2021 12:12:00 +0530
-Message-ID: <20210909064200.16216-4-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210909064200.16216-1-kishon@ti.com>
-References: <20210909064200.16216-1-kishon@ti.com>
+        Thu, 9 Sep 2021 02:50:18 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79630C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:49:05 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z18so1839043ybg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jvq1SkY9pwAOIMxBMn33QFKV8XgkS5RSkAbHTT9NPnc=;
+        b=zPNHmflQ+KK2aPPISKabIT/z6km+R2RESiZoHSRncKMphQza4olqur7NjrJcjL3ZRK
+         B2uuEfASpvnJ5rKUNVZJjMBCwV+308aCaadXEP+5Lkm6THswPSwZCd+Z3A3J9Ge+Nwaw
+         75uWRwxsd/XcCJ4C4xBzlfENUl4yaPmpN7gkty+vqkXaE5Y6llo18zVGWtbSS+lm2HZ4
+         z48TFZEaqQLTEJMNCEmy74PYNzjdFfZQHpYX2bhLkef9uTbXDvDPldtcy/Lxy1cQ8Sft
+         VNFJUHdYpazBlpcewEaGh/4/m1wJDdPv16hdD40aC9lR1my3J75jLxymT4aun03Uhz2K
+         oGOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jvq1SkY9pwAOIMxBMn33QFKV8XgkS5RSkAbHTT9NPnc=;
+        b=f3M7ncZNAoqdclZ0hhdb3/lF1osEXIDUtpE0yDcGBFhSlUD/iCvFslkW61TAikicYm
+         xHzWglkMOlU7AQjGUVu/h4HVA+X9wVbYTE3NqmZyCmNWGqMRQX3FRCjhLoprxLQcHEEb
+         p1vunADEDpgn5fyBRibJICxnvdkNO42NyDWGiIXN6Pw49BRti6I1GGwxmvJXIRA8sNtG
+         Lfic6fiaWb4SIL4VnL7YRdpxivCQaTD1kmIf0GEdIUon4dWZFusNlZvlhL31uUFZu91Y
+         D9hhqmfnESC6j+jqoBXe+i/H/MDzlpNsfM238sU++6FxhfKr2N/ypfmjmBEmYfrf3fId
+         LuUg==
+X-Gm-Message-State: AOAM531Muri0QaZbjcMezjDWe9jvyBIKP2yRzmeQVfd8T//p6aw/AGIj
+        uPVvB+bdOF0VzgMm7MRQdcwQBPpWAtAxfCbWz186NA==
+X-Google-Smtp-Source: ABdhPJyJeMCHtdgCgrGmaCI+oCzAqtrmiQWfiPufs6oN0VW2hb96eJpM42vewETfOKt6pl1t0Vc5dWG7wcbxyZEKFxM=
+X-Received: by 2002:a25:1c09:: with SMTP id c9mr1960098ybc.350.1631170144556;
+ Wed, 08 Sep 2021 23:49:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210908203946.1261798-1-daniel.m.jordan@oracle.com>
+In-Reply-To: <20210908203946.1261798-1-daniel.m.jordan@oracle.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 9 Sep 2021 08:48:53 +0200
+Message-ID: <CAKfTPtArYGHgEaa3GEMeJWzk_n4BDk1SanjrDU_-3fn=okrDEg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix se_is_idle() for !FAIR_GROUP_SCHED
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Josh Don <joshdon@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change. Since configuration to stop HCD is invoked from
-multiple places, group all of them in usb_stop_hcd().
+On Wed, 8 Sept 2021 at 22:40, Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
+>
+> se_is_idle() unconditionally returns 0 for !FAIR_GROUP_SCHED.
+>
+> Check whether the task is SCHED_IDLE instead so buddies aren't set for
+> such tasks, as was the behavior before 304000390f88.
+>
+> Fixes: 304000390f88 ("sched: Cgroup SCHED_IDLE support")
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Tested-by: Chris Chiu <chris.chiu@canonical.com>
----
- drivers/usb/core/hcd.c | 39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 99ff2d23be05..7ee6e4cc0d89 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -2760,6 +2760,26 @@ static void usb_put_invalidate_rhdev(struct usb_hcd *hcd)
- 	usb_put_dev(rhdev);
- }
- 
-+/**
-+ * usb_stop_hcd - Halt the HCD
-+ * @hcd: the usb_hcd that has to be halted
-+ *
-+ * Stop the root-hub polling timer and invoke the HCD's ->stop callback.
-+ */
-+static void usb_stop_hcd(struct usb_hcd *hcd)
-+{
-+	hcd->rh_pollable = 0;
-+	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
-+	del_timer_sync(&hcd->rh_timer);
-+
-+	hcd->driver->stop(hcd);
-+	hcd->state = HC_STATE_HALT;
-+
-+	/* In case the HCD restarted the timer, stop it again. */
-+	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
-+	del_timer_sync(&hcd->rh_timer);
-+}
-+
- /**
-  * usb_add_hcd - finish generic HCD structure initialization and register
-  * @hcd: the usb_hcd structure to initialize
-@@ -2960,13 +2980,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
- 	return retval;
- 
- err_register_root_hub:
--	hcd->rh_pollable = 0;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
--	hcd->driver->stop(hcd);
--	hcd->state = HC_STATE_HALT;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
-+	usb_stop_hcd(hcd);
- err_hcd_driver_start:
- 	if (usb_hcd_is_primary_hcd(hcd) && hcd->irq > 0)
- 		free_irq(irqnum, hcd);
-@@ -3039,16 +3053,7 @@ void usb_remove_hcd(struct usb_hcd *hcd)
- 	 * interrupt occurs), but usb_hcd_poll_rh_status() won't invoke
- 	 * the hub_status_data() callback.
- 	 */
--	hcd->rh_pollable = 0;
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
--
--	hcd->driver->stop(hcd);
--	hcd->state = HC_STATE_HALT;
--
--	/* In case the HCD restarted the timer, stop it again. */
--	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--	del_timer_sync(&hcd->rh_timer);
-+	usb_stop_hcd(hcd);
- 
- 	if (usb_hcd_is_primary_hcd(hcd)) {
- 		if (hcd->irq > 0)
--- 
-2.17.1
-
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..8b22665bc18e 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -497,7 +497,7 @@ static int cfs_rq_is_idle(struct cfs_rq *cfs_rq)
+>
+>  static int se_is_idle(struct sched_entity *se)
+>  {
+> -       return 0;
+> +       return task_has_idle_policy(task_of(se));
+>  }
+>
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
+>
+> base-commit: ac08b1c68d1b1ed3cebb218fc3ea2c07484eb07d
+> --
+> 2.32.0
+>
