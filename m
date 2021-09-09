@@ -2,277 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1997F404254
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48ED0404246
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 02:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348751AbhIIAeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 20:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
+        id S1348687AbhIIA1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 20:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348721AbhIIAeL (ORCPT
+        with ESMTP id S235458AbhIIA1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 20:34:11 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D06AC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 17:33:02 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id t6so155901ilq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:33:02 -0700 (PDT)
+        Wed, 8 Sep 2021 20:27:12 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F36C061575;
+        Wed,  8 Sep 2021 17:26:04 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id h9so7730481ejs.4;
+        Wed, 08 Sep 2021 17:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5TYYBxc50K8ZMZBZ7awprT/bOkKTiGesfrb7WFjJZ+A=;
-        b=KCg85QMP/OVnq6/fqe2waVZlGw1gFTsTbflgSC3G8O1iDp1IJHUm3MOwpZoQjxxDR7
-         Atw25rhjAEpmxxhj1rRyXedydjURMxf4JnVSadGKtWgcyetFjVG75upvVHgaoqHaOe7Q
-         i7ClThKtbyUxOILSABwytp3A6HENqxe+XgPEA=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wreZB7UBAFy1of4iMTATNheSq7Hzv+fftSvSkGYu5PA=;
+        b=NaKPqCa1a34EVinxw/p4SsiPlhjG7b0UoxOOWuczFiH+EKPkscCMJP/bmVE8Hn1bjJ
+         0nN8I0g6FsPOIW4wY1dg8l+Np91/SYFWJemkJigU+EvMt2jjuIU98a5Xsqqz828kiXqu
+         060TnoBDZs5ipialYBOdGqx4myrWBXb6AaYtDQOtg2gPTJGSpdQIa1/6HPjXsWGaxghO
+         9jSiZi0IsYb3s7Ov96EO/tyuvtmC9SIR9pYreHM3XbmJQAtVdp/DcT6CFk4oSvH+wJvD
+         R1iNWJyNgxQxDxoNnLPmGPkzBNAiIbwqhoUIZgeuuH2ORIpUjYdVYypuw/URJJnd82lX
+         AQnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5TYYBxc50K8ZMZBZ7awprT/bOkKTiGesfrb7WFjJZ+A=;
-        b=Yoeo3ktRBmA4yYB/r5/P4vKkAiz0bRtEfwANfMzzQm2PBRUkBXWFy08eXKezgkJPL5
-         4Pe5p1xqMs8yJlZ9HVWD3FKsgducGQvhMLwNecrVaeEJzK4eYBO8PLig3p9dSLbNaxWW
-         ULzntKxWJMVYT0GyVSiwMsxu4a35mkIoQr3a2AbrsbW0/KvEk6eNvRmbKtFUmS9ne9qd
-         vzFuY7u+l/388A9t+lvayfMyS2lKECgV9hHjwxmlcHzdmfMcLoJ2EvXEAL7ybl7UleR9
-         06mNS6i9R2rdhjyWFZ7bDRsFTJKgUoBHNQjpZTxip3iJSpX3OAjtqog7hrufpHAGxGQ2
-         CNZw==
-X-Gm-Message-State: AOAM532KqPucDeesLfsMH5eFsYefz0b2hGrHoyLUNa26PSajxf4G5fWY
-        OnTSZEImPTLupt6/OUDE9vrOXCCiMLMODw==
-X-Google-Smtp-Source: ABdhPJzm7llN897qgbvzEhAU+PdlGmvwChEM/XJMHHIO9/09gewr+U4lg1p3iZYLFDh90DheszDisQ==
-X-Received: by 2002:a92:de0a:: with SMTP id x10mr146093ilm.277.1631147581304;
-        Wed, 08 Sep 2021 17:33:01 -0700 (PDT)
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com. [209.85.166.178])
-        by smtp.gmail.com with ESMTPSA id v5sm96354iln.42.2021.09.08.17.33.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 17:33:01 -0700 (PDT)
-Received: by mail-il1-f178.google.com with SMTP id z2so182413iln.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 17:33:01 -0700 (PDT)
-X-Received: by 2002:a05:6e02:214e:: with SMTP id d14mr150446ilv.142.1631147079713;
- Wed, 08 Sep 2021 17:24:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wreZB7UBAFy1of4iMTATNheSq7Hzv+fftSvSkGYu5PA=;
+        b=iT9h9+bvRIyNEpl24E6oM1dwO9gbbekcpWLW4yKUOAmuCgOA/uJURVbGmH3ZQ+HvbH
+         u1rOADILv5l9kouK0i/9eiWDccj/CtZqDB61KhcM/m7jZxa3OF6YYyHLzejnEGnS7oTb
+         qhjprWWRRtua58H1dfozbGJGsjs6MBqFVwcRoy3tSYOn3hccgURPr1R2tH+VnbWeMwEI
+         +Bej/M6gAXUk60n/FmEljcvSk/hqPBErFo4k9MNSvJH+UACRnp9jp13ttk9ukoIFnUKJ
+         eCK2iRHNPPU7S8QQxSiYDKW8aF6x8uo9IH5/lQx5QCQyIflCo1nKZVTsLenTCb5stFOL
+         dpcA==
+X-Gm-Message-State: AOAM530bGhJlcpIyRclk7bI1uzwEvkISGwLCh5H3zPwwcdkDjE9tykfH
+        YjNlLj6XShxQiMEdFUte0UV+gieiTzgFOg==
+X-Google-Smtp-Source: ABdhPJxiLBa4EoztGWPNdflOdhonE8KZGhBCbwnIWa7SGU8sVnHsxkplIjkXM9JNdSoWCiSW+ADl1w==
+X-Received: by 2002:a17:906:f1ce:: with SMTP id gx14mr430328ejb.14.1631147162651;
+        Wed, 08 Sep 2021 17:26:02 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id s7sm80527edu.23.2021.09.08.17.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 17:26:02 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 03:26:01 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Circular dependency between DSA switch driver and tagging
+ protocol driver
+Message-ID: <20210909002601.mtesy27atk7cuyeo@skbuf>
+References: <20210908220834.d7gmtnwrorhharna@skbuf>
+ <e0567cfe-d8b6-ed92-02c6-e45dd108d7d7@gmail.com>
 MIME-Version: 1.0
-References: <20210901201934.1084250-1-dianders@chromium.org> <YTUSiHiCgihz1AcO@ravnborg.org>
-In-Reply-To: <YTUSiHiCgihz1AcO@ravnborg.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 8 Sep 2021 17:24:28 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U+dnyuGc9OuvMJpYWVx1x6yYQPJgi6fh+6Ne37+veedw@mail.gmail.com>
-Message-ID: <CAD=FV=U+dnyuGc9OuvMJpYWVx1x6yYQPJgi6fh+6Ne37+veedw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/16] eDP: Support probing eDP panels dynamically
- instead of hardcoding
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?Q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Nishanth Menon <nm@ti.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Olof Johansson <olof@lixom.net>,
-        Otavio Salvador <otavio@ossystems.com.br>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
-        =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0567cfe-d8b6-ed92-02c6-e45dd108d7d7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Sep 5, 2021 at 11:55 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+On Wed, Sep 08, 2021 at 03:14:51PM -0700, Florian Fainelli wrote:
+> > Where is the problem?
 >
-> Hi Douglas,
+> I'd say with 994d2cbb08ca, since the tagger now requires visibility into
+> sja1105_switch_ops which is not great, to say the least. You could solve
+> this by:
 >
-> On Wed, Sep 01, 2021 at 01:19:18PM -0700, Douglas Anderson wrote:
-> > The goal of this patch series is to move away from hardcoding exact
-> > eDP panels in device tree files. As discussed in the various patches
-> > in this series (I'm not repeating everything here), most eDP panels
-> > are 99% probable and we can get that last 1% by allowing two "power
-> > up" delays to be specified in the device tree file and then using the
-> > panel ID (found in the EDID) to look up additional power sequencing
-> > delays for the panel.
-> >
-> > This patch series is the logical contiunation of a previous patch
-> > series where I proposed solving this problem by adding a
-> > board-specific compatible string [1]. In the discussion that followed
-> > it sounded like people were open to something like the solution
-> > proposed in this new series.
-> >
-> > In version 2 I got rid of the idea that we could have a "fallback"
-> > compatible string that we'd use if we didn't recognize the ID in the
-> > EDID. This simplifies the bindings a lot and the implementation
-> > somewhat. As a result of not having a "fallback", though, I'm not
-> > confident in transitioning any existing boards over to this since
-> > we'll have to fallback to very conservative timings if we don't
-> > recognize the ID from the EDID and I can't guarantee that I've seen
-> > every panel that might have shipped on an existing product. The plan
-> > is to use "edp-panel" only on new boards or new revisions of old
-> > boards where we can guarantee that every EDID that ships out of the
-> > factory has an ID in the table.
-> >
-> > Version 3 of this series now splits out all eDP panels to their own
-> > driver and adds the generic eDP panel support to this new driver. I
-> > believe this is what Sam was looking for [2].
-> >
-> > [1] https://lore.kernel.org/r/YFKQaXOmOwYyeqvM@google.com/
-> > [2] https://lore.kernel.org/r/YRTsFNTn%2FT8fLxyB@ravnborg.org/
-> >
-> > Changes in v3:
-> > - Decode hex product ID w/ same endianness as everyone else.
-> > - ("Reorder logicpd_type_28...") patch new for v3.
-> > - Split eDP panels patch new for v3.
-> > - Move wayward panels patch new for v3.
-> > - ("Non-eDP panels don't need "HPD" handling") new for v3.
-> > - Split the delay structure out patch just on eDP now.
-> > - ("Better describe eDP panel delays") new for v3.
-> > - Fix "prepare_to_enable" patch new for v3.
-> > - ("Don't re-read the EDID every time") moved to eDP only patch.
-> > - Generic "edp-panel" handled by the eDP panel driver now.
-> > - Change init order to we power at the end.
-> > - Adjust endianness of product ID.
-> > - Fallback to conservative delays if panel not recognized.
-> > - Add Sharp LQ116M1JW10 to table.
-> > - Add AUO B116XAN06.1 to table.
-> > - Rename delays more generically so they can be reused.
-> >
-> > Changes in v2:
-> > - No longer allow fallback to panel-simple.
-> > - Add "-ms" suffix to delays.
-> > - Don't support a "fallback" panel. Probed panels must be probed.
-> > - Not based on patch to copy "desc"--just allocate for probed panels.
-> > - Add "-ms" suffix to delays.
-> >
-> > Douglas Anderson (16):
-> >   dt-bindings: drm/panel-simple-edp: Introduce generic eDP panels
-> >   drm/edid: Break out reading block 0 of the EDID
-> >   drm/edid: Allow the querying/working with the panel ID from the EDID
-> >   drm/panel-simple: Reorder logicpd_type_28 / mitsubishi_aa070mc01
-> >   drm/panel-simple-edp: Split eDP panels out of panel-simple
-> >   ARM: configs: Everyone who had PANEL_SIMPLE now gets PANEL_SIMPLE_EDP
-> >   arm64: defconfig: Everyone who had PANEL_SIMPLE now gets
-> >     PANEL_SIMPLE_EDP
-> >   MIPS: configs: Everyone who had PANEL_SIMPLE now gets PANEL_SIMPLE_EDP
-> >   drm/panel-simple-edp: Move some wayward panels to the eDP driver
-> >   drm/panel-simple: Non-eDP panels don't need "HPD" handling
-> >   drm/panel-simple-edp: Split the delay structure out
-> >   drm/panel-simple-edp: Better describe eDP panel delays
-> >   drm/panel-simple-edp: hpd_reliable shouldn't be subtraced from
-> >     hpd_absent
-> >   drm/panel-simple-edp: Fix "prepare_to_enable" if panel doesn't handle
-> >     HPD
-> >   drm/panel-simple-edp: Don't re-read the EDID every time we power off
-> >     the panel
-> >   drm/panel-simple-edp: Implement generic "edp-panel"s probed by EDID
->
-> Thanks for looking into this. I really like the outcome.
-> We have panel-simple that now (mostly) handle simple panels,
-> and thus all the eDP functionality is in a separate driver.
->
-> I have provided a few nits.
-> My only take on this is the naming - as we do not want to confuse
-> panel-simple and panel-edp I strongly suggest renaming the driver to
-> panel-edp.
+> - splitting up the sja1150 between a library that contains
+> sja1105_switch_ops and does not contain the driver registration code
 
-Sure, I'll do that. I was trying to express the fact that the new
-"panel-edp" driver won't actually handle _all_ eDP panels, only the
-eDP panels that are (comparatively) simpler. For instance, I'm not
-planning to handle panel-samsung-atna33xc20.c in "panel-edp". I guess
-people will figure it out, though.
+I've posted patches which more or less cheat the dependency by creating
+a third module, as you suggest. The tagging protocol still depends on
+the main module, now sans the call to dsa_register_switch, that is
+provided by the third driver, sja1105_probe.ko, which as the name
+suggests probes the hardware. The sja1105_probe.ko also depends on
+sja1105.ko, so the insmod order needs to be:
 
+insmod sja1105.ko
+insmod tag_sja1105.ko
+insmod sja1105_probe.ko
 
-> And then rename the corresponding Kconfig entry.
->
-> With these few changes all patches are:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+I am not really convinced that this change contributes to the overall
+code organization and structure.
 
-Thanks, I'll add it to the patches. If there's anything major I need
-to change I'll give you a yell to make sure you see it.
+> - finding a different way to do a dsa_switch_ops pointer comparison, by
+> e.g.: maintaining a boolean in dsa_port that tracks whether a particular
+> driver is backing that port
 
+Maybe I just don't see how this would scale. So to clarify, are you
+suggesting to add a struct dsa_port :: bool is_sja1105, which the
+sja1105 driver would set to true in sja1105_setup?
 
-> For bisectability I suggest to move the defconfig patches up before you
-> introduce the new Kconfig symbol. Or maybe they will be added via
-> another tree and then this is not possible to control
-
-Yup, I'll do that. There was some question about the defconfig patch
-but they are hopefully cleared up now.
-
-
-> I assume you will apply the patches yourself.
-
-Sure, I can do that with your Ack. I'll also make sure that patches
-that Jani commented on get resolved.
-
-
--Doug
+If this was not a driver I would be maintaining, just watching as a
+reviewer, I believe "no" is what I would say to that.
