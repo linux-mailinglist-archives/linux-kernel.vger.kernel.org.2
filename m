@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E89540573A
+	by mail.lfdr.de (Postfix) with ESMTP id 559F5405739
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353700AbhIINc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 09:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
+        id S1358137AbhIINc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357679AbhIINPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1357680AbhIINPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Sep 2021 09:15:25 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D331611B0;
-        Thu,  9 Sep 2021 13:11:25 +0000 (UTC)
-Date:   Thu, 9 Sep 2021 09:11:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] tracing/boot: bootconfig: Fixes and API name change
-Message-ID: <20210909091123.29f17a6f@gandalf.local.home>
-In-Reply-To: <163119172318.151131.7138254940364392100.stgit@devnote2>
-References: <163119172318.151131.7138254940364392100.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4DF611C7;
+        Thu,  9 Sep 2021 13:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631193125;
+        bh=dNJFtrF78qzIQitC46Mph76KRxuj/uQ+e9tYRuJPMS8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hWfP3mb4q02clcV5wHcI9kTMAvBuT6xXHX60s4fxlAidqb2ohtZYeM+oZX+ZITT/0
+         ujmOkcaRHm4zdYO85iVowNBBAyyK7wd1t/l6XBK1Q2sHIK38OItcbc/TIrluiqMtcL
+         KIGL5hsTE2Ag3AbLUBYCyJcur6BXPAm5WaMM+k7ozWqDkeF0j+D2ero/w7BdcTaT6K
+         E5yJXDYNv4c0sSrYf6sn8B+r3NBG0WZQ7kpw15kC/FvmpgHOHy1FAMbKhIRHwAssHa
+         DeCU6/Zb19ahrPsSL8lGgZLu4gZBVHmYy8EaO64JyEyDVS4GVf+dJ52n5jP2A400nk
+         nf+Qh6qw2Z4tg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH 0/3] tracing/boot: bootconfig: Fixes and API name change
+Date:   Thu,  9 Sep 2021 22:12:03 +0900
+Message-Id: <163119312321.159092.9694278669123009540.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Sep 2021 21:48:43 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi,
 
-> Hi,
-> 
-> Here is a series of patches to fix some issues on boot-time tracing
-> and bootconfig. Yesterday I sent a bugfix(*), and today I found some
-> other issues.
-> 
-> (*) https://lore.kernel.org/all/163112988361.74896.2267026262061819145.stgit@devnote2/T/#u
-> 
-> This includes following patches.
-> 
-> [1/3] tracing/boot: Fix trace_boot_hist_add_array() to check array is value
-> 
-> [2/3] tracing/boot: Fix to check the histogram control param is a leaf node
-> 
-> [3/3] bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
->  - Rename xbc_node_find_child() to xbc_node_find_subkey() to avoid
->    confusing "child" and "subkey" words.
-> 
+Here is a series of patches to fix some issues on boot-time tracing
+and bootconfig. Yesterday I sent a bugfix(*), and today I found some
+other issues.
 
-Masami,
+(*) https://lore.kernel.org/all/163112988361.74896.2267026262061819145.stgit@devnote2/T/#u
 
-Did this go out correctly?
+This includes following patches.
 
-I only received this email, and this email is not showing up on LKML.
+[1/3] tracing/boot: Fix trace_boot_hist_add_array() to check array is value
 
- (https://lore.kernel.org/r/163119172318.151131.7138254940364392100.stgit%40devnote2
- gives "Not found")
+[2/3] tracing/boot: Fix to check the histogram control param is a leaf node
 
--- Steve
+[3/3] bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
+ - Rename xbc_node_find_child() to xbc_node_find_subkey() to avoid
+   confusing "child" and "subkey" words.
 
 
-> 
-> 
-> Thank you,
-> 
-> ---
-> 
-> Masami Hiramatsu (3):
->       tracing/boot: Fix trace_boot_hist_add_array() to check array is value
->       tracing/boot: Fix to check the histogram control param is a leaf node
->       bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
-> 
-> 
->  include/linux/bootconfig.h |    4 ++--
->  kernel/trace/trace_boot.c  |   35 +++++++++++++++++------------------
->  lib/bootconfig.c           |    8 ++++----
->  3 files changed, 23 insertions(+), 24 deletions(-)
-> 
 
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      tracing/boot: Fix trace_boot_hist_add_array() to check array is value
+      tracing/boot: Fix to check the histogram control param is a leaf node
+      bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
+
+
+ include/linux/bootconfig.h |    4 ++--
+ kernel/trace/trace_boot.c  |   37 ++++++++++++++++++-------------------
+ lib/bootconfig.c           |    8 ++++----
+ 3 files changed, 24 insertions(+), 25 deletions(-)
+
+-- 
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
