@@ -2,172 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7E3405CC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083A6405CC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244211AbhIISQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242975AbhIISP6 (ORCPT
+        id S243393AbhIISV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:21:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50386 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237172AbhIISV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:15:58 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE193C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:14:48 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id t4so2790582qkb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DblO9ClH443238qZj20JkQQSAd0noLNjchR3cpshmnA=;
-        b=Q86+9sX7t6cI3lgecF19O/4RxatjCaFYj4PdR8hhhd4DcI/gyHIeAO/qFH/KY5VJMC
-         31EhG1siSdE3ltgNctvI/T+/l5GYT657t4obERgmN+Evu3C+lzhD7Zm0DDWHv8JsIbrR
-         qkCDYW+qUkonLI8X4RJZf/6RgcuFMl4CHdC9WTSk0B2SiRun8eQqYwi2sogffpL01N2z
-         CEAFT2AwGIA5d8LLwfZmJmEARdfBoJT9wQOMuoTNfAajynu1B/cHOjAkdeAa6fBYJLfs
-         us6D9BVtgOrcSaJIbBzWBLtDbmVA44tT2Hwh3FJJ3YgOHVdGAaRobufS/CsuXBwavQFd
-         Lkwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DblO9ClH443238qZj20JkQQSAd0noLNjchR3cpshmnA=;
-        b=N9xjhFuZSk/hii3aeBX7jnsoZ32Mbcsj+jQPlpbfyhRq5t98rFYjFKl5lQYDD+jEwa
-         NjkocK8jsGNiI8vl9xntHxqV+A+ysH8llaCduPj8gyYefOu0nx2WXoSRh/LmBHd/003a
-         ZWOrm7L2IVUqaNDLOn+JLBCcJIapt1zKmHjjpJ1cjh6VU9MejyW9nUr7XGGSRUTVPc2w
-         SDomV/ATftA+wPqybg2ehF7KqK9o7YZe0/apgVKNjbiVBSFjD8yfeBirPX0AwkdU5mk3
-         10xZ51mcnU3YWk34YeX3tTGTHq2LM8Kd7I4iSk7Dc7R2T8XCEqWJCGz57p7wg7dKfZpk
-         33pA==
-X-Gm-Message-State: AOAM533tPRkvc1O4zs/IewQCZWFWzbWbRPcB/52x0y44gdrJf1lQ8tQS
-        zRQLKIiBRLG933sw6xbZNOWz7w==
-X-Google-Smtp-Source: ABdhPJxZrSplUulNFGu6SlBUF9t6hILViTDkMRHvSu9j9tUAIEzSWig8TRANAwaksO+9ULJ2LUcvnQ==
-X-Received: by 2002:a37:a147:: with SMTP id k68mr4008554qke.416.1631211288054;
-        Thu, 09 Sep 2021 11:14:48 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id x125sm1867923qkd.8.2021.09.09.11.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 11:14:47 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 14:16:39 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YTpPh2aaQMyHAi8m@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YToBjZPEVN9Jmp38@infradead.org>
- <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
+        Thu, 9 Sep 2021 14:21:26 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189I2k5a094025;
+        Thu, 9 Sep 2021 14:19:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=2n8QJ1cbL0OO2VSDXilTS1IiYfGfJtcz0GljvG3/16o=;
+ b=P+yQz+O7bULOcKV4ZrP4GuXc8frW3PS4/nByRbbhdjhs9c8rppX9V11WO4zm2qTHYCUw
+ DKsqrfWhg50ImiDUiHAZr7cXvbmhQcn7ToaaXwntu51L1okSgVSarDhbhJ1b/4QJXyA0
+ KiAYeJzwoR71W+jY9fwC82/env0OeOMHiwmSb0CRB/MVlw733kcBERrjai11jChoUdbE
+ 1ol6v/6asKG8A7+O1I17qb+LOke+8WedrhXPOrbd0uH0xz/LJAEsHKsE6vv47695Uq66
+ bVfEcczr5/sdBcWIGc8pqzViXNNj/8uMwgutwFNwEtwAGbAdcDQHLF/7VqliRzo67NlU Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aygjvm4bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 14:19:51 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 189I5Vac107485;
+        Thu, 9 Sep 2021 14:19:50 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aygjvm4ar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 14:19:50 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 189IIFIM031746;
+        Thu, 9 Sep 2021 18:19:48 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma02fra.de.ibm.com with ESMTP id 3axcnkgd2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Sep 2021 18:19:47 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 189IJj0m40894928
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Sep 2021 18:19:45 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42BAF42042;
+        Thu,  9 Sep 2021 18:19:45 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B0714205C;
+        Thu,  9 Sep 2021 18:19:40 +0000 (GMT)
+Received: from sig-9-65-72-231.ibm.com (unknown [9.65.72.231])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Sep 2021 18:19:39 +0000 (GMT)
+Message-ID: <babee2bb6710de2f26d1695b4ee8bf4c93a3f2ca.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 04/12] integrity: restrict INTEGRITY_KEYRING_MACHINE
+ to restrict_link_by_ca
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Date:   Thu, 09 Sep 2021 14:19:38 -0400
+In-Reply-To: <B34345FD-38F9-4722-B046-E250ACBD5B8C@oracle.com>
+References: <20210907160110.2699645-1-eric.snowberg@oracle.com>
+         <20210907160110.2699645-5-eric.snowberg@oracle.com>
+         <c5d8d846cd03a97344700f8ce4f038cdc3e3b8fd.camel@linux.ibm.com>
+         <B34345FD-38F9-4722-B046-E250ACBD5B8C@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LS5KTEqwHIoR0uEY6nCUmaD2NdX1mvw-
+X-Proofpoint-ORIG-GUID: bk7B5mYRoc7QSMT92GE7LvAcTgbaJF11
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-09_06:2021-09-09,2021-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 spamscore=0 suspectscore=0
+ adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:56:54PM +0200, Vlastimil Babka wrote:
-> On 9/9/21 14:43, Christoph Hellwig wrote:
-> > So what is the result here?  Not having folios (with that or another
-> > name) is really going to set back making progress on sane support for
-> > huge pages.  Both in the pagecache but also for other places like direct
-> > I/O.
+On Thu, 2021-09-09 at 11:53 -0600, Eric Snowberg wrote:
+> > On Sep 9, 2021, at 11:25 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > 
+> > On Tue, 2021-09-07 at 12:01 -0400, Eric Snowberg wrote:
+> >> Set the restriction check for INTEGRITY_KEYRING_MACHINE keys to
+> >> restrict_link_by_ca.  This will only allow CA keys into the machine
+> >> keyring.
+> >> 
+> >> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> > 
+> > Normally the new function, in this case the restriction, and usage
+> > should be defined together.  Any reason why 3/12 and 4/12 are two
+> > separate patches?  
+> 
+> I split them since they cross subsystems.
 
-From my end, I have no objections to using the current shape of
-Willy's data structure as a cache descriptor for the filesystem API:
+That makes sense.
 
-struct foo {
-        /* private: don't document the anon union */
-        union {
-                struct {
-        /* public: */
-                        unsigned long flags;
-                        struct list_head lru;
-                        struct address_space *mapping;
-                        pgoff_t index;
-                        void *private;
-                        atomic_t _mapcount;
-                        atomic_t _refcount;
-#ifdef CONFIG_MEMCG
-                        unsigned long memcg_data;
-#endif
-        /* private: the union with struct page is transitional */
-                };
-                struct page page;
-        };
-};
+thanks,
 
-I also have no general objection to a *separate* folio or pageset or
-whatever data structure to address the compound page mess inside VM
-code. With its own cost/benefit analysis. For whatever is left after
-the filesystems have been sorted out.
+Mimi
 
-My objection is simply to one shared abstraction for both. There is
-ample evidence from years of hands-on production experience that
-compound pages aren't the way toward scalable and maintainable larger
-page sizes from the MM side. And it's anything but obvious or
-self-evident that just because struct page worked for both roles that
-the same is true for compound pages.
-
-Willy says it'll work out, I say it won't. We don't have code to prove
-this either way right now.
-
-Why expose the filesystems to this gamble?
-
-Nothing prevents us from putting a 'struct pageset pageset' or 'struct
-folio folio' into a cache descriptor like above later on, right?
-
-[ And IMO, the fact that filesystem people are currently exposed to,
-  and blocked on, mindnumbing internal MM discussions just further
-  strengthens the argument to disconnect the page cache frontend from
-  the memory allocation backend. The fs folks don't care - and really
-  shouldn't care - about any of this. I understand the frustration. ]
-
-Can we go ahead with the cache descriptor for now, and keep the door
-open on how they are backed from the MM side? We should be able to
-answer this without going too deep into MM internals.
-
-In the short term, this would unblock the fs people.
-
-In the longer term this would allow the fs people to focus on fs
-problems, and MM people to solve MM problems.
-
-> Yeah, the silence doesn't seem actionable. If naming is the issue, I believe
-> Matthew had also a branch where it was renamed to pageset. If it's the
-> unclear future evolution wrt supporting subpages of large pages, should we
-> just do nothing until somebody turns that hypothetical future into code and
-> we see whether it works or not?
-
-Folio or pageset works for compound pages, but implies unnecessary
-implementation details for a variable-sized cache descriptor, IMO.
-
-I don't love the name folio for compound pages, but I think it's
-actually hazardous for the filesystem API.
-
-To move forward with the filesystem bits, can we:
-
-1. call it something - anything - that isn't tied to the page, or the
-   nature of multiple pages? fsmem, fsblock, cachemem, cachent, I
-   don't care too deeply and would rather have a less snappy name than
-   a clever misleading one,
-
-2. make things like folio_order(), folio_nr_pages(), folio_page()
-   page_folio() private API in mm/internal.h, to acknowledge that
-   these are current implementation details, not promises on how the
-   cache entry will forever be backed in the future?
-
-3. remove references to physical contiguity, PAGE_SIZE, anonymous
-   pages - and really anything else that nobody has explicitly asked
-   for yet - from the kerneldoc; generally keep things specced to what
-   we need now, and not create dependencies against speculative future
-   ambitions that may or may not pan out,
-
-4. separate and/or table the bits that are purely about compound pages
-   inside MM code and not relevant for the fs interface - things like
-   the workingset.c and swap.c conversions (page_folio() usage seems
-   like a good indicator for where it permeated too deeply into MM
-   core code which then needs to translate back up again)?
