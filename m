@@ -2,81 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2504053FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0AF40548F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 15:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356806AbhIIMzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:55:54 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34430 "EHLO vps0.lunn.ch"
+        id S1357249AbhIINAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 09:00:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:36395 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354448AbhIIMmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:42:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ccslqbdbDMRBI5TMJhPLL0kOsQFJUv4TDelcaobks6E=; b=05fGKYQu2zD3ugpGX5N14Irr/u
-        4b2Xrw30clYSR6GzAqprkul/PZvrYUFHAsgBsUlQYPoAkIntZMzoEReouEB/rC5W9RMm/fJXufvNK
-        YRzOO15MAZywz9newS+wsM8iX2FIthUvRopVsx+PK+IdpiEK8tqC0PAbTvJ3aCpzGbJI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mOJMM-005uJ8-Ct; Thu, 09 Sep 2021 14:40:54 +0200
-Date:   Thu, 9 Sep 2021 14:40:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     olteanv@gmail.com, p.rosenberger@kunbus.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <YToA1hf2/2KWoKxh@lunn.ch>
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+        id S1354153AbhIIMrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631191563;
+        bh=+HVI0XghzcJKkgiW87QzoZzI0ZQ7j9m77j9OMcB3aro=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=C2InCR5mGc1TG/bT5ZgNme4RPUeuOzrkaEQxsyWUaEs1qnzjuOFtd0L+biCl0slwl
+         fIrDvqD6ZvXUBI/7MWk1eH7MO33l+QcFMeY/imehorEQe0RMrBl0IkItYV/bRIdvja
+         GVkphSFtzmQrlncOXtLRqHnlmKJey4mKwHugBJ2q42Hi2VYxWNf4wQAFW2EXZhILUs
+         qvBhYfMbBSGUVjI/hneDEjfdBjOqGFPUTTkNwjJCJUqExiii+CGSp+8l4b9dleVf0L
+         o6ZzXTzstX+fyHxeC8wllyrRHvnstabNMve1/K22KImd4g1lMJk3kXBLIixoquxayT
+         EOJFMf7wBCT6g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H4zJS6KZGz9vDS;
+        Thu,  9 Sep 2021 22:46:00 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kajol Jain <kjain@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        rnsastry@linux.ibm.com, yao.jin@linux.intel.com, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        kan.liang@linux.intel.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, paulus@samba.org
+Subject: Re: [PATCH 1/3] perf: Add macros to specify onchip L2/L3 accesses
+In-Reply-To: <YTiBqbxe7ieqY2OE@hirez.programming.kicks-ass.net>
+References: <20210904064932.307610-1-kjain@linux.ibm.com>
+ <87ilzbmt7i.fsf@mpe.ellerman.id.au>
+ <YTiBqbxe7ieqY2OE@hirez.programming.kicks-ass.net>
+Date:   Thu, 09 Sep 2021 22:45:54 +1000
+Message-ID: <87czphnchp.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:53:21AM +0200, Lino Sanfilippo wrote:
-> This patch series fixes a system hang I got each time i tried to shutdown
-> or reboot a system that uses a KSZ9897 as a DSA switch with a broadcom
-> GENET network device as the DSA master device. At the time the system hangs
-> the message "unregister_netdevice: waiting for eth0 to become free. Usage
-> count = 2." is dumped periodically to the console.
-> 
-> After some investigation I found the reason to be unreleased references to
-> the master device which are still held by the slave devices at the time the
-> system is shut down (I have two slave devices in use).
-> 
-> While these references are supposed to be released in ksz_switch_remove()
-> this function never gets the chance to be called due to the system hang at
-> the master device deregistration which happens before ksz_switch_remove()
-> is called.
-> 
-> The fix is to make sure that the master device references are already
-> released when the device is unregistered. For this reason PATCH1 provides
-> a new function dsa_tree_shutdown() that can be called by DSA drivers to
-> untear the DSA switch at shutdown. PATCH2 uses this function in a new
-> helper function for KSZ switches to properly shutdown the KSZ switch.
-> PATCH 3 uses the new helper function in the KSZ9477 shutdown handler.
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Wed, Sep 08, 2021 at 05:17:53PM +1000, Michael Ellerman wrote:
+>> Kajol Jain <kjain@linux.ibm.com> writes:
+>
+>> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+>> > index f92880a15645..030b3e990ac3 100644
+>> > --- a/include/uapi/linux/perf_event.h
+>> > +++ b/include/uapi/linux/perf_event.h
+>> > @@ -1265,7 +1265,9 @@ union perf_mem_data_src {
+>> >  #define PERF_MEM_LVLNUM_L2	0x02 /* L2 */
+>> >  #define PERF_MEM_LVLNUM_L3	0x03 /* L3 */
+>> >  #define PERF_MEM_LVLNUM_L4	0x04 /* L4 */
+>> > -/* 5-0xa available */
+>> > +#define PERF_MEM_LVLNUM_OC_L2	0x05 /* On Chip L2 */
+>> > +#define PERF_MEM_LVLNUM_OC_L3	0x06 /* On Chip L3 */
+>> 
+>> The obvious use for 5 is for "L5" and so on.
+>> 
+>> I'm not sure adding new levels is the best idea, because these don't fit
+>> neatly into the hierarchy, they are off to the side.
+>> 
+>> 
+>> I wonder if we should use the remote field.
+>> 
+>> ie. for another core's L2 we set:
+>> 
+>>   mem_lvl = PERF_MEM_LVL_L2
+>>   mem_remote = 1
+>
+> This mixes APIs (see below), IIUC the correct usage would be something
+> like: lvl_num=L2 remote=1
 
-I agree with Vladimir here. Shutdown works without issue on mv88e6xxx,
-i do it frequently. I'm sure other developers shutdown there devices
-at the end of the edit/compile/test cycle. If there was a generic
-problem, we would probably know about it. So it seems like there is
-something specific to your system which breaks the reference
-counting. We need to understand that first, then we can see how we fix
-it.
+Aha, I was wondering how lvl and lvl_num were supposed to interact.
 
+>> Which would mean "remote L2", but not remote enough to be
+>> lvl = PERF_MEM_LVL_REM_CCE1.
+>> 
+>> It would be printed by the existing tools/perf code as "Remote L2", vs
+>> "Remote cache (1 hop)", which seems OK.
+>> 
+>> 
+>> ie. we'd be able to express:
+>> 
+>>   Current core's L2: LVL_L2
+>>   Other core's L2:   LVL_L2 | REMOTE
+>>   Other chip's L2:   LVL_REM_CCE1 | REMOTE
+>> 
+>> And similarly for L3.
+>> 
+>> I think that makes sense? Unless people think remote should be reserved
+>> to mean on another chip, though we already have REM_CCE1 for that.
+>
+> IIRC the PERF_MEM_LVL_* namespace is somewhat depricated in favour of
+> the newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields. Of
+> course, ABIs being what they are, we get to support both :/ But I'm not
+> sure mixing them is a great idea.
+
+OK.
+
+> Also, clearly this could use a comment...
+>
+> The 'new' composite doesnt have a hops field because the hardware that
+> nessecitated that change doesn't report it, but we could easily add a
+> field there.
+>
+> Suppose we add, mem_hops:3 (would 6 hops be too small?) and the
+> corresponding PERF_MEM_HOPS_{NA, 0..6}
+
+It's really 7 if we use remote && hop = 0 to mean the first hop.
+
+If we're wanting to use some of the hop levels to represent
+intra-chip/package hops then we could possibly use them all on a really
+big system.
+
+eg. you could imagine something like:
+
+ L2 | 		        - local L2
+ L2 | REMOTE | HOPS_0	- L2 of neighbour core
+ L2 | REMOTE | HOPS_1	- L2 of near core on same chip (same 1/2 of chip)
+ L2 | REMOTE | HOPS_2	- L2 of far core on same chip (other 1/2 of chip)
+ L2 | REMOTE | HOPS_3	- L2 of sibling chip in same package
+ L2 | REMOTE | HOPS_4	- L2 on separate package 1 hop away
+ L2 | REMOTE | HOPS_5	- L2 on separate package 2 hops away
+ L2 | REMOTE | HOPS_6	- L2 on separate package 3 hops away
+
+
+Whether it's useful to represent all those levels I'm not sure, but it's
+probably good if we have the ability.
+
+I guess I'm 50/50 on whether that's enough levels, or whether we want
+another bit to allow for future growth.
+
+> Then I suppose you can encode things like:
 > 
-> Theses patches have been tested on a Raspberry PI 5.10 kernel with a
-> KSZ9897. The patches have been adjusted to apply against net-next and are
-> compile tested with next-next.
+> 	L2			- local L2
+> 	L2 | REMOTE		- remote L2 at an unspecified distance (NA)
+> 	L2 | REMOTE | HOPS_0	- remote L2 on the same node
+> 	L2 | REMOTE | HOPS_1	- remote L2 on a node 1 removed
+> 
+> Would that work?
 
-Is the switch on a hat? Are you using DT overlays?
+Yeah that looks good to me.
 
-   Andrew
+cheers
