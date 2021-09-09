@@ -2,233 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8960A4043F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286E24043FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 05:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350017AbhIIDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 23:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244126AbhIIDcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 23:32:10 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63A3C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 20:31:01 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id z5so1092030ybj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 20:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SKuiG7fSaLUtvrOY7AskCWh9YOWHRbtwHIiErMRt3Fo=;
-        b=q+i5ei6FXsm719Iu9GiQExVUePgwzXZb8Omuxge6SPboGL3SJUUyvX+hWHEHM55VxW
-         0ODi5fHeNhvwUnWHR1OfsWeuyKKBSt5PBZOsVYBKyDVtugD/lfnNrINchGccOGl+dk5r
-         ItHQuRTiEhofv3WtTa6MfLN+zhuRvLVHf2Mh5PutIS8kdunXD3w3yG+L2kFdZyblFuZR
-         sIdrQflGLYYTzYdRd0G/+9O4G1CGDGORrtEb8N2Md0RJy4a5qsx2vrw4MRGbt3hMsqn6
-         znvqu8KGkQKpJHs79XM9BXzUX2uudbKhdbcnvoTelIPDfVuplwwqFvD2oG0GVA6cBeUf
-         9ZIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SKuiG7fSaLUtvrOY7AskCWh9YOWHRbtwHIiErMRt3Fo=;
-        b=OzyK0MEpe4gHWJN5RVCKzC1187X6rG0u0inFZZiByvBvtL4Ca0o2HMh2LT4qdzUCDw
-         Kh0Z96F47wVzDPlDxRRfQHn49Hu4VOZmro/0CkUTUqqFYAkunIUUlPHtKIX1W+34A2bL
-         /G+Z3xrzux4ceD/CykTdSVq1gUfHcsnkVrlCEDRwpCzkfObV3aHuoZN5RK+bEffsXMx2
-         PZI7usla1ntJJrsM/XRDSLjA/VjgpOFj/qhS4oiGa5CTnqk0LfMus/PZXDbzEf1oPkFe
-         21DSIMtnE61/ZzAd4HzpBE1knqMyXtB2MbIREgOiKopG0Bk7jsmwE7qh5UNKKqVqQyOt
-         06lg==
-X-Gm-Message-State: AOAM531vQ8kQ/k0bKj8iXWwAU1WPFOif1b6AMnOia0mHIiTcrD0AwYcd
-        /Fg9KPn5JMXRWX/smZ7dHF/v0Monilye+cIq5rZnUw==
-X-Google-Smtp-Source: ABdhPJwhXa9uKVvpkTonPsJSkl25kEg1AeeAQozeAA4vApKSgEke+CqyqNJnFYaPY3f4KhX9hHc42qL1B4az4TeZF7c=
-X-Received: by 2002:a25:21c5:: with SMTP id h188mr930531ybh.23.1631158260632;
- Wed, 08 Sep 2021 20:31:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com> <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
- <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
- <ee649111-dc07-d6db-8872-dcb692802236@huawei.com> <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
- <b5eb935f-26e1-6475-63af-e7f6101eb017@huawei.com> <CAGETcx9yaWZOzt=gcyNAshoHdPoYizhmrKS-kU9c2QM2+HqeEw@mail.gmail.com>
- <df8e7756-8b0d-d7de-a9ff-3f6eb0ffa8a5@huawei.com> <CAGETcx-47yRUcBjEdWFBtroSEkHXRNrJ4zaD8WpE0DPEPp9NxQ@mail.gmail.com>
- <85b28900-5f42-b997-2ded-0b952bc2a03e@huawei.com> <CAGETcx-N4+u0iw9n5ncx_9MNnTa3ViyesxsDD7xN3jtEPT-uBw@mail.gmail.com>
- <265bb783-10da-a7c1-2625-055dec5643a3@huawei.com>
-In-Reply-To: <265bb783-10da-a7c1-2625-055dec5643a3@huawei.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 8 Sep 2021 20:30:24 -0700
-Message-ID: <CAGETcx9m4=7V25nvYa0030ChKeJw5bu3ogs6gjFpjNKdq+_B_Q@mail.gmail.com>
-Subject: Re: [BUG] amba: Remove deferred device addition
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1350235AbhIIDem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 23:34:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:57916 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235059AbhIIDeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Sep 2021 23:34:36 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxheVPgDlhDyYCAA--.9478S2;
+        Thu, 09 Sep 2021 11:32:32 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
+        davem@davemloft.net,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Paul Chaignon <paul@cilium.io>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: Change value of MAX_TAIL_CALL_CNT from 32 to 33
+Date:   Thu,  9 Sep 2021 11:32:30 +0800
+Message-Id: <1631158350-3661-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxheVPgDlhDyYCAA--.9478S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr13GF1ftFyfWF45Zr4kCrg_yoWftF1rpr
+        18twnakrWvqw15Aa4xKayUWw4UKF4vgF47KFn8CrWSyanFvr9rWr13Kw15ZFZ0vrW8Jw4r
+        WFZ0kr43C3WkXwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvKb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr
+        0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x07bz4SrUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 6:09 PM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
-ote:
->
->
-> On 2021/8/28 3:09, Saravana Kannan wrote:
-> > On Fri, Aug 27, 2021 at 7:38 AM Kefeng Wang <wangkefeng.wang@huawei.com=
-> wrote:
-> >>
-> >> On 2021/8/27 8:04, Saravana Kannan wrote:
-> >>> On Thu, Aug 26, 2021 at 1:22 AM Kefeng Wang <wangkefeng.wang@huawei.c=
-om> wrote:
-> >>>>>>> Btw, I've been working on [1] cleaning up the one-off deferred pr=
-obe
-> >>>>>>> solution that we have for amba devices. That causes a bunch of ot=
-her
-> >>>>>>> headaches. Your patch 3/3 takes us further in the wrong direction=
- by
-> >>>>>>> adding more reasons for delaying the addition of the device.
-> >>>> Hi Saravana, I try the link[1], but with it, there is a crash when b=
-oot
-> >>>> (qemu-system-arm -M vexpress-a15),
-> > I'm assuming it's this one?
-> > arch/arm/boot/dts/vexpress-v2p-ca15_a7.dts
->
-> I use arch/arm/boot/dts/vexpress-v2p-ca15-tc1.dts.
->
-> qemu-system-arm -M vexpress-a15 -dtb vexpress-v2p-ca15-tc1.dtb -cpu
-> cortex-a15 -smp 2 -m size=3D3G -kernel zImage -rtc base=3Dlocaltime -init=
-rd
-> initrd-arm32 -append 'console=3DttyAMA0 cma=3D0 kfence.sample_interval=3D=
-0
-> earlyprintk debug ' -device virtio-net-device,netdev=3Dnet8 -netdev
-> type=3Dtap,id=3Dnet8,script=3D/etc/qemu-ifup,downscript=3D/etc/qemu-ifdow=
-n
-> -nographic
->
-> >
-> >>> Hi,
-> >>>
-> >>> It's hard to make sense of the logs. Looks like two different threads
-> >>> might be printing to the log at the same time? Can you please enable
-> >>> the config that prints the thread ID (forgot what it's called) and
-> >>> collect this again? With what I could tell the crash seems to be
-> >>> happening somewhere in platform_match(), but that's not related to
-> >>> this patch at all?
-> >> Can you reproduce it? it is very likely related(without your patch, th=
-e
-> >> boot is fine),
-> > Sorry, I haven't ever setup qemu and booted vexpress. Thanks for your h=
-elp.
-> >
-> >> the NULL ptr is about serio, it is registed from amba driver.
-> >>
-> >> ambakmi_driver_init
-> >>
-> >>    -- amba_kmi_probe
-> >>
-> >>      -- __serio_register_port
-> > Thanks for the pointer. I took a look at the logs and the code. It's
-> > very strange. As you can see from the backtrace, platform_match() is
-> > being called for the device_add() from serio_handle_event(). But the
-> > device that gets added there is on the serio_bus which obviously
-> > should be using the serio_bus_match.
-> Yes, I am confused too.
-> >
-> >> +Dmitry and input maillist, is there some known issue about serio ?
-> >>
-> >> I add some debug, the full log is attached.
-> >>
-> >> [    2.958355][   T41] input: AT Raw Set 2 keyboard as
-> >> /devices/platform/bus@8000000/bus@8000000:motherboard-bus/bus@8000000:=
-motherboard-bus:iofpga-bus@300000000/1c060000.kmi/serio0/input/input0
-> >> [    2.977441][   T41] serio serio1: pdev c1e05508, pdev->name (null),
-> >> drv c1090fc0, drv->name vexpress-reset
-> > Based on the logs you added, it's pretty clear we are getting to
-> > platform_match(). It's also strange that the drv->name is
-> > vexpress-reset
-> ...
-> >
-> >> [    3.003113][   T41] Backtrace:
-> >> [    3.003451][   T41] [<c0560bb4>] (strcmp) from [<c0646358>] (platfo=
-rm_match+0xdc/0xf0)
-> >> [    3.003963][   T41] [<c064627c>] (platform_match) from [<c06437d4>]=
- (__device_attach_driver+0x3c/0xf4)
-> >> [    3.004769][   T41] [<c0643798>] (__device_attach_driver) from [<c0=
-641180>] (bus_for_each_drv+0x68/0xc8)
-> >> [    3.005481][   T41] [<c0641118>] (bus_for_each_drv) from [<c0642f40=
->] (__device_attach+0xf0/0x16c)
-> >> [    3.006152][   T41] [<c0642e50>] (__device_attach) from [<c06439d4>=
-] (device_initial_probe+0x1c/0x20)
-> >> [    3.006853][   T41] [<c06439b8>] (device_initial_probe) from [<c064=
-2030>] (bus_probe_device+0x94/0x9c)
-> >> [    3.007259][   T41] [<c0641f9c>] (bus_probe_device) from [<c063f9cc=
->] (device_add+0x408/0x8b8)
-> >> [    3.007900][   T41] [<c063f5c4>] (device_add) from [<c071c1cc>] (se=
-rio_handle_event+0x1b8/0x234)
-> >> [    3.008824][   T41] [<c071c014>] (serio_handle_event) from [<c01475=
-a4>] (process_one_work+0x238/0x594)
-> >> [    3.009737][   T41] [<c014736c>] (process_one_work) from [<c014795c=
->] (worker_thread+0x5c/0x5f4)
-> >> [    3.010638][   T41] [<c0147900>] (worker_thread) from [<c014feb4>] =
-(kthread+0x178/0x194)
-> >> [    3.011496][   T41] [<c014fd3c>] (kthread) from [<c0100150>] (ret_f=
-rom_fork+0x14/0x24)
-> >> [    3.011860][   T41] Exception stack(0xc1675fb0 to 0xc1675ff8)
-> > But the platform_match() is happening for the device_add() from
-> > serio_event_handle() that's adding a device to the serio_bus and it
-> > should be using serio_bus_match().
-> >
-> > I haven't reached any conclusion yet, but my current thought process
-> > is that it's either:
-> > 1. My patch is somehow causing list corruption. But I don't directly
-> > touch any list in my change (other than deleting a list entirely), so
-> > it's not clear how that would be happening.
->
-> Maybe some concurrent driver load=EF=BC=9F
->
-> > 2. Without my patch, these AMBA device's probe would be delayed at
-> > least until 5 seconds or possibly later. I'm wondering if my patch is
-> > catching some bad timing assumptions in other code.
->
-> After Rob's patch, It will retry soon.
->
-> commit 039599c92d3b2e73689e8b6e519d653fd4770abb
-> Author: Rob Herring <robh@kernel.org>
-> Date:   Wed Apr 29 15:58:12 2020 -0500
->
->      amba: Retry adding deferred devices at late_initcall
->
->      If amba bus devices defer when adding, the amba bus code simply retr=
-ies
->      adding the devices every 5 seconds. This doesn't work well as it
->      completely unsynchronized with starting the init process which can
->      happen in less than 5 secs. Add a retry during late_initcall. If the
->      amba devices are added, then deferred probe takes over. If the
->      dependencies have not probed at this point, then there's no improvem=
-ent
->      over previous behavior. To completely solve this, we'd need to retry
->      after every successful probe as deferred probe does.
->
->      The list_empty() check now happens outside the mutex, but the mutex
->      wasn't necessary in the first place.
->
->      This needed to use deferred probe instead of fragile initcall orderi=
-ng
->      on 32-bit VExpress systems where the apb_pclk has a number of probe
->      dependencies (vexpress-sysregs, vexpress-config).
->
->
-> >
-> > You might be able to test out theory (2) by DEFERRED_DEVICE_TIMEOUT to
-> > a much smaller number. Say 500ms or 100ms. If it doesn't crash, it
-> > doesn't mean it's not (2), but if it does, then we know for sure it's
-> > (2).
-> ok, I will try this one, but due to above patch, it may not work.
+In the current code, the actual max tail call count is 33 which is greater
+than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consistent
+with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need to
+spend some time to think the reason at the first glance.
 
-Were you able to find anything more?
+We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
+bpf programs to tail-call other bpf programs") and commit f9dabe016b63
+("bpf: Undo off-by-one in interpreter tail call count limit").
 
--Saravana
+In order to avoid changing existing behavior, the actual limit is 33 now,
+this is resonable.
+
+After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we can
+see there exists failed testcase.
+
+On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+ # echo 0 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+
+On some archs:
+ # echo 1 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+
+So it is necessary to change the value of MAX_TAIL_CALL_CNT from 32 to 33,
+then do some small changes of the related code.
+
+With this patch, it does not change the current limit, MAX_TAIL_CALL_CNT
+can reflect the actual max tail call count, and the above failed testcase
+can be fixed.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/arm/net/bpf_jit_32.c         | 11 ++++++-----
+ arch/arm64/net/bpf_jit_comp.c     |  7 ++++---
+ arch/mips/net/ebpf_jit.c          |  4 ++--
+ arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
+ arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++------
+ arch/riscv/net/bpf_jit_comp32.c   |  4 ++--
+ arch/riscv/net/bpf_jit_comp64.c   |  4 ++--
+ arch/sparc/net/bpf_jit_comp_64.c  |  8 ++++----
+ include/linux/bpf.h               |  2 +-
+ kernel/bpf/core.c                 |  4 ++--
+ 10 files changed, 31 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index a951276..39d9ae9 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1180,18 +1180,19 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 
+ 	/* tmp2[0] = array, tmp2[1] = index */
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+-	 *	goto out;
++	/*
+ 	 * tail_call_cnt++;
++	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 *	goto out;
+ 	 */
++	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
++	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
++	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
+ 	lo = (u32)MAX_TAIL_CALL_CNT;
+ 	hi = (u32)((u64)MAX_TAIL_CALL_CNT >> 32);
+-	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
+ 	emit(ARM_CMP_I(tc[0], hi), ctx);
+ 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
+ 	_emit(ARM_COND_HI, ARM_B(jmp_offset), ctx);
+-	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
+-	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
+ 	arm_bpf_put_reg64(tcc, tmp, ctx);
+ 
+ 	/* prog = array->ptrs[index]
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 41c23f4..5d6c843 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -286,14 +286,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	emit(A64_CMP(0, r3, tmp), ctx);
+ 	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+-	 *     goto out;
++	/*
+ 	 * tail_call_cnt++;
++	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 *     goto out;
+ 	 */
++	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+ 	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
+ 	emit(A64_CMP(1, tcc, tmp), ctx);
+ 	emit(A64_B_(A64_COND_HI, jmp_offset), ctx);
+-	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+ 
+ 	/* prog = array->ptrs[index];
+ 	 * if (prog == NULL)
+diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
+index 3a73e93..029fc34 100644
+--- a/arch/mips/net/ebpf_jit.c
++++ b/arch/mips/net/ebpf_jit.c
+@@ -617,14 +617,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
+ 	b_off = b_imm(this_idx + 1, ctx);
+ 	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
+ 	/*
+-	 * if (TCC-- < 0)
++	 * if (--TCC < 0)
+ 	 *     goto out;
+ 	 */
+ 	/* Delay slot */
+ 	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
+ 	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
+ 	b_off = b_imm(this_idx + 1, ctx);
+-	emit_instr(ctx, bltz, tcc_reg, b_off);
++	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
+ 	/*
+ 	 * prog = array->ptrs[index];
+ 	 * if (prog == NULL)
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index beb12cb..b5585ad 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -221,12 +221,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
++	 * tail_call_cnt++;
+ 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+-	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
+-	/* tail_call_cnt++; */
+ 	EMIT(PPC_RAW_ADDIC(_R0, _R0, 1));
++	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
+ 	PPC_BCC(COND_GT, out);
+ 
+ 	/* prog = array->ptrs[index]; */
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index b87a63d..bb15cc4 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -227,6 +227,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
++	 * tail_call_cnt++;
++	 */
++	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
++	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
++
++	/*
+ 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+@@ -234,12 +240,6 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	EMIT(PPC_RAW_CMPLWI(b2p[TMP_REG_1], MAX_TAIL_CALL_CNT));
+ 	PPC_BCC(COND_GT, out);
+ 
+-	/*
+-	 * tail_call_cnt++;
+-	 */
+-	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
+-	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
+-
+ 	/* prog = array->ptrs[index]; */
+ 	EMIT(PPC_RAW_MULI(b2p[TMP_REG_1], b2p_index, 8));
+ 	EMIT(PPC_RAW_ADD(b2p[TMP_REG_1], b2p[TMP_REG_1], b2p_bpf_array));
+diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
+index e649742..1608d94 100644
+--- a/arch/riscv/net/bpf_jit_comp32.c
++++ b/arch/riscv/net/bpf_jit_comp32.c
+@@ -800,12 +800,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 
+ 	/*
+ 	 * temp_tcc = tcc - 1;
+-	 * if (tcc < 0)
++	 * if (temp_tcc < 0)
+ 	 *   goto out;
+ 	 */
+ 	emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-	emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
++	emit_bcc(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+ 
+ 	/*
+ 	 * prog = array->ptrs[index];
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 3af4131..6e9ba83 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -311,12 +311,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+ 	emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+ 
+-	/* if (TCC-- < 0)
++	/* if (--TCC < 0)
+ 	 *     goto out;
+ 	 */
+ 	emit_addi(RV_REG_T1, tcc, -1, ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-	emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
++	emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+ 
+ 	/* prog = array->ptrs[index];
+ 	 * if (!prog)
+diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+index 9a2f20c..50d914c 100644
+--- a/arch/sparc/net/bpf_jit_comp_64.c
++++ b/arch/sparc/net/bpf_jit_comp_64.c
+@@ -863,6 +863,10 @@ static void emit_tail_call(struct jit_ctx *ctx)
+ 	emit_branch(BGEU, ctx->idx, ctx->idx + OFFSET1, ctx);
+ 	emit_nop(ctx);
+ 
++	emit_alu_K(ADD, tmp, 1, ctx);
++	off = BPF_TAILCALL_CNT_SP_OFF;
++	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
++
+ 	off = BPF_TAILCALL_CNT_SP_OFF;
+ 	emit(LD32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
+ 	emit_cmpi(tmp, MAX_TAIL_CALL_CNT, ctx);
+@@ -870,10 +874,6 @@ static void emit_tail_call(struct jit_ctx *ctx)
+ 	emit_branch(BGU, ctx->idx, ctx->idx + OFFSET2, ctx);
+ 	emit_nop(ctx);
+ 
+-	emit_alu_K(ADD, tmp, 1, ctx);
+-	off = BPF_TAILCALL_CNT_SP_OFF;
+-	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
+-
+ 	emit_alu3_K(SLL, bpf_index, 3, tmp, ctx);
+ 	emit_alu(ADD, bpf_array, tmp, ctx);
+ 	off = offsetof(struct bpf_array, ptrs);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f4c16f1..224cc7e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1046,7 +1046,7 @@ struct bpf_array {
+ };
+ 
+ #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+-#define MAX_TAIL_CALL_CNT 32
++#define MAX_TAIL_CALL_CNT 33
+ 
+ #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
+ 				 BPF_F_RDONLY_PROG |	\
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9f4636d..8edb1c3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1564,10 +1564,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+-		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
+-			goto out;
+ 
+ 		tail_call_cnt++;
++		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
++			goto out;
+ 
+ 		prog = READ_ONCE(array->ptrs[index]);
+ 		if (!prog)
+-- 
+2.1.0
+
