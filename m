@@ -2,942 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBFF4047FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDE2404800
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 11:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhIIJqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 05:46:46 -0400
-Received: from mail.emtrion.de ([87.139.198.129]:15800 "EHLO mail3.emtrion.de"
+        id S233263AbhIIJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 05:47:58 -0400
+Received: from mail-dm6nam12on2076.outbound.protection.outlook.com ([40.107.243.76]:10337
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229927AbhIIJqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 05:46:45 -0400
-Received: from hico.emtrion.local (2003:f9:5824:1:dc31:355f:f60c:e34f) by
- EMT-KA-S004.emtrion.local (2003:f9:5824:1:c59f:32f4:72e5:b9e1) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.13; Thu, 9 Sep 2021 11:45:33 +0200
-From:   <thanushree.sreerama@emtrion.com>
-To:     <shawnguo@kernel.org>
-CC:     <robh+dt@kernel.org>, <s.hauer@pengutronix.de>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <thanushree.sreerama@emtrion.com>
-Subject: [PATCH] arm64: dts: imx8mm: Add support for emtrion emCON-MX8M Mini
-Date:   Thu, 9 Sep 2021 11:45:23 +0200
-Message-ID: <20210909094523.91624-1-thanushree.sreerama@emtrion.com>
-X-Mailer: git-send-email 2.20.1
+        id S230145AbhIIJrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 05:47:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KLn6jC9GBATI7CajF7XOl9nv2L/RC7q6zo/tCLCuWZNIGNowl56lcghlUUmb/mE+TEvyeOTLzvgP5hZJWad1sPZbNY8sZMy9ipg58VLnhd46zyT1yk5h/REJatQ2Drt/3z7iQbSEc56rpmnvu88gdy00uY2s7cw2KUPeIjGcMRshRZeJl+nHYYXdWjmyqStgvaAFKGDtfYKkXRVu/8yN7aR+T34g64PhOhGHK9F8g3YCdah9lBfauj6NMXdRACM5EK7/ohddSqT2UVhXVJQcFHePdILzNpLd4fYpZ3Bknevk88vBTftkZKDV2jQrMEa3JgrOKPZ5i4Eog0thHsZyqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=BU2VuCDQYyS3MqJC3JsnGsEp9mM4DdHBHoV7+JVGhS0=;
+ b=i5yUnaMDdT1gW3pnUMk8MH0uVVGk62JSOcRtM4yUPQU/qrxwP84ddLVVeduqOsHmy1sS2UjpyIdPhBSR+tBTSmkKSngwnm32YY4hpwskhOkBLlbxQv0GOr6ie7/5DbGPssec+LNWvxWmSE/Q2Vh2Znji6is/XVHtNazuTf6gf4/nLEwLAjuJN/NZuX++fj4nbAwuRj6lj7HrmbA+9uHsiGX+2X74L6Bhbqt3tugqloYwsDNsHniMjTW2Nk6QrkvqjPavknnBXK2FgBi9VbuAi59YkgadYmkHpR/MK5K75hlGEdgmYM1rN3Z/ympTqKMTBdqkl2FVKvB5a7R1AGGTRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BU2VuCDQYyS3MqJC3JsnGsEp9mM4DdHBHoV7+JVGhS0=;
+ b=JQdpr5i/vsUZLU22MJHmBDbRooHNE5f+70LGB3TnwrgtuqqTWTn1nXWJ1FG13knR6tmSEalH8lD8D3XHE+Egn6Q108ylhXPwMqsA6d9MfrJib7vrA0EW6wNnHhF0uFoZ5bWa0OmPMbH5nBSR/cY4VNPMTFLMsGXzul3Wc3b4CYU=
+Received: from BN9PR03CA0401.namprd03.prod.outlook.com (2603:10b6:408:111::16)
+ by CY4PR12MB1590.namprd12.prod.outlook.com (2603:10b6:910:a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 09:46:35 +0000
+Received: from BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:111:cafe::1) by BN9PR03CA0401.outlook.office365.com
+ (2603:10b6:408:111::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15 via Frontend
+ Transport; Thu, 9 Sep 2021 09:46:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT050.mail.protection.outlook.com (10.13.177.5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 09:46:35 +0000
+Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 9 Sep 2021
+ 04:46:31 -0500
+Date:   Thu, 9 Sep 2021 17:45:38 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+CC:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH 01/19] x86/cpufreatures: add AMD CPPC extension feature
+ flag
+Message-ID: <20210909094538.GA3702717@hr-amd>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-2-ray.huang@amd.com>
+ <c8c57be3-5a86-062c-bd5c-5132d05dde3f@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [2003:f9:5824:1:dc31:355f:f60c:e34f]
-X-ClientProxiedBy: EMT-KA-S004.emtrion.local
- (2003:f9:5824:1:c59f:32f4:72e5:b9e1) To EMT-KA-S004.emtrion.local
- (2003:f9:5824:1:c59f:32f4:72e5:b9e1)
-X-C2ProcessedOrg: 5b249fcb-306f-4927-9982-5d11b1d300ce
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c8c57be3-5a86-062c-bd5c-5132d05dde3f@linuxfoundation.org>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cbcb2fa3-55a7-455c-8b88-08d97376b6a1
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1590:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1590B498C043CA98A3D7526DECD59@CY4PR12MB1590.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PocT39DiK2qq4gP40T8BAx5o1Ert2lrexefwf/157QcYVjGBj025Fzest0KNVVpX2WJAaMgegbixGEKZHrqdJnHjHvnRlpD0EDJBG+TGCEPoM5zdCJeGy0XriOCyyi2hUdfmL182YHh9mzqnjx3ormzJVLlDrtT3C10TF1IDDxWSwhge7qOHtQaOK7gxaGHYbTJkJ6tOznG0XZSZ82q8YvvVmjcQYo2GpH2KWsBHLlYCJJIz4Jbq1NxX2kRwBAHhH5F63vH7gP07TjOqQH+EmtgAEY3fQaYlb7D1hnFB5Ll07XuN9A6TSSSrAmjbydkW1hrU7JFEFroMIxHABkkP5BnYPic1XGK2Xqv/P2f4vbaAR6ZXGNc4D2dG3ubje3RvvLf11H1WcmM4R25tovW9QjzhZzkQYRhvUgK2rIEeFZTZnhBJMGLNruQIB36Yfx4cDEB1al7mGoXAxRRItWx1cYN3u3tuRG4Z5Vx8cdv/kXumzWH4xH9vYOXCArQEmz8/EDJe+1IQ9WXNrkzMn2PA1XL1LOYBKQWCf8Q++eWmf12p4ktSSJbdOZSR7xQzJHl9akZT+6acvoRGMI9NnDnwO+yFl1TT2fxm1aESTaz6spmj4BQEx6KPtaLHV9wN01LlWz6VFAZ1ke3PzVLjukuLjziA866tJJcWRCkFCE/rQ66dlwQuplWwDE0ZWCeqDaJZMEFzM0j3QvZfgVyP9eTFFpRSgjVpLCIs9lYTijAhvzs=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(46966006)(36840700001)(33656002)(336012)(316002)(47076005)(5660300002)(1076003)(8676002)(53546011)(82310400003)(478600001)(54906003)(86362001)(26005)(4744005)(4326008)(70206006)(82740400003)(186003)(2906002)(8936002)(55016002)(356005)(9686003)(6916009)(70586007)(81166007)(16526019)(426003)(33716001)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 09:46:35.6582
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbcb2fa3-55a7-455c-8b88-08d97376b6a1
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1590
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for the emtrion GmbH emCON-MX8M Mini modules.
-They are available with NXP i.MX 8M Mini equipped with 2 or 4 GB Memory.
+On Thu, Sep 09, 2021 at 04:00:04AM +0800, Shuah Khan wrote:
+> On 9/8/21 8:59 AM, Huang Rui wrote:
+> > Add Collaborative Processor Performance Control Extension feature flag
+> > for AMD processors.
+> > 
+> 
+> Please add a couple of sentences about the feature and what it does.
 
-The devicetree imx8mm-emcon.dtsi is the common part providing all
-module components and the basic support for the SoC. The support for the
-avari baseboard in the developer-kit configuration is provided by the
-emcon-avari dts files.
+OK, will describe details at V2.
 
-Signed-off-by: Thanushree Sreerama <thanushree.sreerama@emtrion.com>
-Reviewed by: Frank Erdrich <frank.erdrich@emtrion.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../boot/dts/freescale/imx8mm-emcon-avari.dts |  23 +
- .../dts/freescale/imx8mm-emcon-avari.dtsi     | 141 ++++
- .../boot/dts/freescale/imx8mm-emcon.dtsi      | 687 ++++++++++++++++++
- 4 files changed, 852 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtsi
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-emcon.dtsi
-
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 44890d56c194..ac67956e0bdc 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -64,5 +64,6 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-eval-v3.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mm-emcon-avari.dtb
- 
- dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dts b/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dts
-new file mode 100644
-index 000000000000..b2e8967e9687
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: (GPL-2.0 or MIT)
-+//
-+// Copyright (c) 2021 emtrion GmbH
-+// Author: Frank Erdrich <frank.erdrich@emtrion.com>
-+//
-+
-+/dts-v1/;
-+
-+#include "imx8mm-emcon.dtsi"
-+#include "imx8mm-emcon-avari.dtsi"
-+
-+/ {
-+	model = "emtrion SoM emCON-MX8M mini on Avari";
-+	compatible = "emtrion,emcon-mx8mm-avari", "fsl,imx8mm";
-+};
-+
-+&lvds_backlight {
-+	status = "okay";
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtsi
-new file mode 100644
-index 000000000000..127385ad36aa
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtsi
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: (GPL-2.0 or MIT)
-+//
-+// Copyright (C) 2021 emtrion GmbH
-+// Author: Frank Erdrich <frank.erdrich@emtrion.com>
-+//
-+
-+/ {
-+	aliases {
-+		mmc0 = &usdhc1;
-+		mmc1 = &usdhc2;
-+		boardid = &boardID;
-+	};
-+
-+	chosen {
-+		stdout-path = &uart1;
-+	};
-+
-+	reg_wall_5p0: reg-wall5p0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "Main-Supply";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	reg_base3p3: reg-base3p3 {
-+		compatible = "regulator-fixed";
-+		vin-supply = <&reg_wall_5p0>;
-+		regulator-name = "3V3-avari";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	reg_base1p5: reg-base1p5 {
-+		compatible = "regulator-fixed";
-+		vin-supply = <&reg_base3p3>;
-+		regulator-name = "1V5-avari";
-+		regulator-min-microvolt = <1500000>;
-+		regulator-max-microvolt = <1500000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	reg_usb_otg: reg-otgvbus {
-+		compatible = "regulator-fixed";
-+		vin-supply = <&reg_wall_5p0>;
-+		regulator-name = "OTG_VBUS";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio1 8 GPIO_ACTIVE_LOW>;
-+		regulator-always-on;
-+	};
-+
-+	clk_codec: clock-codec {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <12000000>;
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "SGTL5000-Card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&codec_dai>;
-+		simple-audio-card,frame-master = <&codec_dai>;
-+		simple-audio-card,widgets = "Headphone", "Headphone Jack";
-+		simple-audio-card,routing = "Headphone Jack", "HP_OUT";
-+
-+		cpu_dai: simple-audio-card,cpu {
-+			sound-dai = <&sai2>;
-+		};
-+
-+		codec_dai: simple-audio-card,codec {
-+			sound-dai = <&sgtl5000>;
-+		};
-+	};
-+};
-+
-+&ecspi1 {
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	sgtl5000: audio-codec@a {
-+		compatible = "fsl,sgtl5000";
-+		reg = <0x0a>;
-+		#sound-dai-cells = <0>;
-+		clocks = <&clk_codec>;
-+		VDDA-supply = <&reg_base3p3>;
-+		VDDIO-supply = <&reg_base3p3>;
-+	};
-+
-+	boardID: gpio@3a {
-+		compatible = "nxp,pca8574";
-+		reg = <0x3a>;
-+		gpio-controller;
-+		#gpio-cells = <1>;
-+	};
-+};
-+
-+&sai2 {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+	fsl,uart-has-rtscts;
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	dr_mode = "host";
-+	status = "disabled";
-+};
-+
-+&usdhc2 {
-+	status = "okay";
-+};
-+
-+
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-emcon.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-emcon.dtsi
-new file mode 100644
-index 000000000000..9a0cae089568
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-emcon.dtsi
-@@ -0,0 +1,687 @@
-+// SPDX-License-Identifier: (GPL-2.0 or MIT)
-+//
-+// Copyright 2018 NXP
-+// Copyright (C) 2021 emtrion GmbH
-+//
-+
-+/dts-v1/;
-+
-+#include "imx8mm.dtsi"
-+
-+/ {
-+	model = "emtrion SoM emCON-MX8MM";
-+	compatible = "emtrion,emcon-mx8", "fsl,imx8mm";
-+
-+	chosen {
-+		bootargs = "console=ttymxc0,115200 earlycon=ec_imx6q,0x30860000,115200";
-+		stdout-path = &uart1;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		rpmsg_reserved: rpmsg@0xb8000000 {
-+			no-map;
-+			reg = <0 0xb8000000 0 0x400000>;
-+		};
-+
-+		ivshmem_reserved: ivshmem@bbb00000 {
-+			no-map;
-+			reg = <0 0xbbb00000 0x0 0x00100000>;
-+		};
-+
-+		ivshmem2_reserved: ivshmem2@bba00000 {
-+			no-map;
-+			reg = <0 0xbba00000 0x0 0x00100000>;
-+		};
-+
-+		pci_reserved: pci@bb800000 {
-+			no-map;
-+			reg = <0 0xbb800000 0x0 0x00200000>;
-+		};
-+
-+		loader_reserved: loader@bb700000 {
-+			no-map;
-+			reg = <0 0xbb700000 0x0 0x00100000>;
-+		};
-+	};
-+
-+	pcie0_refclk: pcie0-refclk {
-+		/* dummy entry, required for pcie */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <100000000>;
-+	};
-+
-+	som_leds: leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_led>;
-+
-+		green {
-+			label = "som:green";
-+			gpios = <&gpio3 4 0>;
-+			default-state = "on";
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		red {
-+			label = "som:red";
-+			gpios = <&gpio5 10 0>;
-+			default-state = "off";
-+		};
-+	};
-+
-+	lvds_backlight: lvds-backlight {
-+		compatible = "pwm-backlight";
-+		enable-gpios = <&gpio3 23 GPIO_ACTIVE_HIGH>;
-+		pwms = <&pwm1 0 50000 0>;
-+		brightness-levels = <
-+			0 4 8 16 32 64 80 96 112
-+			128 144 160 176 250
-+		>;
-+		default-brightness-level = <9>;
-+		status = "disabled";
-+	};
-+
-+	reg_usdhc1_vmmc: regulator-emmc {
-+		compatible = "regulator-fixed";
-+		regulator-name = "eMMC";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		off-on-delay = <20000>;
-+		startup-delay-us = <100>;
-+		enable-active-high;
-+	};
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "sdcard_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		off-on-delay = <20000>;
-+		enable-active-high;
-+	};
-+
-+	busfreq {
-+		/* Disable busfreq, to avoid 1st Linux busfreq crash other inmates */
-+		status = "disabled";
-+	};
-+};
-+
-+
-+&cpu_pd_wait {
-+	/delete-property/ compatible;
-+	/* arm,psci-suspend-param = <0x0>; */
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+
-+	emcon-mx8 {
-+		pinctrl_csi_pwn: csi_pwn_grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x19
-+			>;
-+		};
-+
-+		pinctrl_fec1: fec1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
-+				MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
-+				MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-+				MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-+				MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-+				MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-+				MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-+				MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-+				MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-+				MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-+				MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-+				MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-+				MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-+				MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-+				MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19
-+			>;
-+		};
-+
-+		pinctrl_flexspi0: flexspi0grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_NAND_ALE_QSPI_A_SCLK		0x1c2
-+				MX8MM_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B		0x82
-+				MX8MM_IOMUXC_NAND_DATA00_QSPI_A_DATA0		0x82
-+				MX8MM_IOMUXC_NAND_DATA01_QSPI_A_DATA1		0x82
-+				MX8MM_IOMUXC_NAND_DATA02_QSPI_A_DATA2		0x82
-+				MX8MM_IOMUXC_NAND_DATA03_QSPI_A_DATA3		0x82
-+				MX8MM_IOMUXC_NAND_DQS_QSPI_A_DQS		0x82
-+			>;
-+		};
-+
-+		pinctrl_flexspi1: flexspi1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_NAND_CLE_QSPI_B_SCLK		0x1c2
-+				MX8MM_IOMUXC_NAND_CE2_B_QSPI_B_SS0_B		0x82
-+				MX8MM_IOMUXC_NAND_DATA04_QSPI_B_DATA0		0x82
-+				MX8MM_IOMUXC_NAND_DATA05_QSPI_B_DATA1		0x82
-+				MX8MM_IOMUXC_NAND_DATA06_QSPI_B_DATA2		0x82
-+				MX8MM_IOMUXC_NAND_DATA07_QSPI_B_DATA3		0x82
-+			>;
-+		};
-+
-+		pinctrl_ecspi1: ecspi1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_ECSPI1_SCLK_ECSPI1_SCLK		0x82
-+				MX8MM_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI		0x82
-+				MX8MM_IOMUXC_ECSPI1_MISO_ECSPI1_MISO		0x82
-+			>;
-+		};
-+
-+		pinctrl_ecspi1_cs: ecspi1cs {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x40000
-+				MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13		0x40000
-+			>;
-+		};
-+
-+		pinctrl_gpio_led: gpioledgrp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_ECSPI2_SCLK_GPIO5_IO10		0x19
-+				MX8MM_IOMUXC_NAND_CE3_B_GPIO3_IO4		0x19
-+			>;
-+		};
-+
-+		pinctrl_i2c1: i2c1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
-+				MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
-+			>;
-+		};
-+
-+		pinctrl_i2c2: i2c2grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL			0x400001c3
-+				MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA			0x400001c3
-+			>;
-+		};
-+
-+		pinctrl_i2c3: i2c3grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL			0x400001c3
-+				MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA			0x400001c3
-+			>;
-+		};
-+
-+		pinctrl_pcie0: pcie0grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x41
-+				MX8MM_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x41
-+			>;
-+		};
-+
-+		pinctrl_pmic: pmicirq {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_NAND_CE1_B_GPIO3_IO2		0x41
-+			>;
-+		};
-+
-+		pinctrl_sai2: sai2grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SAI2_MCLK_SAI2_MCLK		0xd6
-+				MX8MM_IOMUXC_SAI2_RXC_SAI2_RX_BCLK		0xd6
-+				MX8MM_IOMUXC_SAI2_RXD0_SAI2_RX_DATA0		0xd6
-+				MX8MM_IOMUXC_SAI2_RXFS_SAI2_RX_SYNC		0xd6
-+				MX8MM_IOMUXC_SAI2_TXC_SAI2_TX_BCLK		0xd6
-+				MX8MM_IOMUXC_SAI2_TXD0_SAI2_TX_DATA0		0xd6
-+				MX8MM_IOMUXC_SAI2_TXFS_SAI2_TX_SYNC		0xd6
-+			>;
-+		};
-+
-+		pinctrl_spdif1: spdif1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SPDIF_TX_SPDIF1_OUT		0xd6
-+				MX8MM_IOMUXC_SPDIF_RX_SPDIF1_IN			0xd6
-+			>;
-+		};
-+
-+		pinctrl_uart1: uart1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_UART1_RXD_UART1_DCE_RX		0x140
-+				MX8MM_IOMUXC_UART1_TXD_UART1_DCE_TX		0x140
-+			>;
-+		};
-+
-+		pinctrl_uart2: uart2grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX		0x140
-+				MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX		0x140
-+
-+				/* rts and cts */
-+				MX8MM_IOMUXC_SAI3_RXC_UART2_DCE_CTS_B		0x140
-+				MX8MM_IOMUXC_SAI3_RXD_UART2_DCE_RTS_B		0x140
-+			>;
-+		};
-+
-+		pinctrl_uart3: uart3grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX		0x140
-+				MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX		0x140
-+			>;
-+		};
-+
-+		pinctrl_uart4: uart4grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX		0x140
-+				MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX		0x140
-+			>;
-+		};
-+
-+		pinctrl_usdhc1_gpio: usdhc1grpgpio {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD1_RESET_B_USDHC1_RESET_B		0x41
-+				MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x1c4
-+			>;
-+		};
-+
-+		pinctrl_usdhc1: usdhc1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK			0x190
-+				MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d0
-+				MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6		0x1d0
-+				MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7		0x1d0
-+			>;
-+		};
-+
-+		pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK			0x194
-+				MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d4
-+				MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6		0x1d4
-+				MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7		0x1d4
-+			>;
-+		};
-+
-+		pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK			0x196
-+				MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d6
-+				MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6		0x1d6
-+				MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7		0x1d6
-+			>;
-+		};
-+
-+		/* no reset for sdhc2 interface */
-+		pinctrl_usdhc2_gpio: usdhc2grpgpio {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x1c4
-+				MX8MM_IOMUXC_SD2_WP_USDHC2_WP			0x1c4
-+			>;
-+		};
-+
-+		pinctrl_usdhc2: usdhc2grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x190
-+				MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d0
-+				MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d0
-+				MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d0
-+				MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d0
-+				MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d0
-+				MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+			>;
-+		};
-+
-+		pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x194
-+				MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
-+				MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
-+				MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
-+				MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
-+				MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
-+				MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+			>;
-+		};
-+
-+		pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x196
-+				MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
-+				MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
-+				MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
-+				MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
-+				MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
-+				MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+			>;
-+		};
-+
-+		pinctrl_wdog: wdoggrp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
-+			>;
-+		};
-+
-+		pinctrl_pwm1: pwm1grp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_GPIO1_IO01_PWM1_OUT		0x06
-+			>;
-+		};
-+
-+		pinctrl_lvds: lvdsgrp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x06
-+			>;
-+		};
-+	};
-+};
-+
-+&clk {
-+	init-on-array = <
-+		IMX8MM_CLK_USDHC3_ROOT
-+		IMX8MM_CLK_NAND_USDHC_BUS
-+		IMX8MM_CLK_UART4_ROOT
-+	>;
-+};
-+
-+&flexspi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexspi0>;
-+	pinctrl-1 = <&pinctrl_flexspi1>;
-+	status = "okay";
-+
-+	flash0: spi-flash@0 {
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spi-flash";
-+		spi-max-frequency = <40000000>;
-+	};
-+};
-+
-+&ecspi1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	fsl,spi-num-chipselects = <1>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi1 &pinctrl_ecspi1_cs>;
-+	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	pmic: bd71837@4b {
-+		compatible = "rohm,bd71847";
-+		reg = <0x4b>;
-+		pinctrl-0 = <&pinctrl_pmic>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <2 GPIO_ACTIVE_LOW>;
-+		rohm,reset-snvs-powered;
-+
-+		regulators {
-+			buck1_reg: BUCK1 {
-+				regulator-name = "BUCK1";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <1250>;
-+			};
-+
-+			buck2_reg: BUCK2 {
-+				regulator-name = "BUCK2";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <1250>;
-+				rohm,dvs-run-voltage = <1000000>;
-+				rohm,dvs-idle-voltage = <900000>;
-+			};
-+
-+			buck3_reg: BUCK3 {
-+				// BUCK5 in datasheet
-+				regulator-name = "BUCK3";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1350000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buck4_reg: BUCK4 {
-+				// BUCK6 in datasheet
-+				regulator-name = "BUCK4";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buck5_reg: BUCK5 {
-+				// BUCK7 in datasheet
-+				regulator-name = "BUCK5";
-+				regulator-min-microvolt = <1605000>;
-+				regulator-max-microvolt = <1995000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buck6_reg: BUCK6 {
-+				// BUCK8 in datasheet
-+				regulator-name = "BUCK6";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1400000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo1_reg: LDO1 {
-+				regulator-name = "LDO1";
-+				regulator-min-microvolt = <1600000>;
-+				regulator-max-microvolt = <1900000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo2_reg: LDO2 {
-+				regulator-name = "LDO2";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <900000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo3_reg: LDO3 {
-+				regulator-name = "LDO3";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo4_reg: LDO4 {
-+				regulator-name = "LDO4";
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo6_reg: LDO6 {
-+				regulator-name = "LDO6";
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	rtc: rv1805@69 {
-+		reg = <0x69>;
-+		compatible = "abracon,ab1805";
-+		status = "okay";
-+	};
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+};
-+
-+&mu {
-+	status = "okay";
-+};
-+
-+&sai2 {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai2>;
-+	assigned-clocks = <&clk IMX8MM_CLK_SAI2>;
-+	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <12000000>;
-+	status = "disabled";
-+};
-+
-+&spdif1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spdif1>;
-+	assigned-clocks = <&clk IMX8MM_CLK_SPDIF1>;
-+	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <24576000>;
-+	clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, <&clk IMX8MM_CLK_24M>,
-+		<&clk IMX8MM_CLK_SPDIF1>, <&clk IMX8MM_CLK_DUMMY>,
-+		<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>,
-+		<&clk IMX8MM_CLK_AUDIO_AHB>, <&clk IMX8MM_CLK_DUMMY>,
-+		<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>,
-+		<&clk IMX8MM_AUDIO_PLL1_OUT>, <&clk IMX8MM_AUDIO_PLL2_OUT>;
-+	clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3",
-+		"rxtx4", "rxtx5", "rxtx6", "rxtx7", "spba", "pll8k", "pll11k";
-+	status = "disabled";
-+};
-+
-+&fec1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_fec1>;
-+	phy-mode = "rgmii-id";
-+	phy-reset-gpios = <&gpio1 9 0>;
-+	fsl,magic-packet;
-+	status = "okay";
-+};
-+
-+&uart1 { /* console */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	assigned-clocks = <&clk IMX8MM_CLK_UART2>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	assigned-clocks = <&clk IMX8MM_CLK_UART3>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	assigned-clocks = <&clk IMX8MM_CLK_UART4>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	dr_mode = "otg";
-+	over-current-active-low;
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "disabled";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_usdhc1_gpio>;
-+	pinctrl-1 = <&pinctrl_usdhc1_100mhz>, <&pinctrl_usdhc1_gpio>;
-+	pinctrl-2 = <&pinctrl_usdhc1_200mhz>, <&pinctrl_usdhc1_gpio>;
-+	bus-width = <8>;
-+	vmmc-supply = <&reg_usdhc1_vmmc>;
-+	pm-ignore-notify;
-+	keep-power-in-suspend;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
-+	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-+	wp-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
-+	bus-width = <4>;
-+	vmmc-supply = <&reg_usdhc2_vmmc>;
-+	no-1-8-v;
-+	status = "okay";
-+};
-+
-+&wdog1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdog>;
-+	fsl,ext-reset-output;
-+	status = "okay";
-+};
-+
-+&A53_0 {
-+	cpu-supply = <&buck2_reg>;
-+};
--- 
-2.20.1
-
+Thanks,
+Ray
