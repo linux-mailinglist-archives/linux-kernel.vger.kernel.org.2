@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06DC405B04
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82C5405B0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237358AbhIIQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:40:18 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:42558 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232192AbhIIQkS (ORCPT
+        id S237415AbhIIQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhIIQmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:40:18 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 1DD5A1D24;
-        Thu,  9 Sep 2021 19:39:06 +0300 (MSK)
+        Thu, 9 Sep 2021 12:42:23 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB5C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:41:13 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id y16so5138608ybm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1631205546;
-        bh=Ah4+46r6nDVwZfNEa9ffS5opMw0+uC0WLLzuSRXzu8A=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=UueLkuTdfOdie9h3/mwjNGsgiHnS4bt3wgnmhfKdmgGvyO7s5kqo1RaHOLSA+9sz7
-         ZyogONE6ERN5hly94a/Cyc17c4NokwSWsrQIwfLvuHh9odXgwpW4jYcQE+E6I0TRHf
-         gpVzq+LePzy6QXLrtqln9pYAC8J4n395pdB3IbK8=
-Received: from [192.168.211.46] (192.168.211.46) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 9 Sep 2021 19:39:05 +0300
-Message-ID: <6a4ef0b6-a855-646a-91cc-81060b63850f@paragon-software.com>
-Date:   Thu, 9 Sep 2021 19:39:04 +0300
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rkaCWrw71p3Bwx6Ujv9uVMcrBmBnNtWcMasEZoICUtg=;
+        b=dk7XG+iTfUp9mJk61u0tbmxR8do9bhReeJEjxKWTkr7mk6yTeOo7oOAKTzW88D5oFt
+         xB3/uaxC9EeaQ6xD311r2INEWMUDkeiAuOB+xS8kTK3BZlL9vZg+qv11MC8fIYro0Y4+
+         WfNT0EiCYoxOUvMMnieVkaTDR7VLJRWw+bB15aRVuHemdxOCnanUy2kYvJuB9NIKfh4o
+         yda8xdXzMwYTPZic6D+AD0ISZbeH/iymz9UQLkkpW2qaQZb1K7fQEC6ak7TXPknEKug/
+         3XeamAAIRYw/SneBt3ifDaLJvdeuAZPpwlrp1gEJMOdbHBkld1bFwMCm5ZjFc+k35XgZ
+         1W6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rkaCWrw71p3Bwx6Ujv9uVMcrBmBnNtWcMasEZoICUtg=;
+        b=fsRwX95My/khwQ3tEIas4HFGffLJap1O7s73s0MDwzui8xIJa2agUJm+sJgrvX+uNc
+         5R/GcJzmQ5fhjf/sWYrk683Jpaq07gYrHnRe9jidRSw7WA1R9PUWipNXpdPSvSimSvbF
+         S4p6AHmq7yQ4dsEa2pZhJT640VdUfTxO5R0sH15Er3ezzkBVGihtWYqR6NqSonvmyh8w
+         0ZpJErolcHwLnpL0hrLPkYZphbP+MPzPaaxix/B54/oZB/qHmCwwtzibtgsm0JdT6tUg
+         WJ6h75kw9QqydnpGS2ra4x1AlWNCi++Fa1HP0FJsM8FUTY4iLa0zGfL8Acp0ToA7a+1q
+         cGXg==
+X-Gm-Message-State: AOAM53274qc+tYcM3NNIGBGl6jdL8ZKX7+Jv9UPtNEmh6fLObkiQIeIg
+        oSdP1RVEUAIZ6IVsZ7RMnDk5+GPU3dzj/2bdSIeesw==
+X-Google-Smtp-Source: ABdhPJxOb0z3ulldpbOkQOCns5TrLa7bWBtK5lyZgAwd9CnftUY48Lnurh5DsoueF+EhVX32OlwRpYEDMSkKxKNuJeE=
+X-Received: by 2002:a25:8093:: with SMTP id n19mr5184637ybk.414.1631205672615;
+ Thu, 09 Sep 2021 09:41:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v4 0/9] fs/ntfs3: Use new mount api and change some opts
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        <ntfs3@lists.linux.dev>
-CC:     Christoph Hellwig <hch@lst.de>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20210907153557.144391-1-kari.argillander@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210907153557.144391-1-kari.argillander@gmail.com>
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-19-rananta@google.com>
+ <YTmdUEcbvf/7mkOw@google.com>
+In-Reply-To: <YTmdUEcbvf/7mkOw@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 9 Sep 2021 09:41:00 -0700
+Message-ID: <CAJHc60yi8Dk8d67Gd=_UJRz+71vz0LZZC_TrCE5=kqyRTwBKoA@mail.gmail.com>
+Subject: Re: [PATCH v4 18/18] KVM: selftests: vgic_init: Pull
+ REDIST_REGION_ATTR_ADDR from vgic.h
+To:     Oliver Upton <oupton@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.46]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 8, 2021 at 10:36 PM Oliver Upton <oupton@google.com> wrote:
+>
+> On Thu, Sep 09, 2021 at 01:38:18AM +0000, Raghavendra Rao Ananta wrote:
+> > Pull the definition of REDIST_REGION_ATTR_ADDR from vgic.h.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  tools/testing/selftests/kvm/aarch64/vgic_init.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> Just squash this into the commit where you hoist it into vgic.h. It is
+> fine to glob it together with the other vgic changes since you're
+> dropping it into a completely new header file.
+>
+Sure, I'll squash it.
 
-
-On 07.09.2021 18:35, Kari Argillander wrote:
-> v3 link:
-> lore.kernel.org/ntfs3/20210829095614.50021-1-kari.argillander@gmail.com
-> 
-> This series will delete unnecessary mount options and rename some.
-> Also this will convert ntfs3 to use new mount api. In my opinion we
-> should get this in 5.15 because after that basically we have to have
-> deprecated flag with new mount options. Let's try to avoid that if
-> possible.
-> 
-> v4:
-> 	- Rebased top of the current ntfs3/master
-> 	- Rename mount option (no)acs_rules -> (no)acsrules
-> 	- Fix acs commit message acl -> acs (Thank Pali)
-> v3:
-> 	- Add patch "Convert mount options to pointer in sbi"
-> 	- Add patch "Init spi more in init_fs_context than fill_super"
-> 	- Add patch "Show uid/gid always in show_options"
-> 	- Patch "Use new api for mounting" has make over
-> 	- NLS loading is not anymore possible when remounting
-> 	- show_options() iocharset printing is fixed
-> 	- Delete comment that testing should be done with other
-> 	  mount options.
-> 	- Add reviewed/acked-tags to 1,2,6,8 
-> 	- Rewrite this cover
-> v2:
-> 	- Rewrite this cover leter
-> 	- Reorder noatime to first patch
-> 	- NLS loading with string
-> 	- Delete default_options function
-> 	- Remove remount flags
-> 	- Rename no_acl_rules mount option
-> 	- Making code cleaner
-> 	- Add comment that mount options should be tested
-> 
-> Kari Argillander (9):
->   fs/ntfs3: Remove unnecesarry mount option noatime
->   fs/ntfs3: Remove unnecesarry remount flag handling
->   fs/ntfs3: Convert mount options to pointer in sbi
->   fs/ntfs3: Use new api for mounting
->   fs/ntfs3: Init spi more in init_fs_context than fill_super
->   fs/ntfs3: Make mount option nohidden more universal
->   fs/ntfs3: Add iocharset= mount option as alias for nls=
->   fs/ntfs3: Rename mount option no_acs_rules > (no)acsrules
->   fs/ntfs3: Show uid/gid always in show_options()
-> 
->  Documentation/filesystems/ntfs3.rst |  10 +-
->  fs/ntfs3/attrib.c                   |   2 +-
->  fs/ntfs3/dir.c                      |   8 +-
->  fs/ntfs3/file.c                     |   4 +-
->  fs/ntfs3/inode.c                    |  12 +-
->  fs/ntfs3/ntfs_fs.h                  |  26 +-
->  fs/ntfs3/super.c                    | 498 +++++++++++++++-------------
->  fs/ntfs3/xattr.c                    |   2 +-
->  8 files changed, 290 insertions(+), 272 deletions(-)
-> 
-> 
-> base-commit: 2e3a51b59ea26544303e168de8a0479915f09aa3
-> 
-
-Applied, thanks for patches and review!
-
-Best regards,
-Konstantin
+Regards,
+Raghavendra
+> --
+> Thanks,
+> Oliver
