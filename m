@@ -2,159 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE2D405C74
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64168405C77
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242598AbhIISBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237205AbhIISBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:01:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17547C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:00:01 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m21-20020a17090a859500b00197688449c4so2069805pjn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GNjXTY5duOz5iXe0iAVr/cU22eBlSdyUTm1y6N/AOUA=;
-        b=eZpkE8uHgyLVQ7ZYGW8+2OCnNwbPIVqjw1hB+TtE0X2wh3aOAZMYtxJALgcu59UIm+
-         2O5Sz1AezMZYIBCE8r37mHz4hY+fhnyEpkTFm3iH3REZI6b3NVK9nYcj4Rxed80hcbmC
-         xOCRj4kIKMgoXSp6GfiJz3GNmnDhGD1Lg2ms6Yt5rhJH+EoQ/50EHbpyVI4OK4CQeoK+
-         x36WAgbT5YcEdfmLGo44xZVaoNqP2NjhzZrRagk+bGDyr0F6mOBT30Dv5mze3IYpC9D2
-         j0J7nFL4iPUe1CkaPRHusbux4G8Ap1d5mZ8YQAYrBHkZ8fnXe4HmAKnjhQ4eZL56suOR
-         E2FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GNjXTY5duOz5iXe0iAVr/cU22eBlSdyUTm1y6N/AOUA=;
-        b=dse6Apv+iNsLAfQa0ZFUmff3fbmhY57R5wvGd2p28F23ulXuln8M/eVcM+8uHW5s3A
-         36ZG61CeCc2XzgdWqLU9qU8bVHoNcEdKUXldl/sz+/UnpYw3/U+y1qikQnZVuMAErScU
-         MVkJ9jyPK5nuhrC/UuOhJKPZd0FgQZBC2USA7wmwIoeLrsabKd4BPAfd8E8CmJL2bKdr
-         lbeNQvqbT0DTpSeGHhDJFMHIziibU7WD1nP2nKKzJCl2hbbfKdzU+3P4fXL/yeNfU81R
-         fqQ7Jy2tQYVdoy0NPrybOZbQzBns4VWLx7l1cNkAsgefUOwwZJn2aXRb5p6JDMmFFQly
-         daUg==
-X-Gm-Message-State: AOAM532E9ClWFzPO996inMqipCLKPrlJ6etmcqiB6lXnCPNL2KlGSCC3
-        NbMnN+sy85xG83YkEBPtsqFGFg==
-X-Google-Smtp-Source: ABdhPJy2TeUC8LicdPd0UfXbOjZP3tQWsUknqYL5wLhjjYBjKbVqO5zl7sVy7YNXIbHv5Rd5u8Bb9Q==
-X-Received: by 2002:a17:90a:8b84:: with SMTP id z4mr4863656pjn.60.1631210400447;
-        Thu, 09 Sep 2021 11:00:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l22sm2812030pjz.54.2021.09.09.10.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 10:59:59 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 17:59:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
-Message-ID: <YTpLmxaR9zLbcyxx@google.com>
-References: <20210827085110.6763-1-chenyi.qiang@intel.com>
- <YS/BrirERUK4uDaI@google.com>
- <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
+        id S242802AbhIISBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237205AbhIISBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:01:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F19D6610C9;
+        Thu,  9 Sep 2021 18:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631210406;
+        bh=GHZCW8HUw7/KGu0uSODqmPQAEJcMv82slvw8vvRuROY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NS/cWWKTrVi3QTkJnuhBSR0/wCFTcxu0VpStcAAB7t3bGFvq8A3vMK1XyeSjm1zS7
+         D5PJtib1nYiZ3hv1jf0u9zrHms9Jvv/QXYeYYVVmDCNBcoc2A6n3hsYG/tfqfIu3as
+         BJzEV0FB8LocUY2jUujyQdjb0V2WInBj9SjdzqiJMhsZU31OyiIEFGgjmwTreW/VAK
+         G0asbgTo55x95u0KjGZvnpZ2dvlxKDCJ+8ddAAc0Z4CuPTPZBnjkFyxPUmoDi+XzIf
+         QDo1wu/kN23eikPBu+xolUuoksJs7TEu8pfoMULGwE7gsyg0HsNlq8iPUFlNK7UfH9
+         ALZidXSKPR7fg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BDCCE5C0DC8; Thu,  9 Sep 2021 11:00:05 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 11:00:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dan Lustig <dlustig@nvidia.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <20210909180005.GA2230712@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
+In-Reply-To: <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021, Xiaoyao Li wrote:
-> On 9/2/2021 2:08 AM, Sean Christopherson wrote:
-> > On Fri, Aug 27, 2021, Chenyi Qiang wrote:
-> > > Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
-> > > VM exit, it will be directed to L1 VMM, which would cause unexpected
-> > > behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
-> > > 
-> > > Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
-> > > Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> > > ---
-> > >   arch/x86/kvm/vmx/nested.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > > index bc6327950657..754f53cf0f7a 100644
-> > > --- a/arch/x86/kvm/vmx/nested.c
-> > > +++ b/arch/x86/kvm/vmx/nested.c
-> > > @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
-> > >   	case EXIT_REASON_VMFUNC:
-> > >   		/* VM functions are emulated through L2->L0 vmexits. */
-> > >   		return true;
-> > > +	case EXIT_REASON_BUS_LOCK:
-> > > +		return true;
+On Thu, Sep 09, 2021 at 01:03:18PM -0400, Dan Lustig wrote:
+> On 9/9/2021 9:35 AM, Will Deacon wrote:
+> > [+Palmer, PaulW, Daniel and Michael]
 > > 
-> > Hmm, unless there is zero chance of ever exposing BUS_LOCK_DETECTION to L1, it
-> > might be better to handle this in nested_vmx_l1_wants_exit(), e.g.
+> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
+> >> On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
+> >>
+> >>> So if this is purely a RISC-V thing,
+> >>
+> >> Just to clarify, I think the current RISC-V thing is stonger than
+> >> PowerPC, but maybe not as strong as say ARM64, but RISC-V memory
+> >> ordering is still somewhat hazy to me.
+> >>
+> >> Specifically, the sequence:
+> >>
+> >> 	/* critical section s */
+> >> 	WRITE_ONCE(x, 1);
+> >> 	FENCE RW, W
+> >> 	WRITE_ONCE(s.lock, 0);		/* store S */
+> >> 	AMOSWAP %0, 1, r.lock		/* store R */
+> >> 	FENCE R, RW
+> >> 	WRITE_ONCE(y, 1);
+> >> 	/* critical section r */
+> >>
+> >> fully separates section s from section r, as in RW->RW ordering
+> >> (possibly not as strong as smp_mb() though), while on PowerPC it would
+> >> only impose TSO ordering between sections.
+> >>
+> >> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
+> >> similarly it marches the R from the R->RW fence, yielding an:
+> >>
+> >> 	RW->  W
+> >> 	    RmW
+> >> 	    R  ->RW
+> >>
+> >> ordering. It's the stores S and R that can be re-ordered, but not the
+> >> sections themselves (same on PowerPC and many others).
+> >>
+> >> Clarification from a RISC-V enabled person would be appreciated.
+> 
+> To first order, RISC-V's memory model is very similar to ARMv8's.  It
+> is "other-multi-copy-atomic", unlike Power, and respects dependencies.
+> It also has AMOs and LR/SC with optional RCsc acquire or release
+> semantics.  There's no need to worry about RISC-V somehow pushing the
+> boundaries of weak memory ordering in new ways.
+> 
+> The tricky part is that unlike ARMv8, RISC-V doesn't have load-acquire
+> or store-release opcodes at all.  Only AMOs and LR/SC have acquire or
+> release options.  That means that while certain operations like swap
+> can be implemented with native RCsc semantics, others like store-release
+> have to fall back on fences and plain writes.
+> 
+> That's where the complexity came up last time this was discussed, at
+> least as it relates to RISC-V: how to make sure the combination of RCsc
+> atomics and plain operations+fences gives the semantics everyone is
+> asking for here.  And to be clear there, I'm not asking for LKMM to
+> weaken anything about critical section ordering just for RISC-V's sake.
+> TSO/RCsc ordering between critical sections is a perfectly reasonable
+> model in my opinion.  I just want to make sure RISC-V gets it right
+> given whatever the decision is.
+> 
+> >>> then I think it's entirely reasonable to
+> >>>
+> >>>         spin_unlock(&r);
+> >>>         spin_lock(&s);
+> >>>
+> >>> cannot be reordered.
+> >>
+> >> I'm obviously completely in favour of that :-)
 > > 
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index b3f77d18eb5a..793534b7eaba 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -6024,6 +6024,8 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
-> >                          SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE);
-> >          case EXIT_REASON_ENCLS:
-> >                  return nested_vmx_exit_handled_encls(vcpu, vmcs12);
-> > +       case EXIT_REASON_BUS_LOCK:
-> > +               return nested_cpu_has2(vmcs12, SECONDARY_EXEC_BUS_LOCK_DETECTION);
+> > I don't think we should require the accesses to the actual lockwords to
+> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
+> > architectures where you'd end up with an extra barrier either after the
+> > unlock() or before the lock() operation. However, I remain absolutely in
+> > favour of strengthening the ordering of the _critical sections_ guarded by
+> > the locks to be RCsc.
 > 
-> yes, for now, it equals
+> I agree with Will here.  If the AMOSWAP above is actually implemented with
+> a RISC-V AMO, then the two critical sections will be separated as if RW,RW,
+> as Peter described.  If instead it's implemented using LR/SC, then RISC-V
+> gives only TSO (R->R, R->W, W->W), because the two pieces of the AMO are
+> split, and that breaks the chain.  Getting full RW->RW between the critical
+> sections would therefore require an extra fence.  Also, the accesses to the
+> lockwords themselves would not be ordered without an extra fence.
 > 
->                   return false;
+> > Last time this came up, I think the RISC-V folks were generally happy to
+> > implement whatever was necessary for Linux [1]. The thing that was stopping
+> > us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
+> > Michael saw quite a bit of variety in the impact on benchmarks [2] across
+> > different machines. So the question is whether newer Power machines are less
+> > affected to the degree that we could consider making this change again.
 > 
-> because KVM doesn't expose it to L1.
-> 
-> >          default:
-> >                  return true;
-> >          }
-> > 
-> > It's a rather roundabout way of reaching the same result, but I'd prefer to limit
-> > nested_vmx_l0_wants_exit() to cases where L0 wants to handle the exit regardless
-> > of what L1 wants.  This kinda fits that model, but it's not really that L0 "wants"
-> > the exit, it's that L1 can't want the exit.  Does that make sense?
-> 
-> something like below has to be in nested_vmx_l0_wants_exit()
-> 
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu
-> *vcpu,
->         case EXIT_REASON_VMFUNC:
->                 /* VM functions are emulated through L2->L0 vmexits. */
->                 return true;
-> +       case EXIT_REASON_BUS_LOCK:
-> +               return vcpu->kvm->arch.bus_lock_detection_enabled;
->         default:
->                 break;
->         }
-> 
-> 
-> L0 wants this VM exit because it enables BUS LOCK VM exit, not because L1
-> doesn't enable it.
+> Yes, as I said above, RISC-V will implement what is needed to make this work.
 
-No, nested_vmx_l0_wants_exit() is specifically for cases where L0 wants to handle
-the exit even if L1 also wants to handle the exit.  For cases where L0 is expected
-to handle the exit because L1 does _not_ want the exit, the intent is to not have
-an entry in nested_vmx_l0_wants_exit().  This is a bit of a grey area, arguably L0
-"wants" the exit because L0 knows BUS_LOCK cannot be exposed to L1.
+Boqun, I vaguely remember a suggested change from you along these lines,
+but now I cannot find it.  Could you please send it as a formal patch
+if you have not already done so or point me at it if you have?
 
-But if we go with that argument, then the original patch (with a comment), is correct.
-Conditioning L0's wants on bus_lock_detection_enabled is not correct because whether
-or not the feature is enabled by L0 does not affect whether or not it's exposed to L1.
-Obviously BUS_LOCK exits should not happen if bus_lock_detection_enabled==false, but
-that's not relevant for why L0 "wants" the exit.
-
-I'm not totally opposed to handling this in nested_vmx_l0_wants_exit(), but handling
-the check in nested_vmx_l1_wants_exit() has the advantage of being correct both now
-and in the future (if BUS_LOCK is ever exposed to L1).
+							Thanx, Paul
