@@ -2,142 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75006405CDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4578E405CF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 20:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236329AbhIISam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 14:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S237439AbhIISqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 14:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhIISal (ORCPT
+        with ESMTP id S237208AbhIISqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:30:41 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577BEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 11:29:31 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id c6so5742732ybm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 11:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfi0O5z3YUYhbW7zXo4IckbIgfrbajr/CKgbbY2Zyf4=;
-        b=gj+1nfSfrs6Zv+O6sehty2rxFgfE2r+s0x7zwUZC+u+U0mXZzRWJkh+cB+Q5xjmkiO
-         3SRnImL9HDvlYj8Jfbm+DsrHk0TmO52i7ycoJnOA09deIWUfaE0JT1VtIggHWYd2/gFT
-         W6xXUfTP0KotOdpRwzeW++EQyn67B0RUZ+RsA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfi0O5z3YUYhbW7zXo4IckbIgfrbajr/CKgbbY2Zyf4=;
-        b=YH2hqcG7VNZ1ZFyuWHi336ZZjIqMtq0R0WpWH9Z1dmZGVnzI12B/9KCAChFooUk5pJ
-         0HzoqrZeUCV5Lze7DAQ/1pwTcpQkajwBMBU35a008qkPxEOGLeyWkqyS7pHZpFKs/Ywj
-         Nv05JmR48l2+1kLncuYib3/zG0HuBcwu0nGbLaW57aPb4qixbJ5sVAbR14d6Bpu7cnWU
-         aJeSSlG2uOaD2OMvFZWci0L+mVuuYPpDULvltpu37JbNkKPlL7+lO1XMRTCPG6BrxZAE
-         tGt22gnJbpPIyVok2LHCKQi3mtPDkbQJ07gpGK3jmnCB200yKDYl6Ph/NlsYWNCWi0Rw
-         n6uQ==
-X-Gm-Message-State: AOAM533cyM8lhqfhgh1VG+jAXOszp8kV2D3UuV7MgF3LD4s1RA9QximG
-        zD7rSo/j3+0MqXbFrskZOA6V3/zl4iDwwkhPRmGitQ==
-X-Google-Smtp-Source: ABdhPJwKdoS+6eFhIHsa8XBFo0m3Sjd0aYt1yBdRfyKP2io/xudp0Anc9afhfFHCv162xklYocQOh3LGLI6ldwZFqqM=
-X-Received: by 2002:a25:478b:: with SMTP id u133mr5451813yba.532.1631212170654;
- Thu, 09 Sep 2021 11:29:30 -0700 (PDT)
+        Thu, 9 Sep 2021 14:46:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17323C061574;
+        Thu,  9 Sep 2021 11:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7cIe376GgS7Aa1qahSeo56O31ILie9slE4Ah8Ipra0Y=; b=isb8aKhsQKU9aodtEFHcPo7q+Z
+        1Nz6ODr+wnNeD8tqFqpeXKTvLRgFv+5BQgvx9iSfVaTGxb9av/YCRKFbBmX9n2NZU2cwtag7ol6Lw
+        SgXaHyt/SGoDFon3xW2co6a60bgibv0hfVX5O8nmJokeW3SdWM83X9LZSERTPciu1OL5hEzh9HPlK
+        F8RPUS99ce8oAHkeEkjKwN7yIdoosW0p3Xb3LsfSJiw1P9M9is4mkz/Wk1xmzT4G4gj7CfbhE0Rjh
+        Qa6kQ6E0tTaIpPMpKbvYjlQzX8XMRONPmrOXUMN4OPbsOodB0lv3y2jWn/c6L/ZzbeFnWyFEtCN87
+        K5TrPHxQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOP26-00AHI7-QI; Thu, 09 Sep 2021 18:44:33 +0000
+Date:   Thu, 9 Sep 2021 19:44:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YTpWBif8DCV5ovON@casper.infradead.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YToBjZPEVN9Jmp38@infradead.org>
+ <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
+ <YTpPh2aaQMyHAi8m@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210908111500.1.I9f6dac462da830fa0a8ccccbe977ca918bf14e4a@changeid>
- <CAE-0n52ia_Em6GYU-ketmzi4OQxcdux3uLjMGhzVTUJbC0Yz-Q@mail.gmail.com>
-In-Reply-To: <CAE-0n52ia_Em6GYU-ketmzi4OQxcdux3uLjMGhzVTUJbC0Yz-Q@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 9 Sep 2021 11:29:19 -0700
-Message-ID: <CA+cxXh=FJtvAzb0UeMXYs3PKxcdoR7hG23BJQ5Xtj_ywjLUQ_w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/bridge: parade-ps8640: Use regmap APIs
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTpPh2aaQMyHAi8m@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 09, 2021 at 02:16:39PM -0400, Johannes Weiner wrote:
+> My objection is simply to one shared abstraction for both. There is
+> ample evidence from years of hands-on production experience that
+> compound pages aren't the way toward scalable and maintainable larger
+> page sizes from the MM side. And it's anything but obvious or
+> self-evident that just because struct page worked for both roles that
+> the same is true for compound pages.
 
-On Wed, Sep 8, 2021 at 2:54 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-09-08 11:18:05)
-> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > index 685e9c38b2db..a16725dbf912 100644
-> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > @@ -64,12 +65,29 @@ struct ps8640 {
-> >         struct drm_bridge *panel_bridge;
-> >         struct mipi_dsi_device *dsi;
-> >         struct i2c_client *page[MAX_DEVS];
-> > +       struct regmap   *regmap[MAX_DEVS];
-> >         struct regulator_bulk_data supplies[2];
-> >         struct gpio_desc *gpio_reset;
-> >         struct gpio_desc *gpio_powerdown;
-> >         bool powered;
-> >  };
-> >
-> > +static const struct regmap_range ps8640_volatile_ranges[] = {
-> > +       { .range_min = 0, .range_max = 0xff },
->
-> Is the plan to fill this out later or is 0xff the max register? If it's
-> the latter then I think adding the max register to regmap_config is
-> simpler.
-It's the former.
-The real accessible register range is different per page, E.g.:
-- For page0, the register range is 0x00 - 0xbf.
-- For page1, the register range is 0x00 - 0xff.
-- For page2, the register range is 0x80 - 0xff.
-Even if we don't specify the accurate per-page register range later,
-the default register range here (0x00 - 0xff) can cover the available
-registers in each page.
->
-> > +};
-> > +
-> > +static const struct regmap_access_table ps8640_volatile_table = {
-> > +       .yes_ranges = ps8640_volatile_ranges,
-> > +       .n_yes_ranges = ARRAY_SIZE(ps8640_volatile_ranges),
-> > +};
-> > +
-> > +static const struct regmap_config ps8640_regmap_config = {
-> > +       .reg_bits = 8,
-> > +       .val_bits = 8,
-> > +       .volatile_table = &ps8640_volatile_table,
-> > +       .cache_type = REGCACHE_NONE,
-> > +};
-> > +
-> >  static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-> >  {
-> >         return container_of(e, struct ps8640, bridge);
-> > @@ -78,13 +96,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-> >  static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
-> >                                      const enum ps8640_vdo_control ctrl)
-> >  {
-> > -       struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
-> > -       u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
-> > +       struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
-> > +       u8 vdo_ctrl_buf[] = {VDO_CTL_ADD, ctrl};
->
-> Nitpick: Add a space after { and before }.
-Thanks. Will fix this in the next version.
->
-> >         int ret;
-> >
-> > -       ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
-> > -                                            sizeof(vdo_ctrl_buf),
-> > -                                            vdo_ctrl_buf);
-> > +       ret = regmap_bulk_write(map, PAGE3_SET_ADD,
-> > +                               vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
-> > +
-> >         if (ret < 0) {
-> >                 DRM_ERROR("failed to %sable VDO: %d\n",
-> >                           ctrl == ENABLE ? "en" : "dis", ret);
+I object to this requirement.  The folio work has been going on for almost
+a year now, and you come in AT THE END OF THE MERGE WINDOW to ask for it
+to do something entirely different from what it's supposed to be doing.
+If you'd asked for this six months ago -- maybe.  But now is completely
+unreasonable.
+
+I don't think it's a good thing to try to do.  I think that your "let's
+use slab for this" idea is bonkers and doesn't work.  And I really object
+to you getting in the way of my patchset which has actual real-world
+performance advantages in order to whine about how bad the type system
+is in Linux without doing anything to help with it.
+
+Do something.  Or stop standing in the way.  Either works for me.
