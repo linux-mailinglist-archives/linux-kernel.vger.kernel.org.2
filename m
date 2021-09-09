@@ -2,112 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE07404525
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81554404528
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 07:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350849AbhIIFrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 01:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        id S1350863AbhIIFtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 01:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350827AbhIIFrC (ORCPT
+        with ESMTP id S231361AbhIIFta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:47:02 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62E4C061575;
-        Wed,  8 Sep 2021 22:45:53 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id q26-20020a4adc5a000000b002918a69c8eeso202418oov.13;
-        Wed, 08 Sep 2021 22:45:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Pv/SG3tA7yrSb48sLZzZKagPhqs7Dod2/pQrk+267E=;
-        b=MGpgdDSkN+o4FYqEt4gdXdwpa7SfDBsHOhdPE7LwhR5FmrIbZQ9kwpx2JXpmKEp9Lp
-         XiibZh4zGE7W+QQ3ztxPw4aH4lHKGq2gEdwgKbK6L4N7vES6/1rrGNj4kSHhdbaF/VdJ
-         BSxP8PF2fMrKIXmUY3wnCFWZXPzpXVrm/Qbw81VeLBQsV1QpGnPvjc83snjiI1erliHc
-         WYlMrWPqTzGJTVZ/dAKGWcwtoFi2xtNWgS53HsxLJz1dkqdYFQ0JWCuMjvggoattBsB8
-         8vLhB2S2ddvZjLhNIbNFKGvri50KAnYw6PSflQrL2mggk9utb/hKtKqz9HzHjvgkOK0J
-         IT7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Pv/SG3tA7yrSb48sLZzZKagPhqs7Dod2/pQrk+267E=;
-        b=2rWMVuLqEnQ2BENyOV2nIv3jtBkovrWEVNkwU9S3/3jLn0jrKmZRYhOniIp/ABCHRs
-         60C2FlsEMFq2MfYwjD3xyXJqrOAdkkHuDhBUkypHAOuw9vnZ1kFiopvdpejT/YpCiwOK
-         KT2q9Qo0hFP4Bgs1PlrJG8/Rq+f0rxjAt14M3AtIFLUaeM3/vjpr7+KrdVjRApkPVrbV
-         N9Lx2cJ01lEGqpn+h8j0ozj/mFjvcSyPtI/+eJmcOeMG+pxZYHHq2JvMJU0h7+qdsIqj
-         aKLM1rc0iOMyHvgx0NLXl39nxuUIXQlXhIG18QfaTiMhZJ/TJ71QetGNFIKLe+y9UXQL
-         Vfmw==
-X-Gm-Message-State: AOAM5332Gtdk42Qy3cGS7Mb4dCuGF0AcYEaxLGH1EP7A+rtP1x93JD6V
-        QmLW/gGSQXmurX4WdhyCM5b9uXELO0bdFfqly7E9buEZ
-X-Google-Smtp-Source: ABdhPJyZqqIln9S03n1DUtOd+twg50f5kxz5HF0f9k3QrRU8LpNtc0XqrL6Fodh9fIMHIgzSBjbqVsYpZ62Nnhx9uzQ=
-X-Received: by 2002:a05:6820:235:: with SMTP id j21mr1086605oob.75.1631166352576;
- Wed, 08 Sep 2021 22:45:52 -0700 (PDT)
+        Thu, 9 Sep 2021 01:49:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A21C061575;
+        Wed,  8 Sep 2021 22:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oLeEme0/UtsgtWi3oPoIvHkyGoWeV/STJK5ybt+fzqc=; b=TO+GiZKlesWHaNqYSWzxX0/WuJ
+        4g8n1US24PHkLZrfDiS0NsKcDCH8WPbyPe+TvbuXdymrm9s8efmDY6F7bLyTZgq/3Sh98HIg6IrFC
+        DBTW1jIIZy3YoSguXDJXd8tGKqg2r+1qGlPb2V/JkbuamzeXNmhX0pfzUjYkQ2+CsHQPu1HWBCDic
+        pfN7L1q+s3ZPmBn0MxzQAAdq/7hX29gp/r6IvCEtaJZg80U/H3DJp/mDimvZVNTJxzHXAfu/PiBq4
+        trsTc8hj+S1D3+eLAtEgMz+XZpPRza856pvmBRsDSwaugtcdPL/rNMHVy3TIN232lDkWHCN0CS6v9
+        cnnKwgqQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOCum-009WCl-2b; Thu, 09 Sep 2021 05:48:03 +0000
+Date:   Thu, 9 Sep 2021 06:48:00 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk
+Subject: Re: [PATCH] blk-mq: export blk_mq_submit_bio symbol
+Message-ID: <YTmgEAEx69PR/RMy@infradead.org>
+References: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp>
-In-Reply-To: <20210908061611.69823-1-mie@igel.co.jp>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 9 Sep 2021 13:45:41 +0800
-Message-ID: <CAD=hENcYPRQXB4NVfpm+_R2qn3czW3oSOS6rS=CEKWwhHEfkZA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
-To:     Shunsuke Mie <mie@igel.co.jp>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        dhobsong@igel.co.jp, taki@igel.co.jp, etom@igel.co.jp
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 2:16 PM Shunsuke Mie <mie@igel.co.jp> wrote:
->
-> This patch series add a support for rxe driver.
+On Thu, Sep 09, 2021 at 11:06:53AM +0530, Praveen Kumar wrote:
+> There are use-cases like replication where need to hook the blk I/O
+> operations for devices and perform specific operation and fallback to
+> its original I/O operations.
+> Prior to v5.9 there was make_request_fn and then blk_mq_submit_bio
+> exported apis, which provided infrastructure to drivers to develop these
+> features. However in v5.10-rc1 with below commit the API was removed
+> from the export list.
+> 
+> Previous commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.10-rc1&id=681cc5e8667e8579a2da8fa4090c48a2d73fc3bb
+> 
+> This patch exports the blk_mq_submit_bio symbol to provide flexibility
+> to the drivers.
 
-After applying the patches, please run rdma-core tests with the patched kernel.
-Then fix all the problems in rdma-core.
+Please send your users of this "feature" to this list for inclusion
+and we'll help you to massage them into a non-broken version.
 
-Thanks
-Zhu Yanjun
-
->
-> A dma-buf based memory registering has beed introduced to use the memory
-> region that lack of associated page structures (e.g. device memory and CMA
-> managed memory) [1]. However, to use the dma-buf based memory, each rdma
-> device drivers require add some implementation. The rxe driver has not
-> support yet.
->
-> [1] https://www.spinics.net/lists/linux-rdma/msg98592.html
->
-> To enable to use the memories in rxe rdma device, add some changes and
-> implementation in this patch series.
->
-> This series consists of three patches. The first patch changes the IB core
-> to support for rdma drivers that have not real dma device. The second
-> patch extracts a memory mapping process of rxe as a common function to use
-> a dma-buf support. The third patch adds the dma-buf support to rxe driver.
->
-> Related user space RDMA library changes are provided as a separate
-> patch.
->
-> Shunsuke Mie (3):
->   RDMA/umem: Change for rdma devices has not dma device
->   RDMA/rxe: Extract a mapping process into a function
->   RDMA/rxe: Support dma-buf as memory region
->
->  drivers/infiniband/core/umem_dmabuf.c |   2 +-
->  drivers/infiniband/sw/rxe/rxe_loc.h   |   3 +
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 186 +++++++++++++++++++++-----
->  drivers/infiniband/sw/rxe/rxe_verbs.c |  36 +++++
->  4 files changed, 193 insertions(+), 34 deletions(-)
->
-> --
-> 2.17.1
->
+And yes, you should have gotten the memo by now that we don't export
+anything for out of tree modules.
