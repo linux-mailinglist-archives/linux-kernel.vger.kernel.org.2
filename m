@@ -2,133 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC8D405FB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDE2405FBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 00:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346332AbhIIWun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 18:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S1346654AbhIIWvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 18:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhIIWum (ORCPT
+        with ESMTP id S230367AbhIIWvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:50:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157AAC061574;
-        Thu,  9 Sep 2021 15:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jwMx+Bdxcf4JuJYm9ph1dk1Qb2BQqM8i1EKgHVKfk0k=; b=cneqA+m0sw9ZoLdnmiIdv6GQDu
-        pSH5gwmbpIffEtYXVV/MuuL5soL09Hgjtuu89rznwMFmAs7eXCwxCT74gQ9KpzmQQgJaka5CG5RVZ
-        rfuvsocxxlGl0Znc86t9V4OUvWSnJzIN4GKcIZsPEJ0L3jYLxWG23ehVmOdF9e5Y0AjJbKCBU21t2
-        ymbEu2Csp8iG50m+VV6ZPb/t3Q9bcJ/DUubcRFOVS9cqKDg/Z6mpbxozZLZm9bBFK3Jaqpah384xB
-        eynMk9uFExGV70vbfdm/kqYhkTIeMXpLghjDg34uWUoOhUAs9sHyrfaV7IcR7omnHNYaji8rKi5li
-        vpPcaKEw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOSqD-00ARd4-Rk; Thu, 09 Sep 2021 22:48:29 +0000
-Date:   Thu, 9 Sep 2021 23:48:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YTqPNXNMms1OLSXh@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YToBjZPEVN9Jmp38@infradead.org>
- <6b01d707-3ead-015b-eb36-7e3870248a22@suse.cz>
- <YTpPh2aaQMyHAi8m@cmpxchg.org>
- <YTpWBif8DCV5ovON@casper.infradead.org>
- <YTqEpTIbwRJmwCwL@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTqEpTIbwRJmwCwL@cmpxchg.org>
+        Thu, 9 Sep 2021 18:51:47 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE23C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 15:50:37 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id g192-20020a25dbc9000000b0059bd2958c8aso4462867ybf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 15:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=cOv81gwC9dNLZhqvyYQGhAuBKrBFj15moK9/frQLFMU=;
+        b=GDxCPvAruNETvNqoBKUPqU9jy05fk1bp3PWMM3Ljuxl6vVxIF4AQAnIMwpKJNL0LlE
+         edukWYZi/ADH6MMDY1rpxPA0nFuzcN0O/HhhCXj5JeU2H8usrlcbcEFiAAfPU/0G4lfE
+         BqdZklQWBrxjTrfzfMgUdg0CoJ47EV2STC35HOBP3LIHVQaWtPaLBBKDGmHDa8hR/5QO
+         gOl3G+o+CYR9ywt8QyMzByFXdPCGHdpf98uU3VYW+XYTS2L4GkQSRVa3V8Li/NYa3xWq
+         ZvC7SBNBEbzrHUqY4YkInYgBnpGF2UpsarBT8r1XeZOU/GZOK7fmEP/cUJt6qsJwBaFW
+         s2UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=cOv81gwC9dNLZhqvyYQGhAuBKrBFj15moK9/frQLFMU=;
+        b=AgUzpkZQi5NGnVW5AjbT7eDUihfxAE9tFWe8A5VAzxZXYuhElYy5DenGan5vZQHSSk
+         GVTI3b7uyy/E+uIGralHjIW4BnCxBp0RllzKd9Yezys6fGsKOvE48IbeBkL1maIrKply
+         7hqjwvUkuwL5zRG4XiRjmvAG02Van+hRjKLxMMMlgch6pw1ckvIkgL0lUnjS6PycoVoP
+         YOeySRzVBdYk70Sbp9PFgNm/vtWAOqEEOLqBKAFT04EJ/7JTNw9P0aMgsSxdT/SI5fxj
+         Rn14WJi4vuLWqzKSpHt8EmzKFimUYL8bA4UNHz4BwHP0ZoH6Up0z8nIL1ANcWnXE60Q0
+         ntJA==
+X-Gm-Message-State: AOAM530n/E6HeVqDEO7cp0ieP4hloeeLqkFFDUJ2kynLnCCCql6G5pUm
+        pNdpcm93F5Ly13482K23PPxiFeYeaLG5eoJD7kI=
+X-Google-Smtp-Source: ABdhPJwLFHXNgRlAL2YzqDpSi9C+NWVrDLnaDnOcMPOieXeSDgUkK6PEfuqwIliiam/Ydm/pGfidEk5vldeGCbWGJz0=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9a5f:693a:26cc:1fd6])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:664c:: with SMTP id
+ z12mr7299807ybm.62.1631227837092; Thu, 09 Sep 2021 15:50:37 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 15:50:35 -0700
+In-Reply-To: <20210909182525.372ee687@canb.auug.org.au>
+Message-Id: <20210909225035.3990728-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210909182525.372ee687@canb.auug.org.au>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: Re: linux-next: build failure while building Linus' tree
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     sfr@canb.auug.org.au
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, libaokun1@huawei.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ Rasmus
 
-Ugh.  I'm not dealing with this shit.  I'm supposed to be on holiday.
-I've been checking in to see what needs to happen for folios to be
-merged.  But now I'm just fucking done.  I shan't be checking my email
-until September 19th.
+This was introduced in
+commit f0907827a8a91 ("compiler.h: enable builtin overflow checkers and add
+fallback code")
+which added division using the `/` operator, which is problematic when checking
+for overflows of 64b operands on 32b targets.
 
-Merge the folio branch, merge the pageset branch, or don't merge
-anything.  I don't fucking care any more.
+We'll probably need helpers from linux/math64.h and some combination of
+__builtin_choose_expr/__builtin_types_compatible_p.
 
-On Thu, Sep 09, 2021 at 06:03:17PM -0400, Johannes Weiner wrote:
-> On Thu, Sep 09, 2021 at 07:44:22PM +0100, Matthew Wilcox wrote:
-> > On Thu, Sep 09, 2021 at 02:16:39PM -0400, Johannes Weiner wrote:
-> > > My objection is simply to one shared abstraction for both. There is
-> > > ample evidence from years of hands-on production experience that
-> > > compound pages aren't the way toward scalable and maintainable larger
-> > > page sizes from the MM side. And it's anything but obvious or
-> > > self-evident that just because struct page worked for both roles that
-> > > the same is true for compound pages.
-> > 
-> > I object to this requirement.  The folio work has been going on for almost
-> > a year now, and you come in AT THE END OF THE MERGE WINDOW to ask for it
-> > to do something entirely different from what it's supposed to be doing.
-> > If you'd asked for this six months ago -- maybe.  But now is completely
-> > unreasonable.
-> 
-> I asked for exactly this exactly six months ago.
-> 
-> On March 22nd, I wrote this re: the filesystem interfacing:
-> 
-> : So I think transitioning away from ye olde page is a great idea. I
-> : wonder this: have we mapped out the near future of the VM enough to
-> : say that the folio is the right abstraction?
-> :
-> : What does 'folio' mean when it corresponds to either a single page or
-> : some slab-type object with no dedicated page?
-> :
-> : If we go through with all the churn now anyway, IMO it makes at least
-> : sense to ditch all association and conceptual proximity to the
-> : hardware page or collections thereof. Simply say it's some length of
-> : memory, and keep thing-to-page translations out of the public API from
-> : the start. I mean, is there a good reason to keep this baggage?
-> 
-> It's not my fault you consistently dismissed and pushed past this
-> question and then send a pull request anyway.
-> 
-> > I don't think it's a good thing to try to do.  I think that your "let's
-> > use slab for this" idea is bonkers and doesn't work.
-> 
-> Based on what exactly?
-> 
-> You can't think it's that bonkers when you push for replicating
-> slab-like grouping in the page allocator.
-> 
-> Anyway, it was never about how larger pages will pan out in MM. It was
-> about keeping some flexibility around the backing memory for cache
-> entries, given that this is still an unsolved problem. This is not a
-> crazy or unreasonable request, it's the prudent thing to do given the
-> amount of open-ended churn and disruptiveness of your patches.
-> 
-> It seems you're not interested in engaging in this argument. You
-> prefer to go off on tangents and speculations about how the page
-> allocator will work in the future, with seemingly little production
-> experience about what does and doesn't work in real life; and at the
-> same time dismiss the experience of people that deal with MM problems
-> hands-on on millions of machines & thousands of workloads every day.
-> 
-> > And I really object to you getting in the way of my patchset which
-> > has actual real-world performance advantages
-> 
-> So? You've gotten in the way of patches that removed unnecessary
-> compound_head() call and would have immediately provided some of these
-> same advantages without hurting anybody - because the folio will
-> eventually solve them all anyway.
-> 
-> We all balance immediate payoff against what we think will be the
-> right thing longer term.
-> 
-> Anyway, if you think I'm bonkers, just ignore me. If not, maybe lay
-> off the rhetorics, engage in a good-faith discussion and actually
-> address my feedback?
+That will help us fix another compiler bug for older clang releases, too.
+https://github.com/ClangBuiltLinux/linux/issues/1438.
