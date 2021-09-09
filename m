@@ -2,187 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756B6404724
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91B3404728
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbhIIIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:41:41 -0400
-Received: from mout.web.de ([212.227.15.4]:34745 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231281AbhIIIlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:41:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1631176809;
-        bh=TDYtB2JcYZdl2exMRt0DaFOKdnm/cLDcrA9GN52GAs0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fSfy+5e1UPRsu1uF5sKdX2j2N0MwJp8oKakSA3Ghq6orbX06lTOtPVkiWJ99uuhZ0
-         NaXpF3Ivxq9zMQqXvRpAqqBJoRl7cYTTVwILl0SIyZaf7l7p0BWVAkvzZ0XJ1Plitt
-         UJvfR2yjurGaWnUlIemidx0jAf3QYSK4IYIwIUpg=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.27] ([89.14.20.203]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lp7Lg-1mu27Z2Gcm-00esRM; Thu, 09
- Sep 2021 10:40:09 +0200
-Subject: Re: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev as
- fallback
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>
-References: <20210425110200.3050-1-shawn.guo@linaro.org>
- <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de> <20210908010057.GB25255@dragon>
- <100f5bef-936c-43f1-9b3e-a477a0640d84@web.de> <20210909022033.GC25255@dragon>
-From:   Soeren Moch <smoch@web.de>
-Message-ID: <56e9a81a-4e05-cf5e-a8df-782ac75fdbe6@web.de>
-Date:   Thu, 9 Sep 2021 10:39:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232025AbhIIImj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231281AbhIIImi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:42:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBDAC061575;
+        Thu,  9 Sep 2021 01:41:29 -0700 (PDT)
+Date:   Thu, 09 Sep 2021 08:41:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631176888;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0U2cZc7rtlXLSl5Ut13BZAl+dsb0fx7pHYS0hNY80+M=;
+        b=PYESbBmLkOuHTT9yUJjpXuv8yIKQyF/e4GVEyiX7h4gU0EmieId/9r3k2Q7qjRvbolN2cX
+        eyy/duIzSZ6A/Zcep9q7pTQ7AXMtbnDOXet+4TjeDFcx3NbcwgfzUsCnLM5AwYtCKjC2DM
+        lKfI+FkmC1K2FoWg8NC2aDIzis2Y0khjm/FfLsKsAlbuv9Um3VvtTKlHFMhOqLoPVdYZer
+        1VS6fj71zqPp3Id88MAflkgtVk9UkBp+bDGzmEot5MeTNW910i1i5BR+j9AKAs6t6FyW4w
+        eCaYwVje9fLLmGoTGUdHm/j+RSqUGQC8UH6dj2nN1numRoMQ8/vpt4G14FW3UA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631176888;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0U2cZc7rtlXLSl5Ut13BZAl+dsb0fx7pHYS0hNY80+M=;
+        b=Jqg+/5qc4JaHuuKuLeYLP+0hVLcsC/Jt628d21YXP0BztXnO/+NE3aMiJOo4WuSM3hjmbW
+        jmAAfCqZpnUO9JAw==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/idle: Make the idle timer expire in hard
+ interrupt context
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
+References: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210909022033.GC25255@dragon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
-X-Provags-ID: V03:K1:vnwaoO3CKyw/+P4arC4J3P4RilNP9UxvfkXbCFPrAJIrWhE4fas
- zfTZToRbEd21n7qaSwo4h+jRz9xC+YhpWn/OS1t3M8iT/0zs6uO3+S73pyeuhEFRB0IvOU8
- I/94oMJXXOT0uxGH7UlbWA0XteN5tflAjhTgaPnMOWuINuz1mje6JORCp/jsjdKWz5YmVRS
- j9WpQeEtbJMRd8sn+9QrQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cjiZyj6VQ8M=:tS9nCgiRMtk20B3olBKG1G
- i7vEnrFk/td2e6qasyeRW+yOOPCSHYwaz4rHirW+lqUs9RWqgA3bqShbDqrizKkQ8d2BEAMGY
- 7p322fSSqg0IybRkY3mvn7LlxG2vO/RoXYw84rGUukD1ui1vjmKHBoK30/m3UGs3k2qoTsVOv
- phcAp28BivYXyRd9qBxIZWvCsh0I6p10x36LC1hioLlglqYS4Og0tJ2lAzJwuqqFd+uxRur6D
- FZS4dpVXZKVaO2qwn9plD7sCxjdFl4ZgmnxoKNg4Mt61kjzeq+L7hhbYn1SwtvC+2gxCRpjI1
- DcO9w8RQC+Nnh8DGzMuS/uF1zhbxQIWrGE6NUCIrLktrwG+8AbMKDPTUJI0wjjCWFVwc3LSF9
- zTBpleJ/25MDG+kWSUHWWdlh+Cmr6KjJzbtK2a4Ot9AQO9TlFy0dM4QmRELgyEkExpF6MNWfU
- KQb/PdJfLxT4VBB0gh44zbC5qf29bgf2z4weP3AMBM0t/PPmCLKtjVTBCP5nzOOd2CHp6cqQb
- lypkay97BJ/w2aTojQ0Mzq4nk9/qaXiayn8ejES+MDrk06mEu+Ujwfxff88o53Zcd8FDnxQuH
- PDDrM9wdxmRScumrFQ2WUL2FZ27hQR+xzz7J4V9jQfn7Z3/FDHb8lQRCrx8EhxDmkx0aaetSK
- lU815ldge1H70AojNkvUpzT2I2uith2lQlmYLyw9kX0EyqzHBEY/2EaPvcmNBi5mgSyyd3jQZ
- xEo5sTR7T8UhLJk1GOkGUxv0dUiMp3fQ8ANdpf3zO4nox5cr56qoNKuzWY8ZjudvMsrg7gw/3
- 5BlNOo6DoxMd5OzDRgaXXEht3oRST9umn+9WU4HKVEGcjJHsxlMG9394naDrDaMmRmnsa9Fjs
- U+U4HciMWGkFI9CAJ1UZzunqT56R/ngnqIQbmgLctn7Ds9k1PBj7KYdzc5SxVAqu2P5vf69P+
- 5s4IGfTtIXskEft6YUOIFz8I5wW5jrBkiFF1Sy9KWmO+M9M5An4H0uqtfTNvJYNmwAlxgM6YE
- oHxFB1SB9LR8b0enkJDUl3IP+c9SvO8HlhF2RHf3Tp/G9hmsI21jsaN6mMtb5fkbkPV/mPrTf
- TXF4lrIgIyKIz8=
+Message-ID: <163117688696.25758.3102227714043855534.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+The following commit has been merged into the sched/urgent branch of tip:
 
-On 09.09.21 04:20, Shawn Guo wrote:
-> On Wed, Sep 08, 2021 at 07:08:06AM +0200, Soeren Moch wrote:
->> Hi Shawn,
->>
->> On 08.09.21 03:00, Shawn Guo wrote:
->>> Hi Soeren,
->>>
->>> On Tue, Sep 07, 2021 at 09:22:52PM +0200, Soeren Moch wrote:
->>>> On 25.04.21 13:02, Shawn Guo wrote:
->>>>> Instead of aborting country code setup in firmware, use ISO3166 coun=
-try
->>>>> code and 0 rev as fallback, when country_codes mapping table is not
->>>>> configured.  This fallback saves the country_codes table setup for r=
-ecent
->>>>> brcmfmac chipsets/firmwares, which just use ISO3166 code and require=
- no
->>>>> revision number.
->>>> This patch breaks wireless support on RockPro64. At least the access
->>>> point is not usable, station mode not tested.
->>>>
->>>> brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4359/9 wl0: Mar=C2=A0 6=
- 2017
->>>> 10:16:06 version 9.87.51.7 (r686312) FWID 01-4dcc75d9
->>>>
->>>> Reverting this patch makes the access point show up again with linux-=
-5.14 .
->>> Sorry for breaking your device!
->>>
->>> So it sounds like you do not have country_codes configured for your
->>> BCM4359/9 device, while it needs particular `rev` setup for the ccode
->>> you are testing with.  It was "working" likely because you have a stat=
-ic
->>> `ccode` and `regrev` setting in nvram file.
->> It always has been a mystery to me how country codes are configured for
->> this device. Before I read your patch I did not even know that a
->> translation table is required. Is there some documentation how this is
->> supposed to work? Not sure if this makes a difference, BCM4359/9 is a
->> Cypress device I think, I added mainline support for it some time ago.
-> One way to add the translation table is using DT.  You can find more
-> info and example in following commits:
->
-> b41936227078 ("dt-bindings: bcm4329-fmac: add optional brcm,ccode-map")
-> 1a3ac5c651a0 ("brcmfmac: support parse country code map from DT")
-OK, thanks.
-When one way is to use DT, what is the 'traditional way' to add such table=
-?
+Commit-ID:     9848417926353daa59d2b05eb26e185063dbac6e
+Gitweb:        https://git.kernel.org/tip/9848417926353daa59d2b05eb26e185063dbac6e
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Mon, 06 Sep 2021 13:30:34 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 09 Sep 2021 10:36:16 +02:00
 
-And maybe the more interesting question, where can these settings be
-obtained from? The tweaked device specific settings probably from the
-device vendor, good luck!
-But the general country specific settings, as you are obviously
-interested in with your trivial mapping, shouldn't they go into driver
-directly? Only to be overruled when device specific settings are
-available via DT? And of course only for device/firmware combinations
-that support this general mapping, so that other devices with 'unknown
-mapping' are not broken by this enhancement?
->> I have installed different firmware files, brcmfmac4359-sdio.clm_blob,
->> brcmfmac4359-sdio.bin, brcmfmac4359-sdio.txt, the latter also linked as
->> brcmfmac4359-sdio.pine64,rockpro64-2.1.txt. This probably is the nvram
->> file. ccode and regrev are set to zero, which probably means
->> 'international save settings".
-> I'm not sure how this 'international save settings' works for brcmfmac
-> devices.  Do you have more info or any pointers?
-The correct term in this context probably is 'world regulatory domain',
-the most restrictive wifi settings that can be used all over the world.
-This usually is taken as default by cfg80211, apparently also for
-(some?) brcmfmac devices/firmwares.
+sched/idle: Make the idle timer expire in hard interrupt context
 
-These 'world' settings can be replaced by more permissive country
-specific regulatory domain settings, but for brcmfmac devices this seems
-to be firmware specific and requires this country mapping.
+The intel powerclamp driver will setup a per-CPU worker with RT
+priority. The worker will then invoke play_idle() in which it remains in
+the idle poll loop until it is stopped by the timer it started earlier.
 
-I have seen a country code "00" for the world regulatory domain in the
-past, not sure if this is standard or a device/driver/software specific
-hack and if this can be used for brcmfmac (mapping from string "00" to
-country_code=3D0 ?). For sure here are more experienced wifi developers
-who know better.
->>> But roaming to a different
->>> region will mostly get you a broken WiFi support.  Is it possible to s=
-et
->>> up the country_codes for your device to get it work properly?
->> In linux-5.13 it worked, probably with save settings (not all channels
->> selectable, limited tx power), with linux-5.14 it stopped working, so i=
-t
->> is a regression.
->> I personally would like to learn how all this is configured properly.
->> For general use I think save settings are better than no wifi at all
->> with this patch. This fallback to ISO CC seams to work with newer
->> (Synaptics?) devices only.
-> I do not mind you send a reverting if you have problem to add a proper
-> translation table for your device.  But that would mean I have to add
-> a pretty "meaningless" translation table for my devices :(
->
-Is this not the usual DT policy, that missing optional properties should
-not prevent a device to work, that old dtbs should still work when new
-properties are added?
+That timer needs to expire in hard interrupt context on PREEMPT_RT.
+Otherwise the timer will expire in ksoftirqd as a SOFT timer but that task
+won't be scheduled on the CPU because its priority is lower than the
+priority of the worker which is in the idle loop.
 
-I'm not sure what's the best way forward. A plain revert of this patch
-would at least bring back wifi support for RockPro64 devices with
-existing dtbs. Maybe someone else has a better proposal how to proceed.
+Always expire the idle timer in hard interrupt context.
 
-Regards,
-Soeren
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210906113034.jgfxrjdvxnjqgtmc@linutronix.de
 
+---
+ kernel/sched/idle.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 912b47a..d17b0a5 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -379,10 +379,10 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
+ 	cpuidle_use_deepest_state(latency_ns);
+ 
+ 	it.done = 0;
+-	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+ 	it.timer.function = idle_inject_timer_fn;
+ 	hrtimer_start(&it.timer, ns_to_ktime(duration_ns),
+-		      HRTIMER_MODE_REL_PINNED);
++		      HRTIMER_MODE_REL_PINNED_HARD);
+ 
+ 	while (!READ_ONCE(it.done))
+ 		do_idle();
