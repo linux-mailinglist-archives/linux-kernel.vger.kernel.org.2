@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1970405AAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D04E405AAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236810AbhIIQVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:21:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36982 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233878AbhIIQVv (ORCPT
+        id S235070AbhIIQVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhIIQVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:21:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631204441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TVfEtg0caKFVLU4PORG/nOTi8TSVXlHDM/vmUHWN4s=;
-        b=I0xsEkqSD5VXiuD/EncdJESas/pUkhgEEG0zlTyUQ9ijB3m2BeUFFzccjCPwxmDVbPGEPk
-        g8DPCOwcu2S74avlY5bCBj/k6ngVk6bAyUXk0MpKDua1NQj8moQRbSUGFhSd2o0PEIO6yG
-        GOSSPkRB/faq4sZnmohVyRlGfHwIvoo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-jL2yk899M0yOud7RfMuEnA-1; Thu, 09 Sep 2021 12:20:37 -0400
-X-MC-Unique: jL2yk899M0yOud7RfMuEnA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 547BC10144F4;
-        Thu,  9 Sep 2021 16:20:35 +0000 (UTC)
-Received: from epyc.reserve.home (unknown [10.22.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FAFF1865D;
-        Thu,  9 Sep 2021 16:20:34 +0000 (UTC)
-From:   Bandan Das <bsd@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     "Moger, Babu" <bmoger@amd.com>, Babu Moger <babu.moger@amd.com>,
-        bp@alien8.de, corbet@lwn.net, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
-References: <20210812234440.tcssf2iqs435bgdo@treble>
-        <20210902181637.244879-1-babu.moger@amd.com>
-        <20210903000706.fb43tzhjanyg64cx@treble>
-        <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
-        <20210904172334.lfjyqi4qfzvbxef7@treble>
-Date:   Thu, 09 Sep 2021 12:20:32 -0400
-In-Reply-To: <20210904172334.lfjyqi4qfzvbxef7@treble> (Josh Poimboeuf's
-        message of "Sat, 4 Sep 2021 10:23:34 -0700")
-Message-ID: <jpgo891affz.fsf@linux.bootlegged.copy>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Thu, 9 Sep 2021 12:21:50 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4954CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:20:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id j16so2219234pfc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mq+nWy8A3w05M/jNdRBC+ueJXB9b06Z4r6ikEGWgYbM=;
+        b=ron2C1aQMLtHuaUDinHLs22V49sX04sC4cmoqLoSXvBC4GErAQnvMEgrmfAgA5EKCx
+         5EqXdxLbR2Ya4bilBa2iEGyZZ92SZNBkLbfRIycYfSP+pixl3vH81Hpjs0GqvMUhUxDU
+         GwcMjs01IwlyoXmW9BxAfCCsQ3ZrJ6iej7vJZbW0ePJMFmOOpZDMqumdL7Cwa108YLFQ
+         AzL2FJEoZNY+KlvvlaJEzPPiJ3asr7I5wOMXj4py+h2fRm2tlyBCuO9ukNEwvHQMHI57
+         3+ewP5+olEGWKPMmzhqB4kpOo8eyhqa+qx2JjBXKuOiPRqoe5VOr0/Oadmv4T8lLZ4PJ
+         YnTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mq+nWy8A3w05M/jNdRBC+ueJXB9b06Z4r6ikEGWgYbM=;
+        b=QJSDen4ctWUClzIWZewLZ9YVfCFHperhu6bQIpG/1Mn9BypDqiMeHBxKeir63oI0Qp
+         IcA6ujO7KlEFjnOasXFpigET6CR+EsyvqQTHL1t3yIYMgIU0IhQBzmVJN8GvYYP24wq6
+         DwITPxvl5iDk/4pCZpG62FGae+ZdfHEWBl4ccXCimiek9CjDI+VivUqTVspX1U3XPXUR
+         nYInhQu5pQrv8DPjMj6ubKpuMiweCbAVRW2mV662bWb5gB6wR/TJBWLC1dg3UiRssSNS
+         uaTzK5YQVv2rGRAbXOna3TCzUBh2mYW3FxSIIcgBNX4mEPYZ6s1xjFugZyBx9M7A+Uao
+         a5kA==
+X-Gm-Message-State: AOAM533we7QFnZVYNNBOr2QNhFQIKLeRTuRyZuD3RDairWUI7pjnoMln
+        YOUR4gwddL3wgVe+DQw1fH21Qf1tBIoZOA==
+X-Google-Smtp-Source: ABdhPJwCnb1h2lDn6q1HoRMUeDZxli6VbjNX5PsowQJhCVoi8uFSOO2R0igBNYSauqC2RbZiNx+Q+g==
+X-Received: by 2002:a63:f62:: with SMTP id 34mr3322234pgp.159.1631204440449;
+        Thu, 09 Sep 2021 09:20:40 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o22sm2288796pji.18.2021.09.09.09.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 09:20:39 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 16:20:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org
+Subject: Re: [PATCH] KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
+Message-ID: <YTo0U0ae3shRbUYC@google.com>
+References: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909124846.13854-1-yu.c.zhang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Josh Poimboeuf <jpoimboe@redhat.com> writes:
+On Thu, Sep 09, 2021, Yu Zhang wrote:
+> From: Vitaly Kuznetsov <vkuznets@redhat.com>
+> 
+> Currently, 'vmx->nested.vmxon_ptr' is not reset upon VMXOFF
+> emulation. This is not a problem per se as we never access
+> it when !vmx->nested.vmxon. But this should be done to avoid
+> any issue in the future.
+> 
+> Also, initialize the vmxon_ptr when vcpu is created.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 1 +
+>  arch/x86/kvm/vmx/vmx.c    | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 90f34f12f883..e4260f67caac 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -289,6 +289,7 @@ static void free_nested(struct kvm_vcpu *vcpu)
+>  	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+>  
+>  	vmx->nested.vmxon = false;
+> +	vmx->nested.vmxon_ptr = -1ull;
 
-> On Fri, Sep 03, 2021 at 07:52:43PM -0500, Moger, Babu wrote:
->> > BTW, is the list of PSF-affected CPUs the same as the list of
->> > SSB-affected CPUs?  If there might be PSF CPUs which don't have SSB,
->> > then more logic will need to be added to ensure a sensible default.
->> I can't think of a scenario where it is not same on a system.
->
-> To clarify, I'm asking about CPU capabilities.  Are there any AMD CPUs
-> with the PSF feature, which don't have SSB?
->
->> > On a related note, is there a realistic, non-hypothetical need to have
->> > separate policies and cmdline options for both SSB and PSF?  i.e. is
->> > there a real-world scenario where a user needs to disable PSF while
->> > leaving SSB enabled?
->>=20
->> https://www.amd.com/system/files/documents/security-analysis-predictive-=
-store-forwarding.pdf <https://www.amd.com/system/files/documents/security-a=
-nalysis-predictive-store-forwarding.pdf>
->> There are some examples in the document. Probably it is too soon to tell=
- if
->> those are real real-world scenarios as this feature is very new.
->
-> I didn't see any actual examples.  Are you referring to this sentence?
->
->   "PSFD may be desirable for software which is concerned with the
->    speculative behavior of PSF but desires a smaller performance impact
->    than setting SSBD."
->
-Sounds reasonable. It would have been good if the whitepaper mentioned
-any real examples which could benefit from selectively disabling psf.
-Generally speaking, as a user, I would either want to turn speculation
-entirely off or on which is what ssbd already does.
-
->> > Because trying to give them separate interfaces, when PSF disable is
->> > intertwined with SSB disable in hardware, is awkward and confusing.  A=
-nd
->> > the idea of adding another double-negative interface (disable=3Doff!),
->> > just because a vulnerability is considered to be a CPU "feature", isn't
->> > very appetizing.
->> >=20
->> > So instead of adding a new double-negative interface, which only *half*
->> > works due to the ssb_disable dependency, and which is guaranteed to
->> > further confuse users, and which not even be used in the real world
->> > except possibly by confused users...
->> >=20
->> > I'm wondering if we can just start out with the simplest possible
->> > approach: don't change any code and instead just document the fact that
->> > "spec_store_bypass_disable=3D" also affects PSF.
->> >=20
->> > Then, later on, if a real-world need is demonstrated, actual code could
->> > be added to support disabling PSF independently (but of course it would
->> > never be fully independent since PSF disable is forced by SSB disable).
->>=20
->> Do you mean for now keep only 'on' and=C2=A0 'auto' and remove "off"?
->
-> No, since PSF can already be mitigated with SSBD today, I'm suggesting
-> that all code be removed from the patch and instead just update the
-> documentation.
-
+Looks like the "-1ull" comes from current_vmptr and friends, but using INVALID_GPA
+is more appropriate.  It's the same value, but less arbitrary.  The other usage of
+-1ull for guest physical addresses should really be cleaned up, too.
