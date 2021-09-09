@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91B3404728
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A972404734
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhIIImj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhIIImi (ORCPT
+        id S231909AbhIIIqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:46:53 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:59863 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231549AbhIIIqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:42:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBDAC061575;
-        Thu,  9 Sep 2021 01:41:29 -0700 (PDT)
-Date:   Thu, 09 Sep 2021 08:41:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631176888;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0U2cZc7rtlXLSl5Ut13BZAl+dsb0fx7pHYS0hNY80+M=;
-        b=PYESbBmLkOuHTT9yUJjpXuv8yIKQyF/e4GVEyiX7h4gU0EmieId/9r3k2Q7qjRvbolN2cX
-        eyy/duIzSZ6A/Zcep9q7pTQ7AXMtbnDOXet+4TjeDFcx3NbcwgfzUsCnLM5AwYtCKjC2DM
-        lKfI+FkmC1K2FoWg8NC2aDIzis2Y0khjm/FfLsKsAlbuv9Um3VvtTKlHFMhOqLoPVdYZer
-        1VS6fj71zqPp3Id88MAflkgtVk9UkBp+bDGzmEot5MeTNW910i1i5BR+j9AKAs6t6FyW4w
-        eCaYwVje9fLLmGoTGUdHm/j+RSqUGQC8UH6dj2nN1numRoMQ8/vpt4G14FW3UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631176888;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0U2cZc7rtlXLSl5Ut13BZAl+dsb0fx7pHYS0hNY80+M=;
-        b=Jqg+/5qc4JaHuuKuLeYLP+0hVLcsC/Jt628d21YXP0BztXnO/+NE3aMiJOo4WuSM3hjmbW
-        jmAAfCqZpnUO9JAw==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/idle: Make the idle timer expire in hard
- interrupt context
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
-References: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
+        Thu, 9 Sep 2021 04:46:52 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 56097580AF7;
+        Thu,  9 Sep 2021 04:45:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 09 Sep 2021 04:45:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=fXIbsZdMOwnGpikZ6f1eRUW6Zp6
+        DapCjyxIfszyQnyE=; b=2OV64XDRwKpf6BMIUyOBlsL07FXgOmvHe0OG/Z6bjzz
+        ajaLwvxnDBz3oV97VMioFXPeyksXWqn2Jg0hTp01SIH3CnPcUf07R1HwdXa89oc5
+        ke3l8sVQ+B4b9tiJnn7R1VCNTG3j+rD12uBmyhDwHRIqhKoiX6NFFD5S/UfuoEuG
+        mIkvVGV7B/IzY4N3pBK87J//9B4kOy3RjLxgUyvYXRfksbpTCxtQnd0Q3AV8DkP6
+        ByZsfRKBFnPz80/ym5TTVik/cCX2BxMA0HWoLFvhdBsIqSrXQvp27txRk108uAaD
+        nj2eXK4vt3GEwMpj+YN4bfV4DUclspx3eWm9DCOPe2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fXIbsZ
+        dMOwnGpikZ6f1eRUW6Zp6DapCjyxIfszyQnyE=; b=KiupMEmaeBiTfsAPFuMTny
+        +0eK63fG8iVe8wC0DAoXdnJuPE6HcZ+wlCcM3bIrgguLICEpP5AwZquoUlYbLuWs
+        siLD6XiJ+lWPaxcK3LwnOCOCVnvuwo68wMD/fL9hiw9PpGel8fEacFW+eyqzqOf1
+        YNDyuZ+s8PfkbXOej/ylZ8Dj58j2F0NgXgIC50kz0sI+mn9wNsp+YeuAo1FWt6TR
+        jW61JLo52b/soHUMCNG/hX+JKGlN07Bf2e14Q2/bwmQTpb4jg/6YXrO9yDtgzoLW
+        ZY0OIv7Ze6pvLTpyB5TNZrpngihLluNbqhmSU1AY4J6MwtZkflncMom/MWtJC34A
+        ==
+X-ME-Sender: <xms:tck5YZd1ql8G2lK8psEMTd64M_DEzE5kp0oS7rf75N-opTK2YNxBCw>
+    <xme:tck5YXPXY4Kp9IkbloUEDVxBfe-TgUNMBCOqHp9N4EK20xGQRxlwSip75wbmTsIZW
+    l5Xv1k-t0WKTHNbgV0>
+X-ME-Received: <xmr:tck5YShmeIdtPoSBo4zc4hu-rH0o9u1qkb6Vx01yjzPKSzFbZDyRPPWVjaN6IHkbmGuXyjAKhSYYcRmbS97Oo0TzRqLS-xa4gK-Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefledgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:tck5YS_bzvvKEZZ7KML-tm-tE51uTJtXyoY4d6mO1ElLfLiuJuS5rA>
+    <xmx:tck5YVtRlx3M_Ye79QOfqSJC8RiuPNM2aZhVqnHVu1spmyG3bUr_cA>
+    <xmx:tck5YRECUPfd6fZ_h6-RxsDhdh0C_6d_RSHOy9hgXcCkVsihn36yaA>
+    <xmx:tsk5YbIlnZuDcRzP8SP-lfQ5jlOiyb2EDHJLNrd64pM1JIGsPhRwlg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Sep 2021 04:45:40 -0400 (EDT)
+Date:   Thu, 9 Sep 2021 10:45:38 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/7] clk: sunxi-ng: Add a RTC CCU driver
+Message-ID: <20210909084538.jeqltc7b3rtqvu4h@gilmour>
+References: <20210901053951.60952-1-samuel@sholland.org>
+ <20210903145013.hn6dv7lfyvfys374@gilmour>
+ <4a187add-462b-dfe4-868a-fdab85258b8d@sholland.org>
 MIME-Version: 1.0
-Message-ID: <163117688696.25758.3102227714043855534.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="auq6fgnyvsqqa77k"
+Content-Disposition: inline
+In-Reply-To: <4a187add-462b-dfe4-868a-fdab85258b8d@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     9848417926353daa59d2b05eb26e185063dbac6e
-Gitweb:        https://git.kernel.org/tip/9848417926353daa59d2b05eb26e185063dbac6e
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Mon, 06 Sep 2021 13:30:34 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 09 Sep 2021 10:36:16 +02:00
+--auq6fgnyvsqqa77k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sched/idle: Make the idle timer expire in hard interrupt context
+On Fri, Sep 03, 2021 at 10:21:13AM -0500, Samuel Holland wrote:
+> On 9/3/21 9:50 AM, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Wed, Sep 01, 2021 at 12:39:44AM -0500, Samuel Holland wrote:
+> >> This patch series adds a CCU driver for the RTC in the H616 and R329.
+> >> The extra patches at the end of this series show how it would be
+> >> explanded to additional hardware variants.
+> >>
+> >> The driver is intended to support the existing binding used for the H6,
+> >> but also an updated binding which includes all RTC input clocks. I do
+> >> not know how to best represent that binding -- that is a major reason
+> >> why this series is an RFC.
+> >>
+> >> A future patch series could add functionality to the driver to manage
+> >> IOSC calibration at boot and during suspend/resume.
+> >>
+> >> It may be possible to support all of these hardware variants in the
+> >> existing RTC clock driver and avoid some duplicate code, but I'm
+> >> concerned about the complexity there, without any of the CCU
+> >> abstraction.
+> >>
+> >> This series is currently based on top of the other series I just sent
+> >> (clk: sunxi-ng: Lifetime fixes and module support), but I can rebase it
+> >> elsewhere.
+> >=20
+> > I'm generally ok with this, it makes sense to move it to sunxi-ng,
+> > especially with that other series of yours.
+> >=20
+> > My main concern about this is the split driver approach. We used to have
+> > that before in the RTC too, but it was mostly due to the early clock
+> > requirements. With your previous work, that requirement is not there
+> > anymore and we can just register it as a device just like the other
+> > clock providers.
+>=20
+> That's a good point. Originally, I had this RTC CCU providing osc24M, so
+> it did need to be an early provider. But with the current version, we
+> could have the RTC platform driver call devm_sunxi_ccu_probe. That does
+> seem cleaner.
+>=20
+> (Since it wasn't immediately obvious to me why this works: the only
+> early provider remaining is the sun5i CCU, and it doesn't use the sun6i
+> RTC driver.)
+>=20
+> > And since we can register all those clocks at device probe time, we
+> > don't really need to split the driver in two (and especially in two
+> > different places). The only obstacle to this after your previous series
+> > is that we don't have of_sunxi_ccu_probe / devm_sunxi_ccu_probe
+> > functions public, but that can easily be fixed by moving their
+> > definition to include/linux/clk/sunxi-ng.h
+>=20
+> Where are you thinking the clock definitions would go? We don't export
+> any of those structures (ccu_mux, ccu_common) or macros
+> (SUNXI_CCU_GATE_DATA) in a public header either.
 
-The intel powerclamp driver will setup a per-CPU worker with RT
-priority. The worker will then invoke play_idle() in which it remains in
-the idle poll loop until it is stopped by the timer it started earlier.
+Ah, right...
 
-That timer needs to expire in hard interrupt context on PREEMPT_RT.
-Otherwise the timer will expire in ksoftirqd as a SOFT timer but that task
-won't be scheduled on the CPU because its priority is lower than the
-priority of the worker which is in the idle loop.
+> Would you want to export those? That seems like a lot of churn. Or would
+> we put the CCU descriptions in drivers/clk/sunxi-ng and export a
+> function that the RTC driver can call? (Or some other idea?)
 
-Always expire the idle timer in hard interrupt context.
+I guess we could export it. There's some fairly big headers in
+include/linux/clk already (tegra and ti), it's not uAPI and we do have
+reasons to do so, so I guess it's fine.
 
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210906113034.jgfxrjdvxnjqgtmc@linutronix.de
+I'd like to avoid having two drivers for the same device if possible,
+especially in two separate places. This creates some confusion since the
+general expectation is that there's only one driver per device. There's
+also the fact that this could lead to subtle bugs since the probe order
+is the link order (or module loading).
 
----
- kernel/sched/idle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+And synchronizing access to registers between those two drivers will be
+hard, while we could just share the same spin lock between the RTC and
+clock drivers if they are instanciated in the same place.
 
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 912b47a..d17b0a5 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -379,10 +379,10 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
- 	cpuidle_use_deepest_state(latency_ns);
- 
- 	it.done = 0;
--	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
- 	it.timer.function = idle_inject_timer_fn;
- 	hrtimer_start(&it.timer, ns_to_ktime(duration_ns),
--		      HRTIMER_MODE_REL_PINNED);
-+		      HRTIMER_MODE_REL_PINNED_HARD);
- 
- 	while (!READ_ONCE(it.done))
- 		do_idle();
+Maxime
+
+--auq6fgnyvsqqa77k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTnJsgAKCRDj7w1vZxhR
+xWKfAP9WolSmwsGNKd7TEH30FKvAYAxNAYNgceOQQI81F6ZUaAD/X64s6BKisuDB
+r08jQKq1pjleoCJbhAkLWl4nN9Wn7gU=
+=qRHE
+-----END PGP SIGNATURE-----
+
+--auq6fgnyvsqqa77k--
