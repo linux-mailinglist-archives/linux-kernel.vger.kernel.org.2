@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073B5405B15
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89893405B1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238662AbhIIQnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:43:23 -0400
-Received: from mail-4317.protonmail.ch ([185.70.43.17]:46696 "EHLO
-        mail-4317.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238753AbhIIQnV (ORCPT
+        id S239434AbhIIQoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238914AbhIIQnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:43:21 -0400
-Date:   Thu, 09 Sep 2021 16:42:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail; t=1631205730;
-        bh=CRhRrcUbVIk/J340UbBHAnIQ+ohX2n1/c8QCeVn2Jpo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=y7yBqNtkhgsRmIfQ4GPpRJvlsGGmxCbL9NUJ/m538lQMlZMvYSQ2UAxRJkZ1CMNg5
-         6Iv3yvDrCMOeOwxYbbRVvn+/X/+zaHrT9dGoLGonuL/WPiFACJE0voRMT+1AkymQaf
-         xpMkgU49orWB5Ct8we5uSjumO9OVNfB1cftFq9FyfmngXj1PPLacl2K9kbTJmbEl4j
-         aKAH+OyZIMBgh1wodGYRej1Mj3bebYZh8blbXxAt8VosQXyk9oxFR2Ly+lqY9xaKtu
-         5zFUSyYhMpr2A/t850v6DwTCFLOsflPVrr0IubhqCObbRVJsygo5uWr5+rZ3P5VgHm
-         EoGGfdSu+tOXg==
-To:     Rob Clark <robdclark@gmail.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?utf-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Luben Tuikov <luben.tuikov@amd.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Steven Price <steven.price@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH v3 0/9] dma-fence: Deadline awareness
-Message-ID: <CZ2qg4SOe8RnrJpAfZtag_GZTFRt6wAdspKbP4RqpFQCE9Wiuf4xyHTUyKIkaXGu6LfKpSALrmOC3jxgfPdMRjgIAkrkvTnNd9stjXqnPNI=@emersion.fr>
-In-Reply-To: <CAF6AEGuD2bnFpmSWtGxU5+AFj1HVKtnOZmLKRr-pDVbLn0nPVw@mail.gmail.com>
-References: <20210903184806.1680887-1-robdclark@gmail.com> <i-XmBd_5J3_d8cdm-IT6Ery2kHN0FPZCX968aU5idvxQxNlvDJguLLThtF2NF15LF8gGsH4uI2w0s0CL_39KGpzoGpuCgcz2_-4Wjf3AYEM=@emersion.fr> <CAF6AEGuD2bnFpmSWtGxU5+AFj1HVKtnOZmLKRr-pDVbLn0nPVw@mail.gmail.com>
+        Thu, 9 Sep 2021 12:43:37 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E634EC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:42:27 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z18so5117841ybg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BrZuPjCWVQei2hd5TDze97f6NPaJL6ui4tNC7eiVKwg=;
+        b=jGcmb5hbR4l+02tTppChZrB5upTNg//Nka7dpsrOEijk0J1X2X+D/NqH66FmMzewXT
+         OJWjExeSkG1Hy6H9vzjhlErhjmpKe4y83gbr20jwrR6r7dlISolwMNML2hd5PNE1uBuD
+         bQ4X3mgbfSsVUu8/hAY3BY6plretWRWi7U8EzbkxjEC+BZ6Yr5GDLDGi4OEYBQkj0fxZ
+         WhBGCoX3mtKxn8yDhth/YJVISfiBUVOBHrSiZWG8RLsb64wBybXnoEzboBQ+fkNngvZZ
+         s7kq04sSh9lLJpbBWPoRRkuIDnniaDVgXZQEP7A5TwEimgeeRN6ZIhq1ZhRK61BwF1lK
+         sZ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BrZuPjCWVQei2hd5TDze97f6NPaJL6ui4tNC7eiVKwg=;
+        b=rGpFriLUyEypfeSWNGv3Z8MLklngKK6KEqV0baW9Nt//lXndXJSXQhuowGndWXmUS8
+         Hv0yb5FqJmVH0WuP0VLpXSiSjMaV6ro0Xf/jQ3aztq7j4p6I4J79M2Faf8dqSaAEPYwE
+         7A9CFhVBaE0yVbVaLF2j25ynQTKAFnt8zHkp+L6qoG4/Wpb+2YIhE+Dbs/by0G10cbzV
+         B+t1lpCiomeIjVGc5+AE2zbrKDnvJlA0rwQSUs6ELqsrrzETu+xZotUB/JOd3vrW1l+I
+         oYQnfzmF2eNklYrXcz/oLc417MGHay3bG3b3PpNhwALJJUsdZ5biBGqN5D3c8yJ5nZzB
+         SqDA==
+X-Gm-Message-State: AOAM532UQBZAPaDSzQdStBb0+D/ROwFqxQliTp3hKM92XKJVaoJ+SfuX
+        eQ7hW19TlPapRsrs3QzCOVKXkRo6N7mOuLZdGcqeHg==
+X-Google-Smtp-Source: ABdhPJxUfv2OiYmJzLbjvFvpiM3on92xSiPiWN63qMNZXpuT/lL9Yvzo1kzzotX3Jfc71OoRLpnPsZqr+apdMwCxiAk=
+X-Received: by 2002:a25:424a:: with SMTP id p71mr5281009yba.243.1631205747023;
+ Thu, 09 Sep 2021 09:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-3-rananta@google.com>
+ <CAOQ_Qsh=F-tTre_ojiLXUfAriH-coTF_gXCcLyRb3kKM+LLhQA@mail.gmail.com> <20210909065338.ulh32fqi4e6gnh2o@gator>
+In-Reply-To: <20210909065338.ulh32fqi4e6gnh2o@gator>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 9 Sep 2021 09:42:15 -0700
+Message-ID: <CAJHc60zoCVpG+zx_G8fSCcg+wXaigFZFGA=wLZCAsETag+YJfA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, September 9th, 2021 at 18:31, Rob Clark <robdclark@gmail.com> =
-wrote:
+On Wed, Sep 8, 2021 at 11:53 PM Andrew Jones <drjones@redhat.com> wrote:
+>
+> On Wed, Sep 08, 2021 at 10:47:31PM -0400, Oliver Upton wrote:
+> > Hi Raghu,
+> >
+> > On Wed, Sep 8, 2021 at 9:38 PM Raghavendra Rao Ananta
+> > <rananta@google.com> wrote:
+> > >
+> > > Bring-in the kernel's arch/arm64/include/asm/sysreg.h
+> > > into selftests to make use of all the standard
+> > > register definitions in consistence with the kernel.
+> > >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  .../selftests/kvm/include/aarch64/sysreg.h    | 1278 +++++++++++++++++
+> > >  1 file changed, 1278 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
+> >
+> > This belongs in tools/arch/arm64/include/asm/sysreg.h, I believe.
+> >
+>
+> Yes, that's also where I expected it to land.
+>
+Sure, that makes sense. I'll move it there.
 
-> Yes, I think it would.. and "dma-buf/sync_file: Add SET_DEADLINE
-> ioctl" adds such an ioctl.. just for the benefit of igt tests at this
-> point, but the thought was it would be also used by compositors that
-> are doing such frame scheduling. Ofc danvet is a bit grumpy that
-> there isn't a more real (than igt) userspace for the ioctl yet ;-)
-
-Ah, very nice, I somehow missed it.
-
-I guess one issue is that explicit sync isn't quite plumbed through
-compositors yet, so without Jason's DMA-BUF to sync_file IOCTL it'd be
-a bit difficult to use.
-
-Can anybody set the deadline? I wonder if clients should be allowed to.
-
-What happens if the deadline is exceeded? I'd assume nothing in
-particular, the deadline being just a hint?
+Regards,
+Raghavendra
+> Thanks,
+> drew
+>
