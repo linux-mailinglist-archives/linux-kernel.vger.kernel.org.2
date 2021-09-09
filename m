@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ABD40590A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F0E40590D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243720AbhIIOaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S1344683AbhIIObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244349AbhIIOaB (ORCPT
+        with ESMTP id S239664AbhIIOaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:30:01 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4368EC00F61D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:19:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id e23so3668516lfj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:19:11 -0700 (PDT)
+        Thu, 9 Sep 2021 10:30:55 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C975C141149
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 06:20:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f18so3654741lfk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 06:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zjCm2kqLmEkD1fYMpLfynjls4LWjCF1R/HM+9Gqf848=;
-        b=OE15DtuTMThkONQn2QaW9vAJKJ4c5pWnECM8dh6t2F5lxkzOQeepKE0K4HmtgqZgjV
-         MRkwgGmGmxUriL00OMiESoz55OF7Kg50LWHvTG1px0UFyDmtKcbVmx4Uoah1/qoJWO2i
-         5p3ySfY5SwOR9I8JDePdifMsBy7MlP3+CHy2wNlJBPmtx9ai9DWrRxh430t8NpR+qkbV
-         yJOIbzETKc40EIGF15R4XdOy/OgEfFhXtuJ/0bmufBPBzcG62lorQlBtuzSLqOVhO/bC
-         loAS8P5S/d02dnIN04YJ10gffnzt8rv9c7Ey+vvL5DYUHVSyEqPETkva74sSJ0Pjk1j1
-         /7Aw==
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LhLDAgLz2Ns2LxKgq91jjelAjLVn8rnv2rxAxrObxNY=;
+        b=EZbNiLk6QT/lInWHMhAJpHF8jEuu6FDWlWjLNo6BfRNMmpqmEXsxuIN1DP2BhdlKmv
+         EGiIRpPenm/DvgX81YBa2XN++Eg4ivMCQROUQyjjZOCtcBv2VeLzqLvhmuafdih1TC5y
+         oT3TUc0wDuguRPVzrNnFpe7IxWU2Xgo+nGfEW9n1Z1+Gi0FuhQM9PA1g72qFzMSOaqKV
+         LT5Ro2nuSiQoNS1HUdj6HS34s/MVbunJuETqYH7gyiD9hEd4L1FHyNgECc4qQPPDe0N2
+         3dV1GRVB1n+4wDSgKvX3bdsmU3Wpeh2P8RiGZg88ZBvT8E/sigHgOpoNd1VFQvs4gtzr
+         tSuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zjCm2kqLmEkD1fYMpLfynjls4LWjCF1R/HM+9Gqf848=;
-        b=2S34Cl00XCuzx1VT1XT89zDvI8N4hjysx9HbzfQbEYR+GGY/8s7El4d1pVz6oWsbth
-         oaX0DbJQZAeBN3b5Cg15AiFxA2qpkqE1G4HgvgCLmZRV/ub5Xw3b+dQQBJEEVGEjjzqB
-         DdVq5Vjx1Wc0Lh82eXWP/VEYssJQLT2tzQjgY2OdS7YUn7oXCxbpkpNV3DkSH0A5cMka
-         qtYFaKGTbm9Af1bZCrwleM34PLCdnqHW15DGA46c7rSyi/1o6ay1SbeqjsYTrj0zrYOM
-         xVelID0I5HsAnwKKJ4zMMgRO5DkFeiD7jXyZGjvCznMuIuzI9mBx/m+SiNrMXK1jVlz1
-         aGMA==
-X-Gm-Message-State: AOAM533KpFRHGGJBEEvxIkS52OpPfsu67xmNW4JqKbOXidgcSvoRqToG
-        p8gNMZ1fXpizQFZlNiPjyZ4q+w==
-X-Google-Smtp-Source: ABdhPJw92+bv1tpDoZqXpouY2qicTHxeTcDi4tXjJ1yAhPRIT8shcSy3idYOKvLB9LMdigSvIPI8Hw==
-X-Received: by 2002:a05:6512:b27:: with SMTP id w39mr2412730lfu.129.1631193549547;
-        Thu, 09 Sep 2021 06:19:09 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d1sm200065lfl.5.2021.09.09.06.19.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 06:19:09 -0700 (PDT)
-Subject: Re: [PATCH 3/7] arm64: dts: qcom: msm8998-xperia: Add support for
- wcn3990 Bluetooth
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org
-References: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
- <20210903180924.1006044-3-angelogioacchino.delregno@somainline.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <7032cf3a-2469-3d66-bfde-9754dbac58b9@linaro.org>
-Date:   Thu, 9 Sep 2021 16:19:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LhLDAgLz2Ns2LxKgq91jjelAjLVn8rnv2rxAxrObxNY=;
+        b=CGdwoY1eHqS2xGLI4eWC2XugZSnNC6CNjxYzpVxf6IYzN0Hc7FKI/vFpTXKAyYrGgC
+         U2p06VMs35xosVeZCcIrKGVhTHw0I62f6hs0GhahpePAKA9iKTvM40yvJPL7P/bHQk8j
+         aZZ+KeejKF9n83Q4Et00lEQjFgymnOvgZ2SIn1W6E45+2EBj6GP9Jr/g04stq3UNHhJI
+         g02UEoqOPG+FXBbluyr4dZnTRbhJIHrDRLt8IShiPbRI0Yhtq2xrTtkQuvIZro/e36Tv
+         HK11GYAQpKzxV4w9SzK9j5vXSRaH6iQehq5mq1wezfQTlMoSce+YMwPpGpa/leN8C8hs
+         9+BA==
+X-Gm-Message-State: AOAM5308PPDfTYR4bXLrG8VvaacbQ3ZKJ3PjvoE3SIrktU5BtT2qwfrL
+        wNArybomOKAPBoDf6IbrO3PsTCzM7d5crNsYjXhTng==
+X-Google-Smtp-Source: ABdhPJzFMwW0LknShTWoOxG0dXjECyZ6gv0trd1ZifraCHGqs4Km5GClKkXYMJAM/YVYM2IowgbxvebsqinCnJploVU=
+X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr2334594lfu.4.1631193655837;
+ Thu, 09 Sep 2021 06:20:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210903180924.1006044-3-angelogioacchino.delregno@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+ <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Thu, 9 Sep 2021 06:20:45 -0700
+Message-ID: <CAAYoRsWdFwiwo8j2Nc-vhk2mnoZqJC9fyS7URtEz3E1VxfNbLQ@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
+ by BIOS
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/2021 21:09, AngeloGioacchino Del Regno wrote:
-> This platform uses the WCN3990 Bluetooth chip, reachable on UART-3.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> ---
->   .../dts/qcom/msm8998-sony-xperia-yoshino.dtsi   | 17 +++++++++++++++++
->   1 file changed, 17 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> index 2fe53e4675d5..66b009ba72fe 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> @@ -179,6 +179,23 @@ &blsp1_i2c5_sleep {
->   	bias-disable;
->   };
->   
-> +&blsp1_uart3 {
-> +	status = "okay";
-> +
-> +	bluetooth {
-> +		compatible = "qcom,wcn3990-bt";
-> +
-> +		vddio-supply = <&vreg_s4a_1p8>;
-> +		vddxo-supply = <&vreg_l7a_1p8>;
-> +		vddrf-supply = <&vreg_l17a_1p3>;
-> +		vddch0-supply = <&vreg_l25a_3p3>;
-> +		max-speed = <3200000>;
-> +
-> +		clocks = <&rpmcc RPM_SMD_RF_CLK2_PIN>;
-> +	};
-> +};
+On Thu, Sep 9, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Sep 9, 2021 at 8:52 AM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> >
+> > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > > If HWP has been already been enabled by BIOS, it may be
+> > > necessary to override some kernel command line parameters.
+> > > Once it has been enabled it requires a reset to be disabled.
+> > >
+> > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > ---
+> > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> > >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > b/drivers/cpufreq/intel_pstate.c
+> > > index bb4549959b11..073bae5d4498 100644
+> > > --- a/drivers/cpufreq/intel_pstate.c
+> > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> > >                  */
+> > >                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> > >                     intel_pstate_hwp_is_enabled()) {
+> > > -                       hwp_active++;
+> > > +                       hwp_active = 1;
+> > Why this change?
+>
+> I think hwp_active can be changed to bool and then it would make sense
+> to update this line.
+>
+> > >                         hwp_mode_bdw = id->driver_data;
+> > >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> > >
+> > >  static int __init intel_pstate_setup(char *str)
+> > >  {
+> > > +       /*
+> > > +        * If BIOS is forcing HWP, then parameter
+> > > +        * overrides might be needed. Only print
+> > > +        * the message once, and regardless of
+> > > +        * any overrides.
+> > > +        */
+> > > +       if(!hwp_active
+> > This part of code is from early_param, Is it possible that
+> > hwp_active is not 0?
+>
+> Well, it wouldn't matter even if it were nonzero.  This check is just
+> pointless anyway.
+>
+> > > && boot_cpu_has(X86_FEATURE_HWP))
+> > > +               if(intel_pstate_hwp_is_enabled()){
+>
+> This should be
+>
+> if (boot_cpu_has(X86_FEATURE_HWP) && intel_pstate_hwp_is_enabled()) {
 
-There is an ongoing proposal to rework wcn3990 (bt and wifi) bindings, 
-so we might want to delay this a bit. Not a strict requirement, since 
-the changes would be backwards-compatible.
+Disagree.
+This routine gets executed once per intel_pstate related grub command
+line entry. The purpose of the "if(!hwp_active" part is to prevent the
+printing of the message to the logs multiple times.
 
-
--- 
-With best wishes
-Dmitry
+>
+> > > +                       pr_info("HWP enabled by BIOS\n");
+> > > +                       hwp_active = 1;
+> > > +               }
+> > >         if (!str)
+> > >                 return -EINVAL;
+> > >
+> > > -       if (!strcmp(str, "disable"))
+> > > +       if (!strcmp(str, "disable") && !hwp_active)
+> > >                 no_load = 1;
+> > > -       else if (!strcmp(str, "active"))
+> > > +       if (!strcmp(str, "active"))
+> > >                 default_driver = &intel_pstate;
+> > > -       else if (!strcmp(str, "passive"))
+> > > +       if (!strcmp(str, "passive"))
+> > >                 default_driver = &intel_cpufreq;
+> >
+> > Why "else if" changed to "if" ?
+> >
+> > > -
+> > > -       if (!strcmp(str, "no_hwp")) {
+> > > +       if (!strcmp(str, "no_hwp") && !hwp_active) {
+> > >                 pr_info("HWP disabled\n");
+> > >                 no_hwp = 1;
+> > >         }
+> >
