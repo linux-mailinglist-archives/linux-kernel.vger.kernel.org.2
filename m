@@ -2,211 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5954043BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 04:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DDC4043C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 04:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346657AbhIICyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Sep 2021 22:54:04 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19018 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIICyD (ORCPT
+        id S1348596AbhIICyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Sep 2021 22:54:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47562 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230075AbhIICys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Sep 2021 22:54:03 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H4k3R0T8lzbmNx;
-        Thu,  9 Sep 2021 10:48:51 +0800 (CST)
-Received: from [10.174.176.245] (10.174.176.245) by
- dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 9 Sep 2021 10:52:51 +0800
-Subject: Re: [PATCH v2 0/3] auth_gss: netns refcount leaks when
- use-gss-proxy==1
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-CC:     Wenbin Zeng <wenbin.zeng@gmail.com>, <viro@zeniv.linux.org.uk>,
-        <davem@davemloft.net>, <jlayton@kernel.org>,
-        <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
-        <wenbinzeng@tencent.com>, <dsahern@gmail.com>,
-        <nicolas.dichtel@6wind.com>, <willy@infradead.org>,
-        <edumazet@google.com>, <jakub.kicinski@netronome.com>,
-        <tyhicks@canonical.com>, <chuck.lever@oracle.com>,
-        <neilb@suse.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-nfs@vger.kernel.org>
-References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
- <1557470163-30071-1-git-send-email-wenbinzeng@tencent.com>
- <20190515010331.GA3232@fieldses.org>
- <20190612083755.GA27776@bridge.tencent.com>
- <20190612155224.GF16331@fieldses.org>
- <2c9e3d91-f4b3-6f6a-0dc0-21cef4fab3bb@huawei.com>
- <20210908205103.GE23978@fieldses.org>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <eef31464-9807-49f6-fc81-ee7425cc481d@huawei.com>
-Date:   Thu, 9 Sep 2021 10:52:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 8 Sep 2021 22:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631156019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NCU4fELdJJvXy1y+BlFSKK66pAydPKiQ4A8E9zMmeZ0=;
+        b=bRjgU66DrKdfpYdDMg8k0c4KmEUqcvJ9T+fCOpPOY3MFoqxzwbcQbi0k7Zu4sN0eCVYxkG
+        3Fx7BFWtjEHvPmByFZmYRUDIRrHT5HD1GB5EKUy32rtXSfyNqznRhfVOgiAb70u+z5bNG8
+        j0zx91ku0C3YSuU676rdzt1YdPfPFvE=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-4kSqL-t2N9Wofa_CbEL2Uw-1; Wed, 08 Sep 2021 22:53:38 -0400
+X-MC-Unique: 4kSqL-t2N9Wofa_CbEL2Uw-1
+Received: by mail-lj1-f198.google.com with SMTP id v2-20020a2e2f02000000b001dc7ee2a7b8so135114ljv.20
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 19:53:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NCU4fELdJJvXy1y+BlFSKK66pAydPKiQ4A8E9zMmeZ0=;
+        b=YhO+uBVCJuf7aiz64zLEy1CVDN8JMd3ZY9oSwCwtG3GRrEiSzkflhIuOINb1L0elN0
+         C4H2pioOfDyiX2e/bnmft+9fXCVl3Ma++23YNDodZrnSSYxuxRRJJ/9lWaUZD1PFfakw
+         Vg4lLMwMkVagVTSrExkUVN7I1iJ30jJgL2Q+EEO5hzjk5i25noJEmOIT6klwTzQVUhtq
+         QQ6GsZ6lx7/8oojC4hvE7AWBmCpP9ATNm2S+SFOD3soi7E8hUGwmwvG5gacRIwwpFLPc
+         7ivAvoIjLi3KR+qDZcz3WiW0Uc8v3OPwoqQkZMmJWJr8u74NfGbQgacWZkio3AMfamUS
+         eHVg==
+X-Gm-Message-State: AOAM531CtibAVevhkzs59KI7TBnUlqerSS0X+isyM4+2PSOaop7H69eT
+        XSVft4FwsIDAee1jy8D+BLE/QfQdYqNJtJKL/qmJxXNrXrHeIaNdXIidwUpoxyYZl/+HvC0VwJJ
+        VjoC2VQGBgmEDwZELshUHjkXhbwo1t4XSfda2PAjA
+X-Received: by 2002:ac2:5fc5:: with SMTP id q5mr590709lfg.629.1631156016687;
+        Wed, 08 Sep 2021 19:53:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwFbRMHWR8KilaJRfeJK8Ht/RveN4kOKwDEooA6v/pHQ/0C03FMr45i1CD5PKOhN0e2+ww6xEmGD0bWv7mMZI=
+X-Received: by 2002:ac2:5fc5:: with SMTP id q5mr590704lfg.629.1631156016512;
+ Wed, 08 Sep 2021 19:53:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210908205103.GE23978@fieldses.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com> <88701e88ab061f5d1b94bd046afcb9d3588414c3.1631101392.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <88701e88ab061f5d1b94bd046afcb9d3588414c3.1631101392.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 9 Sep 2021 10:53:25 +0800
+Message-ID: <CACGkMEuPUy_fYAGLpj2RYkWGvePhtOVWBa1FGXK0he7s54o4kA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] vp_vdpa: add vq irq offloading support
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/9/9 4:51, J. Bruce Fields 写道:
-> On Tue, Sep 07, 2021 at 10:48:52PM +0800, wanghai (M) wrote:
->> 在 2019/6/12 23:52, J. Bruce Fields 写道:
->>> On Wed, Jun 12, 2019 at 04:37:55PM +0800, Wenbin Zeng wrote:
->>>> On Tue, May 14, 2019 at 09:03:31PM -0400, J. Bruce Fields wrote:
->>>>> Whoops, I was slow to test these.  I'm getting failuring krb5 nfs
->>>>> mounts, and the following the server's logs.  Dropping the three patches
->>>>> for now.
->>>> My bad, I should have found it earlier. Thank you for testing it, Bruce.
->>>>
->>>> I figured it out, the problem that you saw is due to the following code:
->>>> the if-condition is incorrect here because sn->gssp_clnt==NULL doesn't mean
->>>> inexistence of 'use-gss-proxy':
->>> Thanks, but with the new patches I see the following.  I haven't tried
->>> to investigate.
->> This patchset adds the nsfs_evict()->netns_evict() code for breaking
->> deadlock bugs that exist, but this may cause double free because
->> nsfs_evict()->netns_evict() may be called multiple times.
->>
->> for example:
->>
->> int main()
->> {
->>      int fd = open("/proc/self/ns/net", O_RDONLY);
->>      close(fd);
->>
->>      fd = open("/proc/self/ns/net", O_RDONLY);
->>      close(fd);
->> }
->>
->> Therefore, the nsfs evict cannot be used to break the deadlock.
-> Sorry, I haven't really been following this, but I though this problem
-> was fixed by your checking for gssp_clnt (instead of just relying on the
-> use_gssp_proc check) in v3 of your patches?
+On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
 >
-> --b.
-Sorry, I'm not Wenbin Zeng. I recently encountered the same problem and 
-found that Zeng had posted a patchset for it. However, after my own 
-analysis, I found that Zeng's patchset will cause the dobule free problem.
-
-The v3 patches also has the double free issue. Because 
-nsfs_evict()->netns_evict()->gss_svc_shutdown_net()->cache_purge() can 
-be called multiple times.
-
-And, even if there is no double free problem, the application can make 
-the evict called earlier by 'open("/proc/self/ns/net", O_RDONLY); 
-close(fd);', which makes sunrpc unusable.
-
-Therefore, the v3 patchset is also not applicable.
-
-This issue causes an OOM on my server after multiple docker creation and 
-destruction, and I don't have a good solution at the moment.
->> A large number of netns leaks may cause OOM problems, currently I
->> can't find a good solution to fix it, does anyone have a good idea?
->>> --b.
->>>
->>> [ 2908.134813] ------------[ cut here ]------------
->>> [ 2908.135732] name 'use-gss-proxy'
->>> [ 2908.136276] WARNING: CPU: 2 PID: 15032 at fs/proc/generic.c:673 remove_proc_entry+0x124/0x190
->>> [ 2908.138144] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
->>> [ 2908.140183] CPU: 2 PID: 15032 Comm: (coredump) Not tainted 5.2.0-rc2-00441-gaef575f54640 #2257
->>> [ 2908.142062] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
->>> [ 2908.143756] RIP: 0010:remove_proc_entry+0x124/0x190
->>> [ 2908.144519] Code: c3 48 c7 c7 60 24 8b 82 e8 29 16 a5 00 eb d5 48 c7 c7 60 24 8b 82 e8 1b 16 a5 00 4c 89 e6 48 c7 c7 ec 4c 52 82 e8 50 fd db ff <0f> 0b eb b6 48 8b 04 24 83 a8 90 00 00 00 01 e9 78 ff ff ff 4c 89
->>> [ 2908.148138] RSP: 0018:ffffc900047bbdb0 EFLAGS: 00010282
->>> [ 2908.148945] RAX: 0000000000000000 RBX: ffff888036060580 RCX: 0000000000000000
->>> [ 2908.150139] RDX: ffff88807fd24e80 RSI: ffff88807fd165b8 RDI: 00000000ffffffff
->>> [ 2908.151334] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
->>> [ 2908.152564] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffa00adb1b
->>> [ 2908.153816] R13: 00007ffc8bda5d30 R14: 0000000000000000 R15: ffff88805e2873a8
->>> [ 2908.155007] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
->>> [ 2908.156421] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [ 2908.157333] CR2: 0000562b07764c58 CR3: 000000005e8ea001 CR4: 00000000001606e0
->>> [ 2908.158529] Call Trace:
->>> [ 2908.158796]  destroy_use_gss_proxy_proc_entry+0xb7/0x150 [auth_rpcgss]
->>> [ 2908.159966]  gss_svc_shutdown_net+0x11/0x170 [auth_rpcgss]
->>> [ 2908.160830]  netns_evict+0x2f/0x40
->>> [ 2908.161266]  nsfs_evict+0x27/0x40
->>> [ 2908.161685]  evict+0xd0/0x1a0
->>> [ 2908.162035]  __dentry_kill+0xdf/0x180
->>> [ 2908.162520]  dentry_kill+0x50/0x1c0
->>> [ 2908.163005]  ? dput+0x1c/0x2b0
->>> [ 2908.163369]  dput+0x260/0x2b0
->>> [ 2908.163739]  path_put+0x12/0x20
->>> [ 2908.164155]  do_faccessat+0x17c/0x240
->>> [ 2908.164643]  do_syscall_64+0x50/0x1c0
->>> [ 2908.165170]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->>> [ 2908.165959] RIP: 0033:0x7f47098e2157
->>> [ 2908.166445] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
->>> [ 2908.169994] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
->>> [ 2908.171315] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
->>> [ 2908.172563] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
->>> [ 2908.173753] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
->>> [ 2908.174943] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
->>> [ 2908.176163] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
->>> [ 2908.177395] irq event stamp: 4256
->>> [ 2908.177835] hardirqs last  enabled at (4255): [<ffffffff811221ee>] console_unlock+0x41e/0x590
->>> [ 2908.179378] hardirqs last disabled at (4256): [<ffffffff81001b2f>] trace_hardirqs_off_thunk+0x1a/0x1c
->>> [ 2908.181031] softirqs last  enabled at (4252): [<ffffffff820002be>] __do_softirq+0x2be/0x4aa
->>> [ 2908.182458] softirqs last disabled at (4233): [<ffffffff810bf8e0>] irq_exit+0x80/0x90
->>> [ 2908.183869] ---[ end trace d88132b63efc09d8 ]---
->>> [ 2908.184620] BUG: kernel NULL pointer dereference, address: 0000000000000030
->>> [ 2908.185829] #PF: supervisor read access in kernel mode
->>> [ 2908.186924] #PF: error_code(0x0000) - not-present page
->>> [ 2908.187887] PGD 0 P4D 0
->>> [ 2908.188318] Oops: 0000 [#1] PREEMPT SMP PTI
->>> [ 2908.189254] CPU: 2 PID: 15032 Comm: (coredump) Tainted: G        W         5.2.0-rc2-00441-gaef575f54640 #2257
->>> [ 2908.192506] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
->>> [ 2908.195137] RIP: 0010:__lock_acquire+0x3d2/0x1d90
->>> [ 2908.196414] Code: db 48 8b 84 24 88 00 00 00 65 48 33 04 25 28 00 00 00 0f 85 be 10 00 00 48 8d 65 d8 44 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <48> 81 3f 60 0d 01 83 41 bb 00 00 00 00 45 0f 45 d8 83 fe 01 0f 87
->>> [ 2908.202720] RSP: 0018:ffffc900047bbc80 EFLAGS: 00010002
->>> [ 2908.204165] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
->>> [ 2908.206125] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000030
->>> [ 2908.208203] RBP: ffffc900047bbd40 R08: 0000000000000001 R09: 0000000000000000
->>> [ 2908.210219] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807ad91500
->>> [ 2908.211386] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000282
->>> [ 2908.212532] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
->>> [ 2908.213647] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [ 2908.214400] CR2: 0000000000000030 CR3: 000000005e8ea001 CR4: 00000000001606e0
->>> [ 2908.215393] Call Trace:
->>> [ 2908.215589]  ? __lock_acquire+0x255/0x1d90
->>> [ 2908.216071]  ? clear_gssp_clnt+0x1b/0x50 [auth_rpcgss]
->>> [ 2908.216720]  ? __mutex_lock+0x99/0x920
->>> [ 2908.217114]  lock_acquire+0x95/0x1b0
->>> [ 2908.217484]  ? cache_purge+0x1c/0x110 [sunrpc]
->>> [ 2908.218000]  _raw_spin_lock+0x2f/0x40
->>> [ 2908.218370]  ? cache_purge+0x1c/0x110 [sunrpc]
->>> [ 2908.218882]  cache_purge+0x1c/0x110 [sunrpc]
->>> [ 2908.219346]  gss_svc_shutdown_net+0xb8/0x170 [auth_rpcgss]
->>> [ 2908.220104]  netns_evict+0x2f/0x40
->>> [ 2908.220439]  nsfs_evict+0x27/0x40
->>> [ 2908.220786]  evict+0xd0/0x1a0
->>> [ 2908.221050]  __dentry_kill+0xdf/0x180
->>> [ 2908.221458]  dentry_kill+0x50/0x1c0
->>> [ 2908.221842]  ? dput+0x1c/0x2b0
->>> [ 2908.222126]  dput+0x260/0x2b0
->>> [ 2908.222384]  path_put+0x12/0x20
->>> [ 2908.222753]  do_faccessat+0x17c/0x240
->>> [ 2908.223125]  do_syscall_64+0x50/0x1c0
->>> [ 2908.223479]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->>> [ 2908.224152] RIP: 0033:0x7f47098e2157
->>> [ 2908.224566] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
->>> [ 2908.228198] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
->>> [ 2908.229496] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
->>> [ 2908.230938] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
->>> [ 2908.232182] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
->>> [ 2908.233481] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
->>> [ 2908.234750] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
->>> [ 2908.236068] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
->>> [ 2908.237861] CR2: 0000000000000030
->>> [ 2908.238277] ---[ end trace d88132b63efc09d9 ]---
-> .
+> This patch implements the get_vq_irq() callback for virtio pci devices
+> to allow irq offloading.
 >
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> ---
+>  drivers/vdpa/virtio_pci/vp_vdpa.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+>
+> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> index fe0527329857..4c512ae1fe01 100644
+> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> @@ -76,6 +76,13 @@ static u8 vp_vdpa_get_status(struct vdpa_device *vdpa)
+>         return vp_modern_get_status(mdev);
+>  }
+>
+> +static int vp_vdpa_get_vq_irq(struct vdpa_device *vdev, u16 idx)
+> +{
+> +       struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdev);
+> +
+> +       return vp_vdpa->vring[idx].irq;
+> +}
+> +
+>  static void vp_vdpa_free_irq(struct vp_vdpa *vp_vdpa)
+>  {
+>         struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+> @@ -416,6 +423,7 @@ static const struct vdpa_config_ops vp_vdpa_ops = {
+>         .get_config     = vp_vdpa_get_config,
+>         .set_config     = vp_vdpa_set_config,
+>         .set_config_cb  = vp_vdpa_set_config_cb,
+> +       .get_vq_irq     = vp_vdpa_get_vq_irq,
+>  };
+>
+>  static void vp_vdpa_free_irq_vectors(void *data)
+> --
+> 2.31.1
+>
+
