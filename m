@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AF94059E7
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC094059E8
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 17:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239118AbhIIPBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S239196AbhIIPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 11:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239117AbhIIPBl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Sep 2021 11:01:41 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34998 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237427AbhIIPBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 11:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=9l53Nh7/iHpQSXsZmHOxAQYplkVcRh+5oMbjQhUdMB4=; b=QSr76lyUaZazSCd0Dm2+uM+eEI
-        vTTQ5QZ+jkpd1oigNCVUKxAajmBUzVPW7v1e+VoiBRqNUUy8kI6coIYcWr+PoEStS12mkD2t/hnaS
-        yL1OK0A7Zk1XqK3j7lnOjVUGmE5veVes4HZdtKTcic5QO9opmaCdZSnycAAvi0/RVSNA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mOLX6-005vyW-3B; Thu, 09 Sep 2021 17:00:08 +0200
-Date:   Thu, 9 Sep 2021 17:00:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YToheBmLrce1CuZt@lunn.ch>
-References: <YSg+dRPSX9/ph6tb@lunn.ch>
- <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch>
- <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch>
- <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YTll0i6Rz3WAAYzs@lunn.ch>
- <CAGETcx_U--ayNCo2GH1-EuzuD9usywjQm+B57X_YwFOjA3e+3Q@mail.gmail.com>
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF8DC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 08:00:31 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id h133so2831264oib.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 08:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BPTQJvchvvJSjw3IrhGnZ6LhjBiRp3GxG1NEafoFX50=;
+        b=lZwetvwT7x3BLYBepUtqy4iz1HZaQQT44n5FdvmpvhfYkj7Jyv7H9nMJcrwE7ErTMq
+         KkpHC+SC9U6afuPGOiZX6cIAQvkOTSLRj7jOw8MqxBU5lHNsJ6KqwQg//RfnsWN9iDo6
+         waGQe+AclrOEA6Ybykoi1ZlEEw2OOaqNKfsLJM1csrxiYFhdaUiXzsMnV2nHOa58AYp5
+         DAhmYshKLbNQKoxtmNu3V6vlX9pvadtR8cxtuefGBSwBc2gb5bnWcFEwp8mghMjieidb
+         JFaSlaMIOK5F+Kbsg9pkHNq24FWU9AQTysxSD1WClNvUXKCcoh1Qa+nD9TPjef25O1EM
+         sfHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BPTQJvchvvJSjw3IrhGnZ6LhjBiRp3GxG1NEafoFX50=;
+        b=dNGZkywMzfQOYbXUxNhJ6vQRFpkDfcjg2PTqnSRUK4K3JxMpvTVtnzchduegDo0sXU
+         Z4Iggi/6zv5G1vXDFlGVXaPD86yDWTPjozvjSSOj6F0U5g0ifIh6A68iJIIbdmgA+/ux
+         xvallXAXqwVVEVrZJQgAUcNekh4VmxHSJuT5xtXd3lpRfyJSl2WYF5/wi17Lv/IuZ0yV
+         9v6H/p/Zfibyv5B4EKsNOJpH/TetBuiPGVvRhYg3d5jPfWun8MK5WlcamevM1n1Ff5u7
+         nMYHl8iu/13UHK1L1MePw7ezX4brPMvw2+dbfwhpbyQ5d107AiHpR3uMKrEUrrYItfhR
+         wm3w==
+X-Gm-Message-State: AOAM530hCY44iPctQVH2Fu0iChD0Nwz8GauQ7zyEI98uhySANNlHcjbL
+        NZopZB+nhpibCnRvyoBDCaDHwFvd0ro=
+X-Google-Smtp-Source: ABdhPJxDdrURS3VwJZIw1b+uWlG3dnMirxWDODaZt7/hS7AnHcNvaZCHi6y2/qzFW6P2k6jXIEm1UQ==
+X-Received: by 2002:a05:6808:319:: with SMTP id i25mr110467oie.141.1631199630661;
+        Thu, 09 Sep 2021 08:00:30 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id q7sm481717otl.68.2021.09.09.08.00.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 08:00:30 -0700 (PDT)
+Subject: Re: False positive EXPORT_SYMBOL warning with NS variants
+To:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <d63da2a8-1624-21a8-f8ca-f7477c20e56b@gmail.com>
+ <bef77537a67749df31fc7cb5549744ff7b76f6de.camel@perches.com>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <95eaf91f-0a15-e3e3-0e14-ed0d03713874@gmail.com>
+Date:   Thu, 9 Sep 2021 10:00:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_U--ayNCo2GH1-EuzuD9usywjQm+B57X_YwFOjA3e+3Q@mail.gmail.com>
+In-Reply-To: <bef77537a67749df31fc7cb5549744ff7b76f6de.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sigh... looks like some drivers register their mdio bus in their
-> dsa_switch_ops->setup while others do it in their actual probe
-> function (which actually makes more sense to me).
- 
-Drivers are free to do whatever they want. The driver model allows it.
-
-> I'm okay with this big hammer for now while we figure out something
-> better.
-
-
+On 9/5/21 12:51 AM, Joe Perches wrote:
+> On Fri, 2021-09-03 at 11:01 -0500, Ian Pilcher wrote:
+>> $ cat foo.c
+>> // SPDX-License-Identifier: GPL-2.0-only
+>> void (*foo)(void);
+>> EXPORT_SYMBOL_NS(foo, FOO);
+>>
+>> $ scripts/checkpatch.pl -f foo.c
+>> WARNING: EXPORT_SYMBOL(foo); should immediately follow its function/variable
+>> #3: FILE: foo.c:3:
+>> +EXPORT_SYMBOL_NS(foo, FOO);
+>>
+>> The non-NS EXPORT_SYMBOL variants don't trigger this warning.
+>>
 > 
-> >
-> > diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-> > index 53f034fc2ef7..7ecd910f7fb8 100644
-> > --- a/drivers/net/phy/mdio_bus.c
-> > +++ b/drivers/net/phy/mdio_bus.c
-> > @@ -525,6 +525,9 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
-> >             NULL == bus->read || NULL == bus->write)
-> >                 return -EINVAL;
-> >
-> > +       if (bus->parent && bus->parent->of_node)
-> > +               bus->parent->of_node->fwnode.flags |= FWNODE_FLAG_BROKEN_PARENT;
-> > +
-> >         BUG_ON(bus->state != MDIOBUS_ALLOCATED &&
-> >                bus->state != MDIOBUS_UNREGISTERED);
-> >
-> > So basically saying all MDIO busses potentially have a problem.
-> >
-> > I also don't like the name FWNODE_FLAG_BROKEN_PARENT. The parents are
-> > not broken, they work fine, if fw_devlink gets out of the way and
-> > allows them to do their job.
+> Try this:
+> ---
+>   scripts/checkpatch.pl | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> The parent assuming the child will be probed as soon as it's added is
-> a broken expectation/assumption. fw_devlink is just catching them
-> immediately.
-
-Why is it broken? As i said in the history, DSA has worked since
-2008. This behaviour is not that old, but it has been used and worked
-for a number of years.
-
-I actual think your model of the driver model is too simple and needs
-to accept that a driver probe is not atomic. Resources a driver
-registers with other parts of the kernel can be used before the probe
-completes. And we have some corners of the kernel that depend on that.
-
-This is particularly true for network drivers. As soon as you register
-a network interface to the stack, it will start using it, before the
-probe function has completed. It does not wait around for the driver
-core to say it has completed probing. And i doubt this is unique to
-networking. Maybe when a frame buffer driver registers a frame buffer
-with the core, the core starts to draw the splash screen, before the
-probe finishes? Maybe when a block driver registers a block device,
-the core starts reading the partition table, before the probe
-finishes? These are all examples of using a resource before the probe
-completes.
-
-> Having said that, this is not the hill either of us should choose to
-> die on. So, how about something like:
-> FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 88cb294dc4472..91798b07c6cb5 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -4449,6 +4449,7 @@ sub process {
+>   			#   XXX(foo);
+>   			#   EXPORT_SYMBOL(something_foo);
+>   			my $name = $1;
+> +			$name =~ s/^\s*($Ident).*/$1/;
+>   			if ($stat =~ /^(?:.\s*}\s*\n)?.([A-Z_]+)\s*\(\s*($Ident)/ &&
+>   			    $name =~ /^${Ident}_$2/) {
+>   #print "FOO C name<$name>\n";
 > 
-> If that works, I can clean up the series with this and the MDIO fix
-> you mentioned.
 
-That is O.K. for me as a fix. I can test patches next week.
+Seems to work
 
-     Andrew
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
