@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B0A405B43
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA66405B44
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 18:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238519AbhIIQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 12:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        id S238921AbhIIQuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 12:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238377AbhIIQuY (ORCPT
+        with ESMTP id S237302AbhIIQuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 12:50:24 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E8BC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:49:11 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id v17so5149946ybs.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:49:11 -0700 (PDT)
+        Thu, 9 Sep 2021 12:50:50 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0549C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 09:49:40 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id c19so1989675qte.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 09:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s+RgoVMQufwJ1iQH8D3qsEs6NeJAccH1we8wbejIgaA=;
-        b=cKYHvkvuT7X76SxD/wV7YqPOMI1NJnCntmtpLCPUNYxyJ9kJmg1gz9JmPF8j6aZWCp
-         HkUfLN6kOAf5LDuVEu+pXws7bQINvVC+T+LEEAor5KfA35yFRFVrURB3lc2+sX6+x8GM
-         PzsCJaynqKz2jVTUHEL0fGsZpjHslFS5xMQwWj93foGhmNCnNL6CCsOiBH8anvLtHz0n
-         yLWSMLlZi5dJczkFF96IfwEUwqoGsDFhBEfhAkmfrxcGIuKY48mSwUmU5GT/8Nob6l5I
-         bZNfoDgt9wxtcx2nSN/Z0cTmkA7ttTgOGC2d2uM3N1eo3Mwa//VA8lA6J54Xcww3kP3h
-         HU6A==
+        d=labbott.name; s=google;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=7EsbivK71P1e8bO206IiNcmpNFbYB/rwlYkekF7WVpA=;
+        b=rg22EH8oPa2UtSFo4o58oKKq0IgbnmTiFcU5r2NQn36mpg3WhfVpH2yC1rTYNi2rEj
+         Pa6uTEAcCm3dTFqMZyQiAJRn5G/guuoepQG2NdzsE44OD4HeVn39EZZf068fY7InA+yY
+         d2xDr0F1L57JC8/Vxr/HU+u39UmoUQVYoiZLM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s+RgoVMQufwJ1iQH8D3qsEs6NeJAccH1we8wbejIgaA=;
-        b=iEm4w8zOjovRyh/ZVVCKxrg4/6aiDiJgu4u0OHZ6LTB7T1cWjDIqZq6KVtVaUxN4GA
-         9yRNzfH+eCDpxvODP4HU4aXNmGX5GIOJ0zGXQ/E1n3OtVt9FPkfMWSOHpZL7otPBYYqw
-         sUkrPHIU8eUVTXLCw6uFa+YBqYDbIGniIRQpytLgBu6oU2vLuU63LlfMuYVK+LeRNGVO
-         CAa3yaP9U63Z80THx1VsYlRyoJbnyC32MP1e+FDjzjAblTeJotT3G+pikBH5FNKclZY6
-         5h9YiwHuxpfe5mCPylIKs7k2nT4pyAqpgxv0CLhlwyyagCXXkOT64RMOwl4hWCkc61bR
-         kjCA==
-X-Gm-Message-State: AOAM533iL4E8wLvg9rS87HOJkUc2Zp7k5HDDv6uGv1UO4a/YCFX8AqLH
-        nrB77vmuXHuWn5Z2pAOWvkePaW4ifWs8cRWyaLGYAw==
-X-Google-Smtp-Source: ABdhPJwYzxkIizwJV6evp1HhsQhKyxmT4fexYZ5FumlIdEfFU+MXdO/TKphQSop5An7mY+3rnXaNQ/1679+nvib75Zc=
-X-Received: by 2002:a25:c504:: with SMTP id v4mr4742567ybe.308.1631206150502;
- Thu, 09 Sep 2021 09:49:10 -0700 (PDT)
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=7EsbivK71P1e8bO206IiNcmpNFbYB/rwlYkekF7WVpA=;
+        b=O2ccQwvFQmt59BAuiASXKb29WfLRlOgyuKtQISDICpbRw7ZyEeAm67Yazpam+4ie6L
+         CZOH1egjlW7GYnDMSn84yOvo/tY4Q67P3OP2QxQ0gC24Jyd6/GV84GtVhuTR/whhcyXn
+         +pwU5asm6cx4z4g8+zfd2267/NDa7lKhWxlSQUc2c+ekbfrrmQz/NWU9LDJPYpPNZbLW
+         kRgKyyTe6h4HdEX34/DBucxAtgg8upItks6ES50m0fTklKgguiPYBDkPDCEgTmErX7Sl
+         VI3lrW4LdJHiltVhCgo3IBIL6/r6ggn7EvNxAHdVOouOhkvRtd6T2/X6WTjipcqOUDod
+         FK0Q==
+X-Gm-Message-State: AOAM531qJhbuMnZfRfEVKcaBS9ABuG7IdZ2JmBzRgEYdqWYz6cs33UJC
+        XaDhLfAVS86pOHHaHyCkeQv/PRFJdizjZQ==
+X-Google-Smtp-Source: ABdhPJyHiFTiCv41LoyjxABqn9ZNC1MT0IdS8abyUHfAvtnIw9vRkaq0eOknKr9nLtClttE8V53AYA==
+X-Received: by 2002:ac8:7f83:: with SMTP id z3mr3921439qtj.346.1631206180012;
+        Thu, 09 Sep 2021 09:49:40 -0700 (PDT)
+Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
+        by smtp.gmail.com with ESMTPSA id f20sm1612683qka.64.2021.09.09.09.49.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 09:49:39 -0700 (PDT)
+To:     ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>
+From:   Laura Abbott <laura@labbott.name>
+Subject: Reminder: Voting procedures for the Linux Foundation Technical
+ Advisory Board
+Message-ID: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
+Date:   Thu, 9 Sep 2021 12:49:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-5-rananta@google.com>
- <YTl5RQjJ0EFmhUlG@google.com>
-In-Reply-To: <YTl5RQjJ0EFmhUlG@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 9 Sep 2021 09:48:58 -0700
-Message-ID: <CAJHc60zkJ472fW7iAqMoW7JKLzXYwfYdZcAvRyYrxY-V04bTmQ@mail.gmail.com>
-Subject: Re: [PATCH v4 04/18] KVM: arm64: selftests: Introduce ARM64_SYS_KVM_REG
-To:     Oliver Upton <oupton@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 8:02 PM Oliver Upton <oupton@google.com> wrote:
->
-> Hi Raghu,
->
-> On Thu, Sep 09, 2021 at 01:38:04AM +0000, Raghavendra Rao Ananta wrote:
-> > With the inclusion of sysreg.h, that brings in system register
-> > encodings, it would be redundant to re-define register encodings
-> > again in processor.h to use it with ARM64_SYS_REG for the KVM
-> > functions such as set_reg() or get_reg(). Hence, add helper macro,
-> > ARM64_SYS_KVM_REG, that converts SYS_* definitions in sysreg.h
-> > into ARM64_SYS_REG definitions.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  .../selftests/kvm/include/aarch64/processor.h      | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > index bed4ffa70905..ac8b63f8aab7 100644
-> > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > @@ -26,6 +26,20 @@
-> >
-> >  #define ID_AA64DFR0_EL1         3, 0,  0, 5, 0
-> >
-> > +/*
-> > + * ARM64_SYS_KVM_REG(sys_reg_id): Helper macro to convert
-> > + * SYS_* register definitions in sysreg.h to use in KVM
-> > + * calls such as get_reg() and set_reg().
-> > + */
-> > +#define ARM64_SYS_KVM_REG(sys_reg_id)                        \
->
-> nit: KVM_ARM64_SYS_REG() perhaps? Dunno which is more readable.
->
-> > +({                                                   \
-> > +     ARM64_SYS_REG(sys_reg_Op0(sys_reg_id),          \
-> > +                     sys_reg_Op1(sys_reg_id),        \
-> > +                     sys_reg_CRn(sys_reg_id),        \
-> > +                     sys_reg_CRm(sys_reg_id),        \
-> > +                     sys_reg_Op2(sys_reg_id));       \
-> > +})
-> > +
->
-Heh, I came up with the logic faster than picking a name for the
-macro. I guess KVM_ARM64_SYS_REG may be more readable, just for the
-fact that it begins with KVM_. I'll change it.
+Hi,
 
-Regards,
-Raghavendra
-> Could you also switch all current users of ARM64_SYS_REG() in the KVM
-> selftests directory in this commit? You can also drop the system
-> register encodings defined in processor.h
->
-I did that in a separate patch, but I can squash it here to avoid confusion.
+Reminder that the Linux Foundation Technical Advisory Board (TAB) annual
+election will be held virtually during the 2021 Kernel Summit and Linux
+Plumbers Conference. Voting will run from September 20th to September
+23rd 16:00 GMT-4 (US/Eastern). The voting criteria for the 2021 election
+are:
 
-Regards,
-Raghavendra
-> --
-> Thanks,
-> Oliver
+There exist three kernel commits in a mainline or stable released
+kernel that both
+- Have a commit date in the year 2020 or 2021
+- Contain an e-mail address in one of the following tags or merged
+tags (e.g. Reviewed-and-tested-by)
+-- Signed-off-by
+-- Tested-by
+-- Reported-by
+-- Reviewed-by
+-- Acked-by
+
+If you have more than 50 commits that meet this requirement you will
+receive a ballot automatically.
+
+If you have between 3 and 49 commits that meet this requirement please
+e-mail tab-elections@lists.linuxfoundation.org to request your ballot.
+We strongly encourage everyone who meets this criteria to request a
+ballot.
+
+We will be using Condorcet Internet Voting
+Service (CIVS) https://civs1.civs.us/ . This is a voting service
+focused on security and privacy. There are sample polls on the
+website if you would like to see what a ballot will look like.
+
+If you have any questions please e-mail 
+tab-elections@lists.linuxfoundation.org.
+
+Thanks,
+Laura
+
+P.S. Please also consider this another reminder to consider running for
+the TAB as well
