@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C288A404479
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3159E404481
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 06:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243906AbhIIE3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 00:29:22 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:36318
+        id S1350384AbhIIEeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 00:34:44 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58315
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1350388AbhIIE3R (ORCPT
+        by vger.kernel.org with SMTP id S1350256AbhIIEei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:29:17 -0400
+        Thu, 9 Sep 2021 00:34:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=2doZqT3NoobKWKqgUHi+C9s95x4GgY11UNIdMKKqyxI=; b=M
-        JItkHWxqVxjpc/sUtCuq9lkntR7rs96kds+MPnXUyuyj7SVYauqRT80DmB8OQmxs
-        VS8hsf5srTxOS+/2dEA0MpfY9UTFVjhRpkKVT8fKfo0Rfu36z4Vl5JsIeWcdq2Hr
-        hgayVXynrxxJ/GljFGajmb4IM+eRwqBptxjO8/fY7U=
+        Message-Id; bh=l/j2pDn/mjthv3uqEbVaJbJjaFQ1TYxsqeN3B0C0v/0=; b=M
+        gVaqEVBmCdIvP2FF1JiFDVNbwdKxqBMq6oeTyNozrfIceF+vy9bJLWYPoeWdXsvg
+        SU/tihYdUCEraDgz9WrctT+LL75DN3Zrzal6jyu+msKCqRgoMiQEIyiu2E77tfTo
+        2V13ROWsieq08eXcY/PQZhsFRHAfr1aXgYZscbdBt4=
 Received: from localhost.localdomain (unknown [10.162.127.118])
-        by app1 (Coremail) with SMTP id XAUFCgBXX18+jTlh3nQ9AA--.1062S3;
-        Thu, 09 Sep 2021 12:27:42 +0800 (CST)
+        by app1 (Coremail) with SMTP id XAUFCgDXOGZcjjlhUX09AA--.1099S3;
+        Thu, 09 Sep 2021 12:32:28 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tom Parkin <tparkin@katalix.com>,
         Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] drm/amd/amdkfd: fix possible memory leak in svm_range_restore_pages
-Date:   Thu,  9 Sep 2021 12:27:39 +0800
-Message-Id: <1631161659-76719-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        "Gong, Sishuai" <sishuai@purdue.edu>,
+        Matthias Schiffer <mschiffer@universe-factory.net>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
+Date:   Thu,  9 Sep 2021 12:32:00 +0800
+Message-Id: <1631161930-77772-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgBXX18+jTlh3nQ9AA--.1062S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1DZr1Utr13tFW8Ar4ruFg_yoWkArc_G3
-        48X3s3Zr42yF1kZF42vw4rZF929r1UAF4kWw1vqa4rtryavrW5W345Xrn3Xr15ursruFsr
-        Aan8Wr4Sy3sxCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbTkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I
-        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
-        xVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
-        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8I
-        cIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
-        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ23UUUUU=
+X-CM-TRANSID: XAUFCgDXOGZcjjlhUX09AA--.1099S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7urW7CF48tr17Jw43Gr4UJwb_yoW8GF15pF
+        4UCr9rKFy5KF9rAr18Ja4kXa4YkayY9FyrCFWvkwn0ywnxA343Kayj9FnIqFyUArykta1Y
+        v3ZYvr45ZF4DtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9C14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUAkucUUUUU=
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory leak issue may take place in an error handling path. When
-p->xnack_enabled is NULL, the function simply returns with -EFAULT and
-forgets to decrement the reference count of a kfd_process object bumped
-by kfd_lookup_process_by_pasid, which may incur memory leaks.
+The reference count leak issue may take place in an error handling
+path. If both conditions of tunnel->version == L2TP_HDR_VER_3 and the
+return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
+would directly jump to label invalid, without decrementing the reference
+count of the l2tp_session object session increased earlier by
+l2tp_tunnel_get_session(). This may result in refcount leaks.
 
-Fix it by jumping to label "out", in which kfd_unref_process() decreases
-the refcount.
+Fix this issue by decrease the reference count before jumping to the
+label invalid.
 
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/l2tp/l2tp_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index e883731c3f8f..0f7f1e5621ea 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -2426,7 +2426,8 @@ svm_range_restore_pages(struct amdgpu_device *adev, unsigned int pasid,
+diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+index 53486b162f01..93271a2632b8 100644
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -869,8 +869,10 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
  	}
- 	if (!p->xnack_enabled) {
- 		pr_debug("XNACK not enabled for pasid 0x%x\n", pasid);
--		return -EFAULT;
-+		r = -EFAULT;
-+		goto out;
- 	}
- 	svms = &p->svms;
  
+ 	if (tunnel->version == L2TP_HDR_VER_3 &&
+-	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
++	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
++		l2tp_session_dec_refcount(session);
+ 		goto invalid;
++	}
+ 
+ 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+ 	l2tp_session_dec_refcount(session);
 -- 
 2.7.4
 
