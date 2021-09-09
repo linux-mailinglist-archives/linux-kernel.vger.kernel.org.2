@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDCD4046F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EDB4046FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 10:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhIII0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhIII0l (ORCPT
+        id S231642AbhIII0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:26:48 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:33189 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230250AbhIII0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:26:41 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CEDC061575;
-        Thu,  9 Sep 2021 01:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631175928;
-        bh=Zt/5HJcbMjfzJ8UOuZ5H+C1N/XFPNnqVufnRZTc8a+w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XT0azpN+P95LD7/9bFgbkCwNWAx1hPXlvGyg+K3pxc6wUwDBF6mR1QX5xefTiNSN1
-         e9ZD/z3B1MnFe/bNf/vdIYUlBdnfQUR1KBhzYfkrhH+F1SLjA6gXVgB7wZChqyeCrZ
-         oXBAPEEGqiNOycdWA9l8GiBBVhE0m6FaDLKQMEbt/DGRBxkWO017B5seLgxb9+zl0Z
-         5X6wuhCyffh2jIK1tBkySqSsNJZFPhfYHCSpUuxqrG62bBpgF1SDnoP/XR/kybSqHO
-         KusKQVQ5j0CWQEjYQGm52xfxRwibT9XgZbdRfvWdYHoXHi/fgHiUSPxBAn99JEF7xq
-         AEOjzzDYJx7Ow==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H4sWq1gW6z9sW8;
-        Thu,  9 Sep 2021 18:25:27 +1000 (AEST)
-Date:   Thu, 9 Sep 2021 18:25:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure while building Linus' tree
-Message-ID: <20210909182525.372ee687@canb.auug.org.au>
+        Thu, 9 Sep 2021 04:26:45 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1mOFNF-000FqC-RW; Thu, 09 Sep 2021 10:25:33 +0200
+Received: from p57bd9adf.dip0.t-ipconnect.de ([87.189.154.223] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1mOFNF-001UAH-9r; Thu, 09 Sep 2021 10:25:33 +0200
+Message-ID: <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
+Date:   Thu, 9 Sep 2021 10:25:32 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BLIJePllvi91nSzSqX.USXA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.154.223
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BLIJePllvi91nSzSqX.USXA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Randy!
 
-Hi all,
+On 9/8/21 22:19, Randy Dunlap wrote:
+> What is the status of arch/sh/ in general and
+> of these patches in particular?
 
-Building Linus' tree, today's linux-next build (powerpc
-ppc6xx_defconfig gcc4.9) failed like this:
+I've also been trying to reach out to Yoshinori and Rich. I know that Yoshinori is
+currently busy with other work but he can be reached over Twitter [1]. I don't
+know about Rich though.
 
-ERROR: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!
+There are quite a number of patches on the mailing list that need reviewing and
+I fear if that doesn't happen in the foreseeable future, the SH port is being
+kicked out which would be a pity given that we're still maintaining the port in
+Debian and given that there is new hardware available with the J-Core board [2].
 
-Caused by commit
+Adrian
 
-  fad7cd3310db ("nbd: add the check to prevent overflow in __nbd_ioctl()")
+> [1] https://twitter.com/ysat0/
+> [2] https://www.cnx-software.com/2017/03/13/turtle-board-is-a-raspberry-pi-2-like-fpga-board-for-j-core-j2-open-source-superh-sh2-soc/
 
-The added check_mul_overflow() call is being passed 64 bit values.
-COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW is not set for this build (see
-include/linux/overflow.h).
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BLIJePllvi91nSzSqX.USXA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE5xPUACgkQAVBC80lX
-0Gxvywf9FsxUItfWEq1jYlLnD8X1+LGOxJ3f+yuu8TKNLLJONaoeLdgBV3lxkq7K
-Y8tJiitM2Q34SAevWKQ1+/v7Vaqrirxz7V1Hm7hrxQru11E4YxYT+BTbGF/ZbD9f
-VatSJhOttfxsemEnW+M/8JuJ85K53mrCy0u3SK91/TZJxitZCBqMa0AtalhT/F5C
-KT86wCo6OItGmhOjib0pSfI4tf+NZKVM92A2bKN9C6symTWFzBGFMapLGWSQEDvJ
-D+8XT/qMx1UA+Tvn0gHWvzDtS57xpauT22CC0CmOwzMM9rkMhcPpR1AnsvsM6VbG
-VqChQ7EMs/MzsS6haYzVXFFZqC9/LA==
-=CDUb
------END PGP SIGNATURE-----
-
---Sig_/BLIJePllvi91nSzSqX.USXA--
