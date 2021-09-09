@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A36405BDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6896405BE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 19:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240984AbhIIRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 13:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237002AbhIIRSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 13:18:43 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6288C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 10:17:33 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id f2so4152059ljn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlWzkECk20+XqmMBmmlhgHERfUmOY5RNnADt8Z36qog=;
-        b=EK8cd8m3N90BRu7k+tQtRObfDdPm0WNzqcuF6FrjTVlzmoTGEV2VxpLRUXVf9jH8aT
-         G4eBWVkI6uQCMRJzKE9fKssV/wmh8IHKnfFtSZCCFwM1RslKOwFVYeqDmIxarH/iLLjP
-         HwKvShhp9FmcqErZVIckI4ZtDeQufVRuWD4Zs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlWzkECk20+XqmMBmmlhgHERfUmOY5RNnADt8Z36qog=;
-        b=aJmC1PcnAq0FVhTVYXidl3jsHgmm6PxWs57Z2F6YDWa6rONOBPR9eDzsNrTLntMUGZ
-         zcM1RePws1aVxmXG8WDMDglel/5O/wzBY0B7rTH5rKwrZT/e7cysuDt6DHCR6HpApD6W
-         +fvP0PL7kNk2SvrqHH2pfZ2zUNb24kjKqsoRF1+/MdTD4zZgkfmx1cquqExhjjqdU6XI
-         PX7AmpvaWpJks9Xx61XMSKrn7Q9eJsSdv8V4RNcXTVIlW3cPXqYaE/IqrwTqmHMxYozt
-         Z5Wkri7G+yvD34frX0cJB80o/rajT8BYrnz6VUSBSROR7CmM60niCnxwiupiyJotBk3v
-         jTxQ==
-X-Gm-Message-State: AOAM532sW7zut76V81v4YgDScAC8uUJMkl4N82D6KfB2gihbn9uZYOWM
-        4lI0h8p1uEHZW+xRSpX+Me0ohv21GWxr9O1OQZY=
-X-Google-Smtp-Source: ABdhPJzGLqlMs9b8WskgWFYlW8Sdf8nDapgyQni3UWyB43cLMLWL6LxbKmr1BVhGbTXfK6V0jRIQxA==
-X-Received: by 2002:a2e:9154:: with SMTP id q20mr729960ljg.455.1631207851497;
-        Thu, 09 Sep 2021 10:17:31 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id j3sm259020lfm.92.2021.09.09.10.17.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id j12so4097449ljg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
-X-Received: by 2002:a2e:8185:: with SMTP id e5mr734988ljg.31.1631207850194;
- Thu, 09 Sep 2021 10:17:30 -0700 (PDT)
+        id S240989AbhIIRTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 13:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237137AbhIIRTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 13:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31294610CE;
+        Thu,  9 Sep 2021 17:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631207912;
+        bh=Vzgjd07EtEWqLqFdwBwVXT6tQoiq5L9fl/NNb92VUM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nKvpjWDLmIbAiqGD25fjLhXyoOHGOY/R1rU7sbr7K5iSlc0NvQko/e83vdDFjGY3z
+         QQ92yGJODGkgiQ9O0jQCl6i3wM774ALW3WLH7Z3ANlpWUA3pyDBzqScfnmsj1ZcSs0
+         YPj5B3tTj7hvaICEUW+9tZsxestBaWh5yjts6EPsopIOe7yjxYbGCU2ZR8LMaWlaQM
+         5SdhaWr6qX31BN3PPVJQHBV+JvH3bm0z5+oX8HUtJp8IZvMeak66N9FzwRHOd2gZ0N
+         MRpQQEzCf8LYoSV5vKZgtnlfZB6ZazozaGmx8OhCoR/2S6hH8lrHPrE8sUOFZdvKeT
+         bxxhE0qzdFjOg==
+Date:   Thu, 9 Sep 2021 18:17:55 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+Message-ID: <20210909171755.GF5176@sirena.org.uk>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-3-rananta@google.com>
 MIME-Version: 1.0
-References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-18-agruenba@redhat.com>
- <YTnxruxm/xA/BBmQ@infradead.org>
-In-Reply-To: <YTnxruxm/xA/BBmQ@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Sep 2021 10:17:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj4RER3XeG34nLH2PgvuRuj_NRgDx=wLTKv=jYaQnFe+Q@mail.gmail.com>
-Message-ID: <CAHk-=wj4RER3XeG34nLH2PgvuRuj_NRgDx=wLTKv=jYaQnFe+Q@mail.gmail.com>
-Subject: Re: [PATCH v7 17/19] gup: Introduce FOLL_NOFAULT flag to disable page faults
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aZoGpuMECXJckB41"
+Content-Disposition: inline
+In-Reply-To: <20210909013818.1191270-3-rananta@google.com>
+X-Cookie: I have become me without my consent.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:36 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Aug 27, 2021 at 06:49:24PM +0200, Andreas Gruenbacher wrote:
-> > Introduce a new FOLL_NOFAULT flag that causes get_user_pages to return
-> > -EFAULT when it would otherwise trigger a page fault.  This is roughly
-> > similar to FOLL_FAST_ONLY but available on all architectures, and less
-> > fragile.
->
-> So, FOLL_FAST_ONLY only has one single user through
-> get_user_pages_fast_only (pin_user_pages_fast_only is entirely unused,
-> which makes totally sense given that give up on fault and pin are not
-> exactly useful semantics).
 
-So I think we should treat FOLL_FAST_ONLY as a special "internal to
-gup.c" flag, and perhaps not really compare it to the new
-FOLL_NOFAULT.
+--aZoGpuMECXJckB41
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In fact, maybe we could even just make FOLL_FAST_ONLY be the high bit,
-and not expose it in <linux/mm.h> and make it entirely private as a
-name in gup.c.
+On Thu, Sep 09, 2021 at 01:38:02AM +0000, Raghavendra Rao Ananta wrote:
+> Bring-in the kernel's arch/arm64/include/asm/sysreg.h
+> into selftests to make use of all the standard
+> register definitions in consistence with the kernel.
 
-Because FOLL_FAST_ONLY really is meant more as a "this way we can
-share code easily inside gup.c, by having the internal helpers that
-*can* do everything, but not do it all when the user is one of the
-limited interfaces".
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  .../selftests/kvm/include/aarch64/sysreg.h    | 1278 +++++++++++++++++
+>  1 file changed, 1278 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
 
-Because we don't really expect people to use FOLL_FAST_ONLY externally
-- they'll use the explicit interfaces we have instead (ie
-"get_user_pages_fast()"). Those use-cases that want that fast-only
-thing really are so special that they need to be very explicitly so.
+Can we arrange to copy this at build time rather than having a duplicate
+copy we need to keep in sync?  We have some stuff to do this for uapi
+headers already.
 
-FOLL_NOFAULT is different, in that that is something an external user
-_would_ use.
+--aZoGpuMECXJckB41
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Admittedly we'd only have one single case for now, but I think we may
-end up with other filesystems - or other cases entirely - having that
-same kind of "I am holding locks, so I can't fault into the MM, but
-I'm otherwise ok with the immediate mmap_sem lock usage and sleeping".
+-----BEGIN PGP SIGNATURE-----
 
-End result: FOLL_FAST_ONLY and FOLL_NOFAULT have some similarities,
-but at the same time I think they are fundamentally different.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE6QcIACgkQJNaLcl1U
+h9CAPAf+MQBjgDWR7i61DAYpl8mThqlPrRcYiztJRwtYDtMw4tnFmF/r7HCTXxTD
+hznDPxnOmwaOTRqfL/fx7iIeBQGrVFlGdS+RPZcs2MGi9kasXOy0osmAAVC8xYi9
+jawBd/Rb6MMxWin+UYNbKmqfUmXwWuOB8Jgo7Q03+Ef02u5H2YX4uhc2G7zpjzLS
+TgXJBJVGsAzktFvAux/uM6ohHahk/pvvVKV9WmTmQS0Q/irfGevkwOCSExfKHVCS
+LJN2eeZxmILmdc6FMEHqvi+p5YHyilJJdMFStqXBKSRSjMkx2S0AY46vHD6JNMaX
+eqb+UAF2bjsjsvUxjZ2m7wHOdCTYUg==
+=sR7c
+-----END PGP SIGNATURE-----
 
-The FAST_ONLY is the very very special "I can't sleep, I can't even
-take the fundamental MM lock, and we export special interfaces because
-it's _so_ special and can be used in interrupts etc".
-
-In contrast, NOFAULT is not _that_ special. It's just another flag,
-and has generic use.
-
-               Linus
+--aZoGpuMECXJckB41--
