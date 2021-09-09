@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2050405E15
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDBC405E1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345270AbhIIUit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:38:49 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35280 "EHLO vps0.lunn.ch"
+        id S1345399AbhIIUlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:41:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245195AbhIIUis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:38:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=mM50TrfQqQvdPGgFlZnAt32dDbSDk7TXR1qkzbZPrRI=; b=cO
-        M4N/paCpnShAZbECOOAcisClegFIIIrUT7K0atK3lxh4SBwKqpJiURyIl0yI68ennqVQC1qT7OEQm
-        yeHd42Rab44gCIf2Penp6PjuTqTEJheV/QLZGugT+qK0uv0bda8XANPmj0Eg6Qf7CWBozlJO8QvjN
-        V0f/GfvTXanYrY4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mOQnd-005xdu-5o; Thu, 09 Sep 2021 22:37:33 +0200
-Date:   Thu, 9 Sep 2021 22:37:33 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Modi, Geet" <geet.modi@ti.com>
-Cc:     "Nagalla, Hari" <hnagalla@ti.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sharma, Vikram" <vikram.sharma@ti.com>
-Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy: dp83tc811:
- modify list of interrupts enabled at initialization
-Message-ID: <YTpwjWEUmJWo0mwr@lunn.ch>
-References: <20210902190944.4963-1-hnagalla@ti.com>
- <YTFc6pyEtlRO/4r/@lunn.ch>
- <99232B33-1C2F-45AF-A259-0868AC7D3FBC@ti.com>
- <YTdxBMVeqZVyO4Tf@lunn.ch>
- <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com>
+        id S245195AbhIIUlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 16:41:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C07806115A;
+        Thu,  9 Sep 2021 20:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631220006;
+        bh=UuqfyaUZwjVk2T1K6Otxslqo1hOd2YuFf7SmBusu6/4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CJ8qiogBBNiTsIhyV6J9IC8BktRPXvB3caiXz+R8kREh+uxApu6/4KxxYa3EvoVM1
+         0g0MJUZl8kPgN2W2EtmAgoNErkR/uWJh7rEwPJ22bMLe082yWx50pHYSXWLVx8vwRP
+         +GagA+64wTWqxVT/bEuzSJgqyqfRyFgWf6hd+D9sAi6et5PhqHLFX9LLi1X/tT5QZG
+         suLIneSOK1Nien+47krklC/4rKnewLwnh9JXkMegtx8QUeLgsU9rW+GJG7HAwY64jO
+         0nHl/QMlJadgQWbHhcI8BhmDEd++nTYlgxiIZvRbym9Wf8CCTcJjzoDAq7MLfOoh7P
+         fsIk1tdCqbsiw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B8CBF60978;
+        Thu,  9 Sep 2021 20:40:06 +0000 (UTC)
+Subject: Re: [GIT PULL] tracing: More updates for 5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210909090601.43810362@gandalf.local.home>
+References: <20210909090601.43810362@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210909090601.43810362@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-2
+X-PR-Tracked-Commit-Id: cfd799837dbc48499abb05d1891b3d9992354d3a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 43175623dd0dffccacbf014e368ee77f77c73898
+Message-Id: <163122000674.1978.12428875535789769544.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Sep 2021 20:40:06 +0000
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Julio Faracco <jcfaracco@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Qiang.Zhang" <qiang.zhang@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Zanussi <zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I am planning to have following commit msg;
-> 
->  
-> 
-> “This feature is not used by our mainstream customers as they have additional
+The pull request you sent on Thu, 9 Sep 2021 09:06:01 -0400:
 
-As i said, this is not your driver, for you customers. It is the Linux
-kernel driver. Please drop all references to your customers. If you
-need to address anybody, it should be the Linux community as a whole,
-or maybe the users of this driver.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-2
 
-> mechanism to monitor the supply at System level as accuracy requirements are
-> different for each application.  The device is designed with inbuilt monitor
-> with interrupt disabled by default and let user choose if they want to exercise
-> the monitor. However, the driver had this interrupt enabled, the request here
-> is disable it by default in driver however not change in datasheet.  Let user
-> of the driver review the accuracy offered by monitor and if meets the
-> expectation, they can always enable it.”
- 
-I would much more prefer something like...
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/43175623dd0dffccacbf014e368ee77f77c73898
 
-The over voltage interrupt is enabled, but if it every occurs, there is
-no code to make use of it. So remove the pointless enabling of it. It
-can re-enabled when HWMON support is added. For the same reason,
-enabling of the interrupts DP83811_RX_ERR_HF_INT_EN,
-DP83811_MS_TRAINING_INT_EN, DP83811_ESD_EVENT_INT_EN,
-DP83811_ENERGY_DET_INT_EN, DP83811_LINK_QUAL_INT_EN,
-DP83811_JABBER_DET_INT_EN, DP83811_POLARITY_INT_EN,
-DP83811_SLEEP_MODE_INT_EN, DP83811_OVERTEMP_INT_EN,
-DP83811_UNDERVOLTAGE_INT_EN is also removed, since there is no code
-which acts on these interrupts.
+Thank you!
 
-And update the patch to fit.
-
-      Andrew
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
