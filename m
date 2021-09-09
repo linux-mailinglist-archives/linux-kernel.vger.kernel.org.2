@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE67405139
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4766240522E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 14:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353155AbhIIMe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 08:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352956AbhIIMWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:22:48 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CFAC034037
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 04:46:13 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so2071617otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 04:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=scnpuQEkIxlsg5dECCNfy9fibrsqF7ou9Zg/wTCMvoU=;
-        b=HocwwpvIksbWJirVOnxgkgytjZ7wOGw3bbBsvcTefpQe6yTb8YILKbo9qwPW2zKcia
-         uAvzxBZRpgb629jFpVbEEOWJ+FyUmtFR/cF8wq6OSKdFbdT6dCilHyNssc6kHAtZhAlL
-         rbotHx+W8bj0o/uX2Qoirf8mDSm4E4bTDGD/zbWkpH3FdbS/9e2mUxUET2Jp7p8LBeom
-         c/Ph7Mxz1urJJNZGVjAztutFhA/8G6fuU4qfvO2MhrVThrZ+ABBVhpaMWc73QRzkcfcR
-         hWMwVAzQL2HlpF8GkxmfcwWBaiauMOfQn7/q8GJ8gqrNC+IH9pZ+T6Y59KHvss1wqSYA
-         SSdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=scnpuQEkIxlsg5dECCNfy9fibrsqF7ou9Zg/wTCMvoU=;
-        b=A9a1mLF2fzyrnVhW29Ti4hKC3F7dGtbsgLDE9UBIXAlhlerFLqhYp49NLUKasvrgdG
-         52a/Ny7Mg/NhpmOOpgcn4PAYkbZuITzFj/XF0QcqzF0k/LHA3Da8iU+UKF6zo1TXwa/b
-         eOGSoAeHFGKjDG5+Z0Wci5hjjNrJ05sXRueyMeBdLCcgjHsnenbEabUY+E99FkFD06dK
-         ShDXQNS1Qq3fLYARl+RJGNZaIlxcjP0I72WIXmrYXUyisM6fg1g58Qr10Fmo4Og/c/yQ
-         gMncwnf1rCUsU0Rt5LH1+fZ0mT2JVwRA/ZouZncU8KwkgPqqC7XlKVweZreqFTVv+GRZ
-         wXhg==
-X-Gm-Message-State: AOAM532TetZShqgEtJVDqiapDaA7T5TPSI3rSYBe7bZUvXqwtJb1mENK
-        Yxc+hlPn1rTZF8x/CcRDJmMkcDDYJV86sdT2uXo0wA==
-X-Google-Smtp-Source: ABdhPJzVOGJv68hgNTD6ItSe21Ujca3BqWEty2OpMmoHpzOLufjrr5uNJY5SgI4LWRC5Qv4frt+gwMvxWB38mBWp3tQ=
-X-Received: by 2002:a9d:71db:: with SMTP id z27mr2066335otj.292.1631187972828;
- Thu, 09 Sep 2021 04:46:12 -0700 (PDT)
+        id S1354332AbhIIMlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 08:41:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353294AbhIIMUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:20:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1B7761AA2;
+        Thu,  9 Sep 2021 11:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631188235;
+        bh=9FtpahGr9AGk+NCfYFtP6I3wLpCqDy1mxReJ2rVjrPU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=e6IMc2DLRuoNTNXCZC8BJRXZ8pf2tzYJ1Kw+944i0fYluWj7msb4st/L0ku66Y/Sp
+         uPmYsOC4RFNf3X71Y61vLb8ttD9KXYSyLcD2lQDLWvd+7wkE56kWpLPMX9Yjrb46Pq
+         /SPOPIhsev5QSsrX1mnb8snBRG5SNZpWrdDKtQkAlWMkB8bQb1Yh1NxxGk7D35eFx7
+         FWY6y7EwDn5b+2jrs+STze25+8a4fWtRnPU7K0zWFjrDG4YrPBIMfsnoCkQHZ4vyPM
+         WCKEJeIXYoPRN7sbXOsOT4UEhQ13aVz7fclxKEI/VnyoBGq8eXP+igvqP46wJBsdw8
+         /yWjaLFiOlW4w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Nishad Kamdar <nishadkamdar@gmail.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 186/219] mmc: core: Return correct emmc response in case of ioctl error
+Date:   Thu,  9 Sep 2021 07:46:02 -0400
+Message-Id: <20210909114635.143983-186-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210909104925.809674-1-elver@google.com>
-In-Reply-To: <20210909104925.809674-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 9 Sep 2021 13:46:01 +0200
-Message-ID: <CANpmjNOHG3z7qPKWBukjqHC6f1pxbdR1WOMUhsij9whyx0W=VQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan: double -Wframe-larger-than threshold if KASAN
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Arnd Bergmann <arnd@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Taras Madan <tarasmadan@google.com>, linux-mm@kvack.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Sept 2021 at 12:49, Marco Elver <elver@google.com> wrote:
-> All architectures at least double stack size when using one of the KASAN
-> software modes that rely on compiler instrumentation.
->
-> Until now, warnings emitted by -Wframe-larger-than could easily be
-> ignored, as we would still get a working kernel.
->
-> However, with the introduction of -Werror (CONFIG_WERROR=y), it makes
-> sense to at least double the -Wframe-larger-than threshold for
-> software-based KASAN modes to reflect the already increased stack sizes
-> when building a kernel with KASAN enabled.
->
-> Link: https://lkml.kernel.org/r/YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain
-> Signed-off-by: Marco Elver <elver@google.com>
+From: Nishad Kamdar <nishadkamdar@gmail.com>
 
-FWIW, there's still no consensus if this is what we want, and the
-discussion continues at:
-https://lkml.kernel.org/r/CANpmjNPBdx4b7bp=reNJPMzSNetdyrk+503_1LLoxNMYwUhSHg@mail.gmail.com
+[ Upstream commit e72a55f2e5ddcfb3dce0701caf925ce435b87682 ]
 
-> ---
->  lib/Kconfig.debug | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index ed4a31e34098..2055bbb6724a 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -345,6 +345,8 @@ endif # DEBUG_INFO
->  config FRAME_WARN
->         int "Warn for stack frames larger than"
->         range 0 8192
-> +       default 4096 if 64BIT && (KASAN_GENERIC || KASAN_SW_TAGS)
-> +       default 2048 if !64BIT && (KASAN_GENERIC || KASAN_SW_TAGS)
->         default 2048 if GCC_PLUGIN_LATENT_ENTROPY
->         default 1536 if (!64BIT && PARISC)
->         default 1024 if (!64BIT && !PARISC)
-> --
-> 2.33.0.153.gba50c8fa24-goog
->
+When a read/write command is sent via ioctl to the kernel,
+and the command fails, the actual error response of the emmc
+is not sent to the user.
+
+IOCTL read/write tests are carried out using commands
+17 (Single BLock Read), 24 (Single Block Write),
+18 (Multi Block Read), 25 (Multi Block Write)
+
+The tests are carried out on a 64Gb emmc device. All of these
+tests try to access an "out of range" sector address (0x09B2FFFF).
+
+It is seen that without the patch the response received by the user
+is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
+JEDEC specification. After applying the patch proper response is seen.
+This is because the function returns without copying the response to
+the user in case of failure. This patch fixes the issue.
+
+Hence, this memcpy is required whether we get an error response or not.
+Therefor it is moved up from the current position up to immediately
+after we have called mmc_wait_for_req().
+
+The test code and the output of only the CMD17 is included in the
+commit to limit the message length.
+
+CMD17 (Test Code Snippet):
+==========================
+        printf("Forming CMD%d\n", opt_idx);
+        /*  single block read */
+        cmd.blksz = 512;
+        cmd.blocks = 1;
+        cmd.write_flag = 0;
+        cmd.opcode = 17;
+        //cmd.arg = atoi(argv[3]);
+        cmd.arg = 0x09B2FFFF;
+        /* Expecting response R1B */
+        cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+
+        memset(data, 0, sizeof(__u8) * 512);
+        mmc_ioc_cmd_set_data(cmd, data);
+
+        printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+        if(ioctl(fd, MMC_IOC_CMD, &cmd))
+                perror("Error");
+
+        printf("\nResponse: %08x\n", cmd.response[0]);
+
+CMD17 (Output without patch):
+=============================
+test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
+Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 0x09B2FFF]
+Forming CMD17
+Sending CMD17: ARG[0x09b2ffff]
+Error: Connection timed out
+
+Response: 00000000
+(Incorrect response)
+
+CMD17 (Output with patch):
+==========================
+test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
+[sudo] password for test:
+Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
+Forming CMD17
+Sending CMD17: ARG[0x09b2ffff]
+Error: Connection timed out
+
+Response: 80000900
+(Correct OUT_OF_ERROR response as per JEDEC specification)
+
+Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Link: https://lore.kernel.org/r/20210824191726.8296-1-nishadkamdar@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/mmc/core/block.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 2518bc085659..d47829b9fc0f 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -542,6 +542,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
+ 		return mmc_sanitize(card, idata->ic.cmd_timeout_ms);
+ 
+ 	mmc_wait_for_req(card->host, &mrq);
++	memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+ 
+ 	if (cmd.error) {
+ 		dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
+@@ -591,8 +592,6 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
+ 	if (idata->ic.postsleep_min_us)
+ 		usleep_range(idata->ic.postsleep_min_us, idata->ic.postsleep_max_us);
+ 
+-	memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));
+-
+ 	if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B) {
+ 		/*
+ 		 * Ensure RPMB/R1B command has completed by polling CMD13
+-- 
+2.30.2
+
