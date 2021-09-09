@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7514045BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B093F4045BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350685AbhIIGn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:43:27 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49270 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350709AbhIIGnZ (ORCPT
+        id S1350777AbhIIGnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:43:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37366 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350854AbhIIGn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:43:25 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1896gBaL082115;
-        Thu, 9 Sep 2021 01:42:11 -0500
+        Thu, 9 Sep 2021 02:43:28 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1896gFWC057035;
+        Thu, 9 Sep 2021 01:42:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631169731;
-        bh=i/T5CHFI9h8ioTxwA6pnqpLsVdrGp6tVpLfy8pMU8Zo=;
+        s=ti-com-17Q1; t=1631169735;
+        bh=wLtrwmO0KBTWvlGY6UVPf2jvdy+hEiVk6Rtto3aVzfU=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=rDD/NnP+58rjbytrTAb4OLb2SN0x7PDa2Pk4X2p/7wZWJw4mPxWVJfLQVpasrqBjo
-         3L1akOu0yGLeYo4/nPgtMAf18WT2xW2nlwmGjPMP3nimQsumTo8gjxD1xaExjn245e
-         EEsM16oP9imX10eBq+Y1FYOp6nEFCtxQ2mAS4N5Y=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1896gBvG056079
+        b=DWrGqNCi+X/qlxOjfC+pw16TZ4HdikDxqjN1y82Mmcq5cRfrhWnFVZzVBn/s1nvV/
+         qDnDynupjjKGXo6r6JZTaUBiN+mtV24Q2NFxTH9CHsZZeZA96ikqsU3m7VavDFYKWB
+         s8Rb5069VtVBS5ZssiP16Em9lBFuzc/lWmHYMD+w=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1896gFgr029618
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 9 Sep 2021 01:42:11 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 9 Sep 2021 01:42:15 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
- Sep 2021 01:42:11 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2021 01:42:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 9 Sep 2021 01:42:11 -0500
+ Frontend Transport; Thu, 9 Sep 2021 01:42:15 -0500
 Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1896g04R062945;
-        Thu, 9 Sep 2021 01:42:08 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1896g04S062945;
+        Thu, 9 Sep 2021 01:42:12 -0500
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mathias Nyman <mathias.nyman@intel.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <chris.chiu@canonical.com>, Kishon Vijay Abraham I <kishon@ti.com>,
         <lokeshvutla@ti.com>
-Subject: [PATCH v4 2/3] xhci: Set HCD flag to defer primary roothub registration
-Date:   Thu, 9 Sep 2021 12:11:59 +0530
-Message-ID: <20210909064200.16216-3-kishon@ti.com>
+Subject: [PATCH v4 3/3] usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
+Date:   Thu, 9 Sep 2021 12:12:00 +0530
+Message-ID: <20210909064200.16216-4-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210909064200.16216-1-kishon@ti.com>
 References: <20210909064200.16216-1-kishon@ti.com>
@@ -57,33 +57,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set "HCD_FLAG_DEFER_RH_REGISTER" to hcd->flags in xhci_run() to defer
-registering primary roothub in usb_add_hcd(). This will make sure both
-primary roothub and secondary roothub will be registered along with the
-second HCD. This is required for cold plugged USB devices to be detected
-in certain PCIe USB cards (like Inateck USB card connected to AM64 EVM
-or J7200 EVM).
+No functional change. Since configuration to stop HCD is invoked from
+multiple places, group all of them in usb_stop_hcd().
 
-CC: stable@vger.kernel.org # 5.4+
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Suggested-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 Tested-by: Chris Chiu <chris.chiu@canonical.com>
 ---
- drivers/usb/host/xhci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/core/hcd.c | 39 ++++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 3618070eba78..7176058c7f3e 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -692,6 +692,7 @@ int xhci_run(struct usb_hcd *hcd)
- 		if (ret)
- 			xhci_free_command(xhci, command);
- 	}
-+	set_bit(HCD_FLAG_DEFER_RH_REGISTER, &hcd->flags);
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
- 			"Finished xhci_run for USB2 roothub");
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index 99ff2d23be05..7ee6e4cc0d89 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -2760,6 +2760,26 @@ static void usb_put_invalidate_rhdev(struct usb_hcd *hcd)
+ 	usb_put_dev(rhdev);
+ }
  
++/**
++ * usb_stop_hcd - Halt the HCD
++ * @hcd: the usb_hcd that has to be halted
++ *
++ * Stop the root-hub polling timer and invoke the HCD's ->stop callback.
++ */
++static void usb_stop_hcd(struct usb_hcd *hcd)
++{
++	hcd->rh_pollable = 0;
++	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
++	del_timer_sync(&hcd->rh_timer);
++
++	hcd->driver->stop(hcd);
++	hcd->state = HC_STATE_HALT;
++
++	/* In case the HCD restarted the timer, stop it again. */
++	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
++	del_timer_sync(&hcd->rh_timer);
++}
++
+ /**
+  * usb_add_hcd - finish generic HCD structure initialization and register
+  * @hcd: the usb_hcd structure to initialize
+@@ -2960,13 +2980,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
+ 	return retval;
+ 
+ err_register_root_hub:
+-	hcd->rh_pollable = 0;
+-	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+-	del_timer_sync(&hcd->rh_timer);
+-	hcd->driver->stop(hcd);
+-	hcd->state = HC_STATE_HALT;
+-	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+-	del_timer_sync(&hcd->rh_timer);
++	usb_stop_hcd(hcd);
+ err_hcd_driver_start:
+ 	if (usb_hcd_is_primary_hcd(hcd) && hcd->irq > 0)
+ 		free_irq(irqnum, hcd);
+@@ -3039,16 +3053,7 @@ void usb_remove_hcd(struct usb_hcd *hcd)
+ 	 * interrupt occurs), but usb_hcd_poll_rh_status() won't invoke
+ 	 * the hub_status_data() callback.
+ 	 */
+-	hcd->rh_pollable = 0;
+-	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+-	del_timer_sync(&hcd->rh_timer);
+-
+-	hcd->driver->stop(hcd);
+-	hcd->state = HC_STATE_HALT;
+-
+-	/* In case the HCD restarted the timer, stop it again. */
+-	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+-	del_timer_sync(&hcd->rh_timer);
++	usb_stop_hcd(hcd);
+ 
+ 	if (usb_hcd_is_primary_hcd(hcd)) {
+ 		if (hcd->irq > 0)
 -- 
 2.17.1
 
