@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84DF405DFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93017405E00
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344844AbhIIU3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
+        id S1345194AbhIIU3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:29:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233423AbhIIU3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:29:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F45F6054F;
-        Thu,  9 Sep 2021 20:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1631219273;
-        bh=fnkQqJX1niYT9H/+a/DbaGfg4H9TSYi5/PmDtGfAYlI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1v3wdMHmHXPx0mm0Iv+Ti+xSLjrlUVq54qI/K7/iCGbcF+7jzjIfxiT1dWPKnFZS2
-         /Qw8w/OMqmCHdh90tTVnkg2cmFNO99csuW2dlqkXf6xmYx+JkHsU1YFlmb8Xmsb21Z
-         6Cj4vdNRLdPmF8vHasQYu+FzkMJ7J7xW7DK9zl/c=
-Date:   Thu, 9 Sep 2021 13:27:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] rapidio: Avoid bogus __alloc_size warning
-Message-Id: <20210909132752.4bde36ccf50720e56160f00c@linux-foundation.org>
-In-Reply-To: <20210909161409.2250920-1-keescook@chromium.org>
-References: <20210909161409.2250920-1-keescook@chromium.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1345119AbhIIU3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 16:29:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD93611AD;
+        Thu,  9 Sep 2021 20:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631219281;
+        bh=jPUN6W/xkG1ppfaJb7l4yOz/5ULBSSfyBuZRaP9ZWNg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OroZwrt/xO67l+KPDGQZnDSbMNhRWXA1aSxjgglTXHGuIhw0x8hh6q6p61tKBmRlj
+         JBYGHg/xeYw2hL0DOogBvcOgS99RqGasvJiGmX5ZuvuWVRDOKjLIwPEfxdQYDeIiXF
+         Q0O8IDWdxzitPgv6M3jomBGcvEQcjFp2GmD27DN0mi/SrDF5BC0k3gd1smguOyOWaP
+         o0QSNNFCzgfGu+c1BXs8vQG7RZjtwGc26W9VzmfSH5UL2AxyGDUSGjEn94sugQk+sW
+         t0eOB9VtVq8eBCAnLon7zteskAxOdPZnddkq5FViNh25/2BFe/6DA+L8yEFpiTuv9m
+         3gEdyU32h6f2g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 869DC4038F; Thu,  9 Sep 2021 17:27:58 -0300 (-03)
+Date:   Thu, 9 Sep 2021 17:27:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Remi Bernon <rbernon@codeweavers.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf symbol: Look for ImageBase in PE file to compute
+ .text offset
+Message-ID: <YTpuTiYzkTKbUM/l@kernel.org>
+References: <20210909192637.4139125-1-rbernon@codeweavers.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909192637.4139125-1-rbernon@codeweavers.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Sep 2021 09:14:09 -0700 Kees Cook <keescook@chromium.org> wrote:
-
-> GCC 9.3 (but not later) incorrectly evaluates the arguments to
-> check_copy_size(), getting seemingly confused by the size being returned
-> from array_size(). Instead, perform the calculation once, which both
-> makes the code more readable and avoids the bug in GCC.
+Em Thu, Sep 09, 2021 at 09:26:36PM +0200, Remi Bernon escreveu:
+> Instead of using the file offset in the debug file.
 > 
->    In file included from arch/x86/include/asm/preempt.h:7,
->                     from include/linux/preempt.h:78,
->                     from include/linux/spinlock.h:55,
->                     from include/linux/mm_types.h:9,
->                     from include/linux/buildid.h:5,
->                     from include/linux/module.h:14,
->                     from drivers/rapidio/devices/rio_mport_cdev.c:13:
->    In function 'check_copy_size',
->        inlined from 'copy_from_user' at include/linux/uaccess.h:191:6,
->        inlined from 'rio_mport_transfer_ioctl' at drivers/rapidio/devices/rio_mport_cdev.c:983:6:
->    include/linux/thread_info.h:213:4: error: call to '__bad_copy_to' declared with attribute error: copy destination size is too small
->      213 |    __bad_copy_to();
->          |    ^~~~~~~~~~~~~~~
+> This fixes a regression from 00a3423492bc90be99e529a64f13fdd80a0e8c0a,
+> causing incorrect symbol resolution when debug file have been stripped
+> from non-debug sections (in which case its .text section is empty and
+> doesn't have any file position).
 > 
-> But the allocation size and the copy size are identical:
+> The debug files could also be created with a different file alignment,
+> and have different file positions from the mmap-ed binary, or have the
+> section reordered.
 > 
-> 	transfer = vmalloc(array_size(sizeof(*transfer), transaction.count));
-> 	if (!transfer)
-> 		return -ENOMEM;
+> This instead looks for the file image base, using the corresponding bfd
+> *ABS* symbols. As PE symbols only have 4 bytes, it also needs to keep
+> .text section vma high bits.
+
+I added a:
+
+Fixes: 00a3423492bc90be ("perf symbols: Make dso__load_bfd_symbols() load PE files from debug cache only")
+
+To help stable@kernel.org to pick it, its on my local tree now.
+
+It would be great to get a:
+
+Reviewed-by: Nicholas Fraser <nfraser@codeweavers.com> 
+
+Can we have it, please?
+
+- Arnaldo
+
+> Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+> ---
 > 
-> 	if (unlikely(copy_from_user(transfer,
-> 				    (void __user *)(uintptr_t)transaction.block,
-> 				    array_size(sizeof(*transfer), transaction.count)))) {
+> Hi!
+> 
+> As I'm not updating it often I only recently realized that perf had a
+> regression when using stripped debug info files, and all symbols from
+> PE files are off. This should make things better.
+> 
+> Cheers,
+> 
+>  tools/perf/util/symbol.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 77fc46ca07c0..0fc9a5410739 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -1581,10 +1581,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+>  	if (bfd_get_flavour(abfd) == bfd_target_elf_flavour)
+>  		goto out_close;
+>  
+> -	section = bfd_get_section_by_name(abfd, ".text");
+> -	if (section)
+> -		dso->text_offset = section->vma - section->filepos;
+> -
+>  	symbols_size = bfd_get_symtab_upper_bound(abfd);
+>  	if (symbols_size == 0) {
+>  		bfd_close(abfd);
+> @@ -1602,6 +1598,22 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+>  	if (symbols_count < 0)
+>  		goto out_free;
+>  
+> +	section = bfd_get_section_by_name(abfd, ".text");
+> +	if (section) {
+> +		for (i = 0; i < symbols_count; ++i) {
+> +			if (!strcmp(bfd_asymbol_name(symbols[i]), "__ImageBase") ||
+> +			    !strcmp(bfd_asymbol_name(symbols[i]), "__image_base__"))
+> +				break;
+> +		}
+> +		if (i < symbols_count) {
+> +			/* PE symbols can only have 4 bytes, so use .text high bits */
+> +			dso->text_offset = section->vma - (u32)section->vma;
+> +			dso->text_offset += (u32)bfd_asymbol_value(symbols[i]);
+> +		} else {
+> +			dso->text_offset = section->vma - section->filepos;
+> +		}
+> +	}
+> +
+>  	qsort(symbols, symbols_count, sizeof(asymbol *), bfd_symbols__cmpvalue);
+>  
+>  #ifdef bfd_get_section
+> -- 
+> 2.33.0
 
-That's an "error", not a warning.  Or is this thanks to the new -Werror?
+-- 
 
-Either way, I'm inclined to cc:stable on this, because use of gcc-9 on
-older kernels will be a common thing down the ages.
-
-If it's really an "error" on non-Werror kernels then definitely cc:stable.
-
+- Arnaldo
