@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD034048EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20474048ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbhIILJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 07:09:08 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59354 "EHLO mail.skyhub.de"
+        id S234906AbhIILJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:09:50 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48793 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234216AbhIILJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:09:05 -0400
-Received: from zn.tnic (p200300ec2f0e4500a512d950ff073124.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4500:a512:d950:ff07:3124])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98DDE1EC051F;
-        Thu,  9 Sep 2021 13:07:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631185671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=P4SGia4zv5d1uDpVPQGhMPIvAopBVtBUT+4Tkct+Xuw=;
-        b=OdDajBG0ZEE9YklBTtUXlNYu5pL6prbv1Afmi+Jbdol7QyOFDFIx9KNuC3O9B9hAGpO0gD
-        Ex4aVQinm+R6ipez7kkkIm85p6KdpUGPii8vlWLpHXXFLRk5qv+WwbleUXdA6CJQ7d09Z0
-        a1Cq4Dlu4Ljpj6XzkCG7huCs1DOwP0M=
-Date:   Thu, 9 Sep 2021 13:07:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     wujinhua <wujinhua@linux.alibaba.com>
-Cc:     x86 <x86@kernel.org>, "zelin.deng" <zelin.deng@linux.alibaba.com>,
-        "jiayu.ni" <jiayu.ni@linux.alibaba.com>, ak <ak@linux.intel.com>,
-        "luming.yu" <luming.yu@intel.com>, "fan.du" <fan.du@intel.com>,
-        "artie.ding" <artie.ding@linux.alibaba.com>,
-        "tony.luck" <tony.luck@intel.com>, tglx <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "pawan.kumar.gupta" <pawan.kumar.gupta@linux.intel.com>,
-        "fenghua.yu" <fenghua.yu@intel.com>, hpa <hpa@zytor.com>,
-        "ricardo.neri-calderon" <ricardo.neri-calderon@linux.intel.com>,
-        peterz <peterz@infradead.org>
-Subject: Re: =?utf-8?B?5Zue5aSN77yaW1BBVENIXSBwZXJm?= =?utf-8?Q?=3A_optimiz?=
- =?utf-8?Q?e?= clear page in Intel specified model with movq instruction
-Message-ID: <YTnq/3rzmD6ADyZm@zn.tnic>
-References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
- <YTnWXIB42sCLbM2k@zn.tnic>
- <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
+        id S233990AbhIILJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:09:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631185707;
+        bh=AAIXTUSD2D+UBvM2ZbhnEuK+blZbIXOcoQG3/MEal9c=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=LCfkrbakCGoPJrMf8RHEpkgMV5b+E3D09/Pg2P1MUZSFFEMaSSZgltRyTPpxF6h2F
+         e+IOd/dFGn50ftH714QpkR44YqrXyQCiELHsslEDH0rjHlOyyxO4KA9VujhYbG7/cH
+         cPZ1fgbrnHXxHMb8AY1ALSQDWy2kVfGrr9tDmGDw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MacOQ-1mvgiv1erS-00c9cG; Thu, 09
+ Sep 2021 13:08:27 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
+ <20210909101451.jhfk45gitpxzblap@skbuf>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
+Date:   Thu, 9 Sep 2021 13:08:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210909101451.jhfk45gitpxzblap@skbuf>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/wwtckDhDW6OpxHZAWeZEXMWVj4tAjKBl2xYBkDv++je5LVyan9
+ o7dniwUh87k9qsx5pemOMg5DwMjmDYlHCYZFoLidJVHF3PDlHY4C5Fk6heaox7MuqKRmJG6
+ 64JYZHL7q2FoJ/ZehVGnV50+SfDJMBT43Qwmiwi105qRGzoaanLmnC5AZQp6Sqz9/7zZF2e
+ 2LYfHwQ4ry8REopuR00Vw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N6VlbDoFWT8=:5hhJqPmPxuzwCWPyL0fWon
+ vddAbhotSJBIPWiXLDF86CUJzkTc+yyQ9MhQFtbpUkEiwR87YAjE59YLfaJnMiA/yc37UsNhh
+ aPAILjj8A2FoskO2N0oGSP18hpwrTx/MXWUiEZD/OsWWcC3cyDQbjTIy8CevngSwm9DpnarSK
+ fORQ9GKPmXFs180y1r4DSd/LbATypPOVDWl0g3nQCB3QAYyUOV2+Pwk3MHpm/yJpYTJ/+Bgl6
+ LPu3XfKBkB4IbIUovTFUpdZ22stvNjSREjHoX8TTN/oQzphmT66F+3MUui2pAO2KPhsRoJegX
+ X026HXIz4CZJGYVI4syJoyVfjn4S40afBFCpPUwVe0wJtLcDIHShJKwUrbr8plzmGNWpU73Dq
+ BxgE59YtSVcr/McecZCrCwE6DbAU3b5tYIq9jQbGyDCoxV1lyapR7KrhAbGrrXUTxZYFDMBzf
+ fcAuXXY7JFE769LpPlu5BBql9uF7ww+wp7Jzd4CeUYgsbwkWX3ckZB5ZUQsL91oCt7t8IGyCk
+ fRTiejOJVJQnUQr4+OKrcec6KS5gnqOogscdu9JdbH4eVF7kIiw+9ckr3a1HEzM4d79lIWHDI
+ Gev0htMlxFfw8nPVvh6E5E+iOzt59C4P0eK/LCajSltFidcCwW1r1vBH9FpXw3+lkVsfF0pug
+ sq4xX2UcEk43XxYBW/zvF+HxQTnG8xmRiZFXFfbPU1lwhBBkLbsdxgFDwHt9z3pH3MAP5w1wt
+ xbmw0NjxetIhKIitUYaOphCb+ETTrCBaBfRhB7PaSFUfPx2MgkuqERRzKwdRkO5VjFmgPxLyG
+ Rm5adkRxOpvtLwk3dAjEBN+KePb/Tq4IjX/Uq4Kos4NAeq8z5SiJhDxeOEva77Ml+jfmi/AkZ
+ 7nVsepjwD9a3hlEg6dVWxKWNtvzsJrjCnl5LRS67Wfn1UduOvCKvM1aN2cgHPg0JgValsEhAy
+ 03R07yCaPgY9dMwK1vDLB74lWIi4wzMe0KuJFo6I5mnIqZlDZQVtFqF2hqybbNSEuXxwr3QFn
+ 9kavCjKNJuhVoFk4i53rz/akAkkWoMY/vnaWIHUGhhP9Amgayvn5xuhCyiGLommHWr9pf14jW
+ mdw7WTp1zTpJcg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 07:02:08PM +0800, wujinhua wrote:
-> I provide three tests and result for you. All the tests run in Intel
-> CPX.
 
-I said
+Hi,
 
-"What you should do is show the extensive tests you've run with
-real-world benchmarks..."
+On 09.09.21 at 12:14, Vladimir Oltean wrote:
+>
+> Can you try this patch
+>
+> commit 07b90056cb15ff9877dca0d8f1b6583d1051f724
+> Author: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Date:   Tue Jan 12 01:09:43 2021 +0200
+>
+>     net: dsa: unbind all switches from tree when DSA master unbinds
+>
+>     Currently the following happens when a DSA master driver unbinds whi=
+le
+>     there are DSA switches attached to it:
+>
 
-Are your tests real-world benchmarks?
+This patch is already part of the kernel which shows the described shutdow=
+n issues.
 
-IOW, no microbenchmarks please.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Lino
