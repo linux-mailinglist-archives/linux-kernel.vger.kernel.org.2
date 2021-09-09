@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F184046A5
+	by mail.lfdr.de (Postfix) with ESMTP id F40684046A6
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 09:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhIIIAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 04:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        id S231829AbhIIIAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 04:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhIIIAF (ORCPT
+        with ESMTP id S231271AbhIIIAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:00:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8E9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:56 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u1-20020a25ab01000000b0059949024617so1381394ybi.17
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:56 -0700 (PDT)
+        Thu, 9 Sep 2021 04:00:07 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8ADC06179A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 00:58:58 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id e6-20020ac84e46000000b0029baad9aaa0so2646745qtw.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 00:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=i+uiXYfpgsrYOnIAkX12w45jtrWt5rc7VXN0y0x67lk=;
-        b=lKFtkC1hUMc/dNvJ6L4MxEL+gdcqk2pZRq6SyaUatRyJg6pWoLGc3X0zJNrury2oYT
-         aTyUqhK60VPGJQw7Ckfx1ZI/NPnCTXerMaghQW95fpaT6EnKTCE2f6ERfQQjE/87lA1l
-         L2vnDNxlK+y0j3Lz0Hey6AQrdSlILd2pupAzFDqeu0+WiD+fj3sPJnqfPheDWznLS9Gi
-         GRXYBrkNj5aUfCboItria7NA9WIl4naUlnBjGddu5d1wVIB1jiigGWNHP0y/rJrACuMI
-         ULlGL6RO1auLByUi47y4GhWtm3ZLkxbXe2UwIi4+xN1j2zUepVIpDumPXge5/E0T2P8f
-         +/KQ==
+        bh=8in3eNvKM5bNosYyw6M888LU8jMRnNBshM+fnnuLh8c=;
+        b=knxMpAOztiiK7xjpLpYU/MIHLywg5ApNPRb4Zi/4A04IAwhqcFadN6s2wMfTMyghXX
+         jn9k/x6cAH9N21ATOMvLbadZd54XJ4hlWBHQ5k7unbxJIIt02wtEcU/0LnTx0Wofs7ED
+         7/RtO+DkMb+0mr7VDZv1n+YFjj21X8qGMPPjYn3L45ExuYvtPkLSl6ERB4IQh+yA2zl6
+         QPiUqJQRvggSm5ucd7RHH61ZvJPCl2k1cpCQtlhBz2CpmVskak4QuuSn9NptU0f4sO3h
+         ciyVWPUX1HRivPopWr7JBzGKumvbalLn586wonBFhKvsZ6rmDQAGOGYMMdvMvuRLmdaN
+         p9rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=i+uiXYfpgsrYOnIAkX12w45jtrWt5rc7VXN0y0x67lk=;
-        b=NJBLrOSRFX3ObyS5vpRPUkOAnig2YadAOp5VSwkcSIbNkgm3QyYisl1JB9Kmm+2the
-         Uvp7PJ6rUd0+Xkm2uD7EtuB3slGir3/z1nkXc9WJST7RFrrpehUz/egUnfTBMCcIzg6W
-         57XOFjwpJ014RSnt4N7gfxCYzNYvZG4NZGJiwRHL7nEOe7hQ6Qhm5oJnmIiatO3W0gW9
-         R85RZbm6gWVJlNg9lk0IkNjDpbqf9+TV91Yd0vt8qN01UC4UH/PROomFWc5FaXPNuORm
-         CbyjifrQFmmF3KuV2MJN57wUWwrKZ0mKllrmYF2qlxTgunMsPECysGDy5unGEMNuJKcz
-         fi3Q==
-X-Gm-Message-State: AOAM533EkdWHqDpjUOBaeawZsa8PDlzTw5PnCx7ZUcsBw512u+JFyy9I
-        +XDn1+slXQuWen9OGI076Ydxv567XK843aa1XEzjQOTvrMPfjgXS0VZvtqFN/PLT1JAMCuPkjS4
-        2JNeLmRmw/4kQg3p6+5DxcOPsU9pn+IdgDRBiUi4tmCr0sIRPhsUZzkDD652jxPa4jcCP+HGJ
-X-Google-Smtp-Source: ABdhPJx84YGfJdsYvVlCDMJWjePU30GvnzMbJFfDnlWmt2QiZBfEHm/ZQIRrjEQFqoo+6sJ48cOrwonlRHrA
+        bh=8in3eNvKM5bNosYyw6M888LU8jMRnNBshM+fnnuLh8c=;
+        b=5JZwMLEG9fyi96XvIJ2cHNexoSSTECXhVV84QIvMnVvVsnbC0UsBD6GxUSxGkwe+ma
+         KlrqLnUd0Addge9hylUlPK5YgDabz/jxT5RgxJ/nZ9mCtMgXUXNaoJwhCTU3UB1zVQgY
+         VWZClEMuuDWFllmL3F673cfzHND6P1k0R3UmdtHvtHhVVtzYBybtDfAUZMtex1SguM33
+         pb5Bc7zVBYGsTRd22hWzFdw6IKzg+hJI8Gbha/9HwRMZclR8Yv/p48FZf7d07xGWIHRw
+         WybCHDeKHgbjS9r0MaZ0IEqSOV7puh3t0chRDr56+g2ziRXP4WXiRbc3u1OWQEkBg/SA
+         As+A==
+X-Gm-Message-State: AOAM531oJ9efilCBRZYA+saC+TWo9Ool+WF1yGZL30rQ/NsptMQnj0A7
+        YU6C6sbS6GsOAwUY8DutY0mOe+Db5GV49CUCCfpSImgH1J/5tfW9qg/2ZacN3cNJiFzJjjKGkZ1
+        oBMHyb1OQNlwGY9pfhCb78NsSrujqcLn0/k+6RymCPQalJZvlN6jFTbxjnii41v4UJ0Gq7XEv
+X-Google-Smtp-Source: ABdhPJwx16fXLEo1qUNzeVLG4/uTtMZ90O/HfTBkHzW+E0RS3aKXaaQceZfYz/mqKFFzCbBwjWHUQU9WeLZS
 X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:f950:61f2:f1ec:ae8b])
- (user=eranian job=sendgmr) by 2002:a25:d68e:: with SMTP id
- n136mr2292151ybg.271.1631174335303; Thu, 09 Sep 2021 00:58:55 -0700 (PDT)
-Date:   Thu,  9 Sep 2021 00:56:54 -0700
+ (user=eranian job=sendgmr) by 2002:a0c:c2c1:: with SMTP id
+ c1mr1580685qvi.59.1631174337492; Thu, 09 Sep 2021 00:58:57 -0700 (PDT)
+Date:   Thu,  9 Sep 2021 00:56:55 -0700
 In-Reply-To: <20210909075700.4025355-1-eranian@google.com>
-Message-Id: <20210909075700.4025355-8-eranian@google.com>
+Message-Id: <20210909075700.4025355-9-eranian@google.com>
 Mime-Version: 1.0
 References: <20210909075700.4025355-1-eranian@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 07/13] perf/core: add idle hooks
+Subject: [PATCH v1 08/13] perf/x86/core: add idle hooks
 From:   Stephane Eranian <eranian@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
@@ -62,175 +62,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new set of hooks to connect perf_events with the
-idle task. On some PMU models, it may be necessary to flush or stop
-the PMU when going to low power. Upon return from low power, the opposite
-action, i.e., re-enable the PMU, may be necessary. The patch adds
-perf_pmu_register_lopwr_cb() to register a callback on entry or return
-from low power. The callback is invoked with a boolean arg. If true,
-then this is an entry. If false, this is a return.
-
-The callback is invoked from the idle code with interrupts already
-disabled.
+This patch adds the perf idle hooks x86 idle routines.
 
 Signed-off-by: Stephane Eranian <eranian@google.com>
 ---
- include/linux/perf_event.h |  8 ++++++
- kernel/events/core.c       | 58 ++++++++++++++++++++++++++++++++++++++
- kernel/sched/idle.c        | 15 +++++++++-
- 3 files changed, 80 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/mwait.h |  6 +++++-
+ kernel/sched/idle.c          | 12 ++++++++----
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 2d510ad750ed..32ffc009b2ec 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -300,6 +300,7 @@ struct pmu {
- 	/* number of address filters this PMU can do */
- 	unsigned int			nr_addr_filters;
+diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
+index 29dd27b5a339..92080fdc1d2a 100644
+--- a/arch/x86/include/asm/mwait.h
++++ b/arch/x86/include/asm/mwait.h
+@@ -4,6 +4,7 @@
  
-+	struct list_head		lopwr_entry;
- 	/*
- 	 * Fully disable/enable this PMU, can be used to protect from the PMI
- 	 * as well as for lazy/batch writing of the MSRs.
-@@ -430,6 +431,8 @@ struct pmu {
- 	void (*sched_task)		(struct perf_event_context *ctx,
- 					bool sched_in);
+ #include <linux/sched.h>
+ #include <linux/sched/idle.h>
++#include <linux/perf_event.h>
  
-+	void (*lopwr_cb)		(bool lopwr_in);
-+
- 	/*
- 	 * Kmem cache of PMU specific data
- 	 */
-@@ -1429,6 +1432,11 @@ extern void perf_event_task_tick(void);
- extern int perf_event_account_interrupt(struct perf_event *event);
- extern int perf_event_period(struct perf_event *event, u64 value);
- extern u64 perf_event_pause(struct perf_event *event, bool reset);
-+extern void perf_lopwr_cb(bool lopwr_in);
-+extern void perf_lopwr_active_inc(void);
-+extern void perf_lopwr_active_dec(void);
-+extern void perf_register_lopwr_cb(struct pmu *pmu, void (*lowpwr_cb)(bool));
-+
- #else /* !CONFIG_PERF_EVENTS: */
- static inline void *
- perf_aux_output_begin(struct perf_output_handle *handle,
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 1cb1f9b8392e..f739fd92e74b 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -3521,6 +3521,64 @@ void perf_sched_cb_inc(struct pmu *pmu)
- 	this_cpu_inc(perf_sched_cb_usages);
+ #include <asm/cpufeature.h>
+ #include <asm/nospec-branch.h>
+@@ -114,8 +115,11 @@ static inline void mwait_idle_with_hints(unsigned long eax, unsigned long ecx)
+ 		}
+ 
+ 		__monitor((void *)&current_thread_info()->flags, 0, 0);
+-		if (!need_resched())
++		if (!need_resched()) {
++			perf_lopwr_cb(true);
+ 			__mwait(eax, ecx);
++			perf_lopwr_cb(false);
++		}
+ 	}
+ 	current_clr_polling();
  }
- 
-+/*
-+ * The perf_lopwr_cb() is invoked from the idle task. As such it
-+ * cannot grab a mutex that may end up sleeping. The idle task cannot
-+ * sleep by construction. Therefore we create a spinlock and a new
-+ * list of PMUs to invoke on idle. The list is protected by a spinlock
-+ * Normally we would use the pmus_lock and iterate over each PMUs. But
-+ * mutex is not possible and we need to iterate only over the PMU which
-+ * do require a idle callback.
-+ */
-+static DEFINE_SPINLOCK(lopwr_cb_lock);
-+static LIST_HEAD(lopwr_cb_pmus);
-+static DEFINE_PER_CPU(int, lopwr_nr_active);
-+
-+void perf_lopwr_active_inc(void)
-+{
-+	__this_cpu_inc(lopwr_nr_active);
-+}
-+
-+void perf_lopwr_active_dec(void)
-+{
-+	__this_cpu_dec(lopwr_nr_active);
-+}
-+
-+/*
-+ * lopwr_in = true means going to low power state
-+ * lopwr_in = false means returning from low power state
-+ */
-+void perf_lopwr_cb(bool lopwr_in)
-+{
-+	struct pmu *pmu;
-+	unsigned long flags;
-+
-+	if (!__this_cpu_read(lopwr_nr_active))
-+		return;
-+
-+	spin_lock_irqsave(&lopwr_cb_lock, flags);
-+
-+	list_for_each_entry(pmu, &lopwr_cb_pmus, lopwr_entry) {
-+		if (pmu->lopwr_cb)
-+			pmu->lopwr_cb(lopwr_in);
-+	}
-+
-+	spin_unlock_irqrestore(&lopwr_cb_lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(perf_lopwr_cb);
-+
-+void perf_register_lopwr_cb(struct pmu *pmu, void (*func)(bool))
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lopwr_cb_lock, flags);
-+
-+	pmu->lopwr_cb   = func;
-+	list_add_tail(&pmu->lopwr_entry, &lopwr_cb_pmus);
-+
-+	spin_unlock_irqrestore(&lopwr_cb_lock, flags);
-+}
-+
- /*
-  * This function provides the context switch callback to the lower code
-  * layer. It is invoked ONLY when the context switch callback is enabled.
 diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 912b47aa99d8..14ce130aee1b 100644
+index 14ce130aee1b..c0ddc3c32a33 100644
 --- a/kernel/sched/idle.c
 +++ b/kernel/sched/idle.c
-@@ -179,6 +179,7 @@ static void cpuidle_idle_call(void)
+@@ -179,7 +179,6 @@ static void cpuidle_idle_call(void)
  	 */
  	if (need_resched()) {
  		local_irq_enable();
-+		perf_lopwr_cb(false);
+-		perf_lopwr_cb(false);
  		return;
  	}
  
-@@ -191,7 +192,14 @@ static void cpuidle_idle_call(void)
- 	if (cpuidle_not_available(drv, dev)) {
+@@ -230,6 +229,9 @@ static void cpuidle_idle_call(void)
  		tick_nohz_idle_stop_tick();
+ 
+ 		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
++		if (!cpu_idle_force_poll)
++			perf_lopwr_cb(true);
++
+ 		call_cpuidle(drv, dev, next_state);
+ 	} else {
+ 		bool stop_tick = true;
+@@ -244,12 +246,17 @@ static void cpuidle_idle_call(void)
+ 		else
+ 			tick_nohz_idle_retain_tick();
  
 +		if (!cpu_idle_force_poll)
 +			perf_lopwr_cb(true);
 +
- 		default_idle_call();
-+
-+		if (!cpu_idle_force_poll)
-+			perf_lopwr_cb(false);
-+
- 		goto exit_idle;
+ 		entered_state = call_cpuidle(drv, dev, next_state);
+ 		/*
+ 		 * Give the governor an opportunity to reflect on the outcome
+ 		 */
+ 		cpuidle_reflect(dev, entered_state);
  	}
- 
-@@ -249,8 +257,10 @@ static void cpuidle_idle_call(void)
- 	/*
- 	 * It is up to the idle functions to reenable local interrupts
- 	 */
--	if (WARN_ON_ONCE(irqs_disabled()))
-+	if (WARN_ON_ONCE(irqs_disabled())) {
- 		local_irq_enable();
++	if (!cpu_idle_force_poll)
 +		perf_lopwr_cb(false);
-+	}
+ 
+ exit_idle:
+ 	__current_set_polling();
+@@ -259,7 +266,6 @@ static void cpuidle_idle_call(void)
+ 	 */
+ 	if (WARN_ON_ONCE(irqs_disabled())) {
+ 		local_irq_enable();
+-		perf_lopwr_cb(false);
+ 	}
  }
  
- /*
-@@ -279,9 +289,12 @@ static void do_idle(void)
- 	__current_set_polling();
- 	tick_nohz_idle_enter();
- 
-+
+@@ -293,8 +299,6 @@ static void do_idle(void)
  	while (!need_resched()) {
  		rmb();
  
-+		perf_lopwr_cb(true);
-+
+-		perf_lopwr_cb(true);
+-
  		local_irq_disable();
  
  		if (cpu_is_offline(cpu)) {
