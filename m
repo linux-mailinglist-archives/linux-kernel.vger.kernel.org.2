@@ -2,231 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7B4405DC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB224405DCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 21:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344917AbhIITx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 15:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
+        id S1345002AbhIITzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 15:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhIITx5 (ORCPT
+        with ESMTP id S231549AbhIITzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 15:53:57 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F79C061574;
-        Thu,  9 Sep 2021 12:52:47 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 682B661D7; Thu,  9 Sep 2021 15:52:46 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 682B661D7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1631217166;
-        bh=AyCGtbYT4RaWW9mMiPagkXBG5RFU2mC5Liwb9pv6z8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dRKxUKynZSPtK3tk1DW/mwu+lsnRKT/J6fWKEc+JLtyLCWuxYak8B+zv7yovsq6FA
-         ZLNGESftHk8u8rq4ihSqSCnuAuXAvbgDDeIMJ20j8CKd20vd6PT0fxvnOCX+1NZxT5
-         6vpPu6qO5a1WM8nkbcuSHyGRGYk+jSjH9dMApUKc=
-Date:   Thu, 9 Sep 2021 15:52:46 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     "wanghai (M)" <wanghai38@huawei.com>
-Cc:     Wenbin Zeng <wenbin.zeng@gmail.com>, viro@zeniv.linux.org.uk,
-        davem@davemloft.net, jlayton@kernel.org,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        wenbinzeng@tencent.com, dsahern@gmail.com,
-        nicolas.dichtel@6wind.com, willy@infradead.org,
-        edumazet@google.com, jakub.kicinski@netronome.com,
-        tyhicks@canonical.com, chuck.lever@oracle.com, neilb@suse.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] auth_gss: netns refcount leaks when
- use-gss-proxy==1
-Message-ID: <20210909195246.GB13808@fieldses.org>
-References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
- <1557470163-30071-1-git-send-email-wenbinzeng@tencent.com>
- <20190515010331.GA3232@fieldses.org>
- <20190612083755.GA27776@bridge.tencent.com>
- <20190612155224.GF16331@fieldses.org>
- <2c9e3d91-f4b3-6f6a-0dc0-21cef4fab3bb@huawei.com>
- <20210908205103.GE23978@fieldses.org>
- <eef31464-9807-49f6-fc81-ee7425cc481d@huawei.com>
+        Thu, 9 Sep 2021 15:55:31 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A822C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 12:54:21 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id a1so3171821ilj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 12:54:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=iShYJ32xDiHcWLhTqCfK1ZR1yO9OyaBO2PNbhBqcZuI=;
+        b=N7LMKwrD3cNfSvYn8EIm4d5qB6L335/PfR90mOpYMcYrFTkTjOvgUlTh2va3EDJwdT
+         Ix3JJLKXmHK/hsoQhUFlrjElUniI9op0HHuRYHKQeO84n3Dq4j/Hl/S7h7p06RH64cEC
+         9NjeAD4Sz4tp/0lrZWY6acmbqUmFzA5kKc4gjgzvED2Qb3THD5tTW4MwoAkJGxKNcgeK
+         KDsxHCkRmDiUzrInKnM0f+1QtX6G52kHP5EVKaciwAZk4ahcn6gIxpXBXUFYVbYpug9j
+         XxhkDR27odsSKEyVmYQtka6tE8ModF/pCt96k3wtHJDe3yxaCetUp4FmfKYyvtISqkpt
+         NaYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=iShYJ32xDiHcWLhTqCfK1ZR1yO9OyaBO2PNbhBqcZuI=;
+        b=xZ6i8xveMFsSPICb17MXZRnpjyqfvZYsRcjSp3pu0N1mnpDW64ju/IW6/flfuRs/KY
+         0VU/Jyjqc/ynjhHHGrGhVyBsyKeWjAzHRxR2RgcxrLokrx8bZ64WPI3cROfU/5DKZbc1
+         DoJvDaTZmGYZf9beH7O1xzB+wBpY4txV+mj4QOaDtRb64MGMjU0Zxir8SmB4eFCvbnaa
+         HfcUxKZ+vpufQa2l0BE0rkklC1BOzAS2GVg3fHtbxr/BMFHvqjs3KYxJhOwRXYwSy3XJ
+         4JVKHdxLee6gkF4thsjGX+PHkvMpYOhZ+hwfyGhp1QPJWxea+MvPprMSyfLXWl5aW6/i
+         jUPQ==
+X-Gm-Message-State: AOAM5316BPwg+pG/MVYgD0KG6zktxZgwwHEo9KFtusjxsczcXj7nTvLk
+        Em6gKF1SrRguRz6oRBDo3EZaAg==
+X-Google-Smtp-Source: ABdhPJwWTj/Ia+wX7Pghcp8pPPi9/rjwpGl2OLF79WALTgqqHh66LAtzAUief2+m8D+/vAqzNvLz9A==
+X-Received: by 2002:a05:6e02:1b08:: with SMTP id i8mr3580902ilv.161.1631217260825;
+        Thu, 09 Sep 2021 12:54:20 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id a16sm1399414ili.64.2021.09.09.12.54.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 12:54:20 -0700 (PDT)
+Message-ID: <8984f8a3c0dfd3a5f83fb5cc7b0357dca4787274.camel@ndufresne.ca>
+Subject: Re: [EXT] Re: [PATCH v8 04/15] media:Add v4l2 event codec_error and
+ skip
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ming Qian <ming.qian@nxp.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Cc:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 09 Sep 2021 15:54:18 -0400
+In-Reply-To: <AM6PR04MB634124118288EC775F05AFC3E7D59@AM6PR04MB6341.eurprd04.prod.outlook.com>
+References: <cover.1631002447.git.ming.qian@nxp.com>
+         <647f84c1e7c2a48d6492d38fa4f06586235500b8.1631002447.git.ming.qian@nxp.com>
+         <fffd24d3374ecb2fbfafa9b85fa0ef8012fc7efa.camel@ndufresne.ca>
+         <AM6PR04MB634124118288EC775F05AFC3E7D59@AM6PR04MB6341.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <eef31464-9807-49f6-fc81-ee7425cc481d@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 10:52:51AM +0800, wanghai (M) wrote:
+Le jeudi 09 septembre 2021 à 03:13 +0000, Ming Qian a écrit :
+> > -----Original Message-----
+> > From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
+> > Sent: Wednesday, September 8, 2021 9:33 PM
+> > To: Ming Qian <ming.qian@nxp.com>; mchehab@kernel.org;
+> > shawnguo@kernel.org; robh+dt@kernel.org; s.hauer@pengutronix.de
+> > Cc: hverkuil-cisco@xs4all.nl; kernel@pengutronix.de; festevam@gmail.com;
+> > dl-linux-imx <linux-imx@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
+> > linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: [EXT] Re: [PATCH v8 04/15] media:Add v4l2 event codec_error and
+> > skip
+> > 
+> > Caution: EXT Email
+> > 
+> > Hi Ming,
+> > 
+> > more API only review.
+> > 
+> > Le mardi 07 septembre 2021 à 17:49 +0800, Ming Qian a écrit :
+> > > The codec_error event can tell client that there are some error occurs
+> > > in the decoder engine.
+> > > 
+> > > The skip event can tell the client that there are a frame has been
+> > > decoded, but it won't be outputed.
+> > > 
+> > > Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> > > Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
+> > > Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
+> > > ---
+> > >  .../userspace-api/media/v4l/vidioc-dqevent.rst       | 12 ++++++++++++
+> > >  include/uapi/linux/videodev2.h                       |  2 ++
+> > >  2 files changed, 14 insertions(+)
+> > > 
+> > > diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> > > b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> > > index 6eb40073c906..87d40ad25604 100644
+> > > --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> > > +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> > > @@ -182,6 +182,18 @@ call.
+> > >       the regions changes. This event has a struct
+> > >       :c:type:`v4l2_event_motion_det`
+> > >       associated with it.
+> > > +    * - ``V4L2_EVENT_CODEC_ERROR``
+> > > +      - 7
+> > > +      - This event is triggered when some error occurs inside the codec
+> > engine,
+> > > +     usually it can be replaced by a POLLERR event, but in some cases,
+> > > the
+> > POLLERR
+> > > +     may cause the application to exit, but this event can allow the
+> > application to
+> > > +     handle the codec error without exiting.
+> > 
+> > Events are sent to userspace in a separate queue from the VB2 queue. Which
+> > means it's impossible for userspace to know where this error actually took
+> > place.
+> > Userspace may endup discarding valid frames from the VB queue, as it does
+> > not know which one are good, and which one are bad.
+> > 
+> > There is likely a bit of spec work to be done here for non-fatal decode
+> > errors,
+> > but I think the right approach is to use V4L2_BUF_FLAG_ERROR. What we
+> > expect from decoders is that for each frame, a CAPTURE buffer is assigned.
+> > If
+> > decoding that frame was not possible but the error is recoverable (corrupted
+> > bitstream, missing reference, etc.), then the failing frame get marked with
+> > FLAG_ERROR and decoding continues as usual.
+> > 
+> > What isn't documented is that you can set bytesused to 0, meaning there is
+> > nothing useful in that frame, or a valid bytesused when you know only some
+> > blocks are broken (e.g. missing 1 ref). Though, GStreamer might be the only
+> > implementation of that, and byteused 0 may confuse some existing userspace.
+> > 
 > 
-> 在 2021/9/9 4:51, J. Bruce Fields 写道:
-> >On Tue, Sep 07, 2021 at 10:48:52PM +0800, wanghai (M) wrote:
-> >>在 2019/6/12 23:52, J. Bruce Fields 写道:
-> >>>On Wed, Jun 12, 2019 at 04:37:55PM +0800, Wenbin Zeng wrote:
-> >>>>On Tue, May 14, 2019 at 09:03:31PM -0400, J. Bruce Fields wrote:
-> >>>>>Whoops, I was slow to test these.  I'm getting failuring krb5 nfs
-> >>>>>mounts, and the following the server's logs.  Dropping the three patches
-> >>>>>for now.
-> >>>>My bad, I should have found it earlier. Thank you for testing it, Bruce.
-> >>>>
-> >>>>I figured it out, the problem that you saw is due to the following code:
-> >>>>the if-condition is incorrect here because sn->gssp_clnt==NULL doesn't mean
-> >>>>inexistence of 'use-gss-proxy':
-> >>>Thanks, but with the new patches I see the following.  I haven't tried
-> >>>to investigate.
-> >>This patchset adds the nsfs_evict()->netns_evict() code for breaking
-> >>deadlock bugs that exist, but this may cause double free because
-> >>nsfs_evict()->netns_evict() may be called multiple times.
-> >>
-> >>for example:
-> >>
-> >>int main()
-> >>{
-> >>     int fd = open("/proc/self/ns/net", O_RDONLY);
-> >>     close(fd);
-> >>
-> >>     fd = open("/proc/self/ns/net", O_RDONLY);
-> >>     close(fd);
-> >>}
-> >>
-> >>Therefore, the nsfs evict cannot be used to break the deadlock.
-> >Sorry, I haven't really been following this, but I though this problem
-> >was fixed by your checking for gssp_clnt (instead of just relying on the
-> >use_gssp_proc check) in v3 of your patches?
-> >
-> >--b.
-> Sorry, I'm not Wenbin Zeng.
+> Hi Nicolas,
+>     We don't use this event to tell userspace which frame is broken. Actually
+> it tries to tell userspace that 
+> the decoder is abnormal and there will be no more frames output. The usersapce
+> shouldn't wait, it can reset the decoder instance if it wants to continue
+> decoding more frames, or it can exit directly.
+>     Usually there will no capture buffer can be dequeued, so we can't set a
+> V4L2_BUF_FLAG_ERROR flag to a capture buffer.
 
-Apologies!
+That is not logical, if userspace asked to decode a buffer, but didn't queue
+back any CAPTURE buffer, you are expected to just sit there and wait.
 
-> I recently encountered the same problem
-> and found that Zeng had posted a patchset for it. However, after my
-> own analysis, I found that Zeng's patchset will cause the dobule
-> free problem.
+>     In my opinion, setting bytesused to 0 means eos, and as you say, it may
+> confuse some existing userspace.
+
+Byteused 0 only mean EOS for one specific driver, MFC. That behaviour was kept
+to avoid breaking existing userspace. In fact, you have to opt in, the framework
+will prevent you from using it for that purpose.
+
+>     I think it can be replaced by POLLERR in most of case, but we meet some
+> applications who prefer to use this event instead of pollerr
+
+In general, recoverable errors should be handled without the need for userspace
+to reset. This looks more like you have a bug in your error handling and deffer
+it to userspace. Most userspace will just abort and report to users, I doubt
+this is really what you expect.
+
+What matters for recoverable errors is that you keep consuming OUTPUT buffers.
+And userspace should be happy with never getting anything from the CAPTURE till
+the propblem was recovered by the driver. Of course, userspace should probably
+garbage collect the metadata it might be holding, chromium does that with a
+leaky queue of 16 metadata buffer notably
+
+My recommandation would be to drop this for now, and just try to not stall on
+errors (or make it a hard failure for now, pollerr, or ioctl errors).
+
 > 
-> The v3 patches also has the double free issue. Because
-> nsfs_evict()->netns_evict()->gss_svc_shutdown_net()->cache_purge()
-> can be called multiple times.
-
-OK, I see.
-
-> And, even if there is no double free problem, the application can
-> make the evict called earlier by 'open("/proc/self/ns/net",
-> O_RDONLY); close(fd);', which makes sunrpc unusable.
-
-So it seems like we'd need a way to atomically check whether the only
-remaining reference counts on the network namespace were held by this
-rpc client and then continue shutting it down if so?
-
-If that's not practical, maybe another solution would be to provide
-userspace with some explicit way to shut this down, and modify gssproxy
-to do that.
-
---b.
-
-> Therefore, the v3 patchset is also not applicable.
 > 
-> This issue causes an OOM on my server after multiple docker creation
-> and destruction, and I don't have a good solution at the moment.
-> >>A large number of netns leaks may cause OOM problems, currently I
-> >>can't find a good solution to fix it, does anyone have a good idea?
-> >>>--b.
-> >>>
-> >>>[ 2908.134813] ------------[ cut here ]------------
-> >>>[ 2908.135732] name 'use-gss-proxy'
-> >>>[ 2908.136276] WARNING: CPU: 2 PID: 15032 at fs/proc/generic.c:673 remove_proc_entry+0x124/0x190
-> >>>[ 2908.138144] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
-> >>>[ 2908.140183] CPU: 2 PID: 15032 Comm: (coredump) Not tainted 5.2.0-rc2-00441-gaef575f54640 #2257
-> >>>[ 2908.142062] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
-> >>>[ 2908.143756] RIP: 0010:remove_proc_entry+0x124/0x190
-> >>>[ 2908.144519] Code: c3 48 c7 c7 60 24 8b 82 e8 29 16 a5 00 eb d5 48 c7 c7 60 24 8b 82 e8 1b 16 a5 00 4c 89 e6 48 c7 c7 ec 4c 52 82 e8 50 fd db ff <0f> 0b eb b6 48 8b 04 24 83 a8 90 00 00 00 01 e9 78 ff ff ff 4c 89
-> >>>[ 2908.148138] RSP: 0018:ffffc900047bbdb0 EFLAGS: 00010282
-> >>>[ 2908.148945] RAX: 0000000000000000 RBX: ffff888036060580 RCX: 0000000000000000
-> >>>[ 2908.150139] RDX: ffff88807fd24e80 RSI: ffff88807fd165b8 RDI: 00000000ffffffff
-> >>>[ 2908.151334] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> >>>[ 2908.152564] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffa00adb1b
-> >>>[ 2908.153816] R13: 00007ffc8bda5d30 R14: 0000000000000000 R15: ffff88805e2873a8
-> >>>[ 2908.155007] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
-> >>>[ 2908.156421] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>[ 2908.157333] CR2: 0000562b07764c58 CR3: 000000005e8ea001 CR4: 00000000001606e0
-> >>>[ 2908.158529] Call Trace:
-> >>>[ 2908.158796]  destroy_use_gss_proxy_proc_entry+0xb7/0x150 [auth_rpcgss]
-> >>>[ 2908.159966]  gss_svc_shutdown_net+0x11/0x170 [auth_rpcgss]
-> >>>[ 2908.160830]  netns_evict+0x2f/0x40
-> >>>[ 2908.161266]  nsfs_evict+0x27/0x40
-> >>>[ 2908.161685]  evict+0xd0/0x1a0
-> >>>[ 2908.162035]  __dentry_kill+0xdf/0x180
-> >>>[ 2908.162520]  dentry_kill+0x50/0x1c0
-> >>>[ 2908.163005]  ? dput+0x1c/0x2b0
-> >>>[ 2908.163369]  dput+0x260/0x2b0
-> >>>[ 2908.163739]  path_put+0x12/0x20
-> >>>[ 2908.164155]  do_faccessat+0x17c/0x240
-> >>>[ 2908.164643]  do_syscall_64+0x50/0x1c0
-> >>>[ 2908.165170]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >>>[ 2908.165959] RIP: 0033:0x7f47098e2157
-> >>>[ 2908.166445] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
-> >>>[ 2908.169994] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-> >>>[ 2908.171315] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
-> >>>[ 2908.172563] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
-> >>>[ 2908.173753] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
-> >>>[ 2908.174943] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
-> >>>[ 2908.176163] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
-> >>>[ 2908.177395] irq event stamp: 4256
-> >>>[ 2908.177835] hardirqs last  enabled at (4255): [<ffffffff811221ee>] console_unlock+0x41e/0x590
-> >>>[ 2908.179378] hardirqs last disabled at (4256): [<ffffffff81001b2f>] trace_hardirqs_off_thunk+0x1a/0x1c
-> >>>[ 2908.181031] softirqs last  enabled at (4252): [<ffffffff820002be>] __do_softirq+0x2be/0x4aa
-> >>>[ 2908.182458] softirqs last disabled at (4233): [<ffffffff810bf8e0>] irq_exit+0x80/0x90
-> >>>[ 2908.183869] ---[ end trace d88132b63efc09d8 ]---
-> >>>[ 2908.184620] BUG: kernel NULL pointer dereference, address: 0000000000000030
-> >>>[ 2908.185829] #PF: supervisor read access in kernel mode
-> >>>[ 2908.186924] #PF: error_code(0x0000) - not-present page
-> >>>[ 2908.187887] PGD 0 P4D 0
-> >>>[ 2908.188318] Oops: 0000 [#1] PREEMPT SMP PTI
-> >>>[ 2908.189254] CPU: 2 PID: 15032 Comm: (coredump) Tainted: G        W         5.2.0-rc2-00441-gaef575f54640 #2257
-> >>>[ 2908.192506] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
-> >>>[ 2908.195137] RIP: 0010:__lock_acquire+0x3d2/0x1d90
-> >>>[ 2908.196414] Code: db 48 8b 84 24 88 00 00 00 65 48 33 04 25 28 00 00 00 0f 85 be 10 00 00 48 8d 65 d8 44 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <48> 81 3f 60 0d 01 83 41 bb 00 00 00 00 45 0f 45 d8 83 fe 01 0f 87
-> >>>[ 2908.202720] RSP: 0018:ffffc900047bbc80 EFLAGS: 00010002
-> >>>[ 2908.204165] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-> >>>[ 2908.206125] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000030
-> >>>[ 2908.208203] RBP: ffffc900047bbd40 R08: 0000000000000001 R09: 0000000000000000
-> >>>[ 2908.210219] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807ad91500
-> >>>[ 2908.211386] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000282
-> >>>[ 2908.212532] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
-> >>>[ 2908.213647] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>[ 2908.214400] CR2: 0000000000000030 CR3: 000000005e8ea001 CR4: 00000000001606e0
-> >>>[ 2908.215393] Call Trace:
-> >>>[ 2908.215589]  ? __lock_acquire+0x255/0x1d90
-> >>>[ 2908.216071]  ? clear_gssp_clnt+0x1b/0x50 [auth_rpcgss]
-> >>>[ 2908.216720]  ? __mutex_lock+0x99/0x920
-> >>>[ 2908.217114]  lock_acquire+0x95/0x1b0
-> >>>[ 2908.217484]  ? cache_purge+0x1c/0x110 [sunrpc]
-> >>>[ 2908.218000]  _raw_spin_lock+0x2f/0x40
-> >>>[ 2908.218370]  ? cache_purge+0x1c/0x110 [sunrpc]
-> >>>[ 2908.218882]  cache_purge+0x1c/0x110 [sunrpc]
-> >>>[ 2908.219346]  gss_svc_shutdown_net+0xb8/0x170 [auth_rpcgss]
-> >>>[ 2908.220104]  netns_evict+0x2f/0x40
-> >>>[ 2908.220439]  nsfs_evict+0x27/0x40
-> >>>[ 2908.220786]  evict+0xd0/0x1a0
-> >>>[ 2908.221050]  __dentry_kill+0xdf/0x180
-> >>>[ 2908.221458]  dentry_kill+0x50/0x1c0
-> >>>[ 2908.221842]  ? dput+0x1c/0x2b0
-> >>>[ 2908.222126]  dput+0x260/0x2b0
-> >>>[ 2908.222384]  path_put+0x12/0x20
-> >>>[ 2908.222753]  do_faccessat+0x17c/0x240
-> >>>[ 2908.223125]  do_syscall_64+0x50/0x1c0
-> >>>[ 2908.223479]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >>>[ 2908.224152] RIP: 0033:0x7f47098e2157
-> >>>[ 2908.224566] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
-> >>>[ 2908.228198] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-> >>>[ 2908.229496] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
-> >>>[ 2908.230938] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
-> >>>[ 2908.232182] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
-> >>>[ 2908.233481] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
-> >>>[ 2908.234750] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
-> >>>[ 2908.236068] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
-> >>>[ 2908.237861] CR2: 0000000000000030
-> >>>[ 2908.238277] ---[ end trace d88132b63efc09d9 ]---
-> >.
-> >
+> > > +    * - ``V4L2_EVENT_SKIP``
+> > > +      - 8
+> > > +      - This event is triggered when one frame is decoded, but it won't
+> > > be
+> > outputed
+> > > +     to the display. So the application can't get this frame, and the
+> > > input
+> > frame count
+> > > +     is dismatch with the output frame count. And this evevt is telling
+> > > the
+> > client to
+> > > +     handle this case.
+> > 
+> > Similar to my previous comment, this event is flawed, since userspace cannot
+> > know were the skip is located in the queued buffers. Currently, all decoders
+> > are
+> > mandated to support V4L2_BUF_FLAG_TIMESTAMP_COPY. The timestamp
+> > must NOT be interpreted by the driver and must be reproduce as-is in the
+> > associated CAPTURE buffer. It is possible to "garbage" collect skipped
+> > frames
+> > with this method, though tedious.
+> > 
+> > An alternative, and I think it would be much nicer then this, would be to
+> > use
+> > the v4l2_buffer.sequence counter, and just make it skip 1 on skips. Though,
+> > the
+> > down side is that userspace must also know how to reorder frames (a driver
+> > job for stateless codecs) in order to identify which frame was skipped. So
+> > this
+> > is perhaps not that useful, other then knowing something was skipped in the
+> > past.
+> > 
+> > A third option would be to introduce V4L2_BUF_FLAG_SKIPPED. This way the
+> > driver could return an empty payload (bytesused = 0) buffer with this flag
+> > set,
+> > and the proper timestamp properly copied. This would let the driver
+> > communicate skipped frames in real-time. Note that this could break with
+> > existing userspace, so it would need to be opted-in somehow (a control or
+> > some flags).
+> 
+> Hi Nicolas,
+>    The problem we meet is that userspace doesn't care which frame is skipped,
+> it just need to know that there are a frame is skipped, the driver should
+> promise the input frame count is equals to the output frame count.
+>     Your first method is possible in theory, but we find the timestamp may be
+> unreliable, we meet many timestamp issues that userspace may enqueue invalid
+> timestamp or repeated timestamp and so on, so we can't accept this solution.
+
+The driver should not interpret the provided timestamp, so it should not be able
+to say if the timestamp is valid or not, this is not the driver's task.
+
+The driver task is to match the timestamp to the CAPTURE buffer (if that buffer
+was produced), and reproduce it exactly.
+
+>     I think your second option is better. And there are only 1 question, we
+> find some application prefer to use the V4L2_EVENT_EOS to check the eos, not
+> checking the empty buffer, if we use this method to check skipped frame, the
+
+Checking the empty buffer is a legacy method, only available in Samsung MFC
+driver. The spec says that the last buffer should be flagged with _LAST, and any
+further attempt to poll should unblock and DQBUF return EPIPE.
+
+> application should check empty buffer instead of V4L2_EVENT_EOS, otherwise if
+> the last frame is skipped, the application will miss it. Of course this is not
+> a problem, it just increases the complexity of the userspace implementation
+
+The EPIPE mechanism covers this issue, which we initially had with the LAST
+flag.
+
+>     I don't think your third method is feasible, the reasons are as below
+> 		1. usually the empty payload means eos, and as you say, it
+> may introduce confusion.
+>     	2. The driver may not have the opportunity to return an empty payload
+> during decoding, in our driver, driver will pass the capture buffer to
+> firmware, and when some frame is skipped, the firmware won't return the
+> buffer, driver may not find an available capture buffer to return to
+> userspace.
+> 
+>    The requirement is that userspace need to match the input frame count and
+> output frame count. It doesn't care which frame is skipped, so the
+> V4L2_EVENT_SKIP is the easiest way for driver and userspace.
+>    If you think this event is really inappropriate, I prefer to adopt your
+> second option
+
+Please, drop SKIP from you driver and this patchset and fix your draining
+process handling to follow the spec. The Samsung OMX component is irrelevant to
+mainline submission, the OMX code should be updated to follow the spec.
+
+> 
+> > 
+> > >      * - ``V4L2_EVENT_PRIVATE_START``
+> > >        - 0x08000000
+> > >        - Base event number for driver-private events.
+> > > diff --git a/include/uapi/linux/videodev2.h
+> > > b/include/uapi/linux/videodev2.h index 5bb0682b4a23..c56640d42dc5
+> > > 100644
+> > > --- a/include/uapi/linux/videodev2.h
+> > > +++ b/include/uapi/linux/videodev2.h
+> > > @@ -2369,6 +2369,8 @@ struct v4l2_streamparm {
+> > >  #define V4L2_EVENT_FRAME_SYNC                        4
+> > >  #define V4L2_EVENT_SOURCE_CHANGE             5
+> > >  #define V4L2_EVENT_MOTION_DET                        6
+> > > +#define V4L2_EVENT_CODEC_ERROR                       7
+> > > +#define V4L2_EVENT_SKIP                              8
+> > >  #define V4L2_EVENT_PRIVATE_START             0x08000000
+> > > 
+> > >  /* Payload for V4L2_EVENT_VSYNC */
+> > 
+> 
+
+
