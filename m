@@ -2,164 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02024058B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1414058B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 16:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353302AbhIIOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 10:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
+        id S236416AbhIIOOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 10:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347902AbhIIOMb (ORCPT
+        with ESMTP id S1353474AbhIIOOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:12:31 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE6CC08EB2A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:17:52 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b10so1970458ioq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 05:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rYmN9+Vy/Zm7v0RZi8m78PsGaMbXCo9rwM4fXnlFa0A=;
-        b=jw+iTpcLGi33/KUcEaVR3lYwDq9++0Zt56YuT9/orXgQXI25hLKmgRmzW2toJi7myz
-         JPbld8zzLLon+cNCj7SMJHWAl067f8z7RD/RvROUFdI3Ou9HjZc9T162pgu15ZOYJZWf
-         8l6XWBvHQpCKJinTzZt7rdtsbGzQav/fEejvqKQbrPDpfyb0sFGaBk0BRRnT7PFZbdPv
-         yDVqfSiMT2ie32yRsY5ei1vNEx8mK2qHqgyP2v9nXFZ+u09F6NjF7dVD9o9Dow2NTDdo
-         xk3EumusBusF2wvolA+8go4RMKS8aOVH48wEZotYmp2DTIahIZFdmmYTDp8UB7F2vQc+
-         wEzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rYmN9+Vy/Zm7v0RZi8m78PsGaMbXCo9rwM4fXnlFa0A=;
-        b=oYQfjbG5lM3sePfKHYXNQnZ8dZZwCOwitIYZVqFv2SbeDzze3cdZHpgxm9jhMMgZcd
-         jkfKKg4DmYCV/u/20c/cxm4fNY1npCarM1XwUI1vvHNha+rqVnIgc/PnoJRT5dcspvl5
-         x7spie4CXhMwa7OqBsyMi8h/FaC/9IJeNogl0wAoGG1H206d1LT9TIJIUl4YljjtYPVg
-         8B8nxxBKKOD4zOoiPaMv/ZA8eX8VTzOkq6LWVyMkLfcLe+pwMu3rEjcCnnKNFwm1Sckn
-         YwdDKBTRgp+XqkAYL4he4+YZ5EqgyaYDZBHqc/0rbKPAOESANA2zSgdu0C6uBGBZYrpw
-         PYQg==
-X-Gm-Message-State: AOAM530jh6bPE0wkhKxXFR5hT1aASe+XzQtt+JVDIK1w7gby3PxWUTuW
-        BnkDV2w5AsaP5cccDcDRbgo5RQhO9s+Sy2qMRhiQog==
-X-Google-Smtp-Source: ABdhPJzzGnEJRhZfFJ5kL+XJ9LhYV5UeHMmZWo/JVUq5RLvA5TfAvwZJL681YJ5O4yJaKOgNEx7M/kGJZcKwTSrjL5c=
-X-Received: by 2002:a6b:3f02:: with SMTP id m2mr2358919ioa.136.1631189872259;
- Thu, 09 Sep 2021 05:17:52 -0700 (PDT)
+        Thu, 9 Sep 2021 10:14:05 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF87CC0E9FBC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 05:24:48 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mOJ6f-0005nk-Q1; Thu, 09 Sep 2021 14:24:41 +0200
+Date:   Thu, 9 Sep 2021 14:24:41 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: remove unused macro READ_AND_CONFIG_TC
+Message-ID: <20210909122441.cawtj7sivoey4k6k@viti.kaiser.cx>
+References: <20210909110517.15243-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
- <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org> <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
- <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org> <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
- <YTgeIuwumPoR9ZTE@ripper>
-In-Reply-To: <YTgeIuwumPoR9ZTE@ripper>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Thu, 9 Sep 2021 17:47:16 +0530
-Message-ID: <CAMi1Hd1TOFj5USToEhuvZz8vgboQbMWco7gN413-jHJp-A7Ozg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909110517.15243-1-straube.linux@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sept 2021 at 07:50, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
->
-> > On 8/9/2021 9:48 PM, Caleb Connolly wrote:
-> > >
-> > >
-> > > On 09/08/2021 17:12, Rob Clark wrote:
-> > > > On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
-> > > > <akhilpo@codeaurora.org> wrote:
-> [..]
-> > > > > I am a bit confused. We don't define a power domain for gpu in dt,
-> > > > > correct? Then what exactly set_opp do here? Do you think this usleep is
-> > > > > what is helping here somehow to mask the issue?
-> > > The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
-> > > the GPU DT. For the sake of simplicity I'll refer to the lowest
-> > > frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
-> > > the "min" state, and the highest frequency (710000000) and OPP level
-> > > (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
-> > > sdm845.dtsi under the gpu node.
-> > >
-> > > The new devfreq behaviour unmasks what I think is a driver bug, it
-> > > inadvertently puts much more strain on the GPU regulators than they
-> > > usually get. With the new behaviour the GPU jumps from it's min state to
-> > > the max state and back again extremely rapidly under workloads as small
-> > > as refreshing UI. Where previously the GPU would rarely if ever go above
-> > > 342MHz when interacting with the device, it now jumps between min and
-> > > max many times per second.
-> > >
-> > > If my understanding is correct, the current implementation of the GMU
-> > > set freq is the following:
-> > >   - Get OPP for frequency to set
-> > >   - Push the frequency to the GMU - immediately updating the core clock
-> > >   - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
-> > > up somewhere in power management code and causes the gx regulator level
-> > > to be updated
-> >
-> > Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
-> > were using a different api earlier which got deprecated -
-> > dev_pm_opp_set_bw().
-> >
->
-> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
-> I'm lucky I managed to hit a few keys before it crashes, so I spent a
-> few hours looking into this as well...
->
-> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
-> The opp-level is just there for show and isn't used by anything, at
-> least not on 845.
->
-> Further more, I'm missing something in my tree, so the interconnect
-> doesn't hit sync_state, and as such we're not actually scaling the
-> buses. So the problem is not that Linux doesn't turn on the buses in
-> time.
->
-> So I suspect that the "AHB bus error" isn't saying that we turned off
-> the bus, but rather that the GPU becomes unstable or something of that
-> sort.
->
->
-> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
-> Aquarium for 20 minutes without a problem. I then switched the gpu
-> devfreq governor to "userspace" and ran the following:
->
-> while true; do
->   echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
->   echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
-> done
->
-> It took 19 iterations of this loop to crash the GPU.
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-Ack. With your above script, I can reproduce a crash too on db845c
-(A630) running v5.14. I didn't get any crash log though and device
-just rebooted to USB crash mode.
+> The macro READ_AND_CONFIG_TC is not used, remove it.
+> Found with GCC -Wunused-macros.
 
-And same crash on RB5 (A650) too https://hastebin.com/raw/ejutetuwun
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/hal/odm_HWConfig.c | 1 -
+>  1 file changed, 1 deletion(-)
 
->
-> So the problem doesn't seem to be Rob's change, it's just that prior to
-> it the chance to hitting it is way lower. Question is still what it is
-> that we're triggering.
->
-> Regards,
-> Bjorn
+> diff --git a/drivers/staging/r8188eu/hal/odm_HWConfig.c b/drivers/staging/r8188eu/hal/odm_HWConfig.c
+> index ada22a526fee..058d04f6aa58 100644
+> --- a/drivers/staging/r8188eu/hal/odm_HWConfig.c
+> +++ b/drivers/staging/r8188eu/hal/odm_HWConfig.c
+> @@ -6,7 +6,6 @@
+>  #define READ_AND_CONFIG     READ_AND_CONFIG_MP
+
+>  #define READ_AND_CONFIG_MP(ic, txt) (ODM_ReadAndConfig##txt##ic(dm_odm))
+> -#define READ_AND_CONFIG_TC(ic, txt) (ODM_ReadAndConfig_TC##txt##ic(dm_odm))
+
+>  static u8 odm_QueryRxPwrPercentage(s8 AntPower)
+>  {
+> -- 
+> 2.33.0
+
+looks good and compiles for me
+
+Acked-by: Martin Kaiser <martin@kaiser.cx>
