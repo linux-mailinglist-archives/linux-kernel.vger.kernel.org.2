@@ -2,113 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A245A404590
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3173F404598
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 08:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352550AbhIIGWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 02:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352449AbhIIGWP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 02:22:15 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4F3C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Sep 2021 23:21:06 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v10so849748wrd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Sep 2021 23:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T/P5hwYJvg55379EY5nkL2g9RcUJ4Qk0S6irJ7oXfp8=;
-        b=W+UD259EkPe7yVYD54ZeuUDK2XXtVw69FdeGCgGEBFc1CDLvunR753GUf7WT+iFzR1
-         xKkUS2lpR6AbLXNiuWQgOD2aXBsGT3nBfpYjCUFVAzKHREzhUg5++GCq2MsukyfSBP7b
-         fFxDJeEUkHnMc8wr3sq2R49fFTTHOnO2wTn9hQAhEYiqz1YEkTAKWCLklcErvSthgQgA
-         VgnyeoAC0pWRRqLkHxcpUjba7yBB42qYhy/UwLJsXITFm/G0vNpwoPqszFJrkRIIWHPc
-         Ev3bQPSU9UB7aIrWBNw/99QF9jmLn9igvp0kXG2pJUOVVqjwd05txfn2cKz5S3xQoJ+Y
-         U0xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T/P5hwYJvg55379EY5nkL2g9RcUJ4Qk0S6irJ7oXfp8=;
-        b=5C1sB1Hezx7uVBSoQ3kS8QOWPdOM8hQEsbrvFvZnDnUQhwhxPNV1gxw/JNnDJL09WW
-         T0GpELRQPIy7/zISOsOkVFmDZVUrWC+2eg50oDzLC+GHVYIhpja4/MOimbnp45/BUtW3
-         gGlY+zeR4p3jfyy51jObZ97HDSuk7mm+kjbpyUiTKaS2/rDEAyqqKE5mlaABXCr6X9k0
-         740+FbM6rrxg5ln+R0f/OOeMfZZ8dm8S6e8f3cRYtYHjaOd1rCzCTAMGopNnjxMjvfUI
-         ux9+I9yDyf1Su0jrWeWXu6TdG96NkdLmhXT13ysboWetkt/dZoctYZUqpMwZgIZPEbVm
-         qapA==
-X-Gm-Message-State: AOAM5302rilkwMiQKWfKh1/TW2GkuaAbSN+bm0JjLBSm1LAq+1//7VJy
-        a7pEo491q+Apk/4lGVpmSP9U2DxnBHHgC3ORmsXcZA==
-X-Google-Smtp-Source: ABdhPJxyurFAMG5Msr0Cn839JPUJCDt89L5/yYp8G5tPTW+OD2dBuR/hhgmhcIWQX75+UQqZ+PPPAmO3vMDP4BklB9M=
-X-Received: by 2002:adf:fc0e:: with SMTP id i14mr1427926wrr.173.1631168464833;
- Wed, 08 Sep 2021 23:21:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <46a9dbf2-9748-330a-963e-57e615a15440@gmail.com>
- <20210701085117.19018-1-rocco.yue@mediatek.com> <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
-In-Reply-To: <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
-From:   Lorenzo Colitti <lorenzo@google.com>
-Date:   Thu, 9 Sep 2021 15:20:51 +0900
-Message-ID: <CAKD1Yr2aijPe_aq+SRm-xv0ZPoz_gKjYrEX97R1NJyYpSnv4zg@mail.gmail.com>
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Rocco Yue <rocco.yue@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        rocco.yue@gmail.com, chao.song@mediatek.com,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        =?UTF-8?B?Wmh1b2xpYW5nIFpoYW5nICjlvKDljZPkuq4p?= 
-        <zhuoliang.zhang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1352605AbhIIGZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 02:25:19 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61778 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352517AbhIIGZQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 02:25:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="220727885"
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="220727885"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 23:24:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
+   d="scan'208";a="479491328"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2021 23:24:04 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Support --cputype option for hybrid events
+Date:   Thu,  9 Sep 2021 14:22:15 +0800
+Message-Id: <20210909062215.10278-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David,
+In previous patch, we have supported the syntax which enables
+the event on a specified pmu, such as:
 
-sorry for reviving this discussion, but it felt better than starting a
-new thread about this. We (Android) added a vendor hook for this, but
-IMO that's the wrong solution and I think we'd still like to see this
-fixed the right way.
+cpu_core/<event>/
+cpu_atom/<event>/
 
-> I think another addr_gen_mode is better than a separate sysctl. It looks
-> like IN6_ADDR_GEN_MODE_STABLE_PRIVACY and IN6_ADDR_GEN_MODE_RANDOM are
-> the ones used for RAs, so add something like:
->
-> IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-> IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
+While this syntax is not very easy for applying on a set of
+events or applying on a group. In following example, we have to
+explicitly assign the pmu prefix.
 
-I think the real requirement here (which wasn't clear in this thread)
-is that the network needs to control the interface ID (i.e., the
-bottom 64 bits) of the link-local address, but the device is free to
-use whatever interface IDs to form global addresses. See:
-https://www.etsi.org/deliver/etsi_ts/129000_129099/129061/15.03.00_60/ts_129061v150300p.pdf
+  # ./perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -- sleep 1
 
-How do you think that would best be implemented?
+   Performance counter stats for 'sleep 1':
 
-1. The actual interface ID could be passed in using IFLA_INET6_TOKEN,
-but there is only one token, so that would cause all future addresses
-to use the token, disabling things like privacy addresses (bad).
-2. We could add new IN6_ADDR_GEN_MODE_STABLE_PRIVACY_LL_TOKEN,
-IN6_ADDR_GEN_MODE_RANDOM_LL_TOKEN, etc., but we'd need to add one such
-mode for every new mode we add.
-3. We could add a separate sysctl for the link-local address, but you
-said that per-device sysctls aren't free.
-4. We could change the behaviour so that if the user configures a
-token and then sets IN6_ADDR_GEN_MODE_*, then we use the token only
-for the link-local address. But that would impact backwards
-compatibility.
+           1,158,545      cpu_core/cycles/
+           1,003,113      cpu_core/instructions/
 
-Thoughts?
+         1.002428712 seconds time elapsed
 
-Cheers,
-Lorenzo
+A much easier way is:
+
+  # ./perf stat --cputype core -e '{cycles,instructions}' -- sleep 1
+
+   Performance counter stats for 'sleep 1':
+
+           1,101,071      cpu_core/cycles/
+             939,892      cpu_core/instructions/
+
+         1.002363142 seconds time elapsed
+
+For this example, the '--cputype' enables the events from specified
+pmu (cpu_core).
+
+If '--cputype' conflicts with pmu prefix, '--cputype' is ignored.
+
+  # ./perf stat --cputype core -e cycles,cpu_atom/instructions/ -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+          21,003,407      cpu_core/cycles/
+             367,886      cpu_atom/instructions/
+
+         1.002203520 seconds time elapsed
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/Documentation/perf-stat.txt |  4 ++++
+ tools/perf/builtin-stat.c              | 24 ++++++++++++++++++++++++
+ tools/perf/util/evlist.h               |  1 +
+ tools/perf/util/parse-events-hybrid.c  |  9 ++++++---
+ 4 files changed, 35 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 4c9310be6acc..33da737161a6 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -493,6 +493,10 @@ This option can be enabled in perf config by setting the variable
+ 
+ $ perf config stat.no-csv-summary=true
+ 
++--cputype::
++Only enable events on applying cpu with this type for hybrid platform
++(e.g. core or atom)"
++
+ EXAMPLES
+ --------
+ 
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index f6e87b7be5fa..752e2bf1029f 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1168,6 +1168,26 @@ static int parse_stat_cgroups(const struct option *opt,
+ 	return parse_cgroups(opt, str, unset);
+ }
+ 
++static int parse_hybrid_type(const struct option *opt,
++			     const char *str,
++			     int unset __maybe_unused)
++{
++	struct evlist *evlist = *(struct evlist **)opt->value;
++
++	if (!list_empty(&evlist->core.entries)) {
++		fprintf(stderr, "Must define cputype before events/metrics\n");
++		return -1;
++	}
++
++	evlist->hybrid_pmu_name = perf_pmu__hybrid_type_to_pmu(str);
++	if (!evlist->hybrid_pmu_name) {
++		fprintf(stderr, "--cputype %s is not supported!\n", str);
++		return -1;
++	}
++
++	return 0;
++}
++
+ static struct option stat_options[] = {
+ 	OPT_BOOLEAN('T', "transaction", &transaction_run,
+ 		    "hardware transaction statistics"),
+@@ -1282,6 +1302,10 @@ static struct option stat_options[] = {
+ 		       "don't print 'summary' for CSV summary output"),
+ 	OPT_BOOLEAN(0, "quiet", &stat_config.quiet,
+ 			"don't print output (useful with record)"),
++	OPT_CALLBACK(0, "cputype", &evsel_list, "hybrid cpu type",
++		     "Only enable events on applying cpu with this type "
++		     "for hybrid platform (e.g. core or atom)",
++		     parse_hybrid_type),
+ #ifdef HAVE_LIBPFM
+ 	OPT_CALLBACK(0, "pfm-events", &evsel_list, "event",
+ 		"libpfm4 event selector. use 'perf list' to list available events",
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 97bfb8d0be4f..7af5b247e319 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -64,6 +64,7 @@ struct evlist {
+ 	struct evsel *selected;
+ 	struct events_stats stats;
+ 	struct perf_env	*env;
++	const char *hybrid_pmu_name;
+ 	void (*trace_event_sample_raw)(struct evlist *evlist,
+ 				       union perf_event *event,
+ 				       struct perf_sample *sample);
+diff --git a/tools/perf/util/parse-events-hybrid.c b/tools/perf/util/parse-events-hybrid.c
+index 10160ab126f9..3875a8d086e4 100644
+--- a/tools/perf/util/parse-events-hybrid.c
++++ b/tools/perf/util/parse-events-hybrid.c
+@@ -62,10 +62,13 @@ static int create_event_hybrid(__u32 config_type, int *idx,
+ static int pmu_cmp(struct parse_events_state *parse_state,
+ 		   struct perf_pmu *pmu)
+ {
+-	if (!parse_state->hybrid_pmu_name)
+-		return 0;
++	if (parse_state->evlist && parse_state->evlist->hybrid_pmu_name)
++		return strcmp(parse_state->evlist->hybrid_pmu_name, pmu->name);
++
++	if (parse_state->hybrid_pmu_name)
++		return strcmp(parse_state->hybrid_pmu_name, pmu->name);
+ 
+-	return strcmp(parse_state->hybrid_pmu_name, pmu->name);
++	return 0;
+ }
+ 
+ static int add_hw_hybrid(struct parse_events_state *parse_state,
+-- 
+2.17.1
+
