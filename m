@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDBC405E1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996C0405E1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 22:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345399AbhIIUlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 16:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245195AbhIIUlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 16:41:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C07806115A;
-        Thu,  9 Sep 2021 20:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631220006;
-        bh=UuqfyaUZwjVk2T1K6Otxslqo1hOd2YuFf7SmBusu6/4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CJ8qiogBBNiTsIhyV6J9IC8BktRPXvB3caiXz+R8kREh+uxApu6/4KxxYa3EvoVM1
-         0g0MJUZl8kPgN2W2EtmAgoNErkR/uWJh7rEwPJ22bMLe082yWx50pHYSXWLVx8vwRP
-         +GagA+64wTWqxVT/bEuzSJgqyqfRyFgWf6hd+D9sAi6et5PhqHLFX9LLi1X/tT5QZG
-         suLIneSOK1Nien+47krklC/4rKnewLwnh9JXkMegtx8QUeLgsU9rW+GJG7HAwY64jO
-         0nHl/QMlJadgQWbHhcI8BhmDEd++nTYlgxiIZvRbym9Wf8CCTcJjzoDAq7MLfOoh7P
-         fsIk1tdCqbsiw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B8CBF60978;
-        Thu,  9 Sep 2021 20:40:06 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: More updates for 5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210909090601.43810362@gandalf.local.home>
-References: <20210909090601.43810362@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210909090601.43810362@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-2
-X-PR-Tracked-Commit-Id: cfd799837dbc48499abb05d1891b3d9992354d3a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 43175623dd0dffccacbf014e368ee77f77c73898
-Message-Id: <163122000674.1978.12428875535789769544.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 Sep 2021 20:40:06 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Julio Faracco <jcfaracco@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Qiang.Zhang" <qiang.zhang@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Zanussi <zanussi@kernel.org>
+        id S1345945AbhIIUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 16:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345849AbhIIUli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 16:41:38 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731E0C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 13:40:28 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id q3so4057598iot.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 13:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K661PKSm8ynNfd3M9m5f/SuYoVkqWyuufk1lZufUBHI=;
+        b=Kk49WXxGI4Lm6oaick7648IphOhBS9iGNDV1xXGwJbd0rdMIB47VoA8nMiXOWl9UQs
+         bYhSg05tYWKWNgcVoGBdRV+cmajWLDQssFcmP69L3jTYM304T4ZfMJs9RqPc2cuj+MCM
+         JwPJnHtWzemcF2VZRhb/VuDZ6tpCzw0r1iZgNZBT30seCXRpSiPziFCzFP9K69dakV5p
+         HEABxn5yQcYRvplLjvrop7knvZZjPRkI9MbLYxq89liyYA83YdzBZgtuq7n6Iy0ZJknq
+         KARnvP+RUFC4rxW0I//8DUpmcBvvLA8IN/662fSWOXzBRDqj+VBM65Z6FwyY7MKZi3yw
+         Au9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K661PKSm8ynNfd3M9m5f/SuYoVkqWyuufk1lZufUBHI=;
+        b=ksqOWwAQPhS00aqrLQM1YmAAEn1Wj60LiGWrnyTNxbqwg/Ss4yapB7Ubs+PSd7HV57
+         paTzF4xfgF4w4bbfculmur7U7l3s671HDndl34g2W3THmjrcU83iSIKR3QLHACCj3o0G
+         LuIE0FuV4BtTKr05ITe6S0rssMg4gg+A8Hf64v7ytmwusXRUYs6Ax4otP4kSmsNE9a9C
+         rrqIWbqXXGO+aahBQDyuxOLk2tduYSzdtCSO4z83kg3cGyD0YReRKMA2dyhHzYfceDFC
+         arur61lCzfq4AlXrBFdewdQpQsnReZRQoBZ47hDcYBlQU1f4LTfRxq4uTP2j7GgjcDpf
+         90uA==
+X-Gm-Message-State: AOAM531+EhbO6CYwO5OR5p5uOj4xoLDXhaT9GBV//ZogZEY7Lfn2LO8R
+        HR2h3Ov3eRdmOsWfnBdqJS+mRA==
+X-Google-Smtp-Source: ABdhPJyZrfEvanEj4R5uDT0596howBbcNyxuQ3962MrXM6rhaRXofB110KBrxiJbUlwOOkSa8+BpmQ==
+X-Received: by 2002:a05:6602:2ac7:: with SMTP id m7mr4226626iov.66.1631220027881;
+        Thu, 09 Sep 2021 13:40:27 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id t11sm1387116ilf.16.2021.09.09.13.40.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 13:40:27 -0700 (PDT)
+Subject: Re: [PATCH] scsi: bsg: Fix device unregistration
+To:     Zenghui Yu <yuzenghui@huawei.com>, linux-scsi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     fujita.tomonori@lab.ntt.co.jp, martin.petersen@oracle.com,
+        hch@lst.de, gregkh@linuxfoundation.org, wanghaibin.wang@huawei.com
+References: <20210909034608.1435-1-yuzenghui@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <78c3c08b-ebba-8d46-7eae-f82d0b1c50fe@kernel.dk>
+Date:   Thu, 9 Sep 2021 14:40:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210909034608.1435-1-yuzenghui@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 9 Sep 2021 09:06:01 -0400:
+On 9/8/21 9:46 PM, Zenghui Yu wrote:
+> We use device_initialize() to take refcount for the device but forget to
+> put_device() on device teardown, which ends up leaking private data of the
+> driver core, dev_name(), etc. This is reported by kmemleak at boot time if
+> we compile kernel with DEBUG_TEST_DRIVER_REMOVE.
+> 
+> Note that adding the missing put_device() is _not_ sufficient to fix device
+> unregistration. As we don't provide the .release() method for device, which
+> turned out to be typically wrong and will be complained loudly by the
+> driver core.
+> 
+> Fix both of them.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-2
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/43175623dd0dffccacbf014e368ee77f77c73898
-
-Thank you!
+Applied, thanks.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Jens Axboe
+
