@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9AB406515
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C69406519
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239074AbhIJBX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:23:57 -0400
+        id S233126AbhIJBYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:24:32 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238992AbhIJBXq (ORCPT
+        with ESMTP id S239042AbhIJBXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:23:46 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1035CC0613A6
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:19:20 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id s3so496520ljp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:19:19 -0700 (PDT)
+        Thu, 9 Sep 2021 21:23:53 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6689C0613A8
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:20:12 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id n18so317545pgm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fFtcZqqQNlz6Fo1j4RT+wXd6hyzZuXZbR1hNqy5igjU=;
-        b=hSRL+WyUJXwUcnrNYMNnEI15VJGfds+1s1dPvNus6FbCMsiOovqAZAZXi5JWAJIABQ
-         7r5S0cGi+wc4+f/6yCU3ReOpb1EqhwMWWjSn6WNb5Cphsb74F/lMDCVHVQ6kw7vlHst7
-         Lp8QkTTHnevTzIo/hhIWlt7GGNiHHkBDXaCZ3YXotxGb1uGOrwZpxo+WWvaU7KICXprz
-         NtzDx5s8FA6PJDIiTxTdHExWXrnchcMuyHkrzUTqcsNRdbTbM3kkluQ6I2VBD95QsmV7
-         o7NbATkRtuCMYnaEiStX9scb8/ZNHqIgXKd+WuySR0Yet5cKm0/qB7quBPU4R/+vde2w
-         V6HQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l1BaiJ0gkfVc+LassnfOFyf+t5gSZ1M94cRU4Np2S3E=;
+        b=lRZULPzquMYXgjWpDLxvVy0w2xSJmX+cTY5Vo1mT7JVv4iOOIHpuhallgZBWM3UV8Y
+         g5zvaF+AXZmGPXoF994p9zbyTSrNg8eVjDoMXkbVaEsLKkQCyiKxoRk/O64LYQHWIoRX
+         mLEMDAFihI3lvz0+x1U5zk/YbBx7jug7JGvgdOoUSm2BCSQT/gxzv3Cya28Z00vjvrxs
+         NJFh8f7d2Hkk4j4eVYdvR47Z2FK8lHFIkp6oS+ZkEhFLzlhwYHMPgiiac2Q2vWK8KOcF
+         BGRnQZc6E3IkALkdxl6TZ3cPslOydT7LcxHiZBq/0v4cW4nWvV5or2vXVLTwbyPd7NyD
+         qGlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fFtcZqqQNlz6Fo1j4RT+wXd6hyzZuXZbR1hNqy5igjU=;
-        b=XM6Kd8kcLuIfQuwLvZsyJG9Hj0uFjORCVFsJH38oe3sFA/NOMTsoJZd5OxB6ohdjGE
-         Gns3TKPq/3B7Tyg2ldn/wf29ScePwrgF6Z7tIietxcYNFjqD+G3W+GHuV7pKIG1oWH24
-         nchzpmlHBIBzyf0I2MQT3IMlNrBNMp4/8zdggNoLWXwFhxCQmbBvF9JTLzODDLEdTptz
-         eQKZ9iWkTmVhT06L8HEWPQS0pWZchrAmCs9lJ+JW5ERDRA9+UnSD3eV+qyll6TRMc+ib
-         A15x6ZtmPmeGIYHtZKJwwux4WThOSHBRDHITp7tBv45UY6V2bLqk/qTGUexRyF6K/1up
-         5nnQ==
-X-Gm-Message-State: AOAM532qYUr/AGEpoNRPtSmZLexo1Pt5waROgHJpV4TYMkIjiiJ/lO+D
-        Gq7IC7EaB38jpJRtItbb+BLv+RIBTvY290voYKo0Lg==
-X-Google-Smtp-Source: ABdhPJx0EHLqcZYEMME+jzHmD+0Avn+MXVsNojtjDl7JoLwOqEcfuh3FmEWGaZm5g9a/nos0JiO3xDsUyMNrRUFGRHg=
-X-Received: by 2002:a2e:a363:: with SMTP id i3mr2267599ljn.86.1631236758167;
- Thu, 09 Sep 2021 18:19:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l1BaiJ0gkfVc+LassnfOFyf+t5gSZ1M94cRU4Np2S3E=;
+        b=ot4+HFh9NMHlMhSNgGqe+YavHa3RIHwxaRrf2c0jI7m/Jpuz31wyzsHE07ifFKOTnd
+         Zr60+TBdgRZmjNUpQRy0ZwvLxA3IL7tYPLZ1CeQTHIhVZ+llZBcTPxWEVgZH2O1/FCsr
+         WOU3B1Gwt92NC5UtXZsxa6JAxNZHBxG54s41uInhziGM9/JAYGicGPgg0FgvXKrVmune
+         deZjjr2Apa+Ep8Kq2idA0QH10YsS3Ug51rbWewKExOB0Z7srrSerxAaN0wByUXLredVx
+         HahutAWHUtzVxLG2YE7f94XBO/fssYxWtiwLTodm/mim+EaxtUA7YKeS7/MwSHui0QQV
+         5+/g==
+X-Gm-Message-State: AOAM53007Mmhg6H/zVzUZB0z9r0oTRPUkoSjfBYxLOf9SaO2q3sHorRX
+        2lSPeZwNY6atv+VLFWDf2RC6LQ==
+X-Google-Smtp-Source: ABdhPJzHzyqGH27s4iQz3a74J/nl5ISKqP8M0YqLRj+/BKN0zmR4qpUN/S5JSa+y73tnLcrpAgSpTg==
+X-Received: by 2002:a05:6a00:1789:b0:3f9:5ce1:9677 with SMTP id s9-20020a056a00178900b003f95ce19677mr5738445pfg.50.1631236812187;
+        Thu, 09 Sep 2021 18:20:12 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id w24sm3381673pjh.30.2021.09.09.18.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 18:20:11 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 01:20:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3 V7] KVM, SEV: Add support for SEV-ES intra host
+ migration
+Message-ID: <YTqyx0J0Ik7wqx/+@google.com>
+References: <20210902181751.252227-1-pgonda@google.com>
+ <20210902181751.252227-3-pgonda@google.com>
+ <YTqr4nuXYVFz81kD@google.com>
 MIME-Version: 1.0
-References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
- <20210905124439.GA15026@xsang-OptiPlex-9020> <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
- <20210907033000.GA88160@shbuild999.sh.intel.com> <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
- <20210910010842.GA94434@shbuild999.sh.intel.com>
-In-Reply-To: <20210910010842.GA94434@shbuild999.sh.intel.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 9 Sep 2021 18:19:06 -0700
-Message-ID: <CALvZod5_L55RLzwOXh_5C+v9rjVQ4_FEaEB2QYS5+6kuHpHpQg@mail.gmail.com>
-Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        0day robot <lkp@intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Michal Koutn??" <mkoutny@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTqr4nuXYVFz81kD@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:08 PM Feng Tang <feng.tang@intel.com> wrote:
->
-> On Thu, Sep 09, 2021 at 05:43:40PM -0700, Shakeel Butt wrote:
-> > On Mon, Sep 6, 2021 at 8:30 PM Feng Tang <feng.tang@intel.com> wrote:
-> > >
-> > > Hi Shakeel,
-> > >
-> > > On Sun, Sep 05, 2021 at 03:15:46PM -0700, Shakeel Butt wrote:
-> > > > On Sun, Sep 5, 2021 at 5:27 AM kernel test robot <oliver.sang@intel.com> wrote:
-> > > [...]
-> > > > > =========================================================================================
-> > > > > compiler/cpufreq_governor/disk/fs/kconfig/load/rootfs/tbox_group/test/testcase/ucode:
-> > > > >   gcc-9/performance/1BRD_48G/xfs/x86_64-rhel-8.3/3000/debian-10.4-x86_64-20200603.cgz/lkp-icl-2sp2/disk_rr/aim7/0xd000280
-> > > > >
-> > > > > commit:
-> > > > >   3c28c7680e ("memcg: switch lruvec stats to rstat")
-> > > > >   45208c9105 ("memcg: infrastructure to flush memcg stats")
-> > > >
-> > > > I am looking into this. I was hoping we have resolution for [1] as
-> > > > these patches touch similar data structures.
-> > > >
-> > > > [1] https://lore.kernel.org/all/20210811031734.GA5193@xsang-OptiPlex-9020/T/#u
-> > >
-> > > I tried 2 debug methods for that 36.4% vm-scalability regression:
-> > >
-> > > 1. Disable the HW cache prefetcher, no effect on this case
-> > > 2. relayout and add padding to 'struct cgroup_subsys_state', reduce
-> > >    the regression to 3.1%
-> > >
-> >
-> > Thanks Feng but it seems like the issue for this commit is different.
-> > Rearranging the layout didn't help. Actually the cause of slowdown is
-> > the call to queue_work() inside __mod_memcg_lruvec_state().
-> >
-> > At the moment, queue_work() is called after 32 updates. I changed it
-> > to 128 and the slowdown of will-it-scale:page_fault[1|2|3] halved
-> > (from around 10% to 5%). I am unable to run reaim or
-> > will-it-scale:fallocate2 as I was getting weird errors.
-> >
-> > Feng, is it possible for you to run these benchmarks with the change
-> > (basically changing MEMCG_CHARGE_BATCH to 128 in the if condition
-> > before queue_work() inside __mod_memcg_lruvec_state())?
->
-> When I checked this, I tried different changes, including this batch
-> number change :), but it didn't recover the regression (the regression
-> is slightly reduced to about 12%)
->
-> Please check if my patch is what you want to test:
+On Fri, Sep 10, 2021, Sean Christopherson wrote:
+> On Thu, Sep 02, 2021, Peter Gonda wrote:
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index 8db666a362d4..fac21a82e4de 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -1545,6 +1545,59 @@ static void migrate_info_from(struct kvm_sev_info *dst,
+> >  	list_replace_init(&src->regions_list, &dst->regions_list);
+> >  }
+> >  
+> > +static int migrate_vmsa_from(struct kvm *dst, struct kvm *src)
 
-Yes, the following patch is what I want to test.
+Better to call this sev_es_migrate_from()...
 
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 4d8c9af..a50a69a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -682,7 +682,8 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
->
->         /* Update lruvec */
->         __this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
-> -       if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
-> +//     if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
-> +       if (!(__this_cpu_inc_return(stats_flush_threshold) % 128))
->                 queue_work(system_unbound_wq, &stats_flush_work);
->  }
->
+> > +{
+> > +	int i, num_vcpus;
+> > +	struct kvm_vcpu *dst_vcpu, *src_vcpu;
+> > +	struct vcpu_svm *dst_svm, *src_svm;
+> > +
 
-Another change we can try is to remove this specific queue_work()
-altogether because this is the only significant change for the
-workload. That will give us the base performance number. If that also
-has regression then there are more issues to debug. Thanks a lot for
-your help.
+...because this should also clear kvm->es_active.  KVM_SEV_INIT isn't problematic
+(as currently written) because the common sev_guest_init() explicitly writes es_active,
+but I think a clever userspace could get an SEV ASID into an "ES" guest via
+KVM_CAP_VM_COPY_ENC_CONTEXT_FROM, which requires its dst to be !SEV and thus
+doesn't touch es_active.
+
+Huh, that's a bug, svm_vm_copy_asid_from() should explicitly disallow copying the
+ASID from an SEV-ES guest.  I'll send a patch for that.
+
+Last thought, it's probably worth renaming migrate_info_from() to sev_migrate_from()
+to pair with sev_es_migrate_from().
