@@ -2,155 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BFA406DA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED5D406DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhIJOcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:32:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27210 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233120AbhIJOco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:32:44 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AE5KdU066051;
-        Fri, 10 Sep 2021 10:31:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=wFa34YwfOzNnf8xZrjNXgk5F3wW7c5BmLVcGAZSC9l4=;
- b=MC7za/WgGPcd/PzshwVuY6lbRD70PpWfjoENozwvmM1m5e6CkzfLmqaPmsbZyv7QhD29
- zq9tGbrXajg5iIF0zpuZlUZ6XHJguacYN+7VusxhKVGVN/rn0IqmzLPKjwlnQtKfxrUQ
- LflH73p5jsBaJu/3/mgt41uBF5pfdrgg937LRxliYqXLRa96nIvBWxI0bxn8AM87I8a8
- ZcvxaABffL3ZM75OOxvH9pHCmoorb/OSliE5mh0bbkPKEWh1eJfkQzQzKiqHbW9y+VeG
- GH189dMA3pZY29B6/WH1fDR8MzRB3y5KAq+aiMc2TnYDj7MyS2HsiGnwndI6hRdGLACv GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b05npw0tf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 10:31:28 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18AEVSm0182894;
-        Fri, 10 Sep 2021 10:31:28 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b05npw0st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 10:31:28 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18AEHlfj025703;
-        Fri, 10 Sep 2021 14:31:26 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3axcnq26bd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 14:31:26 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18AEVNQs50135536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 14:31:23 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4BAFA4060;
-        Fri, 10 Sep 2021 14:31:23 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FE10A4054;
-        Fri, 10 Sep 2021 14:31:23 +0000 (GMT)
-Received: from sig-9-145-77-172.uk.ibm.com (unknown [9.145.77.172])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Sep 2021 14:31:23 +0000 (GMT)
-Message-ID: <209614b6553374cef5fd306d4235a98472fc5e4d.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC 6/9] s390/pci_mmio: fully validate the VMA before
- calling follow_pte()
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Liam Howlett <liam.howlett@oracle.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Date:   Fri, 10 Sep 2021 16:31:22 +0200
-In-Reply-To: <20210910141221.fuimjijydw57vxjz@revolver>
-References: <20210909145945.12192-1-david@redhat.com>
-         <20210909145945.12192-7-david@redhat.com>
-         <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
-         <d9ec2387-2645-796e-af47-26f22516f7fa@redhat.com>
-         <20210910141221.fuimjijydw57vxjz@revolver>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3ii816pfzgFPIQEVn8d2Kft3lzvux31m
-X-Proofpoint-GUID: pfqh5ouby-FTJSqTcLWxod5zJ1mX_CpX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-10_04:2021-09-09,2021-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- adultscore=0 clxscore=1011 bulkscore=0 phishscore=0 spamscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109100081
+        id S234112AbhIJOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:33:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:58314 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233120AbhIJOdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:33:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57D881FB;
+        Fri, 10 Sep 2021 07:32:35 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E94323F59C;
+        Fri, 10 Sep 2021 07:32:30 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        Jia He <justin.he@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
+Subject: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+Date:   Fri, 10 Sep 2021 22:32:23 +0800
+Message-Id: <20210910143223.6705-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210910122820.26886-1-justin.he@arm.com>
+References: <20210910122820.26886-1-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 14:12 +0000, Liam Howlett wrote:
-> * David Hildenbrand <david@redhat.com> [210910 05:23]:
-> > On 10.09.21 10:22, Niklas Schnelle wrote:
-> > > On Thu, 2021-09-09 at 16:59 +0200, David Hildenbrand wrote:
-> > > > We should not walk/touch page tables outside of VMA boundaries when
-> > > > holding only the mmap sem in read mode. Evil user space can modify the
-> > > > VMA layout just before this function runs and e.g., trigger races with
-> > > > page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
-> > > > with read mmap_sem in munmap").
-> > > > 
-> > > > find_vma() does not check if the address is >= the VMA start address;
-> > > > use vma_lookup() instead.
-> > > > 
-> > > > Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
-> > > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > > > ---
-> > > >   arch/s390/pci/pci_mmio.c | 4 ++--
-> > > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
-> > > > index ae683aa623ac..c5b35ea129cf 100644
-> > > > --- a/arch/s390/pci/pci_mmio.c
-> > > > +++ b/arch/s390/pci/pci_mmio.c
-> > > > @@ -159,7 +159,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
-> > > >   	mmap_read_lock(current->mm);
-> > > >   	ret = -EINVAL;
-> > > > -	vma = find_vma(current->mm, mmio_addr);
-> > > > +	vma = vma_lookup(current->mm, mmio_addr);
-> > > >   	if (!vma)
-> > > >   		goto out_unlock_mmap;
-> > > >   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > > > @@ -298,7 +298,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
-> > > >   	mmap_read_lock(current->mm);
-> > > >   	ret = -EINVAL;
-> > > > -	vma = find_vma(current->mm, mmio_addr);
-> > > > +	vma = vma_lookup(current->mm, mmio_addr);
-> > > >   	if (!vma)
-> > > >   		goto out_unlock_mmap;
-> > > >   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > > 
-> > > Oh wow great find thanks! If I may say so these are not great function
-> > > names. Looking at the code vma_lookup() is inded find_vma() plus the
-> > > check that the looked up address is indeed inside the vma.
-> > > 
-> > 
-> > IIRC, vma_lookup() was introduced fairly recently. Before that, this
-> > additional check was open coded (and still are in some instances). It's
-> > confusing, I agree.
-> 
-> This confusion is why I introduced vma_lookup().  My hope is to reduce
-> the users of find_vma() to only those that actually need the added
-> functionality, which are mostly in the mm code.
+This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
 
-Ah I see, soo the confusingly similar names are in hope of one day
-making find_vma() only visible or at least used in the mm code. That
-does make more sense then. Thanks for the explanation! Maybe this would
-be a good candidate for a treewide change/coccinelle script? Then again
-I guess sometimes one really wants find_vma() and it's hard to tell
-apart.
+After this commit, a boot panic is alway hit on an Ampere EMAG server
+with call trace as follows:
+ Internal error: synchronous external abort: 96000410 [#1] SMP
+ Modules linked in:
+ CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+ Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+ pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[...snip...]
+ Call trace:
+  acpi_ex_system_memory_space_handler+0x26c/0x2c8
+  acpi_ev_address_space_dispatch+0x228/0x2c4
+  acpi_ex_access_region+0x114/0x268
+  acpi_ex_field_datum_io+0x128/0x1b8
+  acpi_ex_extract_from_field+0x14c/0x2ac
+  acpi_ex_read_data_from_field+0x190/0x1b8
+  acpi_ex_resolve_node_to_value+0x1ec/0x288
+  acpi_ex_resolve_to_value+0x250/0x274
+  acpi_ds_evaluate_name_path+0xac/0x124
+  acpi_ds_exec_end_op+0x90/0x410
+  acpi_ps_parse_loop+0x4ac/0x5d8
+  acpi_ps_parse_aml+0xe0/0x2c8
+  acpi_ps_execute_method+0x19c/0x1ac
+  acpi_ns_evaluate+0x1f8/0x26c
+  acpi_ns_init_one_device+0x104/0x140
+  acpi_ns_walk_namespace+0x158/0x1d0
+  acpi_ns_initialize_devices+0x194/0x218
+  acpi_initialize_objects+0x48/0x50
+  acpi_init+0xe0/0x498
 
-> 
+As mentioned by Lorenzo:
+  "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+  eMAG does not like at all and I'd need to understand why. It looks
+  like the issue happen in SystemMemory Opregion handler."
 
-..snip..
+Hence just revert it before everything is clear.
+
+Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Hanjun Guo <guohanjun@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Harb Abdulhamid <harb@amperecomputing.com>
+
+Signed-off-by: Jia He <justin.he@arm.com>
+---
+v2: Improve the commit message
+
+ arch/arm64/include/asm/acpi.h |  3 ---
+ arch/arm64/kernel/acpi.c      | 19 +++----------------
+ drivers/acpi/osl.c            | 23 +++++++----------------
+ include/acpi/acpi_io.h        |  8 --------
+ 4 files changed, 10 insertions(+), 43 deletions(-)
+
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index 7535dc7cc5aa..bd68e1b7f29f 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
+ #define acpi_os_ioremap acpi_os_ioremap
+ 
+-void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
+-#define acpi_os_memmap acpi_os_memmap
+-
+ typedef u64 phys_cpuid_t;
+ #define PHYS_CPUID_INVALID INVALID_HWID
+ 
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index 1c9c2f7a1c04..f3851724fe35 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
+ 	return __pgprot(PROT_DEVICE_nGnRnE);
+ }
+ 
+-static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+-				       acpi_size size, bool memory)
++void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+ {
+ 	efi_memory_desc_t *md, *region = NULL;
+ 	pgprot_t prot;
+@@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+ 	 * It is fine for AML to remap regions that are not represented in the
+ 	 * EFI memory map at all, as it only describes normal memory, and MMIO
+ 	 * regions that require a virtual mapping to make them accessible to
+-	 * the EFI runtime services. Determine the region default
+-	 * attributes by checking the requested memory semantics.
++	 * the EFI runtime services.
+ 	 */
+-	prot = memory ? __pgprot(PROT_NORMAL_NC) :
+-			__pgprot(PROT_DEVICE_nGnRnE);
++	prot = __pgprot(PROT_DEVICE_nGnRnE);
+ 	if (region) {
+ 		switch (region->type) {
+ 		case EFI_LOADER_CODE:
+@@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+ 	return __ioremap(phys, size, prot);
+ }
+ 
+-void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+-{
+-	return __acpi_os_ioremap(phys, size, false);
+-}
+-
+-void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
+-{
+-	return __acpi_os_ioremap(phys, size, true);
+-}
+-
+ /*
+  * Claim Synchronous External Aborts as a firmware first notification.
+  *
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index a43f1521efe6..45c5c0e45e33 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+ #define should_use_kmap(pfn)   page_is_ram(pfn)
+ #endif
+ 
+-static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+-			      bool memory)
++static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
+ {
+ 	unsigned long pfn;
+ 
+@@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+ 			return NULL;
+ 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
+ 	} else
+-		return memory ? acpi_os_memmap(pg_off, pg_sz) :
+-				acpi_os_ioremap(pg_off, pg_sz);
++		return acpi_os_ioremap(pg_off, pg_sz);
+ }
+ 
+ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+@@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+ }
+ 
+ /**
+- * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
++ * acpi_os_map_iomem - Get a virtual address for a given physical address range.
+  * @phys: Start of the physical address range to map.
+  * @size: Size of the physical address range to map.
+- * @memory: true if remapping memory, false if IO
+  *
+  * Look up the given physical address range in the list of existing ACPI memory
+  * mappings.  If found, get a reference to it and return a pointer to it (its
+@@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+  * During early init (when acpi_permanent_mmap has not been set yet) this
+  * routine simply calls __acpi_map_table() to get the job done.
+  */
+-static void __iomem __ref
+-*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
++void __iomem __ref
++*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+ {
+ 	struct acpi_ioremap *map;
+ 	void __iomem *virt;
+@@ -356,7 +353,7 @@ static void __iomem __ref
+ 
+ 	pg_off = round_down(phys, PAGE_SIZE);
+ 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+-	virt = acpi_map(phys, size, memory);
++	virt = acpi_map(phys, size);
+ 	if (!virt) {
+ 		mutex_unlock(&acpi_ioremap_lock);
+ 		kfree(map);
+@@ -375,17 +372,11 @@ static void __iomem __ref
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 	return map->virt + (phys - map->phys);
+ }
+-
+-void __iomem *__ref
+-acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+-{
+-	return __acpi_os_map_iomem(phys, size, false);
+-}
+ EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+ 
+ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+ {
+-	return (void *)__acpi_os_map_iomem(phys, size, true);
++	return (void *)acpi_os_map_iomem(phys, size);
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+ 
+diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+index a0212e67d6f4..027faa8883aa 100644
+--- a/include/acpi/acpi_io.h
++++ b/include/acpi/acpi_io.h
+@@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+ }
+ #endif
+ 
+-#ifndef acpi_os_memmap
+-static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
+-					    acpi_size size)
+-{
+-	return ioremap_cache(phys, size);
+-}
+-#endif
+-
+ extern bool acpi_permanent_mmap;
+ 
+ void __iomem __ref
+-- 
+2.17.1
 
