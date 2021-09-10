@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1524071D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCB84071D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbhIJT1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:27:11 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:48253 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229546AbhIJT1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:27:03 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18AJPdHj511727
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 10 Sep 2021 12:25:39 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18AJPdHj511727
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021083001; t=1631301939;
-        bh=YFAQh7YL0Zd1LWre2EQ6VQmqRzlfVaJSwblMnsJBijY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=RUPQiAq13rtgPyFNAZ5sFR4c6uxMOi8t8VtZkAJLFA8IcXSn8NzOr1pFPsiePkCkE
-         OCK98IBKF5T7qgivnjIrPQFimlJuavtW/g1I6GqBMMYphzwrzqZi/IIItKqDleOgl0
-         6aUJJ5q8WIg61TmLqtSUhp4UhLv2VbMuuxCXICyacamSdjnXe+pOkbrlFlxzHgZrgZ
-         cAlKhGIYP8jVN0o8qbPP1gPFoOQ+5k2g5gTBTywqWZirdckmtgT3UvcjMJuVZ3Q84g
-         fCvm4eVhDjEjfXIW35sCA1c5DjRkQNPd2WBYzvtQcgvqJUFhs3+TZZx3ess2Fj/RtK
-         OzRokVTB+IszA==
-Subject: Re: [PATCH] x86/asm: pessimize the pre-initialization case in
- static_cpu_has()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210908171716.3340120-1-hpa@zytor.com>
- <YTo92+0ruBlkcaDf@zn.tnic> <1a73e0c2-8efe-fee9-5141-f7e9a95c748d@zytor.com>
- <f59dbeee-8d2f-0964-90db-bf9c3c176763@zytor.com> <YTsh7kdH+eGHgK7U@zn.tnic>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <b90675c5-d004-d90c-7890-48a81ed52414@zytor.com>
-Date:   Fri, 10 Sep 2021 12:25:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YTsh7kdH+eGHgK7U@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232804AbhIJT1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:27:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232223AbhIJT1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 15:27:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5D8EF611CE;
+        Fri, 10 Sep 2021 19:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631301958;
+        bh=EATeyJm8qfF3SE8iCM5kjfV79HUSox1zh5REqNXJj7I=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZW4O/7SLLZWCHq9H6V1w+GhLxI0mF0wqGPsbdlsiOWMvibqvRifc+tDCDmYa14YUS
+         vgccVeSYEz1I9ji7RNAVFiTd6e4vA3gI4OyEr7skt4uAfamZ7a5YD8EjEhwbqXGRmu
+         1V8DSx3PIRCGz1zFLosJ9owGVM6/kG/tLcoFHJGRukHLe4C9bhwVFCuIXebrE2eB/w
+         2qOYPHhOIQY/4oFQvxF9Y9YuPCsjQqcjT5NQMWEUbh9heWFocwOfYv1QYCbljaE7rd
+         6ysvzXl4WCJYlva4oSz1Rl0Fsn5zLUNsRrZs1/6sdNdrthvOac2yYwO7X8BBUht5lC
+         WYV8lzKJeGpQg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4EF27609F8;
+        Fri, 10 Sep 2021 19:25:58 +0000 (UTC)
+Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.15-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YTsioP7hPOP47cfn@ls3530>
+References: <YTsioP7hPOP47cfn@ls3530>
+X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YTsioP7hPOP47cfn@ls3530>
+X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-3
+X-PR-Tracked-Commit-Id: 671028728083e856e9919221b109e3b2cd2ccc49
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 23ef827c1bacc6c2b8314ff5bf571d4db57059b0
+Message-Id: <163130195826.21375.9642517909511292941.pr-tracker-bot@kernel.org>
+Date:   Fri, 10 Sep 2021 19:25:58 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 10 Sep 2021 11:17:20 +0200:
 
+> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-3
 
-On 9/10/21 2:14 AM, Borislav Petkov wrote:
-> On Thu, Sep 09, 2021 at 03:17:14PM -0700, H. Peter Anvin wrote:
->> ... into the visible part of the subject line, that was supposed to say.
->> This is rather important when browsing logs, e.g. using gitk.
-> 
-> So you resize your gitk window. It's not like there are no other commits
-> with a bit longer commit titles.
-> 
-> The important part is that our commit messages should be readable months
-> and years from now - I don't have to explain this to you, of all people.
-> 
-> "pessimize" is not even a word:
-> 
-> https://www.merriam-webster.com/dictionary/pessimize:
-> 
-> “pessimize”
-> 
->    The word you've entered isn't in the dictionary. Click on a spelling
->    suggestion below or try again using the search bar above.
-> 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/23ef827c1bacc6c2b8314ff5bf571d4db57059b0
 
-Depends on which dictionary you use.
+Thank you!
 
-	https://www.yourdictionary.com/pessimize
-
-> So while I have an idea what you mean, I'm sure that "what" can be
-> formulated in a better way.
-> 
-
-OK, no worries.  I'll resubmit.
-
-	-hpa
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
