@@ -2,164 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A69406C78
+	by mail.lfdr.de (Postfix) with ESMTP id 35E44406C76
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhIJMuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:50:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51854 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233176AbhIJMuU (ORCPT
+        id S233240AbhIJMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233145AbhIJMuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:50:20 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18ACXD0u036477;
-        Fri, 10 Sep 2021 08:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=E/DFWdEISJRi/Y1gKRSU/cqGG8eo6W7MV0ZgTlsUblw=;
- b=Smp4JU/RIwYVqOLEa15ydAxZLCFSdRfcRdlcHOSIXOXHR9RpxXa0XaIBcUpn+8H2ny6j
- eVBPWnC4XXHzxCMHoRiq++bvhVbMNDFKHdrbl+2Lx45mdaxoXzIhly6We56pHaSV5mUD
- aOSGs49uI89G3S6bqPsrENtP1EaybKF7lBexKUNkqrdNMJTn6IvvaPCu7iHkK5YpYfQw
- UWpZ7aDb4dCqNcJ8ekH/Rngp/oexrOqHTdtMMoKIkxM6mAf268i2ha5uWZY9F/BIcwlR
- XGpjvRnBCVD6KNyezShV8MAdQmv/EA2g4QGYRfxqx5JCkNKwtJdMDhcSj2jJW0SObaAV yQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b01ry81qc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 08:48:54 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18ACY3Pi041730;
-        Fri, 10 Sep 2021 08:48:54 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b01ry81py-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 08:48:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18ACfV4Z014871;
-        Fri, 10 Sep 2021 12:48:52 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3axcnp9cc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 12:48:52 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18ACiUgI51380652
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 12:44:30 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D9E8BAE045;
-        Fri, 10 Sep 2021 12:48:49 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E7AAAE058;
-        Fri, 10 Sep 2021 12:48:49 +0000 (GMT)
-Received: from sig-9-145-77-172.uk.ibm.com (unknown [9.145.77.172])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Sep 2021 12:48:49 +0000 (GMT)
-Message-ID: <dc672aa05a596a79c97339c14c09cc22559ffd10.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC 6/9] s390/pci_mmio: fully validate the VMA before
- calling follow_pte()
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-Date:   Fri, 10 Sep 2021 14:48:49 +0200
-In-Reply-To: <d9ec2387-2645-796e-af47-26f22516f7fa@redhat.com>
-References: <20210909145945.12192-1-david@redhat.com>
-         <20210909145945.12192-7-david@redhat.com>
-         <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
-         <d9ec2387-2645-796e-af47-26f22516f7fa@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: WviTXLUXHIM_uory2-CQINhyQJhxlK5t
-X-Proofpoint-GUID: 0YIVd7A3BA4CamRB-6ZIuFzXrVl0b_Qw
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-10_04:2021-09-09,2021-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109100074
+        Fri, 10 Sep 2021 08:50:18 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA8BC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:49:02 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso1443012pjj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OruuubkQ8i3YLqb6+3r6RVE7e77MrkfQsER8optuCOM=;
+        b=c7M0Om1a+77yc41d1QfC822W/3TI+8tUgsZ8+YDbYlDvNkRM5nV1Yt20zmxvhA7l0h
+         eS7rYYVwukesan7zh6oTys6Trli56PR39GNbsaF+Tf2FZhCdH3CBdPdErKg9hLCy9jCf
+         NPiumAjqQb5Ti8Ctdx0evhMLkvFkkLFzd7jpU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OruuubkQ8i3YLqb6+3r6RVE7e77MrkfQsER8optuCOM=;
+        b=LgNnl6uNrWi2ahajmDWYA/1f0VfgqVjXBKspNLcFqUaTceHsshqNuU9Qh1qU/G0JhB
+         gBanumkERSSAyRhx7mXa9moL1q3Rt5f3TjGVYzwrWjTnFwlGZpwxIhgy49KaWimYiiXs
+         nYoSSGprOEAvFrif+uDkIGLl+CkmNle8ZilibZFqBOl1Gwassro8XX5ffBlb00v5k3KK
+         K1776ZdL0h3l1Bd3AHFmhodMxky0Mc6L3g7vBClKVs8Vj5030F/fMguvYR1xtiU+CsC/
+         WwN64j8DoqkcNYA48idS8/xZqo9ieO1D9Qg93kzv8LCR2dHpDnF/1Aem9yDT6ehwbrnn
+         rn9w==
+X-Gm-Message-State: AOAM530fwM6+yqeSlPGmIg+A3UtBPcn9UbXbPFxqwNE/CRy43x1un8xj
+        OehBpeMIXsouwPkVCCUwN04aWQ==
+X-Google-Smtp-Source: ABdhPJyeQzjtxluE/5VxrHOJXu7FA9FgDVGp2E++lsR+iYm7Pj/7GTCIRRtL4FsW9NdS7b0m7PdXeQ==
+X-Received: by 2002:a17:902:64d0:b0:13b:67b3:e2e8 with SMTP id y16-20020a17090264d000b0013b67b3e2e8mr2149434pli.10.1631278142262;
+        Fri, 10 Sep 2021 05:49:02 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:7627:5944:d90:b374])
+        by smtp.gmail.com with ESMTPSA id u24sm5474912pfm.81.2021.09.10.05.48.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 05:49:01 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 21:48:57 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache
+ hints tests
+Message-ID: <YTtUOXF1qGbL+q0V@google.com>
+References: <20210709092227.1051346-1-senozhatsky@chromium.org>
+ <619afe51-4cba-95e0-69bc-bb96e1f88aae@xs4all.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <619afe51-4cba-95e0-69bc-bb96e1f88aae@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 11:23 +0200, David Hildenbrand wrote:
-> On 10.09.21 10:22, Niklas Schnelle wrote:
-> > On Thu, 2021-09-09 at 16:59 +0200, David Hildenbrand wrote:
-> > > We should not walk/touch page tables outside of VMA boundaries when
-> > > holding only the mmap sem in read mode. Evil user space can modify the
-> > > VMA layout just before this function runs and e.g., trigger races with
-> > > page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
-> > > with read mmap_sem in munmap").
-> > > 
-> > > find_vma() does not check if the address is >= the VMA start address;
-> > > use vma_lookup() instead.
-> > > 
-> > > Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
-> > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > > ---
-> > >   arch/s390/pci/pci_mmio.c | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
-> > > index ae683aa623ac..c5b35ea129cf 100644
-> > > --- a/arch/s390/pci/pci_mmio.c
-> > > +++ b/arch/s390/pci/pci_mmio.c
-> > > @@ -159,7 +159,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
-> > >   
-> > >   	mmap_read_lock(current->mm);
-> > >   	ret = -EINVAL;
-> > > -	vma = find_vma(current->mm, mmio_addr);
-> > > +	vma = vma_lookup(current->mm, mmio_addr);
-> > >   	if (!vma)
-> > >   		goto out_unlock_mmap;
-> > >   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > > @@ -298,7 +298,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
-> > >   
-> > >   	mmap_read_lock(current->mm);
-> > >   	ret = -EINVAL;
-> > > -	vma = find_vma(current->mm, mmio_addr);
-> > > +	vma = vma_lookup(current->mm, mmio_addr);
-> > >   	if (!vma)
-> > >   		goto out_unlock_mmap;
-> > >   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > 
-> > Oh wow great find thanks! If I may say so these are not great function
-> > names. Looking at the code vma_lookup() is inded find_vma() plus the
-> > check that the looked up address is indeed inside the vma.
-> > 
-> 
-> IIRC, vma_lookup() was introduced fairly recently. Before that, this 
-> additional check was open coded (and still are in some instances). It's 
-> confusing, I agree.
-> 
-> > I think this is pretty independent of the rest of the patches, so do
-> > you want me to apply this patch independently or do you want to wait
-> > for the others?
-> 
-> Sure, please go ahead and apply independently. It'd be great if you 
-> could give it a quick sanity test, although I don't expect surprises -- 
-> unfortunately, the environment I have easily at hand is not very well 
-> suited (#cpu, #mem, #disk ...) for anything that exceeds basic compile 
-> tests (and even cross-compiling is significantly faster ...).
+Hello,
 
-Yes and even if you had more hardware this code path is only hit by
-very specialized workloads doing MMIO access of PCI devices from
-userspace. I did test with such a workload (ib_send_bw test utility)
-and all looks good.
-
-Applied and will be sent out by Heiko or Vasily as part of the s390
-tree.
-
-
+On (21/09/10 14:20), Hans Verkuil wrote:
+> Hi Sergey,
 > 
-> > In any case:
-> > 
-> > Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> > 
+> I've applied the "[PATCHv6 0/8] videobuf2: support new noncontiguous DMA API" series
+> to my kernel, and applied this patch to v4l-utils.
 > 
-> Thanks!
+> Running 'test-media vim2m' in contrib/test results in the following compliance failures:
 > 
+> Streaming ioctls:
+>         test read/write: OK (Not Supported)
+>         test blocking wait: OK
+>         Video Capture: Captured 8 buffers
+>         test MMAP (no poll): OK
+>         Video Capture: Captured 8 buffers
+>         test MMAP (select): OK
+>         Video Capture: Captured 8 buffers
+>         test MMAP (epoll): OK
+>         Video Capture: Captured 8 buffers
+>         test USERPTR (no poll): OK
+>         Video Capture: Captured 8 buffers
+>         test USERPTR (select): OK
+>                 fail: v4l2-test-buffers.cpp(1869): !(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
+>                 fail: v4l2-test-buffers.cpp(1932): setupDmaBuf(expbuf_node, node, q, exp_q)
+>         test DMABUF (no poll): FAIL
+>                 fail: v4l2-test-buffers.cpp(1869): !(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
+>                 fail: v4l2-test-buffers.cpp(1932): setupDmaBuf(expbuf_node, node, q, exp_q)
+>         test DMABUF (select): FAIL
+> 
+> The same happens with e.g. vivid, but vim2m is quicker to test.
+> 
+> I'm not sure whether this is a bug in this v4l2-compliance patch or whether it is
+> a bug in the v6 series, but it should be checked.
 
+Looking into it now. I ran v4l2-compliance, but not "contrib/test/test-media"
