@@ -2,199 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AF8407192
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D587C407194
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhIJTB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:01:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35516 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230513AbhIJTBW (ORCPT
+        id S232504AbhIJTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:02:38 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36492
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230513AbhIJTCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:01:22 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AIwEPj014036;
-        Fri, 10 Sep 2021 12:00:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=P9BhS20MQ5YEBx0OcmmChZLCRp+fuPXGfewf/dbAw9M=;
- b=OrRKJD8ECeWTIAGFSx6bUSPZGwROVVKZtGNm3M3jrwrzm4xdY69x+bzFAbzeAZO9pS2x
- mMxIEmj2dBYFPWZS0sZltUFYYJlhydm+vVqz9IIsgXPEHG4TL1qrHIoRDAJ4+qg+IfeR
- FZUf5JQ6mv2nu1jSje6zJWunNOUcXXu83sA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aytffxvs9-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Sep 2021 12:00:10 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 10 Sep 2021 12:00:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mJeoFC1zPZ6tQQYou24UvttmS90CTpQLo+r++3k1Obh83xldnRrgebZ5cqghpNGI0K8moO7TzWhbe06HDmw4nWADxDqCrcuWzDQuHGkaX9m7iFNghWJSp4b9+gu/26judAgg9qA9hSwLy9zShWCh2rJBBoYCnrxAZvwSRKCHhHPfFF0itH+YIhugYK2fewA9wIx9qCk21ynT1JYAB7YpQ/QtFlLzpSgRZ0qwEsg3Fp82TbtkVNQvj0KCb5GyGpsIXDrKBzpKeorf8mBiw6OLWimGC8ECQ1zFOXA5qkfCrg2QERp3n83LtI4kWt0AdqdM74wPZE8w0S0jYlv6ZDkL1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=P9BhS20MQ5YEBx0OcmmChZLCRp+fuPXGfewf/dbAw9M=;
- b=Tcc+KPtVSK6u7V9Fu/rQgKKYPOvSDhEhVG8sPyaA8oiLAnRn818q56YT3Sj8oDbvPtIjhDW/gmDx04v+OmyC3hXg623j/LbMDsUH+J068mzvJw+KZdW87iKZfpCVgRjVANQxx69I1GX/3m1UhxV8U2hLoy4QcgAE0RgtpbPLvS8CX8kxnhYDHyS9/iGdb064u792DT6XPHH5CxqCtXEKZEKde1bi2m3aNfIz+BqIisNMIVyQcrPfYKz8MVKq1ey2m5NyLZE0vc9kiTBaK+btM/OnAcARwt9HAAycPCLi6M8y3JT4W537Zwr/W0djP+AG+kIwemragNOOaqnOzv3yrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5094.namprd15.prod.outlook.com (2603:10b6:806:1dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Fri, 10 Sep
- 2021 19:00:08 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4500.018; Fri, 10 Sep 2021
- 19:00:08 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Andrii Nakryiko" <andrii@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
- events
-Thread-Topic: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
- events
-Thread-Index: AQHXpCby8uzfjDX52kWXwjwsop4wLqudGFYAgAA1/ICAAExtgIAAA5iAgAACr4CAAALQgA==
-Date:   Fri, 10 Sep 2021 19:00:08 +0000
-Message-ID: <6830FC62-995A-4282-BD30-76E2506ED993@fb.com>
-References: <20210907202802.3675104-1-songliubraving@fb.com>
- <20210907202802.3675104-2-songliubraving@fb.com>
- <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
- <YTtjeyfJXXiDielu@hirez.programming.kicks-ass.net>
- <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
- <20210910184027.GQ4323@worktop.programming.kicks-ass.net>
- <20210910185003.GC5106@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210910185003.GC5106@worktop.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 83e7217b-5fd3-47ae-1dd4-08d9748d3552
-x-ms-traffictypediagnostic: SA1PR15MB5094:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB50949B283661D660008BBA29B3D69@SA1PR15MB5094.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eZNDTFpmbKDQB7ss6syeO3YasLEtViSfBEenhdujH0IQCf/DlnE9e2+lBzjdrxqbpsjcqNJQvqRRxttq6m6Dl1TCinq6xBJMjgo5Y4E6Dea+tbrPzE2r8nikww+9p4Hr3gXpf690OuJmE+9BdMPWoTSOtL5tBOFv+lWueJsi48MFrwSE2XN6varl5ko5oK0zRgcIC0yZnktbQR+/92/Aik4Ov7Kdd5q4M43ujBhyjw8M4181sTMZeglDt343Age+rZhTvGrCi3/lr3T47G/MW7UDIzhLRjEp4iQVGn/CY87qngdTbRuTdnhFYmnfiZGB33JO9EHW/m6hEk7ICyFXv12z1K5KA5n+a2j+wzVsTAXnjTt0Fd9q5BD6AnrLW06umOzxIiqjNkRGZjPnMKgv3Jt1H/hpf+I/gMToMmcECTyWkbfpWbVaKJXBZRvgne2IL3dfaVBecU5839FVH/zeIdr00vZzqYwFWt5g4yFjKy13X/u+kVJ1/pcnhqA/yAbcwdbEw+PilfFU9wAyqNfjvCFzJs6UYNUqNH7Eafs/lv0E0BXmhTli8gyszoM8IiRSCVK9dgShNGaJKa0rc0yohk9h6aheQK3UBUPeZ/X1IyjKJmnPUhvmV0cZnO8ZNkribmwBuOD7ITOZEsHjhEbPvj1FJK5m1oLxKlZOMGA6P0MPCQiirNM5XuzhIt4ONLHGJj6V1GDx0hBS7FJflAV7ZOTf/BpNz5yBm2qsosREM3aTAiPyMBqH2QmRfe7FIFQR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(4326008)(38100700002)(6916009)(2616005)(86362001)(122000001)(8936002)(38070700005)(6486002)(8676002)(36756003)(83380400001)(6506007)(91956017)(76116006)(508600001)(64756008)(66476007)(66446008)(66556008)(66946007)(54906003)(53546011)(5660300002)(2906002)(316002)(33656002)(186003)(71200400001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?LR6hr1U5gHJciPhCVJ7GKXRP6T1xJLVW5aGyMLnLpFCKZ9QGhcM9oMKIshth?=
- =?us-ascii?Q?/TDIM1IJNHgo5W88GczzHczPpIH2fxTQsYOhTTSG5OJtcAI/Jx5CPfwsjp1f?=
- =?us-ascii?Q?YNtSS1EznEG3rQd1XYbVOqdzvSM7cfNRhWZ41Q0VBvkUHsi3bfLC0/7f10jA?=
- =?us-ascii?Q?giamKIrZA9lgWNFKryhjCdjdkmPBVFM/14jVJl+fTnFa6EE1DSHZ0KtQNxaX?=
- =?us-ascii?Q?uqYS9K+YHve2Hd1F4IStlNSU0KyMuHAGKzmY0myWY7S0PFETLu0tyHKYeHQK?=
- =?us-ascii?Q?OKr2sYfcOz1ys1kVQee6onouLxC6jR9ppBxqGGcehd5RcDB7g82WI2sgijkc?=
- =?us-ascii?Q?5xbyVh+CWhP8CbcgFsqXSfEbgfG2aiFT2bZWXNk1ukieoh+2uRU8YDN/6HNG?=
- =?us-ascii?Q?j+afVYlfyXZM10b+lMQNjcRIGA7/zQH0c3yl07IW+oxYlr8a5xL8B0AoNEqH?=
- =?us-ascii?Q?wb8lNJW/NygEVMAV2/qUMH91kj/HenHKoowVjAVxzCktrRxwL6KRsOObYGYz?=
- =?us-ascii?Q?71gGa+YE1UHJvTtYSpgJPAEqvX1vyiGc9QF9QT7OSairEub4EhP4vVJp9Bxp?=
- =?us-ascii?Q?r0hmAzPdlFYpYeHtfKeQN14lHrGzMXbS92aW2nzcGsnVYvq6H8OlRX0kixBI?=
- =?us-ascii?Q?Vpeh5b8PEw6iuq+CWL01fCIqJX3J1uO4qpREay/3m39luRRTL0LB1O5c7cGF?=
- =?us-ascii?Q?koFkS1Jl/cU9eW2i5krVV8fhnWGhPiVDD9bgqEKLHVXZik1oFIME1ogPJavC?=
- =?us-ascii?Q?hNj4SyluehkuD8YVrSJ+yV3RnDR9shwRtqI8EO7z4JrDZbn3q2yHQWqFM0IT?=
- =?us-ascii?Q?kCbzWyH5I40pT1N2FiLAjidfb1/p9tjCFNJXmH93DIteBR28f96DrgsghiCt?=
- =?us-ascii?Q?msLHJv5lrhLqoz49ytmrdWGzJb2lYr9/Pp7vR1rBD0qVY+Zbkpi8BSumE16p?=
- =?us-ascii?Q?7vg881L5NqxGlzO+WCCoSbFZnJ+BfeQ5tTwZfQwyRkzJyMxw1GcBydBKtY84?=
- =?us-ascii?Q?eb3cqIr2uRunrxetP9VPp5calRmX7gcTWpKvYHjKbujkNu+PobZM9GYnY7V7?=
- =?us-ascii?Q?mNQlB1jipZn36AY0fStVoRpvUodu9lJbRC9ql7BwkA9u8IalPOGgJbExmdOq?=
- =?us-ascii?Q?2QkDmHMaO6VY1lXOAQScM/PnO84mBX2t04tsvtjhWIygzbsOIKxDpEh/lI2X?=
- =?us-ascii?Q?InKtAxqvXOXkrli6L5azRUnPFcLUflPo+Jd6pRduyJKGYIm9lXBB/0qP9uiS?=
- =?us-ascii?Q?ftiVnb70ZLeF4l9Xk5937k/X1d1N5q24yPM7NyjmWfFucf2dVHNLuskF+BQc?=
- =?us-ascii?Q?3f8Tusvq4lWY9ls4sk+WWsnAziPlQqLtQ3K28OJv/2esO27v58NaK5iifzLI?=
- =?us-ascii?Q?QyzgFqk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C7A405EE9611ED4393BA497A00359561@namprd15.prod.outlook.com>
+        Fri, 10 Sep 2021 15:02:36 -0400
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 47AAF3F499
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:01:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631300484;
+        bh=MBtluqNukPdcEGpdwgvbXPFv3pY+sw4KVloaomnNcZg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=Ndlus/ACQ9A4PJmfwqz0t9gNSpEjWNMjUkkJUjh/qKJ02PHBhbq6vxzbonF7YOPLI
+         64T3jkk2jeyv00Nk2yWjS8DQpsIWXNB2YxaTt5qCTeZTTwmFkxpRgH5med7+2sOIji
+         KbGvzDxG/t9Nn2ksrJxINJvzf6aJSZduUR1yb+qSZLxdaTNK6RcXLKpI3m5QhtixjJ
+         sP4vBV9/A7A0lqzDCgiPxXv2L7Z988ia3n2f71pYIsp1Jsv0TxYKH2DjtqPtUsBL+Y
+         D0rDUnJ6SrK8yBgOvYyS0HX+lT8XOR8KJMx+k70Bwz4FX6JF39G085Q1OGJmUsru4i
+         OcQK+wr3n99Zw==
+Received: by mail-pj1-f69.google.com with SMTP id y15-20020a17090a600f00b001993b27b471so1808847pji.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:01:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MBtluqNukPdcEGpdwgvbXPFv3pY+sw4KVloaomnNcZg=;
+        b=6YtkFbxF1ADeMnLe3TWs5faEFvVz6i4pQa6wL7BCedoznfIdLCTJfyu5KoIfg7J4pm
+         2ZEn0BNHAGWBc+Ma9uvLbi4HDshogzg0RAetSLIvCl7Mxnm1YEh7Jx7scZG6PSbK+kUf
+         ry1lqXQULKi/nUVPwIHDBZYcQ7Ws9BzHm2kifds73346eZcqaTreqcejWXMST1l2OGZS
+         /dBMHnZ+DS/N4ZGC6L6KLK2+pgPF1gENA2e70TckYXAbnAjKbue1wlgm2Y4Mwk5leMr5
+         5cgEVSD3v7nTjWbqMRXxk9hjM3Lfrz2xkH+7TQDidFZmwV/Dc4kpc32UsxaPGnJFBLx3
+         5MUQ==
+X-Gm-Message-State: AOAM532jt3HWeEVHfiSDqCWVXdCGuXuCHQTnIIEtFFe3uAODPTb+5wvF
+        lwYTrwTjEUlki77vKaHw6ZdggIPGyDz8pumVql8Xe+QYPrg8Rloi8hoEdGx8LaiW3DbcAv3O/KU
+        oVFOE/92CP01TSKZf+gKMqmr76Y+xF6DLGgUcYB9iCQ==
+X-Received: by 2002:a63:68a:: with SMTP id 132mr8612402pgg.154.1631300482703;
+        Fri, 10 Sep 2021 12:01:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgNV/BhWRskvi5hTjkSPzv93WPvsAkhP+1MjE4wfxOgQjdY3eWlCNEVCpeLprlPYvbtvEEMQ==
+X-Received: by 2002:a63:68a:: with SMTP id 132mr8612363pgg.154.1631300482138;
+        Fri, 10 Sep 2021 12:01:22 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id t23sm5377869pjs.16.2021.09.10.12.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 12:01:21 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     tim.gardner@canonical.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: drbg - Fix unused value warning in drbg_healthcheck_sanity()
+Date:   Fri, 10 Sep 2021 13:01:17 -0600
+Message-Id: <20210910190117.24882-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83e7217b-5fd3-47ae-1dd4-08d9748d3552
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2021 19:00:08.2509
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tlGNuRht8XBbzjHS2Yrgf2y49BHXPcoVUG0/ai1xSYpx8hVKwaO/bt8dC3hGgWape+eaKxOTVNFgQqxvIMeU3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5094
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: XjPg5QZMxurXopPWZJXehCp97jPDRB4q
-X-Proofpoint-ORIG-GUID: XjPg5QZMxurXopPWZJXehCp97jPDRB4q
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-10_07:2021-09-09,2021-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 spamscore=0
- mlxlogscore=736 malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015
- bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109100110
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Coverity warns uf an unused value:
 
+CID 44865 (#2 of 2): Unused value (UNUSED_VALUE)
+assigned_value: Assigning value -14 to ret here, but that stored value is
+overwritten before it can be used.
+2006        int ret = -EFAULT;
+...
+value_overwrite: Overwriting previous write to ret with value from drbg_seed(drbg, &addtl, false).
+2052        ret = drbg_seed(drbg, &addtl, false);
 
-> On Sep 10, 2021, at 11:50 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> On Fri, Sep 10, 2021 at 08:40:27PM +0200, Peter Zijlstra wrote:
->> On Fri, Sep 10, 2021 at 06:27:36PM +0000, Song Liu wrote:
->> 
->>> This works great and saves 3 entries! We have the following now:
->> 
->> Yay!
->> 
->>> ID: 0 from bpf_get_branch_snapshot+18 to intel_pmu_snapshot_branch_stack+0
->> 
->> is unavoidable, we need to end up in intel_pmu_snapshot_branch_stack()
->> eventually.
->> 
->>> ID: 1 from __brk_limit+477143934 to bpf_get_branch_snapshot+0
->> 
->> could be elided by having the JIT emit the call to
->> intel_pmu_snapshot_branch_stack directly, instead of laundering it
->> through that helper I suppose.
->> 
->>> ID: 2 from __brk_limit+477192263 to __brk_limit+477143880  # trampoline 
->>> ID: 3 from __bpf_prog_enter+34 to __brk_limit+477192251
->> 
->> -ENOCLUE
->> 
->>> ID: 4 from migrate_disable+60 to __bpf_prog_enter+9
->>> ID: 5 from __bpf_prog_enter+4 to migrate_disable+0
->> 
->> I suppose we can reduce that to a single branch if we inline
->> migrate_disable() here, that thing unfortunately needs one branch
->> itself.
-> 
-> Oooh, since we put local_irq_save/restore() in
-> intel_pmu_snapshot_branch_stack(), we no longer need to be after
-> migrate_disable(). You could go back to placing it earlier!
+Fix this by removing the variable initializer.
 
-Hmm.. not really. We call migrate_disable() before entering the BPF program. 
-And the helper calls snapshot_branch_stack() inside the BPF program. To move
-it to before migrate_disable(), we will have to add a "whether to snapshot
-branch stack" check before entering the BPF program. This check, while is
-cheap, is added to all BPF programs on this hook, even when the program does 
-not use snapshot at all. So we would rather keep all logic inside the helper, 
-and not touch the common path. 
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ crypto/drbg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Song
-
-
-
-
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index ea85d4a0fe9e..f72f340a1321 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -2003,7 +2003,7 @@ static inline int __init drbg_healthcheck_sanity(void)
+ #define OUTBUFLEN 16
+ 	unsigned char buf[OUTBUFLEN];
+ 	struct drbg_state *drbg = NULL;
+-	int ret = -EFAULT;
++	int ret;
+ 	int rc = -EFAULT;
+ 	bool pr = false;
+ 	int coreref = 0;
+-- 
+2.33.0
 
