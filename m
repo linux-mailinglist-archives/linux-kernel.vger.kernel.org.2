@@ -2,164 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80055406562
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E0F406566
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhIJBsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:48:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:16019 "EHLO mga03.intel.com"
+        id S229551AbhIJBtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:49:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhIJBr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:47:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="221015209"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="221015209"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:46:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="540078011"
-Received: from unknown (HELO [10.239.13.122]) ([10.239.13.122])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:46:44 -0700
-Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210827085110.6763-1-chenyi.qiang@intel.com>
- <YS/BrirERUK4uDaI@google.com>
- <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
- <YTpLmxaR9zLbcyxx@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <56fa664d-c4e5-066b-2bc8-2f1d2e74b35a@intel.com>
-Date:   Fri, 10 Sep 2021 09:46:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S229452AbhIJBtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 21:49:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1135D61101;
+        Fri, 10 Sep 2021 01:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631238522;
+        bh=4rEbcia9klYRhMFk/xM9Aun4Pm5+wzcxNJqHpHv6N24=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Cd1xvSkX6QDqPQTuZ8Z5JfPye1PwZKNKBwQcdAxXpPiQ4Wv4/YO4bu7392VM1NImm
+         XuqIRhXVDQOmNq6KSr8rWzexPOcCPMDghVxucL/kYlgg2NEUou0rGKI4DQIyM2g3Fy
+         mTI9iVfW7eexcWE6vVBtjxAQvSmoU7mFjQLMDUwSWuju4wbAJbEuu/6ThH0xt17RqL
+         SIS1ANlgNOPIEgRj4P/eVVLtktiFqy/YnCHyHLePIE2xLTjWgYF7zbT0aY/6PRyG/c
+         Lhk66ZB9V/wbFnuqyPdyND3JA8N/JXNsLfrWL+k3ZMB/mEgVAI6ETvK757e2MJofFD
+         yJthpusIGSAFA==
+Date:   Fri, 10 Sep 2021 03:48:38 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 09/15] leds: trigger: blkdev: Check devices for
+ activity and blink LEDs
+Message-ID: <20210910034838.4331512d@thinkpad>
+In-Reply-To: <20210909222513.2184795-10-arequipeno@gmail.com>
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+        <20210909222513.2184795-10-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YTpLmxaR9zLbcyxx@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 1:59 AM, Sean Christopherson wrote:
-> On Thu, Sep 02, 2021, Xiaoyao Li wrote:
->> On 9/2/2021 2:08 AM, Sean Christopherson wrote:
->>> On Fri, Aug 27, 2021, Chenyi Qiang wrote:
->>>> Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
->>>> VM exit, it will be directed to L1 VMM, which would cause unexpected
->>>> behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
->>>>
->>>> Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
->>>> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
->>>> ---
->>>>    arch/x86/kvm/vmx/nested.c | 2 ++
->>>>    1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->>>> index bc6327950657..754f53cf0f7a 100644
->>>> --- a/arch/x86/kvm/vmx/nested.c
->>>> +++ b/arch/x86/kvm/vmx/nested.c
->>>> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
->>>>    	case EXIT_REASON_VMFUNC:
->>>>    		/* VM functions are emulated through L2->L0 vmexits. */
->>>>    		return true;
->>>> +	case EXIT_REASON_BUS_LOCK:
->>>> +		return true;
->>>
->>> Hmm, unless there is zero chance of ever exposing BUS_LOCK_DETECTION to L1, it
->>> might be better to handle this in nested_vmx_l1_wants_exit(), e.g.
->>>
->>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->>> index b3f77d18eb5a..793534b7eaba 100644
->>> --- a/arch/x86/kvm/vmx/nested.c
->>> +++ b/arch/x86/kvm/vmx/nested.c
->>> @@ -6024,6 +6024,8 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
->>>                           SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE);
->>>           case EXIT_REASON_ENCLS:
->>>                   return nested_vmx_exit_handled_encls(vcpu, vmcs12);
->>> +       case EXIT_REASON_BUS_LOCK:
->>> +               return nested_cpu_has2(vmcs12, SECONDARY_EXEC_BUS_LOCK_DETECTION);
->>
->> yes, for now, it equals
->>
->>                    return false;
->>
->> because KVM doesn't expose it to L1.
->>
->>>           default:
->>>                   return true;
->>>           }
->>>
->>> It's a rather roundabout way of reaching the same result, but I'd prefer to limit
->>> nested_vmx_l0_wants_exit() to cases where L0 wants to handle the exit regardless
->>> of what L1 wants.  This kinda fits that model, but it's not really that L0 "wants"
->>> the exit, it's that L1 can't want the exit.  Does that make sense?
->>
->> something like below has to be in nested_vmx_l0_wants_exit()
->>
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu
->> *vcpu,
->>          case EXIT_REASON_VMFUNC:
->>                  /* VM functions are emulated through L2->L0 vmexits. */
->>                  return true;
->> +       case EXIT_REASON_BUS_LOCK:
->> +               return vcpu->kvm->arch.bus_lock_detection_enabled;
->>          default:
->>                  break;
->>          }
->>
->>
->> L0 wants this VM exit because it enables BUS LOCK VM exit, not because L1
->> doesn't enable it.
-> 
-> No, nested_vmx_l0_wants_exit() is specifically for cases where L0 wants to handle
-> the exit even if L1 also wants to handle the exit.  For cases where L0 is expected
-> to handle the exit because L1 does _not_ want the exit, the intent is to not have
-> an entry in nested_vmx_l0_wants_exit().  This is a bit of a grey area, arguably L0
-> "wants" the exit because L0 knows BUS_LOCK cannot be exposed to L1.
+On Thu,  9 Sep 2021 17:25:07 -0500
+Ian Pilcher <arequipeno@gmail.com> wrote:
 
-No. What I wanted to convey here is exactly "L0 wants to handle it 
-because L0 wants it, and no matter L1 wants it or not (i.e., even if L1 
-wants it) ", not "L0 wants it because the feature not exposed to L1/L1 
-cannot enable it".
+> +static void blkdev_blink(const struct ledtrig_blkdev_led *const led)
+> +{
 
-Even for the future case that this feature is exposed to L1, and both L0 
-and L1 enable it. It should exit to L0 first for every bus lock happened 
-in L2 VM and after L0 handles it, L0 needs to inject a BUS LOCK VM exit 
-to L1 if L1 enables it. Every bus lock acquired in L2 VM should be 
-regarded as the bus lock happened in L1 VM as well. L2 VM is just an 
-application of L1 VM.
+Why are you declaring the led variable as const? This is not needed.
+Sure, you do not change it, but I have never seen this being used in
+this way in kernel.
 
-IMO, the flow should be:
+> +	unsigned long delay_on = READ_ONCE(led->blink_msec);
+> +	unsigned long delay_off = 1;	/* 0 leaves LED turned on */
+> +
+> +	led_blink_set_oneshot(led->led_dev, &delay_on, &delay_off, 0);
+> +}
+> +
+> +static void blkdev_update_disk(struct ledtrig_blkdev_disk *const disk,
+> +			       const unsigned int generation)
+> +{
+> +	const struct block_device *const part0 = disk->gd->part0;
+> +	const unsigned long read_ios = part_stat_read(part0, ios[STAT_READ]);
+> +	const unsigned long write_ios = part_stat_read(part0, ios[STAT_WRITE])
+> +				+ part_stat_read(part0, ios[STAT_DISCARD])
+> +				+ part_stat_read(part0, ios[STAT_FLUSH]);
 
-if (L0 enables it) {
-	exit to L0;
-	L0 handling;
-	if (is_guest_mode(vcpu) && L1 enables it) {
-		inject BUS_LOCK VM EXIT to L1;
-	}
-} else if (L1 enables it) {
-	BUS_LOCK VM exit to L1;
-} else {
-	BUG();
-}
+Again, yes, you do not change part0, read_ios or write_ios in this
+function, but this does not mean you need to declare them const.
 
-> But if we go with that argument, then the original patch (with a comment), is correct.
-> Conditioning L0's wants on bus_lock_detection_enabled is not correct because whether
-> or not the feature is enabled by L0 does not affect whether or not it's exposed to L1.
-> Obviously BUS_LOCK exits should not happen if bus_lock_detection_enabled==false, but
-> that's not relevant for why L0 "wants" the exit.
-> 
-> I'm not totally opposed to handling this in nested_vmx_l0_wants_exit(), but handling
-> the check in nested_vmx_l1_wants_exit() has the advantage of being correct both now
-> and in the future (if BUS_LOCK is ever exposed to L1).
-> 
+Const is good when you want to declare that a place where a pointer
+points to should be constant. You don't need to do it for the pointer
+itself, I don't see any benefit from this.
+
+> +
+> +	if (disk->read_ios != read_ios) {
+> +		disk->read_act = true;
+> +		disk->read_ios = read_ios;
+> +	} else {
+> +		disk->read_act = false;
+> +	}
+> +
+> +	if (disk->write_ios != write_ios) {
+> +		disk->write_act = true;
+> +		disk->write_ios = write_ios;
+> +	} else {
+> +		disk->write_act = false;
+> +	}
+> +
+> +	disk->generation = generation;
+> +}
+> +
+> +static bool blkdev_read_mode(const enum ledtrig_blkdev_mode mode)
+> +{
+> +	return mode != LEDTRIG_BLKDEV_MODE_WO;
+> +}
+> +
+> +static bool blkdev_write_mode(const enum ledtrig_blkdev_mode mode)
+> +{
+> +	return mode != LEDTRIG_BLKDEV_MODE_RO;
+> +}
+
+It would be better to simply do the comparison where it is needed,
+since it is so short. These functions aren't needed, they do not
+shorten code in any significant way, nor do they make it more readable
+(in fact, they make it a little less readable).
+
+> +
+> +static void blkdev_process(struct work_struct *const work)
+
+You are again using const where it is not needed.
+In fact the work_func_t type does not have it:
+  typedef void (*work_func_t)(struct work_struct *work);
+
+> +{
+> +	static unsigned int generation;
+> +
+> +	struct ledtrig_blkdev_led *led;
+> +	struct ledtrig_blkdev_link *link;
+> +	unsigned long delay;
+> +
+> +	if (!mutex_trylock(&ledtrig_blkdev_mutex))
+> +		goto exit_reschedule;
+> +
+> +	hlist_for_each_entry(led, &ledtrig_blkdev_leds, leds_node) {
+> +
+> +		hlist_for_each_entry(link, &led->disks, led_disks_node) {
+> +
+> +			struct ledtrig_blkdev_disk *const disk = link->disk;
+> +
+> +			if (disk->generation != generation)
+> +				blkdev_update_disk(disk, generation);
+> +
+> +			if (disk->read_act && blkdev_read_mode(led->mode)) {
+> +				blkdev_blink(led);
+> +				break;
+> +			}
+> +
+> +			if (disk->write_act && blkdev_write_mode(led->mode)) {
+> +				blkdev_blink(led);
+> +				break;
+> +			}
+
+These two blinks should be one blink, i.e.
+  if ((read_act && read_mode) || (write_act && write_mode))
+    blink();
+
+> +		}
+> +	}
+> +
+> +	++generation;
+> +
+> +	mutex_unlock(&ledtrig_blkdev_mutex);
+> +
+> +exit_reschedule:
+> +	delay = READ_ONCE(ledtrig_blkdev_interval);
+> +	WARN_ON_ONCE(!schedule_delayed_work(&ledtrig_blkdev_work, delay));
+> +}
+> +
+>  
+>  /*
+>   *
 
