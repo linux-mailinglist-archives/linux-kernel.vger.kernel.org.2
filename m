@@ -2,237 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9070406DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFFC406DE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbhIJPGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhIJPGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:06:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CE0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=trX8c7TNjrxV2L8XG+G06fHZ46kQCJFnfp1PT2gu3oo=; b=czFl5olL2suxV0VuLRYcv8ug46
-        9vqm5GoYv8lg88cIaYeSP97KtY0A7RD8Z2Cd/jBLl4QkZZgPOq0sKjIGBEs+QQSPDaQzPwi4I5DS0
-        etA4YdMBcnJ/3DytKnwaYS8zTxRaWKnup9WvkJlbPXHTKhIPQSyxF/ZKypmkHVp6jOic1DNQdwS6l
-        n2Tz2B3rLuSI+Yz+Zeu24ZqM94jH6Q9e5Bl1KRoMyJEYMtFd6+Eps0rJZaoCfcXr7iCKb/AAosXj0
-        2dk61eLq3d0NG8z7jRD5VPxQ+uKmWfsdbUKkzBjN/tZqTwE3mXXLyBtBzMUQLTnI0lJGcNWKrR2yU
-        F/AS48YQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOi3N-00B6BR-0W; Fri, 10 Sep 2021 15:03:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DCAAE300047;
-        Fri, 10 Sep 2021 17:02:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B9A932BBF8369; Fri, 10 Sep 2021 17:02:54 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 17:02:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
-Message-ID: <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
-References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
- <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
- <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
- <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
- <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
+        id S234210AbhIJPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:04:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234227AbhIJPEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:04:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DADF960F5D;
+        Fri, 10 Sep 2021 15:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631286182;
+        bh=PH99uv9BEC9eR+yC1+eR9dawbQ9KeXsn8vOTTb1eqCQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GGoRWuyr5yRtYb50aZYkgkop1tYa+fVvdSywVoYq9xbevQrwLoyOBOA4mW6vCwSgs
+         csUYcbijYP5hK/IB51lcfBkNQyBshcGV0T6Ms1GxONJMGUcQyu6G2I1ovP7q56PlC0
+         CGKEsOUfs1jzjuacoWmEszpk3miGLSI/88sUYtN8nb7CPYgzSk7qVIb4NsQ+lf4/wG
+         DLemEvGSl5xxO51zTyYsVUbrECtEqRoxvF5Po6L7zmJSl52wqpwPvZEfhwU214Ely1
+         1c+Qt/4rfkL+dJwL2QaztEO6AAr3TrH+ppwmUNez0NSV5YrU4+HgKbf85RqQs7oFPH
+         rzLmmsWNoz4ZQ==
+Message-ID: <100c9d193641f2d18b1a5a15d25b9a36f5edb6bc.camel@kernel.org>
+Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
+ /sys/devices/system/node/node*/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 10 Sep 2021 18:02:59 +0300
+In-Reply-To: <YTtmJAgOllgtsIDh@kroah.com>
+References: <20210910001726.811497-1-jarkko@kernel.org>
+         <YTsAjCZQ6AaWDjD1@kroah.com>
+         <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
+         <YTtmJAgOllgtsIDh@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:32:18AM +0200, Maarten Lankhorst wrote:
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index d456579d0952..791c28005eef 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -736,6 +736,44 @@ __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
->  	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
->  }
->  
-> +/**
-> + * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
-> + * @lock: mutex to lock
-> + * @ctx: optional w/w acquire context
-> + *
-> + * Trylocks a mutex with the optional acquire context; no deadlock detection is
-> + * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
-> + *
-> + * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
-> + * specified, -EALREADY and -EDEADLK handling may happen in calls to ww_mutex_lock.
-> + *
-> + * A mutex acquired with this function must be released with ww_mutex_unlock.
-> + */
-> +int __sched
-> +ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ctx)
-> +{
-> +	bool locked;
-> +
-> +	if (!ctx)
-> +		return mutex_trylock(&ww->base);
-> +
-> +#ifdef CONFIG_DEBUG_MUTEXES
-> +	DEBUG_LOCKS_WARN_ON(ww->base.magic != &ww->base);
-> +#endif
-> +
-> +	preempt_disable();
-> +	locked = __mutex_trylock(&ww->base);
-> +
-> +	if (locked) {
-> +		ww_mutex_set_context_fastpath(ww, ctx);
-> +		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ctx->dep_map, _RET_IP_);
-> +	}
-> +	preempt_enable();
-> +
-> +	return locked;
-> +}
-> +EXPORT_SYMBOL(ww_mutex_trylock);
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  void __sched
->  mutex_lock_nested(struct mutex *lock, unsigned int subclass)
+On Fri, 2021-09-10 at 16:05 +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 10, 2021 at 04:17:44PM +0300, Jarkko Sakkinen wrote:
+> > On Fri, 2021-09-10 at 08:51 +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
+> > > > The amount of SGX memory on the system is determined by the BIOS an=
+d it
+> > > > varies wildly between systems.  It can be from dozens of MB's on de=
+sktops
+> > > > or VM's, up to many GB's on servers.  Just like for regular memory,=
+ it is
+> > > > sometimes useful to know the amount of usable SGX memory in the sys=
+tem.
+> > > >=20
+> > > > Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
+> > > > showing the total SGX memory in each NUMA node. The total memory fo=
+r
+> > > > each NUMA node is calculated by adding the sizes of contained EPC
+> > > > sections together.
+> > > >=20
+> > > > Introduce arch_node_read_meminfo(), which can optionally be rewritt=
+en by
+> > > > the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
+> > > >=20
+> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > ---
+> > > > v4:
+> > > > * A new patch.
+> > > >  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
+> > > >  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
+> > > >  drivers/base/node.c            | 10 +++++++++-
+> > > >  3 files changed, 29 insertions(+), 1 deletion(-)
+> > >=20
+> > > Where is the Documentation/ABI/ update for this new sysfs file?
+> >=20
+> > It's has been existed for a long time, e.g.
+> >=20
+> >  cat /sys/devices/system/node/node0/meminfo
+> > Node 0 MemTotal:       32706792 kB
+> > Node 0 MemFree:         5382988 kB
+> > Node 0 MemUsed:        27323804 kB
+> > Node 0 SwapCached:            8 kB
+> > Node 0 Active:          3640612 kB
+> > Node 0 Inactive:       21757684 kB
+> > Node 0 Active(anon):    2833772 kB
+> > Node 0 Inactive(anon):    14392 kB
+> > Node 0 Active(file):     806840 kB
+> > Node 0 Inactive(file): 21743292 kB
+> > Node 0 Unevictable:       80640 kB
+> > Node 0 Mlocked:           80640 kB
+> > Node 0 Dirty:                36 kB
+> > Node 0 Writeback:             0 kB
+> > Node 0 FilePages:      22833124 kB
+> > Node 0 Mapped:          1112832 kB
+> > Node 0 AnonPages:       2645812 kB
+> > Node 0 Shmem:            282984 kB
+> > Node 0 KernelStack:       18544 kB
+> > Node 0 PageTables:        46704 kB
+> > Node 0 NFS_Unstable:          0 kB
+> > Node 0 Bounce:                0 kB
+> > Node 0 WritebackTmp:          0 kB
+> > Node 0 KReclaimable:    1311812 kB
+> > Node 0 Slab:            1542220 kB
+> > Node 0 SReclaimable:    1311812 kB
+> > Node 0 SUnreclaim:       230408 kB
+> > Node 0 AnonHugePages:         0 kB
+> > Node 0 ShmemHugePages:        0 kB
+> > Node 0 ShmemPmdMapped:        0 kB
+> > Node 0 FileHugePages:        0 kB
+> > Node 0 FilePmdMapped:        0 kB
+> > Node 0 HugePages_Total:     0
+> > Node 0 HugePages_Free:      0
+> > Node 0 HugePages_Surp:      0
 
-> diff --git a/kernel/locking/ww_rt_mutex.c b/kernel/locking/ww_rt_mutex.c
-> index 3f1fff7d2780..c4cb863edb4c 100644
-> --- a/kernel/locking/ww_rt_mutex.c
-> +++ b/kernel/locking/ww_rt_mutex.c
-> @@ -50,6 +50,18 @@ __ww_rt_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx,
->  	return ret;
->  }
->  
-> +int __sched
-> +ww_mutex_trylock(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
-> +{
-> +	int locked = rt_mutex_trylock(&lock->base);
-> +
-> +	if (locked && ctx)
-> +		ww_mutex_set_context_fastpath(lock, ctx);
-> +
-> +	return locked;
-> +}
-> +EXPORT_SYMBOL(ww_mutex_trylock);
-> +
->  int __sched
->  ww_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
->  {
+This was something also spinned my head a bit, i.e. why hugepages fields
+are not aligned correctly.
 
-That doesn't look right, how's this for you?
+> >=20
+> > This file is undocumented but the fields seem to reflect what is in
+> > /proc/meminfo, so I added additional patch for documentation:
+> >=20
+> > https://lore.kernel.org/linux-sgx/20210910001726.811497-3-jarkko@kernel=
+.org/
+> >=20
+> > I have no idea why things are how they are. I'm just merely trying to f=
+ollow
+> > the existing patterns. I'm also fully aware of the defacto sysfs patter=
+n, i.e.
+> > one value per file.
+>=20
+> Then please do not add anything else to this nightmare of a mess.
 
----
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -94,6 +94,9 @@ static inline unsigned long __owner_flag
- 	return owner & MUTEX_FLAGS;
- }
- 
-+/*
-+ * Returns: __mutex_owner(lock) on failure or NULL on success.
-+ */
- static inline struct task_struct *__mutex_trylock_common(struct mutex *lock, bool handoff)
- {
- 	unsigned long owner, curr = (unsigned long)current;
-@@ -736,6 +739,47 @@ __ww_mutex_lock(struct mutex *lock, unsi
- 	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
- }
- 
-+/**
-+ * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
-+ * @ww: mutex to lock
-+ * @ww_ctx: optional w/w acquire context
-+ *
-+ * Trylocks a mutex with the optional acquire context; no deadlock detection is
-+ * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
-+ *
-+ * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
-+ * specified, -EALREADY handling may happen in calls to ww_mutex_trylock.
-+ *
-+ * A mutex acquired with this function must be released with ww_mutex_unlock.
-+ */
-+int ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ww_ctx)
-+{
-+	if (!ww_ctx)
-+		return mutex_trylock(&ww->base);
-+
-+	MUTEX_WARN_ON(ww->base.magic != &ww->base);
-+
-+	if (unlikely(ww_ctx == READ_ONCE(ww->ctx)))
-+		return -EALREADY;
-+
-+	/*
-+	 * Reset the wounded flag after a kill. No other process can
-+	 * race and wound us here, since they can't have a valid owner
-+	 * pointer if we don't have any locks held.
-+	 */
-+	if (ww_ctx->acquired == 0)
-+		ww_ctx->wounded = 0;
-+
-+	if (__mutex_trylock(&ww->base)) {
-+		ww_mutex_set_context_fastpath(ww, ww_ctx);
-+		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ww_ctx->dep_map, _RET_IP_);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(ww_mutex_trylock);
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- void __sched
- mutex_lock_nested(struct mutex *lock, unsigned int subclass)
---- a/kernel/locking/ww_rt_mutex.c
-+++ b/kernel/locking/ww_rt_mutex.c
-@@ -9,6 +9,34 @@
- #define WW_RT
- #include "rtmutex.c"
- 
-+int ww_mutex_trylock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx)
-+{
-+	struct rt_mutex *rtm = &lock->base;
-+
-+	if (!ww_ctx)
-+		return rt_mutex_trylock(rtm);
-+
-+	if (unlikely(ww_ctx == READ_ONCE(lock->ctx)))
-+		return -EALREADY;
-+
-+	/*
-+	 * Reset the wounded flag after a kill. No other process can
-+	 * race and wound us here, since they can't have a valid owner
-+	 * pointer if we don't have any locks held.
-+	 */
-+	if (ww_ctx->acquired == 0)
-+		ww_ctx->wounded = 0;
-+
-+	if (__rt_mutex_trylock(&rtm->rtmutex)) {
-+		ww_mutex_set_context_fastpath(lock, ww_ctx);
-+		mutex_acquire_nest(&rtm->dep_map, 0, 1, ww_ctx->dep_map, _RET_IP_);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(ww_mutex_trylock);
-+
- static int __sched
- __ww_rt_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx,
- 		   unsigned int state, unsigned long ip)
+There is already /sys/devices/system/node/node0/hugepages/.
+
+It has alike data to the contents of meminfo:
+
+/sys/devices/system/node/node0/hugepages/hugepages-2048kB:
+surplus_hugepages
+nr_hugepages
+free_hugepages
+
+/sys/devices/system/node/node0/hugepages/hugepages-1048576kB:
+surplus_hugepages
+nr_hugepages
+free_hugepages
+
+[I'm wondering tho, how the fields in meminfo are supposed to be interprete=
+d,
+ given that there are two types of huge pages, but let's just ignore that
+ for the moment.]
+
+Following this pattern, I'd perhaps go and create (and document):
+
+/sys/devices/system/node/node0/sgx/memory_size
+
+which would have the size in bytes.
+
+> thanks,
+>=20
+> greg k-h
+
+/Jarkko
+
