@@ -2,122 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8C24068BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A594068C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhIJIuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:50:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19024 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhIJIux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:50:53 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H5Twf31TJzbmQD;
-        Fri, 10 Sep 2021 16:45:38 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 10 Sep 2021 16:49:40 +0800
-Subject: Re: [PATCH -next 2/6] ext4: introduce last_check_time record previous
- check time
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-References: <20210906144754.2601607-1-yebin10@huawei.com>
- <20210906144754.2601607-3-yebin10@huawei.com>
- <03bd0982-f0ad-78b4-7b98-cbfdbab9deec@linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <613B1C24.4040901@huawei.com>
-Date:   Fri, 10 Sep 2021 16:49:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S231856AbhIJI57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:57:59 -0400
+Received: from mga17.intel.com ([192.55.52.151]:41199 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231731AbhIJI56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:57:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="201224849"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="201224849"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:56:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="540452276"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Sep 2021 01:56:36 -0700
+Date:   Fri, 10 Sep 2021 16:50:05 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v15 4/6] fpga: image-load: add status ioctl
+Message-ID: <20210910085005.GC754505@yilunxu-OptiPlex-7050>
+References: <20210909021846.681121-1-russell.h.weight@intel.com>
+ <20210909021846.681121-5-russell.h.weight@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <03bd0982-f0ad-78b4-7b98-cbfdbab9deec@linux.dev>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909021846.681121-5-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 08, 2021 at 07:18:44PM -0700, Russ Weight wrote:
+> Extend the FPGA Image Load class driver to include an
+> FPGA_IMAGE_LOAD_STATUS IOCTL that can be used to monitor the progress
+> of an ongoing image load.  The status returned includes how much data
+> remains to be transferred, the progress of the image load, and error
+> information in the case of a failure.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> V15:
+>  - This patch is new to the patchset and provides an FPGA_IMAGE_LOAD_STATUS
+>    IOCTL to return the current values for: remaining_size, progress,
+>    err_progress, and err_code.
+>  - This patch has elements of the following three patches from the previous
+>    patch-set:
+>      [PATCH v14 3/6] fpga: sec-mgr: expose sec-mgr update status
+>      [PATCH v14 4/6] fpga: sec-mgr: expose sec-mgr update errors
+>      [PATCH v14 5/6] fpga: sec-mgr: expose sec-mgr update size
+>  - Changed file, symbol, and config names to reflect the new driver name
+>  - There are some minor changes to locking to enable this ioctl to return
+>    coherent data.
+> ---
+>  Documentation/fpga/fpga-image-load.rst |  6 +++
+>  drivers/fpga/fpga-image-load.c         | 53 ++++++++++++++++++++++----
+>  include/uapi/linux/fpga-image-load.h   | 18 +++++++++
+>  3 files changed, 70 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
+> index 739d735592a5..3d5eb51223e3 100644
+> --- a/Documentation/fpga/fpga-image-load.rst
+> +++ b/Documentation/fpga/fpga-image-load.rst
+> @@ -31,3 +31,9 @@ updated. This is an exclusive operation; an attempt to start concurrent image
+>  load for the same device will fail with EBUSY. An eventfd file descriptor
+>  parameter is provided to this IOCTL, and it will be signalled at the
+>  completion of the image load.
+> +
+> +FPGA_IMAGE_LOAD_STATUS:
+> +
+> +Collect status for an on-going image upload. The status returned includes
+> +how much data remains to be transferred, the progress of the image load,
+> +and error information in the case of a failure.
+> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
+> index b784456765b0..99a47b21c995 100644
+> --- a/drivers/fpga/fpga-image-load.c
+> +++ b/drivers/fpga/fpga-image-load.c
+> @@ -22,10 +22,27 @@ static dev_t fpga_image_devt;
+>  
+>  #define to_image_load(d) container_of(d, struct fpga_image_load, dev)
+>  
+> -static void fpga_image_dev_error(struct fpga_image_load *imgld,
+> +static void fpga_image_update_progress(struct fpga_image_load *imgld,
+> +				       enum fpga_image_prog new_progress)
+> +{
+> +	mutex_lock(&imgld->lock);
+> +	imgld->progress = new_progress;
+> +	mutex_unlock(&imgld->lock);
+> +}
+> +
+> +static void fpga_image_set_error(struct fpga_image_load *imgld,
+>  				 enum fpga_image_err err_code)
+>  {
+> +	mutex_lock(&imgld->lock);
+> +	imgld->err_progress = imgld->progress;
+>  	imgld->err_code = err_code;
+> +	mutex_unlock(&imgld->lock);
+> +}
+> +
+> +static void fpga_image_dev_error(struct fpga_image_load *imgld,
+> +				 enum fpga_image_err err_code)
+> +{
+> +	fpga_image_set_error(imgld, err_code);
+>  	imgld->lops->cancel(imgld);
+>  }
+>  
+> @@ -49,18 +66,18 @@ static void fpga_image_do_load(struct work_struct *work)
+>  
+>  	get_device(&imgld->dev);
+>  	if (!try_module_get(imgld->dev.parent->driver->owner)) {
+> -		imgld->err_code = FPGA_IMAGE_ERR_BUSY;
+> +		fpga_image_set_error(imgld, FPGA_IMAGE_ERR_BUSY);
+>  		goto idle_exit;
+>  	}
+>  
+> -	imgld->progress = FPGA_IMAGE_PROG_PREPARING;
+> +	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PREPARING);
+>  	ret = imgld->lops->prepare(imgld);
+>  	if (ret != FPGA_IMAGE_ERR_NONE) {
+>  		fpga_image_dev_error(imgld, ret);
+>  		goto modput_exit;
+>  	}
+>  
+> -	imgld->progress = FPGA_IMAGE_PROG_WRITING;
+> +	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_WRITING);
+>  	while (imgld->remaining_size) {
+>  		ret = imgld->lops->write_blk(imgld, offset);
+>  		if (ret != FPGA_IMAGE_ERR_NONE) {
+> @@ -71,7 +88,7 @@ static void fpga_image_do_load(struct work_struct *work)
+>  		offset = size - imgld->remaining_size;
+>  	}
+>  
+> -	imgld->progress = FPGA_IMAGE_PROG_PROGRAMMING;
+> +	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PROGRAMMING);
+>  	ret = imgld->lops->poll_complete(imgld);
+>  	if (ret != FPGA_IMAGE_ERR_NONE)
+>  		fpga_image_dev_error(imgld, ret);
+> @@ -151,20 +168,42 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
+>  	return ret;
+>  }
+>  
+> +static int fpga_image_load_ioctl_status(struct fpga_image_load *imgld,
+> +					unsigned long arg)
+> +{
+> +	struct fpga_image_status status;
+> +
+> +	memset(&status, 0, sizeof(status));
+> +	status.progress = imgld->progress;
+> +	status.remaining_size = imgld->remaining_size;
+> +	status.err_progress = imgld->err_progress;
+> +	status.err_code = imgld->err_code;
+> +
+> +	if (copy_to_user((void __user *)arg, &status, sizeof(status)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
+>  static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+>  				  unsigned long arg)
+>  {
+>  	struct fpga_image_load *imgld = filp->private_data;
+>  	int ret = -ENOTTY;
+>  
+> +	mutex_lock(&imgld->lock);
+> +
+>  	switch (cmd) {
+>  	case FPGA_IMAGE_LOAD_WRITE:
+> -		mutex_lock(&imgld->lock);
+>  		ret = fpga_image_load_ioctl_write(imgld, arg);
+> -		mutex_unlock(&imgld->lock);
+> +		break;
+> +	case FPGA_IMAGE_LOAD_STATUS:
+> +		ret = fpga_image_load_ioctl_status(imgld, arg);
+>  		break;
+>  	}
+>  
+> +	mutex_unlock(&imgld->lock);
+> +
+>  	return ret;
+>  }
+>  
+> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
+> index a60da115adf5..6a995bcc0fb7 100644
+> --- a/include/uapi/linux/fpga-image-load.h
+> +++ b/include/uapi/linux/fpga-image-load.h
+> @@ -38,6 +38,7 @@ enum fpga_image_err {
+>  };
+>  
+>  #define FPGA_IMAGE_LOAD_WRITE	_IOW(FPGA_IMAGE_LOAD_MAGIC, 0, struct fpga_image_write)
+> +#define FPGA_IMAGE_LOAD_STATUS	_IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
+>  
+>  /**
+>   * FPGA_IMAGE_LOAD_WRITE - _IOW(FPGA_IMAGE_LOAD_MAGIC, 0,
+> @@ -56,4 +57,21 @@ struct fpga_image_write {
+>  	__u64 buf;		/* User space address of source data */
+>  };
+>  
+> +/**
+> + * FPGA_IMAGE_LOAD_STATUS - _IOR(FPGA_IMAGE_LOAD_MAGIC, 1,
+> + *				 struct fpga_image_status)
+> + *
+> + * Request status information for an ongoing update.
+> + * data buffer, size, and an eventfd file descriptor.
 
+This line is a typo.
 
-On 2021/9/9 10:20, Guoqing Jiang wrote:
->
->
-> On 9/6/21 10:47 PM, Ye Bin wrote:
->> kmmpd:
->> ...
->>      diff = jiffies - last_update_time;
->>      if (diff > mmp_check_interval * HZ) {
->> ...
->> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
->> than 'mmp_update_interval', so there will never trigger detection.
->> Introduce last_check_time record previous check time.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/ext4/mmp.c | 14 +++++++++-----
->>   1 file changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->> index 12af6dc8457b..89797f12a815 100644
->> --- a/fs/ext4/mmp.c
->> +++ b/fs/ext4/mmp.c
->> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
->>       int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->>       unsigned mmp_check_interval;
->>       unsigned long last_update_time;
->> +    unsigned long last_check_time;
->>       unsigned long diff;
->>       int retval = 0;
->>   @@ -170,6 +171,7 @@ static int kmmpd(void *data)
->>         memcpy(mmp->mmp_nodename, init_utsname()->nodename,
->>              sizeof(mmp->mmp_nodename));
->> +    last_update_time = jiffies;
-I'm sorry, actually i want to init 'last_check_time' at here,  I will 
-fix it in v2.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +struct fpga_image_status {
+> +	/* Output */
+> +	__u32 remaining_size;			/* size remaining to transfer */
+> +	enum fpga_image_prog progress;		/* current progress of image load */
+> +	enum fpga_image_prog err_progress;	/* progress at time of error */
+> +	enum fpga_image_err err_code;		/* error code */
+
+Should we use __u32 for these enumeration types?
+
 Thanks,
-YeBin
->>         while (!kthread_should_stop() && !sb_rdonly(sb)) {
->>           if (!ext4_has_feature_mmp(sb)) {
->> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
->>           }
->>             diff = jiffies - last_update_time;
->> -        if (diff < mmp_update_interval * HZ)
->> +        if (diff < mmp_update_interval * HZ) {
->>               schedule_timeout_interruptible(mmp_update_interval *
->>                                  HZ - diff);
->> +            diff = jiffies - last_update_time;
->> +        }
->>             /*
->>            * We need to make sure that more than mmp_check_interval
->> -         * seconds have not passed since writing. If that has happened
->> -         * we need to check if the MMP block is as we left it.
->> +         * seconds have not passed since check. If that has happened
->> +         * we need to check if the MMP block is as we write it.
->>            */
->> -        diff = jiffies - last_update_time;
->> -        if (diff > mmp_check_interval * HZ) {
->> +        if (jiffies - last_check_time > mmp_check_interval * HZ) {
->
-> Before the above checking, seems last_check_time is not initialized yet.
->>               struct buffer_head *bh_check = NULL;
->>               struct mmp_struct *mmp_check;
->>   @@ -234,6 +237,7 @@ static int kmmpd(void *data)
->>                   goto wait_to_exit;
->>               }
->>               put_bh(bh_check);
->> +            last_check_time = jiffies;
->>           }
->>              /*
->
-> Thanks,
-> Guoqing
-> .
->
+Yilun
 
+> +};
+> +
+>  #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
+> -- 
+> 2.25.1
