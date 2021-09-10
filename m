@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890CA4064E6
+	by mail.lfdr.de (Postfix) with ESMTP id D30544064E7
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbhIJBHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:33459 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240034AbhIJAlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:41:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="219093465"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="219093465"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 17:40:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="540053524"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.2.86]) ([10.238.2.86])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 17:40:10 -0700
-Subject: Re: [PATCH v2] perf list: Display hybrid pmu events with cpu type
-To:     Andi Kleen <ak@linux.intel.com>, Ian Rogers <irogers@google.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210903025239.22754-1-yao.jin@linux.intel.com>
- <CAP-5=fVT6G6Ysdd39O3XROyKUxAs6uQVeO8mnbsy-Oy5VqujrA@mail.gmail.com>
- <0ccb62bf-34be-b986-4794-d8cc2a767a3e@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <59cf3fcb-e6cd-ddbe-84e5-6c3e85d575b4@linux.intel.com>
-Date:   Fri, 10 Sep 2021 08:39:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236101AbhIJBH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240199AbhIJAmC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:42:02 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7752C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:40:52 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id s25so117064vsa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=u99A3nTsEcjLLtFLYfw0zQdAAXoFdW/AuvMLvdfo3s4=;
+        b=TW7VBVq6dK6hsRFpDVJJBgboDluU3a+UwpCW4hBgVvH8sOBE5QfR/PI5spsa0KR+tR
+         xRsSXywROggbTW7FX9pv8vo6R/cO5JMcm5lJp3ZriRuTnOwD85QLKGbxFvYSu+EqDRAp
+         cg7sGGMsrbZI6VyOKbIgE7SSi2A5ArNHO9bfoWx4bU0+bknhS4FitHbJlyABXOxKDuTD
+         LoObBJ0IdP+DiLyAdmvGEH5BjnzH44OtT6fjZUOFs8uAXjp0DfGktG0bWwOGobDzUozz
+         /boUVhlxqmxwen9I0ktEp1cZvN6szGSfSjrO71UHDMT0fZU798j5PqCjg8QxnpTLU2zn
+         rVBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=u99A3nTsEcjLLtFLYfw0zQdAAXoFdW/AuvMLvdfo3s4=;
+        b=SUzBmeJCTDHsK4vvy9CBVjhEg9NoKhfY9qsUHJDjxKqSA9jylYp44Li9uQHvS6jOCe
+         esl9Dya9Z3BeNoV+1fZbftwNC8FCqt3ctD1BsQBqzz+SIbbxme+mz7Ym6dHRdFQJKtR1
+         nHKwXFS4m7uNo4CtAUo4mHJkp5ehgq5rYLtNWm8x4rp9wIMAnhDjsHq8Nna2JEqf+GEF
+         kN7YiN66zXPZM44tqICFUS3k4x3+YEYqfK+J0ZzTigQqu8A5DWNnejGJxQktg9bkg1+A
+         SOx7Sj5Q7C3VRdX6B/eNrV2POrTUHEMXGQmw4pJhcz3aGYuEUJ+HEOxDidiC5ZN3/VBz
+         sfIQ==
+X-Gm-Message-State: AOAM533Ui+TY3Eop4fs2O2rOCBgz7g5t4MLt975C0QVN4tBNSA6diZOD
+        HQ8EBli17qFHz03v9uZFprSR5FzJYXr+88ledMqA
+X-Google-Smtp-Source: ABdhPJwkaBrAuiHABMu8IcTdvxJeg1KK4aP27a3qLiVaj8iQxGCaBhVotOsv0c4stecCCk4+BPxRMpAgcT494uzIS7o=
+X-Received: by 2002:a67:6245:: with SMTP id w66mr4292730vsb.34.1631234451815;
+ Thu, 09 Sep 2021 17:40:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0ccb62bf-34be-b986-4794-d8cc2a767a3e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <f58c6a58-86a6-1b37-7cec-6a9d801189ed@gmail.com>
+In-Reply-To: <f58c6a58-86a6-1b37-7cec-6a9d801189ed@gmail.com>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Fri, 10 Sep 2021 09:40:25 +0900
+Message-ID: <CABMQnVJ8z6Tcbee6rv2vCR48ZDesC9f_ZnH6gx7rFONYT8iTpg@mail.gmail.com>
+Subject: Re: [PATCH] rtc: rx8010: select REGMAP_I2C
+To:     Yu-Tung Chang <mtwget@gmail.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+2021=E5=B9=B48=E6=9C=8830=E6=97=A5(=E6=9C=88) 12:56 Yu-Tung Chang <mtwget@g=
+mail.com>:
+>
+> From 45801967ad80578161485937a0833b27b90210f9 Mon Sep 17 00:00:00 2001
+> From: Yu-Tung Chang <mtwget@gmail.com>
+> Date: Mon, 30 Aug 2021 10:59:17 +0800
+> Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
+>
+> The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
+> depending on the configuration the build may fail. Fix it.
+>
+> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+> ---
+>  drivers/rtc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-On 9/10/2021 6:56 AM, Andi Kleen wrote:
-> 
-> On 9/9/2021 3:37 PM, Ian Rogers wrote:
->> On Thu, Sep 2, 2021 at 7:54 PM Jin Yao <yao.jin@linux.intel.com> wrote:
->>> Add a new option '--cputype' to perf-list to display core-only pmu events
->>> or atom-only pmu events.
->>>
->>> Each hybrid pmu event has been assigned with a pmu name, this patch
->>> compares the pmu name before listing the result.
->> Would this work more broadly for any PMU type? If so perhaps pmu
->> rather than cputype is a more appropriate option name?
-> 
-> It's not just the cpu pmu, because it still lists the uncore events, which makes sense.
-> 
-> If you want to match the pmu it probably would make sense to match it in the default matching for 
-> non option arguments in perf list. But that would be a different patch.
-> 
-> -Andi
-> 
-> 
+Reviewed-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 
-Yes, agree with Andi. Besides for cpu pmu events, it also lists the software events and uncore 
-events. So probably cputype is an appropriate option name.
+>
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index 12153d5801ce..f7bf87097a9f 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -624,6 +624,7 @@ config RTC_DRV_FM3130
+>
+>  config RTC_DRV_RX8010
+>         tristate "Epson RX8010SJ"
+> +       select REGMAP_I2C
+>         help
+>           If you say yes here you get support for the Epson RX8010SJ RTC
+>           chip.
+> --
+> 2.33.0
 
-Thanks
-Jin Yao
+Best regards,
+  Nobuhiro
 
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org / kernel.org}
+   GPG ID: 40AD1FA6
