@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7078D40740D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3D740740F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234895AbhIJXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:50:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
+        id S234879AbhIJXwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:52:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhIJXt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:49:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6A561209;
-        Fri, 10 Sep 2021 23:48:44 +0000 (UTC)
+        id S234787AbhIJXwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:52:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C14761215;
+        Fri, 10 Sep 2021 23:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631317725;
-        bh=CT+zN2hvsAGlq3FXd8oqicFmjUPdT7vc0738cJVqDhc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=NBh9bj15FRDBR+BDeOLotaclfeKGuxxEoc4JgAJKKHSox00tTCMgZLOGby7uUyLYQ
-         pUtT8PJgxMce1q0BfXQGk+qIw445gAvZ6NLhM4y8jA3YmI46zR+zNzroZXVu/pZbaM
-         pTbn7Eto3WbEs5hwCEQxgUa7pk5OieVIazdXrixmWnVA0ZXVHOPpeLJa2vQT1Ei7aF
-         /ufGH9sxsebTeWF+phKh0lNfjV8oBhSvhX22Iap+CYZELu0dBswL/q/Q1LCFKtPJe6
-         t2CcUFqSt5aknM/ek0YF2QSjZKjYczxCuqCMGiGxDka+iZ6w5jVDpn2rd6xDDUxgLZ
-         AD+jGYwhQZKlw==
-Date:   Fri, 10 Sep 2021 16:48:44 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     Jan Beulich <jbeulich@suse.com>, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH 12/12] swiotlb-xen: this is PV-only on x86
-In-Reply-To: <YThiyxG0d2tmCtb+@infradead.org>
-Message-ID: <alpine.DEB.2.21.2109101636470.10523@sstabellini-ThinkPad-T480s>
-References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com> <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com> <YThiyxG0d2tmCtb+@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        s=k20201202; t=1631317857;
+        bh=uIpzXfyi8+fV+u3rmhdW4lpuq9BRwztl6U+ksNKr5PI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PIBWcXKzrLpgOJluRe/nYh34CXuRmxKG27Dbkve6wm+0eJ7x7H6z1IbAhgZArFREO
+         1az18KO+TyHJppslmxXpR0LoXiXckEnto/CeJUadea/vLrq5JZXOn6QE9u/9gvPh3l
+         BzFIULLWf1jk/uYBj1MjA2kQ+Z1d8xjnPxe4YPNw74JLvUyQzYkn2Lr+sf4eFvxeSh
+         /IuDhsR1qGJ67svnFkpkL4xyAqunt6zgwVkeAUJW9U61xopJL6l2khHnwWL/kBEz06
+         OpdpNLK0eu9nvb5P/G60oOIskv+VfLNCD8sMEtGb10Nw/LMYD/E2fhoXFATagx+e79
+         InTBhzg2s9w6A==
+Subject: Re: [PATCH 10/10] vmlinux.lds.h: remove old check for GCC 4.9
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <20210910234047.1019925-11-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <9433c702-ecf2-4197-2456-59857d38538d@kernel.org>
+Date:   Fri, 10 Sep 2021 16:50:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210910234047.1019925-11-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021, Christoph Hellwig wrote:
-> On Tue, Sep 07, 2021 at 02:13:21PM +0200, Jan Beulich wrote:
-> > The code is unreachable for HVM or PVH, and it also makes little sense
-> > in auto-translated environments. On Arm, with
-> > xen_{create,destroy}_contiguous_region() both being stubs, I have a hard
-> > time seeing what good the Xen specific variant does - the generic one
-> > ought to be fine for all purposes there. Still Arm code explicitly
-> > references symbols here, so the code will continue to be included there.
+On 9/10/2021 4:40 PM, Nick Desaulniers wrote:
+> Now that GCC 5.1 is the minimally supported version of GCC, we can
+> effectively revert
 > 
-> Can the Xen/arm folks look into that?  Getting ARM out of using
-> swiotlb-xen would be a huge step forward cleaning up some DMA APIs.
-
-On ARM swiotlb-xen is used for a different purpose compared to x86.
-
-Many ARM SoCs still don't have an IOMMU covering all DMA-mastering
-devices (e.g. Raspberry Pi 4). As a consequence we map Dom0 1:1 (guest
-physical == physical address).
-
-Now if it was just for Dom0, thanks to the 1:1 mapping, we wouldn't need
-swiotlb-xen. But when we start using PV drivers to share the network or
-disk between Dom0 and DomU we are going to get DomU pages mapped in
-Dom0, we call them "foreign pages".  They are not mapped 1:1. It can
-happen that one of these foreign pages are used for DMA operations
-(e.g. related to the NIC). swiotlb-xen is used to detect these
-situations and translate the guest physical address to physical address
-of foreign pages appropriately.
-
-If an IOMMU is available and the DMA-mastering device is behind it, then
-swiotlb-xen is not necessary. FYI there is community interest in
-selectively disabling swiotlb-xen for devices that are behind an IOMMU.
-
-
-> > Instead of making PCI_XEN's "select" conditional, simply drop it -
-> > SWIOTLB_XEN will be available unconditionally in the PV case anyway, and
-> > is - as explained above - dead code in non-PV environments.
-> > 
-> > This in turn allows dropping the stubs for
-> > xen_{create,destroy}_contiguous_region(), the former of which was broken
-> > anyway - it failed to set the DMA handle output.
+> commit 85c2ce9104eb ("sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to
+> 64 bytes for GCC-4.9")
 > 
-> Looks good:
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>   include/asm-generic/vmlinux.lds.h | 4 ----
+>   1 file changed, 4 deletions(-)
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index aa50bf2959fe..f2984af2b85b 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -116,11 +116,7 @@
+>    * GCC 4.5 and later have a 32 bytes section alignment for structures.
+>    * Except GCC 4.9, that feels the need to align on 64 bytes.
 
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Comment should be adjusted.
+
+>    */
+> -#if __GNUC__ == 4 && __GNUC_MINOR__ == 9
+> -#define STRUCT_ALIGNMENT 64
+> -#else
+>   #define STRUCT_ALIGNMENT 32
+> -#endif
+>   #define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
+>   
+>   /*
+> 
