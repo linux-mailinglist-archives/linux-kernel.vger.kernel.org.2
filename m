@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3131E406619
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C77F40661C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhIJD1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 23:27:46 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:35878 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229461AbhIJD1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 23:27:43 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowACHaaJV0Dph4vkNAA--.29783S2;
-        Fri, 10 Sep 2021 11:26:13 +0800 (CST)
-From:   Jiang Jiasheng <jiasheng@iscas.ac.cn>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, Jiang Jiasheng <jiasheng@iscas.ac.cn>
-Subject: [PATCH 6/6] irq: Potentially 'offset out of size' bug
-Date:   Fri, 10 Sep 2021 03:26:12 +0000
-Message-Id: <1631244372-1817960-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowACHaaJV0Dph4vkNAA--.29783S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFy3JFWkuFykGF13ArW5Jrb_yoW3GrX_Gr
-        9YyF1DWr48JryrAw4rtw4xAF1jy348AF48uw1Syay5J390vFn3Aw43XFZ0krsxXrWxAw1x
-        A34Y9FW3tr4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU2FALUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S230049AbhIJD3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 23:29:07 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:59322 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhIJD3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 23:29:06 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOXCk-002n9d-In; Fri, 10 Sep 2021 03:27:54 +0000
+Date:   Fri, 10 Sep 2021 03:27:54 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [git pull] iov_iter fixes
+Message-ID: <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The find_next_bit() use nr_irqs as size, and using it without
-any check might cause its returned value out of the size
+On Thu, Sep 09, 2021 at 09:22:30PM -0600, Jens Axboe wrote:
+> On 9/9/21 9:11 PM, Al Viro wrote:
+> > On Thu, Sep 09, 2021 at 09:05:13PM -0600, Jens Axboe wrote:
+> >> On 9/9/21 8:57 PM, Al Viro wrote:
+> >>> On Thu, Sep 09, 2021 at 03:19:56PM -0600, Jens Axboe wrote:
+> >>>
+> >>>> Not sure how we'd do that, outside of stupid tricks like copy the
+> >>>> iov_iter before we pass it down. But that's obviously not going to be
+> >>>> very efficient. Hence we're left with having some way to reset/reexpand,
+> >>>> even in the presence of someone having done truncate on it.
+> >>>
+> >>> "Obviously" why, exactly?  It's not that large a structure; it's not
+> >>> the optimal variant, but I'd like to see profiling data before assuming
+> >>> that it'll cause noticable slowdowns.
+> >>
+> >> It's 48 bytes, and we have to do it upfront. That means we'd be doing it
+> >> for _all_ requests, not just when we need to retry. As an example, current
+> >> benchmarks are at ~4M read requests per core. That'd add ~200MB/sec of
+> >> memory traffic just doing this copy.
+> > 
+> > Umm...  How much of that will be handled by cache?
+> 
+> Depends? And what if the iovec itself has been modified in the middle?
+> We'd need to copy that whole thing too. It's just not workable as a
+> solution.
 
-Signed-off-by: Jiang Jiasheng <jiasheng@iscas.ac.cn>
----
- kernel/irq/irqdesc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Huh?  Why the hell would we need to copy iovecs themselves?  They are never
+modified by ->read_iter()/->write_iter().
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 4a617d73..5bb310a 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -820,7 +820,8 @@ EXPORT_SYMBOL_GPL(__irq_alloc_descs);
-  */
- unsigned int irq_get_next_irq(unsigned int offset)
- {
--	return find_next_bit(allocated_irqs, nr_irqs, offset);
-+	offset = find_next_bit(allocated_irqs, nr_irqs, offset);
-+	return offset < nr_irqs ? offset : nr_irqs;
- }
- 
- struct irq_desc *
--- 
-2.7.4
+That's the whole fucking point of iov_iter - the iovec itself is made
+constant, with all movable parts taken to iov_iter.
 
+Again, we should never, ever modify the iovec (or bvec, etc.) array in
+->read_iter()/->write_iter()/->sendmsg()/etc. instances.  If you see such
+behaviour anywhere, report it immediately.  Any such is a blatant bug.
