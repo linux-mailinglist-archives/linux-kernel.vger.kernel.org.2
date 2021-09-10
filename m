@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCB840663D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113CE40663F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhIJEA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 00:00:56 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:34346 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229462AbhIJEAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 00:00:55 -0400
-Received: from localhost.localdomain (unknown [124.16.141.243])
-        by APP-01 (Coremail) with SMTP id qwCowABX2dgZ2Dpho9EOAA--.30793S2;
-        Fri, 10 Sep 2021 11:59:22 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     Damien.LeMoal@wdc.com, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, axboe@kernel.dk,
-        xen-devel@lists.xenproject.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] xen-blkback: Remove needless request_queue NULL pointer check
-Date:   Fri, 10 Sep 2021 03:59:18 +0000
-Message-Id: <20210910035918.24907-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowABX2dgZ2Dpho9EOAA--.30793S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw43Kry8uF4xXF47Wr1xXwb_yoWDKrc_Wr
-        18ZrZaqr1v9rs09w1DCFnay340k3WkZFy09an2qFWaq347AFyaq3y7Zrn5Gw47uayUKrn5
-        CFyUG3W2yr1xAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwAYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr1j6F
-        4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-        8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1_M3UUUUU=
-X-Originating-IP: [124.16.141.243]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQoAA102ag5bSAAAsc
+        id S229836AbhIJECu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 00:02:50 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:4917 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229462AbhIJECt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 00:02:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UnrmHeq_1631246479;
+Received: from localhost(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UnrmHeq_1631246479)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 12:01:26 +0800
+From:   Liguang Zhang <zhangliguang@linux.alibaba.com>
+To:     James Morse <james.morse@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liguang Zhang <zhangliguang@linux.alibaba.com>
+Subject: [PATCH] firmware: arm_sdei: pass sdei_api_event_register right parameters
+Date:   Fri, 10 Sep 2021 12:01:17 +0800
+Message-Id: <20210910040117.98736-1-zhangliguang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The request_queue pointer returned from bdev_get_queue() shall
-never be NULL, so the null check is unnecessary, just remove it.
+Function _local_event_enable is used for private sdei event
+registeration called by sdei_event_register. We should pass
+sdei_api_event_register right flag and mpidr parameters, otherwise atf
+may trigger assert errors.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
 ---
-Changes since v2:
-- Add missing parenthesis.
-- Remove another null pointer check.
----
- drivers/block/xen-blkback/xenbus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/arm_sdei.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index 33eba3df4dd9..aac08b4369ac 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -516,10 +516,10 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
- 		vbd->type |= VDISK_REMOVABLE;
+diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+index a7e762c352f9..0736752dadde 100644
+--- a/drivers/firmware/arm_sdei.c
++++ b/drivers/firmware/arm_sdei.c
+@@ -558,14 +558,16 @@ static int sdei_api_event_register(u32 event_num, unsigned long entry_point,
+ static void _local_event_register(void *data)
+ {
+ 	int err;
++	u64 mpidr;
+ 	struct sdei_registered_event *reg;
+ 	struct sdei_crosscall_args *arg = data;
  
- 	q = bdev_get_queue(bdev);
--	if (q && test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (test_bit(QUEUE_FLAG_WC, &q->queue_flags))
- 		vbd->flush_support = true;
+ 	WARN_ON(preemptible());
  
--	if (q && blk_queue_secure_erase(q))
-+	if (blk_queue_secure_erase(q))
- 		vbd->discard_secure = true;
++	mpidr = read_cpuid_mpidr();
+ 	reg = per_cpu_ptr(arg->event->private_registered, smp_processor_id());
+ 	err = sdei_api_event_register(arg->event->event_num, sdei_entry_point,
+-				      reg, 0, 0);
++				      reg, SDEI_EVENT_REGISTER_RM_PE, mpidr);
  
- 	vbd->feature_gnt_persistent = feature_persistent;
+ 	sdei_cross_call_return(arg, err);
+ }
 -- 
-2.17.1
+2.19.1.6.gb485710b
 
