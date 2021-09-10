@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA802406FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6E1406FAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhIJQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:30:24 -0400
-Received: from mga02.intel.com ([134.134.136.20]:33493 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhIJQaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:30:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="208349032"
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="208349032"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 09:29:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="694915605"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Sep 2021 09:29:08 -0700
-Received: from [10.209.0.27] (kliang2-MOBL.ccr.corp.intel.com [10.209.0.27])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 908D6580833;
-        Fri, 10 Sep 2021 09:29:07 -0700 (PDT)
-Subject: Re: [PATCH V3 1/3] perf/x86: Add new event for AUX output counter
- index
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        x86@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210907163903.11820-1-adrian.hunter@intel.com>
- <20210907163903.11820-2-adrian.hunter@intel.com>
- <ab6f9ec2-2571-de5a-d44a-427851b08d19@linux.intel.com>
- <20210910160409.GI4323@worktop.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <453b9364-c350-79ca-00fa-b9e6ed6e3367@linux.intel.com>
-Date:   Fri, 10 Sep 2021 12:29:06 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229584AbhIJQa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhIJQaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:30:55 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DF0C061574;
+        Fri, 10 Sep 2021 09:29:44 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso1818187pjq.4;
+        Fri, 10 Sep 2021 09:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vdtqoZFv4MiNf9W0UtI32iEhVLYL/ZJOdc/dPw1DUT0=;
+        b=mKUglSAtqg5FFG0aE6ZYZRsjNgt0zN0tJdYTnxtOekBzBANig0bDKYPzJjqZ0Ioqwy
+         flmnTwEG7eZEPaY40itMixbnaOAaLFbT7ZyMgLWsgbL1nE4729lG466b5abBZaPFyLUW
+         xPHNh7bpUKRokfImZI1EfpksGLzp6dCuKDpU/PFvUovJ8MqthjiQwoND5XpJ2N0YtX7g
+         /ISPOBz/Ne+rFXxlUHPgFrS9n51wjpaFY2hNMYagYGYwzKWaHzyx76zm1UqJ0JVBVmie
+         IDP/3qYSufIqwQMVphqqFW+Z3g4GOBG+p6KDF8r7+3XLI+rsYt1CCkOOECd5hvmGIWeR
+         m6Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=vdtqoZFv4MiNf9W0UtI32iEhVLYL/ZJOdc/dPw1DUT0=;
+        b=Ras2r57PSTtrf7e6OEsO0RQUTg78fQOqqb9lCMjgXawpwkTOIRJlKxRZJ1gZojR6uZ
+         2EvbNqgh46dNMXncFJStAUf0utq7kVDI209OGhsWNtLGT/OiE5a0Na8mzVo1nOVQ9apF
+         cLoFw8y2uAXGa8rdGvH9LouiWGNsms9GL8G9OxM5O0YRGKfzqgEYKOvbjvQuiZx9cviy
+         7U8zkfraY/YKxiQPO8BQKRgKtpvE1CdaB3yV8ZPx2Czlcqj5AOonoMZLM2+H9hE57VD8
+         bWiEs9UrvSPX933ohzKFvdssaRaXHsa8/tT6vFqeUyOz9w5IdD/idXbwEWSkBcWHWqpJ
+         iCaQ==
+X-Gm-Message-State: AOAM531vt9dy2+ru9vyBIfXZImf2tAbDoJGwmpmISjgAOl6WZwqrk4N4
+        nAkb49hOi5JlObff8mCRsdc=
+X-Google-Smtp-Source: ABdhPJwJyvEfjrZIYq522afmxJF7TXijqFxAuXFnynfmMEQAUKyqh7P5vjH8QvR/S6cXSa7usNocaw==
+X-Received: by 2002:a17:902:7c11:b0:13a:ad7:4cb8 with SMTP id x17-20020a1709027c1100b0013a0ad74cb8mr8200500pll.2.1631291383918;
+        Fri, 10 Sep 2021 09:29:43 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id l10sm5745608pgn.22.2021.09.10.09.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:29:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 10 Sep 2021 06:29:41 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     "brookxu.cn" <brookxu.cn@gmail.com>,
+        Vipin Sharma <vipinsh@google.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
+Message-ID: <YTuH9fULTx+pLuuH@slm.duckdns.org>
+References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
+ <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
+ <20210909143720.GA14709@blackbody.suse.cz>
+ <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+ <YTpY0G3+IJYmGbdd@blackbook>
+ <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
+ <20210910092310.GA18084@blackbody.suse.cz>
+ <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
+ <20210910153609.GC24156@blackbody.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210910160409.GI4323@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210910153609.GC24156@blackbody.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Fri, Sep 10, 2021 at 05:36:09PM +0200, Michal Koutný wrote:
+> If there's a limit on certain level with otherwise unconstrained cgroup
+> structure below (a valid config too), the 'fail' counter would help
+> determining what the affected cgroup is. Does that make sense to you?
 
-On 9/10/2021 12:04 PM, Peter Zijlstra wrote:
-> On Tue, Sep 07, 2021 at 01:45:22PM -0400, Liang, Kan wrote:
->> On 9/7/2021 12:39 PM, Adrian Hunter wrote:
-> 
->>> @@ -4494,8 +4500,16 @@ static int intel_pmu_check_period(struct perf_event *event, u64 value)
->>>    	return intel_pmu_has_bts_period(event, value) ? -EINVAL : 0;
->>>    }
->>> +static void intel_aux_output_init(void)
->>> +{
->>> +	/* Refer also intel_pmu_aux_output_match() */
->>> +	if (x86_pmu.intel_cap.pebs_output_pt_available)
->>> +		x86_pmu.assign = intel_pmu_assign_event;
->>> +}
->>
->> For a hybrid machine, x86_pmu.intel_cap.pebs_output_pt_available is always
->> cleared. We probably need the PMU specific
->> pmu->intel_cap.pebs_output_pt_available here.
->>
->>> +
->>>    static int intel_pmu_aux_output_match(struct perf_event *event)
->>>    {
->>> +	/* intel_pmu_assign_event() is needed, refer intel_aux_output_init() */
->>>    	if (!x86_pmu.intel_cap.pebs_output_pt_available)
->>>    		return 0;
->>>
->>
->> For a hybrid machine, this always return 0. I think we need to fix it first?
-> 
-> AFAICT the patch is correct for !hybrid, and the hybrid PT muck can then
-> also fix this up, right?
-> 
+While the desire to make the interface complete is understandable, I don't
+think we need to go too far in that direction given that debugging these
+configuration issues requires human intervention anyway and providing
+overall information is often enough of aid especially for simple controllers
+like misc/pid. So, let's stick to something consistent and simple even if
+not complete and definitely not name them "fail" even if we add them.
 
-Yes, for !hybrid, the patch is good.
+Thanks.
 
-Since PEBS via PT is temporarily disabled for hybrid for now, the patch 
-set should not bring any issues with hybrid either.
-The hybrid PT can be fixed separately.
-
-Thanks,
-Kan
+-- 
+tejun
