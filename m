@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14644068D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9668B4068DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbhIJJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:08:45 -0400
-Received: from mail-eopbgr50055.outbound.protection.outlook.com ([40.107.5.55]:63811
+        id S232027AbhIJJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:08:50 -0400
+Received: from mail-eopbgr50071.outbound.protection.outlook.com ([40.107.5.71]:38403
         "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231965AbhIJJIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:08:42 -0400
+        id S231946AbhIJJIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:08:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ta8+cekach8yVMjY6KI75bBnSWPGpkpVdHbZvqZjmuixrLB9RTKA2Vs9uh1/RTftQGOWrrC70/6TwsXq/bBXXImpiDaKkwQ2YIU5Tg55F1A1e0AcWynBzf8/Mk+ynNhEro5+3alBAnm3+L8lfpPzc8p6dXrkn/CW1tJiw89+heZNraLTheD+l9RR8tXAI9Wqnes2ocy4hrXaV1I647G+BiZlHmOYfZRRHOMMnVaUFDm7CKTiF6Lbtx6COyzJ71faKbOXWk188AYj873w7xkINnD/19qxfIuYYJSxjZi/C8siQan4RKy9HmACh0f4dJBoWPDAVZas3exa/AzOs91L2w==
+ b=TCBLrJKd6J0i15LwJs6PFQd8zB9DN+EcW+kncRwv7CnodFJXbiQ/D9dumt9t5RXAYswwx1IcBy/oLjuOQ0NktDrTrYvvclw8gCTbpjWKnMepl4dl2HEgto3FizvzWlhraPRWeMMGtw308uBRNYMoMTCX2i06H+wqLM3u98oVzDHHWb53UqLoKDg/XnFz6ogFg5X3qY8gpmpQlVqqQjMuLguBM/FGJOGWrJ8qxwpNMr/OygW6t7WvRnYi5uUDunrha3mObP1GrtAinjZBfG8Izi5C/FVa3lZZoXH173kHQVZTd7//Pc1bJDVUpAfbRhVq+I8bvzkzWGJJfKsfu3xI5g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=QDhteh/7rEL9ai3+QO2/IVVoUPCsC5kBHl60+oO4Pgw=;
- b=nEfNgPyNLLu6V+vDgS6C76pFAlgwMgvmhoPpBNrqWZ1eAhzGqKW9v8TXwmT4rnh2b1uCSFqwFgY0iVPFtsryR5pQ5Hd1qmE0sVSBtb7+bzwtItIuCXrf9GYlP409LMMDRPApYil8PBDNszBzIpme//P7f3mHepOOE/gtaJSSYgsVSp19rG95Ysfdh6cIJyJmxTp38IGfOV4j2+wzJ2XsNrszVNAekuh5oWzJ4XF3qjzibeThnz/ZCzCw54ssucnmydQErmZw5IVta47o6izex17NET3j5FSRcZcoReDKiar5X/sqoIUCBb5gLhA/Ro8Tz9m9/z+0FItqN/vv2Ju/VQ==
+ bh=9z53OB33UptejiSPx8cCZS3bGbReQXN5OFaSnD5NJUk=;
+ b=PRvFi0wy2WHqOxHhIfmGWeAJKOg8/WTWNs7ce64tCbK0fGb7LFImTj1L/ToqX6kwesL0PFN0N55ITUPj4BGpd37AUaBKra0vGXAGYiOC5JG4LxGrhz+1AtdC1K0ywjJVaC6ZR8fDdF5nNDZP/FUmN3DoliyBpBZpffkTwwRRgAJlpu+2HD29KZYHYgGHKchplPWtTQqcWHEt/HsUXS/Vj8RUAIIRYrWGQV4F68nAB1jo9hZ7IOzb3EBp3dk2up4UfMGaQ7hBgDVO5bgixxzgUzPmUKABqhg9mD3yxLqkMu8lDl4Lyz3RDLGFXjcCLO1qwmiWW1BnVhplJa9zXjmdGw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QDhteh/7rEL9ai3+QO2/IVVoUPCsC5kBHl60+oO4Pgw=;
- b=c7RCDiNTdSm8aYsAPJUB8t4Uc/YFOl5lVef/f6uVyBRcJ2LsSc69Rj0XA0PHabxCsn3A9u/U+oZbpqaSk9lYn0IDXIduf02ZFH3KcUShFgHGBa9pFhenU9AAXMzDAnMhp+JImt6ahUN7aHYRMrmsU5N28VMVCFizdryEMzHKtyk=
+ bh=9z53OB33UptejiSPx8cCZS3bGbReQXN5OFaSnD5NJUk=;
+ b=TLSrFE5vS4x0TkHydcusz7CUR50eGm1+rvrhGTocpWYiaiTHs3Y+gbI8mvxSXBEwzcfHQwjtRc9XaebHz2uQf7A8WeaGt+wuqfyYRE2iK0VFw64Fuuh5Aypc7Cy64wu9ctSSlHkMMKuXGZhmSfETiDtvviDZWV2PPyYnCB1uA6Y=
 Authentication-Results: wizery.com; dkim=none (message not signed)
  header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB7PR04MB4763.eurprd04.prod.outlook.com (2603:10a6:10:1c::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Fri, 10 Sep
- 2021 09:07:30 +0000
+ 2021 09:07:35 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::4868:6843:a39f:aa53]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::4868:6843:a39f:aa53%4]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 09:07:30 +0000
+ 09:07:35 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org,
         mathieu.poirier@linaro.org, o.rempel@pengutronix.de
@@ -45,9 +45,9 @@ Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         linux-remoteproc@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V4 2/6] remoteproc: fix the wrong default value of is_iomem
-Date:   Fri, 10 Sep 2021 17:06:17 +0800
-Message-Id: <20210910090621.3073540-3-peng.fan@oss.nxp.com>
+Subject: [PATCH V4 3/6] remoteproc: imx_rproc: fix TCM io memory type
+Date:   Fri, 10 Sep 2021 17:06:18 +0800
+Message-Id: <20210910090621.3073540-4-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210910090621.3073540-1-peng.fan@oss.nxp.com>
 References: <20210910090621.3073540-1-peng.fan@oss.nxp.com>
@@ -57,53 +57,53 @@ X-ClientProxiedBy: SG3P274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::24)
  To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG3P274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 09:07:26 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG3P274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 09:07:30 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c9b8fc3b-8f0e-4610-1092-08d9743a6aff
+X-MS-Office365-Filtering-Correlation-Id: 7c14a02e-1124-461b-864b-08d9743a6daf
 X-MS-TrafficTypeDiagnostic: DB7PR04MB4763:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4763DF272F1CE80436C92A0EC9D69@DB7PR04MB4763.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB4763173B564FE96472166BF2C9D69@DB7PR04MB4763.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:469;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /2CQL1YBp0Za+9ObUyVaszR6UH4LbKAcRjKnSt1dkZnGbJ+hC537PRBUlM8vWb7l7ztmue9LMBSHiVGWoSBqdNZtXakad4ycbNYm7/Ar9sWKpR6BvtC0orfDoAK2cBRzMjLbauSNsjVbcjNl575yqyJpj22aDb3E2yEkCkhxEuW2cEwLeq1EGmvKQcoOWdyZaOFODy7abegAcpO5lvfJoYOaWJSOUdWXeZIEab4iLCn7lj/isGtRtRtPiW2yYKmFAUFMjLm5K1ZHrp1OnjWAZnXaUBxSTju4USEUL0Knyn3y+7IOxnMxpBoae5el6VYyBB8L4KdJPahwZ4liy2DQysRzrbH+gSrpzrpvyDjZ34mXxB409Ee+GeAm2e9740xHLdzmletK9Jg6oIQYEvaFNSpIGoMQs27QnXP2xtGAQbeXq60VczBjCaYkdblZ/ACzhtsBm69CPLFFjO4NNtxqcU1TZslgf1BEshYXaKQybhOWrRDGLF9xBJSQ51Js/A5r+nR+5qJrXyYL5ReIjI4RE6l4mUIAUmRmuegkcp+sNoVryjGyoamrGEUXl3VSiU9my5RTCwsZGrAIAvWwdFUDvpMJJ8qB40dTyNdpwacU6SRxSlRYlXENfs2Qxy2CAbxDrjR8dRqtdY71+bSRtKcr4i7V/nqWcKotpwVKNdXY7JPEVMfQhFaupaS3xDGe7XJeCOVnGX1K3YZPc0TpTZrL1Q==
+X-Microsoft-Antispam-Message-Info: syjBBcydt41Efyq0N0f6fEo1mEfIwGdyQDSKjRQBl9uyISp6oRpvjg1mjlELKts+tP/+75EnfyaXWBoKbNtJh2gBgy5d7c5VfX+zDNtuf7XY4kURZwrwfWHxlEYUC3Qsd1VX1zAsjPIHQC7abf3h2/WmeDcVHnkuX+twYG2eQSuCawOBzB6UXJkV3BpNXcqzHfG1bDlgt4cXr3Qm/BJRKUFbtAC9RUf+32smb7erGMldc5k+un36+a5ChAm0wQJQ2hfurI2EUIi5FzXRe6HHkaIc7/GSBbPW7GGq1DrDRUTJFbJisACGsQq68CcgA+2wbUwOwhj76KX12gKC1z/9WvWQwg4s6MvqOhr12bJKEDjLixLfumsmmt1DtDrmkJfOiFkgbJv9aXqJNrvnZLcmijyH6xN2TjFeW9URls8xLV3KYNKwsQiC5iRbOWuMCS4lUZAnuZZEHlZ/9C10NTwxuD6tXceMlEW0A1ZT+RPIJnpAXxe8lvDubMoW/xfxQ1jd31BLHqLIfdqby8YCZ2pEoiaPQgc3+DsLmkH9a1rXOXtxp0UCUNPUl7j+oc4rKXHuEkoJ8ryolBN7xglXNj1uK3OCpvbY+pV/uzXcu76lhauBH3HPQY0UBq2Yi7pkD1XcvWJhmEtU40QG0kvPhVVWVnUToxCwhLI0+tRUU8PwT3ghTHW7VZD45qfDqI6jB9NwI1+tPnjGqNpgrX+4GOriRA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(6512007)(8936002)(66946007)(66556008)(66476007)(83380400001)(7416002)(6506007)(1076003)(6666004)(38350700002)(38100700002)(6486002)(8676002)(316002)(186003)(52116002)(86362001)(26005)(478600001)(2906002)(2616005)(5660300002)(956004)(4326008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5Z8+F+nAv7Mo+3f4jdy4vgltTbtG1vudidJmbjU5MKkvcM3cuUS1hLth/FFs?=
- =?us-ascii?Q?Phv2oVy3hUFZFl4tILKKrdMVBR1eU75TzPchAF+BvEqh44CXf3cFKafRN0G8?=
- =?us-ascii?Q?wBUmZ7r5LfRSX0muNe6WKZ2UyQ51Rt4zSpZa6bY8JXSKKLYfrSKsCyQ7+ku5?=
- =?us-ascii?Q?VGlwLMgX7LFIYSNRRl94zrLuOABd3sdE/PogzCx27e/6/iBJRw/qss6f/sNK?=
- =?us-ascii?Q?igKuFgbhnEqvy8CkXY76UuhumnZQFQ5NA7MCONZLdtjWyl7inwLA4IBCcXWU?=
- =?us-ascii?Q?5MspNtgSuudJoOJXBwjUs/rZrgH5gPENighx0btxbIXLxiyb8sbCVo13IVRy?=
- =?us-ascii?Q?Inj1Y6q+V377dgxs9RS7RmNoPoWraw1kHZ61HxZSDhDI73SzUlQEJyxdpmaj?=
- =?us-ascii?Q?PYsuHhLebCOa3fBc/wGaJr0Ez8+SMTC3An1eYZo9gdLJFhlxRirtXImyYuDR?=
- =?us-ascii?Q?g1sH5KUpENP00vgBrHk4th7AOjxElp0ZlnmQCeIcIau36uYOKVYpKduncrTf?=
- =?us-ascii?Q?jCykQ6ILNq9ToQ7N1t4aMQbSg2QFHgjH6kpgWKK0Y4RumO641c8ye630fVJS?=
- =?us-ascii?Q?KOW7HV2pqiJm2Z4/VwHJYH94Wp9bU+m+mIT3X+N9CBOpVyUeYG9spczK1Jmw?=
- =?us-ascii?Q?8a2+qqzGdx+9VSleOjXGm43pzsRgpTgxKhMjRfEHASZLmE2NIDEMZ+mvIoAX?=
- =?us-ascii?Q?J4xcWDnaAdXAGX24uXNdRGmLl47elPGgjtGM1t/SSQVvg0LSJ+uvI6MjBULR?=
- =?us-ascii?Q?JE290jJWwWRHKqsP3dk746oUEl1uc7k64lh9qx62a3yCOf82LyyZDsIipPSO?=
- =?us-ascii?Q?k/TMtT8HDepGk88zKmuIkjMiwzle7LZzzVZpz+fpur9ASLsIUEWAJEfQVMJz?=
- =?us-ascii?Q?rd8lOZVf+B1KTKWksenYJrPG3NZDPBmnitr4AJ9pH1/q1VBMonpbIep1C1nS?=
- =?us-ascii?Q?BgLtmf9U/q174MORHkcsFOFld46iG7Nfm7dDc88UyMPkGpBiHrdRuTwArSlm?=
- =?us-ascii?Q?rkzd+9U/U41M409OyAioGZg9lppiY5SWptykeOrLPe1/ULn9MlMQFTpH+g+g?=
- =?us-ascii?Q?XDBE3QjgFcNvUsOnHVi+P4+AJSDK9K7m/XmCbX5tskGpMdq0XuAgTdjseEfW?=
- =?us-ascii?Q?l+O6gDAiV4tkyrK9bziQwIHL8PE+C3TG+2ZR5q3VCPQ8bGGxWVroQlw8VaGb?=
- =?us-ascii?Q?BD9ypMT9WLjSCHrSqWgaPlNUtmbyaVQnOebPt3C9+9a0qtfARblNb1SDvYsE?=
- =?us-ascii?Q?ELkrU3dbUPs5XG4Nf+0z235GKukteX5RDcDUwsVTbs0rznAkbjmQ/pMsFSkc?=
- =?us-ascii?Q?lsR+575VIzBwi6eCTJ4VtA5v?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6wFYi8e86I6dFZyYSV4zYdsnaxh56BGximNWa/fB9gz+yLl20xkDu7xz43xC?=
+ =?us-ascii?Q?67OSbeBcqPEjIDYOC4iYunoZc+IjB3FPdNzPXsKQdU4Z5ZuVopvVUlOvlvNf?=
+ =?us-ascii?Q?4iC5G5WSYi8eMsLbN3wkZ9dNtJZd8TG4TMvylkSj+c10s2syHvyUnm97gNcW?=
+ =?us-ascii?Q?bmWbTFpocjPbHRraRiA6kpc5Cfg5U0WtiZdgL3ouq8bUaelF8rkLp8OQqUew?=
+ =?us-ascii?Q?i7WHAioI4dJ+jdYHGl4WWFGpNW3MVgz75v5HYAq1mGRS7Nmj44GvIuYFijN/?=
+ =?us-ascii?Q?pHrVsipIiegENcxELWlIRb3DhzOKkZrxdkGcoOSR2WfezoTxf6lZwqshHQzo?=
+ =?us-ascii?Q?SaKIIYYAJ+iA9WD+1ttdwceL6bcFX5fKKeaXs+wTzImnG+andybVdzXS+hQc?=
+ =?us-ascii?Q?JkVVDHs+u2BtDSltRdd7zuuSTF/LCPA92/aG/BpbqHRZ4bdFj6bGVtOM1O7h?=
+ =?us-ascii?Q?0Os6HMoF+weWDpB3W4Ky3w1HoQyeVOsBY85n0+melW/tPuXpg3LgOnaJ4nRr?=
+ =?us-ascii?Q?qyyeOWPp9mQN4VMn6mv/joziLXneIpkjL94je0e69/JZB4p/hcpMQMysrYEP?=
+ =?us-ascii?Q?n2Cs5MBZl7YqYf0WiYAIDBHFxGjEyzIm3Gp0s0Y8GSv9m9ML2iM9Re/3Bfsc?=
+ =?us-ascii?Q?bRPVhZLPzLPusLkWpkjqVAJLC+epVuqm+n9RVUqSzoCU7GAkh7AgPWIC+O1S?=
+ =?us-ascii?Q?tDFF+uLkfw1Dp6LYKLivnppjWzbcpOH9rII3o4qccEEpN/gWLXArdLUK6N85?=
+ =?us-ascii?Q?UBiwL3pcvkVQyTn/fs2XOjPcJM1oDYMnxjfT4WZyvcSqR6/I51VNYMpkShP0?=
+ =?us-ascii?Q?XOX4sas1224KJ9jOToD213X4bKsBgeNt33Gn4XbO6okXW2pD7evtMFAN4PHg?=
+ =?us-ascii?Q?HgQDKdiqw/yreejlhFSLSWFuKsYz92UjAuTpsDz1X2v4hLLpgebbxPMJQPE1?=
+ =?us-ascii?Q?FBo8UrxpHs0fVzvH0WVVCPgC2otboJ4xHYc+L7Mkcl+CdejCAGqnxNCtGNaO?=
+ =?us-ascii?Q?mieDgfVvgMOOlOqF0Uengq1YJBwJQyqQASRWDhvR6sLAoghlsNigGqEMvCOX?=
+ =?us-ascii?Q?Jn3Rto3Yn4XoTUDx00BVdK8fOrFAb2xnWSN8ZTD0MbQskdBTffmmQSTN+QKd?=
+ =?us-ascii?Q?nt2DQ0X7pFJExFvHaTMOWCL2qkgt0YSZLaTnS99l8cqJvDxXJnroMX0x1h8w?=
+ =?us-ascii?Q?iTuxzQnXjqd2Y41eASvb3ZiGfUGbvJe6EO9Ez1rFYwNr/Y6eToRk/xzBRStH?=
+ =?us-ascii?Q?mbsw4UI93PP0XxsZ9xMoUD93rELeSHVcxuPA7r7pm4rczVd+AdkuXtaHLN7k?=
+ =?us-ascii?Q?hi5i6FtsooP2h4tCEF26UqJU?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9b8fc3b-8f0e-4610-1092-08d9743a6aff
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c14a02e-1124-461b-864b-08d9743a6daf
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 09:07:30.3580
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 09:07:34.9029
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 03GioMW5hwtLe3ePGat768kaIbPERqr4Vvngr8D7TfSu4j9KB/LnL3atApk0VqVkgFyKAC37/WYxvtShKpX0rw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: WBhqLtrazlzWGp+VWr1obtbIaNHDRCBPKdE8OniETsLJfc7Xdwo+dhhhnCqsrYZGmNzWIBPkLi0E1MVGrbHlPQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4763
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -111,49 +111,153 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dong Aisheng <aisheng.dong@nxp.com>
 
-Currently the is_iomem is a random value in the stack which may
-be default to true even on those platforms that not use iomem to
-store firmware.
+is_iomem was introduced in the commit 40df0a91b2a5 ("remoteproc: add
+is_iomem to da_to_va"), but the driver seemed missed to provide the io
+type correctly.
+This patch updates remoteproc driver to indicate the TCM on IMX are io
+memories. Without the change, remoteproc kick will fail.
 
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Fixes: 40df0a91b2a5 ("remoteproc: add is_iomem to da_to_va")
+Cc: Peng Fan <peng.fan@nxp.com>
 Reviewed-and-tested-by: Peng Fan <peng.fan@nxp.com>
+Fixes: 79806d32d5aa ("remoteproc: imx_rproc: support i.MX8MN/P")
 Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/remoteproc/remoteproc_coredump.c   | 2 +-
- drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/remoteproc/imx_rproc.c | 35 ++++++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
-index aee657cc08c6a..c892f433a323e 100644
---- a/drivers/remoteproc/remoteproc_coredump.c
-+++ b/drivers/remoteproc/remoteproc_coredump.c
-@@ -152,8 +152,8 @@ static void rproc_copy_segment(struct rproc *rproc, void *dest,
- 			       struct rproc_dump_segment *segment,
- 			       size_t offset, size_t size)
+diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+index d88f76f5305eb..71dcc6dd32e40 100644
+--- a/drivers/remoteproc/imx_rproc.c
++++ b/drivers/remoteproc/imx_rproc.c
+@@ -71,6 +71,7 @@ struct imx_rproc_mem {
+ /* att flags */
+ /* M4 own area. Can be mapped at probe */
+ #define ATT_OWN		BIT(1)
++#define ATT_IOMEM	BIT(2)
+ 
+ /* address translation table */
+ struct imx_rproc_att {
+@@ -117,7 +118,7 @@ struct imx_rproc {
+ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* ITCM   */
+-	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN },
++	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S */
+ 	{ 0x00180000, 0x00180000, 0x00009000, 0 },
+ 	/* OCRAM */
+@@ -131,7 +132,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ 	/* DDR (Code) - alias */
+ 	{ 0x10000000, 0x40000000, 0x0FFE0000, 0 },
+ 	/* DTCM */
+-	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S - alias */
+ 	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+ 	/* OCRAM */
+@@ -147,7 +148,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* TCML - alias */
+-	{ 0x00000000, 0x007e0000, 0x00020000, 0 },
++	{ 0x00000000, 0x007e0000, 0x00020000, ATT_IOMEM},
+ 	/* OCRAM_S */
+ 	{ 0x00180000, 0x00180000, 0x00008000, 0 },
+ 	/* OCRAM */
+@@ -159,9 +160,9 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+ 	/* DDR (Code) - alias */
+ 	{ 0x10000000, 0x80000000, 0x0FFE0000, 0 },
+ 	/* TCML */
+-	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN },
++	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+ 	/* TCMU */
+-	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+ 	/* OCRAM_S */
+ 	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+ 	/* OCRAM */
+@@ -199,12 +200,12 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+ 	/* OCRAM_PXP (Code) - alias */
+ 	{ 0x00940000, 0x00940000, 0x00008000, 0 },
+ 	/* TCML (Code) */
+-	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
++	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* DDR (Code) - alias, first part of DDR (Data) */
+ 	{ 0x10000000, 0x80000000, 0x0FFF0000, 0 },
+ 
+ 	/* TCMU (Data) */
+-	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM (Data) */
+ 	{ 0x20200000, 0x00900000, 0x00020000, 0 },
+ 	/* OCRAM_EPDC (Data) */
+@@ -218,18 +219,18 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+ static const struct imx_rproc_att imx_rproc_att_imx6sx[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* TCML (M4 Boot Code) - alias */
+-	{ 0x00000000, 0x007F8000, 0x00008000, 0 },
++	{ 0x00000000, 0x007F8000, 0x00008000, ATT_IOMEM },
+ 	/* OCRAM_S (Code) */
+ 	{ 0x00180000, 0x008F8000, 0x00004000, 0 },
+ 	/* OCRAM_S (Code) - alias */
+ 	{ 0x00180000, 0x008FC000, 0x00004000, 0 },
+ 	/* TCML (Code) */
+-	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
++	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* DDR (Code) - alias, first part of DDR (Data) */
+ 	{ 0x10000000, 0x80000000, 0x0FFF8000, 0 },
+ 
+ 	/* TCMU (Data) */
+-	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S (Data) - alias? */
+ 	{ 0x208F8000, 0x008F8000, 0x00004000, 0 },
+ 	/* DDR (Data) */
+@@ -341,7 +342,7 @@ static int imx_rproc_stop(struct rproc *rproc)
+ }
+ 
+ static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+-			       size_t len, u64 *sys)
++			       size_t len, u64 *sys, bool *is_iomem)
  {
-+	bool is_iomem = false;
- 	void *ptr;
--	bool is_iomem;
+ 	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
+ 	int i;
+@@ -354,6 +355,8 @@ static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+ 			unsigned int offset = da - att->da;
  
- 	if (segment->dump) {
- 		segment->dump(rproc, segment, dest, offset, size);
-diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-index 44e7f9308f4bc..d635d19a5aa8a 100644
---- a/drivers/remoteproc/remoteproc_elf_loader.c
-+++ b/drivers/remoteproc/remoteproc_elf_loader.c
-@@ -178,8 +178,8 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
- 		u64 filesz = elf_phdr_get_p_filesz(class, phdr);
- 		u64 offset = elf_phdr_get_p_offset(class, phdr);
- 		u32 type = elf_phdr_get_p_type(class, phdr);
-+		bool is_iomem = false;
- 		void *ptr;
--		bool is_iomem;
+ 			*sys = att->sa + offset;
++			if (is_iomem)
++				*is_iomem = att->flags & ATT_IOMEM;
+ 			return 0;
+ 		}
+ 	}
+@@ -377,7 +380,7 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
+ 	 * On device side we have many aliases, so we need to convert device
+ 	 * address (M4) to system bus address first.
+ 	 */
+-	if (imx_rproc_da_to_sys(priv, da, len, &sys))
++	if (imx_rproc_da_to_sys(priv, da, len, &sys, is_iomem))
+ 		return NULL;
  
- 		if (type != PT_LOAD)
- 			continue;
+ 	for (i = 0; i < IMX_RPROC_MEM_MAX; i++) {
+@@ -553,8 +556,12 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+ 		if (b >= IMX_RPROC_MEM_MAX)
+ 			break;
+ 
+-		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
+-						     att->sa, att->size);
++		if (att->flags & ATT_IOMEM)
++			priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
++							     att->sa, att->size);
++		else
++			priv->mem[b].cpu_addr = devm_ioremap_wc(&pdev->dev,
++								att->sa, att->size);
+ 		if (!priv->mem[b].cpu_addr) {
+ 			dev_err(dev, "failed to remap %#x bytes from %#x\n", att->size, att->sa);
+ 			return -ENOMEM;
 -- 
 2.25.1
 
