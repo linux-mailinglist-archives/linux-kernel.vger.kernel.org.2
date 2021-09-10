@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80154072B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D620B4072B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbhIJUuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:50:15 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:46007 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233733AbhIJUuO (ORCPT
+        id S234140AbhIJUwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233384AbhIJUv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:50:14 -0400
-Received: (qmail 50185 invoked by uid 1000); 10 Sep 2021 16:49:01 -0400
-Date:   Fri, 10 Sep 2021 16:49:01 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     cristian.birsan@microchip.com
-Cc:     gregkh@linuxfoundation.org, nicolas.ferre@microchip.com,
-        ada@thorsis.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] USB: host: ehci-atmel: Add support for HSIC phy
-Message-ID: <20210910204901.GA50170@rowland.harvard.edu>
-References: <20210910163842.1596407-1-cristian.birsan@microchip.com>
- <20210910163842.1596407-3-cristian.birsan@microchip.com>
+        Fri, 10 Sep 2021 16:51:59 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CFDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:50:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id m9so4393172wrb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rccd+FaDPVuDVeT3ukG1P6kvqoGb4ZgC6X7OYACoy/s=;
+        b=cER3bO29OcgSodf61vRqIvHUBKosrXwEHSCrlWi02cr3+6CKJxgyu85jqtaMe6W1ee
+         /byGcMOhvnZQ3KdjahfAwtB+lttckYtDeKnipUZKsnX+I4Rcc/RryIF6hYvYpxAYDEEd
+         NLmA2J85CD7qGJK765ZP0k6+xiH9rukkVMsT8qTFBoYAYasKcnk5GnljdaYe0wefsFaZ
+         qPRdmHnlpZcIx9wGAKLi5GidA87wNRS2yTHb9zeoxBnYnB8fH7et3YcbICxgRK+JwI6y
+         umTCDdhsy68K0mQ5VK4uH/5H57sXq2Gk5b+ei4G6eamtv6DuCIW2pZMp55IKeNKwOMvo
+         09UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rccd+FaDPVuDVeT3ukG1P6kvqoGb4ZgC6X7OYACoy/s=;
+        b=c371BeAuGGXM+objFpEAuEuPzwkp7HckDKm7hVZl4oJSiEmNKuTlrHElrxZrO3efru
+         UYyGWc0NQpWiEyua2R5FxuKg7yR3k7PAVWhrz2bCp+/emXZleFuEdAAJMR4lakJTitjV
+         HFF4cVmbF4cqqczLwDtrHuQnLcfbG1KddSiLCnCxsx07YIm5Lj44a5krcWLP3qnxiZBe
+         6ztD0hvjaXnp4JXp+P3spvhzv4FmHbif7QxbAcW7JhYFpvz+N81ZR+97JlLhP5qMmg2v
+         Ui/LwNWy2bKlzMbKu4Ugu1kEvpbTOBQH9Zrp1rJK3CGKM/zw3I5gC9TORLEQJ2WjF66S
+         fzsg==
+X-Gm-Message-State: AOAM531UMHeY1s++vCyoHH709oh1GE608HwBSBFLrdw//eHW9aRrPaB/
+        nMhpwGfecEaYqKtWUvUddw4=
+X-Google-Smtp-Source: ABdhPJzIzcb1KBsTMTxM9lVfQOfg2ZnjsBwcWGfoUEi5Ppy63exjH+qlsqqhScjjK1Zpke/3AHaUkA==
+X-Received: by 2002:adf:e44f:: with SMTP id t15mr4031973wrm.394.1631307045259;
+        Fri, 10 Sep 2021 13:50:45 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
+        by smtp.gmail.com with ESMTPSA id g11sm5592427wrx.30.2021.09.10.13.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 13:50:44 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 0/7] remove pointers from struct hal_ops
+Date:   Fri, 10 Sep 2021 22:50:26 +0200
+Message-Id: <20210910205033.3778-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910163842.1596407-3-cristian.birsan@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 07:38:42PM +0300, cristian.birsan@microchip.com wrote:
-> From: Cristian Birsan <cristian.birsan@microchip.com>
-> 
-> Add support for USB Host High Speed Port HSIC phy.
-> 
-> Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-> ---
+This series removes some more pointers from struct hal_ops and
+removes the function rtl8188e_set_hal_ops() that is empty after
+the removals.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Michael Straube (7):
+  staging: r8188eu: remove mgnt_xmit from struct hal_ops
+  staging: r8188eu: remove hal_xmit from struct hal_ops
+  staging: r8188eu: remove read_bbreg from struct hal_ops
+  staging: r8188eu: remove write_bbreg from struct hal_ops
+  staging: r8188eu: remove read_rfreg from struct hal_ops
+  staging: r8188eu: remove write_rfreg from struct hal_ops
+  staging: r8188eu: remove rtl8188e_set_hal_ops()
 
->  drivers/usb/host/ehci-atmel.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ehci-atmel.c b/drivers/usb/host/ehci-atmel.c
-> index e893467d659c..05d41fd65f25 100644
-> --- a/drivers/usb/host/ehci-atmel.c
-> +++ b/drivers/usb/host/ehci-atmel.c
-> @@ -18,6 +18,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/usb.h>
->  #include <linux/usb/hcd.h>
-> +#include <linux/usb/phy.h>
-> +#include <linux/usb/of.h>
->  
->  #include "ehci.h"
->  
-> @@ -25,6 +27,9 @@
->  
->  static const char hcd_name[] = "ehci-atmel";
->  
-> +#define EHCI_INSNREG(index)			((index) * 4 + 0x90)
-> +#define EHCI_INSNREG08_HSIC_EN			BIT(2)
-> +
->  /* interface and function clocks */
->  #define hcd_to_atmel_ehci_priv(h) \
->  	((struct atmel_ehci_priv *)hcd_to_ehci(h)->priv)
-> @@ -154,6 +159,9 @@ static int ehci_atmel_drv_probe(struct platform_device *pdev)
->  		goto fail_add_hcd;
->  	device_wakeup_enable(hcd->self.controller);
->  
-> +	if (of_usb_get_phy_mode(pdev->dev.of_node) == USBPHY_INTERFACE_MODE_HSIC)
-> +		writel(EHCI_INSNREG08_HSIC_EN, hcd->regs + EHCI_INSNREG(8));
-> +
->  	return retval;
->  
->  fail_add_hcd:
-> -- 
-> 2.25.1
-> 
+ drivers/staging/r8188eu/core/rtw_debug.c      |  8 +--
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   |  8 +--
+ drivers/staging/r8188eu/core/rtw_mp.c         | 10 ++--
+ drivers/staging/r8188eu/core/rtw_xmit.c       |  9 ++--
+ drivers/staging/r8188eu/hal/hal_intf.c        | 51 -------------------
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c    |  2 +-
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  7 ---
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  5 --
+ drivers/staging/r8188eu/include/hal_intf.h    | 29 -----------
+ .../staging/r8188eu/include/rtl8188e_hal.h    |  2 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 24 ++++-----
+ 11 files changed, 31 insertions(+), 124 deletions(-)
+
+-- 
+2.33.0
+
