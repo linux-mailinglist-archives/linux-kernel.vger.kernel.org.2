@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3187B406BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8412406C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhIJMfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
+        id S233887AbhIJMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233394AbhIJMe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:34:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F853611F2;
-        Fri, 10 Sep 2021 12:33:18 +0000 (UTC)
+        id S234434AbhIJMfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F314D61206;
+        Fri, 10 Sep 2021 12:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277199;
-        bh=N+X6dDOdaFYryrWTgzWwsS6fY5MCzcMnHkhpuV1FUEU=;
+        s=korg; t=1631277278;
+        bh=WSnMHjzypwQ7Fjbes+Eoz5ZjFsK+4pYENgGUMoTuVxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J3VGrslV3p9IapjnBfEfI5+Wkfv34Ljix/9KdCWDuU0yKZAP9U3NFfGLvy5dYzFC5
-         +WD8O7g/cpjfBE74G9jDrkQEsKRDSfvTL5HnIFB3wIqbIxUh80OsJStT+pTkNjigPc
-         TwT6fIv5v9GbiBeakEJSrC50XlqGn+UB3KMqiY9A=
+        b=o8w7uOGw9fakfG/ZwQ3UZD01dGQB6I6fsk3xr37vfc4+q03vBT5YxurVKjuu84msC
+         Mtj1OWk7fuqMSBVr+EeGMz8jUTYEKUgRthNCf9jKM7zSGv3LDOIzAgCd3F71D79k0b
+         Er9bjuyQcN+fjkbhJgPo5tWA5kR1Rgr8h5Wsox/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        David Jeffery <djeffery@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 16/26] blk-mq: clearing flush request reference in tags->rqs[]
-Date:   Fri, 10 Sep 2021 14:30:20 +0200
-Message-Id: <20210910122916.774523957@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 18/37] ALSA: hda/realtek: Workaround for conflicting SSID on ASUS ROG Strix G17
+Date:   Fri, 10 Sep 2021 14:30:21 +0200
+Message-Id: <20210910122917.767802823@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
-References: <20210910122916.253646001@linuxfoundation.org>
+In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+References: <20210910122917.149278545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +38,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 364b61818f65045479e42e76ed8dd6f051778280 upstream.
+commit 13d9c6b998aaa76fd098133277a28a21f2cc2264 upstream.
 
-Before we free request queue, clearing flush request reference in
-tags->rqs[], so that potential UAF can be avoided.
+ASUS ROG Strix G17 has the very same PCI and codec SSID (1043:103f) as
+ASUS TX300, and unfortunately, the existing quirk for TX300 is broken
+on ASUS ROG.  Actually the device works without the quirk, so we'll
+need to clear the quirk before applying for this device.
+Since ASUS ROG has a different codec (ALC294 - while TX300 has
+ALC282), this patch adds a workaround for the device, just clearing
+the codec->fixup_id by checking the codec vendor_id.
 
-Based on one patch written by David Jeffery.
+It's a bit ugly to add such a workaround there, but it seems to be the
+simplest way.
 
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: David Jeffery <djeffery@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-5-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214101
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210820143214.3654-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-mq.c |   35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2589,16 +2589,49 @@ static void blk_mq_remove_cpuhp(struct b
- 					    &hctx->cpuhp_dead);
- }
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9160,6 +9160,16 @@ static int patch_alc269(struct hda_codec
  
-+/*
-+ * Before freeing hw queue, clearing the flush request reference in
-+ * tags->rqs[] for avoiding potential UAF.
-+ */
-+static void blk_mq_clear_flush_rq_mapping(struct blk_mq_tags *tags,
-+		unsigned int queue_depth, struct request *flush_rq)
-+{
-+	int i;
-+	unsigned long flags;
-+
-+	/* The hw queue may not be mapped yet */
-+	if (!tags)
-+		return;
-+
-+	WARN_ON_ONCE(refcount_read(&flush_rq->ref) != 0);
-+
-+	for (i = 0; i < queue_depth; i++)
-+		cmpxchg(&tags->rqs[i], flush_rq, NULL);
-+
-+	/*
-+	 * Wait until all pending iteration is done.
-+	 *
-+	 * Request reference is cleared and it is guaranteed to be observed
-+	 * after the ->lock is released.
+ 	snd_hda_pick_fixup(codec, alc269_fixup_models,
+ 		       alc269_fixup_tbl, alc269_fixups);
++	/* FIXME: both TX300 and ROG Strix G17 have the same SSID, and
++	 * the quirk breaks the latter (bko#214101).
++	 * Clear the wrong entry.
 +	 */
-+	spin_lock_irqsave(&tags->lock, flags);
-+	spin_unlock_irqrestore(&tags->lock, flags);
-+}
++	if (codec->fixup_id == ALC282_FIXUP_ASUS_TX300 &&
++	    codec->core.vendor_id == 0x10ec0294) {
++		codec_dbg(codec, "Clear wrong fixup for ASUS ROG Strix G17\n");
++		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
++	}
 +
- /* hctx->ctxs will be freed in queue's release handler */
- static void blk_mq_exit_hctx(struct request_queue *q,
- 		struct blk_mq_tag_set *set,
- 		struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
- {
-+	struct request *flush_rq = hctx->fq->flush_rq;
-+
- 	if (blk_mq_hw_queue_mapped(hctx))
- 		blk_mq_tag_idle(hctx);
- 
-+	blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
-+			set->queue_depth, flush_rq);
- 	if (set->ops->exit_request)
--		set->ops->exit_request(set, hctx->fq->flush_rq, hctx_idx);
-+		set->ops->exit_request(set, flush_rq, hctx_idx);
- 
- 	if (set->ops->exit_hctx)
- 		set->ops->exit_hctx(hctx, hctx_idx);
+ 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
+ 	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
+ 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
 
 
