@@ -2,109 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0374067B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451CE4067AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhIJHeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 03:34:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19022 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhIJHeR (ORCPT
+        id S231531AbhIJHbS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Sep 2021 03:31:18 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:58657 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhIJHbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 03:34:17 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H5SDG4b8tzbmKM;
-        Fri, 10 Sep 2021 15:29:02 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 10 Sep 2021 15:33:04 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 10 Sep
- 2021 15:33:04 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <io-uring@vger.kernel.org>
-CC:     <axboe@kernel.dk>, <asml.silence@gmail.com>,
-        <john.wanghui@huawei.com>
-Subject: [PATCH -next v2] io-wq: Fix memory leak in create_io_worker
-Date:   Fri, 10 Sep 2021 15:29:10 +0800
-Message-ID: <20210910072910.43319-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+        Fri, 10 Sep 2021 03:31:16 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id EAB79CED3D;
+        Fri, 10 Sep 2021 09:30:03 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v8] Bluetooth: btusb: Add support using different nvm for
+ variant WCN6855 controller
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
+Date:   Fri, 10 Sep 2021 09:30:03 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, tjiang@codeaurora.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <1A6C7105-5BA3-44C4-9F94-BB71FBDBE8F5@holtmann.org>
+References: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kmemleak tool detected a memory leak.
+Hi Zijun,
 
-====================
-unreferenced object 0xffff888126fcd6c0 (size 192):
-  comm "syz-executor.1", pid 11934, jiffies 4294983026 (age 15.690s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81632c91>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff81632c91>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff81632c91>] create_io_worker+0x41/0x1e0 fs/io-wq.c:739
-    [<ffffffff8163311e>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff8163311e>] io_wqe_enqueue+0x1fe/0x330 fs/io-wq.c:866
-    [<ffffffff81620b64>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162c59c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6933
-    [<ffffffff8162c7ab>] io_req_task_submit+0x4b/0xa0 fs/io_uring.c:2233
-    [<ffffffff8162cb48>] io_async_task_func+0x108/0x1c0 fs/io_uring.c:5462
-    [<ffffffff816259e3>] tctx_task_work+0x1b3/0x3a0 fs/io_uring.c:2158
-    [<ffffffff81269b43>] task_work_run+0x73/0xb0 kernel/task_work.c:164
-    [<ffffffff812dcdd1>] tracehook_notify_signal include/linux/tracehook.h:212 [inline]
-    [<ffffffff812dcdd1>] handle_signal_work kernel/entry/common.c:146 [inline]
-    [<ffffffff812dcdd1>] exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
-    [<ffffffff812dcdd1>] exit_to_user_mode_prepare+0x151/0x180 kernel/entry/common.c:209
-    [<ffffffff843ff25d>] __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
-    [<ffffffff843ff25d>] syscall_exit_to_user_mode+0x1d/0x40 kernel/entry/common.c:302
-    [<ffffffff843fa4a2>] do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-====================
+> the RF perfermance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
+> 1 file changed, 37 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 928cbfa4c42d..0f5d2222d624 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+> #define QCA_DFU_TIMEOUT		3000
+> #define QCA_FLAG_MULTI_NVM      0x80
+> 
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+> struct qca_version {
+> 	__le32	rom_version;
+> 	__le32	patch_version;
+> @@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
+> 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+> 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+> 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+> };
+> 
+> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+> 	return err;
+> }
+> 
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					struct qca_version *ver,
+> +					char *variant)
+> +{
+> +	char *sep = (strlen(variant) == 0) ? "" : "_";
+> +	u16 board_id = le16_to_cpu(ver->board_id);
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +
+> +	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		/* if boardid equal 0, use default nvm without suffix */
+> +		if (board_id == 0x0) {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
+> +				rom_version, sep, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
+> +				rom_version, sep, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+> +}
+> +
+> static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 				    struct qca_version *ver,
+> 				    const struct qca_device_info *info)
+> @@ -3354,19 +3383,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 	char fwname[64];
+> 	int err;
+> 
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> +	switch (ver->ram_version) {
+> +	case WCN6855_2_0_RAM_VERSION_GF:
+> +	case WCN6855_2_1_RAM_VERSION_GF:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
+> +		break;
+> +	default:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
+> +		break;
 
-If io_should_retry_thread is false in create_io_worker() and
-io_queue_worker_create is false in io_workqueue_create(), free the worker.
+I mentioned this multiple times now, the indentation is wrong here.
 
-Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
-Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
-Changes in v2:
-* Add free worker if io_queue_worker_create is false in io_workqueue_create();
-* Add kmemleak calltrace in commit message;
+Regards
 
- fs/io-wq.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index d80e4a735677..c24f79cf2b97 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -725,6 +725,7 @@ static void io_workqueue_create(struct work_struct *work)
- 	if (!io_queue_worker_create(worker, acct, create_worker_cont)) {
- 		clear_bit_unlock(0, &worker->create_state);
- 		io_worker_release(worker);
-+		kfree(worker);
- 	}
- }
- 
-@@ -759,6 +760,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
- 	if (!IS_ERR(tsk)) {
- 		io_init_new_worker(wqe, worker, tsk);
- 	} else if (!io_should_retry_thread(PTR_ERR(tsk))) {
-+		kfree(worker);
- 		goto fail;
- 	} else {
- 		INIT_WORK(&worker->work, io_workqueue_create);
--- 
-2.17.1
+Marcel
 
