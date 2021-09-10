@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D450406DF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA377406DF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhIJPH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:07:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229749AbhIJPH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E6B60F92;
-        Fri, 10 Sep 2021 15:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631286405;
-        bh=VIn1b4GQH+TJrbsUH/3F2B+v61HV9neqi+1DLLKlHvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ewu10aDmon6lqr9M+QtkSQT2j7QL/Zgb9y3S6QUIRpOEhC4DrrS5UrsycyCysrvSt
-         kbEhtRU3QbKYVUtMalnpVlJbpeWcmWCfzT+ylUn4hIAtQikCfNlTHbWy1ZD7tmhqdD
-         snjIJtA38vsRU93VedDt8M2/u7JVU+S4nc2be9fG6t8jGfpJaQ6E+jxLduMUrfPgmB
-         OanYA8n4Y8Q5b0seD6Onap+yhWX4l7SZL7tIYVlrmioBlkA9OtcHsSHTqemSJympD+
-         L3bdP68IkwCl7L09Kcn/FsgHbbNU/678BKD5aWTk0IT5c2BlQsUM41/tMVM8w5S1tE
-         8lY33cKuTgsxQ==
-Date:   Fri, 10 Sep 2021 16:06:40 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
- current_save_and_set_rtlock_wait_state()
-Message-ID: <20210910150639.GA1755@willie-the-truck>
-References: <20210909105915.757320973@infradead.org>
- <20210909110203.767330253@infradead.org>
- <20210909134524.GB9722@willie-the-truck>
- <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
- <20210910125658.GA1454@willie-the-truck>
- <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
- <YTtlOQfAl/cT5Na9@hirez.programming.kicks-ass.net>
+        id S234164AbhIJPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234267AbhIJPJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:09:16 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEA2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:08:05 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id i13so2364348ilm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BrxzTCRXFeWgHCONUvuL7grava4MVAVW3Zocp6vU7jo=;
+        b=my+xizXrJkbSt6xkUqSxuB8Jm0KThrQH0s5xj6MBSAfvx+JU7850qyZgWajaZpDFrT
+         WmFxjKFRXLPGGQ76Q1lwASuTMVAkaHSizZtI2EfNKV6d4iZNjJYZ85U1gVeHVglkkkza
+         JKC0ruBtS2gPVXi8FMRiZjAQ3u0ysMjMA3GaGwsESADei7dpcuDw18KOcdygZtHcVTNU
+         eWOy8ESo4T2oNCniSNpkBg1ID2kcP6DlSVzRIKs9bKmdpBk+BSUiMCZMSaAkDpoyI+ti
+         tytk1h9R2QNkiwz1AsCjQSLQMFBrPL6N6wNULWFWD9LS239T6cXJIAjGUEMFnORQe8tG
+         CRfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BrxzTCRXFeWgHCONUvuL7grava4MVAVW3Zocp6vU7jo=;
+        b=dsXuQfQYhZk8ZZ4Qa4/pQH/RxbR9yr3HyY76Dvdl5mB1EMWG1xONBFqBWgWGWuOoQi
+         sWbE67QhSa9eHKwX9gIvUpRP48851Q/EG5Y0+yOw0x2iqxJsMMSjwp0wmZ9jp0Mrb9IJ
+         CTk4DFKlw0rzcy4+7y4/p0IpCTbvXqXf3xVBhGBe2UXhrYd+KE9+YK1G7wXGQ0WF4xrD
+         r4RHYl1Qi/qfwrDazpRDZpTsT21T0X4dyVhkYE7FY5JJsAeSZyKvUH7GiV78MfH6hN6Z
+         6Cddxm45iurm6+WTSMmfrCF4UgfsY7k2pAmlGzEpS3wapOjnPhr85ee/YF3UNTUXp9vo
+         NYpw==
+X-Gm-Message-State: AOAM531+yVz6/HD68Hsxmgjd6QTYwaoUffCQLxrHEyG4JSuvDuFJoG87
+        tBuRJRzEBCYC/zUH0s0VFnb/pxdd3CDZUlgOAFE=
+X-Google-Smtp-Source: ABdhPJxKSMqljOv4kq4sT7iCXHFFs4i40ciAQ4hNIZSI59SAfmiS7XM4mhBu6+bVF974ULWxJcFAuw==
+X-Received: by 2002:a05:6e02:68a:: with SMTP id o10mr6969504ils.72.1631286484904;
+        Fri, 10 Sep 2021 08:08:04 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id z16sm2660078ile.72.2021.09.10.08.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 08:08:03 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+ <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
+Date:   Fri, 10 Sep 2021 09:08:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTtlOQfAl/cT5Na9@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:01:29PM +0200, Peter Zijlstra wrote:
-> On Fri, Sep 10, 2021 at 03:17:04PM +0200, Peter Zijlstra wrote:
-> > On Fri, Sep 10, 2021 at 01:57:26PM +0100, Will Deacon wrote:
-> > > On Thu, Sep 09, 2021 at 04:27:46PM +0200, Peter Zijlstra wrote:
-> > > > Moo yes, so the earlier changelog I wrote was something like:
-> > > > 
-> > > > 	current_save_and_set_rtlock_wait_state();
-> > > > 	for (;;) {
-> > > > 		if (try_lock())
-> > > > 			break;
-> > > > 
-> > > > 		raw_spin_unlock_irq(&lock->wait_lock);
-> > > > 		if (!cond)
-> > > > 			schedule();
-> > > > 		raw_spin_lock_irq(&lock->wait_lock);
-> > > > 
-> > > > 		set_current_state(TASK_RTLOCK_WAIT);
-> > > > 	}
-> > > > 	current_restore_rtlock_saved_state();
-> > > > 
-> > > > which is more what the code looks like before these patches, and in that
-> > > > case the @cond load can be lifted before __state.
-> > > 
-> > > Ah, so that makes more sense, thanks. I can't see how the try_lock() could
-> > > be reordered though, as it's going to have to do an atomic rmw.
-> > 
-> > OK, lemme go update the Changelog and make it __flags for bigeasy :-)
+On 9/10/21 8:42 AM, Al Viro wrote:
+> On Fri, Sep 10, 2021 at 07:57:49AM -0600, Jens Axboe wrote:
 > 
-> The patch now reads:
+>> It was just a quick hack, might very well be too eager to go through
+>> those motions. But pondering this instead of sleeping, we don't need to
+>> copy all of iov_iter in order to restore the state, and we can use the
+>> same advance after restoring. So something like this may be more
+>> palatable. Caveat - again untested, and I haven't tested the performance
+>> impact of this at all.
 > 
-> ---
-> Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu, 09 Sep 2021 12:59:16 +0200
-> 
-> While looking at current_save_and_set_rtlock_wait_state() I'm thinking
-> it really ought to use smp_store_mb(), because using it for a more
-> traditional wait loop like:
-> 
-> 	current_save_and_set_rtlock_wait_state();
-> 	for (;;) {
-> 		if (cond)
-> 			schedule();
-> 
-> 		set_current_state(TASK_RTLOCK_WAIT);
-> 	}
-> 	current_restore_rtlock_saved_state();
-> 
-> is actually broken, since the cond load could be re-ordered against
-> the state store, which could lead to a missed wakeup -> BAD (tm).
-> 
-> While there, make them consistent with the IRQ usage in
-> set_special_state().
+> You actually can cut it down even more - nr_segs + iov remains constant
+> all along, so you could get away with just 3 words here...  I would be
 
-Cheers, that's much better:
+Mmm, the iov pointer remains constant? Maybe I'm missing your point, but
+the various advance functions are quite happy to increment iter->iov or
+iter->bvec, so we need to restore them. From a quick look, looks like
+iter->nr_segs is modified for advancing too.
 
-Acked-by: Will Deacon <will@kernel.org>
+What am I missing?
 
-Will
+> surprised if extra memory traffic had shown up - it's well within the
+> noise from register spills, (un)inlining, etc.  We are talking about
+> 3 (or 4, with your variant) extra words on one stack frame (and that'd
+> be further offset by removal of ->truncated); I'd still like to see the
+> profiling data, but concerns about extra memory traffic due to that
+> are, IMO, misplaced.
+
+See other email that was just sent out, it is measurable but pretty
+minimal. But that's also down to about 1/3rd of copying the whole
+thing blindly, so definitely a better case.
+
+-- 
+Jens Axboe
+
