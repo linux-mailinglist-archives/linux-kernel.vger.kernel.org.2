@@ -2,1028 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1AE407001
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00312407006
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhIJQz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:55:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34255 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229664AbhIJQzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:55:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631292850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/O7XT3xU2+oR02u0LyCrxKptxbSCyE9eFNuP/z7GFNc=;
-        b=iSXpVFl8bDy9M+Wgu7qNhOWKQ4khPEdbKMyXzhfIgbTC8GOSpIU2Lj9xpDP8lfrRpsgRGK
-        y9dCiE1D+Cdu+c7X4TVlmeImgByNP2fZ0zEN2TkgxYm2XsUK/5GZEtsyqJLujtB4wHeRFC
-        jxKfsyS7UsIeCOxdhR+y13Qn7+zG7mc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-0A4gQq1LOVe4MYo4ixvZlA-1; Fri, 10 Sep 2021 12:54:07 -0400
-X-MC-Unique: 0A4gQq1LOVe4MYo4ixvZlA-1
-Received: by mail-ej1-f72.google.com with SMTP id bx10-20020a170906a1ca00b005c341820edeso1351567ejb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:54:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/O7XT3xU2+oR02u0LyCrxKptxbSCyE9eFNuP/z7GFNc=;
-        b=5HxmUFaRgNSIJ1TmfdSdxwDAjGB/Qlu0Yd2bpS6mSZeCza4sJC3ysBHtBAJ2nBDWBf
-         dnTe9JMg8x9B0iKGev06kSUMwieUgo2IsZ0WJ/7vjZsfbvyfnwrm3Gqq1M6DWvSZs+mH
-         zltSs2kZVQgTpoZbSKSkG+j7vxElANDwd0v9GfBV7Hzgs3PRd5/xTtjKYda5amHc6TjM
-         Wpbl3qFT4nf/psa3OCcwunB4dj4pUXI7eRvybTZE2adoaYCH3YAkIbt2TZzBgUUsK/Vf
-         OE6GMaM7RVMKIYAPW8W8vXqucYSBA/Mtlw7BI46pfXiLtbHHiwOidWQlc0V5RhRnQayG
-         b//Q==
-X-Gm-Message-State: AOAM530VoyDmQZ/8GB2rDuK+QvDdxFv9YdhdLPvEEUzePqhRe7M6VKni
-        6GBWno4AKe+aBGWWC13vQtM3xDvykZ4NmXZiue6d7GxlZk/ag6BwIPxtVbSmRaz0eIbngZPcUF/
-        qYPmyvbQagBFlA13MwVqyZ0Si
-X-Received: by 2002:a50:f1d9:: with SMTP id y25mr10152625edl.116.1631292845958;
-        Fri, 10 Sep 2021 09:54:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5r7iNgbOymhM7ZaR7j0vD4hSnDYLMY1J166nsHaFDCnUWrf0Pgukx1qwTUbl+YDfKsQBvKQ==
-X-Received: by 2002:a50:f1d9:: with SMTP id y25mr10152587edl.116.1631292845628;
-        Fri, 10 Sep 2021 09:54:05 -0700 (PDT)
-Received: from x1.bristot.me (host-87-17-204-109.retail.telecomitalia.it. [87.17.204.109])
-        by smtp.gmail.com with ESMTPSA id cn9sm1252499edb.51.2021.09.10.09.54.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 09:54:05 -0700 (PDT)
-Subject: Re: [PATCH 1/9] tracefs: Add API tracefs_hist_data_parse()
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>
-References: <20210810204818.880714-1-rostedt@goodmis.org>
- <20210810204818.880714-2-rostedt@goodmis.org>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <cb15abc8-0403-aaa9-afb9-4bde77d7df29@redhat.com>
-Date:   Fri, 10 Sep 2021 18:54:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230352AbhIJQz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:55:56 -0400
+Received: from mail-mw2nam12on2054.outbound.protection.outlook.com ([40.107.244.54]:60001
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229633AbhIJQzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:55:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c2vyxRejKzLqCIVPQlH0qD/ttEP4U2w5eZq72G2vT9TTiGCRB33G/JfwSXMOgG/o/SJq1um9wL38LBuggoDe2/+Eju9JggS+BwEnW8qoOm6ouYz9SzpOBm9D4kGnVxie8y8iwq/Y/hNvsoEXfdj1VEg5ADxvao2H9zmYkZZ8EKhkU5eavBtitV1Lcw+oT8YnYg4wmjSTO1UnQPD3QjonT5DR8EIsZhZxy0Er4LS9wpmARyU8JEc0wqTuwE392S2b0D0meGC/u75PuDd5ZYshXrz7JCQJ5UhRbPy0m1iUi4oYC9Z9qOahKuYwXlDfnQsX0TeffmavJQWKnj8NnhHmgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=07k0m0mrlJcc3w5+dOaM5Kp4xCx7nVSsqQT2V30EGSc=;
+ b=EbopO9pFUsvOVtPtApFbCTBjj78mevnB15ph4d9yQpO+HtpDoBZeSPrq9T14PxrB/ReReTfJlOW9+zxYWncbubInmKSTHTDlfrbUNKE6MzorPl5qF3Ylg/91QxlP6mjjH3hVjwzORG/zj/byS3OEAF/zm7YB7ryjXhbhwLgj8kzBqrNgrgmmW0T5yaHePU2yXlcB8/XIBvCnjVce2M+wIrJjw6zZ+oLZyRmrAmU/K3HgVM36mxWS6uBTveN+X/912pTk4eWaa2EtiG1AZJHF97qneg7Th+7gnBdKA7Xg9ZlF9YPGQi9qhB+LwXHLbX68yem2kV0DeBs7Gb6ez68EXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=07k0m0mrlJcc3w5+dOaM5Kp4xCx7nVSsqQT2V30EGSc=;
+ b=mmcpd11icSax1F1m7ii7YL+6xr1rFub+q450d3H9PqEe4wGzPigp07KI7robl41Q39aPu50HW2cynaRpNpPH1SUm1aJov2lD57aUvqsqvhO6abIlU6ZmpyZUfdBH9JgAkAqLSuw8pWGmAkpsZjBk1m+QxH6/fVtrkqy7KvPxHuQ=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=silabs.com;
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
+ by SA0PR11MB4703.namprd11.prod.outlook.com (2603:10b6:806:9f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Fri, 10 Sep
+ 2021 16:54:41 +0000
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::7050:a0a:415:2ccd]) by SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::7050:a0a:415:2ccd%7]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
+ 16:54:41 +0000
+From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 02/31] staging: wfx: do not send CAB while scanning
+Date:   Fri, 10 Sep 2021 18:54:36 +0200
+Message-ID: <2897625.p8pCB6X8cM@pc-42>
+Organization: Silicon Labs
+In-Reply-To: <20210910163100.n6ltzn543f2mnggy@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com> <20210910160504.1794332-3-Jerome.Pouiller@silabs.com> <20210910163100.n6ltzn543f2mnggy@kari-VirtualBox>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-ClientProxiedBy: SN4PR0401CA0024.namprd04.prod.outlook.com
+ (2603:10b6:803:21::34) To SN6PR11MB2718.namprd11.prod.outlook.com
+ (2603:10b6:805:63::18)
 MIME-Version: 1.0
-In-Reply-To: <20210810204818.880714-2-rostedt@goodmis.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from pc-42.localnet (2a01:e34:ecb5:66a0:9876:e1d7:65be:d294) by SN4PR0401CA0024.namprd04.prod.outlook.com (2603:10b6:803:21::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 16:54:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 61433090-76cc-4dcc-227a-08d9747baee0
+X-MS-TrafficTypeDiagnostic: SA0PR11MB4703:
+X-Microsoft-Antispam-PRVS: <SA0PR11MB47031C357E91FEBD1D0DC52293D69@SA0PR11MB4703.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +f7HXfmUE0dZ43JzCYPUbVKlBhpSmGN/vu9fUTHnwGs46AoW5jkyA4ALWMH/v5gJUYTD1srXmANNzI0xLyQI098WjAfowOdrg6+nzFSe0qB3ilLEwL93+sNw6gyEk4msPbPvGgpVI4t0anGtUzhXBb2PynXuBhGkjY/4CDtmrh3hMU349hb40GZ2sMSgDefxpEAQlKcScx7dbrKbHthk1wUAjoDZhYqQZADbWbwqo3a79LpWNrQUpKod492HD71uWcxDm+ppYjEByoNwjqC5zTUTySX/mimkj4MpSh+zjyIiufVzmqKlU03szbLy3kR2kGZma256KfwfUfUTwPx3STzDUkqpt4sbmw16zQardQ0ylaLbngX+yWCEb6mycUjN2qHwMR6FNdHPlx8nFuvlo4XtJhuQ7KTQUS5AmQ9TX7lk49Zk0t58fpMNNv5ygd3k4hN3Ki9+PmlTeCXmkw8O+wC/Q4aWNIQyqYu4VOMq6DmCmmSfBEqjFs38V6Efwuw3GeQ6nChqIRq6XR4K2HoKy1FQGOYI1b7dJTjPLl75vOXxHFzhcOQAQNivV9oSVts01U93FhEbuPfz2kbRRCl+OiBM7RlG/XrvuqTkX0ePx9jpQFN3PyMd70gz2n4i5S2gd3v9LwzD8XwgefJBwZ2bdwo/Q9CfsVEJSBsF2IbA4g1BWIonTYWCvY536fuiyyVS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(39850400004)(396003)(6916009)(66574015)(8676002)(52116002)(2906002)(8936002)(316002)(186003)(6486002)(54906003)(6506007)(5660300002)(66556008)(66476007)(9686003)(478600001)(38100700002)(36916002)(83380400001)(4326008)(6666004)(33716001)(86362001)(6512007)(66946007)(39026012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?c+QircM+zrkhdtrPV0ZgXjilISgTHU/PQNDKyM5x78zg/klRpDP7PYp0mt?=
+ =?iso-8859-1?Q?JSu+ylYQOH086Bu7KwZcmHkExFUwAUfuMQenC9SvP86hn63tX0r8rrvN1G?=
+ =?iso-8859-1?Q?QyVweq8fbjRbm1jslXfkO2WIIKqYvFJRWxU8dj655B0GNBd8M2/fAWyByo?=
+ =?iso-8859-1?Q?cyaqTwOQ9Ai1myVp7pEKxF7rTm79VRNYgNBKiBOzK2eDsxICmgCfcA6MAv?=
+ =?iso-8859-1?Q?SH+A7Tb1pXNM+CuWnjV7zNI3sotfEtuSo2jME6zm5TyUPPLu+PFL2Uh0ez?=
+ =?iso-8859-1?Q?SSg16JiBJrue88NNlf9IZrI+VJZ25ZkIIjhKOXTZvZoD6P4oHo/3NnMx36?=
+ =?iso-8859-1?Q?ehfsyxXWJ1/UE5wIYISnJzZx6A51izyQl1RBrW3K/cf3STcTxTc7tIle4y?=
+ =?iso-8859-1?Q?IZAT5gvhIrkeL8TY1lAIizTADyPIRG17+hMXAtUa3ZCYoQsE/8+XmlJo6c?=
+ =?iso-8859-1?Q?k3YexHbZVSV2ncDIShD4Yd/QYjRcaMjdCh3s3mkgmYuOXkdHyK2Kn2mnZz?=
+ =?iso-8859-1?Q?/HWNiKq+ic2Tkad6m9Kcl8YB+zv/mj71jBFILECxj1o4TwAIsyinAT5hfh?=
+ =?iso-8859-1?Q?bHI5dZMRXogS2sBxpAVhSyuu2r7wdU8xWkzO5mKUqRinU1TmgZYYamCLLZ?=
+ =?iso-8859-1?Q?MwM5f7Zea6vQzbu6Qa+qV1fmSosoMaazurHZXw+PDF/MTLAXf8pFhrQUj1?=
+ =?iso-8859-1?Q?CJtnjYkKGutoa9a4CII8sCqp5w+/jcaCj3EzIzsW3joA848k94k7pdzL0j?=
+ =?iso-8859-1?Q?xsALgK8x9Fu9om6ml0GjYJnBTQIOVCPjbffeAnWreujMzkFsEIhK0SNc/v?=
+ =?iso-8859-1?Q?TYvgoxJVWfUWRXRSZaCSAE/fs3BKDfWg1ZqInUj2m7p8UDWqJrC/gRq+Qq?=
+ =?iso-8859-1?Q?m1yMM3zqlCiU189xdppdZtFGh0H+5T2FO6aqJJdPBURazBVVxFTR/4inXD?=
+ =?iso-8859-1?Q?m71c9I8MXg6lVOOaZFAItsPYtan1QQsquDz7S9y6DRQAkozX6KueEOyMz8?=
+ =?iso-8859-1?Q?/weFQ7P3UdNlnSDEAsq00tTARVmFK0m0uET0QfG6mCgSGOJkTyU9QrbCKw?=
+ =?iso-8859-1?Q?Y/XB8rmEQz+IT+RjzOABrW55FVx60YNioaeMbTopkZ3C4VsysT8h4gDZsc?=
+ =?iso-8859-1?Q?WSMC+wECKVrim8dbC7e/qhygn65hHxig9U+p6Jh24PRy1v5bPuCSsJb3p3?=
+ =?iso-8859-1?Q?fdHn4fEOmK/qO2Os2oTmOnSk2J5oBfRfIUpE96eoTW+vtcaRbCz0KfcezV?=
+ =?iso-8859-1?Q?y+7e7uqOYvUNB3ZT18rKvGq1DIhC+l8J6+LMXKHHjF2dHVl0kWq0ZiCrKf?=
+ =?iso-8859-1?Q?tXfuhQeEMChW9/6vi2F+udFemeJKhxvXjjpVw6Hn6+7TmIah9FKPh+jXQQ?=
+ =?iso-8859-1?Q?K5xSNRaE0vwbMBCyEy1KCt+t1c6Plg2MWIBZFdNooUFGalgPyFJPca/UEW?=
+ =?iso-8859-1?Q?o66EamjneiinL77H?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61433090-76cc-4dcc-227a-08d9747baee0
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 16:54:41.4788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S11Uz6k8sUkkrMjEQHpAfqFjOjxlYd/gbZU7M9wm4oFQmYw1zWgeMu3wFZ+0HMgZksBHQylg7vfo2yWgGeNHhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4703
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 10:48 PM, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> Add a function tracefs_hist_data_parse() that will take the content of a
-> trace event's hist data file, and parse it into a "tracefs_hist_data"
-> descriptor that can be used to read the raw data from the file.
+On Friday 10 September 2021 18:31:00 CEST Kari Argillander wrote:
+> CAUTION: This email originated from outside of the organization. Do not c=
+lick links or open attachments unless you recognize the sender and know the=
+ content is safe.
+>=20
+>=20
+> On Fri, Sep 10, 2021 at 06:04:35PM +0200, Jerome Pouiller wrote:
+> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> >
+> > During the scan requests, the Tx traffic is suspended. This lock is
+> > shared by all the network interfaces. So, a scan request on one
+> > interface will block the traffic on a second interface. This causes
+> > trouble when the queued traffic contains CAB (Content After DTIM Beacon=
+)
+> > since this traffic cannot be delayed.
+> >
+> > It could be possible to make the lock local to each interface. But It
+> > would only push the problem further. The device won't be able to send
+> > the CAB before the end of the scan.
+> >
+> > So, this patch just ignore the DTIM indication when a scan is in
+> > progress. The firmware will send another indication on the next DTIM an=
+d
+> > this time the system will be able to send the traffic just behind the
+> > beacon.
+> >
+> > The only drawback of this solution is that the stations connected to
+> > the AP will wait for traffic after the DTIM for nothing. But since the
+> > case is really rare it is not a big deal.
+> >
+> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> > ---
+> >  drivers/staging/wfx/sta.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+> > index a236e5bb6914..d901588237a4 100644
+> > --- a/drivers/staging/wfx/sta.c
+> > +++ b/drivers/staging/wfx/sta.c
+> > @@ -629,8 +629,18 @@ int wfx_set_tim(struct ieee80211_hw *hw, struct ie=
+ee80211_sta *sta, bool set)
+> >
+> >  void wfx_suspend_resume_mc(struct wfx_vif *wvif, enum sta_notify_cmd n=
+otify_cmd)
+> >  {
+> > +     struct wfx_vif *wvif_it;
+> > +
+> >       if (notify_cmd !=3D STA_NOTIFY_AWAKE)
+> >               return;
+> > +
+> > +     // Device won't be able to honor CAB if a scan is in progress on =
+any
+> > +     // interface. Prefer to skip this DTIM and wait for the next one.
+>=20
+> In one patch you drop // comments but you introduce some of your self.
 
-Steve,
+Indeed. When I wrote this patch, I didn't yet care to this issue. Is it
+a big deal since it is fixed in patch 27?
 
-Is this the latest version?
 
-I am getting this when trying it (the patch 1/9):
 
-[root@f34 libtracefs]# make
-  COMPILE FPIC       tracefs-utils.o
-  COMPILE FPIC       tracefs-instance.o
-  COMPILE FPIC       tracefs-events.o
-  COMPILE FPIC       tracefs-tools.o
-  COMPILE FPIC       tracefs-marker.o
-  COMPILE FPIC       tracefs-kprobes.o
-  COMPILE FPIC       tracefs-hist.o
-  COMPILE FPIC       tracefs-filter.o
-  COMPILE FPIC       sqlhist-lex.o
-  COMPILE FPIC       sqlhist.tab.o
-  COMPILE FPIC       tracefs-sqlhist.o
-make[1]: *** No rule to make target 'hist.l', needed by 'hist-lex.c'.  Stop.
-make: *** [Makefile:365: /root/libtracefs/lib/tracefs/libtracefs.so.1.3.dev] Error 2
+--=20
+J=E9r=F4me Pouiller
 
--- Daniel
-
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  include/tracefs.h       |   7 +
->  src/Makefile            |   7 +
->  src/tracefs-hist-data.c | 861 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 875 insertions(+)
->  create mode 100644 src/tracefs-hist-data.c
-> 
-> diff --git a/include/tracefs.h b/include/tracefs.h
-> index 17020de0108a..6bd40d72cb25 100644
-> --- a/include/tracefs.h
-> +++ b/include/tracefs.h
-> @@ -413,6 +413,13 @@ static inline int tracefs_hist_destroy(struct tracefs_instance *instance,
->  	return tracefs_hist_command(instance, hist, TRACEFS_HIST_CMD_DESTROY);
->  }
->  
-> +struct tracefs_hist_data;
-> +
-> +struct tracefs_hist_data *tracefs_hist_data_parse(const char *buffer,
-> +						  const char **next_buffer,
-> +						  char **err);
-> +void tracefs_hist_data_free(struct tracefs_hist_data *hdata);
-> +
->  struct tracefs_synth;
->  
->  /*
-> diff --git a/src/Makefile b/src/Makefile
-> index 9248efc5c7fd..1ab181416b82 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -17,6 +17,10 @@ OBJS += sqlhist-lex.o
->  OBJS += sqlhist.tab.o
->  OBJS += tracefs-sqlhist.o
->  
-> +# Order matters for the the two below
-> +OBJS += hist-lex.o
-> +OBJS += tracefs-hist-data.o
-> +
->  OBJS := $(OBJS:%.o=$(bdir)/%.o)
->  DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
->  
-> @@ -45,6 +49,9 @@ sqlhist.tab.c: sqlhist.y sqlhist.tab.h
->  sqlhist-lex.c: sqlhist.l sqlhist.tab.c
->  	flex -o $@ $<
->  
-> +hist-lex.c: hist.l
-> +	flex -P hist_ -o $@ $<
-> +
->  $(bdir)/%.o: %.c
->  	$(Q)$(call do_fpic_compile)
->  
-> diff --git a/src/tracefs-hist-data.c b/src/tracefs-hist-data.c
-> new file mode 100644
-> index 000000000000..497ab9ce97b4
-> --- /dev/null
-> +++ b/src/tracefs-hist-data.c
-> @@ -0,0 +1,861 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +/*
-> + * Copyright (C) 2021 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
-> + *
-> + * Updates:
-> + * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-> + *
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <dirent.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <limits.h>
-> +
-> +#include "tracefs.h"
-> +#include "tracefs-local.h"
-> +
-> +#define HIST_FILE "hist"
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <stdarg.h>
-> +#include <errno.h>
-> +#include <ctype.h>
-> +#include <unistd.h>
-> +#include <tracefs.h>
-> +
-> +#include "hist.h"
-> +
-> +#define offset_of(type, field)	((unsigned long )(&((type *)0)->field))
-> +#define container_of(p, type, field) ((type *)((void *)(p) - offset_of(type, field)));
-> +
-> +extern int hist_lex_init_extra(void *data, void* ptr_yy_globals);
-> +extern int hist_lex_destroy(void *scanner);
-> +
-> +int hist_yyinput(void *extra, char *buf, int max)
-> +{
-> +	struct hist_data *data = extra;
-> +
-> +	if (!data || !data->buffer)
-> +		return -1;
-> +
-> +	if (data->buffer_idx + max > data->buffer_size)
-> +		max = data->buffer_size - data->buffer_idx;
-> +
-> +	if (max)
-> +		memcpy(buf, data->buffer + data->buffer_idx, max);
-> +
-> +	data->buffer_idx += max;
-> +
-> +	return max;
-> +}
-> +
-> +extern int hist_yylex(void *data, void *scanner);
-> +
-> +static char *name_token(enum yytokentype type)
-> +{
-> +	switch (type) {
-> +	case YYEMPTY:
-> +		return "YYEMPTY";
-> +	case YYEOF:
-> +		return "YYEOF";
-> +	case YYerror:
-> +		return "YYerror";
-> +	case YYUNDEF:
-> +		return "YYUNDEF";
-> +	case NUMBER:
-> +		return "NUMBER";
-> +	case HEX:
-> +		return "HEX";
-> +	case NEWLINE:
-> +		return "NEWLINE";
-> +	case STRING:
-> +		return "STRING";
-> +	case KEY_TYPE:
-> +		return "KEY_TYPE";
-> +	case KEY_VAL:
-> +		return "KEY_VAL";
-> +	case START_RANGE:
-> +		return "START_RANGE";
-> +	case RANGE_LINEAR:
-> +		return "RANGE_LINEAR";
-> +	case RANGE_EXPONENT:
-> +		return "RANGE_EXPONENT";
-> +	case RAW_VAL:
-> +		return "RAW_VAL";
-> +	case STACKTRACE:
-> +		return "STACKTRACE";
-> +	case STACK_ITEM:
-> +		return "STACK_ITEM";
-> +	case STACK_MOD:
-> +		return "STACK_MOD";
-> +	case VALUE:
-> +		return "VALUE";
-> +	case TOTALS:
-> +		return "TOTALS";
-> +	case HITS:
-> +		return "HITS";
-> +	case ENTRIES:
-> +		return "ENTRIES";
-> +	case DROPPED:
-> +		return "DROPPED";
-> +	case COMMENT:
-> +		return "COMMENT";
-> +	case COLON:
-> +		return "COLON";
-> +	case COMMA:
-> +		return "COMMA";
-> +	}
-> +	return NULL;
-> +}
-> +
-> +enum tracefs_bucket_key_type {
-> +	TRACEFS_BUCKET_KEY_UNDEF,
-> +	TRACEFS_BUCKET_KEY_SINGLE,
-> +	TRACEFS_BUCKET_KEY_RANGE,
-> +};
-> +
-> +struct tracefs_hist_bucket_key_single {
-> +	long long		val;
-> +	char			*sym;
-> +};
-> +
-> +struct tracefs_hist_bucket_key_range {
-> +	long long		start;
-> +	long long		end;
-> +};
-> +
-> +struct tracefs_hist_bucket_key {
-> +	struct tracefs_hist_bucket_key	*next;
-> +	enum tracefs_bucket_key_type	type;
-> +	union {
-> +		struct tracefs_hist_bucket_key_single	single;
-> +		struct tracefs_hist_bucket_key_range	range;
-> +	};
-> +};
-> +
-> +struct tracefs_hist_bucket_val {
-> +	struct tracefs_hist_bucket_val		*next;
-> +	long long				val;
-> +};
-> +
-> +struct tracefs_hist_bucket {
-> +	struct tracefs_hist_bucket		*next;
-> +	struct tracefs_hist_bucket_key		*keys;
-> +	struct tracefs_hist_bucket_key		**next_key;
-> +	struct tracefs_hist_bucket_val		*vals;
-> +	struct tracefs_hist_bucket_val		**next_val;
-> +};
-> +
-> +struct tracefs_hist_data {
-> +	char				**key_names;
-> +	char				**value_names;
-> +	struct tracefs_hist_bucket	*buckets;
-> +	struct tracefs_hist_bucket	**next_bucket;
-> +	unsigned long long		hits;
-> +	unsigned long long		entries;
-> +	unsigned long long		dropped;
-> +};
-> +
-> +static int do_comment(struct tracefs_hist_data *hdata, const char *comment)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int do_key_type(struct tracefs_hist_data *hdata, const char *key)
-> +{
-> +	char **tmp;
-> +
-> +	tmp = tracefs_list_add(hdata->key_names, key);
-> +	if (!tmp)
-> +		return -1;
-> +	hdata->key_names = tmp;
-> +
-> +	return 0;
-> +}
-> +
-> +static int do_value_type(struct tracefs_hist_data *hdata, const char *key)
-> +{
-> +	char **tmp;
-> +
-> +	tmp = tracefs_list_add(hdata->value_names, key);
-> +	if (!tmp)
-> +		return -1;
-> +	hdata->value_names = tmp;
-> +
-> +	return 0;
-> +}
-> +
-> +static int start_new_row(struct tracefs_hist_data *hdata)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +
-> +	bucket = calloc(1, sizeof(*bucket));
-> +	if (!bucket)
-> +		return -1;
-> +
-> +	key = calloc(1, sizeof(*key));
-> +	if (!key) {
-> +		free(bucket);
-> +		return -1;
-> +	}
-> +
-> +	bucket->keys = key;
-> +	bucket->next_key = &key->next;
-> +
-> +	bucket->next_val = &bucket->vals;
-> +
-> +	*hdata->next_bucket = bucket;
-> +	hdata->next_bucket = &bucket->next;
-> +	return 0;
-> +}
-> +
-> +static int start_new_key(struct tracefs_hist_data *hdata)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +
-> +	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
-> +
-> +	key = calloc(1, sizeof(*key));
-> +	if (!key) {
-> +		free(bucket);
-> +		return -1;
-> +	}
-> +
-> +	*bucket->next_key = key;
-> +	bucket->next_key = &key->next;
-> +
-> +	return 0;
-> +}
-> +
-> +static char *chomp(char *text)
-> +{
-> +	char *p;
-> +	int len;
-> +
-> +	while (isspace(*text))
-> +		text++;
-> +
-> +	len = strlen(text);
-> +	p = text + len - 1;
-> +	while (p >= text && isspace(*p))
-> +		p--;
-> +
-> +	p[1] = '\0';
-> +
-> +	return text;
-> +}
-> +
-> +static int __do_key_val(struct tracefs_hist_data *hdata,
-> +			char *text, const char *delim, const char *end)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +	struct tracefs_hist_bucket_key_single *k;
-> +	char *val;
-> +	int len;
-> +
-> +	text = chomp(text);
-> +
-> +	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
-> +
-> +	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
-> +	if (!key->type)
-> +		key->type = TRACEFS_BUCKET_KEY_SINGLE;
-> +
-> +	if (key->type != TRACEFS_BUCKET_KEY_SINGLE)
-> +		return -1;
-> +
-> +	k = &key->single;
-> +
-> +	len = strlen(text);
-> +	len += k->sym ? strlen(k->sym) + strlen(delim) : 0;
-> +	if (end)
-> +		len += strlen(end);
-> +
-> +	val = realloc(k->sym, len + 1);
-> +	if (!val)
-> +		return -1;
-> +
-> +	if (k->sym)
-> +		strcat(val, delim);
-> +	else
-> +		val[0] = '\0';
-> +
-> +	strcat(val, text);
-> +	if (end)
-> +		strcat(val, end);
-> +
-> +	k->sym = val;
-> +
-> +	return 0;
-> +}
-> +
-> +static int do_key_val(struct tracefs_hist_data *hdata, char *text)
-> +{
-> +	return __do_key_val(hdata, text, " ", NULL);
-> +}
-> +
-> +static int do_key_stack(struct tracefs_hist_data *hdata, char *text)
-> +{
-> +	return __do_key_val(hdata, text, "\n", NULL);
-> +}
-> +
-> +static int do_key_stack_mod(struct tracefs_hist_data *hdata, char *text)
-> +{
-> +	return __do_key_val(hdata, text, " [", "]");
-> +}
-> +
-> +static int do_key_raw(struct tracefs_hist_data *hdata, char *text)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +	struct tracefs_hist_bucket_key_single *k;
-> +
-> +	text = chomp(text);
-> +
-> +	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
-> +
-> +	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
-> +	if (key->type != TRACEFS_BUCKET_KEY_SINGLE)
-> +		return -1;
-> +
-> +	k = &key->single;
-> +
-> +	if (k->val)
-> +		return -1;
-> +
-> +	k->val = strtoll(text, NULL, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int do_key_range(struct tracefs_hist_data *hdata, long long start,
-> +			long long end)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +	struct tracefs_hist_bucket_key_range *k;
-> +
-> +	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
-> +
-> +	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
-> +
-> +	if (!key->type)
-> +		key->type = TRACEFS_BUCKET_KEY_RANGE;
-> +
-> +	if (key->type != TRACEFS_BUCKET_KEY_RANGE)
-> +		return -1;
-> +
-> +	k = &key->range;
-> +
-> +	k->start = start;
-> +	k->end = end;
-> +
-> +	return 0;
-> +}
-> +
-> +static int do_value_num(struct tracefs_hist_data *hdata, long long num)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_val *val;
-> +
-> +	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
-> +	val = calloc(1, sizeof(*val));
-> +	if (!val)
-> +		return -1;
-> +
-> +	val->val = num;
-> +
-> +	*bucket->next_val = val;
-> +	bucket->next_val = &val->next;
-> +
-> +	return 0;
-> +}
-> +
-> +static long long expo(unsigned int e, long long exp)
-> +{
-> +	long long ret;
-> +
-> +	if (exp < 0)
-> +		exp = 0;
-> +
-> +	if (e == 2)
-> +		return 1LL << exp;
-> +
-> +	ret = 1;
-> +	for (; exp > 0; exp--)
-> +		ret *= e;
-> +	return e;
-> +}
-> +
-> +enum hist_state {
-> +	HIST_START,
-> +	HIST_KEYS_START,
-> +	HIST_KEYS,
-> +	HIST_KEY_VALS,
-> +	HIST_RANGE,
-> +	HIST_VALUES,
-> +	HIST_NEXT_KEY,
-> +	HIST_STACK,
-> +	HIST_ENTRIES,
-> +	HIST_DROPPED,
-> +	HIST_END,
-> +};
-> +
-> +static const char *find_buffer_line(const char *buffer, int line_no)
-> +{
-> +	int line = 0;
-> +	int i;
-> +
-> +	for (i = 0; buffer[i]; i++) {
-> +		if (buffer[i] == '\n') {
-> +			line++;
-> +			if (line >= line_no) {
-> +				i++;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +	return buffer + i;
-> +}
-> +
-> +static void print_line(struct trace_seq *seq, struct hist_data *data)
-> +{
-> +	const char *buffer = data->buffer;
-> +	int i;
-> +
-> +	buffer = find_buffer_line(buffer, data->line_no);
-> +
-> +	for (i = 0; buffer[i]; i++) {
-> +		if (buffer[i] == '\n')
-> +			break;
-> +	}
-> +
-> +	trace_seq_printf(seq, "%.*s (line:%d idx:%d)\n", i, buffer,
-> +			 data->line_no, data->line_idx);
-> +	trace_seq_printf(seq, "%*s\n", data->line_idx, "^");
-> +}
-> +
-> +static void print_error(struct hist_data *data, char **err,
-> +			enum hist_state state, enum yytokentype type)
-> +{
-> +	struct trace_seq seq;
-> +	char *tname;
-> +
-> +	if (!err)
-> +		return;
-> +
-> +	trace_seq_init(&seq);
-> +
-> +	print_line(&seq, data);
-> +
-> +	trace_seq_printf(&seq, "Error in ");
-> +	switch (state) {
-> +	case HIST_START:
-> +		trace_seq_printf(&seq, "HIST_START");
-> +		break;
-> +	case HIST_KEYS_START:
-> +		trace_seq_printf(&seq, "HIST_KEYS_START");
-> +		break;
-> +	case HIST_KEYS:
-> +		trace_seq_printf(&seq, "HIST_KEYS");
-> +		break;
-> +	case HIST_KEY_VALS:
-> +		trace_seq_printf(&seq, "HIST_KEY_VALS");
-> +		break;
-> +	case HIST_RANGE:
-> +		trace_seq_printf(&seq, "HIST_RANGE");
-> +		break;
-> +	case HIST_VALUES:
-> +		trace_seq_printf(&seq, "HIST_VALUES");
-> +		break;
-> +	case HIST_NEXT_KEY:
-> +		trace_seq_printf(&seq, "HIST_NEXT_KEY");
-> +	case HIST_STACK:
-> +		trace_seq_printf(&seq, "HIST_STACK");
-> +		break;
-> +	case HIST_ENTRIES:
-> +		trace_seq_printf(&seq, "HIST_ENTRIES");
-> +		break;
-> +	case HIST_DROPPED:
-> +		trace_seq_printf(&seq, "HIST_DROPPED");
-> +		break;
-> +	case HIST_END:
-> +		trace_seq_printf(&seq, "HIST_END");
-> +		break;
-> +	}
-> +	trace_seq_printf(&seq, " with token ");
-> +	tname = name_token(type);
-> +	if (tname)
-> +		trace_seq_printf(&seq, "%s", tname);
-> +	else
-> +		trace_seq_printf(&seq, "(unknown %d)", type);
-> +
-> +	trace_seq_printf(&seq, " last token %s\n", data->text);
-> +	trace_seq_terminate(&seq);
-> +	if (seq.buffer)
-> +		*err = seq.buffer;
-> +	seq.buffer = NULL;
-> +	trace_seq_destroy(&seq);
-> +}
-> +
-> +static void update_next(const char **next_buffer, struct hist_data *data)
-> +{
-> +	if (!next_buffer)
-> +		return;
-> +
-> +	*next_buffer = find_buffer_line(data->buffer, data->line_no - 1);
-> +}
-> +
-> +/**
-> + * tracefs_hist_data_free - free a created hist data descriptor
-> + * @hdata: The tracefs_hist_data descriptor to free.
-> + *
-> + * Frees the data allocated by tracefs_hist_data_parse().
-> + */
-> +void tracefs_hist_data_free(struct tracefs_hist_data *hdata)
-> +{
-> +	struct tracefs_hist_bucket *bucket;
-> +	struct tracefs_hist_bucket_key *key;
-> +	struct tracefs_hist_bucket_val *val;
-> +
-> +	if (!hdata)
-> +		return;
-> +
-> +	tracefs_list_free(hdata->key_names);
-> +	tracefs_list_free(hdata->value_names);
-> +
-> +	while ((bucket = hdata->buckets)) {
-> +		hdata->buckets = bucket->next;
-> +		while ((key = bucket->keys)) {
-> +			bucket->keys = key->next;
-> +			switch (key->type) {
-> +			case TRACEFS_BUCKET_KEY_SINGLE:
-> +				free(key->single.sym);
-> +				break;
-> +			default:
-> +				break;
-> +			}
-> +			free(key);
-> +		}
-> +		while ((val = bucket->vals)) {
-> +			bucket->vals = val->next;
-> +			free(val);
-> +		}
-> +		free(bucket);
-> +	}
-> +
-> +	free(hdata);
-> +}
-> +
-> +/* Used for debugging in gdb */
-> +static void breakpoint(char *text)
-> +{
-> +}
-> +
-> +/**
-> + * tracefs_hist_data_parse - parse a hist file of a trace event
-> + * @buffer: The buffer containing the hist file content
-> + * @next_buffer: If not NULL will point to the next hist in the buffer
-> + * @err: If not NULL, will load the error message on error
-> + *
-> + * Reads and parses the content of a "hist" file of a trace event.
-> + * It will return a descriptor that can be used to read the content and
-> + * create a histogram table.
-> + *
-> + * Because "hist" files may contain more than one histogram, and this
-> + * function will only parse one of the histograms, if there are more
-> + * than one histogram in the buffer, and @next_buffer is not NULL, then
-> + * it will return the location of the next histogram in @next_buffer.
-> + *
-> + * If there's an error in the parsing, then @err will contain an error
-> + * message about what went wrong.
-> + *
-> + * Returns a desrciptor of a histogram representing the hist file content.
-> + * NULL on error.
-> + * The descriptor must be freed with tracefs_hist_data_free().
-> + */
-> +struct tracefs_hist_data *
-> +tracefs_hist_data_parse(const char *buffer, const char **next_buffer, char **err)
-> +{
-> +	struct tracefs_hist_data *hdata;
-> +	struct hist_data data;
-> +	enum hist_state state = 0;
-> +	long long start_range, end_range;
-> +	bool first = false;
-> +	unsigned int e;
-> +	int buffer_size;
-> +	bool done = false;
-> +	char *text;
-> +	enum yytokentype type;
-> +	int ret;
-> +
-> +	if (!buffer)
-> +		return NULL;
-> +
-> +	hdata = calloc(1, sizeof(*hdata));
-> +	if (!hdata)
-> +		return NULL;
-> +
-> +	hdata->next_bucket = &hdata->buckets;
-> +
-> +	memset(&data, 0, sizeof(data));
-> +
-> +	buffer_size = strlen(buffer);
-> +	data.buffer = buffer;
-> +	data.buffer_size = buffer_size;
-> +	data.text = malloc(buffer_size);
-> +	if (!data.text) {
-> +		free(hdata);
-> +		perror("text");
-> +		exit(-1);
-> +	}
-> +
-> +	ret = hist_lex_init_extra(&data, &data.scanner);
-> +	if (ret < 0) {
-> +		perror("ylex_init");
-> +		return NULL;
-> +	}
-> +	while (!done) {
-> +		type = hist_yylex(&data, data.scanner);
-> +		if (type < 0)
-> +			break;
-> +		text = data.text;
-> +		breakpoint(text);
-> +		switch (state) {
-> +		case HIST_START:
-> +			switch (type) {
-> +			case COMMENT:
-> +				first = true;
-> +				ret = do_comment(hdata, text);
-> +				if (ret < 0)
-> +					goto error;
-> +				break;
-> +			case KEY_TYPE:
-> +				goto key_type;
-> +			case STACKTRACE:
-> +				goto stacktrace;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_KEYS_START:
-> +			switch (type) {
-> +			case KEY_TYPE:
-> + key_type:
-> +				if (first) {
-> +					ret = do_key_type(hdata, text);
-> +					if (ret < 0)
-> +						goto error;
-> +				}
-> +				ret = start_new_row(hdata);
-> +				state = HIST_KEY_VALS;
-> +				break;
-> +			case STACKTRACE:
-> + stacktrace:
-> +				if (first) {
-> +					ret = do_key_type(hdata, "stacktrace");
-> +					if (ret < 0)
-> +						goto error;
-> +				}
-> +				ret = start_new_row(hdata);
-> +				state = HIST_STACK;
-> +				break;
-> +			case HITS:
-> +				hdata->hits = strtoll(text, NULL, 0);
-> +				state = HIST_ENTRIES;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_KEYS:
-> +			switch (type) {
-> +			case KEY_TYPE:
-> +				if (first) {
-> +					ret = do_key_type(hdata, text);
-> +					if (ret < 0)
-> +						goto error;
-> +				}
-> +				ret = start_new_key(hdata);
-> +				state = HIST_KEY_VALS;
-> +				break;
-> +			case STACKTRACE:
-> +				if (first) {
-> +					ret = do_key_type(hdata, "stacktrace");
-> +					if (ret < 0)
-> +						goto error;
-> +				}
-> +				ret = start_new_key(hdata);
-> +				state = HIST_STACK;
-> +				break;
-> +			case NEWLINE:
-> +				break;
-> +			case COLON:
-> +				state = HIST_VALUES;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_NEXT_KEY:
-> +			switch (type) {
-> +			case COLON:
-> +				state = HIST_VALUES;
-> +				break;
-> +			case COMMA:
-> +				state = HIST_KEYS;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_KEY_VALS:
-> +			switch (type) {
-> +			case NEWLINE:
-> +				continue;
-> +			case START_RANGE:
-> +				start_range = strtoll(text, NULL, 0);
-> +				state = HIST_RANGE;
-> +				break;
-> +			case KEY_VAL:
-> +				ret = do_key_val(hdata, text);
-> +				if (ret < 0)
-> +					goto error;
-> +				break;
-> +			case RAW_VAL:
-> +				ret = do_key_raw(hdata, text);
-> +				if (ret < 0)
-> +					goto error;
-> +				state = HIST_NEXT_KEY;
-> +				break;
-> +			case COLON:
-> +				state = HIST_VALUES;
-> +				break;
-> +			case COMMA:
-> +				state = HIST_KEYS;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_STACK:
-> +			switch (type) {
-> +			case NEWLINE:
-> +				break;
-> +			case STACK_ITEM:
-> +				ret = do_key_stack(hdata, text);
-> +				if (ret < 0)
-> +					goto error;
-> +				break;
-> +			case STACK_MOD:
-> +				ret = do_key_stack_mod(hdata, text);
-> +				if (ret < 0)
-> +					goto error;
-> +				break;
-> +			case COLON:
-> +				state = HIST_VALUES;
-> +				break;
-> +			case COMMA:
-> +				state = HIST_KEYS;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_RANGE:
-> +			switch (type) {
-> +			case RANGE_LINEAR:
-> +				do_key_range(hdata, start_range,
-> +					     strtoll(text, NULL, 0));
-> +				break;
-> +			case RANGE_EXPONENT:
-> +				end_range = strtoll(text, NULL, 0);
-> +				e = (unsigned int)start_range;
-> +				start_range = expo(e, end_range - 1);
-> +				end_range = expo(e, end_range);
-> +				do_key_range(hdata, start_range, end_range);
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			state = HIST_KEYS;
-> +			break;
-> +		case HIST_VALUES:
-> +			switch (type) {
-> +			case VALUE:
-> +				if (first) {
-> +					ret = do_value_type(hdata, text);
-> +					if (ret < 0)
-> +						goto error;
-> +				}
-> +				break;
-> +			case NUMBER:
-> +				ret = do_value_num(hdata, strtoll(text, NULL, 0));
-> +				if (ret < 0)
-> +					goto error;
-> +				break;
-> +			case NEWLINE:
-> +				state = HIST_KEYS_START;
-> +				first = false;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_ENTRIES:
-> +			switch (type) {
-> +			case ENTRIES:
-> +				hdata->entries = strtoll(text, NULL, 0);
-> +				state = HIST_DROPPED;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_DROPPED:
-> +			switch (type) {
-> +			case DROPPED:
-> +				hdata->dropped = strtoll(text, NULL, 0);
-> +				state = HIST_END;
-> +				break;
-> +			default:
-> +				goto error;
-> +			}
-> +			break;
-> +		case HIST_END:
-> +			done = true;
-> +			switch (type) {
-> +			case COMMENT:
-> +				update_next(next_buffer, &data);
-> +				break;
-> +			case YYEOF:
-> +				/* Fall through */
-> +			default:
-> +				/* Do at end, as next_buffer may point to buffer*/
-> +				if (next_buffer)
-> +					*next_buffer = NULL;
-> +				break;
-> +			}
-> +			break;
-> +		}
-> +	}
-> +
-> +	hist_lex_destroy(data.scanner);
-> +	free(data.text);
-> +
-> +	return hdata;
-> + error:
-> +	print_error(&data, err, state, type);
-> +	hist_lex_destroy(data.scanner);
-> +	free(data.text);
-> +	tracefs_hist_data_free(hdata);
-> +	return NULL;
-> +}
-> 
 
