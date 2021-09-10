@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830D1407108
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CF3407109
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhIJSlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
+        id S232211AbhIJSmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJSlt (ORCPT
+        with ESMTP id S229476AbhIJSl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:41:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0B4C061574;
-        Fri, 10 Sep 2021 11:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h4jPQ7Zdr5Ida+XAg8yR3XSpVV86/qySljCfBrpPhJQ=; b=i3xiCww++hTiz5JqZRPOVQX7Gi
-        C6sQr8nV7lGvueiQy8NPgpQmXWZgFO5db9flVZvPYgtYrFXt3g54fBQ7s90XeOwKj6saipHh0Cy3A
-        aZbMkCl0m/RjThlWDMCEz0SnFQSiZVHf4M1ypAQy3zwMDoACDlciEJxcv89b+RHwhSCo/l4p9WiRr
-        5s7tl/PbMXr2cz3VHJJSqQWBJU2o/YsvDHuk2oaCo8bXJKSJeaXLZe6lP781wRNKKTB4WRYHp551s
-        xCUSDR+4FRNC9zpsRyxSpCgW/nW2J1959tYQkSJ5ypDlLig5S5D1h6WhXNE4h8fNapoSG3g1WmFct
-        XkILBtJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOlRs-002BtX-EB; Fri, 10 Sep 2021 18:40:28 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4ED5B98627A; Fri, 10 Sep 2021 20:40:27 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 20:40:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <20210910184027.GQ4323@worktop.programming.kicks-ass.net>
-References: <20210907202802.3675104-1-songliubraving@fb.com>
- <20210907202802.3675104-2-songliubraving@fb.com>
- <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
- <YTtjeyfJXXiDielu@hirez.programming.kicks-ass.net>
- <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
+        Fri, 10 Sep 2021 14:41:59 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481DDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:40:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i25so1950049lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=3vkTMGrZ3SRZIZdzzIrtgXnmVKr3uAywThftSTXEpQY=;
+        b=LAXyZ71WmTVjjlIkgp8qd5/MZzB4/gg+KUl/2LCXnkwX8nvBSbTc9rOwfKC+/RTmNO
+         H85MliFgE2jxwO/GH5u9rg4EwIaWjNWJ+OI7pspJusPnIczEioczoCQLC5EQBWrHEQ47
+         oRndC7ATCBWesElZnBlNxuxOo6IsGKuRI5gC3EwnnzR0Z0cWYLtWIOn6elhJNMb2eQbM
+         mABBmosWonK0MeS+OaG4ghyk9Uh7OglgSZwm3NCl21v01BQ8zcMIEUHBXasGHPJ3Q6Iy
+         rUHShIf9lgDBgVXV9jd+fNylnPcbcR6+HbI/HsaGruFrSBVGQrs9mypM1YxYt22QttGJ
+         7FHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=3vkTMGrZ3SRZIZdzzIrtgXnmVKr3uAywThftSTXEpQY=;
+        b=lwXx0j22LHzyldu7Lco6wh4KP0AIxPuRVjTjgzGvTtbN7uyW8UK0qf5dT2JTUiRH7M
+         eudHTTpsTeScdWkuW8MCOFxjUF1r4kV321wbHJtjT5qw+MGIDhZS5jyUBzA9ADVprofW
+         3fJXRHuBsaY+L+aAXof3ckM+xg8j4Zth/SZ7ErppbowjeP/v20yUeuXRaHGpVzKBlk4u
+         zymOw5zmI9RnQKsOPNdLytLw15kYH9XGZrtvNf8K7jAxlW16QbiQMmWesy7JYUCaKH/+
+         kzGmKXId22CuXpw46ScBj+stW1O9suWdJvKMDdTnzky0rGDDOSH8mPGZyQnK+mX4djrB
+         sKgA==
+X-Gm-Message-State: AOAM530OGYv0arXoh+yNpq28lRVdgoQSetPEVeuFpYmcVw0NVEL3Us15
+        3jF+/3ZgPZsiP9zK+cvHUdE=
+X-Google-Smtp-Source: ABdhPJz5ZkaZjWTWzzQccHlDZvXfHwAEaCrAp3HYRTEhRBJRUP/4tK6H3AmjqeACS8MXsmjj41A61g==
+X-Received: by 2002:a05:6512:304b:: with SMTP id b11mr5177111lfb.502.1631299246559;
+        Fri, 10 Sep 2021 11:40:46 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.70])
+        by smtp.gmail.com with UTF8SMTPSA id r13sm636505ljh.61.2021.09.10.11.40.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 11:40:46 -0700 (PDT)
+Message-ID: <dbc1947b-f9bf-c577-6b1d-c73516e7ff49@gmail.com>
+Date:   Fri, 10 Sep 2021 21:40:45 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] staging: r8188eu: core: remove unused variable padapter
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YTukfSY0CxowGXlQ@user>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YTukfSY0CxowGXlQ@user>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:27:36PM +0000, Song Liu wrote:
-
-> This works great and saves 3 entries! We have the following now:
-
-Yay!
-
-> ID: 0 from bpf_get_branch_snapshot+18 to intel_pmu_snapshot_branch_stack+0
-
-is unavoidable, we need to end up in intel_pmu_snapshot_branch_stack()
-eventually.
-
-> ID: 1 from __brk_limit+477143934 to bpf_get_branch_snapshot+0
-
-could be elided by having the JIT emit the call to
-intel_pmu_snapshot_branch_stack directly, instead of laundering it
-through that helper I suppose.
-
-> ID: 2 from __brk_limit+477192263 to __brk_limit+477143880  # trampoline 
-> ID: 3 from __bpf_prog_enter+34 to __brk_limit+477192251
-
--ENOCLUE
-
-> ID: 4 from migrate_disable+60 to __bpf_prog_enter+9
-> ID: 5 from __bpf_prog_enter+4 to migrate_disable+0
-
-I suppose we can reduce that to a single branch if we inline
-migrate_disable() here, that thing unfortunately needs one branch
-itself.
-
-> ID: 6 from bpf_testmod_loop_test+20 to __bpf_prog_enter+0
-
-And this is the first branch out of the test program, giving 7 entries
-now, of which we can remove at least 2 more with a bit of elbow greace,
-right?
-
-> ID: 7 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
-> ID: 8 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+On 9/10/21 21:31, Saurav Girepunje wrote:
+> Remove unused variable padapter from mp_init_xmit_attrib().
 > 
-> I will fold this in and send v7. 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 
-Excellent.
+Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
+
+Thanks!
+
+> ---
+>   drivers/staging/r8188eu/core/rtw_mp.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+> index dabdd0406f30..8ac23d2112fb 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mp.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mp.c
+> @@ -75,7 +75,7 @@ static void _init_mp_priv_(struct mp_priv *pmp_priv)
+>   	memcpy(pnetwork->Ssid.Ssid, "mp_871x", pnetwork->Ssid.SsidLength);
+>   }
+> 
+> -static void mp_init_xmit_attrib(struct mp_tx *pmptx, struct adapter *padapter)
+> +static void mp_init_xmit_attrib(struct mp_tx *pmptx)
+>   {
+>   	struct pkt_attrib *pattrib;
+>   	struct tx_desc *desc;
+> @@ -107,7 +107,7 @@ s32 init_mp_priv(struct adapter *padapter)
+>   	pmppriv->papdater = padapter;
+> 
+>   	pmppriv->tx.stop = 1;
+> -	mp_init_xmit_attrib(&pmppriv->tx, padapter);
+> +	mp_init_xmit_attrib(&pmppriv->tx);
+> 
+>   	switch (padapter->registrypriv.rf_config) {
+>   	case RF_1T1R:
+> --
+> 2.32.0
+> 
+
+
+With regards,
+Pavel Skripkin
