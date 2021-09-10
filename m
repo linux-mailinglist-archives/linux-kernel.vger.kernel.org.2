@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39DE406B40
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92962406B45
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhIJMP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhIJMPY (ORCPT
+        id S233082AbhIJMQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:16:46 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37878
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232941AbhIJMQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:15:24 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7172C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id m26so1719451pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:subject:message-id:mime-version:content-disposition;
-        bh=sNHZqX51zHFqUb1YJWg9QJwyqCeOzXRPdRsjUY5I6Ag=;
-        b=bC2Ym7PmBYdQuYL34sSgVk9+vw84Hqc1VxjQB+4q3j+c6PZgB2qbSoOm09EsEwDC3P
-         3pqTBzd6W7biYNnnSCJT4zYdEqrA7OI7GaPXOA2HUKE5Dwhq+HoDMzBSQT023SB+qV96
-         BcLZwzGabNcmim25SNVJsYwZnSb1/+GdtFJblqVlGLMaFvZZ6lmzYiNA/oD2Mp7jFXwm
-         /9EyKQSolzAy/UeuSyi4+3jsOoFwQOWkdLpci+BaQ6v/gFJKDzCWdTPtzXqpcIVCVOS6
-         Vx2zQKmzzw7e8V/zCDscHVkYZ0mBGG4hEgEMY3jpRl8M+PG9QSbkgIV1rjLernUWehZs
-         uNsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=sNHZqX51zHFqUb1YJWg9QJwyqCeOzXRPdRsjUY5I6Ag=;
-        b=SsEPvTzmjJIFyJuIAcY5J1P/dMDxcZn9Kf8rkU+RRosjC9Iz4LHjYgNWmcuwJVZmd1
-         hbSA9Hym7/6QFxRelS/Jl8Yh2Zz8LL9w8UFgzvhIhT7LwNb38/sJR9SETxUdmQ+qKyJb
-         +DGx5QvF3V83Iu2M5r1UgxcgaxVmBmhQZJa0WSQL2/v9wVGw5Rdgc4SxqAuUMbn+mFIM
-         fbiJ3+kbT/8x6y5cnzvSAw5NtskVwbcIwaXt33XGI188+srbCIBv3c6srEMUtc437jDF
-         ImctF+E0qwbDwXI0xdICYTUMNEdkze0acGzhVpxiz1vEa38yM7GTZtS1HHpTvDo7bJ/p
-         QeLQ==
-X-Gm-Message-State: AOAM533D1T/bs/OKoaeiDJNC1kn94i0CtRSGRxJzpl7yDrZjDg+jH8IQ
-        x1Wr+Ki8y8+GCwl9VQAx0iT6SquN9fc=
-X-Google-Smtp-Source: ABdhPJwiHhAXDkoi0ZyNcUTMvHDAoy8ENP57u8sblZ675Ua2l23verVId7F2bB71NTzc7sSYpCIUrw==
-X-Received: by 2002:aa7:8d10:0:b0:414:ab01:656c with SMTP id j16-20020aa78d10000000b00414ab01656cmr7591632pfe.13.1631276053097;
-        Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
-Received: from ws2 (node-12h5.pool-101-51.dynamic.totinternet.net. [101.51.194.201])
-        by smtp.gmail.com with ESMTPSA id k12sm5347866pjm.52.2021.09.10.05.14.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 05:14:12 -0700 (PDT)
-From:   Andreas Bauer <andreas.bauer.nexus@gmail.com>
-X-Google-Original-From: Andreas Bauer <Andreas.Bauer.Nexus@gmail.com>
-Date:   Fri, 10 Sep 2021 19:14:07 +0700
-To:     linux-kernel@vger.kernel.org
-Subject: 9pnet_virtio missing dependency
-Message-ID: <YTtMD6Zm0FeXIR7m@ws2>
+        Fri, 10 Sep 2021 08:16:45 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id AF3223F328;
+        Fri, 10 Sep 2021 12:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631276132;
+        bh=WH5acUJXrOaRqz+J2404Ycvly8mHVPMOcA9T/AX5FBw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=b0PPT3Tadgfgm16gBw637065w4w47RlmElz/m56mi5dfOfRt8xW8x5u7Uxzzzg6aS
+         0qRdyU2IWl2rVPnw1aoqI3eJfEU8Ecgsa2EVZC18VWDS71FJbiY8UvCWSdT/4T6yx7
+         SyVjA/lwqnpfjTNH8pTdsAUPcosdbBRQVJNtm0pZTCuQ4TNz2ekL2lj6JT7Iy128g1
+         l2jtkPXn2npVaNbKyx9zfxDYHDQPs5HUJwWe832vmcFO2gXXN1VxBlfr67jG9amtCm
+         p4Vjlt8jg8B9BSaXdGOaFHWd2SKSFKN/vy4t99XyVNOBrlhKtKFWqrlqF8hJTSEnZL
+         RZjPidX5CVeHg==
+From:   Colin King <colin.king@canonical.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: img-hash: remove need for error return variable ret
+Date:   Fri, 10 Sep 2021 13:15:32 +0100
+Message-Id: <20210910121532.50366-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear all,
+From: Colin Ian King <colin.king@canonical.com>
 
-While compiling a minimal qemu kernel 5.14.2 with 9p root fs, I encountered a
-problem with the 9pnet_virtio code:
+The assignment to error return variable ret and then the jump to
+an error exit path can be simplified by just returning the error
+return at the failure point. This allows variable ret and the
+error return path to be removed. This cleans up a static analysis
+warninng that variable ret is being assigned (value never being
+used) and being re-assigned later.
 
-| [    0.553249] 9pnet: Installing 9P2000 support
-[...]
-| [    0.561547] 9pnet: -- v9fs_mount (1): 
-| [    0.562156] 9pnet_virtio: no channels available for device /dev/root
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/crypto/img-hash.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-9p_virtio_create() is called and the list of channels in this loop
+diff --git a/drivers/crypto/img-hash.c b/drivers/crypto/img-hash.c
+index aa4c7b2af3e2..d8e82d69745d 100644
+--- a/drivers/crypto/img-hash.c
++++ b/drivers/crypto/img-hash.c
+@@ -674,14 +674,12 @@ static int img_hash_digest(struct ahash_request *req)
+ static int img_hash_cra_init(struct crypto_tfm *tfm, const char *alg_name)
+ {
+ 	struct img_hash_ctx *ctx = crypto_tfm_ctx(tfm);
+-	int err = -ENOMEM;
+ 
+ 	ctx->fallback = crypto_alloc_ahash(alg_name, 0,
+ 					   CRYPTO_ALG_NEED_FALLBACK);
+ 	if (IS_ERR(ctx->fallback)) {
+ 		pr_err("img_hash: Could not load fallback driver.\n");
+-		err = PTR_ERR(ctx->fallback);
+-		goto err;
++		return PTR_ERR(ctx->fallback);
+ 	}
+ 	crypto_ahash_set_reqsize(__crypto_ahash_cast(tfm),
+ 				 sizeof(struct img_hash_request_ctx) +
+@@ -689,9 +687,6 @@ static int img_hash_cra_init(struct crypto_tfm *tfm, const char *alg_name)
+ 				 IMG_HASH_DMA_THRESHOLD);
+ 
+ 	return 0;
+-
+-err:
+-	return err;
+ }
+ 
+ static int img_hash_cra_md5_init(struct crypto_tfm *tfm)
+-- 
+2.32.0
 
-|        list_for_each_entry(chan, &virtio_chan_list, chan_list) {
-
-turns out to be empty. After instrumenting the code with a few more
-debug outputs, it turns out p9_virtio_probe() is not called. I am 
-not familiar enough with the code flow to see exactly where the
-problem lies.
-
-I think all relevant kernel options are enabled:
-
-| $ cat .config | grep -Ei '9P|VIRTIO' | grep -v "^#" | sort
-| CONFIG_9P_FS_POSIX_ACL=y
-| CONFIG_9P_FS_SECURITY=y
-| CONFIG_9P_FS=y
-| CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS=y
-| CONFIG_BLK_MQ_VIRTIO=y
-| CONFIG_HW_RANDOM_VIRTIO=y
-| CONFIG_NET_9P_DEBUG=y
-| CONFIG_NET_9P_VIRTIO=y
-| CONFIG_NET_9P=y
-| CONFIG_VIRTIO_BLK=y
-| CONFIG_VIRTIO_CONSOLE=y
-| CONFIG_VIRTIO_FS=y
-| CONFIG_VIRTIO_INPUT=y
-| CONFIG_VIRTIO_MEM=y
-| CONFIG_VIRTIO_MENU=y
-| CONFIG_VIRTIO_NET=y
-| CONFIG_VIRTIO_PCI_LEGACY=y
-| CONFIG_VIRTIO_PCI_LIB=y
-| CONFIG_VIRTIO_PCI=y
-| CONFIG_VIRTIO=y
-
-It seems that there is a dependecy on some other kernel code that is neither
-documented nor instrumented in config-logic.
-
-When I compile a distribution kernel (i.e. almost everything compiled in) 
-with "localyesconfig" the 9p root fs is found and mounted properly.
-
-What code is missing?
-
-Thanks,
-
-Andreas
