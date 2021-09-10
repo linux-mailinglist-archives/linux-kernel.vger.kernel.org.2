@@ -2,621 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289B340687D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0230A406849
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhIJIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:30:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28757 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231665AbhIJIaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:30:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="243348390"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="243348390"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:29:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="549180320"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Sep 2021 01:29:03 -0700
-Date:   Fri, 10 Sep 2021 16:22:32 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v15 2/6] fpga: image-load: enable image loads
-Message-ID: <20210910082232.GB754505@yilunxu-OptiPlex-7050>
-References: <20210909021846.681121-1-russell.h.weight@intel.com>
- <20210909021846.681121-3-russell.h.weight@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909021846.681121-3-russell.h.weight@intel.com>
+        id S231744AbhIJIYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:24:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231666AbhIJIYK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:24:10 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18A82xVP059738;
+        Fri, 10 Sep 2021 04:22:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=jVxY14ywZqG7Jf4duKhASmJyUCTEy+v+4GH1vFnf6RQ=;
+ b=NhTohMXYFJu5EJOqcrxdpdw5pUq7qWPVzsaodVcysGUKZZ0gJZp4cGONJSLjQJQE+iH2
+ 2lHNTtWNiga0XOLoxTGvzfc2s8XmwXk8FQ1lEbknElHwi+BdsmLPWTB+wF5nyLC2Jukz
+ tHWS9S8+sebVrIgstnjh9ifDE6ehLdbLbgYjaddS4WWgsyt31jxvxOdT4lGKMKJCZj9f
+ YXQkE6dnSh+IKdo4EKRpnyNj1uRCx1GsxbBGSB78+5rbGAXibcafLTWLF+c0sZQIEmwN
+ Y49Lc9vtocWB/xyBdf4+f1XCvbhDvcLcm0R2kXcF1Zft7bz3uk9SRHEyNgiFthVFiDKJ bA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ayu419y7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 04:22:57 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18A8C8FN101185;
+        Fri, 10 Sep 2021 04:22:57 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ayu419y74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 04:22:57 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18A8HQMh015695;
+        Fri, 10 Sep 2021 08:22:55 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3axcnqe9r8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 08:22:54 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18A8MpbT26673662
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Sep 2021 08:22:51 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A23D3A4065;
+        Fri, 10 Sep 2021 08:22:51 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50858A4066;
+        Fri, 10 Sep 2021 08:22:51 +0000 (GMT)
+Received: from sig-9-145-77-172.uk.ibm.com (unknown [9.145.77.172])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Sep 2021 08:22:51 +0000 (GMT)
+Message-ID: <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC 6/9] s390/pci_mmio: fully validate the VMA before
+ calling follow_pte()
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+Date:   Fri, 10 Sep 2021 10:22:50 +0200
+In-Reply-To: <20210909145945.12192-7-david@redhat.com>
+References: <20210909145945.12192-1-david@redhat.com>
+         <20210909145945.12192-7-david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sP6U2HhjRzpPKt-WnTURwLFoYc87rO_0
+X-Proofpoint-ORIG-GUID: Aty1VeXchEKLqvSS2X_qjh5vNDqqeENk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-10_02:2021-09-09,2021-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1011 impostorscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109100050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 07:18:42PM -0700, Russ Weight wrote:
-> Extend the FPGA Image Load class driver to include IOCTL support
-> (FPGA_IMAGE_LOAD_WRITE) for initiating an upload of an image to a device.
-> The IOCTL will return immediately, and the update will begin in the
-> context of a kernel worker thread.
+On Thu, 2021-09-09 at 16:59 +0200, David Hildenbrand wrote:
+> We should not walk/touch page tables outside of VMA boundaries when
+> holding only the mmap sem in read mode. Evil user space can modify the
+> VMA layout just before this function runs and e.g., trigger races with
+> page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+> with read mmap_sem in munmap").
 > 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v15:
->  - Compare to previous patch:
->      [PATCH v14 2/6] fpga: sec-mgr: enable secure updates
->  - Changed file, symbol, and config names to reflect the new driver name
->  - Removed update/filename sysfs file and added the FPGA_IMAGE_LOAD_WRITE
->    IOCTL for writing the image data to the FPGA card. The driver no longer
->    uses the request_firmware framework.
->  - Fixed some error return values in fpga_image_load_register()
->  - Removed signed-off/reviewed-by tags
-> v14:
->  - Added MAINTAINERS reference for
->    Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
->  - Updated ABI documentation date and kernel version
->  - Updated copyright to 2021
-> v13:
->   - Change "if (count == 0 || " to "if (!count || "
->   - Improve error message: "Attempt to register without all required ops\n"
-> v12:
->   - Updated Date and KernelVersion fields in ABI documentation
->   - Removed size parameter from write_blk() op - it is now up to
->     the lower-level driver to determine the appropriate size and
->     to update smgr->remaining_size accordingly.
-> v11:
->   - Fixed a spelling error in a comment
->   - Initialize smgr->err_code and smgr->progress explicitly in
->     fpga_sec_mgr_create() instead of accepting the default 0 value.
-> v10:
->   - Rebased to 5.12-rc2 next
->   - Updated Date and KernelVersion in ABI documentation
-> v9:
->   - Updated Date and KernelVersion in ABI documentation
-> v8:
->   - No change
-> v7:
->   - Changed Date in documentation file to December 2020
->   - Changed filename_store() to use kmemdup_nul() instead of
->     kstrndup() and changed the count to not assume a line-return.
-> v6:
->   - Changed "security update" to "secure update" in commit message
-> v5:
->   - When checking the return values for functions of type enum
->     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
-> v4:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->     and removed unnecessary references to "Intel".
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> v3:
->   - Removed unnecessary "goto done"
->   - Added a comment to explain imgr->driver_unload in
->     ifpga_sec_mgr_unregister()
-> v2:
->   - Bumped documentation date and version
->   - Removed explicit value assignments in enums
->   - Other minor code cleanup per review comments
-> ---
->  Documentation/fpga/fpga-image-load.rst |  21 +++
->  MAINTAINERS                            |   1 +
->  drivers/fpga/fpga-image-load.c         | 224 ++++++++++++++++++++++++-
->  include/linux/fpga/fpga-image-load.h   |  29 ++++
->  include/uapi/linux/fpga-image-load.h   |  58 +++++++
->  5 files changed, 329 insertions(+), 4 deletions(-)
->  create mode 100644 include/uapi/linux/fpga-image-load.h
+> find_vma() does not check if the address is >= the VMA start address;
+> use vma_lookup() instead.
 > 
-> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
-> index a6e53ac66026..2ca8d2f0212d 100644
-> --- a/Documentation/fpga/fpga-image-load.rst
-> +++ b/Documentation/fpga/fpga-image-load.rst
-> @@ -8,3 +8,24 @@ The FPGA Image Load class driver provides a common API for user-space
->  tools to manage image uploads to FPGA devices. Device drivers that
->  instantiate the FPGA Image Load class driver will interact with the
->  target device to transfer and authenticate the image data.
-> +
-> +User API
-> +========
-> +
-> +open
-> +----
-> +
-> +An FPGA Image Load device is opened exclusively to control an image load.
-> +Image loads are processed by a kernel worker thread. A user may choose
-> +close the device while the upload continues.
+> Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/pci/pci_mmio.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+> index ae683aa623ac..c5b35ea129cf 100644
+> --- a/arch/s390/pci/pci_mmio.c
+> +++ b/arch/s390/pci/pci_mmio.c
+> @@ -159,7 +159,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
+>  
+>  	mmap_read_lock(current->mm);
+>  	ret = -EINVAL;
+> -	vma = find_vma(current->mm, mmio_addr);
+> +	vma = vma_lookup(current->mm, mmio_addr);
+>  	if (!vma)
+>  		goto out_unlock_mmap;
+>  	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> @@ -298,7 +298,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
+>  
+>  	mmap_read_lock(current->mm);
+>  	ret = -EINVAL;
+> -	vma = find_vma(current->mm, mmio_addr);
+> +	vma = vma_lookup(current->mm, mmio_addr);
+>  	if (!vma)
+>  		goto out_unlock_mmap;
+>  	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
 
-Why we allow the user to close the dev while the uploading is ongoing?
-Seems it introduces more checking effort when another user open the dev
-again and try another uploading.
+Oh wow great find thanks! If I may say so these are not great function
+names. Looking at the code vma_lookup() is inded find_vma() plus the
+check that the looked up address is indeed inside the vma.
 
-> +
-> +ioctl
-> +-----
-> +
-> +FPGA_IMAGE_LOAD_WRITE:
-> +
-> +Start an image load with the provided image buffer. This IOCTL returns
-> +immediately after starting a kernel worker thread to process the image load
-> +which could take as long a 40 minutes depending on the actual device being
-> +updated. This is an exclusive operation; an attempt to start concurrent image
-> +load for the same device will fail with EBUSY.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4e7f48fa7e5c..637bc003ca81 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7365,6 +7365,7 @@ S:	Maintained
->  F:	Documentation/fpga/fpga-image-load.rst
->  F:	drivers/fpga/fpga-image-load.c
->  F:	include/linux/fpga/fpga-image-load.h
-> +F:	include/uapi/linux/fpga-image-load.h
->  
->  FPU EMULATOR
->  M:	Bill Metzenthen <billm@melbpc.org.au>
-> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-> index 7d75bbcff541..f5ccfa9dd977 100644
-> --- a/drivers/fpga/fpga-image-load.c
-> +++ b/drivers/fpga/fpga-image-load.c
-> @@ -5,18 +5,181 @@
->   * Copyright (C) 2019-2021 Intel Corporation, Inc.
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/fpga/fpga-image-load.h>
-> +#include <linux/fs.h>
-> +#include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
-> +#include <linux/uaccess.h>
->  #include <linux/vmalloc.h>
->  
->  #define IMAGE_LOAD_XA_LIMIT	XA_LIMIT(0, INT_MAX)
->  static DEFINE_XARRAY_ALLOC(fpga_image_load_xa);
->  
->  static struct class *fpga_image_load_class;
-> +static dev_t fpga_image_devt;
->  
->  #define to_image_load(d) container_of(d, struct fpga_image_load, dev)
->  
-> +static void fpga_image_dev_error(struct fpga_image_load *imgld,
-> +				 enum fpga_image_err err_code)
-> +{
-> +	imgld->err_code = err_code;
-> +	imgld->lops->cancel(imgld);
-> +}
-> +
-> +static void fpga_image_prog_complete(struct fpga_image_load *imgld)
-> +{
-> +	mutex_lock(&imgld->lock);
-> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
-> +	complete_all(&imgld->update_done);
-> +	mutex_unlock(&imgld->lock);
-> +}
-> +
-> +static void fpga_image_do_load(struct work_struct *work)
-> +{
-> +	struct fpga_image_load *imgld;
-> +	enum fpga_image_err ret;
-> +	u32 size, offset = 0;
-> +
-> +	imgld = container_of(work, struct fpga_image_load, work);
-> +	size = imgld->remaining_size;
-> +
-> +	get_device(&imgld->dev);
-> +	if (!try_module_get(imgld->dev.parent->driver->owner)) {
-> +		imgld->err_code = FPGA_IMAGE_ERR_BUSY;
-> +		goto idle_exit;
-> +	}
-> +
-> +	imgld->progress = FPGA_IMAGE_PROG_PREPARING;
-> +	ret = imgld->lops->prepare(imgld);
-> +	if (ret != FPGA_IMAGE_ERR_NONE) {
-> +		fpga_image_dev_error(imgld, ret);
-> +		goto modput_exit;
-> +	}
-> +
-> +	imgld->progress = FPGA_IMAGE_PROG_WRITING;
-> +	while (imgld->remaining_size) {
-> +		ret = imgld->lops->write_blk(imgld, offset);
-> +		if (ret != FPGA_IMAGE_ERR_NONE) {
-> +			fpga_image_dev_error(imgld, ret);
-> +			goto done;
-> +		}
-> +
-> +		offset = size - imgld->remaining_size;
+I think this is pretty independent of the rest of the patches, so do
+you want me to apply this patch independently or do you want to wait
+for the others?
 
-The low level driver is required to update the "remaining_size" in
-write_blk ops?
+In any case:
 
-The API seems ambiguous. The framework asks for writing a block of data,
-but no block size is specified.
+Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-> +	}
-> +
-> +	imgld->progress = FPGA_IMAGE_PROG_PROGRAMMING;
-> +	ret = imgld->lops->poll_complete(imgld);
-> +	if (ret != FPGA_IMAGE_ERR_NONE)
-> +		fpga_image_dev_error(imgld, ret);
-> +
-> +done:
-> +	if (imgld->lops->cleanup)
-> +		imgld->lops->cleanup(imgld);
-> +
-> +modput_exit:
-> +	module_put(imgld->dev.parent->driver->owner);
-> +
-> +idle_exit:
-> +	/*
-> +	 * Note: imgld->remaining_size is left unmodified here to provide
-> +	 * additional information on errors. It will be reinitialized when
-> +	 * the next image load begins.
-> +	 */
-> +	vfree(imgld->data);
-> +	imgld->data = NULL;
-> +	put_device(&imgld->dev);
-> +	fpga_image_prog_complete(imgld);
-> +}
-> +
-> +static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
-> +				       unsigned long arg)
-> +{
-> +	struct fpga_image_write wb;
-> +	unsigned long minsz;
-> +	u8 *buf;
-> +
-> +	if (imgld->driver_unload || imgld->progress != FPGA_IMAGE_PROG_IDLE)
-> +		return -EBUSY;
-> +
-> +	minsz = offsetofend(struct fpga_image_write, buf);
-> +	if (copy_from_user(&wb, (void __user *)arg, minsz))
-> +		return -EFAULT;
-> +
-> +	if (wb.flags)
-> +		return -EINVAL;
-> +
-> +	/* Enforce 32-bit alignment on the write data */
-> +	if (wb.size & 0x3)
-> +		return -EINVAL;
-> +
-> +	buf = vzalloc(wb.size);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	if (copy_from_user(buf, u64_to_user_ptr(wb.buf), wb.size)) {
-> +		vfree(buf);
-> +		return -EFAULT;
-> +	}
-> +
-> +	imgld->data = buf;
-> +	imgld->remaining_size = wb.size;
-> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
-> +	imgld->progress = FPGA_IMAGE_PROG_STARTING;
-> +	reinit_completion(&imgld->update_done);
-> +	schedule_work(&imgld->work);
-> +
-> +	return 0;
-> +}
-> +
-> +static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
-> +				  unsigned long arg)
-> +{
-> +	struct fpga_image_load *imgld = filp->private_data;
-> +	int ret = -ENOTTY;
-> +
-> +	switch (cmd) {
-> +	case FPGA_IMAGE_LOAD_WRITE:
-> +		mutex_lock(&imgld->lock);
-> +		ret = fpga_image_load_ioctl_write(imgld, arg);
-> +		mutex_unlock(&imgld->lock);
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int fpga_image_load_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct fpga_image_load *imgld = container_of(inode->i_cdev,
-> +						     struct fpga_image_load, cdev);
-> +
-> +	if (test_and_set_bit(0, &imgld->opened))
-
-Some more flags to add for "opened" field? But the field name indicates
-it is a single flag.
-
-> +		return -EBUSY;
-> +
-> +	filp->private_data = imgld;
-> +
-> +	return 0;
-> +}
-> +
-> +static int fpga_image_load_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct fpga_image_load *imgld = filp->private_data;
-> +
-> +	clear_bit(0, &imgld->opened);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations fpga_image_load_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = fpga_image_load_open,
-> +	.release = fpga_image_load_release,
-> +	.unlocked_ioctl = fpga_image_load_ioctl,
-> +};
-> +
->  /**
->   * fpga_image_load_register - create and register an FPGA Image Load Device
->   *
-> @@ -33,11 +196,17 @@ fpga_image_load_register(struct device *parent,
->  			 const struct fpga_image_load_ops *lops, void *priv)
->  {
->  	struct fpga_image_load *imgld;
-> -	int id, ret;
-> +	int ret;
-> +
-> +	if (!lops || !lops->cancel || !lops->prepare ||
-> +	    !lops->write_blk || !lops->poll_complete) {
-> +		dev_err(parent, "Attempt to register without all required ops\n");
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	imgld = kzalloc(sizeof(*imgld), GFP_KERNEL);
->  	if (!imgld)
-> -		return NULL;
-> +		return ERR_PTR(-ENOMEM);
-
-This is the fix for Patch #1? If yes please merge it to Patch #1.
-
->  
->  	ret = xa_alloc(&fpga_image_load_xa, &imgld->dev.id, imgld, IMAGE_LOAD_XA_LIMIT,
->  		       GFP_KERNEL);
-> @@ -48,13 +217,19 @@ fpga_image_load_register(struct device *parent,
->  
->  	imgld->priv = priv;
->  	imgld->lops = lops;
-> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
-> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
-> +	init_completion(&imgld->update_done);
-> +	INIT_WORK(&imgld->work, fpga_image_do_load);
->  
->  	imgld->dev.class = fpga_image_load_class;
->  	imgld->dev.parent = parent;
-> +	imgld->dev.devt = MKDEV(MAJOR(fpga_image_devt), imgld->dev.id);
->  
-> -	ret = dev_set_name(&imgld->dev, "fpga_image%d", id);
-> +	ret = dev_set_name(&imgld->dev, "fpga_image%d", imgld->dev.id);
-
-Another fix? Please merge it to Patch #1.
-
->  	if (ret) {
-> -		dev_err(parent, "Failed to set device name: fpga_image%d\n", id);
-> +		dev_err(parent, "Failed to set device name: fpga_image%d\n",
-> +			imgld->dev.id);
-
-Ditto
-
->  		goto error_device;
->  	}
->  
-> @@ -64,6 +239,16 @@ fpga_image_load_register(struct device *parent,
->  		return ERR_PTR(ret);
->  	}
->  
-> +	cdev_init(&imgld->cdev, &fpga_image_load_fops);
-> +	imgld->cdev.owner = parent->driver->owner;
-> +	imgld->cdev.kobj.parent = &imgld->dev.kobj;
-> +
-> +	ret = cdev_add(&imgld->cdev, imgld->dev.devt, 1);
-> +	if (ret) {
-> +		put_device(&imgld->dev);
-> +		return ERR_PTR(ret);
-> +	}
-> +
->  	return imgld;
->  
->  error_device:
-> @@ -83,9 +268,29 @@ EXPORT_SYMBOL_GPL(fpga_image_load_register);
->   *
->   * This function is intended for use in an FPGA Image Load driver's
->   * remove() function.
-> + *
-> + * For some devices, once authentication of the uploaded image has begun,
-> + * the hardware cannot be signaled to stop, and the driver will not exit
-> + * until the hardware signals completion.  This could be 30+ minutes of
-> + * waiting. The driver_unload flag enables a force-unload of the driver
-> + * (e.g. modprobe -r) by signaling the parent driver to exit even if the
-
-How does the driver_unload enables the force unload of the parent
-driver? I didn't find the code.
-
-> + * hardware update is incomplete. The driver_unload flag also prevents
-> + * new updates from starting once the unregister process has begun.
->   */
->  void fpga_image_load_unregister(struct fpga_image_load *imgld)
->  {
-> +	mutex_lock(&imgld->lock);
-> +	imgld->driver_unload = true;
-> +	if (imgld->progress == FPGA_IMAGE_PROG_IDLE) {
-> +		mutex_unlock(&imgld->lock);
-> +		goto unregister;
-> +	}
-> +
-> +	mutex_unlock(&imgld->lock);
-> +	wait_for_completion(&imgld->update_done);
-> +
-> +unregister:
-> +	cdev_del(&imgld->cdev);
->  	device_unregister(&imgld->dev);
->  }
->  EXPORT_SYMBOL_GPL(fpga_image_load_unregister);
-> @@ -100,19 +305,30 @@ static void fpga_image_load_dev_release(struct device *dev)
->  
->  static int __init fpga_image_load_class_init(void)
->  {
-> +	int ret;
->  	pr_info("FPGA Image Load Driver\n");
->  
->  	fpga_image_load_class = class_create(THIS_MODULE, "fpga_image_load");
->  	if (IS_ERR(fpga_image_load_class))
->  		return PTR_ERR(fpga_image_load_class);
->  
-> +	ret = alloc_chrdev_region(&fpga_image_devt, 0, MINORMASK,
-> +				  "fpga_image_load");
-> +	if (ret)
-> +		goto exit_destroy_class;
-> +
->  	fpga_image_load_class->dev_release = fpga_image_load_dev_release;
->  
->  	return 0;
-> +
-> +exit_destroy_class:
-> +	class_destroy(fpga_image_load_class);
-> +	return ret;
->  }
->  
->  static void __exit fpga_image_load_class_exit(void)
->  {
-> +	unregister_chrdev_region(fpga_image_devt, MINORMASK);
->  	class_destroy(fpga_image_load_class);
->  	WARN_ON(!xa_empty(&fpga_image_load_xa));
->  }
-> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
-> index a9cef9e1056b..b3d790e5d943 100644
-> --- a/include/linux/fpga/fpga-image-load.h
-> +++ b/include/linux/fpga/fpga-image-load.h
-> @@ -7,22 +7,51 @@
->  #ifndef _LINUX_FPGA_IMAGE_LOAD_H
->  #define _LINUX_FPGA_IMAGE_LOAD_H
->  
-> +#include <linux/cdev.h>
-> +#include <linux/completion.h>
->  #include <linux/device.h>
->  #include <linux/mutex.h>
->  #include <linux/types.h>
-> +#include <uapi/linux/fpga-image-load.h>
->  
->  struct fpga_image_load;
->  
->  /**
->   * struct fpga_image_load_ops - device specific operations
-> + * @prepare:		    Required: Prepare secure update
-> + * @write_blk:		    Required: Write a block of data
-> + * @poll_complete:	    Required: Check for the completion of the
-> + *			    HW authentication/programming process. This
-> + *			    function should check for imgld->driver_unload
-> + *			    and abort with FPGA_IMAGE_ERR_CANCELED when true.
-> + * @cancel:		    Required: Signal HW to cancel update
-> + * @cleanup:		    Optional: Complements the prepare()
-> + *			    function and is called at the completion
-> + *			    of the update, whether success or failure,
-> + *			    if the prepare function succeeded.
->   */
->  struct fpga_image_load_ops {
-> +	enum fpga_image_err (*prepare)(struct fpga_image_load *imgld);
-> +	enum fpga_image_err (*write_blk)(struct fpga_image_load *imgld, u32 offset);
-> +	enum fpga_image_err (*poll_complete)(struct fpga_image_load *imgld);
-> +	enum fpga_image_err (*cancel)(struct fpga_image_load *imgld);
-> +	void (*cleanup)(struct fpga_image_load *imgld);
->  };
->  
->  struct fpga_image_load {
->  	struct device dev;
-> +	struct cdev cdev;
->  	const struct fpga_image_load_ops *lops;
->  	struct mutex lock;		/* protect data structure contents */
-> +	unsigned long opened;
-> +	struct work_struct work;
-> +	struct completion update_done;
-> +	const u8 *data;				/* pointer to update data */
-> +	u32 remaining_size;			/* size remaining to transfer */
-> +	enum fpga_image_prog progress;
-> +	enum fpga_image_prog err_progress;	/* progress at time of failure */
-
-This field is not used in this patch? So could you introduce it later?
-
-> +	enum fpga_image_err err_code;		/* image load error code */
-> +	bool driver_unload;
->  	void *priv;
->  };
->  
-> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
-> new file mode 100644
-> index 000000000000..4146a0a9e408
-> --- /dev/null
-> +++ b/include/uapi/linux/fpga-image-load.h
-> @@ -0,0 +1,58 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Header File for FPGA Image Load User API
-> + *
-> + * Copyright (C) 2019-2021 Intel Corporation, Inc.
-> + *
-> + */
-> +
-> +#ifndef _UAPI_LINUX_FPGA_IMAGE_LOAD_H
-> +#define _UAPI_LINUX_FPGA_IMAGE_LOAD_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/ioctl.h>
-> +
-> +#define FPGA_IMAGE_LOAD_MAGIC 0xB9
-> +
-> +/* Image load progress codes */
-> +enum fpga_image_prog {
-> +	FPGA_IMAGE_PROG_IDLE,
-> +	FPGA_IMAGE_PROG_STARTING,
-> +	FPGA_IMAGE_PROG_PREPARING,
-> +	FPGA_IMAGE_PROG_WRITING,
-> +	FPGA_IMAGE_PROG_PROGRAMMING,
-> +	FPGA_IMAGE_PROG_MAX
-> +};
-> +
-> +/* Image error progress codes */
-> +enum fpga_image_err {
-> +	FPGA_IMAGE_ERR_NONE,
-> +	FPGA_IMAGE_ERR_HW_ERROR,
-> +	FPGA_IMAGE_ERR_TIMEOUT,
-> +	FPGA_IMAGE_ERR_CANCELED,
-> +	FPGA_IMAGE_ERR_BUSY,
-> +	FPGA_IMAGE_ERR_INVALID_SIZE,
-> +	FPGA_IMAGE_ERR_RW_ERROR,
-> +	FPGA_IMAGE_ERR_WEAROUT,
-> +	FPGA_IMAGE_ERR_MAX
-> +};
-> +
-> +#define FPGA_IMAGE_LOAD_WRITE	_IOW(FPGA_IMAGE_LOAD_MAGIC, 0, struct fpga_image_write)
-
-Put the cmd word definition under the comments and parameter definition.
-
-> +
-> +/**
-> + * FPGA_IMAGE_LOAD_WRITE - _IOW(FPGA_IMAGE_LOAD_MAGIC, 0,
-> + *				struct fpga_image_write)
-> + *
-> + * Upload a data buffer to the target device. The user must provide the
-> + * data buffer, size, and an eventfd file descriptor.
-
-I didn't find the eventfd.
-
-Thanks,
-Yilun
-
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +struct fpga_image_write {
-> +	/* Input */
-> +	__u32 flags;		/* Zero for now */
-> +	__u32 size;		/* Data size (in bytes) to be written */
-> +	__u64 buf;		/* User space address of source data */
-> +};
-> +
-> +#endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
-> -- 
-> 2.25.1
