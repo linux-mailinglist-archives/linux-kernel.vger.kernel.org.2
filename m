@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874364068AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A044068B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhIJIn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbhIJIn6 (ORCPT
+        id S231787AbhIJIss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:48:48 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:44866 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231502AbhIJIsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:43:58 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA62C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:42:47 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id r11-20020a5d4e4b000000b001575c5ed4b4so255669wrt.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=U1vC9mnO0GBdoKpseWlG9U1U97SJv1m6txgMtoboTzg=;
-        b=n3pl4+LNU7r9TdH1mDQnshwXXrJ9vN5/AKvWIaXaZxv0es3C1jvHbtpnaE0QoyYV3s
-         bLzMocdz5kT6gVxVNalgb3Rwf1g0k9EoahxKhtlRy5vRfV5ydiH0KM1K3aua5WQf/jhQ
-         1tDObTW3VBWsk+pCgb7Tf+yPh8ZHkEypT5aKJVHfdKdV1d6zZb9067AiUIgSQuzsO75y
-         NXOWCE5zzpABN4Dd87620agkbPs2IzRkQx0sDmog2t7wur+K0jrercr6NHyPQhp73xuK
-         3BRgM68/bFtIJeuuDG+hTjHf3C6pFpltVwe3+af/AR1CpsJbPP+EeH7EvgfxLWgY+FUM
-         0BFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=U1vC9mnO0GBdoKpseWlG9U1U97SJv1m6txgMtoboTzg=;
-        b=giFaF6xuUIet1sUsKPe2FYcXd+WgaL/FFQTQYERhYuiSai2mkUcK5ieJE8i3UzRUrU
-         NNDoXUvlSKiJxpqYQvkkp6s49qEry87jPKvJU/3eOLqBddU8Q1pCsbM4KFbh/iPDkVfz
-         PuvvOZw0GdnqLh4mCa7ji0h2ZIrStg0UCP48oCt81cg+aVKrU3K85nNRpwpX/nxWUIAZ
-         NWD82JChzS36X4nk2PaKSr2K58+Npm8ehDdL0Adq3rObg+KfvUpAzI7XhInXx3V3YciH
-         KI437+sjX8wX67p9e22hqQPj1MuQlUR4DuzGmUa9w2HhIhejW8QFVpqrGfDv9IYA2Bqe
-         Or/w==
-X-Gm-Message-State: AOAM533JkkGG4Bo7SDTGsrLvVyh7jaViQdjsJlXqGxUHgy6dW+B/DZ9Z
-        IqmYYoZVNLRBeg9FuoiW4PnNnbm/6w==
-X-Google-Smtp-Source: ABdhPJwGuEJMuTO6/viXWtuEQiUIMR2aLLdxdXs8HVQnZ36KCbdmjDe56A7J6bV12sPrDHYPPEoqITXNGw==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:98f9:2b1c:26b6:bc81])
- (user=elver job=sendgmr) by 2002:a05:600c:19cc:: with SMTP id
- u12mr411559wmq.0.1631263365627; Fri, 10 Sep 2021 01:42:45 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 10:42:40 +0200
-Message-Id: <20210910084240.1215803-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] kasan: fix Kconfig check of CC_HAS_WORKING_NOSANITIZE_ADDRESS
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 10 Sep 2021 04:48:47 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18A5VHLT013636;
+        Fri, 10 Sep 2021 03:47:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=rOhfXC7sHBEvR7/dWcSMGOF2uz7Di1A6fzXYCY1IRpo=;
+ b=jnCPoZKdhAqBc7q1gEzbchc9mSG0Ir7Id+t0DTjGY1lCpub7v/Jr1N84rTO6eENEzAj/
+ qMMNcXw1IvdiFn1khLgRYAWfQvV451daPlNUakDTPgHeF/7o3rn6ThWk5Jlsr6pvetQS
+ GEP1r+HOLlIc3S0aLc1cs29z4HAaLTXQPb38eOHmYHuJ+OdcWHwnV9Z9bZhFnATTbHYr
+ lOPRW9gdKSHq9jUapBMD6XUKp6LyKqLT0ZuqnuiDqxpOFb7o1ZwxiFgSYpgxyzjDujqe
+ BsaZYr06GnWZDVuhj5pT86ilZQXUAHbZcKiS+mPpFYNOMaXg7ezR38K6H6sVgc+i0oSC GQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3aytvr0uy0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 10 Sep 2021 03:47:33 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 10 Sep
+ 2021 09:47:31 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Fri, 10 Sep 2021 09:47:31 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8657A2A9;
+        Fri, 10 Sep 2021 08:47:31 +0000 (UTC)
+Date:   Fri, 10 Sep 2021 08:47:31 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH 1/4] spi: amd: Refactor code to use less
+ spi_master_get_devdata
+Message-ID: <20210910084731.GU9223@ediswmail.ad.cirrus.com>
+References: <20210909111005.304101-1-tanureal@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210909111005.304101-1-tanureal@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: TTbCO2G_qxBwivlHGuUEcr5bZppdApW0
+X-Proofpoint-ORIG-GUID: TTbCO2G_qxBwivlHGuUEcr5bZppdApW0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the main KASAN config option CC_HAS_WORKING_NOSANITIZE_ADDRESS is
-checked for instrumentation-based modes. However, if
-HAVE_ARCH_KASAN_HW_TAGS is true all modes may still be selected.
+On Thu, Sep 09, 2021 at 12:10:02PM +0100, Lucas Tanure wrote:
+> Get master data in the start and then just use struct amd_spi
+> as it has the needed variable
+> 
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> ---
 
-To fix, also make the software modes depend on
-CC_HAS_WORKING_NOSANITIZE_ADDRESS.
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Fixes: 6a63a63ff1ac ("kasan: introduce CONFIG_KASAN_HW_TAGS")
-Signed-off-by: Marco Elver <elver@google.com>
----
- lib/Kconfig.kasan | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index 1e2d10f86011..cdc842d090db 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -66,6 +66,7 @@ choice
- config KASAN_GENERIC
- 	bool "Generic mode"
- 	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
-+	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
- 	select SLUB_DEBUG if SLUB
- 	select CONSTRUCTORS
- 	help
-@@ -86,6 +87,7 @@ config KASAN_GENERIC
- config KASAN_SW_TAGS
- 	bool "Software tag-based mode"
- 	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
-+	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
- 	select SLUB_DEBUG if SLUB
- 	select CONSTRUCTORS
- 	help
--- 
-2.33.0.309.g3052b89438-goog
-
+Thanks,
+Charles
