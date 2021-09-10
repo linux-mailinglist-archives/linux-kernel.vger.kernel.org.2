@@ -2,147 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E98406D89
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97767406D8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhIJOVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:21:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49182 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233837AbhIJOVG (ORCPT
+        id S233948AbhIJOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233706AbhIJOXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:21:06 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AE4dT0003764;
-        Fri, 10 Sep 2021 10:19:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=tRUcJmxZI06bgFTd2YoWwdkI1EIf07riiKhsAJZnDaQ=;
- b=ZrjhJ1IuAdWNBJqiskGsC8nlcEPv2s1p+8+Z2NVAeJzdMN7tF1ohextJz5ctdeZ1WNRX
- Mz/Gt2nmzq4JLvifwugJKJlHp9YhYxJPsA6iM9ww2a0YQ7Id3zypWL44V9zaex7rLrK1
- ZYLCP//kh+qz0aLcmSs982ehIrdsHC/St4FUg9MEv4CxnjKCE5XfudqJfS+WuxG1mbFN
- ZEi5dWH3+5JR2Sp7Wn1VwhU6qzmNYqEgH0w0ZA2Sieg23npxhE6n7WQVAqxWoX76ec70
- OXwOR+VNT4bIjt8uhJ/oOfJSy0NtC0wnKdgOzbS2Mzppoll1dNbFbg5TKCQzQqgNpzd8 wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ayu41hdew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 10:19:47 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18AE53FG004823;
-        Fri, 10 Sep 2021 10:19:46 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ayu41hde0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 10:19:46 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18AEHawv025614;
-        Fri, 10 Sep 2021 14:19:44 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3axcnq23d2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Sep 2021 14:19:43 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18AEFIxU58655226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 14:15:18 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3045C42041;
-        Fri, 10 Sep 2021 14:19:41 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BE31142042;
-        Fri, 10 Sep 2021 14:19:40 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Sep 2021 14:19:40 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Oliver O'Halloran" <oohall@gmail.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 1/1] powerpc: Drop superfluous pci_dev_is_added() calls
-Date:   Fri, 10 Sep 2021 16:19:40 +0200
-Message-Id: <20210910141940.2598035-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210910141940.2598035-1-schnelle@linux.ibm.com>
-References: <20210910141940.2598035-1-schnelle@linux.ibm.com>
+        Fri, 10 Sep 2021 10:23:04 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F483C061574;
+        Fri, 10 Sep 2021 07:21:52 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id j18so2511863ioj.8;
+        Fri, 10 Sep 2021 07:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zmNqBLewQaaKkP2q8Ul9Jyt5h75v47zNGniVQpRx2AQ=;
+        b=BxBv/+bSDLI1rN7kY8XSh3xYVqzyskdsnmX8S58laTteFNswfqpEKT5vDvYd+p6ZFp
+         K+YgWnIfDJjXKJWSZzSku7CrsWy2g9i73fBa37Qk9mZi2ur9oU8JJSdKqyUyqVaf/DNn
+         cq6xKKK6zf1YUKPJfLGux7i1iOeBrLqshxoMuTVYY+8YrWtR1k8TKSfcQ8qRRdBVRqCl
+         j5O3xOBe3hUIKHbgycyWH70+kET7/vrB9oM1a9qOde0cUzYY617O5Kq981HtkAPu3rcA
+         xbwnGYkMUsQIEsH4c7Hmz9vR3Eq2QXQYhEzpESGRNnFmL6DLg8sr2PSiXVARGq0zJo20
+         tOYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zmNqBLewQaaKkP2q8Ul9Jyt5h75v47zNGniVQpRx2AQ=;
+        b=mMxLq/IU7/1RCeF3JzGgqkggTAMO6Uo1mZ6JyRWohUQ+mfCNBd9Jq4apvJo6wRBPiP
+         ntH44JHXpb2DUCNYlkfV9CWbeDJrEt4VEKPQzS/etxbxCzjDeHOYpaWA6p+1A0bZnIx7
+         kP9JWc6O5IF08j3TFX8ooFAWIvYAAwvR7NSfIMV1KROkGm26RlmUOy3w/b+NGOHmk5HR
+         bJBYho9VygMDSq7uRSKBAPoHPrkB18KTB0gQY0njsbBsiLG1nHZDm6JIwkTYB1QrjOeM
+         ujyTd5xjT4I9Zbn77Z455UAkP/9HuSLdhqVq0ApKANCZzjFkWqffOmpK7lEAppcHsLss
+         dnEw==
+X-Gm-Message-State: AOAM531o4v0mULEQjaKqtTAT96ifF+86Rv0kJ6eJ7BhQOnwR07M90w9a
+        gW1eSogwf26Roc/3B8ZUu7c=
+X-Google-Smtp-Source: ABdhPJw+E68xCs6Oxl5jTnpHdh/LKCk9dItlsG58oCXjwyXFlCvMNuQLWdjghPO3ZsFIg2XOo6lY9Q==
+X-Received: by 2002:a6b:ba42:: with SMTP id k63mr7244772iof.37.1631283711819;
+        Fri, 10 Sep 2021 07:21:51 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id p19sm2504816ilj.58.2021.09.10.07.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 07:21:51 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5F92727C0054;
+        Fri, 10 Sep 2021 10:21:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 10 Sep 2021 10:21:50 -0400
+X-ME-Sender: <xms:-2k7YUCwiswyMHj6GVOeQ00rsSCmDUqDQrzC2KnDfZyCx7EkHDNK7Q>
+    <xme:-2k7YWinXPT9u4fMHllG6n0pGO077Uq-NmvE2_rELaRTReQXxCNpkQowtaelNk_vo
+    w5GJzXuK5KRPeevog>
+X-ME-Received: <xmr:-2k7YXkPG8Wge9vYRxS3NvWwOS1TTnwyhtEUnXWQpGvsndYzYPrUdgKfBAZFyw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
+    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:-2k7Yay427K9GVzuJn1nqf83X6dFt7jcNnvm0mjAdsvBlF2GOFGqdA>
+    <xmx:-2k7YZTtSzKpMOV2l85Pq-mykm0euZecMci-9L0hupB8kgqc8x-qow>
+    <xmx:-2k7YVa8HX-a31_WDjRpgf1WvXpBfOYh3qoB-auWr-_Y1P4vkfCiHQ>
+    <xmx:_mk7Ybme2Q-w1jWUSGEB1Lp8jbZOBaBE0CI0kNotzbKb5w8bJJcPvoMcT0c>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Sep 2021 10:21:47 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 22:20:13 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <YTtpnZuSId9yDUjB@boqun-archlinux>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+ <20210909180005.GA2230712@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: za8VTNRr0shtqDgsPfee0Ni4ctKNrmje
-X-Proofpoint-ORIG-GUID: LucwXuB3CGUb9u06TqyoDzboh2KLAZa7
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-10_04:2021-09-09,2021-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 impostorscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109100081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909180005.GA2230712@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On powerpc, pci_dev_is_added() is called as part of SR-IOV fixups
-that are done under pcibios_add_device() which in turn is only called in
-pci_device_add() whih is called when a PCI device is scanned.
+On Thu, Sep 09, 2021 at 11:00:05AM -0700, Paul E. McKenney wrote:
+[...]
+> 
+> Boqun, I vaguely remember a suggested change from you along these lines,
+> but now I cannot find it.  Could you please send it as a formal patch
+> if you have not already done so or point me at it if you have?
+> 
 
-Now pci_dev_assign_added() is called in pci_bus_add_device() which is
-only called after scanning the device. Thus pci_dev_is_added() is always
-false and can be dropped.
+Here is a draft patch based on the change I did when I discussed with
+Peter, and I really want to hear Alan's thought first. Ideally, we
+should also have related litmus tests and send to linux-arch list so
+that we know the ordering is provided by every architecture.
 
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Regards,
+Boqun
+
+--------------------------------->8
+Subject: [PATCH] tools/memory-model: Provide extra ordering for
+ lock-{release,acquire} on the same CPU
+
+A recent discussion[1] shows that we are in favor of strengthening the
+ordering of lock-release + lock-acquire on the same CPU: a lock-release
+and a po-after lock-acquire should provide the so-called RCtso ordering,
+that is a memory access S po-before the lock-release should be ordered
+against a memory access R po-after the lock-acquire, unless S is a store
+and R is a load.
+
+The strengthening meets programmers' expection that "sequence of two
+locked regions to be ordered wrt each other" (from Linus), and can
+reduce the mental burden when using locks. Therefore add it in LKMM.
+
+[1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
+
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- arch/powerpc/platforms/powernv/pci-sriov.c | 6 ------
- arch/powerpc/platforms/pseries/setup.c     | 3 +--
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ .../Documentation/explanation.txt             | 28 +++++++++++++++++++
+ tools/memory-model/linux-kernel.cat           |  6 ++--
+ 2 files changed, 31 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-index 28aac933a439..deddbb233fde 100644
---- a/arch/powerpc/platforms/powernv/pci-sriov.c
-+++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-@@ -9,9 +9,6 @@
+diff --git a/tools/memory-model/Documentation/explanation.txt b/tools/memory-model/Documentation/explanation.txt
+index 5d72f3112e56..d62de21f32c4 100644
+--- a/tools/memory-model/Documentation/explanation.txt
++++ b/tools/memory-model/Documentation/explanation.txt
+@@ -1847,6 +1847,34 @@ therefore the load of x must execute before the load of y.  Thus we
+ cannot have r1 = 1 and r2 = 0 at the end (this is an instance of the
+ MP pattern).
  
- #include "pci.h"
++This requirement also applies to a lock-release and a lock-acquire
++on different locks, as long as the lock-acquire is po-after the
++lock-release. Note that "po-after" means the lock-acquire and the
++lock-release are on the same cpu. An example simliar to the above:
++
++	int x, y;
++	spinlock_t s;
++	spinlock_t t;
++
++	P0()
++	{
++		int r1, r2;
++
++		spin_lock(&s);
++		r1 = READ_ONCE(x);
++		spin_unlock(&s);
++		spin_lock(&t);
++		r2 = READ_ONCE(y);
++		spin_unlock(&t);
++	}
++
++	P1()
++	{
++		WRITE_ONCE(y, 1);
++		smp_wmb();
++		WRITE_ONCE(x, 1);
++	}
++
+ This requirement does not apply to ordinary release and acquire
+ fences, only to lock-related operations.  For instance, suppose P0()
+ in the example had been written as:
+diff --git a/tools/memory-model/linux-kernel.cat b/tools/memory-model/linux-kernel.cat
+index 2a9b4fe4a84e..d70315fddef6 100644
+--- a/tools/memory-model/linux-kernel.cat
++++ b/tools/memory-model/linux-kernel.cat
+@@ -27,7 +27,7 @@ include "lock.cat"
+ (* Release Acquire *)
+ let acq-po = [Acquire] ; po ; [M]
+ let po-rel = [M] ; po ; [Release]
+-let po-unlock-rf-lock-po = po ; [UL] ; rf ; [LKR] ; po
++let po-unlock-lock-po = po ; [UL] ; (po|rf) ; [LKR] ; po
  
--/* for pci_dev_is_added() */
--#include "../../../../drivers/pci/pci.h"
--
- /*
-  * The majority of the complexity in supporting SR-IOV on PowerNV comes from
-  * the need to put the MMIO space for each VF into a separate PE. Internally
-@@ -228,9 +225,6 @@ static void pnv_pci_ioda_fixup_iov_resources(struct pci_dev *pdev)
+ (* Fences *)
+ let R4rmb = R \ Noreturn	(* Reads for which rmb works *)
+@@ -70,12 +70,12 @@ let rwdep = (dep | ctrl) ; [W]
+ let overwrite = co | fr
+ let to-w = rwdep | (overwrite & int) | (addr ; [Plain] ; wmb)
+ let to-r = addr | (dep ; [Marked] ; rfi)
+-let ppo = to-r | to-w | fence | (po-unlock-rf-lock-po & int)
++let ppo = to-r | to-w | fence | (po-unlock-lock-po & int)
  
- void pnv_pci_ioda_fixup_iov(struct pci_dev *pdev)
- {
--	if (WARN_ON(pci_dev_is_added(pdev)))
--		return;
--
- 	if (pdev->is_virtfn) {
- 		struct pnv_ioda_pe *pe = pnv_ioda_get_pe(pdev);
+ (* Propagation: Ordering from release operations and strong fences. *)
+ let A-cumul(r) = (rfe ; [Marked])? ; r
+ let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
+-	po-unlock-rf-lock-po) ; [Marked]
++	po-unlock-lock-po) ; [Marked]
+ let prop = [Marked] ; (overwrite & ext)? ; cumul-fence* ;
+ 	[Marked] ; rfe? ; [Marked]
  
-diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-index f79126f16258..2188054470c1 100644
---- a/arch/powerpc/platforms/pseries/setup.c
-+++ b/arch/powerpc/platforms/pseries/setup.c
-@@ -74,7 +74,6 @@
- #include <asm/hvconsole.h>
- 
- #include "pseries.h"
--#include "../../../../drivers/pci/pci.h"
- 
- DEFINE_STATIC_KEY_FALSE(shared_processor);
- EXPORT_SYMBOL(shared_processor);
-@@ -750,7 +749,7 @@ static void pseries_pci_fixup_iov_resources(struct pci_dev *pdev)
- 	const int *indexes;
- 	struct device_node *dn = pci_device_to_OF_node(pdev);
- 
--	if (!pdev->is_physfn || pci_dev_is_added(pdev))
-+	if (!pdev->is_physfn)
- 		return;
- 	/*Firmware must support open sriov otherwise dont configure*/
- 	indexes = of_get_property(dn, "ibm,open-sriov-vf-bar-info", NULL);
 -- 
-2.25.1
+2.32.0
 
