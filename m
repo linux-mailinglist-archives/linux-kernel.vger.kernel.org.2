@@ -2,227 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8358406C80
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB95406C8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhIJMxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233095AbhIJMxI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:53:08 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF27C061574;
-        Fri, 10 Sep 2021 05:51:57 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id n14-20020a05600c3b8e00b002f8bd2f8ab6so1372923wms.5;
-        Fri, 10 Sep 2021 05:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T0Kza21M5RkTzf291TUHaFKlBPBGzvLm8pO18XxAdkU=;
-        b=okHmHXfqY/Jx9vlmHAH+Mn9jwD9yT/V72hOa0fulm+VjLjVTTpDTOWGMo1DXPaeMAz
-         Kdy+uc5wFIhNt5LK8YQDMcdAG7yw0NEsSYnp6W/b7Qf7lL4ZmMjdYa7LE66nO8LODBOJ
-         n6yRU8O0DpDEX8tNLzpBPsDZYZcMQFFzAuVe+yuxjCynZEUy1KyC8IYrUhev53EYyqME
-         ps3c7BNBqkW3sZauO29gIfRopLRGNnBmvaS674DKYajnGfoPZDXiXg5Ckzo87rjxmMrd
-         /DtWKCQ/K73IC6ewIZL4ttKF8stRP4T+JWfC+Yw+e3Av7CtRKXhFxtOpUVpVg8RPc0ta
-         Mfwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T0Kza21M5RkTzf291TUHaFKlBPBGzvLm8pO18XxAdkU=;
-        b=GWhMxlxZDMz2YBht8HPsDTqKDIoP2inwHU4URiQlabtoC9crMZQWyn7pP89U7EBDKd
-         wt2skdOmLAqUiHdvLQEonG21R5716Hek+n7asHpgsOVUrOtxuapHz49LV7bTG8yePq37
-         0g97aKr2oMcxd+CuRwSZWqIrfWbMAu4VlrvPUVTEC24Sh7zFGMo5ZUGk2qp5pyOTVLRc
-         4QicUxtnLP2KC2eCU+gbaP/zKhyHzcIQvKilvy4YNKCMB5xm91+Du72GSwllmQ1RvwVJ
-         vsq8NQPANoRl3RM0TRYvIT2Z8/vCP4O24CV4YMLpWvpVZvEHK2Y+t6KjeuJ7rCTZEWMo
-         ZKvA==
-X-Gm-Message-State: AOAM5327A50cE1nD1tq2Rv7LdXLvIg8acgW0J1OcdFO8I1wMZeGyzMHZ
-        jCJrd3skpfyhkU/2RI59TyUE5KXDyIUbEkZqr3o=
-X-Google-Smtp-Source: ABdhPJwFbByDUlrrsQ6dQpRSGNqUcCD/KStLeVUDLPXetuY5wqSXTm+TQjY8RRqdkVfmvdTqDfZmaXjT3968OYGAPO4=
-X-Received: by 2002:a1c:4e02:: with SMTP id g2mr8342202wmh.91.1631278316328;
- Fri, 10 Sep 2021 05:51:56 -0700 (PDT)
+        id S233095AbhIJM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:57:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:56808 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231843AbhIJM5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:57:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3058D6D;
+        Fri, 10 Sep 2021 05:56:00 -0700 (PDT)
+Received: from [10.57.15.112] (unknown [10.57.15.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57DC83F5A1;
+        Fri, 10 Sep 2021 05:55:59 -0700 (PDT)
+Subject: Re: [PATCH] dma-debug: prevent an error message from causing runtime
+ problems
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        iommu@lists.linux-foundation.org, Christoph Hellwig <hch@lst.de>
+References: <20210910120541.39938-1-someguy@effective-light.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <215cd3ba-3f4c-ab74-c59e-f099fa64aaac@arm.com>
+Date:   Fri, 10 Sep 2021 13:55:52 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com> <1631092255-25150-5-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1631092255-25150-5-git-send-email-shengjiu.wang@nxp.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Fri, 10 Sep 2021 15:51:44 +0300
-Message-ID: <CAEnQRZBi6pMbuHTJF4yNzX_Lh-pYZc3LTNuKVs5pk-hNS-OWMQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] dt-bindings: dsp: fsl: update binding document for
- remote proc driver
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        linux-remoteproc@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210910120541.39938-1-someguy@effective-light.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 12:39 PM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> As there are two drivers for DSP on i.MX, one is for sound open
-> firmware, another is for remote processor framework. In order to
-> distinguish two kinds of driver, defining different compatible strings.
->
-> For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
-> are needed and the mailbox channel is different with SOF.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+On 2021-09-10 13:05, Hamza Mahfooz wrote:
+> For some drivers, that call add_dma_entry() from somewhere down the call
+> stack.
 
-Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+Nit: strictly, drivers don't call add_dma_entry(). Drivers only call the 
+DMA API functions, and it is the DMA API internals which take a detour 
+through dma-debug when desired.
 
+> If this error condition is triggered once, it causes the error
+> message to spam the kernel's printk buffer
+
+Is that true? It doesn't look like anything in dma-debug itself can 
+obviously lead to that; I was assuming that in Jeremy's case it's the 
+driver which has managed to do something such that every new mapping 
+call it makes ends up hitting the warning. A busy network interface is 
+probably more than capable of saturating the kernel log with a print for 
+every packet (particularly a great big 100GBE-capable multi-queue thing 
+like that one).
+
+> and bring the CPU usage up to
+> 100%. Also, since there is at least one driver that is in the mainline
+> and suffers from the error condition, it is more useful to WARN_ON() here
+> instead of just printing the error message (in hopes that it will make it
+> easier for other drivers that suffer from this issue to be spotted).
+> 
+> Link: https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com
+> Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
 > ---
->  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
->  1 file changed, 75 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> index 7afc9f2be13a..51ea657f6d42 100644
-> --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
->
->  maintainers:
->    - Daniel Baluta <daniel.baluta@nxp.com>
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
->
->  description: |
->    Some boards from i.MX8 family contain a DSP core used for
-> @@ -19,6 +20,10 @@ properties:
->        - fsl,imx8qxp-dsp
->        - fsl,imx8qm-dsp
->        - fsl,imx8mp-dsp
-> +      - fsl,imx8qxp-hifi4
-> +      - fsl,imx8qm-hifi4
-> +      - fsl,imx8mp-hifi4
-> +      - fsl,imx8ulp-hifi4
->
->    reg:
->      maxItems: 1
-> @@ -28,37 +33,63 @@ properties:
->        - description: ipg clock
->        - description: ocram clock
->        - description: core clock
-> +      - description: debug interface clock
-> +      - description: message unit clock
-> +    minItems: 3
-> +    maxItems: 5
->
->    clock-names:
->      items:
->        - const: ipg
->        - const: ocram
->        - const: core
-> +      - const: debug
-> +      - const: mu
-> +    minItems: 3
-> +    maxItems: 5
->
->    power-domains:
->      description:
->        List of phandle and PM domain specifier as documented in
->        Documentation/devicetree/bindings/power/power_domain.txt
-> +    minItems: 1
->      maxItems: 4
->
->    mboxes:
->      description:
->        List of <&phandle type channel> - 2 channels for TXDB, 2 channels for RXDB
-> +      or - 1 channel for TX, 1 channel for RX, 1 channel for RXDB
->        (see mailbox/fsl,mu.txt)
-> +    minItems: 3
->      maxItems: 4
->
->    mbox-names:
-> -    items:
-> -      - const: txdb0
-> -      - const: txdb1
-> -      - const: rxdb0
-> -      - const: rxdb1
-> +    oneOf:
-> +      - items:
-> +          - const: txdb0
-> +          - const: txdb1
-> +          - const: rxdb0
-> +          - const: rxdb1
-> +      - items:
-> +          - const: tx
-> +          - const: rx
-> +          - const: rxdb
->
->    memory-region:
->      description:
->        phandle to a node describing reserved memory (System RAM memory)
->        used by DSP (see bindings/reserved-memory/reserved-memory.txt)
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 4
-> +
-> +  firmware-name:
-> +    description: |
-> +      Default name of the firmware to load to the remote processor.
-> +
-> +  fsl,dsp-ctrl:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to syscon block which provide access for processor enablement
->
->  required:
->    - compatible
-> @@ -91,3 +122,41 @@ examples:
->          mboxes = <&lsio_mu13 2 0>, <&lsio_mu13 2 1>, <&lsio_mu13 3 0>, <&lsio_mu13 3 1>;
->          memory-region = <&dsp_reserved>;
->      };
-> +  - |
-> +    #include <dt-bindings/clock/imx8mp-clock.h>
-> +    dsp_reserved: dsp@92400000 {
-> +      reg = <0x92400000 0x1000000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring0: vdev0vring0@942f0000 {
-> +      reg = <0x942f0000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring1: vdev0vring1@942f8000 {
-> +      reg = <0x942f8000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0buffer: vdev0buffer@94300000 {
-> +      compatible = "shared-dma-pool";
-> +      reg = <0x94300000 0x100000>;
-> +      no-map;
-> +    };
-> +
-> +    dsp: dsp@3b6e8000 {
-> +      compatible = "fsl,imx8mp-hifi4";
-> +      reg = <0x3B6E8000 0x88000>;
-> +      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
-> +      clock-names = "ipg", "ocram", "core", "debug";
-> +      firmware-name = "imx/dsp/hifi4.bin";
-> +      power-domains = <&audiomix_pd>;
-> +      mbox-names = "tx", "rx", "rxdb";
-> +      mboxes = <&mu2 0 0>,
-> +               <&mu2 1 0>,
-> +               <&mu2 3 0>;
-> +      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
-> +                      <&dsp_vdev0vring1>, <&dsp_reserved>;
-> +      fsl,dsp-ctrl = <&audio_blk_ctrl>;
-> +    };
-> --
-> 2.17.1
->
+>   kernel/dma/debug.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+> index 6c90c69e5311..d9806689666e 100644
+> --- a/kernel/dma/debug.c
+> +++ b/kernel/dma/debug.c
+> @@ -567,7 +567,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+>   		pr_err("cacheline tracking ENOMEM, dma-debug disabled\n");
+>   		global_disable = true;
+>   	} else if (rc == -EEXIST) {
+> -		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported\n");
+> +		WARN_ONCE(1,
+> +			  pr_fmt("cacheline tracking EEXIST, overlapping mappings aren't supported\n"
+> +			 ));
+
+Unless there's some subtlety I'm missing, it would be better to use 
+err_printk() here - not only for consistency of output, but also to tie 
+in with dma-debug's existing output-limiting controls.
+
+Robin.
+
+>   	}
+>   }
+>   
+> 
