@@ -2,221 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C2A406D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03DE406D6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhIJOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbhIJOSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:18:20 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F07C061574;
-        Fri, 10 Sep 2021 07:17:09 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id q3so2510549iot.3;
-        Fri, 10 Sep 2021 07:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+sFLMZElAVHc/wW7dKbFnODg1P6YHS1rZdYgRGnxqS0=;
-        b=Qft7R5rG2nvgGRq3853xAqNE830wk0LN97/l7kmrjYH3QSgMA1lM5yhlDCDt9KQFt2
-         L4X2RNZre6WcHt7vDtM8cNHcJ5ArCyNxj8/pA+dTPaxlrW+lw6lo4PGMqY9zg04zp3gm
-         0GDlTScCyTMf4cx426ZHkzXTd3Nrl1n3jfywUULts7S97I6TZNvNVOFTFQr9Pj3Ty8bo
-         h8SGwswT8GP/B3Nl09DUbc5Xv38I/r+Sn7+IAO9I1OC6sF3bp+ni3oKPb8n/R0tMUoro
-         pwDrMtc6l0UsV517ErDebCx8SYZFA8/PeQWPN6VM0/JcryamzzGkgDkoG9aA+Egbnldq
-         PA5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+sFLMZElAVHc/wW7dKbFnODg1P6YHS1rZdYgRGnxqS0=;
-        b=A4Z+D761d/pStIXMI3D0qDfkuAaBKW9lTjX2v2pfJfPSNxqJ6V1z1CD+Sq4yGRHBZK
-         VzytDZ3CXybrbzvRPZAorTPw0V/AWWYW4/xei4Qf+s/P1L0vHkIa8oAHGfmGb0XNSYmj
-         ghmbBI9LGNRKEC5G97OQvgEG5DC1MpVj/MVj9LZDZevHXGOTFx9OEfZDqaaXq1o+BQzh
-         7s/HmCCpFvrXC5N7sX7o4G0SLT02XMyAao8qwmW7bcUuTAgKVo60ITrSBqoy1QOWsPtM
-         afJUWbnWI2EJjEpegkajUeBLwaM/wIPfMRPeHRMIO0hN5HPdhXg/kJWUCmF0b0eDK1Ni
-         r63g==
-X-Gm-Message-State: AOAM533+VJqHwjZM4lEj6IjKu9G4nQ7chTay1Jo3mE8VD+RJjjKXwzx3
-        SUyfCl5fXxOe/0m9Q8P3HJA=
-X-Google-Smtp-Source: ABdhPJzeCxfGxPrZUPLfvozxZ0shyhheF4J55KmxyhyGARd6ssgztvdemEa7XhocaMXlO9AHzEmghg==
-X-Received: by 2002:a6b:2b43:: with SMTP id r64mr7070754ior.187.1631283428903;
-        Fri, 10 Sep 2021 07:17:08 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id s18sm2679699iov.53.2021.09.10.07.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 07:17:08 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 5C5AF27C0054;
-        Fri, 10 Sep 2021 10:17:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 10 Sep 2021 10:17:07 -0400
-X-ME-Sender: <xms:4Gg7YUu3qodJvuVwXahBFi-cyeIKLd2NCvLbjMSz8PXGybx2AsYFmg>
-    <xme:4Gg7YReJd29j4_DE5rO0f-0VxYzi81e8xQBbsXCGLgsr7hgbGr5rVnhKc5vUu47oU
-    vXeNftoeGKt7p5nUg>
-X-ME-Received: <xmr:4Gg7YfxgpCUqQde-GLG4hT-v57Ei4i5wCmdSY9P0ttsJBcx2wThIuPPmtCT3OQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:4Gg7YXMfU-tuLy52oXdYRJmGpYumR5JGQEa-lJpk5Yf9DKEQ_RB51A>
-    <xmx:4Gg7YU967dQJQOx8sdTnvawrEfeS543qLRN4lQaCUq1HIYbJ841j7g>
-    <xmx:4Gg7YfWpusiEdG4g735ay0cGgGhV79vupRkG1chEyO6jXxCPbNcNjw>
-    <xmx:4mg7YfiezmjYkfU1QNLCoRh4maX8DW3rqmeADZG4rdkgkE2NRFjYfg5kW3A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Sep 2021 10:17:04 -0400 (EDT)
-Date:   Fri, 10 Sep 2021 22:15:30 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Dan Lustig <dlustig@nvidia.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mpe@ellerman.id.au
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-Message-ID: <YTtognqVF6UCHQ/7@boqun-archlinux>
-References: <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu>
- <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
- <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
- <20210909133535.GA9722@willie-the-truck>
- <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
- <YTqgSmX57l2hCMk0@boqun-archlinux>
- <YTsmZWGXOKlfgbh9@hirez.programming.kicks-ass.net>
- <YTstpCYfnL9P1sAA@boqun-archlinux>
- <20a453f3-9b1f-20ab-880b-1018b2e11664@nvidia.com>
+        id S233981AbhIJORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:17:48 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40641 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233806AbhIJORp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:17:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631283390;
+        bh=K/rOvSuYgaLnknL2KSEDyeYf85pxBp1RfczcK2sf6XI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Hj8dW57Pww3U3V7+GtXE5mdCuH0Ws+FugjziObUxVTAR4zC9IcQbj38K9e2XVgkp2
+         BqLpy8WpZ4uR7klbK/lIGyNdRP7PmMI3/uczieTB8dotWagtPC5xP1r02lrXNZdXF/
+         Pi6spJzIvNvsPeuZvWwLQtY0Ajf0y4TgmBMR5D8uYlesS/2I0wqP/Q+iGS4/GcG39t
+         IdJbQf+fcKLszSbCKyfoUuRFuthd2+kKvQYWRtox82H7Lil0TqgDOLqGev43ds4j0k
+         T7RYG69xX8EMFZ1JcmtDZBQRAEZeuR8/zhx0OAFN/Bu5tiB5fK4qhs+LxWnBeWjTCz
+         CNmaogFhUZX3A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H5dGP47xJz9sW4;
+        Sat, 11 Sep 2021 00:16:29 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
+        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com
+Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+In-Reply-To: <878s04my3b.fsf@mpe.ellerman.id.au>
+References: <20210909075700.4025355-1-eranian@google.com>
+ <20210909075700.4025355-2-eranian@google.com>
+ <20210909190342.GE4323@worktop.programming.kicks-ass.net>
+ <878s04my3b.fsf@mpe.ellerman.id.au>
+Date:   Sat, 11 Sep 2021 00:16:20 +1000
+Message-ID: <875yv8ms7f.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20a453f3-9b1f-20ab-880b-1018b2e11664@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 09:48:55AM -0400, Dan Lustig wrote:
-> On 9/10/2021 6:04 AM, Boqun Feng wrote:
-> > On Fri, Sep 10, 2021 at 11:33:25AM +0200, Peter Zijlstra wrote:
-> >> On Fri, Sep 10, 2021 at 08:01:14AM +0800, Boqun Feng wrote:
-> >>> On Thu, Sep 09, 2021 at 01:03:18PM -0400, Dan Lustig wrote:
-> >>>> On 9/9/2021 9:35 AM, Will Deacon wrote:
-> >>>>> On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
-> >>
-> >>>>>> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
-> >>>>>> similarly it marches the R from the R->RW fence, yielding an:
-> >>>>>>
-> >>>>>> 	RW->  W
-> >>>>>> 	    RmW
-> >>>>>> 	    R  ->RW
-> >>>>>>
-> >>>>>> ordering. It's the stores S and R that can be re-ordered, but not the
-> >>>>>> sections themselves (same on PowerPC and many others).
-> >>
-> >>>> I agree with Will here.  If the AMOSWAP above is actually implemented with
-> >>>> a RISC-V AMO, then the two critical sections will be separated as if RW,RW,
-> >>>> as Peter described.  If instead it's implemented using LR/SC, then RISC-V
-> >>>
-> >>> Just out of curiosity, in the following code, can the store S and load L
-> >>> be reordered?
-> >>>
-> >>> 	WRITE_ONCE(x, 1); // store S
-> >>> 	FENCE RW, W
-> >>>  	WRITE_ONCE(s.lock, 0); // unlock(s)
-> >>>  	AMOSWAP %0, 1, s.lock  // lock(s)
-> >>> 	FENCE R, RW
-> >>> 	r1 = READ_ONCE(y); // load L
-> >>>
-> >>> I think they can, because neither "FENCE RW, W" nor "FENCE R, RW" order
-> >>> them.
-> >>
-> >> I'm confused by your argument, per the above quoted section, those
-> >> fences and the AMO combine into a RW,RW ordering which is (as per the
-> >> later clarification) multi-copy-atomic, aka smp_mb().
-> >>
-> > 
-> > Right, my question is more about the reasoning about why fence rw,w +
-> > AMO + fence r,rw act as a fence rw,rw.
-> 
-> Is this a RISC-V question?  If so, it's as simple as:
+Michael Ellerman <mpe@ellerman.id.au> writes:
+> Peter Zijlstra <peterz@infradead.org> writes:
+>> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
+>>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+>>> index f92880a15645..eb11f383f4be 100644
+>>> --- a/include/uapi/linux/perf_event.h
+>>> +++ b/include/uapi/linux/perf_event.h
+>>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
+>>>  struct perf_branch_entry {
+>>>  	__u64	from;
+>>>  	__u64	to;
+>>> -	__u64	mispred:1,  /* target mispredicted */
+>>> -		predicted:1,/* target predicted */
+>>> -		in_tx:1,    /* in transaction */
+>>> -		abort:1,    /* transaction abort */
+>>> -		cycles:16,  /* cycle count to last branch */
+>>> -		type:4,     /* branch type */
+>>> -		reserved:40;
+>>> +	union {
+>>> +		__u64	val;	    /* to make it easier to clear all fields */
+>>> +		struct {
+>>> +			__u64	mispred:1,  /* target mispredicted */
+>>> +				predicted:1,/* target predicted */
+>>> +				in_tx:1,    /* in transaction */
+>>> +				abort:1,    /* transaction abort */
+>>> +				cycles:16,  /* cycle count to last branch */
+>>> +				type:4,     /* branch type */
+>>> +				reserved:40;
+>>> +		};
+>>> +	};
+>>>  };
+>>
+>>
+>> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
+>> one. Power folks, could you please have a look?
+>
+> The bit number of each field changes between big and little endian, but
+> as long as kernel and userspace are the same endian, and both only
+> access values via the bitfields then it works.
+...
+>
+> It does look like we have a bug in perf tool though, if I take a
+> perf.data from a big endian system to a little endian one I don't see
+> any of the branch flags decoded. eg:
+>
+> BE:
+>
+> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> ... branch stack: nr:28
+> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
+>
+> LE:
+>
+> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> ... branch stack: nr:28
+> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
+>                                                          ^
+>                                                          missing P
+>
+> I guess we're missing a byte swap somewhere.
 
-Yep, and thanks for the answer.
+Ugh. We _do_ have a byte swap, but we also need a bit swap.
 
-> 1) S and anything earlier are ordered before the AMO by the first fence
-> 2) L and anything later are ordered after the AMO by the second fence
-> 3) 1 + 2 = S and anything earlier are ordered before L or anything later
-> 
-> Since RISC-V is multi-copy atomic, so 1+2 just naturally compose
-> transitively.
-> 
-> > Another related question, can
-> > fence rw,w + store + fence w,rw act as a fence rw,rw by the similar
-> > reasoning? IOW, will the two loads in the following be reordered?
-> > 
-> > 	r1 = READ_ONCE(x);
-> > 	FENCE RW, W
-> > 	WRITE_ONCE(z, 1);
-> > 	FENCE W, RW
-> > 	r2 = READ_ONCE(y);
-> > 
-> > again, this is more like a question out of curiosity, not that I find
-> > this pattern is useful.
-> 
-> Does FENCE W,RW appear in some actual use case?  But yes, if it does
+That works for the single bit fields, not sure if it will for the
+multi-bit fields.
 
-I'm not aware of any, but probably because no other arch can order
-write->read without a full barrier (or release+acquire if RCsc), we have
-a few patterns in kernel where we only want to order write->read, and
-smp_mb()s are used, if on RISCV FENCE W,R is cheaper than FENCE RW,RW,
-then *in theory* we can have smp_wrmb() implemented as FENCE W,R on
-RISCV and smp_mb() on other archs.
+So that's a bit of a mess :/
 
-/me run
-
-And I'm sure there are cases that we use smp_mb() where only
-write->{read,write} is supposed to be ordered, so there may be use case
-by the same reason.
-
-I'm not proposing doing anything, just saying we don't use FENCE W,RW
-because there is no equilavent concept in other archs, so it's not
-modeled by an API. Besides, it may not be cheaper than FENCE RW,RW on
-RISCV.
-
-Regards,
-Boqun
-
-> appear, this sequence would also act as a FENCE RW,RW on RISC-V.
-> 
-> Dan
-> 
-> > Regards,
-> > Boqun
-> > 
-> >> As such, S and L are not allowed to be re-ordered in the given scenario.
-> >>
-> >>> Note that the reordering is allowed in LKMM, because unlock-lock
-> >>> only need to be as strong as RCtso.
-> >>
-> >> Risc-V is strictly stronger than required in this instance. Given the
-> >> current lock implementation. Daniel pointed out that if the atomic op
-> >> were LL/SC based instead of AMO it would end up being RCtso.
-> >>
+cheers
