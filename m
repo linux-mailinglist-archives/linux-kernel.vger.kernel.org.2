@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97181406FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F53406FCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhIJQjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:39:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhIJQjJ (ORCPT
+        id S229673AbhIJQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhIJQjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:39:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631291878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0CAdzkTXaTtsnhj1wGgFOSI+YlIYEhF5ZYiGUnrefr0=;
-        b=WJ0fC2G8edjNc9fSKXvZa8PoElDMgSi4MQkMiD1uVl92O3Aq7TLNdFcRsCWcaeVsEVWu6u
-        HqBUfau4VyCDl0L/K04b+lqLHAu0ZFN2sXjDaiWXoxakTrCwDX0b7apHrvPFtvjr0GjeAk
-        pigMg6Xr8SswTq1ftQ+cYARa2gtwasY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-wpfwJVvDPaaA7XFsknzfvg-1; Fri, 10 Sep 2021 12:37:55 -0400
-X-MC-Unique: wpfwJVvDPaaA7XFsknzfvg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 867781B18BC0;
-        Fri, 10 Sep 2021 16:37:53 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.195.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC61919C79;
-        Fri, 10 Sep 2021 16:37:50 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Prakash Sangappa <prakash.sangappa@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: Fwd: [RESEND RFC PATCH 0/3] Provide fast access to thread
- specific data
-References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
-        <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
-        <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
-Date:   Fri, 10 Sep 2021 18:37:49 +0200
-In-Reply-To: <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
-        (Peter Oskolkov's message of "Fri, 10 Sep 2021 08:18:10 -0700")
-Message-ID: <8735qcgzdu.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Fri, 10 Sep 2021 12:39:31 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B456C061574;
+        Fri, 10 Sep 2021 09:38:20 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id t19so5178017lfe.13;
+        Fri, 10 Sep 2021 09:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5QwWlin4ZDvaZz8INndl7HFIc0CWI9paTvPrHzicgUs=;
+        b=DUyvAmNot4XZwCNeqeKSLbIWXwtKyNpK9CSu8KQWthes7Z5JLPWMKwLOVx/BHZczvQ
+         I/n8sRYB6s4vEk1ADPAj5goJ4z80hq3K6CX5/k2uaSkbcHBuzSTFLUNN3oI3+0qK9CxD
+         c2PDrR2MGkAso0PWf+M3yaSqqXKGYMjD8GFvRGh7uxrvGGbDbdhhBtqmHdzsWRn8hfTp
+         rZ6aG4IPiH0u7FNxzfp36biOhtWvnGRWrlFgp0ooVeGjP/uJY3r87EhxXoSJc4u/lM2r
+         5kq8NHFPQN4fe8ay62pP74YwkZqr5mdz+y2K+roRYXMWS55DOKnI6fHbwfEvWqRyndI+
+         3FGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5QwWlin4ZDvaZz8INndl7HFIc0CWI9paTvPrHzicgUs=;
+        b=2VX0fdr59j1QZ2qHPdBw8oFrvWY8l8OvlpL3SPA8QsRLIRy+Z+bMATKI2e3ujh382i
+         4BOIiWm+AGsFjccgodaT4yvpTT/aMn7oF4UsmU4GkGbvasHsF85a37TbpbNaV3UzplKC
+         bc4sfkORWINNAG7NnM2iq+cXBrEw3Pshnoi5lZJPdEqeqXBDcwC+pRhCQFi3FPh2aVI+
+         6mh18vQrYxsW5QnZs9BuVuE/MADK5+VWL9OV2grNPfIY3Bpj/u7Ds1nOVEqnNAMoNhdD
+         Zp3JJrErx4x1whcJYEE5/w2yqDZ/MH/Fzc7+hadxWmh75ilQSX5xLCdoLy5YKTGAr7y1
+         cOpg==
+X-Gm-Message-State: AOAM530E6x/tu8joTOxoeOYMn9IHH8nSg6cHU3GqU3St6vFVxoF4B3Ok
+        3ShQMzP4vnvHAv2mndoKvh657olP/bvG9Q==
+X-Google-Smtp-Source: ABdhPJyBMNpyr6O/YeNDwI+y61ms2IlKVu+yvNY5ICj6QQaRGZ22URyufC1dKc7Zr1+Qr8oBeU+AUw==
+X-Received: by 2002:ac2:4db9:: with SMTP id h25mr4667412lfe.298.1631291898449;
+        Fri, 10 Sep 2021 09:38:18 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id u17sm675056lja.45.2021.09.10.09.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:38:17 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 19:38:16 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 17/31] staging: wfx: simplify hif_join()
+Message-ID: <20210910163816.jsujo3hsw7roerd5@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-18-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210910160504.1794332-18-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Oskolkov:
+On Fri, Sep 10, 2021 at 06:04:50PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> 
+> The new code is smaller.
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/staging/wfx/hif_tx.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+> index 6ffbae32028b..aea0ed55edc6 100644
+> --- a/drivers/staging/wfx/hif_tx.c
+> +++ b/drivers/staging/wfx/hif_tx.c
+> @@ -306,10 +306,7 @@ int hif_join(struct wfx_vif *wvif, const struct ieee80211_bss_conf *conf,
+>  		return -ENOMEM;
+>  	body->infrastructure_bss_mode = !conf->ibss_joined;
+>  	body->short_preamble = conf->use_short_preamble;
+> -	if (channel->flags & IEEE80211_CHAN_NO_IR)
+> -		body->probe_for_join = 0;
+> -	else
+> -		body->probe_for_join = 1;
+> +	body->probe_for_join = !(channel->flags & IEEE80211_CHAN_NO_IR);
 
-> In short, due to the need to read/write to the userspace from
-> non-sleepable contexts in the kernel it seems that we need to have some
-> form of per task/thread kernel/userspace shared memory that is pinned,
-> similar to what your sys_task_getshared does.
+Also harder to read imo because this is negative. But I see that whole
+code is made for really really really compact so maybe it's same style
+as you have done in past.
 
-In glibc, we'd also like to have this for PID and TID.  Eventually,
-rt_sigprocmask without kernel roundtrip in most cases would be very nice
-as well.  For performance and simplicity in userspace, it would be best
-if the memory region could be at the same offset from the TCB for all
-threads.
-
-For KTLS, the idea was that the auxiliary vector would contain size and
-alignment of the KTLS.  Userspace would reserve that memory, register it
-with the kernel like rseq (or the robust list pointers), and pass its
-address to the vDSO functions that need them.  The last part ensures
-that the vDSO functions do not need non-global data to determine the
-offset from the TCB.  Registration is still needed for the caches.
-
-I think previous discussions (in the KTLS and rseq context) did not have
-the pinning constraint.
-
-Thanks,
-Florian
-
+>  	body->channel_number = channel->hw_value;
+>  	body->beacon_interval = cpu_to_le32(conf->beacon_int);
+>  	body->basic_rate_set =
+> -- 
+> 2.33.0
+> 
