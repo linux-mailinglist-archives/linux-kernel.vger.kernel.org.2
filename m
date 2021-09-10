@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164BB407222
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A277940722D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhIJTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:54:14 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49136 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhIJTyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:54:10 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E96651C0B7A; Fri, 10 Sep 2021 21:52:56 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 21:52:56 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/26] 5.10.64-rc1 review
-Message-ID: <20210910195256.GA16729@amd>
-References: <20210910122916.253646001@linuxfoundation.org>
+        id S233187AbhIJT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:57:05 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:58336 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230489AbhIJT5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 15:57:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1631303753;
+  x=1662839753;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RxHsFDpgPb8WljFHoMd0jVOTaLKbxwOshUbSMEYRLiE=;
+  b=aUdh8gYDg1z9HLxVzjuZfPHk7QRGtAZVH6tzgrn+bt3icfcIpklWOThM
+   abLetnVkMnaikdNa2WBC0oDybvdbSFDFxqTe/VRggwZsPGg2MWK3SNZD9
+   Qa9+tXycJHWgv9GPGo7mzLP1aQhsuvfjn3iEvhFqoKAlfe7MTcTw8Z1U0
+   Y9q0YiFOFM35uYmn+Cua0FcWu4Mp9n4Jn0vJIzICCZuIsdslyWENTE5ZM
+   gpYyWjE2nB7bHsVEBVK1cGNySO8EOag8k+1AdSqRbx3HoAwYJS/6uJyfn
+   8f2j4WEFoBjt23lykILb0fV5sqIRKy+3K42I5Z79mDwmDbDy1cZYVbECR
+   g==;
+From:   Jesper Nilsson <jesper.nilsson@axis.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <kernel@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: stmmac: allow CSR clock of 300MHz
+Date:   Fri, 10 Sep 2021 21:55:34 +0200
+Message-ID: <20210910195535.12533-1-jesper.nilsson@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Synopsys Ethernet IP uses the CSR clock as a base clock for MDC.
+The divisor used is set in the MAC_MDIO_Address register field CR
+(Clock Rate)
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The divisor is there to change the CSR clock into a clock that falls
+below the IEEE 802.3 specified max frequency of 2.5MHz.
 
-Hi!
+If the CSR clock is 300MHz, the code falls back to using the reset
+value in the MAC_MDIO_Address register, as described in the comment
+above this code.
 
-> This is the start of the stable review cycle for the 5.10.64 release.
-> There are 26 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+However, 300MHz is actually an allowed value and the proper divider
+can be estimated quite easily (it's just 1Hz difference!)
 
-CIP testing did not find any problems here:
+A CSR frequency of 300MHz with the maximum clock rate value of 0x5
+(STMMAC_CSR_250_300M, a divisor of 124) gives somewhere around
+~2.42MHz which is below the IEEE 802.3 specified maximum.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
+For the ARTPEC-8 SoC, the CSR clock is this problematic 300MHz,
+and unfortunately, the reset-value of the MAC_MDIO_Address CR field
+is 0x0.
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+This leads to a clock rate of zero and a divisor of 42, and gives an
+MDC frequency of ~7.14MHz.
 
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Allow CSR clock of 300MHz by making the comparison inclusive.
 
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index ece02b35a6ce..6560d9f24715 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -309,7 +309,7 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
+ 			priv->clk_csr = STMMAC_CSR_100_150M;
+ 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
+ 			priv->clk_csr = STMMAC_CSR_150_250M;
+-		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
++		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
+ 			priv->clk_csr = STMMAC_CSR_250_300M;
+ 	}
+ 
+-- 
+2.20.1
 
-iEYEARECAAYFAmE7t5cACgkQMOfwapXb+vKXxQCgl570TAs+WbylFNnJ1kk1tCnM
-NvwAnjYMQwuzpzh1nTL/iwcq95YrnOni
-=OAPr
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
