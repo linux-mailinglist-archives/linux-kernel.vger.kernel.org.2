@@ -2,273 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644E840735E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4B7407360
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhIJWaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
+        id S231160AbhIJWet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhIJWaJ (ORCPT
+        with ESMTP id S229560AbhIJWeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:30:09 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B316C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:28:58 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id q68so3101877pga.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:28:58 -0700 (PDT)
+        Fri, 10 Sep 2021 18:34:46 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8A0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:33:35 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id bb10so2067514plb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4upt3twKDfZzhgS0KgOjUOkdNu2DrvH+oHdfHKvpBis=;
-        b=ijf1cAa06KmG8VG4yG/vZj+aKdYQHscgegBlH1jKsvQ6Olz+GvbOeVuG/VZzCXTKpg
-         1caEROaD1K+MxvAqmwSEhnxizRgmKKWg9iOjRiozofTqfKug6x4aTGevh7FD91sp6txx
-         ctJcUmm3qc9e2W0+XN9tBq/Eu1EWiueXeIDzQnQdAlKroh3d5Ox4AqoUbSWLGLVT4JGh
-         uJSQsMYkjApL6Swo2Tt/Q7sK8d0JE4RfVEC+WqrPHjOG735oCN7GFv9qr9yBOkBiVSZl
-         ATbdKldN1HnauUXPEJ6FgT6HZzCO5StEKyrLE9VGVZBJ+kSAAPXFexsw4Zdetmapf/ym
-         AfNQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KogNB3CtDBsoiP5ldOgQwTIvqBJIsD4GKdTNops/1yQ=;
+        b=UAcBDFc4nu5xZI6NItqQaW4uU+bEx/u8k4HW1GNr1alzZ+dJCw5o4F/TIiweOUn9XM
+         jfkwHzpJAGwuzuC1y/meZn2t0ezhHF2T2AtC5ptWbsnG6Bf410hWfZ/8t2wce4j9GqRc
+         OP2T/PaLaV6KNHZFyq94a1gz+S+v0PEJNN5kI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4upt3twKDfZzhgS0KgOjUOkdNu2DrvH+oHdfHKvpBis=;
-        b=HlVoCycdUyAFCRBHSq7VY57//nhvma2zOwy+AOtPf8jjDhxGfjsDYe9i7jJL3aRe0u
-         ezbara5q8Tj3r7AlYVLgY+0nyydVpw7lcFT9+i8NVMypRDo6XsoIqTT4OPg6YAiEkyhW
-         T1YLsBXWPqsgO5I2OaBBw3okPH6hbj4zyumoH/+BcqGAOU8NN8VgziI7xEuvVeIt45yH
-         qp6GSQYxGUt1U3iJ05KEob8Q2HQ3pDAVtxcCd7Sopyxlzqq0T8HHm/EL+inI9sz/ikJF
-         Je7oNC2LLkEfMxRkbLilWJ/b4I2nSIfzE1BYcCXOyVnruCy58f+8q+ZDubHHNwzzOYSy
-         ucmQ==
-X-Gm-Message-State: AOAM5330gA4baL0aWVYJURhgE0/I41DzV8GMMM6Z8fqfVFxaa7EngdwB
-        3L+c35uMD5U6p+Y0PwWJUtqH0A==
-X-Google-Smtp-Source: ABdhPJybrp1lFRB62MiX2OEEesSapj9DXuY35HgMvFjaHgw34dnJ1mADN2UED3P1jGz9j10NtpsZ3Q==
-X-Received: by 2002:a63:f913:: with SMTP id h19mr9284584pgi.351.1631312937535;
-        Fri, 10 Sep 2021 15:28:57 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x65sm494491pfb.29.2021.09.10.15.28.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KogNB3CtDBsoiP5ldOgQwTIvqBJIsD4GKdTNops/1yQ=;
+        b=XCu6UGTFhSoROQkTNzcwbnnDzsa8ikTtuxaRbrgd102qwk4t5bh6LT4f/fwygNCwtX
+         TzYHKr1oQSPpYF5sBjAWQQ4gSHJqoZViO0mIxSgeY6Ok3llYSKZk8t5z9AAN7wQ+0DqN
+         DaZqLmupG5iqHKu+KJhf7bfTUG+S3VPS6/7auiRNWn7iyB/fJsfB6n8fYNh+Llhj0O89
+         WqgVoAFNfu53n5l16NukujSNcjGKMpz4/9tlRTtoQDBpJOI8+z8Uxg0uMwKQLTOdBpIe
+         I34hv4hqUiXd2bZQdWSu0RTFaOEVcX5WDuaLTNERrWFNHrDZL8rJ6igqE9tjBI2Zaxag
+         cYUQ==
+X-Gm-Message-State: AOAM531YMANY4pwIf/AqEdI20pNsmoWC2Xeamn6PIg2AO3WwrPTwwWiI
+        xm++sFqeSBE5LqgsVkQSW+7CMA==
+X-Google-Smtp-Source: ABdhPJzfwmfRvWdToI2+EeTaBgjO6k13GnYIyiNMix4a+TwjSBOIXZho41aZN2Zo/RN4o0U7QfITCg==
+X-Received: by 2002:a17:90b:4f8f:: with SMTP id qe15mr12032956pjb.37.1631313214885;
+        Fri, 10 Sep 2021 15:33:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c11sm5801619pfm.55.2021.09.10.15.33.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 15:28:57 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 22:28:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Fri, 10 Sep 2021 15:33:34 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>
-Subject: Re: [PATCH v4 5/6] KVM: x86: Support interrupt dispatch in x2APIC
- mode with APIC-write VM exit
-Message-ID: <YTvcJZSd1KQvNmaz@google.com>
-References: <20210809032925.3548-1-guang.zeng@intel.com>
- <20210809032925.3548-6-guang.zeng@intel.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] x86/asm: Fix setz size enqcmds() build failure
+Date:   Fri, 10 Sep 2021 15:33:32 -0700
+Message-Id: <20210910223332.3224851-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809032925.3548-6-guang.zeng@intel.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1604; h=from:subject; bh=E3AZeKoawYriHgTNF4IibG7kRb7S+kCAfy4Ad/M7+Zc=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhO907BcW/2wXObLve9DtfyCZRObXWuInD8NopPI3D GjS1i0qJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTvdOwAKCRCJcvTf3G3AJmvAD/ 9rKjmYwePN6cFMXAGn+acaF/iBCzmO+UhDVFUKBzchwyPg6VuQVIe+bxX6vjUucMXUlAtodrf6dNCp A2yOiIuNFTJge5PTr88TF3Ym5riBXNOJn5Ottojs+BQae/sV70M+LFda0pxThtviA632LB5k2lzR/D 8HDHNgD8SIzC/bfRaRJEE4+p+6u3lWZOUVuVL36W0WlGK7t/a90EjgUnX3Dg5z6To04woiBWIsTKM2 hIHSjBJy+qj4i4mnb/I9d7S2EYVpYXYngjljwQr4paBZSOSHMWYXBX387L3BOYOwbIOyr9ty4Q1+hi BU87g0w2COuBanDs8MFMhp2Z1mdhwTgrnXBKy7/BKPNc55nws4ObVNa8JmOu8k2JDxeDav3DR4SeSl t8JqzE4XE7YvgpKUMtBJta8DC+xHJBg6GBC8ENgo9PwlMY6pAsDI3OwNMijay84Om8ZPUS89rgbmAx XVtqaCn6tOZv4OXxRPupCuMY6CVHjmtmxmW5onI8gP6jwGDjupo8WHUfuBemug9Qoh8428PjxfOYLP w83Hvjnr4u6+zy8trHar6m39tdlJvwUmgBbTVPmEqpzoRCCR4YDFBz0wxNGd/3agEdUACD+7CiM2Wm ls4IGR4fQvtlDAr9P33+D25h1F7F4oldm+dmHzOIhTYmn3nvrXH0xQtnmXOw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021, Zeng Guang wrote:
-> Since IA x86 platform introduce features of IPI virtualization and
-> User Interrupts, new behavior applies to the execution of WRMSR ICR
+When building under GCC 4.9 and 5.5:
 
-What do User Interrupts have to do with anything?
+arch/x86/include/asm/special_insns.h: Assembler messages:
+arch/x86/include/asm/special_insns.h:286: Error: operand size mismatch for `setz'
 
-> register that causes APIC-write VM exit instead of MSR-write VM exit
-> in x2APIC mode.
+Fix the type to "bool" for condition code arguments, as documented.
 
-Please lead with what support is actually being added, and more directly state
-what the new behavior actually is, e.g. when should KVM expect these types of
-traps.  The shortlog helps a bit, but APIC-write is somewhat ambiguous without
-the context that it refers to the trap-like exits, not exception-like exits on
-the WRMSR itself.
-
-Peeking ahead, this probably should be squashed with the next patch that adds
-IPI virtualizatio support.  Without that patch's code that disables ICR MSR
-intercepts for IPIv, this patch makes zero sense.
-
-I'm not totally opposed to splitting IPIv support into two patches, I just don't
-like splitting out this tiny subset that makes zero sense without the IPIv
-code/context.  I assume you took this approach so that the shortlog could be
-"KVM: VMX:" for the IPIv code.  IMO it's perfectly ok to keep that shortlog even
-though there are minor changes outside of vmx/.  VMX is the only user of
-kvm_apic_write_nodecode(), so it's not wrong to say it affects only VMX.
-
-> This requires KVM to emulate writing 64-bit value to offset 300H on
-> the virtual-APIC page(VICR) for guest running in x2APIC mode when
-
-Maybe stylize that as vICR to make it stand out as virtual ICR?
-
-> APIC-wrtie VM exit occurs. Prevoisely KVM doesn't consider this
-       ^^^^^                 ^^^^^^^^^^
-       write                 Previously
-
-> situation as CPU never produce APIC-write VM exit in x2APIC mode before.
-> 
-> Signed-off-by: Zeng Guang <guang.zeng@intel.com>
-> ---
->  arch/x86/kvm/lapic.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index ba5a27879f1d..0b0f0ce96679 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2188,7 +2188,14 @@ void kvm_apic_write_nodecode(struct kvm_vcpu *vcpu, u32 offset)
->  	/* hw has done the conditional check and inst decode */
->  	offset &= 0xff0;
->  
-> -	kvm_lapic_reg_read(vcpu->arch.apic, offset, 4, &val);
-
-Probably worth snapshotting vcpu->arch.apic.
-
-> +	if (apic_x2apic_mode(vcpu->arch.apic) && (offset == APIC_ICR)) {
-
-
-A comment here would be _extremely_ helpful.  IIUC, this path is reached when IPIv
-is enabled for all ICR writes that can't be virtualized, e.g. broadcast IPIs.
-
-And I'm tempted to say this should WARN and do nothing if KVM gets an exit on
-anything except ICR writes.
-
-> +		u64 icr_val = *((u64 *)(vcpu->arch.apic->regs + offset));
-
-Maybe just bump "val" to a u64?
-
-Rather than open code this, can't this be:
-
-		kvm_lapic_reg_read(apic, offset, 8, &val);
-> +
-> +		kvm_lapic_reg_write(vcpu->arch.apic, APIC_ICR2, (u32)(icr_val>>32));
-> +		val = (u32)icr_val;
-
-Hmm, this is the third path that open codes the ICR2:ICR split.  I think it's
-probably worth adding a helper (patch below), and this can become:
-
-void kvm_apic_write_nodecode(struct kvm_vcpu *vcpu, u32 offset)
-{
-	struct kvm_lapic *apic = vcpu->arch.apic;
-	u64 val = 0;
-
-	/* hw has done the conditional check and inst decode */
-	offset &= 0xff0;
-
-	/* TODO: optimize to just emulate side effect w/o one more write */
-	if (apic_x2apic_mode(apic)) {
-		if (WARN_ON_ONCE(offset != APIC_ICR))
-			return 1;
-
-		kvm_lapic_reg_read(apic, offset, 8, &val);
-		kvm_lapic_reg_write64(apic, offset, val);
-	} else {
-		kvm_lapic_reg_read(apic, offset, 4, &val);
-		kvm_lapic_reg_write(apic, offset, val);
-	}
-}
-
-There is some risk my idea will backfire if the CPU traps other WRMSRs, but even
-then the pedant in me thinks the code for that should be:
-
-
-	if (apic_x2apic_mode(apic)) {
-		int size = offset == APIC_ICR ? 8 : 4;
-
-		kvm_lapic_reg_read(apic, offset, size, &val);
-		kvm_lapic_reg_write64(apic, offset, val);
-	} else {
-		...
-	}
-
-or worst case scenario, move the APIC_ICR check back so that the non-ICR path
-back to "if (apic_x2apic_mode(vcpu->arch.apic) && (offset == APIC_ICR))" so that
-it naturally falls into the 4-byte read+write.
-
-> +	} else {
-> +		kvm_lapic_reg_read(vcpu->arch.apic, offset, 4, &val);
-> +	}
->  
->  	/* TODO: optimize to just emulate side effect w/o one more write */
->  	kvm_lapic_reg_write(vcpu->arch.apic, offset, val);
-> -- 
-> 2.25.1
-
-
-From c7641cf0c2ea2a1c5e6dda4007f8d285595ff82d Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Fri, 10 Sep 2021 15:07:57 -0700
-Subject: [PATCH] KVM: x86: Add a helper to handle 64-bit APIC writes to ICR
-
-Add a helper to handle 64-bit APIC writes, e.g. for x2APIC WRMSR, to
-deduplicate the handling of ICR writes, which KVM needs to emulate as
-back-to-back writes to ICR2 and then ICR.  Future support for IPI
-virtualization will add yet another path where KVM must handle a 64-bit
-APIC write.
-
-Opportunistically fix the comment; ICR2 holds the destination (if there's
-no shorthand), not the vector.
-
-No functional change intended.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
+Co-developed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: kernel test robot <lkp@intel.com>
+Cc: Ben Widawsky <ben.widawsky@intel.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/kvm/lapic.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+I tripped over this myself, but I found Arnd's version, so this is
+basically a v2 of:
+https://lore.kernel.org/lkml/20210802145356.1154321-1-arnd@kernel.org/
+---
+ arch/x86/include/asm/special_insns.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 76fb00921203..5f526ee10301 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2183,6 +2183,14 @@ void kvm_lapic_set_eoi(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_lapic_set_eoi);
-
-+static int kvm_lapic_reg_write64(struct kvm_lapic *apic, u32 reg, u64 data)
-+{
-+	/* For 64-bit ICR writes, set ICR2 (dest) before ICR (command). */
-+	if (reg == APIC_ICR)
-+		kvm_lapic_reg_write(apic, APIC_ICR2, (u32)(data >> 32));
-+	return kvm_lapic_reg_write(apic, reg, (u32)data);
-+}
-+
- /* emulate APIC access in a trap manner */
- void kvm_apic_write_nodecode(struct kvm_vcpu *vcpu, u32 offset)
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index f3fbb84ff8a7..68c257a3de0d 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -275,7 +275,7 @@ static inline int enqcmds(void __iomem *dst, const void *src)
  {
-@@ -2794,10 +2802,7 @@ int kvm_x2apic_msr_write(struct kvm_vcpu *vcpu, u32 msr, u64 data)
- 	if (reg == APIC_ICR2)
- 		return 1;
-
--	/* if this is ICR write vector before command */
--	if (reg == APIC_ICR)
--		kvm_lapic_reg_write(apic, APIC_ICR2, (u32)(data >> 32));
--	return kvm_lapic_reg_write(apic, reg, (u32)data);
-+	return kvm_lapic_reg_write64(apic, reg, data);
- }
-
- int kvm_x2apic_msr_read(struct kvm_vcpu *vcpu, u32 msr, u64 *data)
-@@ -2828,10 +2833,7 @@ int kvm_hv_vapic_msr_write(struct kvm_vcpu *vcpu, u32 reg, u64 data)
- 	if (!lapic_in_kernel(vcpu))
- 		return 1;
-
--	/* if this is ICR write vector before command */
--	if (reg == APIC_ICR)
--		kvm_lapic_reg_write(apic, APIC_ICR2, (u32)(data >> 32));
--	return kvm_lapic_reg_write(apic, reg, (u32)data);
-+	return kvm_lapic_reg_write64(apic, reg, data);
- }
-
- int kvm_hv_vapic_msr_read(struct kvm_vcpu *vcpu, u32 reg, u64 *data)
---
+ 	const struct { char _[64]; } *__src = src;
+ 	struct { char _[64]; } __iomem *__dst = dst;
+-	int zf;
++	bool zf;
+ 
+ 	/*
+ 	 * ENQCMDS %(rdx), rax
+-- 
+2.30.2
 
