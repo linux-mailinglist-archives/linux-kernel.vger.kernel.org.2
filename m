@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF8C406D4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92BF406D4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233860AbhIJOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
+        id S233769AbhIJOJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233812AbhIJOGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD1C6108B;
-        Fri, 10 Sep 2021 14:05:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631282727;
-        bh=D2ami6yF6KBlKQzHAl1TD6Ie2GMhTERSAFckVxM7qDI=;
+        id S233588AbhIJOJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:09:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9338261026;
+        Fri, 10 Sep 2021 14:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631282887;
+        bh=jy8iX7u8N4kahz8YNLrYTS1/6jQuiJV9E8sScRt+fbs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SYU2n9qOpffQKO4UmXliwAmk++ymTkgMWHGg2t5nmxSMSvujaxGbg/3LJc6FBjuAw
-         pNvlGoZ8qaFFMOZU3YJyF1P1aIHLrHsNRkhEjJ6iTtWIxQJ6awFbmtxidr+50bdI2c
-         P+c1yCks6S8ZAWu8UESmCX5XvQPnWfCvh1MuUI3g=
-Date:   Fri, 10 Sep 2021 16:05:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
- /sys/devices/system/node/node*/meminfo
-Message-ID: <YTtmJAgOllgtsIDh@kroah.com>
-References: <20210910001726.811497-1-jarkko@kernel.org>
- <YTsAjCZQ6AaWDjD1@kroah.com>
- <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
+        b=TEVZL4qhDtpLJT4O9J6GdfWlXs8ZBQwzGvrpixIarIdLGiw+i3eD3D2Md7fRrlSrJ
+         fy8gfOtYT4u9Fxg+I5OBnqKWzFQpRbK4DSNOgsgdGXhMr8ak8ONujz+U9hmxh8j+IZ
+         73u7lrQRRP0Pdwh6KXyjJdbEK5x+TSrsDz76wUukOkFk/wAA4C/AFHgZKALwi3nENR
+         cDzjcS2Q+r7/d2GwYGSYFSyM3t10D5vVyoDqwsjzMnL+PXAO9gpzOeWXAYfxAhbPgP
+         saPut2BhoqZDw6c+i8GXXTCPBqJJr2CzlrCHoQBJwp5940CZ0txHZFTJ0lQea1CVFw
+         4fLpCmohatEdg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6E42A4038F; Fri, 10 Sep 2021 11:08:02 -0300 (-03)
+Date:   Fri, 10 Sep 2021 11:08:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf report: Add support to print a textual
+ representation of IBS raw sample data
+Message-ID: <YTtmwrZ6iy0TzG3l@kernel.org>
+References: <20210817221509.88391-1-kim.phillips@amd.com>
+ <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
+ <YTth5DLWGbyAzxvQ@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YTth5DLWGbyAzxvQ@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:17:44PM +0300, Jarkko Sakkinen wrote:
-> On Fri, 2021-09-10 at 08:51 +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
-> > > The amount of SGX memory on the system is determined by the BIOS and it
-> > > varies wildly between systems.  It can be from dozens of MB's on desktops
-> > > or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> > > sometimes useful to know the amount of usable SGX memory in the system.
-> > > 
-> > > Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
-> > > showing the total SGX memory in each NUMA node. The total memory for
-> > > each NUMA node is calculated by adding the sizes of contained EPC
-> > > sections together.
-> > > 
-> > > Introduce arch_node_read_meminfo(), which can optionally be rewritten by
-> > > the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
-> > > 
-> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > ---
-> > > v4:
-> > > * A new patch.
-> > >  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
-> > >  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
-> > >  drivers/base/node.c            | 10 +++++++++-
-> > >  3 files changed, 29 insertions(+), 1 deletion(-)
+Em Fri, Sep 10, 2021 at 10:47:16AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Thu, Sep 09, 2021 at 04:58:12PM -0500, Kim Phillips escreveu:
+> > Hi Arnaldo,
 > > 
-> > Where is the Documentation/ABI/ update for this new sysfs file?
+> > Can you please take a look at applying this series?  Its kernel-side
+> > dependent series has already been applied and is in Linus' master.
 > 
-> It's has been existed for a long time, e.g.
+> Sure, I'm now trying to fix this:
 > 
->  cat /sys/devices/system/node/node0/meminfo
-> Node 0 MemTotal:       32706792 kB
-> Node 0 MemFree:         5382988 kB
-> Node 0 MemUsed:        27323804 kB
-> Node 0 SwapCached:            8 kB
-> Node 0 Active:          3640612 kB
-> Node 0 Inactive:       21757684 kB
-> Node 0 Active(anon):    2833772 kB
-> Node 0 Inactive(anon):    14392 kB
-> Node 0 Active(file):     806840 kB
-> Node 0 Inactive(file): 21743292 kB
-> Node 0 Unevictable:       80640 kB
-> Node 0 Mlocked:           80640 kB
-> Node 0 Dirty:                36 kB
-> Node 0 Writeback:             0 kB
-> Node 0 FilePages:      22833124 kB
-> Node 0 Mapped:          1112832 kB
-> Node 0 AnonPages:       2645812 kB
-> Node 0 Shmem:            282984 kB
-> Node 0 KernelStack:       18544 kB
-> Node 0 PageTables:        46704 kB
-> Node 0 NFS_Unstable:          0 kB
-> Node 0 Bounce:                0 kB
-> Node 0 WritebackTmp:          0 kB
-> Node 0 KReclaimable:    1311812 kB
-> Node 0 Slab:            1542220 kB
-> Node 0 SReclaimable:    1311812 kB
-> Node 0 SUnreclaim:       230408 kB
-> Node 0 AnonHugePages:         0 kB
-> Node 0 ShmemHugePages:        0 kB
-> Node 0 ShmemPmdMapped:        0 kB
-> Node 0 FileHugePages:        0 kB
-> Node 0 FilePmdMapped:        0 kB
-> Node 0 HugePages_Total:     0
-> Node 0 HugePages_Free:      0
-> Node 0 HugePages_Surp:      0
-> 
-> This file is undocumented but the fields seem to reflect what is in
-> /proc/meminfo, so I added additional patch for documentation:
-> 
-> https://lore.kernel.org/linux-sgx/20210910001726.811497-3-jarkko@kernel.org/
-> 
-> I have no idea why things are how they are. I'm just merely trying to follow
-> the existing patterns. I'm also fully aware of the defacto sysfs pattern, i.e.
-> one value per file.
+>   CC      /tmp/build/perf/util/amd-sample-raw.o
+> util/amd-sample-raw.c: In function ‘evlist__amd_sample_raw’:
+> util/amd-sample-raw.c:125:42: error: ‘ bytes’ directive output may be truncated writing 6 bytes into a region of size between 4 and 7 [-Werror=format-truncation=]
+>   125 |                          " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
+>       |                                          ^~~~~~
+> In file included from /usr/include/stdio.h:866,
+>                  from util/amd-sample-raw.c:7:
+> /usr/include/bits/stdio2.h:71:10: note: ‘__builtin___snprintf_chk’ output between 21 and 24 bytes into a destination of size 21
+>    71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+>       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    72 |                                    __glibc_objsize (__s), __fmt,
+>       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    73 |                                    __va_arg_pack ());
+>       |                                    ~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/amd-sample-raw.o] Error 1
 
-Then please do not add anything else to this nightmare of a mess.
+So, that trick with using sizeof and that string 3 times is cumbersome
+and prone to truncation, at least the compiler can't say that the number
+you're passing to %2d will have just 2 digits:
 
-thanks,
+[acme@quaco c]$ cat printf.c
+#include <stdio.h>
+#include <stdlib.h>
 
-greg k-h
+int main(int argc, char *argv[])
+{
+	char bf[64];
+	int len = snprintf(bf, sizeof(bf), "%2d", atoi(argv[1]));
+
+	printf("strlen(%s): %u\n", bf, len);
+
+	return 0;
+}
+[acme@quaco c]$ ./printf 1234567
+strlen(1234567): 7
+[acme@quaco c]$
+
+I'm trying to rework this.
+
+- Arnaldo
