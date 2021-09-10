@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596DD40688C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874364068AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhIJIgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:36:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57474 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbhIJIga (ORCPT
+        id S231849AbhIJIn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhIJIn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:36:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 918E420203;
-        Fri, 10 Sep 2021 08:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631262919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=byJxGIGEdXY0dNiR3JR/k4UiilB5WnFIjCG84yHjPvA=;
-        b=oMY1GPzbSb4+Nhh3TT6muALj3czRc6RYjO8XFhoTGB2SwjjsTicuFJdPQobspIh+rISUHL
-        eLMWo1ZyXCJA99BQCG2PIGOwS2I4vxmS5p+ttronuYx0OmdLvjSpNOFIp7k0x5sI8qfwPP
-        4n1ySiHDzUjYigcgBvIWrfsXPmOGYlk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EF7FEA3B99;
-        Fri, 10 Sep 2021 08:35:17 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 10:35:17 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
- bail out early
-Message-ID: <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
-References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
- <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
- <20210908015014.GA28091@shbuild999.sh.intel.com>
- <YThg8Mp42b194k0/@dhcp22.suse.cz>
- <20210910074400.GA18707@shbuild999.sh.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910074400.GA18707@shbuild999.sh.intel.com>
+        Fri, 10 Sep 2021 04:43:58 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA62C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:42:47 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id r11-20020a5d4e4b000000b001575c5ed4b4so255669wrt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=U1vC9mnO0GBdoKpseWlG9U1U97SJv1m6txgMtoboTzg=;
+        b=n3pl4+LNU7r9TdH1mDQnshwXXrJ9vN5/AKvWIaXaZxv0es3C1jvHbtpnaE0QoyYV3s
+         bLzMocdz5kT6gVxVNalgb3Rwf1g0k9EoahxKhtlRy5vRfV5ydiH0KM1K3aua5WQf/jhQ
+         1tDObTW3VBWsk+pCgb7Tf+yPh8ZHkEypT5aKJVHfdKdV1d6zZb9067AiUIgSQuzsO75y
+         NXOWCE5zzpABN4Dd87620agkbPs2IzRkQx0sDmog2t7wur+K0jrercr6NHyPQhp73xuK
+         3BRgM68/bFtIJeuuDG+hTjHf3C6pFpltVwe3+af/AR1CpsJbPP+EeH7EvgfxLWgY+FUM
+         0BFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=U1vC9mnO0GBdoKpseWlG9U1U97SJv1m6txgMtoboTzg=;
+        b=giFaF6xuUIet1sUsKPe2FYcXd+WgaL/FFQTQYERhYuiSai2mkUcK5ieJE8i3UzRUrU
+         NNDoXUvlSKiJxpqYQvkkp6s49qEry87jPKvJU/3eOLqBddU8Q1pCsbM4KFbh/iPDkVfz
+         PuvvOZw0GdnqLh4mCa7ji0h2ZIrStg0UCP48oCt81cg+aVKrU3K85nNRpwpX/nxWUIAZ
+         NWD82JChzS36X4nk2PaKSr2K58+Npm8ehDdL0Adq3rObg+KfvUpAzI7XhInXx3V3YciH
+         KI437+sjX8wX67p9e22hqQPj1MuQlUR4DuzGmUa9w2HhIhejW8QFVpqrGfDv9IYA2Bqe
+         Or/w==
+X-Gm-Message-State: AOAM533JkkGG4Bo7SDTGsrLvVyh7jaViQdjsJlXqGxUHgy6dW+B/DZ9Z
+        IqmYYoZVNLRBeg9FuoiW4PnNnbm/6w==
+X-Google-Smtp-Source: ABdhPJwGuEJMuTO6/viXWtuEQiUIMR2aLLdxdXs8HVQnZ36KCbdmjDe56A7J6bV12sPrDHYPPEoqITXNGw==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:98f9:2b1c:26b6:bc81])
+ (user=elver job=sendgmr) by 2002:a05:600c:19cc:: with SMTP id
+ u12mr411559wmq.0.1631263365627; Fri, 10 Sep 2021 01:42:45 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 10:42:40 +0200
+Message-Id: <20210910084240.1215803-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH] kasan: fix Kconfig check of CC_HAS_WORKING_NOSANITIZE_ADDRESS
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 10-09-21 15:44:00, Feng Tang wrote:
-> On Wed, Sep 08, 2021 at 09:06:24AM +0200, Michal Hocko wrote:
-> > On Wed 08-09-21 09:50:14, Feng Tang wrote:
-> > > On Tue, Sep 07, 2021 at 10:44:32AM +0200, Michal Hocko wrote:
-> > [...]
-> > > > While this is a good fix from the functionality POV I believe you can go
-> > > > a step further. Please add a detection to the cpuset code and complain
-> > > > to the kernel log if somebody tries to configure movable only cpuset.
-> > > > Once you have that in place you can easily create a static branch for
-> > > > cpuset_insane_setup() and have zero overhead for all reasonable
-> > > > configuration. There shouldn't be any reason to pay a single cpu cycle
-> > > > to check for something that almost nobody does.
-> > > > 
-> > > > What do you think?
-> > > 
-> > > I thought about the implementation, IIUC, the static_branch_enable() is
-> > > easy, it could be done when cpuset.mems is set with movable only nodes,
-> > > but disable() is much complexer,
-> > 
-> > Do we care about disable at all? The point is to not have 99,999999%
-> > users pay overhead of the check which is irrelevant to them. Once
-> > somebody wants to use this "creative" setup then paying an extra check
-> > sounds perfectly sensible to me. If somebody cares enough then the
-> > disable logic could be implemented. But for now I believe we should be
-> > OK with only enable case.
-> 
-> Here is tested draft patch to add the check in cpuset code (the looping
-> zone code could be improved by adding a for_each_populated_zone_nodemask
-> macro.
-> 
-> Thanks,
-> Feng
-> 
-> ---
->  include/linux/cpuset.h |  7 +++++++
->  include/linux/mmzone.h | 14 ++++++++++++++
->  kernel/cgroup/cpuset.c | 10 ++++++++++
->  mm/page_alloc.c        |  4 +++-
->  4 files changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d2b9c41..a434985 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -34,6 +34,8 @@
->   */
->  extern struct static_key_false cpusets_pre_enable_key;
->  extern struct static_key_false cpusets_enabled_key;
-> +extern struct static_key_false cpusets_abnormal_setup_key;
-> +
->  static inline bool cpusets_enabled(void)
->  {
->  	return static_branch_unlikely(&cpusets_enabled_key);
-> @@ -51,6 +53,11 @@ static inline void cpuset_dec(void)
->  	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
->  }
->  
-> +static inline bool cpusets_abnormal_check_needed(void)
+In the main KASAN config option CC_HAS_WORKING_NOSANITIZE_ADDRESS is
+checked for instrumentation-based modes. However, if
+HAVE_ARCH_KASAN_HW_TAGS is true all modes may still be selected.
 
-I would go with cpusets_insane_config with a comment explaining what
-that means. I would also do a pr_info() when the static branch is
-enabled.
+To fix, also make the software modes depend on
+CC_HAS_WORKING_NOSANITIZE_ADDRESS.
 
-[...]
+Fixes: 6a63a63ff1ac ("kasan: introduce CONFIG_KASAN_HW_TAGS")
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ lib/Kconfig.kasan | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 4e455fa..5728675 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4919,7 +4919,9 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->  	 * any suitable zone to satisfy the request - e.g. non-movable
->  	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
->  	 */
-> -	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
-> +	if (cpusets_enabled() &&
-> +		cpusets_abnormal_check_needed() &&
-
-You do not need cpusets_enabled check here. Remember the primary point
-is to not introduce any branch unless a dubious configuration is in
-place.
-
-> +		(gfp_mask & __GFP_HARDWALL)) {
->  		struct zoneref *z = first_zones_zonelist(ac->zonelist,
->  					ac->highest_zoneidx,
->  					&cpuset_current_mems_allowed);
-> -- 
-> 2.7.4
-> 
-
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index 1e2d10f86011..cdc842d090db 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -66,6 +66,7 @@ choice
+ config KASAN_GENERIC
+ 	bool "Generic mode"
+ 	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
++	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
+ 	select SLUB_DEBUG if SLUB
+ 	select CONSTRUCTORS
+ 	help
+@@ -86,6 +87,7 @@ config KASAN_GENERIC
+ config KASAN_SW_TAGS
+ 	bool "Software tag-based mode"
+ 	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
++	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
+ 	select SLUB_DEBUG if SLUB
+ 	select CONSTRUCTORS
+ 	help
 -- 
-Michal Hocko
-SUSE Labs
+2.33.0.309.g3052b89438-goog
+
