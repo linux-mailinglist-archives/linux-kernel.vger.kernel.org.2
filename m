@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75765407353
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ACC407358
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhIJWWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        id S230250AbhIJW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbhIJWWl (ORCPT
+        with ESMTP id S230210AbhIJW1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:22:41 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6733DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:21:29 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id t18so4702742wrb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:21:29 -0700 (PDT)
+        Fri, 10 Sep 2021 18:27:34 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD648C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:26:21 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id p15so5551551ljn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O957Ri/0BgbMSrPbxQY/9ULVJYFNDqjXyqmF7WgsPVo=;
-        b=LhvJ5TKap96EqV9/pPcDlP3U58e7yk7wFss4ufzPsVIj5y2XJbPcKaAlOvABrLGrKd
-         CmDE5YasEk5QfA+RKiPigj25VuDR6UuHnzRiCaYoq+K0CAG8NYbyGBvY8ej0MZc8VM7X
-         IxjGId1hnLBYpgGrJP2zj7WaRkX53sDTuAv8EZablEdPkv7j/ZX2sQbAhjfrrTuIKkMp
-         otLhkNMkkgX8sTYHW3wEYAlI2gN62tAFfyVtrmgD1uoCzfIzo0Qx2YR61X0F79pJztA5
-         9gKzxU93MSzBFOTyjkUAUPWifDmGlbnN2B2trk8LX+nkdqmcv1PHt2Y1Ihu9OOAtu9C1
-         xZzg==
+        bh=ZUsosREWjU2wuV6r3RVgu7Lpknqi56uAU/0psBGml44=;
+        b=gnhbUbe1BBqDRhDCmh1BvzZDOVv+5MgUpusii4XwBsEY3nKBBWRU3qnoMzRewlV3EB
+         0Nii6pzDgDLRgcTEP7/AfebocopF3MRg4f9HL9/n3m1rSIoHdxY7nLwf8RiGlPV/twuH
+         VrEEsNXo56l9T7wTI2VJYgo6uzHnKyvr2r7mVmFmZ2sF2lajHA51Ltag/Jv7bhORnmcn
+         yv9teW3xFLbtKN7BnvcqcRMKTUzufcj8SfyHmAzI8bWW1Vm37E4DBcWmQ91zpnXE9KRb
+         DpUJtGVvxfxiUe9bTnLS5ppumYz9c2LZjaenkwvrPPNeaWpMMtP7rzyrdVGhxu7a7/9P
+         KeMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O957Ri/0BgbMSrPbxQY/9ULVJYFNDqjXyqmF7WgsPVo=;
-        b=v/p+UWTxwopRiZy48kDTzbXIsmW5vQ0lr+2PaZbL4nFGY2/p+fFSUwHIkevs7f9+Uw
-         FmmL4fQhwbRQFQZbBZEAfYQz/MApXdzs1eGQS4s3JBXOSUFVgBqfrZu4KmcMTsttbPeO
-         tgpCaFNUGtdgRmkPP3jkFBdZHJxwyy38f/0jqk8UdVW9GmVej15hX8DnRER+hMu59mUk
-         oLhsMeB+dJQJt6+18j8Xlb7T696gi/K43Bte+Ew3gaEt5NUujZ69K7ykuXIPcjAfxl9v
-         6Ywjh/UgYe69sw2ZDUJJwbnp34X2ag8G3I1uHu1IsBTbwIfnHuXyAAzXPH0cCg+sA1Wo
-         Zf2A==
-X-Gm-Message-State: AOAM5331r58nDs06opiCJ7qsVDUppGdg55d7PDnyuWX+rrq83606MUHV
-        u5xEc4PvU6yN18CP1KTImdT0aKkxBvxrb1b6tqWigg==
-X-Google-Smtp-Source: ABdhPJwPCI1BFrQljr8CVIaPm/HOKh9tjiswuqnbA3ltFmsMfJOsLlLTxXucgARNDednGBrthMujWF+g5kzitLnlR20=
-X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr2646wrx.147.1631312487842;
- Fri, 10 Sep 2021 15:21:27 -0700 (PDT)
+        bh=ZUsosREWjU2wuV6r3RVgu7Lpknqi56uAU/0psBGml44=;
+        b=F+2BwGW2XdXHJJDj5MK2c9Hhia5WWklvt/KbZEfYL2674sugmzaNia45aLO1Uzv73F
+         9z/91VRJX+k8Yfzzpli9P2aChdpiUgKuoTu770hlam3LHNPYcaIFkpCfMOhzg9kPD4sv
+         1QuhSWJ7k8HMuV0IbPgEVZe/ykYrtbE5o+erpONa8TCowafeGj2aSYihfL6MnInybHkI
+         8aEzj5CGjLaagnViVDv093PkjhfYHBxihaXxcldQbCcXLnIsH7fxMoT6gQZ5As35DLCb
+         M6YkqDqg0hpdzP4M8c3CP5WZEHsjJZlMHgyXmZ9VUAOCfRO4ZGlQMVyZTxpxK7p/K8jx
+         yTYw==
+X-Gm-Message-State: AOAM530GKpHDuU9yzaIKuzZ/sW34jyqG33gIL0LWKRLfW7NEhYJMMnAN
+        10pscf8EKTJuz7cuMntB3eFTvyVX6rZ0YS+fTBgD1Q==
+X-Google-Smtp-Source: ABdhPJx3/1Rtn9zsJc9K90my4fz5+Vetr5D0dTwX0ylIR93VWN4NRYrGohRc2iC9tLwZ90CWhp6WOJY0z4VConDNsL4=
+X-Received: by 2002:a2e:b551:: with SMTP id a17mr5889255ljn.128.1631312780009;
+ Fri, 10 Sep 2021 15:26:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
-In-Reply-To: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 11 Sep 2021 06:21:16 +0800
-Message-ID: <CABVgOSkHoVcRQLGVTZZ1andSY4UHqoRwLdyiTHh9KTQ4m3av9w@mail.gmail.com>
-Subject: Re: After KUnit update for Linux 5.15-rc1 - unable to share VFAT
- filesystem via samba
-To:     Arthur Marsh <arthur.marsh@internode.on.net>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <20210909182525.372ee687@canb.auug.org.au> <20210909225035.3990728-1-ndesaulniers@google.com>
+ <CAKwvOd=hoPv2GMZws6UsnMHop6+662wer=Hfo2Tw2=1XXCY2JA@mail.gmail.com> <CAKwvOdmXVLjd9ukYpORDgPeqFcM4nRiOYE_1Mtr_bGa=FPo4Cg@mail.gmail.com>
+In-Reply-To: <CAKwvOdmXVLjd9ukYpORDgPeqFcM4nRiOYE_1Mtr_bGa=FPo4Cg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 10 Sep 2021 15:26:09 -0700
+Message-ID: <CAKwvOdnDOQPRe3v7ZD6SRR=TgbLqo1wfn_zmgfJpbqGEZyJ1-Q@mail.gmail.com>
+Subject: Re: linux-next: build failure while building Linus' tree
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, libaokun1@huawei.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        llvm@lists.linux.dev, Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, sfr@canb.auug.org.au
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 8:02 PM Arthur Marsh
-<arthur.marsh@internode.on.net> wrote:
+On Fri, Sep 10, 2021 at 3:17 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Fri, Sep 10, 2021 at 3:02 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Thu, Sep 9, 2021 at 3:50 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > + Rasmus
+> > >
+> > > This was introduced in
+> > > commit f0907827a8a91 ("compiler.h: enable builtin overflow checkers and add
+> > > fallback code")
+> > > which added division using the `/` operator, which is problematic when checking
+> > > for overflows of 64b operands on 32b targets.
+> > >
+> > > We'll probably need helpers from linux/math64.h and some combination of
+> > > __builtin_choose_expr/__builtin_types_compatible_p.
+> > >
+> > > That will help us fix another compiler bug for older clang releases, too.
+> > > https://github.com/ClangBuiltLinux/linux/issues/1438.
+> >
+> > Ok, I have something hacked up that I think will work:
+> > https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863
+>
+> hmm...playing around with adding some static asserts to the above, I
+
+ah! static_assert can't be used for the type agnostic macros,
+BUILD_BUG_ON needs to be used in its place. Ok, let me add a few and
+see if that can help instill some confidence here.
+
+> don't think it's quite right, specifically:
+> #define div_64(dividend, divisor) ({            \
+>   typeof(dividend) z;
+>
+> might declare z with the expected sign, but not necessarily the
+> correct width when the dividend is 32b but the divisor is 64b.  Feels
+> a bit like trying to encode the C type promotion rules in a macro...
+>
+> > This incomplete diff is a little hacked up to reproduce the issue with
+> > a known-bad revision of clang that demonstrates a similar issue to GCC
+> > 4.9.  You can ignore the movement of check_mul_overflow and friends in
+> > include/linux/overflow.h.
+> >
+> > I think I'm going to break that up into 2 or 3 patches:
+> > 1. move is_signed_type from include/linux/overflow.h to perhaps
+> > include/linux/typecheck.h.
+> > 2. add div64_x64, div_x64, and div_64 to include/linux/math64.h, use
+> > them in include/linux/overflow.h to fix GCC 4.9
+> > 3. move multiply fallbacks out of
+> > COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW for clang < 14.
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
 >
 >
->  Hi, I have been sharing an old VFAT formatted hard disk on one pc to
-> another using Samba and sometime after kernel 5.14.0 it stopped working (apparently no longer being shared as the mount.smbfs command
-> on the client failed with error -13 yet mount.smbfs still worked for
-> ext3 filesytems shared from the same machine which had the VFAT
-> filesystem).
->  The only error I saw on the machine with the VFAT formatted hard disk
-> was the output of the mount command had truncated the name of the
-> mount to only include the first 4 characters of the base name of the
-> mount point.
->  e.g. when VFAT filesystem was mounted on /mnt/victoria, the output of
-> the mount command showed the filesytem mounted on /mnt/vict
 >
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-I can't reproduce this on my machine (which is openSUSE Tumbleweed
-with their "vanilla" 5.14 kernel package on x86_64, mounting a FAT16
-filesystem).
 
-# mount /dev/sda1 /mnt/victoria
-# mount | grep vic
-/dev/sda1 on /mnt/victoria type vfat
-(rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
-# uname -a
-Linux patpat 5.14.0-1-vanilla #1 SMP Mon Aug 30 07:01:36 UTC 2021
-(dc06e24) x86_64 x86_64 x86_64 GNU/Linux
 
-I can try it again on an older i386 machine, but I doubt that'd change
-things: this doesn't smell architecture-specific to me.
-
-This seems a lot more like it's something to do with /proc/mounts or
-similar, rather than a FAT specific issue (and, unless something
-really strange has happened with the CONFIG_FAT_DEFAULT_CODEPAGE
-config option, which I doubt), this change shouldn't affect anything
-at all when KUnit isn't enabled and used. I suspect it just shows up
-in the bisect because it's basically the only change in fs/fat for a
-while.
-
-The bisect against the whole kernel tree seems likely to be of more use.
-
--- David
+-- 
+Thanks,
+~Nick Desaulniers
