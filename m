@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966F1406574
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C9140657B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhIJBzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:55:14 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:32992 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229648AbhIJBzM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:55:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Unqrd8t_1631238837;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Unqrd8t_1631238837)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 09:53:58 +0800
-Subject: Re: [Ocfs2-devel] [PATCH v2] ocfs2: Fix handle refcount leak in two
- exception handling paths
-To:     Wengang Wang <wen.gang.wang@oracle.com>
-Cc:     Chenyuan Mi <cymi20@fudan.edu.cn>,
-        akpm <akpm@linux-foundation.org>, Xin Tan <tanxin.ctf@gmail.com>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
-References: <20210908102055.10168-1-cymi20@fudan.edu.cn>
- <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
- <6018AF95-3613-4D43-A3E6-7BAA0E0BE009@oracle.com>
- <c48fb54e-0dd9-42c7-f53d-2ea58fb97255@linux.alibaba.com>
- <CED0D2AD-7905-490E-8D36-50D192CD9BF1@oracle.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <ee86ea1a-0348-e975-3c67-8d574eaadbe3@linux.alibaba.com>
-Date:   Fri, 10 Sep 2021 09:53:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S229656AbhIJCAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:00:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:7224 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhIJCAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:00:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="208073443"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="208073443"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:59:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="540085015"
+Received: from unknown (HELO [10.239.13.122]) ([10.239.13.122])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:59:25 -0700
+Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+ <20210827070249.924633-7-xiaoyao.li@intel.com> <YTp/oGmiin19q4sQ@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
+Date:   Fri, 10 Sep 2021 09:59:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CED0D2AD-7905-490E-8D36-50D192CD9BF1@oracle.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YTp/oGmiin19q4sQ@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/10/2021 5:41 AM, Sean Christopherson wrote:
+> On Fri, Aug 27, 2021, Xiaoyao Li wrote:
+>> CPUID 0xD leaves reports the capabilities of Intel PT, e.g. it decides
+>> which bits are valid to be set in MSR_IA32_RTIT_CTL, and reports the
+>> number of PT ADDR ranges.
+>>
+>> KVM needs to check that guest CPUID values set by userspace doesn't
+>> enable any bit which is not supported by bare metal. Otherwise,
+>> 1. it will trigger vm-entry failure if hardware unsupported bit is
+>>     exposed to guest and set by guest.
+>> 2. it triggers #GP when context switch PT MSRs if exposing more
+>>     RTIT_ADDR* MSRs than hardware capacity.
+>>
+>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>> ---
+>> There is bit 31 of CPUID(0xD, 0).ECX that doesn't restrict any bit in
+>> MSR_IA32_RTIT_CTL. If guest has different value than host, it won't
+>> cause any vm-entry failure, but guest will parse the PT packet with
+>> wrong format.
+>>
+>> I also check it to be same as host to ensure the virtualization correctness.
+>>
+>> Changes in v2:
+>> - Call out that if configuring more PT ADDR MSRs than hardware, it can
+>>    cause #GP when context switch.
+>> ---
+>>   arch/x86/kvm/cpuid.c | 25 +++++++++++++++++++++++++
+>>   1 file changed, 25 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 739be5da3bca..0c8e06a24156 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -76,6 +76,7 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
+>>   static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+>>   {
+>>   	struct kvm_cpuid_entry2 *best;
+>> +	u32 eax, ebx, ecx, edx;
+>>   
+>>   	/*
+>>   	 * The existing code assumes virtual address is 48-bit or 57-bit in the
+>> @@ -89,6 +90,30 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+>>   			return -EINVAL;
+>>   	}
+>>   
+>> +	/*
+>> +	 * CPUID 0xD leaves tell Intel PT capabilities, which decides
+> 
+> CPUID.0xD is XSAVE state, CPUID.0x14 is Intel PT.  This series needs tests...
 
+My apologize.
 
-On 9/10/21 1:48 AM, Wengang Wang wrote:
+>> +	 * pt_desc.ctl_bitmask in later update_intel_pt_cfg().
+>> +	 *
+>> +	 * pt_desc.ctl_bitmask decides the legal value for guest
+>> +	 * MSR_IA32_RTIT_CTL. KVM cannot support PT capabilities beyond native,
+>> +	 * otherwise it will trigger vm-entry failure if guest sets native
+>> +	 * unsupported bits in MSR_IA32_RTIT_CTL.
+>> +	 */
+>> +	best = cpuid_entry2_find(entries, nent, 0xD, 0);
+>> +	if (best) {
+>> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
+>> +		if (best->ebx & ~ebx || best->ecx & ~ecx)
+>> +			return -EINVAL;
+>> +	}
+>> +	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+>> +	if (best) {
+>> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
+>> +		if (((best->eax & 0x7) > (eax & 0x7)) ||
 > 
-> 
-> On Sep 9, 2021, at 4:07 AM, Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>> wrote:
-> 
-> Hi Wengang,
-> 
-> On 9/9/21 1:12 AM, Wengang Wang wrote:
-> Hi,
-> 
-> Sorry for late involving, but this doesn’t look right to me.
-> 
-> On Sep 8, 2021, at 3:51 AM, Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>> wrote:
-> 
-> 
-> 
-> On 9/8/21 6:20 PM, Chenyuan Mi wrote:
-> The reference counting issue happens in two exception handling paths
-> of ocfs2_replay_truncate_records(). When executing these two exception
-> handling paths, the function forgets to decrease the refcount of handle
-> increased by ocfs2_start_trans(), causing a refcount leak.
-> 
-> Fix this issue by using ocfs2_commit_trans() to decrease the refcount
-> of handle in two handling paths.
-> 
-> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn<mailto:cymi20@fudan.edu.cn>>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn<mailto:xiyuyang19@fudan.edu.cn>>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com<mailto:tanxin.ctf@gmail.com>>
-> 
-> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>>
-> ---
-> fs/ocfs2/alloc.c | 2 ++
-> 1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-> index f1cc8258d34a..b05fde7edc3a 100644
-> --- a/fs/ocfs2/alloc.c
-> +++ b/fs/ocfs2/alloc.c
-> @@ -5940,6 +5940,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
-> status = ocfs2_journal_access_di(handle, INODE_CACHE(tl_inode), tl_bh,
->  OCFS2_JOURNAL_ACCESS_WRITE);
-> if (status < 0) {
-> + ocfs2_commit_trans(osb, handle);
-> mlog_errno(status);
-> goto bail;
-> }
-> @@ -5964,6 +5965,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
->      data_alloc_bh, start_blk,
->      num_clusters);
-> if (status < 0) {
-> + ocfs2_commit_trans(osb, handle);
-> 
-> As a transaction, stuff expected to be in the same handle should be treated as atomic.
-> Here the stuff includes the tl_bh and other metadata block which will be modified in ocfs2_free_clusters().
-> Coming here, some of related meta blocks may be in the handle but others are not due to the error happened.
-> If you do a commit, partial meta blocks are committed to log. — that breaks the atomic idea, it will cause FS inconsistency.
-> So what’s reason you want to commit the meta block changes, which is not all of expected, in this handle to journal log?
-> 
-> Do you really see a hit on the failure? or just you detected the refcount leak by code review?
-> 
-> You may want to look at ocfs2_journal_dirty() for the error handling part.
-> 
-> 
-> For the first error handling, since we don't call ocfs2_journal_dirty()
-> yet, so won't be a problem.
-> For the second error handling, I think we don't have a better way. Look
-> at other callers of ocfs2_free_clusters(), we simply ignore the error
-> code.
-> Anyway, we should commit transaction if starts, otherwise journal will
-> be abnormal.
-> 
-> I don't think so. If error happened, we should fail ocfs2, rather than do a partial committing.
-> 
+> Ugh, looking at the rest of the code, even this isn't sufficient because
+> pt_desc.guest.addr_{a,b} are hardcoded at 4 entries, i.e. running KVM on hardware
+> with >4 entries will lead to buffer overflows.
 
-Umm... not exactly...
-Take ocfs2_free_clusters() for example, when it fails in case of EIO or
-ENOMEM, we can't just abort journal in such cases, because it is not so
-serious, only a bit blocks still occupied and they will recovery during
-the next mount. 
-That's why we have "errors=continue" in most filesystems, we should always
-consider the business continuity first.
-Also you can look at ext4_free_blocks() for reference.
+it's hardcoded to 4 because there is a note of "no processors support 
+more than 4 address ranges" in SDM vol.3 Chapter 31.3.1, table 31-11
 
-Thanks,
-Joseph
+> One option would be to bump that to the theoretical max of 15, which doesn't seem
+> too horrible, especially if pt_desc as a whole is allocated on-demand, which it
+> probably should be since it isn't exactly tiny (nor ubiquitous)
+> 
+> A different option would be to let userspace define whatever it wants for guest
+> CPUID, and instead cap nr_addr_ranges at min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
+> 
+> Letting userspace generate a bad MSR_IA32_RTIT_CTL is not problematic, there are
+> plenty of ways userspace can deliberately trigger VM-Entry failure due to invalid
+> guest state (even if this is a VM-Fail condition, it's not a danger to KVM).
+
+I'm fine to only safe guard the nr_addr_range if VM-Entry failure 
+doesn't matter.
+
+> 
+>> +		    ((best->eax & ~eax) >> 16) ||
+>> +		    (best->ebx & ~ebx))
+>> +			return -EINVAL;
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> -- 
+>> 2.27.0
+>>
+
