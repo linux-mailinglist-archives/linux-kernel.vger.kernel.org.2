@@ -2,269 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB85406D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADD9406D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhIJN4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:56:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:57670 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233245AbhIJN4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:56:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 382431FB;
-        Fri, 10 Sep 2021 06:54:53 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FB5E3F59C;
-        Fri, 10 Sep 2021 06:54:51 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 14:54:46 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        harb@amperecomputing.com
-Subject: Re: [PATCH] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210910135446.GA15810@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
+        id S233743AbhIJN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231963AbhIJN7D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 09:59:03 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A16C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:57:52 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id f6so2480662iox.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=okxowYiYpVAz+QOVLwdcNcrp4VmSwPX31n5dFtu44U4=;
+        b=emWQ7Ed3o/yh9av13hdO8A64Jqg0BHkBj74jZ9GWNmXLvTlst/JH0JlgnaGmR0g6oQ
+         OpmVxkZY8X81nheWbAGNsBzbKGT4OfmhMRNbw9KQyK0cgS4McFgjjl4wnKpY1NvbBaf7
+         +PB9Xt/bgNyoAU05qv2SLlxM+/aqoblXriO2etLGqW/tnQBZ0gaX+fU8G2cnR50yB3XK
+         vZkUZngoEa7udrj227EonEZj/AmKcmZw/aWT64ff9VRlaw/3Un6GuH2c+pEx22WCR/Jh
+         zCg6G08kRkE/qae2m8xD4nWkoV0ZmkFHib/Ny/g9x/Gq58m1fUi9IZFmCUCXVqt80K/5
+         Wkqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=okxowYiYpVAz+QOVLwdcNcrp4VmSwPX31n5dFtu44U4=;
+        b=zZ+2cktS37efXUJhQwuCfkHnb98/Z2j2/I+psv6xjaFzkGqoC+MD0ejZnVaCT35qDs
+         oHTlNa0Q+GtXeSx5hifc180xzWX2CY5YV0yw7DPOQA6SdepW0OQkKLQWXwV9vHw8xub1
+         BbRfTdHXATxdgy0wTMPWQ63h8GwxFFMIeHgd8Jb0uctmdkg/28kIKQsfg2XuCneI2eEv
+         +VUDhbaYovQszuAqlP8wCdSDzEdNdoVBA4ytUNEKa710uyZEdaen9suBixvLBAktjgbr
+         gu4r3fYNAa6Lci32vIjgAsnD2dXtLvCCqXlA1yPwcdYZZF7aUxiCgtzXAHJxSdp6jhO0
+         yLZQ==
+X-Gm-Message-State: AOAM532702Eh4e0V3xuZf3Bl4oouQzLDqB7CERkjS9zsghPZDehAQ/WU
+        cSYs9UeSzUWoy9wn8zFO7vKhYjaGd1VtgQ==
+X-Google-Smtp-Source: ABdhPJyxs/i5tyRSPvaZGRBl4794yVfWF/PP8MrdDXRWszUIpBx+KThTIBBNGhNdaGT/x1/7JrICdQ==
+X-Received: by 2002:a5e:c00a:: with SMTP id u10mr7117244iol.60.1631282271309;
+        Fri, 10 Sep 2021 06:57:51 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id z26sm2544886iol.6.2021.09.10.06.57.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 06:57:50 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+Date:   Fri, 10 Sep 2021 07:57:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910122820.26886-1-justin.he@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[dropped CC stable, +CC Harb]
-
-On Fri, Sep 10, 2021 at 08:28:20PM +0800, Jia He wrote:
-> This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+On 9/9/21 9:36 PM, Al Viro wrote:
+> On Thu, Sep 09, 2021 at 09:30:03PM -0600, Jens Axboe wrote:
 > 
-> After this commit, a boot panic is alway hit on an Ampere EMAG server
-> with call trace as follows:
->  Internal error: synchronous external abort: 96000410 [#1] SMP
->  Modules linked in:
->  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
->  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
->  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [...snip...]
->  Call trace:
->   acpi_ex_system_memory_space_handler+0x26c/0x2c8
->   acpi_ev_address_space_dispatch+0x228/0x2c4
->   acpi_ex_access_region+0x114/0x268
->   acpi_ex_field_datum_io+0x128/0x1b8
->   acpi_ex_extract_from_field+0x14c/0x2ac
->   acpi_ex_read_data_from_field+0x190/0x1b8
->   acpi_ex_resolve_node_to_value+0x1ec/0x288
->   acpi_ex_resolve_to_value+0x250/0x274
->   acpi_ds_evaluate_name_path+0xac/0x124
->   acpi_ds_exec_end_op+0x90/0x410
->   acpi_ps_parse_loop+0x4ac/0x5d8
->   acpi_ps_parse_aml+0xe0/0x2c8
->   acpi_ps_execute_method+0x19c/0x1ac
->   acpi_ns_evaluate+0x1f8/0x26c
->   acpi_ns_init_one_device+0x104/0x140
->   acpi_ns_walk_namespace+0x158/0x1d0
->   acpi_ns_initialize_devices+0x194/0x218
->   acpi_initialize_objects+0x48/0x50
->   acpi_init+0xe0/0x498
+>>> Again, we should never, ever modify the iovec (or bvec, etc.) array in
+>>> ->read_iter()/->write_iter()/->sendmsg()/etc. instances.  If you see
+>>> such behaviour anywhere, report it immediately.  Any such is a blatant
+>>> bug.
+>>
+>> Yes that was wrong, the iovec is obviously const. But that really
+>> doesn't change the original point, which was that copying the iov_iter
+>> itself unconditionally would be miserable.
 > 
-> From the debugging, we're mapping something which is *not* described by
-> the EFI memory map, but *does* want PROT_NORMAL_NC.
-
-"Does not" you mean. We are forcing memory semantics mappings to
-PROT_NORMAL_NC, which eMAG does not like at all and I'd need to
-understand why.
-
-It looks like the issue happen in SystemMemory Opregion handler.
-
+> Might very well be true, but... won't your patch hit the reimport on
+> every short read?  And the cost of uaccess in there is *much* higher
+> than copying of 48 bytes into local variable...
 > 
-> Hence just revert it before everything is clear.
-> 
-> Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-> Cc: stable@vger.kernel.org
+> Or am I misreading your patch?  Note that short reads on reaching
+> EOF are obviously normal - it's not a rare case at all.
 
-No need, it is not even in an -rc yet (and stable should not be CCed in
-the addressees CC list).
+It was just a quick hack, might very well be too eager to go through
+those motions. But pondering this instead of sleeping, we don't need to
+copy all of iov_iter in order to restore the state, and we can use the
+same advance after restoring. So something like this may be more
+palatable. Caveat - again untested, and I haven't tested the performance
+impact of this at all.
 
-Thanks,
-Lorenzo
 
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Hanjun Guo <guohanjun@huawei.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  arch/arm64/include/asm/acpi.h |  3 ---
->  arch/arm64/kernel/acpi.c      | 19 +++----------------
->  drivers/acpi/osl.c            | 23 +++++++----------------
->  include/acpi/acpi_io.h        |  8 --------
->  4 files changed, 10 insertions(+), 43 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index 7535dc7cc5aa..bd68e1b7f29f 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
->  void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
->  #define acpi_os_ioremap acpi_os_ioremap
->  
-> -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
-> -#define acpi_os_memmap acpi_os_memmap
-> -
->  typedef u64 phys_cpuid_t;
->  #define PHYS_CPUID_INVALID INVALID_HWID
->  
-> diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-> index 1c9c2f7a1c04..f3851724fe35 100644
-> --- a/arch/arm64/kernel/acpi.c
-> +++ b/arch/arm64/kernel/acpi.c
-> @@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
->  	return __pgprot(PROT_DEVICE_nGnRnE);
->  }
->  
-> -static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
-> -				       acpi_size size, bool memory)
-> +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
->  {
->  	efi_memory_desc_t *md, *region = NULL;
->  	pgprot_t prot;
-> @@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
->  	 * It is fine for AML to remap regions that are not represented in the
->  	 * EFI memory map at all, as it only describes normal memory, and MMIO
->  	 * regions that require a virtual mapping to make them accessible to
-> -	 * the EFI runtime services. Determine the region default
-> -	 * attributes by checking the requested memory semantics.
-> +	 * the EFI runtime services.
->  	 */
-> -	prot = memory ? __pgprot(PROT_NORMAL_NC) :
-> -			__pgprot(PROT_DEVICE_nGnRnE);
-> +	prot = __pgprot(PROT_DEVICE_nGnRnE);
->  	if (region) {
->  		switch (region->type) {
->  		case EFI_LOADER_CODE:
-> @@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
->  	return __ioremap(phys, size, prot);
->  }
->  
-> -void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-> -{
-> -	return __acpi_os_ioremap(phys, size, false);
-> -}
-> -
-> -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
-> -{
-> -	return __acpi_os_ioremap(phys, size, true);
-> -}
-> -
->  /*
->   * Claim Synchronous External Aborts as a firmware first notification.
->   *
-> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> index a43f1521efe6..45c5c0e45e33 100644
-> --- a/drivers/acpi/osl.c
-> +++ b/drivers/acpi/osl.c
-> @@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
->  #define should_use_kmap(pfn)   page_is_ram(pfn)
->  #endif
->  
-> -static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
-> -			      bool memory)
-> +static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
->  {
->  	unsigned long pfn;
->  
-> @@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
->  			return NULL;
->  		return (void __iomem __force *)kmap(pfn_to_page(pfn));
->  	} else
-> -		return memory ? acpi_os_memmap(pg_off, pg_sz) :
-> -				acpi_os_ioremap(pg_off, pg_sz);
-> +		return acpi_os_ioremap(pg_off, pg_sz);
->  }
->  
->  static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-> @@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
->  }
->  
->  /**
-> - * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-> + * acpi_os_map_iomem - Get a virtual address for a given physical address range.
->   * @phys: Start of the physical address range to map.
->   * @size: Size of the physical address range to map.
-> - * @memory: true if remapping memory, false if IO
->   *
->   * Look up the given physical address range in the list of existing ACPI memory
->   * mappings.  If found, get a reference to it and return a pointer to it (its
-> @@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
->   * During early init (when acpi_permanent_mmap has not been set yet) this
->   * routine simply calls __acpi_map_table() to get the job done.
->   */
-> -static void __iomem __ref
-> -*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
-> +void __iomem __ref
-> +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
->  {
->  	struct acpi_ioremap *map;
->  	void __iomem *virt;
-> @@ -356,7 +353,7 @@ static void __iomem __ref
->  
->  	pg_off = round_down(phys, PAGE_SIZE);
->  	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
-> -	virt = acpi_map(phys, size, memory);
-> +	virt = acpi_map(phys, size);
->  	if (!virt) {
->  		mutex_unlock(&acpi_ioremap_lock);
->  		kfree(map);
-> @@ -375,17 +372,11 @@ static void __iomem __ref
->  	mutex_unlock(&acpi_ioremap_lock);
->  	return map->virt + (phys - map->phys);
->  }
-> -
-> -void __iomem *__ref
-> -acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-> -{
-> -	return __acpi_os_map_iomem(phys, size, false);
-> -}
->  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
->  
->  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
->  {
-> -	return (void *)__acpi_os_map_iomem(phys, size, true);
-> +	return (void *)acpi_os_map_iomem(phys, size);
->  }
->  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
->  
-> diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-> index a0212e67d6f4..027faa8883aa 100644
-> --- a/include/acpi/acpi_io.h
-> +++ b/include/acpi/acpi_io.h
-> @@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
->  }
->  #endif
->  
-> -#ifndef acpi_os_memmap
-> -static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
-> -					    acpi_size size)
-> -{
-> -	return ioremap_cache(phys, size);
-> -}
-> -#endif
-> -
->  extern bool acpi_permanent_mmap;
->  
->  void __iomem __ref
-> -- 
-> 2.17.1
-> 
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 855ea544807f..4d6d4315deda 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2608,8 +2608,6 @@ static bool io_resubmit_prep(struct io_kiocb *req)
+ 
+ 	if (!rw)
+ 		return !io_req_prep_async(req);
+-	/* may have left rw->iter inconsistent on -EIOCBQUEUED */
+-	iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
+ 	return true;
+ }
+ 
+@@ -3431,14 +3429,45 @@ static bool need_read_all(struct io_kiocb *req)
+ 		S_ISBLK(file_inode(req->file)->i_mode);
+ }
+ 
++/*
++ * Stash the items we need to restore an iov_iter after a partial or
++ * -EAGAIN'ed result.
++ */
++struct iov_store {
++	ssize_t io_size;
++	size_t iov_offset;
++	unsigned long nr_segs;
++	const void *ptr;
++};
++
++static void io_iter_reset(struct iov_iter *iter, struct iov_store *store,
++			  ssize_t did_bytes)
++{
++	iter->count = store->io_size;
++	iter->iov_offset = store->iov_offset;
++	iter->nr_segs = store->nr_segs;
++	iter->iov = store->ptr;
++	if (did_bytes > 0)
++		iov_iter_advance(iter, did_bytes);
++}
++
++static void io_iov_store(struct iov_store *store, struct iov_iter *iter)
++{
++	store->io_size = iov_iter_count(iter);
++	store->iov_offset = iter->iov_offset;
++	store->nr_segs = iter->nr_segs;
++	store->ptr = iter->iov;
++}
++
+ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ {
+ 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
+ 	struct kiocb *kiocb = &req->rw.kiocb;
+ 	struct iov_iter __iter, *iter = &__iter;
+ 	struct io_async_rw *rw = req->async_data;
+-	ssize_t io_size, ret, ret2;
+ 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
++	struct iov_store store;
++	ssize_t ret, ret2;
+ 
+ 	if (rw) {
+ 		iter = &rw->iter;
+@@ -3448,8 +3477,8 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	io_size = iov_iter_count(iter);
+-	req->result = io_size;
++	io_iov_store(&store, iter);
++	req->result = store.io_size;
+ 
+ 	/* Ensure we clear previously set non-block flag */
+ 	if (!force_nonblock)
+@@ -3463,7 +3492,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		return ret ?: -EAGAIN;
+ 	}
+ 
+-	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), io_size);
++	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), store.io_size);
+ 	if (unlikely(ret)) {
+ 		kfree(iovec);
+ 		return ret;
+@@ -3479,18 +3508,17 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		/* no retry on NONBLOCK nor RWF_NOWAIT */
+ 		if (req->flags & REQ_F_NOWAIT)
+ 			goto done;
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = 0;
+ 	} else if (ret == -EIOCBQUEUED) {
+ 		goto out_free;
+-	} else if (ret <= 0 || ret == io_size || !force_nonblock ||
++	} else if (ret <= 0 || ret == store.io_size || !force_nonblock ||
+ 		   (req->flags & REQ_F_NOWAIT) || !need_read_all(req)) {
+ 		/* read all, failed, already did sync or don't want to retry */
+ 		goto done;
+ 	}
+ 
++	io_iter_reset(iter, &store, ret);
++
+ 	ret2 = io_setup_async_rw(req, iovec, inline_vecs, iter, true);
+ 	if (ret2)
+ 		return ret2;
+@@ -3501,7 +3529,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 	iter = &rw->iter;
+ 
+ 	do {
+-		io_size -= ret;
++		store.io_size -= ret;
+ 		rw->bytes_done += ret;
+ 		/* if we can retry, do so with the callbacks armed */
+ 		if (!io_rw_should_retry(req)) {
+@@ -3520,7 +3548,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 			return 0;
+ 		/* we got some bytes, but not all. retry. */
+ 		kiocb->ki_flags &= ~IOCB_WAITQ;
+-	} while (ret > 0 && ret < io_size);
++	} while (ret > 0 && ret < store.io_size);
+ done:
+ 	kiocb_done(kiocb, ret, issue_flags);
+ out_free:
+@@ -3543,8 +3571,9 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	struct kiocb *kiocb = &req->rw.kiocb;
+ 	struct iov_iter __iter, *iter = &__iter;
+ 	struct io_async_rw *rw = req->async_data;
+-	ssize_t ret, ret2, io_size;
+ 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
++	struct iov_store store;
++	ssize_t ret, ret2;
+ 
+ 	if (rw) {
+ 		iter = &rw->iter;
+@@ -3554,8 +3583,10 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	io_size = iov_iter_count(iter);
+-	req->result = io_size;
++
++	io_iov_store(&store, iter);
++	req->result = store.io_size;
++	ret2 = 0;
+ 
+ 	/* Ensure we clear previously set non-block flag */
+ 	if (!force_nonblock)
+@@ -3572,7 +3603,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	    (req->flags & REQ_F_ISREG))
+ 		goto copy_iov;
+ 
+-	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), io_size);
++	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), store.io_size);
+ 	if (unlikely(ret))
+ 		goto out_free;
+ 
+@@ -3619,9 +3650,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		kiocb_done(kiocb, ret2, issue_flags);
+ 	} else {
+ copy_iov:
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
++		io_iter_reset(iter, &store, ret2);
+ 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+ 		return ret ?: -EAGAIN;
+ 	}
+
+-- 
+Jens Axboe
+
