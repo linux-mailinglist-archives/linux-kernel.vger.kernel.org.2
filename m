@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5B3406BAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C078406B94
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhIJMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
+        id S233406AbhIJMcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233185AbhIJMdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD142611C0;
-        Fri, 10 Sep 2021 12:32:00 +0000 (UTC)
+        id S233321AbhIJMch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 209B7611C8;
+        Fri, 10 Sep 2021 12:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277121;
-        bh=a4Lzupioy6saCybQPAd+d5Cp1xeBmgR+k/sKPmm0DZg=;
+        s=korg; t=1631277086;
+        bh=UFPg6g8EZ67ThjPvwToE4GQwtABdHpwXOQSFTDPLs5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w46ZFNTDLJodXeYAEB0AX7ZAgM4V1Q0oq7nxi9YJnki/caHyfR+HncAc07u/xjyJj
-         2shHcq46v3UkbzLMCkLZdkI+Rg0g22Vm6mddIctW0Q7Ng4f+wyJHepdP/3Qw+kXOQz
-         3bskt0a53lX/wxjRJL1dMJqlprI4BZlGXuNtx1fs=
+        b=psaOW3JDTX8YkrLTWUua26OlWY1KkPNT7ZbvRKAz8M3Rzv7n7O+KqY2gsKoXXjIDV
+         EK0vk3V6ayknCobgkgmOKBNTQ8sziqS/KLr8imvDIoAhWEuxBp2bsiH1bHcvp+Simj
+         uCCvZQ+xiKv+U88aZN9hlCt47cRc+6voYSPogcME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 5.13 11/22] usb: host: xhci-rcar: Dont reload firmware after the completion
-Date:   Fri, 10 Sep 2021 14:30:10 +0200
-Message-Id: <20210910122916.306772117@linuxfoundation.org>
+        "Li Qiang (Johnny Li)" <johnny.li@montage-tech.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH 5.14 21/23] cxl/pci: Fix debug message in cxl_probe_regs()
+Date:   Fri, 10 Sep 2021 14:30:11 +0200
+Message-Id: <20210910122916.678625088@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
+References: <20210910122916.022815161@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Li Qiang (Johnny Li) <johnny.li@montage-tech.com>
 
-commit 57f3ffdc11143f56f1314972fe86fe17a0dcde85 upstream.
+commit da582aa5ad5787c46e3f475ab3f4602ec84c1617 upstream.
 
-According to the datasheet, "Upon the completion of FW Download,
-there is no need to write or reload FW.". Otherwise, it's possible
-to cause unexpected behaviors. So, adds such a condition.
+Indicator string for mbox and memdev register set to status
+incorrectly in error message.
 
-Fixes: 4ac8918f3a73 ("usb: host: xhci-plat: add support for the R-Car H2 and M2 xHCI controllers")
-Cc: stable@vger.kernel.org # v3.17+
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210827063227.81990-1-yoshihiro.shimoda.uh@renesas.com
+Cc: <stable@vger.kernel.org>
+Fixes: 30af97296f48 ("cxl/pci: Map registers based on capabilities")
+Signed-off-by: Li Qiang (Johnny Li) <johnny.li@montage-tech.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Link: https://lore.kernel.org/r/163072205089.2250120.8103605864156687395.stgit@dwillia2-desk3.amr.corp.intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-rcar.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/cxl/pci.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-rcar.c
-+++ b/drivers/usb/host/xhci-rcar.c
-@@ -134,6 +134,13 @@ static int xhci_rcar_download_firmware(s
- 	const struct soc_device_attribute *attr;
- 	const char *firmware_name;
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -1022,8 +1022,8 @@ static int cxl_probe_regs(struct cxl_mem
+ 		    !dev_map->memdev.valid) {
+ 			dev_err(dev, "registers not found: %s%s%s\n",
+ 				!dev_map->status.valid ? "status " : "",
+-				!dev_map->mbox.valid ? "status " : "",
+-				!dev_map->memdev.valid ? "status " : "");
++				!dev_map->mbox.valid ? "mbox " : "",
++				!dev_map->memdev.valid ? "memdev " : "");
+ 			return -ENXIO;
+ 		}
  
-+	/*
-+	 * According to the datasheet, "Upon the completion of FW Download,
-+	 * there is no need to write or reload FW".
-+	 */
-+	if (readl(regs + RCAR_USB3_DL_CTRL) & RCAR_USB3_DL_CTRL_FW_SUCCESS)
-+		return 0;
-+
- 	attr = soc_device_match(rcar_quirks_match);
- 	if (attr)
- 		quirks = (uintptr_t)attr->data;
 
 
