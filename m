@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F05406594
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE31F406597
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhIJCPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:15:10 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:32783 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhIJCPJ (ORCPT
+        id S229779AbhIJCPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:15:44 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50104 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhIJCPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:15:09 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 18A2Djon010955;
-        Fri, 10 Sep 2021 11:13:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 18A2Djon010955
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631240026;
-        bh=udWjwfq60F1tLUm1m72YBO5+pyGaJaRnnlyiYr4sAfE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0XX9KQjQjryldcYbWVmumEwcAwLbQvGI71V4r9jNi5tE/NScXniByF9byz7RBE/6X
-         mrRztoQgkQfumszF/YjLIAgZYi3nfaAa0P3aMkefxpjS8Kgn/vFue62f1SUaRD0L74
-         t2TRt4YcUgyQhRM9zYoZPjqVpvSczO1BxlgPnti3R/U+WLmkEcNj0rIlNE8Vb3XdCJ
-         MeHu48ANoDQYKFm7f1zC6uTO4xcIwOO6n21XiyUgzFytVANcZ7Y2BREo0mPbznHFJS
-         nAl9g2HBZdXJmNpc2O0sdA4LgjO7L/mqGZ1k2CZLjk4E4C0bf44yhzVuIC0u45HBo7
-         MwdIlhNeBUfsA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id k23-20020a17090a591700b001976d2db364so418224pji.2;
-        Thu, 09 Sep 2021 19:13:46 -0700 (PDT)
-X-Gm-Message-State: AOAM532PF+sYMl7Jo7ZuJoLLKDy1vPs0sOwJ9hjZ7p2gxXo6jj9RTvKh
-        cwH6YoOcIG6OAikS88fAQ78Qtw1Ho9DihX9g4Zs=
-X-Google-Smtp-Source: ABdhPJzsQEVxfZfrPHtmSoiJqpIaQCbePzktoUaB9fjFhHO8qjDLzEBmXpWaRfbbZkOqp2DwuT5bFmnqZJO2BlsLKL0=
-X-Received: by 2002:a17:902:e04d:b0:13a:70c9:11b8 with SMTP id
- x13-20020a170902e04d00b0013a70c911b8mr5250710plx.82.1631240025345; Thu, 09
- Sep 2021 19:13:45 -0700 (PDT)
+        Thu, 9 Sep 2021 22:15:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UnqXATB_1631240069;
+Received: from B-W5MSML85-1937.local(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0UnqXATB_1631240069)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 10:14:29 +0800
+From:   "taoyi.ty" <escape@linux.alibaba.com>
+Subject: Re: [RFC PATCH 1/2] add pinned flags for kernfs node
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <e753e449240bfc43fcb7aa26dca196e2f51e0836.1631102579.git.escape@linux.alibaba.com>
+ <YTiuBaiVZhe3db9O@kroah.com>
+Message-ID: <3d871bd0-dab5-c9ca-61b9-6aa137fa9fdf@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 10:14:28 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210901145212.478066-1-arielmarcovitch@gmail.com>
-In-Reply-To: <20210901145212.478066-1-arielmarcovitch@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 10 Sep 2021 11:13:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQHTL_djSLXVyuvn1mOtvumNAKo8iE7tQiyONxtJ3a4xg@mail.gmail.com>
-Message-ID: <CAK7LNAQHTL_djSLXVyuvn1mOtvumNAKo8iE7tQiyONxtJ3a4xg@mail.gmail.com>
-Subject: Re: [PATCH v2] checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
-To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
-Cc:     Valentin Rothberg <valentinrothberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTiuBaiVZhe3db9O@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 11:52 PM Ariel Marcovitch
-<arielmarcovitch@gmail.com> wrote:
->
-> As opposed to the --diff option, --commit can get ref names instead of
-> commit hashes.
->
-> When using the --commit option, the script resets the working directory
-> to the commit before the given ref, by adding '~' to the end of the ref.
->
-> However, the 'HEAD' ref is relative, and so when the working directory
-> is reset to 'HEAD~', 'HEAD' points to what was 'HEAD~'. Then when the
-> script resets to 'HEAD' it actually stays in the same commit. In this
-> case, the script won't report any cases because there is no diff between
-> the cases of the two refs.
->
-> Prevent the user from using HEAD refs.
->
-> A better solution might be to resolve the refs before doing the
-> reset, but for now just disallow such refs.
->
-> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->  scripts/checkkconfigsymbols.py | 3 +++
->  1 file changed, 3 insertions(+)
+
+On 2021/9/8 下午8:35, Greg KH wrote:
+> Why are kernfs changes needed for this?  kernfs creation is not
+> necessarily supposed to be "fast", what benchmark needs this type of
+> change to require the addition of this complexity?
+
+The implementation of the cgroup pool should have nothing
+
+to do with kernfs, but during the development process,
+
+I found that when there is a background cpu load, it takes
+
+a very significant time for a process to get the mutex from
+
+being awakened to starting execution.
+
+To create 400 cgroups concurrently, if there is no background
+
+cpu load, it takes about 80ms, but if the cpu usage rate is
+
+40%, it takes about 700ms. If you reduce
+
+sched_wakeup_granularity_ns, the time consumption will also
+
+be reduced. If you change mutex to spinlock, the situation
+
+will be very much improved.
+
+So to solve this problem, mutex should not be used. The
+
+cgroup pool relies on kernfs_rename which uses
+
+kernfs_mutex, so I need to bypass kernfs_mutex and
+
+add a pinned flag for this.
+
+Because the lock mechanism of kernfs_rename has been
+
+changed, in order to maintain data consistency, the creation
+
+and deletion of kernfs have also been changed accordingly
+
+I admit that this is really not a very elegant design, but I don’t
+
+know how to make it better, so I throw out the problem and
+
+try to seek help from the community.
 
 
-Applied to linux-kbuild. Thanks.
-
-> diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
-> index b9b0f15e5880..c57c990c3244 100755
-> --- a/scripts/checkkconfigsymbols.py
-> +++ b/scripts/checkkconfigsymbols.py
-> @@ -102,6 +102,9 @@ def parse_options():
->                       "continue.")
->
->      if args.commit:
-> +        if args.commit.startswith('HEAD'):
-> +            sys.exit("The --commit option can't use the HEAD ref")
-> +
->          args.find = False
->
->      if args.ignore:
->
-> base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
-> --
-> 2.25.1
->
+thanks,
 
 
--- 
-Best Regards
-Masahiro Yamada
+Yi Tao
+
