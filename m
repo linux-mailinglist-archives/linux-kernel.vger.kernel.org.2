@@ -2,180 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E58406D60
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFBA406D65
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhIJOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233783AbhIJOOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:14:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B6761026;
-        Fri, 10 Sep 2021 14:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631283171;
-        bh=g5951wZWje9hIRSOfytjpLRGzJIdR6p2NSp7c8C6ves=;
-        h=Date:From:To:Cc:Subject:From;
-        b=X9DW8a0g+gZ4PLFUmASSa8iT+OlJCiQDfXDkWJYpuSE4ArAzemE8uC4uEoRQO2Fdy
-         aio5m9BZxGAYfual6aWK9UXd3FG7AXz2opYN+6f/3HqJsk6rqDbUYtmUtVmbj9pO1T
-         khWxD1da5SFyJlgz5AtJz5fXrosT1xpQ8vHz+E+4=
-Date:   Fri, 10 Sep 2021 16:12:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Oded Gabbay <ogabbay@kernel.org>
-Subject: [GIT PULL] More Char/Misc driver changes for 5.15-rc1
-Message-ID: <YTtn4YSxwlQ5GbLT@kroah.com>
+        id S233915AbhIJOPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:15:38 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:1284 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233706AbhIJOPh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:15:37 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18AE7fdM023952;
+        Fri, 10 Sep 2021 14:14:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=ZWHue2ooirFJM2/u+XGtNgseDPA9Yr4H9TMEzJ9M34M=;
+ b=WlcjXfoSrujjXleyeOE0i8o7QUjbTti1Jbp6DBY55Iwhv/7zv89QsprkuouV5ZgA4/CI
+ NHRSdxDhiu59Q0KPtyOJrYjnTM7cxM9VmjwmajQFH65Z8vEEeryfLuy0Jps97wMgrdBh
+ g/iB37EJLt0/YdxcQCXtHj8WJl6tAAlzMi07nA9OdE/UQ4RGT90CmUOekK/DHKpOykur
+ DfDHtJzdpPopMiqJQcaonTB+vvQ+bzkXw8Hwj21vknDeMTsI3VXrkWqXB4IXfN8PEdMf
+ 0YEkzGw0m/ubDg1RC/7aVZ7NY/fUZ6+T3UE4rDxwmfjXTZFnCrid60DluRtECRymdsJG Hw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=ZWHue2ooirFJM2/u+XGtNgseDPA9Yr4H9TMEzJ9M34M=;
+ b=XrFAJ8eZd48pXAYowKmcf5BGdhUqDzSDvWmk3HLRPmi5C/KcAsNsRHqrKY8H/nd1cRcB
+ hdo3oWdFuw4m0avodB70/bqCz0ZF5Fm3IYSAyo8uwdbkaZzlYFscyUQzYh8v4bDkVqa2
+ W+lJ9PFgwjlHQr6URoJjSgHUOX1e8omp8cz5Nl0v4AWw9jqkVCfeew77jUVL6ziT2B3T
+ 8W3kUV3O6R0u7zNeTqoMD0SgHgP0xdMN3BUMgOrJzWqFKQ33ExoQVGZNkYcyBSLHi3VM
+ SvnIapCqTF+tjvZHKFPDTmkbiQmdxBz8ycAmZAutlTVy/orOB7MycTu4WfsRLitKWrZx AQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3aytfka0hj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Sep 2021 14:14:22 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18AEEL42124656;
+        Fri, 10 Sep 2021 14:14:21 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by aserp3020.oracle.com with ESMTP id 3aytfycf0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Sep 2021 14:14:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EmUUuhDv0SsZs1yQOzE+5YeHADTNtkFqX1nwyOAG+ZGXFl8ArDhE0hgAeepHKqOQ8O2YgsWeHlhiwcfgvT9cilwMoLigfvcu1TsUMbdyGAU0vJhf4pxFP94EB3F73BhhCS/CETxv9TYTPsTqHJwgZz9REDkg43IWfwSra0kThcVng76CX6S7Tw1OgJQC2z3XMSuUsXPKim+ISOuF3VFcr1+iRrQHLaGfhFJ3P1NPL3utEdVt2lAj92SWIAp4e+n/V8TPlFdC1I5knPw5IQZtUy6Rv6oCJu39CITurb9z0pqSB1iicI2dOqfriOn4+Hqj3fbaL8lpR5sX5A4g5HI2Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ZWHue2ooirFJM2/u+XGtNgseDPA9Yr4H9TMEzJ9M34M=;
+ b=laxtbs7RV5ZI3SkbbfBGEF0p2Ucg+fndDS/dRnOX0PnIb1x4zqdJ9XXuXs41bI/rOmpM8/adfzn7VC5FyVxwgjixF6JBzmAR4AqPwFnTb4F+AvkWuacAEx8fPtAIOl5COO8UrFoeLdP014by2z2dJAx3nvJGfj4xsniHrv7vLUq43PdxcVAqFeBHqSt9GtAntVjzJ1BvEDdTNPaP9fvdoPx/BkF/OLdqDZQnhXMHo9X43hAbMzcZ7/SmFAVGex+AxsbBVoCvbmHUnR2j4nblLArTeVdNRsjbK4s2le/d9sjlIGN8qvjwpZYnfZvyrsuFHJUOlmf0alXWQlNi/Rrfnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZWHue2ooirFJM2/u+XGtNgseDPA9Yr4H9TMEzJ9M34M=;
+ b=PXri9fIhNNV5eV0KrlX6VEMmFvjKsXb8e2oz3Ai+uJRXOLrJc4AkR42Oz4Jw2vS2Nnj4wrVzXtHackAGVhV1sEZ1wlS95yLtEb09HJGva6KAOSSvHBnZa7xdfsOFRUu/nsX79RCybXIPNgwSPa32XBNn903WGxoxagPNvUYc5kU=
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
+ by DM6PR10MB3260.namprd10.prod.outlook.com (2603:10b6:5:1ab::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 10 Sep
+ 2021 14:14:12 +0000
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::f4b1:d890:7745:30a3%5]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
+ 14:14:12 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH RFC 5/9] s390/uv: fully validate the VMA before calling
+ follow_page()
+Thread-Topic: [PATCH RFC 5/9] s390/uv: fully validate the VMA before calling
+ follow_page()
+Thread-Index: AQHXpYuSHG/JrbFz7UmTxzxyXzbggKudUSEA
+Date:   Fri, 10 Sep 2021 14:14:12 +0000
+Message-ID: <20210910141404.fzgxymamjnfnvskf@revolver>
+References: <20210909145945.12192-1-david@redhat.com>
+ <20210909145945.12192-6-david@redhat.com>
+In-Reply-To: <20210909145945.12192-6-david@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0f79a503-e952-43ae-8bd1-08d9746543ba
+x-ms-traffictypediagnostic: DM6PR10MB3260:
+x-microsoft-antispam-prvs: <DM6PR10MB3260BE70B8C0E3E40EEA0D18FDD69@DM6PR10MB3260.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:187;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C5vC+cysjgzxRYqs+9PnAP/TpXcVf+W/GDJ03UYkO6OwLnQSYKtllq3Wh8mZIpSG3gRX1E1bL73IzKGILbAha/s2mOrE2CoifVJu3grBYPr7a6ZUfGTcNXhusdct0rBFstjQVBQ3iVCJuw97H2n3EX44Hq6+IxCJIuGXm1lrHtp+pwj/UzgIUS17+jC8on/MP5oQMqOPq3MBjrja09JX9zc9zm14YdrOJaU3SCRd1keVM9bHn31rTD7U7+3skjYUXzM0/9wvn1TZlFZQdJbtLJiCGZ6zizB5gmYKGMD5rGz+3JM9V2ScNwPvkgymk21wnZ1AKq3Ud0oRzkMr5jF2lyunywzGnRIsiSa83eqDYc6PyAWh8hdUfhmc1T/o5+mJJILxvWEOI81O7+ZejaqqbX1utawOLkRdn0JEYLfIz/VT6XaGPjD6QCq3b5xSSfUoUQ6bEK8VrWPEcdjOsu6fgBmb9xmWosxm4/m4TmohZVdoUnhfbAtkVUQabTW6NKabQHfhxsyljcOQi0g+dZm5A0usyWf2gEAQzYyt+LwTG7rkUjUAdd8d1oC2QGzh9GAsrDxA6UEXSrZ/wGFbwaaO+1cVSFTcExKw8e8pl8BDGQvRckqbZK7P1iMdHHHYbQt6G+t009Vzv3AY3xIho/vr5t/jwrlcHEOp+I0xHVchEj8q3wyolF7QRGID7x4Rc1tlrLSV1GD9mob2GKsAfTFvFA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(39860400002)(396003)(136003)(376002)(366004)(2906002)(38100700002)(122000001)(71200400001)(38070700005)(6512007)(3716004)(54906003)(44832011)(9686003)(26005)(8676002)(91956017)(86362001)(316002)(8936002)(186003)(4326008)(478600001)(6916009)(6486002)(66446008)(66476007)(76116006)(66946007)(64756008)(66556008)(6506007)(1076003)(33716001)(5660300002)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9+u3KGnwbXPwi9BfLGlYBi6j0AC27pIR2OvzpPH4hKHKPNKkNMC09iapHlUF?=
+ =?us-ascii?Q?93bpVA6pHm6uDa4IDrPERHWIiTZ1m/s14xC1Kel5fBzNCMOVs0v0ab9B3zdE?=
+ =?us-ascii?Q?ibRktQZYFOgfm3tr+hWLOKbDIRU9jmwd1B7lc66IX2qTXWiHRunvO4LTReCv?=
+ =?us-ascii?Q?GCT6n+kio/Cur//7pB4O0QcaPL+6sQt8e/7UwhmRlTY+YSBjSeW7b0UCInc7?=
+ =?us-ascii?Q?6J6r9yPYqEX3E7V2kdsjhNm3IbOq4N7Fdh/4GpGrnV9iYCFBGPxxXswrJ3+Y?=
+ =?us-ascii?Q?gaku8ZX2qJBSGRlXtpFj6cdnaxNGROn3VF7xdV3L6iGaGXXpBoBRXfUHDNAU?=
+ =?us-ascii?Q?Yn3LOCsS+arRnuF97YukL67+Sqxi3UtDLFGEJEX2GU1floo5kUoUSYGBhF7v?=
+ =?us-ascii?Q?dePjjU3u2AO/cSAghK6IlEzXllHDz50+w/6XTC74FhfWQhEU6+0AJMqFxEcs?=
+ =?us-ascii?Q?yD7Uh2uoPMK3lGWJ0br3ULmmAu00nc4pFDLKpwqzBvQ/Aw7tIo03RpHq2Xzm?=
+ =?us-ascii?Q?5PZNGaGIeJmy+N2I+jDfOswNm1gIJmlPQT6L8oCuX5TQI8u9L1GEEesyFf/o?=
+ =?us-ascii?Q?SJ6YRGhNgvMceg7QuK3CVO7nTjnz/Gfaz22Wc3HaTfIP+VIaJx6CfCg0MYYR?=
+ =?us-ascii?Q?jcQVs17dbt3jSTxi51vZsK8CHeBLGNEmxyAbnoC1D//b+yYCv/jj/G6nY4e9?=
+ =?us-ascii?Q?5PCJ9sm/PREjtK/ntkCHDV6Ckw/jJwGG0DUtWRIgDuQ93gre99DFRnm45u15?=
+ =?us-ascii?Q?HU4fcDVjcZbWMKNFcOBglwxPWgfTSelYKrvEh+xfGjJzsOZ2ertxzmHsL6/F?=
+ =?us-ascii?Q?ZB1Z/l2d1uJyxrObcu8QAk7+wQeBKvz2wAuH8oLy3VC8UAdTpF1pk8TDK+7L?=
+ =?us-ascii?Q?CpO4wSdTfBWm5yhB2bf7P7Rk5K2j9+zeiYlJ1XBlf8gB6KqC/n3anrDYCd7g?=
+ =?us-ascii?Q?ybNp6zAAxBOaN7PDj/u+dcAecyp+l2DPQkXUETSyxrd7ey0zgAyarbEfz2TI?=
+ =?us-ascii?Q?qbQhjPTTF3z5m7G4TMTIJxRO7xiqOxpL9qgWHE+LU9d5qqTjGIOkaEtk6Lpa?=
+ =?us-ascii?Q?WmtZkVWy1OIiihukqstfOqoQQvdd8c9rIWQe0YEJfZ0O+Z/6Q1TgVmq/kt+s?=
+ =?us-ascii?Q?ZIx59w9PLXmubReGzqyJQqbU37o7HnzBmqDrzrySfpbEwsIl8KRIn0ZvsA9n?=
+ =?us-ascii?Q?b8dr6rZmlwlQu8x/wGuyssMkvVmAG2tXTD4MB5Y8rT/Liq/R9NFzQtYKDMhi?=
+ =?us-ascii?Q?9WrZQCkVK4L7XdDgsDEVj0+91BvqBZg2z4Eitwt4exztW1xKCxpxb8RYfe0c?=
+ =?us-ascii?Q?+vsRnU827e9Kn11vUPJcHoGn?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <60DE37EC12A21945BFCF2237540DA475@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f79a503-e952-43ae-8bd1-08d9746543ba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2021 14:14:12.0450
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ALWxGLTFQIMa5Tsgvgngk8dXBZOHCbJsG6HicWsEncHQHYCS8DFulQN6IxeIUYBq4GaIkQmaNLkP6leWU54L1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3260
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10103 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109100082
+X-Proofpoint-GUID: gS_Pt4dFafI7J9qllCzrqzzMk1gtAYvL
+X-Proofpoint-ORIG-GUID: gS_Pt4dFafI7J9qllCzrqzzMk1gtAYvL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ba1dc7f273c73b93e0e1dd9707b239ed69eebd70:
+* David Hildenbrand <david@redhat.com> [210909 11:01]:
+> We should not walk/touch page tables outside of VMA boundaries when
+> holding only the mmap sem in read mode. Evil user space can modify the
+> VMA layout just before this function runs and e.g., trigger races with
+> page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+> with read mmap_sem in munmap").
+>=20
+> find_vma() does not check if the address is >=3D the VMA start address;
+> use vma_lookup() instead.
+>=20
+> Fixes: 214d9bbcd3a6 ("s390/mm: provide memory management functions for pr=
+otected KVM guests")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/kernel/uv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index aeb0a15bcbb7..193205fb2777 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -227,7 +227,7 @@ int gmap_make_secure(struct gmap *gmap, unsigned long=
+ gaddr, void *uvcb)
+>  	uaddr =3D __gmap_translate(gmap, gaddr);
+>  	if (IS_ERR_VALUE(uaddr))
+>  		goto out;
+> -	vma =3D find_vma(gmap->mm, uaddr);
+> +	vma =3D vma_lookup(gmap->mm, uaddr);
+>  	if (!vma)
+>  		goto out;
+>  	/*
+> --=20
+> 2.31.1
+>=20
+>=20
 
-  Merge tag 'char-misc-5.15-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc (2021-09-01 08:35:06 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc1-2
-
-for you to fetch changes up to 4cd67adc44a3ccdb3b8526c9f932f905284e028f:
-
-  Merge tag 'misc-habanalabs-next-2021-09-01' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux into char-misc-next (2021-09-01 20:13:05 +0200)
-
-----------------------------------------------------------------
-Misc driver patches for 5.15-rc1, second round
-
-Here is a second round of misc driver patches for 5.15-rc1.
-
-In here is only updates for the Habanalabs driver.  This request is late
-because the previously-objected-to dma-buf patches are all removed and
-some fixes that you and others found are now included in here as well.
-
-All of these have been in linux-next for well over a week with no
-reports of problems, and they are all self-contained to only this one
-driver.  Full details are in the shortlog.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alon Mizrahi (1):
-      habanalabs/gaudi: add monitored SOBs to state dump
-
-Greg Kroah-Hartman (1):
-      Merge tag 'misc-habanalabs-next-2021-09-01' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux into char-misc-next
-
-Koby Elbaz (2):
-      habanalabs: fix race between soft reset and heartbeat
-      habanalabs: clear msg_to_cpu_reg to avoid misread after reset
-
-Oded Gabbay (29):
-      habanalabs: rename enum vm_type_t to vm_type
-      habanalabs: re-init completion object upon retry
-      habanalabs: release pending user interrupts on device fini
-      habanalabs: handle case of interruptable wait
-      habanalabs: user mappings can be 64-bit
-      habanalabs: allow disabling huge page use
-      habanalabs: use get_task_pid() to take PID
-      habanalabs: fix type of variable
-      habanalabs: add asic property of host dma offset
-      habanalabs: set dma max segment size
-      habanalabs/gaudi: fix information printed on SM event
-      habanalabs: update firmware header to latest version
-      habanalabs/goya: add missing initialization
-      habanalabs: revise prints on FD close
-      habanalabs: remove redundant warning message
-      habanalabs: expose server type in INFO IOCTL
-      habanalabs/gaudi: move scrubbing to late init
-      habanalabs/gaudi: minimize number of register reads
-      habanalabs: update to latest firmware headers
-      habanalabs/gaudi: increase boot fit timeout
-      habanalabs/gaudi: restore user registers when context opens
-      habanalabs/gaudi: define DC POWER for secured PMC
-      habanalabs/gaudi: size should be printed in decimal
-      habanalabs/gaudi: invalidate PMMU mem cache on init
-      habanalabs: disable IRQ in user interrupts spinlock
-      habanalabs: remove unnecessary device status check
-      habanalabs: never copy_from_user inside spinlock
-      habanalabs/gaudi: block ICACHE_BASE_ADDERESS_HIGH in TPC
-      habanalabs: add support for f/w reset
-
-Ofir Bitton (6):
-      habanalabs: update firmware header files
-      habanalabs: missing mutex_unlock in process kill procedure
-      habanalabs/gaudi: trigger state dump in case of SM errors
-      habanalabs: add validity check for event ID received from F/W
-      habanalabs/gaudi: scrub HBM to a specific value
-      habanalabs/gaudi: fetch TPC/MME ECC errors from F/W
-
-Ohad Sharabi (5):
-      habanalabs: get multiple fences under same cs_lock
-      habanalabs: add wait-for-multi-CS uAPI
-      habanalabs: convert PCI BAR offset to u64
-      habanalabs: make set_pci_regions asic function
-      habanalabs: modify multi-CS to wait on stream masters
-
-Omer Shpigelman (1):
-      habanalabs: add "in device creation" status
-
-Rajaravi Krishna Katta (1):
-      habanalabs/gaudi: hwmon default card name
-
-Tomer Tayar (3):
-      habanalabs: fix nullifying of destroyed mmu pgt pool
-      habanalabs: mark linux image as not loaded after hw_fini
-      habanalabs/gaudi: unmask out of bounds SLM access interrupt
-
-Yuri Nudelman (7):
-      habanalabs: allow fail on inability to respect hint
-      habanalabs: expose state dump
-      habanalabs: state dump monitors and fences infrastructure
-      habanalabs/gaudi: implement state dump
-      habanalabs: save pid per userptr
-      habanalabs: fix mmu node address resolution in debugfs
-      habanalabs: add userptr_lookup node in debugfs
-
-Zvika Yehudai (1):
-      habanalabs: rename cb_mmap to mmap
-
-farah kassabri (5):
-      habanalabs: support hint addresses range reservation
-      habanalabs: signal/wait change sync object reset flow
-      habanalabs: add support for encapsulated signals reservation
-      habanalabs: add support for encapsulated signals submission
-      habanalabs: cannot sleep while holding spinlock
-
- .../ABI/testing/debugfs-driver-habanalabs          |   19 +
- drivers/misc/habanalabs/common/Makefile            |    3 +-
- drivers/misc/habanalabs/common/command_buffer.c    |    4 +-
- .../misc/habanalabs/common/command_submission.c    | 1387 +++++++++++++++-----
- drivers/misc/habanalabs/common/context.c           |  146 ++-
- drivers/misc/habanalabs/common/debugfs.c           |  184 ++-
- drivers/misc/habanalabs/common/device.c            |  163 +--
- drivers/misc/habanalabs/common/firmware_if.c       |   56 +-
- drivers/misc/habanalabs/common/habanalabs.h        |  421 +++++-
- drivers/misc/habanalabs/common/habanalabs_drv.c    |   13 +-
- drivers/misc/habanalabs/common/habanalabs_ioctl.c  |    2 +
- drivers/misc/habanalabs/common/hw_queue.c          |  198 ++-
- drivers/misc/habanalabs/common/memory.c            |  169 ++-
- drivers/misc/habanalabs/common/mmu/mmu_v1.c        |   12 +-
- drivers/misc/habanalabs/common/pci/pci.c           |    2 +
- drivers/misc/habanalabs/common/state_dump.c        |  718 ++++++++++
- drivers/misc/habanalabs/common/sysfs.c             |   20 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              |  716 ++++++++--
- drivers/misc/habanalabs/gaudi/gaudiP.h             |   19 +-
- drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |    5 -
- drivers/misc/habanalabs/gaudi/gaudi_security.c     |    8 +
- drivers/misc/habanalabs/goya/goya.c                |  102 +-
- drivers/misc/habanalabs/include/common/cpucp_if.h  |  115 +-
- .../misc/habanalabs/include/common/hl_boot_if.h    |   62 +-
- .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |    3 +
- .../misc/habanalabs/include/gaudi/gaudi_masks.h    |   17 +
- .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |    2 -
- include/uapi/misc/habanalabs.h                     |  186 ++-
- 28 files changed, 3918 insertions(+), 834 deletions(-)
- create mode 100644 drivers/misc/habanalabs/common/state_dump.c
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
