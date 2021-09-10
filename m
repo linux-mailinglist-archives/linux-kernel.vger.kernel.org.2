@@ -2,152 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA17406E7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EC4406E83
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhIJPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhIJPno (ORCPT
+        id S234538AbhIJPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:47:03 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:44961 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhIJPrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:43:44 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA29C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:42:33 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id g14so2214660pfm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:42:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SiGov35SyrsNa0p/ygBsXRJGs1dQPnAwPQrLMje8peY=;
-        b=OhnY6WvivfLN56CFZm2k0VBJ7cJc6GXoso1feCmNuLK8xVSKyNXzypQNHUMoueR81T
-         7BAQp8lvgS6+TnBycew5IfreukV5O+HzfQAtQ7TL/uBxrlNXrKBmpJj/yHZMNJ0/7R6g
-         IY58OotEPjfFC/tQGdNvx8wa8I46YCObxV3jV/MCEmfvZb+6ypkV9Khryt80BGswpAwm
-         8sqtZ/FZygb5Zm33K0mpwsWQlH78jEQEfxT02gtE5FRC/SkrWoEx7FbVMKuGfQ0SoljM
-         lSBHY8KsBFLsPIHxc8BNhCHsrBf9E9seNirDnGkTqbnNf84BdhGzyhrY+mmy5OTDo6W/
-         YSOA==
+        Fri, 10 Sep 2021 11:47:01 -0400
+Received: by mail-ot1-f52.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so2760135otg.11;
+        Fri, 10 Sep 2021 08:45:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SiGov35SyrsNa0p/ygBsXRJGs1dQPnAwPQrLMje8peY=;
-        b=32PHIBRDKI+u//cUWHEl0rhzICZowv3of8ryaKz5Jxqqs1SG6Z8p1MUjQJDmwbHruI
-         eBlzqOdqshcLURvQ9NJ4lhkh34y6MSm5RYcZRfiRMs4t085KpXgy5R9ZtWSUdOnWCzpO
-         6Q1804cXegWRgGVp15rd57rlJBDPNRcYzrUxnXiGtRONH/gkKJ6qTVRPRLRYDjX/bMN3
-         pPggPeq8PGoMTbBvpq6MpwWDUVlyqA9qz4HVDEejZ91/ttCp+talklSSEBF0zvIVjytT
-         VTS23QmL0vm404h0s3BKuXJPPHEPnZLzPwariw7PfKPN/lwSnJBXafIiBLxyAFn8jXIw
-         WjFw==
-X-Gm-Message-State: AOAM530UDk4KWKqUN+dFBYmO5gLiDtdidNt2S/KvqOjXE8GIojL2bxqL
-        AlvqKC72SXKQoxuvXEjJX/5YMWJbGhhcjMG6a73hZA==
-X-Google-Smtp-Source: ABdhPJySmKiB3mBJQHU9hN5iTUa8KrMdmCh9lgDsiS2zVvc6bLRexKehjl8yUaSsg/UkCBe+LeshF6hEHQSQKLitJ4s=
-X-Received: by 2002:a05:6a00:1a10:b0:412:448c:89ca with SMTP id
- g16-20020a056a001a1000b00412448c89camr8871652pfv.86.1631288552597; Fri, 10
- Sep 2021 08:42:32 -0700 (PDT)
+        bh=IafxlXhAy5ang9tPFO3tf+SLenv7yclmDNvoDEyRnoU=;
+        b=FJPjeZadXfM69JnIVn2CQMWbYAEFnwDidUu8G4XUvkYBkJF8jyLD9YXQ48oQ4EbFM/
+         cWbk4w2xYNH3+GkX78/G5vdx6ZCZ5Vq7ViMOJSeMhogJCaBypW5+szgq82PPjhHXpIJu
+         c2mfgZi3O/n4RyYY17yOeggYy0F41V5Vv89YaKoiQwfn1wjm5NXDswrVfax4B1+oYJTm
+         mUtoAhT/dG8+sIoVoNchRVsotXojFwEdOyqMC/77TcOKFMVA9WnvjAFUgTOPmGoc43yM
+         ElFBYmVs117ZjhPhaxLsuQjyV4R4FQGT5LFa+dquQnLeXMiUZhTMgYdDfpGtelhwFuFz
+         YXpQ==
+X-Gm-Message-State: AOAM533P80hPWLePnWN7Cw5t2ZBhcKvYl74J5PqE6foAWD82T4aw6Z3c
+        ks5yGq3FtOUJml3AYLexREBHoGLKXoswVkZE8PE=
+X-Google-Smtp-Source: ABdhPJz8b2yhlfD6oLMA/fmwgmQ+jYLSP6f5/XvYYfKJ2BnCN1HBJ57/GJ2ekQIXcd7khQAIVKjDSRHa8kEzcvU+HdU=
+X-Received: by 2002:a9d:6945:: with SMTP id p5mr5163940oto.301.1631288749417;
+ Fri, 10 Sep 2021 08:45:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910124628.6261-1-justin.he@arm.com>
-In-Reply-To: <20210910124628.6261-1-justin.he@arm.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 10 Sep 2021 08:42:21 -0700
-Message-ID: <CAPcyv4ie_ZzEwrrKJEVrDP19UWAgSiW3GU9f99EqX0e6BPQDPA@mail.gmail.com>
-Subject: Re: [PATCH v2] device-dax: use fallback nid when numa node is invalid
-To:     Jia He <justin.he@arm.com>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+ <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+ <CAAYoRsWdFwiwo8j2Nc-vhk2mnoZqJC9fyS7URtEz3E1VxfNbLQ@mail.gmail.com>
+ <CAJZ5v0hO7SajJ5HFVDcma6nOfzy-289MdwUSiJbY8Hm3mxvXnQ@mail.gmail.com>
+ <CAJZ5v0j1JjLr0co06yJCCNV2p06e91Zh7tkMXoGTE=waB5Xo1Q@mail.gmail.com>
+ <CAAYoRsUun0_tXTEGi6m1L0A9ffRWZ8FbLs1kFEZ0d0QQi+ssQw@mail.gmail.com>
+ <CAJZ5v0jMDbxXt_EWN-GUOGBDCpDGHUoqRoTtfR8-rUOQjDBUyw@mail.gmail.com> <CAAYoRsVOh+TxZK8BWfM=u6YqEhSY-Pgpt+aavZGBLogVTEocKw@mail.gmail.com>
+In-Reply-To: <CAAYoRsVOh+TxZK8BWfM=u6YqEhSY-Pgpt+aavZGBLogVTEocKw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 10 Sep 2021 17:45:38 +0200
+Message-ID: <CAJZ5v0jwLrnz+93yjP0s8ctbka95_tuLZocuFP1g5ryef5QRLQ@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
+ by BIOS
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 5:46 AM Jia He <justin.he@arm.com> wrote:
+On Fri, Sep 10, 2021 at 5:35 PM Doug Smythies <dsmythies@telus.net> wrote:
 >
-> Previously, numa_off was set unconditionally in dummy_numa_init()
-> even with a fake numa node. Then ACPI sets node id as NUMA_NO_NODE(-1)
-> after acpi_map_pxm_to_node() because it regards numa_off as turning
-> off the numa node. Hence dev_dax->target_node is NUMA_NO_NODE on
-> arm64 with fake numa case.
+> On Fri, Sep 10, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Fri, Sep 10, 2021 at 5:14 AM Doug Smythies <dsmythies@telus.net> wrote:
+> > > On Thu, Sep 9, 2021 at 10:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > On Thu, Sep 9, 2021 at 6:12 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > On Thu, Sep 9, 2021 at 3:20 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > > > > > On Thu, Sep 9, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > > On Thu, Sep 9, 2021 at 8:52 AM Srinivas Pandruvada
+> > > > > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > > > >
+> > > > > > > > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > > > > > > > > If HWP has been already been enabled by BIOS, it may be
+> > > > > > > > > necessary to override some kernel command line parameters.
+> > > > > > > > > Once it has been enabled it requires a reset to be disabled.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> > > > > > > > >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > > b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > > index bb4549959b11..073bae5d4498 100644
+> > > > > > > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> > > > > > > > >                  */
+> > > > > > > > >                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> > > > > > > > >                     intel_pstate_hwp_is_enabled()) {
+> > > > > > > > > -                       hwp_active++;
+> > > > > > > > > +                       hwp_active = 1;
+> > > > > > > > Why this change?
+> > > > > > >
+> > > > > > > I think hwp_active can be changed to bool and then it would make sense
+> > > > > > > to update this line.
+> > > > > > >
+> > > > > > > > >                         hwp_mode_bdw = id->driver_data;
+> > > > > > > > >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> > > > > > > > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > > > > > > > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> > > > > > > > >
+> > > > > > > > >  static int __init intel_pstate_setup(char *str)
+> > > > > > > > >  {
+> > > > > > > > > +       /*
+> > > > > > > > > +        * If BIOS is forcing HWP, then parameter
+> > > > > > > > > +        * overrides might be needed. Only print
+> > > > > > > > > +        * the message once, and regardless of
+> > > > > > > > > +        * any overrides.
+> > > > > > > > > +        */
+> > > > > > > > > +       if(!hwp_active
+> > > > > > > > This part of code is from early_param, Is it possible that
+> > > > > > > > hwp_active is not 0?
+> > > > > > >
+> > > > > > > Well, it wouldn't matter even if it were nonzero.  This check is just
+> > > > > > > pointless anyway.
+> > > > > > >
+> > > > > > > > > && boot_cpu_has(X86_FEATURE_HWP))
+> > > > > > > > > +               if(intel_pstate_hwp_is_enabled()){
+> > > > > > >
+> > > > > > > This should be
+> > > > > > >
+> > > > > > > if (boot_cpu_has(X86_FEATURE_HWP) && intel_pstate_hwp_is_enabled()) {
+> > > > > >
+> > > > > > Disagree.
+> > > > > > This routine gets executed once per intel_pstate related grub command
+> > > > > > line entry. The purpose of the "if(!hwp_active" part is to prevent the
+> > > > > > printing of the message to the logs multiple times.
+> > > > >
+> > > > > Ah OK.  Fair enough.
+> > > > >
+> > > > > You can do all of the checks in one conditional, though.  They will be
+> > > > > processed left-to-right anyway.
+> > > > >
+> > > > > But then it would be good to avoid calling
+> > > > > intel_pstate_hwp_is_enabled() multiple times if it returns false.
+> > > > >
+> > > > > And having said all that I'm not sure why you are trying to make
+> > > > > no_hwp depend on !hwp_active?  I will not be taken into account anyway
+> > > > > if intel_pstate_hwp_is_enabled() returns 'true'?
+> > > > >
+> > > > > So if no_hwp is covered regardless, you may move the
+> > > > > intel_pstate_hwp_is_enabled() inside the no_load conditional.
+> > > > >
+> > > > > Alternatively, and I would do that, intel_pstate_hwp_is_enabled()
+> > > > > could be evaluated earlier in intel_pstate_init() and if it returned
+> > > > > 'true', both no_load and no_hwp would be disregarded.
+> > > >
+> > > > Something like the attached, for the record.
+> > >
+> > > O.K. and Thanks.
+> > > I was trying to avoid this line getting into the log:
+> > >
+> > > [    0.000000] intel_pstate: HWP disabled
+> > >
+> > > only to overridden later by, now, these lines:
+> > >
+> > > [    0.373742] intel_pstate: HWP enabled by BIOS
+> > > [    0.374177] intel_pstate: Intel P-state driver initializing
+> > > [    0.375097] intel_pstate: HWP enabled
+> > >
+> > > Let me see if I can go with your suggestion and get to
+> > > what I had hoped to get in the logs.
+> >
+> > It would be sufficient to put the "disabled" printk() after the
+> > "no_hwp" if () statement in intel_pstate_init().  See attached.
 >
-> Without this patch, pmem can't be probed as RAM devices on arm64 if
-> SRAT table isn't present:
->   $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g -a 64K
->   kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with invalid node: -1
->   kmem: probe of dax0.0 failed with error -22
+> Agreed, thanks. Yes, I was thinking similar.
 >
-> This fixes it by using fallback memory_add_physaddr_to_nid() as nid.
+> > BTW, I've changed the message to "HWP not enabled", because that's
+> > what really happens to be precise.
 >
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
-> v2: - rebase it based on David's "memory group" patch.
->     - drop the changes in dev_dax_kmem_remove() since nid had been
->       removed in remove_memory().
->  drivers/dax/kmem.c | 31 +++++++++++++++++--------------
->  1 file changed, 17 insertions(+), 14 deletions(-)
+> Agreed. Good idea.
 >
-> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> index a37622060fff..e4836eb7539e 100644
-> --- a/drivers/dax/kmem.c
-> +++ b/drivers/dax/kmem.c
-> @@ -47,20 +47,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->         unsigned long total_len = 0;
->         struct dax_kmem_data *data;
->         int i, rc, mapped = 0;
-> -       int numa_node;
-> -
-> -       /*
-> -        * Ensure good NUMA information for the persistent memory.
-> -        * Without this check, there is a risk that slow memory
-> -        * could be mixed in a node with faster memory, causing
-> -        * unavoidable performance issues.
-> -        */
-> -       numa_node = dev_dax->target_node;
-> -       if (numa_node < 0) {
-> -               dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
-> -                               numa_node);
-> -               return -EINVAL;
-> -       }
-> +       int numa_node = dev_dax->target_node;
->
->         for (i = 0; i < dev_dax->nr_range; i++) {
->                 struct range range;
-> @@ -71,6 +58,22 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->                                         i, range.start, range.end);
->                         continue;
->                 }
-> +
-> +               /*
-> +                * Ensure good NUMA information for the persistent memory.
-> +                * Without this check, there is a risk but not fatal that slow
-> +                * memory could be mixed in a node with faster memory, causing
-> +                * unavoidable performance issues. Warn this and use fallback
-> +                * node id.
-> +                */
-> +               if (numa_node < 0) {
-> +                       int new_node = memory_add_physaddr_to_nid(range.start);
-> +
-> +                       dev_info(dev, "changing nid from %d to %d for DAX region [%#llx-%#llx]\n",
-> +                                numa_node, new_node, range.start, range.end);
-> +                       numa_node = new_node;
-> +               }
-> +
->                 total_len += range_len(&range);
+> Give me a fews days to create and test a formal patch.
 
-This fallback change belongs where the parent region for the namespace
-adopts its target_node, because it's not clear
-memory_add_physaddr_to_nid() is the right fallback in all situations.
-Here is where this setting is happening currently:
+OK
 
-drivers/acpi/nfit/core.c:3004:          ndr_desc->target_node =
-pxm_to_node(spa->proximity_domain);
-drivers/acpi/nfit/core.c:3007:          ndr_desc->target_node = NUMA_NO_NODE;
-drivers/nvdimm/e820.c:29:       ndr_desc.target_node = nid;
-drivers/nvdimm/of_pmem.c:58:            ndr_desc.target_node =
-ndr_desc.numa_node;
-drivers/nvdimm/region_devs.c:1127:      nd_region->target_node =
-ndr_desc->target_node;
-
-...where is this pmem region originating on this arm64 platform?
+> I currently have limited access to a computer that doesn't force
+> HWP via BIOS.
