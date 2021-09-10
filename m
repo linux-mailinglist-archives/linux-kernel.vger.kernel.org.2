@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1741F406C70
+	by mail.lfdr.de (Postfix) with ESMTP id 85336406C71
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhIJMqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233424AbhIJMq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68D6160E94;
-        Fri, 10 Sep 2021 12:45:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631277916;
-        bh=u82foOMSBD2SO3pdy2Df3/FLyJdVMTCjSxcxbQ2H6Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ec5mXp8myPUPpCCPqmnP/jTIcA49WxLNi2F+BEGPfUeGlOKRBx+v2ub/x7AEpb2Ry
-         hQdc3DNWqyTbTZz6C0rmrKvvJvqgy9sBu6uXh3nbfSKjyMtWcMoAZrfdziym0kQ0b/
-         EyNFbDxzt+6dggmkyNoNmm8Na428uLchP6GMDdnSP0/i0DuG+EKGGL8IjuTyCVeNdf
-         NJu1cuUdj5X9rLbRq/MaQJGdIv7xNp8dJbsPV8Ee/0GY28Oe8qBmKVXtCI6BwITS35
-         1pKmPd9qYi8+jqRnEBU7mW+yVF/fA5IOZwlzrkfP/4slw5gmCq2zkZWQar2GOk33J2
-         59Kin0IHNAriw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mOftz-0004zV-Bh; Fri, 10 Sep 2021 14:45:07 +0200
-Date:   Fri, 10 Sep 2021 14:45:07 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, fujita.tomonori@lab.ntt.co.jp,
-        axboe@kernel.dk, martin.petersen@oracle.com, hch@lst.de,
-        gregkh@linuxfoundation.org, wanghaibin.wang@huawei.com
-Subject: Re: [PATCH] scsi: bsg: Fix device unregistration
-Message-ID: <YTtTU4+DZEb4WRkR@hovoldconsulting.com>
-References: <20210909034608.1435-1-yuzenghui@huawei.com>
+        id S233693AbhIJMqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:46:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38424 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233683AbhIJMqn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:46:43 -0400
+Date:   Fri, 10 Sep 2021 14:45:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631277931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYe9djVH32oIH1dMg/4UjSUuB4tMkZH3lMYm37JAmKk=;
+        b=w+k4dlfOOv7gn5eutCAba/foctsxreNZ4ry2tb6w4PXPlKcgSDM8Ceq3VK8NSCyGDYibiw
+        C06iw+7yUoIV/VAxyQ9ZwJ16BO+yK4vGK7yNUtuMZXv68GgvvdnllhWxWRfU1spWVvEDRK
+        DMCwo0fJTQ+LIRdz9QmnFkWNegRvEVcFZoHhsIaw6xAtF2Kneu8BRrqRx+akpdcU3yLrl7
+        LkfSJ8Ec3KcUObMDk40940jM7wkl89y23Qqdn+Gdu/8VThNJ1c58cwVGKPdPCPnUsdOBgc
+        XYxDzawY7nKXlEMM7Oz+30jpvry+c9g4ahGAh5LLo5djlDCwP4rIhgNVd/sk4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631277931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYe9djVH32oIH1dMg/4UjSUuB4tMkZH3lMYm37JAmKk=;
+        b=AdsAeligySKM6SzqdjbDXCbe8QdfU3L2ILy9rWSDZPjeIoOBtuy2qnH6MlEPJT1GgufPDQ
+        yuf71zaDqRumWfBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
+ current_save_and_set_rtlock_wait_state()
+Message-ID: <20210910124530.iezmxpzzhkbl6gwt@linutronix.de>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.767330253@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210909034608.1435-1-yuzenghui@huawei.com>
+In-Reply-To: <20210909110203.767330253@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 11:46:08AM +0800, Zenghui Yu wrote:
-> We use device_initialize() to take refcount for the device but forget to
-> put_device() on device teardown, which ends up leaking private data of the
-> driver core, dev_name(), etc. This is reported by kmemleak at boot time if
-> we compile kernel with DEBUG_TEST_DRIVER_REMOVE.
-> 
-> Note that adding the missing put_device() is _not_ sufficient to fix device
-> unregistration. As we don't provide the .release() method for device, which
-> turned out to be typically wrong and will be complained loudly by the
-> driver core.
-> 
-> Fix both of them.
-> 
-> Fixes: ead09dd3aed5 ("scsi: bsg: Simplify device registration")
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->  block/bsg.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
- 
-> +static void bsg_device_release(struct device *dev)
-> +{
-> +	struct bsg_device *bd = container_of(dev, struct bsg_device, device);
-> +
-> +	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
-> +	kfree(bd);
-> +}
+On 2021-09-09 12:59:16 [+0200], Peter Zijlstra wrote:
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -253,22 +254,24 @@ struct task_group;
+>   */
+>  #define current_save_and_set_rtlock_wait_state()			\
+>  	do {								\
+> -		lockdep_assert_irqs_disabled();				\
+> -		raw_spin_lock(&current->pi_lock);			\
+> +		unsigned long flags; /* may shadow */			\
+could we haz __flags so no shadow?
 
-> @@ -198,6 +205,7 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
->  	bd->device.devt = MKDEV(bsg_major, ret);
->  	bd->device.class = bsg_class;
->  	bd->device.parent = parent;
-> +	bd->device.release = bsg_device_release;
->  	dev_set_name(&bd->device, "%s", name);
->  	device_initialize(&bd->device);
->  
-> @@ -218,6 +226,7 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
->  out_device_del:
->  	cdev_device_del(&bd->cdev, &bd->device);
->  out_ida_remove:
-> +	put_device(&bd->device);
->  	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
->  out_kfree:
->  	kfree(bd);
+> +									\
+> +		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+>  		current->saved_state = current->__state;		\
+>  		debug_rtlock_wait_set_state();				\
+> -		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
+> -		raw_spin_unlock(&current->pi_lock);			\
+> +		smp_store_mb(current->__state, TASK_RTLOCK_WAIT);	\
+> +		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
 
-Ehh, what about the blatant use-after-free and double-free you just
-added here?
-
-Martin, can this still be dropped from the scsi tree or does it need to
-be fixed incrementally?
-
-Johan
+Sebastian
