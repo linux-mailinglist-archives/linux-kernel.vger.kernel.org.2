@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC61406828
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99ED540682A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhIJIKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:10:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54960 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhIJIKL (ORCPT
+        id S231732AbhIJILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:11:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59421 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231691AbhIJILR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:10:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id AE3352004C;
-        Fri, 10 Sep 2021 08:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631261339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 10 Sep 2021 04:11:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631261406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=s3YO21RL5B4bIYQW/pvfgxRmZIFg+04XQ1r4GlVCaHM=;
-        b=Vl6K96n0ceSaujzU8wf4tTVN60AwLJpnN0TiIWN/T8wFljxQ7joXK3xmBEMhcqVn4oCZRk
-        A910UPSOKm37b+4lgiTuGogoZesUuU+oqs9VIM43BKnlCfh7GB7/s4489jlyYsXxsjeaV+
-        KdwcIe5LhPJL/2kVWxrGSbaPYYj+0gI=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 91147A3BA2;
-        Fri, 10 Sep 2021 08:08:59 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 10:08:56 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] livepatch: Kick idle cpu's tasks to perform
- transition
-Message-ID: <YTsSmC3vGWa+kf5l@alley>
-References: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
- <YSjgj+ZzOutFxevl@alley>
- <your-ad-here.call-01631177645-ext-9742@work.hours>
+        bh=04dg9eLo5DobwnbTP7RmzFwFoUSaWkodvk2ic+H8548=;
+        b=LItJBSy3DHmwpkZiTV8nTOaBEjmbjBx0MM7KbZrNZMAez1LrJIGSPPcqEHbwiV8aeJyN5g
+        kHpSk6RZdlMFc4q2syUlTgELQewXUazzSyz+cwJIKNPrSue0+00Gd0zaPEQ8RFxRcv4ky8
+        S6AQE+ufAUYsv0K5Ts66rbsL+Wix1LI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-7CYRIdSRMT6F1ka46RGksQ-1; Fri, 10 Sep 2021 04:10:05 -0400
+X-MC-Unique: 7CYRIdSRMT6F1ka46RGksQ-1
+Received: by mail-wm1-f71.google.com with SMTP id j21-20020a05600c1c1500b00300f1679e4dso245240wms.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:10:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=04dg9eLo5DobwnbTP7RmzFwFoUSaWkodvk2ic+H8548=;
+        b=VkLFMojKLAKOW+sirOyDNIAvioojWrR0WzFvM4am+NnJVRJ06meau6A80gLtRNHH0v
+         p4a6DFlVuEmKGUAJ4OCqXY/BslnYe7dpFs8tVFXgxTP9WlCTH7/lJ0HGhjFOOnybUaTF
+         NfGscbJq9Jqy9rBDGnYZ1SoCIIJ9rwNaSMdmwjDs1DpDepIm5t845R8JGeHf0PcTcDai
+         w/DRTd2SyQUn2NCPL69QT4FgJZzJrOiFWvJ0GyYtpPnHMSmelvw76Tk6ipJlpqA3E+Vp
+         lz00cu+3ysaTQ3PBUQlgiJi4eSLoXN4hSd5GQCFPowS/9MM5KB5P/UQITImciQmcbwt4
+         n5xA==
+X-Gm-Message-State: AOAM532RhfHgBchILFMe2MLtB3YwVBBux5uTNKHfo4xI6dcYos30W2kF
+        7LoSy44NNryPCWvTX8Rfdk2DWW6UgxbjuP9VpJ9n8jhnYmwauv6/lhtiCdzgfsEs1BEbM3YZ3o/
+        Z1suxty0Yzmprjn4fS/8/xsXW
+X-Received: by 2002:a05:600c:3b0e:: with SMTP id m14mr7171031wms.118.1631261403954;
+        Fri, 10 Sep 2021 01:10:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznq/1Zr/LhNYqj/gZ4OdPBVawbvoIodEWaQXNr0cQS5ZYlI1VWvjYdpXqwAPwN0hOtTSUxVw==
+X-Received: by 2002:a05:600c:3b0e:: with SMTP id m14mr7170994wms.118.1631261403703;
+        Fri, 10 Sep 2021 01:10:03 -0700 (PDT)
+Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id j7sm322322wrr.27.2021.09.10.01.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 01:10:03 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 10:10:01 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
+ the vcpuid
+Message-ID: <20210910081001.4gljsvmcovvoylwt@gator>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-10-rananta@google.com>
+ <20210909075643.fhngqu6tqrpe33gl@gator>
+ <CAJHc60wRkUyKEdY0ok0uC7r=P0FME+Lb7oapz+AKbjaNDhFHyA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <your-ad-here.call-01631177645-ext-9742@work.hours>
+In-Reply-To: <CAJHc60wRkUyKEdY0ok0uC7r=P0FME+Lb7oapz+AKbjaNDhFHyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-09-09 10:54:05, Vasily Gorbik wrote:
-> On Fri, Aug 27, 2021 at 02:54:39PM +0200, Petr Mladek wrote:
-> > On Wed 2021-07-07 14:49:38, Vasily Gorbik wrote:
-> > > --- a/kernel/livepatch/transition.c
-> > > +++ b/kernel/livepatch/transition.c
-> > > @@ -415,8 +415,11 @@ void klp_try_complete_transition(void)
-> > >  	for_each_possible_cpu(cpu) {
-> > >  		task = idle_task(cpu);
-> > >  		if (cpu_online(cpu)) {
-> > > -			if (!klp_try_switch_task(task))
-> > > +			if (!klp_try_switch_task(task)) {
-> > >  				complete = false;
-> > > +				set_tsk_need_resched(task);
-> > 
-> > Is this really needed?
-> 
-> Yes, otherwise the inner idle loop is not left and
-> klp_update_patch_state() is not reached. Only waking up idle
-> cpus is not enough.
+On Thu, Sep 09, 2021 at 10:10:56AM -0700, Raghavendra Rao Ananta wrote:
+> On Thu, Sep 9, 2021 at 12:56 AM Andrew Jones <drjones@redhat.com> wrote:
+> >
+> > On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
+...
+> > > +     for (i = 0; i < KVM_MAX_VCPUS; i++) {
+> > > +             vcpuid = vcpuid_map[i].vcpuid;
+> > > +             GUEST_ASSERT_1(vcpuid != VM_VCPUID_MAP_INVAL, mpidr);
+> >
+> > We don't want this assert if it's possible to have sparse maps, which
+> > it probably isn't ever going to be, but...
+> >
+> If you look at the way the array is arranged, the element with
+> VM_VCPUID_MAP_INVAL acts as a sentinel for us and all the proper
+> elements would lie before this. So, I don't think we'd have a sparse
+> array here.
 
-I see.
+If we switch to my suggestion of adding map entries at vcpu-add time and
+removing them at vcpu-rm time, then the array may become sparse depending
+on the order of removals.
 
-> > Also, please do this in klp_send_signals(). We kick there all other
-> > tasks that block the transition for too long.
-> 
-> #define SIGNALS_TIMEOUT 15
-> 
-> Hm, kicking the idle threads in klp_send_signals() means extra 15 seconds
-> delay for every transition in our case and failing kselftests:
->
-> I understand this 15 seconds delay for loaded system and tasks doing real
-> work is good,
+Thanks,
+drew
 
-Yup. Also normal processes should not stay in the running state
-for this long. They are typically migrated quickly. But the idle task is
-special.
-
-> but those lazy idle "running" tasks could be kicked right
-> away with no harm done, right?
-
-Fair enough.
-
-Best Regards,
-Petr
