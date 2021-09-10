@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E33B40669A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D1240669E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhIJExk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 00:53:40 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:56575 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhIJExj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 00:53:39 -0400
-Received: from [IPv6:::1] ([IPv6:2601:646:8600:3c71:fdf9:cf28:325e:596])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18A4q2Zi317027
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Thu, 9 Sep 2021 21:52:03 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18A4q2Zi317027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021083001; t=1631249523;
-        bh=FUbYLNLfsxkmBYIgXCMzE84jXrwtgqyNfIq/wOODqQE=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=Z0ZiLjKXdZdQA8DKbafgAvQ5t2kt+k0LVHhE9fVO7rDbuKE3q8LaLCcrN/Ye9IBL6
-         uvFqvFobu6rkbndRod4IBSFFOn7UWB89pCCb5XyyO2XrIp3KrxNGGtn32XlENfKSbP
-         mXSUCfRTnPQrw5pRNsdTT+BKsb/2DjttLHE5DnborKbx3YnzX5ymnqIhQpwf6G/e/v
-         jouQ2xHH0boP4q8NIBITd3UAFfDver3osDGZESlYSRZJJTGQBoTUbzLFgWxhWsz3X+
-         7rCfZRx/x99jDv3iY+tv3vM6q4Al+nOZ7uUx/N1bacoiK6oYwlPGVBeer3BKGr1r8F
-         /7B+aqB+sqo/Q==
-Date:   Thu, 09 Sep 2021 21:51:55 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-CC:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Youquan Song <youquan.song@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [PATCH 17/24] x86/entry: Introduce struct ist_regs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <286DCB70-B36E-4229-966E-BE45F2AEA703@zytor.com>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com> <20210831175025.27570-18-jiangshanlai@gmail.com> <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com> <286DCB70-B36E-4229-966E-BE45F2AEA703@zytor.com>
-Message-ID: <4C8A910F-679F-4F49-AAA5-AA3B9BE5F2BD@zytor.com>
+        id S230263AbhIJFFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 01:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhIJFFb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 01:05:31 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C339C061574;
+        Thu,  9 Sep 2021 22:04:21 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id w6so401664pll.3;
+        Thu, 09 Sep 2021 22:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d5eOmTxE1ZD/E42iqd3uKR/Y6MHuYpwLI55f3E0La5E=;
+        b=D8jXj9DJpL/epFZdDk8+HpYXMdp57OTLkSPCkszhGUOuPyjnPP6Vbnal1jn4yQUTBT
+         9nZdTQ6d+9CcIYBiCeVdZjN/2YANVlY/9mIGI7uCjKRrTs2DdN2cauGI/GERiGfDq/Ql
+         e4XxaoCaGS7rexQA0wOf13jNJVXvJgTqxf2qwCO97lNCqpor+J36XaQNS0XUUSE5fbG7
+         zXDOhg1lhiavFfLbS/paCIECSnMhn2x2zoU+34et0ZRZrYsYluYfmrNiWS/kiSkp5iHH
+         M7anLDr4fSc0pYqtetsYftjfVdspeuxSNRjq/6pu04PJ5FnrQcl+nrc1Eb6F+40zq/Lk
+         gH7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d5eOmTxE1ZD/E42iqd3uKR/Y6MHuYpwLI55f3E0La5E=;
+        b=jWvYP7DheRkzxx6a9fvqLPEo0pMUoIdJUOdAzfE2O5h6PBSPuGFxgxAb/qjucNw16r
+         ZzgvljNFquGjeY/Zo8aJnZDAxVZk39eUajgK3JUtaZ4XBILUzuhkYr8NwMJP9jKSctPO
+         gP9bKlT7AXYdhAzWlNzWiK5vyMFYP7QgA0421oLKgMN76/EK2x6+NnMjD1lX4QoF/Y9C
+         PPAxFga8Qq5XBTb8QQU4y0NpL3oHSp/0eRDBHSNhaETbp6oDRAZF61oMMQomwp2nWO5O
+         lQi22aU7Vzsf/GoUjTGEJSkgmPZJ5e0F+/RUhsZWzuiQg/7KSf5hM3nGkjBuY+blnWIt
+         TM+w==
+X-Gm-Message-State: AOAM533mBCDN64D1JojkZkytatr7pUScjom2vV39YY8ThF+9dDj/yz26
+        bj+PatLbs6DHONJTgCnStq4=
+X-Google-Smtp-Source: ABdhPJzHTI+b4/VBBzRYnWIhKBe6tQMwl0FszM9/LHsx0pAHwPEtWEcpLlfJ+ynZ5AoGCf0SWDW+Qw==
+X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr5899371plt.4.1631250260605;
+        Thu, 09 Sep 2021 22:04:20 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:acdc:1d22:e20a:2796])
+        by smtp.gmail.com with ESMTPSA id s192sm4053556pgc.23.2021.09.09.22.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 22:04:19 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 22:04:16 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>,
+        kernel test robot <lkp@intel.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1] Input: ads7846: ads7846_get_value - fix unaligned
+ pointer value warning
+Message-ID: <YTrnUFI53iwvwxrj@google.com>
+References: <20210707124115.20028-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707124115.20028-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note: with FRED paranoid entry is no longer needed since the hardware enfor=
-ces gs_base mode consistency=2E
+Hi Oleksij,
 
-On September 9, 2021 9:50:40 PM PDT, "H=2E Peter Anvin" <hpa@zytor=2Ecom> =
-wrote:
->It may affect your design, I don't know, but FRED exception delivery (as =
-currently architected per draft 2=2E0; it is subject to change still) pushe=
-s several fields above the conventional stack frame (and thus above pt_regs=
-=2E)
->
->On September 9, 2021 5:18:47 PM PDT, Lai Jiangshan <laijs@linux=2Ealibaba=
-=2Ecom> wrote:
->>
->>
->>On 2021/9/1 01:50, Lai Jiangshan wrote:
->>> From: Lai Jiangshan <laijs@linux=2Ealibaba=2Ecom>
->>>=20
->>> struct ist_regs is the upmost stack frame for IST interrupt, it
->>> consists of struct pt_regs and other fields which will be added in
->>> later patch=2E
->>>=20
->>> Make vc_switch_off_ist() take ist_regs as its argument and it will swi=
-tch
->>> the whole ist_regs if needed=2E
->>>=20
->>> Make the frame before calling paranoid_entry() and paranoid_exit() be
->>> struct ist_regs=2E
->>>=20
->>> This patch is prepared for converting paranoid_entry() and paranoid_ex=
-it()
->>> into C code which will need the additinal fields to store the results =
-in
->>> paranoid_entry() and to use them in paranoid_exit()=2E
->>
->>This patch was over designed=2E
->>
->>In ASM code, we can easily save results in the callee-saved registers=2E
->>For example, rc3 is saved in %r14, gsbase info is saved in %rbx=2E
->>
->>And in C code, we can't save results in registers=2E  And I thought ther=
-e was
->>no place to save the results because the CR3 and gsbase are not kernel's=
-=2E
->>So I extended the pt_regs to ist_regs to save the results=2E
->>
->>But it was incorrect=2E  The results can be saved in percpu data at the =
-end of
->>paranoid_entry() after the CR3/gsbase are settled down=2E  And the resul=
-ts
->>can be read at the beginning of paranoid_exit() before the CR3/gsbase ar=
-e
->>switched to the interrupted context's=2E
->>
->>sigh=2E
->>
->>>=20
->>> The C interrupt handlers don't use struct ist_regs due to they don't n=
-eed
->>> the additional fields in the struct ist_regs, and they still use pt_re=
-gs=2E
->>>=20
->>
->
+On Wed, Jul 07, 2021 at 02:41:15PM +0200, Oleksij Rempel wrote:
+> Fix warning reported by the kernel test robot:
+> drivers/input/touchscreen/ads7846.c:705:24: warning: taking address
+> of packed member 'data' of class or structure 'ads7846_buf' may result
+> in an unaligned pointer value [-Waddress-of-packed-member]
+> 
+> Fixes: 6965eece2a89 ("Input: ads7846 - convert to one message")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  drivers/input/touchscreen/ads7846.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+> index adb4c2230c31..1987dedac94f 100644
+> --- a/drivers/input/touchscreen/ads7846.c
+> +++ b/drivers/input/touchscreen/ads7846.c
+> @@ -702,7 +702,7 @@ static int ads7846_get_value(struct ads7846_buf *buf)
+>  {
+>  	int value;
+>  
+> -	value = be16_to_cpup(&buf->data);
+> +	value = get_unaligned_be16(&buf->data);
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+ds7846_buf is declared as packed so I believe using be16_to_cpu(buf->data)
+will suffice.
+
+I can adjust on my side if you agree.
+
+Thanks.
+
+-- 
+Dmitry
