@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18286406C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D58406C22
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhIJMhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54528 "EHLO mail.kernel.org"
+        id S233375AbhIJMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhIJMfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B315961205;
-        Fri, 10 Sep 2021 12:34:32 +0000 (UTC)
+        id S233812AbhIJMfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9362F6120C;
+        Fri, 10 Sep 2021 12:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277273;
-        bh=OBUJ/1McE9fHUIdKsOYpeaQiu0q8A0By/0mG5jaZVqw=;
+        s=korg; t=1631277276;
+        bh=An+Lp+ljJHzr4qbhSJgFcGmghQyzGx5bjkpP6Kj/AsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a6ZXPUeXE/lCwQmcMrQJbwbOKw4moKDV1XEjRKB3VcEq2y9h2ox5XjR5fdNpHhHVT
-         aon/XUtycZ372k6Z5QNcC7H6kJKR1Xs/N6q3DfY8S4vfOHQ56PeSUqT/kGiOjHUK52
-         NrX37QT8Z6VbhRON/B+JPfOViqNpife4+9prTlEI=
+        b=luqUOQL2tLNhnIYyIi0nc3Ut98kF9QsEoUn4QTIudfthKDDXWUSK68LjOILlhfh7h
+         jlHMLlgYObOGtD9h1C9sY+huQzm7cDC5UbjZIPVia0adr0JOrRSO6kSGJYzc9dcss+
+         l4kf7uM6Rv9knNMjp0hJkbFn8yjjtLXFqJG6Xttw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/37] cryptoloop: add a deprecation warning
-Date:   Fri, 10 Sep 2021 14:30:19 +0200
-Message-Id: <20210910122917.706490236@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 5.4 17/37] ARM: 8918/2: only build return_address() if needed
+Date:   Fri, 10 Sep 2021 14:30:20 +0200
+Message-Id: <20210910122917.737586266@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
 References: <20210910122917.149278545@linuxfoundation.org>
@@ -39,62 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Ben Dooks <ben-linux@fluff.org>
 
-[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
+commit fb033c95c94ca1ee3d16e04ebdb85d65fb55fff8 upstream.
 
-Support for cryptoloop has been officially marked broken and deprecated
-in favor of dm-crypt (which supports the same broken algorithms if
-needed) in Linux 2.6.4 (released in March 2004), and support for it has
-been entirely removed from losetup in util-linux 2.23 (released in April
-2013).  Add a warning and a deprecation schedule.
+The system currently warns if the config conditions for
+building return_address in arch/arm/kernel/return_address.c
+are not met, leaving just an EXPORT_SYMBOL_GPL(return_address)
+of a function defined to be 'static linline'.
+This is a result of aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h").
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Since we're not going to build anything other than an exported
+symbol for something that is already being defined to be an
+inline-able return of NULL, just avoid building the code to
+remove the following warning:
+
+Fixes: aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h")
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/Kconfig      | 4 ++--
- drivers/block/cryptoloop.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/kernel/Makefile         |    6 +++++-
+ arch/arm/kernel/return_address.c |    4 ----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 0fc27ac14f29..9f6782329a23 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -230,7 +230,7 @@ config BLK_DEV_LOOP_MIN_COUNT
- 	  dynamically allocated with the /dev/loop-control interface.
+--- a/arch/arm/kernel/Makefile
++++ b/arch/arm/kernel/Makefile
+@@ -17,10 +17,14 @@ CFLAGS_REMOVE_return_address.o = -pg
+ # Object file lists.
  
- config BLK_DEV_CRYPTOLOOP
--	tristate "Cryptoloop Support"
-+	tristate "Cryptoloop Support (DEPRECATED)"
- 	select CRYPTO
- 	select CRYPTO_CBC
- 	depends on BLK_DEV_LOOP
-@@ -242,7 +242,7 @@ config BLK_DEV_CRYPTOLOOP
- 	  WARNING: This device is not safe for journaled file systems like
- 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
- 	  instead, which can be configured to be on-disk compatible with the
--	  cryptoloop device.
-+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
+ obj-y		:= elf.o entry-common.o irq.o opcodes.o \
+-		   process.o ptrace.o reboot.o return_address.o \
++		   process.o ptrace.o reboot.o \
+ 		   setup.o signal.o sigreturn_codes.o \
+ 		   stacktrace.o sys_arm.o time.o traps.o
  
- source "drivers/block/drbd/Kconfig"
++ifneq ($(CONFIG_ARM_UNWIND),y)
++obj-$(CONFIG_FRAME_POINTER)	+= return_address.o
++endif
++
+ obj-$(CONFIG_ATAGS)		+= atags_parse.o
+ obj-$(CONFIG_ATAGS_PROC)	+= atags_proc.o
+ obj-$(CONFIG_DEPRECATED_PARAM_STRUCT) += atags_compat.o
+--- a/arch/arm/kernel/return_address.c
++++ b/arch/arm/kernel/return_address.c
+@@ -7,8 +7,6 @@
+  */
+ #include <linux/export.h>
+ #include <linux/ftrace.h>
+-
+-#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
+ #include <linux/sched.h>
  
-diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
-index 3cabc335ae74..f0a91faa43a8 100644
---- a/drivers/block/cryptoloop.c
-+++ b/drivers/block/cryptoloop.c
-@@ -189,6 +189,8 @@ init_cryptoloop(void)
- 
- 	if (rc)
- 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
-+	else
-+		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
- 	return rc;
+ #include <asm/stacktrace.h>
+@@ -53,6 +51,4 @@ void *return_address(unsigned int level)
+ 		return NULL;
  }
  
--- 
-2.30.2
-
+-#endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND) */
+-
+ EXPORT_SYMBOL_GPL(return_address);
 
 
