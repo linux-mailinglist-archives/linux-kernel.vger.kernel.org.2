@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC294064E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890CA4064E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhIJBHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:17 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60205 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239286AbhIJAiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:38:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnqfhRh_1631234206;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UnqfhRh_1631234206)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 08:36:47 +0800
-Subject: Re: [PATCH 17/24] x86/entry: Introduce struct ist_regs
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Youquan Song <youquan.song@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-18-jiangshanlai@gmail.com>
- <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
-Message-ID: <01b8f2d7-b987-47c5-0436-1535031fde05@linux.alibaba.com>
-Date:   Fri, 10 Sep 2021 08:36:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S236058AbhIJBHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:07:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33459 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240034AbhIJAlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:41:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="219093465"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="219093465"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 17:40:13 -0700
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="540053524"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.2.86]) ([10.238.2.86])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 17:40:10 -0700
+Subject: Re: [PATCH v2] perf list: Display hybrid pmu events with cpu type
+To:     Andi Kleen <ak@linux.intel.com>, Ian Rogers <irogers@google.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210903025239.22754-1-yao.jin@linux.intel.com>
+ <CAP-5=fVT6G6Ysdd39O3XROyKUxAs6uQVeO8mnbsy-Oy5VqujrA@mail.gmail.com>
+ <0ccb62bf-34be-b986-4794-d8cc2a767a3e@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <59cf3fcb-e6cd-ddbe-84e5-6c3e85d575b4@linux.intel.com>
+Date:   Fri, 10 Sep 2021 08:39:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
+In-Reply-To: <0ccb62bf-34be-b986-4794-d8cc2a767a3e@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/9/10 08:18, Lai Jiangshan wrote:
+On 9/10/2021 6:56 AM, Andi Kleen wrote:
+> 
+> On 9/9/2021 3:37 PM, Ian Rogers wrote:
+>> On Thu, Sep 2, 2021 at 7:54 PM Jin Yao <yao.jin@linux.intel.com> wrote:
+>>> Add a new option '--cputype' to perf-list to display core-only pmu events
+>>> or atom-only pmu events.
+>>>
+>>> Each hybrid pmu event has been assigned with a pmu name, this patch
+>>> compares the pmu name before listing the result.
+>> Would this work more broadly for any PMU type? If so perhaps pmu
+>> rather than cputype is a more appropriate option name?
+> 
+> It's not just the cpu pmu, because it still lists the uncore events, which makes sense.
+> 
+> If you want to match the pmu it probably would make sense to match it in the default matching for 
+> non option arguments in perf list. But that would be a different patch.
+> 
+> -Andi
 > 
 > 
-> On 2021/9/1 01:50, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> struct ist_regs is the upmost stack frame for IST interrupt, it
->> consists of struct pt_regs and other fields which will be added in
->> later patch.
->>
->> Make vc_switch_off_ist() take ist_regs as its argument and it will switch
->> the whole ist_regs if needed.
->>
->> Make the frame before calling paranoid_entry() and paranoid_exit() be
->> struct ist_regs.
->>
->> This patch is prepared for converting paranoid_entry() and paranoid_exit()
->> into C code which will need the additinal fields to store the results in
->> paranoid_entry() and to use them in paranoid_exit().
-> 
-> This patch was over designed.
-> 
-> In ASM code, we can easily save results in the callee-saved registers.
-> For example, rc3 is saved in %r14, gsbase info is saved in %rbx.
-> 
-> And in C code, we can't save results in registers.  And I thought there was
-> no place to save the results because the CR3 and gsbase are not kernel's.
-> So I extended the pt_regs to ist_regs to save the results.
-> 
-> But it was incorrect.  The results can be saved in percpu data at the end of
-> paranoid_entry() after the CR3/gsbase are settled down.  And the results
-> can be read at the beginning of paranoid_exit() before the CR3/gsbase are
-> switched to the interrupted context's.
-> 
-> sigh.
 
-Sigh again. IST interrupts can be nested.  We can't save the results in percpu
-data unless we make it stack-like which is not a good idea.  The changelog
-failed to express it.
+Yes, agree with Andi. Besides for cpu pmu events, it also lists the software events and uncore 
+events. So probably cputype is an appropriate option name.
 
-> 
->>
->> The C interrupt handlers don't use struct ist_regs due to they don't need
->> the additional fields in the struct ist_regs, and they still use pt_regs.
->>
-> 
+Thanks
+Jin Yao
+
