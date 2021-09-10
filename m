@@ -2,133 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36144068E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE2406903
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhIJJMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:12:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9413 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbhIJJMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:12:34 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H5VPH3kpNz8yRX;
-        Fri, 10 Sep 2021 17:06:59 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Fri, 10 Sep 2021 17:11:21 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Fri, 10
- Sep 2021 17:11:21 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <axboe@kernel.dk>, <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <acme@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] blktrace: Fix uaf in blk_trace access after removing by sysfs
-Date:   Fri, 10 Sep 2021 17:21:20 +0800
-Message-ID: <20210910092120.182270-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S232043AbhIJJXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:23:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1791 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231964AbhIJJXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:23:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="220709742"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="220709742"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 02:21:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="504993651"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2021 02:21:33 -0700
+Date:   Fri, 10 Sep 2021 17:21:32 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
+ bail out early
+Message-ID: <20210910092132.GA54659@shbuild999.sh.intel.com>
+References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
+ <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
+ <20210908015014.GA28091@shbuild999.sh.intel.com>
+ <YThg8Mp42b194k0/@dhcp22.suse.cz>
+ <20210910074400.GA18707@shbuild999.sh.intel.com>
+ <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an use-after-free problem triggered by following process:
+On Fri, Sep 10, 2021 at 10:35:17AM +0200, Michal Hocko wrote:
+[...]
+> >  
+> > +static inline bool cpusets_abnormal_check_needed(void)
+> 
+> I would go with cpusets_insane_config with a comment explaining what
+> that means. I would also do a pr_info() when the static branch is
+> enabled.
+> 
+> [...]
+> 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 4e455fa..5728675 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -4919,7 +4919,9 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+> >  	 * any suitable zone to satisfy the request - e.g. non-movable
+> >  	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
+> >  	 */
+> > -	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
+> > +	if (cpusets_enabled() &&
+> > +		cpusets_abnormal_check_needed() &&
+> 
+> You do not need cpusets_enabled check here. Remember the primary point
+> is to not introduce any branch unless a dubious configuration is in
+> place.
 
-      P1(sda)				P2(sdb)
-			echo 0 > /sys/block/sdb/trace/enable
-			  blk_trace_remove_queue
-			    synchronize_rcu
-			    blk_trace_free
-			      relay_close
-rcu_read_lock
-__blk_add_trace
-  trace_note_tsk
-  (Iterate running_trace_list)
-			        relay_close_buf
-				  relay_destroy_buf
-				    kfree(buf)
-    trace_note(sdb's bt)
-      relay_reserve
-        buf->offset <- nullptr deference (use-after-free) !!!
-rcu_read_unlock
+Thanks for the review, patch updated below. Also should we combine
+this one with the original detection patch?
 
-[  502.714379] BUG: kernel NULL pointer dereference, address:
-0000000000000010
-[  502.715260] #PF: supervisor read access in kernel mode
-[  502.715903] #PF: error_code(0x0000) - not-present page
-[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-[  502.717252] Oops: 0000 [#1] SMP
-[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-[  502.732872] Call Trace:
-[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-[  502.733734]  blk_add_trace_rq+0x7b/0xd0
-[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-[  502.734755]  blk_mq_start_request+0xde/0x1b0
-[  502.735287]  scsi_queue_rq+0x528/0x1140
-...
-[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-[  502.747501]  sg_ioctl+0x466/0x1100
+Thanks,
+Feng
 
-Reproduce method:
-  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sda, BLKTRACESTART)
-  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sdb, BLKTRACESTART)
-
-  echo 0 > /sys/block/sdb/trace/enable &
-  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
-
-  ioctl$SG_IO(/dev/sda, SG_IO, ...)
-  // Enters trace_note_tsk() after blk_trace_free() returned
-  // Use mdelay in rcu region rather than msleep(which may schedule out)
-
-Don't remove blk_trace by sysfs when blk_trace is at Blktrace_running
-state, just like function __blk_trace_remove() does. The state change
-process and blk_trace_remove_queue() are protected and by mutex lock
-'q->debugfs_mutex', so the sequence of stopping blk_trace first and
-then removing it will be ensured.
-
-Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- kernel/trace/blktrace.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ include/linux/cpuset.h | 13 +++++++++++++
+ include/linux/mmzone.h | 14 ++++++++++++++
+ kernel/cgroup/cpuset.c | 13 +++++++++++++
+ mm/page_alloc.c        |  2 +-
+ 4 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index c221e4c3f625..7fe29bb9746f 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1821,8 +1821,17 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
- 		}
- 		if (value)
- 			ret = blk_trace_setup_queue(q, bdev);
--		else
--			ret = blk_trace_remove_queue(q);
-+		else {
-+			/*
-+			 * Don't remove blk_trace under running state, in
-+			 * case triggering use-after-free in function
-+			 * __blk_add_trace().
-+			 */
-+			if (bt->trace_state != Blktrace_running)
-+				ret = blk_trace_remove_queue(q);
-+			else
-+				ret = -EBUSY;
-+		}
- 		goto out_unlock_bdev;
- 	}
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index d2b9c41..95bacec 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -34,6 +34,8 @@
+  */
+ extern struct static_key_false cpusets_pre_enable_key;
+ extern struct static_key_false cpusets_enabled_key;
++extern struct static_key_false cpusets_insane_config_key;
++
+ static inline bool cpusets_enabled(void)
+ {
+ 	return static_branch_unlikely(&cpusets_enabled_key);
+@@ -51,6 +53,17 @@ static inline void cpuset_dec(void)
+ 	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+ }
  
++/*
++ * Check if there has been insane configurations. E.g. there was usages
++ * which binds a docker OS to memory nodes with only movable zones, which
++ * causes system to behave abnormally, as the usage triggers many innocent
++ * processes get oom-killed.
++ */
++static inline bool cpusets_insane_config(void)
++{
++	return static_branch_unlikely(&cpusets_insane_config_key);
++}
++
+ extern int cpuset_init(void);
+ extern void cpuset_init_smp(void);
+ extern void cpuset_force_rebuild(void);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 6a1d79d..c3f5527 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1116,6 +1116,20 @@ extern struct zone *next_zone(struct zone *zone);
+ 			; /* do nothing */		\
+ 		else
+ 
++/* Whether the 'nodes' are all movable nodes */
++static inline bool movable_only_nodes(nodemask_t *nodes)
++{
++	struct zone *zone;
++
++	for_each_populated_zone(zone) {
++		if (zone_idx(zone) != ZONE_MOVABLE &&
++			node_isset(zone_to_nid(zone), *nodes))
++			return false;
++	}
++
++	return true;
++}
++
+ static inline struct zone *zonelist_zone(struct zoneref *zoneref)
+ {
+ 	return zoneref->zone;
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index df1ccf4..e0cb12e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -69,6 +69,13 @@
+ DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
+ DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
+ 
++/*
++ * There could be abnormal cpuset configurations for cpu or memory
++ * node binding, add this key to provide a quick low-cost judgement
++ * of the situation.
++ */
++DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
++
+ /* See "Frequency meter" comments, below. */
+ 
+ struct fmeter {
+@@ -1868,6 +1875,12 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval < 0)
+ 		goto done;
+ 
++	if (movable_only_nodes(&trialcs->mems_allowed)) {
++		static_branch_enable(&cpusets_insane_config_key);
++		pr_info("cpuset: See abornal binding to movable nodes only(nmask=%*pbl)\n",
++			nodemask_pr_args(&trialcs->mems_allowed));
++	}
++
+ 	spin_lock_irq(&callback_lock);
+ 	cs->mems_allowed = trialcs->mems_allowed;
+ 	spin_unlock_irq(&callback_lock);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 4e455fa..a7e0854 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4919,7 +4919,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	 * any suitable zone to satisfy the request - e.g. non-movable
+ 	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
+ 	 */
+-	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
++	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
+ 		struct zoneref *z = first_zones_zonelist(ac->zonelist,
+ 					ac->highest_zoneidx,
+ 					&cpuset_current_mems_allowed);
 -- 
-2.31.1
+2.7.4
 
