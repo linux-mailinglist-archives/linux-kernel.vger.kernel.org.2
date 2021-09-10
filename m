@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D759B407232
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EE2407239
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhIJT6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbhIJT6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:58:17 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92654C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:57:06 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id b200so3799716iof.13
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tBrvKO9A/dPwPbpROFlIDW4gM0sK3mcNXTt1Pn9aYHY=;
-        b=Wr4Gh3KIEFBM+ACEtKQQkB6ZOkXVsSDftDicx8567wKbGFHG5dCUuH68Dx+CuM8TK6
-         gQ7djhp5EGDI/HV2+EvnV7cWz7JpEknCAap1HFt6xk8PkkNW9U41GiHMY9RrY2jHgCC4
-         CKNW6+usqWdG2oQzFX3bYmPoBwgjJQdRUpxKw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tBrvKO9A/dPwPbpROFlIDW4gM0sK3mcNXTt1Pn9aYHY=;
-        b=cTq0JbUSDbQr5IiqeMxgju4OvGyw8cTZR+Q9QQZ9tAS/JMAKkPNmKTglm48NtBqI53
-         iKK/qwN0C16jmBtZA4rNrOBFsxh6MItLLNJXSSS/6P0a3jj+3Q9OAqexXXfFd4Boo89+
-         c/cw4sRh0ymuVWz3rpcHPNCoevOQ0sWddaVUherDjS4F4en45HyCLRi3K+zPEuz7Kso2
-         W49CSafnFw3ucOZhGlsUgZT+HGJvCWZtGRKRDKzcUaaUp9rG2TAF0fCElbDzyIZ8MpJK
-         DHKwmFFPG6MhQRcG4eXO7dRWTbLmcAOb+zY3TkLtGgt47mG53Uw2nmUg+NmZOg7iv66p
-         +qRw==
-X-Gm-Message-State: AOAM532Ow4+38sue4QXBe35f//RJzCZKV0ZsbdlXK1kIg34a8K/phcGv
-        YCUEEXxTna1pJ7kef3PjVCyLcQ==
-X-Google-Smtp-Source: ABdhPJyP48qJEKgFnhFD8cbEzB1AQlheLGpbQaL1VD3/gyzpnzXEXw6tsqrQNdt45Z3xGwS0dvg2og==
-X-Received: by 2002:a6b:3f02:: with SMTP id m2mr8297816ioa.136.1631303825973;
-        Fri, 10 Sep 2021 12:57:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a17sm2999141ilp.75.2021.09.10.12.57.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 12:57:05 -0700 (PDT)
-Subject: Re: After KUnit update for Linux 5.15-rc1 - unable to share VFAT
- filesystem via samba
-To:     Arthur Marsh <arthur.marsh@internode.on.net>
-Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
- <f1d84102-6edf-271f-52f9-0d4bbc85c0c7@linuxfoundation.org>
- <C1ACE9E0-2EDF-4F55-A6F1-B9143F62514B@internode.on.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <843ce49e-4adf-c3c4-83e1-8fb114589cc6@linuxfoundation.org>
-Date:   Fri, 10 Sep 2021 13:57:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233114AbhIJUBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:01:00 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:59575 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230513AbhIJUAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 16:00:49 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8600:3c70:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18AJxIMe517265
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Fri, 10 Sep 2021 12:59:25 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18AJxIMe517265
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631303967;
+        bh=chquAj+ypukLNoNPJFWYjEMUvJZHTqTclDYlmUvWdp0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=C+Go7moZYNAcJrZ3OGaA+/2RGNbqjfvGGstKaS+ypiEJWaZsFPKljh2LNeOiJhJ7d
+         +7peCjQSrGQhp86PnToJfpvsUB6a0zvF2vCI0VRpCI2Hxx8rLR/OueiHTk9yMoh0bn
+         6mEY0eFlwAEEXhbKN65rH5eV3rXB11fiAVqJsIVoTxqFLtjUag29Sa2JFI9FJPEYVA
+         SdAKReYBUnuI+HNkmV7X02pWbst5I8lpD3mDYkpZKKT6yWTMUCaMTEp298TZ8t9SwM
+         pZ2LjhZC1V7fAcawpBWhjGy4UCh2bwS1dQ5MPvauuLjzjudSn2h2ojtZuyeCmD7MB7
+         Gq1Xtk2yzWQ8Q==
+From:   "H. Peter Anvin (Intel)" <hpa@zytor.com>
+To:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     x86 mailing list <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Subject: [PATCH v3 0/2] x86/asm: avoid register pressure from the init case in static_cpu_has()
+Date:   Fri, 10 Sep 2021 12:59:07 -0700
+Message-Id: <20210910195910.2542662-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210908171716.3340120-1-hpa@zytor.com>
+References: <20210908171716.3340120-1-hpa@zytor.com>
 MIME-Version: 1.0
-In-Reply-To: <C1ACE9E0-2EDF-4F55-A6F1-B9143F62514B@internode.on.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 12:33 PM, Arthur Marsh wrote:
->> Can you send your config and dmesg? This will help determine if
->> KUNIT is enabled - it shouldn't be.
-> 
-> # CONFIG_KUNIT is not set
-> 
-> I am re-running the git-bisect without the " - - fs/fat" qualifier but it will take a few days.
-> 
+gcc will sometimes manifest the address of boot_cpu_data in a register
+as part of constant propagation. When multiple static_cpu_has() are
+used this may foul the mainline code with a register load which will
+only be used on the fallback path, which is unused after
+initialization.
 
-Can you run a quick test reverting the following one
-at a time to isolate:
+Explicitly force gcc to use immediate (rip-relative) addressing for
+the fallback path, thus removing any possible register use from
+static_cpu_has().
 
-b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd (this is the other one in
-you bisect log)
+However, currently there is no convenient way to make gcc generate a
+%rip-relative immediate reference without splitting code into i386 and
+x86-64 versions, so add a new macro to <asm/asm.h> for this purpose.
 
-c815f04ba94940fbc303a6ea9669e7da87f8e77d (This is the KUnit patch)
-(This one shouldn't be in play without CONFIG_KUNIT)
+Changes in v3:
+--------------
+* Clarify the subject line
 
-thanks,
--- Shuah
+Changes in v2:
+--------------
+* Add new macro to <asm/asm.h>
+* *Actually* generate the %rip-relative addressing mode.
+
+ arch/x86/include/asm/asm.h        |  5 +++++
+ arch/x86/include/asm/cpufeature.h | 13 +++++++++----
+ 2 files changed, 14 insertions(+), 4 deletions(-)
