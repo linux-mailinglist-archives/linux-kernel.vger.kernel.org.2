@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D82740658B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14127406586
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhIJCNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:13:41 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:48794 "EHLO inva020.nxp.com"
+        id S229648AbhIJCLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:11:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhIJCNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:13:39 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CA1BE1A5FED;
-        Fri, 10 Sep 2021 04:12:28 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 92D251A0AD8;
-        Fri, 10 Sep 2021 04:12:28 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 22F50183AD05;
-        Fri, 10 Sep 2021 10:12:27 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_spdif: Add support for i.MX8ULP
-Date:   Fri, 10 Sep 2021 09:49:22 +0800
-Message-Id: <1631238562-27081-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229524AbhIJCLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:11:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7E6610E8;
+        Fri, 10 Sep 2021 02:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631239803;
+        bh=14On0rcaDezxbH9UPvQ6IzG/K0p2ja5CEwdNBBTMIbA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=W/xZGTf7eknCyaup/1kGx7lADH0Ux1yFiR9+NcWrwjqFzi9IfuZsPqAVueSnkUwV9
+         Dfezlg+k8THQILM5fOP4ifMkEMnU1G34qEjwOa3TirsM4HH0coRDNbxHPlWYLzQwnW
+         vyW4TfkRbJvtLxBfKQu8KzGTI5rVRBuscSBElQkk5qGmYduj7j/f0GjuWkG/gmDllQ
+         G+Pod8NRnpmwCNnAZWlLwu1d2G4alJZ5+pRS2R+q28/D4k5TaPwOGVq4fqttmJw1fC
+         O1AXW7piiQC8gupLpmbMyalvRkiKA2BwIeCH4PQ5P5p4uV4eGkfWmib4w1/HhQeC+y
+         SvkPZv7AiljsA==
+Date:   Fri, 10 Sep 2021 04:09:59 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 00/15] Introduce block device LED trigger
+Message-ID: <20210910040959.5ae4a6a1@thinkpad>
+In-Reply-To: <20210909222513.2184795-1-arequipeno@gmail.com>
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On i.MX8ULP the spdif works with EDMA, so add compatible
-string and soc specific data for i.MX8ULP.
+Dear Ian,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+I have tried to look into this and replied to some of your patches.
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8ffb1a6048d6..61ba08322f23 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -186,6 +186,16 @@ static struct fsl_spdif_soc_data fsl_spdif_imx8mm = {
- 	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
- };
- 
-+static struct fsl_spdif_soc_data fsl_spdif_imx8ulp = {
-+	.imx = true,
-+	.shared_root_clock = true,
-+	.raw_capture_mode = false,
-+	.interrupts = 1,
-+	.tx_burst = 2,		/* Applied for EDMA */
-+	.rx_burst = 2,		/* Applied for EDMA */
-+	.tx_formats = SNDRV_PCM_FMTBIT_S24_LE,	/* Applied for EDMA */
-+};
-+
- /* Check if clk is a root clock that does not share clock source with others */
- static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
- {
-@@ -1556,6 +1566,7 @@ static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{ .compatible = "fsl,imx8qm-spdif", .data = &fsl_spdif_imx8qm, },
- 	{ .compatible = "fsl,imx8mm-spdif", .data = &fsl_spdif_imx8mm, },
-+	{ .compatible = "fsl,imx8ulp-spdif", .data = &fsl_spdif_imx8ulp, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
--- 
-2.17.1
+There are still many things to do, and I think the reviewing would be
+much easier to review if you sent all the code changes as one patch
+(since the changes are doing an atomic change: adding support for blkdev
+LED trigger). Keep only the sysfs doc change in a separate patch.
 
+You are unnecessary using the const keyword in places where it is not
+needed and not customary for Linux kernel codebase. See in another of
+my replies.
+
+You are using a weird comment style, i.e.
+  /*
+   *
+   *	Disassociate an LED from the trigger
+   *
+   */
+
+  static void blkdev_deactivate(struct led_classdev *const led_dev)
+
+Please look at how functions are documented in led-class.c, for example.
+
+There are many other things I would like you to change and fix,
+I will comment on them once you send this proposal as two commits:
+one sysfs docs change, one code change.
+
+Marek
