@@ -2,169 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0395E406A32
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38EA406A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhIJKgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 06:36:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52104 "EHLO
+        id S232431AbhIJKiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:38:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52658 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232157AbhIJKgP (ORCPT
+        with ESMTP id S232157AbhIJKh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:36:15 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8CBD01FE65;
-        Fri, 10 Sep 2021 10:35:03 +0000 (UTC)
+        Fri, 10 Sep 2021 06:37:59 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 57C2D1FE65;
+        Fri, 10 Sep 2021 10:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631270103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631270207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wYIN96dlfyxUk9rWZXzHgJP2ogNKRUq1YB5cFiiBzMc=;
-        b=OWynuje8wmFcZ1fruEQTPqBXrYESWu/F76mVmZ50UVfSuDWjqXVsi0QQ8jlBU9VLBMs//x
-        Sv0OfgakxXQAlnvVDhej4TcZ/DlmUZxujgGPDv6T3TbYp2aMIUFudvAldojoDsKsKAYWAN
-        X3rAwEQUGCE4AOwKFcM0DPRjWV8rUm0=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=H2VnXoHa2A4K95NUzL7qITQw88USxIzmreaA433cCYQ=;
+        b=HR548Zw8DIrBJ/igCxh2VQX2odWSM3fMFY/SXo9k5d2wwRft6NEROE0M2SyIgTThv/c/uc
+        Kafb6F8o2BYzI1gnT6G9xbSF4sFE2rnnOcVK7hUw+wgnQDRJ9lTkw6WSJm5kKY5UoVBaLI
+        I+BHBnDRL6eAh9GcNYYk7x41wJdP2tw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DE67DA3B97;
-        Fri, 10 Sep 2021 10:35:02 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 12:35:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
- bail out early
-Message-ID: <YTs01sPa5MojLGqO@dhcp22.suse.cz>
-References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
- <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
- <20210908015014.GA28091@shbuild999.sh.intel.com>
- <YThg8Mp42b194k0/@dhcp22.suse.cz>
- <20210910074400.GA18707@shbuild999.sh.intel.com>
- <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
- <20210910092132.GA54659@shbuild999.sh.intel.com>
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EAC4813D29;
+        Fri, 10 Sep 2021 10:36:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qSszNz41O2FOFwAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 10 Sep 2021 10:36:46 +0000
+To:     =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>
+Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Beulich <jbeulich@suse.com>
+References: <20210730103854.12681-1-jgross@suse.com>
+ <20210730103854.12681-3-jgross@suse.com> <YTswC2T2cvsEw2dP@mail-itl>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v3 2/3] xen/blkfront: don't take local copy of a request
+ from the ring page
+Message-ID: <ca6e6e23-6e24-38cb-1d06-b25c83767e6d@suse.com>
+Date:   Fri, 10 Sep 2021 12:36:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910092132.GA54659@shbuild999.sh.intel.com>
+In-Reply-To: <YTswC2T2cvsEw2dP@mail-itl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YDiXBiNt21aKFiTvqXl3q9RqqBf0BQSSN"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would squash the two changes into a single patch.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YDiXBiNt21aKFiTvqXl3q9RqqBf0BQSSN
+Content-Type: multipart/mixed; boundary="JUVTtvF3oNKhDqHwfJSukXexFi2WlmUoF";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?=
+ <marmarek@invisiblethingslab.com>
+Cc: xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Konrad Rzeszutek Wilk
+ <konrad.wilk@oracle.com>, =?UTF-8?Q?Roger_Pau_Monn=c3=a9?=
+ <roger.pau@citrix.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Jan Beulich <jbeulich@suse.com>
+Message-ID: <ca6e6e23-6e24-38cb-1d06-b25c83767e6d@suse.com>
+Subject: Re: [PATCH v3 2/3] xen/blkfront: don't take local copy of a request
+ from the ring page
+References: <20210730103854.12681-1-jgross@suse.com>
+ <20210730103854.12681-3-jgross@suse.com> <YTswC2T2cvsEw2dP@mail-itl>
+In-Reply-To: <YTswC2T2cvsEw2dP@mail-itl>
 
-On Fri 10-09-21 17:21:32, Feng Tang wrote:
-[...]
-> +/*
-> + * Check if there has been insane configurations. E.g. there was usages
-> + * which binds a docker OS to memory nodes with only movable zones, which
-> + * causes system to behave abnormally, as the usage triggers many innocent
-> + * processes get oom-killed.
+--JUVTtvF3oNKhDqHwfJSukXexFi2WlmUoF
+Content-Type: multipart/mixed;
+ boundary="------------011F05A4CB9DE931D3CC7582"
+Content-Language: en-US
 
-I would go with more specifics here. What about
+This is a multi-part message in MIME format.
+--------------011F05A4CB9DE931D3CC7582
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-/*
- * This will get enabled whenever a cpuset configuration is considered
- * unsupportable in general. E.g. movable only node which cannot satisfy
- * any non movable allocations (see update_nodemask).
- * Page allocator needs to make additional checks for those
- * configurations and this check is meant to guard those checks without
- * any overhead for sane configurations.
- */
-> + */
-> +static inline bool cpusets_insane_config(void)
-> +{
-> +	return static_branch_unlikely(&cpusets_insane_config_key);
-> +}
-> +
->  extern int cpuset_init(void);
->  extern void cpuset_init_smp(void);
->  extern void cpuset_force_rebuild(void);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 6a1d79d..c3f5527 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1116,6 +1116,20 @@ extern struct zone *next_zone(struct zone *zone);
->  			; /* do nothing */		\
->  		else
->  
-> +/* Whether the 'nodes' are all movable nodes */
-> +static inline bool movable_only_nodes(nodemask_t *nodes)
-> +{
-> +	struct zone *zone;
-> +
-> +	for_each_populated_zone(zone) {
-> +		if (zone_idx(zone) != ZONE_MOVABLE &&
-> +			node_isset(zone_to_nid(zone), *nodes))
-> +			return false;
-> +	}
-> +
-> +	return true;
+On 10.09.21 12:14, Marek Marczykowski-G=C3=B3recki wrote:
+> On Fri, Jul 30, 2021 at 12:38:53PM +0200, Juergen Gross wrote:
+>> In order to avoid a malicious backend being able to influence the loca=
+l
+>> copy of a request build the request locally first and then copy it to
+>> the ring page instead of doing it the other way round as today.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> Reviewed-by: Jan Beulich <jbeulich@suse.com>
+>> Acked-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+>> ---
+>> V2:
+>> - init variable to avoid potential compiler warning (Jan Beulich)
+>> ---
+>>   drivers/block/xen-blkfront.c | 25 +++++++++++++++----------
+>>   1 file changed, 15 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront=
+=2Ec
+>> index 15e840287734..b7301006fb28 100644
+>=20
+> (...)
+>=20
+>> @@ -827,10 +832,10 @@ static int blkif_queue_rw_req(struct request *re=
+q, struct blkfront_ring_info *ri
+>>   	if (setup.segments)
+>>   		kunmap_atomic(setup.segments);
+>>  =20
+>> -	/* Keep a private copy so we can reissue requests when recovering. *=
+/
+>> -	rinfo->shadow[id].req =3D *ring_req;
+>> +	/* Copy request(s) to the ring page. */
+>> +	*final_ring_req =3D *ring_req;
+>=20
+> Is this guaranteed to not be optimized by the compiler in an unsafe way=
 
-Sorry I didn't really get to read this previously. The implementation
-works but I find it harder to read than really necessary. Why don't you
-use first_zones_zonelist here as well?
-	
-> +}
-> +
->  static inline struct zone *zonelist_zone(struct zoneref *zoneref)
->  {
->  	return zoneref->zone;
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index df1ccf4..e0cb12e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -69,6 +69,13 @@
->  DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
->  DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
->  
-> +/*
-> + * There could be abnormal cpuset configurations for cpu or memory
-> + * node binding, add this key to provide a quick low-cost judgement
-> + * of the situation.
-> + */
-> +DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
-> +
->  /* See "Frequency meter" comments, below. */
->  
->  struct fmeter {
-> @@ -1868,6 +1875,12 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
->  	if (retval < 0)
->  		goto done;
->  
-> +	if (movable_only_nodes(&trialcs->mems_allowed)) {
-> +		static_branch_enable(&cpusets_insane_config_key);
-> +		pr_info("cpuset: See abornal binding to movable nodes only(nmask=%*pbl)\n",
-> +			nodemask_pr_args(&trialcs->mems_allowed));
+> (like, do the operation the other way around)?
 
-This doesn't sound very useful for admins IMHO. It is not clear what the
-problem is and how to deal with it. What about
-		pr_into("Unsupported (movable nodes only) cpuset configuration detected! Cpuset allocations might fail even with a lot of memory available.");
+I don't think the C standard allows that. AFAIK reordering writes is
+allowed only between sequence points. And each external function call is
+a sequence point, making such an optimization in our case illegal.
 
-> +	}
-> +
->  	spin_lock_irq(&callback_lock);
->  	cs->mems_allowed = trialcs->mems_allowed;
->  	spin_unlock_irq(&callback_lock);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 4e455fa..a7e0854 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4919,7 +4919,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->  	 * any suitable zone to satisfy the request - e.g. non-movable
->  	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
->  	 */
-> -	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
-> +	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
->  		struct zoneref *z = first_zones_zonelist(ac->zonelist,
->  					ac->highest_zoneidx,
->  					&cpuset_current_mems_allowed);
-> -- 
-> 2.7.4
 
--- 
-Michal Hocko
-SUSE Labs
+Juergen
+
+--------------011F05A4CB9DE931D3CC7582
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------011F05A4CB9DE931D3CC7582--
+
+--JUVTtvF3oNKhDqHwfJSukXexFi2WlmUoF--
+
+--YDiXBiNt21aKFiTvqXl3q9RqqBf0BQSSN
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE7NT4FAwAAAAAACgkQsN6d1ii/Ey8t
+2gf+N+WivElKoy9i6Whxd4rrrfEgFb+GzHmhiPCJfNEpstG02jsb0k43eda74wAcdEVpHl7EIG7i
+8gBbJwSxH5ZAm295X5wMia00fFtlyppP5uinCToZsE/sbGx2nOCako4HrVNfCzP16R6tXclaY9ho
+0dvWYDCF/owSYAzT5OgDkSxVRRqLbZz1CnjFtVRDgp/UXCPJnehCMZ1nxBh6HNBBLPgrE6YldLqN
+HzkEqs4n3CBFGOD7BzZ25UbLS7PH+JGDWaEWk1ZLFZFm1unwxM5qn42FQf0f0IvrAGAS3WNiq7Nh
+Al23xfAoUu3Nulw+cTq3M2avOvoC5C5/y4XeC8aGSg==
+=Dr55
+-----END PGP SIGNATURE-----
+
+--YDiXBiNt21aKFiTvqXl3q9RqqBf0BQSSN--
