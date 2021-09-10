@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4AA4072A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59774072AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhIJUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S234153AbhIJUpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhIJUo0 (ORCPT
+        with ESMTP id S233733AbhIJUpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:44:26 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAA2C061574;
-        Fri, 10 Sep 2021 13:43:15 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so2352897pjr.1;
-        Fri, 10 Sep 2021 13:43:15 -0700 (PDT)
+        Fri, 10 Sep 2021 16:45:02 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112D7C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:43:51 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id n34so2918500pfv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=R4w85zjPqPgM+LRfwktg9CkrDzxslzluVbcge0FkBFY=;
-        b=YNNOuL7eSsrf7eoHStnzjI4Th8V6QfeagWnRR4gXbFsA1RdjEJu/iYsMCDq8spGSuf
-         VqV+5UAHDpWw/wB5dxTqdNx8/5scNgRq+lX5DEpTFis+xyqpoX1ApwfY8stnDBZNlTNL
-         6Q0InQNk/8ObjKttJ1HMF6N0nXfmlX0duQQFA1my+7i+cvFGuxD1UXVPhKjT+/493FLu
-         vSjmEpWaY5PNchhPRNxrMTwhnPpdtXxs5RNhFly+AzUOoAexh+/MvGqXwFTfbzNtHZNR
-         TxpVlnDjEjNvcmZbhaR6hJoVUDBUlN6RywS/QbV5sdgHyIWWGNcEUFg1T+Sh9nvFbJhj
-         /Dkw==
+        d=google.com; s=20210112;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=lKqAYpYNlQ9hkuyrKjXk6bTpMchdOnzhQvx8SF/LD7o=;
+        b=DlpN4wySBad/y9SQPx+P71ThJSo7FqyruNXODlhEZ1s3VW+7183RRa/2RPQdKA+x3C
+         xHLFetRomChjnZ3c9CXts4FhRjtnNUDGvp7l9/XhuzSR31sm0fhUne3+cv1xX3y+Q4RT
+         vnIiVPDc31WJZb8SkH5yokzl7SaZ1uqJS9NKc3tenwZeDy3QiLXYxoaP4efDPlRISMC+
+         CYlX2+VJMkBkFXQBbBCTN9lLugiwuTAGkFQCLmpjlnMnC59LKz04aqsuDFkGQEPCI3L5
+         9pIEOFG7qghiV+TfkNgunDkPDacmtSqxhqnLpI/X8vvrmedAWnxwvoBdNXFXB/Q9BWpF
+         y48w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=R4w85zjPqPgM+LRfwktg9CkrDzxslzluVbcge0FkBFY=;
-        b=IExek+O3H2m9Akia1eWpd3t+CDPYfM6lZHLXatr+z3hBL8FK2rf2gHTp9+/PBb0hXK
-         4E8uxAuCbVFfXdG50APWOlhQgDgZPXWAo9V2f5f9sczRwIyTiOge6Wc78qTubqUuXiXE
-         aWn0NzCFX02DFioBE9Mpict60tbqzppAOjwfBEw1BvLx5CMkZam6YbrSd0DzzHGjd+as
-         79fujux19kXwTXRGHv7zsSkrCGFFNLjUZnoPG/pkD18+PQWjxOEJ+uuKPo+pWniwJsgg
-         r0zTJHIzyNJFUTaAAX89BR4SL/2lo3addcxzuPaNcR+8oPO5n3UmsNcZEkwQd/cOTUGI
-         Nksg==
-X-Gm-Message-State: AOAM533VE/PYsmMULvpEBQxuEwOouYUNQsmaZYId0NawM9WK/vEkb1Np
-        lP3N+NigPMlMGBhCPs8jk1VEaNvlfFBUzWPA2Gw=
-X-Google-Smtp-Source: ABdhPJwS+eboeogCPLNYrFYt6F/79NRKqWDN1AAOczEeH0Cx7DAHjzZZd9gQugEMxgrVrrKyz7OMfw==
-X-Received: by 2002:a17:902:b696:b0:13a:7871:55f5 with SMTP id c22-20020a170902b69600b0013a787155f5mr8168928pls.60.1631306594121;
-        Fri, 10 Sep 2021 13:43:14 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id u12sm5955383pgi.21.2021.09.10.13.43.09
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=lKqAYpYNlQ9hkuyrKjXk6bTpMchdOnzhQvx8SF/LD7o=;
+        b=dByivAhKz/NdWccCtsmpwsZKOwOXyTkuYkBeTsXgHyC/6uTkdXiHcZMs0BSAkLVuNr
+         9xC77wVe2ORJZqaDtGFO0GbODN9gF8bUmhbQ1Blj4wiTz164rqArTXbsVZyizat5Y3tp
+         A2htrINlHsT4kG2ye/NPiXuLUIvbflqwYQ7pcKjddDlvbqptFKrTHNQk9IyXcUUilMKB
+         bHUyr8Hf2A1pjNd+b0ebqBHtCQsB7GUMW4HGSLQ+ZJXIsnDpbz+GX1eHtg0vHuuYJ9V9
+         vRAOFUlUj3QzhdhlM50o1Wl7KB0Cw+NxkGuZphnxkUMeXt8cofdtVwEero1DJkVFSNNi
+         UwpQ==
+X-Gm-Message-State: AOAM531czp79PdYFKnvGBWlzpQWEqoKZHSnDelfX5W/aUlNsiupEEvnk
+        FvIoQRxWg3O1TXr9eoIqEHrc2AeBXrKfbQ==
+X-Google-Smtp-Source: ABdhPJwiFdCSpFHUVrxWhGBdkE/BHmxDqiwoStULK3QICSNhV57xCRT2ou2cu/HVzHN00h72WGl6aA==
+X-Received: by 2002:a63:555c:: with SMTP id f28mr8943790pgm.340.1631306630358;
+        Fri, 10 Sep 2021 13:43:50 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
+        by smtp.gmail.com with ESMTPSA id o10sm5950482pgp.68.2021.09.10.13.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 13:43:13 -0700 (PDT)
-Message-ID: <613bc361.1c69fb81.3f2e3.19b1@mx.google.com>
-Date:   Fri, 10 Sep 2021 13:43:13 -0700 (PDT)
-X-Google-Original-Date: Fri, 10 Sep 2021 20:43:07 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 00/23] 5.14.3-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Fri, 10 Sep 2021 13:43:48 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Kailun Qin <kailun.qin@intel.com>
+Cc:     tj@kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, changhuaixin@linux.alibaba.com,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH] sched/core: Fix wrong burst unit in cgroup2 cpu.max write
+References: <20210910162509.622222-1-kailun.qin@intel.com>
+Date:   Fri, 10 Sep 2021 13:43:39 -0700
+In-Reply-To: <20210910162509.622222-1-kailun.qin@intel.com> (Kailun Qin's
+        message of "Fri, 10 Sep 2021 12:25:09 -0400")
+Message-ID: <xm267dfonouc.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 14:29:50 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.3 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Kailun Qin <kailun.qin@intel.com> writes:
 
-5.14.3-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+> In cpu_max_write(), as the eventual tg_set_cfs_bandwidth() operates on
+> the burst in nsec which is input from tg_get_cfs_burst() in usec, it
+> should be converted into nsec accordingly.
+>
+> If not, this may cause a write into cgroup2 cpu.max to unexpectedly
+> change an already set cpu.max.burst.
+>
+> This patch addresses the above issue.
+>
+> Signed-off-by: Kailun Qin <kailun.qin@intel.com>
 
+Oh, huh, cpu_period_quota_parse is confusing and changes the units in
+period. (It might make more sense to make all that interaction clearer
+somehow, but this is probably fine)
+
+It's probably also better to just use tg->cfs_bandwidth.burst directly
+rather than do an unnecessary div+multiply.
+
+For whichever version:
+
+Reviewed-by: Ben Segall <bsegall@google.com>
+
+> ---
+>  kernel/sched/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index c4462c454ab9..fc9fcc56149f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -10711,7 +10711,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
+>  {
+>  	struct task_group *tg = css_tg(of_css(of));
+>  	u64 period = tg_get_cfs_period(tg);
+> -	u64 burst = tg_get_cfs_burst(tg);
+> +	u64 burst = (u64)tg_get_cfs_burst(tg) * NSEC_PER_USEC;
+>  	u64 quota;
+>  	int ret;
