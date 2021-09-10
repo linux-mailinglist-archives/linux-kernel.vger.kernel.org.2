@@ -2,212 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63CC406D3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB88406D43
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhIJOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:01:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231963AbhIJOBn (ORCPT
+        id S233739AbhIJOFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233658AbhIJOFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:01:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631282432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bL/byGSpb3O+/6TI3MhORPkecYe2Wew1ixIcleGl5VM=;
-        b=dqcT80t4nW2/PyLfUKC8OhtZzgFaqXDSDtkuAKgE9kIhsPfZudl6ydBH2mVFMnaNIkQB3m
-        LvOBNHrub/ahuJF/BEytMlIhel4rzwpuWgyKnKyPqS+I3ZiCexmWxEp39TWWn3lh1dohR9
-        YsSB0JKiFaSak5x0HJmp5XdklqYyEwE=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-d7wMMqIyNPiNe9Bm--5YLQ-1; Fri, 10 Sep 2021 10:00:31 -0400
-X-MC-Unique: d7wMMqIyNPiNe9Bm--5YLQ-1
-Received: by mail-il1-f200.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so3133893ilj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:00:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bL/byGSpb3O+/6TI3MhORPkecYe2Wew1ixIcleGl5VM=;
-        b=vVI2zjcoolgeBMv6x5zrDnHJnvKgg1GWJYcV3WK19gm++UXt+dA1MT7mpazxMnSETi
-         eUbpRuTpaT9lmvIBUfIuS2hF5O3YMkMat3fco0YqfksMv0uRtyCFN3kwjnidLy2EWa2f
-         q70aPsPp3Zo+ZbeUNSbJhSpXR5XvUDDGEkcs+vlp+PxUwqcfYJFjLIsIdti4rhp6QaHZ
-         n/kIQD/lgAvpN89ZoSVCGRwrAgGgsItSrsAJMA8DLM4kJLIzKt5o+80fubt4nWH9UF08
-         a5uuZDGCG126RpAkXp7hnWhzQibBYGboI73a2lWUPg8q+xs54JniJ/0bmaUXfiIojykA
-         j5cw==
-X-Gm-Message-State: AOAM530hKKjxLFssCFzhUF/7dJjBxtVMl+NaaKuf5BKJpwYC/peAGHlR
-        jGpuTI8PgPhHDo2Ts69N3QwqzxFyuD+gemP6S9HOKsFVB9W5QcsJvMkIj0JXtko80oFcuED5Upm
-        vS46DBNF3H1IeQt0fMdtAPyWh
-X-Received: by 2002:a5e:9249:: with SMTP id z9mr7403653iop.14.1631282430086;
-        Fri, 10 Sep 2021 07:00:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxI8qNHc8fkfaZGxesLWLEVd8g/AyePjNbNf1D2B5rTs8PALPBnk6jL8eZ4VnnWLbwkfffm7Q==
-X-Received: by 2002:a5e:9249:: with SMTP id z9mr7403636iop.14.1631282429853;
-        Fri, 10 Sep 2021 07:00:29 -0700 (PDT)
-Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id p11sm2594768ilm.61.2021.09.10.07.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 07:00:29 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 09:00:26 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     linux-kernel@vger.kernel.org, Jim Cromie <jim.cromie@gmail.com>
-Subject: Re: [PATCH] dyndbg: make dyndbg a known cli param
-Message-ID: <20210910140026.tufn25xf5j4tzbtx@halaneylaptop>
-References: <20210909161755.61743-1-ahalaney@redhat.com>
- <0849504a-b7ed-f448-6d66-1a9fd5ad70ce@akamai.com>
+        Fri, 10 Sep 2021 10:05:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62BDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wOqrrvDZiOq5cww66uejzparN3JwZPm6+E/WejBRpDQ=; b=H13Bubyutnr2EXQUUbC5DxLhRv
+        fWrgsTuFg9+FtSCekMRuJdXAwrAzq5fn+rfGYXt0KiJVcxmIGUiyz28NDBGHL4rfIyPN9eQFqN4p1
+        D2Wkb2oYlqnYTTRRNuwl4YcLilqB1CTHtRLFPYDAZLWOVXeHE3opqzn3BiSDGuYeZLThAvjvfA8i4
+        bKbQ6Xy5E1VzmE5EwmGhfL9r5YZ8jP/6BlkzZxabNAtvjopb8gTOnEXSKeMnf/wQ5NJ85FMQQg7Qb
+        9FmMhlDPD+e7Vv5JvUExV9zkmGJAA3w6Hg88cfkn3GX14Ihk3WeKXfIDAi4X597LWOkVSLXhfAKs6
+        rjlsRoQA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOh5u-00B3r6-4P; Fri, 10 Sep 2021 14:01:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2CA7B300047;
+        Fri, 10 Sep 2021 16:01:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 167EE23CBCBF6; Fri, 10 Sep 2021 16:01:29 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 16:01:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
+ current_save_and_set_rtlock_wait_state()
+Message-ID: <YTtlOQfAl/cT5Na9@hirez.programming.kicks-ass.net>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.767330253@infradead.org>
+ <20210909134524.GB9722@willie-the-truck>
+ <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
+ <20210910125658.GA1454@willie-the-truck>
+ <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0849504a-b7ed-f448-6d66-1a9fd5ad70ce@akamai.com>
+In-Reply-To: <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 05:34:51PM -0400, Jason Baron wrote:
-> 
-> 
-> On 9/9/21 12:17 PM, Andrew Halaney wrote:
-> > Right now dyndbg shows up as an unknown parameter if used on boot:
+On Fri, Sep 10, 2021 at 03:17:04PM +0200, Peter Zijlstra wrote:
+> On Fri, Sep 10, 2021 at 01:57:26PM +0100, Will Deacon wrote:
+> > On Thu, Sep 09, 2021 at 04:27:46PM +0200, Peter Zijlstra wrote:
+> > > Moo yes, so the earlier changelog I wrote was something like:
+> > > 
+> > > 	current_save_and_set_rtlock_wait_state();
+> > > 	for (;;) {
+> > > 		if (try_lock())
+> > > 			break;
+> > > 
+> > > 		raw_spin_unlock_irq(&lock->wait_lock);
+> > > 		if (!cond)
+> > > 			schedule();
+> > > 		raw_spin_lock_irq(&lock->wait_lock);
+> > > 
+> > > 		set_current_state(TASK_RTLOCK_WAIT);
+> > > 	}
+> > > 	current_restore_rtlock_saved_state();
+> > > 
+> > > which is more what the code looks like before these patches, and in that
+> > > case the @cond load can be lifted before __state.
 > > 
-> >     Unknown command line parameters: dyndbg=module params +p ; module sys +p
-> > 
-> > That's because it is unknown, it doesn't sit in the __param
-> > section, so the processing done to warn users supplying an unknown
-> > parameter doesn't think it is legitimate.
-> > 
-> > Install a dummy handler to register it. This was chosen instead of the
-> > approach the (deprecated) ddebug_query param takes, which is to
-> > have a real handler that copies the string taking up a KiB memory.
-> > 
-> > Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-> > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> > ---
-> > 
-> > This is the last valid param I know of that was getting flagged on boot
-> > if used correctly. Please let me know if the alternative approach of
-> > actually copying the string is preferred and I'll spin that up instead.
-> > 
+> > Ah, so that makes more sense, thanks. I can't see how the try_lock() could
+> > be reordered though, as it's going to have to do an atomic rmw.
 > 
-> Hi Andrew,
-> 
-> So I think you are referring to the string copying that ddebug_query= does.
-> I don't think that works for 'dyndbg=' b/c its actually looking through
-> the entire command line for stuff like <module_name>.dyndbg="blah".
-> 
-> So I think what you prposed below makes sense, we could perhaps add a note
-> as to why it's a noop. As I mentioned it needs to look through the entire
-> string.
-> 
+> OK, lemme go update the Changelog and make it __flags for bigeasy :-)
 
-I think that the ddebug_query= style works fine for dyndbg=, and that
-things like <module_name>.dyndbg= go through a different path to
-actually have the work done.
+The patch now reads:
 
-When dyndbg= is processed through dynamic_debug_init() all of the
-<module_name>.dyndbg= style queries don't do anything ultimately.
+---
+Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu, 09 Sep 2021 12:59:16 +0200
 
-When the module is actually loaded unknown_module_param_cb() checks for
-the module's dyndbg query and calls ddebug_dyndbg_module_param_cb()
-directly. It is at this point that I believe the query is really
-applied.
+While looking at current_save_and_set_rtlock_wait_state() I'm thinking
+it really ought to use smp_store_mb(), because using it for a more
+traditional wait loop like:
 
-For example, this is what I see in dmesg:
+	current_save_and_set_rtlock_wait_state();
+	for (;;) {
+		if (cond)
+			schedule();
 
-    [    0.045553] Kernel command line: BOOT_IMAGE=(hd0,msdos1)/vmlinuz-5.14.0+ root=UUID=9a0e5b84-1190-465f-a587-f2f2a00a8e91 ro rhgb quiet "dyndbg=module params +p ; module sys +p" dynamic_debug.verbose=2 kvm.dyndbg=+pflmt
+		set_current_state(TASK_RTLOCK_WAIT);
+	}
+	current_restore_rtlock_saved_state();
 
-    # Initial dynamic_debug processing..
-    [    0.114308] dyndbg:   6 debug prints in module main
-    [    0.114308] dyndbg:   1 debug prints in module initramfs
-    <snip (no kvm debug prints... since it is a module and not loaded)>
+is actually broken, since the cond load could be re-ordered against
+the state store, which could lead to a missed wakeup -> BAD (tm).
 
-    # Processing normal dyndbg= for builtins, param has matches but sys
-    # does not
-    [    0.114308] dyndbg: dyndbg="module params +p ; module sys +p"
-    [    0.114308] dyndbg: query 0: "module params +p "
-    <snip>
-    [    0.114308] dyndbg: applied: func="" file="" module="params" format="" lineno=0-0
-    [    0.114308] dyndbg: query 1: "module sys +p"
-    [    0.114308] dyndbg: no-match: func="" file="" module="sys" format="" lineno=0-0
-    [    0.114308] dyndbg: processed 2 queries, with 4 matches, 0 errs
+While there, make them consistent with the IRQ usage in
+set_special_state().
 
-    # Trying to process kvm.dyndbg=, but no effect as module isn't loaded
-    [    0.114308] doing dyndbg params: kvm.dyndbg='+pflmt'
-    [    0.114308] dyndbg: kvm.dyndbg="+pflmt"
-    <snip>
-    [    0.114308] dyndbg: processed 1 queries, with 0 matches, 0 errs
+Fixes: 5f220be21418 ("sched/wakeup: Prepare for RT sleeping spin/rwlocks")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210909110203.767330253@infradead.org
+---
+ include/linux/sched.h |   21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-    # kvm module is loaded, kernel/module.c calls ddebug_dyndbg_module_param_cb()
-    # this time it does something
-    [    3.651764] doing kvm, parsing ARGS: 'dyndbg=+pflmt '
-    [    3.651767] doing kvm: dyndbg='+pflmt'
-    [    3.651768] dyndbg: module: kvm dyndbg="+pflmt"
-    [    3.651769] dyndbg: query 0: "+pflmt"
-    <snip>
-    [    3.652414] dyndbg: applied: func="" file="" module="kvm" format="" lineno=0-0
-    [    3.652416] dyndbg: processed 1 queries, with 10 matches, 0 errs
-
-With that being said, I think ddebug_query= style of copying the
-dyndbg="string" is all that is really needed for processing builtins,
-and the module loading method that's already in place shouldn't be
-affected. Does that change you opinion of the approach (or am I totally
-misunderstanding)? Processing the whole cli seems unnecessary, but I'm
-also a (unjustified?) stickler for adding additional memory usage in the
-patch.
-
-> 
-> > Sort of an aside, but what's the policy for removing deprecated cli
-> > params? ddebug_query has been deprecated for a very long time now, but I
-> > am not sure if removing params like that is considered almost as bad as
-> > breaking userspace considering some systems might update their kernels
-> > but not the bootloader supplying the param.
-> 
-> I think it's probably ok to remove at this point, especially now that
-> we are going to flag it as unknown, right? So I feel like that change
-> can logically go with this series if you want as a separate patch.
-
-ddebug_query actually _is_ known (it registers with __setup() so there's
-no warning like the one I listed in the commit description (although the
-deprecated message in lib/dynamic_debug.c is present if you actually use
-it). So I sort of feel like the removal would be separate to this
-patchset. Let me know when your thoughts when you answer the prior
-question and I'll react with a v2 accordingly!
-
-> 
-> Thanks,
-> 
-> -Jason
-> 
-> 
-> > 
-> >  lib/dynamic_debug.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> > index cb5abb42c16a..84c16309cc63 100644
-> > --- a/lib/dynamic_debug.c
-> > +++ b/lib/dynamic_debug.c
-> > @@ -761,6 +761,18 @@ static __init int ddebug_setup_query(char *str)
-> >  
-> >  __setup("ddebug_query=", ddebug_setup_query);
-> >  
-> > +/*
-> > + * Install a noop handler to make dyndbg look like a normal kernel cli param.
-> > + * This avoids warnings about dyndbg being an unknown cli param when supplied
-> > + * by a user.
-> > + */
-> > +static __init int dyndbg_setup(char *str)
-> > +{
-> > +	return 1;
-> > +}
-> > +
-> > +__setup("dyndbg=", dyndbg_setup);
-> > +
-> >  /*
-> >   * File_ops->write method for <debugfs>/dynamic_debug/control.  Gathers the
-> >   * command text from userspace, parses and executes it.
-> > 
-> 
-
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -218,7 +218,7 @@ struct task_group;
+  */
+ #define set_special_state(state_value)					\
+ 	do {								\
+-		unsigned long flags; /* may shadow */			\
++		unsigned long __flags; /* may shadow */			\
+ 									\
+ 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		debug_special_state_change((state_value));		\
+@@ -245,7 +245,8 @@ struct task_group;
+  *		if (try_lock())
+  *			break;
+  *		raw_spin_unlock_irq(&lock->wait_lock);
+- *		schedule_rtlock();
++ *		if (!cond)
++ *			schedule_rtlock();
+  *		raw_spin_lock_irq(&lock->wait_lock);
+  *		set_current_state(TASK_RTLOCK_WAIT);
+  *	}
+@@ -253,22 +254,24 @@ struct task_group;
+  */
+ #define current_save_and_set_rtlock_wait_state()			\
+ 	do {								\
+-		lockdep_assert_irqs_disabled();				\
+-		raw_spin_lock(&current->pi_lock);			\
++		unsigned long __flags; /* may shadow */			\
++									\
++		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		current->saved_state = current->__state;		\
+ 		debug_rtlock_wait_set_state();				\
+-		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
+-		raw_spin_unlock(&current->pi_lock);			\
++		smp_store_mb(current->__state, TASK_RTLOCK_WAIT);	\
++		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0);
+ 
+ #define current_restore_rtlock_saved_state()				\
+ 	do {								\
+-		lockdep_assert_irqs_disabled();				\
+-		raw_spin_lock(&current->pi_lock);			\
++		unsigned long __flags; /* may shadow */			\
++									\
++		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		debug_rtlock_wait_restore_state();			\
+ 		WRITE_ONCE(current->__state, current->saved_state);	\
+ 		current->saved_state = TASK_RUNNING;			\
+-		raw_spin_unlock(&current->pi_lock);			\
++		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0);
+ 
+ #define get_current_state()	READ_ONCE(current->__state)
