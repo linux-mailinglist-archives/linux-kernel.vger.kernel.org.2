@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C9C406FC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97181406FC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhIJQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:38:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39708 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhIJQiR (ORCPT
+        id S229464AbhIJQjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:39:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229466AbhIJQjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:38:17 -0400
-Date:   Fri, 10 Sep 2021 18:37:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631291825;
+        Fri, 10 Sep 2021 12:39:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631291878;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=IvDpwOczDRqm9rI0g/uY9I1ionUNWs+le2JnOc/SO7Q=;
-        b=WKKmzah4eSSVJ7UeCKPRPGa25hwmHIu2o0s56eXAYMrtuvjrpYUGoxBHeM0OCcCHtWGemF
-        7WCPp1I1+zZLQYu7pgxd60nRGRGsDGJ2jcENEX0iUajCCG9U03XZBRuWLqq30V4uJqWlK/
-        IAzrq8kBEY95oPuJg3oZZPMowWFmH0xT0Zifa89oH8NuYH+UGU4Oyg7FtI59jjJHAd5Ilq
-        UqGL2o7uwfPjWxO1+GnPuJRs+vzmm4VqZHYn282Mv5heapfw8eIJp0F6rmQf2C6M7CWPyr
-        QHiWsC/Z2pdD/epkrNp3OEPOspXxHbBf7xbTqkEw4iD6fsj6NBXU/jbwlWyb/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631291825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IvDpwOczDRqm9rI0g/uY9I1ionUNWs+le2JnOc/SO7Q=;
-        b=kZMv8vD2+4cFldVpYhvijokfw/AyzwCzAhA+gbaZs7eGT4dJCfQ7zWSPZhnPFU9ghYTOIh
-        w0EnVF1RG73AQ5AA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] locking: Remove rt_rwlock_is_contended()
-Message-ID: <20210910163704.ykotcrvbt6yaqron@linutronix.de>
-References: <20210906143004.2259141-1-bigeasy@linutronix.de>
- <20210907100944.7qu3frjuuty3oi3d@linutronix.de>
- <20210907103458.l2iyvjps5bjwnzng@linutronix.de>
- <20210910161614.GJ4323@worktop.programming.kicks-ass.net>
+        bh=0CAdzkTXaTtsnhj1wGgFOSI+YlIYEhF5ZYiGUnrefr0=;
+        b=WJ0fC2G8edjNc9fSKXvZa8PoElDMgSi4MQkMiD1uVl92O3Aq7TLNdFcRsCWcaeVsEVWu6u
+        HqBUfau4VyCDl0L/K04b+lqLHAu0ZFN2sXjDaiWXoxakTrCwDX0b7apHrvPFtvjr0GjeAk
+        pigMg6Xr8SswTq1ftQ+cYARa2gtwasY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-wpfwJVvDPaaA7XFsknzfvg-1; Fri, 10 Sep 2021 12:37:55 -0400
+X-MC-Unique: wpfwJVvDPaaA7XFsknzfvg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 867781B18BC0;
+        Fri, 10 Sep 2021 16:37:53 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.195.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC61919C79;
+        Fri, 10 Sep 2021 16:37:50 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Prakash Sangappa <prakash.sangappa@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: Fwd: [RESEND RFC PATCH 0/3] Provide fast access to thread
+ specific data
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
+        <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
+        <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
+Date:   Fri, 10 Sep 2021 18:37:49 +0200
+In-Reply-To: <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
+        (Peter Oskolkov's message of "Fri, 10 Sep 2021 08:18:10 -0700")
+Message-ID: <8735qcgzdu.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210910161614.GJ4323@worktop.programming.kicks-ass.net>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-10 18:16:14 [+0200], Peter Zijlstra wrote:
-> On Tue, Sep 07, 2021 at 12:34:58PM +0200, Sebastian Andrzej Siewior wrote:
-> > rt_rwlock_is_contended() has not users. It makes no sense to use it as
-> > rwlock_is_contended() because it is a sleeping lock on RT and preemption
-> > is possible. It reports always != 0 if used by a writer and even if
-> > there is a waiter then the lock might not be handed over if the
-> > current owner has the highest priority.
-> 
-> I'm confused now... so first you have two patches that wire up
-> {spin,rwlock}_is_contended() and how you're arguing we shouldn't do
-> that?
+* Peter Oskolkov:
 
-Yes. I got arguments against it after sleeping :)
+> In short, due to the need to read/write to the userspace from
+> non-sleepable contexts in the kernel it seems that we need to have some
+> form of per task/thread kernel/userspace shared memory that is pinned,
+> similar to what your sys_task_getshared does.
 
-> AFAICT the _is_contended() can still use useful even with preemption,
-> the typicla use case is a long lock-holder deciding to drop the lock in
-> order to let someone else in. That still works with preemptible locks,
-> no?
+In glibc, we'd also like to have this for PID and TID.  Eventually,
+rt_sigprocmask without kernel roundtrip in most cases would be very nice
+as well.  For performance and simplicity in userspace, it would be best
+if the memory region could be at the same offset from the TCB for all
+threads.
 
-Sure. We can do that. Then we should look into:
-- fixing rwsem_is_contended() for the writer. The writer always observes
-  true even with no waiter around.
+For KTLS, the idea was that the auxiliary vector would contain size and
+alignment of the KTLS.  Userspace would reserve that memory, register it
+with the kernel like rseq (or the robust list pointers), and pass its
+address to the vDSO functions that need them.  The last part ensures
+that the vDSO functions do not need non-global data to determine the
+offset from the TCB.  Registration is still needed for the caches.
 
-- checking the top waiter list vs priority of the lock owner/current. If
-  the current lock owner has the highest priority then the unlock+lock
-  is probably pointless as he regains the lock.
-  For the spin_lock() case, if the owner is SCHED_OTHER and the waiter
-  is SCHED_OTHER then unlock+lock will give the lock to the previous
-  owner due to rt_mutex_steal() working in his favour. Unless there is a
-  preemption.
+I think previous discussions (in the KTLS and rseq context) did not have
+the pinning constraint.
 
-- reader checking for contention is probably pointless. It works with a
-  pending writer and one reader since a second reader will hold-off the
-  writer from acquiring the lock. Also if the reader does unlock+lock
-  then writer might not be quick enough.
+Thanks,
+Florian
 
-Sebastian
