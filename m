@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF64406BE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BC3406BC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhIJMfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52592 "EHLO mail.kernel.org"
+        id S233206AbhIJMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:34:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233627AbhIJMeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:34:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A17D1611EE;
-        Fri, 10 Sep 2021 12:33:12 +0000 (UTC)
+        id S233629AbhIJMdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:33:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86293611C0;
+        Fri, 10 Sep 2021 12:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277193;
-        bh=4vQ/ZzFECcekYZ2Hcm4y3pu+ZCD9NQxmMVpVlE5aSeg=;
+        s=korg; t=1631277150;
+        bh=zyqoNqZppJPK1gv9y9sHtdwlchOr1PMS2idfI9KuZsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q8dAE1Ki8oha3rRhXkwN/6jzsno1axHTQH8qVd1xD/6IvWZT6kKCjaBqcoRf8IvMS
-         qL7o73RNpejU9OSND0mZJHkC8/pVSytWUHXLEX2dk0fjC3367jKoHKb1b1KGCui4jr
-         Y/G5V0uBlGmf7DUv/A+jC1khySXx3Y0DQRRg9ln4=
+        b=ui+A5b7tRQUmqcCIWrVAITL3/t5DrTRM5so9R5Tb46BM21maOBuDC6EPHUmkd6Y07
+         ZLeko1Ni/kMKFYMmfuFgThHo7+dMSlF/BfnP4ehwR45Q8VwBDk9Gspdh1EMV2NUdWD
+         BKPRVYjCEX/OR3yRRJfX1lF9CLWuFoJmenXawY08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: [PATCH 5.10 14/26] netfilter: nf_tables: initialize set before expression setup
-Date:   Fri, 10 Sep 2021 14:30:18 +0200
-Message-Id: <20210910122916.712856812@linuxfoundation.org>
+        stable@vger.kernel.org, Tao Wang <wat@codeaurora.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.13 20/22] xhci: Fix failure to give back some cached cancelled URBs.
+Date:   Fri, 10 Sep 2021 14:30:19 +0200
+Message-Id: <20210910122916.600202484@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
-References: <20210910122916.253646001@linuxfoundation.org>
+In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
+References: <20210910122915.942645251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,121 +39,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit ad9f151e560b016b6ad3280b48e42fa11e1a5440 upstream.
+commit 94f339147fc3eb9edef7ee4ef6e39c569c073753 upstream.
 
-nft_set_elem_expr_alloc() needs an initialized set if expression sets on
-the NFT_EXPR_GC flag. Move set fields initialization before expression
-setup.
+Only TDs with status TD_CLEARING_CACHE will be given back after
+cache is cleared with a set TR deq command.
 
-[4512935.019450] ==================================================================
-[4512935.019456] BUG: KASAN: null-ptr-deref in nft_set_elem_expr_alloc+0x84/0xd0 [nf_tables]
-[4512935.019487] Read of size 8 at addr 0000000000000070 by task nft/23532
-[4512935.019494] CPU: 1 PID: 23532 Comm: nft Not tainted 5.12.0-rc4+ #48
-[...]
-[4512935.019502] Call Trace:
-[4512935.019505]  dump_stack+0x89/0xb4
-[4512935.019512]  ? nft_set_elem_expr_alloc+0x84/0xd0 [nf_tables]
-[4512935.019536]  ? nft_set_elem_expr_alloc+0x84/0xd0 [nf_tables]
-[4512935.019560]  kasan_report.cold.12+0x5f/0xd8
-[4512935.019566]  ? nft_set_elem_expr_alloc+0x84/0xd0 [nf_tables]
-[4512935.019590]  nft_set_elem_expr_alloc+0x84/0xd0 [nf_tables]
-[4512935.019615]  nf_tables_newset+0xc7f/0x1460 [nf_tables]
+xhci_invalidate_cached_td() failed to set the TD_CLEARING_CACHE status
+for some cancelled TDs as it assumed an endpoint only needs to clear the
+TD it stopped on.
 
-Reported-by: syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com
-Fixes: 65038428b2c6 ("netfilter: nf_tables: allow to specify stateful expression in set definition")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
+This isn't always true. For example with streams enabled an endpoint may
+have several stream rings, each stopping on a different TDs.
+
+Note that if an endpoint has several stream rings, the current code
+will still only clear the cache of the stream pointed to by the last
+cancelled TD in the cancel list.
+
+This patch only focus on making sure all canceled TDs are given back,
+avoiding hung task after device removal.
+Another fix to solve clearing the caches of all stream rings with
+cancelled TDs is needed, but not as urgent.
+
+This issue was simultanously discovered and debugged by
+by Tao Wang, with a slightly different fix proposal.
+
+Fixes: 674f8438c121 ("xhci: split handling halted endpoints into two steps")
+Cc: <stable@vger.kernel.org> #5.12
+Reported-by: Tao Wang <wat@codeaurora.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210820123503.2605901-4-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |   46 +++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 22 deletions(-)
+ drivers/usb/host/xhci-ring.c |   40 +++++++++++++++++++++++++---------------
+ 1 file changed, 25 insertions(+), 15 deletions(-)
 
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -4280,15 +4280,7 @@ static int nf_tables_newset(struct net *
- 	err = nf_tables_set_alloc_name(&ctx, set, name);
- 	kfree(name);
- 	if (err < 0)
--		goto err_set_alloc_name;
--
--	if (nla[NFTA_SET_EXPR]) {
--		expr = nft_set_elem_expr_alloc(&ctx, set, nla[NFTA_SET_EXPR]);
--		if (IS_ERR(expr)) {
--			err = PTR_ERR(expr);
--			goto err_set_alloc_name;
--		}
--	}
-+		goto err_set_name;
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -942,17 +942,21 @@ static int xhci_invalidate_cancelled_tds
+ 					 td->urb->stream_id);
+ 		hw_deq &= ~0xf;
  
- 	udata = NULL;
- 	if (udlen) {
-@@ -4299,21 +4291,19 @@ static int nf_tables_newset(struct net *
- 	INIT_LIST_HEAD(&set->bindings);
- 	set->table = table;
- 	write_pnet(&set->net, net);
--	set->ops   = ops;
-+	set->ops = ops;
- 	set->ktype = ktype;
--	set->klen  = desc.klen;
-+	set->klen = desc.klen;
- 	set->dtype = dtype;
- 	set->objtype = objtype;
--	set->dlen  = desc.dlen;
--	set->expr = expr;
-+	set->dlen = desc.dlen;
- 	set->flags = flags;
--	set->size  = desc.size;
-+	set->size = desc.size;
- 	set->policy = policy;
--	set->udlen  = udlen;
--	set->udata  = udata;
-+	set->udlen = udlen;
-+	set->udata = udata;
- 	set->timeout = timeout;
- 	set->gc_int = gc_int;
--	set->handle = nf_tables_alloc_handle(table);
+-		if (td->cancel_status == TD_HALTED) {
+-			cached_td = td;
+-		} else if (trb_in_td(xhci, td->start_seg, td->first_trb,
+-			      td->last_trb, hw_deq, false)) {
++		if (td->cancel_status == TD_HALTED ||
++		    trb_in_td(xhci, td->start_seg, td->first_trb, td->last_trb, hw_deq, false)) {
+ 			switch (td->cancel_status) {
+ 			case TD_CLEARED: /* TD is already no-op */
+ 			case TD_CLEARING_CACHE: /* set TR deq command already queued */
+ 				break;
+ 			case TD_DIRTY: /* TD is cached, clear it */
+ 			case TD_HALTED:
+-				/* FIXME  stream case, several stopped rings */
++				td->cancel_status = TD_CLEARING_CACHE;
++				if (cached_td)
++					/* FIXME  stream case, several stopped rings */
++					xhci_dbg(xhci,
++						 "Move dq past stream %u URB %p instead of stream %u URB %p\n",
++						 td->urb->stream_id, td->urb,
++						 cached_td->urb->stream_id, cached_td->urb);
+ 				cached_td = td;
+ 				break;
+ 			}
+@@ -961,18 +965,24 @@ static int xhci_invalidate_cancelled_tds
+ 			td->cancel_status = TD_CLEARED;
+ 		}
+ 	}
+-	if (cached_td) {
+-		cached_td->cancel_status = TD_CLEARING_CACHE;
  
- 	set->field_count = desc.field_count;
- 	for (i = 0; i < desc.field_count; i++)
-@@ -4323,20 +4313,32 @@ static int nf_tables_newset(struct net *
- 	if (err < 0)
- 		goto err_set_init;
- 
-+	if (nla[NFTA_SET_EXPR]) {
-+		expr = nft_set_elem_expr_alloc(&ctx, set, nla[NFTA_SET_EXPR]);
-+		if (IS_ERR(expr)) {
-+			err = PTR_ERR(expr);
-+			goto err_set_expr_alloc;
-+		}
+-		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+-						cached_td->urb->stream_id,
+-						cached_td);
+-		/* Failed to move past cached td, try just setting it noop */
+-		if (err) {
+-			td_to_noop(xhci, ring, cached_td, false);
+-			cached_td->cancel_status = TD_CLEARED;
++	/* If there's no need to move the dequeue pointer then we're done */
++	if (!cached_td)
++		return 0;
 +
-+		set->expr = expr;
-+	}
-+
-+	set->handle = nf_tables_alloc_handle(table);
-+
- 	err = nft_trans_set_add(&ctx, NFT_MSG_NEWSET, set);
- 	if (err < 0)
--		goto err_set_trans;
-+		goto err_set_expr_alloc;
- 
- 	list_add_tail_rcu(&set->list, &table->sets);
- 	table->use++;
++	err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
++					cached_td->urb->stream_id,
++					cached_td);
++	if (err) {
++		/* Failed to move past cached td, just set cached TDs to no-op */
++		list_for_each_entry_safe(td, tmp_td, &ep->cancelled_td_list, cancelled_td_list) {
++			if (td->cancel_status != TD_CLEARING_CACHE)
++				continue;
++			xhci_dbg(xhci, "Failed to clear cancelled cached URB %p, mark clear anyway\n",
++				 td->urb);
++			td_to_noop(xhci, ring, td, false);
++			td->cancel_status = TD_CLEARED;
+ 		}
+-		cached_td = NULL;
+ 	}
  	return 0;
- 
--err_set_trans:
-+err_set_expr_alloc:
-+	if (set->expr)
-+		nft_expr_destroy(&ctx, set->expr);
-+
- 	ops->destroy(set);
- err_set_init:
--	if (expr)
--		nft_expr_destroy(&ctx, expr);
--err_set_alloc_name:
- 	kfree(set->name);
- err_set_name:
- 	kvfree(set);
+ }
 
 
