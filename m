@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBC9406BCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1F9406BE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhIJMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:34:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
+        id S234344AbhIJMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:35:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhIJMdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3AE61026;
-        Fri, 10 Sep 2021 12:32:34 +0000 (UTC)
+        id S233911AbhIJMec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:34:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19BE361207;
+        Fri, 10 Sep 2021 12:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277155;
-        bh=X/sqA20iPz91bU3VUhdOFV01p3e6fAPvhJ9G63FgFHA=;
+        s=korg; t=1631277201;
+        bh=WAFf2IeH++Z3ZsRNc443cqKD4wjm2AF+LQotwUfL1m0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xUcsBIgEc82WkmjiZ56aSR8Bi/G1lLONhSfaxqvqL5nTc8jKt3Bdx9esMvWVr67f8
-         8ops4J4T5TkmGMFhIZlSdZTR1soyHyZDK/xJ/DITYjLJ6VnrzcdBANx9uiN746wcGV
-         qw88lzQ7mwfCUrT2pNfrOHbJ46MwNVmOvNLKXLJs=
+        b=BQSHTtVdiZaxSEffljFA+oZ7aploCmlaG+oQl0rLArVaDmXwxQootUVd0eugG3LrY
+         dzCbMkRHdeJj1zX1XyaO1rLVw4xEnTLQi5onN6L1cZYnejTZLx+vhOqIi6NRSmSxW2
+         8NciXMim18pAvHKjOHJ9eFDqSSzyOka2MwZ8EG9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.13 22/22] PCI: Call Max Payload Size-related fixup quirks early
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 17/26] ALSA: usb-audio: Add registration quirk for JBL Quantum 800
 Date:   Fri, 10 Sep 2021 14:30:21 +0200
-Message-Id: <20210910122916.659407589@linuxfoundation.org>
+Message-Id: <20210910122916.811604857@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-commit b8da302e2955fe4d41eb9d48199242674d77dbe0 upstream.
+commit c8b177b6e3a005bd8fb0395a4bc5db3470301c28 upstream.
 
-pci_device_add() calls HEADER fixups after pci_configure_device(), which
-configures Max Payload Size.
+Add another device ID for JBL Quantum 800. It requires the same quirk as
+other JBL Quantum devices.
 
-Convert MPS-related fixups to EARLY fixups so pci_configure_mps() takes
-them into account.
-
-Fixes: 27d868b5e6cfa ("PCI: Set MPS to match upstream bridge")
-Link: https://lore.kernel.org/r/20210624171418.27194-1-kabel@kernel.org
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210831002531.116957-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3235,12 +3235,12 @@ static void fixup_mpss_256(struct pci_de
- {
- 	dev->pcie_mpss = 1; /* 256 bytes */
- }
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
- 
- /*
-  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1896,6 +1896,7 @@ static const struct registration_quirk r
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
++	REG_QUIRK_ENTRY(0x0ecb, 0x1f47, 2),	/* JBL Quantum 800 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
 
 
