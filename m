@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791A24062BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2F64063EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241963AbhIJAqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:46:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44506 "EHLO mail.kernel.org"
+        id S234496AbhIJAv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:51:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232453AbhIJAS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E0356115A;
-        Fri, 10 Sep 2021 00:17:35 +0000 (UTC)
+        id S233546AbhIJAUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8589611CE;
+        Fri, 10 Sep 2021 00:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233056;
-        bh=N7VryCQb/YIXbsKUrHSlN8c3f2IOZpt0Z9Ky/nPZQZk=;
+        s=k20201202; t=1631233148;
+        bh=rQ1yDeHV+X4An5M1J5eMNbx8BfZ5b1ajquIcRCMKf+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hwYt2LTBXN4RVzqX8Cxi2NYUBY9sFoXXSwBO75Sw16lHlsUh1jM6Dr3yGc9QP7yIm
-         JoDlpmM6oszNZ7JRKilf0wVlSfRnGTVV5iWaQeBvTlhuM32k41qcf2xuDdIWwSj3Ug
-         qmr8FyO9I9m+d30mM/37GYVoVJ4WHkwgZDaWcPL/9Ryee2e14Vv4CB4uyw3IwYvFQb
-         HszYgVHtDoiYBE6ZiBZsVQ5Av2ibl/+aQK1jaP9IptJ5UhiSq5RrmVzAXwDSHzvf+g
-         xhxVhHNNJg7TjKrT5YAW3lszY/dWC+paPK6SkZWNVK1LpTGE3QV+D/ssR2A4mhMa6r
-         x8L+bmKmWCjOg==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/3] x86/sgx: Report SGX memory in /proc/meminfo
-Date:   Fri, 10 Sep 2021 03:17:25 +0300
-Message-Id: <20210910001726.811497-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210910001726.811497-1-jarkko@kernel.org>
-References: <20210910001726.811497-1-jarkko@kernel.org>
+        b=IHk7l6k+QNyPWhMOrA4P7Qvuj+qVi/f80UImUwEr35S1I2iZ+xbG4ZoorG3+yYwQG
+         Vxej+BATZm4ndSpItgyfapZ+QTSPXYkg9we9eQvy1FqHBw8jyMumsTDCCrD2+c0kY4
+         jlEipe39iGm3im+wOZUk83rV/+JvBM/dOE77vnYkd44CFiZAkVgEBb2ewybiNHdP8x
+         6i1rte9v3cE0pI8ysH4u1x2ummpZs5A4N2zyIHRN5OWPzbUiA9kwxI/w6dj4VS+Ar8
+         GpGpGr8FpL9wCjXW/aa8I3wofSeyGEOyU8h1LXOyXk578/jeVirgqEnSUBlgvLF9mf
+         CpDHUDxxzb+fw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 33/88] jbd2: fix portability problems caused by unaligned accesses
+Date:   Thu,  9 Sep 2021 20:17:25 -0400
+Message-Id: <20210910001820.174272-33-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210910001820.174272-1-sashal@kernel.org>
+References: <20210910001820.174272-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of SGX memory on the system is determined by the BIOS and it
-varies wildly between systems.  It can be from dozens of MB's on desktops
-or VM's, up to many GB's on servers.  Just like for regular memory, it is
-sometimes useful to know the amount of usable SGX memory in the system.
+From: Theodore Ts'o <tytso@mit.edu>
 
-Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
-usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
-BIOS, the printout would be:
+[ Upstream commit a20d1cebb98bba75f2e34fddc768dd8712c1bded ]
 
-SGX_MemTotal:      22528 kB
+This commit applies the e2fsck/recovery.c portions of commit
+1e0c8ca7c08a ("e2fsck: fix portability problems caused by unaligned
+accesses) from the e2fsprogs git tree.
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+The on-disk format for the ext4 journal can have unaigned 32-bit
+integers.  This can happen when replaying a journal using a obsolete
+checksum format (which was never popularly used, since the v3 format
+replaced v2 while the metadata checksum feature was being stablized).
+
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-v4:
-* Calculate sgx_mem_total by adding up the sizes of the NUMA node
-  EPC's, only once all of them have been set up correctly.
-* Move documentation to a separate patch, as it clearly is a
-  separate issue.
-v2:
-* Move ifdef fix for sgx_set_attribute() to a separate patch.
----
- arch/x86/include/asm/sgx.h     |  2 ++
- arch/x86/kernel/cpu/sgx/main.c | 10 ++++++++--
- arch/x86/mm/pat/set_memory.c   |  5 +++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
+ fs/jbd2/recovery.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 05f3e21f01a7..65124b05c145 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -365,6 +365,8 @@ struct sgx_sigstruct {
-  * comment!
-  */
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index d47a0d96bf30..4c4209262437 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -196,7 +196,7 @@ static int jbd2_descriptor_block_csum_verify(journal_t *j, void *buf)
+ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ {
+ 	char *			tagp;
+-	journal_block_tag_t *	tag;
++	journal_block_tag_t	tag;
+ 	int			nr = 0, size = journal->j_blocksize;
+ 	int			tag_bytes = journal_tag_bytes(journal);
  
-+extern unsigned long sgx_mem_total;
-+
- #ifdef CONFIG_X86_SGX_KVM
- int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
- 		     int *trapnr);
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 4c6da5f4a9d4..d8f5769e4004 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+@@ -206,14 +206,14 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ 	tagp = &bh->b_data[sizeof(journal_header_t)];
  
--/* The free page list lock protected variables prepend the lock. */
-+/* Total size of the Enclave Page Cache (EPC) in the system. */
-+unsigned long sgx_mem_total;
-+
-+/* The number of free EPC pages in all nodes. */
- static unsigned long sgx_nr_free_pages;
+ 	while ((tagp - bh->b_data + tag_bytes) <= size) {
+-		tag = (journal_block_tag_t *) tagp;
++		memcpy(&tag, tagp, sizeof(tag));
  
- /* Nodes with one or more EPC sections. */
-@@ -727,6 +730,9 @@ static bool __init sgx_page_cache_init(void)
- 		return false;
+ 		nr++;
+ 		tagp += tag_bytes;
+-		if (!(tag->t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
++		if (!(tag.t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
+ 			tagp += 16;
+ 
+-		if (tag->t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
++		if (tag.t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
+ 			break;
  	}
  
-+	for (i = 0; i < num_possible_nodes(); i++)
-+		sgx_mem_total += sgx_numa_nodes[nid].size;
-+
- 	return true;
+@@ -433,9 +433,9 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
  }
  
-@@ -799,7 +805,7 @@ ssize_t arch_node_read_meminfo(struct device *dev,
+ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
++				      journal_block_tag3_t *tag3,
+ 				      void *buf, __u32 sequence)
+ {
+-	journal_block_tag3_t *tag3 = (journal_block_tag3_t *)tag;
+ 	__u32 csum32;
+ 	__be32 seq;
  
- 	len += sysfs_emit_at(buf, len,
- 			     "Node %d SGX_MemTotal:   %8lu kB\n",
--			     dev->id, node->size);
-+			     dev->id, node->size / 1024);
+@@ -496,7 +496,7 @@ static int do_one_pass(journal_t *journal,
+ 	while (1) {
+ 		int			flags;
+ 		char *			tagp;
+-		journal_block_tag_t *	tag;
++		journal_block_tag_t	tag;
+ 		struct buffer_head *	obh;
+ 		struct buffer_head *	nbh;
  
- 	return len;
- }
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index ad8a5c586a35..b55ea89df801 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -29,6 +29,7 @@
- #include <asm/proto.h>
- #include <asm/memtype.h>
- #include <asm/set_memory.h>
-+#include <asm/sgx.h>
+@@ -613,8 +613,8 @@ static int do_one_pass(journal_t *journal,
+ 			       <= journal->j_blocksize - descr_csum_size) {
+ 				unsigned long io_block;
  
- #include "../mm_internal.h"
+-				tag = (journal_block_tag_t *) tagp;
+-				flags = be16_to_cpu(tag->t_flags);
++				memcpy(&tag, tagp, sizeof(tag));
++				flags = be16_to_cpu(tag.t_flags);
  
-@@ -116,6 +117,10 @@ void arch_report_meminfo(struct seq_file *m)
- 	if (direct_gbpages)
- 		seq_printf(m, "DirectMap1G:    %8lu kB\n",
- 			direct_pages_count[PG_LEVEL_1G] << 20);
-+
-+#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
-+	seq_printf(m, "SGX_MemTotal:   %8lu kB\n", sgx_mem_total / 1024);
-+#endif
- }
- #else
- static inline void split_page_count(int level) { }
+ 				io_block = next_log_block++;
+ 				wrap(journal, next_log_block);
+@@ -632,7 +632,7 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					J_ASSERT(obh != NULL);
+ 					blocknr = read_tag_block(journal,
+-								 tag);
++								 &tag);
+ 
+ 					/* If the block has been
+ 					 * revoked, then we're all done
+@@ -647,8 +647,8 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					/* Look for block corruption */
+ 					if (!jbd2_block_tag_csum_verify(
+-						journal, tag, obh->b_data,
+-						be32_to_cpu(tmp->h_sequence))) {
++			journal, &tag, (journal_block_tag3_t *)tagp,
++			obh->b_data, be32_to_cpu(tmp->h_sequence))) {
+ 						brelse(obh);
+ 						success = -EFSBADCRC;
+ 						printk(KERN_ERR "JBD2: Invalid "
 -- 
-2.25.1
+2.30.2
 
