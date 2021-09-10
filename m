@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC84406D2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF7E406D32
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhIJNya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:54:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38808 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbhIJNy0 (ORCPT
+        id S233710AbhIJN4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233682AbhIJN4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:54:26 -0400
-Date:   Fri, 10 Sep 2021 15:53:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631281994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6pxcfUfqepcmfNTX+DNeLKNNP9jLrEk/ehng0WwRfw=;
-        b=yG/H4GMCbptSO7FFcgIZ3+sX9PJQnoS+zgFEMIv+9T8v8/wQYYfHCqW3I9ka5COSD59xmU
-        TWkLyIOd0xvuyA2mqh4fAiN0Z9D3kU4KKRWAO127ve37IHLj+pdcquIhyOHh2uSMLxSFqo
-        U64INnaE7tgFSKSWlrhJrv5Gx4BE5vxFhLrmDvbBQHg+xq86zHI5bPThiur/1bMFl9bMqx
-        61/9Il1VJ6+Ubhg5zNS+k3ADJcg2HSR3g0MoAW7/JxqwacB2ZFcPQyLU7WbxjrYoWNjqRK
-        2e3hFDPZjgifTaRnBIjtS9NkeKtPWV/poC+e6JvneYf0qL/GkZx+gFzloTIabQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631281994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6pxcfUfqepcmfNTX+DNeLKNNP9jLrEk/ehng0WwRfw=;
-        b=vIw2vRZVwOSK2r6u9SnvhSeInTcZdGwE5kQKYgymfiOoj2p1indCiqAZUBAx4FXF9765IQ
-        c/OxepXxr02YYLDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Waiman Long <llong@redhat.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v3] lockdep: Let lock_is_held_type() detect recursive read as
- read
-Message-ID: <20210910135312.4axzdxt74rgct2ur@linutronix.de>
-References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
- <9af2b074-9fcf-5aea-f37d-9b2482146489@redhat.com>
- <20210903084001.lblecrvz4esl4mrr@linutronix.de>
- <YTgc8xXuVlpOhoUT@boqun-archlinux>
- <YTiN1HLeHeIhi/nT@hirez.programming.kicks-ass.net>
+        Fri, 10 Sep 2021 09:56:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12A4C061574;
+        Fri, 10 Sep 2021 06:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9ImyjIQib3SxIlByLQNiBXiiPVZK58gAv8kSEMD9sVE=; b=oBN7pCYz8VJ7+hrMhxoU5Oij6M
+        i9W2Webo06YujU1PHoBJLxTBPW8Kkv+nVKIMIzqCjQQM62u65SnRjm7yyDtjOPv2VK2vq5EN88IFP
+        Tsa9QkKntfCwVt9ZGt7zxrBFNYR49+szBCP971/mWZhp5+ijFB1xv1TfE09+43Yy9N9c+5TBLz2UR
+        0HQ8pu9JrbxD8ULdvqdEV7RrLKNt9jT43HhBTOiVcQLRHUhm68uKBuFceDVMTXMa1UetgtLkHl4Sx
+        9BdUC2i06YN7mdCzDZsHaCvkvlUJF+AFQM+/1N0YM4k2HG4Pn0gS9HX9Ho5SQkVrx4RVJWIxR8b1E
+        /NWTkGGw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOgyi-00B3X5-6o; Fri, 10 Sep 2021 13:54:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FB4E300047;
+        Fri, 10 Sep 2021 15:54:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4025420195557; Fri, 10 Sep 2021 15:54:03 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 15:54:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YTtjeyfJXXiDielu@hirez.programming.kicks-ass.net>
+References: <20210907202802.3675104-1-songliubraving@fb.com>
+ <20210907202802.3675104-2-songliubraving@fb.com>
+ <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTiN1HLeHeIhi/nT@hirez.programming.kicks-ass.net>
+In-Reply-To: <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lock_is_held_type(, 1) detects acquired read locks. It only recognized
-locks acquired with lock_acquire_shared(). Read locks acquired with
-lock_acquire_shared_recursive() are not recognized because a `2' is
-stored as the read value.
+On Fri, Sep 10, 2021 at 12:40:51PM +0200, Peter Zijlstra wrote:
 
-Rework the check to additionally recognise lock's read value one and two
-as a read held lock.
+> The below seems to cure that.
 
-Fixes: e918188611f07 ("locking: More accurate annotations for read_lock()")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Waiman Long <longman@redhat.com>
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
----
-v3: move the !! to the right spot so it actually works.
+Seems I lost a hunk, fold below.
 
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index bf1c00c881e48..bfa0a347f27c4 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_map *lock, int read)
- 		struct held_lock *hlock = curr->held_locks + i;
+diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+index 9e6d6eaeb4cb..6b72e9b55c69 100644
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -228,20 +228,6 @@ static void __intel_pmu_lbr_enable(bool pmi)
+ 		wrmsrl(MSR_ARCH_LBR_CTL, lbr_select | ARCH_LBR_CTL_LBREN);
+ }
  
- 		if (match_held_lock(hlock, lock)) {
--			if (read == -1 || hlock->read == read)
-+			if (read == -1 || !!hlock->read == read)
- 				return LOCK_STATE_HELD;
+-static void __intel_pmu_lbr_disable(void)
+-{
+-	u64 debugctl;
+-
+-	if (static_cpu_has(X86_FEATURE_ARCH_LBR)) {
+-		wrmsrl(MSR_ARCH_LBR_CTL, 0);
+-		return;
+-	}
+-
+-	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+-	debugctl &= ~(DEBUGCTLMSR_LBR | DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
+-	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+-}
+-
+ void intel_pmu_lbr_reset_32(void)
+ {
+ 	int i;
+@@ -779,8 +765,12 @@ void intel_pmu_lbr_disable_all(void)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
  
- 			return LOCK_STATE_NOT_HELD;
--- 
-2.33.0
-
+-	if (cpuc->lbr_users && !vlbr_exclude_host())
++	if (cpuc->lbr_users && !vlbr_exclude_host()) {
++		if (static_cpu_has(X86_FEATURE_ARCH_LBR))
++			return __intel_pmu_arch_lbr_disable();
++
+ 		__intel_pmu_lbr_disable();
++	}
+ }
+ 
+ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
