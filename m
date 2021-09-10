@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4124E407381
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C5A407398
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhIJWrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        id S232617AbhIJWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhIJWro (ORCPT
+        with ESMTP id S231340AbhIJWwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:47:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D2DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:46:32 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id bb10so2082983plb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:46:32 -0700 (PDT)
+        Fri, 10 Sep 2021 18:52:18 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEF0C061574;
+        Fri, 10 Sep 2021 15:51:04 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r2so3135570pgl.10;
+        Fri, 10 Sep 2021 15:51:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        h=message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=hDI8Y6mH8Vv3DAsnwS0yW9w8j+2nbIddrFiYVYVb1dk=;
-        b=KNPYmUim0fOfCtO8Wr4jZVQjg0tWMRDCSf2r/LF5Sin3uawGILEPXqog+7dRSDo+KI
-         dcg/OryMJbklnfL14SqKDRz8WBpBuopwEDlKhOjnYSOjC247ljm86vVZU0hHrfH+ddTa
-         vFHPQORDWT0CHwHzFySKIbzDgC47s57njn6ZEGwBMC5KTOQB14JvmUAS4t4r+sz/knsU
-         T+wg8isinB/dCd1dfVBK7yFkIilTHK9bR00fdbGuFIFN65VdDg2dI3HR9/vtpDV6IJsx
-         mTv8fco8KkbdBrijMl7lMGZKoPCloJkMmlS/5tNcuQjevfEJC5W8uRus9X8S2E06Fz9I
-         NWYg==
+        bh=3mpqjN68QQFaPBGCnbSwv0HNK+T3hlBJN58L+ECUVr0=;
+        b=AIHCKtGx6AnCmJWHYqbnECRPR8apQ7rwIO1IC7n7SD+bk8SYSW1tF4zP5LIYqqqU3k
+         VWsxzSPsrRrboEBoXq3IGkZWWxuVj89m/BLVR5P3HVd6zswtqFUoTqvaf6YstwWRmAmD
+         Hh2pWYPHsCYgKiDHnW9BPql5MjL8P/hsCAWDLjAN/xxo8TjREVNQpU4XiwQuP+86fjie
+         pOLZDadxTF6sehqQjiffk/YtH6MW4sD5klcDqege6wbiA559phw4V45LiC0se5gCKD72
+         ocv8Pdb59InxkiWnnV77W5OOWtfqVeY7oaB8GXw9OX+93S2GNQ4PQtSDXMWMlPJEbM7W
+         QWuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=hDI8Y6mH8Vv3DAsnwS0yW9w8j+2nbIddrFiYVYVb1dk=;
-        b=28nVcXn/UZWVk5sA+v8HGvfBZgi94Rh5OCkVyocWV328+kwaF3x/wqMZvhfPlXh9pS
-         XTmSLxChq9tTPOpPbIKOrK56wmuP8yWSAhM53ZMoiu0K29S7Avbmk2ZTLs5T4oMVqSiR
-         fOP+dbONmUQxeuHUBrZUu5toN6/tRqy9RBkmSqL8mIoo0vJdVM92qxjTa0dKHOW3YC0y
-         R8Q3KBJaZxl8JC4DAQXUZVEjTpps4CFS90xYHi0sKIYQ5rHgwXjaYDyVFpA3n44qUT7R
-         sLDr3FifLrOyTqkYa8Q64rEgr17faUFqlG25OfrQpr6sVaohKeqk9BeniUhq/gv0Z9bq
-         PLWQ==
-X-Gm-Message-State: AOAM530crK49g4ITubPNHwYTjc0xJCQQGN+X/JMjce0po28LpELdnTbC
-        qadPnDieRm7CzoWI1iyY2uY=
-X-Google-Smtp-Source: ABdhPJzZisj9V9AWQKEGsi7V4TH8qmYHTGy7cnJvE6VWIkhTFdhsL+jkM29VTrVDh4dkKAw5Y+LHHg==
-X-Received: by 2002:a17:90a:f0c2:: with SMTP id fa2mr12038486pjb.7.1631313992381;
-        Fri, 10 Sep 2021 15:46:32 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:e240:6ca6:1a1d:d57:193a])
-        by smtp.gmail.com with ESMTPSA id 123sm5564081pff.76.2021.09.10.15.46.31
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=3mpqjN68QQFaPBGCnbSwv0HNK+T3hlBJN58L+ECUVr0=;
+        b=AsXqnVPgBwqbY54ekEiFV0Y6a2R1AcsTYuK93AZYxAqKibt9TT3uQpIzqukn0ny1t5
+         L4UBkuYTaM+khcUaq0teGrkVarvsDU3phbdLNKLVajRQNsQFDL75/Mv2eRnCU51Mt+GM
+         uxuuHtXI68x4XpSG3X96Ta0r0YSIavkXDOoI2AyPQ3jc956DsrNIhaA6dQhA0HGhFzvy
+         ywxRwAOVvyE1ficnHMkCw1aA65xIC8IAobJ04SW0FCHLongKBY21o3YKv+pJnpSBg8Kc
+         jhEulHrFYDyzkdqDnwz94c20pvR47WiCGkOGGtBKX/N8uTlkKZx0ZOa7QgSNRKU7y1EI
+         GGyw==
+X-Gm-Message-State: AOAM532rixcyKUsuJMJ36wZL+tRC698zH9ayu0vvT7nA8MTk1cE0nKeh
+        uy5ybbOrv3pGkODisblpadSwCWv4jCqf/5CQkZg=
+X-Google-Smtp-Source: ABdhPJxKaRf6KpYLjK3cs6GqM/vNcnZ38KzPV2AYnzurXdiok0wxY1oO6TNJSWgOCd86jUIB3pX+0A==
+X-Received: by 2002:a63:4606:: with SMTP id t6mr42200pga.388.1631314262764;
+        Fri, 10 Sep 2021 15:51:02 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id g4sm6147055pgs.42.2021.09.10.15.50.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 15:46:31 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH v2] perf tools: Allow build-id with trailing zeros
-Date:   Fri, 10 Sep 2021 15:46:30 -0700
-Message-Id: <20210910224630.1084877-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 10 Sep 2021 15:51:01 -0700 (PDT)
+Message-ID: <613be155.1c69fb81.3bb88.364b@mx.google.com>
+Date:   Fri, 10 Sep 2021 15:51:01 -0700 (PDT)
+X-Google-Original-Date: Fri, 10 Sep 2021 22:50:54 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/26] 5.10.64-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current perf saves a build-id with size but old versions assumes the
-size of 20.  In case the build-id is less than 20 (like for MD5), it'd
-fill the rest with 0s.
+On Fri, 10 Sep 2021 14:30:04 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.64 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.64-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-I saw a problem when old version of perf record saved a binary in the
-build-id cache and new version of perf reads the data.  The symbols
-should be read from the build-id cache (as the path no longer has the
-same binary) but it failed due to mismatch in the build-id.
-
-  symsrc__init: build id mismatch for /home/namhyung/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf.
-
-The build-id event in the data has 20 byte build-ids, but it saw a
-different size (16) when it reads the build-id of the elf file in the
-build-id cache.
-
-  $ readelf -n ~/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf
-
-  Displaying notes found in: .note.gnu.build-id
-    Owner                Data size 	Description
-    GNU                  0x00000010	NT_GNU_BUILD_ID (unique build ID bitstring)
-      Build ID: 53e4c2f42a4c61a2d632d92a72afa08f
-
-Let's fix this by allowing trailing zeros if the size is different.
-
-Fixes: 39be8d0115b3 ("perf tools: Pass build_id object to dso__build_id_equal()")
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/dso.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index ee15db2be2f4..9ed9a5676d35 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1349,6 +1349,16 @@ void dso__set_build_id(struct dso *dso, struct build_id *bid)
- 
- bool dso__build_id_equal(const struct dso *dso, struct build_id *bid)
- {
-+	if (dso->bid.size > bid->size && dso->bid.size == BUILD_ID_SIZE) {
-+		/*
-+		 * For the backward compatibility, it allows a build-id has
-+		 * trailing zeros.
-+		 */
-+		return !memcmp(dso->bid.data, bid->data, bid->size) &&
-+			!memchr_inv(&dso->bid.data[bid->size], 0,
-+				    dso->bid.size - bid->size);
-+	}
-+
- 	return dso->bid.size == bid->size &&
- 	       memcmp(dso->bid.data, bid->data, dso->bid.size) == 0;
- }
--- 
-2.33.0.309.g3052b89438-goog
+5.10.64-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
