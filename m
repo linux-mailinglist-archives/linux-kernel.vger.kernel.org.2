@@ -2,459 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0206C4072CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619E04072D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhIJVIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:08:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28244 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229655AbhIJVIP (ORCPT
+        id S234332AbhIJVMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:12:07 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:33770 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhIJVMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:08:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631308023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q9KZDH1D/ABjYfwzxftF0zZZn/J3WSV1VxEdGTEAW48=;
-        b=Ym/hcZB7L5t1XkOCp3KI7tEJ/Y0OQ0LyygaBRoeEvperlElv2XJ25+qj20rdaE3DlucRCk
-        fmYIdJ8bHLkDzRRkrfz3uXOYsQaGUZaUpdlbyq7Yin+JW1sBkSVdVStP6l+VsL9mxYrJXp
-        5o43mn0Q5nVn9L2ElpL3aOzwynqnXpA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-VLdCxBrCMdqe-8LNUC7j9A-1; Fri, 10 Sep 2021 17:07:02 -0400
-X-MC-Unique: VLdCxBrCMdqe-8LNUC7j9A-1
-Received: by mail-ed1-f69.google.com with SMTP id b6-20020aa7c6c6000000b003c2b5b2ddf8so1650754eds.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:07:01 -0700 (PDT)
+        Fri, 10 Sep 2021 17:12:06 -0400
+Received: by mail-ej1-f44.google.com with SMTP id x11so6963472ejv.0;
+        Fri, 10 Sep 2021 14:10:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q9KZDH1D/ABjYfwzxftF0zZZn/J3WSV1VxEdGTEAW48=;
-        b=ImmKTAlF5193xmTqMx0l9GOamZvLJCHLvN6UyvXlc09B7B3wc87VOvMCp/AoZ/yGX9
-         g+ewnMgkzTaZ4CgFAgQt4t3mJI/8rOhztONKx4yvC9XrT4kKN5z8W5z5vfZmLtnd3M6K
-         49bhRdrdzNbgO9YmtPJjtbFH8vCJdabqDVnI6fUJBOinDQAE5Kam3LkBkqAoilTJEodi
-         HEO80HDPNGKt5EVXXsCqb7o2AjWuInuClnvjyqLKijzwv7gwb/h1ARYKj2uoerA1Ra7B
-         zcoJhj65/Pq3QREUQvysKFYnyX/3gP6EAFn5Ib/Ogyh1NVSgVmuA7uBRI1N8QvpDi+Xt
-         WB+w==
-X-Gm-Message-State: AOAM530Cer+yb5Tt/5YDaNHBSFknhnXB9yv/ahpCAPSnng/D3iYFfCg3
-        4gbEVVPlQra3ZISqMXSE/Oy1jaUUQouK4W0/YaHGvspHy6ElPCXVQ7bnotkP1F9O2yKcq3CLrzB
-        wzyJB2UvJlYseQv9spULtZw0D
-X-Received: by 2002:a17:906:da01:: with SMTP id fi1mr11720112ejb.149.1631308020277;
-        Fri, 10 Sep 2021 14:07:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVMbjuqilfvbyqMjMcixx0lRg0IKZpcIYr6vwFb10OvwKa3MiH+2Dsv2EUR4M+0KTuQ776Cg==
-X-Received: by 2002:a17:906:da01:: with SMTP id fi1mr11720083ejb.149.1631308019967;
-        Fri, 10 Sep 2021 14:06:59 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id p18sm3466485edu.86.2021.09.10.14.06.59
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9UmuHpu0cKxiQt++F9TGuOrk3G7S1/A6mYH0c36xdco=;
+        b=LMGsPbnBR4xPj4P/2VKlJK91kBvwIcDypk7lTJ9QzVtaArQNaOuR2udX55GaZ10gYI
+         F9m2/0JgvR1YuU28sBnnat1X1WsXP8GcK86EY+XPFDfxJhDFFjMLQ3MxN3mLu2uXpot2
+         eFhQWp2nRmiQToyYPAfNfJEYfCosMlBktBs3qlnbtB9q0NLzX4+BTwdwcSyQ1MP+Ei/l
+         jfk+UT6WN1yaFXHDcuDr1tp9Rte9CvfnTAGrzO8DQfTCM2N4YvgNWaTbzxegpeA4iYSy
+         pKgrAxZoxxgTVmi45l4Sot4Kg5hA4zXr0i6G3JpGVlq9NPBYeRTDJsXLXFPjDe5gnERe
+         Fw/g==
+X-Gm-Message-State: AOAM530VQ76wXYXd9l+o2C1+zPQfekKo1+FhSX+aXbV3wY8DtiAKcuUM
+        4qgPL6wTiJEKHmBuMnE825+ku9s13no=
+X-Google-Smtp-Source: ABdhPJznWasfW90FIjz/BZqRStamQExSrh6n2KZMW+zQlaX3aghygulRK5Ci6yyFmhpHNynB+tx60A==
+X-Received: by 2002:a17:906:a3d9:: with SMTP id ca25mr3739305ejb.306.1631308253495;
+        Fri, 10 Sep 2021 14:10:53 -0700 (PDT)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id i6sm2860344ejd.57.2021.09.10.14.10.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 14:06:59 -0700 (PDT)
-Subject: Re: [PATCH v2] staging: rtl8723bs: remove possible deadlock when
- disconnect
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-References: <20210902093559.9779-1-fabioaiuto83@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <c730848c-3c8d-1e49-fa74-b956400a5d3d@redhat.com>
-Date:   Fri, 10 Sep 2021 23:06:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 10 Sep 2021 14:10:53 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id w29so3685359wra.8;
+        Fri, 10 Sep 2021 14:10:53 -0700 (PDT)
+X-Received: by 2002:adf:e349:: with SMTP id n9mr12196570wrj.326.1631308253036;
+ Fri, 10 Sep 2021 14:10:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902093559.9779-1-fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <163111665183.283156.17200205573146438918.stgit@warthog.procyon.org.uk>
+ <163111665914.283156.3038561975681836591.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163111665914.283156.3038561975681836591.stgit@warthog.procyon.org.uk>
+From:   Marc Dionne <marc.dionne@auristor.com>
+Date:   Fri, 10 Sep 2021 18:10:42 -0300
+X-Gmail-Original-Message-ID: <CAB9dFduo9smK9VvPPKYPFXNdyvQu723UsnrfVDRvk8Eq+g7gFg@mail.gmail.com>
+Message-ID: <CAB9dFduo9smK9VvPPKYPFXNdyvQu723UsnrfVDRvk8Eq+g7gFg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] afs: Fix missing put on afs_read objects and missing
+ get on the key therein
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org,
+        Markus Suvanto <markus.suvanto@gmail.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/2/21 11:35 AM, Fabio Aiuto wrote:
-> when turning off a connection, lockdep complains with the
-> following warning (a modprobe has been done but the same
-> happens with a disconnection from NetworkManager,
-> it's enough to trigger a cfg80211_disconnect call):
-> 
-> [  682.855867] ======================================================
-> [  682.855877] WARNING: possible circular locking dependency detected
-> [  682.855887] 5.14.0-rc6+ #16 Tainted: G         C OE
-> [  682.855898] ------------------------------------------------------
-> [  682.855906] modprobe/1770 is trying to acquire lock:
-> [  682.855916] ffffb6d000332b00 (&pxmitpriv->lock){+.-.}-{2:2},
-> 		at: rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.856073]
->                but task is already holding lock:
-> [  682.856081] ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
-> 		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
-> [  682.856207]
->                which lock already depends on the new lock.
-> 
-> [  682.856215]
->                the existing dependency chain (in reverse order) is:
-> [  682.856223]
->                -> #1 (&pstapriv->sta_hash_lock){+.-.}-{2:2}:
-> [  682.856247]        _raw_spin_lock_bh+0x34/0x40
-> [  682.856265]        rtw_get_stainfo+0x9a/0x110 [r8723bs]
-> [  682.856389]        rtw_xmit_classifier+0x27/0x130 [r8723bs]
-> [  682.856515]        rtw_xmitframe_enqueue+0xa/0x20 [r8723bs]
-> [  682.856642]        rtl8723bs_hal_xmit+0x3b/0xb0 [r8723bs]
-> [  682.856752]        rtw_xmit+0x4ef/0x890 [r8723bs]
-> [  682.856879]        _rtw_xmit_entry+0xba/0x350 [r8723bs]
-> [  682.856981]        dev_hard_start_xmit+0xee/0x320
-> [  682.856999]        sch_direct_xmit+0x8c/0x330
-> [  682.857014]        __dev_queue_xmit+0xba5/0xf00
-> [  682.857030]        packet_sendmsg+0x981/0x1b80
-> [  682.857047]        sock_sendmsg+0x5b/0x60
-> [  682.857060]        __sys_sendto+0xf1/0x160
-> [  682.857073]        __x64_sys_sendto+0x24/0x30
-> [  682.857087]        do_syscall_64+0x3a/0x80
-> [  682.857102]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.857117]
->                -> #0 (&pxmitpriv->lock){+.-.}-{2:2}:
-> [  682.857142]        __lock_acquire+0xfd9/0x1b50
-> [  682.857158]        lock_acquire+0xb4/0x2c0
-> [  682.857172]        _raw_spin_lock_bh+0x34/0x40
-> [  682.857185]        rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.857308]        rtw_free_assoc_resources+0x53/0x110 [r8723bs]
-> [  682.857415]        cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
-> [  682.857522]        cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
-> [  682.857759]        cfg80211_leave+0x2b/0x40 [cfg80211]
-> [  682.857961]        cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
-> [  682.858163]        raw_notifier_call_chain+0x41/0x50
-> [  682.858180]        __dev_close_many+0x62/0x100
-> [  682.858195]        dev_close_many+0x7d/0x120
-> [  682.858209]        unregister_netdevice_many+0x416/0x680
-> [  682.858225]        unregister_netdevice_queue+0xab/0xf0
-> [  682.858240]        unregister_netdev+0x18/0x20
-> [  682.858255]        rtw_unregister_netdevs+0x28/0x40 [r8723bs]
-> [  682.858360]        rtw_dev_remove+0x24/0xd0 [r8723bs]
-> [  682.858463]        sdio_bus_remove+0x31/0xd0 [mmc_core]
-> [  682.858532]        device_release_driver_internal+0xf7/0x1d0
-> [  682.858550]        driver_detach+0x47/0x90
-> [  682.858564]        bus_remove_driver+0x77/0xd0
-> [  682.858579]        rtw_drv_halt+0xc/0x678 [r8723bs]
-> [  682.858685]        __x64_sys_delete_module+0x13f/0x250
-> [  682.858699]        do_syscall_64+0x3a/0x80
-> [  682.858715]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.858729]
->                other info that might help us debug this:
-> 
-> [  682.858737]  Possible unsafe locking scenario:
-> 
-> [  682.858744]        CPU0                    CPU1
-> [  682.858751]        ----                    ----
-> [  682.858758]   lock(&pstapriv->sta_hash_lock);
-> [  682.858772]                                lock(&pxmitpriv->lock);
-> [  682.858786]                                lock(&pstapriv->sta_hash_lock);
-> [  682.858799]   lock(&pxmitpriv->lock);
-> [  682.858812]
->                 *** DEADLOCK ***
-> 
-> [  682.858820] 5 locks held by modprobe/1770:
-> [  682.858831]  #0: ffff8d870697d980 (&dev->mutex){....}-{3:3},
-> 		at: device_release_driver_internal+0x1a/0x1d0
-> [  682.858869]  #1: ffffffffbdbbf1c8 (rtnl_mutex){+.+.}-{3:3},
-> 		at: unregister_netdev+0xe/0x20
-> [  682.858906]  #2: ffff8d87054ee5e8 (&rdev->wiphy.mtx){+.+.}-{3:3},
-> 		at: cfg80211_netdev_notifier_call+0x9e/0x560 [cfg80211]
-> [  682.859131]  #3: ffff8d870f2bc8f0 (&wdev->mtx){+.+.}-{3:3},
-> 		at: cfg80211_leave+0x20/0x40 [cfg80211]
-> [  682.859354]  #4: ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
-> 		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
-> [  682.859482]
->                stack backtrace:
-> [  682.859491] CPU: 1 PID: 1770 Comm: modprobe Tainted: G
-> 		C OE     5.14.0-rc6+ #16
-> [  682.859507] Hardware name: LENOVO 80NR/Madrid, BIOS DACN25WW 08/20/2015
-> [  682.859517] Call Trace:
-> [  682.859531]  dump_stack_lvl+0x56/0x6f
-> [  682.859551]  check_noncircular+0xdb/0xf0
-> [  682.859579]  __lock_acquire+0xfd9/0x1b50
-> [  682.859606]  lock_acquire+0xb4/0x2c0
-> [  682.859623]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.859752]  ? mark_held_locks+0x48/0x70
-> [  682.859769]  ? rtw_free_stainfo+0x4a/0x4a0 [r8723bs]
-> [  682.859898]  _raw_spin_lock_bh+0x34/0x40
-> [  682.859914]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.860039]  rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.860171]  rtw_free_assoc_resources+0x53/0x110 [r8723bs]
-> [  682.860286]  cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
-> [  682.860397]  cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
-> [  682.860629]  cfg80211_leave+0x2b/0x40 [cfg80211]
-> [  682.860836]  cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
-> [  682.861048]  ? __lock_acquire+0x4dc/0x1b50
-> [  682.861070]  ? lock_is_held_type+0xa8/0x110
-> [  682.861089]  ? lock_is_held_type+0xa8/0x110
-> [  682.861104]  ? find_held_lock+0x2d/0x90
-> [  682.861120]  ? packet_notifier+0x173/0x300
-> [  682.861141]  ? lock_release+0xb3/0x250
-> [  682.861160]  ? packet_notifier+0x192/0x300
-> [  682.861184]  raw_notifier_call_chain+0x41/0x50
-> [  682.861205]  __dev_close_many+0x62/0x100
-> [  682.861224]  dev_close_many+0x7d/0x120
-> [  682.861245]  unregister_netdevice_many+0x416/0x680
-> [  682.861264]  ? find_held_lock+0x2d/0x90
-> [  682.861284]  unregister_netdevice_queue+0xab/0xf0
-> [  682.861306]  unregister_netdev+0x18/0x20
-> [  682.861325]  rtw_unregister_netdevs+0x28/0x40 [r8723bs]
-> [  682.861434]  rtw_dev_remove+0x24/0xd0 [r8723bs]
-> [  682.861542]  sdio_bus_remove+0x31/0xd0 [mmc_core]
-> [  682.861615]  device_release_driver_internal+0xf7/0x1d0
-> [  682.861637]  driver_detach+0x47/0x90
-> [  682.861656]  bus_remove_driver+0x77/0xd0
-> [  682.861674]  rtw_drv_halt+0xc/0x678 [r8723bs]
-> [  682.861782]  __x64_sys_delete_module+0x13f/0x250
-> [  682.861801]  ? lockdep_hardirqs_on_prepare+0xf3/0x170
-> [  682.861817]  ? syscall_enter_from_user_mode+0x20/0x70
-> [  682.861836]  do_syscall_64+0x3a/0x80
-> [  682.861855]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.861873] RIP: 0033:0x7f6dbe85400b
-> [  682.861890] Code: 73 01 c3 48 8b 0d 6d 1e 0c 00 f7 d8 64 89
-> 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
-> b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 3d
-> 1e 0c 00 f7 d8 64 89 01 48
-> [  682.861906] RSP: 002b:00007ffe7a82f538 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-> [  682.861923] RAX: ffffffffffffffda RBX: 000055a64693bd20 RCX: 00007f6dbe85400b
-> [  682.861935] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055a64693bd88
-> [  682.861946] RBP: 000055a64693bd20 R08: 0000000000000000 R09: 0000000000000000
-> [  682.861957] R10: 00007f6dbe8c7ac0 R11: 0000000000000206 R12: 000055a64693bd88
-> [  682.861967] R13: 0000000000000000 R14: 000055a64693bd88 R15: 00007ffe7a831848
-> 
-> This happens because when we enqueue a frame for
-> transmission we do it under xmit_priv lock, then calling
-> rtw_get_stainfo (needed for enqueuing) takes sta_hash_lock
-> and this leads to the following lock dependency:
-> 
-> xmit_priv->lock -> sta_hash_lock
-> 
-> Turning off a connection will bring to call
-> rtw_free_assoc_resources which will set up
-> the inverse dependency:
-> 
-> sta_hash_lock -> xmit_priv_lock
-> 
-> This could lead to a deadlock as lockdep complains.
-> 
-> Fix it by removing the xmit_priv->lock around
-> rtw_xmitframe_enqueue call inside rtl8723bs_hal_xmit
-> and put it in a smaller critical section inside
-> rtw_xmit_classifier, the only place where
-> xmit_priv data are actually accessed.
-> 
-> Replace spin_{lock,unlock}_bh(pxmitpriv->lock)
-> in other tx paths leading to rtw_xmitframe_enqueue
-> call with spin_{lock,unlock}_bh(psta->sleep_q.lock)
-> - it's not clear why accessing a sleep_q was protected
-> by a spinlock on xmitpriv->lock.
-> 
-> This way is avoided the same faulty lock nesting
-> order.
-> 
-> CC: Larry Finger <Larry.Finger@lwfinger.net>
-> Tested-on: Lenovo Ideapad MiiX 300-10IBY
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-
-Thank you for your work on this. Overall this looks good.
-
-I have one remark, since now you are relying on the
-sta->sleep_q.lock to protect the sleep_q data, you also
-need to update the sleep_q accesses in rtw_free_stainfo()
-specifically you need to add a spin_{lock,unlock}_bh(psta->sleep_q.lock)
-around these lines:
-
-
-        rtw_free_xmitframe_queue(pxmitpriv, &psta->sleep_q);
-        psta->sleepq_len = 0;
-
-
-Note there also is a:
-
-        spin_lock_bh(&pxmitpriv->lock);
-
-Just above this which needs to be pushed down to below the
-block which takes the psta->sleep_q.lock, so that the entire
-thing ends up looking like this:
-
-	spin_lock_bh(&psta->sleep_q.lock);
-        rtw_free_xmitframe_queue(pxmitpriv, &psta->sleep_q);
-        psta->sleepq_len = 0;
-	spin_unlock_bh(&psta->sleep_q.lock);
-
-        spin_lock_bh(&pxmitpriv->lock);
-
-Other then that this patch looks good, thanks.
-
-Regards,
-
-Hans
-
-
-
+On Wed, Sep 8, 2021 at 12:58 PM David Howells <dhowells@redhat.com> wrote:
+>
+> The afs_read objects created by afs_req_issue_op() get leaked because
+> afs_alloc_read() returns a ref and then afs_fetch_data() gets its own ref
+> which is released when the operation completes, but the initial ref is
+> never released.
+>
+> Fix this by discarding the initial ref at the end of afs_req_issue_op().
+>
+> This leak also covered another bug whereby a ref isn't got on the key
+> attached to the read record by afs_req_issue_op().  This isn't a problem as
+> long as the afs_read req never goes away...
+>
+> Fix this by calling key_get() in afs_req_issue_op().
+>
+> This was found by the generic/074 test.  It leaks a bunch of kmalloc-192
+> objects each time it is run, which can be observed by watching
+> /proc/slabinfo.
+>
+> Fixes: f7605fa869cf ("afs: Fix leak of afs_read objects")
+> Reported-by: Marc Dionne <marc.dionne@auristor.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: linux-afs@lists.infradead.org
+> Link: https://lore.kernel.org/r/163010394740.3035676.8516846193899793357.stgit@warthog.procyon.org.uk/
 > ---
-> Changes in v2:
-> 	- remove an unused local variable to suppress
-> 	  gcc warning intoduced by the patch
-> 
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c  |  7 ++-----
->  drivers/staging/rtl8723bs/core/rtw_recv.c      | 10 +++-------
->  drivers/staging/rtl8723bs/core/rtw_xmit.c      | 13 +++++++------
->  drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c |  2 --
->  4 files changed, 12 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 375d2a742dd2..a1ae16ec69eb 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -5919,7 +5919,6 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
->  	struct sta_info *psta_bmc;
->  	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
->  	struct xmit_frame *pxmitframe = NULL;
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  	struct sta_priv  *pstapriv = &padapter->stapriv;
->  
->  	/* for BC/MC Frames */
-> @@ -5930,8 +5929,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
->  	if ((pstapriv->tim_bitmap&BIT(0)) && (psta_bmc->sleepq_len > 0)) {
->  		msleep(10);/*  10ms, ATIM(HIQ) Windows */
->  
-> -		/* spin_lock_bh(&psta_bmc->sleep_q.lock); */
-> -		spin_lock_bh(&pxmitpriv->lock);
-> +		spin_lock_bh(&psta_bmc->sleep_q.lock);
->  
->  		xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
->  		list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -5954,8 +5952,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
->  			rtw_hal_xmitframe_enqueue(padapter, pxmitframe);
->  		}
->  
-> -		/* spin_unlock_bh(&psta_bmc->sleep_q.lock); */
-> -		spin_unlock_bh(&pxmitpriv->lock);
-> +		spin_unlock_bh(&psta_bmc->sleep_q.lock);
->  
->  		/* check hi queue and bmc_sleepq */
->  		rtw_chk_hi_queue_cmd(padapter);
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
-> index 105fe0e3482a..41bfca549c64 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_recv.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
-> @@ -957,10 +957,8 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
->  		if ((psta->state&WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap&BIT(psta->aid))) {
->  			struct list_head	*xmitframe_plist, *xmitframe_phead;
->  			struct xmit_frame *pxmitframe = NULL;
-> -			struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
-> -			/* spin_lock_bh(&psta->sleep_q.lock); */
-> -			spin_lock_bh(&pxmitpriv->lock);
-> +			spin_lock_bh(&psta->sleep_q.lock);
->  
->  			xmitframe_phead = get_list_head(&psta->sleep_q);
->  			xmitframe_plist = get_next(xmitframe_phead);
-> @@ -991,12 +989,10 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
->  					update_beacon(padapter, WLAN_EID_TIM, NULL, true);
->  				}
->  
-> -				/* spin_unlock_bh(&psta->sleep_q.lock); */
-> -				spin_unlock_bh(&pxmitpriv->lock);
-> +				spin_unlock_bh(&psta->sleep_q.lock);
->  
->  			} else {
-> -				/* spin_unlock_bh(&psta->sleep_q.lock); */
-> -				spin_unlock_bh(&pxmitpriv->lock);
-> +				spin_unlock_bh(&psta->sleep_q.lock);
->  
->  				if (pstapriv->tim_bitmap&BIT(psta->aid)) {
->  					if (psta->sleepq_len == 0) {
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> index 3eb6db2f26bb..878264f46980 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> @@ -1797,6 +1797,7 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  	struct sta_info *psta;
->  	struct tx_servq	*ptxservq;
->  	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
-> +	struct xmit_priv *xmit_priv = &padapter->xmitpriv;
->  	struct hw_xmit	*phwxmits =  padapter->xmitpriv.hwxmits;
->  	signed int res = _SUCCESS;
->  
-> @@ -1814,12 +1815,14 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  
->  	ptxservq = rtw_get_sta_pending(padapter, psta, pattrib->priority, (u8 *)(&ac_index));
->  
-> +	spin_lock_bh(&xmit_priv->lock);
->  	if (list_empty(&ptxservq->tx_pending))
->  		list_add_tail(&ptxservq->tx_pending, get_list_head(phwxmits[ac_index].sta_queue));
->  
->  	list_add_tail(&pxmitframe->list, get_list_head(&ptxservq->sta_pending));
->  	ptxservq->qcnt++;
->  	phwxmits[ac_index].accnt++;
-> +	spin_unlock_bh(&xmit_priv->lock);
->  
->  exit:
->  
-> @@ -2202,11 +2205,10 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
->  	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
->  	struct xmit_frame *pxmitframe = NULL;
->  	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
->  	psta_bmc = rtw_get_bcmc_stainfo(padapter);
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
-> +	spin_lock_bh(&psta->sleep_q.lock);
->  
->  	xmitframe_phead = get_list_head(&psta->sleep_q);
->  	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -2307,7 +2309,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
->  
->  _exit:
->  
-> -	spin_unlock_bh(&pxmitpriv->lock);
-> +	spin_unlock_bh(&psta->sleep_q.lock);
->  
->  	if (update_mask)
->  		update_beacon(padapter, WLAN_EID_TIM, NULL, true);
-> @@ -2319,9 +2321,8 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
->  	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
->  	struct xmit_frame *pxmitframe = NULL;
->  	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
-> +	spin_lock_bh(&psta->sleep_q.lock);
->  
->  	xmitframe_phead = get_list_head(&psta->sleep_q);
->  	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -2374,7 +2375,7 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
->  		}
->  	}
->  
-> -	spin_unlock_bh(&pxmitpriv->lock);
-> +	spin_unlock_bh(&psta->sleep_q.lock);
+>
+>  fs/afs/file.c |    3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/afs/file.c b/fs/afs/file.c
+> index db035ae2a134..6688fff14b0b 100644
+> --- a/fs/afs/file.c
+> +++ b/fs/afs/file.c
+> @@ -295,7 +295,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
+>         fsreq->subreq   = subreq;
+>         fsreq->pos      = subreq->start + subreq->transferred;
+>         fsreq->len      = subreq->len   - subreq->transferred;
+> -       fsreq->key      = subreq->rreq->netfs_priv;
+> +       fsreq->key      = key_get(subreq->rreq->netfs_priv);
+>         fsreq->vnode    = vnode;
+>         fsreq->iter     = &fsreq->def_iter;
+>
+> @@ -304,6 +304,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
+>                         fsreq->pos, fsreq->len);
+>
+>         afs_fetch_data(fsreq->vnode, fsreq);
+> +       afs_put_read(fsreq);
 >  }
->  
->  void enqueue_pending_xmitbuf(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> index 156d6aba18ca..5f5c4719b586 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> @@ -507,9 +507,7 @@ s32 rtl8723bs_hal_xmit(
->  			rtw_issue_addbareq_cmd(padapter, pxmitframe);
->  	}
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
->  	err = rtw_xmitframe_enqueue(padapter, pxmitframe);
-> -	spin_unlock_bh(&pxmitpriv->lock);
->  	if (err != _SUCCESS) {
->  		rtw_free_xmitframe(pxmitpriv, pxmitframe);
->  
-> 
+>
+>  static int afs_symlink_readpage(struct page *page)
 
+Tested that it prevents the leak of about 49K kmalloc-192 objects for
+a run of generic/074.
+
+Reviewed-and-tested-by: Marc Dionne <marc.dionne@auristor.com>
+
+Marc
