@@ -2,91 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEC4406907
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57C840690A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhIJJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:24:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37980 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbhIJJYX (ORCPT
+        id S232083AbhIJJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:25:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31100 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231916AbhIJJZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:24:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D387022420;
-        Fri, 10 Sep 2021 09:23:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631265791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 10 Sep 2021 05:25:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631265832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AxyNsNXpcaoyxBKXxrL/D1l4dorTQq9F7tfJh7pzbIo=;
-        b=kYAeMRNqrK2eHW8Bx7E+FBsRJN1XYHIzivgkxEiakryLSLrDsy6FvBAEzVgC5JpU8OEJvk
-        Dq84PXD+wNaMFFz5gxhbkp1IRbzyvgMej5zXNqlwkZe9WVMgq5A3cVrlcMjZZOGpUwKaBf
-        PbaPXIsyAiDDmUACoSK1CkrKeVeDndw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF3D613D26;
-        Fri, 10 Sep 2021 09:23:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MAlNKv8jO2HWcAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 10 Sep 2021 09:23:11 +0000
-Date:   Fri, 10 Sep 2021 11:23:10 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-Message-ID: <20210910092310.GA18084@blackbody.suse.cz>
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
- <20210909143720.GA14709@blackbody.suse.cz>
- <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
- <YTpY0G3+IJYmGbdd@blackbook>
- <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
+        bh=vrslVFgCV0A1ASGIKU12boBiWPC4TLJ7XoCjGrBTCz8=;
+        b=JJEvg2H5+TLjA9WWSA96xgLOShSki5LRRV51vAw4FkeJKk9aTbTXTBID0YKSTaMdkL8KzI
+        BPtKEbJeaWWq7p6ohU2BNeRphgDq2X0pznRgjwlRUrIO/SY0O7d/DukENTt+QJWaFJ5kJA
+        6DPIYQTiZsK+QmEV2eV3+QX/QzLoWik=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-EpoP7FQFOV67SySPaiJZ1Q-1; Fri, 10 Sep 2021 05:23:51 -0400
+X-MC-Unique: EpoP7FQFOV67SySPaiJZ1Q-1
+Received: by mail-wm1-f71.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so548778wme.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 02:23:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vrslVFgCV0A1ASGIKU12boBiWPC4TLJ7XoCjGrBTCz8=;
+        b=apILDfII/dngz3BFmQ1h5/hhQj8/gLNcOX1DeZvjXKIA5ZSBagk5MO5zGoM3L1KjdN
+         Y7hKqGs6F6XWxrKkAQmosAd9BQIIih3mBD2cqf0B5IsyiYKtk2iCt6cTwmIWpBPqY1fL
+         zZYvWhsJVHvljUwfufVsB/N1tHcbF5ayzsCl1ztI7B5wgwvj7B1xznIjqJOX6/DfvhiC
+         vC2iy1R2haRsk/LCqRjc6vel/MLW6JtEhWqWfnAleNS4uVbnPShr2iO/RrhI25P8tZEE
+         pdvjGJNLUp1zkBntvIuZfL3OCSLkogjjWMJ/iCc/Yxqvza9zskPuSpSN0hAd15Y8Y2oH
+         hHTg==
+X-Gm-Message-State: AOAM533n5UT7AvrxRfcR0UdzWFCvvHle8wLzeSD4B8Z8KHEYii/8ahDK
+        hRF1syr84gsduGPgsylhqVOMdukcpLFKcqbupnrDZv9jqrX+wJsmrxWKloGqPEKlzlfg9cCAi6h
+        +NnLmSnDK3KogSUDeHPge269l
+X-Received: by 2002:adf:e7ca:: with SMTP id e10mr537328wrn.97.1631265830262;
+        Fri, 10 Sep 2021 02:23:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbJtumfWhoeoqWdrbbfX6WGzwZFjWqOeIuwT2t9OUhauNMdOAXqx3T37WZquMUdpxR8rvMgA==
+X-Received: by 2002:adf:e7ca:: with SMTP id e10mr537307wrn.97.1631265829997;
+        Fri, 10 Sep 2021 02:23:49 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c600c.dip0.t-ipconnect.de. [91.12.96.12])
+        by smtp.gmail.com with ESMTPSA id p5sm4479649wrd.25.2021.09.10.02.23.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 02:23:49 -0700 (PDT)
+Subject: Re: [PATCH RFC 6/9] s390/pci_mmio: fully validate the VMA before
+ calling follow_pte()
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20210909145945.12192-1-david@redhat.com>
+ <20210909145945.12192-7-david@redhat.com>
+ <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d9ec2387-2645-796e-af47-26f22516f7fa@redhat.com>
+Date:   Fri, 10 Sep 2021 11:23:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 01:30:46PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> I am a bit confused here. For misc_cgroup, we can only be rejected when the count
-> touch Limit, but there may be other more reasons for other subsystems.
+On 10.09.21 10:22, Niklas Schnelle wrote:
+> On Thu, 2021-09-09 at 16:59 +0200, David Hildenbrand wrote:
+>> We should not walk/touch page tables outside of VMA boundaries when
+>> holding only the mmap sem in read mode. Evil user space can modify the
+>> VMA layout just before this function runs and e.g., trigger races with
+>> page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+>> with read mmap_sem in munmap").
+>>
+>> find_vma() does not check if the address is >= the VMA start address;
+>> use vma_lookup() instead.
+>>
+>> Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   arch/s390/pci/pci_mmio.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+>> index ae683aa623ac..c5b35ea129cf 100644
+>> --- a/arch/s390/pci/pci_mmio.c
+>> +++ b/arch/s390/pci/pci_mmio.c
+>> @@ -159,7 +159,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
+>>   
+>>   	mmap_read_lock(current->mm);
+>>   	ret = -EINVAL;
+>> -	vma = find_vma(current->mm, mmio_addr);
+>> +	vma = vma_lookup(current->mm, mmio_addr);
+>>   	if (!vma)
+>>   		goto out_unlock_mmap;
+>>   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+>> @@ -298,7 +298,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
+>>   
+>>   	mmap_read_lock(current->mm);
+>>   	ret = -EINVAL;
+>> -	vma = find_vma(current->mm, mmio_addr);
+>> +	vma = vma_lookup(current->mm, mmio_addr);
+>>   	if (!vma)
+>>   		goto out_unlock_mmap;
+>>   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> 
+> Oh wow great find thanks! If I may say so these are not great function
+> names. Looking at the code vma_lookup() is inded find_vma() plus the
+> check that the looked up address is indeed inside the vma.
+> 
 
-Sorry, I wasn't clear about that -- the failures I meant to be counted
-here were only the ones caused by (an ancestor) limit. Maybe there's a
-better naem for that.
+IIRC, vma_lookup() was introduced fairly recently. Before that, this 
+additional check was open coded (and still are in some instances). It's 
+confusing, I agree.
 
-> Therefore, when we are rejected, does it mean that we have touch
-> Limit? If so, do we still need to distinguish between max and fail?
-> (for misc_cgroup)
+> I think this is pretty independent of the rest of the patches, so do
+> you want me to apply this patch independently or do you want to wait
+> for the others?
 
-r
-`- c1
-   `- c2.max
-       `- c3
-          `- c4.max
-	     `- task t
-          `- c5
+Sure, please go ahead and apply independently. It'd be great if you 
+could give it a quick sanity test, although I don't expect surprises -- 
+unfortunately, the environment I have easily at hand is not very well 
+suited (#cpu, #mem, #disk ...) for anything that exceeds basic compile 
+tests (and even cross-compiling is significantly faster ...).
 
-Assuming c2.max < c4.max, when a task t calls try_charge and it fails
-because of c2.max, then the 'max' event is counted to c2 (telling that
-the limit is perhaps low) and the 'fail' event is counted to c4 (telling
-you where the troubles originated). That is my idea. Although in the
-case of short-lived cgroups, you'd likely only get the hierarchically
-aggregated 'fail' events from c3 or higher with lower (spatial)
-precision.
-What would be the type of information useful for your troubleshooting?
+> 
+> In any case:
+> 
+> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> 
 
-Cheers,
-Michal
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
