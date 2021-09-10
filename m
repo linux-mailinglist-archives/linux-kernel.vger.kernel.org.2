@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A408406C32
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6B0406C0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhIJMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
+        id S234624AbhIJMgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234523AbhIJMgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D70611CC;
-        Fri, 10 Sep 2021 12:35:01 +0000 (UTC)
+        id S234055AbhIJMfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD77D61221;
+        Fri, 10 Sep 2021 12:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277302;
-        bh=Fp9iHK9qg8iuvvWGDvZmfJn8RZX3hd+AzMlZ/QaJh9k=;
+        s=korg; t=1631277240;
+        bh=Tffiqs3obAKlBqzPkwEMJ6xzyjDYXefTcDPZLUQYFnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h3Zf/eaLj0pKEPvr6IhTzFpVXZDl0a6lRz7uEPQ7L4/UkcLnLTpcI6T3kLARhxXud
-         HTdgTNVJQ++KEiSHQ4eWaLTpcI04wUX7xwLM+Vq1DTukA4MccqiBfdqoFVbeGhCE7n
-         IsMXmOeSa0Jjx1otdFnJLDfvB8bLBd7i6BfK2Z7o=
+        b=zMDvRh7TcSH3QetdgI2+T1VpJ4u7meqOz2ss+HoNBNN4rveObM3/w+/VD1eZyNb56
+         TRd+AyyJpFJRcIVIlKhSVs/zdgHtgg9IH+6zws1Ko6Ro9IdqrTNgkdlqzhYe61Zetd
+         7f6tB3k7a53SLA/eqZ+vFV84cx5O4L0HQxtXG1rY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Chris Zankel <chris@zankel.net>, linux-xtensa@linux-xtensa.org
-Subject: [PATCH 5.4 07/37] xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH 5.10 06/26] serial: 8250: 8250_omap: Fix unused variable warning
 Date:   Fri, 10 Sep 2021 14:30:10 +0200
-Message-Id: <20210910122917.417589971@linuxfoundation.org>
+Message-Id: <20210910122916.470710157@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
-References: <20210910122917.149278545@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
 
-commit ed5aacc81cd41efc4d561e14af408d1003f7b855 upstream.
+commit 6f991850412963381017cfb0d691cbd4d6a551dc upstream.
 
-XTENSA should only select HAVE_FUTEX_CMPXCHG when FUTEX is
-set/enabled. This prevents a kconfig warning.
+With commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable"),
+below warning is seen with W=1 and CONFIG_SERIAL_8250_DMA is disabled:
 
-WARNING: unmet direct dependencies detected for HAVE_FUTEX_CMPXCHG
-  Depends on [n]: FUTEX [=n]
-  Selected by [y]:
-  - XTENSA [=y] && !MMU [=n]
+   drivers/tty/serial/8250/8250_omap.c:1199:42: warning: unused variable 'k3_soc_devices' [-Wunused-const-variable]
 
-Fixes: d951ba21b959 ("xtensa: nommu: select HAVE_FUTEX_CMPXCHG")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: linux-xtensa@linux-xtensa.org
-Message-Id: <20210526070337.28130-1-rdunlap@infradead.org>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Fix this by moving the code using k3_soc_devices array to
+omap_serial_fill_features_erratas() that handles other errata flags as
+well.
+
+Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Link: https://lore.kernel.org/r/20201111112653.2710-2-vigneshr@ti.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/xtensa/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_omap.c |   26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -27,7 +27,7 @@ config XTENSA
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if !MMU
-+	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_OPROFILE
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -538,6 +538,11 @@ static void omap_8250_pm(struct uart_por
+ static void omap_serial_fill_features_erratas(struct uart_8250_port *up,
+ 					      struct omap8250_priv *priv)
+ {
++	const struct soc_device_attribute k3_soc_devices[] = {
++		{ .family = "AM65X",  },
++		{ .family = "J721E", .revision = "SR1.0" },
++		{ /* sentinel */ }
++	};
+ 	u32 mvr, scheme;
+ 	u16 revision, major, minor;
+ 
+@@ -585,6 +590,14 @@ static void omap_serial_fill_features_er
+ 	default:
+ 		break;
+ 	}
++
++	/*
++	 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
++	 * don't have RHR_IT_DIS bit in IER2 register. So drop to flag
++	 * to enable errata workaround.
++	 */
++	if (soc_device_match(k3_soc_devices))
++		priv->habit &= ~UART_HAS_RHR_IT_DIS;
+ }
+ 
+ static void omap8250_uart_qos_work(struct work_struct *work)
+@@ -1208,12 +1221,6 @@ static int omap8250_no_handle_irq(struct
+ 	return 0;
+ }
+ 
+-static const struct soc_device_attribute k3_soc_devices[] = {
+-	{ .family = "AM65X",  },
+-	{ .family = "J721E", .revision = "SR1.0" },
+-	{ /* sentinel */ }
+-};
+-
+ static struct omap8250_dma_params am654_dma = {
+ 	.rx_size = SZ_2K,
+ 	.rx_trigger = 1,
+@@ -1419,13 +1426,6 @@ static int omap8250_probe(struct platfor
+ 			up.dma->rxconf.src_maxburst = RX_TRIGGER;
+ 			up.dma->txconf.dst_maxburst = TX_TRIGGER;
+ 		}
+-
+-		/*
+-		 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
+-		 * don't have RHR_IT_DIS bit in IER2 register
+-		 */
+-		if (soc_device_match(k3_soc_devices))
+-			priv->habit &= ~UART_HAS_RHR_IT_DIS;
+ 	}
+ #endif
+ 	ret = serial8250_register_8250_port(&up);
 
 
