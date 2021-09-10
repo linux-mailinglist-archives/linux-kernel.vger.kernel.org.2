@@ -2,129 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102EB406E0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBE5406E0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhIJPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:18:16 -0400
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:35451 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhIJPSL (ORCPT
+        id S234336AbhIJPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234130AbhIJPSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:18:11 -0400
-Received: by mail-vs1-f47.google.com with SMTP id p14so1902136vsm.2;
-        Fri, 10 Sep 2021 08:17:00 -0700 (PDT)
+        Fri, 10 Sep 2021 11:18:16 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF28C061574;
+        Fri, 10 Sep 2021 08:17:04 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso704159ooq.8;
+        Fri, 10 Sep 2021 08:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9/r2jFAF4fuZAXe9z2au/VDKOW/roOtkXIYaWUHqNEQ=;
+        b=MRNzLsl01ylX1469VXO/mhaaKWOlvmn20MilD8o+Al777Clc1lvBd5xV/VOAYg/RQU
+         ucU2dDpbSXfRAnnwwceYdd0bXu8NLmfoAp4o9xGR2XnartOOaRrnzSH0saF6M7o9U5U+
+         qpy4NSpZ9lxuCPhAGDfAE3358iIZWx3nMjfugwHaCdd8SJwcv50EKxplNb3PfQJ4pVAl
+         yAaDbRB5YlX/m1ejbEqq3GHJk33WcvJk8kfmZt42BF8WFELMKwQ1Yi7NEX30jN4T5GGg
+         OAysjLdoAG42C2JwM9cN5VQOXMjENBnI+4IxOYqPTQMaKqLTMOY888gVci7vDS8iA+Ci
+         WIuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3BcYGTvP/p5y9awC2x3olztEkOI5xebLT4gUcpSRmlY=;
-        b=pqQ+zh0YZrJP4UysuUgUS9lgK3fmzB22dBzqELerFuUHATe/4lNXZmB9ocUo9qDzop
-         7DG1uaJgC2dxXq4H6vPKBReyLCKjceDckzYt2PiJ3Vgn7M+Kx2zfA2FYA469rXWdlufy
-         pIYv6evzhgwQDsSreNnavPy8BIUK2c+C53dOHB+uMrLrRpB2HLu3P1PzunhlUR0nasGo
-         SIu5dce0Dr7mzkYGuJphLwAFXg2Ldp6WaoA21kGRMR3OqXamxlT92ysHRV4OfGx6ieVH
-         TLNLVMqPcapfpk1h+7cmLuQA4HpRduoBPmAJcT/M6WHlbLzjGoaFsO6NeK/G9h4/GgWn
-         CkSg==
-X-Gm-Message-State: AOAM5327560HWZmsEC1l4YL8bjglxe8Rwkd5y0BkQS144uVyFihWRzdQ
-        tHCJISVqXcxkUIa0laiMeS/AAdH7Rgt2yLTfpjkIfjhQ
-X-Google-Smtp-Source: ABdhPJwT5ETyKLWcQ5k7xuhcbA0yvTD3jh/UbJMdE4jvWnM+tTSMk70pO5NvxTo6u5XWka0X6xtHA4gmLbXeWevGZoo=
-X-Received: by 2002:a05:6102:b10:: with SMTP id b16mr5775448vst.41.1631287016565;
- Fri, 10 Sep 2021 08:16:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9/r2jFAF4fuZAXe9z2au/VDKOW/roOtkXIYaWUHqNEQ=;
+        b=aei++pyOwIitNgQImHvrsIjy2jQLKvrGUm0uqbVgDzxqlW/VmBZV5nXHypDXh3j2Oh
+         iCvhc6ENf9zj1/4wSclKLS0OUo5gvlotvmKG/QrLDAHhTdCDLJjtc8egk1jVG2q9K6/g
+         DZE2CEQ6ilso3ZRwy5/6Hhl2ZT/7V5l4dyLLYBVWRBhWWOQt8YMLrR6H994YETowpq8R
+         9vevSueoMc7nXSGCAYzd4UOx+yVOH59IlmJ5Zv+U3LXI5oQ6ZBIa9olYGOp8FiN+63Dq
+         1ycp+Y3vT0x71fKDJy/0iVCfsgf5+rAX233/X/HbZ0ICiTz1m1U8yQheVXUcDU58PYea
+         v/Eg==
+X-Gm-Message-State: AOAM5328bVmtxjqKbBTn+H1hWI/3pbKJOU7smmfrdtzTxOP1P+qqmyoX
+        HrX8MNu6o0Qrkx8G5f8zXZQ=
+X-Google-Smtp-Source: ABdhPJzRqGjJ2f+RtawEC/78yoBOy2c9ViQ17o3jLlbSchEtcI43aAHDJ5T79P874BofaMKJXmoHhQ==
+X-Received: by 2002:a4a:2a09:: with SMTP id k9mr4795173oof.79.1631287024039;
+        Fri, 10 Sep 2021 08:17:04 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id u194sm1375492oie.37.2021.09.10.08.17.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 08:17:03 -0700 (PDT)
+Subject: Re: [PATCH v2 06/15] leds: trigger: blkdev: Add function to get
+ gendisk by name
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kabel@kernel.org
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+ <20210909222513.2184795-7-arequipeno@gmail.com> <YTr+8h12z7kMLlV/@kroah.com>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <d4c6bc27-6595-2e95-cae8-d3e8e349955e@gmail.com>
+Date:   Fri, 10 Sep 2021 10:17:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1627293835-17441-1-git-send-email-zheyuma97@gmail.com> <1627293835-17441-2-git-send-email-zheyuma97@gmail.com>
-In-Reply-To: <1627293835-17441-2-git-send-email-zheyuma97@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 10 Sep 2021 17:16:44 +0200
-Message-ID: <CAMuHMdXB_HHgi1iPSnjusQvgdUYJDBwQc=+f+5vpmEjXBKArng@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] video: fbdev: asiliantfb: Error out if 'pixclock'
- equals zero
-To:     Zheyu Ma <zheyuma97@gmail.com>
-Cc:     "Antonino A. Daplas" <adaplas@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTr+8h12z7kMLlV/@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheyu,
+On 9/10/21 1:45 AM, Greg KH wrote:
+> You now have bumped the reference count on this structure.  Where do you
+> decrement it when you are finished with it?
 
-On Mon, Jul 26, 2021 at 12:04 PM Zheyu Ma <zheyuma97@gmail.com> wrote:
-> The userspace program could pass any values to the driver through
-> ioctl() interface. If the driver doesn't check the value of 'pixclock',
-> it may cause divide error.
->
-> Fix this by checking whether 'pixclock' is zero first.
->
-> The following log reveals it:
->
-> [   43.861711] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-> [   43.861737] CPU: 2 PID: 11764 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #224
-> [   43.861756] RIP: 0010:asiliantfb_check_var+0x4e/0x730
-> [   43.861843] Call Trace:
-> [   43.861848]  ? asiliantfb_remove+0x190/0x190
-> [   43.861858]  fb_set_var+0x2e4/0xeb0
-> [   43.861866]  ? fb_blank+0x1a0/0x1a0
-> [   43.861873]  ? lock_acquire+0x1ef/0x530
-> [   43.861884]  ? lock_release+0x810/0x810
-> [   43.861892]  ? lock_is_held_type+0x100/0x140
-> [   43.861903]  ? ___might_sleep+0x1ee/0x2d0
-> [   43.861914]  ? __mutex_lock+0x620/0x1190
-> [   43.861921]  ? do_fb_ioctl+0x313/0x700
-> [   43.861929]  ? mutex_lock_io_nested+0xfa0/0xfa0
-> [   43.861936]  ? __this_cpu_preempt_check+0x1d/0x30
-> [   43.861944]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-> [   43.861952]  ? lockdep_hardirqs_on+0x59/0x100
-> [   43.861959]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-> [   43.861967]  ? trace_hardirqs_on+0x6a/0x1c0
-> [   43.861978]  do_fb_ioctl+0x31e/0x700
->
-> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+That happens when I "unlink" the block device from the LED in
+blkdev_disk_unlink_locked() at ledtrig-blkdev.c:410.
 
-Thanks for your patch!
+(And also in the error path of link_device_store() at
+ledtrig-blkdev.c:372.)
 
-> ---
-> Changes in v2:
->     - Make commit log more descriptive
-> ---
->  drivers/video/fbdev/asiliantfb.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/video/fbdev/asiliantfb.c b/drivers/video/fbdev/asiliantfb.c
-> index 3e006da47752..84c56f525889 100644
-> --- a/drivers/video/fbdev/asiliantfb.c
-> +++ b/drivers/video/fbdev/asiliantfb.c
-> @@ -227,6 +227,9 @@ static int asiliantfb_check_var(struct fb_var_screeninfo *var,
->  {
->         unsigned long Ftarget, ratio, remainder;
->
-> +       if (!var->pixclock)
-> +               return -EINVAL;
-
-While this fixes the crash, it is not correct: according to the
-fbdev API, invalid values must be rounded up to a supported value,
-if possible.  -EINVAL should only be returned if rounding up values
-in fb_var_screeninfo cannot give a valid mode.
-
-The same comment applies to the other patches in this series:
-[PATCH v2 2/3] video: fbdev: kyro: Error out if 'pixclock' equals zero
-[PATCH v2 3/3] video: fbdev: riva: Error out if 'pixclock' equals zero
-
-> +
->         ratio = 1000000 / var->pixclock;
->         remainder = 1000000 % var->pixclock;
->         Ftarget = 1000000 * ratio + (1000000 * remainder) / var->pixclock;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
