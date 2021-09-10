@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7176406E14
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93E7406E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbhIJPUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S234382AbhIJPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234263AbhIJPUi (ORCPT
+        with ESMTP id S234263AbhIJPVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:20:38 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD73C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:19:27 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id t20so1585380pju.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:19:27 -0700 (PDT)
+        Fri, 10 Sep 2021 11:21:13 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC034C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:20:01 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id t19so4932898ejr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zjxt7+clbNQQvd9ZPDVPHwVKwjpRnv02bpP5uIHrJKg=;
-        b=BSW0AkLpwHwkLPCavwIQLHhDqfV4NbmcpdKNa4qAiJDDR/Ffmb+Wtwbx8Bt8ZxeJE3
-         PjjR+Zv7tQgVQH034Xo+cOhBsPJF3yz3KcAEgkfiIMAcW9cZVhZ1bjCheh03AUfM2krn
-         zgR4r5kqqKYO9t3WRupK2hVksv8E0rAmND5cCmXJ4NH4M8dHpbMJhI3jBZeqO93A5oVo
-         FE3gtrzBJgzXiswBs2iMADjPPntjctFg88v3Oz0jEgbPnXOs+nH9kp2yTOsF5RRW+Eiy
-         H0MSH/7khZbRjKSU2TiyHxP2u6xlns1Rf01Ck3a0xD7t0qGYPU3jAXy+So4mt+j6IVLe
-         miVw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y3tC4nDyVOsSkA0uvt6jkAqJXxoQ4QhFC8D3n1gWmeM=;
+        b=ccMPMMdig5pYc+7VPBZnQ4mnFUWGTG7mZaFdqBT9Xd6nDf6cpl7WE75bCXUPBZPGl4
+         wWgELNQlT/zOxFOIxv5i4T2mpvIQZm6wDUJf0NJf5kJvx4y/oj7kb23opd02XH/VIooU
+         uqsLsbZnGehK1pQ/JnitY5m67RA0XQitRLSe5hdehUKQTCmucvHmWf3iOxJlddJZ5dkf
+         H+lAQ3uH+BtVf6bXYPmXCzAl5sI5VGTQ1cvJA1tFP8QAhYg743NLQ2UQ6Psu8LxrRxL5
+         G8CC4lnp2IVuKEr6F9jLiJ2i7VQygXG0al0ZVwSR+KfkVQDpWZDUGUzALiAFcEg5khgt
+         dNtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zjxt7+clbNQQvd9ZPDVPHwVKwjpRnv02bpP5uIHrJKg=;
-        b=MYrQNnqv1LF0QLuec9reV7zsoVkCDOlee3/xWc7huz132fakMu1nL4K2FktOWXqmXC
-         CCTQkOPeSQuYwxUMQVtrWnGp0onXp+qsoPG4DVf/d6pd8bl6dJOpQ0uOv/r7HnJ2Fl4c
-         EzTDePr8nDUYvqUXA570iW2pNIqhiWoYCiGT3RKHdFkLW/iG+35gJ2dQM8XUM/YZ9EuM
-         RHHN4SBo7he2rnksA1GdFKPLStVmxLXvX+WDFtYigyFqcUeBGriykUESlvcn4AEDMZFA
-         yBjBvYkU09++Y5jL3vjZuwoN1Vbtu1/foo+u3k6pyibN6ndpHvA23UUZi+JN2baheZG5
-         DIsQ==
-X-Gm-Message-State: AOAM531EsujTV9s4Ey0pIBq6e3c+MO+Cs06SHtJBETSBxjcn2wB36QXR
-        iSQP5T3/+VFJnUDPO8oUCqaBsg==
-X-Google-Smtp-Source: ABdhPJx0LplRfx25sKT8ANeINOGLOmRhkwpXlJkZIuK/9ZEaK+VT6H/9FHBkxlc67h4EVYpANLx2VA==
-X-Received: by 2002:a17:90a:19c3:: with SMTP id 3mr8938575pjj.23.1631287166324;
-        Fri, 10 Sep 2021 08:19:26 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g18sm5027871pfj.80.2021.09.10.08.19.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y3tC4nDyVOsSkA0uvt6jkAqJXxoQ4QhFC8D3n1gWmeM=;
+        b=AuZ4J4tk+y5+csPIon51Ar5wvpqOr6VnUZJnMe0elrLQHwy38pJH3Emq4y+LJjIob7
+         AcDVREq/62Aj4MTKuLo8MJLy6YmtLdEdXCcRs+f57Yh7D0jnx9pPU8GpuTqj1VWlLROu
+         innPZraablUJyorsC1GnWR43DGKsXQfDUpkzoBL0K/CoqysnX5utFrE2+HPgh21DIWFy
+         zle5Fcm0CaA51IzeNfhs8ja9pAecb8ThTNSvKRcJS0fYrs1oiMFy1bWKLdYnEJ/vGYy3
+         xU6vfhtGQNu/zyA3Ucu72Uiql7Hrq3x9Jpzmgpkwrr0JSuRlEzhd4fLB6bTBiMkLT0QE
+         D2Xw==
+X-Gm-Message-State: AOAM5305pXTBWlD4J0V6qPJUHUWDE7oTjWgMuYGTGZz+7JszOumhF6L2
+        D66N6NBU7MkwgbctOo2fGBQ=
+X-Google-Smtp-Source: ABdhPJz3kLbFrvosjlIym0GPjZG0FUPBwnXlHAOjGj9fbcmUnBGPHja0GDTZOaYuCjD+t5cWBIhSXg==
+X-Received: by 2002:a17:907:c10:: with SMTP id ga16mr10343714ejc.174.1631287200402;
+        Fri, 10 Sep 2021 08:20:00 -0700 (PDT)
+Received: from localhost.localdomain (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
+        by smtp.gmail.com with ESMTPSA id j5sm2602039ejb.96.2021.09.10.08.19.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 08:19:25 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 15:19:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
-Message-ID: <YTt3elxQPbo5JXb3@google.com>
-References: <20210827085110.6763-1-chenyi.qiang@intel.com>
- <YS/BrirERUK4uDaI@google.com>
- <0f064b93-8375-8cba-6422-ff12f95af656@intel.com>
- <YTpLmxaR9zLbcyxx@google.com>
- <56fa664d-c4e5-066b-2bc8-2f1d2e74b35a@intel.com>
+        Fri, 10 Sep 2021 08:19:59 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] staging: r8188eu: Shorten calls chain of rtw_read8/16/32()
+Date:   Fri, 10 Sep 2021 17:19:58 +0200
+Message-ID: <9324065.O9NRuxeco7@localhost.localdomain>
+In-Reply-To: <YTYgnrvwxNt4+CvR@kroah.com>
+References: <20210904220048.12822-1-fmdefrancesco@gmail.com> <20210904220048.12822-3-fmdefrancesco@gmail.com> <YTYgnrvwxNt4+CvR@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56fa664d-c4e5-066b-2bc8-2f1d2e74b35a@intel.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021, Xiaoyao Li wrote:
-> On 9/10/2021 1:59 AM, Sean Christopherson wrote:
-> > No, nested_vmx_l0_wants_exit() is specifically for cases where L0 wants to handle
-> > the exit even if L1 also wants to handle the exit.  For cases where L0 is expected
-> > to handle the exit because L1 does _not_ want the exit, the intent is to not have
-> > an entry in nested_vmx_l0_wants_exit().  This is a bit of a grey area, arguably L0
-> > "wants" the exit because L0 knows BUS_LOCK cannot be exposed to L1.
+On Monday, September 6, 2021 4:07:26 PM CEST Greg Kroah-Hartman wrote:
+> On Sun, Sep 05, 2021 at 12:00:47AM +0200, Fabio M. De Francesco wrote:
+> > Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+> > For this purpose unify the three usb_read8/16/32 into the new
+> > usb_read(); make the latter parameterizable with 'size'; embed most of
+> > the code of usbctrl_vendorreq() into usb_read() and use in it the new
+> > usb_control_msg_recv() API of USB Core.
+> > 
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> >
+> > [...]
+> > 
+> > +	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+> > +		status = usb_control_msg_recv(udev, 0, 
+REALTEK_USB_VENQT_CMD_REQ,
+> > +					      
+REALTEK_USB_VENQT_READ, value,
+> > +					      
+REALTEK_USB_VENQT_CMD_IDX, io_buf,
+> > +					      size, 
+RTW_USB_CONTROL_MSG_TIMEOUT,
+> > +					      GFP_KERNEL);
+> > +		if (!status) {   /*  Success this control transfer. */
 > 
-> No. What I wanted to convey here is exactly "L0 wants to handle it because
-> L0 wants it, and no matter L1 wants it or not (i.e., even if L1 wants it) ",
-> not "L0 wants it because the feature not exposed to L1/L1 cannot enable it".
+> Comments go on the next line.
 > 
-> Even for the future case that this feature is exposed to L1, and both L0 and
-> L1 enable it. It should exit to L0 first for every bus lock happened in L2
-> VM and after L0 handles it, L0 needs to inject a BUS LOCK VM exit to L1 if
-> L1 enables it. Every bus lock acquired in L2 VM should be regarded as the
-> bus lock happened in L1 VM as well. L2 VM is just an application of L1 VM.
+> > +			rtw_reset_continual_urb_error(dvobjpriv);
+> > +			memcpy(data, io_buf, size);
+> > +		} else { /*  error cases */
 > 
-> IMO, the flow should be:
+> Again, next line for the comment.
 > 
-> if (L0 enables it) {
-> 	exit to L0;
-> 	L0 handling;
-> 	if (is_guest_mode(vcpu) && L1 enables it) {
-> 		inject BUS_LOCK VM EXIT to L1;
-> 	}
-> } else if (L1 enables it) {
-> 	BUS_LOCK VM exit to L1;
-> } else {
-> 	BUG();
-> }
+> > +			DBG_88E("reg 0x%x, usb %s %u fail, status:
+%d vendorreq_times:%d\n",
+> > +				value, "read", size, status, 
+vendorreq_times);
+> 
+> These should be removed eventually...
+> 
+> > +
+> > +			if (status == (-ESHUTDOWN) || status == -
+ENODEV) {
+> > +				adapt->bSurpriseRemoved = true;
+> 
+> Odd, but ok...
 
-Ah, we've speculated differently on how nested support would operate.  Let's go
-with the original patch plus a brief comment stating it's never exposed to L1.
-Since that approach doesn't speculate, it can't be wrong. :-)
+I'm not so sure that it is OK. Please correct me if I'm wrong...
 
-Thanks!
+The calls chain from usb_control_msg_recv() seems to be the following:
+
+usb_control_msg_recv/send()
+        -> usb_control_msg()
+                -> usb_internal_control_msg()
+                        -> usb_start_wait_urb()
+                                -> usb_submit_urb()
+
+Each of the above functions could fail for different reasons and if so they 
+return the errors up to the first caller into "status". I can find no lines 
+of code where the above-mentioned functions set and return -ESHUTDOWN.
+
+Unless I'm missing something obvious, "status" is a non-shared variable. The 
+variables that are assigned with errors in all five of the above-mentioned 
+functions are also local (non shared) variables.
+
+To summarize: how could "status" be assigned -ESHUTDOWN? Is any point in the 
+chain that value assigned by a concurrent thread to a shared variable and 
+then returned up to the caller (i.e., usb_control_msg_recv())?
+
+Since the code has this "if (status == (-ESHUTDOWN) || ...)" it expects that 
+sometimes it could be 'true', so I'm 100% sure that I can't see where my 
+argument is not valid... :(
+
+Can someone please help me to understand this topic?
+
+Thanks,
+
+Fabio
+
+
+
+> 
+> > [...]
+
+
+
