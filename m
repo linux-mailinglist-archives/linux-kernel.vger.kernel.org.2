@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA048406646
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2CF406647
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhIJENH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 00:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhIJENG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 00:13:06 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE5CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 21:11:55 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id k13so1375554lfv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 21:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DxuUJjYQzcMig7TJzqeQbDiwDXMeQY4AlFQzmAL8BFo=;
-        b=caV35vZBF/+tv+N/twTyQQIepPYKrU77+eUwAhhJt3yzpY3fZR+jg6Vj0KzNx1wMlG
-         khJyigYpp6RzraAOG24s+SRBLCuqBhIjY7ndBQ5GL05US8rXNihBIvuEIX2pK4RieWjG
-         6Oma/I6gIdr/zl/fcrcU85RJXRGJOekaW7423Xyfi+lyYoqWbNJSnZowbQOW0g/PO8dB
-         Ip9MKNP9KqFk9e0puoqir2yz4xIKFi6wxSX5IOc1PAdQaFaBE1S6Ud9QaNAmx1MgV/pn
-         OQeQiz/Ap2LiVmj6CAUlJuKzapQNJWxX0fvvO5nkN2r9//rFyQLpLHsbCSRiVgSPwI4L
-         uCNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DxuUJjYQzcMig7TJzqeQbDiwDXMeQY4AlFQzmAL8BFo=;
-        b=n3X/mQqa6hIfASKpEpH7mJ8Nm1E2tDTi8oQiwMDqcLYMIWQWHNLiD4Y3aT9UNVGfXd
-         bWLWMmDMqJxmr2qw6IgecvNCvQR5cDSptPgflhp/ZP/B/XQAieTVCoSTcKHehS7QZ5vJ
-         Z65X9BGqVdp/13nc+HPedaZy7Q5wYlZe0HDHSHCf4tRXBsyQUS4JLJYSyeHZCezaV52i
-         6RebaU1X/jgElyiYV2PohG9wRz3xXuFvE3rWB+cA+uLGLlwEW3VZYtXMAIqrWFZLCnly
-         KB+FipC0NrFUlQAPrMTdtoWS+J2QxU1tCzYmnY6yw+RxSvx3gCn0t/WLY2Uh4+ZymXmS
-         l28Q==
-X-Gm-Message-State: AOAM533qMhptexRCfpg91Y6qVqB+PWn346u5OpqYZg6Mo4zwFSv+2EwC
-        Otoh4M8R2ugjxFPNUoYf8j+IzflbQT37idgceYfoAQ==
-X-Google-Smtp-Source: ABdhPJzczePxiiiUKaYgpWec1VQ/FQlfTM5oaUvNp5X1nEy/SYSL5rijb8rTiNIik6aTvN83Y9O38gJxtOgp4JBOqSU=
-X-Received: by 2002:a05:6512:695:: with SMTP id t21mr2316218lfe.157.1631247113923;
- Thu, 09 Sep 2021 21:11:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
- <CAAYoRsVX76Ey9FHhZXdwKWiMdmf0Oi6SKrP2J=XnNgB92sZW1A@mail.gmail.com> <9586d66802138dc144836b310ef5b20394c59695.camel@linux.intel.com>
-In-Reply-To: <9586d66802138dc144836b310ef5b20394c59695.camel@linux.intel.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Thu, 9 Sep 2021 21:11:46 -0700
-Message-ID: <CAAYoRsUHQoFH4rb2cu5ZgMc8=e7WWZt8qQwZ6eFAtVSD1kghoA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
- by BIOS
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
+        id S230139AbhIJEQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 00:16:04 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39079 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhIJEQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 00:16:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631247284;
+        bh=rVhS98kJuXOnQaP7kFU1p2+ZpKPQj1X3psyXiI/RJPw=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=k7cNoLKduf3CbFZ+DBR2k5ZUz/lnn3roEJzz7udeLJq2kce5dAPiuELyYIMin1MVK
+         4X8rQ06rvWUXWJVE6HJ/l6Agz4ieoKrngvqDkZQ5FUXqN/TytJEHr8QYCXeQVzX+jY
+         RNyvCGtLY0IsZYNOlqbp4K+Kes+MxiMpRoQPmHnM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.151.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mqb1c-1mkQLM3CAi-00md8r; Fri, 10
+ Sep 2021 06:14:44 +0200
+Message-ID: <817e71d3987224bbacfd916b2d953fb528ecb4d5.camel@gmx.de>
+Subject: Re: question about isolcpus and nohz_full
+From:   Mike Galbraith <efault@gmx.de>
+To:     Chris Friesen <chris.friesen@windriver.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 10 Sep 2021 06:14:43 +0200
+In-Reply-To: <b39eca5b-98e4-6b9e-c65b-63aad84d8caf@windriver.com>
+References: <b39eca5b-98e4-6b9e-c65b-63aad84d8caf@windriver.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.41.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HnBSxbAoExudxLQpb9sxZIRqna151B5g7WT8YRL5SJpE0Ct+kH8
+ 1OfHlbK96BwBVQ4MFoeJSF5mynf2o6O8KHoIvSOFdOeOGk+qoUSeTIj9+OilH0wPKqbtIqC
+ 1dIQhI9s6vkKxLecK8Omuq60HJBKxgCv2hPrlh44gvH5/su1RPXKKSwqJsj8OWZroOXrDFu
+ jnoZe9J92M3oYf1AwOquQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8mbqzdPw2/Q=:CIw/2qX3eUZX4tdXIBY5Yx
+ CyAKaSb40Iinr2MR+IBF7ChsGedEbP56KZ5Ya4nZSdQggjmpFlB3jPVcqN1du8Sadh1PpgxPJ
+ alfBh6O402Uy7PeeRm9P8TTEbn8czjJeg4iyHLMtISjM2EVqQnLPGqkvSu4RJZTV6m02q1mE4
+ 0vYcBujUklVFq0Q3OInZ2Erb8jXNQvNFFt7tVMqHhuPfOfydLXfbTfn5mdlh/aU5Uu+2gRCrQ
+ 3rHPW0mo4la4uBTAN/XbqTYTcIHkuGWj963a4RgNgQCEsWhS9qnL+rZ9qJcXLborWuy+dClFC
+ SEZ/0QG8ArORxjWpjQyOeIBvj8kgj8Xy4JKqYMYLN8JrQIFvi0euLK9GtTJZGA6WSgeTfQbcz
+ F+jkihRrfe9AysMDHmXPvKuak7VR9iMn+tKmM3K5TKdHdA5dVYR0w4KvPLDypEiDqDs5lGSmw
+ 536DVrBhg8gK5XeGbUKcaZmTrRQ/kWXvuv80WWmPCJkBBL2TqW7MjQJUIv3HGDsy+XUOSuvBH
+ BjQe3bAjaystWqTkJtYbXmMSe9S09KLa6e9Nh6RLt71lgniF3K0C8L5lI14cRNbCSOyFkcbZM
+ E+0xfOWRHxQL/kCiCKI5nbgD4EJMCeTR0PxIohVvjkgrskxSZnBZaFEWwKOuMbrO0/vTFGROX
+ aax4W0FjgEgfMNmIGOYTWraLzAnGCKm0hxiOC+maZCw3Rzi0gZiZbp+1IPaG7LKTWe/VPvHBO
+ 5tjIgnhHtUCtBzlDmpaOXzwp0F3MiusjpHsFsFKAPppITq/K9kN7k/QfSEMkwdScxc5KR5U5v
+ wfuRbjm4CrCU0qzR52LFYu2RSiNH+jAU2nQQn5k5PsezTvMqPqidamZ8dq1pCYjWn1PgVXi+p
+ +AMhPwXTQyAQgl1KHvERJzIggP8EvTWMR3E+aSz+5rtb2n2+IRztmLQWty+qdFgMybzHsBJgS
+ mIXGc1WrVHnBuS+l6LDsgb8HfWLg3U0C6EfUtCbDmyYu5SCZLe17OlVzvIvcjk4ugyoxWT7hK
+ lT8cFdGLvNIrjoJQ079fHmzmCgUFIgdJZQV3jWtThyUIuf43R6FHbEc+U8712SuySMAurgdEV
+ fcSrr2QJn55X7Q=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 7:53 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
-
-> On Thu, 2021-09-09 at 06:30 -0700, Doug Smythies wrote:
-> > On Wed, Sep 8, 2021 at 11:33 PM Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com> wrote:
-> > >
-> > > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
-> > > > If HWP has been already been enabled by BIOS, it may be
-> > > > necessary to override some kernel command line parameters.
-> > > > Once it has been enabled it requires a reset to be disabled.
-> > > >
-> > > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> > > > ---
-> > > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
-> > > >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/drivers/cpufreq/intel_pstate.c
-> > > > b/drivers/cpufreq/intel_pstate.c
-> > > > index bb4549959b11..073bae5d4498 100644
-> > > > --- a/drivers/cpufreq/intel_pstate.c
-> > > > +++ b/drivers/cpufreq/intel_pstate.c
-> > > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
-> > > >                  */
-> > > >                 if ((!no_hwp &&
-> > > > boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
-> > > >                     intel_pstate_hwp_is_enabled()) {
-> > > > -                       hwp_active++;
-> > > > +                       hwp_active = 1;
-> > > Why this change?
-> >
-> > It was just to keep it at 1, but I agree not absolutely needed.
-> >
-> > >
-> > > >                         hwp_mode_bdw = id->driver_data;
-> > > >                         intel_pstate.attr = hwp_cpufreq_attrs;
-> > > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
-> > > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
-> > > >
-> > > >  static int __init intel_pstate_setup(char *str)
-> > > >  {
-> > > > +       /*
-> > > > +        * If BIOS is forcing HWP, then parameter
-> > > > +        * overrides might be needed. Only print
-> > > > +        * the message once, and regardless of
-> > > > +        * any overrides.
-> > > > +        */
-> > > > +       if(!hwp_active
-> > > This part of code is from early_param, Is it possible that
-> > > hwp_active is not 0?
-> >
-> > Not at this point, in any testing I did.
-> > But I do not know the authoritative answer
-> > to your question.
-> >
-> But as you explained you want to prevent repeated print of
-> "HWP enabled by BIOS". So you need this.
+On Thu, 2021-09-09 at 10:26 -0600, Chris Friesen wrote:
 >
-> > >
-> > > > && boot_cpu_has(X86_FEATURE_HWP))
-> > > > +               if(intel_pstate_hwp_is_enabled()){
-> > > > +                       pr_info("HWP enabled by BIOS\n");
-> > > > +                       hwp_active = 1;
-> > > > +               }
-> > > >         if (!str)
-> > > >                 return -EINVAL;
-> > > >
-> > > > -       if (!strcmp(str, "disable"))
-> > > > +       if (!strcmp(str, "disable") && !hwp_active)
-> > > >                 no_load = 1;
-> > > > -       else if (!strcmp(str, "active"))
-> > > > +       if (!strcmp(str, "active"))
-> > > >                 default_driver = &intel_pstate;
-> > > > -       else if (!strcmp(str, "passive"))
-> > > > +       if (!strcmp(str, "passive"))
-> > > >                 default_driver = &intel_cpufreq;
-> > >
-> > > Why "else if" changed to "if" ?
-> >
-> > Because it doesn't matter anyway and I would
-> > have had to figure out another qualifier.
-> > This way, and given that this executes once per
-> > intel_pstate command line parameter, the code
-> > executes the way it used to, overall.
-> If someone specified intel_pstate=active, it will also compare with
-> "passive" with this change.
+> 2) Is it allowed to specify=C2=A0 "nohz_full" for some CPUs at boot time
+> without specifying any isolcpus?
 
-Disagree.
-As far as I can tell, and I tested, it works as expected.
+Yup (IM[not the least bit;]HO the proper way to partition a box).
 
-... Doug
+> =C2=A0 If so, what happens if I later isolate
+> a subset of those CPUs using "cpuset.sched_load_balance" in cgroups?=C2=
+=A0 Is
+> that allowed when the equivalent boot args are not?
 
-> > > > -
-> > > > -       if (!strcmp(str, "no_hwp")) {
-> > > > +       if (!strcmp(str, "no_hwp") && !hwp_active) {
-> > > >                 pr_info("HWP disabled\n");
-> > > >                 no_hwp = 1;
-> > > >         }
-> > >
-> > >
->
->
+That's what an old shield script I still have laying around does.  I
+booted master on my little desktop box with nohz_full=3D1,2,3,5,6,7 and
+shielded cores 2 and 3, after taking down cpus 4-7 (smt), and it still
+seems to work fine.
+
+I used to also override (via ugly.. maybe even fugly, hack) nohz
+dynamically, turning the tick on/off for subsets, on having proven best
+for jitter of heftily threaded RT app spread across many isolated
+cores, thus could at need even partition a box with a mixture of
+ticked, nohz idle, and tickless sets, albeit in a rather limited
+fashion due to nohz_full preallocation requirement.  Would be nice for
+some situations if nohz mode were to become a fully dynamic set
+attribute.
+
+	-Mike
