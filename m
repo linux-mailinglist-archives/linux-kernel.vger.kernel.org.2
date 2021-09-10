@@ -2,161 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51E640687E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC0F406881
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhIJIaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbhIJIag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:30:36 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4164C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:29:25 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 18so1228115pfh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 01:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=X1Ka596D4T+qrQ3x64aHg+vCGr4l6bDdJYBtf2qGrO0=;
-        b=HaNdN2FTqndKVudMjlQwIWFnOE/CqokRoRHKeHRkWRZJOkVkT8frSZro/BHaU/8/WX
-         9okM67qatIZ2cejk9JOyFtzLL05Ig81xOYtjhXO02hQGOvoaA8fKBgfOr9QHSiRQmCkA
-         HTz740YYD2GgUEMj9GE3bBi5k9qnH3PGDXa2pfRoB0twhbxs9+Ha6nCh9OdTizR6Izw/
-         bQnZYOVVLAWGR8hvvseHVgrt+X/9Z+qLu1rpKLPai5BxkF/+7sIZLyBveNlOqZTWdU7e
-         feaOg027OQiJRgIwMpHCaBewP0Jv9YD7FvvJrgSb+6WJuUMmEubQVp9mfD5aEeBHdCsu
-         d+8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=X1Ka596D4T+qrQ3x64aHg+vCGr4l6bDdJYBtf2qGrO0=;
-        b=z3bfuzrFSsSMFt+EVytfayjPZtD3dMfDraHhpjyrWcqxRhflWBoaoJu2Xv4mZFeo4H
-         0YID/TuskoUaZYGpr4HCy1o0sIZ5mLNUQA4NCUryByqma4yLMB4R8pNUYSu76ltVBhPO
-         n6Eupu/GJI8T1n+Fnldm83xBnVpwx0oH/VN3r1uLPEVkFhV8t1JX/A1ZoEohB6ulyh54
-         YHEjNbA0mUFFDvOjCt++Hw3+P8b/capic/ckMlFqAeJS5APWELmeBAhwDrg+iBm+i8ic
-         KiLsUFmp5MWLYobgNlS/4YfE3FQJAxjNb0+iH1A8FaYoIG7ZFlGzo605UeQCMjof4bT4
-         y77A==
-X-Gm-Message-State: AOAM532OaXE3mVdK2P/rTH3rjmcx8duwkb1bkf5KCKAu1WcwAyq3XV98
-        /8Zubqw6FWq8m3WDKbotlS0=
-X-Google-Smtp-Source: ABdhPJx+y/VBPKdyWT1FN19oFSjXlOnff4HzZHsc8WE0QCRAD91fR8f/qNwy27Bha2ytjOPpbg/2Eg==
-X-Received: by 2002:a63:b007:: with SMTP id h7mr6222926pgf.443.1631262565075;
-        Fri, 10 Sep 2021 01:29:25 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id y8sm4628496pfe.162.2021.09.10.01.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 01:29:24 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 13:59:19 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH v2] staging: rtl8712: Move similar execution in to a function.
-Message-ID: <YTsXXxtQn7QN6nIm@user>
+        id S231776AbhIJIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231502AbhIJIcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:32:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 804DE610C7;
+        Fri, 10 Sep 2021 08:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631262650;
+        bh=SPE/jxAWcGR+hp29mSZ8jiX1DlvUPpFpsR5GhteB0/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rdJTsYlW1nmMWC/XtoK6daUP0VO8FY3FIh1eEbhc0bA4TLMp4fdNC/Ao4iwuJXK3D
+         dGt5CnHrKC4JPe2ecUBMN+m+xd4jNM3dutWCGFPHphKFjhrflJ3sRsyv+Q2vGOIPKA
+         noZtdu76LaegO4L2ET5NFaMoRI+VHTXjCGe431PTdzXiVqjs7ShWcIQT0bD82ZvPbP
+         4TrEeSGJuduSBz7QKG0Qll8pN6a6vBsuxLt/lbdkJ8UpNRuAlAS9pGiPia/tDUjrxH
+         Q/mQsefp9NxaMmU2pdVLcUXvGXw1DnI+jYAwaggg+KqSvXHe4M49w74RAo/4cxc5sW
+         iW6ChlD5IMz3g==
+Date:   Fri, 10 Sep 2021 09:30:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+Message-ID: <20210910083011.GA4474@sirena.org.uk>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-3-rananta@google.com>
+ <20210909171755.GF5176@sirena.org.uk>
+ <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
 Content-Disposition: inline
+In-Reply-To: <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
+X-Cookie: You are standing on my toes.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rtl8712_cmd.c function read_macreg_hdl,write_macreg_hdl,write_bbreg_hdl
-and write_rfreg_hdl all are having same execution.
 
-Move this common execution in to a new function common_read_write_hdl().
-Call common_read_write_hdl() from read_macreg_hdl,write_macreg_hdl,
-write_bbreg_hdlhis and write_rfreg_hdl.This will reduce duplicate code.
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
+On Thu, Sep 09, 2021 at 01:06:31PM -0700, Raghavendra Rao Ananta wrote:
+> On Thu, Sep 9, 2021 at 10:18 AM Mark Brown <broonie@kernel.org> wrote:
 
-ChangeLog V2:
-- Add more explanation about the patch
+> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
 
- drivers/staging/rtl8712/rtl8712_cmd.c | 41 +++++++--------------------
- 1 file changed, 11 insertions(+), 30 deletions(-)
+> > Can we arrange to copy this at build time rather than having a duplicate
+> > copy we need to keep in sync?  We have some stuff to do this for uapi
+> > headers already.
 
-diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
-index e9294e1ed06e..9bc0588be04b 100644
---- a/drivers/staging/rtl8712/rtl8712_cmd.c
-+++ b/drivers/staging/rtl8712/rtl8712_cmd.c
-@@ -117,9 +117,9 @@ static void r871x_internal_cmd_hdl(struct _adapter *padapter, u8 *pbuf)
- 	kfree(pdrvcmd->pbuf);
- }
+> That's a great idea actually (I wasn't aware of it). But, probably
+> should've mentioned it earlier, I had a hard time compiling the header
+> as is so I modified it a little bit and made the definitions of
+> [write|read]_sysreg_s() similar to the ones in kvm-unit-tests.
+> I'll try my best to get the original format working and try to
+> implement your idea if it works.
 
--static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+static u8 common_read_write_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
-+	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
- 	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
+One option would be to do something like split out the bits that can be
+shared into a separate header which can be included from both places and
+then have the header with the unsharable bits include that.  Something
+like sysreg.h and sysreg_defs.h for example.
 
- 	/*  invoke cmd->callback function */
-@@ -129,20 +129,17 @@ static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
- 	else
- 		pcmd_callback(padapter, pcmd);
- 	return H2C_SUCCESS;
-+
- }
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature; name="signature.asc"
 
--static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
-+	return common_read_write_hdl(padapter, pbuf);
-+}
+-----BEGIN PGP SIGNATURE-----
 
--	/*  invoke cmd->callback function */
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+{
-+	return common_read_write_hdl(padapter, pbuf);
- }
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE7F5IACgkQJNaLcl1U
+h9DaOwf+IKLvC2prK1SBAm+BeUSM4HW6iFJLUaEoQBFNBFbKI1JLEvcDGWwF4PQ/
+zF8K1mWNAZNuqG3g3sx1pZ++IXy2reWVG6Dchp8SOs20ahX654NRhdALQ8xHmgtH
+CHUDOB0Yh4TnmPiaKSbPvAGb0k3qgc+Et/45zJVhfejUqH7o6HYNMzzT296sGKak
+0tST6itO7q+JqfrNOxp6FXJNB+ikd59ByaA06Xbv7jvP3xp8cYVRuOy42QhWi3Wo
+XAIw3BInkhRgwi+/CdRtKhwq1sm1+beeBZ90DgsLCgb1Z1phbVRMiUcbFhzEQ9Tn
+o4+sFQj+1FxkCY0Os7WkC2bBY/o1uQ==
+=XPRc
+-----END PGP SIGNATURE-----
 
- static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
-@@ -155,15 +152,7 @@ static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
-
- static u8 write_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
--
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+	return common_read_write_hdl(padapter, pbuf);
- }
-
- static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
-@@ -184,15 +173,7 @@ static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
-
- static u8 write_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
--
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+	return common_read_write_hdl(padapter, pbuf);
- }
-
- static u8 sys_suspend_hdl(struct _adapter *padapter, u8 *pbuf)
---
-2.32.0
-
+--SLDf9lqlvOQaIe6s--
