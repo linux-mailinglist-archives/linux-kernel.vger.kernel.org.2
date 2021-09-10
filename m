@@ -2,60 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA70C406B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7C0406B0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhIJLxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:53:24 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35830 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232825AbhIJLxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:53:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=xz3EHqt1aNuCCfFgP4l7aFLLA09koIhgwoehEBHEMPo=; b=BaquWuYDdAmhM56vGNxCao7Jdo
-        HTwm6MB/Nz1Pnzk/t5m1hnBtrsRf/oicCtVEuJFcUFdr4EvGAYix6ZTpPlA6t2JikxuiVqKWjq6Lw
-        csAiQf20rpXoO1NqZeY+DiTXxhy3M6ra8EnxYdG2+hGQpek92yJcSDynODgoL/CoOTtE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mOf4W-0063Om-AS; Fri, 10 Sep 2021 13:51:56 +0200
-Date:   Fri, 10 Sep 2021 13:51:56 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Saravana Kannan <saravanak@google.com>,
-        p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <YTtG3NbYjUbu4jJE@lunn.ch>
-References: <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
- <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <20210909154734.ujfnzu6omcjuch2a@skbuf>
- <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
- <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
- <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
- <20210909225457.figd5e5o3yw76mcs@skbuf>
- <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com>
+        id S232904AbhIJLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:55:28 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59910 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhIJLz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 07:55:27 -0400
+Received: from [192.168.1.122] (unknown [171.61.210.53])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 987EA20B6C51;
+        Fri, 10 Sep 2021 04:54:13 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 987EA20B6C51
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1631274856;
+        bh=ziAi+qptclA5i6MG+SvCqXYYgrSpzSGk6DytVmGYMVk=;
+        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
+        b=noc5AuY4HfjaZXzU8JME4Z6ZzLjw1G4ZHoAyqD/iAbkXv02whq5PXyUzMOK2t+TLR
+         hATJdajSdxAEDTQe1UnF87v6SvotGAgScIXUV0qvlbRH8/L6FtCHrBldv7ynyVchPl
+         IX+hWfFB86ychqvoe2EFEmSNpfNaJd7/y1JV0q3A=
+From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Subject: Re: [PATCH] blk-mq: export blk_mq_submit_bio symbol
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk, lalita.muppana@microsoft.com,
+        schakrabarti@linux.microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>, longli@microsoft.com,
+        KY Srinivasan <kys@microsoft.com>
+References: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
+ <YTmgEAEx69PR/RMy@infradead.org>
+Message-ID: <fa6012fa-ea5a-e292-12b3-c457a212a52c@linux.microsoft.com>
+Date:   Fri, 10 Sep 2021 17:24:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com>
+In-Reply-To: <YTmgEAEx69PR/RMy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It does not really scale but we also don't have that many DSA masters to
-> support, I believe I can name them all: bcmgenet, stmmac, bcmsysport, enetc,
-> mv643xx_eth, cpsw, macb.
+On 09-09-2021 11:18, Christoph Hellwig wrote:
+> On Thu, Sep 09, 2021 at 11:06:53AM +0530, Praveen Kumar wrote:
+>> There are use-cases like replication where need to hook the blk I/O
+>> operations for devices and perform specific operation and fallback to
+>> its original I/O operations.
+>> Prior to v5.9 there was make_request_fn and then blk_mq_submit_bio
+>> exported apis, which provided infrastructure to drivers to develop these
+>> features. However in v5.10-rc1 with below commit the API was removed
+>> from the export list.
+>>
+>> Previous commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.10-rc1&id=681cc5e8667e8579a2da8fa4090c48a2d73fc3bb
+>>
+>> This patch exports the blk_mq_submit_bio symbol to provide flexibility
+>> to the drivers.
+> 
+> Please send your users of this "feature" to this list for inclusion
+> and we'll help you to massage them into a non-broken version.
+> 
 
-fec, mvneta, mvpp2, i210/igb.
+Thank you for the response and appreciate your help. Providing a bit of
+details below.
 
-     Andrew
+The disk replication solution which I mentioned, hooks all the block i/o
+operation using make_request_fn for specific device request queue and do
+some massaging and then call the standard block operations.
+The flow is something like below :
+
+replication_func_init (struct block_device *bdev)
+... orig_queue = bdev_get_queue(bdev)		// save the original state
+... orig_request_fn = orig_queue->request_fn;
+... orig_queue->make_request_fn = custom_function(say "replicate_request_func")
+
+
+replicate_request_func(...) {
+... does some driver specific massaging
+... // calls original
+    if (orig_queue->make_request_fn)
+	orig_queue->make_request_fn(...)
+    else
+	blk_mq_make_request(...)
+...
+
+Now, the current implementation have make_request_fn moved to submit_bio, one
+probable approach is to somehow, update the original submit_bio to custom
+"replicate_submit_bio_func" and then handle the case likewise as done in
+"replicate_request_func". But, "blk_mq_submit_bio" is not exported symbol..
+
+Second, "submit_bio_noacct" is the next approach which we thought can be used
+for submit the bio, but, for case where original submit_bio is NULL, we will
+end calling recursively the new submit_bio, and panic. 
+
+replicate_submit_bio_func
+... does some driver specific massaging
+... // calls exported symbol
+   submit_bio_noacct
+    __submit_bio_noacct(bio)
+       __submit_bio
+        disk->fops->submit_bio(bio) -> updated API
+         replicate_submit_bio_func
+           submit_bio_noacct
+
+Hope, the provided information helps understanding the problem. If not, please
+do let us know, we will try to provide more details accordingly.  Also, please
+do provide your thoughts and suggestions how can we achieve the above kind of
+functionality on latest kernel version.
+
+
+Further, we were trying to understand the history over the removal of make_request_fn
+in the queue within blk_mq_init_allocated_queue API, but didn't find much. Can you
+please provide any information regarding the same. Also, is there a possibility of have
+similar kind of implemenation for submit_bio ?
+
+...
+-	q->make_request_fn = blk_mq_make_request;
+...
+Patch : https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/block/blk-mq.c?h=v5.14&id=8cf7961dab42c9177a556b719c15f5b9449c24d1 
+
+Regards,
+
+~Praveen.
