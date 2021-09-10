@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A307F407362
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E51F407368
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhIJWf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S231918AbhIJWgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhIJWf0 (ORCPT
+        with ESMTP id S230210AbhIJWgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:35:26 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF83C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:34:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id bb10so2068348plb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:34:15 -0700 (PDT)
+        Fri, 10 Sep 2021 18:36:23 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49578C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:35:11 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id k4so7021645lfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h1KMn3Fshg4uYr8YfRrHZ2vdSz5a1cpY72wgBiJJOF8=;
-        b=iRDDOgnP+G9JHVtoHxj7l9ciH2Y1GMZ/mQySobNB24uIVa5ws523vhwyw3pEvHfWBo
-         F0MI4A6gWjttoyo6/WENSJRusiop4COlgJlWls48nIzh0qppc3wFVTBITDgInzkrBLfU
-         1GR8LE/sJUGbpqXfj+NDfTLRTTfhTBnrfRJxA=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWQGZrSo/Do81bAjpKTAeUBjh1IoG/kzcaTcruy7fk4=;
+        b=saxjUAPFfGK5B7x+nTYAT8yzhPqGdjMcWQvcVRiW147le2Hcl7k+yEuEEnfNw/9TyA
+         Y3vf1VNph4TncTlTx1IMM/x9uNvAzX3wbgQIHTeOsQXQnzlQQTTX15AxY3FnsB67Ggf3
+         hPEOE5t3ZyCWbbXJnDY0pU3XBxYNqcfTk8P8wQI/yV8Ql4708KRfCApaMROmhVXXUmvC
+         6vNrZTJjoCkt63PL5L1xSjXhzoB5MVuuQs4fqVCzbWHDR093c6Jv9i8aadzA57XFVCCR
+         rL8F5phsIJ8TYBNg3M5uNOWc58OpDrhiOJ2paxP3MNbYc5BrOb92wi//AKbIbJOfwyfK
+         U1ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h1KMn3Fshg4uYr8YfRrHZ2vdSz5a1cpY72wgBiJJOF8=;
-        b=6dGl68FQeA02QVouL0SQ9R8a42XogYeVVjWPwMBwPwbd2F2tPaTXr1bN0yoNpwESZr
-         pgci5j3myMXTJsFUfgkrClwgThGIaTyElid9lvKFR2MjUQlpRF+qIbGCHVZvjw3PIADT
-         YDWlmiRDH5pyKo2qK+LqrRd37vT2MKZcZxrCGZcOjYS1R8yge96ViN1re2QF/H8H6PCP
-         c6w8/CZq5LezLbLIx+3zQ0TiMJfRLIX3lVhHPnYAQIcUl+AciftaFpvI/a26ss0lqgxX
-         W/AGDXNlCdht4S/JJG4r0vOup0g/N74cDVkXic82bHv6rHK4pG19/o9mg6+oqTi2jS0b
-         dJFw==
-X-Gm-Message-State: AOAM530gpIO9EIpO3qhK/NyzpFkLGizncDkU3AGN54VSybC7bat+DxCs
-        5k93z41BlOkWe07SYAjegSNLmw==
-X-Google-Smtp-Source: ABdhPJygkmxYfXcBhG9ucJo4Ua7e6TcbLt11eckqwgIrmoDz/+2To+4buTIyxJKWp7nD2D+nuLWn7A==
-X-Received: by 2002:a17:90b:f97:: with SMTP id ft23mr11824590pjb.135.1631313254984;
-        Fri, 10 Sep 2021 15:34:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r22sm4102pjp.7.2021.09.10.15.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 15:34:14 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Subject: [PATCH] samples/seccomp: Avoid alias warning
-Date:   Fri, 10 Sep 2021 15:34:09 -0700
-Message-Id: <20210910223409.3225001-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWQGZrSo/Do81bAjpKTAeUBjh1IoG/kzcaTcruy7fk4=;
+        b=RmM7IgSo/bzupjbn/h6aFAAoI/3bIas5IvR+614x25fLtt+fKYJvrMGwgdC9BPOPsP
+         uE4t29HygrmLtlgxET3kWAnE/svOc21K8x2y4nGMinTU3ufNA0zoxIB9ONYv6uUYT+Jy
+         Aa2X/Yqaf7gkZWBPRZPLImXutH5+uji19JiIgQTlA/ZXlhSTA5VryN0ypyjR2vcFm5kS
+         PBFpwO/3XbiwBYB06yq/5wxCe5BstYFYJagHHQVBWzv3PYusmXLKZm8WfGjF3YFHG7C4
+         gqFIBt/3y3hayu+Ql3FKxyhXux1LcFjkS8XuiMSDkXZzMPCBwYHuvdss3EPO656BxFp4
+         ITNw==
+X-Gm-Message-State: AOAM5315kC6O++tNdSNKhg410rRNufHC7UzMuHvtTr6XmHV61HyJd78m
+        qiWy1hC2HWGiWNhjj6kNHZNZUO7iYathGmosXqWLeg==
+X-Google-Smtp-Source: ABdhPJw541SsRoH3llrdeNz3D2AuhbrsNp86DUKg8d4moYQ1Lm0on5D/RGg9t2gjrSVV/TE6HoXob88bUDTMzYSAKfk=
+X-Received: by 2002:ac2:4c46:: with SMTP id o6mr5569552lfk.240.1631313309434;
+ Fri, 10 Sep 2021 15:35:09 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=876; h=from:subject; bh=wgU1RhPfSkz45p/Y/24CHuUYZ/13y0E8bzJ8zxSgP9E=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhO91gDwTnOcX5A85kax/+FJgIy4j/fwoHUSkxzYqd u4vsAfiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTvdYAAKCRCJcvTf3G3AJkxuEA CAHSEmtwsQzUKSdRi/evlh881hhI01Tlpuji21Z2aamUm7ilGB2bFukE5ZSI0PKLSjt4lpQ4Z+aULR uqTDxsXAdnHqQxS35eQA9/UZB6xKP5C7fkh+4k6TZtzWmVkPw1hCAkXc6vgpsnO+BKtxq1OT91uLf2 BwAZtGa0Y+b6RaPZ1xncZUKpBi1DTYmao7QWIx5pb3MYM2kF+PtZmTjARDNuxz2qvW3RQ2JeHUTh3Y 5cw/UkyEZicifQvrJq5ks5EhMp1WP/rfB30FeM/Svby9GjhOF4PvSscGCcAxc61ycMhPo8fRUNhPFF Fisfo5f4HatAOtvnv8QTw1zOdhx2O5iMBdUv3qISJn3MDTlLaktfitvfSL1McyF/rSXjiWUduSH7Og SMCoUV5PsJbRIrP5hfPHoq9rV2jhj4+1G1N8qGcG0F/5TgcUNF3tpsOb/7LkDMyiGrArMNeiYZ1Q+P e0e5DuH6q1kBLqVLBMSFJojFirgRcfXeo7GTC3+RCr0Jlk6Uno0F1lIXdVSlKjcS90oWs63gkMZxgZ GoYVJpQQnz5ryAd4bf5aW3UeaFLWvfbuOYphEDlVbjf6O+e7LPJPKSqoLH49NqPXTSgJPWJ/haMn4W lBLR/EnXyLFPqzvgIBnspMggvemTkv8XqFlPnYXKoTU5qzJrxWF4oCFmBgyA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210909182525.372ee687@canb.auug.org.au> <20210909225035.3990728-1-ndesaulniers@google.com>
+ <CAKwvOd=hoPv2GMZws6UsnMHop6+662wer=Hfo2Tw2=1XXCY2JA@mail.gmail.com>
+ <CAKwvOdmXVLjd9ukYpORDgPeqFcM4nRiOYE_1Mtr_bGa=FPo4Cg@mail.gmail.com> <CAKwvOdnDOQPRe3v7ZD6SRR=TgbLqo1wfn_zmgfJpbqGEZyJ1-Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdnDOQPRe3v7ZD6SRR=TgbLqo1wfn_zmgfJpbqGEZyJ1-Q@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 10 Sep 2021 15:34:58 -0700
+Message-ID: <CAKwvOdkc9oQWh8tFobxS9NTGsyyeWHLz9+RQ2bgxFawob0hEwQ@mail.gmail.com>
+Subject: Re: linux-next: build failure while building Linus' tree
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, libaokun1@huawei.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        llvm@lists.linux.dev, Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, sfr@canb.auug.org.au
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under GCC 4.9, fix the warning due to missing -fno-strict-aliasing:
+On Fri, Sep 10, 2021 at 3:26 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Fri, Sep 10, 2021 at 3:17 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Sep 10, 2021 at 3:02 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > On Thu, Sep 9, 2021 at 3:50 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > >
+> > > > + Rasmus
+> > > >
+> > > > This was introduced in
+> > > > commit f0907827a8a91 ("compiler.h: enable builtin overflow checkers and add
+> > > > fallback code")
+> > > > which added division using the `/` operator, which is problematic when checking
+> > > > for overflows of 64b operands on 32b targets.
+> > > >
+> > > > We'll probably need helpers from linux/math64.h and some combination of
+> > > > __builtin_choose_expr/__builtin_types_compatible_p.
+> > > >
+> > > > That will help us fix another compiler bug for older clang releases, too.
+> > > > https://github.com/ClangBuiltLinux/linux/issues/1438.
+> > >
+> > > Ok, I have something hacked up that I think will work:
+> > > https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863
+> >
+> > hmm...playing around with adding some static asserts to the above, I
+>
+> ah! static_assert can't be used for the type agnostic macros,
+> BUILD_BUG_ON needs to be used in its place. Ok, let me add a few and
+> see if that can help instill some confidence here.
 
-samples/seccomp/user-trap.c:50:2: warning: dereferencing type-punned pointer will break strict-alias
-ing rules [-Wstrict-aliasing]
-samples/seccomp/user-trap.c:83:2: warning: dereferencing type-punned pointer will break strict-alias
-ing rules [-Wstrict-aliasing]
+Ah, I just saw your comment now about raising the minimum required
+version of gcc to 5.1.
+https://github.com/ClangBuiltLinux/linux/issues/1438#issuecomment-916745801
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- samples/seccomp/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > This incomplete diff is a little hacked up to reproduce the issue with
+> > > a known-bad revision of clang that demonstrates a similar issue to GCC
+> > > 4.9.  You can ignore the movement of check_mul_overflow and friends in
+> > > include/linux/overflow.h.
+> > >
+> > > I think I'm going to break that up into 2 or 3 patches:
+> > > 1. move is_signed_type from include/linux/overflow.h to perhaps
+> > > include/linux/typecheck.h.
+> > > 2. add div64_x64, div_x64, and div_64 to include/linux/math64.h, use
+> > > them in include/linux/overflow.h to fix GCC 4.9
+> > > 3. move multiply fallbacks out of
+> > > COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW for clang < 14.
 
-diff --git a/samples/seccomp/Makefile b/samples/seccomp/Makefile
-index c85ae0ed8342..a3a3ef20a8fc 100644
---- a/samples/seccomp/Makefile
-+++ b/samples/seccomp/Makefile
-@@ -3,4 +3,4 @@ userprogs-always-y += bpf-fancy dropper bpf-direct user-trap
- 
- bpf-fancy-objs := bpf-fancy.o bpf-helper.o
- 
--userccflags += -I usr/include
-+userccflags += -I usr/include -fno-strict-aliasing
+In that case, I do have __mulodi4() rewritten from compiler-rt to be
+usable in the kernel.
 -- 
-2.30.2
-
+Thanks,
+~Nick Desaulniers
