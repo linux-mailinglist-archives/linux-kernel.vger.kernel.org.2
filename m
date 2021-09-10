@@ -2,70 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA654070C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D113C4070C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhIJSDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
+        id S229961AbhIJSFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhIJSD3 (ORCPT
+        with ESMTP id S229451AbhIJSFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:03:29 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB59C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:02:18 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id v123so2536513pfb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:02:18 -0700 (PDT)
+        Fri, 10 Sep 2021 14:05:23 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B09C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:04:12 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z5so5573555ybj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:04:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=1ivUikkgItgo5QSAdWUt+WIYsvlwr7CryN3TKRkrCwk=;
-        b=ImTBilWeK9HZJ1HIhLcXN7h6qYPyK7ARKJFvBJLOOC2XhBQPzwL8PaEnQ6tO6lfceA
-         ny8wgWvmywMrH7UFofyTSBFVf/ozQR24xKov0Iy56rkeJCcZB+Ddm88sxLmS06p11wHW
-         BZGWTibNXtMUkGLMLMijLESc1utd9HTwcjtkXEjJ+l5phrifejHVV0qou0ssI7lnWYxJ
-         iQz2N2TIEE8YerijauHF6GeXRSR4bVO0sx/onKRd6NAePgibhLA2yCxmumsRHTECKkr2
-         cOoL8gGT5iCHdOjcdRqgRaR35BANaEbluF9etPYGzmWikc3Ml2mUW1A44ubpbZPvDt6H
-         JIsA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FdiZIU18HRQNVcUBqI1gOpJDuHw72fPqFgD0vfSbxiM=;
+        b=OftdWZEwD9jdXht+HSnlAwhydSymZg+fXMuExwKIPpWPSdPet2l673kSg8FcGtw/6d
+         q/A8Jammz5TZedHA0AghaMGGChHtT4/kVWecAClUWj5q1tcoBkPQ91R8uZfezyXn1maC
+         dYBLtWCRik7kgp43oQveNCvzkjyyNnCZtQRG8fAd0m1JyDBsgXnolXRZtTMW7Nd24Dm9
+         /R+toReJ9Jkosf8Ny7n9oy64MKoI6hxdAt9vg8RHkQ6J5ZouUO23IUvUJGlNZsriSIUT
+         y/mncKScphEyMFh6hYP3TjUIv7at+65xBbQO8YlIAu7cB6/3mLMu/squbAehr5XeI1qJ
+         osVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=1ivUikkgItgo5QSAdWUt+WIYsvlwr7CryN3TKRkrCwk=;
-        b=Aymptdr4i6awqoSFQcIey4zSz4QVWcrL7bkJHfOypdceH+rrxhhGe8gVe1lSkF2oaQ
-         QrzB4HDwmZ40WeRSVlDVNh+k6a/kc1YxyHbniIsgMXNky+7vDOT5A6qvZHEhZOcGADg1
-         +HCov00A51bsqAiwCcyqiY1vwMA2dVKRLsk19+IISZTL9tG4jPa2I25OwWYTCTT6o4Fq
-         gDPUlYzSM5W3BC0YqBWsrBlNY0yHpFNVIiHJrLsxKuyGCW305/x1J7iBynVXFB/RFUGN
-         F1Gb6FLkP/90oBzh2NMjskxLptOsodujYAhmohVRftnqXnnkGEEShXT1bdz87C8aEkt2
-         cHfg==
-X-Gm-Message-State: AOAM5339tzM3sZs/m2HjvY+faq7G2Dlm/KpSzt3Iab8pROsiovhvbyZX
-        ZaMegx4KAo4p8DQpnJvoKRsdkGUYKAJx6Cz6T6U=
-X-Google-Smtp-Source: ABdhPJzlEwsvHbjnHZJYPd37tB+C/uADy3CcRiMPQx4qpSYqgLs/xOTyjrNdq5J4i+Jgyw1XdnuE/ajGXedVdhkhh58=
-X-Received: by 2002:a62:e50c:0:b029:2f9:b9b1:d44f with SMTP id
- n12-20020a62e50c0000b02902f9b9b1d44fmr9454932pff.42.1631296937848; Fri, 10
- Sep 2021 11:02:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FdiZIU18HRQNVcUBqI1gOpJDuHw72fPqFgD0vfSbxiM=;
+        b=3LMRN40LeF+iLGrzYIYQw9G69NZkqrjsn37JgQZEsULtrz2UPSHG02DNX4vBa+OAYi
+         zssu/h/dzPFqLCvE5nso066+aRCq+xpfQtuF39DRVO99OxBLeLOiSr+8Wcz/Fy//3QID
+         MWc6nbZWU7VLyYDfn5tctmfP9OyOu+Iwojk6pCAjSQTDLHgHs7t3anX2VU251odP+eXW
+         LD9onAT5UVfdAxsVMa5BVxuxoTMQJ3Yq4qyCcwZQWtE1qN8yYhgTTd3bZU0ob4H1GLUU
+         1hB6grDqc0WWR6L6Km8jmM/8CwRI/oDajfJVQ7BAnTsKCU8aQ7YaICRKQVLrjcYg3Ga9
+         xWmg==
+X-Gm-Message-State: AOAM533/+HkaVIP96yhPp5Gu2nxxBZx9C56PU73Ct3W6s9u3C/f6tG9+
+        ho2GX96WpgGxmt8ns6uSLzPqA5XMSjK0GxtVgHWfDg==
+X-Google-Smtp-Source: ABdhPJzWgdNOv8FFFa8yER05OfPRQry5w0Mk8yQAnalMrVdKBP5XCEEVprWbGAlMxK82fvaBzfD7oAiOSSVboVdVasw=
+X-Received: by 2002:a25:8093:: with SMTP id n19mr12994954ybk.414.1631297049652;
+ Fri, 10 Sep 2021 11:04:09 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a20:b1d:b0:52:729e:30cb with HTTP; Fri, 10 Sep 2021
- 11:02:17 -0700 (PDT)
-Reply-To: mrs.chantal166@gmail.com
-From:   Mrs chantal <misschantal1004@gmail.com>
-Date:   Fri, 10 Sep 2021 18:02:17 +0000
-Message-ID: <CAAUzMkB-h9Z+sjtg2Ab_4NuRei5HDmAoAMMFof5Yz0WaUUdmwg@mail.gmail.com>
-Subject: Dear Beneficiary
-To:     undisclosed-recipients:;
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-10-rananta@google.com>
+ <20210909075643.fhngqu6tqrpe33gl@gator> <CAJHc60wRkUyKEdY0ok0uC7r=P0FME+Lb7oapz+AKbjaNDhFHyA@mail.gmail.com>
+ <20210910081001.4gljsvmcovvoylwt@gator>
+In-Reply-To: <20210910081001.4gljsvmcovvoylwt@gator>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Fri, 10 Sep 2021 11:03:58 -0700
+Message-ID: <CAJHc60yhg7oYiJpHJK27M7=qo0CMOX+Qj9+q-ZHgTVhWr_76aA@mail.gmail.com>
+Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
+ the vcpuid
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.3 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
-Fill the followings with your details;
-1. Your Name:
-2. Country :
-3. Age and Sex:
-4. Occupation :
-5. Id Card Identification
+On Fri, Sep 10, 2021 at 1:10 AM Andrew Jones <drjones@redhat.com> wrote:
+>
+> On Thu, Sep 09, 2021 at 10:10:56AM -0700, Raghavendra Rao Ananta wrote:
+> > On Thu, Sep 9, 2021 at 12:56 AM Andrew Jones <drjones@redhat.com> wrote:
+> > >
+> > > On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
+> ...
+> > > > +     for (i = 0; i < KVM_MAX_VCPUS; i++) {
+> > > > +             vcpuid = vcpuid_map[i].vcpuid;
+> > > > +             GUEST_ASSERT_1(vcpuid != VM_VCPUID_MAP_INVAL, mpidr);
+> > >
+> > > We don't want this assert if it's possible to have sparse maps, which
+> > > it probably isn't ever going to be, but...
+> > >
+> > If you look at the way the array is arranged, the element with
+> > VM_VCPUID_MAP_INVAL acts as a sentinel for us and all the proper
+> > elements would lie before this. So, I don't think we'd have a sparse
+> > array here.
+>
+> If we switch to my suggestion of adding map entries at vcpu-add time and
+> removing them at vcpu-rm time, then the array may become sparse depending
+> on the order of removals.
+>
+Oh, I get it now. But like you mentioned, we add entries to the map
+while the vCPUs are getting added and then sync_global_to_guest()
+later. This seems like a lot of maintainance, unless I'm interpreting
+it wrong or not seeing an advantage.
+I like your idea of coming up an arch-independent interface, however.
+So I modified it similar to the familiar ucall interface that we have
+and does everything in one shot to avoid any confusion:
+
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h
+b/tools/testing/selftests/kvm/include/kvm_util.h
+index 010b59b13917..0e87cb0c980b 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -400,4 +400,24 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t
+vcpu_id, struct ucall *uc);
+ int vm_get_stats_fd(struct kvm_vm *vm);
+ int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
+
++#define VM_CPUID_MAP_INVAL -1
++
++struct vm_cpuid_map {
++       uint64_t hw_cpuid;
++       int vcpuid;
++};
++
++/*
++ * Create a vcpuid:hw_cpuid map and export it to the guest
++ *
++ * Input Args:
++ *   vm - KVM VM.
++ *
++ * Output Args: None
++ *
++ * Must be called after all the vCPUs are added to the VM
++ */
++void vm_cpuid_map_init(struct kvm_vm *vm);
++int guest_get_vcpuid(void);
++
+ #endif /* SELFTEST_KVM_UTIL_H */
+diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c
+b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+index db64ee206064..e796bb3984a6 100644
+--- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
++++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+@@ -16,6 +16,8 @@
+
+ static vm_vaddr_t exception_handlers;
+
++static struct vm_cpuid_map cpuid_map[KVM_MAX_VCPUS];
++
+ static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
+ {
+        return (v + vm->page_size) & ~(vm->page_size - 1);
+@@ -426,3 +428,42 @@ void vm_install_exception_handler(struct kvm_vm
+*vm, int vector,
+        assert(vector < VECTOR_NUM);
+        handlers->exception_handlers[vector][0] = handler;
+ }
++
++void vm_cpuid_map_init(struct kvm_vm *vm)
++{
++       int i = 0;
++       struct vcpu *vcpu;
++       struct vm_cpuid_map *map;
++
++       TEST_ASSERT(!list_empty(&vm->vcpus), "vCPUs must have been created\n");
++
++       list_for_each_entry(vcpu, &vm->vcpus, list) {
++               map = &cpuid_map[i++];
++               map->vcpuid = vcpu->id;
++               get_reg(vm, vcpu->id,
+KVM_ARM64_SYS_REG(SYS_MPIDR_EL1), &map->hw_cpuid);
++               map->hw_cpuid &= MPIDR_HWID_BITMASK;
++       }
++
++       if (i < KVM_MAX_VCPUS)
++               cpuid_map[i].vcpuid = VM_CPUID_MAP_INVAL;
++
++       sync_global_to_guest(vm, cpuid_map);
++}
++
++int guest_get_vcpuid(void)
++{
++       int i, vcpuid;
++       uint64_t mpidr = read_sysreg(mpidr_el1) & MPIDR_HWID_BITMASK;
++
++       for (i = 0; i < KVM_MAX_VCPUS; i++) {
++               vcpuid = cpuid_map[i].vcpuid;
++
++               /* Was this vCPU added to the VM after the map was
+initialized? */
++               GUEST_ASSERT_1(vcpuid != VM_CPUID_MAP_INVAL, mpidr);
++
++               if (mpidr == cpuid_map[i].hw_cpuid)
++                       return vcpuid;
++       }
++
++       /* We should not be reaching here */
++       GUEST_ASSERT_1(0, mpidr);
++       return -1;
++}
+
+This would ensure that we don't have a sparse array and can use the
+last non-vCPU element as a sentinal node.
+If you still feel preparing the map as and when the vCPUs are created
+makes more sense, I can go for it.
+
+Regards,
+Raghavendra
+> Thanks,
+> drew
+>
