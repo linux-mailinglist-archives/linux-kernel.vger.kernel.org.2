@@ -2,69 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC93A407203
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32430407205
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhIJTan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        id S233113AbhIJTbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbhIJTaK (ORCPT
+        with ESMTP id S234323AbhIJTbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:30:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233A3C061756;
-        Fri, 10 Sep 2021 12:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6jlEs7B165almJRLRE31tW+xA96GS78RIfJR4xnCYbg=; b=PL265S7y2ZrKBxAQknmUxxk6IB
-        Aguj777Hn3MNTpKzo4XgmpG3fkwj5QEPCohKYCOKBOp92wiIPxFnr1dSYYv+wIgCXd/qRYPuiPcX/
-        HcFkxsCp4UTc/iYvtsb7Jg814M7S5lXI5sS6rHb6Hoaqu5XGCFYrBREwCEI5AzKSC4DFgyXXA2j8E
-        J8yUeX4WkSUKCkCfpaxR1bu2gUpVf/tQwLnWbdWacIYf05oUSwCUHkw9xn6CxrRfpEAkWElIHdnK4
-        ILdqf7NBdUP+g7nRdZyNG0lHwLN38GrVDQLu66NfJJupMdQ6NCFKSLJQU16oogf5UyE1ly7MFYUCp
-        66tc4f7w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOmCb-002CZS-PL; Fri, 10 Sep 2021 19:28:46 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3557898627A; Fri, 10 Sep 2021 21:28:45 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 21:28:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v7 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <20210910192845.GT4323@worktop.programming.kicks-ass.net>
-References: <20210910183352.3151445-1-songliubraving@fb.com>
- <20210910183352.3151445-2-songliubraving@fb.com>
+        Fri, 10 Sep 2021 15:31:01 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E5C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:29:20 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id w4so4861685ljh.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4106171iyruquc6tsn3sJ73L23Envq9y9gb7Tkr3Js8=;
+        b=Sbx9cYlMH6RNCNfgWQKJU9uLVzoUJlaFno4UiRW9KsKlNEW8ZAN0RdHh2NgMZq6C9o
+         e3mehRNuX5LtPaKxPMXeqlcBmfm8sURx7khjg8ErV4fm9RlO+HkXVobI5CV42u11X3B+
+         zS4RgMtkz4dPickrPQ7/qBfhFtG7ji38o08kDaVFK6SAzR4CLPiY6ixiJWcHwH63xYUU
+         Yrk/FAGyq4sy4LcNzRZqfZTb4C7tetxBGB5M/FkUAmAvqGCPpdMbkSR2ioWHivR5uK2c
+         hND30wzAJuKaKv2Mjr4gGSXaF5CIPn8VX5QeXlJU4pZjfay3MOek6SanZ0GV7XRc3HF/
+         XeXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4106171iyruquc6tsn3sJ73L23Envq9y9gb7Tkr3Js8=;
+        b=hH4v17UwGBaVZO0gI1EnLvlj8e9ZUwRcvaZB2RfLsmnUVN9DJb1n93Gm7CDvuqQRge
+         5AYOVE8tE0kwxyNmWaY9zCwJ4dp0oONXSReOG2/WrDuOIRR0KGGmruq5+kvkxYuvNjwJ
+         XOWn8pzAjZQ9V7zKAuRlG2zVJ/uPLCixpR/VjOif8x8DzhMKxY3tIAbMHh/xUVIvaCQR
+         GroZNqvwZgT4pHwmb3L9HwfeNy//hf0OJNhjRImm8nMKDDrd/P9C+fxc5TNs3bkGlz39
+         ZWEN3bE6EbugrzW4NbSSGzzVKwoiHDmBEkJDKmnrf618IslymQhb6nMQqSzIsSBQlDIR
+         OhsA==
+X-Gm-Message-State: AOAM533iMXnlthYQNE3LmABv/Iqcz+J6CDmscUsHa9M03pJOa8wst4ob
+        HAObkK9It0JySmaKLQXaLw04cu4RalDs4QjkKmH1rw==
+X-Google-Smtp-Source: ABdhPJw7204XMnLRYaCCb5ZZ2RHlO4S8cc7Z3nMU7nKKuC8uEYefhxLX8FFJ42oRPfYCPgFA+mERHc/+dmy+Gs1E7O8=
+X-Received: by 2002:a05:651c:1305:: with SMTP id u5mr5310763lja.198.1631302158776;
+ Fri, 10 Sep 2021 12:29:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910183352.3151445-2-songliubraving@fb.com>
+References: <20210910113345.62bda9e6@canb.auug.org.au>
+In-Reply-To: <20210910113345.62bda9e6@canb.auug.org.au>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 10 Sep 2021 12:29:08 -0700
+Message-ID: <CAKwvOd=JQZXPstMsJOirXxRb8iFOCnpNW4SdmmGu1WOpZ5JS2Q@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the kspp tree with the
+ compiler-attributes tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:33:50AM -0700, Song Liu wrote:
-> The typical way to access branch record (e.g. Intel LBR) is via hardware
-> perf_event. For CPUs with FREEZE_LBRS_ON_PMI support, PMI could capture
-> reliable LBR. On the other hand, LBR could also be useful in non-PMI
-> scenario. For example, in kretprobe or bpf fexit program, LBR could
-> provide a lot of information on what happened with the function. Add API
-> to use branch record for software use.
-> 
-> Note that, when the software event triggers, it is necessary to stop the
-> branch record hardware asap. Therefore, static_call is used to remove some
-> branch instructions in this process.
-> 
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+On Thu, Sep 9, 2021 at 6:33 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the kspp tree got conflicts in:
+>
+>   include/linux/compiler-gcc.h
+>   include/linux/compiler_types.h
+>
+> between commit:
+>
+>   b83a908498d6 ("compiler_attributes.h: move __compiletime_{error|warning}")
+>
+> from the compiler-attributes tree and commit:
+>
+>   122b05c65c5d ("compiler_types.h: Remove __compiletime_object_size()")
+>
+> from the kspp tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Thanks Stephen,
+Kees, Miguel just sent the patch from his tree to Linus in a PR:
+https://lore.kernel.org/lkml/20210910191734.GA8688@kernel.org/T/#u
+
+>
+> --
+> Cheers,
+> Stephen Rothwell
+>
+> diff --cc include/linux/compiler-gcc.h
+> index 21c36b69eb06,01985821944b..000000000000
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@@ -41,8 -41,9 +41,6 @@@
+>
+>   #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
+>
+> - #define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
+>  -#define __compiletime_warning(message) __attribute__((__warning__(message)))
+>  -#define __compiletime_error(message) __attribute__((__error__(message)))
+> --
+>   #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
+>   #define __latent_entropy __attribute__((latent_entropy))
+>   #endif
+> diff --cc include/linux/compiler_types.h
+> index b6ff83a714ca,c43308b0a9a9..000000000000
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@@ -290,11 -290,13 +290,6 @@@ struct ftrace_likely_data
+>         (sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
+>          sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+>
+> - /* Compile time object size, -1 for unknown */
+> - #ifndef __compiletime_object_size
+> - # define __compiletime_object_size(obj) -1
+>  -#ifndef __compiletime_warning
+>  -# define __compiletime_warning(message)
+>  -#endif
+>  -#ifndef __compiletime_error
+>  -# define __compiletime_error(message)
+> --#endif
+> --
+>   #ifdef __OPTIMIZE__
+>   # define __compiletime_assert(condition, msg, prefix, suffix)         \
+>         do {                                                            \
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
