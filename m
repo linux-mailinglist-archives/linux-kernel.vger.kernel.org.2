@@ -2,151 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BBA40659C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61804065A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhIJCRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhIJCRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:17:01 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4C4C061574;
-        Thu,  9 Sep 2021 19:15:50 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so281970otq.7;
-        Thu, 09 Sep 2021 19:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=XdFt5ACb0B6NcL1KaHkMQUctIwj4PvbhHoqu8//N+IA=;
-        b=LHdCsqiGZr1a7aiYUkP7DmFRSY7gqLulr5Nn4zNvh0y0RdM3QF64LUuHQQV0fezoKI
-         YsCK6WfLBg9Q2NBIggwlnPau0NPP6Y4pCj2blHxTwEP058jXdih56SE3+lu2Md/kjcre
-         K4rNqVMX/9YI+LoHuUho1R5cJ0myVdOUlWPTJG71JcR6X41cR25TSptNwkxjAnpiluu5
-         cri4JIizJV3LqCUBtbyO/irsiAWmRIOMrjNoTtaOu4p1WLIDmNtZuWqe3Iiki/AfcjEO
-         6XyeP7kKTKfhfawpJRWevUuLrXg7nB7yYn+Z/GFMr8a/taVTZ6NbBE8VX8MjM/l/iI5I
-         THfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XdFt5ACb0B6NcL1KaHkMQUctIwj4PvbhHoqu8//N+IA=;
-        b=yUfPWjqDo5JeZifG9QrimcyaxASS+NsMmoPyrjU2cOg3iocu+75h/iyTLmFb1cBFaB
-         J12JVj116yhrkuhHpBkir4skMpdjBpWMCEiDIGZhDX/CXvx/TEcvbJNiEcXGfqGFiGRa
-         U61DQPAPIFjHS2sx458xFtV1Xw5cxRTIAtAXPKtPUY0tJJu8MrQJdFT2vllQNp1IDvSA
-         SSaUj3SmRUSy6aAQpqUWcxjQk4fOZn5/YTLZ5VFwHSUgia5VcxeoDgPYDe9lStkx3Lhq
-         0R9hPlb49nhFtJoNdCWW6z3lZV27OVrrDn+BdLgDepDHTTxg76kmmRlsfdxl+lGexzuY
-         wJxA==
-X-Gm-Message-State: AOAM532EXSBKiFwhwhr/08oWJ66l/r7SqwjN7kcT4ws9NWJR9a50XPg4
-        84jDfa/aKl0kKu0jVhmNhHY=
-X-Google-Smtp-Source: ABdhPJz5QMktgDBi/tpsczQ7ArxVo+6UbzYO2tKpJ/Bym6d5ziGJqK7GGOJGwLYOME5N69NldHwqgw==
-X-Received: by 2002:a05:6830:3482:: with SMTP id c2mr2655519otu.16.1631240150156;
-        Thu, 09 Sep 2021 19:15:50 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:d03b:9989:a53d:104f? ([2600:1700:dfe0:49f0:d03b:9989:a53d:104f])
-        by smtp.gmail.com with ESMTPSA id m25sm938941otp.41.2021.09.09.19.15.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 19:15:49 -0700 (PDT)
-Message-ID: <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com>
-Date:   Thu, 9 Sep 2021 19:15:40 -0700
+        id S229742AbhIJCS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhIJCS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:18:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDD0860F94;
+        Fri, 10 Sep 2021 02:17:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631240237;
+        bh=c3RRvTlhhK0ZHI/AL1jQEm27c30eexogLcOnN7PKsdQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GBh6KPY8KGsZnBUrLVJHkfpVmFJ0F4wvxUnXwaYUFlQwgGBnE58WfIAK5LKN2YDsi
+         fGQaSHOQ1JQ1h7p1adt94UKUhxZ19qspyTFSvPONf4tcXdU2/i9eA6p4eAZ388URaC
+         llA+6EFoLWaZBJTDthsn1k8aPV26ttdcCr0TsyGl/trS8Aot8N3Gx2ZPvOAby8t5E/
+         0a16f9bEhHYnfFWof9HCf1+jIjgHu2/Cs6dqa4kyS3hQVSd7KcMekF9cGfx+t0qJG0
+         9GIPIXL94/NPSueE5rvI+ld+Fx8HCm4mjh4K3bl9Uy5evyBJSonCmbfi+XMI8nq1x3
+         u25n6NTZhihAg==
+Date:   Fri, 10 Sep 2021 04:17:13 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 09/15] leds: trigger: blkdev: Check devices for
+ activity and blink LEDs
+Message-ID: <20210910041713.4722760a@thinkpad>
+In-Reply-To: <20210909222513.2184795-10-arequipeno@gmail.com>
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+        <20210909222513.2184795-10-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Content-Language: en-US
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de>
- <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de>
- <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf>
- <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <20210909154734.ujfnzu6omcjuch2a@skbuf>
- <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
- <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
- <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
- <20210909225457.figd5e5o3yw76mcs@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210909225457.figd5e5o3yw76mcs@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu,  9 Sep 2021 17:25:07 -0500
+Ian Pilcher <arequipeno@gmail.com> wrote:
 
+> +static void blkdev_update_disk(struct ledtrig_blkdev_disk *const disk,
+> +			       const unsigned int generation)
+> +{
+> +	const struct block_device *const part0 = disk->gd->part0;
+> +	const unsigned long read_ios = part_stat_read(part0, ios[STAT_READ]);
+> +	const unsigned long write_ios = part_stat_read(part0, ios[STAT_WRITE])
+> +				+ part_stat_read(part0, ios[STAT_DISCARD])
+> +				+ part_stat_read(part0, ios[STAT_FLUSH]);
 
-On 9/9/2021 3:54 PM, Vladimir Oltean wrote:
-[snip]
-> Question 6: How about a patch on the device core that is more lightweight?
-> Wouldn't it be sensible for device_shutdown() to just call ->remove if
-> the device's bus has no ->shutdown, and the device's driver doesn't have
-> a ->shutdown either?
-> 
-> Answer: This would sometimes work, the vast majority of DSA switch
-> drivers, and Ethernet controllers (in this case used as DSA masters) do
-> not have a .shutdown method implemented. But their bus does: PCI does,
-> SPI controllers do, most of the time. So it would work for limited
-> scenarios, but would be ineffective in the general sense.
+So your code allows me to use a partition block device (like sda2) to
+register with the blkdev LED trigger, but when I do this, the code will
+disregard that I just want the LED to blink on activity on that one
+partition. Instead you will blink for whole sda, since you are looking
+at stats of only part0.
 
-Having wondered about that question as well, I don't really see a 
-compelling reason as to why we do not default to calling .remove() when 
-.shutdown() is not implemented. In almost all of the cases the semantics 
-of .remove() are superior to those required by .shutdown().
+Am I right?
 
-> 
-> Question 7: I said that .shutdown, as opposed to .remove, doesn't really
-> care so much about the integrity of data structures. So how far should
-> we really go to fix this issue? Should we even bother to unbind the
-> whole DSA tree, when the sole problem is that we are the DSA master's
-> upper, and that is keeping a reference on it?
-> 
-> Answer: Well, any solution that does unnecessary data structure teardown
-> only delays the reboot for nothing. Lino's patch just bluntly calls
-> dsa_tree_teardown() from the switch .shutdown method, and this leaks
-> memory, namely dst->ports. But does this really matter? Nope, so let's
-> extrapolate. In this case, IMO, the simplest possible solution would be
-> to patch bcmgenet to not unregister the net device. Then treat every
-> other DSA master driver in the same way as they come, one by one.
-> Do you need to unregister_netdevice() at shutdown? No. Then don't.
-> Is it nice? Probably not, but I'm not seeing alternatives.
+If so, this in unacceptable. The whole point of blkdev trigger is that
+you can reliably use it for any block device, and then it will blink
+the LED for that device, be it partition or whole disk.
 
-It does not really scale but we also don't have that many DSA masters to 
-support, I believe I can name them all: bcmgenet, stmmac, bcmsysport, 
-enetc, mv643xx_eth, cpsw, macb. If you want me to patch bcmgenet, give 
-me a few days to test and make sure there is no power management 
-regression, that's the primary concern I have.
+Marek
 
-> 
-> Also, unless I'm missing something, Lino probably still sees the WARN_ON
-> in bcmgenet's unregister_netdevice() about eth0 getting unregistered
-> while having an upper interface. If not, it's by sheer luck that the DSA
-> switch's ->shutdown gets called before bcmgenet's ->shutdown. But for
-> this reason, it isn't a great solution either. If the device links can't
-> guarantee us some sort of shutdown ordering (what we ideally want, as
-> mentioned, is for the DSA switch driver to get _unbound_ (->remove)
-> before the DSA master gets unbound or shut down).
-> 
-
-All of your questions are good and I don't have answers to any of them, 
-however I would like you and others to reason about .shutdown() not just 
-in the context of a reboot, or kexec'd kernel but also in the context of 
-putting the system into ACPI S5 (via poweroff). In that case the goal is 
-not only to quiesce the device, the goal is also to put it in a low 
-power mode.
-
-For bcmgenet specifically the code path that leads to a driver remove is 
-well tested and is guaranteeing the network device registration, thus 
-putting the PHY into suspend, shutting down DMAs, turning off clocks. 
-This is a big hammer, but it gets the job done and does not introduce 
-yet another code path to test, it's the same as the module removal.
--- 
-Florian
