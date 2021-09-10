@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E461C4066C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B023D4066BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhIJFco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 01:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhIJFco (ORCPT
+        id S230371AbhIJFb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 01:31:27 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16248 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230352AbhIJFbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 01:32:44 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5927C061574;
-        Thu,  9 Sep 2021 22:31:33 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id c6so626185pjv.1;
-        Thu, 09 Sep 2021 22:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=svfX9vrckIXv0kIsXF1Q/PyrjfnFqdiB+uHxilhWrdk=;
-        b=DsoWUPYLyH10u3d1eAgto4n9+YHgGmryBuTU6J0m9Yr7KuorWxHF2yxAWPKUxWBFHM
-         x2B0+3RoLsmf4Jj6mHDxW6RC1/bQK5guVuS1QaaQKBD1y9R3+sCHpUtDlY0KKKb5qRXk
-         9oCPVpqniclK+QjaiuLG09eiKHArJ/W09gn5lAQmxBI9XFyvxTuIfpXCiOrSP5OH/O4F
-         +V5PJLkog8EB3Se7oyPLlA+cj3bU1M3btokG2h8wHLg18TVsFnZLXjta+HxezIrvEyoX
-         B7r88e18ApPdRNg+nNWe7rtHd6SGZp4sVu71gz1iAc1CeQCl6031+5br9Z4URhuohdL8
-         WLDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=svfX9vrckIXv0kIsXF1Q/PyrjfnFqdiB+uHxilhWrdk=;
-        b=41hEvMeeZhWAXE0xdmw4DjddbYcp7WhvUr9Q+PrFxMkkta7XAwwUPjB0PJjXzCsMMo
-         7Ody9LIf8b5qWZhbPxsbfahEmkQxmeKGCQeJoUyhypbwWqnKmiZoUm07a/IYyglpCG0t
-         3JE/BL3arqysj06iaO2m7kGQ0eIho8RlpMmn/psncLnrYkWtdTTxAuMVSCJm1EDKzp0v
-         CTAPvCV9qp4JFlM+MmlPteBQYyk4zhs4XkrqfUyPjtwVwd52Z/Awgf99YmKgRd57fQ3C
-         0oBcd254QVrF6fIGGX4auOeOonNyh4EgdYBqiXDM9cbbLjxsnvdpw5sWYLXAEwp0BWCX
-         1tBA==
-X-Gm-Message-State: AOAM530kt3KvUWYXl6bBUFR/9A3ZPmBl2iytfec6R0shxwqjSim9G4s/
-        HvWnoePGuX3leqgQuacxmz8xjUy0uhs=
-X-Google-Smtp-Source: ABdhPJwEvyoYNFGGCWYsnZiTj2N0FUwbbi4MlENVHaDd+k8Xq8Bi8vcgCw/F6v2GQRdx7GTdznXCUg==
-X-Received: by 2002:a17:902:b601:b029:12b:d9a:894f with SMTP id b1-20020a170902b601b029012b0d9a894fmr5884186pls.63.1631251893206;
-        Thu, 09 Sep 2021 22:31:33 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.113])
-        by smtp.gmail.com with ESMTPSA id mv1sm3692398pjb.29.2021.09.09.22.31.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 22:31:32 -0700 (PDT)
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Vipin Sharma <vipinsh@google.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
- <20210909143720.GA14709@blackbody.suse.cz>
- <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
- <YTpY0G3+IJYmGbdd@blackbook>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
-Date:   Fri, 10 Sep 2021 13:30:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Fri, 10 Sep 2021 01:31:24 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H5PZV6MDcz8stp;
+        Fri, 10 Sep 2021 13:29:38 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 10 Sep 2021 13:30:10 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 10 Sep 2021 13:30:09 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <will@kernel.org>, <catalin.marinas@arm.com>,
+        <ryabinin.a.a@gmail.com>, <andreyknvl@gmail.com>,
+        <dvyukov@google.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <elver@google.com>, <akpm@linux-foundation.org>,
+        <gregkh@linuxfoundation.org>
+CC:     <kasan-dev@googlegroups.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v4 0/3] arm64: support page mapping percpu first chunk allocator
+Date:   Fri, 10 Sep 2021 13:33:51 +0800
+Message-ID: <20210910053354.26721-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YTpY0G3+IJYmGbdd@blackbook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Percpu embedded first chunk allocator is the firstly option, but it
+could fails on ARM64, eg,
+  "percpu: max_distance=0x5fcfdc640000 too large for vmalloc space 0x781fefff0000"
+  "percpu: max_distance=0x600000540000 too large for vmalloc space 0x7dffb7ff0000"
+  "percpu: max_distance=0x5fff9adb0000 too large for vmalloc space 0x5dffb7ff0000"
 
-Thanks for your time.
+then we could meet "WARNING: CPU: 15 PID: 461 at vmalloc.c:3087 pcpu_get_vm_areas+0x488/0x838",
+even the system could not boot successfully.
 
-Michal Koutný wrote on 2021/9/10 2:56 上午:
-> On Thu, Sep 09, 2021 at 09:49:56AM -0700, Vipin Sharma <vipinsh@google.com> wrote:
->> We are adding two files in this patch series, misc.events and
->> misc.events.local. I think "fail" should go in misc.events.local and
->> its name should be changed to "max".
-> 
-> I consider the max vs fail orthogonal to local vs hierarchical. I.e.
-> both entries can be in both files:
-> 
-> (1) misc.events.local:max	number of times the cgroup's misc.max was hit
-> (2) misc.events.local:fail	number of times operation failed in the cgroup
-> (3) misc.events:max		number of times the cgroup's misc.max was hit in the subtree
-> (4) misc.events:fail		number of times operation failed in the subtree
-> 
-> Is that too many? Admittedly, I assume (1) and (4) will be the more useful ones.
-> However, I'm afraid overloading "max" as suggested might be (more)
-> confusing. ('subtree' above := self or descendant)
+Let's implement page mapping percpu first chunk allocator as a fallback
+to the embedding allocator to increase the robustness of the system.
 
-I am a bit confused here. For misc_cgroup, we can only be rejected when the count
-touch Limit, but there may be other more reasons for other subsystems. Therefore,
-when we are rejected, does it mean that we have touch Limit? If so, do we still
-need to distinguish between max and fail? (for misc_cgroup)
+Also fix a crash when both NEED_PER_CPU_PAGE_FIRST_CHUNK and KASAN_VMALLOC enabled.
 
-> Michal
-> 
+Tested on ARM64 qemu with cmdline "percpu_alloc=page" based on v5.14.
+
+V4:
+- add ACK/RB
+- address comments about patch1 from Catalin
+- add Greg and Andrew into list suggested by Catalin
+
+v3:
+- search for a range that fits instead of always picking the end from
+  vmalloc area suggested by Catalin.
+- use NUMA_NO_NODE to avoid "virt_to_phys used for non-linear address:"
+  issue in arm64 kasan_populate_early_vm_area_shadow().
+- add Acked-by: Marco Elver <elver@google.com> to patch v3
+
+V2:
+- fix build error when CONFIG_KASAN disabled, found by lkp@intel.com
+- drop wrong __weak comment from kasan_populate_early_vm_area_shadow(),
+  found by Marco Elver <elver@google.com>
+
+Kefeng Wang (3):
+  vmalloc: Choose a better start address in vm_area_register_early()
+  arm64: Support page mapping percpu first chunk allocator
+  kasan: arm64: Fix pcpu_page_first_chunk crash with KASAN_VMALLOC
+
+ arch/arm64/Kconfig         |  4 ++
+ arch/arm64/mm/kasan_init.c | 16 ++++++++
+ drivers/base/arch_numa.c   | 82 +++++++++++++++++++++++++++++++++-----
+ include/linux/kasan.h      |  6 +++
+ mm/kasan/init.c            |  5 +++
+ mm/vmalloc.c               | 19 ++++++---
+ 6 files changed, 116 insertions(+), 16 deletions(-)
+
+-- 
+2.26.2
+
