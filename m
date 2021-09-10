@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE37406BB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49A5406C05
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhIJMdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
+        id S233993AbhIJMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233692AbhIJMdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77037611CE;
-        Fri, 10 Sep 2021 12:32:06 +0000 (UTC)
+        id S233856AbhIJMfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61398611F0;
+        Fri, 10 Sep 2021 12:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277127;
-        bh=24WADtF1nlCF5+DsbBKx77QjJcAUjTpmnx8sRSvWoek=;
+        s=korg; t=1631277245;
+        bh=0OciUXkOw6H8uLnsBBtXfwARuNwWQfNBL2OXCIPePuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AH0V6+yd07xvvmvhIqgmv7TmOJYJvzJB0OFO9mXBEQkhaKJVRrE1stBMwawMfFJzK
-         7x1FciKmRZF1ydhwG9+wXRMUYNwuTR8QN3PYHCUjJFtT3hLaXIUnN09cgwPSi48IYY
-         WAQ5xPs7nDJgajcvUSKANTsqUusbiFv3BqhM9d9I=
+        b=L4sDnF8dG1KGnboU1Fdccn9NJhfpPjEGN39Ue2yJAVHRiAAWYwGGZhZ7/Hgp4j/aC
+         5FGc4GNkqBifCQ9YKqgcgR9SiCxkEFg+2AUt2HTNSibOGiPzw1kEeIX20zpS6xEFQK
+         bTUZWja+L1RkRuWPir56+PMgkpsyBTAzgPhFuDKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 5.13 13/22] usb: cdnsp: fix the wrong mult value for HS isoc or intr
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 5.10 08/26] tty: drop termiox user definitions
 Date:   Fri, 10 Sep 2021 14:30:12 +0200
-Message-Id: <20210910122916.365208009@linuxfoundation.org>
+Message-Id: <20210910122916.528381124@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +38,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-commit e9ab75f26eb9354dfc03aea3401b8cfb42cd6718 upstream.
+commit c762a2b846b619c0f92f23e2e8e16f70d20df800 upstream.
 
-usb_endpoint_maxp() only returns the bit[10:0] of wMaxPacketSize
-of endpoint descriptor, not include bit[12:11] anymore, so use
-usb_endpoint_maxp_mult() instead.
+As was concluded in a follow-up discussion of commit e0efb3168d34 (tty:
+Remove dead termiox code) [1], termiox ioctls never worked, so there is
+barely anyone using this interface. We can safely remove the user
+definitions for this never adopted interface.
 
-Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-Cc: stable@vger.kernel.org
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1628836253-7432-4-git-send-email-chunfeng.yun@mediatek.com
+[1] https://lore.kernel.org/lkml/c1c9fc04-02eb-2260-195b-44c357f057c0@kernel.org/t/#u
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210105120239.28031-12-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/cdns3/cdnsp-mem.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/termios.h |   15 ---------------
+ 1 file changed, 15 deletions(-)
 
---- a/drivers/usb/cdns3/cdnsp-mem.c
-+++ b/drivers/usb/cdns3/cdnsp-mem.c
-@@ -882,7 +882,7 @@ static u32 cdnsp_get_endpoint_max_burst(
- 	if (g->speed == USB_SPEED_HIGH &&
- 	    (usb_endpoint_xfer_isoc(pep->endpoint.desc) ||
- 	     usb_endpoint_xfer_int(pep->endpoint.desc)))
--		return (usb_endpoint_maxp(pep->endpoint.desc) & 0x1800) >> 11;
-+		return usb_endpoint_maxp_mult(pep->endpoint.desc) - 1;
+--- a/include/uapi/linux/termios.h
++++ b/include/uapi/linux/termios.h
+@@ -5,19 +5,4 @@
+ #include <linux/types.h>
+ #include <asm/termios.h>
  
- 	return 0;
- }
+-#define NFF	5
+-
+-struct termiox
+-{
+-	__u16	x_hflag;
+-	__u16	x_cflag;
+-	__u16	x_rflag[NFF];
+-	__u16	x_sflag;
+-};
+-
+-#define	RTSXOFF		0x0001		/* RTS flow control on input */
+-#define	CTSXON		0x0002		/* CTS flow control on output */
+-#define	DTRXOFF		0x0004		/* DTR flow control on input */
+-#define DSRXON		0x0008		/* DCD flow control on output */
+-
+ #endif
 
 
