@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36797406C11
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8090406B7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhIJMgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:36:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
+        id S233254AbhIJMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234051AbhIJMfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:35:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12024611C8;
-        Fri, 10 Sep 2021 12:34:12 +0000 (UTC)
+        id S233228AbhIJMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:32:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76B42611C8;
+        Fri, 10 Sep 2021 12:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277253;
-        bh=ultJftXe2XkVYnmOk8UWy08LFzE4g3CVf/4sLRRd5MU=;
+        s=korg; t=1631277065;
+        bh=4PNFQT0sWdvPFPLHHfWaQiXxNzDhxFvvX3ryFhHiK8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPJcKw9ACFZ7is2Dn4dzZRD9KX79yLoB2hwyb9G+ZKmYE1Lhv3n6k7ASPqFxea1Jp
-         4VDFUyj5rIwbl4cJnaEaZV7g9a+dHcQPSoGIB0ERCV/5HMinzhtqcblwm4WuBzb9O2
-         3irS/l/a6DoQTHO+kW0fQJizoTobUQKhhHWHYPKk=
+        b=mBNLVAcg+HgU4ED5s+3sZOI7r2WPXuL7sROXykOu3DXkQMTH4/r21852yyq5ILMuJ
+         1YbtlV/SqE9J3EjGCHWqm3nR2aVzJ6tWgCRCszf4zT6Sa7vRdbU23jbCBdr1OgUUW1
+         M6EheszIvUvE9fkcEbCPJnPv0OMHInxNK+LkWqVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        syzbot+13146364637c7363a7de@syzkaller.appspotmail.com,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 01/37] ext4: fix race writing to an inline_data file while its xattrs are changing
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 5.14 14/23] usb: mtu3: fix the wrong HS mult value
 Date:   Fri, 10 Sep 2021 14:30:04 +0200
-Message-Id: <20210910122917.196545239@linuxfoundation.org>
+Message-Id: <20210910122916.464101082@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
-References: <20210910122917.149278545@linuxfoundation.org>
+In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
+References: <20210910122916.022815161@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,42 +38,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit a54c4613dac1500b40e4ab55199f7c51f028e848 upstream.
+commit 44e4439d8f9f8d0e9da767d1f31e7c211081feca upstream.
 
-The location of the system.data extended attribute can change whenever
-xattr_sem is not taken.  So we need to recalculate the i_inline_off
-field since it mgiht have changed between ext4_write_begin() and
-ext4_write_end().
+usb_endpoint_maxp() returns actual max packet size, @mult will
+always be zero, fix it by using usb_endpoint_maxp_mult() instead
+to get mult.
 
-This means that caching i_inline_off is probably not helpful, so in
-the long run we should probably get rid of it and shrink the in-memory
-ext4 inode slightly, but let's fix the race the simple way for now.
-
-Cc: stable@kernel.org
-Fixes: f19d5870cbf72 ("ext4: add normal write support for inline data")
-Reported-by: syzbot+13146364637c7363a7de@syzkaller.appspotmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: 4d79e042ed8b ("usb: mtu3: add support for usb3.1 IP")
+Cc: stable@vger.kernel.org
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1628836253-7432-3-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inline.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/usb/mtu3/mtu3_gadget.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -750,6 +750,12 @@ int ext4_write_inline_data_end(struct in
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	BUG_ON(!ext4_has_inline_data(inode));
+--- a/drivers/usb/mtu3/mtu3_gadget.c
++++ b/drivers/usb/mtu3/mtu3_gadget.c
+@@ -64,14 +64,12 @@ static int mtu3_ep_enable(struct mtu3_ep
+ 	u32 interval = 0;
+ 	u32 mult = 0;
+ 	u32 burst = 0;
+-	int max_packet;
+ 	int ret;
  
-+	/*
-+	 * ei->i_inline_off may have changed since ext4_write_begin()
-+	 * called ext4_try_to_write_inline_data()
-+	 */
-+	(void) ext4_find_inline_data_nolock(inode);
-+
- 	kaddr = kmap_atomic(page);
- 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
- 	kunmap_atomic(kaddr);
+ 	desc = mep->desc;
+ 	comp_desc = mep->comp_desc;
+ 	mep->type = usb_endpoint_type(desc);
+-	max_packet = usb_endpoint_maxp(desc);
+-	mep->maxp = max_packet & GENMASK(10, 0);
++	mep->maxp = usb_endpoint_maxp(desc);
+ 
+ 	switch (mtu->g.speed) {
+ 	case USB_SPEED_SUPER:
+@@ -92,7 +90,7 @@ static int mtu3_ep_enable(struct mtu3_ep
+ 				usb_endpoint_xfer_int(desc)) {
+ 			interval = desc->bInterval;
+ 			interval = clamp_val(interval, 1, 16) - 1;
+-			mult = (max_packet & GENMASK(12, 11)) >> 11;
++			mult = usb_endpoint_maxp_mult(desc) - 1;
+ 		}
+ 		break;
+ 	default:
 
 
