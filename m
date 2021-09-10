@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE2A40716E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D4840717F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbhIJSq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhIJSqz (ORCPT
+        id S232392AbhIJSwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:52:09 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:43852 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhIJSv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:46:55 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E96C061574;
-        Fri, 10 Sep 2021 11:45:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id dw14so1067280pjb.1;
-        Fri, 10 Sep 2021 11:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ihW9KDPndspt5qyNgxniOeuPju9h1xWPYJ0Z1tD1580=;
-        b=Who8hrR5IA2WjiAVPOoV4Acmb006sdOjcXFxANx1ntVdZKyjFwm1lU40Bqmakh3kvY
-         mqSwfJPiTivVjwHO/ivFcWP18Ha0T9eQS1+CEnCW1KZKRbXSWDcFoJFm0p6lS6fOMNEU
-         dTxeP0F8wyGF3OD6w5ThcjsdC+7g8FXt5alb5is+sisAwxIZHhuIOobAucjCEn96pkjs
-         KbsdxFRXus1BPwiJB3JucI/Hgk5VSp1GdSAN3PDBYww/fhQLqJGci+QwUGxZm8T2NdsL
-         lil4GmCW0O1Z2Qd6Y2jpxn3aHLXS4WldrxDlg6di6oeNcEPuXXLCnqF2gm2y/ibUTiLn
-         n3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ihW9KDPndspt5qyNgxniOeuPju9h1xWPYJ0Z1tD1580=;
-        b=meUlLTjY+ERdtEac4ZHa5QKwHsVDwhoacsLBtEy13C/iC+saVW3imjRSYXW2tnm6Ml
-         DMoISiWtGPl+i1hbe9s3K0Dmt1jD6iM4ldZ02nEKxBA/oLnRCeGOm2TSPR5v+vr4dxdM
-         CjJqeaLLKyLoXC80abg5hcWh7/zA9SuPMR97JrheUnfD6rATImkLn+RJ7qRTh3sxS0Yq
-         j9DGJLKF0lAr4qt8YgxnmOuUennI+2Lnk+LbqkkAw2auTvHRXgSCwSlwabzk3TEtZsF8
-         rB1OY5awI+NHYLXyqB9z0d7d1ZRKHKOwl4QURvQC8m4cR5BSSc3k2V5OtrBrM2QtKNco
-         GeSg==
-X-Gm-Message-State: AOAM531u0dtx5PNKppyCI+x+QwZ3QpC5GuuMeY/CFhr4UK1wY0U7XR7W
-        JjAQczn+XJ083u+vBXraZ7M=
-X-Google-Smtp-Source: ABdhPJzb39KzBYhV8pFaG1xVNgnzDoPs+DQfr0du2JtOpJHqT7+txRFSWf4W2D3khbmnksM+BFqNkQ==
-X-Received: by 2002:a17:902:784f:b0:13a:3f0e:bb3f with SMTP id e15-20020a170902784f00b0013a3f0ebb3fmr8893507pln.61.1631299543631;
-        Fri, 10 Sep 2021 11:45:43 -0700 (PDT)
-Received: from [10.230.24.142] ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id p12sm5494025pff.106.2021.09.10.11.45.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 11:45:42 -0700 (PDT)
-Message-ID: <2045f6d5-2580-9275-e71c-537a8fc6237b@gmail.com>
-Date:   Fri, 10 Sep 2021 11:45:33 -0700
+        Fri, 10 Sep 2021 14:51:58 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOlZi-002y21-5p; Fri, 10 Sep 2021 18:48:34 +0000
+Date:   Fri, 10 Sep 2021 18:48:34 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [git pull] iov_iter fixes
+Message-ID: <YTuogsGTH5pQLKo7@zeniv-ca.linux.org.uk>
+References: <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+ <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
+ <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+ <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk>
+ <CAHk-=wiPEZypYDnoDF7mRE=u1y6E_etmCTuOx3v2v6a_Wj=z3g@mail.gmail.com>
+ <b1944570-0e72-fd64-a453-45f17e7c1e56@kernel.dk>
+ <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 5.4 00/37] 5.4.145-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210910122917.149278545@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 10, 2021 at 10:31:00AM -0700, Linus Torvalds wrote:
+> On Fri, Sep 10, 2021 at 10:26 AM Jens Axboe <axboe@kernel.dk> wrote:
+> >
+> > On 9/10/21 10:58 AM, Linus Torvalds wrote:
+> > > On Fri, Sep 10, 2021 at 9:56 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > >>
+> > >> What's the point of all those contortions, anyway?  You only need it for
+> > >> iovec case; don't mix doing that and turning it into flavour-independent
+> > >> primitive.
+> > >
+> > > Good point, making it specific to iovec only gets rid of a lot of
+> > > special cases and worries.
+> > >
+> > > This is fairly specialized, no need to always cater to every possible case.
+> >
+> > Alright, split into three patches:
+> >
+> > https://git.kernel.dk/cgit/linux-block/log/?h=iov_iter
+> 
+> That looks sane to me.
+> 
+> Please add some comment about how that
+> 
+>         i->iov -= state->nr_segs - i->nr_segs;
+> 
+> actually is the right thing for all the three cases (iow how 'iov',
+> 'kvec' and 'bvec' all end up having a union member that acts the same
+> way).
+> 
+> But yeah, I like how the io_uring.c code looks better this way too.
+> 
+> Al, what do you think?
 
-
-On 9/10/2021 5:30 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.145 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.145-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I think that sizeof(struct bio_vec) != sizeof(struct iovec):
+struct bio_vec {
+        struct page     *bv_page;
+	unsigned int    bv_len;
+	unsigned int    bv_offset;
+};
+takes 3 words on 32bit boxen.
+struct iovec
+{
+        void __user *iov_base;  /* BSD uses caddr_t (1003.1g requires void *) */
+	__kernel_size_t iov_len; /* Must be size_t (1003.1g) */
+};
+takes 2 words on 32bit boxen.
