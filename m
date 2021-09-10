@@ -2,123 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1DC40670F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7341406705
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhIJGGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:06:38 -0400
-Received: from smtpout1.mo3005.mail-out.ovh.net ([79.137.123.220]:48425 "EHLO
-        smtpout1.3005.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230429AbhIJGGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:06:36 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Sep 2021 02:06:35 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.109.146.51])
-        by mo3005.mail-out.ovh.net (Postfix) with ESMTPS id ECA4513EFE4;
-        Fri, 10 Sep 2021 05:48:19 +0000 (UTC)
-Received: from kaod.org (37.59.142.100) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 10 Sep
- 2021 07:48:19 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-100R003b2afc9eb-92ed-4917-a57a-8775a7168fc9,
-                    7E3151BA03BDFE499776E315E3312AC0A00E288C) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.64.250.170
-Subject: Re: [PATCH AUTOSEL 5.14 38/99] KVM: PPC: Book3S HV: XICS: Fix mapping
- of passthrough interrupts
-To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-CC:     Michael Ellerman <mpe@ellerman.id.au>, <kvm-ppc@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>
-References: <20210910001558.173296-1-sashal@kernel.org>
- <20210910001558.173296-38-sashal@kernel.org>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <27739836-bad2-6b3f-7f40-e84663fbbf24@kaod.org>
-Date:   Fri, 10 Sep 2021 07:48:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230520AbhIJGDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhIJGDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:03:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6245B6113A;
+        Fri, 10 Sep 2021 06:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631253733;
+        bh=kWhJlIC/1vHbeFhKoaxwk/xnuUNuDuDMWv8UUrP4zwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GKOXggWLy1L4eUBaHMMLpMRIcYzEKuAxNZ96kGhtbWEkketIVT4i+VcUb2tvEfQmq
+         /8SEFpiR/3lcdZhmoSCeEkWsx74JVPuFkg6E8bZ7Xu4fBKzz5jPK/HTt6GkMJXJdTL
+         vN42zrZNw87OmLaDErMrRv0IPf47T4dVNRQ1N7Ik=
+Date:   Fri, 10 Sep 2021 08:01:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "taoyi.ty" <escape@linux.alibaba.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <YTr0zvythCIJk4Xb@kroah.com>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+ <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210910001558.173296-38-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.100]
-X-ClientProxiedBy: DAG1EX1.mxp5.local (172.16.2.1) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: c650a476-78a5-43c6-9aa9-2b943421663f
-X-Ovh-Tracer-Id: 17411760584997833510
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudegtddgleekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeetfeejteefhfeuveethfduffeftdelvdeghfelhfeljeehheeuieevudeggefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtohepshgrshhhrghlsehkvghrnhgvlhdrohhrgh
+In-Reply-To: <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 2:14 AM, Sasha Levin wrote:
-> From: Cédric Le Goater <clg@kaod.org>
+On Fri, Sep 10, 2021 at 10:11:53AM +0800, taoyi.ty wrote:
+> On 2021/9/8 下午8:37, Greg KH wrote:
 > 
-> [ Upstream commit 1753081f2d445f9157550692fcc4221cd3ff0958 ]
+> > Perhaps you shouldn't be creating that many containers all at once?
+> > What normal workload requires this?
 > 
-> PCI MSIs now live in an MSI domain but the underlying calls, which
-> will EOI the interrupt in real mode, need an HW IRQ number mapped in
-> the XICS IRQ domain. Grab it there.
+> Thank you for your reply.
 > 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> Link: https://lore.kernel.org/r/20210701132750.1475580-31-clg@kaod.org
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-
-Why are we backporting this patch in stable trees ?
-
-It should be fine but to compile, we need a partial backport of commit
-51be9e51a800 ("KVM: PPC: Book3S HV: XIVE: Fix mapping of passthrough 
-interrupts") which exports irq_get_default_host().
-
-Thanks,
-
-C.
-
-
-> ---
->  arch/powerpc/kvm/book3s_hv.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 085fb8ecbf68..1ca0a4f760bc 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -5328,6 +5328,7 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
->  	struct kvmppc_passthru_irqmap *pimap;
->  	struct irq_chip *chip;
->  	int i, rc = 0;
-> +	struct irq_data *host_data;
->  
->  	if (!kvm_irq_bypass)
->  		return 1;
-> @@ -5392,7 +5393,14 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
->  	 * the KVM real mode handler.
->  	 */
->  	smp_wmb();
-> -	irq_map->r_hwirq = desc->irq_data.hwirq;
-> +
-> +	/*
-> +	 * The 'host_irq' number is mapped in the PCI-MSI domain but
-> +	 * the underlying calls, which will EOI the interrupt in real
-> +	 * mode, need an HW IRQ number mapped in the XICS IRQ domain.
-> +	 */
-> +	host_data = irq_domain_get_irq_data(irq_get_default_host(), host_irq);
-> +	irq_map->r_hwirq = (unsigned int)irqd_to_hwirq(host_data);
->  
->  	if (i == pimap->n_mapped)
->  		pimap->n_mapped++;
-> @@ -5400,7 +5408,7 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
->  	if (xics_on_xive())
->  		rc = kvmppc_xive_set_mapped(kvm, guest_gsi, desc);
->  	else
-> -		kvmppc_xics_set_mapped(kvm, guest_gsi, desc->irq_data.hwirq);
-> +		kvmppc_xics_set_mapped(kvm, guest_gsi, irq_map->r_hwirq);
->  	if (rc)
->  		irq_map->r_hwirq = 0;
->  
+> The scenario is the function computing of the public
 > 
+> cloud. Each instance of function computing will be
+> 
+> allocated about 0.1 core cpu and 100M memory. On
+> 
+> a high-end server, for example, 104 cores and 384G,
+> 
+> it is normal to create hundreds of containers at the
+> 
+> same time if burst of requests comes.
 
+So it is a resource management issue on your side, right?  Perhaps
+stagger the creation of new containers to allow the overall creation
+time to be less?
+
+thanks,
+
+greg k-h
