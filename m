@@ -2,171 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFFC406DE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5783D406DEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhIJPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234227AbhIJPEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:04:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DADF960F5D;
-        Fri, 10 Sep 2021 15:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631286182;
-        bh=PH99uv9BEC9eR+yC1+eR9dawbQ9KeXsn8vOTTb1eqCQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=GGoRWuyr5yRtYb50aZYkgkop1tYa+fVvdSywVoYq9xbevQrwLoyOBOA4mW6vCwSgs
-         csUYcbijYP5hK/IB51lcfBkNQyBshcGV0T6Ms1GxONJMGUcQyu6G2I1ovP7q56PlC0
-         CGKEsOUfs1jzjuacoWmEszpk3miGLSI/88sUYtN8nb7CPYgzSk7qVIb4NsQ+lf4/wG
-         DLemEvGSl5xxO51zTyYsVUbrECtEqRoxvF5Po6L7zmJSl52wqpwPvZEfhwU214Ely1
-         1c+Qt/4rfkL+dJwL2QaztEO6AAr3TrH+ppwmUNez0NSV5YrU4+HgKbf85RqQs7oFPH
-         rzLmmsWNoz4ZQ==
-Message-ID: <100c9d193641f2d18b1a5a15d25b9a36f5edb6bc.camel@kernel.org>
-Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
- /sys/devices/system/node/node*/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 10 Sep 2021 18:02:59 +0300
-In-Reply-To: <YTtmJAgOllgtsIDh@kroah.com>
-References: <20210910001726.811497-1-jarkko@kernel.org>
-         <YTsAjCZQ6AaWDjD1@kroah.com>
-         <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
-         <YTtmJAgOllgtsIDh@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S234180AbhIJPFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhIJPFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:05:39 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAD3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:04:28 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id bd1so3302680oib.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1pwlVxDkfCa0su9+pm6vroWkQFMoA+AryU161sjcxfk=;
+        b=Upka5ZzTcAbnaXhLgktHI/hEk3sA+dwVQL8Kt+LeTHdDwSOL5teaXo51VLxQLrhTY0
+         zHaWBnbao+/ZYQx7iQ8KNffO8Bwbw3ZrHKOfKEOWTxxgq+zd9iZ0xBxL2zkqLVuGUR6C
+         3I1+nnsaV1qxKKvfek19l7XxI5oG5T1gDXUHzxFkcqwMbgCJD1MazII9eIFRVbqjJsXO
+         IKiOtRNl9mjhkvh46uw34cfWYOwMduNhvPj40XmfrZaa2b96CUkLr8iDIYwlLZmWoFtc
+         ooHZx5cKluVeam5DJudtqN6O9eSdqoCM3BIAn/oNpmSD+wPhZDmiiJ+yRcmjPefk7x/9
+         n5MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1pwlVxDkfCa0su9+pm6vroWkQFMoA+AryU161sjcxfk=;
+        b=j29v7LSptHKW1Dh41HfEgvIMQtojKuFbYfRGZiKRCMh1nwr5CSH4lBWwxCTOhmpPyP
+         sNBGJvsSkD5Q4lMjLfXE908hQaCvnSXkxxzNQY5jH0hHA7w1WoyJL1D6u2RYXWDxCrIG
+         SwONPKpxGajqSeoyfXrB45KSkvJiyRdjTHQFq4Dphk1QEUGpw/HmIrU7B1dqTbA7uOBs
+         M9rRsS74LRrCqVg/hVIVyyjxnYJePkLJ+ghDNccPqkv/4bzR5KUUDNxJMMOl9t2wn9lW
+         p4AcSJkWKV8C1v91BWV93GZhqSGXcx4Pp28wEUVS3Lmw1rAnCwVP6rAnPWevdkzar4qW
+         w1PA==
+X-Gm-Message-State: AOAM533+A7Qj748JE+W/q389SttZWjewQ38cfTzEa0G9cL8IJwcezvPP
+        3yrWmkXhCpFJ0CeakETb+IfWzQ==
+X-Google-Smtp-Source: ABdhPJxSGAPtW3Oy2T5TFXP6JxfWfln/a1Zc6o7Sj8HhmrsyQ7Zv1HwU0sge2r1VlGeYw6LAnrGExA==
+X-Received: by 2002:aca:d02:: with SMTP id 2mr4489656oin.126.1631286267793;
+        Fri, 10 Sep 2021 08:04:27 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id 99sm1276993otd.2.2021.09.10.08.04.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 08:04:27 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+Message-ID: <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
+Date:   Fri, 10 Sep 2021 09:04:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 16:05 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Sep 10, 2021 at 04:17:44PM +0300, Jarkko Sakkinen wrote:
-> > On Fri, 2021-09-10 at 08:51 +0200, Greg Kroah-Hartman wrote:
-> > > On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
-> > > > The amount of SGX memory on the system is determined by the BIOS an=
-d it
-> > > > varies wildly between systems.  It can be from dozens of MB's on de=
-sktops
-> > > > or VM's, up to many GB's on servers.  Just like for regular memory,=
- it is
-> > > > sometimes useful to know the amount of usable SGX memory in the sys=
-tem.
-> > > >=20
-> > > > Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
-> > > > showing the total SGX memory in each NUMA node. The total memory fo=
-r
-> > > > each NUMA node is calculated by adding the sizes of contained EPC
-> > > > sections together.
-> > > >=20
-> > > > Introduce arch_node_read_meminfo(), which can optionally be rewritt=
-en by
-> > > > the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
-> > > >=20
-> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > ---
-> > > > v4:
-> > > > * A new patch.
-> > > >  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
-> > > >  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
-> > > >  drivers/base/node.c            | 10 +++++++++-
-> > > >  3 files changed, 29 insertions(+), 1 deletion(-)
-> > >=20
-> > > Where is the Documentation/ABI/ update for this new sysfs file?
-> >=20
-> > It's has been existed for a long time, e.g.
-> >=20
-> >  cat /sys/devices/system/node/node0/meminfo
-> > Node 0 MemTotal:       32706792 kB
-> > Node 0 MemFree:         5382988 kB
-> > Node 0 MemUsed:        27323804 kB
-> > Node 0 SwapCached:            8 kB
-> > Node 0 Active:          3640612 kB
-> > Node 0 Inactive:       21757684 kB
-> > Node 0 Active(anon):    2833772 kB
-> > Node 0 Inactive(anon):    14392 kB
-> > Node 0 Active(file):     806840 kB
-> > Node 0 Inactive(file): 21743292 kB
-> > Node 0 Unevictable:       80640 kB
-> > Node 0 Mlocked:           80640 kB
-> > Node 0 Dirty:                36 kB
-> > Node 0 Writeback:             0 kB
-> > Node 0 FilePages:      22833124 kB
-> > Node 0 Mapped:          1112832 kB
-> > Node 0 AnonPages:       2645812 kB
-> > Node 0 Shmem:            282984 kB
-> > Node 0 KernelStack:       18544 kB
-> > Node 0 PageTables:        46704 kB
-> > Node 0 NFS_Unstable:          0 kB
-> > Node 0 Bounce:                0 kB
-> > Node 0 WritebackTmp:          0 kB
-> > Node 0 KReclaimable:    1311812 kB
-> > Node 0 Slab:            1542220 kB
-> > Node 0 SReclaimable:    1311812 kB
-> > Node 0 SUnreclaim:       230408 kB
-> > Node 0 AnonHugePages:         0 kB
-> > Node 0 ShmemHugePages:        0 kB
-> > Node 0 ShmemPmdMapped:        0 kB
-> > Node 0 FileHugePages:        0 kB
-> > Node 0 FilePmdMapped:        0 kB
-> > Node 0 HugePages_Total:     0
-> > Node 0 HugePages_Free:      0
-> > Node 0 HugePages_Surp:      0
+On 9/10/21 7:57 AM, Jens Axboe wrote:
+> On 9/9/21 9:36 PM, Al Viro wrote:
+>> On Thu, Sep 09, 2021 at 09:30:03PM -0600, Jens Axboe wrote:
+>>
+>>>> Again, we should never, ever modify the iovec (or bvec, etc.) array in
+>>>> ->read_iter()/->write_iter()/->sendmsg()/etc. instances.  If you see
+>>>> such behaviour anywhere, report it immediately.  Any such is a blatant
+>>>> bug.
+>>>
+>>> Yes that was wrong, the iovec is obviously const. But that really
+>>> doesn't change the original point, which was that copying the iov_iter
+>>> itself unconditionally would be miserable.
+>>
+>> Might very well be true, but... won't your patch hit the reimport on
+>> every short read?  And the cost of uaccess in there is *much* higher
+>> than copying of 48 bytes into local variable...
+>>
+>> Or am I misreading your patch?  Note that short reads on reaching
+>> EOF are obviously normal - it's not a rare case at all.
+> 
+> It was just a quick hack, might very well be too eager to go through
+> those motions. But pondering this instead of sleeping, we don't need to
+> copy all of iov_iter in order to restore the state, and we can use the
+> same advance after restoring. So something like this may be more
+> palatable. Caveat - again untested, and I haven't tested the performance
+> impact of this at all.
 
-This was something also spinned my head a bit, i.e. why hugepages fields
-are not aligned correctly.
+Passes basic testing for me. I added a sysctl switch for this so I can
+compare performance, running my usual peak-perf-single-core benchmark.
+That one does ~3.5M IOPS, using polled IO. There's always a slight
+variability between boots and builds, hence the sysctl so I could
+toggle this behavior on the fly.
 
-> >=20
-> > This file is undocumented but the fields seem to reflect what is in
-> > /proc/meminfo, so I added additional patch for documentation:
-> >=20
-> > https://lore.kernel.org/linux-sgx/20210910001726.811497-3-jarkko@kernel=
-.org/
-> >=20
-> > I have no idea why things are how they are. I'm just merely trying to f=
-ollow
-> > the existing patterns. I'm also fully aware of the defacto sysfs patter=
-n, i.e.
-> > one value per file.
->=20
-> Then please do not add anything else to this nightmare of a mess.
+Did a few runs, and the differences are very stable. With this enabled,
+we spend about 0.15% more time in io_read(). That's only worth about
+5K IOPS at 3.5M, not enough to notice as the variation for the 1 second
+reporting window usually swings more than that:
 
-There is already /sys/devices/system/node/node0/hugepages/.
+Old behavior:
+IOPS=3536512, IOS/call=32/31, inflight=(75)
+IOPS=3541888, IOS/call=32/32, inflight=(64)
+IOPS=3529056, IOS/call=32/31, inflight=(119)
+IOPS=3521184, IOS/call=32/32, inflight=(96)
+IOPS=3527456, IOS/call=32/31, inflight=(128)
+IOPS=3525504, IOS/call=32/32, inflight=(128)
+IOPS=3524288, IOS/call=32/32, inflight=(128)
+IOPS=3536192, IOS/call=32/32, inflight=(96)
+IOPS=3535840, IOS/call=32/32, inflight=(96)
+IOPS=3533728, IOS/call=32/31, inflight=(128)
+IOPS=3528384, IOS/call=32/32, inflight=(128)
+IOPS=3518400, IOS/call=32/32, inflight=(64)
 
-It has alike data to the contents of meminfo:
+Turning it on:
+IOPS=3533824, IOS/call=32/31, inflight=(64)
+IOPS=3541408, IOS/call=32/32, inflight=(32)
+IOPS=3533024, IOS/call=32/31, inflight=(64)
+IOPS=3528672, IOS/call=32/32, inflight=(35)
+IOPS=3522272, IOS/call=32/31, inflight=(107)
+IOPS=3517632, IOS/call=32/32, inflight=(57)
+IOPS=3516000, IOS/call=32/31, inflight=(96)
+IOPS=3513568, IOS/call=32/32, inflight=(34)
+IOPS=3525600, IOS/call=32/31, inflight=(96)
+IOPS=3527136, IOS/call=32/31, inflight=(101)
 
-/sys/devices/system/node/node0/hugepages/hugepages-2048kB:
-surplus_hugepages
-nr_hugepages
-free_hugepages
+I think that's tolerable, it was never going to be absolutely free.
 
-/sys/devices/system/node/node0/hugepages/hugepages-1048576kB:
-surplus_hugepages
-nr_hugepages
-free_hugepages
+What do you think of this approach? Parts of iov_iter are going to
+remain constant, like iter_type and data_source. io_uring already copies
+iter->count, so that just leaves restoring iov (and unionized friends),
+nr_segs union, and iov_offset;
 
-[I'm wondering tho, how the fields in meminfo are supposed to be interprete=
-d,
- given that there are two types of huge pages, but let's just ignore that
- for the moment.]
+We could pretty this up and have the state part be explicit in iov_iter,
+and have the store/restore parts end up in uio.h. That'd tie them closer
+together, though I don't expect iov_iter changes to be an issue. It
+would make it more maintainable, though. I'll try and hack up this
+generic solution, see if that looks any better.
 
-Following this pattern, I'd perhaps go and create (and document):
-
-/sys/devices/system/node/node0/sgx/memory_size
-
-which would have the size in bytes.
-
-> thanks,
->=20
-> greg k-h
-
-/Jarkko
+-- 
+Jens Axboe
 
