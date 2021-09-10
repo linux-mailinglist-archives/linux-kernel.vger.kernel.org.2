@@ -2,60 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51C6406DBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3326A406DBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhIJOsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:48:06 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:39848 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhIJOsE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:48:04 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOhjZ-002vI7-Qg; Fri, 10 Sep 2021 14:42:29 +0000
-Date:   Fri, 10 Sep 2021 14:42:29 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [git pull] iov_iter fixes
-Message-ID: <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
-References: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+        id S234073AbhIJOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:46:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233128AbhIJOqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:46:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD2C0611CB;
+        Fri, 10 Sep 2021 14:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631285120;
+        bh=Wc9uNNc6NEx+AyIpNzRW4FvMaS9VoFEvCpU39lxJ3k8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HnsNUElUTF+UpCYjgy98q30nsuLIbW1Xy1xVeOC7KMnfERwaCWwni9PwBBp1aZ7sw
+         QQ0XxaLxeVdFgvqyTWAirVIuw6RmgNwt5gHweFXLF0x0iIYtlZDXOtmFQwVDiwvSag
+         lOMWC6GbCFm4BByfNwRu88vLw28T1GXZ9JNPlUU7jlgzVZG5FaXLjzhKFczskGjSZt
+         EkkLZxP1Tx9RhB/m5xeZK7JyBpGxtIOrVhNZGEZynA3Pge+yL0qOrg6kMXoW3DcOJO
+         mRn6d4rN5QxBRLil2rY5MWaQio4AEscCVdinFI+YYjxIRC+NLm4/kTmTWtbUE1mMP1
+         Zi6Nqlyz1lSEw==
+Date:   Fri, 10 Sep 2021 15:44:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 03/10] spi: Add flag for no TX after a RX in the same
+ Chip Select
+Message-ID: <20210910144442.GD4474@sirena.org.uk>
+References: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
+ <20210908113450.788452-4-tanureal@opensource.cirrus.com>
+ <20210908123734.GF4112@sirena.org.uk>
+ <7dc20785-95da-6599-49dc-8e5f805d6a14@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fOHHtNG4YXGJ0yqR"
 Content-Disposition: inline
-In-Reply-To: <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <7dc20785-95da-6599-49dc-8e5f805d6a14@opensource.cirrus.com>
+X-Cookie: You are standing on my toes.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 07:57:49AM -0600, Jens Axboe wrote:
 
-> It was just a quick hack, might very well be too eager to go through
-> those motions. But pondering this instead of sleeping, we don't need to
-> copy all of iov_iter in order to restore the state, and we can use the
-> same advance after restoring. So something like this may be more
-> palatable. Caveat - again untested, and I haven't tested the performance
-> impact of this at all.
+--fOHHtNG4YXGJ0yqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You actually can cut it down even more - nr_segs + iov remains constant
-all along, so you could get away with just 3 words here...  I would be
-surprised if extra memory traffic had shown up - it's well within the
-noise from register spills, (un)inlining, etc.  We are talking about
-3 (or 4, with your variant) extra words on one stack frame (and that'd
-be further offset by removal of ->truncated); I'd still like to see the
-profiling data, but concerns about extra memory traffic due to that
-are, IMO, misplaced.
+On Thu, Sep 09, 2021 at 11:51:21AM +0100, Lucas tanure wrote:
+> On 9/8/21 1:37 PM, Mark Brown wrote:
+> > On Wed, Sep 08, 2021 at 12:34:44PM +0100, Lucas Tanure wrote:
+> > > Some controllers can't write to the bus after a read without
+> > > releasing the chip select, so add flag and a check in spi core
+
+> > Nothing you've added ever reads this flag and I'm not sure what anything
+> > would be able to constructively do with it so why add the flag?  I don't
+> > understand what the use case is.
+
+> __spi_validate checks this flag and makes sure the message can be received
+> by the controller.
+> __spi_validate can't fix the message, so it only rejects the message.
+
+Given that this is hardware that can't possibly work how useful is that
+validation?  It's a fairly unusual thing for devices to do in the first
+place, only applies if using the native chip select (which your patch
+doesn't check for) and I am not sure that this is a general enough
+pattern in controllers to have generic support for.  I suspect that a
+lot of controllers with similar restrictions will be even more limited
+than this, for example only supporting one or two transfers with limits
+on the data, so it's not clear to me how useful this capability would
+be.
+
+--fOHHtNG4YXGJ0yqR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE7b1oACgkQJNaLcl1U
+h9DXGwf+NsQSSeNthNc4XvpJJN66EDXpfaBT1ScTmJnD8QVkQ+UvQljH7GTtifpI
+Kf0BUk0eqjnfQGH71oS3r+FsaX6vtY6CJ33LjEunROl/wXvR4t799e7Ei/SOdTPe
+zjAJsFtMob2hXToXGztubOvxIC4HnGUC7SrshUtO2dF4GG5ypAEsNBposfCbHcms
+XtJaHpR4ULFC35BcSNNf4T4rEpXd71j+bqy5qX13uHc5xtK7BsyCvIY3Ys3HEaOJ
+lHDHG9znRZAdQ3UcWDQV1rTVB/+2wpQwtlq+CvfrqCTpNnK2hbVN81gOW8fFx9jq
+tZbGgYIJ8sCUHDR3FmF9I6Jli+/c2g==
+=0dk3
+-----END PGP SIGNATURE-----
+
+--fOHHtNG4YXGJ0yqR--
