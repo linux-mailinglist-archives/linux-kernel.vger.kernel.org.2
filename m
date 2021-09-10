@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF1C406CD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBD1406CDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhIJNWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:22:14 -0400
-Received: from relay.sw.ru ([185.231.240.75]:58268 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231963AbhIJNWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:22:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=JVXUl/vOizFbXr36SIPs7G3RFOBb+JiAbzjybBgSVzo=; b=JLfwkFXuuXp3vd0TC
-        /NFlQV+FNFjxEFpmxjyN2Xcau1dZ7GgOhyPyo4HrLhWmnInQ5e1thC1wdt+G+EvfHG8LCuyDQMo4D
-        6/cxxh6G/QICGAi+EGhYighds6CAGImWsDXVSdQm/rVweBBVKGuOa2flWL+Ih1/ZygDxHCACfnIBw
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mOgSg-001V2v-Il; Fri, 10 Sep 2021 16:20:58 +0300
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
-Date:   Fri, 10 Sep 2021 16:20:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233495AbhIJNZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231963AbhIJNZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 09:25:49 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1594C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:24:38 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f070059e5c0f8ed8d1239.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:700:59e5:c0f8:ed8d:1239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EFC3B1EC013E;
+        Fri, 10 Sep 2021 15:24:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631280273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=VwIDjvSAEZcyShtXbaCUqIqB8YqpksxdGrjyPfc0M+Q=;
+        b=hWQszuVONK6ITVdzvuOgAbbDT+dwusyPMFU3IAHV4nF7XO6Q1ZyvCGljXrj8DbTyuJL9JT
+        RNuywXZJukC67yctMwOl6naqV70fvD8tVlw77YitmSO9QnlRmkXaofBxv0/+wtAfMHnP/q
+        MQLRWAZXu+MyXigyb/fZ5LcElOxaif0=
+Date:   Fri, 10 Sep 2021 15:24:30 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [PATCH v2 0/2] x86/asm: avoid register pressure from
+ static_cpu_has()
+Message-ID: <YTtcjhrWS8e9VfWG@zn.tnic>
+References: <20210908171716.3340120-1-hpa@zytor.com>
+ <20210909220818.417312-1-hpa@zytor.com>
+ <YTsif1FeOEyFJnqc@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YTsif1FeOEyFJnqc@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 4:04 PM, Tetsuo Handa wrote:
-> On 2021/09/10 21:39, Vasily Averin wrote:
->> The kernel currently allows dying tasks to exceed the memcg limits.
->> The allocation is expected to be the last one and the occupied memory
->> will be freed soon.
->> This is not always true because it can be part of the huge vmalloc
->> allocation. Allowed once, they will repeat over and over again.
->> Moreover lifetime of the allocated object can differ from
->> In addition the lifetime of the dying task.
+On Fri, Sep 10, 2021 at 11:16:47AM +0200, Borislav Petkov wrote:
+> Right, maybe I'm missing something but what is wrong with the immediate
+> addressing variant, i.e., that thing:
 > 
-> Can't we add fatal_signal_pending(current) test to vmalloc() loop?
+> 	testb  $0x8,0xffffffff89346eea
+> 
+> and you need to *force* %rip-relative?
 
-1) this has been done in the past but has been reverted later.
-2) any vmalloc changes will affect non-memcg allocations too.
- If we're doing memcg-related checks it's better to do it in one place.
-3) it is not vmalloc-only issue. Huge number of  kmalloc page allocations 
-from N concurrent threads will lead to the same problem. 
+To answer my own question after peterz asked: that hardcoded address
+won't work with KASLR, ofc.
 
->> Multiple such allocations running concurrently can not only overuse
->> the memcg limit, but can lead to a global out of memory and,
->> in the worst case, cause the host to panic.
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
