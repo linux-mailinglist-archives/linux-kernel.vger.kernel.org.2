@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E604F406B95
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE37406BB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbhIJMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50014 "EHLO mail.kernel.org"
+        id S233831AbhIJMdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233367AbhIJMck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:32:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F507611C9;
-        Fri, 10 Sep 2021 12:31:28 +0000 (UTC)
+        id S233692AbhIJMdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77037611CE;
+        Fri, 10 Sep 2021 12:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277089;
-        bh=WFWK/09lBNfAtxGfozjNZrWrz3JqIkV9UdcgteRxojk=;
+        s=korg; t=1631277127;
+        bh=24WADtF1nlCF5+DsbBKx77QjJcAUjTpmnx8sRSvWoek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6JsnrwIwo34186PKX2dsU04+9tvNEmu5Alp9QL/LcKqAmCxk8MbKc5O3+wkOX7C7
-         JT6rFR9o+KOLgr7lCga8JBIBhJor6FPCz0IFS6P3yfVS27JrbEE/ZUPcekfiGjiteP
-         WWD6OjsBvUUv+blmXpppENK7Qc/QmlW929tIYML0=
+        b=AH0V6+yd07xvvmvhIqgmv7TmOJYJvzJB0OFO9mXBEQkhaKJVRrE1stBMwawMfFJzK
+         7x1FciKmRZF1ydhwG9+wXRMUYNwuTR8QN3PYHCUjJFtT3hLaXIUnN09cgwPSi48IYY
+         WAQ5xPs7nDJgajcvUSKANTsqUusbiFv3BqhM9d9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.14 22/23] cxl/pci: Fix lockdown level
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 5.13 13/22] usb: cdnsp: fix the wrong mult value for HS isoc or intr
 Date:   Fri, 10 Sep 2021 14:30:12 +0200
-Message-Id: <20210910122916.709969307@linuxfoundation.org>
+Message-Id: <20210910122916.365208009@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
-References: <20210910122916.022815161@linuxfoundation.org>
+In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
+References: <20210910122915.942645251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit 9e56614c44b994b78fc9fcb2070bcbe3f5df0d7b upstream.
+commit e9ab75f26eb9354dfc03aea3401b8cfb42cd6718 upstream.
 
-A proposed rework of security_locked_down() users identified that the
-cxl_pci driver was passing the wrong lockdown_reason. Update
-cxl_mem_raw_command_allowed() to fail raw command access when raw pci
-access is also disabled.
+usb_endpoint_maxp() only returns the bit[10:0] of wMaxPacketSize
+of endpoint descriptor, not include bit[12:11] anymore, so use
+usb_endpoint_maxp_mult() instead.
 
-Fixes: 13237183c735 ("cxl/mem: Add a "RAW" send command")
-Cc: Ben Widawsky <ben.widawsky@intel.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: <stable@vger.kernel.org>
-Cc: Ondrej Mosnacek <omosnace@redhat.com>
-Cc: Paul Moore <paul@paul-moore.com>
-Link: https://lore.kernel.org/r/163072204525.2250120.16615792476976546735.stgit@dwillia2-desk3.amr.corp.intel.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Cc: stable@vger.kernel.org
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1628836253-7432-4-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cxl/pci.c |    2 +-
+ drivers/usb/cdns3/cdnsp-mem.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -568,7 +568,7 @@ static bool cxl_mem_raw_command_allowed(
- 	if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
- 		return false;
+--- a/drivers/usb/cdns3/cdnsp-mem.c
++++ b/drivers/usb/cdns3/cdnsp-mem.c
+@@ -882,7 +882,7 @@ static u32 cdnsp_get_endpoint_max_burst(
+ 	if (g->speed == USB_SPEED_HIGH &&
+ 	    (usb_endpoint_xfer_isoc(pep->endpoint.desc) ||
+ 	     usb_endpoint_xfer_int(pep->endpoint.desc)))
+-		return (usb_endpoint_maxp(pep->endpoint.desc) & 0x1800) >> 11;
++		return usb_endpoint_maxp_mult(pep->endpoint.desc) - 1;
  
--	if (security_locked_down(LOCKDOWN_NONE))
-+	if (security_locked_down(LOCKDOWN_PCI_ACCESS))
- 		return false;
- 
- 	if (cxl_raw_allow_all)
+ 	return 0;
+ }
 
 
