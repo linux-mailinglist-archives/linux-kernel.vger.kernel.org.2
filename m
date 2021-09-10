@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478B84071C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BAB4071C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhIJTNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbhIJTNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:13:45 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAFAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:12:33 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id l11so6102907lfe.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=srYMDe++QnliOuROCsgFjptM040iRN2INrvA4QIwYuM=;
-        b=IpbKSMqWqJJtigxNgiA4UVTS8XpTsHs4gor/CaqvuHvr9Cg4VHviz9gtV3CUEYxF7K
-         QxrZ/sa8LU9zyJSvHDUdk4ZD7icQB899a9GSkjrRmwVoV/3u7NXhNH0+lszZyqo2vdfO
-         Fzco6tGp6+FJQgxdIVE/c7xanSzRNd0Qvq2HQHccRiJbF7PgqKYBw+JUMsPFEBmk+yXB
-         juc4TyfMmWiTTA4P65fiiVEZ1YTDHQzHyzLOYZS5dLkPV+PdQEX7auBBNaiEqf7azlA0
-         ew+DeuPLe8l+6UtPJ1gC3ahtI4iQdAngZWEW5fJ3s4cVpls4zy6pRn4/YnFYuKjwzwF6
-         VIqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=srYMDe++QnliOuROCsgFjptM040iRN2INrvA4QIwYuM=;
-        b=cGkfbZmd1KJVHyg8LIe7qpRZfL07/8559HU7cjLOieSDMRxotuN9nJbZBIzTWSl6sG
-         xRinzm4SqdGKTR+kKJmXVSlHWtWmGZEpfc36ci0yaeZPDL5Gh2LMyr8uTpdOpb+3w4Rk
-         KBuqR2Z6L9WeWdS/gsvEzx4+soS9fFsSWC8BdweQsrJM+4snijxPZ1eLt7fI8NfOftwC
-         aHUSRUVyD3IEj+Q5eJRmByI0ufXb+AIjhXFxHGWasIcEHFJSnPPqZWFsnyDbBhh0E62n
-         cgXko7035QDG6AfurCyuF/TgrsOm8J8tblIlntbYKghgMWd2M+OJv45Bm60/DYunphdV
-         1U2A==
-X-Gm-Message-State: AOAM531jYx/WkyK9SVuNYrk8WORSu4DEI3+T87I04VI9yHyIaRgkUYmC
-        Djm7V8Ij4tHNW8VzYKHUJqgq8rFD2TjWmzXM7rW13g==
-X-Google-Smtp-Source: ABdhPJxomRF3jPI/9nKBaS/IozcrefKP3f+T2rmbFNzaQwdwbfB1J4Oc0cUByzTbTiWsNSogRZHcvEny+YujoYXQevk=
-X-Received: by 2002:a05:6512:ac4:: with SMTP id n4mr4929225lfu.237.1631301151579;
- Fri, 10 Sep 2021 12:12:31 -0700 (PDT)
+        id S232252AbhIJTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:20:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229546AbhIJTT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 15:19:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D5961167;
+        Fri, 10 Sep 2021 19:18:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631301527;
+        bh=Sh4pD9U7w51AAAI4Xnju3zUjDCk8B7lUevXPX+TctKk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IPWpXJ6DZpQzq0k43F0a9mlUoFnNK88PDlb2AbVDFqcttl7nKt6P87NYarv7KNPPw
+         /iv0KIqnv9WqdixkTI3fVWUoTKXFgCtePObyD9vZ+/pHRQ9mPheyoutvgPc3tMQHT5
+         nh3oKd0ejh6Wr17VXW3pSfeREutcOnBSm3HnhPpXv38QxszKcPedhcuF+ivQIu0GaH
+         JRaoSsjB/rg7lvAa5Q28aO3BfNOjEo0hbo2wlkPkV8phXshK3q+f5nBtTlg7Kggt/K
+         7z+YmBywKUqsM19n5g/XOQwp7HEuXCaIw9UISl/gAked2H4DVSIrO4Fd9l5e3jfy1e
+         6ZsUJw0D/WTlQ==
+Date:   Fri, 10 Sep 2021 21:17:34 +0200
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL v2] Compiler Attributes for v5.15-rc1
+Message-ID: <20210910191734.GA8688@kernel.org>
 MIME-Version: 1.0
-References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
- <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
- <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
- <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com> <CAPNVh5fMUQCa37iprcAykgkHzY5Rj8DSiwtZBU6FbnzjOv8ciw@mail.gmail.com>
-In-Reply-To: <CAPNVh5fMUQCa37iprcAykgkHzY5Rj8DSiwtZBU6FbnzjOv8ciw@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 10 Sep 2021 21:12:05 +0200
-Message-ID: <CAG48ez1sPjPYePmXTgtFbaj6_0yY0Z_bGw+apwO_zTV-qwftSA@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Prakash Sangappa <prakash.sangappa@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: elm/2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 6:28 PM Peter Oskolkov <posk@google.com> wrote:
-> On Fri, Sep 10, 2021 at 9:13 AM Prakash Sangappa
-> <prakash.sangappa@oracle.com> wrote:
-> > > Do you think your sys_task_getshared can be tweaked to return an
-> > > arbitrarily-sized block of memory (subject to overall constraints)
-> > > rather than a fixed number of "options"?
-> >
-> > I suppose it could. How big of a size? We don=E2=80=99t want to hold on=
- to
-> > arbitrarily large  amount of pinned memory. The preference would
-> > be for the kernel to decide what is going to be shared based on
-> > what functionality/data sharing is supported. In that sense the size
-> > is pre defined not something the userspace/application can ask.
->
-> There could be a sysctl or some other mechanism that limits the amount
-> of memory pinned per mm (or per task). Having "options" hardcoded for
-> such a generally useful feature seems limiting...
+Hi Linus,
 
-That seems like it'll just create trouble a few years down the line
-when the arbitrarily-chosen limit that nobody is monitoring blows up
-in someone's production environment.
+Please pick up the following attribute improvements (2nd take).
 
-If this area is used for specific per-thread items, then the kernel
-should be able to enforce that you only allocate as much space as is
-needed for all threads of the process (based on the maximum number
-that have ever been running in parallel in the process), right? Which
-would probably work best if the kernel managed those allocations.
+The first two patches were in my tree for a long while.
+The latest has been in -next for only a day, but that was
+my mistake forgetting to upload it sooner to my tree.
+
+You will find an easy conflict -- the end result should be
+just adding the new attributes to the GCC 4 list.
+
+(Sorry...)
+
+Cheers,
+Miguel
+
+The following changes since commit 62fb9874f5da54fdb243003b386128037319b219:
+
+  Linux 5.13 (2021-06-27 15:21:11 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.15-rc1-v2
+
+for you to fetch changes up to b83a908498d68fafca931e1276e145b339cac5fb:
+
+  compiler_attributes.h: move __compiletime_{error|warning} (2021-09-09 01:14:28 +0200)
+
+----------------------------------------------------------------
+Compiler Attributes improvements:
+
+  - Fix __has_attribute(__no_sanitize_coverage__) for GCC 4 (Marco Elver)
+
+  - Add Nick as Reviewer for compiler_attributes.h (Nick Desaulniers)
+
+  - Move __compiletime_{error|warning} (Nick Desaulniers)
+
+----------------------------------------------------------------
+Marco Elver (1):
+      Compiler Attributes: fix __has_attribute(__no_sanitize_coverage__) for GCC 4
+
+Nick Desaulniers (2):
+      MAINTAINERS: add Nick as Reviewer for compiler_attributes.h
+      compiler_attributes.h: move __compiletime_{error|warning}
+
+ MAINTAINERS                         |  1 +
+ include/linux/compiler-gcc.h        |  3 ---
+ include/linux/compiler_attributes.h | 25 +++++++++++++++++++++++++
+ include/linux/compiler_types.h      |  6 ------
+ 4 files changed, 26 insertions(+), 9 deletions(-)
