@@ -2,197 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA69407013
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D15407016
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhIJQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIJQ66 (ORCPT
+        id S230504AbhIJQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:59:13 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58643 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhIJQ7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:58:58 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE54CC061574;
-        Fri, 10 Sep 2021 09:57:46 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t19so5289854lfe.13;
-        Fri, 10 Sep 2021 09:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KigKFT5R1DxFkjz0kfipXNyWumwkd21XrYlMRDlSUkg=;
-        b=azN7jo+EzudnR0M0ozgDgkVky6ElgMzVIoItARXCC+hkSpuP3/wHqtH/18Xm9k3qJC
-         Vxl9WOHu6A0S275zRvI3NPU3vRykx8D3rNnHZFHzabQ/LrCkmW27NRmeNN3t/gx+aaZd
-         fsSQsCB0Opk0bGjAhL+bhYeGkVTkkEPs/WDuGNU/T2fvClpBNSf55IwXWyTQcSLxx+XV
-         8ff56bJv4qMcUU1zOg+v+HKqSYV76/M5ETkKgNwaRt0zpsBzPcQFES3KGNGb8P+eCKz3
-         MyEELO0Vqb6rcUCGs2hezUI2KKnfTjXkpSAj/eMasEmkitCrWft0ymEcOGqnsymnXrJb
-         Ec1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KigKFT5R1DxFkjz0kfipXNyWumwkd21XrYlMRDlSUkg=;
-        b=wo4NN0G9Z4X+ldl2XGVshgMZCMCPlka7XeoD57Z96PibXB8fFRq5dcV51gVEXEunZk
-         oPV4dOLDQsIOdKDNxAHI0XwJkAWBuVnY4NlT8HU0SvosStME69XprLw/dsQ1r7nkBpZu
-         oC6OgvkoZ2PCcZh54B9GEWHlzcC2LVv2EXp3E+OHzYNqdEIatqhMnfWZLwGM0T9i0scc
-         c5G29muaRP4+BEoVMLj/E8Ykz1cQuVDmWhl9H3mGYX5wz4GJem3/cNNmRjWBC8qb77DN
-         OWHqCpZk3qoa87H8/PAlbMn+1dNSb8+EYAPgBvJh60QTykWvBn86cyqNs7ROnRGW761h
-         E3Ww==
-X-Gm-Message-State: AOAM5303NV61MYY8UFIysLJ7BbSl/VUFEPe5peUDjtyVOua8fL+4Vq4k
-        eHKAycTvilHc5cyerluhCsPu3TfuFzxJUQ==
-X-Google-Smtp-Source: ABdhPJzmhGvGwPHJL2r+6t2hno1TGXqNQgDOvbpHHgK5p/Z0sx/BWkHI7cZBxLOv4xoGaFhcwvsQZA==
-X-Received: by 2002:a05:6512:238b:: with SMTP id c11mr4597902lfv.413.1631293065053;
-        Fri, 10 Sep 2021 09:57:45 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id h4sm607074lft.184.2021.09.10.09.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:57:44 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 19:57:43 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 31/31] staging: wfx: indent functions arguments
-Message-ID: <20210910165743.jm7ssqak7gouyl5j@kari-VirtualBox>
-References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
- <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
+        Fri, 10 Sep 2021 12:59:12 -0400
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18AGvsnc044636;
+        Sat, 11 Sep 2021 01:57:54 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Sat, 11 Sep 2021 01:57:54 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18AGvsYi044633
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 11 Sep 2021 01:57:54 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Subject: Re: [syzbot] possible deadlock in bd_register_pending_holders
+To:     syzbot <syzbot+f5608de5d89cc0d998c7@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000e272fb05cba51fe4@google.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Message-ID: <d4d71dc8-0373-b7a9-2a95-ba2d3c87f968@I-love.SAKURA.ne.jp>
+Date:   Sat, 11 Sep 2021 01:57:53 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
+In-Reply-To: <000000000000e272fb05cba51fe4@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:05:04PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> Function arguments must be aligned with left parenthesis. Apply that
-> rule.
+Since commit dfbb3409b27fa42b in axboe/linux-block.git#block-5.15 breaks
+"sb_writers#$N => &p->lock => major_names_lock" dependency chain,
+I think that this dependency chain should be no longer possible.
 
-To my eyes something still go wrong with this patch. Might be my email
-fault, but every other patch looks ok. Now these are too left. Also it
-should alight with first argument not left parenthesis?
+#syz fix: block: genhd: don't call blkdev_show() with major_names_lock held
 
+On 2021/09/10 23:42, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/staging/wfx/hif_tx_mib.c |  2 +-
->  drivers/staging/wfx/key.c        | 26 +++++++++++++-------------
->  2 files changed, 14 insertions(+), 14 deletions(-)
+> syzbot found the following issue on:
 > 
-> diff --git a/drivers/staging/wfx/hif_tx_mib.c b/drivers/staging/wfx/hif_tx_mib.c
-> index 45e531d996bd..97e961e6bcf6 100644
-> --- a/drivers/staging/wfx/hif_tx_mib.c
-> +++ b/drivers/staging/wfx/hif_tx_mib.c
-> @@ -75,7 +75,7 @@ int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
->  	} else {
->  		return hif_read_mib(wdev, vif_id,
->  				    HIF_MIB_ID_EXTENDED_COUNTERS_TABLE, arg,
-> -				sizeof(struct hif_mib_extended_count_table));
-> +				    sizeof(struct hif_mib_extended_count_table));
->  	}
->  }
->  
-> diff --git a/drivers/staging/wfx/key.c b/drivers/staging/wfx/key.c
-> index 51a528102016..65134a174683 100644
-> --- a/drivers/staging/wfx/key.c
-> +++ b/drivers/staging/wfx/key.c
-> @@ -31,7 +31,7 @@ static void wfx_free_key(struct wfx_dev *wdev, int idx)
->  }
->  
->  static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
-> -			     struct ieee80211_key_conf *key, u8 *peer_addr)
-> +			struct ieee80211_key_conf *key, u8 *peer_addr)
->  {
->  	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
->  	msg->key_length = key->keylen;
-> @@ -41,7 +41,7 @@ static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
->  }
->  
->  static u8 fill_wep_group(struct hif_wep_group_key *msg,
-> -			      struct ieee80211_key_conf *key)
-> +			 struct ieee80211_key_conf *key)
->  {
->  	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
->  	msg->key_id = key->keyidx;
-> @@ -51,7 +51,7 @@ static u8 fill_wep_group(struct hif_wep_group_key *msg,
->  }
->  
->  static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
-> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
-> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
->  {
->  	u8 *keybuf = key->key;
->  
-> @@ -68,9 +68,9 @@ static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
->  }
->  
->  static u8 fill_tkip_group(struct hif_tkip_group_key *msg,
-> -			       struct ieee80211_key_conf *key,
-> -			       struct ieee80211_key_seq *seq,
-> -			       enum nl80211_iftype iftype)
-> +			  struct ieee80211_key_conf *key,
-> +			  struct ieee80211_key_seq *seq,
-> +			  enum nl80211_iftype iftype)
->  {
->  	u8 *keybuf = key->key;
->  
-> @@ -93,7 +93,7 @@ static u8 fill_tkip_group(struct hif_tkip_group_key *msg,
->  }
->  
->  static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
-> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
-> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
->  {
->  	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
->  	ether_addr_copy(msg->peer_address, peer_addr);
-> @@ -102,8 +102,8 @@ static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
->  }
->  
->  static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
-> -			       struct ieee80211_key_conf *key,
-> -			       struct ieee80211_key_seq *seq)
-> +			  struct ieee80211_key_conf *key,
-> +			  struct ieee80211_key_seq *seq)
->  {
->  	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
->  	memcpy(msg->aes_key_data, key->key, key->keylen);
-> @@ -114,7 +114,7 @@ static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
->  }
->  
->  static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
-> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
-> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
->  {
->  	u8 *keybuf = key->key;
->  
-> @@ -129,7 +129,7 @@ static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
->  }
->  
->  static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
-> -			       struct ieee80211_key_conf *key)
-> +			  struct ieee80211_key_conf *key)
->  {
->  	u8 *keybuf = key->key;
->  
-> @@ -143,8 +143,8 @@ static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
->  }
->  
->  static u8 fill_aes_cmac_group(struct hif_igtk_group_key *msg,
-> -				   struct ieee80211_key_conf *key,
-> -				   struct ieee80211_key_seq *seq)
-> +			      struct ieee80211_key_conf *key,
-> +			      struct ieee80211_key_seq *seq)
->  {
->  	WARN(key->keylen != sizeof(msg->igtk_key_data), "inconsistent data");
->  	memcpy(msg->igtk_key_data, key->key, key->keylen);
-> -- 
-> 2.33.0
+> HEAD commit:    27151f177827 Merge tag 'perf-tools-for-v5.15-2021-09-04' o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=104612b3300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f5608de5d89cc0d998c7
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 > 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f5608de5d89cc0d998c7@syzkaller.appspotmail.com
