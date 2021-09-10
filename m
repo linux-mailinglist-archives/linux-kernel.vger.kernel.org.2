@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF29406B6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBA9406B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbhIJMbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:31:23 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57381 "EHLO mga04.intel.com"
+        id S233442AbhIJMcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:32:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232997AbhIJMbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:31:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="219205329"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="219205329"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 05:30:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="431539785"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga006.jf.intel.com with ESMTP; 10 Sep 2021 05:30:05 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (alobakin-mobl.ger.corp.intel.com [10.237.140.50])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 18ACU3af025901;
-        Fri, 10 Sep 2021 13:30:03 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        linux-hardening@vger.kernel.org,
-        Kristen C Accardi <kristen.c.accardi@intel.com>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marios Pomonis <pomonis@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marta A Plantykow <marta.a.plantykow@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v6 kspp-next 16/22] livepatch: only match unique symbols when using fgkaslr
+        id S233416AbhIJMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:32:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D25361026;
+        Fri, 10 Sep 2021 12:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631277094;
+        bh=/yC7W9LN4mYejE5LbVaxqYQGFtSqa66F/TYC9rkSmgo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=K3F3keMH9Cn0YOC0k2g1U/86jR2iWkH+NpgszUCE16RUVsALGBPVqoDRRCzITQDhl
+         VJvbrQ28oXZcStfblKar6K9xsIpUNbaUfAIlAzYMhmm1PQndFF2arj00PHJnJoD5gD
+         s9GMzz+ZJEHiAswS5+NcWuxD3Wz9JPV7EyRKluZo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.14 03/23] igmp: Add ip_mc_list lock in ip_check_mc_rcu
 Date:   Fri, 10 Sep 2021 14:29:53 +0200
-Message-Id: <20210910122953.400-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <alpine.LSU.2.21.2109091347400.20761@pobox.suse.cz>
-References: <20210831144115.154-1-alexandr.lobakin@intel.com> <20210831144114.154-17-alexandr.lobakin@intel.com> <alpine.LSU.2.21.2109091347400.20761@pobox.suse.cz>
+Message-Id: <20210910122916.136931707@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
+References: <20210910122916.022815161@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miroslav Benes <mbenes@suse.cz>
-Date: Thu, 9 Sep 2021 13:53:35 +0200 (CEST)
+From: Liu Jian <liujian56@huawei.com>
 
-> Hi,
+commit 23d2b94043ca8835bd1e67749020e839f396a1c2 upstream.
 
-Hi!
+I got below panic when doing fuzz test:
 
-> On Tue, 31 Aug 2021, Alexander Lobakin wrote:
-> 
-> > From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > 
-> > If any type of function granular randomization is enabled, the sympos
-> > algorithm will fail, as it will be impossible to resolve symbols when
-> > there are duplicates using the previous symbol position.
-> > 
-> > Override the value of sympos to always be zero if fgkaslr is enabled for
-> > either the core kernel or modules, forcing the algorithm
-> > to require that only unique symbols are allowed to be patched.
-> > 
-> > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > ---
-> >  kernel/livepatch/core.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> > index 335d988bd811..852bbfa9da7b 100644
-> > --- a/kernel/livepatch/core.c
-> > +++ b/kernel/livepatch/core.c
-> > @@ -169,6 +169,17 @@ static int klp_find_object_symbol(const char *objname, const char *name,
-> >  	else
-> >  		kallsyms_on_each_symbol(klp_find_callback, &args);
-> >  
-> > +	/*
-> > +	 * If any type of function granular randomization is enabled, it
-> > +	 * will be impossible to resolve symbols when there are duplicates
-> > +	 * using the previous symbol position (i.e. sympos != 0). Override
-> > +	 * the value of sympos to always be zero in this case. This will
-> > +	 * force the algorithm to require that only unique symbols are
-> > +	 * allowed to be patched.
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_FG_KASLR))
-> > +		sympos = 0;
-> > +
-> 
-> I ran the live patching tests and no problem occurred, which is great. We 
-> do not have a test for old_sympos, which makes the testing less telling, 
-> but at least nothing blows up with the section randomization itself.
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 4056 Comm: syz-executor.3 Tainted: G    B             5.14.0-rc1-00195-gcff5c4254439-dirty #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+dump_stack_lvl+0x7a/0x9b
+panic+0x2cd/0x5af
+end_report.cold+0x5a/0x5a
+kasan_report+0xec/0x110
+ip_check_mc_rcu+0x556/0x5d0
+__mkroute_output+0x895/0x1740
+ip_route_output_key_hash_rcu+0x2d0/0x1050
+ip_route_output_key_hash+0x182/0x2e0
+ip_route_output_flow+0x28/0x130
+udp_sendmsg+0x165d/0x2280
+udpv6_sendmsg+0x121e/0x24f0
+inet6_sendmsg+0xf7/0x140
+sock_sendmsg+0xe9/0x180
+____sys_sendmsg+0x2b8/0x7a0
+___sys_sendmsg+0xf0/0x160
+__sys_sendmmsg+0x17e/0x3c0
+__x64_sys_sendmmsg+0x9e/0x100
+do_syscall_64+0x3b/0x90
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x462eb9
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8
+ 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48>
+ 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3df5af1c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000462eb9
+RDX: 0000000000000312 RSI: 0000000020001700 RDI: 0000000000000007
+RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3df5af26bc
+R13: 00000000004c372d R14: 0000000000700b10 R15: 00000000ffffffff
 
-Great, thanks!
+It is one use-after-free in ip_check_mc_rcu.
+In ip_mc_del_src, the ip_sf_list of pmc has been freed under pmc->lock protection.
+But access to ip_sf_list in ip_check_mc_rcu is not protected by the lock.
 
-> However, I want to reiterate what I wrote for the same patch in v5 
-> series.
-> 
-> The above hunk should work, but I wonder if we should make it more 
-> explicit. With the change the user will get the error with "unresolvable 
-> ambiguity for symbol..." if they specify sympos and the symbol is not 
-> unique. It could confuse them.
-> 
-> So, how about it making it something like
-> 
-> if (IS_ENABLED(CONFIG_FG_KASLR) || IS_ENABLED(CONFIG_MODULE_FG_KASLR))
->         if (sympos) {
->                 pr_err("fgkaslr is enabled, specifying sympos for symbol '%s' in object '%s' does not work.\n",
->                         name, objname);
->                 *addr = 0;
->                 return -EINVAL;
->         }
-> 
-> ? (there could be goto to the error out at the end of the function to 
-> save copy-pasting).
-> 
-> In that case, if sympos is not specified, the user will get the message 
-> which matches the reality. If the user specifies it, they will get the 
-> error in case of fgkaslr (no matter if the symbol is found or not).
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/ipv4/igmp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-Not familiar with livepatching unfortunately, hope Kristen and/or
-Kees will comment on this. Looks fine for me anyways.
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -2720,6 +2720,7 @@ int ip_check_mc_rcu(struct in_device *in
+ 		rv = 1;
+ 	} else if (im) {
+ 		if (src_addr) {
++			spin_lock_bh(&im->lock);
+ 			for (psf = im->sources; psf; psf = psf->sf_next) {
+ 				if (psf->sf_inaddr == src_addr)
+ 					break;
+@@ -2730,6 +2731,7 @@ int ip_check_mc_rcu(struct in_device *in
+ 					im->sfcount[MCAST_EXCLUDE];
+ 			else
+ 				rv = im->sfcount[MCAST_EXCLUDE] != 0;
++			spin_unlock_bh(&im->lock);
+ 		} else
+ 			rv = 1; /* unspecified source; tentatively allow */
+ 	}
 
-> What do you think?
-> 
-> Miroslav
 
-Thanks,
-Al
