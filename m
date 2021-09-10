@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8DB4066E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651624066FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhIJFt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 01:49:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39310 "EHLO mail.kernel.org"
+        id S230477AbhIJGBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:01:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230324AbhIJFtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 01:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B26E6113E;
-        Fri, 10 Sep 2021 05:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1631252895;
-        bh=y+g5+vYmyUBT33D8ySZgMhBpgV0mbcZV0/vKNAb2F1Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HI1Y6wbkyVgz/bIiw+e47tBIHqeKoFOh5luupaOggukfgTNbnUkN68U86p4s4M+tK
-         fpFbaSqX6Q4aLODt1Er2DLwUct/DXsdN8jF/GJrGsEgjWlGNe1IbQE4TZi4CMJuj/1
-         1Qy/IiNClojXHoFlWmYSIGS6MStf1/ST+gHqsSxY=
-Date:   Thu, 9 Sep 2021 22:48:14 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] rapidio: Avoid bogus __alloc_size warning
-Message-Id: <20210909224814.7460f8dfa3134742b90b34eb@linux-foundation.org>
-In-Reply-To: <20210910045010.GO1935@kadam>
-References: <20210909161409.2250920-1-keescook@chromium.org>
-        <20210909132752.4bde36ccf50720e56160f00c@linux-foundation.org>
-        <202109091549.FF8E0C61E2@keescook>
-        <20210909161109.14b147628de07ed7c20d84ae@linux-foundation.org>
-        <202109091849.53C9A8AD@keescook>
-        <20210910045010.GO1935@kadam>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230417AbhIJGBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:01:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F13D36113E;
+        Fri, 10 Sep 2021 06:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631253623;
+        bh=+oBAtMoawlHInRv8YIXOyVPI7irf8Xkg/tet/t4c8lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZyJ6ySZWKFHN2JnLx3GxlRZMUgBx7kgGbC9a0TdGLvUn6eAzCKJNLB6FYt8RbhTIC
+         tH8uosog7Dpcb5qWhoF/PeWufLF5PH+ltZFt7ZbLniTMVzCu/jASqdCdDf2BnXcPy8
+         +hAT0lIPiWbzrj5ofnPY/DVNdlOW0VGKIuXZoflY=
+Date:   Fri, 10 Sep 2021 08:00:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "taoyi.ty" <escape@linux.alibaba.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 1/2] add pinned flags for kernfs node
+Message-ID: <YTr0YDfLbKTkxy52@kroah.com>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <e753e449240bfc43fcb7aa26dca196e2f51e0836.1631102579.git.escape@linux.alibaba.com>
+ <YTiuBaiVZhe3db9O@kroah.com>
+ <3d871bd0-dab5-c9ca-61b9-6aa137fa9fdf@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3d871bd0-dab5-c9ca-61b9-6aa137fa9fdf@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 07:50:10 +0300 Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Fri, Sep 10, 2021 at 10:14:28AM +0800, taoyi.ty wrote:
+> 
+> On 2021/9/8 下午8:35, Greg KH wrote:
+> > Why are kernfs changes needed for this?  kernfs creation is not
+> > necessarily supposed to be "fast", what benchmark needs this type of
+> > change to require the addition of this complexity?
+> 
+> The implementation of the cgroup pool should have nothing
+> 
+> to do with kernfs, but during the development process,
+> 
+> I found that when there is a background cpu load, it takes
+> 
+> a very significant time for a process to get the mutex from
+> 
+> being awakened to starting execution.
+> 
+> To create 400 cgroups concurrently, if there is no background
+> 
+> cpu load, it takes about 80ms, but if the cpu usage rate is
+> 
+> 40%, it takes about 700ms. If you reduce
+> 
+> sched_wakeup_granularity_ns, the time consumption will also
+> 
+> be reduced. If you change mutex to spinlock, the situation
+> 
+> will be very much improved.
+> 
+> So to solve this problem, mutex should not be used. The
+> 
+> cgroup pool relies on kernfs_rename which uses
+> 
+> kernfs_mutex, so I need to bypass kernfs_mutex and
+> 
+> add a pinned flag for this.
+> 
+> Because the lock mechanism of kernfs_rename has been
+> 
+> changed, in order to maintain data consistency, the creation
+> 
+> and deletion of kernfs have also been changed accordingly
+> 
+> I admit that this is really not a very elegant design, but I don’t
+> 
+> know how to make it better, so I throw out the problem and
+> 
+> try to seek help from the community.
 
-> On Thu, Sep 09, 2021 at 06:52:27PM -0700, Kees Cook wrote:
-> > On Thu, Sep 09, 2021 at 04:11:09PM -0700, Andrew Morton wrote:
-> > > On Thu, 9 Sep 2021 15:51:23 -0700 Kees Cook <keescook@chromium.org> wrote:
-> > > 
-> > > > > That's an "error", not a warning.  Or is this thanks to the new -Werror?
-> > > > 
-> > > > This is a "regular" error (__bad_copy_to() uses __compiletime_error()).
-> > > > 
-> > > > > Either way, I'm inclined to cc:stable on this, because use of gcc-9 on
-> > > > > older kernels will be a common thing down the ages.
-> > > > > 
-> > > > > If it's really an "error" on non-Werror kernels then definitely cc:stable.
-> > > > 
-> > > > I would expect that as only being needed if __alloc_size was backported
-> > > > to -stable, which seems unlikely.
-> > > 
-> > > Ah.  Changelog didn't tell me that it's an __alloc_size thing.
-> > 
-> > Er, it's in the Subject, but I guess I could repeat it?
-> > 
-> 
-> This is how the email looks like to Andrew.
-> 
-> https://sylpheed.sraoss.jp/images/sylpheed2-mainwindow.png
-> 
-> Try to find the subject in that nonsense.  Same for everyone else on
-> email as well.
-> 
-> https://marc.info/?l=linux-kernel&m=163120404328790&w=2
-> 
-> I only either read the subject or the body of the commit message and
-> never both.  :P
+Look at the changes to kernfs for 5.15-rc1 where a lot of the lock
+contention was removed based on benchmarks where kernfs (through sysfs)
+was accessed by lots of processes all at once.
 
-I read the body if the subject looks relevant ;)
+That should help a bit in your case, but remember, the creation of
+kernfs files is not the "normal" case, so it is not optimized at all.
+We have optimized the access case, which is by far the most common.
 
-But that subject reads to me as "rapidio: Avoid bogus *blah* warning". 
-We have soooooo many alloc_foo functions that one's eyes glaze over
-something like "alloc_size"
+good luck!
 
-Why?  Because the identifier "__alloc_size" is of great significance
-to Kees because he wrote the thing.  Everyone else just sees "*blah*".
+greg k-h
