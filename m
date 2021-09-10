@@ -2,142 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56508406D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1616C406D73
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhIJORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbhIJORo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:17:44 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FBAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso1617894pjj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gw+gLCH4fCh3RyF148MnGJMCmmJ7GK/O+08Kg6ZzZIU=;
-        b=iGKa/dQ/+1b2SCObj5WlpAPCGiElDzjo26XEpjecBcMIOUB+ABwSNwYetiNhbPpjjP
-         BtSbRcbsv8OjFrr8xovigvNf7WiTiIocIAATducN2RkKRBxpCRx2ZXDia3mZptZQTLWb
-         Vl4jDx1kT4QYXTRkK4WNOpMo4w7e/YOknPwS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gw+gLCH4fCh3RyF148MnGJMCmmJ7GK/O+08Kg6ZzZIU=;
-        b=19GqFgB6d5eWA9lHNx98eeUL6hIJHrB8Xzl+f5meBsrRGm7txWywSBzimlY/pmP721
-         qds0WTgEN/OJXddjrnLXuaXCoB/vxAjp7O42JjchcC1kp0sfI+l5vbL1hPhUedu5yv8r
-         Y8nqLtXlnRx8eu/0krJXqcukjaxTW9HveNrP81Y4B76YTonPzJnZk1VoKzeQZbclAZQu
-         Wn6xhNpG2v7RKParuveZnzFBOhmiON9LNQYLVldsRPb8TDegD+cDgVRoshUxQrMSno67
-         4GkPgwejvmTgqpEuX5sELiJah/16HNtj0htVnYsJP9KP2aftn5dNGby2XKhKYCHuB0cN
-         oJvw==
-X-Gm-Message-State: AOAM530KA8KYC2+VjOY9/TJm2Pb+96z1wPWKQM5gCDjfvsl1vU+VtcPs
-        umWyviPiQWUbBD5H/I4TXW8Z7G7Rq1wLGw==
-X-Google-Smtp-Source: ABdhPJx/ZYE/fslknnTb9EgXTfXCY/KJOZR+QfvjM/8WANgcJTX0p3oHcALf2sE4fe/3ZRje9ASGgQ==
-X-Received: by 2002:a17:902:be0f:b0:13a:95e:a51 with SMTP id r15-20020a170902be0f00b0013a095e0a51mr7888442pls.44.1631283392125;
-        Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:7627:5944:d90:b374])
-        by smtp.gmail.com with ESMTPSA id e13sm270051pfc.137.2021.09.10.07.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 07:16:31 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 23:16:27 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache
- hints tests
-Message-ID: <YTtouz4IG/UPq84K@google.com>
-References: <20210709092227.1051346-1-senozhatsky@chromium.org>
- <619afe51-4cba-95e0-69bc-bb96e1f88aae@xs4all.nl>
- <YTtUOXF1qGbL+q0V@google.com>
- <YTtePjJoynZ4imCp@google.com>
+        id S234088AbhIJOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234038AbhIJOSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:18:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 861CA61059;
+        Fri, 10 Sep 2021 14:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631283435;
+        bh=8VMMBQz1fBPhOTOuXPG7wt13SZ2nMYbvMnCjRQW/alY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DgBvwP4GlSVkiAcG56selz8dj1JWIcvPguhXvLoJhJllUHw570zAV7CZCaHSUcgon
+         VAIQPK5SEQ7VyshPIR0v4vsK1oWGncvd1Y6PZ7YjyCbwImltdGtoRcB197oCgZf1rK
+         S80ePFogrbWcfA9NDlvD9aRe+EZ5dEwj1jEbjgOWvt5BSlhctou1MhKbbGprd4tsvt
+         S5jwVAOGBeFq7p4GL+wZiLnr8RwoI+v7O+Zzni8LbSywidyMMq3V6J8i5hIgU1obne
+         7k/o6/FiXioQvKOrxsMKsyEcte0R5rBbdhXQwW30b5TSoTAxhRBjm2AjJ72n/bcfiW
+         Tw1HYv6iCavtw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B88374038F; Fri, 10 Sep 2021 11:17:11 -0300 (-03)
+Date:   Fri, 10 Sep 2021 11:17:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf report: Add support to print a textual
+ representation of IBS raw sample data
+Message-ID: <YTto5xw/XSMuiGrG@kernel.org>
+References: <20210817221509.88391-1-kim.phillips@amd.com>
+ <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
+ <YTth5DLWGbyAzxvQ@kernel.org>
+ <YTtmwrZ6iy0TzG3l@kernel.org>
+ <YTtnpAcaCNYozoJF@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YTtePjJoynZ4imCp@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YTtnpAcaCNYozoJF@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/09/10 22:31), Sergey Senozhatsky wrote:
-> > Looking into it now. I ran v4l2-compliance, but not "contrib/test/test-media"
+Em Fri, Sep 10, 2021 at 11:11:48AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Sep 10, 2021 at 11:08:02AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Sep 10, 2021 at 10:47:16AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Thu, Sep 09, 2021 at 04:58:12PM -0500, Kim Phillips escreveu:
+> > > > Hi Arnaldo,
+> > > > 
+> > > > Can you please take a look at applying this series?  Its kernel-side
+> > > > dependent series has already been applied and is in Linus' master.
+> > > 
+> > > Sure, I'm now trying to fix this:
+> > > 
+> > >   CC      /tmp/build/perf/util/amd-sample-raw.o
+> > > util/amd-sample-raw.c: In function ‘evlist__amd_sample_raw’:
+> > > util/amd-sample-raw.c:125:42: error: ‘ bytes’ directive output may be truncated writing 6 bytes into a region of size between 4 and 7 [-Werror=format-truncation=]
+> > >   125 |                          " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
+> > >       |                                          ^~~~~~
+> > > In file included from /usr/include/stdio.h:866,
+> > >                  from util/amd-sample-raw.c:7:
+> > > /usr/include/bits/stdio2.h:71:10: note: ‘__builtin___snprintf_chk’ output between 21 and 24 bytes into a destination of size 21
+> > >    71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+> > >       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >    72 |                                    __glibc_objsize (__s), __fmt,
+> > >       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >    73 |                                    __va_arg_pack ());
+> > >       |                                    ~~~~~~~~~~~~~~~~~
+> > > cc1: all warnings being treated as errors
+> > > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/amd-sample-raw.o] Error 1
+> > 
+> > So, that trick with using sizeof and that string 3 times is cumbersome
+> > and prone to truncation, at least the compiler can't say that the number
+> > you're passing to %2d will have just 2 digits:
+> > 
+> > [acme@quaco c]$ cat printf.c
+> > #include <stdio.h>
+> > #include <stdlib.h>
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> > 	char bf[64];
+> > 	int len = snprintf(bf, sizeof(bf), "%2d", atoi(argv[1]));
+> > 
+> > 	printf("strlen(%s): %u\n", bf, len);
+> > 
+> > 	return 0;
+> > }
+> > [acme@quaco c]$ ./printf 1234567
+> > strlen(1234567): 7
+> > [acme@quaco c]$
+> > 
+> > I'm trying to rework this.
 > 
-> AFAICT the problem is in v4l2-compliance patch.
-> 
-> We clear request flags if queue does not support user-space cache hints:
-> 
-> 	 q->allow_cache_hints && q->memory == VB2_MEMORY_MMAP
-> 
-> But for DMABUF buffers (only) we set cache hints internally in
-> set_buffer_cache_hints() and always skip cache sync/flush on
-> prepare/finish regardless of what is passed from the user-space:
-> 
->        if (q->memory == VB2_MEMORY_DMABUF) {
->                vb->skip_cache_sync_on_finish = 1;
->                vb->skip_cache_sync_on_prepare = 1;
->                return;
->        }
-> 
-> Technically we don't support user-space cache hints for DMABUF, so we
-> clear passed user-space cache hint flags.
-> 
-> I think the fix should look like this (tested with "test-media vivid"):
-> 
-> ---
-> 
-> diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-> index 9b87c90f..baa306f1 100644
-> --- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
-> +++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-> @@ -1865,9 +1865,10 @@ static int setupDmaBuf(struct node *expbuf_node, struct node *node,
->  				fail_on_test(!buf.g_bytesused(p));
->  		}
->  		flags = buf.g_flags();
-> -		/* We always skip cache sync/flush for DMABUF memory type */
-> -		fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
-> -		fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
-> +
-> +		/* Make sure that flags are cleared */
-> +		fail_on_test((flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
-> +		fail_on_test((flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
->  		fail_on_test(flags & V4L2_BUF_FLAG_DONE);
->  		fail_on_test(buf.querybuf(node, i));
->  		fail_on_test(buf.check(q, Queued, i));
+> So below is the minimal fix, the other cases the compiler somehow thinks
+> its ok, so I'll keep as is, will just remove the sizeof(string) to
+> sizeof(var), as I did below for the offending case.
 
+End result:
 
-Alternatively, we can do something like below on the kernel side instead:
-do nothing in v4l2 for DMABUF and preserve b->flags (if user-space has
-passed cache management flags).
-
-// But I think it'll be better to clear b->flags cache hints for DMABUF. To
-// indicate that we don't accept cache-hints for DMABUF.
-
-
----
-
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index 6edf4508c636..fc8e31b7dced 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -345,6 +345,13 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
- 				   struct vb2_buffer *vb,
- 				   struct v4l2_buffer *b)
+diff --git a/tools/perf/util/amd-sample-raw.c b/tools/perf/util/amd-sample-raw.c
+index fc1f670e88562b2e..fbb7d61c50489374 100644
+--- a/tools/perf/util/amd-sample-raw.c
++++ b/tools/perf/util/amd-sample-raw.c
+@@ -106,7 +106,7 @@ static void pr_ibs_op_data2(union ibs_op_data2 reg)
+ static void pr_ibs_op_data3(union ibs_op_data3 reg)
  {
-+	/*
-+	 * No user-space cache hints for DMABUF, but we preserve b->flags
-+	 * cache hints (if user-space has passed any).
-+	 */
-+	if (q->memory == VB2_MEMORY_DMABUF)
-+		return;
-+
- 	if (!vb2_queue_allows_cache_hints(q)) {
- 		/*
- 		 * Clear buffer cache flags if queue does not support user
+ 	char l2_miss_str[sizeof(" L2Miss _")] = "";
+-	char op_mem_width_str[sizeof(" OpMemWidth __ bytes")] = "";
++	char op_mem_width_str[sizeof(" OpMemWidth _____ bytes")] = "";
+ 	char op_dc_miss_open_mem_reqs_str[sizeof(" OpDcMissOpenMemReqs __")] = "";
+ 
+ 	/*
+@@ -114,14 +114,13 @@ static void pr_ibs_op_data3(union ibs_op_data3 reg)
+ 	 * Ignore L2Miss and OpDcMissOpenMemReqs (and opdata2) if DcMissNoMabAlloc or SwPf set
+ 	 */
+ 	if (!(cpu_family == 0x19 && cpu_model < 0x10 && (reg.dc_miss_no_mab_alloc || reg.sw_pf))) {
+-		snprintf(l2_miss_str, sizeof(" L2Miss _"),
+-			 " L2Miss %d", reg.l2_miss);
+-		snprintf(op_dc_miss_open_mem_reqs_str, sizeof(" OpDcMissOpenMemReqs __"),
++		snprintf(l2_miss_str, sizeof(l2_miss_str), " L2Miss %d", reg.l2_miss);
++		snprintf(op_dc_miss_open_mem_reqs_str, sizeof(op_dc_miss_open_mem_reqs_str),
+ 			 " OpDcMissOpenMemReqs %2d", reg.op_dc_miss_open_mem_reqs);
+ 	}
+ 
+ 	if (reg.op_mem_width)
+-		snprintf(op_mem_width_str, sizeof(" OpMemWidth __ bytes"),
++		snprintf(op_mem_width_str, sizeof(op_mem_width_str),
+ 			 " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
+ 
+ 	printf("ibs_op_data3:\t%016llx LdOp %d StOp %d DcL1TlbMiss %d DcL2TlbMiss %d "
