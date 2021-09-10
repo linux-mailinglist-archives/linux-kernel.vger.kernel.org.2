@@ -2,364 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21D240661F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F198406621
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhIJD3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 23:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        id S229989AbhIJDaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 23:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhIJD3V (ORCPT
+        with ESMTP id S230060AbhIJDaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 23:29:21 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A85C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 20:28:11 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso475240ots.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 20:28:11 -0700 (PDT)
+        Thu, 9 Sep 2021 23:30:03 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5399CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 20:28:53 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id j18so610443ioj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 20:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UieKKUbo09vigeTGRsi4douxAAlNSVtFLyaLJNMJYZA=;
-        b=s2DH9HshjSdUjX5RQDFXPAXPgQBV7mcTQ5XXwI8sBWEGGnD7/iTqEkcv/TtD4A61iu
-         S/WuZs4WOttAf6ZUBHtC8S5FngwmdjB1YC3yS7vhYSCtup4oDq7lRaWVZHwEW/AlOXDr
-         xKP0AsijEFz9BWAB5UqEBrjwXLX61GR/SF2Z3isXNW773kwsAwBsndaYlvoGukvE1N7H
-         3PF7x6kG4BGptKyKurg3zUSRRqEhzkQSY06DBeWB2af5zJ9SDWRazTcuBhmnRZfaQMAJ
-         7wQF6jHLp6q86H+euYe7GMObuHmr2t8XIz6tb0ld26sK7L7kdJyLjNK2VfPFd/L2729W
-         rSUw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HkeHhnqkzSEVCG8RBViWFhN/hyIZCVQVxMZ4nK2bjs8=;
+        b=PkWP9UGyF379pXe/D9Yf+Ivd9Eruhf+xmAuxu9RC2rNGoNLpkUGMDnp6G5oIuI8hQ2
+         xbTqhTOfVOBA41nsgUthZ2RcHT6sOyQp7Bv2iMAwiUJSVxdnha8b+nYnwT8JDwW1gj6L
+         KCu3onchyYKvwKNOYmsyf1ltANK5T7B/NQ6+NkZDlrWwymOlFSBQQyA50LlDKaN3DArh
+         sNq1hDQokhDbuswGnyJa5j400ekgZ9yVbHbrxz4E0N5gfO++NsYq7aKUjp8tR7R+jFY+
+         1a94D/qkCQzhh+VEzOafB4SFOCwpRlc/BfbaLfqSs41fraajURLFkSIheRelXV1SGOfs
+         9Y3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UieKKUbo09vigeTGRsi4douxAAlNSVtFLyaLJNMJYZA=;
-        b=qDo12h8hKJ4fMhWX3qFsDRmkxCcpI2qua2950lX6m1hj74aBpU6S8Fef5uTnuanCmx
-         oPenySfBUovw91JSJ5N7g0qWbAmfkhRaVYiKC7jVoY/yRzVOaNuifqQNyQwPoYYx2wEl
-         xpCWY2hgbikZ/jou/0hR+nK70EmCLwxuXpCQPK+f2LSBpNOOCEKFpcjSGcIKpI+e9Lqh
-         RCBjUo4ANM7vPwFMMPSOooPja4mhtsS1juALwn/N9f1/7q5J7/5WAHe95fvFjmNFbcQB
-         6WpSqC+NGdOROn2ZOeUgbf9wsuMOkxTCo9WxWPrPTHvltYwUU6/XLVCewfS+oE795qCV
-         SZ/w==
-X-Gm-Message-State: AOAM532Q58EvIX0s8JwAZf00ga79Oe5k/YUAPSNoRt51s5PXffTLrFvy
-        lbcvyaW5d4jf52l7iHziRDc1OZbOTyiASzPKKT+Vow==
-X-Google-Smtp-Source: ABdhPJygHsmlgHEAZLMm5r+tKUYJ57NEXNEd3ZTCM/AiLFbevyN26U5tU997Fbv3XxUJc40jyM38JSL6xbSdiA0s89A=
-X-Received: by 2002:a05:6830:349c:: with SMTP id c28mr2873634otu.35.1631244490681;
- Thu, 09 Sep 2021 20:28:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HkeHhnqkzSEVCG8RBViWFhN/hyIZCVQVxMZ4nK2bjs8=;
+        b=0dd1szWe20OGPMNs0IDWZ2x9WAXZSELOy7Fiu/py8HAxd6F3K378hNeEg2vNPB/+pw
+         BCipvuJNoji1j26km4FMZvF5CLuNtkhAfhkzHmCBaJsFgEZ6eybzZL1ggKWQRGih0Z27
+         pIiQMYVU2AkhGxvp4X0VXvoo9tnMiWwULYMTGn9NfkhW1YmHS4JQS9Q2REEIC29J3znO
+         zmEiiQWcSwFuGwlhaP355aXJPQKhlZlaYPxbZ1gDtKCbwH/vVCDSSx1doVUL/vMAxfAc
+         x4nARrlQQk1oSaFCEHHGdWuzFp+8nd8sHQ0q9VSHkOrqlDn+cyCQY3BfGi3+4mDarFmN
+         TnpQ==
+X-Gm-Message-State: AOAM5303kTUzk2yH00WOB6wHj9khi4ow0ANm/1gfuaecM0HKwsGD5aN0
+        4KVyaWcGG7llJKIzQJGWHMkUxg==
+X-Google-Smtp-Source: ABdhPJyZRFwpOYrNkHfl47VbHws9Q0r+wvfhG26yCw8IAw26Y2E0tf7E/tZS25v8UB3hFtxJT183ew==
+X-Received: by 2002:a5e:c00a:: with SMTP id u10mr5291469iol.60.1631244532538;
+        Thu, 09 Sep 2021 20:28:52 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id h9sm1870320ioz.30.2021.09.09.20.28.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 20:28:52 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <ebc6cc5e-dd43-6370-b462-228e142beacb@kernel.dk>
+ <CAHk-=whoMLW-WP=8DikhfE4xAu_Tw9jDNkdab4RGEWWMagzW8Q@mail.gmail.com>
+ <ebb7b323-2ae9-9981-cdfd-f0f460be43b3@kernel.dk>
+ <CAHk-=wi2fJ1XrgkfSYgn9atCzmJZ8J3HO5wnPO0Fvh5rQx9mmA@mail.gmail.com>
+ <88f83037-0842-faba-b68f-1d4574fb45cb@kernel.dk>
+ <YTrHYYEQslQzvnWW@zeniv-ca.linux.org.uk>
+ <8d9e4f7c-bcf4-2751-9978-6283cabeda52@kernel.dk>
+ <YTrN16wu/KE0X/QZ@zeniv-ca.linux.org.uk>
+ <YTrP0EbPaZ4c67Ij@zeniv-ca.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4f9960f0-26bd-5972-3dcf-f2e2d63ea283@kernel.dk>
+Date:   Thu, 9 Sep 2021 21:28:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-18-brijesh.singh@amd.com>
-In-Reply-To: <20210820155918.7518-18-brijesh.singh@amd.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Thu, 9 Sep 2021 20:27:59 -0700
-Message-ID: <CAA03e5Fb9nGQ8mVJzDvRi4ujq_g0q8zOjOOx4+rYZOJRkrmbhg@mail.gmail.com>
-Subject: Re: [PATCH Part2 v5 17/45] crypto: ccp: Add the SNP_{SET,GET}_EXT_CONFIG
- command
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTrP0EbPaZ4c67Ij@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`
+On 9/9/21 9:24 PM, Al Viro wrote:
+> On Fri, Sep 10, 2021 at 03:15:35AM +0000, Al Viro wrote:
+>> On Thu, Sep 09, 2021 at 09:06:58PM -0600, Jens Axboe wrote:
+>>> On 9/9/21 8:48 PM, Al Viro wrote:
+>>>> On Thu, Sep 09, 2021 at 07:35:13PM -0600, Jens Axboe wrote:
+>>>>
+>>>>> Yep ok I follow you now. And yes, if we get a partial one but one that
+>>>>> has more consumed than what was returned, that would not work well. I'm
+>>>>> guessing that a) we've never seen that, or b) we always end up with
+>>>>> either correctly advanced OR fully advanced, and the fully advanced case
+>>>>> would then just return 0 next time and we'd just get a short IO back to
+>>>>> userspace.
+>>>>>
+>>>>> The safer way here would likely be to import the iovec again. We're
+>>>>> still in the context of the original submission, and the sqe hasn't been
+>>>>> consumed in the ring yet, so that can be done safely.
+>>>>
+>>>> ... until you end up with something assuming that you've got the same
+>>>> iovec from userland the second time around.
+>>>>
+>>>> IOW, generally it's a bad idea to do that kind of re-imports.
+>>>
+>>> That's really no different than having one thread do the issue, and
+>>> another modify the iovec while it happens. It's only an issue if you
+>>> don't validate it, just like you did the first time you imported. No
+>>> assumptions need to be made here.
+>>
+>> 	It's not "need to be made", it's "will be mistakenly made by
+>> somebody several years down the road"...
+> 
+> E.g. somebody blindly assuming that the amount of data read the last
+> time around will not exceed the size of reimported iov_iter.  What I'm
+> saying is that there's a plenty of ways to fuck up in that direction,
+> and they will *not* be caught by normal fuzzers.
 
-On Fri, Aug 20, 2021 at 9:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> The SEV-SNP firmware provides the SNP_CONFIG command used to set the
-> system-wide configuration value for SNP guests. The information includes
-> the TCB version string to be reported in guest attestation reports.
->
-> Version 2 of the GHCB specification adds an NAE (SNP extended guest
-> request) that a guest can use to query the reports that include additional
-> certificates.
->
-> In both cases, userspace provided additional data is included in the
-> attestation reports. The userspace will use the SNP_SET_EXT_CONFIG
-> command to give the certificate blob and the reported TCB version string
-> at once. Note that the specification defines certificate blob with a
-> specific GUID format; the userspace is responsible for building the
-> proper certificate blob. The ioctl treats it an opaque blob.
->
-> While it is not defined in the spec, but let's add SNP_GET_EXT_CONFIG
-> command that can be used to obtain the data programmed through the
-> SNP_SET_EXT_CONFIG.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  Documentation/virt/coco/sevguest.rst |  28 +++++++
->  drivers/crypto/ccp/sev-dev.c         | 115 +++++++++++++++++++++++++++
->  drivers/crypto/ccp/sev-dev.h         |   3 +
->  include/uapi/linux/psp-sev.h         |  17 ++++
->  4 files changed, 163 insertions(+)
->
-> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
-> index 7c51da010039..64a1b5167b33 100644
-> --- a/Documentation/virt/coco/sevguest.rst
-> +++ b/Documentation/virt/coco/sevguest.rst
-> @@ -134,3 +134,31 @@ See GHCB specification for further detail on how to parse the certificate blob.
->  The SNP_PLATFORM_STATUS command is used to query the SNP platform status. The
->  status includes API major, minor version and more. See the SEV-SNP
->  specification for further details.
-> +
-> +2.4 SNP_SET_EXT_CONFIG
-> +----------------------
-> +:Technology: sev-snp
-> +:Type: hypervisor ioctl cmd
-> +:Parameters (in): struct sev_data_snp_ext_config
-> +:Returns (out): 0 on success, -negative on error
-> +
-> +The SNP_SET_EXT_CONFIG is used to set the system-wide configuration such as
-> +reported TCB version in the attestation report. The command is similar to
-> +SNP_CONFIG command defined in the SEV-SNP spec. The main difference is the
-> +command also accepts an additional certificate blob defined in the GHCB
-> +specification.
-> +
-> +If the certs_address is zero, then previous certificate blob will deleted.
-> +For more information on the certificate blob layout, see the GHCB spec
-> +(extended guest request message).
-> +
-> +
-> +2.4 SNP_GET_EXT_CONFIG
-> +----------------------
-> +:Technology: sev-snp
-> +:Type: hypervisor ioctl cmd
-> +:Parameters (in): struct sev_data_snp_ext_config
-> +:Returns (out): 0 on success, -negative on error
-> +
-> +The SNP_SET_EXT_CONFIG is used to query the system-wide configuration set
-> +through the SNP_SET_EXT_CONFIG.
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 16c6df5d412c..9ba194acbe85 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -1132,6 +1132,10 @@ static int __sev_snp_shutdown_locked(int *error)
->         if (!sev->snp_inited)
->                 return 0;
->
-> +       /* Free the memory used for caching the certificate data */
-> +       kfree(sev->snp_certs_data);
-> +       sev->snp_certs_data = NULL;
-> +
->         /* SHUTDOWN requires the DF_FLUSH */
->         wbinvd_on_all_cpus();
->         __sev_do_cmd_locked(SEV_CMD_SNP_DF_FLUSH, NULL, NULL);
-> @@ -1436,6 +1440,111 @@ static int sev_ioctl_snp_platform_status(struct sev_issue_cmd *argp)
->         return ret;
->  }
->
-> +static int sev_ioctl_snp_get_config(struct sev_issue_cmd *argp)
-> +{
-> +       struct sev_device *sev = psp_master->sev_data;
-> +       struct sev_user_data_ext_snp_config input;
-> +       int ret;
-> +
-> +       if (!sev->snp_inited || !argp->data)
-> +               return -EINVAL;
-> +
-> +       if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
-> +               return -EFAULT;
-> +
-> +       /* Copy the TCB version programmed through the SET_CONFIG to userspace */
-> +       if (input.config_address) {
-> +               if (copy_to_user((void * __user)input.config_address,
-> +                                &sev->snp_config, sizeof(struct sev_user_data_snp_config)))
-> +                       return -EFAULT;
-> +       }
-> +
-> +       /* Copy the extended certs programmed through the SNP_SET_CONFIG */
-> +       if (input.certs_address && sev->snp_certs_data) {
-> +               if (input.certs_len < sev->snp_certs_len) {
-> +                       /* Return the certs length to userspace */
-> +                       input.certs_len = sev->snp_certs_len;
+If the plan pans out, it's literally doing the _exact_ same thing that
+we did originally. No assumptions are made about the contents of the
+iovecs originally passed in, none of that state is reused. It's an
+identical import to what was originally done.
 
-This API to retrieve the length of the certs seems pretty odd. We only
-return the length if the input.certs_address is non-NULL. But if we
-know the length how did we allocate an address to write to
-`input.certs_address`?
+I'm not saying it's trivial, but as long as the context is correct, then
+it really should be pretty straight forward...
 
-> +
-> +                       ret = -ENOSR;
-> +                       goto e_done;
-> +               }
-> +
-> +               if (copy_to_user((void * __user)input.certs_address,
-> +                                sev->snp_certs_data, sev->snp_certs_len))
-> +                       return -EFAULT;
-> +       }
-> +
-> +       ret = 0;
-> +
-> +e_done:
-> +       if (copy_to_user((void __user *)argp->data, &input, sizeof(input)))
-> +               ret = -EFAULT;
-> +
-> +       return ret;
-> +}
-> +
-> +static int sev_ioctl_snp_set_config(struct sev_issue_cmd *argp, bool writable)
-> +{
-> +       struct sev_device *sev = psp_master->sev_data;
-> +       struct sev_user_data_ext_snp_config input;
-> +       struct sev_user_data_snp_config config;
-> +       void *certs = NULL;
-> +       int ret = 0;
-> +
-> +       if (!sev->snp_inited || !argp->data)
-> +               return -EINVAL;
-> +
-> +       if (!writable)
-> +               return -EPERM;
-> +
-> +       if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
-> +               return -EFAULT;
-> +
-> +       /* Copy the certs from userspace */
-> +       if (input.certs_address) {
-> +               if (!input.certs_len || !IS_ALIGNED(input.certs_len, PAGE_SIZE))
-> +                       return -EINVAL;
-> +
-> +               certs = psp_copy_user_blob(input.certs_address, input.certs_len);
+> I'm not arguing in favour of an uncoditional copy, BTW - I would like
+> to see something resembling profiling data, but it's obviously not a
+> pretty solution.
 
-Is `psp_copy_user_blob()` implemented in this patch series? When I
-searched through the patches, I only found an implementation that
-always returns an error. But maybe I missed the implementation?
+I can tell you right now that it's unworkable, it'll be a very
+noticeable slowdown. And it's very much a case of doing the slow path
+for the extreme corner case of ever hitting this case. For most
+workloads, you'll _never_ hit it. But we obviously have to be able to do
+it, for the slower cases (like SCSI with low QD, it'd trigger pretty
+easily).
 
-Also, out of curiosity, any reason we cannot use copy_from_user here?
+-- 
+Jens Axboe
 
-> +               if (IS_ERR(certs))
-> +                       return PTR_ERR(certs);
-> +       }
-> +
-> +       /* Issue the PSP command to update the TCB version using the SNP_CONFIG. */
-> +       if (input.config_address) {
-> +               if (copy_from_user(&config,
-> +                                  (void __user *)input.config_address, sizeof(config))) {
-> +                       ret = -EFAULT;
-> +                       goto e_free;
-> +               }
-> +
-> +               ret = __sev_do_cmd_locked(SEV_CMD_SNP_CONFIG, &config, &argp->error);
-> +               if (ret)
-> +                       goto e_free;
-> +
-> +               memcpy(&sev->snp_config, &config, sizeof(config));
-> +       }
-> +
-> +       /*
-> +        * If the new certs are passed then cache it else free the old certs.
-> +        */
-> +       if (certs) {
-> +               kfree(sev->snp_certs_data);
-> +               sev->snp_certs_data = certs;
-> +               sev->snp_certs_len = input.certs_len;
-> +       } else {
-> +               kfree(sev->snp_certs_data);
-> +               sev->snp_certs_data = NULL;
-> +               sev->snp_certs_len = 0;
-> +       }
-> +
-> +       return 0;
-> +
-> +e_free:
-> +       kfree(certs);
-> +       return ret;
-> +}
-> +
->  static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->         void __user *argp = (void __user *)arg;
-> @@ -1490,6 +1599,12 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->         case SNP_PLATFORM_STATUS:
->                 ret = sev_ioctl_snp_platform_status(&input);
->                 break;
-> +       case SNP_SET_EXT_CONFIG:
-> +               ret = sev_ioctl_snp_set_config(&input, writable);
-> +               break;
-> +       case SNP_GET_EXT_CONFIG:
-> +               ret = sev_ioctl_snp_get_config(&input);
-> +               break;
-
-What is the intended use of `SNP_GET_EXT_CONFIG`. Yes, I get that it
-returns the "EXT config" previously set via `SNP_SET_EXT_CONFIG`. But
-presumably the caller can keep track of what it's previously passed to
-`SNP_SET_EXT_CONFIG`. Does it really need to call into the kernel to
-get these certs?
-
->         default:
->                 ret = -EINVAL;
->                 goto out;
-> diff --git a/drivers/crypto/ccp/sev-dev.h b/drivers/crypto/ccp/sev-dev.h
-> index fe5d7a3ebace..d2fe1706311a 100644
-> --- a/drivers/crypto/ccp/sev-dev.h
-> +++ b/drivers/crypto/ccp/sev-dev.h
-> @@ -66,6 +66,9 @@ struct sev_device {
->
->         bool snp_inited;
->         struct snp_host_map snp_host_map[MAX_SNP_HOST_MAP_BUFS];
-> +       void *snp_certs_data;
-> +       u32 snp_certs_len;
-> +       struct sev_user_data_snp_config snp_config;
->  };
->
->  int sev_dev_init(struct psp_device *psp);
-> diff --git a/include/uapi/linux/psp-sev.h b/include/uapi/linux/psp-sev.h
-> index ffd60e8b0a31..60e7a8d1a18e 100644
-> --- a/include/uapi/linux/psp-sev.h
-> +++ b/include/uapi/linux/psp-sev.h
-> @@ -29,6 +29,8 @@ enum {
->         SEV_GET_ID,     /* This command is deprecated, use SEV_GET_ID2 */
->         SEV_GET_ID2,
->         SNP_PLATFORM_STATUS,
-> +       SNP_SET_EXT_CONFIG,
-> +       SNP_GET_EXT_CONFIG,
->
->         SEV_MAX,
->  };
-> @@ -190,6 +192,21 @@ struct sev_user_data_snp_config {
->         __u8 rsvd[52];
->  } __packed;
->
-> +/**
-> + * struct sev_data_snp_ext_config - system wide configuration value for SNP.
-> + *
-> + * @config_address: address of the struct sev_user_data_snp_config or 0 when
-> + *             reported_tcb does not need to be updated.
-> + * @certs_address: address of extended guest request certificate chain or
-> + *              0 when previous certificate should be removed on SNP_SET_EXT_CONFIG.
-> + * @certs_len: length of the certs
-> + */
-> +struct sev_user_data_ext_snp_config {
-> +       __u64 config_address;           /* In */
-> +       __u64 certs_address;            /* In */
-> +       __u32 certs_len;                /* In */
-> +};
-> +
->  /**
->   * struct sev_issue_cmd - SEV ioctl parameters
->   *
-> --
-> 2.17.1
->
