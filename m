@@ -2,148 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57C840690A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9537E406910
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhIJJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:25:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31100 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231916AbhIJJZD (ORCPT
+        id S232026AbhIJJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:27:32 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:37510 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231818AbhIJJ1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:25:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631265832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vrslVFgCV0A1ASGIKU12boBiWPC4TLJ7XoCjGrBTCz8=;
-        b=JJEvg2H5+TLjA9WWSA96xgLOShSki5LRRV51vAw4FkeJKk9aTbTXTBID0YKSTaMdkL8KzI
-        BPtKEbJeaWWq7p6ohU2BNeRphgDq2X0pznRgjwlRUrIO/SY0O7d/DukENTt+QJWaFJ5kJA
-        6DPIYQTiZsK+QmEV2eV3+QX/QzLoWik=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-EpoP7FQFOV67SySPaiJZ1Q-1; Fri, 10 Sep 2021 05:23:51 -0400
-X-MC-Unique: EpoP7FQFOV67SySPaiJZ1Q-1
-Received: by mail-wm1-f71.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so548778wme.6
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 02:23:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vrslVFgCV0A1ASGIKU12boBiWPC4TLJ7XoCjGrBTCz8=;
-        b=apILDfII/dngz3BFmQ1h5/hhQj8/gLNcOX1DeZvjXKIA5ZSBagk5MO5zGoM3L1KjdN
-         Y7hKqGs6F6XWxrKkAQmosAd9BQIIih3mBD2cqf0B5IsyiYKtk2iCt6cTwmIWpBPqY1fL
-         zZYvWhsJVHvljUwfufVsB/N1tHcbF5ayzsCl1ztI7B5wgwvj7B1xznIjqJOX6/DfvhiC
-         vC2iy1R2haRsk/LCqRjc6vel/MLW6JtEhWqWfnAleNS4uVbnPShr2iO/RrhI25P8tZEE
-         pdvjGJNLUp1zkBntvIuZfL3OCSLkogjjWMJ/iCc/Yxqvza9zskPuSpSN0hAd15Y8Y2oH
-         hHTg==
-X-Gm-Message-State: AOAM533n5UT7AvrxRfcR0UdzWFCvvHle8wLzeSD4B8Z8KHEYii/8ahDK
-        hRF1syr84gsduGPgsylhqVOMdukcpLFKcqbupnrDZv9jqrX+wJsmrxWKloGqPEKlzlfg9cCAi6h
-        +NnLmSnDK3KogSUDeHPge269l
-X-Received: by 2002:adf:e7ca:: with SMTP id e10mr537328wrn.97.1631265830262;
-        Fri, 10 Sep 2021 02:23:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbJtumfWhoeoqWdrbbfX6WGzwZFjWqOeIuwT2t9OUhauNMdOAXqx3T37WZquMUdpxR8rvMgA==
-X-Received: by 2002:adf:e7ca:: with SMTP id e10mr537307wrn.97.1631265829997;
-        Fri, 10 Sep 2021 02:23:49 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c600c.dip0.t-ipconnect.de. [91.12.96.12])
-        by smtp.gmail.com with ESMTPSA id p5sm4479649wrd.25.2021.09.10.02.23.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 02:23:49 -0700 (PDT)
-Subject: Re: [PATCH RFC 6/9] s390/pci_mmio: fully validate the VMA before
- calling follow_pte()
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20210909145945.12192-1-david@redhat.com>
- <20210909145945.12192-7-david@redhat.com>
- <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d9ec2387-2645-796e-af47-26f22516f7fa@redhat.com>
-Date:   Fri, 10 Sep 2021 11:23:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 10 Sep 2021 05:27:31 -0400
+X-UUID: 30a0599609814a07a9fbc573b5fead1d-20210910
+X-UUID: 30a0599609814a07a9fbc573b5fead1d-20210910
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 909894693; Fri, 10 Sep 2021 17:26:16 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 10 Sep 2021 17:26:15 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 10 Sep 2021 17:26:14 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>
+Subject: [PATCH v2] ASoC: mediatek: common: handle NULL case in suspend/resume function
+Date:   Fri, 10 Sep 2021 17:26:13 +0800
+Message-ID: <20210910092613.30188-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <82d683ec361245e1879b3f14492cdd5c41957e52.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.09.21 10:22, Niklas Schnelle wrote:
-> On Thu, 2021-09-09 at 16:59 +0200, David Hildenbrand wrote:
->> We should not walk/touch page tables outside of VMA boundaries when
->> holding only the mmap sem in read mode. Evil user space can modify the
->> VMA layout just before this function runs and e.g., trigger races with
->> page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
->> with read mmap_sem in munmap").
->>
->> find_vma() does not check if the address is >= the VMA start address;
->> use vma_lookup() instead.
->>
->> Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->>   arch/s390/pci/pci_mmio.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
->> index ae683aa623ac..c5b35ea129cf 100644
->> --- a/arch/s390/pci/pci_mmio.c
->> +++ b/arch/s390/pci/pci_mmio.c
->> @@ -159,7 +159,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
->>   
->>   	mmap_read_lock(current->mm);
->>   	ret = -EINVAL;
->> -	vma = find_vma(current->mm, mmio_addr);
->> +	vma = vma_lookup(current->mm, mmio_addr);
->>   	if (!vma)
->>   		goto out_unlock_mmap;
->>   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
->> @@ -298,7 +298,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
->>   
->>   	mmap_read_lock(current->mm);
->>   	ret = -EINVAL;
->> -	vma = find_vma(current->mm, mmio_addr);
->> +	vma = vma_lookup(current->mm, mmio_addr);
->>   	if (!vma)
->>   		goto out_unlock_mmap;
->>   	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> 
-> Oh wow great find thanks! If I may say so these are not great function
-> names. Looking at the code vma_lookup() is inded find_vma() plus the
-> check that the looked up address is indeed inside the vma.
-> 
+When memory allocation for afe->reg_back_up fails, reg_back_up can't
+be used.
+Keep the suspend/resume flow but skip register backup when
+afe->reg_back_up is NULL, in case illegal memory access happens.
 
-IIRC, vma_lookup() was introduced fairly recently. Before that, this 
-additional check was open coded (and still are in some instances). It's 
-confusing, I agree.
+Fixes: 283b612429a2 ("ASoC: mediatek: implement mediatek common structure")
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Change since v1:
+  add Reported-by tag
+---
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-> I think this is pretty independent of the rest of the patches, so do
-> you want me to apply this patch independently or do you want to wait
-> for the others?
-
-Sure, please go ahead and apply independently. It'd be great if you 
-could give it a quick sanity test, although I don't expect surprises -- 
-unfortunately, the environment I have easily at hand is not very well 
-suited (#cpu, #mem, #disk ...) for anything that exceeds basic compile 
-tests (and even cross-compiling is significantly faster ...).
-
-> 
-> In any case:
-> 
-> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> 
-
-Thanks!
-
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+index baaa5881b1d4..e95c7c018e7d 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -334,9 +334,11 @@ int mtk_afe_suspend(struct snd_soc_component *component)
+ 			devm_kcalloc(dev, afe->reg_back_up_list_num,
+ 				     sizeof(unsigned int), GFP_KERNEL);
+ 
+-	for (i = 0; i < afe->reg_back_up_list_num; i++)
+-		regmap_read(regmap, afe->reg_back_up_list[i],
+-			    &afe->reg_back_up[i]);
++	if (afe->reg_back_up) {
++		for (i = 0; i < afe->reg_back_up_list_num; i++)
++			regmap_read(regmap, afe->reg_back_up_list[i],
++				    &afe->reg_back_up[i]);
++	}
+ 
+ 	afe->suspended = true;
+ 	afe->runtime_suspend(dev);
+@@ -356,12 +358,13 @@ int mtk_afe_resume(struct snd_soc_component *component)
+ 
+ 	afe->runtime_resume(dev);
+ 
+-	if (!afe->reg_back_up)
++	if (!afe->reg_back_up) {
+ 		dev_dbg(dev, "%s no reg_backup\n", __func__);
+-
+-	for (i = 0; i < afe->reg_back_up_list_num; i++)
+-		mtk_regmap_write(regmap, afe->reg_back_up_list[i],
+-				 afe->reg_back_up[i]);
++	} else {
++		for (i = 0; i < afe->reg_back_up_list_num; i++)
++			mtk_regmap_write(regmap, afe->reg_back_up_list[i],
++					 afe->reg_back_up[i]);
++	}
+ 
+ 	afe->suspended = false;
+ 	return 0;
 -- 
-Thanks,
-
-David / dhildenb
+2.18.0
 
