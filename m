@@ -2,161 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5783D406DEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D450406DF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhIJPFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhIJPFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:05:39 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAD3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:04:28 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id bd1so3302680oib.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1pwlVxDkfCa0su9+pm6vroWkQFMoA+AryU161sjcxfk=;
-        b=Upka5ZzTcAbnaXhLgktHI/hEk3sA+dwVQL8Kt+LeTHdDwSOL5teaXo51VLxQLrhTY0
-         zHaWBnbao+/ZYQx7iQ8KNffO8Bwbw3ZrHKOfKEOWTxxgq+zd9iZ0xBxL2zkqLVuGUR6C
-         3I1+nnsaV1qxKKvfek19l7XxI5oG5T1gDXUHzxFkcqwMbgCJD1MazII9eIFRVbqjJsXO
-         IKiOtRNl9mjhkvh46uw34cfWYOwMduNhvPj40XmfrZaa2b96CUkLr8iDIYwlLZmWoFtc
-         ooHZx5cKluVeam5DJudtqN6O9eSdqoCM3BIAn/oNpmSD+wPhZDmiiJ+yRcmjPefk7x/9
-         n5MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1pwlVxDkfCa0su9+pm6vroWkQFMoA+AryU161sjcxfk=;
-        b=j29v7LSptHKW1Dh41HfEgvIMQtojKuFbYfRGZiKRCMh1nwr5CSH4lBWwxCTOhmpPyP
-         sNBGJvsSkD5Q4lMjLfXE908hQaCvnSXkxxzNQY5jH0hHA7w1WoyJL1D6u2RYXWDxCrIG
-         SwONPKpxGajqSeoyfXrB45KSkvJiyRdjTHQFq4Dphk1QEUGpw/HmIrU7B1dqTbA7uOBs
-         M9rRsS74LRrCqVg/hVIVyyjxnYJePkLJ+ghDNccPqkv/4bzR5KUUDNxJMMOl9t2wn9lW
-         p4AcSJkWKV8C1v91BWV93GZhqSGXcx4Pp28wEUVS3Lmw1rAnCwVP6rAnPWevdkzar4qW
-         w1PA==
-X-Gm-Message-State: AOAM533+A7Qj748JE+W/q389SttZWjewQ38cfTzEa0G9cL8IJwcezvPP
-        3yrWmkXhCpFJ0CeakETb+IfWzQ==
-X-Google-Smtp-Source: ABdhPJxSGAPtW3Oy2T5TFXP6JxfWfln/a1Zc6o7Sj8HhmrsyQ7Zv1HwU0sge2r1VlGeYw6LAnrGExA==
-X-Received: by 2002:aca:d02:: with SMTP id 2mr4489656oin.126.1631286267793;
-        Fri, 10 Sep 2021 08:04:27 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id 99sm1276993otd.2.2021.09.10.08.04.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 08:04:27 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
-Message-ID: <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
-Date:   Fri, 10 Sep 2021 09:04:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234181AbhIJPH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229749AbhIJPH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E6B60F92;
+        Fri, 10 Sep 2021 15:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631286405;
+        bh=VIn1b4GQH+TJrbsUH/3F2B+v61HV9neqi+1DLLKlHvc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ewu10aDmon6lqr9M+QtkSQT2j7QL/Zgb9y3S6QUIRpOEhC4DrrS5UrsycyCysrvSt
+         kbEhtRU3QbKYVUtMalnpVlJbpeWcmWCfzT+ylUn4hIAtQikCfNlTHbWy1ZD7tmhqdD
+         snjIJtA38vsRU93VedDt8M2/u7JVU+S4nc2be9fG6t8jGfpJaQ6E+jxLduMUrfPgmB
+         OanYA8n4Y8Q5b0seD6Onap+yhWX4l7SZL7tIYVlrmioBlkA9OtcHsSHTqemSJympD+
+         L3bdP68IkwCl7L09Kcn/FsgHbbNU/678BKD5aWTk0IT5c2BlQsUM41/tMVM8w5S1tE
+         8lY33cKuTgsxQ==
+Date:   Fri, 10 Sep 2021 16:06:40 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
+ current_save_and_set_rtlock_wait_state()
+Message-ID: <20210910150639.GA1755@willie-the-truck>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.767330253@infradead.org>
+ <20210909134524.GB9722@willie-the-truck>
+ <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
+ <20210910125658.GA1454@willie-the-truck>
+ <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
+ <YTtlOQfAl/cT5Na9@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTtlOQfAl/cT5Na9@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 7:57 AM, Jens Axboe wrote:
-> On 9/9/21 9:36 PM, Al Viro wrote:
->> On Thu, Sep 09, 2021 at 09:30:03PM -0600, Jens Axboe wrote:
->>
->>>> Again, we should never, ever modify the iovec (or bvec, etc.) array in
->>>> ->read_iter()/->write_iter()/->sendmsg()/etc. instances.  If you see
->>>> such behaviour anywhere, report it immediately.  Any such is a blatant
->>>> bug.
->>>
->>> Yes that was wrong, the iovec is obviously const. But that really
->>> doesn't change the original point, which was that copying the iov_iter
->>> itself unconditionally would be miserable.
->>
->> Might very well be true, but... won't your patch hit the reimport on
->> every short read?  And the cost of uaccess in there is *much* higher
->> than copying of 48 bytes into local variable...
->>
->> Or am I misreading your patch?  Note that short reads on reaching
->> EOF are obviously normal - it's not a rare case at all.
+On Fri, Sep 10, 2021 at 04:01:29PM +0200, Peter Zijlstra wrote:
+> On Fri, Sep 10, 2021 at 03:17:04PM +0200, Peter Zijlstra wrote:
+> > On Fri, Sep 10, 2021 at 01:57:26PM +0100, Will Deacon wrote:
+> > > On Thu, Sep 09, 2021 at 04:27:46PM +0200, Peter Zijlstra wrote:
+> > > > Moo yes, so the earlier changelog I wrote was something like:
+> > > > 
+> > > > 	current_save_and_set_rtlock_wait_state();
+> > > > 	for (;;) {
+> > > > 		if (try_lock())
+> > > > 			break;
+> > > > 
+> > > > 		raw_spin_unlock_irq(&lock->wait_lock);
+> > > > 		if (!cond)
+> > > > 			schedule();
+> > > > 		raw_spin_lock_irq(&lock->wait_lock);
+> > > > 
+> > > > 		set_current_state(TASK_RTLOCK_WAIT);
+> > > > 	}
+> > > > 	current_restore_rtlock_saved_state();
+> > > > 
+> > > > which is more what the code looks like before these patches, and in that
+> > > > case the @cond load can be lifted before __state.
+> > > 
+> > > Ah, so that makes more sense, thanks. I can't see how the try_lock() could
+> > > be reordered though, as it's going to have to do an atomic rmw.
+> > 
+> > OK, lemme go update the Changelog and make it __flags for bigeasy :-)
 > 
-> It was just a quick hack, might very well be too eager to go through
-> those motions. But pondering this instead of sleeping, we don't need to
-> copy all of iov_iter in order to restore the state, and we can use the
-> same advance after restoring. So something like this may be more
-> palatable. Caveat - again untested, and I haven't tested the performance
-> impact of this at all.
+> The patch now reads:
+> 
+> ---
+> Subject: sched/wakeup: Strengthen current_save_and_set_rtlock_wait_state()
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Thu, 09 Sep 2021 12:59:16 +0200
+> 
+> While looking at current_save_and_set_rtlock_wait_state() I'm thinking
+> it really ought to use smp_store_mb(), because using it for a more
+> traditional wait loop like:
+> 
+> 	current_save_and_set_rtlock_wait_state();
+> 	for (;;) {
+> 		if (cond)
+> 			schedule();
+> 
+> 		set_current_state(TASK_RTLOCK_WAIT);
+> 	}
+> 	current_restore_rtlock_saved_state();
+> 
+> is actually broken, since the cond load could be re-ordered against
+> the state store, which could lead to a missed wakeup -> BAD (tm).
+> 
+> While there, make them consistent with the IRQ usage in
+> set_special_state().
 
-Passes basic testing for me. I added a sysctl switch for this so I can
-compare performance, running my usual peak-perf-single-core benchmark.
-That one does ~3.5M IOPS, using polled IO. There's always a slight
-variability between boots and builds, hence the sysctl so I could
-toggle this behavior on the fly.
+Cheers, that's much better:
 
-Did a few runs, and the differences are very stable. With this enabled,
-we spend about 0.15% more time in io_read(). That's only worth about
-5K IOPS at 3.5M, not enough to notice as the variation for the 1 second
-reporting window usually swings more than that:
+Acked-by: Will Deacon <will@kernel.org>
 
-Old behavior:
-IOPS=3536512, IOS/call=32/31, inflight=(75)
-IOPS=3541888, IOS/call=32/32, inflight=(64)
-IOPS=3529056, IOS/call=32/31, inflight=(119)
-IOPS=3521184, IOS/call=32/32, inflight=(96)
-IOPS=3527456, IOS/call=32/31, inflight=(128)
-IOPS=3525504, IOS/call=32/32, inflight=(128)
-IOPS=3524288, IOS/call=32/32, inflight=(128)
-IOPS=3536192, IOS/call=32/32, inflight=(96)
-IOPS=3535840, IOS/call=32/32, inflight=(96)
-IOPS=3533728, IOS/call=32/31, inflight=(128)
-IOPS=3528384, IOS/call=32/32, inflight=(128)
-IOPS=3518400, IOS/call=32/32, inflight=(64)
-
-Turning it on:
-IOPS=3533824, IOS/call=32/31, inflight=(64)
-IOPS=3541408, IOS/call=32/32, inflight=(32)
-IOPS=3533024, IOS/call=32/31, inflight=(64)
-IOPS=3528672, IOS/call=32/32, inflight=(35)
-IOPS=3522272, IOS/call=32/31, inflight=(107)
-IOPS=3517632, IOS/call=32/32, inflight=(57)
-IOPS=3516000, IOS/call=32/31, inflight=(96)
-IOPS=3513568, IOS/call=32/32, inflight=(34)
-IOPS=3525600, IOS/call=32/31, inflight=(96)
-IOPS=3527136, IOS/call=32/31, inflight=(101)
-
-I think that's tolerable, it was never going to be absolutely free.
-
-What do you think of this approach? Parts of iov_iter are going to
-remain constant, like iter_type and data_source. io_uring already copies
-iter->count, so that just leaves restoring iov (and unionized friends),
-nr_segs union, and iov_offset;
-
-We could pretty this up and have the state part be explicit in iov_iter,
-and have the store/restore parts end up in uio.h. That'd tie them closer
-together, though I don't expect iov_iter changes to be an issue. It
-would make it more maintainable, though. I'll try and hack up this
-generic solution, see if that looks any better.
-
--- 
-Jens Axboe
-
+Will
