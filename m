@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7764070D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F734070D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhIJSNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S230317AbhIJSVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhIJSNm (ORCPT
+        with ESMTP id S229476AbhIJSVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:13:42 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4802AC061574;
-        Fri, 10 Sep 2021 11:12:31 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id r3so4575808ljc.4;
-        Fri, 10 Sep 2021 11:12:31 -0700 (PDT)
+        Fri, 10 Sep 2021 14:21:43 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DCAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:20:32 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id 5so1677058plo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 11:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=yAS2V26MFTPXdp5D+1VvRXcpwyS1dkM+dGnCynSdaik=;
-        b=QZCMZ92pfp0Aw7elF0GYvXcwRYYzg/cDsaEmEba4f+WIMOVwz64HZqjB1pjqWaqukb
-         BIwSvfvT4DWFNxpLG6dqJIBwAdLbGHF5xXrKnAarI5o91JevyqVgKYgwE2SaxNHrunCS
-         41lNXtxFKbJ3d1/82AzOiHGuEiHzg7/4kipXZOrwcZ87+wKE/3L7czuJk+oxX/0d73E+
-         uJKdkUoRTBaP30HwMX4u4SGP4p5MrIDNZdNwZ7xq99qXL5FvCE6QdiJ0WfJSNj1ERa8l
-         hbcqa6ILYPJB1hgBsrFvgArXvSZEZ1WXL7ylaUIYasJ2G85yWH7wzbrFjioLsLpt0W0Y
-         mfYg==
+        bh=MQBLIvat0Yi5uc02p/sMmL47y+EqK3jI7MnOBAhKSpo=;
+        b=CSLBs1ZYIhN2ZflZu+StwA+/osv2USf5nrilccKrwZRW8TLBnnTCBgdN/SivALTq29
+         bZZUKmhMsH/C4I4oMTMmhGTGWiLX0kfgy8X+Ppy2zjlgMxXvXeCiJNW1hF7WRK6ucGqU
+         SJ3Q/PAnOMSiJsFnMPH8vhq4nlg31/EsOnzffpYWEDDQdXBLHFkAvHByGkqNhx/Wp/rn
+         yDJxVip0x8NperS+nyyf+un6v73GjbEdZ1dS4qwHMCWcQrFkez1Hoi/1xXhj4JBRRY5a
+         /G7y248LuiHaCylhfPp5fTHrltU84TAF+uFCHVzexhwl6sKlmyYi0dHRHP2m5LKQB+1+
+         FZoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition;
-        bh=yAS2V26MFTPXdp5D+1VvRXcpwyS1dkM+dGnCynSdaik=;
-        b=zHOU7J7QnQEUUdfXZQY4UZd5wL7GNgcw1juctFIYyh6rvDzY2uK8yqMO/rTsgpdYQX
-         JtPFno51tuf8VQ+wm+nys/cKmNpSRX+oImUur0vO8o4Ee+j4De3vxmt6MAPZ7rju0SO1
-         69xklyRzactUovh6h7mOPUjxUs+bUW7ky4QH0NVq0fOnZryvHlgBr20mZ3DzNHNqUdtv
-         +brsSLLeeQoO0mY+wcunaqR2VeSqaB9Cp3NUOCbgTeybGpTVnM44oekzQK/lHr5CrXYT
-         YQPxLN0F3SgEWHCAA2lWg70Hn7ZLYIO2UVfFNIIrvY8XYnhpGatLswEpG3BS3nyI15Mp
-         Uwhw==
-X-Gm-Message-State: AOAM533JIDq4Gb5gKcW6CrvW2t5SNislwP31UI4m+t0tSYNYjGKyielq
-        2yajt/G7aS9YPQTWi1NsE/EQ41ri65H1OA==
-X-Google-Smtp-Source: ABdhPJyv+ihp3UJkL+McKA/31v+I+WB/lbUcXTkXIuSsRWwmYlY+S/nkN2pZwedAzLWpLNtlfn1zyg==
-X-Received: by 2002:a2e:bb93:: with SMTP id y19mr5072294lje.79.1631297549627;
-        Fri, 10 Sep 2021 11:12:29 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id o16sm623643lfu.45.2021.09.10.11.12.28
+        bh=MQBLIvat0Yi5uc02p/sMmL47y+EqK3jI7MnOBAhKSpo=;
+        b=tMqArvqoQVKpSlwD5w7dHj/Cl077IV3O+69Y6+xFiaDoeARjDsMfis9QY8ZFeeGrTe
+         /ypj+DYxbKenw7LmVUInfJ1cBaEE9ZkDivHDILss8rY8v88HSFUZ6qmOytgEDAIO1A0T
+         Ct8YMi+5P2OCYPlucGOR5idb1rE7HfXkl2USAWZuF9Frqyof0I9Jj58ICFNHTTxgwX13
+         i8SmaJG3f+eu9cNIAggMDfUXJpFcflMWLV7NIqsaY7g2kKcHTNIOjbClRzNXXMaK+hP7
+         9Yf4Zrray8wFmZ1gQ8oMDibvDyzpsLLmISCqp7JezQOGgdbsom+I/EoLK4J93TM6W/cN
+         S1tQ==
+X-Gm-Message-State: AOAM530922xrxilHaDqWTyHYu1PAuGiVS+/vd5PtsG+4lfCvTjig9XHy
+        OutNXk6xlyxl5AEvRm5W7Lk=
+X-Google-Smtp-Source: ABdhPJx3EZioYxal1RHBatlP+Lu41k4JXAZ/f5FVmhry4zywyIXVDdzr4tnbMf0cDUYrlpCFykvecg==
+X-Received: by 2002:a17:90b:1509:: with SMTP id le9mr4370489pjb.171.1631298031785;
+        Fri, 10 Sep 2021 11:20:31 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id m21sm5950077pfa.216.2021.09.10.11.20.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 11:12:28 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 21:12:27 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: fs/ntfs3: Runtree implementation with rbtree or others
-Message-ID: <20210910181227.4tr3xn2aooeo2lvw@kari-VirtualBox>
+        Fri, 10 Sep 2021 11:20:31 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 23:50:26 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, martin@kaiser.cx,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove unused variable Adapter
+Message-ID: <YTuh6iDyPMUC3wha@user>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -61,42 +63,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Remove unused variable Adapter from rtw_IOL_cmd_buf_dump function.
 
-Konstantin you have wrote in ntfs_fs.h in struct runs_tree:
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_iol.c          | 2 +-
+ drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 2 +-
+ drivers/staging/r8188eu/include/rtw_iol.h       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-/* TODO: Use rb tree instead of array. */
-struct runs_tree {
-	struct rb_root root;
+diff --git a/drivers/staging/r8188eu/core/rtw_iol.c b/drivers/staging/r8188eu/core/rtw_iol.c
+index 5c1b19679cad..abaddfb1a1a5 100644
+--- a/drivers/staging/r8188eu/core/rtw_iol.c
++++ b/drivers/staging/r8188eu/core/rtw_iol.c
+@@ -174,7 +174,7 @@ u8 rtw_IOL_cmd_boundary_handle(struct xmit_frame *pxmit_frame)
+ 	return is_cmd_bndy;
+ }
 
-	struct ntfs_run *runs;
-	size_t count; /* Currently used size a ntfs_run storage. */
-	size_t allocated; /* Currently allocated ntfs_run storage size. */
-};
+-void rtw_IOL_cmd_buf_dump(struct adapter  *Adapter, int buf_len, u8 *pbuf)
++void rtw_IOL_cmd_buf_dump(int buf_len, u8 *pbuf)
+ {
+ 	int i;
+ 	int j = 1;
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+index 14758361960c..f3fb1a2f4cb6 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+@@ -362,7 +362,7 @@ void rtw_IOL_cmd_tx_pkt_buf_dump(struct adapter *Adapter, int data_len)
+ 				rtw_usleep_os(2);
+ 			} while (!rstatus && (loop++ < 10));
+ 		}
+-		rtw_IOL_cmd_buf_dump(Adapter, data_len, pbuf);
++		rtw_IOL_cmd_buf_dump(data_len, pbuf);
+ 		vfree(pbuf);
+ 	}
+ 	DBG_88E("###### %s ######\n", __func__);
+diff --git a/drivers/staging/r8188eu/include/rtw_iol.h b/drivers/staging/r8188eu/include/rtw_iol.h
+index 471f9ca092a8..7979cbcf8e00 100644
+--- a/drivers/staging/r8188eu/include/rtw_iol.h
++++ b/drivers/staging/r8188eu/include/rtw_iol.h
+@@ -63,6 +63,6 @@ int _rtw_IOL_append_WRF_cmd(struct xmit_frame *xmit_frame, u8 rf_path,
+ 	_rtw_IOL_append_WRF_cmd((xmit_frame),(rf_path), (addr), (value), (mask))
 
+ u8 rtw_IOL_cmd_boundary_handle(struct xmit_frame *pxmit_frame);
+-void  rtw_IOL_cmd_buf_dump(struct adapter  *Adapter,int buf_len,u8 *pbuf);
++void  rtw_IOL_cmd_buf_dump(int buf_len, u8 *pbuf);
 
-But right now it is not array. It is just memory. Probably some early
-comment, but I check that little bit and I think rb tree may not be good
-choice. Right now we allocate more memory with kvmalloc() and then make
-space for one entry with memmove. I do not quite understand why cannot
-memory be other way around. This way we do not memmove. We can just put
-new entry to other end right?
-
-Also one thing what comes to my mind is to allocate page at the time. Is
-there any drawbacks? If we do this with rb_tree we get many small entrys
-and it also seems to problem. Ntfs-3g allocate 4kiB at the time. But
-they still reallocate which I think is avoidable.
-
-Also one nice trick with merging two run_tree togethor would be not to
-allocate new memory for it but just use pointer to other list. This way
-we can have big run_tree but it is in multi page. No need to reallocate
-with this strategy. 
-
-I just want some thoughts about this before starting implementation. If
-you think rb_tree would be right call then I can do that. It just seems
-to me that it might not be. But if search speed is big factor then it
-might be. I just do not yet understand enogh that I can fully understand
-benefits and drawbacks.
-
-  Argillander
+ #endif /* __RTW_IOL_H_ */
+--
+2.32.0
 
