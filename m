@@ -2,397 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286B6407321
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45FD407323
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234659AbhIJVym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:54:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44955 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233480AbhIJVyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:54:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="306748831"
-X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
-   d="gz'50?scan'50,208,50";a="306748831"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 14:53:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
-   d="gz'50?scan'50,208,50";a="450654629"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 10 Sep 2021 14:53:21 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOoSW-0004kB-BY; Fri, 10 Sep 2021 21:53:20 +0000
-Date:   Sat, 11 Sep 2021 05:52:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        keyrings@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, dhowells@redhat.com, zohar@linux.ibm.com,
-        jarkko@kernel.org, seth.forshee@canonical.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>
-Subject: Re: [PATCH] integrity: support including firmware ".platform" keys
- at build time
-Message-ID: <202109110507.ucpEmrwz-lkp@intel.com>
-References: <20210910172515.8430-1-nayna@linux.ibm.com>
+        id S234687AbhIJVz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234306AbhIJVz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 17:55:27 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20502C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:54:15 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id g14so5427673ljk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LuVy44p0SzGJdTULb6pel42CgB5i1WaUkiR0FbuO3yM=;
+        b=i1HGv5k809Vz0jqOZ+KFuOEx/5GxHPbRfnJ0i1SgrmLONgBPVHjZ2WWzYZqB7Vlb0U
+         jY9oE6YSeqSYOLYSg8tOtoG40cSoH/WJ3nCMzQPRgu0jMSn5tUCg554fNMH1/tedbuJ6
+         7PNhIf/GkpbB3+NZm8dDr4hV3d/Yl6LhYtkTPDvdRlCDZMPpRDtAEl2f3PZO7CgOFqX7
+         Q2w5E1Nt/WmjWp3mlqR3soRiM/d9/8+ygyz+a0v/btDEUkG0BJMoey+eu4czRo1hwD8b
+         HbUvJbvYvNcjfOrMeMSuMn/fEig7VlNRbVdnndKe5vWF6D5+Jxt8JPeTV1QneJC0vKWu
+         YVaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LuVy44p0SzGJdTULb6pel42CgB5i1WaUkiR0FbuO3yM=;
+        b=0pTdLlv9WBtWhnAi3fYnHCk6brxgR/pHRh86mnOL2UAbAZACCe6zn79SjWSbjq8k1V
+         h1R62ZOV0lt4jwLCjSAehNscU8KvO4HtjOpaObVpQI7i+qBTQ7wE91M6FqMsEgbFxFbm
+         q+Z5yzzE+1u8VvkZXrzfKYzO+rU/QkJmb8UUAiurx9uWQaJk9HADGWsaHW547QQFylFP
+         B4PKanZfuy8oLO/byra81scObLr9UKKi7+WybXs7XE7bNqT4dJ/SuNWJRvB7wQEahy5p
+         2L/6GVBBzmXwKVtTSO+bvmkitL0K/C7P4EWiEbyEzk4gydjQdgs2SNbB5UIkWAG9uE5r
+         PZ6w==
+X-Gm-Message-State: AOAM530iL+d7E46GxVv3VCRi5wQZMQJY8p6hBVEkJdu9sPZCx1BOZ2xB
+        zOBArpK3IE87ThDc8E+KaiKvi341TMhn2K7UsUOxgw==
+X-Google-Smtp-Source: ABdhPJw8prcns/QsXYgt1qWzntnGdhvAunooG7Gi6A+ykIHvPvnufx5Lr1500mVLKw9Z4jWt0xAxIGcPHrwLQNVHRGM=
+X-Received: by 2002:a05:651c:54e:: with SMTP id q14mr5675857ljp.426.1631310853126;
+ Fri, 10 Sep 2021 14:54:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
-Content-Disposition: inline
-In-Reply-To: <20210910172515.8430-1-nayna@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210902181751.252227-1-pgonda@google.com> <20210902181751.252227-2-pgonda@google.com>
+ <YTqirwnu0rOcfDCq@google.com>
+In-Reply-To: <YTqirwnu0rOcfDCq@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Fri, 10 Sep 2021 15:54:01 -0600
+Message-ID: <CAMkAt6pa2aLZYa3N_jPXdx3zwAMiAUW4m2DRc4rXFC7N1EQcYA@mail.gmail.com>
+Subject: Re: [PATCH 1/3 V7] KVM, SEV: Add support for SEV intra host migration
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 9, 2021 at 6:11 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Nit, preferred shortlog scope is "KVM: SEV:"
+>
+> On Thu, Sep 02, 2021, Peter Gonda wrote:
+> > For SEV to work with intra host migration, contents of the SEV info struct
+> > such as the ASID (used to index the encryption key in the AMD SP) and
+> > the list of memory regions need to be transferred to the target VM.
+> > This change adds a commands for a target VMM to get a source SEV VM's sev
+> > info.
+> >
+> > The target is expected to be initialized (sev_guest_init), but not
+> > launched state (sev_launch_start) when performing receive. Once the
+> > target has received, it will be in a launched state and will not
+> > need to perform the typical SEV launch commands.
+> >
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > Reviewed-by: Marc Orr <marcorr@google.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > Cc: Wanpeng Li <wanpengli@tencent.com>
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: Joerg Roedel <joro@8bytes.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  Documentation/virt/kvm/api.rst  |  15 +++++
+> >  arch/x86/include/asm/kvm_host.h |   1 +
+> >  arch/x86/kvm/svm/sev.c          | 101 ++++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/svm/svm.c          |   1 +
+> >  arch/x86/kvm/svm/svm.h          |   2 +
+> >  arch/x86/kvm/x86.c              |   5 ++
+> >  include/uapi/linux/kvm.h        |   1 +
+> >  7 files changed, 126 insertions(+)
+> >
+> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> > index 4ea1bb28297b..e8cecc024649 100644
+> > --- a/Documentation/virt/kvm/api.rst
+> > +++ b/Documentation/virt/kvm/api.rst
+> > @@ -6702,6 +6702,21 @@ MAP_SHARED mmap will result in an -EINVAL return.
+> >  When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+> >  perform a bulk copy of tags to/from the guest.
+> >
+> > +7.29 KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
+> > +-------------------------------------
+>
+> Do we really want to bury this under KVM_CAP?  Even KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
+> is a bit of a stretch, but at least that's a one-way "enabling", whereas this
+> migration routine should be able to handle multiple migrations, e.g. migrate A->B
+> and B->A.  Peeking at your selftest, it should be fairly easy to add in this edge
+> case.
+>
+> This is probably a Paolo question, I've no idea if there's a desire to expand
+> KVM_CAP versus adding a new ioctl().
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the review Sean. I put this under KVM_CAP as you suggested
+following the idea of svm_vm_copy_asid_from. Paolo or anyone else have
+thoughts here? It doesn't really matter to me.
 
-Hi Nayna,
+>
+> > +Architectures: x86 SEV enabled
+> > +Type: vm
+> > +Parameters: args[0] is the fd of the source vm
+> > +Returns: 0 on success
+>
+> It'd be helpful to provide a brief description of the error cases.  Looks like
+> -EINVAL is the only possible error?
+>
+> > +This capability enables userspace to migrate the encryption context
+>
+> I would prefer to scope this beyond "encryption context".  Even for SEV, it
+> copies more than just the "context", which was an abstraction of SEV's ASID,
+> e.g. this also hands off the set of encrypted memory regions.  Looking toward
+> the future, if TDX wants to support this it's going to need to hand over a ton
+> of stuff, e.g. S-EPT tables.
+>
+> Not sure on a name, maybe MIGRATE_PROTECTED_VM_FROM?
 
-I love your patch! Perhaps something to improve:
+Protected VM sounds reasonable. I was using 'context' here to mean all
+metadata related to a CoCo VM as with the
+KVM_CAP_VM_COPY_ENC_CONTEXT_FROM. Is it worth diverging naming here?
 
-[auto build test WARNING on integrity/next-integrity]
-[also build test WARNING on linus/master v5.14 next-20210910]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+>
+> > from the vm
+>
+> Capitalize VM in the description, if only to be consistent within these two
+> paragraphs.  If it helps, oretend all the terrible examples in this file don't
+> exist ;-)
+>
+> > +indicated by the fd to the vm this is called on.
+> > +
+> > +This is intended to support intra-host migration of VMs between userspace VMMs.
+> > +in-guest workloads scheduled by the host. This allows for upgrading the VMMg
+>
+> This snippet (and the lowercase "vm") looks like it was left behind after a
+> copy-paste from KVM_CAP_VM_COPY_ENC_CONTEXT_FROM.
+>
+> > +process without interrupting the guest.
+> > +
+> >  8. Other capabilities.
+> >  ======================
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 09b256db394a..f06d87a85654 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1456,6 +1456,7 @@ struct kvm_x86_ops {
+> >       int (*mem_enc_reg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+> >       int (*mem_enc_unreg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+> >       int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+> > +     int (*vm_migrate_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+> >
+> >       int (*get_msr_feature)(struct kvm_msr_entry *entry);
+> >
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index 46eb1ba62d3d..8db666a362d4 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -1501,6 +1501,107 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> >       return sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, &data, &argp->error);
+> >  }
+> >
+> > +static int svm_sev_lock_for_migration(struct kvm *kvm)
+> > +{
+> > +     struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> > +
+> > +     /*
+> > +      * Bail if this VM is already involved in a migration to avoid deadlock
+> > +      * between two VMs trying to migrate to/from each other.
+> > +      */
+> > +     if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
+> > +             return -EBUSY;
+> > +
+> > +     mutex_lock(&kvm->lock);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void svm_unlock_after_migration(struct kvm *kvm)
+> > +{
+> > +     struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> > +
+> > +     mutex_unlock(&kvm->lock);
+> > +     atomic_set_release(&sev->migration_in_progress, 0);
+> > +}
+> > +
+> > +static void migrate_info_from(struct kvm_sev_info *dst,
+> > +                           struct kvm_sev_info *src)
+> > +{
+> > +     sev_asid_free(dst);
+>
+> Ooh, this brings up a potential shortcoming of requiring @dst to be SEV-enabled.
+> If every SEV{-ES} ASID is allocated, then there won't be an available ASID to
+> (temporarily) allocate for the intra-host migration.  But that temporary ASID
+> isn't actually necessary, i.e. there's no reason intra-host migration should fail
+> if all ASIDs are in-use.
+>
+> I don't see any harm in requiring the @dst to _not_ be SEV-enabled.  sev_info
+> is not dynamically allocated, i.e. migration_in_progress is accessible either
+> way.  That would also simplify some of the checks, e.g. the regions_list check
+> goes away because svm_register_enc_region() fails on non-SEV guests.
+>
+> I believe this will also fix multiple bugs in the next patch (SEV-ES support).
+>
+> Bug #1, SEV-ES support changes the checks to:
+>
+>         if (!sev_guest(kvm)) {
+>                 ret = -EINVAL;
+>                 pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
+>                 goto out_unlock;
+>         }
+>
+>         ...
+>
+>         if (!sev_guest(source_kvm)) {
+>                 ret = -EINVAL;
+>                 pr_warn_ratelimited(
+>                         "Source VM must be SEV enabled to migrate from.\n");
+>                 goto out_source;
+>         }
+>
+>         if (sev_es_guest(kvm)) {
+>                 ret = migrate_vmsa_from(kvm, source_kvm);
+>                 if (ret)
+>                         goto out_source;
+>         }
+>
+> and fails to handle the scenario where dst.SEV_ES != src.SEV_ES.  If @dst is
+> SEV_ES-enabled and @src has created vCPUs, migrate_vmsa_from() will still fail
+> due to guest_state_protected being false, but the reverse won't hold true and
+> KVM will "successfully" migrate an SEV-ES guest to an SEV guest.  I'm guessing
+> fireworks will ensue, e.g. due to running with the wrong ASID.
+>
+> Bug #2, migrate_vmsa_from() leaks dst->vmsa, as this
+>
+>                 dst_svm->vmsa = src_svm->vmsa;
+>                 src_svm->vmsa = NULL;
+>
+> overwrites dst_svm->vmsa that was allocated by svm_create_vcpu().
+>
+> AFAICT, there isn't anything that will break by forcing @dst to be !SEV (except
+> stuff that's already broken, see below).  For SEV{-ES} specific stuff, anything
+> that is allocated/set vCPU creation likely needs to be migrated, e.g. VMSA and
+> the GHCB MSR value.  The only missing action is kvm_free_guest_fpu().
+>
+> Side topic, the VMSA really should be allocated in sev_es_create_vcpu(), and
+> guest_fpu should never be allocated for SEV-ES guests (though that doesn't change
+> the need for kvm_free_guest_fpu() in this case).  I'll send patches for that.
 
-url:    https://github.com/0day-ci/linux/commits/Nayna-Jain/integrity-support-including-firmware-platform-keys-at-build-time/20210911-012617
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity
-config: nios2-defconfig (attached as .config)
-compiler: nios2-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/fb58bf03a2f9965a2e0cfdcb16d1bad2fc5f083a
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Nayna-Jain/integrity-support-including-firmware-platform-keys-at-build-time/20210911-012617
-        git checkout fb58bf03a2f9965a2e0cfdcb16d1bad2fc5f083a
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=nios2 
+I believe there is no need to require dst to be SEV or SEV-ES enabled.
+This logic was just carried over from our internal implementation
+which is more similar to the 2 ioctl version in V1-3.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+>
+> > +     dst->asid = src->asid;
+> > +     dst->misc_cg = src->misc_cg;
+> > +     dst->handle = src->handle;
+> > +     dst->pages_locked = src->pages_locked;
+> > +
+> > +     src->asid = 0;
+> > +     src->active = false;
+> > +     src->handle = 0;
+> > +     src->pages_locked = 0;
+> > +     src->misc_cg = NULL;
+> > +
+> > +     INIT_LIST_HEAD(&dst->regions_list);
+> > +     list_replace_init(&src->regions_list, &dst->regions_list);
+> > +}
+> > +
+> > +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
+> > +{
+> > +     struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
+> > +     struct file *source_kvm_file;
+> > +     struct kvm *source_kvm;
+> > +     int ret;
+> > +
+> > +     ret = svm_sev_lock_for_migration(kvm);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (!sev_guest(kvm) || sev_es_guest(kvm)) {
+> > +             ret = -EINVAL;
+> > +             pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
+>
+> Linux generally doesn't log user errors to dmesg.  They can be helpful during
+> development, but aren't actionable and thus are of limited use in production.
+>
 
-All warnings (new ones prefixed by >>):
+As noted I added for marcorr's feedback. I'll remove all of this.
 
-   certs/common.c: In function 'load_certificate_list':
-   certs/common.c:11:9: error: unknown type name 'key_ref_t'; did you mean 'key_ref_put'?
-      11 |         key_ref_t key;
-         |         ^~~~~~~~~
-         |         key_ref_put
-   certs/common.c:31:23: error: implicit declaration of function 'key_create_or_update' [-Werror=implicit-function-declaration]
-      31 |                 key = key_create_or_update(make_key_ref(keyring, 1),
-         |                       ^~~~~~~~~~~~~~~~~~~~
-   certs/common.c:36:46: error: 'KEY_POS_ALL' undeclared (first use in this function)
-      36 |                                            ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-         |                                              ^~~~~~~~~~~
-   certs/common.c:36:46: note: each undeclared identifier is reported only once for each function it appears in
-   certs/common.c:36:61: error: 'KEY_POS_SETATTR' undeclared (first use in this function)
-      36 |                                            ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-         |                                                             ^~~~~~~~~~~~~~~
-   certs/common.c:37:44: error: 'KEY_USR_VIEW' undeclared (first use in this function)
-      37 |                                            KEY_USR_VIEW | KEY_USR_READ),
-         |                                            ^~~~~~~~~~~~
-   certs/common.c:37:59: error: 'KEY_USR_READ' undeclared (first use in this function)
-      37 |                                            KEY_USR_VIEW | KEY_USR_READ),
-         |                                                           ^~~~~~~~~~~~
-   certs/common.c:38:44: error: 'KEY_ALLOC_NOT_IN_QUOTA' undeclared (first use in this function)
-      38 |                                            KEY_ALLOC_NOT_IN_QUOTA |
-         |                                            ^~~~~~~~~~~~~~~~~~~~~~
-   certs/common.c:39:44: error: 'KEY_ALLOC_BUILT_IN' undeclared (first use in this function)
-      39 |                                            KEY_ALLOC_BUILT_IN |
-         |                                            ^~~~~~~~~~~~~~~~~~
-   certs/common.c:40:44: error: 'KEY_ALLOC_BYPASS_RESTRICTION' undeclared (first use in this function)
-      40 |                                            KEY_ALLOC_BYPASS_RESTRICTION);
-         |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> certs/common.c:41:28: warning: passing argument 1 of 'IS_ERR' makes pointer from integer without a cast [-Wint-conversion]
-      41 |                 if (IS_ERR(key)) {
-         |                            ^~~
-         |                            |
-         |                            int
-   In file included from include/linux/rwsem.h:18,
-                    from include/linux/key.h:18,
-                    from certs/common.c:4:
-   include/linux/err.h:34:60: note: expected 'const void *' but argument is of type 'int'
-      34 | static inline bool __must_check IS_ERR(__force const void *ptr)
-         |                                                ~~~~~~~~~~~~^~~
-   In file included from include/linux/kernel.h:19,
-                    from certs/common.c:3:
->> certs/common.c:43:40: warning: passing argument 1 of 'PTR_ERR' makes pointer from integer without a cast [-Wint-conversion]
-      43 |                                PTR_ERR(key));
-         |                                        ^~~
-         |                                        |
-         |                                        int
-   include/linux/printk.h:390:40: note: in definition of macro 'pr_err'
-     390 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-         |                                        ^~~~~~~~~~~
-   In file included from include/linux/rwsem.h:18,
-                    from include/linux/key.h:18,
-                    from certs/common.c:4:
-   include/linux/err.h:29:61: note: expected 'const void *' but argument is of type 'int'
-      29 | static inline long __must_check PTR_ERR(__force const void *ptr)
-         |                                                 ~~~~~~~~~~~~^~~
-   In file included from include/linux/kernel.h:19,
-                    from certs/common.c:3:
->> certs/common.c:46:54: warning: dereferencing 'void *' pointer
-      46 |                                   key_ref_to_ptr(key)->description);
-         |                                                      ^~
-   include/linux/printk.h:410:43: note: in definition of macro 'pr_notice'
-     410 |         printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
-         |                                           ^~~~~~~~~~~
-   certs/common.c:46:54: error: request for member 'description' in something not a structure or union
-      46 |                                   key_ref_to_ptr(key)->description);
-         |                                                      ^~
-   include/linux/printk.h:410:43: note: in definition of macro 'pr_notice'
-     410 |         printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
-         |                                           ^~~~~~~~~~~
-   cc1: some warnings being treated as errors
+> > +             goto out_unlock;
+> > +     }
+>
+> Hmm, I was going to say that migration should be rejected if @dst has created
+> vCPUs, but the SEV-ES support migrates VMSA state and so must run after vCPUs
+> are created.  Holding kvm->lock does not prevent invoking per-vCPU ioctls(),
+> including KVM_RUN.  Modifying vCPU SEV{-ES} state while a vCPU is actively running
+> is bound to cause explosions.
+>
+> One option for this patch would be to check kvm->created_vcpus and then add
+> different logic for SEV-ES, but that's probably not desirable for userspace as
+> it will mean triggering intra-host migration at different points for SEV vs. SEV-ES.
+>
+> So I think the only option is to take vcpu->mutex for all vCPUs in both @src and
+> @dst.  Adding that after acquiring kvm->lock in svm_sev_lock_for_migration()
+> should Just Work.  Unless userspace is misbehaving, the lock won't be contended
+> since all vCPUs need to be quiesced, though it's probably worth using the
+> mutex_lock_killable() variant just to be safe.
 
+Ack will do.
 
-vim +/IS_ERR +41 certs/common.c
-
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22   6  
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22   7  int load_certificate_list(const u8 cert_list[],
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22   8  			  const unsigned long list_size,
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22   9  			  const struct key *keyring)
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  10  {
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  11  	key_ref_t key;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  12  	const u8 *p, *end;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  13  	size_t plen;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  14  
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  15  	p = cert_list;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  16  	end = p + list_size;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  17  	while (p < end) {
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  18  		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  19  		 * than 256 bytes in size.
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  20  		 */
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  21  		if (end - p < 4)
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  22  			goto dodgy_cert;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  23  		if (p[0] != 0x30 &&
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  24  		    p[1] != 0x82)
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  25  			goto dodgy_cert;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  26  		plen = (p[2] << 8) | p[3];
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  27  		plen += 4;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  28  		if (plen > end - p)
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  29  			goto dodgy_cert;
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  30  
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  31  		key = key_create_or_update(make_key_ref(keyring, 1),
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  32  					   "asymmetric",
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  33  					   NULL,
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  34  					   p,
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  35  					   plen,
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  36  					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  37  					   KEY_USR_VIEW | KEY_USR_READ),
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  38  					   KEY_ALLOC_NOT_IN_QUOTA |
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  39  					   KEY_ALLOC_BUILT_IN |
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  40  					   KEY_ALLOC_BYPASS_RESTRICTION);
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22 @41  		if (IS_ERR(key)) {
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  42  			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22 @43  			       PTR_ERR(key));
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  44  		} else {
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22  45  			pr_notice("Loaded X.509 cert '%s'\n",
-2565ca7f5ec1a9 Eric Snowberg 2021-01-22 @46  				  key_ref_to_ptr(key)->description);
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---J2SCkAp4GZ/dPZZf--
+>
+> > +     if (!list_empty(&dst_sev->regions_list)) {
+> > +             ret = -EINVAL;
+> > +             pr_warn_ratelimited(
+> > +                     "VM must not have encrypted regions to migrate to.\n");
+> > +             goto out_unlock;
+> > +     }
+> > +
+> > +     source_kvm_file = fget(source_fd);
+> > +     if (!file_is_kvm(source_kvm_file)) {
+> > +             ret = -EBADF;
+> > +             pr_warn_ratelimited(
+> > +                             "Source VM must be SEV enabled to migrate from.\n");
+>
+> Case in point for not logging errors, this is arguably inaccurate as the source
+> "VM" isn't a VM.
+>
+> > +             goto out_fput;
+> > +     }
+> > +
+> > +     source_kvm = source_kvm_file->private_data;
+> > +     ret = svm_sev_lock_for_migration(source_kvm);
+> > +     if (ret)
+> > +             goto out_fput;
+> > +
+> > +     if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
+> > +             ret = -EINVAL;
+> > +             pr_warn_ratelimited(
+> > +                     "Source VM must be SEV enabled to migrate from.\n");
+> > +             goto out_source;
+> > +     }
+> > +
+> > +     migrate_info_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
+> > +     ret = 0;
+> > +
+> > +out_source:
+> > +     svm_unlock_after_migration(source_kvm);
+> > +out_fput:
+> > +     if (source_kvm_file)
+> > +             fput(source_kvm_file);
+> > +out_unlock:
+> > +     svm_unlock_after_migration(kvm);
+> > +     return ret;
+> > +}
