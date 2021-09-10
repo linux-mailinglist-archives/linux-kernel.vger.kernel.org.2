@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB954068EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCAA4068F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhIJJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:15:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42440 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231929AbhIJJPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:15:46 -0400
+        id S231969AbhIJJSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhIJJSH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:18:07 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3C1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 02:16:56 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f0f0700510d70add229dcc0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:700:510d:70ad:d229:dcc0])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 48A4A1EC04E0;
-        Fri, 10 Sep 2021 11:14:30 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BEEF61EC0390;
+        Fri, 10 Sep 2021 11:16:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631265270;
+        t=1631265410;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mg2KCJRCngKdnfrJ87i+9lfhY9Ln0gC4Hcxl/MpDIXI=;
-        b=iKwoDsKL98WvhBBlKSeQG25xjDzhUhTHPsxGDY6pGggCa+D7wEJx9A3UeoNW6JHHfkaYKc
-        U1iDB3WqRWvcJ7mVZVS6MdVYvTYJx+kHzFsS/pks2+4xTtkAISRSkXYNPoxz3uF06jNGiw
-        hwuUSTqPhc84hAJkiBRRm4lJOZmjFGY=
-Date:   Fri, 10 Sep 2021 11:14:22 +0200
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ja789o5lI09KtLVM89FV5cMUUR8FmCvg4bkLQy1qXl8=;
+        b=imkkjsyc7cbeo0ydp99Hl/kGC9iP6/QoOmN7hllKdWKCqgFgCit0/cMXo6QCOYP0y9INS5
+        tcFVOJsitifC9vXV+XuPksAFOSaFHCgOn3DejKArpzi1nJoEkLPbx//UCFGWztRfwnfKa3
+        dBHxQkNLAGQqh8RvmJ6TvvbpT5aHQ94=
+Date:   Fri, 10 Sep 2021 11:16:47 +0200
 From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin" <hpa@zytor.com>
+To:     "H. Peter Anvin (Intel)" <hpa@zytor.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/asm: pessimize the pre-initialization case in
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [PATCH v2 0/2] x86/asm: avoid register pressure from
  static_cpu_has()
-Message-ID: <YTsh7kdH+eGHgK7U@zn.tnic>
+Message-ID: <YTsif1FeOEyFJnqc@zn.tnic>
 References: <20210908171716.3340120-1-hpa@zytor.com>
- <YTo92+0ruBlkcaDf@zn.tnic>
- <1a73e0c2-8efe-fee9-5141-f7e9a95c748d@zytor.com>
- <f59dbeee-8d2f-0964-90db-bf9c3c176763@zytor.com>
+ <20210909220818.417312-1-hpa@zytor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f59dbeee-8d2f-0964-90db-bf9c3c176763@zytor.com>
+In-Reply-To: <20210909220818.417312-1-hpa@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:17:14PM -0700, H. Peter Anvin wrote:
-> ... into the visible part of the subject line, that was supposed to say.
-> This is rather important when browsing logs, e.g. using gitk.
+On Thu, Sep 09, 2021 at 03:08:16PM -0700, H. Peter Anvin (Intel) wrote:
+> gcc will sometimes manifest the address of boot_cpu_data in a register
+> as part of constant propagation. When multiple static_cpu_has() are
+> used this may foul the mainline code with a register load which will
+> only be used on the fallback path, which is unused after
+> initialization.
+> 
+> Explicitly force gcc to use immediate (rip-relative) addressing for
+> the fallback path, thus removing any possible register use from
+> static_cpu_has().
 
-So you resize your gitk window. It's not like there are no other commits
-with a bit longer commit titles.
+Right, maybe I'm missing something but what is wrong with the immediate
+addressing variant, i.e., that thing:
 
-The important part is that our commit messages should be readable months
-and years from now - I don't have to explain this to you, of all people.
+	testb  $0x8,0xffffffff89346eea
 
-"pessimize" is not even a word:
-
-https://www.merriam-webster.com/dictionary/pessimize:
-
-“pessimize”
-
-  The word you've entered isn't in the dictionary. Click on a spelling
-  suggestion below or try again using the search bar above.
-
-So while I have an idea what you mean, I'm sure that "what" can be
-formulated in a better way.
-
-Thx.
+and you need to *force* %rip-relative?
 
 -- 
 Regards/Gruss,
