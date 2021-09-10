@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDB4407263
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C6740726C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhIJUU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbhIJUU5 (ORCPT
+        id S233794AbhIJUWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:22:19 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:40585 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhIJUWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:20:57 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66044C061574;
-        Fri, 10 Sep 2021 13:19:46 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id bg1so1858868plb.13;
-        Fri, 10 Sep 2021 13:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=y/gZSR8qkoQo9P9xvHcf3mSQUvxlAlQxXPeEFN7ETGk=;
-        b=Fy5CAolk0RZE6VracL2Mw62YYTxNaYa18v+5gcCmCailBMnv5+U+vrps2mFNNGNFoc
-         dYAZWY0WaGyOLISIifwUgNDLIs83AzsgC4iZL+Y7KNtS71danS7ie22qz5mbCfOQDDk4
-         D+UBUw++JvhXRFGZtVaw08kT29DWSD7BjBwcUOc76cRhuN4TE19K2wOJ/qTItAKX+WvA
-         /i/dcrKodo+3qvclcZbBgLcMrseJUa/Q4anF27jLxtBw89QmnINTjnS7ZJ7hsMtbJXDB
-         7BCpteP8WLLo+MeUXlUe7g7+Mn27ihZBk3CKWvlgtriC0dyyga18c3saTZhwljYDVg8e
-         GuHw==
+        Fri, 10 Sep 2021 16:22:10 -0400
+Received: by mail-oi1-f179.google.com with SMTP id h133so4602205oib.7;
+        Fri, 10 Sep 2021 13:20:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=y/gZSR8qkoQo9P9xvHcf3mSQUvxlAlQxXPeEFN7ETGk=;
-        b=6de5SrkL+woQPRimNlzlEnIcthP+Rsy6CccskNQDaHJErMSdBEaGkBeXOT7auOB1Q+
-         oF7S0+LfKJ7LKQqvOGAr61J+3s00tpybaSt/2KoZySorwEUCSNbE2vwuM1ty8a1vX6Yo
-         WIFJGGaoS0LHHgJk4/9Ilyb6cURm1YRErqEY7e8GCSWJ53AJ1NBsonHZoKSz6U7uFacL
-         8Na6mD9/QC/JrmLQK581AA1DhcGYEi+Z50eFO4ewf79rLXfKzv/AqTYcTcEVMKRIJzRV
-         8KxmN6I3HDmDeTYLnLNgbc+YILjK4Ro8pnBAyzCGTM2Jnp3Gte0bvMAxwAg+7xUd/sN5
-         dfhA==
-X-Gm-Message-State: AOAM531BfcSQGzdRm13E2jhWtXTiUuj10/dp62xwVVQt951pkcQ3DlRD
-        d4WUb3xgAOWXqqt6MnzO5/NhV7Cf5JQ=
-X-Google-Smtp-Source: ABdhPJz0/DDLpI8Eo5MbH/LxQhG1mu/BcBtDSxe42sOenaLF67nLPI4/N04uKW4qWD1uQ3L6piyaLQ==
-X-Received: by 2002:a17:90a:1282:: with SMTP id g2mr11343648pja.230.1631305185877;
-        Fri, 10 Sep 2021 13:19:45 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id v25sm5538823pfm.202.2021.09.10.13.19.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 13:19:45 -0700 (PDT)
-Message-ID: <4723bf26-2795-dfd7-b00f-2a6ae1d8b4ee@gmail.com>
-Date:   Fri, 10 Sep 2021 13:19:40 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4IPxaQoHLBsI4TsWZBSz429Jh2IPs4Tsu9wpBitBgng=;
+        b=RHaoRE+qDgYZPicCywIjXi43sTcHVLztXKuRhBqTKG/BC3AcU3T1OrRbsbchDZDH42
+         qQDkjh6NdFxcOPdOkhKUyztQ7LAqL5c4wAeychuNyh7BIphBf6Uh7sdgOi6vp/32XXGb
+         7XiEUztdTPfVfdZxT6e+BGsuwZ4vLBRUsFXtzKfFjnj/xiJK2WdT3QIJq7NSo/Cfn08l
+         B6R0zrZCw+1G3nZRT9RcFkxXwuEsE2qI7pv8dasNw8D+q0EA+xN7BMiCZvTl+0MkdVF0
+         h63WP8ufp5jj/Vvpq5MhXPhWhx3Jqd598XNIr0ufIKJo6hzZugdYA8IS1BwiF2rrSuyx
+         EVDA==
+X-Gm-Message-State: AOAM530MuR9lBAdZ75GkAgdwnu8Cu+xtRwYXoMF3cJWo/boXmyAt4kel
+        nl+98UZs1SecqQhNZwgqsA==
+X-Google-Smtp-Source: ABdhPJz5SQZueBteIwX5jHufIZZ/JozLZUCT7O2iJGriI7vlauYxJk6NPj/twUv+QLH5Q4gVPTAZyQ==
+X-Received: by 2002:a05:6808:aa8:: with SMTP id r8mr5746125oij.171.1631305258063;
+        Fri, 10 Sep 2021 13:20:58 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s24sm1483439otp.37.2021.09.10.13.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 13:20:57 -0700 (PDT)
+Received: (nullmailer pid 3226408 invoked by uid 1000);
+        Fri, 10 Sep 2021 20:20:55 -0000
+Date:   Fri, 10 Sep 2021 15:20:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Keith Packard <keithpac@amazon.com>
+Cc:     linux-kernel@vger.kernel.org, Abbott Liu <liuwenliang@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Segall <bsegall@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        bpf@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>, devicetree@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Joe Perches <joe@perches.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        KP Singh <kpsingh@kernel.org>, kvm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Song Liu <songliubraving@fb.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        virtualization@lists.linux-foundation.org,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v4 4/7] Make sure task_struct is available for
+ raw_smp_processor_id
+Message-ID: <YTu+JyNyQH7v+1Yx@robh.at.kernel.org>
+References: <id:20210907220038.91021-1-keithpac@amazon.com>
+ <20210908190605.419064-1-keithpac@amazon.com>
+ <20210908190605.419064-5-keithpac@amazon.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 5.14 00/23] 5.14.3-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210910122916.022815161@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908190605.419064-5-keithpac@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/10/2021 5:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.3 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Sep 08, 2021 at 12:06:02PM -0700, Keith Packard wrote:
+> To allow architectures to use the 'cpu' field in task_struct for cpu
+> identification, the task_struct must be visible whereever the
+> raw_smp_processor_id macro is used. It would be simplest to include
+> linux/sched.h from the relevant asm/smp.h file, but that file is
+> included from linux/sched.h, and the recursive include ends up with
+> several declarations in the wrong order.
 > 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
+> To avoid this, the PowerPC architecture code has this ugly hack:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
+> 	#define raw_smp_processor_id() \
+> 		(*(unsigned int *)((void *)current + _TASK_CPU))
 > 
-> thanks,
+> As an alternative, placing includes of linux/sched.h in a few files
+> that are used along with asm/smp.h means we can use the task_struct
+> field directly.
 > 
-> greg k-h
+> Signed-off-by: Keith Packard <keithpac@amazon.com>
+> ---
+>  arch/arm/mm/proc-v7-bugs.c     | 1 +
+>  drivers/vhost/vhost.c          | 1 +
+>  drivers/vhost/vhost.h          | 1 +
+>  include/asm-generic/irq_regs.h | 1 +
+>  include/linux/of_address.h     | 1 +
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Where does the DT code use raw_smp_processor_id()? The header itself 
+certainly doesn't and the headers should only include what the headers 
+use directly.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+In general this seems pretty terrible pulling in all of sched.h (and 
+then everything else it includes) for just raw_smp_processor_id().
+
+>  include/linux/random.h         | 1 +
+>  include/linux/topology.h       | 1 +
+>  init/calibrate.c               | 1 +
+>  kernel/bpf/bpf_lru_list.h      | 1 +
+>  kernel/bpf/percpu_freelist.h   | 1 +
+>  kernel/sched/cpuacct.c         | 2 +-
+>  lib/irq_regs.c                 | 1 +
+>  12 files changed, 12 insertions(+), 1 deletion(-)
