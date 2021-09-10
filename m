@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BFE40654E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E432406554
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhIJBlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S229483AbhIJBnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhIJBlR (ORCPT
+        with ESMTP id S229445AbhIJBnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:41:17 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE70C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:40:07 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id r2so370677pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nw1XuRphVhmebMWySqSgscevY/3iUqmrlDyrnRFrHKA=;
-        b=S5YmgtMQkCudzpyQLODl0re3GrSSO7j8nvdeHfwyXadBlaer9vIIbVnMHIal02p63S
-         yowjL4wta0GDTHwMhyqa3fDnfZMZJc3SXllkdzD2rbKtxX8QHqU7aHWiL8iFVSYDEexp
-         Y5TBwOxhymRo4xijghBmEvLxS1Ut7eQnIb0/QbJ1nubo+kg2T6n0+ssFpPowyf1NqBeP
-         fymykYwYYMll6MN3tm4j9V3CTS/arPS7Y/NBlRT+dXecnnp+MkGFxJWQuL12PIT84yOl
-         T84piIPgK4V3IDM6TMYMBjo1XXaSjReUCGT/8bUwsNN1EcampT+IhcGoljfYGcQA7MWU
-         BfZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nw1XuRphVhmebMWySqSgscevY/3iUqmrlDyrnRFrHKA=;
-        b=dmqk5E/pV2DYGh5hnsWz7R7S1vyNqMOpQWLcLISL5NtCSzU+hJL1KwyhMHWOy94ion
-         tPPSIbm6925mTFC4bqeM5CFjGoz7Q5iwj9rBjOTOxDpXCqDSHC6evr17fW86ETbZwN3H
-         5SOCLpnzS8YigvUu03YY8MLCm+FMQQka+9wTfKQmlky/W1A35A33PJGUsoPYtNHQ36oL
-         GGRGVQKVJDnRdIQfpGzKAoyJmlvinlPpgrXL3YlSiLEfEo9uUPIX93Wo65TMcZ9demjY
-         84vW2ub8XaQggrGQb1DICcOLljqs5oT5BjEredltt2TTaU/AKLKsihSQRO1U29z/AaUZ
-         XlDg==
-X-Gm-Message-State: AOAM530rX7A2vB6+Xn/ykSxtQwDikK7ZPmv7dCSdmgtimfqWqx7CBz+e
-        L3lr1QfUgWzyq2IBhVgXmAy6wQ==
-X-Google-Smtp-Source: ABdhPJzhcYHZJOzZKYUuqzZuCXltDD1Cm6NY9QEhexyPCdpteDd8b5Dr69VBiaHl1B9IRYv7mchLXw==
-X-Received: by 2002:a05:6a00:aca:b029:392:9c79:3a39 with SMTP id c10-20020a056a000acab02903929c793a39mr5815686pfl.57.1631238006377;
-        Thu, 09 Sep 2021 18:40:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y13sm3326392pfb.115.2021.09.09.18.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 18:40:05 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 01:40:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Marc Orr <marcorr@google.com>
-Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3 V7] KVM, SEV: Add support for SEV intra host migration
-Message-ID: <YTq3cRq5tYbopgSd@google.com>
-References: <20210902181751.252227-1-pgonda@google.com>
- <20210902181751.252227-2-pgonda@google.com>
- <YTqirwnu0rOcfDCq@google.com>
- <CAA03e5Ek=puWCXc+cTi-XNe02RXJLY7Y6=cq1g-AyxEan_RG2A@mail.gmail.com>
+        Thu, 9 Sep 2021 21:43:20 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902BCC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=EEsL2Ua4JKiBuEtvP+hN91RNOSRfb0BEIz1GBTlyL28=; b=ItvbIjG6CBNfdQX20OGwAIjjxx
+        RvMBUGZLltEmI5/xFRrZtp02xj9k8eABgFWVpySMvJLzl557ZvX9vzl8mZr2mKY79eAgFZid4q8JK
+        7PUkgC0AWTe6edEUtui4BYJ80jx7xwibUVw09I6JPyLQWFLTQo9UifWIGoUy1avaejg628TwCCU0+
+        1+s0N4nqu/Oz4H/xJ/58P/UGZKf4RiPF2QbVbszSAz1W44glpt4BWt4c8rty6G8DvEYSXHJMptwwg
+        qYQZWG0K6vo/AGO+Yh8rYBlPZPVTILTEp+zcs9cUbgODlj6s2tuFW63NTB/k+FiX6AwKzNWBpSXJW
+        p2zNcDRw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOVYL-00BXZP-9T; Fri, 10 Sep 2021 01:42:05 +0000
+Subject: Re: [PATCH] ASoC: mediatek: add required config dependency
+To:     Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+        tiwai@suse.com, matthias.bgg@gmail.com
+Cc:     alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        geert@linux-m68k.org, wenst@chromium.org,
+        bicycle.tsai@mediatek.com, jiaxin.yu@mediatek.com,
+        shane.chien@mediatek.com
+References: <20210909065533.2114-1-trevor.wu@mediatek.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <46bf2061-7a00-c6f0-d2e9-5605b13f1c3f@infradead.org>
+Date:   Thu, 9 Sep 2021 18:42:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA03e5Ek=puWCXc+cTi-XNe02RXJLY7Y6=cq1g-AyxEan_RG2A@mail.gmail.com>
+In-Reply-To: <20210909065533.2114-1-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021, Marc Orr wrote:
-> > > +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
-> > > +{
-> > > +     struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
-> > > +     struct file *source_kvm_file;
-> > > +     struct kvm *source_kvm;
-> > > +     int ret;
-> > > +
-> > > +     ret = svm_sev_lock_for_migration(kvm);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (!sev_guest(kvm) || sev_es_guest(kvm)) {
-> > > +             ret = -EINVAL;
-> > > +             pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
-> >
-> > Linux generally doesn't log user errors to dmesg.  They can be helpful during
-> > development, but aren't actionable and thus are of limited use in production.
+On 9/8/21 11:55 PM, Trevor Wu wrote:
+> Because SND_SOC_MT8195 depends on COMPILE_TEST, it's possible to build
+> MT8195 driver in many different config combinations.
+> Add all dependent config for SND_SOC_MT8195 in case some errors happen
+> when COMPILE_TEST is enabled.
 > 
-> Ha. I had suggested adding the logs when I reviewed these patches
-> (maybe before Peter posted them publicly). My rationale is that if I'm
-> looking at a crash in production, and all I have is a stack trace and
-> the error code, then I can narrow the failure down to this function,
-> but once the function starts returning the same error code in multiple
-> places now it's non-trivial for me to deduce exactly which condition
-> caused the crash. Having these logs makes it trivial. However, if this
-> is not the preferred Linux style then so be it.
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
 
-I don't necessarily disagree, but none of these errors conditions should so much
-as sniff production.  E.g. if userspace invokes this on a !KVM fd or on a non-SEV
-source, or before guest_state_protected=true, then userspace has bigger problems.
-Ditto if the dest isn't actual KVM VM or doesn't meet whatever SEV-enabled/disabled
-criteria we end up with.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-The mismatch in online_vcpus is the only one where I could reasonablly see a bug
-escaping to production, e.g. due to an orchestration layer mixup.
+Thanks.
 
-For all of these conditions, userspace _must_ be aware of the conditions for success,
-and except for guest_state_protected=true, userspace has access to what state it
-sent into KVM, e.g. it shouldn't be difficult for userspace dump the relevant bits
-from the src and dst without any help from the kernel.
 
-If userspace really needs kernel help to differentiate what's up, I'd rather use
-more unique errors for online_cpus and guest_state_protected, e.g. -E2BIG isn't
-too big of a strecth for the online_cpus mismatch.
+> ---
+>   sound/soc/mediatek/Kconfig | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+> index 5a2f4667d50b..81ad2dcee9eb 100644
+> --- a/sound/soc/mediatek/Kconfig
+> +++ b/sound/soc/mediatek/Kconfig
+> @@ -1,6 +1,7 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   config SND_SOC_MEDIATEK
+>   	tristate
+> +	select REGMAP_MMIO
+>   
+>   config SND_SOC_MT2701
+>   	tristate "ASoC support for Mediatek MT2701 chip"
+> @@ -188,7 +189,9 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+>   config SND_SOC_MT8195
+>   	tristate "ASoC support for Mediatek MT8195 chip"
+>   	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	depends on COMMON_CLK
+>   	select SND_SOC_MEDIATEK
+> +	select MFD_SYSCON if SND_SOC_MT6359
+>   	help
+>   	  This adds ASoC platform driver support for Mediatek MT8195 chip
+>   	  that can be used with other codecs.
+> 
+
+
+-- 
+~Randy
+
