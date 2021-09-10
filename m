@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC0F406881
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596DD40688C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhIJIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231502AbhIJIcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:32:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 804DE610C7;
-        Fri, 10 Sep 2021 08:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631262650;
-        bh=SPE/jxAWcGR+hp29mSZ8jiX1DlvUPpFpsR5GhteB0/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rdJTsYlW1nmMWC/XtoK6daUP0VO8FY3FIh1eEbhc0bA4TLMp4fdNC/Ao4iwuJXK3D
-         dGt5CnHrKC4JPe2ecUBMN+m+xd4jNM3dutWCGFPHphKFjhrflJ3sRsyv+Q2vGOIPKA
-         noZtdu76LaegO4L2ET5NFaMoRI+VHTXjCGe431PTdzXiVqjs7ShWcIQT0bD82ZvPbP
-         4TrEeSGJuduSBz7QKG0Qll8pN6a6vBsuxLt/lbdkJ8UpNRuAlAS9pGiPia/tDUjrxH
-         Q/mQsefp9NxaMmU2pdVLcUXvGXw1DnI+jYAwaggg+KqSvXHe4M49w74RAo/4cxc5sW
-         iW6ChlD5IMz3g==
-Date:   Fri, 10 Sep 2021 09:30:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
-Message-ID: <20210910083011.GA4474@sirena.org.uk>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-3-rananta@google.com>
- <20210909171755.GF5176@sirena.org.uk>
- <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
+        id S231821AbhIJIgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:36:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57474 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231665AbhIJIga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:36:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 918E420203;
+        Fri, 10 Sep 2021 08:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631262919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byJxGIGEdXY0dNiR3JR/k4UiilB5WnFIjCG84yHjPvA=;
+        b=oMY1GPzbSb4+Nhh3TT6muALj3czRc6RYjO8XFhoTGB2SwjjsTicuFJdPQobspIh+rISUHL
+        eLMWo1ZyXCJA99BQCG2PIGOwS2I4vxmS5p+ttronuYx0OmdLvjSpNOFIp7k0x5sI8qfwPP
+        4n1ySiHDzUjYigcgBvIWrfsXPmOGYlk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EF7FEA3B99;
+        Fri, 10 Sep 2021 08:35:17 +0000 (UTC)
+Date:   Fri, 10 Sep 2021 10:35:17 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
+ bail out early
+Message-ID: <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
+References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
+ <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
+ <20210908015014.GA28091@shbuild999.sh.intel.com>
+ <YThg8Mp42b194k0/@dhcp22.suse.cz>
+ <20210910074400.GA18707@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
-X-Cookie: You are standing on my toes.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210910074400.GA18707@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 10-09-21 15:44:00, Feng Tang wrote:
+> On Wed, Sep 08, 2021 at 09:06:24AM +0200, Michal Hocko wrote:
+> > On Wed 08-09-21 09:50:14, Feng Tang wrote:
+> > > On Tue, Sep 07, 2021 at 10:44:32AM +0200, Michal Hocko wrote:
+> > [...]
+> > > > While this is a good fix from the functionality POV I believe you can go
+> > > > a step further. Please add a detection to the cpuset code and complain
+> > > > to the kernel log if somebody tries to configure movable only cpuset.
+> > > > Once you have that in place you can easily create a static branch for
+> > > > cpuset_insane_setup() and have zero overhead for all reasonable
+> > > > configuration. There shouldn't be any reason to pay a single cpu cycle
+> > > > to check for something that almost nobody does.
+> > > > 
+> > > > What do you think?
+> > > 
+> > > I thought about the implementation, IIUC, the static_branch_enable() is
+> > > easy, it could be done when cpuset.mems is set with movable only nodes,
+> > > but disable() is much complexer,
+> > 
+> > Do we care about disable at all? The point is to not have 99,999999%
+> > users pay overhead of the check which is irrelevant to them. Once
+> > somebody wants to use this "creative" setup then paying an extra check
+> > sounds perfectly sensible to me. If somebody cares enough then the
+> > disable logic could be implemented. But for now I believe we should be
+> > OK with only enable case.
+> 
+> Here is tested draft patch to add the check in cpuset code (the looping
+> zone code could be improved by adding a for_each_populated_zone_nodemask
+> macro.
+> 
+> Thanks,
+> Feng
+> 
+> ---
+>  include/linux/cpuset.h |  7 +++++++
+>  include/linux/mmzone.h | 14 ++++++++++++++
+>  kernel/cgroup/cpuset.c | 10 ++++++++++
+>  mm/page_alloc.c        |  4 +++-
+>  4 files changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index d2b9c41..a434985 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -34,6 +34,8 @@
+>   */
+>  extern struct static_key_false cpusets_pre_enable_key;
+>  extern struct static_key_false cpusets_enabled_key;
+> +extern struct static_key_false cpusets_abnormal_setup_key;
+> +
+>  static inline bool cpusets_enabled(void)
+>  {
+>  	return static_branch_unlikely(&cpusets_enabled_key);
+> @@ -51,6 +53,11 @@ static inline void cpuset_dec(void)
+>  	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+>  }
+>  
+> +static inline bool cpusets_abnormal_check_needed(void)
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I would go with cpusets_insane_config with a comment explaining what
+that means. I would also do a pr_info() when the static branch is
+enabled.
 
-On Thu, Sep 09, 2021 at 01:06:31PM -0700, Raghavendra Rao Ananta wrote:
-> On Thu, Sep 9, 2021 at 10:18 AM Mark Brown <broonie@kernel.org> wrote:
+[...]
 
-> > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 4e455fa..5728675 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4919,7 +4919,9 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+>  	 * any suitable zone to satisfy the request - e.g. non-movable
+>  	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
+>  	 */
+> -	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
+> +	if (cpusets_enabled() &&
+> +		cpusets_abnormal_check_needed() &&
 
-> > Can we arrange to copy this at build time rather than having a duplicate
-> > copy we need to keep in sync?  We have some stuff to do this for uapi
-> > headers already.
+You do not need cpusets_enabled check here. Remember the primary point
+is to not introduce any branch unless a dubious configuration is in
+place.
 
-> That's a great idea actually (I wasn't aware of it). But, probably
-> should've mentioned it earlier, I had a hard time compiling the header
-> as is so I modified it a little bit and made the definitions of
-> [write|read]_sysreg_s() similar to the ones in kvm-unit-tests.
-> I'll try my best to get the original format working and try to
-> implement your idea if it works.
+> +		(gfp_mask & __GFP_HARDWALL)) {
+>  		struct zoneref *z = first_zones_zonelist(ac->zonelist,
+>  					ac->highest_zoneidx,
+>  					&cpuset_current_mems_allowed);
+> -- 
+> 2.7.4
+> 
 
-One option would be to do something like split out the bits that can be
-shared into a separate header which can be included from both places and
-then have the header with the unsharable bits include that.  Something
-like sysreg.h and sysreg_defs.h for example.
-
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE7F5IACgkQJNaLcl1U
-h9DaOwf+IKLvC2prK1SBAm+BeUSM4HW6iFJLUaEoQBFNBFbKI1JLEvcDGWwF4PQ/
-zF8K1mWNAZNuqG3g3sx1pZ++IXy2reWVG6Dchp8SOs20ahX654NRhdALQ8xHmgtH
-CHUDOB0Yh4TnmPiaKSbPvAGb0k3qgc+Et/45zJVhfejUqH7o6HYNMzzT296sGKak
-0tST6itO7q+JqfrNOxp6FXJNB+ikd59ByaA06Xbv7jvP3xp8cYVRuOy42QhWi3Wo
-XAIw3BInkhRgwi+/CdRtKhwq1sm1+beeBZ90DgsLCgb1Z1phbVRMiUcbFhzEQ9Tn
-o4+sFQj+1FxkCY0Os7WkC2bBY/o1uQ==
-=XPRc
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
+-- 
+Michal Hocko
+SUSE Labs
