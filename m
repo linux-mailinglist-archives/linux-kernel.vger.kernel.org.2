@@ -2,70 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61804065A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9C24065A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhIJCS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:18:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhIJCS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:18:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDD0860F94;
-        Fri, 10 Sep 2021 02:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631240237;
-        bh=c3RRvTlhhK0ZHI/AL1jQEm27c30eexogLcOnN7PKsdQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GBh6KPY8KGsZnBUrLVJHkfpVmFJ0F4wvxUnXwaYUFlQwgGBnE58WfIAK5LKN2YDsi
-         fGQaSHOQ1JQ1h7p1adt94UKUhxZ19qspyTFSvPONf4tcXdU2/i9eA6p4eAZ388URaC
-         llA+6EFoLWaZBJTDthsn1k8aPV26ttdcCr0TsyGl/trS8Aot8N3Gx2ZPvOAby8t5E/
-         0a16f9bEhHYnfFWof9HCf1+jIjgHu2/Cs6dqa4kyS3hQVSd7KcMekF9cGfx+t0qJG0
-         9GIPIXL94/NPSueE5rvI+ld+Fx8HCm4mjh4K3bl9Uy5evyBJSonCmbfi+XMI8nq1x3
-         u25n6NTZhihAg==
-Date:   Fri, 10 Sep 2021 04:17:13 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 09/15] leds: trigger: blkdev: Check devices for
- activity and blink LEDs
-Message-ID: <20210910041713.4722760a@thinkpad>
-In-Reply-To: <20210909222513.2184795-10-arequipeno@gmail.com>
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
-        <20210909222513.2184795-10-arequipeno@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229733AbhIJCT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:19:26 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:55756 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhIJCTZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:19:25 -0400
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="42672477"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 10 Sep 2021 10:18:12 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(31504:0:AUTH_RELAY)
+        (envelope-from <phoenix@emc.com.tw>); Fri, 10 Sep 2021 10:18:10 +0800 (CST)
+Received: from 192.168.33.13
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2475:0:AUTH_LOGIN)
+        (envelope-from <phoenix@emc.com.tw>); Fri, 10 Sep 2021 10:18:08 +0800 (CST)
+From:   "phoenix" <phoenix@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <jingle.wu@emc.com.tw>, <josh.chen@emc.com.tw>,
+        <dave.wang@emc.com.tw>
+References: <20210729010940.5752-1-phoenix@emc.com.tw> <000001d79d99$53762dd0$fa628970$@emc.com.tw> <YS0+TU21/nok6Ge9@google.com>
+In-Reply-To: <YS0+TU21/nok6Ge9@google.com>
+Subject: RE: [PATCH] Input: elantench - Fix the firmware misreport coordinates for trackpoint occasionally.
+Date:   Fri, 10 Sep 2021 10:18:08 +0800
+Message-ID: <005101d7a5ea$18e01d30$4aa05790$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGk7tjGsgsB1mM/H5Ov4MUFApOKzQImMkU5AJ1HjHOr3I7dkA==
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcODgwNTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy01NWZjYmI0OC0xMWRkLTExZWMtYTkyNS04OGQ3ZjY1ODJkZmNcYW1lLXRlc3RcNTVmY2JiNDktMTFkZC0xMWVjLWE5MjUtODhkN2Y2NTgyZGZjYm9keS50eHQiIHN6PSIyODM4IiB0PSIxMzI3NTcxMzg4ODA0ODgyMDciIGg9IkU4akNpY1dBdzF4R0pOU0VZU0NPQmZsNVFBUT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Sep 2021 17:25:07 -0500
-Ian Pilcher <arequipeno@gmail.com> wrote:
+Hi Dmity,
 
-> +static void blkdev_update_disk(struct ledtrig_blkdev_disk *const disk,
-> +			       const unsigned int generation)
-> +{
-> +	const struct block_device *const part0 = disk->gd->part0;
-> +	const unsigned long read_ios = part_stat_read(part0, ios[STAT_READ]);
-> +	const unsigned long write_ios = part_stat_read(part0, ios[STAT_WRITE])
-> +				+ part_stat_read(part0, ios[STAT_DISCARD])
-> +				+ part_stat_read(part0, ios[STAT_FLUSH]);
+Sorry for late reply.
+> +		if (packet[4] == 0x80 || packet[5] == 0x80 ||
+> +		    packet[1] >> 7 == packet[4] >> 7 ||
+"I think this will reject X coordinates in range [0, 127]. Is this really
+what is needed? What kind of patterns are you observing when firmware
+misreports coordinates?"
+this will reject X in range [128, 256] and [-128, -256]. This patch prevent
+cursor suddenly jump to screen edge or corner.
+The patterns we observing as below:
+1. x (packet[4]) or y (packet[5]) is 0x80, ex: [xx xx xx xx 80 80]
+2. ~x sign bit is same as MSB(most significant bit) of x, ex: [30 00 00 06
+00 00] 
+3. ~y sign bit is same as MSB of y, ex: [30 00 00 06 fa 00]
 
-So your code allows me to use a partition block device (like sda2) to
-register with the blkdev LED trigger, but when I do this, the code will
-disregard that I just want the LED to blink on activity on that one
-partition. Instead you will blink for whole sda, since you are looking
-at stats of only part0.
+Best regards,
+Phoenix Huang
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
+Sent: Tuesday, August 31, 2021 4:24 AM
+To: phoenix <phoenix@emc.com.tw>
+Cc: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
+jingle.wu@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw
+Subject: Re: [PATCH] Input: elantench - Fix the firmware misreport
+coordinates for trackpoint occasionally.
 
-Am I right?
+Hi Phoenix,
 
-If so, this in unacceptable. The whole point of blkdev trigger is that
-you can reliably use it for any block device, and then it will blink
-the LED for that device, be it partition or whole disk.
+On Mon, Aug 30, 2021 at 08:19:48PM +0800, phoenix wrote:
+> Hi Dmitry,
+> 
+> Would you review this patch, thanks
+> 
+> Best regards,
+> Phoenix Huang
+> 
+> -----Original Message-----
+> From: Phoenix Huang [mailto:phoenix@emc.com.tw]
+> Sent: Thursday, July 29, 2021 9:10 AM
+> To: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org; 
+> dmitry.torokhov@gmail.com
+> Cc: jingle.wu@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw; 
+> Phoenix Huang <phoenix@emc.com.tw>
+> Subject: [PATCH] Input: elantench - Fix the firmware misreport 
+> coordinates for trackpoint occasionally.
+> 
+> Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+> ---
+>  drivers/input/mouse/elantech.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/input/mouse/elantech.c 
+> b/drivers/input/mouse/elantech.c index 2d0bc029619f..07e1098f2d31 
+> 100644
+> --- a/drivers/input/mouse/elantech.c
+> +++ b/drivers/input/mouse/elantech.c
+> @@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct 
+> psmouse *psmouse,
+>  	case 0x16008020U:
+>  	case 0x26800010U:
+>  	case 0x36808000U:
+> +	
+> +		/* This firmware misreport coordinates for trackpoint
+> occasionally.
+> +		* So we discard these packets by pattern to prevent cursor
+> jumps.
+> +		*/
+> +		if (packet[4] == 0x80 || packet[5] == 0x80 ||
+> +		    packet[1] >> 7 == packet[4] >> 7 ||
 
-Marek
+I think this will reject X coordinates in range [0, 127]. Is this really
+what is needed? What kind of patterns are you observing when firmware
+misreports coordinates?
+
+Thanks.
+
+--
+Dmitry
 
