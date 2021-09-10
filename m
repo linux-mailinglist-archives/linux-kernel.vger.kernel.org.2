@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6EB406C47
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B1F406C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhIJMij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:38:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233989AbhIJMgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:36:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F060961212;
-        Fri, 10 Sep 2021 12:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277330;
-        bh=yNeSV/+GvOhN4sGBzmArfpkfRCnC8Sxs6NJWjqbipQw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YolKgoiuErrdQTJV/Q/gjf6XjkDPnyvWt0OmoaOT8nx9iAwaPD8VOsFm80736vrVW
-         1J2EwTNnR8fXKtMQuMzBQrlhcHhzT5+63y40ZGfH0vHObhJb6bIqRf0V0iGUwpleim
-         2Tw6JFXd+QOWtI3zt75nf4sZ03XYNHhqkhNEiHZQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.4 37/37] PCI: Call Max Payload Size-related fixup quirks early
-Date:   Fri, 10 Sep 2021 14:30:40 +0200
-Message-Id: <20210910122918.373728688@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
-References: <20210910122917.149278545@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233389AbhIJMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234632AbhIJMmM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:42:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1112C0604C4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:35:21 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mOfkJ-0004KL-8c; Fri, 10 Sep 2021 14:35:07 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mOfkG-0002CL-J1; Fri, 10 Sep 2021 14:35:04 +0200
+Date:   Fri, 10 Sep 2021 14:35:04 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Ziyang Xuan <william.xuanziyang@huawei.com>
+Cc:     robin@protonic.nl, linux@rempel-privat.de, socketcan@hartkopp.net,
+        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] can: j1939: fix errant alert in j1939_tp_rxtimer
+Message-ID: <20210910123504.GI26100@pengutronix.de>
+References: <20210906094219.95924-1-william.xuanziyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210906094219.95924-1-william.xuanziyang@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:18:58 up 204 days, 15:42, 103 users,  load average: 0.13, 0.34,
+ 0.28
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+On Mon, Sep 06, 2021 at 05:42:19PM +0800, Ziyang Xuan wrote:
+> When the session state is J1939_SESSION_DONE, j1939_tp_rxtimer() will
+> give an alert "rx timeout, send abort", but do nothing actually.
+> Move the alert into session active judgment condition, it is more
+> reasonable.
+> 
+> One of the scenarioes is that j1939_tp_rxtimer() execute followed by
+> j1939_xtp_rx_abort_one(). After j1939_xtp_rx_abort_one(), the session
+> state is J1939_SESSION_DONE, then j1939_tp_rxtimer() give an alert.
+> 
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit b8da302e2955fe4d41eb9d48199242674d77dbe0 upstream.
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-pci_device_add() calls HEADER fixups after pci_configure_device(), which
-configures Max Payload Size.
+Thank you!
 
-Convert MPS-related fixups to EARLY fixups so pci_configure_mps() takes
-them into account.
+> ---
+>  net/can/j1939/transport.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 0f8309314075..d3f0a062b400 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1226,12 +1226,11 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
+>  		session->err = -ETIME;
+>  		j1939_session_deactivate(session);
+>  	} else {
+> -		netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
+> -			     __func__, session);
+> -
+>  		j1939_session_list_lock(session->priv);
+>  		if (session->state >= J1939_SESSION_ACTIVE &&
+>  		    session->state < J1939_SESSION_ACTIVE_MAX) {
+> +			netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
+> +				     __func__, session);
+>  			j1939_session_get(session);
+>  			hrtimer_start(&session->rxtimer,
+>  				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
+> -- 
+> 2.25.1
+> 
+> 
 
-Fixes: 27d868b5e6cfa ("PCI: Set MPS to match upstream bridge")
-Link: https://lore.kernel.org/r/20210624171418.27194-1-kabel@kernel.org
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/pci/quirks.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3246,12 +3246,12 @@ static void fixup_mpss_256(struct pci_de
- {
- 	dev->pcie_mpss = 1; /* 256 bytes */
- }
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
- 
- /*
-  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
-
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
