@@ -2,195 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3582406048
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 01:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240E040604E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhIIXzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 19:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S229508AbhIJAEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhIIXzY (ORCPT
+        with ESMTP id S229448AbhIJAEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 19:55:24 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33198C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 16:54:14 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id j12so234089ljg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 16:54:14 -0700 (PDT)
+        Thu, 9 Sep 2021 20:04:02 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53538C061574;
+        Thu,  9 Sep 2021 17:02:52 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id i13so200008ilm.4;
+        Thu, 09 Sep 2021 17:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lEXBNIjoCx4wipKmwfyEP+b49yukKCkKDlBK6xvr4hg=;
-        b=hMuDFTsBZJrHhGQpWIm4hqqN26UHeqqimLOR3rPj9GbyKZ57gsX21/4nhbRxf0Yq46
-         HVspR622wdjNz58z0Zxaajsd0tOkAPMCxr/KWSRgYy/ZlUOjcv2AaNFUeLXtXiboRN9S
-         oDjMMi+vpKpb9wDuj0s6BXAhTLh2PX/jdlHf+VQ23sBoaEV+hfb5t1bn3c5JD9y6hz0b
-         Z0aYsvtifXm3v4UIEE00A1JqQ27AV6K9RaSF06tDYYt3YiAexUZWcwQmlJhLl8fmopbA
-         dzbDUFIF/4GCda/9Wp4xJt4b9DTQsDSpnAnwIr1iEXR+W1KZsa+FkKa2nlwlMoTgf/AZ
-         RcOQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qfK7KKl8oFnAFH+nw9DM1NT8Mmm4+KRvCOrQXBPc9YQ=;
+        b=JSw6gegC8T2qItiD+mR81bE9kG69ZL9oFEyQX0T9e8eeGTmewX4cK6osqNg085Swip
+         wqhJEUtXgpnp7p1NHuhWQKyWQj5tE49RZtBP78yh4ijmqrFWa3eGf6wAG/xfagmexEAE
+         TqV/q2XehhTAWGipnNNCuvTFrwXgFbYP1Gm1KhiobVy1JUpQSIMWGBBm6D9xYBv0RncY
+         fxv+zExVbKcTIYuctmoZjYPHBLacLHg6+8g5iGNRoL49PMGuGKlJUNXIacJ4f8CBJR2q
+         KN+ef499hhIkwM8GOFEct4vlVlrpBtP6CwRCny+bx8s07n5FlUZ742k+PxetG9u/MSGR
+         eExg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lEXBNIjoCx4wipKmwfyEP+b49yukKCkKDlBK6xvr4hg=;
-        b=51mwS6EG1e4rC0iqwCWogEjTyQnNTo+WJmsvAGn2suIh+EyFGQnr/1rp8GbtLNVG+Q
-         +nsYrPllMREedLhXVmgsLqbBkVEjhFaY2HnERVOsGC3trjC5mSbQuXq1Eg86I7cDKH6P
-         nhkZdVZ17yDhM+zxgJ2EJhtwdfzE6DbC2GHcOkffI7iKt4HZtqs2rApMGUlWluqOIc07
-         6bNTj/2MT9Fskd6SeU6AOAlD9hHM0zSq0iz4xwGQXUhDpcFDl90BX19A+DmBWnQRoh7r
-         ibsXPXNWHglEsUW5MY07kxIJ7fjSN/vcmtXkeVtfvfpeMuCLupb6P0412qXOTj9dJvF4
-         vOTA==
-X-Gm-Message-State: AOAM532lTl7pi2qWkBOGOkSEegtaO8egCA/OwqXexQM2TvnGVv3C5/fd
-        DcuvNPC8tvq/+jnWZp+23Z3yJIlyVO+6DRn6p424YA==
-X-Google-Smtp-Source: ABdhPJyyRfuILjQGgezjN0NrCikr6etrhvJiJJ3qvt5RCgl38xBgEXiafZyZGOC8hqZ/qoHZ1jNR0cqFszbHQ0KtJj4=
-X-Received: by 2002:a2e:b894:: with SMTP id r20mr1967952ljp.238.1631231652319;
- Thu, 09 Sep 2021 16:54:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qfK7KKl8oFnAFH+nw9DM1NT8Mmm4+KRvCOrQXBPc9YQ=;
+        b=i8rsCsFYWK410Ltf+IEpm8y1UJUKokz7YIenJelOKW9yULqk6LzsBhwEyyFcqRNgkA
+         AqLgGWojknfYskkZjo82WpmFjJuy5PqL3GIYkvMfIEbpXGWrTxr0K+NrJYZashW5vJJh
+         89uShmu0IQbyMT/zEqmFNEazzEMdxsUQ4Kp0T+ZYZVVQWjN63SiRg7J9oNQ+7J1QAx3F
+         c2ODroK2NleAQNmbT8Hjj0M6p1HPI2Y/xAH6HeEMEsfR+6vKOzw2OPTVeNSd6a2LNvCd
+         HjHsX3vLmm4cxvuNtfuYPJmP2+hvdwJHCLSLFtfDXK/4Z1w7Z6pEAO/3+BJxd/feT5aa
+         FS2Q==
+X-Gm-Message-State: AOAM533WubqJ1xsiRAopqcd4QtxgitMPpYA4SEKhr/SBqO1npn1QBitB
+        86yOE8wEGx4H4uqfOrks+7Y=
+X-Google-Smtp-Source: ABdhPJx3XgSSt7P4jwLJpMfTeIhUnjm7pdclbaRsqiUqCdh3RY8o19sP5CF6ckLWEsFYIQp36R0pfA==
+X-Received: by 2002:a92:ad12:: with SMTP id w18mr4235005ilh.181.1631232171550;
+        Thu, 09 Sep 2021 17:02:51 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id o5sm1548868iow.48.2021.09.09.17.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 17:02:50 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id D562E27C005B;
+        Thu,  9 Sep 2021 20:02:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 09 Sep 2021 20:02:49 -0400
+X-ME-Sender: <xms:p6A6YUmNsdhmXNN91aaqq4MX4rCXPQn80F7Sxfq1RZ_nQ-Hu3HRemA>
+    <xme:p6A6YT3ayp0tewFu7fHSP36FuOgzS5s93WKCIORZBWwwbgcSiQmCxTykI7mcW2w2y
+    av1NJNrWxldXiZBWQ>
+X-ME-Received: <xmr:p6A6YSoSDn0EjQnN5aWX-eyBq3949Vyd3XNRWEUiG7rYwpY3tMxiPZ1WXDRCow>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegtddgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
+    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:p6A6YQnk6lJmDWoJRNiTYNks_VK5QQ64K_LI1jYDH4x8iu57vKvggg>
+    <xmx:p6A6YS3ycplbyx1D3pvahiPq5sKmJYPSj6U1vYWM9BKRBcAtV3S4KA>
+    <xmx:p6A6YXsn6GMEqhGpjx9VUAc1TI6Ybz9IotbmoWPaJb88qtiysD63_w>
+    <xmx:qKA6Yb6k4veRvD76QJQBR5t8JeSzp7luwPqHlUXlIf3prBsZVDk3V9kezV8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Sep 2021 20:02:46 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 08:01:14 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Dan Lustig <dlustig@nvidia.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <YTqgSmX57l2hCMk0@boqun-archlinux>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
 MIME-Version: 1.0
-References: <20210909232141.2489691-1-dualli@chromium.org> <20210909232141.2489691-2-dualli@chromium.org>
-In-Reply-To: <20210909232141.2489691-2-dualli@chromium.org>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 9 Sep 2021 16:54:00 -0700
-Message-ID: <CAHRSSExGF3teN83P4jJJ1_ibzEvxTScm2-KMo5+kLZ7xCaMhSw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] binder: fix freeze race
-To:     Li Li <dualli@chromium.org>
-Cc:     dualli@google.com, gregkh@linuxfoundation.org,
-        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
-        surenb@google.com, joel@joelfernandes.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:21 PM Li Li <dualli@chromium.org> wrote:
->
-> From: Li Li <dualli@google.com>
->
-> Currently cgroup freezer is used to freeze the application threads, and
-> BINDER_FREEZE is used to freeze binder interface. There's already a
-> mechanism for BINDER_FREEZE to wait for any existing transactions to
-> drain out before actually freezing the binder interface.
->
-> But freezing an app requires 2 steps, freezing the binder interface with
-> BINDER_FREEZEwhich and then freezing the application main threads with
-> cgroupfs. This is not an atomic operation. The following race issue
-> might happen.
->
-> 1) Binder interface is frozen by ioctl(BINDER_FREEZE);
-> 2) Main thread initiates a new sync binder transaction;
-> 3) Main thread is frozen by "echo 1 > cgroup.freeze";
-> 4) The response reaches the frozen thread, which will unexpectedly fail.
->
-> This patch provides a mechanism for user space freezer manager to check
-> if there's any new pending transaction happening between BINDER_FREEZE
-> and freezing main thread. If there's any, the main thread freezing
-> operation can be rolled back.
->
-> Furthermore, the response might reach the binder driver before the
-> rollback actually happens. That will also cause failed transaction.
->
-> As the other process doesn't wait for another response of the response,
-> the failed response transaction can be fixed by treating the response
-> transaction like an oneway/async one, allowing it to reach the frozen
-> thread. And it will be consumed when the thread gets unfrozen later.
->
-> Bug: 198493121
+On Thu, Sep 09, 2021 at 01:03:18PM -0400, Dan Lustig wrote:
+> On 9/9/2021 9:35 AM, Will Deacon wrote:
+> > [+Palmer, PaulW, Daniel and Michael]
+> > 
+> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
+> >> On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
+> >>
+> >>> So if this is purely a RISC-V thing,
+> >>
+> >> Just to clarify, I think the current RISC-V thing is stonger than
+> >> PowerPC, but maybe not as strong as say ARM64, but RISC-V memory
+> >> ordering is still somewhat hazy to me.
+> >>
+> >> Specifically, the sequence:
+> >>
+> >> 	/* critical section s */
+> >> 	WRITE_ONCE(x, 1);
+> >> 	FENCE RW, W
+> >> 	WRITE_ONCE(s.lock, 0);		/* store S */
+> >> 	AMOSWAP %0, 1, r.lock		/* store R */
+> >> 	FENCE R, RW
+> >> 	WRITE_ONCE(y, 1);
+> >> 	/* critical section r */
+> >>
+> >> fully separates section s from section r, as in RW->RW ordering
+> >> (possibly not as strong as smp_mb() though), while on PowerPC it would
+> >> only impose TSO ordering between sections.
+> >>
+> >> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
+> >> similarly it marches the R from the R->RW fence, yielding an:
+> >>
+> >> 	RW->  W
+> >> 	    RmW
+> >> 	    R  ->RW
+> >>
+> >> ordering. It's the stores S and R that can be re-ordered, but not the
+> >> sections themselves (same on PowerPC and many others).
+> >>
+> >> Clarification from a RISC-V enabled person would be appreciated.
+> 
+> To first order, RISC-V's memory model is very similar to ARMv8's.  It
+> is "other-multi-copy-atomic", unlike Power, and respects dependencies.
+> It also has AMOs and LR/SC with optional RCsc acquire or release
+> semantics.  There's no need to worry about RISC-V somehow pushing the
+> boundaries of weak memory ordering in new ways.
+> 
+> The tricky part is that unlike ARMv8, RISC-V doesn't have load-acquire
+> or store-release opcodes at all.  Only AMOs and LR/SC have acquire or
+> release options.  That means that while certain operations like swap
+> can be implemented with native RCsc semantics, others like store-release
+> have to fall back on fences and plain writes.
+> 
+> That's where the complexity came up last time this was discussed, at
+> least as it relates to RISC-V: how to make sure the combination of RCsc
+> atomics and plain operations+fences gives the semantics everyone is
+> asking for here.  And to be clear there, I'm not asking for LKMM to
+> weaken anything about critical section ordering just for RISC-V's sake.
+> TSO/RCsc ordering between critical sections is a perfectly reasonable
+> model in my opinion.  I just want to make sure RISC-V gets it right
+> given whatever the decision is.
+> 
+> >>> then I think it's entirely reasonable to
+> >>>
+> >>>         spin_unlock(&r);
+> >>>         spin_lock(&s);
+> >>>
+> >>> cannot be reordered.
+> >>
+> >> I'm obviously completely in favour of that :-)
+> > 
+> > I don't think we should require the accesses to the actual lockwords to
+> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
+> > architectures where you'd end up with an extra barrier either after the
+> > unlock() or before the lock() operation. However, I remain absolutely in
+> > favour of strengthening the ordering of the _critical sections_ guarded by
+> > the locks to be RCsc.
+> 
+> I agree with Will here.  If the AMOSWAP above is actually implemented with
+> a RISC-V AMO, then the two critical sections will be separated as if RW,RW,
+> as Peter described.  If instead it's implemented using LR/SC, then RISC-V
 
-Please remove "Bug: " tag. Replace it with a "Fixes:" tag that cites
-the patch that introduced the race.
+Just out of curiosity, in the following code, can the store S and load L
+be reordered?
 
-> Signed-off-by: Li Li <dualli@google.com>
-> ---
->  drivers/android/binder.c          | 32 +++++++++++++++++++++++++++----
->  drivers/android/binder_internal.h |  2 ++
->  2 files changed, 30 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index d9030cb6b1e4..f9713a97578c 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -3038,9 +3038,8 @@ static void binder_transaction(struct binder_proc *proc,
->         if (reply) {
->                 binder_enqueue_thread_work(thread, tcomplete);
->                 binder_inner_proc_lock(target_proc);
-> -               if (target_thread->is_dead || target_proc->is_frozen) {
-> -                       return_error = target_thread->is_dead ?
-> -                               BR_DEAD_REPLY : BR_FROZEN_REPLY;
-> +               if (target_thread->is_dead) {
-> +                       return_error = BR_DEAD_REPLY;
->                         binder_inner_proc_unlock(target_proc);
->                         goto err_dead_proc_or_thread;
->                 }
-> @@ -4648,6 +4647,22 @@ static int binder_ioctl_get_node_debug_info(struct binder_proc *proc,
->         return 0;
->  }
->
-> +static int binder_txns_pending(struct binder_proc *proc)
-> +{
-> +       struct rb_node *n;
-> +       struct binder_thread *thread;
-> +
-> +       if (proc->outstanding_txns > 0)
-> +               return 1;
-> +
-> +       for (n = rb_first(&proc->threads); n; n = rb_next(n)) {
-> +               thread = rb_entry(n, struct binder_thread, rb_node);
-> +               if (thread->transaction_stack)
-> +                       return 1;
-> +       }
-> +       return 0;
-> +}
-> +
->  static int binder_ioctl_freeze(struct binder_freeze_info *info,
->                                struct binder_proc *target_proc)
->  {
-> @@ -4682,6 +4697,14 @@ static int binder_ioctl_freeze(struct binder_freeze_info *info,
->         if (!ret && target_proc->outstanding_txns)
->                 ret = -EAGAIN;
->
-> +       /* Also check pending transactions that wait for reply */
-> +       if (ret >= 0) {
-> +               binder_inner_proc_lock(target_proc);
-> +               if (binder_txns_pending(target_proc))
+	WRITE_ONCE(x, 1); // store S
+	FENCE RW, W
+ 	WRITE_ONCE(s.lock, 0); // unlock(s)
+ 	AMOSWAP %0, 1, s.lock  // lock(s)
+	FENCE R, RW
+	r1 = READ_ONCE(y); // load L
 
-The convention in the binder driver is to append "_ilocked" to the
-function name if the function expects the inner proc lock to be held
-(so "binder_txns_pending_ilocked(target_proc) in this case)".
+I think they can, because neither "FENCE RW, W" nor "FENCE R, RW" order
+them. Note that the reordering is allowed in LKMM, because unlock-lock
+only need to be as strong as RCtso.
 
-> +                       ret = -EAGAIN;
-> +               binder_inner_proc_unlock(target_proc);
-> +       }
-> +
->         if (ret < 0) {
->                 binder_inner_proc_lock(target_proc);
->                 target_proc->is_frozen = false;
-> @@ -4705,7 +4728,8 @@ static int binder_ioctl_get_freezer_info(
->                 if (target_proc->pid == info->pid) {
->                         found = true;
->                         binder_inner_proc_lock(target_proc);
-> -                       info->sync_recv |= target_proc->sync_recv;
-> +                       info->sync_recv |= target_proc->sync_recv |
-> +                                       (binder_txns_pending(target_proc) << 1);
->                         info->async_recv |= target_proc->async_recv;
->                         binder_inner_proc_unlock(target_proc);
->                 }
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index 810c0b84d3f8..402c4d4362a8 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -378,6 +378,8 @@ struct binder_ref {
->   *                        binder transactions
->   *                        (protected by @inner_lock)
->   * @sync_recv:            process received sync transactions since last frozen
-> + *                        bit 0: received sync transaction after being frozen
-> + *                        bit 1: new pending sync transaction during freezing
+Moreover, how about the outcome of the following case:
 
-Should these bit assignments be documented in binder.h since these bit
-assignments end up being relevant in struct binder_frozen_status_info?
+	{ 
+	r1, r2 are registers (variables) on each CPU, X, Y are memory
+	locations, and initialized as 0
+	}
 
+	CPU 0
+	=====
+	AMOSWAP r1, 1, X
+	FENCE R, RW
+	r2 = READ_ONCE(Y);
 
->   *                        (protected by @inner_lock)
->   * @async_recv:           process received async transactions since last frozen
->   *                        (protected by @inner_lock)
-> --
-> 2.33.0.309.g3052b89438-goog
->
+	CPU 1
+	=====
+	WRITE_ONCE(Y, 1);
+	FENCE RW, RW
+	r2 = READ_ONCE(X);
+
+can we observe the result where r2 on CPU0 is 0 while r2 on CPU1 is 1?
+
+Regards,
+Boqun
+
+> gives only TSO (R->R, R->W, W->W), because the two pieces of the AMO are
+> split, and that breaks the chain.  Getting full RW->RW between the critical
+> sections would therefore require an extra fence.  Also, the accesses to the
+> lockwords themselves would not be ordered without an extra fence.
+> 
+> > Last time this came up, I think the RISC-V folks were generally happy to
+> > implement whatever was necessary for Linux [1]. The thing that was stopping
+> > us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
+> > Michael saw quite a bit of variety in the impact on benchmarks [2] across
+> > different machines. So the question is whether newer Power machines are less
+> > affected to the degree that we could consider making this change again.
+> 
+> Yes, as I said above, RISC-V will implement what is needed to make this work.
+> 
+> Dan
+> 
+> > Will
+> > 
+> > [1] https://lore.kernel.org/lkml/11b27d32-4a8a-3f84-0f25-723095ef1076@nvidia.com/
+> > [2] https://lore.kernel.org/lkml/87tvp3xonl.fsf@concordia.ellerman.id.au/
