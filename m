@@ -2,213 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B568340662B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECF3406628
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhIJDbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 23:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhIJDbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 23:31:47 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BD2C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 20:30:37 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id s20so1107767oiw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 20:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NNboQ/FR4h0376TGbPOg84fczWq1c0viqJFh4kJpLOo=;
-        b=DOWVLWOxYph3rCExJ6yJTlcc1s6U/I3mbRtoHPSRkXdkWwTcFm3mjoOrRLkY4fytA9
-         0MyW+YeqXjf9HXZv7TJPKSd7UE3UcCWj+cYfQcBX6vbFByevBmZEuafXo9MXazkUmO5+
-         6dwbOE/QzI0XGmZsV3K79MBvd6Y15aDLFALfeAF7kLvp7FeK0AOE2nC30749dih4elGu
-         uyZmD0f2M+RK4S7/7YjQaGhoIzOl+g/b1xOBsJ9VA1Fjo2i7MYPJz2Nr3o02fdQOy8SD
-         7e3bc8KeQMkMqxK4xNykHuuIxmQoYlWgk6Q2sp0Vb5IG+XeVopue08zLomU9bzVjK+J1
-         S4zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NNboQ/FR4h0376TGbPOg84fczWq1c0viqJFh4kJpLOo=;
-        b=Ry/DKGRzfx/8gDMum4PupDKS45JGdiy1HSv9gUgbuN7QGKq/yl9AXSZYg1ODSgxTAU
-         fMyJwR6Yi2KGetWR2eeZ3NtTurkh65CSv/kTFJZojxnjl0VyHML3146U4B8nKFmAUm+U
-         JRUVe83DRgta4Th5oW+ykShCmNfcdhxzpyWl+X8WquZN5YJJfDVsTndMx6qnVjNDcId0
-         W0iKFhmnUtLcBTubv/BnJBRYMmPUJ24QANf9ZOQ9EGQDP4T/3UKikmauXkYCjovrwBtG
-         nU5R63nk8rvxuPAdv0VoN8GhPEPF4adSExZP/kK31hbHG2e1YXEPrXl6+9V4t5IqHy0Y
-         tAXg==
-X-Gm-Message-State: AOAM531u5bDNCeHNvDqXsWct71PDHgK1gjmNGXUb+mqvuXh23+igyiJ1
-        qrRPAA6P3LHyYNExkzgNUDlpMduRutUPwnQRPjA6/g==
-X-Google-Smtp-Source: ABdhPJyMHOEn4H9rfV4O2+PMzf0ccVbYklwH5xFOd06p1a88RXslpULKUsmN2vs6tHJbgkdkc/h+sJIlfaTplJ4cEtw=
-X-Received: by 2002:a05:6808:909:: with SMTP id w9mr2624314oih.164.1631244636311;
- Thu, 09 Sep 2021 20:30:36 -0700 (PDT)
+        id S230129AbhIJDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 23:31:44 -0400
+Received: from mail-vi1eur05on2048.outbound.protection.outlook.com ([40.107.21.48]:2432
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229929AbhIJDbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 23:31:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XOD+2IyJefK0HcwCl0KhHlO4hq7ZJEbG7u5Q8zlUI4zmd31xIN93Ikv7tYgpNP1YFqrgr9PMpMk9h3P6P7WBgt9Yxxpoijfh1wjWG5PP8icvmnP4wNo5XwxcbTXT7q4Ufko/EwlRatj1FB7Okx5492r2sh/7P9eHySMyvHGM2UjWvbXWri/FYbR2VHiEz00fivfwSnVE+oOlfCYtxXOdQ15jUh7XYoGolG2GaxVTHe1QMmuNDD+OxmWS9y+UFKkLgd0qi92/q4juv8QTILRQEkGZnj48JNvKn4oc1tUaU2dg/dOHtp6CwJkhi/qRvXdRvPYPcPrmvKQw0vePYPJxlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=xA/WU93xrfMs9lHATSEskRf9EXYoenE7/UQW0OWXFTI=;
+ b=mhXWjuqKKb3Ou6YlLSXUuQ3L9XhX1XTD7fm3eAEaMq1Tx3JyXJ218VE1wnWedE0dgxApoQ6h+qoFfWqMiubEr4j0oiSGkn9VIDIspF+aAHqjeBmMIq6447G2fosG/17Me7J4h4NbDJ9onM5HxNxGeuF1p3H5bzq5E9Vyas6gazt6lsuF32QN1LUnarsZCx266S83pS5+1zfQTXcmwxnAsJt+ENZdL8x/edXLVIQda54oj/T7VEs0fhZ4qZN/DPFXipEzBeEl4nqHuagt/A+HitorrIvHsbWXltkHY3AIa5BK2OO5oAfCRKxhGUx6ehGvC2ASuWwVxSTmAVMpsN8Pbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xA/WU93xrfMs9lHATSEskRf9EXYoenE7/UQW0OWXFTI=;
+ b=FAj6EZ9xHhILHnrqkGCA0mT7NBV6YnULj2aUoQ7cdO8VBNRnftYjiQyE9RIxnAs40K1ucSJ9m/iEfkB3Bq1zRaAkUdpFhYYDmvF6aFTY5KkoBHBqJOEPBmFG3gytZi437FV+YJBKFnDN3O2vm9sASlXds1QzYqf1TyHP5sijmpc=
+Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
+ by VI1PR04MB5951.eurprd04.prod.outlook.com (2603:10a6:803:d5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 10 Sep
+ 2021 03:30:27 +0000
+Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
+ ([fe80::5901:3a55:84d6:d0fb]) by VE1PR04MB6688.eurprd04.prod.outlook.com
+ ([fe80::5901:3a55:84d6:d0fb%7]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
+ 03:30:27 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     Fabio Estevam <festevam@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+CC:     Sasha Levin <sashal@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH AUTOSEL 5.14 058/252] spi: imx: fix ERR009165
+Thread-Topic: [PATCH AUTOSEL 5.14 058/252] spi: imx: fix ERR009165
+Thread-Index: AQHXpW/CnW7hBPbyOESaynmh5wkPyqub6FqAgAAB6ICAALLxsA==
+Date:   Fri, 10 Sep 2021 03:30:27 +0000
+Message-ID: <VE1PR04MB6688DC0E216F0EA6E1A4349E89D69@VE1PR04MB6688.eurprd04.prod.outlook.com>
+References: <20210909114106.141462-1-sashal@kernel.org>
+ <20210909114106.141462-58-sashal@kernel.org>
+ <500c68753cac86d9b3021ddf1e8580779e685332.camel@pengutronix.de>
+ <CAOMZO5D6pbTG3O14OtZRUCa5DPcG0seUzot4gX4Y=hQOpxRfdQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5D6pbTG3O14OtZRUCa5DPcG0seUzot4gX4Y=hQOpxRfdQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 700d6e14-f56c-42e9-99f2-08d9740b5533
+x-ms-traffictypediagnostic: VI1PR04MB5951:
+x-microsoft-antispam-prvs: <VI1PR04MB5951FBA551D43BA8ED8B6A5289D69@VI1PR04MB5951.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: knqFdEafDsgiT33Q7x/PyGFSkB5zLpGNvgSD24/s8Yt7ARPpjj4PwMlFwC44b98eHbO1YOH/FtjruyvcywMTuc4JQYVeN6IZ2eQzMiFxNUxDeKQbAmfYqv6hy+tvmwrQUa4zCR2nT1jeiKEmiTQj4aoXYAjlYYidLHHbAXXq6Q7F9aU9RDjxbOlJ/GPmF0V18CBVemRACoR0/OF31pE1ceKV5Eb+K4y07kGCdz4Wgf8BajzZszEd2Ey/OSDjaJquNHKCPjQ1ckU62LH7NnEZtC6zLH3Sqsx3ikhJzoVdKe3bMahsBign1twPWbO6DK1ieSdE88LJ4um0ydn6Lcr3cKcF5seb5gwvUi5NiZ07Y9BoVbAKWwCrayPa/H0chD+Qi9J5NsJomgnR1g4BXZYUG/WNM974LuOudqBcyoq8iZs9DJ6NnKffblovPwVkrU5KRuH8AYd2l/PvS73hgPURDiTKUeFwttVMJFbtcWx05UZAbBGW9kPW7iHkDm02Q6TV50LKwovFpLSisoabT4QlBAJzmEg1f6M9jBqVJhckW8AelYJu7r7OFvE+0ujSWJzi/DxAJaruDeTN2mldmNugfjr2WvG34pPz+TTvBpQj/oxqzZGEdUME/wQlw+fzN8znwYdvX0RsWAelGXA2MrSrx5AOq2i6Nj23QDfaBL4bDySUgFd6Ezy3FP1JAuOGtnz958GrPcTHCNVI9uRo35HHeXkjtKP1pdayK305UJgnBXLr9ti4CG/mO7txZsIiUFwS8xnp5B/HUwQn53kSHU8JTCU8/uUHXoh68x+66HRWU5k=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(396003)(346002)(136003)(52536014)(53546011)(9686003)(6506007)(71200400001)(110136005)(7696005)(4326008)(5660300002)(2906002)(8936002)(316002)(66946007)(478600001)(38070700005)(76116006)(66556008)(26005)(66476007)(64756008)(66446008)(86362001)(8676002)(33656002)(966005)(45080400002)(186003)(54906003)(55016002)(38100700002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Am5Oy4dTKrTRdxBeTwyhfNAASp1yEmw6Bhkpz+ZYAVVEvnxyweVA6Uq2Fk3N?=
+ =?us-ascii?Q?W/HPN+KN59CQejZP8Uig3dxVhi0KN3UDrxLlngpTZ+UqT0BAhvNff2Vn4wn9?=
+ =?us-ascii?Q?8THtCo7KZ0H2Z9r+Y7aunNhNZZo8YdggLtw26i5lX5wyUSyVh9Ia8AiNaSUc?=
+ =?us-ascii?Q?PaT63DYPMHSnzhGcS4wxIGIFniRv4OR1upYJ/p3OiTKwe1SxKn5jnnZZVYE1?=
+ =?us-ascii?Q?HkV2vMkyQeryezl0rn4NWh7mqt9BWGO8jklBEYz+gi0WtG91FNRf4xiAvO5e?=
+ =?us-ascii?Q?+p2A63cO6yUJf2o6dFsZAfvt3Dyt+asxaQg3FvejyClghurTXxBZFihi9NzF?=
+ =?us-ascii?Q?/pBsosYbN9QB+uz28RWWd/4ms0xnm1bpFSgCEqtP0WzvL90UEDpHv8/uE2nD?=
+ =?us-ascii?Q?lronaYhq3hZiaMdtR6BUGCk/bxtlzhX8YfBM5PiKtKcveFmYmHlL05GwJpZf?=
+ =?us-ascii?Q?Yj/+PVcd5AvJFiHXO3dAGT2bzetTY1PxfhB8Ure91623WF/9eRR8rEAN5F4M?=
+ =?us-ascii?Q?yqyXGEV9s/pBLojtp7DPPna9fFHgEoREP9+FxURHhvFaQ9rXzsTMcO86QTXA?=
+ =?us-ascii?Q?pYfCKV/C81juZxj9VoTVsG3sGIiDlWOQggonlZ/EMw6vfrBaKABxIqmzKXf3?=
+ =?us-ascii?Q?ZHbTdPshcRwfrvSxDkOGpEKQH3qiQeUQL52RoWYtT+2EGZuf6I/XJI+ApxY2?=
+ =?us-ascii?Q?m/bkWUrwXzEVqIC4I/lZ6WoUcKq5oC7TaJE5BXIO9a13M9HidOCcozh0KMwP?=
+ =?us-ascii?Q?us3E9pcMuUC8QS7+3zD5WXG3yd5KHlAGHcrb1nSAypSk4Cz7WZyIPazhZ1dq?=
+ =?us-ascii?Q?0v/cKZwK8vZTzQIHWNF/QnCyBOaAOIQhcc6W8EsVbXq0NQKsQG/JSFPjNJrs?=
+ =?us-ascii?Q?8qsNWM78TrObCWB+jGDQluxPZTgaj6eUqWglHWyrlYyztVQT5MLuoew0Z2gD?=
+ =?us-ascii?Q?8PL/rrafLQxjcFJPibuGGmheGsRNF8ODqDFgnuh/yCmgb3mCASGt0O/f0X3s?=
+ =?us-ascii?Q?SQta3gpVWRCyIJ/iZ5rRFZGdvm/hhN8sOu3dIHQwlD926vLvCP+vVmHvDFQX?=
+ =?us-ascii?Q?4P4grn3c5H28yhrqkizS/uSA5qdGCW3D7EQu3P2mXWGZMdizf+SuYzTuktyK?=
+ =?us-ascii?Q?uWy5i6itFlHpYr7vy43EdeVzNywxD9kuSsC0fTycAoeZwiP8Dq2yijUapG/j?=
+ =?us-ascii?Q?hr3qxg+AFuVWHPFY9xAt7b9taZh8p1etix8ojRPBPvrb21u9mLggJi3CABq1?=
+ =?us-ascii?Q?lQv1nB5RhF4ErvDunHS0aQO4UVyYw2xbiHqpZ8FsliKQpKhKVIeEmAd5cUhR?=
+ =?us-ascii?Q?dmmQr04JuvtOmeVNL2MXs5Gd?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-19-brijesh.singh@amd.com>
-In-Reply-To: <20210820155918.7518-19-brijesh.singh@amd.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Thu, 9 Sep 2021 20:30:25 -0700
-Message-ID: <CAA03e5FMCp7cZLXKPZ53SOUK-cOF+WmGRj256K9=+wivHvTA0Q@mail.gmail.com>
-Subject: Re: [PATCH Part2 v5 18/45] crypto: ccp: Provide APIs to query
- extended attestation report
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 700d6e14-f56c-42e9-99f2-08d9740b5533
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2021 03:30:27.1693
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fPzbj751qGY0sSUK1BlACu0aSN02jOxwc1Ccoa01bZJLf2pje+9mpn5fn+9q1z7gfA0WZUzz3uXsydrGyTFtBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5951
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 9:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> Version 2 of the GHCB specification defines VMGEXIT that is used to get
-> the extended attestation report. The extended attestation report includes
-> the certificate blobs provided through the SNP_SET_EXT_CONFIG.
->
-> The snp_guest_ext_guest_request() will be used by the hypervisor to get
-> the extended attestation report. See the GHCB specification for more
-> details.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  drivers/crypto/ccp/sev-dev.c | 43 ++++++++++++++++++++++++++++++++++++
->  include/linux/psp-sev.h      | 24 ++++++++++++++++++++
->  2 files changed, 67 insertions(+)
->
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 9ba194acbe85..e2650c3d0d0a 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -22,6 +22,7 @@
->  #include <linux/firmware.h>
->  #include <linux/gfp.h>
->  #include <linux/cpufeature.h>
-> +#include <linux/sev-guest.h>
->
->  #include <asm/smp.h>
->
-> @@ -1677,6 +1678,48 @@ int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *error)
->  }
->  EXPORT_SYMBOL_GPL(snp_guest_dbg_decrypt);
->
-> +int snp_guest_ext_guest_request(struct sev_data_snp_guest_request *data,
-> +                               unsigned long vaddr, unsigned long *npages, unsigned long *fw_err)
-> +{
-> +       unsigned long expected_npages;
-> +       struct sev_device *sev;
-> +       int rc;
-> +
-> +       if (!psp_master || !psp_master->sev_data)
-> +               return -ENODEV;
-> +
-> +       sev = psp_master->sev_data;
-> +
-> +       if (!sev->snp_inited)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * Check if there is enough space to copy the certificate chain. Otherwise
-> +        * return ERROR code defined in the GHCB specification.
-> +        */
-> +       expected_npages = sev->snp_certs_len >> PAGE_SHIFT;
+> Hi Lucas,
+>=20
+> On Thu, Sep 9, 2021 at 1:43 PM Lucas Stach <l.stach@pengutronix.de> wrote=
+:
+> >
+> > Hi Sasha,
+> >
+> > Am Donnerstag, dem 09.09.2021 um 07:37 -0400 schrieb Sasha Levin:
+> > > From: Robin Gong <yibin.gong@nxp.com>
+> > >
+> > > [ Upstream commit 980f884866eed4dda2a18de888c5a67dde67d640 ]
+> > >
+> > > Change to XCH  mode even in dma mode, please refer to the below
+> > > errata:
+> > > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fw=
+w
+> > >
+> w.nxp.com%2Fdocs%2Fen%2Ferrata%2FIMX6DQCE.pdf&amp;data=3D04%7C01
+> %7Cyib
+> > >
+> in.gong%40nxp.com%7C39f3117d59434df46fc108d973b1bb3e%7C686ea1d3
+> bc2b4
+> > >
+> c6fa92cd99c5c301635%7C0%7C1%7C637668029454898655%7CUnknown%7
+> CTWFpbGZ
+> > >
+> sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn
+> 0
+> > > %3D%7C1000&amp;sdata=3DNxCByvu4qCGniWnXccSxLNy9ilvQhFpid7O9Ag
+> 1HloI%3D&
+> > > amp;reserved=3D0
+> > >
+> >
+> > This patch is part of a quite extensive series touching multiple
+> > drivers and devicetree descriptions and will do more harm than good if
+> > backported without the rest of the series. The options here are:
+> > a) backport the entire series (this will most likely not match the
+> > stable criteria)
+> > b) drop the patch from the stable queue
+>=20
+> Yes, I agree. I prefer going with option b).
+Agree, vote for option b.
 
-Is this calculation for `expected_npages` correct? Assume that
-`sev->snp_certs_len` is less than a page (e.g., 2000). Then, this
-calculation will return `0` for `expected_npages`, rather than round
-up to 1.
-
-> +       if (*npages < expected_npages) {
-> +               *npages = expected_npages;
-> +               *fw_err = SNP_GUEST_REQ_INVALID_LEN;
-> +               return -EINVAL;
-> +       }
-> +
-> +       rc = sev_do_cmd(SEV_CMD_SNP_GUEST_REQUEST, data, (int *)&fw_err);
-> +       if (rc)
-> +               return rc;
-> +
-> +       /* Copy the certificate blob */
-> +       if (sev->snp_certs_data) {
-> +               *npages = expected_npages;
-> +               memcpy((void *)vaddr, sev->snp_certs_data, *npages << PAGE_SHIFT);
-> +       } else {
-> +               *npages = 0;
-> +       }
-> +
-> +       return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_guest_ext_guest_request);
-> +
->  static void sev_exit(struct kref *ref)
->  {
->         misc_deregister(&misc_dev->misc);
-> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> index 00bd684dc094..ea94ce4d834a 100644
-> --- a/include/linux/psp-sev.h
-> +++ b/include/linux/psp-sev.h
-> @@ -924,6 +924,23 @@ void *psp_copy_user_blob(u64 uaddr, u32 len);
->  void *snp_alloc_firmware_page(gfp_t mask);
->  void snp_free_firmware_page(void *addr);
->
-> +/**
-> + * snp_guest_ext_guest_request - perform the SNP extended guest request command
-> + *  defined in the GHCB specification.
-> + *
-> + * @data: the input guest request structure
-> + * @vaddr: address where the certificate blob need to be copied.
-> + * @npages: number of pages for the certificate blob.
-> + *    If the specified page count is less than the certificate blob size, then the
-> + *    required page count is returned with error code defined in the GHCB spec.
-> + *    If the specified page count is more than the certificate blob size, then
-> + *    page count is updated to reflect the amount of valid data copied in the
-> + *    vaddr.
-> + */
-> +int snp_guest_ext_guest_request(struct sev_data_snp_guest_request *data,
-> +                               unsigned long vaddr, unsigned long *npages,
-> +                               unsigned long *error);
-> +
->  #else  /* !CONFIG_CRYPTO_DEV_SP_PSP */
->
->  static inline int
-> @@ -971,6 +988,13 @@ static inline void *snp_alloc_firmware_page(gfp_t mask)
->
->  static inline void snp_free_firmware_page(void *addr) { }
->
-> +static inline int snp_guest_ext_guest_request(struct sev_data_snp_guest_request *data,
-> +                                             unsigned long vaddr, unsigned long *n,
-> +                                             unsigned long *error)
-> +{
-> +       return -ENODEV;
-> +}
-> +
->  #endif /* CONFIG_CRYPTO_DEV_SP_PSP */
->
->  #endif /* __PSP_SEV_H__ */
-> --
-> 2.17.1
->
