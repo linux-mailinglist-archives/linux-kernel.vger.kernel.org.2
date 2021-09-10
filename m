@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2898A406BD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DBA406C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhIJMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52028 "EHLO mail.kernel.org"
+        id S234926AbhIJMhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233576AbhIJMeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:34:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A3E611F0;
-        Fri, 10 Sep 2021 12:32:48 +0000 (UTC)
+        id S234178AbhIJMgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:36:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C556120E;
+        Fri, 10 Sep 2021 12:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277169;
-        bh=vyGAABwmiXyysA7wsLjKWpXFiK41eGNiDxZGJQlyqmw=;
+        s=korg; t=1631277290;
+        bh=OgYCzNSAmHAJIMchHWHi3CWoRBsZ0US8dQMiggFdiMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u2796ty7RPN2XXVZ8Non0VkGkQhE6OGAVvcttuM4KcRcyREi9nVN0n+RwcTcpKD90
-         EyJcTJbwT+ItRw66U5RJoTG1Cwp7w0UGhPqThbk/7CiId8KGHWhDzrsTwKipJTrJDQ
-         p7llb5SN/b7wUcoTLBE4Y0So34w/Qo9iElyBIaYg=
+        b=liNkLoWF0i3TUbeX6m2KseBcy0Y1R7R3kVXKdFSPf0AdC0jzsipF4adjvTEeCs957
+         9BoGPV0VvyZAs24rmLiDoUpKe51PtJqSJjdMPJe181oD8ra78wDa0LmNMkbAME1yAP
+         VzcnGgwl2Pu3K67WNuVjYEQ0woD8O/9dStZuJA5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        David Jeffery <djeffery@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 07/22] blk-mq: clearing flush request reference in tags->rqs[]
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.4 03/37] ext4: report correct st_size for encrypted symlinks
 Date:   Fri, 10 Sep 2021 14:30:06 +0200
-Message-Id: <20210910122916.178096123@linuxfoundation.org>
+Message-Id: <20210910122917.267981972@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+References: <20210910122917.149278545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +38,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 364b61818f65045479e42e76ed8dd6f051778280 upstream.
+commit 8c4bca10ceafc43b1ca0a9fab5fa27e13cbce99e upstream.
 
-Before we free request queue, clearing flush request reference in
-tags->rqs[], so that potential UAF can be avoided.
+The stat() family of syscalls report the wrong size for encrypted
+symlinks, which has caused breakage in several userspace programs.
 
-Based on one patch written by David Jeffery.
+Fix this by calling fscrypt_symlink_getattr() after ext4_getattr() for
+encrypted symlinks.  This function computes the correct size by reading
+and decrypting the symlink target (if it's not already cached).
 
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: David Jeffery <djeffery@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-5-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+For more details, see the commit which added fscrypt_symlink_getattr().
+
+Fixes: f348c252320b ("ext4 crypto: add symlink encryption")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210702065350.209646-3-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-mq.c |   35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ fs/ext4/symlink.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2620,16 +2620,49 @@ static void blk_mq_remove_cpuhp(struct b
- 					    &hctx->cpuhp_dead);
+--- a/fs/ext4/symlink.c
++++ b/fs/ext4/symlink.c
+@@ -52,10 +52,19 @@ static const char *ext4_encrypted_get_li
+ 	return paddr;
  }
  
-+/*
-+ * Before freeing hw queue, clearing the flush request reference in
-+ * tags->rqs[] for avoiding potential UAF.
-+ */
-+static void blk_mq_clear_flush_rq_mapping(struct blk_mq_tags *tags,
-+		unsigned int queue_depth, struct request *flush_rq)
++static int ext4_encrypted_symlink_getattr(const struct path *path,
++					  struct kstat *stat, u32 request_mask,
++					  unsigned int query_flags)
 +{
-+	int i;
-+	unsigned long flags;
++	ext4_getattr(path, stat, request_mask, query_flags);
 +
-+	/* The hw queue may not be mapped yet */
-+	if (!tags)
-+		return;
-+
-+	WARN_ON_ONCE(refcount_read(&flush_rq->ref) != 0);
-+
-+	for (i = 0; i < queue_depth; i++)
-+		cmpxchg(&tags->rqs[i], flush_rq, NULL);
-+
-+	/*
-+	 * Wait until all pending iteration is done.
-+	 *
-+	 * Request reference is cleared and it is guaranteed to be observed
-+	 * after the ->lock is released.
-+	 */
-+	spin_lock_irqsave(&tags->lock, flags);
-+	spin_unlock_irqrestore(&tags->lock, flags);
++	return fscrypt_symlink_getattr(path, stat);
 +}
 +
- /* hctx->ctxs will be freed in queue's release handler */
- static void blk_mq_exit_hctx(struct request_queue *q,
- 		struct blk_mq_tag_set *set,
- 		struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
- {
-+	struct request *flush_rq = hctx->fq->flush_rq;
-+
- 	if (blk_mq_hw_queue_mapped(hctx))
- 		blk_mq_tag_idle(hctx);
+ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ 	.get_link	= ext4_encrypted_get_link,
+ 	.setattr	= ext4_setattr,
+-	.getattr	= ext4_getattr,
++	.getattr	= ext4_encrypted_symlink_getattr,
+ 	.listxattr	= ext4_listxattr,
+ };
  
-+	blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
-+			set->queue_depth, flush_rq);
- 	if (set->ops->exit_request)
--		set->ops->exit_request(set, hctx->fq->flush_rq, hctx_idx);
-+		set->ops->exit_request(set, flush_rq, hctx_idx);
- 
- 	if (set->ops->exit_hctx)
- 		set->ops->exit_hctx(hctx, hctx_idx);
 
 
