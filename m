@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5576F4063DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D414E40642F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243267AbhIJAtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:49:55 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36237 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233498AbhIJAUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:20:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnpwgrP_1631233127;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UnpwgrP_1631233127)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 08:18:49 +0800
-Subject: Re: [PATCH 17/24] x86/entry: Introduce struct ist_regs
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Youquan Song <youquan.song@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-18-jiangshanlai@gmail.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
-Date:   Fri, 10 Sep 2021 08:18:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S243327AbhIJAyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:54:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233475AbhIJAVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:21:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4EC06023D;
+        Fri, 10 Sep 2021 00:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631233231;
+        bh=zUwheBrgiTwOErnoc8EJwk/XxzAdHk58Wtva3bRQ2a4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rSWR0bTGOtaj40AkXUuRyE3SmDt+oV4nbNqXjkvDBaRrnYMKmMK+LKZ1hFBPdoMKl
+         JTLJuzlT91kBvB8arfv9SV5DbfJBVW46RupwIng3RFxCE4wXvdT9Ckd6qaqExz9EIx
+         1l14VWaO/3ip81pIJN9Y7hwDsunbEE9eIFwVnKlJVsYjzyL+U4lIxPeozGlG7zgeJq
+         rTMULCRDv9NAgf3D2PP1HPejuJFV68BANVnlOh+3JK0Jwwz9FrA1N4M7MRvrNvsm9N
+         JnTIwC9dhNjE7iEJfXE+GT7Expc35fB5hQqhdI/IacfWu3DCamnZNBm6XZylfcTgxT
+         oJRk5F6aal/HQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jon Lin <jon.lin@rock-chips.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 01/53] clk: rockchip: rk3036: fix up the sclk_sfc parent error
+Date:   Thu,  9 Sep 2021 20:19:36 -0400
+Message-Id: <20210910002028.175174-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210831175025.27570-18-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jon Lin <jon.lin@rock-chips.com>
 
+[ Upstream commit 0be3df186f870cbde56b223c1ad7892109c9c440 ]
 
-On 2021/9/1 01:50, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> struct ist_regs is the upmost stack frame for IST interrupt, it
-> consists of struct pt_regs and other fields which will be added in
-> later patch.
-> 
-> Make vc_switch_off_ist() take ist_regs as its argument and it will switch
-> the whole ist_regs if needed.
-> 
-> Make the frame before calling paranoid_entry() and paranoid_exit() be
-> struct ist_regs.
-> 
-> This patch is prepared for converting paranoid_entry() and paranoid_exit()
-> into C code which will need the additinal fields to store the results in
-> paranoid_entry() and to use them in paranoid_exit().
+Choose the correct pll
 
-This patch was over designed.
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+Acked-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lore.kernel.org/r/20210713094456.23288-5-jon.lin@rock-chips.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/clk/rockchip/clk-rk3036.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-In ASM code, we can easily save results in the callee-saved registers.
-For example, rc3 is saved in %r14, gsbase info is saved in %rbx.
-
-And in C code, we can't save results in registers.  And I thought there was
-no place to save the results because the CR3 and gsbase are not kernel's.
-So I extended the pt_regs to ist_regs to save the results.
-
-But it was incorrect.  The results can be saved in percpu data at the end of
-paranoid_entry() after the CR3/gsbase are settled down.  And the results
-can be read at the beginning of paranoid_exit() before the CR3/gsbase are
-switched to the interrupted context's.
-
-sigh.
-
-> 
-> The C interrupt handlers don't use struct ist_regs due to they don't need
-> the additional fields in the struct ist_regs, and they still use pt_regs.
-> 
+diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
+index 6a46f85ad837..1814be5ef574 100644
+--- a/drivers/clk/rockchip/clk-rk3036.c
++++ b/drivers/clk/rockchip/clk-rk3036.c
+@@ -120,6 +120,7 @@ PNAME(mux_pll_src_3plls_p)	= { "apll", "dpll", "gpll" };
+ PNAME(mux_timer_p)		= { "xin24m", "pclk_peri_src" };
+ 
+ PNAME(mux_pll_src_apll_dpll_gpll_usb480m_p)	= { "apll", "dpll", "gpll", "usb480m" };
++PNAME(mux_pll_src_dmyapll_dpll_gpll_xin24_p)   = { "dummy_apll", "dpll", "gpll", "xin24m" };
+ 
+ PNAME(mux_mmc_src_p)	= { "apll", "dpll", "gpll", "xin24m" };
+ PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "ext_i2s", "xin12m" };
+@@ -339,7 +340,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
+ 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS, 10, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(10), 4, GFLAGS),
+ 
+-	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_apll_dpll_gpll_usb480m_p, 0,
++	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_dmyapll_dpll_gpll_xin24_p, 0,
+ 			RK2928_CLKSEL_CON(16), 0, 2, MFLAGS, 2, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(10), 5, GFLAGS),
+ 
+-- 
+2.30.2
 
