@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59995406D56
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB12406D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhIJOMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:12:38 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:8624 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233702AbhIJOMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:12:36 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18A6UI7r018935;
-        Fri, 10 Sep 2021 09:11:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=Tjo1b/f4UDI2qPHaSD4AUkLYHrkga4Eyry3mj3JPrr4=;
- b=LO8UDqCqzmj47Y30yfZYSPBJX3E8lmiEJaSmJg8p1p+v7r3CGhpwANLwIPPLHCVllAL2
- 4NAdhfUZX08BXBLHVnnUCCb1KuHwp4FE8pc1NsfHjhaND8MySnAfufP6gl3pHQQY5pc+
- nXJh5XN9NITrHtBNK6S2+HgLrltUhBkwLja0ID3brnOlyNWlHaDtmyP188Bxga1Flx4D
- 5dGMOEjzBE39BkqKNvkC7lsSdgtKaoZaD+Iyg8KwXpS+kbSLAtyZBaiKx7DdVEnmlTjj
- /vzpPErwJaOIPCrHz8dw9fINIxSXOZqUAciMzf1H9b11WV8YZS81AbWIEFFeJ4Kc6++K 4Q== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3aytg7926j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Sep 2021 09:11:20 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 10 Sep
- 2021 15:11:13 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Fri, 10 Sep 2021 15:11:13 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D8A3DB10;
-        Fri, 10 Sep 2021 14:11:12 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 14:11:12 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Lucas tanure <tanureal@opensource.cirrus.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: Re: [PATCH v2 4/4] spi: amd: Don't wait for a write-only transfer to
- finish
-Message-ID: <20210910141112.GZ9223@ediswmail.ad.cirrus.com>
-References: <20210910111529.12539-1-tanureal@opensource.cirrus.com>
- <20210910111529.12539-4-tanureal@opensource.cirrus.com>
- <20210910124223.GY9223@ediswmail.ad.cirrus.com>
- <790250e3-a928-57d4-1378-bc8923163452@opensource.cirrus.com>
+        id S233940AbhIJONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:13:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233928AbhIJOND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:13:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBAFA611BF;
+        Fri, 10 Sep 2021 14:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631283112;
+        bh=ejUip3itZwLtheb3TXxocHtkN/0auCx2Nyksa+ii378=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C+HZ4bH9qWVLiTV8Fh+ic8F170bofDkPzKdAi+/lR+PkiYjXf6/Z45UjJSMNDrB92
+         kYTFgaeU88+xie+OtpBFt7q7+KgSf8msQU1LwSBty1l285Lh/26UvUsxxTAt3JP0LH
+         4xXxqW3iFB1MaI+MSwRwnQUTS1o+ukcVPEg+PjKaUCOdXKtagxEI8KXb1z6UZCpyFn
+         x6zeFBD2Z2/nUDYMD7YKkALCSY1T3p+MKJPV49Qwag4ZzLWEU3mDfZzfgTKlybMRzx
+         V7UkKaXrqxysbmGMZHkC5VgnItAEYFLHyQAkm8kQ54HSLlUbJuGHvksZqYP46npPm6
+         l2faXe7RWYM3A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E28E84038F; Fri, 10 Sep 2021 11:11:48 -0300 (-03)
+Date:   Fri, 10 Sep 2021 11:11:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf report: Add support to print a textual
+ representation of IBS raw sample data
+Message-ID: <YTtnpAcaCNYozoJF@kernel.org>
+References: <20210817221509.88391-1-kim.phillips@amd.com>
+ <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
+ <YTth5DLWGbyAzxvQ@kernel.org>
+ <YTtmwrZ6iy0TzG3l@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <790250e3-a928-57d4-1378-bc8923163452@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: EWhzBsSsU4K3t9naDZjM4lvSNVFx_5_Q
-X-Proofpoint-ORIG-GUID: EWhzBsSsU4K3t9naDZjM4lvSNVFx_5_Q
-X-Proofpoint-Spam-Reason: safe
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YTtmwrZ6iy0TzG3l@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 02:47:32PM +0100, Lucas tanure wrote:
-> On 9/10/21 1:42 PM, Charles Keepax wrote:
-> >On Fri, Sep 10, 2021 at 12:15:29PM +0100, Lucas Tanure wrote:
-> >>Return from a write-only transfer without waiting for
-> >>it to finish
-> >>But wait before a new transfer as the previous may
-> >>still happening and also wait before reading the data
-> >>from the FIFO
-> >>
-> >>Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> >>---
-> >>  static int amd_spi_master_setup(struct spi_device *spi)
-> >>@@ -178,6 +185,7 @@ static inline int amd_spi_fifo_xfer(struct amd_spi *amd_spi,
-> >>  			amd_spi_clear_fifo_ptr(amd_spi);
-> >>  			/* Execute command */
-> >>  			amd_spi_execute_opcode(amd_spi);
-> >>+			amd_spi_busy_wait(amd_spi);
-> >
-> >Surely the previous transfer can't still be happening if this if
-> >unconditional? Should this not be gated on rx_len?
-> >
-> >Thanks,
-> >Charles
-> >
-> >>  			/* Read data from FIFO to receive buffer  */
-> >>  			for (i = 0; i < rx_len; i++)
-> >>  				buf[i] = amd_spi_readreg8(amd_spi, AMD_SPI_FIFO_BASE + tx_len + i);
-> >>-- 
-> >>2.33.0
-> >>
-> This is executed inside an xfer->rx_buf not null if, so it`s gated
-> in a read transfer and not for a write transfer only
+Em Fri, Sep 10, 2021 at 11:08:02AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Sep 10, 2021 at 10:47:16AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Thu, Sep 09, 2021 at 04:58:12PM -0500, Kim Phillips escreveu:
+> > > Hi Arnaldo,
+> > > 
+> > > Can you please take a look at applying this series?  Its kernel-side
+> > > dependent series has already been applied and is in Linus' master.
+> > 
+> > Sure, I'm now trying to fix this:
+> > 
+> >   CC      /tmp/build/perf/util/amd-sample-raw.o
+> > util/amd-sample-raw.c: In function ‘evlist__amd_sample_raw’:
+> > util/amd-sample-raw.c:125:42: error: ‘ bytes’ directive output may be truncated writing 6 bytes into a region of size between 4 and 7 [-Werror=format-truncation=]
+> >   125 |                          " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
+> >       |                                          ^~~~~~
+> > In file included from /usr/include/stdio.h:866,
+> >                  from util/amd-sample-raw.c:7:
+> > /usr/include/bits/stdio2.h:71:10: note: ‘__builtin___snprintf_chk’ output between 21 and 24 bytes into a destination of size 21
+> >    71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+> >       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    72 |                                    __glibc_objsize (__s), __fmt,
+> >       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    73 |                                    __va_arg_pack ());
+> >       |                                    ~~~~~~~~~~~~~~~~~
+> > cc1: all warnings being treated as errors
+> > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/amd-sample-raw.o] Error 1
 > 
+> So, that trick with using sizeof and that string 3 times is cumbersome
+> and prone to truncation, at least the compiler can't say that the number
+> you're passing to %2d will have just 2 digits:
+> 
+> [acme@quaco c]$ cat printf.c
+> #include <stdio.h>
+> #include <stdlib.h>
+> 
+> int main(int argc, char *argv[])
+> {
+> 	char bf[64];
+> 	int len = snprintf(bf, sizeof(bf), "%2d", atoi(argv[1]));
+> 
+> 	printf("strlen(%s): %u\n", bf, len);
+> 
+> 	return 0;
+> }
+> [acme@quaco c]$ ./printf 1234567
+> strlen(1234567): 7
+> [acme@quaco c]$
+> 
+> I'm trying to rework this.
 
-And so it is, sorry should have looked at more than just the git
-context there.
+So below is the minimal fix, the other cases the compiler somehow thinks
+its ok, so I'll keep as is, will just remove the sizeof(string) to
+sizeof(var), as I did below for the offending case.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+- Arnaldo
 
-Thanks,
-Charles
+diff --git a/tools/perf/util/amd-sample-raw.c b/tools/perf/util/amd-sample-raw.c
+index fc1f670e88562b2e..e24025022735acdc 100644
+--- a/tools/perf/util/amd-sample-raw.c
++++ b/tools/perf/util/amd-sample-raw.c
+@@ -106,7 +106,7 @@ static void pr_ibs_op_data2(union ibs_op_data2 reg)
+ static void pr_ibs_op_data3(union ibs_op_data3 reg)
+ {
+ 	char l2_miss_str[sizeof(" L2Miss _")] = "";
+-	char op_mem_width_str[sizeof(" OpMemWidth __ bytes")] = "";
++	char op_mem_width_str[sizeof(" OpMemWidth _____ bytes")] = "";
+ 	char op_dc_miss_open_mem_reqs_str[sizeof(" OpDcMissOpenMemReqs __")] = "";
+ 
+ 	/*
+@@ -121,7 +121,7 @@ static void pr_ibs_op_data3(union ibs_op_data3 reg)
+ 	}
+ 
+ 	if (reg.op_mem_width)
+-		snprintf(op_mem_width_str, sizeof(" OpMemWidth __ bytes"),
++		snprintf(op_mem_width_str, sizeof(op_mem_width_str),
+ 			 " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
+ 
+ 	printf("ibs_op_data3:\t%016llx LdOp %d StOp %d DcL1TlbMiss %d DcL2TlbMiss %d "
