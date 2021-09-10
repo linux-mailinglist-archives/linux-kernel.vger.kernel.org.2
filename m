@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC2A406E44
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC473406E46
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhIJPhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhIJPhT (ORCPT
+        id S234518AbhIJPh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:37:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49546 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhIJPhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:37:19 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE52C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:36:08 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id q3so2851021iot.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gyzTKbWVdKw+duqrxX3upWkRtBAW8/OkSW9a+m+CMLc=;
-        b=gcdu5td+Rm0+7hdaU82rZ/4mqpy4DsK/VK8JXp6rJ4R8/arEGTp8iE3/wJS75uGwFx
-         1/Iz3YN1Yd4+mr6xjfsOfXrL6IKKeTJe5q0p1cnXB9vMeQh7MBA/16j2DFQUCilF+Uby
-         lhapYk6cbBMvoRvl12V0oZSf5V1zKQ6YyVnOtl+T6CICiLCfKESi71f8IkTlkXCdKdX1
-         MvIN48iC0tgFzOLJD8itI3UyteVO3VxDPZQt9Ptzm/Gs9SJvz4rqr836b55MDkHHh9OP
-         z7CAn8pSrtMgE7jscAbo5QA+dFYxwnB9aVARuG9xYjVIM62ZbjkGKP9sKzR0XLF2AAWa
-         H0Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gyzTKbWVdKw+duqrxX3upWkRtBAW8/OkSW9a+m+CMLc=;
-        b=J2XsxoV8kxsM0N9hxBzhjlqzhSItEmGhNsrcF5CI4fzHxhyzMAanQhdPNLGr3n0Y6j
-         yKHEPO/n+MxL3bPY8y//E7zA7sprCyehF7+hQhBS8oMK9+xszOY1MlY49NPxWnGhHi75
-         GmLxsKKvUbVSxBDfq/ZTI27m4Dj8xUy2Q8IlwfLXMBdwngi8s0gk7vemNrQkf2OG32fr
-         hGZKzdojrnY3ViibgMr+/5yjXdp3f8UYGwuUjNuIUOFkcFDva9dyV1jXhqwYfg+gXFsz
-         xiiCshV5se58ttt/rBBQqK41xsPa3st9Ggoz1MU31jKRfkwlBniwEAMn/PzLf30gt5/K
-         JnVA==
-X-Gm-Message-State: AOAM533Hp0lk8NCUwEs3N4jaCQQIiV5fISOfYGUvaI9BwWUeit8HEbDH
-        uKaNB26y2v3aDA7pl5/Ky8l2cZnyUQTmQXcg6Ow=
-X-Google-Smtp-Source: ABdhPJz6rNfdCnQQEzMAqjS2AiGV/MUfaB3YhG2ed0Uleegau3IugJcQUoW/aWSd2BxTfzab/jrhlQ==
-X-Received: by 2002:a5e:da01:: with SMTP id x1mr7823595ioj.43.1631288167484;
-        Fri, 10 Sep 2021 08:36:07 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id t14sm2613590ilu.67.2021.09.10.08.36.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 08:36:06 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
- <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
- <YTt6l9gDX+kXwtBW@zeniv-ca.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <565e8aa7-27e7-4c3c-1a84-4181194c74d8@kernel.dk>
-Date:   Fri, 10 Sep 2021 09:36:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Sep 2021 11:37:23 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5204021CC0;
+        Fri, 10 Sep 2021 15:36:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631288171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBZRN9N1d5pyu4AdCx2wOykUXfyS79SPRhnX7ttZWoI=;
+        b=iyD4aQR13XtpyGuJ53I7aLFdhysvYSWSxVBZgnn7ZhwG3yVUitIv/qbfIUccgDvq7+i/13
+        M8/VtCPWPMg6CAslB/UzZsWpp8LGEPSL8AmuhZWP0ytWUTXcyj5NMnybRWgCLZyiyIX+y8
+        dHBUCVW0U6qmGCL5JxUEjKUpH+qJPvM=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 398B4133D0;
+        Fri, 10 Sep 2021 15:36:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id C413DWt7O2F3FgAAGKfGzw
+        (envelope-from <mkoutny@suse.com>); Fri, 10 Sep 2021 15:36:11 +0000
+Date:   Fri, 10 Sep 2021 17:36:09 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     "brookxu.cn" <brookxu.cn@gmail.com>
+Cc:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
+Message-ID: <20210910153609.GC24156@blackbody.suse.cz>
+References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
+ <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
+ <20210909143720.GA14709@blackbody.suse.cz>
+ <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+ <YTpY0G3+IJYmGbdd@blackbook>
+ <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
+ <20210910092310.GA18084@blackbody.suse.cz>
+ <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YTt6l9gDX+kXwtBW@zeniv-ca.linux.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 9:32 AM, Al Viro wrote:
-> On Fri, Sep 10, 2021 at 09:08:02AM -0600, Jens Axboe wrote:
-> 
->>> You actually can cut it down even more - nr_segs + iov remains constant
->>> all along, so you could get away with just 3 words here...  I would be
->>
->> Mmm, the iov pointer remains constant? Maybe I'm missing your point, but
->> the various advance functions are quite happy to increment iter->iov or
->> iter->bvec, so we need to restore them. From a quick look, looks like
->> iter->nr_segs is modified for advancing too.
->>
->> What am I missing?
-> 
-> i->iov + i->nr_segs does not change - the places incrementing the former
-> will decrement the latter by the same amount.  So it's enough to store
-> either of those - the other one can be recovered by subtracting the
-> saved value from the current i->iov + i->nr_segs.
+On Fri, Sep 10, 2021 at 10:29:21PM +0800, "brookxu.cn" <brookxu.cn@gmail.com> wrote:
+> Through events and events.local, we can determine which node has
+> insufficient resources. For example, when the ‘events’ is large, we traverse
+> down and use events.local to determine which node has insufficient
+> resources.
 
-Ahh, clever. Yes that should work just fine. Let me test that and send
-out a proposal. Thanks Al.
+IIUC, this works in situations when the limits are set in decreasing
+fashion (from root down) till very (controller) leaves. That's a valid
+config and you're right that following 'max' events gets you to the
+misbehaving/underprovisioned cgroup.
 
--- 
-Jens Axboe
+> 'fail' counter does not seem to provide more effective
+> information in this regard. When 'fail' is big, it seems that we still need
+> to use events and events.local to determine the node of insufficient
+> resources.
+> I am not very sure what details can we learn through 'fail' counter.
 
+If there's a limit on certain level with otherwise unconstrained cgroup
+structure below (a valid config too), the 'fail' counter would help
+determining what the affected cgroup is. Does that make sense to you?
+
+The log messages as implemented currently, aren't as useful as proposed
+'fail' counter (they would need report 'cg' path, not 'i').
+
+I see justification for 'fail' events as a replacement for the dropped
+log messages. Although it's not a complete replacement due to longer
+persistence of the log, illustrated e.g. with the short-lived containers
+whose cgroups/fail counts are gone).
+
+
+Michal
