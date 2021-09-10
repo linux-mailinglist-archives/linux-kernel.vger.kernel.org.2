@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E2A4070CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4794070C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhIJSHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:07:54 -0400
-Received: from mout.gmx.net ([212.227.17.21]:56217 "EHLO mout.gmx.net"
+        id S230146AbhIJSHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:07:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhIJSHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:07:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631297194;
-        bh=jW448sTpnZDFN8QUPHirb3j8PtdVPnlNAfzumAnRlCg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Sau4UFrV1U7CBrV2HCXYodO7ioryBw4nIq8GJ1aaA8kqGW8lpg3L+MjQlvtGVDHXn
-         wUkJNohBXkfHLtF0JztEhkYssG06zefT0J2BYPiPcslOfLp9sgJZklUrIxeF7CrRH+
-         XGxY1JOiQl7rixTkCThbeODPA2uS4X0uaW05SUYw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([46.223.119.124]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MI5QF-1mBqLm3a35-00FDr0; Fri, 10
- Sep 2021 20:06:33 +0200
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        id S229451AbhIJSHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 14:07:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7D76113A;
+        Fri, 10 Sep 2021 18:06:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631297199;
+        bh=y7gzzPXHMkryt9e4+4AKiJdOsSmuXw9tQqMcv44sZO4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aZj3p9/AxT/C6MApqRK4nHQPKulw+LKH3LIemaam4nAojJ/zOqveJ//NsqBebMhHN
+         B0vcjKK9OjuJkxOXGolJHy4oNDJjy9AvUMMxYTcZhhY5+3WPkQrosvJrcptfXY6ROF
+         VFaSHruncpG+fCj2A0R9TFE/uEvx7o4d4b4ASo9ph/p7PzghQ6svl3Om8wDUgYx++o
+         mUVD/47AuKw5cQhIKWU2UDLj6CisPbkVGKU5h/+wGixpHiyIiHQRkq9hY+EnPdreQz
+         jmUYZPjsbHvDydbHG1wqJz+2xfIRY+X/om4Olq+XFymwHE227GrsCVaZ+1wSI+sH5n
+         5po5YKvlxfd0g==
+Date:   Fri, 10 Sep 2021 19:06:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, stable@vger.kernel.org
-Subject: [PATCH] tpm: fix potential NULL pointer access in tpm_del_char_device()
-Date:   Fri, 10 Sep 2021 20:04:51 +0200
-Message-Id: <20210910180451.19314-1-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.33.0
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
+Message-ID: <20210910180601.GH4474@sirena.org.uk>
+References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
+ <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+ <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
+ <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
+ <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:0DM/eQqN4B/1MK1yjszEd9wMzscabNNp2hctTNBF7BDsN95RFlQ
- QWE+gJIP3x2739QCpvtIJzyyKQZIzXFtI+jVuMjK0ACVMwqJeyhljcXOjcafP4jygrwv5FG
- nFJdANsr9U5EmnW1j7ECFEpNwqp2bIDwvVO4VQMLeGWOcDscODIK9lUSI0ILISyt+yGZNGs
- AMYUpbrDi7PQlra3XfsEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ddwqrUnKMt8=:c+XWJ89mC6OfwVzn2Fp3SF
- 3+8f26ajiFtiXxhy2grMmNV7HAVKIztaqu3nDu/fzeOruDBRnDbXB5GkHHjbB3hRZ4X55fEQS
- /pfw1aihg5hbhoCStwl1T5VjRVatXP2Qy9fULL2ZseY+w8gL0IYaLUhxRxZ4iVZGA2tdEv6Z/
- batx1CS4Vvruaz/UnQb0w14eeJCAbdOH8or9yLAwPrdtTvvqMM8Ly9/0U/UH+8EQL7Wst/1m4
- a89UlXwDXdPyBFYUI185mf54o2IOCn85gDP3r8N2eAyD8ZbJ3zpA2L0ZFrbZI3QF8EQ5LCkta
- OAMzN0OJ7mlqYrzmahKYEOwYXQ+FyHoIv+5VvKm5jAdDjftAf6B0VNpo1B7uxgDbM1JqU8XBe
- MqVTj7vrDHZdD0UHInRDiRJ7lFJYOKRZjnfM5VwgTLQcMhfzhwVJQGpaoJu97egPJiwQzEUOo
- WoQ6SE6P2woWqYbeB3JRpF9VW612yGhpOBlYPS3bFjXKlnsjn7prv5ktAuYRfPJAOfeQ3SYdB
- qfPDwEYn0oTlZEu3TE2LZJqEHzTyeQBXz+C5QTrI0htPbfp9np5kM4jlLLEVHXaCDOh8fI8IQ
- W/EWIR1iQJzTmyi7RNztB3sK6Cxy7i7FKctbsOm+BKzyZL77h5GdAYdA2iZaItfXwQetZIx19
- JU46aPgPUTL8lR6d3hC0Ud3NptyvKK5pd5nI4/xjsLvIjDCc+QdzeqlNVL6tZjLimCJXsaIoQ
- 4zpGnQQbVyz1Q7gEFV/Axm22E3NhhVOKZRFX6Ce/8RMqbToaVKi0SDGb5ldETbkOHIxunjoF8
- PC9XNtBLhyXSbgX+kux5HCLD2xLKh4yHgKNH3kEEgqPR0YZs08PKGstkoKItVGT005jSZfwyB
- DA9bSYDwb8hH7BQ0vezqG2HAEJ2TJXKRb1c0Slzante9+KYJlnV2uBCPHvhVVtSxsquTlDmvr
- HmQTJQbt20P43DHDuUaWf1fgjMZaPQCnJ+dWH7shitjDHwmC9bk5EL3G91r8ghwTZcKv8akLC
- wyHBAf8A1vdiR5qH2+JzBe3a5PW6OBMz7lL95gX/Dl1FRwroKaYy6XFytyPTH3rGHd6cKQfF/
- SwnfjOIRrY6N6g=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
+Content-Disposition: inline
+In-Reply-To: <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
+X-Cookie: You are standing on my toes.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gdHBtX2RlbF9jaGFyX2RldmljZSgpIG1ha2Ugc3VyZSB0aGF0IGNoaXAtPm9wcyBpcyBzdGls
-bCB2YWxpZC4KVGhpcyBjaGVjayBpcyBuZWVkZWQgc2luY2UgaW4gY2FzZSBvZiBhIHN5c3RlbSBz
-aHV0ZG93bgp0cG1fY2xhc3Nfc2h1dGRvd24oKSBoYXMgYWxyZWFkeSBiZWVuIGNhbGxlZCBhbmQg
-c2V0IGNoaXAtPm9wcyB0byBOVUxMLgpUaGlzIGxlYWRzIHRvIGEgTlVMTCBwb2ludGVyIGFjY2Vz
-cyBhcyBzb29uIGFzIHRwbV9kZWxfY2hhcl9kZXZpY2UoKQp0cmllcyB0byBhY2Nlc3MgY2hpcC0+
-b3BzIGluIGNhc2Ugb2YgVFBNIDIuCgpGaXhlczogZGNiZWFiMTk0NjQ1NCAoInRwbTogZml4IGNy
-YXNoIGluIHRwbV90aXMgZGVpbml0aWFsaXphdGlvbiIpCkNjOiBzdGFibGVAdmdlci5rZXJuZWwu
-b3JnClNpZ25lZC1vZmYtYnk6IExpbm8gU2FuZmlsaXBwbyA8TGlub1NhbmZpbGlwcG9AZ214LmRl
-PgotLS0KIGRyaXZlcnMvY2hhci90cG0vdHBtLWNoaXAuYyB8IDE2ICsrKysrKysrKysrLS0tLS0K
-IDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvY2hhci90cG0vdHBtLWNoaXAuYyBiL2RyaXZlcnMvY2hhci90cG0vdHBt
-LWNoaXAuYwppbmRleCBkZGFlY2ViN2UxMDkuLmVkMWZiNWQ4MmNhZiAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9jaGFyL3RwbS90cG0tY2hpcC5jCisrKyBiL2RyaXZlcnMvY2hhci90cG0vdHBtLWNoaXAu
-YwpAQCAtNDc0LDEzICs0NzQsMTkgQEAgc3RhdGljIHZvaWQgdHBtX2RlbF9jaGFyX2RldmljZShz
-dHJ1Y3QgdHBtX2NoaXAgKmNoaXApCiAKIAkvKiBNYWtlIHRoZSBkcml2ZXIgdW5jYWxsYWJsZS4g
-Ki8KIAlkb3duX3dyaXRlKCZjaGlwLT5vcHNfc2VtKTsKLQlpZiAoY2hpcC0+ZmxhZ3MgJiBUUE1f
-Q0hJUF9GTEFHX1RQTTIpIHsKLQkJaWYgKCF0cG1fY2hpcF9zdGFydChjaGlwKSkgewotCQkJdHBt
-Ml9zaHV0ZG93bihjaGlwLCBUUE0yX1NVX0NMRUFSKTsKLQkJCXRwbV9jaGlwX3N0b3AoY2hpcCk7
-CisJLyogQ2hlY2sgaWYgY2hpcC0+b3BzIGlzIHN0aWxsIHZhbGlkIHNpbmNlIGluIGNhc2Ugb2Yg
-YSBzaHV0ZG93bgorCSAqIHRwbV9jbGFzc19zaHV0ZG93bigpIGhhcyBhbHJlYWR5IHNlbnQgdGhl
-IFRQTTJfU2h1dGRvd24gY29tbWFuZAorCSAqIGFuZCBzZXQgY2hpcC0+b3BzIHRvIE5VTEwuCisJ
-ICovCisJaWYgKGNoaXAtPm9wcykgeworCQlpZiAoY2hpcC0+ZmxhZ3MgJiBUUE1fQ0hJUF9GTEFH
-X1RQTTIpIHsKKwkJCWlmICghdHBtX2NoaXBfc3RhcnQoY2hpcCkpIHsKKwkJCQl0cG0yX3NodXRk
-b3duKGNoaXAsIFRQTTJfU1VfQ0xFQVIpOworCQkJCXRwbV9jaGlwX3N0b3AoY2hpcCk7CisJCQl9
-CiAJCX0KKwkJY2hpcC0+b3BzID0gTlVMTDsKIAl9Ci0JY2hpcC0+b3BzID0gTlVMTDsKIAl1cF93
-cml0ZSgmY2hpcC0+b3BzX3NlbSk7CiB9CiAKCmJhc2UtY29tbWl0OiBhM2ZhN2ExMDFkY2ZmOTM3
-OTFkMWIxYmRiM2FmZmNhZDE0MTBjOGMxCi0tIAoyLjMzLjAKCg==
+
+--U3BNvdZEnlJXqmh+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 09, 2021 at 11:32:18AM +0200, Maarten Lankhorst wrote:
+
+> This is also useful in regulator_lock_nested, which may avoid dropping
+> regulator_nesting_mutex in the uncontended path, so use it there.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--U3BNvdZEnlJXqmh+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE7nogACgkQJNaLcl1U
+h9C1wAf8DRBLZNw/1NtB8vjzFkFGUyhl1QcogXZ/PZiQr8ZaYyuCxWV6f4cXYJOV
+uoUy/RXBkW5rX4+TDqj2dDcugYffBDQ4XjLKAsNaUznOlo6kvlGtKwIoNibDGuoh
+MYx9mFMNlSEhK2q2QVXhgVeKCc19e03XsN6EzN6fqzGCRKlGxdBRGWLZ1HkPfKia
+eo2oFiowQmJdrm1INKM39md3CDY4z6e09p0fmIUs6nCl5VvgWls/FyNCMuILlw8C
+BhimfCE429mqI4KDYr0ndzYNWXv+y4f2PI4EB+0aFhBxKYYj4xlBTwrXmiS/nxwR
+/o/o58UBtmax/fFX4l5pT+u8Cj4WAA==
+=X/vV
+-----END PGP SIGNATURE-----
+
+--U3BNvdZEnlJXqmh+--
