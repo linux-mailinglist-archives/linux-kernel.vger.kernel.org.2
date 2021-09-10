@@ -2,125 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5075040726D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4FC40726E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhIJUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:22:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhIJUW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:22:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A636101A;
-        Fri, 10 Sep 2021 20:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631305275;
-        bh=HU4SPFJd6YbqdG5bV+eoahm8kyolTJUMByR509YWOZo=;
-        h=Subject:From:To:Cc:Date:From;
-        b=lUh/q4iGt6FChVdeOrV/wZeKctvcza4jxM7i8VCa45RGDsVtFjcvqNeJ6OLM65ut0
-         0yT8FnNhgXR9LAwoiaU7UkH/WcbC6Sizhevkjb8ViPH0DOEJSL4+t9E8KsikUnUC0b
-         Um0Et8kgO4WGb+vXtcp1ZGpJtU8srPZl2CprKStOxHsUlTBkQCvqZxTAxbJlsM0mHm
-         64pdSsJKSszHUzcL9EmY+2GMaGyqVh/pq6p/StNb+ukbePXjQvurcTGJg42ei97sZu
-         soXGedBmyTMCj/hB2m92lCF3a7uq+IyaoCV7ynACnVhYpiAyQErRlxNMXGuxjzr9VS
-         S5jDQrDGM5NaQ==
-Message-ID: <7e9645dfc7f53fed859c543d77e63a36db204b78.camel@kernel.org>
-Subject: [ANNOUNCE] 5.4.143-rt64
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Cc:     Gregor Beck <gregor.beck@gmail.com>
-Date:   Fri, 10 Sep 2021 15:21:13 -0500
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S233858AbhIJUXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhIJUXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 16:23:21 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB34C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:22:09 -0700 (PDT)
+Received: from ipservice-092-217-077-211.092.217.pools.vodafone-ip.de ([92.217.77.211] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mOn2B-0005Wm-Qf; Fri, 10 Sep 2021 22:22:03 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 0/4] remove unused usb endpoint functions
+Date:   Fri, 10 Sep 2021 22:21:47 +0200
+Message-Id: <20210910202151.4007-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+Remove driver-specific functions to detect the type and direction of a
+usb endpoint. Their callers have already been updated to use the helper
+functions from the usb core.
 
-I'm pleased to announce the 5.4.143-rt64 stable release.
+Martin Kaiser (4):
+  staging: r8188eu: remove unused function usb_endpoint_is_int
+  staging: r8188eu: remove unused function RT_usb_endpoint_is_bulk_in
+  staging: r8188eu: remove unused function RT_usb_endpoint_num
+  staging: r8188eu: remove the remaining usb endpoint functions
 
-You can get this release via the git tree at:
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 40 -----------------------
+ 1 file changed, 40 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.4-rt
-  Head SHA1: f30e118c1cde0ba5319bd707b88bd9106284f6be
-
-Or to build 5.4.143-rt64 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.143.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.143-rt64.patch.xz
-
-
-You can also build from 5.4.143-rt63 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/incr/patch-5.4.143-rt63-rt64.patch.xz
-
-Enjoy!
-
-   Tom
-
-Changes from v5.4.143-rt63:
----
-
-Andrew Halaney (1):
-      locking/rwsem-rt: Remove might_sleep() in __up_read()
-
-Gregor Beck (1):
-      fscache: fix initialisation of cookie hash table raw spinlocks
-
-Tom Zanussi (1):
-      Linux 5.4.143-rt64
----
-fs/fscache/cookie.c       | 2 +-
- kernel/locking/rwsem-rt.c | 1 -
- localversion-rt           | 2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
----
-diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
-index 5508d92e3f8f..cba2a226897f 100644
---- a/fs/fscache/cookie.c
-+++ b/fs/fscache/cookie.c
-@@ -963,6 +963,6 @@ void __init fscache_cookie_init(void)
- {
- 	int i;
- 
--	for (i = 0; i < (1 << fscache_cookie_hash_shift) - 1; i++)
-+	for (i = 0; i < ARRAY_SIZE(fscache_cookie_hash); i++)
- 		INIT_HLIST_BL_HEAD(&fscache_cookie_hash[i]);
- }
-diff --git a/kernel/locking/rwsem-rt.c b/kernel/locking/rwsem-rt.c
-index 19ea20be3fd7..966946454ced 100644
---- a/kernel/locking/rwsem-rt.c
-+++ b/kernel/locking/rwsem-rt.c
-@@ -200,7 +200,6 @@ void __up_read(struct rw_semaphore *sem)
- 	if (!atomic_dec_and_test(&sem->readers))
- 		return;
- 
--	might_sleep();
- 	raw_spin_lock_irq(&m->wait_lock);
- 	/*
- 	 * Wake the writer, i.e. the rtmutex owner. It might release the
-diff --git a/localversion-rt b/localversion-rt
-index b0e8dd7bd707..10474042df49 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt63
-+-rt64
+-- 
+2.20.1
 
