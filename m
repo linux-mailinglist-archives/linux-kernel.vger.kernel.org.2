@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBED4067C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C164067DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhIJHhq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Sep 2021 03:37:46 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44475 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhIJHhi (ORCPT
+        id S231408AbhIJHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 03:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231384AbhIJHlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 03:37:38 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 989BDCED3D;
-        Fri, 10 Sep 2021 09:36:25 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH 1/2] Bluetooth: call sock_hold earlier in sco_conn_del
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210903031306.78292-2-desmondcheongzx@gmail.com>
-Date:   Fri, 10 Sep 2021 09:36:25 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        eric.dumazet@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <7AEB2618-111A-45F4-8C00-CF40FCBE92EC@holtmann.org>
-References: <20210903031306.78292-1-desmondcheongzx@gmail.com>
- <20210903031306.78292-2-desmondcheongzx@gmail.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Fri, 10 Sep 2021 03:41:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C708DC061574;
+        Fri, 10 Sep 2021 00:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OKoWGsqHXDMYyu+uV7rTXmu0osZyZbPhrGNN3ToBOTk=; b=rpO3mglPTdCGsKxRrM0B0CQ2D0
+        I6u7uKG05K/d12zEbb5ksbimIcVlcbmz0VBvyMNJ2v16NGPibVDB3nRtiE9yrmhDDVqbBD59eKvsb
+        K+dtqQR56MVyblMZCXrwo/3zQ2OyvbuGeh5s87lDq39FvtsLu+SKUmJbqS370RZPFSY3VkR92nxpv
+        LLHBeMdtrLIfe8wLcUOjLUqNgt5ssIui/qmKqGon+hgI8EwJYTP8djPb9osTbGy2731CWns6UQUmQ
+        hIDwUOXkSIVKyRSlRcr8M6ZcYZsGt1qQpU489r08j0v2QHnVLCcSM1/r6cpnLYn4phAaAgzfngnc4
+        rl3xVTUg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOb5g-00An2r-Uc; Fri, 10 Sep 2021 07:37:21 +0000
+Date:   Fri, 10 Sep 2021 08:36:52 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 16/19] iomap: Add done_before argument to iomap_dio_rw
+Message-ID: <YTsLFKtUWPNcFo9c@infradead.org>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-17-agruenba@redhat.com>
+ <YTnwZU8Q0eqBccmM@infradead.org>
+ <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgF7TPaumMU6HjBjawjFWjvEg=116=gtnzsxAcfdP4wAw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Desmond,
-
-> In sco_conn_del, conn->sk is read while holding on to the
-> sco_conn.lock to avoid races with a socket that could be released
-> concurrently.
+On Thu, Sep 09, 2021 at 10:22:56AM -0700, Linus Torvalds wrote:
+> I think you misunderstand.
 > 
-> However, in between unlocking sco_conn.lock and calling sock_hold,
-> it's possible for the socket to be freed, which would cause a
-> use-after-free write when sock_hold is finally called.
+> Or maybe I do.
 > 
-> To fix this, the reference count of the socket should be increased
-> while the sco_conn.lock is still held.
+> It very much doesn't force sync in this case. It did the *first* part
+> of it synchronously, but then it wants to continue with that async
+> part for the rest, and very much do that async completion.
 > 
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
-> net/bluetooth/sco.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-> index b62c91c627e2..4a057f99b60a 100644
-> --- a/net/bluetooth/sco.c
-> +++ b/net/bluetooth/sco.c
-> @@ -187,10 +187,11 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
-> 	/* Kill socket */
-> 	sco_conn_lock(conn);
-> 	sk = conn->sk;
+> And that's why it wants to add that "I already did X much of the
+> work", exactly so that the async completion can report the full end
+> result.
 
-please add a comment here on why we are doing it.
-
-> +	if (sk)
-> +		sock_hold(sk);
-> 	sco_conn_unlock(conn);
-> 
-> 	if (sk) {
-> -		sock_hold(sk);
-> 		lock_sock(sk);
-> 		sco_sock_clear_timer(sk);
-> 		sco_chan_del(sk, err);
-
-Regards
-
-Marcel
-
+Could be, and yes in that case it won't work.
