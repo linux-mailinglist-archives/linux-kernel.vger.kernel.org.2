@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C5A406C13
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D406C0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhIJMgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        id S234289AbhIJMga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233342AbhIJMf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:35:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DCB611F2;
-        Fri, 10 Sep 2021 12:34:15 +0000 (UTC)
+        id S234280AbhIJMfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A9C61207;
+        Fri, 10 Sep 2021 12:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277256;
-        bh=UtKDepxJnKD6aep966SvPGD5FdpgoSt7hPXJeZYRJj4=;
+        s=korg; t=1631277248;
+        bh=bu47G0dhHchfHPxY/aEfeAtfJ3toOPvO2T/CaQ1t1BE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O4rZNdahQNWioR0LT5Wk+o6xRndJD6VX4FMSMfWzde4ZW2qgFlETuYVAG7sm7cxd9
-         zCN+Zovaymmov0UJ3uM+y5K8PJAC68TZvGXurZQ8Pc8TKh17txmuaZFH5a9hJN8FNa
-         NQTwgU5HQLAkg1U/tBbjC9/LKkGvHgwFjS446yBA=
+        b=uvH/12JIzdOvsx5vnP8aguOSBSZHDN//t/czAEbRR4Pbv6/Z7zuQ/3GDHZ0zZ2GuZ
+         hTnAIRyQaVhRC2Ejt7VkYUzPEcigu3L0t2a3b9GUDzD3T0xkdIleePwhG7ehWbS8G4
+         bYB072+VsrE9ROtFshnQ4j7R7lOu5MDxrwLLC+90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Shai Malin <smalin@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/37] qed: Fix the VF msix vectors flow
+        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 09/26] Revert "r8169: avoid link-up interrupt issue on RTL8106e if user enables ASPM"
 Date:   Fri, 10 Sep 2021 14:30:13 +0200
-Message-Id: <20210910122917.519718178@linuxfoundation.org>
+Message-Id: <20210910122916.559335856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
-References: <20210910122917.149278545@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shai Malin <smalin@marvell.com>
+From: Hayes Wang <hayeswang@realtek.com>
 
-[ Upstream commit b0cd08537db8d2fbb227cdb2e5835209db295a24 ]
+commit 2115d3d482656ea702f7cf308c0ded3500282903 upstream.
 
-For VFs we should return with an error in case we didn't get the exact
-number of msix vectors as we requested.
-Not doing that will lead to a crash when starting queues for this VF.
+This reverts commit 1ee8856de82faec9bc8bd0f2308a7f27e30ba207.
 
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
+This is used to re-enable ASPM on RTL8106e, if it is possible.
+
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169_main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
-index bc1f5b36b5bf..1db49424aa43 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_main.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
-@@ -559,7 +559,12 @@ static int qed_enable_msix(struct qed_dev *cdev,
- 			rc = cnt;
- 	}
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -3547,6 +3547,7 @@ static void rtl_hw_start_8106(struct rtl
+ 	rtl_eri_write(tp, 0x1b0, ERIAR_MASK_0011, 0x0000);
  
--	if (rc > 0) {
-+	/* For VFs, we should return with an error in case we didn't get the
-+	 * exact number of msix vectors as we requested.
-+	 * Not doing that will lead to a crash when starting queues for
-+	 * this VF.
-+	 */
-+	if ((IS_PF(cdev) && rc > 0) || (IS_VF(cdev) && rc == cnt)) {
- 		/* MSI-x configuration was achieved */
- 		int_params->out.int_mode = QED_INT_MODE_MSIX;
- 		int_params->out.num_vectors = rc;
--- 
-2.30.2
-
+ 	rtl_pcie_state_l2l3_disable(tp);
++	rtl_hw_aspm_clkreq_enable(tp, true);
+ }
+ 
+ DECLARE_RTL_COND(rtl_mac_ocp_e00e_cond)
 
 
