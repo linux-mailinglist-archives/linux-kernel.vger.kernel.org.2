@@ -2,138 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451CE4067AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194474067AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhIJHbS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Sep 2021 03:31:18 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:58657 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhIJHbQ (ORCPT
+        id S231449AbhIJHbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 03:31:35 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38408 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231364AbhIJHbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 03:31:16 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id EAB79CED3D;
-        Fri, 10 Sep 2021 09:30:03 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v8] Bluetooth: btusb: Add support using different nvm for
- variant WCN6855 controller
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
-Date:   Fri, 10 Sep 2021 09:30:03 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rocky Liao <rjliao@codeaurora.org>, tjiang@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1A6C7105-5BA3-44C4-9F94-BB71FBDBE8F5@holtmann.org>
-References: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
-To:     Zijun Hu <zijuhu@codeaurora.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Fri, 10 Sep 2021 03:31:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UnshV9X_1631259019;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UnshV9X_1631259019)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 15:30:20 +0800
+Subject: Re: [PATCH 24/24] x86/syscall/64: Move the checking for sysret to C
+ code
+To:     Nikolay Borisov <n.borisov.lkml@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-25-jiangshanlai@gmail.com>
+ <0801d530-9a86-fbc8-9c27-6beae1f114f3@gmail.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <74bde1d9-8e77-5e26-9c8c-0c527b5ccc6d@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 15:30:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <0801d530-9a86-fbc8-9c27-6beae1f114f3@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zijun,
 
-> the RF perfermance of wcn6855 soc chip from different foundries will be
-> difference, so we should use different nvm to configure them.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
-> drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
-> 1 file changed, 37 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 928cbfa4c42d..0f5d2222d624 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
-> #define QCA_DFU_TIMEOUT		3000
-> #define QCA_FLAG_MULTI_NVM      0x80
-> 
-> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> +
-> struct qca_version {
-> 	__le32	rom_version;
-> 	__le32	patch_version;
-> @@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
-> 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
-> 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
-> 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
-> };
-> 
-> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-> @@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
-> 	return err;
-> }
-> 
-> +static void btusb_generate_qca_nvm_name(char *fwname,
-> +					size_t max_size,
-> +					struct qca_version *ver,
-> +					char *variant)
-> +{
-> +	char *sep = (strlen(variant) == 0) ? "" : "_";
-> +	u16 board_id = le16_to_cpu(ver->board_id);
-> +	u32 rom_version = le32_to_cpu(ver->rom_version);
-> +
-> +	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +		/* if boardid equal 0, use default nvm without suffix */
-> +		if (board_id == 0x0) {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
-> +				rom_version, sep, variant);
-> +		} else {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
-> +				rom_version, sep, variant, board_id);
-> +		}
-> +	} else {
-> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-> +			rom_version);
-> +	}
-> +
-> +}
-> +
-> static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
-> 				    struct qca_version *ver,
-> 				    const struct qca_device_info *info)
-> @@ -3354,19 +3383,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
-> 	char fwname[64];
-> 	int err;
-> 
-> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		/* if boardid equal 0, use default nvm without surfix */
-> -		if (le16_to_cpu(ver->board_id) == 0x0) {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -				 le32_to_cpu(ver->rom_version));
-> -		} else {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-> -				le32_to_cpu(ver->rom_version),
-> -				le16_to_cpu(ver->board_id));
-> -		}
-> -	} else {
-> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -			 le32_to_cpu(ver->rom_version));
-> +	switch (ver->ram_version) {
-> +	case WCN6855_2_0_RAM_VERSION_GF:
-> +	case WCN6855_2_1_RAM_VERSION_GF:
-> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
-> +		break;
-> +	default:
-> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
-> +		break;
 
-I mentioned this multiple times now, the indentation is wrong here.
+On 2021/9/10 15:20, Nikolay Borisov wrote:
+> 
+> 
+> On 31.08.21 г. 20:50, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>
+>> Like do_fast_syscall_32() which checks whether it can return to userspace
+>> via fast instructions before the function returns, do_syscall_64()
+>> also checks whether it can use sysret to return to userspace before
+>> do_syscall_64() returns via C code.  And a bunch of ASM code can be removed.
+>>
+>> No functional change intended.
+>>
+>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> <snip>
+> 
+>> +/*
+>> + * Check if it can use SYSRET.
+>> + *
+>> + * Try to use SYSRET instead of IRET if we're returning to
+>> + * a completely clean 64-bit userspace context.
+>> + *
+>> + * Returns 0 to return using IRET or 1 to return using SYSRET.
+>> + */
+>> +static __always_inline int can_sysret(struct pt_regs *regs)
+> 
+> nit: Since this is a predicate function why not simply return bool ?
 
-Regards
+I don't have any preference.
 
-Marcel
+The choice came from my limitation of the needed knowledge.
 
+I followed the design of do_fast_syscall_32() which returns a 4-byte word
+to indicate if it can fast return to userspace,  and I know how to test the
+result in ASM for a 4-byte word.  If it was a bool, I don't know how to
+test the result in ASM.
+
+> 
+>> +{
+>> +	/* In the Xen PV case we must use iret anyway. */
+>> +	if (static_cpu_has(X86_FEATURE_XENPV))
+>> +		return 0;
+>> +
+>> +	/* SYSRET requires RCX == RIP && R11 == RFLAGS */
+>> +	if (regs->ip != regs->cx || regs->flags != regs->r11)
+>> +		return 0;
+>> +
+>> +	/* CS and SS must match SYSRET */
+>> +	if (regs->cs != __USER_CS || regs->ss != __USER_DS)
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * On Intel CPUs, SYSRET with non-canonical RCX/RIP will #GP
+>> +	 * in kernel space.  This essentially lets the user take over
+>> +	 * the kernel, since userspace controls RSP.
+>> +	 */
+>> +	if (regs->cx != canonical_address(regs->cx))
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * SYSCALL clears RF when it saves RFLAGS in R11 and SYSRET cannot
+>> +	 * restore RF properly. If the slowpath sets it for whatever reason, we
+>> +	 * need to restore it correctly.
+>> +	 *
+>> +	 * SYSRET can restore TF, but unlike IRET, restoring TF results in a
+>> +	 * trap from userspace immediately after SYSRET.  This would cause an
+>> +	 * infinite loop whenever #DB happens with register state that satisfies
+>> +	 * the opportunistic SYSRET conditions.  For example, single-stepping
+>> +	 * this user code:
+>> +	 *
+>> +	 *           movq	$stuck_here, %rcx
+>> +	 *           pushfq
+>> +	 *           popq %r11
+>> +	 *   stuck_here:
+>> +	 *
+>> +	 * would never get past 'stuck_here'.
+>> +	 */
+>> +	if (regs->r11 & (X86_EFLAGS_RF | X86_EFLAGS_TF))
+>> +		return 0;
+>> +
+>> +	return 1;
+>> +}
+>> +
+>> +/* Returns 0 to return using IRET or 1 to return using SYSRET. */
+>> +__visible noinstr int do_syscall_64(struct pt_regs *regs, int nr)
+> 
+> nit: Ditto about bool
+> 
+>>   {
+>>   	add_random_kstack_offset();
+>>   	nr = syscall_enter_from_user_mode(regs, nr);
+>> @@ -84,6 +154,7 @@ __visible noinstr void do_syscall_64(struct pt_regs *regs, int nr)
+>>   
+>>   	instrumentation_end();
+>>   	syscall_exit_to_user_mode(regs);
+>> +	return can_sysret(regs);
+>>   }
+>>   #endif
+>>   
+> 
+> <snip>
+> 
