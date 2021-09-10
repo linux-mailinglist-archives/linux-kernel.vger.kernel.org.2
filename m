@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75DC4064E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ED04064EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240209AbhIJBHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:36 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60432 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240861AbhIJAnL (ORCPT
+        id S240615AbhIJBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233109AbhIJAzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:43:11 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18A0fsbh098329;
-        Thu, 9 Sep 2021 19:41:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631234514;
-        bh=7WpQ0UQcRckhL2KZvB4oX9WAhqkdJztE4q4lICX7bYU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=mX2WPCfx3MZRw55KF2xHWdHz3xgCzW0ei13jc9kwpVfeXiH3QdwkTQqeytDenEfvL
-         8Cukd8LpP99EttSCHqqEUNTMmLaoqL7BmePzpGEzURRKQ0Tu7PrM0OlNYtMn/YdDIi
-         Ad4yYI6dSWOiHVx3r28LQfMRMpnsS3UpD0pCRqDY=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18A0fs5U059866
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 9 Sep 2021 19:41:54 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
- Sep 2021 19:41:53 -0500
-Received: from DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14]) by
- DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14%17]) with mapi id
- 15.01.2308.014; Thu, 9 Sep 2021 19:41:53 -0500
-From:   "Modi, Geet" <geet.modi@ti.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "Nagalla, Hari" <hnagalla@ti.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sharma, Vikram" <vikram.sharma@ti.com>
-Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
- dp83tc811: modify list of interrupts enabled at initialization
-Thread-Topic: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
- dp83tc811: modify list of interrupts enabled at initialization
-Thread-Index: AQHXoC4XSSkBWxKBYUuzA52mb5z+zauRtoAAgAWhA4CAAZ4BAIADCCgAgACK0YD//66ZAA==
-Date:   Fri, 10 Sep 2021 00:41:53 +0000
-Message-ID: <E3DBDC45-111F-4744-82A8-95C7D5CCEBE5@ti.com>
-References: <20210902190944.4963-1-hnagalla@ti.com> <YTFc6pyEtlRO/4r/@lunn.ch>
- <99232B33-1C2F-45AF-A259-0868AC7D3FBC@ti.com> <YTdxBMVeqZVyO4Tf@lunn.ch>
- <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com> <YTpwjWEUmJWo0mwr@lunn.ch>
-In-Reply-To: <YTpwjWEUmJWo0mwr@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.52.21080801
-x-originating-ip: [10.250.200.196]
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <04DAA7E225833244AA978630095B1EB7@owa.mail.ti.com>
-Content-Transfer-Encoding: base64
+        Thu, 9 Sep 2021 20:55:55 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C2EC06114C
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:43:55 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id w4so385953ljh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7uuVd30s2WHbNN7lmdDhnwmn6gKKOjm5ZXOnnVPJOAc=;
+        b=gHtlqt+DwPRv1ejJ4sOoZNXBRm7rh4PT1EOgN6JuPS+IpgiuiwPgrOsidYVLyj3dLp
+         PMG/QeOd1hk+EwhqyFBdc6dT7F/fLM0/2aYgcriLKtO7Mj9jft8z8qN1+rbjMq++qbLp
+         CDaqK3Va1LGh9NGm0a7cgsmKOkz/hd/8/r0RXmYCDbP2/dcQ9uRwdbnk//d8ta8fCxqM
+         +A/PWqa8+YYIpm8uSrdpE4hrzS3pNXXjHK7OknZ8zBNYEWiRpLhho8In6csV3u1++gqU
+         Lvc+4pVAbxzSXQRVWDDBobX9oZPxBo4aPEa1dFn+QIjEbQ2b+g5t3Kg+zYr+eta2QMvl
+         sVCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7uuVd30s2WHbNN7lmdDhnwmn6gKKOjm5ZXOnnVPJOAc=;
+        b=QbJwMH4VK6p+DtRg+3UMraJzhAQV2WK8QMD0UO6cx+aSBIDg3WqztIDDF/iJwnbUOM
+         fcL6h4SOq2biYEmSoVKlVdAt7vG2J9L/WiVeVRCg81LjZA1pMr3e3xJOXTu3lmhSxLUm
+         oyDJO7pWC2CA/paMaISQfXhvLakUfYaZXQTn75kJN4r99O8grUhvQAhC5hNzvUCym4dw
+         SHL9NjpAMJQkKwF7Vf80JxP+NCWqRYMqIZ1ietsHo8+U/ptfldsugCkHZy3AAN/bDUxA
+         hPdKxzcIPEdQ1R8RLBngOBxYFc0s/STqdw3FW9qOnbwYYSyaMjNiv2EoPm3NG5aNqUfE
+         LGfg==
+X-Gm-Message-State: AOAM533W5bpnbSMnWoRJ3eZ2YGF5wTE3t9M1akHFrpMsOYPS0FgS3Anx
+        ZkYTMYglS/Tu7qI6yyj7Qfeu9MrFjkz6+gX9a1nIeg==
+X-Google-Smtp-Source: ABdhPJzeCz6w0q2U+ulvoyoJWdHD+nGGyY4JW/MWaqGjcHA3gGLSDaljkucvPJBwYPGeR5s6gbQ6arp4upt1qhQTYN8=
+X-Received: by 2002:a2e:a363:: with SMTP id i3mr2168651ljn.86.1631234632179;
+ Thu, 09 Sep 2021 17:43:52 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
+ <20210905124439.GA15026@xsang-OptiPlex-9020> <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
+ <20210907033000.GA88160@shbuild999.sh.intel.com>
+In-Reply-To: <20210907033000.GA88160@shbuild999.sh.intel.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 9 Sep 2021 17:43:40 -0700
+Message-ID: <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
+Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        0day robot <lkp@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Michal Koutn??" <mkoutny@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmV3LA0KDQpBcyBtZW50aW9uZWQgd2Ugd2FudCB0byBkbyB0aGlzIGluIHBoYXNlczog
-DQphKSB0aGlzIHBhdGNoIHRvIGRpc2FibGUgdGhlIE92ZXJ2b2x0YWdlIGRyaXZlciBpbnRlcnJ1
-cHQNCmIpIEFmdGVyIGNhcmVmdWxseSBjb25zaWRlcmluZyBvdGhlciBpbnRlcnJ1cHRzLCBwbGFu
-IGEgIGZvbGxvdy1vbiBwYXRjaCB0byB0YWtlIGNhcmUgb2Ygb3RoZXIgaW50ZXJydXB0cy4NCg0K
-UGF0Y2ggY29tbWVudCB3aWxsIGJlIGlubGluZSB3aXRoIHlvdXIgc3VnZ2VzdGlvbg0KDQoiVGhl
-IG92ZXIgdm9sdGFnZSBpbnRlcnJ1cHQgaXMgZW5hYmxlZCwgYnV0IGlmIGl0IGV2ZXIgb2NjdXJz
-LCB0aGVyZSBpcyBubyBjb2RlIHRvIG1ha2UgdXNlIG9mIGl0LiBTbyByZW1vdmluZyBpdC4gSXQN
-CiAgICBjYW4gcmUtZW5hYmxlZCB3aGVuIEhXTU9OIHN1cHBvcnQgaXMgYWRkZWQgIg0KDQpSZWdh
-cmZkcywNCkdlZXQNCg0KDQrvu79PbiA5LzkvMjEsIDE6MzcgUE0sICJBbmRyZXcgTHVubiIgPGFu
-ZHJld0BsdW5uLmNoPiB3cm90ZToNCg0KICAgID4gSSBhbSBwbGFubmluZyB0byBoYXZlIGZvbGxv
-d2luZyBjb21taXQgbXNnOw0KICAgID4gDQogICAgPiAgDQogICAgPiANCiAgICA+IOKAnFRoaXMg
-ZmVhdHVyZSBpcyBub3QgdXNlZCBieSBvdXIgbWFpbnN0cmVhbSBjdXN0b21lcnMgYXMgdGhleSBo
-YXZlIGFkZGl0aW9uYWwNCg0KICAgIEFzIGkgc2FpZCwgdGhpcyBpcyBub3QgeW91ciBkcml2ZXIs
-IGZvciB5b3UgY3VzdG9tZXJzLiBJdCBpcyB0aGUgTGludXgNCiAgICBrZXJuZWwgZHJpdmVyLiBQ
-bGVhc2UgZHJvcCBhbGwgcmVmZXJlbmNlcyB0byB5b3VyIGN1c3RvbWVycy4gSWYgeW91DQogICAg
-bmVlZCB0byBhZGRyZXNzIGFueWJvZHksIGl0IHNob3VsZCBiZSB0aGUgTGludXggY29tbXVuaXR5
-IGFzIGEgd2hvbGUsDQogICAgb3IgbWF5YmUgdGhlIHVzZXJzIG9mIHRoaXMgZHJpdmVyLg0KDQog
-ICAgPiBtZWNoYW5pc20gdG8gbW9uaXRvciB0aGUgc3VwcGx5IGF0IFN5c3RlbSBsZXZlbCBhcyBh
-Y2N1cmFjeSByZXF1aXJlbWVudHMgYXJlDQogICAgPiBkaWZmZXJlbnQgZm9yIGVhY2ggYXBwbGlj
-YXRpb24uICBUaGUgZGV2aWNlIGlzIGRlc2lnbmVkIHdpdGggaW5idWlsdCBtb25pdG9yDQogICAg
-PiB3aXRoIGludGVycnVwdCBkaXNhYmxlZCBieSBkZWZhdWx0IGFuZCBsZXQgdXNlciBjaG9vc2Ug
-aWYgdGhleSB3YW50IHRvIGV4ZXJjaXNlDQogICAgPiB0aGUgbW9uaXRvci4gSG93ZXZlciwgdGhl
-IGRyaXZlciBoYWQgdGhpcyBpbnRlcnJ1cHQgZW5hYmxlZCwgdGhlIHJlcXVlc3QgaGVyZQ0KICAg
-ID4gaXMgZGlzYWJsZSBpdCBieSBkZWZhdWx0IGluIGRyaXZlciBob3dldmVyIG5vdCBjaGFuZ2Ug
-aW4gZGF0YXNoZWV0LiAgTGV0IHVzZXINCiAgICA+IG9mIHRoZSBkcml2ZXIgcmV2aWV3IHRoZSBh
-Y2N1cmFjeSBvZmZlcmVkIGJ5IG1vbml0b3IgYW5kIGlmIG1lZXRzIHRoZQ0KICAgID4gZXhwZWN0
-YXRpb24sIHRoZXkgY2FuIGFsd2F5cyBlbmFibGUgaXQu4oCdDQoNCiAgICBJIHdvdWxkIG11Y2gg
-bW9yZSBwcmVmZXIgc29tZXRoaW5nIGxpa2UuLi4NCg0KICAgIFRoZSBvdmVyIHZvbHRhZ2UgaW50
-ZXJydXB0IGlzIGVuYWJsZWQsIGJ1dCBpZiBpdCBldmVyeSBvY2N1cnMsIHRoZXJlIGlzDQogICAg
-bm8gY29kZSB0byBtYWtlIHVzZSBvZiBpdC4gU28gcmVtb3ZlIHRoZSBwb2ludGxlc3MgZW5hYmxp
-bmcgb2YgaXQuIEl0DQogICAgY2FuIHJlLWVuYWJsZWQgd2hlbiBIV01PTiBzdXBwb3J0IGlzIGFk
-ZGVkLiBGb3IgdGhlIHNhbWUgcmVhc29uLA0KICAgIGVuYWJsaW5nIG9mIHRoZSBpbnRlcnJ1cHRz
-IERQODM4MTFfUlhfRVJSX0hGX0lOVF9FTiwNCiAgICBEUDgzODExX01TX1RSQUlOSU5HX0lOVF9F
-TiwgRFA4MzgxMV9FU0RfRVZFTlRfSU5UX0VOLA0KICAgIERQODM4MTFfRU5FUkdZX0RFVF9JTlRf
-RU4sIERQODM4MTFfTElOS19RVUFMX0lOVF9FTiwNCiAgICBEUDgzODExX0pBQkJFUl9ERVRfSU5U
-X0VOLCBEUDgzODExX1BPTEFSSVRZX0lOVF9FTiwNCiAgICBEUDgzODExX1NMRUVQX01PREVfSU5U
-X0VOLCBEUDgzODExX09WRVJURU1QX0lOVF9FTiwNCiAgICBEUDgzODExX1VOREVSVk9MVEFHRV9J
-TlRfRU4gaXMgYWxzbyByZW1vdmVkLCBzaW5jZSB0aGVyZSBpcyBubyBjb2RlDQogICAgd2hpY2gg
-YWN0cyBvbiB0aGVzZSBpbnRlcnJ1cHRzLg0KDQogICAgQW5kIHVwZGF0ZSB0aGUgcGF0Y2ggdG8g
-Zml0Lg0KDQogICAgICAgICAgQW5kcmV3DQoNCg==
+On Mon, Sep 6, 2021 at 8:30 PM Feng Tang <feng.tang@intel.com> wrote:
+>
+> Hi Shakeel,
+>
+> On Sun, Sep 05, 2021 at 03:15:46PM -0700, Shakeel Butt wrote:
+> > On Sun, Sep 5, 2021 at 5:27 AM kernel test robot <oliver.sang@intel.com> wrote:
+> [...]
+> > > =========================================================================================
+> > > compiler/cpufreq_governor/disk/fs/kconfig/load/rootfs/tbox_group/test/testcase/ucode:
+> > >   gcc-9/performance/1BRD_48G/xfs/x86_64-rhel-8.3/3000/debian-10.4-x86_64-20200603.cgz/lkp-icl-2sp2/disk_rr/aim7/0xd000280
+> > >
+> > > commit:
+> > >   3c28c7680e ("memcg: switch lruvec stats to rstat")
+> > >   45208c9105 ("memcg: infrastructure to flush memcg stats")
+> >
+> > I am looking into this. I was hoping we have resolution for [1] as
+> > these patches touch similar data structures.
+> >
+> > [1] https://lore.kernel.org/all/20210811031734.GA5193@xsang-OptiPlex-9020/T/#u
+>
+> I tried 2 debug methods for that 36.4% vm-scalability regression:
+>
+> 1. Disable the HW cache prefetcher, no effect on this case
+> 2. relayout and add padding to 'struct cgroup_subsys_state', reduce
+>    the regression to 3.1%
+>
+
+Thanks Feng but it seems like the issue for this commit is different.
+Rearranging the layout didn't help. Actually the cause of slowdown is
+the call to queue_work() inside __mod_memcg_lruvec_state().
+
+At the moment, queue_work() is called after 32 updates. I changed it
+to 128 and the slowdown of will-it-scale:page_fault[1|2|3] halved
+(from around 10% to 5%). I am unable to run reaim or
+will-it-scale:fallocate2 as I was getting weird errors.
+
+Feng, is it possible for you to run these benchmarks with the change
+(basically changing MEMCG_CHARGE_BATCH to 128 in the if condition
+before queue_work() inside __mod_memcg_lruvec_state())?
+
+For the formal patch/fix, I will write down a better explanation on
+what should be the batch size.
+
+thanks,
+Shakeel
