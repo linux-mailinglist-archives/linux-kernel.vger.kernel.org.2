@@ -2,128 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D524069F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6372A406A19
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhIJKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 06:21:13 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37281 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232094AbhIJKVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:21:12 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 183FC5C0151;
-        Fri, 10 Sep 2021 06:20:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 10 Sep 2021 06:20:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=NrqFJE
-        A7K6DO9LA/zODEzDVYxlIRo+E5W5azI/AS25s=; b=gnCMg5Sa3W3YRGREGMaFBI
-        kjYQ38F7khqobc9HZSyAeTpG0otGcxXMaEDKFfOntPPw8u9uq5TUK6f/PVe5uFU/
-        vhUgu0VRVgVC0hqcNvU4sAgJMZvx1xwfIA9toHcVz7QFcmxTVqapFu+/uowYJSLl
-        7+qhj6GzQ4Ic5197tOIRPKcqUxDlwUEEA0JOA+SzHsKoKD67pV1F88SG4/4RMTa+
-        rZE/jGJGBztORg9Vp3s7DDyL+SNIWRmt4P9bG/+CfjZpLMGBMaZdpgeu7TlQtjRF
-        w+72l5LepDSEkt7Jx4sjlJjfNpMx1ib2DMLuIdA63I/tbiQZEjoP/g3Vr3FgvSqA
-        ==
-X-ME-Sender: <xms:UDE7YQ_psUErcvCdfEma6qtxyiDa_x-tzPPBMWdIhCeHGMjQKmX7Fg>
-    <xme:UDE7YYvR7fOyf3bAkoYQq2G6EPSTJimrGxTtBEX7OQJzdwpax9enI_v84rWiy7lZz
-    0Ebdqr5e69jBg>
-X-ME-Received: <xmr:UDE7YWByCTTyEz0wEH7cUKTgig4vEtRj5NOvrFUcZ6p0sUbHH-zIJBrsWtX5pJ-Rx1vM9ptFnyItnunA-bEa0SKADITQyp8a>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeetveff
-    iefghfekhffggeeffffhgeevieektedthfehveeiheeiiedtudegfeetffenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhes
-    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:UDE7YQdfK5rsmuH5zxY9z7O41G-OHzAzlpYQZ7DnGydc_3gRj0kmxg>
-    <xmx:UDE7YVOEj4S9hxKU22a3vyunluZgbFQ8r3RfEk0uMADMyw9ol52-pA>
-    <xmx:UDE7YamFaNmf9uXKUyOyI8eFCeabYqYfT52kru9E7hukuh-VS6GNfg>
-    <xmx:UTE7YRCwN_hsfXUEm5_f4Q1IlQiJ6FpfZY86I-8R_RiG6HK9DjZA4w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Sep 2021 06:19:59 -0400 (EDT)
-Date:   Fri, 10 Sep 2021 12:19:56 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] xen: harden netfront against malicious backends
-Message-ID: <YTsxTKNlL1KgMhB3@mail-itl>
-References: <20210824102809.26370-1-jgross@suse.com>
- <1f98d97c-1610-6a66-e269-29b2a9e41004@suse.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a+WymmwsT1dAoNOc"
-Content-Disposition: inline
-In-Reply-To: <1f98d97c-1610-6a66-e269-29b2a9e41004@suse.com>
+        id S232284AbhIJKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:24:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232196AbhIJKYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 06:24:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98D356103D;
+        Fri, 10 Sep 2021 10:22:59 +0000 (UTC)
+Received: from 82-132-222-91.dab.02.net ([82.132.222.91] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mOdgP-00A1cK-B3; Fri, 10 Sep 2021 11:22:57 +0100
+Date:   Fri, 10 Sep 2021 11:22:56 +0100
+Message-ID: <875yv8d91b.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Russell King <linux@arm.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        Niklas =?UTF-8?B?U8O2ZGVybHVuZA==?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+In-Reply-To: <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+References: <20200624195811.435857-1-maz@kernel.org>
+        <20200624195811.435857-8-maz@kernel.org>
+        <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.222.91
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, linux@arm.linux.org.uk, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, kernel-team@android.com, stable@vger.kernel.org, damm+renesas@opensource.se, niklas.soderlund+renesas@ragnatech.se, linux-renesas-soc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert,
 
---a+WymmwsT1dAoNOc
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 10 Sep 2021 12:19:56 +0200
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Juergen Gross <jgross@suse.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, xen-devel@lists.xenproject.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] xen: harden netfront against malicious backends
+On Thu, 09 Sep 2021 16:22:01 +0100,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> Hi Marc, Russell,
+> 
+> On Wed, Jun 24, 2020 at 9:59 PM Marc Zyngier <maz@kernel.org> wrote:
+> > The GIC driver uses a RMW sequence to update the affinity, and
+> > relies on the gic_lock_irqsave/gic_unlock_irqrestore sequences
+> > to update it atomically.
+> >
+> > But these sequences only expend into anything meaningful if
+> > the BL_SWITCHER option is selected, which almost never happens.
+> >
+> > It also turns out that using a RMW and locks is just as silly,
+> > as the GIC distributor supports byte accesses for the GICD_TARGETRn
+> > registers, which when used make the update atomic by definition.
+> >
+> > Drop the terminally broken code and replace it by a byte write.
+> >
+> > Fixes: 04c8b0f82c7d ("irqchip/gic: Make locking a BL_SWITCHER only feature")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Thanks for your patch, which is now commit 005c34ae4b44f085
+> ("irqchip/gic: Atomically update affinity"), to which I bisected a hard
+> lock-up during boot on the Renesas EMMA Mobile EV2-based KZM-A9-Dual
+> board, which has a dual Cortex-A9 with PL390.
+> 
+> Despite the ARM Generic Interrupt Controller Architecture Specification
+> (both version 1.0 and 2.0) stating that the Interrupt Processor Targets
+> Registers are byte-accessible, the EMMA Mobile EV2 User's Manual
+> states that the interrupt registers can be accessed via the APB bus,
+> in 32-bit units.  Using byte accesses locks up the system.
 
-On Tue, Aug 24, 2021 at 05:33:10PM +0200, Jan Beulich wrote:
-> On 24.08.2021 12:28, Juergen Gross wrote:
-> > It should be mentioned that a similar series has been posted some years
-> > ago by Marek Marczykowski-G=C3=B3recki, but this series has not been ap=
-plied
-> > due to a Xen header not having been available in the Xen git repo at
-> > that time. Additionally my series is fixing some more DoS cases.
->=20
-> With this, wouldn't it have made sense to Cc Marek, in case he wants to
-> check against his own version (which over time may have evolved and
-> hence not match the earlier submission anymore)?
+Urgh. That is definitely a pretty poor integration. How about the
+priority registers? I guess they suffer from the same issue...
 
-I have compared this, and the blkfront series against my patches and
-they seem to cover exactly the same set of issues. Besides one comment I
-made separately, I think nothing is missing. Thanks!
+> Unfortunately I only have remote access to the board showing the
+> issue.  I did check that adding the writeb_relaxed() before the
+> writel_relaxed() that was used before also causes a lock-up, so the
+> issue is not an endian mismatch.
+> Looking at the driver history, these registers have always been
+> accessed using 32-bit accesses before.  As byte accesses lead
+> indeed to simpler code, I'm wondering if they had been tried before,
+> and caused issues before?
 
-BTW, shouldn't those those patches land in stable branches too? In some
-threat models, I'd qualify them as security fixes.
+Not that I know. A lock was probably fine on a two CPU system. Less so
+on a busy 8 CPU machine where interrupts are often migrated. The GIC
+architecture makes a point in not requiring locking for most of the
+registers that can be accessed concurrently.
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
+> Since you said the locking was bogus before, due to the reliance on
+> the BL_SWITCHER option, I'm not suggesting a plain revert, but I'm
+> wondering what kind of locking you suggest to use instead?
 
---a+WymmwsT1dAoNOc
-Content-Type: application/pgp-signature; name="signature.asc"
+There isn't much we can do aside from reintroducing the RMW+spinlock
+approach, and for real this time. It would have to be handled as a
+quirk though, as I'm not keen on reintroducing this for all systems.
 
------BEGIN PGP SIGNATURE-----
+I wrote the patchlet below, which is totally untested. Please give it
+a go and let me know if it helps.
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmE7MU0ACgkQ24/THMrX
-1yyPgwf/UhMrTFQDi4aAO939ZYoIqkqGRgzJvXk3uKeBm1e3Cja+W310tHHN9YcV
-jArR36lzQkV9/DzUSIE/OTvtxJ4kw/5/iGOaDNTAZhpr7AVU0JTjOhJSD0FINqeh
-V2/97cuouBTK69DRBoB7XPhGgeM6qhhkJIKns9alnvsXy3Xjdar7SHg4GjWBWIEV
-aSPQwiac1JCoGQC4y0U2Ke1WT81ozbztAZCSoYORTzmwzRNwufuf0n1kgfdt1LK/
-2s01e4WJebsYowlqTDYZNPKL0L0qyHj9XMeIHjuBZG2Xa86k/Q5RwEN3rAMtsH6O
-L2eIsY98ExjJmqH29Og0/EqbOeoCSg==
-=HpA0
------END PGP SIGNATURE-----
+	M.
 
---a+WymmwsT1dAoNOc--
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index d329ec3d64d8..dca40a974b7a 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -107,6 +107,8 @@ static DEFINE_RAW_SPINLOCK(cpu_map_lock);
+ 
+ #endif
+ 
++static DEFINE_STATIC_KEY_FALSE(needs_rmw_access);
++
+ /*
+  * The GIC mapping of CPU interfaces does not necessarily match
+  * the logical CPU numbering.  Let's use a mapping as returned
+@@ -774,6 +776,25 @@ static int gic_pm_init(struct gic_chip_data *gic)
+ #endif
+ 
+ #ifdef CONFIG_SMP
++static void rmw_writeb(u8 bval, void __iomem *addr)
++{
++	static DEFINE_RAW_SPINLOCK(rmw_lock);
++	unsigned long offset = (unsigned long)addr & ~3UL;
++	unsigned long shift = offset * 8;
++	unsigned long flags;
++	u32 val;
++
++	raw_spin_lock_irqsave(&rmw_lock, flags);
++
++	addr -= offset;
++	val = readl_relaxed(addr);
++	val &= ~(0xffUL << shift);
++	val |= (u32)bval << shift;
++	writel_relaxed(val, addr);
++
++	raw_spin_unlock_irqrestore(&rmw_lock, flags);
++}
++
+ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+ 			    bool force)
+ {
+@@ -788,7 +809,10 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+ 	if (cpu >= NR_GIC_CPU_IF || cpu >= nr_cpu_ids)
+ 		return -EINVAL;
+ 
+-	writeb_relaxed(gic_cpu_map[cpu], reg);
++	if (static_branch_unlikely(&needs_rmw_access))
++		rmw_writeb(gic_cpu_map[cpu], reg);
++	else
++		writeb_relaxed(gic_cpu_map[cpu], reg);
+ 	irq_data_update_effective_affinity(d, cpumask_of(cpu));
+ 
+ 	return IRQ_SET_MASK_OK_DONE;
+@@ -1375,6 +1399,29 @@ static bool gic_check_eoimode(struct device_node *node, void __iomem **base)
+ 	return true;
+ }
+ 
++static bool gic_enable_rmw_access(void *data)
++{
++	/*
++	 * The EMEV2 class of machines has a broken interconnect, and
++	 * locks up on accesses that are less than 32bit. So far, only
++	 * the affinity setting requires it.
++	 */
++	if (of_machine_is_compatible("renesas,emev2")) {
++		static_branch_enable(&needs_rmw_access);
++		return true;
++	}
++
++	return false;
++}
++
++static const struct gic_quirk gic_quirks[] = {
++	{
++		.desc		= "Implementation with broken byte access",
++		.compatible	= "arm,pl390",
++		.init		= gic_enable_rmw_access,
++	},
++};
++
+ static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
+ {
+ 	if (!gic || !node)
+@@ -1391,6 +1438,8 @@ static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
+ 	if (of_property_read_u32(node, "cpu-offset", &gic->percpu_offset))
+ 		gic->percpu_offset = 0;
+ 
++	gic_enable_of_quirks(node, gic_quirks, gic);
++
+ 	return 0;
+ 
+ error:
+
+-- 
+Without deviation from the norm, progress is not possible.
