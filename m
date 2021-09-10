@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E682406C4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3268A406C4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhIJMiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54780 "EHLO mail.kernel.org"
+        id S235130AbhIJMix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234747AbhIJMg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:36:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CD29611F2;
-        Fri, 10 Sep 2021 12:35:39 +0000 (UTC)
+        id S234791AbhIJMhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:37:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0593561205;
+        Fri, 10 Sep 2021 12:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277340;
-        bh=dwBWVZu+lrrk2i9bHIXLLcXCr6utd3u5CEnnQMf9ays=;
+        s=korg; t=1631277343;
+        bh=5zjBR5A1B1Eq4myHC55RTn9MeL6Pg4xIVgB1lXqAfa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOchcXP1iwcjC12iHHY/RM+tS83PxLubWoH8YLbYbA03TTI7qwToxxfM2IaGzBKQs
-         LuqpHiUzA8uhQRn9U/gNO1OpGKoScLRZUSJrtlAE01uClvTaQB5DEs8Saf/NIjNfH7
-         CAa3ySIyNeRMAssCLANzfDaedRXONa3oh913GhZg=
+        b=uxPRWY8TfXBpKhLy6kR40wMMRgMFB1n1n1g3yTGuF7JlADQTDlteGVhe2v6iuvrI4
+         2T+5HN3WMJLPeTssVUx3AS9SHSpOJYDX2/+zxKje/37Rwbh6or0G0ix21Sl18si0xj
+         wbWJ5SwjFmYHfZZhJy3QYjlopra3rdyehcT+4NL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Esben Haabendal <esben@geanix.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 26/37] net: ll_temac: Remove left-over debug message
-Date:   Fri, 10 Sep 2021 14:30:29 +0200
-Message-Id: <20210910122918.017739504@linuxfoundation.org>
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 27/37] mm/page_alloc: speed up the iteration of max_order
+Date:   Fri, 10 Sep 2021 14:30:30 +0200
+Message-Id: <20210910122918.056822547@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
 References: <20210910122917.149278545@linuxfoundation.org>
@@ -39,31 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Esben Haabendal <esben@geanix.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-commit ce03b94ba682a67e8233c9ee3066071656ded58f upstream.
+commit 7ad69832f37e3cea8557db6df7c793905f1135e8 upstream.
 
-Fixes: f63963411942 ("net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY")
-Signed-off-by: Esben Haabendal <esben@geanix.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When we free a page whose order is very close to MAX_ORDER and greater
+than pageblock_order, it wastes some CPU cycles to increase max_order to
+MAX_ORDER one by one and check the pageblock migratetype of that page
+repeatedly especially when MAX_ORDER is much larger than pageblock_order.
+
+We also should not be checking migratetype of buddy when "order ==
+MAX_ORDER - 1" as the buddy pfn may be invalid, so adjust the condition.
+With the new check, we don't need the max_order check anymore, so we
+replace it.
+
+Also adjust max_order initialization so that it's lower by one than
+previously, which makes the code hopefully more clear.
+
+Link: https://lkml.kernel.org/r/20201204155109.55451-1-songmuchun@bytedance.com
+Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other pageblocks")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/xilinx/ll_temac_main.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ mm/page_alloc.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -939,10 +939,8 @@ temac_start_xmit(struct sk_buff *skb, st
- 	wmb();
- 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -906,7 +906,7 @@ static inline void __free_one_page(struc
+ 	unsigned int max_order;
+ 	struct capture_control *capc = task_capc(zone);
  
--	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
--		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
-+	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1))
- 		netif_stop_queue(ndev);
--	}
+-	max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
++	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
  
- 	return NETDEV_TX_OK;
- }
+ 	VM_BUG_ON(!zone_is_initialized(zone));
+ 	VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
+@@ -919,7 +919,7 @@ static inline void __free_one_page(struc
+ 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
+ 
+ continue_merging:
+-	while (order < max_order - 1) {
++	while (order < max_order) {
+ 		if (compaction_capture(capc, page, order, migratetype)) {
+ 			__mod_zone_freepage_state(zone, -(1 << order),
+ 								migratetype);
+@@ -945,7 +945,7 @@ continue_merging:
+ 		pfn = combined_pfn;
+ 		order++;
+ 	}
+-	if (max_order < MAX_ORDER) {
++	if (order < MAX_ORDER - 1) {
+ 		/* If we are here, it means order is >= pageblock_order.
+ 		 * We want to prevent merge between freepages on isolate
+ 		 * pageblock and normal pageblock. Without this, pageblock
+@@ -966,7 +966,7 @@ continue_merging:
+ 						is_migrate_isolate(buddy_mt)))
+ 				goto done_merging;
+ 		}
+-		max_order++;
++		max_order = order + 1;
+ 		goto continue_merging;
+ 	}
+ 
 
 
