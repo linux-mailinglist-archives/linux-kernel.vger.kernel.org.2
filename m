@@ -2,169 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B52406FEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FFA406FF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhIJQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        id S230114AbhIJQun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhIJQuU (ORCPT
+        with ESMTP id S229466AbhIJQuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:50:20 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66802C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:49:09 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id oc9so1750287pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:49:09 -0700 (PDT)
+        Fri, 10 Sep 2021 12:50:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9E0C061574;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id w6so1522789pll.3;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D73TCouYpmB9xTDq2w7pwNMpCZ26H76q6mSoWgYbZp4=;
-        b=F43ZYCKmMprzrgdMer2LY0t1FWeggf1klI3wE4zuw9KgzxKPLwSUcLq68QagbKqcgS
-         u0VbgQi7BC2XMZyYslXV24N/ciEdhGbIWfqgfBseRd38ZrP3eI+7SJQEnI7GqKfZAaMR
-         q3hAwgZMiyBr1umfujg7FKciNwjoq9o3Kz4iYclfulVhUX17jd5SNphe0VrlITtTVsVW
-         HE+x2l7uYN/EbTrEXl/4rvuTn+YC7CDq8oNL6h4+X/3iuWGqQxRBG5c7NbJ/aB9xrlcG
-         0baweGLp/SP2nzj136hFGOJp8b880iaDG5mCLzvw2VbpcuC0YZ5UUv9hapNxd/tmnKKQ
-         nNxA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ycLk39mqr2VW20gmuwiS1O96iwebvsbUDKPqz1r4HLs=;
+        b=SwFAicqGFHYDPBgQbXLMJQ0UcmZY8lvUK61PawM7D0Nd1XWOmic8A7dtlSBGftYXPp
+         xi3UTO+1z1xbIjIbsiLJ8Q/9xUUKAh0J4i3hAOX/qhS/9pi0c9P6bG7g8G0gM0uAkb6P
+         K7S/4G77KHQ4gsQHrP+7672jpkYyigpoj8a+VGveTJ/c/oUqO6Gd3qDKWw+OVXuKg4IK
+         4qcpP/7Ha7F4kKM6LtlzziDVjx5YW6ESH4ILyPv5J8P1YHi9ghGRcFADXvv22+gJsMX0
+         P7S2+oxpmBjT4bpeQbiwz4FR8BkP7FZ5aViXGFWZfpnrMbegmWV4S2CLRrM0IKHIePu2
+         9anA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=D73TCouYpmB9xTDq2w7pwNMpCZ26H76q6mSoWgYbZp4=;
-        b=ZDsaxywWvQJlqSUkTPLJ+onJzPTodjTTaol9JUZQrESNXeXIbM//3PjgWDM2UO1jzU
-         H7I/avwngerfyBudPqCzMS0yvkzKiXATqBHwLs+N5OqIxwUOjF5r6LHmvplWc90KKKKJ
-         gH7/GClXf5JTIA8578+cqIK8Q/VGmaxiLDackZO7AcaqY5Bzqq4F+HIy60vPCt2IZ7pp
-         JuOegMXHWjEzw+MPxMHtLOIlPejSqWV+h7uSFJMjutJu+US4UUZ9jvYIfA+kePYiDVzx
-         f/hGV4QEqdcrVnyf3nyqTHk3mHFm1e2FyOg7szXUqueJTbh+11tj4XXu79Fb6cPuoAWy
-         t0nw==
-X-Gm-Message-State: AOAM532PZ9QBPPFMvvTWMtQjOFXEfGay2WG3s9wSWZfmTWy0jD/fH3a9
-        3oANSUxZoTeCL9nNO9Vqhv9cTZq+pOpeVw==
-X-Google-Smtp-Source: ABdhPJw+XLEN+3FBF3KioB9P2490DQ0c/LCiYAWPjGRvjicH0jMd3fzKEg//lH4Jt+EWTnL0EVQeGg==
-X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr10627798pji.149.1631292548500;
-        Fri, 10 Sep 2021 09:49:08 -0700 (PDT)
-Received: from [192.168.1.6] ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id v190sm5537113pfv.166.2021.09.10.09.49.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 09:49:08 -0700 (PDT)
-Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        florian.c.schilhabel@googlemail.com, gregkh@linuxfoundation.org,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8712: Move similar execution in to a
- function.
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-References: <YTsXXxtQn7QN6nIm@user> <20210910090045.GD7203@kadam>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-Message-ID: <a31836c3-6999-339b-32f8-5f7d7f7e5b27@gmail.com>
-Date:   Fri, 10 Sep 2021 22:19:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ycLk39mqr2VW20gmuwiS1O96iwebvsbUDKPqz1r4HLs=;
+        b=z/QQBv/Djc1pBH3QleAZAYC2QUJm5p+c2mKqzm3reBffFBMSMdQN5062jITwIMtBSj
+         z/IuNYgg1rDMP6DZyqJfYFFV0Q4fzOkGcKWihhQTlfhhJ5XNoqEaSobs6sOhcHKjUpSq
+         M9b7eY6wS64DZpDHId4k/xlxkbP1JYhjrNpQPg+ej6GZ8j8y87t3so7OlH8dTIRzf4vj
+         6VJAIOBjxBXUjzHZACDUORQ2NvgZVZkRrJ8Ag0BGBJ3ckZto2MlUOmTQLNqyKcg6DUdM
+         loOGI92a2fqpgCh7L2sQywnPvnpIDd0qqlUNNmFrh4BQhKTq5X16XUpifN+6jbri2m2K
+         83HQ==
+X-Gm-Message-State: AOAM530KY1VfTUqvv40UBHY7FFier9EjVSERusCNTK2Bb1NDET78ekF7
+        Q3Cmo0vg6X6aJeW6Hk5eIh8=
+X-Google-Smtp-Source: ABdhPJx6HayHTsEYB+vEWqNfBLiFbx5o1vkHH89e13ig1jxEYIceWRXoq8Ca5ZyyZw58QBDwmVSJ6A==
+X-Received: by 2002:a17:90b:4b51:: with SMTP id mi17mr616793pjb.120.1631292569014;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id l185sm5569198pfd.62.2021.09.10.09.49.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:49:28 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 10 Sep 2021 06:49:27 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "taoyi.ty" <escape@linux.alibaba.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+ <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210910090045.GD7203@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Fri, Sep 10, 2021 at 10:11:53AM +0800, taoyi.ty wrote:
+> The scenario is the function computing of the public
+> cloud. Each instance of function computing will be
+> allocated about 0.1 core cpu and 100M memory. On
+> a high-end server, for example, 104 cores and 384G,
+> it is normal to create hundreds of containers at the
+> same time if burst of requests comes.
 
-On 10/09/21 2:30 pm, Dan Carpenter wrote:
-> 
-> On Fri, Sep 10, 2021 at 01:59:19PM +0530, Saurav Girepunje wrote:
->> In rtl8712_cmd.c function read_macreg_hdl,write_macreg_hdl,write_bbreg_hdl
->> and write_rfreg_hdl all are having same execution.
-> 
-> I get what you're trying to do, because this code is bad and duplicative
-> but this is not the right fix.
-> 
-> Let's take read_macreg_hdl() as an example.
-> 
-> Look at how it's called:
-> 
->     215          switch (pcmd->cmdcode) {
->     216          case GEN_CMD_CODE(_Read_MACREG):
->     217                  read_macreg_hdl(padapter, (u8 *)pcmd);
->     218                  pcmd_r = pcmd;
->     219                  break;
-> 
-> Then look at how it's implemented:
-> 
->     120  static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
->     121  {
->     122          void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj      *pcmd);
->     123          struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
->     124
->     125          /*  invoke cmd->callback function */
->     126          pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
-> 
-> So pcmd->cmdcode is GEN_CMD_CODE(_Read_MACREG).  We look that up in the
-> cmd_callback[] array and it is:
-> 
->          {GEN_CMD_CODE(_Read_MACREG), NULL}, /*0*/
-> 
->     127          if (!pcmd_callback)
->     128                  r8712_free_cmd_obj(pcmd);
-> 
-> So now we no that "pcmd_callback" is NULL meaning it will free "pcmd".
-> And if you remember in the caller it does "pcmd_r = pcmd;" but "pcmd"
-> is freed so that's going to lead to a use after free in r8712_cmd_thread().
-> It's garbage and the patch doesn't really help.
+This type of use case isn't something cgroup is good at, at least not
+currently. The problem is that trying to scale management operations like
+creating and destroying cgroups has implications on how each controller is
+implemented - we want the hot paths which get used while cgroups are running
+actively to be as efficient and scalable as possible even if that requires a
+lot of extra preparation and lazy cleanup operations. We don't really want
+to push for cgroup creation / destruction efficiency at the cost of hot path
+overhead.
 
-One more thought here after the
+This has implications for use cases like you describe. Even if the kernel
+pre-prepare cgroups to low latency for cgroup creation, it means that the
+system would be doing a *lot* of managerial extra work creating and
+destroying cgroups constantly for not much actual work.
 
-     127          if (!pcmd_callback)
-     128                  r8712_free_cmd_obj(pcmd);
+Usually, the right solution for this sort of situations is pooling cgroups
+from the userspace which usually has a lot better insight into which cgroups
+can be recycled and can also adjust the cgroup hierarchy to better fit the
+use case (e.g. some rapid-cycling cgroups can benefit from higher-level
+resource configurations).
 
-r8712_free_cmd_obj(pcmd); we could do  pcmd = NULL; so in the caller 
-when it will do "pcmd_r = pcmd;" it is actually making NULL to pcmd_r. 
-On r8712_cmd_thread there is check for pcmd is NULL or not before 
-execution on pcmd.
+So, it'd be great to make the managerial operations more efficient from
+cgroup core side but there are inherent architectural reasons why
+rapid-cycling use cases aren't and won't be prioritized.
 
-pcmd = cmd_hdl_filter(padapter, pcmd);
-	if (pcmd) { /* if pcmd != NULL, cmd will be handled by f/w */
+Thanks.
 
-Please let me know you thought on this dan.
-
-> 
-> The right way to fix it is to get rid of the cmd_callback[] array.
-> 
->     129          else
->     130                  pcmd_callback(padapter, pcmd);
->     131          return H2C_SUCCESS;
->     132  }
-> 
-> Getting rid of the cmd_callback[] array looks like this.  In
-> read_rfreg_hdl() we know that the callback is r8712_getbbrfreg_cmdrsp_callback()
-> so we can call that directly.
-> 
-> diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
-> index e9294e1ed06e..51a6abb27d41 100644
-> --- a/drivers/staging/rtl8712/rtl8712_cmd.c
-> +++ b/drivers/staging/rtl8712/rtl8712_cmd.c
-> @@ -174,11 +174,7 @@ static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
->   
->   	if (pcmd->rsp && pcmd->rspsz > 0)
->   		memcpy(pcmd->rsp, (u8 *)&val, pcmd->rspsz);
-> -	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
-> -	if (!pcmd_callback)
-> -		r8712_free_cmd_obj(pcmd);
-> -	else
-> -		pcmd_callback(padapter, pcmd);
-> +	r8712_getbbrfreg_cmdrsp_callback(padapter, pcmd);
->   	return H2C_SUCCESS;
->   }
->   
-> 
-> regards,
-> dan carpenter
-> 
-
-Thanks Dan for review.
-
-Regards,
-Saurav Girepunje
+-- 
+tejun
