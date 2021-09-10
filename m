@@ -2,198 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F069406FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B421406FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhIJQk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:40:27 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:54266 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230142AbhIJQkT (ORCPT
+        id S230416AbhIJQlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:41:17 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43944 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230328AbhIJQlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:40:19 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18ADtSXO013678;
-        Fri, 10 Sep 2021 16:38:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=ermdxKvFV9JWJbi2XHvPVkWjU5DlOiI75ae1Io8dAGA=;
- b=PfMeGmSOCYmv4HbY748HLzPig8Zr+DL9YOaaSjThXIivBpADfjHOruEE6SKo2XBLuwru
- OIHFTnlujJtWVzGpIrLdoPH/Tv4dyvvIZ5RHYQajTkrW49yrHN+Mgr6eXksmUwJvvrRJ
- mEkF1PfKWcAxQxiBhJoOu2usk1walvUu4H/8tljqfMQZk5YGDMW+GV8cSN2ct6kCn2L6
- WvcNMXUxul7PJ1lUN0czSxEugJh8IVyliyQLZxB35yM3I9+L+2ByxJdzn6uWZgPG0YoB
- asrwjyM97f998tP9qK+g316AWVzXlRHbT5NiHkUUW0pjIs4A946R+4WXsRbWgbstZfoJ gw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ermdxKvFV9JWJbi2XHvPVkWjU5DlOiI75ae1Io8dAGA=;
- b=DwF9pA9Judej7u9UG2j3Hlmfjm64fWdl2EB5m/0yVzjC96T+dheEfRET39Cemi26BSlV
- 36qGS30nQlq4iu9/A2RqZB+IIZzloURu5/zFvEIeX0NdTv6YtlJz9JnzUmLfj0sAgBX/
- bG0zH3BXVx8SlHlaQnpT0jDF/iJPfo8TQwk8U2pSiWNowoPupARmiFZBVQ8Jz3Z6/uZv
- yzcm6OOk8Mxj6kY7KVmjZ7Nk+k/FnSNGjszCk0eAMmLb8d15/fsc+SKUIXzjLq0bi8/V
- YxhdIj60slkbRLBOSRegYltQB4qLbLpM76fjKHU89tMBm0ezfK2P5OWf7LhkTWaPb/95 +A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ayty4afkv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 16:38:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18AGaAVs020523;
-        Fri, 10 Sep 2021 16:38:56 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2169.outbound.protection.outlook.com [104.47.73.169])
-        by aserp3020.oracle.com with ESMTP id 3aytfyhm12-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 16:38:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xo9fgS5GJoqNKo8DhSZXx2CouMt7WrfXSTN6Oy4txVr0notTiNUCU9waqT+oC4iQ4oQYz2nO2Ig1gkFjUB8VKpZBsuaOcNeWTtnG7/ueleI0HYXiqFOWyA/GDL/FI6hMvvTpIVbnhKF+fN5tR8hLt1Al5zeONU33ehdsRSIQ61JieghIW2/XSY6SUB8sOxKlyt9FIdF2Jtx/4yrbIE/RZTJkXGHN58bQGi8+o95QfFWX1STiz9Fp2eBA5Sgt/rdpM7k1aw+fOkJ6+5HPiuF92kWB2verKg/HPKmTCjWWHVAg2i1w/DSjwWvQjnZ70uMaPHquwWav03fWinMHtB65/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ermdxKvFV9JWJbi2XHvPVkWjU5DlOiI75ae1Io8dAGA=;
- b=fhgrPJp7M9OCX7/4iTWY4TEOK/8KTkYJrNODOmEmYmMznbK0gxCk9wOrYmsiXIZ0yIDVnuop+jqtUVdPPqY0lufgGXnzEl0Qpo5B8VZKZpteSTxKB8r6J9CQexZEW33t6ouFFajbRG7bjYHarLs9uSfC9kbsIdsbwceBiPAkdHJ18mDUDLTjjMKh2Yatv0N7u+aVrC3Xvr+eil+UlvaHmbbfqYfHfysTMiwKV2i/en3WrWJs9pywso8TmOwAkEs40JilWUd1W0vyDNjRPs+eBOQWl0Snfy97rd5J9uemqTK2hpYwPYcmEggvSXli2CFOxcYRM1x3w87rRzQS41HDNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ermdxKvFV9JWJbi2XHvPVkWjU5DlOiI75ae1Io8dAGA=;
- b=xPfc8aUKQ+fiPkxeSO3fTw2jjTBVxac3mh8wsbWEouw2kFJpR2sGphjb1ST3feh6x/4bSbbj7wf9gBgHGWuWEjJWx94+DyT0RJAgpSgiQ2EPS1Uyrq4SEN7xWLv94xMZERgg2exBkwgsvaHccfW4AuKdekhnYIHTN9QaecErbX0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by BYAPR10MB3654.namprd10.prod.outlook.com (2603:10b6:a03:123::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 10 Sep
- 2021 16:38:54 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701%6]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 16:38:54 +0000
-Subject: Re: [PATCH 2/3] scsi: libiscsi: fix invalid pointer dereference in
- iscsi_eh_session_reset
-To:     Ding Hui <dinghui@sangfor.com.cn>, lduncan@suse.com,
-        cleech@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210910010220.24073-1-dinghui@sangfor.com.cn>
- <20210910010220.24073-3-dinghui@sangfor.com.cn>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <302af74d-5b72-5b2f-050a-33f0978e321f@oracle.com>
-Date:   Fri, 10 Sep 2021 11:38:51 -0500
+        Fri, 10 Sep 2021 12:41:16 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18A9YPhT030668;
+        Fri, 10 Sep 2021 18:39:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=sC/T97Aos4kjVqrR5NQYyImnWuZMntqt0EqkidBKWbc=;
+ b=0V2qafOD2CiPKjYjTOTjxXc34j85f5ujdnf7A4J3BoAFcuT+SvFVaEtEgLRbUsABP/EW
+ sgoWU3Mufacq5HMK2DmISE70PZRT1+eqnOYiRJSuVhU/ncvhoPYqcFVprYQ+RgonUUxY
+ Q1byLr0EHj1tQofIoxfnnEHwf4/pBUyF2acAujosq8dgZ3QXpvKhTWHzvHaWMf9D9J9p
+ vuhRsz1x17GgiIo+86lnho2yht4O84SA0k2NxXBOfTjrKnrwdI2FKLFbx8f1tC9FjSGp
+ Iptl60DyPU+EMi02iOB0EcHVEtJR63AcUitGmJ7IN5cNjZhniGsNN3CUAH5Zn/scUZfZ sA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b04ur1x5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 18:39:55 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ACE9910002A;
+        Fri, 10 Sep 2021 18:39:54 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node2.st.com [10.75.127.2])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 91FF02248C3;
+        Fri, 10 Sep 2021 18:39:54 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG1NODE2.st.com
+ (10.75.127.2) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 10 Sep
+ 2021 18:39:53 +0200
+Subject: Re: [GIT PULL] remoteproc updates for v5.15
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "Konrad Dybcio" <konrad.dybcio@somainline.org>,
+        Alex Elder <elder@linaro.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>
+References: <20210907140023.2399178-1-bjorn.andersson@linaro.org>
+ <d689501f-87d3-59ef-0c04-69b1f5029cc9@foss.st.com> <YTtyxSHdBpFpM6ra@ripper>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <aa564260-61c2-e6ee-4b86-4689b84bfc02@foss.st.com>
+Date:   Fri, 10 Sep 2021 18:39:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210910010220.24073-3-dinghui@sangfor.com.cn>
-Content-Type: text/plain; charset=utf-8
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YTtyxSHdBpFpM6ra@ripper>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR12CA0016.namprd12.prod.outlook.com
- (2603:10b6:5:1c0::29) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
-MIME-Version: 1.0
-Received: from [20.15.0.204] (73.88.28.6) by DM6PR12CA0016.namprd12.prod.outlook.com (2603:10b6:5:1c0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 16:38:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b23e0238-5e40-4dbf-b388-08d974797a43
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3654:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB36540CE68AF9A7B5A52AAE94F1D69@BYAPR10MB3654.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:161;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gbec1mc0nAqLb00ePe3jVhteyU1psMlAp0qJWS3GPK2sXQqwomc+bZ1Ynu0k5FV2pw2hEuGtsrL5oeo+k/G9Bv85UlWA3KrwQaW640k3yMSyvuGYZAF1TgtDkh4er62r8DqfgKxNBq1lioGgUbzgBUHKm7FSkuTNYelJWRaccyD7Suqukx3NMqUiMoymjWolQ0q5sgBdBx6UHrgJCZvnvV8bA0eguZAvPy1sTFhojciKzuEayQRf5xeyn2X5fA4SYouixGZVD82SbWwT6HYmYtym4EI9Mwg6jA51Z3wvaNaNU2EEXvRLaYKIR80KagXUZ8tIsI88QrBKi6HyHWFP6lobTUdFVkCczvvcsQB4qn7gAGW5xM2O68mmkqKfho+QRMr3cN9hUcqVuILDK3U1i8YMwviyKoiiNstR7khW/9sFHzV1jsOj2ZpRaqDD6e384xRlUQiwVCsWGN9WGPJWfSd7HJWuxF/mB2pDLsRluQL6HJssar0a8u1ECnPmHxeihbja8Dz/xN0ClNSIu3C6f20Eq2Q9Fp74OAinR1qoKBECwYXIudUEDJcmFQF13FjUNXCjhBy0luKe+VpgUs6+bgvBouzHLzhfQu+fABynvW+VnrGKd2xoufI0KGv+I5/8qzi9iAGKumnGfcMF8jS7zQNQc0R99LbhqSbhtkUysRqLsPjdQyk7cjlINSxJbiHi+Q/9oqvqrrskT86oNMY4C0CmcmEVP3OEj6APYDsBmaTrD8ETGVIDI9y6vFOYXzK5gRRC0vQY2JGc3o4AHeJzAQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(39860400002)(136003)(346002)(53546011)(8676002)(36756003)(66946007)(66556008)(26005)(83380400001)(16576012)(186003)(66476007)(316002)(5660300002)(8936002)(6706004)(38100700002)(31696002)(31686004)(956004)(6486002)(2906002)(478600001)(2616005)(86362001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVBvdVlmZEhKSmQ1c3BNSjVRSFpFQjJSTDJKRDllRjFtYThpUHZUVEFGOFZt?=
- =?utf-8?B?QkV0d293SndVb1hmbVkvcWlqSWpsMGNQaFgvUFZNSytnUDFWQmhCVmd2cGJN?=
- =?utf-8?B?NFJ1MTk2NXpTdmEvS2ROaENsSmJrYzZUM0xKdUdHVUVmVG5PZTkwd0ZSVlJ6?=
- =?utf-8?B?R21kL2hWTWpwTzg2WVJFQ2REeFR5WnE3YSt2VDEzZzZQbmVNRThtVWplVnR5?=
- =?utf-8?B?QzVESGZqenRqWDFUMUxmUklqT1ZQbWYzVHJpVGtQd3d5THZ2SERpa0grbWJK?=
- =?utf-8?B?T1ZhN2M4bFNQNnFKc0NPMzVyYzJtd3EwQUVDaFM4MEp5Y1hvUENuQW9iZTRC?=
- =?utf-8?B?K25CVzFpSHY0WC9NZUhDQnNOczltUmRuYms1OW51MmtxdGdUc2lPTUdHS0Vh?=
- =?utf-8?B?N0k5aDZNZWlKUUJHVDZUK0J6YTBrSVQ4ZkxJNnNwMlhrYzFlUndPUzNPZlA0?=
- =?utf-8?B?eEMwZjZMdjNBU0tWSUhhd0tHVFBwbGt5ZENhRm4zcHRwVlFPZWhROWErQmJM?=
- =?utf-8?B?b25UWmxTTE9Uc0dMSThmVEdCTWdWQkVqSmNSVEpaVjRIdWJJekl0Tzk2WjEy?=
- =?utf-8?B?UkE1OWd3V0FKektLU09qd0dIRWpzMHVTT3JGQ3JEbnAvWjdYSkxVTHRSVnNz?=
- =?utf-8?B?cVFSS1lXV2lHVG85Q1hMMjlQeUJSTzZZaXZjYnZ4ckovUE12N3d5Sk9tL0NV?=
- =?utf-8?B?bW55U05VaHEvUyt5SnV0QzZtS0o4cXlZTWpLK2x3T2ZNeUdOSi9ldU1tRlhw?=
- =?utf-8?B?THozUFA2eDBhOUQremdOakh5eTdsNlMvaGFsRHFlSU84M1VQZndYRWR2MVNt?=
- =?utf-8?B?d0FyWXlFVytMVEhXL2FtQ1MzV1c0RG1MTTlZbWJ6c3NGVXovaWJGSlNQTXp1?=
- =?utf-8?B?Z3lGdzIzc000ZUlLWGZFdlNkMnVoY1NyWE1iZFUrbFAyN21vTmtsQzVWNm92?=
- =?utf-8?B?WmhhZ1hjRkkxcm1pamFhMFQ1YmpoS05USzFVSk9YSVN1NGd2TmhXVDExNVVi?=
- =?utf-8?B?UzgzaXJuenhwZHBmRDFVS256OEI1dUdMYXM5TmZ4Mzk4N2NZbVhiM1RkeE5E?=
- =?utf-8?B?NjUvc054eFpiM0ppOElERzFXWVJFclFYNWVUeEZya3d2bHVaa2pIaGMwV3Uz?=
- =?utf-8?B?SllNQ3hHNjRaV2VlNS9JZG5GVVJBOFhhYkhyd2MyZHVYdWJLTzA5SE1NSnk2?=
- =?utf-8?B?QWdEUjJrOTk0MnFDcDdMU3Y0TU5rUkNvMkoxNHAwcHI0a3gvMGxINEdQY2pU?=
- =?utf-8?B?ZFd5RVoxOWRYQk9MWjdmTGNwcW1Fb3V5UXBwd3lsRmg4MW1oWUFPOXlhR0kw?=
- =?utf-8?B?aFlMMW5iKzdFSEtsdlprbXpiWElaR1ZpOTBXUkgyd2lIUGszYjYwZ2N2V0NN?=
- =?utf-8?B?dXMrUTZBMFBEUnl1cENsN3JOUmlObmdMeVpaNThZOGp2bEtVekx2L3UvSEdN?=
- =?utf-8?B?RmVYck9YcUp6QVpVMHZScGlvczAvWURXRFptMEZYR3ZlUU13aExIbFgzMmFr?=
- =?utf-8?B?b3hBL1NYem0wRGNZT2V1VFdzT0pIYTJOc1ZZNFhMYzFSK2ZNT2pQeHlqcWl0?=
- =?utf-8?B?dTE5bllPVE45ZDE1dk5FNjRDaUlsVDlCYXNld0tORC9hcGU2ek9QaVFUVThz?=
- =?utf-8?B?cjdvcVJ3SGJ6akNjZTNrTnpDSGhVMksyTVdBaUhxdldBaU91YXFJTSs3WXBB?=
- =?utf-8?B?VlJrSU4rTXNUTkZ4MlZvb0hWL296eXBkVjRWeWdsaWYzMWw5dlBvd1ZPWHRJ?=
- =?utf-8?Q?hxAl83pcVjszTyfCd/G55keBOQV4GQs5W710r8h?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b23e0238-5e40-4dbf-b388-08d974797a43
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 16:38:54.2107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WsgoDcL5NwhQP2ROl2zUkCHM7VwyLjVK5fhDSGD0zosYvWEieIWh46vCwEC2z/Itx2+G5UjHK8CYXcMCdZjTLP9G22xElit91CM4umWsPRM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3654
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10103 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
- suspectscore=0 spamscore=0 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109100096
-X-Proofpoint-ORIG-GUID: qhTS5LhwpI8AFUlHbqJuWVrlcN-R9YR9
-X-Proofpoint-GUID: qhTS5LhwpI8AFUlHbqJuWVrlcN-R9YR9
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG1NODE2.st.com
+ (10.75.127.2)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-10_06,2021-09-09_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 8:02 PM, Ding Hui wrote:
-> like commit 5db6dd14b313 ("scsi: libiscsi: Fix NULL pointer dereference in
-> iscsi_eh_session_reset"), access conn->persistent_address here is not safe
-> too.
+
+
+On 9/10/21 4:59 PM, Bjorn Andersson wrote:
+> On Fri 10 Sep 06:32 PDT 2021, Arnaud POULIQUEN wrote:
 > 
-> The persistent_address is independent of conn refcount, so maybe
-> already freed by iscsi_conn_teardown(), also we put the refcount of conn
-> above, the conn pointer may be invalid.
+>> Hello Bjorn,
+>>
+> 
+> Good morning Arnaud,
+> 
+>>
+>> On 9/7/21 4:00 PM, Bjorn Andersson wrote:
+>>> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+>>>
+>>>   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+>>>
+>>> are available in the Git repository at:
+>>>
+>>>   https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.15
+>>>
+>>> for you to fetch changes up to a0a77028c85ad1f6f36c3ceea21b30dc43721665:
+>>>
+>>>   remoteproc: q6v5_pas: Add sdm660 ADSP PIL compatible (2021-08-04 12:37:32 -0500)
+>>>
+>>> ----------------------------------------------------------------
+>>> remoteproc updates for v5.15
+>>>
+>>
+>> I was expecting to see a pull request for the RPMsg framework as well,
+>> integrating my work around the rpmsg_char driver restructuring.
+>>
+>> These series listed at the end of my mail have been reviewed by Mathieu Poirier
+>> (RPMsg framework co-maintainer) before the 5.14 pull requests. Then on July 12,
+>> I re-based the series on v14.1-rc1 expecting to give you enough time to
+>> integrate them for the next 5.15 merge window.
+>>
+> 
+> Yes, I definitely had enough time.
+> 
+>> Could you please tell me if it is just a miss or if you have some concerns on
+>> them? Because I never received feedback from you for this work.
+>>
+> 
+> I did see that you and Mathieu had reached an agreement on the patches
+> and set out to apply the patches.
+> 
+> But as I look at the patches I realize that you're refactoring the
+> entire design of how rpmsg_char works and last time we spoke about the
+> existing users I got the feeling that you had no way to validate that
+> they still work after this refactoring. And in those discussions I
+> highlighted a few things that would break existing users.
+> 
+> So I felt the need to convince myself that your series does indeed not
+> break existing users.
 
-This shouldn't happen like you describe above, because when we wake up
-we will see the session->state is ISCSI_STATE_TERMINATE. We will then
-not reference the conn in that code below.
-
-However, it looks like we could hit an issue where if a user was resetting
-the persistent_address or targetname via iscsi_set_param -> iscsi_switch_str_param
-then we could be accessing freed memory. I think we need the frwd_lock when swapping
-the strings in iscsi_switch_str_param.
-
+I understand, Mathieu and I have kept in mind this compatibility. I think we
+maintain the legacy. But yes, agree with you that a non regression test using
+the Qcom drivers is important to ensure that.
 
 > 
-> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-> ---
->  drivers/scsi/libiscsi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Unfortunately I dropped the ball on getting back to do this.
 > 
-> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-> index 712a45368385..69b3b2148328 100644
-> --- a/drivers/scsi/libiscsi.c
-> +++ b/drivers/scsi/libiscsi.c
-> @@ -2531,8 +2531,8 @@ int iscsi_eh_session_reset(struct scsi_cmnd *sc)
->  	spin_lock_bh(&session->frwd_lock);
->  	if (session->state == ISCSI_STATE_LOGGED_IN) {
->  		ISCSI_DBG_EH(session,
-> -			     "session reset succeeded for %s,%s\n",
-> -			     session->targetname, conn->persistent_address);
-> +			     "session reset succeeded for %s\n",
-> +			     session->targetname);
->  	} else
->  		goto failed;
->  	spin_unlock_bh(&session->frwd_lock);
+>> Or maybe I missed something in the process, I thought that Matthieu's
+>> "reviewed-by" was sufficient to be accepted.
+>>
 > 
+> The change is complex, affects existing users, it introduces new ABI and
+> that I don't believe Mathieu has the means of testing the existing
+> users(?). So while I trust Mathieu's R-b, I did want to take one more
+> look at it.
+> 
+>> How could we move forward on this work, which also seems to interest some other
+>> companies?
+>>
+> 
+> I'll make sure to carve out the necessary time in the coming days to go
+> through the patches and let's take it from there.
+> 
+>> Related series:
+>> - [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the control part
+>>   https://lkml.org/lkml/2021/7/12/2872
+>> - [PATCH v4 0/4] rpmsg: char: introduce the rpmsg-raw channel???
+>>   https://lkml.org/lkml/2021/7/12/2908
+>> - [PATCH v3] rpmsg: ctrl: Introduce new RPMSG_CREATE/RELEASE_DEV_IOCTL controls
+>>   https://lkml.org/lkml/2021/7/12/2913
+>>
+> 
+> You have 9 patches over 3 different series in different versions, where
+> things certainly depend on each other.
+> 
+> I believe I asked you if we could do this step-wise, I didn't mean that
+> we should split it in multiple steps that needs to be taken at the same
+> time...
 
+This split is coming during review discussions with Mathieu, to ease the
+reviews. So versions depend on series reviews iteration.
+But it is not necessary to get them in one package "just" to respect dependencies.
+
+Here is the order you have to respect:
+
+1) [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the control part
+=> first patch that impact rpmsg_char client drivers.
+minor impact but right, not tested on Qcom platform (only build testd for Qcom
+drivers)
+
+2) [PATCH v4 0/4] rpmsg: char: introduce the rpmsg-raw channel
+As described in the cover letter to be applied on top of:
+[PATCH v5 0/4] Restructure the rpmsg char to decorrelate the control part
+=> tested by  Julien Massot from iot.bzh
+
+3) [PATCH v3] rpmsg: ctrl: Introduce new RPMSG_CREATE/RELEASE_DEV_IOCTL controls
+To apply on top of the two previous ones.
+
+So either you can integrate and test them one by one, or i can squash them in a
+new series if this can simplify your integration.
+
+In any cases, just send me an email if you need patch-sets refactoring, or
+clarification on some points.
+
+
+>> - [PATCH v2] rpmsg: Fix rpmsg_create_ept return when RPMSG config is not defined
+>>   https://lkml.org/lkml/2021/7/12/2877
+> 
+> Then you have this, which I thought was related to the others when I
+> browsed through the patch list, and therefor didn't merge. But now that
+> I look again I see that this is unrelated.
+> 
+> I've added the appropriate Fixes tag and picked this up now.
+
+Correct independent patch, thanks for the patch update.
+
+Thanks,
+Arnaud
+
+> 
+> Regards,
+> Bjorn
+> 
+>> Thanks in advance,
+>> Regards,
+>> Arnaud
+>>
+>>
+>>> This moves the crash recovery worker to the freezable work queue to
+>>> avoid interaction with other drivers during suspend & resume. It fixes a
+>>> couple of typos in comments.
+>>>
+>>> It adds support for handling the audio DSP on SDM660 and it fixes a race
+>>> between the Qualcomm wireless subsystem driver and the associated driver
+>>> for the RF chip.
+>>>
+>>> ----------------------------------------------------------------
+>>> Alex Elder (1):
+>>>       remoteproc: use freezable workqueue for crash notifications
+>>>
+>>> Bjorn Andersson (1):
+>>>       remoteproc: qcom: wcnss: Fix race with iris probe
+>>>
+>>> Dong Aisheng (2):
+>>>       remoteproc: fix an typo in fw_elf_get_class code comments
+>>>       remoteproc: fix kernel doc for struct rproc_ops
+>>>
+>>> Konrad Dybcio (2):
+>>>       dt-bindings: remoteproc: qcom: adsp: Add SDM660 ADSP
+>>>       remoteproc: q6v5_pas: Add sdm660 ADSP PIL compatible
+>>>
+>>>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |   1 +
+>>>  drivers/remoteproc/qcom_q6v5_pas.c                 |   1 +
+>>>  drivers/remoteproc/qcom_wcnss.c                    |  49 +++------
+>>>  drivers/remoteproc/qcom_wcnss.h                    |   4 +-
+>>>  drivers/remoteproc/qcom_wcnss_iris.c               | 120 +++++++++++++--------
+>>>  drivers/remoteproc/remoteproc_core.c               |   4 +-
+>>>  drivers/remoteproc/remoteproc_elf_helpers.h        |   2 +-
+>>>  include/linux/remoteproc.h                         |   5 +-
+>>>  8 files changed, 96 insertions(+), 90 deletions(-)
+>>>
