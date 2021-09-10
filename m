@@ -2,119 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F5B40700F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA69407013
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhIJQ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:57:45 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:41878 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhIJQ5m (ORCPT
+        id S230445AbhIJQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhIJQ66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:57:42 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOjpE-002whY-NL; Fri, 10 Sep 2021 16:56:28 +0000
-Date:   Fri, 10 Sep 2021 16:56:28 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [git pull] iov_iter fixes
-Message-ID: <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk>
-References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
- <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+        Fri, 10 Sep 2021 12:58:58 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE54CC061574;
+        Fri, 10 Sep 2021 09:57:46 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t19so5289854lfe.13;
+        Fri, 10 Sep 2021 09:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KigKFT5R1DxFkjz0kfipXNyWumwkd21XrYlMRDlSUkg=;
+        b=azN7jo+EzudnR0M0ozgDgkVky6ElgMzVIoItARXCC+hkSpuP3/wHqtH/18Xm9k3qJC
+         Vxl9WOHu6A0S275zRvI3NPU3vRykx8D3rNnHZFHzabQ/LrCkmW27NRmeNN3t/gx+aaZd
+         fsSQsCB0Opk0bGjAhL+bhYeGkVTkkEPs/WDuGNU/T2fvClpBNSf55IwXWyTQcSLxx+XV
+         8ff56bJv4qMcUU1zOg+v+HKqSYV76/M5ETkKgNwaRt0zpsBzPcQFES3KGNGb8P+eCKz3
+         MyEELO0Vqb6rcUCGs2hezUI2KKnfTjXkpSAj/eMasEmkitCrWft0ymEcOGqnsymnXrJb
+         Ec1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KigKFT5R1DxFkjz0kfipXNyWumwkd21XrYlMRDlSUkg=;
+        b=wo4NN0G9Z4X+ldl2XGVshgMZCMCPlka7XeoD57Z96PibXB8fFRq5dcV51gVEXEunZk
+         oPV4dOLDQsIOdKDNxAHI0XwJkAWBuVnY4NlT8HU0SvosStME69XprLw/dsQ1r7nkBpZu
+         oC6OgvkoZ2PCcZh54B9GEWHlzcC2LVv2EXp3E+OHzYNqdEIatqhMnfWZLwGM0T9i0scc
+         c5G29muaRP4+BEoVMLj/E8Ykz1cQuVDmWhl9H3mGYX5wz4GJem3/cNNmRjWBC8qb77DN
+         OWHqCpZk3qoa87H8/PAlbMn+1dNSb8+EYAPgBvJh60QTykWvBn86cyqNs7ROnRGW761h
+         E3Ww==
+X-Gm-Message-State: AOAM5303NV61MYY8UFIysLJ7BbSl/VUFEPe5peUDjtyVOua8fL+4Vq4k
+        eHKAycTvilHc5cyerluhCsPu3TfuFzxJUQ==
+X-Google-Smtp-Source: ABdhPJzmhGvGwPHJL2r+6t2hno1TGXqNQgDOvbpHHgK5p/Z0sx/BWkHI7cZBxLOv4xoGaFhcwvsQZA==
+X-Received: by 2002:a05:6512:238b:: with SMTP id c11mr4597902lfv.413.1631293065053;
+        Fri, 10 Sep 2021 09:57:45 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id h4sm607074lft.184.2021.09.10.09.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:57:44 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 19:57:43 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 31/31] staging: wfx: indent functions arguments
+Message-ID: <20210910165743.jm7ssqak7gouyl5j@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 10:06:25AM -0600, Jens Axboe wrote:
-
-> Looks something like this. Not super pretty in terms of needing a define
-> for this, and maybe I'm missing something, but ideally we'd want it as
-> an anonymous struct that's defined inside iov_iter. Anyway, gets the
-> point across. Alternatively, since we're down to just a few members now,
-> we just duplicate them in each struct...
+On Fri, Sep 10, 2021 at 06:05:04PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> Would be split into two patches, one for the iov_state addition and
-> the save/restore helpers, and then one switching io_uring to use them.
-> Figured we'd need some agreement on this first...
+> Function arguments must be aligned with left parenthesis. Apply that
+> rule.
 
-> +#define IOV_ITER_STATE					\
-> +	size_t iov_offset;				\
-> +	size_t count;					\
-> +	union {						\
-> +		unsigned long nr_segs;			\
-> +		struct {				\
-> +			unsigned int head;		\
-> +			unsigned int start_head;	\
-> +		};					\
-> +		loff_t xarray_start;			\
-> +	};						\
-> +
-> +struct iov_iter_state {
-> +	IOV_ITER_STATE;
-> +};
-> +
->  struct iov_iter {
->  	u8 iter_type;
->  	bool data_source;
-> -	size_t iov_offset;
-> -	size_t count;
->  	union {
->  		const struct iovec *iov;
->  		const struct kvec *kvec;
-> @@ -40,12 +54,10 @@ struct iov_iter {
->  		struct pipe_inode_info *pipe;
->  	};
->  	union {
-> -		unsigned long nr_segs;
-> +		struct iov_iter_state state;
->  		struct {
-> -			unsigned int head;
-> -			unsigned int start_head;
-> +			IOV_ITER_STATE;
->  		};
-> -		loff_t xarray_start;
->  	};
->  	size_t truncated;
->  };
+To my eyes something still go wrong with this patch. Might be my email
+fault, but every other patch looks ok. Now these are too left. Also it
+should alight with first argument not left parenthesis?
 
-No.  This is impossible to read *and* wrong for flavours other than
-iovec anyway.
-
-Rules:
-	count is flavour-independent
-	iovec: iov, nr_segs, iov_offset.  nr_segs + iov is constant
-	kvec: kvec, nr_segs, iov_offset.  nr_segs + kvec is constant
-	bvec: bvec, nr_segs, iov_offset.  nr_segs + bvec is constant
-	xarray: xarray, xarray_start, iov_offset.  xarray and xarray_start are constant.
-	pipe: pipe, head, start_head, iov_offset.  pipe and start_head are constant,
-						   iov_offset can be derived from the rest.
-	discard: nothing.
-
-What's more, for pipe (output-only) the situation is much trickier and
-there this "reset + advance" won't work at all.  Simply not applicable.
-
-What's the point of all those contortions, anyway?  You only need it for
-iovec case; don't mix doing that and turning it into flavour-independent
-primitive.
-
-Especially since you turn around and access the fields of that sucker
-(->count, that is) directly in your code.  Keep it simple and readable,
-please.  We'll sort the sane flavour-independent API later.  And get
-rid of ->truncate, while we are at it.
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/staging/wfx/hif_tx_mib.c |  2 +-
+>  drivers/staging/wfx/key.c        | 26 +++++++++++++-------------
+>  2 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/staging/wfx/hif_tx_mib.c b/drivers/staging/wfx/hif_tx_mib.c
+> index 45e531d996bd..97e961e6bcf6 100644
+> --- a/drivers/staging/wfx/hif_tx_mib.c
+> +++ b/drivers/staging/wfx/hif_tx_mib.c
+> @@ -75,7 +75,7 @@ int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
+>  	} else {
+>  		return hif_read_mib(wdev, vif_id,
+>  				    HIF_MIB_ID_EXTENDED_COUNTERS_TABLE, arg,
+> -				sizeof(struct hif_mib_extended_count_table));
+> +				    sizeof(struct hif_mib_extended_count_table));
+>  	}
+>  }
+>  
+> diff --git a/drivers/staging/wfx/key.c b/drivers/staging/wfx/key.c
+> index 51a528102016..65134a174683 100644
+> --- a/drivers/staging/wfx/key.c
+> +++ b/drivers/staging/wfx/key.c
+> @@ -31,7 +31,7 @@ static void wfx_free_key(struct wfx_dev *wdev, int idx)
+>  }
+>  
+>  static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
+> -			     struct ieee80211_key_conf *key, u8 *peer_addr)
+> +			struct ieee80211_key_conf *key, u8 *peer_addr)
+>  {
+>  	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
+>  	msg->key_length = key->keylen;
+> @@ -41,7 +41,7 @@ static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
+>  }
+>  
+>  static u8 fill_wep_group(struct hif_wep_group_key *msg,
+> -			      struct ieee80211_key_conf *key)
+> +			 struct ieee80211_key_conf *key)
+>  {
+>  	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
+>  	msg->key_id = key->keyidx;
+> @@ -51,7 +51,7 @@ static u8 fill_wep_group(struct hif_wep_group_key *msg,
+>  }
+>  
+>  static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
+> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
+> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
+>  {
+>  	u8 *keybuf = key->key;
+>  
+> @@ -68,9 +68,9 @@ static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
+>  }
+>  
+>  static u8 fill_tkip_group(struct hif_tkip_group_key *msg,
+> -			       struct ieee80211_key_conf *key,
+> -			       struct ieee80211_key_seq *seq,
+> -			       enum nl80211_iftype iftype)
+> +			  struct ieee80211_key_conf *key,
+> +			  struct ieee80211_key_seq *seq,
+> +			  enum nl80211_iftype iftype)
+>  {
+>  	u8 *keybuf = key->key;
+>  
+> @@ -93,7 +93,7 @@ static u8 fill_tkip_group(struct hif_tkip_group_key *msg,
+>  }
+>  
+>  static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
+> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
+> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
+>  {
+>  	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
+>  	ether_addr_copy(msg->peer_address, peer_addr);
+> @@ -102,8 +102,8 @@ static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
+>  }
+>  
+>  static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
+> -			       struct ieee80211_key_conf *key,
+> -			       struct ieee80211_key_seq *seq)
+> +			  struct ieee80211_key_conf *key,
+> +			  struct ieee80211_key_seq *seq)
+>  {
+>  	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
+>  	memcpy(msg->aes_key_data, key->key, key->keylen);
+> @@ -114,7 +114,7 @@ static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
+>  }
+>  
+>  static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
+> -			      struct ieee80211_key_conf *key, u8 *peer_addr)
+> +			 struct ieee80211_key_conf *key, u8 *peer_addr)
+>  {
+>  	u8 *keybuf = key->key;
+>  
+> @@ -129,7 +129,7 @@ static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
+>  }
+>  
+>  static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
+> -			       struct ieee80211_key_conf *key)
+> +			  struct ieee80211_key_conf *key)
+>  {
+>  	u8 *keybuf = key->key;
+>  
+> @@ -143,8 +143,8 @@ static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
+>  }
+>  
+>  static u8 fill_aes_cmac_group(struct hif_igtk_group_key *msg,
+> -				   struct ieee80211_key_conf *key,
+> -				   struct ieee80211_key_seq *seq)
+> +			      struct ieee80211_key_conf *key,
+> +			      struct ieee80211_key_seq *seq)
+>  {
+>  	WARN(key->keylen != sizeof(msg->igtk_key_data), "inconsistent data");
+>  	memcpy(msg->igtk_key_data, key->key, key->keylen);
+> -- 
+> 2.33.0
+> 
