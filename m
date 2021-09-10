@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CED407312
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB34C407317
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbhIJVri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
+        id S234677AbhIJVtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233480AbhIJVrh (ORCPT
+        with ESMTP id S234646AbhIJVtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:47:37 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893B1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:46:24 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so4140003otq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=++QHrqgiKekFVysXZMhd2rrKBQpZDTBgQWBiMBTyRX4=;
-        b=jKmbyI3OsVkjKnLxNtHb5YDUvhK+qmwz3B+k3Bt4ABaqQRJXU394z4mRHUDPdhgfKX
-         V5qR6n3xkjts2ZQ+SBlwg6JWuKzWHseHwhsUbbVrxEgCdZpU3a1gM5HRkwdiOiKF850l
-         7ssOKJyRkCCTQZp809Hfjjk/UcvACIBD/aFW9NQXALrvXwsnLD/U53RLTlL4UaknPG5q
-         zLc0U8CoU/hKWcJEX9NfgFZDs4M0bNZhz3irslcUy5gW1ti4XdwVDKnue2DkYMx8wgbs
-         hSOp0nHLNkByJX6Si+S5/UMooHqRHyebui6t/tVd65uizdduDT/mh/CcRPg+d3o0z5Iy
-         LG9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=++QHrqgiKekFVysXZMhd2rrKBQpZDTBgQWBiMBTyRX4=;
-        b=Dhu4GRzJfR0KmY2lL2R4r4qr5JKpTHV8+tG8lqtG54/mLLWp6xxVLvrUjl8bXbe9lh
-         36wHlgkz67OnROx3rpQrh7RXgBamZBgN9hB5zfA/V8OesoyC4kD4L34LP4VFR/22Q2aH
-         GhvtK+R4ZE56Drpr3qBf/Vw4naJTk+GYAoayJP/hSnhqMk7REnexaBEctLrV+4uZpGoG
-         FW5TJ4tXEOOBUM3fcEZJvGxrLe/OgpdRtwVKM/yCUAa330HyBAF26pnIAQB8pLBumEHg
-         3oaEfncYYdBIb6FMNFm/MxPo28kdOqZIjbEdR/adzIq2sB4mnfWOa4ze1U9tNkHWHTYY
-         wIOg==
-X-Gm-Message-State: AOAM532uhRc7P0aQBRkVFhOTANATBr+J/vk2FgVg8nR14Nb7og+CsayZ
-        o6Zyhy/cPvzBmmzlUXfdFt0lFYGWmoeKGadi9mXUJQ==
-X-Google-Smtp-Source: ABdhPJwjV66Z2n5sSFAkbvXAaXHm+ruJI4hvVih91Zj1FFxpt4TZGjeQfAlq28ovXILknWUiyC1+F7YTGIG2abe/afE=
-X-Received: by 2002:a9d:5a89:: with SMTP id w9mr6336406oth.91.1631310383564;
- Fri, 10 Sep 2021 14:46:23 -0700 (PDT)
+        Fri, 10 Sep 2021 17:49:39 -0400
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DF1C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:48:26 -0700 (PDT)
+Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 8C9311F50C;
+        Fri, 10 Sep 2021 23:48:21 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 23:48:20 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, dmitry.baryshkov@linaro.org,
+        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, paul.bouchara@somainline.org
+Subject: Re: [PATCH 2/2] drm/msm/dpu: Fix timeout issues on command mode
+ panels
+Message-ID: <20210910214820.h6in2ffl5pwu7xtv@Marijn-Arch-PC.localdomain>
+References: <20210901174347.1012129-1-angelogioacchino.delregno@somainline.org>
+ <20210901174347.1012129-2-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-References: <20210910183220.2397812-1-seanjc@google.com> <20210910183220.2397812-3-seanjc@google.com>
-In-Reply-To: <20210910183220.2397812-3-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 10 Sep 2021 14:46:12 -0700
-Message-ID: <CALMp9eSYfXQScdHa84xMaXoReZZow1dCzWw5i7T4URHGpq3KFQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Identify vCPU0 by its vcpu_idx instead of
- walking vCPUs array
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901174347.1012129-2-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:32 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Use vcpu_idx to identify vCPU0 when updating HyperV's TSC page, which is
-> shared by all vCPUs and "owned" by vCPU0 (because vCPU0 is the only vCPU
-> that's guaranteed to exist).  Using kvm_get_vcpu() to find vCPU works,
-> but it's a rather odd and suboptimal method to check the index of a given
-> vCPU.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Hi Angelo!
+
+On 2021-09-01 19:43:47, AngeloGioacchino Del Regno wrote:
+> In function dpu_encoder_phys_cmd_wait_for_commit_done we are always
+> checking if the relative CTL is started by waiting for an interrupt
+> to fire: it is fine to do that, but then sometimes we call this
+> function while the CTL is up and has never been put down, but that
+> interrupt gets raised only when the CTL gets a state change from
+> 0 to 1 (disabled to enabled), so we're going to wait for something
+> that will never happen on its own.
+> 
+> Solving this while avoiding to restart the CTL is actually possible
+> and can be done by just checking if it is already up and running
+> when the wait_for_commit_done function is called: in this case, so,
+> if the CTL was already running, we can say that the commit is done
+> if the command transmission is complete (in other terms, if the
+> interface has been flushed).
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index aa01698d6b25..b5b1b555ac4e 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -682,6 +682,9 @@ static int dpu_encoder_phys_cmd_wait_for_commit_done(
+>  	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
+>  		return 0;
+>  
+> +	if (phys_enc->hw_ctl->ops.is_started)
+> +		return dpu_encoder_phys_cmd_wait_for_tx_complete(phys_enc);
+
+In the previous commit you introduced is_started to the ops struct as
+function pointer, and you probably intend to call it here instead of
+just checking whether it might be NULL.
+
+As far as I remember this was also the reason for previously mentioning
+that it was faulty and required a v2 in:
+https://lore.kernel.org/linux-arm-msm/bdc67afc-3736-5497-c43f-5165c55e0354@somainline.org/
+
+Thanks!
+
+- Marijn
+
+> +
+>  	return _dpu_encoder_phys_cmd_wait_for_ctl_start(phys_enc);
+>  }
+>  
+> -- 
+> 2.32.0
+> 
