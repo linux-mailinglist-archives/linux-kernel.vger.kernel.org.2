@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844BB4071B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F8F4071B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhIJTJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        id S232758AbhIJTJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhIJTJb (ORCPT
+        with ESMTP id S229546AbhIJTJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:09:31 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E9CC061574;
-        Fri, 10 Sep 2021 12:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RvbOKws0vugnzCKuDTONgPld9Ii4J9dkZzNenEfUNqQ=; b=lEb37XTIAAKxxFQZd/qjhReziA
-        qvG9vN/kWb8vRH00OnuyV2Huaon4u9hYkWgGGy0ivwB01bHyInZP6t+UqQaoinoLYOGNaZAWIVAqe
-        aGFAc1U1uoTjdoEa8EdYIpyQBT/GmAYf6ZhJtaiMtz7J6MEetoaWfjnioacDmDeKFBn36RI9LrHvK
-        jfxGG1Uv1FZmZEgttfgIVznKLk+vd85IowrSXWo50Xr6NrH1SsoS654YnKwg1CH2j87Z07GdS+pr9
-        snKUB7Iq6yM9yyJg0emhYGSvFjOr/63hJD6xot+O/YeMTkIhtk4tGzLGqX7KBSV2CJOm/6Ql26IN7
-        rq0d3vqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOlsb-002CBg-DA; Fri, 10 Sep 2021 19:08:07 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E00B198627A; Fri, 10 Sep 2021 21:08:04 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 21:08:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <20210910190804.GS4323@worktop.programming.kicks-ass.net>
-References: <20210907202802.3675104-1-songliubraving@fb.com>
- <20210907202802.3675104-2-songliubraving@fb.com>
- <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
- <YTtjeyfJXXiDielu@hirez.programming.kicks-ass.net>
- <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
- <20210910184027.GQ4323@worktop.programming.kicks-ass.net>
- <20210910185003.GC5106@worktop.programming.kicks-ass.net>
- <6830FC62-995A-4282-BD30-76E2506ED993@fb.com>
+        Fri, 10 Sep 2021 15:09:43 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7954CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:08:32 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id a20so3089938ilq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CGR2907jA1AKoyCj8Tk/IjWSPxjZVjA/qpLk/UXRDlY=;
+        b=Hu9zaQGAp6wamEYNfxPwGiKlL47T37nt9w+WbLEo2ZSyIQiTi28r+GC4veIIKwxspb
+         vM+tG30AJxLZRuKJ4H/qOCIwR3xrkKXzrU5RUIYsNzMWo8U+0qE4cp1kTZwl7yjzUBrk
+         cwb61bWa0uruAVM6j+kSRzKaXx6hsl7nnFLcu0aH1r9huIs/u2MQLX7IJ81nAL2ycMg3
+         cPbrjHTYXJqEuKcBjSvPKPVNh3b3KpHnGKuGHByPpmQHrRi52snHgGSeFNtAQElpPrTg
+         KAXF4zaH0y84+rp55mN9a3eBYcgq374jDodYyer6EBrBg4ncKoQuoT8BtNSsDM2Vohiz
+         pl8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CGR2907jA1AKoyCj8Tk/IjWSPxjZVjA/qpLk/UXRDlY=;
+        b=PLA1WduTABIo0riAvOKm6uWFHcnCKgijJa9TXXT1iv8xpfElsivfFwvTlAkCSHtHwo
+         5ks0ldEvWw3eQAm3ow7crpYATrBrmYVF+DhLO+E6BTaBwkfnqdfMJAyLoK2UEosQnOpC
+         ZVxf58k/36LmwHZgJOjz9P8mUtESV543gHOmuUAylLXqTZI2lylQH/6IIH8Q+wqCqZwr
+         qQX7RU6jhvgEBtmyzwKlHXy6EUmfikm7XK2d3yMYspOJK9PI9vnWcDSbAV9iEjP1lJGZ
+         cobElTkDMTaW8USzQ05n8rGKmVldYZio2lNs5e2kgg5BBxdunZPEcr2Z/M4gTVZEQ97/
+         nNDg==
+X-Gm-Message-State: AOAM5305sAj2pfmV8CJcPvk5eOFqPZqQ4WExaM9IuhHTwk9VOrzV0c1/
+        Rx7NYmQHvkhXfPIBHFRplRUHFXlSftSi0WA5AXU=
+X-Google-Smtp-Source: ABdhPJzhzdUaBPwCkzhBi3vRe37qRpviqGQRMvzN5lvBxYoOuwJiWfGRLbrhlhc9KPcsN5usBcAmO1gX9XwapXqESCA=
+X-Received: by 2002:a05:6e02:1747:: with SMTP id y7mr5105442ill.5.1631300911962;
+ Fri, 10 Sep 2021 12:08:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6830FC62-995A-4282-BD30-76E2506ED993@fb.com>
+References: <20210908234751.GA8052@kernel.org> <20210909000141.3136241-1-ndesaulniers@google.com>
+ <CANiq72nwzPt2zx-m8Cbi8-GAztknEefVDVM4VGhOFyUvagcukQ@mail.gmail.com>
+In-Reply-To: <CANiq72nwzPt2zx-m8Cbi8-GAztknEefVDVM4VGhOFyUvagcukQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 10 Sep 2021 21:08:21 +0200
+Message-ID: <CANiq72muNDdCeiA8EWMkuD9Ksa8KKoqMT1h081UfoM3iWbxj8g@mail.gmail.com>
+Subject: Re: [GIT PULL] Compiler Attributes for v5.15-rc1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 07:00:08PM +0000, Song Liu wrote:
+On Thu, Sep 9, 2021 at 2:13 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> I would like to have that one in -next for a couple days before making
+> the PR. Since we are in the merge window too, I decided to send the
+> one I had in the queue first.
 
-> Hmm.. not really. We call migrate_disable() before entering the BPF program. 
-> And the helper calls snapshot_branch_stack() inside the BPF program. To move
-> it to before migrate_disable(), we will have to add a "whether to snapshot
-> branch stack" check before entering the BPF program. This check, while is
-> cheap, is added to all BPF programs on this hook, even when the program does 
-> not use snapshot at all. So we would rather keep all logic inside the helper, 
-> and not touch the common path. 
+I am sending v2 now.
 
-Moo :/ Because I also really don't want to expose struct rq, it's
-currently nicely squirelled away in kernel/sched/ and doesn't get
-anywhere near include/.
-
-A well, maybe we can do something clever with migrate_disable() itself.
-I'll put it on this endless todo list ;-)
+Cheers,
+Miguel
