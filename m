@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E9440732C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6125840732F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhIJWE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        id S234701AbhIJWFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231812AbhIJWE1 (ORCPT
+        with ESMTP id S232571AbhIJWFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:04:27 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306A5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:03:16 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id g16so2096832uam.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:03:16 -0700 (PDT)
+        Fri, 10 Sep 2021 18:05:04 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40D3C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:03:52 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id rj12-20020a17090b3e8c00b001991428ded8so1931166pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dcqU9ZKZN47g77fb/rE27/hZjysW8Rw23gLua/TqJ3g=;
-        b=m6aWXd2Gw4Bh6WEXuh6E/mhFWW2qOUaAXVIKQaGVEYvVg7FIGyKJOCA2XmKv0/l78E
-         gkhKmn+zzD+ejrbhHZ5EfsAZYWV4wCaPUYDsdBpSIsoE1bRK7ErgU/yG65o84Z8xPwFn
-         M+yeUkABwCrQlIwgMbXLVqKZdyS14pBia6tMJKUhttjVErg93dBD0Te7wH7/qlhrBpUu
-         qvFGyWeEIVl8KWDteL7cEd3ogiiiNdbCy2xxO3DgaWzodE6YJXBwLuEIQUaPW1Foq6PZ
-         hlC7P3yR+0tYq7Jav4Xg9d5+/PnVUH0za3AP6UuA+fvAeKhqINk8VlaPpTp+1pRCdLKx
-         tU0g==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kMcSN7EDR5pkPvVWu02zCDgJ8As0247Z64kS+l1KD5M=;
+        b=Arop9WPr0Ceoz84Ze+YMFVIDNRDnLtzMNDpy4BUZF70ia5fRzvIq7RlZMLZjyGEaXQ
+         DbIC/qFNDlwy7ysOoDuaQFsdcTnJLjNVYxMrf1bIKn3pC+1TexFcFAfTWJoIFKZaeLl3
+         k7SE89JKTy4RdDQ355MjI51vV5m4wlDFzqyNTxgRq+vhJDNntyqoiR3avhdcQ+8H8Mxm
+         rAzIOUMvH1Ux4hfkDZi7Aem/r5nBm0rK+xiPuwHLFLVj4lXa4ArHXayJuApLQwHh+9So
+         LiPcD5dnrsI1GcOqOoDOVVUI/m/K30gMO57E+Iz0kMxdwwys8gkh7JKzyKWsfh+qfkbX
+         MXKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dcqU9ZKZN47g77fb/rE27/hZjysW8Rw23gLua/TqJ3g=;
-        b=QVcqZfHtCdzxWC/sRQDz8O+EPH3hZ5/GNLgjT7VSUIonrJXdtro3qKKXRONDw3eO3b
-         FQ4msRAA4BL+GSjQZzDoB2L0jrAyzjVLic4DGLa9zedvp2HwiA7qObeEW/HpAopJTcIh
-         zC3N+n8hjVDB4ZZFsCzHe47VHmu9ZnnUy5MD7BijLzSgn1aJUrsWsYuf1+6sKEzTiJw9
-         3bzDO+aVFiGUpGXynJYDibFDlaTci2i01fWSJVr1+kr4qNZLgCWJlJxhe5KnwxKDq5zY
-         CC9laCd3mLz3aooG/fYXZjgJ2sATdV0uKTadcc2U/FKYh6S3MLibeUAs/0mrfHHVPxUh
-         h7iQ==
-X-Gm-Message-State: AOAM532u9/fSZoGqB3HufTiM1iJSy7BB47qNaKuZFZfxB3gDA1j34LmF
-        +EhT72YITvOp3ZdAMgGou24zsCS8GNPShTFaDIuEuviM
-X-Google-Smtp-Source: ABdhPJzE48lT6fqiiuWBqWFJ0x87spa0lMjXvc0VaGDvNGGYnsC+9drMKpfUvUE2GtBvBI8gN5I8AhDu+lzquAQEWe0=
-X-Received: by 2002:ab0:1647:: with SMTP id l7mr7838728uae.128.1631311395250;
- Fri, 10 Sep 2021 15:03:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kMcSN7EDR5pkPvVWu02zCDgJ8As0247Z64kS+l1KD5M=;
+        b=Z4mXxbOHt956FpXGt9hZTUPxLHJ9AaIqp3ZLDPv6rb99qfUYHO1IT5egVxqnlLZFgG
+         7BqQk5snZHzAqd8cJySus84pS2+MKV4oBEYpM7mEsBFOCdgEMIkIFS3qp+D8O74Z48cV
+         2LH2eI5nMFQwLKRcH4WoobDlyZHmLbCV694jsjEyMNavesCReTH6WOMtawjd3xecHUkZ
+         K/VBI2pcAuTXkLFng1u/zYUa8qbfLDEBhZy6BCi8mJ1mxV1R0VQ1Gai7vRkmjTSKATYr
+         HtvLBwg3fOHOxZXORtEUQoLi4YEqOazKXlll3qu7qEV/RyDDh5xsDykD6yk2DMM4iTRh
+         2HXA==
+X-Gm-Message-State: AOAM5310tC/g7Y4OA1SCMHle0WSNraEDaPt026XjDugCH7WSlG/nR8x/
+        bA8EQ8iQ/ilXCoMwoCyUFKg7TQ==
+X-Google-Smtp-Source: ABdhPJxkI335EQRG2FWMLzTQnx7fbpqCA4w8gWJYpX14ZbmuPVZ6TAYwi90vMQonCxqCoDq1/d/RXQ==
+X-Received: by 2002:a17:902:bd8d:b0:13a:8c8:a2b2 with SMTP id q13-20020a170902bd8d00b0013a08c8a2b2mr9450872pls.89.1631311431938;
+        Fri, 10 Sep 2021 15:03:51 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id l1sm5614461pju.15.2021.09.10.15.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 15:03:51 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 22:03:47 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3 V7] KVM, SEV: Add support for SEV intra host migration
+Message-ID: <YTvWQ0jKqzFsxQd8@google.com>
+References: <20210902181751.252227-1-pgonda@google.com>
+ <20210902181751.252227-2-pgonda@google.com>
+ <YTqirwnu0rOcfDCq@google.com>
+ <CAMkAt6pa2aLZYa3N_jPXdx3zwAMiAUW4m2DRc4rXFC7N1EQcYA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210909161755.61743-1-ahalaney@redhat.com> <0849504a-b7ed-f448-6d66-1a9fd5ad70ce@akamai.com>
- <CAJfuBxzX9nEvxC1s-4uRCzLwN0=3gbFT__9vO_coEM5CrpnJng@mail.gmail.com>
- <20210910182445.vao7uhqveaen25tk@halaneylaptop> <CAJfuBxzWwXCmw+YsonMCOaHq=21C-rVPL8BhZpDU0NPQW0B_8w@mail.gmail.com>
- <20210910201635.4d3fhhrwvcusdwk2@halaneylaptop>
-In-Reply-To: <20210910201635.4d3fhhrwvcusdwk2@halaneylaptop>
-From:   jim.cromie@gmail.com
-Date:   Fri, 10 Sep 2021 16:02:49 -0600
-Message-ID: <CAJfuBxxh81UXb2re109Jirnfjca+db3_bicmoaea62nE0UiRhQ@mail.gmail.com>
-Subject: Re: [PATCH] dyndbg: make dyndbg a known cli param
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMkAt6pa2aLZYa3N_jPXdx3zwAMiAUW4m2DRc4rXFC7N1EQcYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 2:16 PM Andrew Halaney <ahalaney@redhat.com> wrote:
->
-> On Fri, Sep 10, 2021 at 01:31:22PM -0600, jim.cromie@gmail.com wrote:
-> > On Fri, Sep 10, 2021 at 12:24 PM Andrew Halaney <ahalaney@redhat.com> wrote:
-> > >
-> > > On Fri, Sep 10, 2021 at 11:14:45AM -0600, jim.cromie@gmail.com wrote:
-> > > > On Thu, Sep 9, 2021 at 3:34 PM Jason Baron <jbaron@akamai.com> wrote:
-> > > >
-> > > > >
-> > > > >
-> > > > > On 9/9/21 12:17 PM, Andrew Halaney wrote:
-> > > > > > Right now dyndbg shows up as an unknown parameter if used on boot:
-> > > > > >
-> > > > > >     Unknown command line parameters: dyndbg=module params +p ; module
-> > > > > sys +p
-> > > > > >
-> > > > > > That's because it is unknown, it doesn't sit in the __param
-> > > > > > section, so the processing done to warn users supplying an unknown
-> > > > > > parameter doesn't think it is legitimate.
-> > > > > >
-> > > >
-> > > >
-> > > > your usage is incorrect for what youre trying to do in that example
-> > > > what you need is:
-> > > >
-> > > >   params.dyndbg=+p  sys.dyndbg=+p
-> > > >
-> > > > dyndbg is properly unknown as a kernel param, it isnt one.
-> > > > ( it was called a "fake" module param when added.)
-> > > > $module.dyndbg is good, since its after the $module. (and the dot)
-> > > > it also then inherits the "scan bootargs for relevant ones on module load"
-> > > > behavior
-> > > >
-> > > >
-> > >
-> > > That example is (slightly altered) from
-> > > Documentation/admin-guide/dynamic-debug-howto.rst,
+On Fri, Sep 10, 2021, Peter Gonda wrote:
+> > Do we really want to bury this under KVM_CAP?  Even KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
+> > is a bit of a stretch, but at least that's a one-way "enabling", whereas this
+> > migration routine should be able to handle multiple migrations, e.g. migrate A->B
+> > and B->A.  Peeking at your selftest, it should be fairly easy to add in this edge
+> > case.
 > >
-> > oh dear, I see the lines youre referring to.
-> > I am surprised.
-> > fyi, those lines are:
-> >     // enable pr_debugs in 2 builtins, #cmt is stripped
-> >     dyndbg="module params +p #cmt ; module sys +p"
-> >
-> > is your patchset removing those lines ?
-> > if so, ack that part.
-> >
-> > > I can change the example used to be a little less confusing (using the
-> > > module keyword is confusing, I could use something like
-> > > func or file instead of what the docs use as an example).
-> >
-> > yes please, I saw bad usage, thought faulty premise.
-> >
-> > > Is that what you're after, a better example usage of dyndbg= being
-> > > whined about in dmesg for the commit message, or am I misunderstanding?
-> >
-> > I guess Im inured to it.  Heres my regular version with a similar addition.
-> >
-> > Unknown command line parameters:
-> > virtme_link_mods=/home/jimc/projects/lx/wk-next/builds/local-i915m/.virtme_mods/lib/modules/0.0.0
-> > virtme_initmount0=/root virtme_initmount1=/root/sbin
-> > virtme_stty_con=rows 27 cols 109 iutf8
-> > virtme_chdir=home/jimc/projects/lx dyndbg=+p
-> >
-> > most of them do something, just not for the kernel.
-> >
-> > I dont think this is worth explicitly silencing.
-> > rather rip out the misleading doc.
-> >
->
-> Ohhhhh, ok now I think I'm following what you and Jason are saying.
->
-> dyndbg= parameter does need to process the whole cli, for cases like
-> when $module.dyndbg= is supplied but $module is a builtin. And you are
-> saying that this syntax (although it works)
-> 'dyndbg="module params +p #cmt ; module sys +p"' is not the intended
-> usage.
->
-> So converting dyndbg= to act like ddebug_query= won't work because
-> $module.dyndbg="+p" should work if $module is builtin or a module
-> (settles my open discussion with Jason).
+> > This is probably a Paolo question, I've no idea if there's a desire to expand
+> > KVM_CAP versus adding a new ioctl().
+> 
+> Thanks for the review Sean. I put this under KVM_CAP as you suggested
+> following the idea of svm_vm_copy_asid_from. Paolo or anyone else have
+> thoughts here? It doesn't really matter to me.
 
-yes, $mod.dyndbg=+p  works now whether $mod is builtin or loadable.
- that must stick.
+Ah, sorry :-/  I obviously don't have a strong preference either.
 
-if bare dyndbg="str" works like an alias for ddebug_query=
- (its amazing what one forgets)
-then I agree the warning is misleading.
+> > > +Architectures: x86 SEV enabled
+> > > +Type: vm
+> > > +Parameters: args[0] is the fd of the source vm
+> > > +Returns: 0 on success
+> >
+> > It'd be helpful to provide a brief description of the error cases.  Looks like
+> > -EINVAL is the only possible error?
+> >
+> > > +This capability enables userspace to migrate the encryption context
+> >
+> > I would prefer to scope this beyond "encryption context".  Even for SEV, it
+> > copies more than just the "context", which was an abstraction of SEV's ASID,
+> > e.g. this also hands off the set of encrypted memory regions.  Looking toward
+> > the future, if TDX wants to support this it's going to need to hand over a ton
+> > of stuff, e.g. S-EPT tables.
+> >
+> > Not sure on a name, maybe MIGRATE_PROTECTED_VM_FROM?
+> 
+> Protected VM sounds reasonable. I was using 'context' here to mean all
+> metadata related to a CoCo VM as with the
+> KVM_CAP_VM_COPY_ENC_CONTEXT_FROM. Is it worth diverging naming here?
+
+Yes, as they are two similar but slightly different things, IMO we want to diverge
+so that it's obvious they operate on different data.
