@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D406C0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1356C406BD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhIJMga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:36:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
+        id S234237AbhIJMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:35:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234280AbhIJMfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A9C61207;
-        Fri, 10 Sep 2021 12:34:07 +0000 (UTC)
+        id S234073AbhIJMeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:34:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 980DA611C8;
+        Fri, 10 Sep 2021 12:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277248;
-        bh=bu47G0dhHchfHPxY/aEfeAtfJ3toOPvO2T/CaQ1t1BE=;
+        s=korg; t=1631277183;
+        bh=LRlzWnO+lbSox1yLVo8gzaZucTtgcS1uo23GKB3qyJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvH/12JIzdOvsx5vnP8aguOSBSZHDN//t/czAEbRR4Pbv6/Z7zuQ/3GDHZ0zZ2GuZ
-         hTnAIRyQaVhRC2Ejt7VkYUzPEcigu3L0t2a3b9GUDzD3T0xkdIleePwhG7ehWbS8G4
-         bYB072+VsrE9ROtFshnQ4j7R7lOu5MDxrwLLC+90=
+        b=ZiHFkQwc44IhTBbwoCRvLAQY+tRoPcOsRA5DXS9F5tZCfem9F2ayiMPgochZazHnW
+         Bdf55OUBblwUYs8h/dGMs9y1ctEWw4zrlw7vMgXqDeJm2OQR3J0dscMKNNl/CnffXU
+         lOoifsVWiegkyHAbjtuSpaNpj0X6Sa2uHlDflM1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 09/26] Revert "r8169: avoid link-up interrupt issue on RTL8106e if user enables ASPM"
-Date:   Fri, 10 Sep 2021 14:30:13 +0200
-Message-Id: <20210910122916.559335856@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Monakov <amonakov@ispras.ru>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 10/26] x86/events/amd/iommu: Fix invalid Perf result due to IOMMU PMC power-gating
+Date:   Fri, 10 Sep 2021 14:30:14 +0200
+Message-Id: <20210910122916.588606851@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
 References: <20210910122916.253646001@linuxfoundation.org>
@@ -39,30 +40,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hayes Wang <hayeswang@realtek.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 2115d3d482656ea702f7cf308c0ded3500282903 upstream.
+commit e10de314287c2c14b0e6f0e3e961975ce2f4a83d upstream.
 
-This reverts commit 1ee8856de82faec9bc8bd0f2308a7f27e30ba207.
+On certain AMD platforms, when the IOMMU performance counter source
+(csource) field is zero, power-gating for the counter is enabled, which
+prevents write access and returns zero for read access.
 
-This is used to re-enable ASPM on RTL8106e, if it is possible.
+This can cause invalid perf result especially when event multiplexing
+is needed (i.e. more number of events than available counters) since
+the current logic keeps track of the previously read counter value,
+and subsequently re-program the counter to continue counting the event.
+With power-gating enabled, we cannot gurantee successful re-programming
+of the counter.
 
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Workaround this issue by :
+
+1. Modifying the ordering of setting/reading counters and enabing/
+   disabling csources to only access the counter when the csource
+   is set to non-zero.
+
+2. Since AMD IOMMU PMU does not support interrupt mode, the logic
+   can be simplified to always start counting with value zero,
+   and accumulate the counter value when stopping without the need
+   to keep track and reprogram the counter with the previously read
+   counter value.
+
+This has been tested on systems with and without power-gating.
+
+Fixes: 994d6608efe4 ("iommu/amd: Remove performance counter pre-initialization test")
+Suggested-by: Alexander Monakov <amonakov@ispras.ru>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210504065236.4415-1-suravee.suthikulpanit@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/events/amd/iommu.c |   47 ++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -3547,6 +3547,7 @@ static void rtl_hw_start_8106(struct rtl
- 	rtl_eri_write(tp, 0x1b0, ERIAR_MASK_0011, 0x0000);
+--- a/arch/x86/events/amd/iommu.c
++++ b/arch/x86/events/amd/iommu.c
+@@ -18,8 +18,6 @@
+ #include "../perf_event.h"
+ #include "iommu.h"
  
- 	rtl_pcie_state_l2l3_disable(tp);
-+	rtl_hw_aspm_clkreq_enable(tp, true);
+-#define COUNTER_SHIFT		16
+-
+ /* iommu pmu conf masks */
+ #define GET_CSOURCE(x)     ((x)->conf & 0xFFULL)
+ #define GET_DEVID(x)       (((x)->conf >> 8)  & 0xFFFFULL)
+@@ -285,22 +283,31 @@ static void perf_iommu_start(struct perf
+ 	WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
+ 	hwc->state = 0;
+ 
++	/*
++	 * To account for power-gating, which prevents write to
++	 * the counter, we need to enable the counter
++	 * before setting up counter register.
++	 */
++	perf_iommu_enable_event(event);
++
+ 	if (flags & PERF_EF_RELOAD) {
+-		u64 prev_raw_count = local64_read(&hwc->prev_count);
++		u64 count = 0;
+ 		struct amd_iommu *iommu = perf_event_2_iommu(event);
+ 
++		/*
++		 * Since the IOMMU PMU only support counting mode,
++		 * the counter always start with value zero.
++		 */
+ 		amd_iommu_pc_set_reg(iommu, hwc->iommu_bank, hwc->iommu_cntr,
+-				     IOMMU_PC_COUNTER_REG, &prev_raw_count);
++				     IOMMU_PC_COUNTER_REG, &count);
+ 	}
+ 
+-	perf_iommu_enable_event(event);
+ 	perf_event_update_userpage(event);
+-
  }
  
- DECLARE_RTL_COND(rtl_mac_ocp_e00e_cond)
+ static void perf_iommu_read(struct perf_event *event)
+ {
+-	u64 count, prev, delta;
++	u64 count;
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	struct amd_iommu *iommu = perf_event_2_iommu(event);
+ 
+@@ -311,14 +318,11 @@ static void perf_iommu_read(struct perf_
+ 	/* IOMMU pc counter register is only 48 bits */
+ 	count &= GENMASK_ULL(47, 0);
+ 
+-	prev = local64_read(&hwc->prev_count);
+-	if (local64_cmpxchg(&hwc->prev_count, prev, count) != prev)
+-		return;
+-
+-	/* Handle 48-bit counter overflow */
+-	delta = (count << COUNTER_SHIFT) - (prev << COUNTER_SHIFT);
+-	delta >>= COUNTER_SHIFT;
+-	local64_add(delta, &event->count);
++	/*
++	 * Since the counter always start with value zero,
++	 * simply just accumulate the count for the event.
++	 */
++	local64_add(count, &event->count);
+ }
+ 
+ static void perf_iommu_stop(struct perf_event *event, int flags)
+@@ -328,15 +332,16 @@ static void perf_iommu_stop(struct perf_
+ 	if (hwc->state & PERF_HES_UPTODATE)
+ 		return;
+ 
++	/*
++	 * To account for power-gating, in which reading the counter would
++	 * return zero, we need to read the register before disabling.
++	 */
++	perf_iommu_read(event);
++	hwc->state |= PERF_HES_UPTODATE;
++
+ 	perf_iommu_disable_event(event);
+ 	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+ 	hwc->state |= PERF_HES_STOPPED;
+-
+-	if (hwc->state & PERF_HES_UPTODATE)
+-		return;
+-
+-	perf_iommu_read(event);
+-	hwc->state |= PERF_HES_UPTODATE;
+ }
+ 
+ static int perf_iommu_add(struct perf_event *event, int flags)
 
 
