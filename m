@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615A6406353
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4204063EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240975AbhIJAq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
+        id S234477AbhIJAvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232550AbhIJATA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:19:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AFE2611EF;
-        Fri, 10 Sep 2021 00:17:38 +0000 (UTC)
+        id S231163AbhIJAUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 235F2611CA;
+        Fri, 10 Sep 2021 00:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233058;
-        bh=PywQY83TtiMI0PdTcLzgo31hypntOHwyDabvvSB0vbk=;
+        s=k20201202; t=1631233149;
+        bh=57vFTcOJ+yFREvKnkKYBx44O4OYEhdto7aRuTkiK8wg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HcCc+dsJ3fcFOPOFA8AvwCSykEd/JkHubtPj8E1M4ZPg/55smrtXmVCR95I7G8yKX
-         otBezZfynPsasgqQE6liqfW8ixP0mklq8KBPUoPhgHqQ0GocSPI0s1Hxjf4LHY27xV
-         wvUBlSzsq6RTEuaGbJBjAaIaFNMVj4XmMxcFcz1QMgz2ANHP/O2DUy9jz8Ks2bNfH5
-         XwHiVxGJpeop9YmlfXTdH6wj04C7/xf1hEjpuO94yjUSjbQLMdKsPD12X0Rg0++l1H
-         VexNp9iETluDvNx567bgC+LwlvYKv1X7dSxibaHF1KgXLC+QrcU7/ckxbvFzWUc3zG
-         WXDetiWUJxGsA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: [PATCH v4 3/3] x86/sgx: Document SGX_MemTotal to Documentation/x86/meminfo.rst
-Date:   Fri, 10 Sep 2021 03:17:26 +0300
-Message-Id: <20210910001726.811497-3-jarkko@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210910001726.811497-1-jarkko@kernel.org>
-References: <20210910001726.811497-1-jarkko@kernel.org>
+        b=lb+E9Xo8bhuS+c6/S9jyIgnHZZ6nrQuvyQdu3I/zht9BuqZ4dM8FLNCWz/BVMmRxv
+         BJXVvPA5GMHAcs4OCmN5XuTcHmUICz0XECaDVpN9lWKAsuq5LACxJbFfO1e+UjiGdn
+         mBm9pXCrH1gk3SxnC4WLrj2NbVo+oYQBALw63xCcE7NBD8advMdsbvlf+qE6MS/EFA
+         lEjnrosni3oi2RIxbco5meAGpzIT7HivRLNcxxhX1a6V0jElRwBjUeDe3XDKGqDpkD
+         tiB2eTWEB433qy/6S+ik6QnH4+4IHrACZznhaCx5K1v17ejJBSJDdJmGcIhxIeFDEI
+         fFlBxW8daNCGA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Lukas Czerner <lczerner@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.13 34/88] jbd2: fix clang warning in recovery.c
+Date:   Thu,  9 Sep 2021 20:17:26 -0400
+Message-Id: <20210910001820.174272-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210910001820.174272-1-sashal@kernel.org>
+References: <20210910001820.174272-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document SGX_MemTotal field of /proc/meminfo to
-Documentation/x86/meminfo.rst. This is a new file for x86 specific
-meminfo fields.
+From: Theodore Ts'o <tytso@mit.edu>
 
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+[ Upstream commit 390add0cc9f4d7fda89cf3db7651717e82cf0afc ]
+
+Remove unused variable store which was never used.
+
+This fix is also in e2fsprogs commit 99a2294f85f0 ("e2fsck: value
+stored to err is never read").
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-v4:
-* A new patch.
- Documentation/x86/meminfo.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
- create mode 100644 Documentation/x86/meminfo.rst
+ fs/jbd2/recovery.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/x86/meminfo.rst b/Documentation/x86/meminfo.rst
-new file mode 100644
-index 000000000000..999b676a04a8
---- /dev/null
-+++ b/Documentation/x86/meminfo.rst
-@@ -0,0 +1,11 @@
-+This document describes x86 specific fields of /proc/meminfo.
-+
-+Supplemental fields for /proc/meminfo
-+=====================================
-+
-+SGX_MemTotal
-+                Total usable physical SGX memory, also known as Enclave
-+                Page Cache (EPC), in kB's. This is the physical memory
-+                used for enclave pages. It is below the amount set in
-+                the BIOS: a portion of that memory is required for
-+                the state of the enclave pages.
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 4c4209262437..ba979fcf1cd3 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -760,7 +760,6 @@ static int do_one_pass(journal_t *journal,
+ 				 */
+ 				jbd_debug(1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
+ 					  next_commit_ID);
+-				err = 0;
+ 				brelse(bh);
+ 				goto done;
+ 			}
 -- 
-2.25.1
+2.30.2
 
