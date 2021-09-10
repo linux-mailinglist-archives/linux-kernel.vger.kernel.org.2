@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6DA406591
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974CB40658E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhIJCOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:14:40 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:31865 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhIJCOj (ORCPT
+        id S229728AbhIJCN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:13:56 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46026 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhIJCNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:14:39 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 18A2D44M010730;
-        Fri, 10 Sep 2021 11:13:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 18A2D44M010730
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631239985;
-        bh=sgPJXoTajAmVGHS5iIFMa+U79emXCk2kogyKNFILe4A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1ywusa9vWY7DJjllu1FN3w6cvqRlUJdVlEAiGAi2VLv4JQqaJlCNpU/+I2n1tciJR
-         lFOUGX/uZ4PJ4Rr9onJhRLKGL7NG/ngbnxeVaeqnp7vCQ/FH4AD5iLIUjkIulQ85o1
-         SpktyzVJpXnzjQ3vGShHaOrDxtWQtyM5lIUHlK7bkCNr33oVHWl/C9aclDzJesRoc3
-         XGn6nThedCcLR27d0gv0hNHdtTbJ3veu/pgUF+k1Xl/fOr0CmCeo1iwlxqe5cD68uA
-         pSiNRDHc7wKSQP0gzY7npX8NCAtUmDOvJ1KrOB+4kwT1LMhD3mLqH1pe3/vy22LmSg
-         OYqtS2xSQ7VCA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so427167pjr.1;
-        Thu, 09 Sep 2021 19:13:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531dUOHt/KWzu0vJ8oILvHD6fRpko6fuHUB702ObDb4AS2us5qL4
-        0S/7F/ii3jHofJH3N/PXOgiY64F2xYKe2QJ4wHI=
-X-Google-Smtp-Source: ABdhPJxuux86ydKbSgkuefvanEMhYmIWHEo9acCeEgvLIlswP7SMLWwOgLSO2fRtFlj0fYLR3L/yPoskO/9htP1Y8uo=
-X-Received: by 2002:a17:902:6b42:b0:13a:54d0:39c4 with SMTP id
- g2-20020a1709026b4200b0013a54d039c4mr5506437plt.42.1631239984466; Thu, 09 Sep
- 2021 19:13:04 -0700 (PDT)
+        Thu, 9 Sep 2021 22:13:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Unqfudi_1631239952;
+Received: from B-W5MSML85-1937.local(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Unqfudi_1631239952)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 10:12:33 +0800
+From:   "taoyi.ty" <escape@linux.alibaba.com>
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+To:     Tejun Heo <tj@kernel.org>
+Cc:     gregkh@linuxfoundation.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTjmP0EGEWGYhroM@slm.duckdns.org>
+Message-ID: <7b8d68c6-9a1c-dc19-e430-e044e4c4f210@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 10:12:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210901164952.538834-1-arielmarcovitch@gmail.com>
-In-Reply-To: <20210901164952.538834-1-arielmarcovitch@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 10 Sep 2021 11:12:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATFq0CwzVmsGon6rXuNV2eaEYLyNPexkncK4ssO1N35tQ@mail.gmail.com>
-Message-ID: <CAK7LNATFq0CwzVmsGon6rXuNV2eaEYLyNPexkncK4ssO1N35tQ@mail.gmail.com>
-Subject: Re: [PATCH v2] checkkconfigsymbols.py: Remove skipping of help lines
- in parse_kconfig_file
-To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
-Cc:     Valentin Rothberg <valentinrothberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTjmP0EGEWGYhroM@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 1:50 AM Ariel Marcovitch
-<arielmarcovitch@gmail.com> wrote:
->
-> When parsing Kconfig files to find symbol definitions and references,
-> lines after a 'help' line are skipped until a new config definition
-> starts.
->
-> However, Kconfig statements can actually be after a help section, as
-> long as these have shallower indentation. These are skipped by the
-> parser.
->
-> This means that symbols referenced in this kind of statements are
-> ignored by this function and thus are not considered undefined
-> references in case the symbol is not defined.
->
-> Remove the 'skip' logic entirely, as it is not needed if we just use the
-> STMT regex to find the end of help lines.
->
-> However, this means that keywords that appear as part of the help
-> message (i.e. with the same indentation as the help lines) it will be
-> considered as a reference/definition. This can happen now as well, but
-> only with REGEX_KCONFIG_DEF lines. Also, the keyword must have a SYMBOL
-> after it, which probably means that someone referenced a config in the
-> help so it seems like a bonus :)
->
-> The real solution is to keep track of the indentation when a the first
-> help line in encountered and then handle DEF and STMT lines only if the
-> indentation is shallower.
->
-> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
-> ---
+I am glad to receive your reply.
 
-Applied to linux-kbuild. Thanks.
+cgroup pool is a relatively simple solution that I think can
+
+solve the problem.
+
+I have tried making locking more granular, but in the end found
+
+it too diffcult. cgroup_mutex protects almost all operation related
+
+to cgroup. If not use cgroup_mutex, I have no idea how to design
+
+lock mechanism to take both concurrent performance and
+
+existing interfaces into account. Do you have any good advice?
 
 
->  scripts/checkkconfigsymbols.py | 8 --------
->  1 file changed, 8 deletions(-)
->
-> diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
-> index b9b0f15e5880..4f9dc98f3f60 100755
-> --- a/scripts/checkkconfigsymbols.py
-> +++ b/scripts/checkkconfigsymbols.py
-> @@ -34,7 +34,6 @@ REGEX_SOURCE_SYMBOL = re.compile(SOURCE_SYMBOL)
->  REGEX_KCONFIG_DEF = re.compile(DEF)
->  REGEX_KCONFIG_EXPR = re.compile(EXPR)
->  REGEX_KCONFIG_STMT = re.compile(STMT)
-> -REGEX_KCONFIG_HELP = re.compile(r"^\s+help\s*$")
->  REGEX_FILTER_SYMBOLS = re.compile(r"[A-Za-z0-9]$")
->  REGEX_NUMERIC = re.compile(r"0[xX][0-9a-fA-F]+|[0-9]+")
->  REGEX_QUOTES = re.compile("(\"(.*?)\")")
-> @@ -432,7 +431,6 @@ def parse_kconfig_file(kfile):
->      lines = []
->      defined = []
->      references = []
-> -    skip = False
->
->      if not os.path.exists(kfile):
->          return defined, references
-> @@ -448,12 +446,6 @@ def parse_kconfig_file(kfile):
->          if REGEX_KCONFIG_DEF.match(line):
->              symbol_def = REGEX_KCONFIG_DEF.findall(line)
->              defined.append(symbol_def[0])
-> -            skip = False
-> -        elif REGEX_KCONFIG_HELP.match(line):
-> -            skip = True
-> -        elif skip:
-> -            # ignore content of help messages
-> -            pass
->          elif REGEX_KCONFIG_STMT.match(line):
->              line = REGEX_QUOTES.sub("", line)
->              symbols = get_symbols_in_line(line)
->
-> base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
-> --
-> 2.25.1
->
+thanks,
 
 
--- 
-Best Regards
-Masahiro Yamada
+Yi Tao
+
+
+On 2021/9/9 上午12:35, Tejun Heo wrote:
+> Hello,
+>
+> On Wed, Sep 08, 2021 at 08:15:11PM +0800, Yi Tao wrote:
+>> In order to solve this long-tail delay problem, we designed a cgroup
+>> pool. The cgroup pool will create a certain number of cgroups in advance.
+>> When a user creates a cgroup through the mkdir system call, a clean cgroup
+>> can be quickly obtained from the pool. Cgroup pool draws on the idea of
+>> cgroup rename. By creating pool and rename in advance, it reduces the
+>> critical area of cgroup creation, and uses a spinlock different from
+>> cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
+>> competition with attaching processes on the other hand.
+> I'm not sure this is the right way to go about it. There are more
+> conventional ways to improve scalability - making locking more granular and
+> hunting down specific operations which take long time. I don't think cgroup
+> management operations need the level of scalability which requires front
+> caching.
+>
+> Thanks.
+>
