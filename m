@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C88406548
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BFE40654E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhIJBkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:40:01 -0400
-Received: from mail-eopbgr1300114.outbound.protection.outlook.com ([40.107.130.114]:11936
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229766AbhIJBkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:40:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HpBTaB9O7m2U+V4magvgNAbnB4WnZ04bqXz1JsbGlOwlk/bOMHyoDvJTLu0x2JRrzOVfZExACpLsOstFbiQ1IMwst+997OomU2HDdbDtg7tEmfw7jt6A/WC5I4XRRFyWo3OqdS/snxi/IrUFm2XwGXj4feDBBefS8o7+3gzPTRo3PSJl/Ee2jAvNOhOG7nO9IlncvS8ez2NiqVTGgEVZliAqGBaVl8k795D+QU/8Ya+MLnU1kZZFUcR2S7flmqJ8T61R7ByARa6/E/tky6F08pm7QmmxCiEcvDLzZez2eWd6s64cLRNGESgUEpBXtuo4ugOOCv18QRVz5cbaLDK4DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=OJ5UhXj4twMkluN7cIOzQ46DBkCj2/Iq8A1kaDcBzDI=;
- b=WRVZxd3fRJgz1sEvTwVozI5zf3Pb2pcPrifApBFCaMo55to343oRMFygD1umWcgJCQBiD40RQVSDZ0GeLdDClRxxRb39nqOGSGFQKAOg7UFy1x5a8E2hTbFyfpa1UqB3JoM4hY4BAX2TLNow0UymvUb3KmhxI3/TaUdRz+neioRbZ84qtDcVvZlVcjLxRcfrHTWLi9QLnMeytHTxt0ez0hOltFZ+CynjdIsQu6TOL/O+iqsop/TFdRIpcjNSwCpUsyVmXSFYkCAqXQbeuUglHHRDlEud+5LugSwli9ZutOXgebJy/DBTysC7DApiv8ebaa+djfeRQu/NgNo0puqhUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OJ5UhXj4twMkluN7cIOzQ46DBkCj2/Iq8A1kaDcBzDI=;
- b=nK/u9Sr48oSePlnar/Ac24NYrTMaC+rn5FDco54DoQUMSna2WD5WDehJx4MdWqoOinFZjAkLfBWwbW81XOuIj1bGI40sXuSlcXotZwoZjYBzAdJS0MgauJ8xtdiZaScTFUFBsP1/ET1H6QCvtLVGma8Pt82HuTG3K6+z0K4+5cK3DyKfftr5RvsBQPWCE8P5KfpK73ArC8T8xkwRsP0qprIKrNMKzGBCvfe9k7OKXldZJhdxxwvQYf5GrjevS3QIjlJmvkdtdFKmsOkonDEIEvpvYTX1MPB89g9qUz/Al15jjL5URUG4RZDKiu1pBqDrqmzNCxuloEzifbfFvbwRTQ==
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3553.apcprd06.prod.outlook.com (2603:1096:202:31::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Fri, 10 Sep
- 2021 01:38:46 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4457.026; Fri, 10 Sep 2021
- 01:38:45 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "yulei.sh@bytedance.com" <yulei.sh@bytedance.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "osk@google.com" <osk@google.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>
-Subject: RE: [PATCH v3 1/3] dt-bindings: aspeed: Add UART routing controller
-Thread-Topic: [PATCH v3 1/3] dt-bindings: aspeed: Add UART routing controller
-Thread-Index: AQHXpWWkyhyvOPma00qLCHgaz2i9raubotKAgADZLHA=
-Date:   Fri, 10 Sep 2021 01:38:45 +0000
-Message-ID: <HK0PR06MB3779990AF1A5BF5300DC9B0E91D69@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210909102907.32037-1-chiawei_wang@aspeedtech.com>
- <20210909102907.32037-2-chiawei_wang@aspeedtech.com>
- <1631190773.304300.200343.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1631190773.304300.200343.nullmailer@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d2411d1b-d20e-4781-11c6-08d973fbbad9
-x-ms-traffictypediagnostic: HK2PR06MB3553:
-x-microsoft-antispam-prvs: <HK2PR06MB3553192BC7A74FE7032B2B6891D69@HK2PR06MB3553.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JLVZ5lMzVN7S0+N2ifT5Tjc7YqeGXIqerRWq0f+Wefg+50TZth5zR2sWrFcVISfIjyusUnUNP3tOg1sPZkoZiNGK7NnHjE6eigwEoJEjC1KTupYaJnyTw4par7lqJCq2IB27n+mSI4d2O03pMHSIPqalJsblj/VhH+Pj6Qk7WwcqoJjvSKsYUvcyN2vTOx4A3eHiCODrVMtDu4IKLR2FDY/CiK+75MxRejffn6zgi9HKKWhCDmS9OEjX4rEqIG6ZFEywT0pnfdEB3PKJWo1EWRAGwN0Wq6qx4i85JMXbxs/OHAxp529Mz7ZgF0iTxpzs2a22dcJ1ZXJnfr4gQ9obkfvPPUviDy6tX+OYexcnt0dKuaHy4jJ5kvupb3fZX1/gSKvIzuClq1GNYpgHv6QaAJjT8nkNVS4GWXXc1xvD2tvs7cYkSS9mD6Nvg60p0GAl1zrR6edy5ErwNkob1vVj72ICkF1ligup9JZ8r88H3BIdnrvouWs5drUkFGICPxnir71Jg0McTppOUcwrRFwxgG0zzGlWfR3q/Khu/+xBygG9AeaNiMHe+tJX7OF7i73wxGOgi8KQVRvhlByNqKbX+w0KCqh9IDvkJWfa9JFJSPzMj44CwtMZ2PZ1dfK0+c/M54mAkQKUEr4KvIOdDs+vMQunUTbHQsrEb1lyTkOJelU0mXpm37EgK3q9Dx3vm97oaYc86hnFLboGk93xYZLN/t7TSXxzqaMcIWr/sFzQQBAxEBL4nBkqQ4eModfEasdd/H6Y4GDCkRTE0q9jdVC67Agjg3iv62Oens0IvhycD+U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39840400004)(136003)(376002)(346002)(54906003)(52536014)(6506007)(66556008)(83380400001)(26005)(66476007)(64756008)(8676002)(66446008)(8936002)(186003)(7416002)(71200400001)(66946007)(76116006)(9686003)(38100700002)(122000001)(38070700005)(86362001)(33656002)(55016002)(7696005)(6916009)(478600001)(966005)(316002)(5660300002)(4326008)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N2F2lC3RloQtoIo5KZQM43EDDq87WsdKKjvG23v7nAOCVI1R2US1jJhahfnD?=
- =?us-ascii?Q?4y8YMAkZTpaPSD0jn0zh0HOPY4R7JMqFjm4e7Ktd4uRFrtBAkqzBxvBBRjX/?=
- =?us-ascii?Q?KTtbI5AQEIDd5UYVdZFqXihNuVjVaOt1G5Vk9mibc5NmWg86DhzBXJbbak63?=
- =?us-ascii?Q?sQDC+didOJSD/w1/IjKKL+W+bc1BKgVThnduMmqmSh6JfSW0nGxr3N4GCo+B?=
- =?us-ascii?Q?zl7PP4/RzOgfhyT36fB4cMSxROQYwo0ewAa9FJ4DC5EXcWFGoeNiWD7jhqdM?=
- =?us-ascii?Q?PGUDKu/oXDXFMmmKED/T16kTJ2wTjvIcMsL8YppwxVuMxCgpSEVEd/w6OTWp?=
- =?us-ascii?Q?TA9Hytii+OQmtaAuWxPQeh0/y0O0l69GU9HN+4+9VFnSsAgCf1k61f5rMkXc?=
- =?us-ascii?Q?SCkQvvkN93fyB+AGdaQAXDz+VIV0gSPxDhMhmaP96kRueyMspE1GdOTGOjcO?=
- =?us-ascii?Q?76+mibuKMmXdUI75e9Zqi4HZM7H0mWrtKnsKo80Bu7/RxSJRYFnM1yPF1QUt?=
- =?us-ascii?Q?ZiFWxjnzkP9a6QcFCZCjECZX0vPsUnEdEmtRj2c2I6xtWAG0ZTCcjt2sKHzt?=
- =?us-ascii?Q?q58nrAGhvse+wCT7NYZIUmMzH3eVYM8Nzp0lxFFpZkCpwP9va6eS91pklaKj?=
- =?us-ascii?Q?EYDSzqm+eDO1yERxQ7a2NY83rsotXuisyOSkhDtju/P1quLCwBI4nJkGVu0r?=
- =?us-ascii?Q?p5oeUQxRRQSaHetNHe9XKKQ+7R//tBDmxSyg3tFL0SzBwWNuaoMSmYcTve6c?=
- =?us-ascii?Q?GIsMsZzoEQFjDaot71Oj9kzs5c0vvJ5LIVt4pXIEd2qJOsiyz/rm4Zm8z7n1?=
- =?us-ascii?Q?ydsjU5XjjBQWhs0xfkp1T+wLbDzFq7EGPbwgzfZTMPrSJwyf4qoSIZVOMqrB?=
- =?us-ascii?Q?xcQG4dKLbgA8qwV19CWlJlUYlaPvCVXTuNSQUJiDhSWKSHkQx5dbK4bCMEL/?=
- =?us-ascii?Q?1SBINsOWAEozdrpxW1UUHZWHEa1lxb+4r8O9qJ0QeHFotebK0w5VpRw3BT5A?=
- =?us-ascii?Q?/LkfiDC2JUo8rVqP90DYmCsytabDwLVT2AR2u9CD4IhjsIybGgNNv5ULp6ap?=
- =?us-ascii?Q?OLqmSxEOaJA4hRafWrSkyS08NLWLlriT77zhSjPcqlLIOYx+fb/2pjhFpydo?=
- =?us-ascii?Q?HuDUnUm8OUKN2ksa3cICzFXJhrT0ovaq6qoVXZpRSlU5wu73HbvIjaGg96Hm?=
- =?us-ascii?Q?rpw4IMTJWkNgnH0t8Hr0gnIzW+EfolTgBI7CFXK1HQa564nVQcKEB1Zf8Ryp?=
- =?us-ascii?Q?uzV0mXGDyW/wl2RpJnjl+oAZ/y9gGjVkpz5yVaMI3TwiT1swZ2BYH5S53jpn?=
- =?us-ascii?Q?OY4HcUeBZZOtCSO8i+n4Xmux?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230366AbhIJBlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhIJBlR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 21:41:17 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE70C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:40:07 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id r2so370677pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:40:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nw1XuRphVhmebMWySqSgscevY/3iUqmrlDyrnRFrHKA=;
+        b=S5YmgtMQkCudzpyQLODl0re3GrSSO7j8nvdeHfwyXadBlaer9vIIbVnMHIal02p63S
+         yowjL4wta0GDTHwMhyqa3fDnfZMZJc3SXllkdzD2rbKtxX8QHqU7aHWiL8iFVSYDEexp
+         Y5TBwOxhymRo4xijghBmEvLxS1Ut7eQnIb0/QbJ1nubo+kg2T6n0+ssFpPowyf1NqBeP
+         fymykYwYYMll6MN3tm4j9V3CTS/arPS7Y/NBlRT+dXecnnp+MkGFxJWQuL12PIT84yOl
+         T84piIPgK4V3IDM6TMYMBjo1XXaSjReUCGT/8bUwsNN1EcampT+IhcGoljfYGcQA7MWU
+         BfZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nw1XuRphVhmebMWySqSgscevY/3iUqmrlDyrnRFrHKA=;
+        b=dmqk5E/pV2DYGh5hnsWz7R7S1vyNqMOpQWLcLISL5NtCSzU+hJL1KwyhMHWOy94ion
+         tPPSIbm6925mTFC4bqeM5CFjGoz7Q5iwj9rBjOTOxDpXCqDSHC6evr17fW86ETbZwN3H
+         5SOCLpnzS8YigvUu03YY8MLCm+FMQQka+9wTfKQmlky/W1A35A33PJGUsoPYtNHQ36oL
+         GGRGVQKVJDnRdIQfpGzKAoyJmlvinlPpgrXL3YlSiLEfEo9uUPIX93Wo65TMcZ9demjY
+         84vW2ub8XaQggrGQb1DICcOLljqs5oT5BjEredltt2TTaU/AKLKsihSQRO1U29z/AaUZ
+         XlDg==
+X-Gm-Message-State: AOAM530rX7A2vB6+Xn/ykSxtQwDikK7ZPmv7dCSdmgtimfqWqx7CBz+e
+        L3lr1QfUgWzyq2IBhVgXmAy6wQ==
+X-Google-Smtp-Source: ABdhPJzhcYHZJOzZKYUuqzZuCXltDD1Cm6NY9QEhexyPCdpteDd8b5Dr69VBiaHl1B9IRYv7mchLXw==
+X-Received: by 2002:a05:6a00:aca:b029:392:9c79:3a39 with SMTP id c10-20020a056a000acab02903929c793a39mr5815686pfl.57.1631238006377;
+        Thu, 09 Sep 2021 18:40:06 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y13sm3326392pfb.115.2021.09.09.18.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 18:40:05 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 01:40:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Orr <marcorr@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3 V7] KVM, SEV: Add support for SEV intra host migration
+Message-ID: <YTq3cRq5tYbopgSd@google.com>
+References: <20210902181751.252227-1-pgonda@google.com>
+ <20210902181751.252227-2-pgonda@google.com>
+ <YTqirwnu0rOcfDCq@google.com>
+ <CAA03e5Ek=puWCXc+cTi-XNe02RXJLY7Y6=cq1g-AyxEan_RG2A@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2411d1b-d20e-4781-11c6-08d973fbbad9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2021 01:38:45.5551
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VR3gEucS5JN1QgJUcNVEDs18JQooOg7ztny+5jQWZ83m7SSD4obru4jNLManzHdyI3B0fZwdfjJ4vlNmNntXCEHNbIvYnZ+RkkRfEYb9Nt4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3553
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA03e5Ek=puWCXc+cTi-XNe02RXJLY7Y6=cq1g-AyxEan_RG2A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-> From: Rob Herring <robh@kernel.org>
-> Sent: Thursday, September 9, 2021 8:33 PM
->=20
-> On Thu, 09 Sep 2021 18:29:05 +0800, Chia-Wei Wang wrote:
-> > Add dt-bindings for Aspeed UART routing controller.
+On Thu, Sep 09, 2021, Marc Orr wrote:
+> > > +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
+> > > +{
+> > > +     struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
+> > > +     struct file *source_kvm_file;
+> > > +     struct kvm *source_kvm;
+> > > +     int ret;
+> > > +
+> > > +     ret = svm_sev_lock_for_migration(kvm);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     if (!sev_guest(kvm) || sev_es_guest(kvm)) {
+> > > +             ret = -EINVAL;
+> > > +             pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
 > >
-> > Signed-off-by: Oskar Senft <osk@google.com>
-> > Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> > ---
-> >  .../bindings/soc/aspeed/uart-routing.yaml     | 70
-> +++++++++++++++++++
-> >  1 file changed, 70 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
-> >
->=20
-> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
-> dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->=20
-> yamllint warnings/errors:
->=20
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/soc/aspeed/uart-routing.example.dt.yaml=
-:
-> 0:0: /example-0/lpc@1e789000: failed to match any schema with compatible:
-> ['aspeed,ast2600-lpc-v2', 'simple-mfd', 'syscon']
+> > Linux generally doesn't log user errors to dmesg.  They can be helpful during
+> > development, but aren't actionable and thus are of limited use in production.
+> 
+> Ha. I had suggested adding the logs when I reviewed these patches
+> (maybe before Peter posted them publicly). My rationale is that if I'm
+> looking at a crash in production, and all I have is a stack trace and
+> the error code, then I can narrow the failure down to this function,
+> but once the function starts returning the same error code in multiple
+> places now it's non-trivial for me to deduce exactly which condition
+> caused the crash. Having these logs makes it trivial. However, if this
+> is not the preferred Linux style then so be it.
 
-The "aspeed,ast2600-lpc-v2" compatible string is described in the .txt file=
- 'aspeed-lpc.txt'.
-Do we have to firstly convert the text file into YAML one to resolve this d=
-ependency issue?
+I don't necessarily disagree, but none of these errors conditions should so much
+as sniff production.  E.g. if userspace invokes this on a !KVM fd or on a non-SEV
+source, or before guest_state_protected=true, then userspace has bigger problems.
+Ditto if the dest isn't actual KVM VM or doesn't meet whatever SEV-enabled/disabled
+criteria we end up with.
 
-Regards,
-Chiawei
+The mismatch in online_vcpus is the only one where I could reasonablly see a bug
+escaping to production, e.g. due to an orchestration layer mixup.
 
->=20
-> doc reference errors (make refcheckdocs):
->=20
-> See https://patchwork.ozlabs.org/patch/1526149
->=20
-> This check can fail if there are any dependencies. The base for a patch s=
-eries is
-> generally the most recent rc1.
->=20
-> If you already ran 'make dt_binding_check' and didn't see the above error=
-(s),
-> then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->=20
-> pip3 install dtschema --upgrade
->=20
-> Please check and re-submit.
+For all of these conditions, userspace _must_ be aware of the conditions for success,
+and except for guest_state_protected=true, userspace has access to what state it
+sent into KVM, e.g. it shouldn't be difficult for userspace dump the relevant bits
+from the src and dst without any help from the kernel.
 
+If userspace really needs kernel help to differentiate what's up, I'd rather use
+more unique errors for online_cpus and guest_state_protected, e.g. -E2BIG isn't
+too big of a strecth for the online_cpus mismatch.
