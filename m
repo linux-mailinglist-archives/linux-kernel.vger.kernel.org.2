@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3D740740F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD7D407413
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbhIJXwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhIJXwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C14761215;
-        Fri, 10 Sep 2021 23:50:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631317857;
-        bh=uIpzXfyi8+fV+u3rmhdW4lpuq9BRwztl6U+ksNKr5PI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PIBWcXKzrLpgOJluRe/nYh34CXuRmxKG27Dbkve6wm+0eJ7x7H6z1IbAhgZArFREO
-         1az18KO+TyHJppslmxXpR0LoXiXckEnto/CeJUadea/vLrq5JZXOn6QE9u/9gvPh3l
-         BzFIULLWf1jk/uYBj1MjA2kQ+Z1d8xjnPxe4YPNw74JLvUyQzYkn2Lr+sf4eFvxeSh
-         /IuDhsR1qGJ67svnFkpkL4xyAqunt6zgwVkeAUJW9U61xopJL6l2khHnwWL/kBEz06
-         OpdpNLK0eu9nvb5P/G60oOIskv+VfLNCD8sMEtGb10Nw/LMYD/E2fhoXFATagx+e79
-         InTBhzg2s9w6A==
-Subject: Re: [PATCH 10/10] vmlinux.lds.h: remove old check for GCC 4.9
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-References: <20210910234047.1019925-1-ndesaulniers@google.com>
- <20210910234047.1019925-11-ndesaulniers@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <9433c702-ecf2-4197-2456-59857d38538d@kernel.org>
-Date:   Fri, 10 Sep 2021 16:50:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234787AbhIJXzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:55:40 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:47383 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232897AbhIJXzj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:55:39 -0400
+Received: from MTA-15-3.privateemail.com (MTA-15-1.privateemail.com [198.54.118.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 945EE829C2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:54:26 -0400 (EDT)
+Received: from mta-15.privateemail.com (localhost [127.0.0.1])
+        by mta-15.privateemail.com (Postfix) with ESMTP id 2C61B18000B2;
+        Fri, 10 Sep 2021 19:54:25 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.209])
+        by mta-15.privateemail.com (Postfix) with ESMTPA id 4FAAF18000A3;
+        Fri, 10 Sep 2021 19:54:24 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Hamza Mahfooz <someguy@effective-light.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH v2] dma-debug: prevent an error message from causing runtime problems
+Date:   Fri, 10 Sep 2021 19:53:37 -0400
+Message-Id: <20210910235337.13172-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210910234047.1019925-11-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 4:40 PM, Nick Desaulniers wrote:
-> Now that GCC 5.1 is the minimally supported version of GCC, we can
-> effectively revert
-> 
-> commit 85c2ce9104eb ("sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to
-> 64 bytes for GCC-4.9")
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->   include/asm-generic/vmlinux.lds.h | 4 ----
->   1 file changed, 4 deletions(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index aa50bf2959fe..f2984af2b85b 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -116,11 +116,7 @@
->    * GCC 4.5 and later have a 32 bytes section alignment for structures.
->    * Except GCC 4.9, that feels the need to align on 64 bytes.
+For some drivers, that use the DMA API. This error message can be reached
+several millions of times per second, causing spam to the kernel's printk
+buffer and bringing the CPU usage up to 100% (so, it should be rate
+limited). However, since there is at least one driver that is in the
+mainline and suffers from the error condition, it is more useful to
+err_printk() here instead of just rate limiting the error message (in hopes
+that it will make it easier for other drivers that suffer from this issue
+to be spotted).
 
-Comment should be adjusted.
+Link: https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com
+Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+v2: use err_printk() and make some clarifications in the commit message.
+---
+ kernel/dma/debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->    */
-> -#if __GNUC__ == 4 && __GNUC_MINOR__ == 9
-> -#define STRUCT_ALIGNMENT 64
-> -#else
->   #define STRUCT_ALIGNMENT 32
-> -#endif
->   #define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
->   
->   /*
-> 
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 6c90c69e5311..718a7f455df6 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -567,7 +567,8 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+ 		pr_err("cacheline tracking ENOMEM, dma-debug disabled\n");
+ 		global_disable = true;
+ 	} else if (rc == -EEXIST) {
+-		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported\n");
++		err_printk(entry->dev, entry, "cacheline tracking EEXIST, "
++			   "overlapping mappings aren't supported\n");
+ 	}
+ }
+ 
+-- 
+2.33.0
+
