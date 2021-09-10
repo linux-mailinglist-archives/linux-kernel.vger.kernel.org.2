@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66FA406573
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966F1406574
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhIJBzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:55:11 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39045 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhIJBzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:55:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="284668191"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="284668191"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:54:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="548935759"
-Received: from jianjunz-mobl2.ccr.corp.intel.com (HELO localhost) ([10.249.170.205])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:53:54 -0700
-Date:   Fri, 10 Sep 2021 09:53:51 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Hou Wenlong <houwenlong93@linux.alibaba.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Avi Kivity <avi@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] kvm: x86: Introduce hypercall x86 ops for
- handling hypercall not in cpl0
-Message-ID: <20210910015351.yxvgv2nedgojmmeo@linux.intel.com>
-References: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
- <04a337801ad5aaa54144dc57df8ee2fc32bc9c4e.1631188011.git.houwenlong93@linux.alibaba.com>
- <20210909163901.2vvozmkuxjcgabs5@linux.intel.com>
- <YTo/t4G1iI28oDmk@google.com>
+        id S229661AbhIJBzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:55:14 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:32992 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229648AbhIJBzM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 21:55:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Unqrd8t_1631238837;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Unqrd8t_1631238837)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 09:53:58 +0800
+Subject: Re: [Ocfs2-devel] [PATCH v2] ocfs2: Fix handle refcount leak in two
+ exception handling paths
+To:     Wengang Wang <wen.gang.wang@oracle.com>
+Cc:     Chenyuan Mi <cymi20@fudan.edu.cn>,
+        akpm <akpm@linux-foundation.org>, Xin Tan <tanxin.ctf@gmail.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+References: <20210908102055.10168-1-cymi20@fudan.edu.cn>
+ <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
+ <6018AF95-3613-4D43-A3E6-7BAA0E0BE009@oracle.com>
+ <c48fb54e-0dd9-42c7-f53d-2ea58fb97255@linux.alibaba.com>
+ <CED0D2AD-7905-490E-8D36-50D192CD9BF1@oracle.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <ee86ea1a-0348-e975-3c67-8d574eaadbe3@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 09:53:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTo/t4G1iI28oDmk@google.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <CED0D2AD-7905-490E-8D36-50D192CD9BF1@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 05:09:11PM +0000, Sean Christopherson wrote:
-> On Fri, Sep 10, 2021, Yu Zhang wrote:
-> > On Thu, Sep 09, 2021 at 07:55:23PM +0800, Hou Wenlong wrote:
-> > > Per Intel's SDM, use vmcall instruction in non VMX operation for cpl3
-> > > it should trigger a #UD. And in VMX root operation, it should
-> > 
-> > Are you sure? IIRC, vmcall will always cause VM exit as long as CPU
-> > is in non-root mode(regardless the CPL).
+
+
+On 9/10/21 1:48 AM, Wengang Wang wrote:
 > 
-> Correct, VMCALL unconditionally causes VM-Exit in non-root mode, but Hou is
-> referring to the first fault condition of "non VMX operation".  The intent of the
-> patch is to emulate hardware behavior for CPL>0: if L1 is not in VMX operation,
-> a.k.a. not post-VMXON, then #UD, else #GP (because VMCALL #GPs at CPL>0 in VMX
-> root).
+> 
+> On Sep 9, 2021, at 4:07 AM, Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>> wrote:
+> 
+> Hi Wengang,
+> 
+> On 9/9/21 1:12 AM, Wengang Wang wrote:
+> Hi,
+> 
+> Sorry for late involving, but this doesn’t look right to me.
+> 
+> On Sep 8, 2021, at 3:51 AM, Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>> wrote:
+> 
+> 
+> 
+> On 9/8/21 6:20 PM, Chenyuan Mi wrote:
+> The reference counting issue happens in two exception handling paths
+> of ocfs2_replay_truncate_records(). When executing these two exception
+> handling paths, the function forgets to decrease the refcount of handle
+> increased by ocfs2_start_trans(), causing a refcount leak.
+> 
+> Fix this issue by using ocfs2_commit_trans() to decrease the refcount
+> of handle in two handling paths.
+> 
+> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn<mailto:cymi20@fudan.edu.cn>>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn<mailto:xiyuyang19@fudan.edu.cn>>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com<mailto:tanxin.ctf@gmail.com>>
+> 
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com<mailto:joseph.qi@linux.alibaba.com>>
+> ---
+> fs/ocfs2/alloc.c | 2 ++
+> 1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+> index f1cc8258d34a..b05fde7edc3a 100644
+> --- a/fs/ocfs2/alloc.c
+> +++ b/fs/ocfs2/alloc.c
+> @@ -5940,6 +5940,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+> status = ocfs2_journal_access_di(handle, INODE_CACHE(tl_inode), tl_bh,
+>  OCFS2_JOURNAL_ACCESS_WRITE);
+> if (status < 0) {
+> + ocfs2_commit_trans(osb, handle);
+> mlog_errno(status);
+> goto bail;
+> }
+> @@ -5964,6 +5965,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+>      data_alloc_bh, start_blk,
+>      num_clusters);
+> if (status < 0) {
+> + ocfs2_commit_trans(osb, handle);
+> 
+> As a transaction, stuff expected to be in the same handle should be treated as atomic.
+> Here the stuff includes the tl_bh and other metadata block which will be modified in ocfs2_free_clusters().
+> Coming here, some of related meta blocks may be in the handle but others are not due to the error happened.
+> If you do a commit, partial meta blocks are committed to log. — that breaks the atomic idea, it will cause FS inconsistency.
+> So what’s reason you want to commit the meta block changes, which is not all of expected, in this handle to journal log?
+> 
+> Do you really see a hit on the failure? or just you detected the refcount leak by code review?
+> 
+> You may want to look at ocfs2_journal_dirty() for the error handling part.
+> 
+> 
+> For the first error handling, since we don't call ocfs2_journal_dirty()
+> yet, so won't be a problem.
+> For the second error handling, I think we don't have a better way. Look
+> at other callers of ocfs2_free_clusters(), we simply ignore the error
+> code.
+> Anyway, we should commit transaction if starts, otherwise journal will
+> be abnormal.
+> 
+> I don't think so. If error happened, we should fail ocfs2, rather than do a partial committing.
+> 
 
-Oh, I see. It's to make the virtualized world more real. But like you said, 
-it's not KVM's target. And doing that could cause more problems - a PV guest
-expects the VMCALL to succeed, regardless it has VMX capability or its VMX is
-on or not.
+Umm... not exactly...
+Take ocfs2_free_clusters() for example, when it fails in case of EIO or
+ENOMEM, we can't just abort journal in such cases, because it is not so
+serious, only a bit blocks still occupied and they will recovery during
+the next mount. 
+That's why we have "errors=continue" in most filesystems, we should always
+consider the business continuity first.
+Also you can look at ext4_free_blocks() for reference.
 
-Thanks for the explaination.
-
-B.R.
-Yu
+Thanks,
+Joseph
