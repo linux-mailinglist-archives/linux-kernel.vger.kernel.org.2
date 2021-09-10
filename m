@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB6406DD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452ED406DE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhIJPBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbhIJPBf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:01:35 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B17CC061574;
-        Fri, 10 Sep 2021 08:00:24 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id y128so3280106oie.4;
-        Fri, 10 Sep 2021 08:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wQtNDxK+stHmlXk66BKubuUVLuPTzjYg0fIt3ivIQek=;
-        b=SYDaDPYgbgJN3VcKQZKoEAgtrCd84+T7uR+OJyE6WcjV+VguQxkSsdXPtKNkx4nQha
-         JNFYscRaBlTDzffUmBCUUppIVYfajHkSlWSWzyXpqmC767U+6R/9A5ogSRbVsK3OO0o/
-         qEwlnHPEfZQ5+N5YI8TEvgWpvCS2PxWqTFn46pLYj6WYNl3lzchHoT4kW/XnVr9uoi5W
-         77DfL0xS9jrlYpgFgMQnGxYqF+OhX5t6BXuvAbdbt2OHhvsyFAeLitmz2eEJGoMrdBcM
-         DUyHiJtGWQ60NQ+8t+eSTrG1/H8I5wB/kjfR46LhMG04SBECU40Df7WWLAqHlzOwCIpk
-         TyTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wQtNDxK+stHmlXk66BKubuUVLuPTzjYg0fIt3ivIQek=;
-        b=nXHWRAjSHgrTI5XDLZOwHdMZu7PqjIyMezvJrTf8Gd3lyROkDy9r3X5Jt1dUDxOga9
-         e/nXteHP+ie1eR0YoWaSy3YPlnyQAwQ3xX6tHCqAcouW9z6wfGsjBOpolk3w3Vdp0D2H
-         IygWQtk/HIzkHcfJv5ocBxVw/tYHUb0NRDXySbcEucmXwHYrPH+2IcXn/mnGPjk68V7j
-         lzJt5EWZ7B5x2orvTjF/113q35UNwD7a38g5aYhalgGRS0vic+ONp+SrBsecIt1yivIv
-         IfGeL6Wk3jGXq/Cvw+7S14yvjwSZfVSGwQiU2DQn6lnSrx03HzqdWHJg7TgDSG45lqUE
-         zHUA==
-X-Gm-Message-State: AOAM530xIrAwVk2LLR9zuDIBpmty+Omz3ZeKtJzOBpDud6RNDRUIVO68
-        QpzqFes3stV+T+SxTf8qkX8=
-X-Google-Smtp-Source: ABdhPJzdUeZHCJK7gVOaL66L4g1Zgwg1Z0bGxP/5YNQqApki9OrQhrZPKoyKGL3damp5l3xmW1pi4g==
-X-Received: by 2002:aca:5f04:: with SMTP id t4mr4493370oib.53.1631286023877;
-        Fri, 10 Sep 2021 08:00:23 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id s8sm1247577otd.76.2021.09.10.08.00.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 08:00:23 -0700 (PDT)
-Subject: Re: [PATCH v2 04/15] block: Add block device LED trigger integrations
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
- <20210909222513.2184795-5-arequipeno@gmail.com>
- <20210910032319.71b843d7@thinkpad>
-From:   Ian Pilcher <arequipeno@gmail.com>
-Message-ID: <4b40f4fc-4baf-c75f-e61f-310fe6d15e0c@gmail.com>
-Date:   Fri, 10 Sep 2021 10:00:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234184AbhIJPDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:03:37 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33740 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229749AbhIJPDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:03:35 -0400
+Received: from zn.tnic (p200300ec2f0f0700e42ce33fe8cf6a79.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:700:e42c:e33f:e8cf:6a79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 93BC61EC0277;
+        Fri, 10 Sep 2021 17:02:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631286138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=40kPdt7aP/VJYkQyMREfQyPgJ8o6qpk6K8Mxu6v6cSc=;
+        b=mZ0JcBF56mTU6V0YTC61tZbPl8X0LCaqV1t+QlhEk3mjWHgSHZF5dXkxFXSXhGUION3Odd
+        8c/8BBNjWwb218w1V8+ZjDkG7xQbIB2escJ8cg5SbXRf2ClULwId1eDLbmvqpxW7H+B37m
+        j71cPf0I4R1mC5Q61ol+StbImh1Vte8=
+Date:   Fri, 10 Sep 2021 17:02:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v3 2/8] mm: Introduce a function to check for
+ confidential computing features
+Message-ID: <YTtzcoFdi7Ond8Kt@zn.tnic>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <0a7618d54e7e954ee56c22ad1b94af2ffe69543a.1631141919.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210910032319.71b843d7@thinkpad>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0a7618d54e7e954ee56c22ad1b94af2ffe69543a.1631141919.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 8:23 PM, Marek Behún wrote:
-> On Thu,  9 Sep 2021 17:25:02 -0500
-> Ian Pilcher <arequipeno@gmail.com> wrote:
->> Call ledtrig_blkdev_disk_init() from device_add_disk() to ensure that
->> ledtrig is initialized to NULL, in case a driver allocates the structure
->> itself and doesn't use kzalloc()
-> 
-> No, this is not needed. If someone does not use kzalloc(), they should
-> use it. No need to fix other code here.
+On Wed, Sep 08, 2021 at 05:58:33PM -0500, Tom Lendacky wrote:
+> In prep for other confidential computing technologies, introduce a generic
 
-Yeah.  I'm honestly not sure if this is necessary or not, as I don't
-know if there are any drivers that actually have this problem.  I
-decided to include this for now, because an uninitialized pointer can
-cause memory corruption, etc., when the disk cleanup function follows a
-garbage pointer.
+preparation
 
-This recent commit seems to indicate that until recently drivers were
-responsible for doing gendisk allocation.
+> helper function, cc_platform_has(), that can be used to check for specific
+> active confidential computing attributes, like memory encryption. This is
+> intended to eliminate having to add multiple technology-specific checks to
+> the code (e.g. if (sev_active() || tdx_active())).
 
-> commit f525464a8000f092c20b00eead3eaa9d849c599e
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Fri May 21 07:50:55 2021 +0200
-> 
->     block: add blk_alloc_disk and blk_cleanup_disk APIs
->     
->     Add two new APIs to allocate and free a gendisk including the
->     request_queue for use with BIO based drivers.  This is to avoid
->     boilerplate code in drivers.
+...
 
-Were those drivers expected to use kzalloc() or otherwise zero out the
-entire structure?  I really don't know.
+> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+> new file mode 100644
+> index 000000000000..253f3ea66cd8
+> --- /dev/null
+> +++ b/include/linux/cc_platform.h
+> @@ -0,0 +1,88 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Confidential Computing Platform Capability checks
+> + *
+> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
+> + */
+> +
+> +#ifndef _CC_PLATFORM_H
 
-I think that it makes sense to defer to the block subsystem maintainers
-on this question.
+	_LINUX_CC_PLATFORM_H
+
+> +#define _CC_PLATFORM_H
 
 -- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
