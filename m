@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D876406CBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5CC406CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbhIJNNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhIJNNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:13:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5663461074;
-        Fri, 10 Sep 2021 13:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631279528;
-        bh=xHga66dm4Y9qq0uRqhXsaAzyDsRHpSACVQyB1egW9K0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eJsE8Ta6uMCzj83BNAPi3TWJsU/ek87eyc1cyWmWRbEY6LSIylTILxeLBPcCh3VqM
-         +UuMDdXOzL2lQa3ZO+22QXyIvPaBNRxbm5bJPOijU2PIlnw+VUUwwBk6Qq944OmjEt
-         RxLXy/en9uHOqzUYaD2jNDahx9TyJep9QujaFP2GGBjlD9gAgAVV2LhCdNWEnasLZG
-         uI2891BkzeNzXWtWsobyVrHnvL4wBnpSFLqWoM3EZBy8CtrltF35zKoWtE82xJZSl7
-         6dcRlyMvMJZE9sfRGf2NFUywvBlJ731VryKu7qmG6o8My6JZQ8tLbZ1xLv9HzTGXXY
-         qhT9n3wq0f8MQ==
-Received: by mail-ej1-f44.google.com with SMTP id a25so4173451ejv.6;
-        Fri, 10 Sep 2021 06:12:08 -0700 (PDT)
-X-Gm-Message-State: AOAM53075Aojjeephn1s2w1j0GtYcE22Gg43TIcWRirB/poj0IGt0NjH
-        SONdVDODKY6Z+zLolJxGxSLNE/tCzwEND1LHOA==
-X-Google-Smtp-Source: ABdhPJwxGWq0xviAjQ1uqiQ6zFb2APY00BFbtVFZJIy9PKNY22PNbijurhvlFBUTtPgsvxhftkZqTIJ49BSdm3GEVUw=
-X-Received: by 2002:a17:906:7217:: with SMTP id m23mr9323698ejk.466.1631279526962;
- Fri, 10 Sep 2021 06:12:06 -0700 (PDT)
+        id S233418AbhIJNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232804AbhIJNUS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 09:20:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD53C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ninElOyv81dMVidL5ufjaZyKTFmzPaIwU+OoWpq1OOg=; b=FO+tHfueTJF3RSFawxG4/G5rGB
+        Wq8V1O12TjM6OEKiEwWqxOlR73xTN8p986jwFfYGSmODuFFNg5lk8CFxD8oq7LMN9Z2Y94m/Gn7Ns
+        rnlGrqUDGzELw+AOpSz+rZCWDOyC3Pr30RP5FToYPEGx7yTZwibSf12PNbAV7cOfWAL+sZgJVfx2I
+        G5vKJxeVsyN2YZlX/dC+kxXGJ89TqQFH6y+qfMqJ/fJHN3ChTcOfmp0u8kng558gZl6ufoKAP3OV7
+        T56vK/vfnyKtezZ6uoHFtYYP9pa9WEcGCW2GmqlrrIDNRFET0cxy5j8Q9SN90ZgPafB4L0qZCeH5v
+        obEhWm0Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOgOw-00B2DC-Fa; Fri, 10 Sep 2021 13:17:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5AAB300047;
+        Fri, 10 Sep 2021 15:17:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A75042C1B51C5; Fri, 10 Sep 2021 15:17:04 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 15:17:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
+ current_save_and_set_rtlock_wait_state()
+Message-ID: <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.767330253@infradead.org>
+ <20210909134524.GB9722@willie-the-truck>
+ <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
+ <20210910125658.GA1454@willie-the-truck>
 MIME-Version: 1.0
-References: <20210909213118.1087083-1-robh@kernel.org> <20210909213118.1087083-5-robh@kernel.org>
-In-Reply-To: <20210909213118.1087083-5-robh@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 10 Sep 2021 08:11:55 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJS2V959cbybBDHnj_X4OXiSeHocpknDN97u6r2y17PyA@mail.gmail.com>
-Message-ID: <CAL_JsqJS2V959cbybBDHnj_X4OXiSeHocpknDN97u6r2y17PyA@mail.gmail.com>
-Subject: Re: [PATCH 4/8] dt-bindings: clock: arm,syscon-icst: Use 'reg'
- instead of 'vco-offset' for VCO register address
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Cc:     Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910125658.GA1454@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:31 PM Rob Herring <robh@kernel.org> wrote:
->
-> 'reg' is the standard property for defining register banks/addresses. Add
-> it to use for the VCO register address and deprecate 'vco-offset'. This
-> will also allow for using standard node names with unit-addresses.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml b/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
-> index 118c5543e037..c346287ca15d 100644
-> --- a/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
-> +++ b/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
-> @@ -69,6 +69,10 @@ properties:
->        - arm,impd1-vco1
->        - arm,impd1-vco2
->
-> +  reg:
-> +    maxItems: 1
-> +    description: The VCO register
-> +
->    clocks:
->      description: Parent clock for the ICST VCO
->      maxItems: 1
-> @@ -83,6 +87,7 @@ properties:
->    vco-offset:
->      $ref: '/schemas/types.yaml#/definitions/uint32'
->      description: Offset to the VCO register for the oscillator
-> +    deprecated
+On Fri, Sep 10, 2021 at 01:57:26PM +0100, Will Deacon wrote:
+> On Thu, Sep 09, 2021 at 04:27:46PM +0200, Peter Zijlstra wrote:
+> > Moo yes, so the earlier changelog I wrote was something like:
+> > 
+> > 	current_save_and_set_rtlock_wait_state();
+> > 	for (;;) {
+> > 		if (try_lock())
+> > 			break;
+> > 
+> > 		raw_spin_unlock_irq(&lock->wait_lock);
+> > 		if (!cond)
+> > 			schedule();
+> > 		raw_spin_lock_irq(&lock->wait_lock);
+> > 
+> > 		set_current_state(TASK_RTLOCK_WAIT);
+> > 	}
+> > 	current_restore_rtlock_saved_state();
+> > 
+> > which is more what the code looks like before these patches, and in that
+> > case the @cond load can be lifted before __state.
+> 
+> Ah, so that makes more sense, thanks. I can't see how the try_lock() could
+> be reordered though, as it's going to have to do an atomic rmw.
 
-Sigh, that should be 'deprecated: true'.
-
-Rob
+OK, lemme go update the Changelog and make it __flags for bigeasy :-)
