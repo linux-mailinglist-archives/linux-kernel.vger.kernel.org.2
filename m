@@ -2,370 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADE1406E17
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102EB406E0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234395AbhIJPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:21:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:51542 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234333AbhIJPVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:21:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="221135594"
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="221135594"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 08:20:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="505123283"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2021 08:20:07 -0700
-Date:   Fri, 10 Sep 2021 23:13:35 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v14 1/4] fpga: m10bmc-sec: create max10 bmc secure update
- driver
-Message-ID: <20210910151335.GB757507@yilunxu-OptiPlex-7050>
-References: <20210909233304.5650-1-russell.h.weight@intel.com>
- <20210909233304.5650-2-russell.h.weight@intel.com>
+        id S234270AbhIJPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:18:16 -0400
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:35451 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhIJPSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 11:18:11 -0400
+Received: by mail-vs1-f47.google.com with SMTP id p14so1902136vsm.2;
+        Fri, 10 Sep 2021 08:17:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3BcYGTvP/p5y9awC2x3olztEkOI5xebLT4gUcpSRmlY=;
+        b=pqQ+zh0YZrJP4UysuUgUS9lgK3fmzB22dBzqELerFuUHATe/4lNXZmB9ocUo9qDzop
+         7DG1uaJgC2dxXq4H6vPKBReyLCKjceDckzYt2PiJ3Vgn7M+Kx2zfA2FYA469rXWdlufy
+         pIYv6evzhgwQDsSreNnavPy8BIUK2c+C53dOHB+uMrLrRpB2HLu3P1PzunhlUR0nasGo
+         SIu5dce0Dr7mzkYGuJphLwAFXg2Ldp6WaoA21kGRMR3OqXamxlT92ysHRV4OfGx6ieVH
+         TLNLVMqPcapfpk1h+7cmLuQA4HpRduoBPmAJcT/M6WHlbLzjGoaFsO6NeK/G9h4/GgWn
+         CkSg==
+X-Gm-Message-State: AOAM5327560HWZmsEC1l4YL8bjglxe8Rwkd5y0BkQS144uVyFihWRzdQ
+        tHCJISVqXcxkUIa0laiMeS/AAdH7Rgt2yLTfpjkIfjhQ
+X-Google-Smtp-Source: ABdhPJwT5ETyKLWcQ5k7xuhcbA0yvTD3jh/UbJMdE4jvWnM+tTSMk70pO5NvxTo6u5XWka0X6xtHA4gmLbXeWevGZoo=
+X-Received: by 2002:a05:6102:b10:: with SMTP id b16mr5775448vst.41.1631287016565;
+ Fri, 10 Sep 2021 08:16:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909233304.5650-2-russell.h.weight@intel.com>
+References: <1627293835-17441-1-git-send-email-zheyuma97@gmail.com> <1627293835-17441-2-git-send-email-zheyuma97@gmail.com>
+In-Reply-To: <1627293835-17441-2-git-send-email-zheyuma97@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 10 Sep 2021 17:16:44 +0200
+Message-ID: <CAMuHMdXB_HHgi1iPSnjusQvgdUYJDBwQc=+f+5vpmEjXBKArng@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] video: fbdev: asiliantfb: Error out if 'pixclock'
+ equals zero
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     "Antonino A. Daplas" <adaplas@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 04:33:01PM -0700, Russ Weight wrote:
-> Create a sub driver for the FPGA Card BMC in order to support secure
-> updates.  This sub-driver will invoke an instance of the FPGA Image Load
-> class driver for the image load portion of the update.
-> 
-> This patch creates the MAX10 BMC Secure Update driver and provides sysfs
-> files for displaying the current root entry hashes for the FPGA static
-> region, the FPGA PR region, and the MAX10 BMC.
-> 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
+Hi Zheyu,
+
+On Mon, Jul 26, 2021 at 12:04 PM Zheyu Ma <zheyuma97@gmail.com> wrote:
+> The userspace program could pass any values to the driver through
+> ioctl() interface. If the driver doesn't check the value of 'pixclock',
+> it may cause divide error.
+>
+> Fix this by checking whether 'pixclock' is zero first.
+>
+> The following log reveals it:
+>
+> [   43.861711] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+> [   43.861737] CPU: 2 PID: 11764 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #224
+> [   43.861756] RIP: 0010:asiliantfb_check_var+0x4e/0x730
+> [   43.861843] Call Trace:
+> [   43.861848]  ? asiliantfb_remove+0x190/0x190
+> [   43.861858]  fb_set_var+0x2e4/0xeb0
+> [   43.861866]  ? fb_blank+0x1a0/0x1a0
+> [   43.861873]  ? lock_acquire+0x1ef/0x530
+> [   43.861884]  ? lock_release+0x810/0x810
+> [   43.861892]  ? lock_is_held_type+0x100/0x140
+> [   43.861903]  ? ___might_sleep+0x1ee/0x2d0
+> [   43.861914]  ? __mutex_lock+0x620/0x1190
+> [   43.861921]  ? do_fb_ioctl+0x313/0x700
+> [   43.861929]  ? mutex_lock_io_nested+0xfa0/0xfa0
+> [   43.861936]  ? __this_cpu_preempt_check+0x1d/0x30
+> [   43.861944]  ? _raw_spin_unlock_irqrestore+0x46/0x60
+> [   43.861952]  ? lockdep_hardirqs_on+0x59/0x100
+> [   43.861959]  ? _raw_spin_unlock_irqrestore+0x46/0x60
+> [   43.861967]  ? trace_hardirqs_on+0x6a/0x1c0
+> [   43.861978]  do_fb_ioctl+0x31e/0x700
+>
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+
+Thanks for your patch!
+
 > ---
-> v14:
->   - Changed symbol and text references to reflect the renaming of the
->     Security Manager Class driver to FPGA Image Load.
-> v13:
->   - Updated copyright to 2021
->   - Updated ABI documentation date and kernel version
->   - Call updated fpga_sec_mgr_register() and fpga_sec_mgr_unregister()
->     functions instead of devm_fpga_sec_mgr_create() and
->     devm_fpga_sec_mgr_register().
-> v12:
->   - Updated Date and KernelVersion fields in ABI documentation
-> v11:
->   - Added Reviewed-by tag
-> v10:
->   - Changed the path expressions in the sysfs documentation to
->     replace the n3000 reference with something more generic to
->     accomodate other devices that use the same driver.
-> v9:
->   - Rebased to 5.12-rc2 next
->   - Updated Date and KernelVersion in ABI documentation
-> v8:
->   - Previously patch 2/6, otherwise no change
-> v7:
->   - Updated Date and KernelVersion in ABI documentation
-> v6:
->   - Added WARN_ON() call for (sha_num_bytes / stride) to assert
->     that the proper count is passed to regmap_bulk_read().
-> v5:
->   - No change
-> v4:
->   - Moved sysfs files for displaying the root entry hashes (REH)
->     from the FPGA Security Manager class driver to here. The
->     m10bmc_reh() and m10bmc_reh_size() functions are removed and
->     the functionality from these functions is moved into a
->     show_root_entry_hash() function for displaying the REHs.
->   - Added ABI documentation for the new sysfs entries:
->     sysfs-driver-intel-m10-bmc-secure
->   - Updated the MAINTAINERS file to add the new ABI documentation
->     file: sysfs-driver-intel-m10-bmc-secure
->   - Removed unnecessary ret variable from m10bmc_secure_probe()
->   - Incorporated new devm_fpga_sec_mgr_register() function into
->     m10bmc_secure_probe() and removed the m10bmc_secure_remove()
->     function.
-> v3:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
->     Update driver"
->   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
->     underlying functions are now called directly.
->   - Changed "_root_entry_hash" to "_reh", with a comment explaining
->     what reh is.
-> v2:
->   - Added drivers/fpga/intel-m10-bmc-secure.c file to MAINTAINERS.
->   - Switched to GENMASK(31, 16) for a couple of mask definitions.
->   - Moved MAX10 BMC address and function definitions to a separate
->     patch.
->   - Replaced small function-creation macros with explicit function
->     declarations.
->   - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
->   - Adapted to changes in the Intel FPGA Security Manager by splitting
->     the single call to ifpga_sec_mgr_register() into two function
->     calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+> Changes in v2:
+>     - Make commit log more descriptive
 > ---
->  .../testing/sysfs-driver-intel-m10-bmc-secure |  29 ++++
->  MAINTAINERS                                   |   2 +
->  drivers/fpga/Kconfig                          |  11 ++
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/intel-m10-bmc-secure.c           | 145 ++++++++++++++++++
->  5 files changed, 190 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
->  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> new file mode 100644
-> index 000000000000..363403ce992d
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> @@ -0,0 +1,29 @@
-> +What:		/sys/bus/platform/drivers/intel-m10bmc-secure/.../security/sr_root_entry_hash
-> +Date:		Aug 2021
-> +KernelVersion:	5.15
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the static
-> +		region if one is programmed, else it returns the
-> +		string: "hash not programmed".  This file is only
-> +		visible if the underlying device supports it.
-> +		Format: "0x%x".
-> +
-> +What:		/sys/bus/platform/drivers/intel-m10bmc-secure/.../security/pr_root_entry_hash
-> +Date:		Aug 2021
-> +KernelVersion:	5.15
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the partial
-> +		reconfiguration region if one is programmed, else it
-> +		returns the string: "hash not programmed".  This file
-> +		is only visible if the underlying device supports it.
-> +		Format: "0x%x".
-> +
-> +What:		/sys/bus/platform/drivers/intel-m10bmc-secure/.../security/bmc_root_entry_hash
-> +Date:		Aug 2021
-> +KernelVersion:	5.15
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the BMC image
-> +		if one is programmed, else it returns the string:
-> +		"hash not programmed".  This file is only visible if the
-> +		underlying device supports it.
-> +		Format: "0x%x".
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e3fbc1bde9bc..cf93835b4775 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7363,8 +7363,10 @@ M:	Russ Weight <russell.h.weight@intel.com>
->  L:	linux-fpga@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/ABI/testing/sysfs-class-fpga-image-load
-> +F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+>  drivers/video/fbdev/asiliantfb.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/asiliantfb.c b/drivers/video/fbdev/asiliantfb.c
+> index 3e006da47752..84c56f525889 100644
+> --- a/drivers/video/fbdev/asiliantfb.c
+> +++ b/drivers/video/fbdev/asiliantfb.c
+> @@ -227,6 +227,9 @@ static int asiliantfb_check_var(struct fb_var_screeninfo *var,
+>  {
+>         unsigned long Ftarget, ratio, remainder;
+>
+> +       if (!var->pixclock)
+> +               return -EINVAL;
 
-Should we change the name of the driver? Some keywords like "image load"
-or "firmware update" should be in the name.
+While this fixes the crash, it is not correct: according to the
+fbdev API, invalid values must be rounded up to a supported value,
+if possible.  -EINVAL should only be returned if rounding up values
+in fb_var_screeninfo cannot give a valid mode.
 
-Thanks,
-Yilun
+The same comment applies to the other patches in this series:
+[PATCH v2 2/3] video: fbdev: kyro: Error out if 'pixclock' equals zero
+[PATCH v2 3/3] video: fbdev: riva: Error out if 'pixclock' equals zero
 
->  F:	Documentation/fpga/fpga-image-load.rst
->  F:	drivers/fpga/fpga-image-load.c
-> +F:	drivers/fpga/intel-m10-bmc-secure.c
->  F:	include/linux/fpga/fpga-image-load.h
->  F:	include/uapi/linux/fpga-image-load.h
->  
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index c12a14e62fff..9d25b1ec03cd 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -253,4 +253,15 @@ config FPGA_IMAGE_LOAD
->  	  and/or the device itself to authenticate and disposition the
->  	  image data.
->  
-> +config FPGA_M10_BMC_SECURE
-> +	tristate "Intel MAX10 BMC Secure Update driver"
-> +	depends on MFD_INTEL_M10_BMC && FPGA_IMAGE_LOAD
-> +	help
-> +	  Secure update support for the Intel MAX10 board management
-> +	  controller.
 > +
-> +	  This is a subdriver of the Intel MAX10 board management controller
-> +	  (BMC) and provides support for secure updates for the BMC image,
-> +	  the FPGA image, the Root Entry Hashes, etc.
-> +
->  endif # FPGA
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index adf228ee4f5e..8d4c1869ac4c 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -25,6 +25,9 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->  # FPGA Image Load Framework
->  obj-$(CONFIG_FPGA_IMAGE_LOAD)		+= fpga-image-load.o
->  
-> +# FPGA Secure Update Drivers
-> +obj-$(CONFIG_FPGA_M10_BMC_SECURE)	+= intel-m10-bmc-secure.o
-> +
->  # FPGA Bridge Drivers
->  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
-> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-> new file mode 100644
-> index 000000000000..03fc571f40f2
-> --- /dev/null
-> +++ b/drivers/fpga/intel-m10-bmc-secure.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel Max10 Board Management Controller Secure Update Driver
-> + *
-> + * Copyright (C) 2019-2021 Intel Corporation. All rights reserved.
-> + *
-> + */
-> +#include <linux/bitfield.h>
-> +#include <linux/device.h>
-> +#include <linux/fpga/fpga-image-load.h>
-> +#include <linux/mfd/intel-m10-bmc.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +
-> +struct m10bmc_sec {
-> +	struct device *dev;
-> +	struct intel_m10bmc *m10bmc;
-> +	struct fpga_image_load *imgld;
-> +};
-> +
-> +/* Root Entry Hash (REH) support */
-> +#define REH_SHA256_SIZE		32
-> +#define REH_SHA384_SIZE		48
-> +#define REH_MAGIC		GENMASK(15, 0)
-> +#define REH_SHA_NUM_BYTES	GENMASK(31, 16)
-> +
-> +static ssize_t
-> +show_root_entry_hash(struct device *dev, u32 exp_magic,
-> +		     u32 prog_addr, u32 reh_addr, char *buf)
-> +{
-> +	struct m10bmc_sec *sec = dev_get_drvdata(dev);
-> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-> +	int sha_num_bytes, i, cnt, ret;
-> +	u8 hash[REH_SHA384_SIZE];
-> +	u32 magic;
-> +
-> +	ret = m10bmc_raw_read(sec->m10bmc, prog_addr, &magic);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(dev, "%s magic 0x%08x\n", __func__, magic);
-> +
-> +	if (FIELD_GET(REH_MAGIC, magic) != exp_magic)
-> +		return sysfs_emit(buf, "hash not programmed\n");
-> +
-> +	sha_num_bytes = FIELD_GET(REH_SHA_NUM_BYTES, magic) / 8;
-> +	if (sha_num_bytes != REH_SHA256_SIZE &&
-> +	    sha_num_bytes != REH_SHA384_SIZE)   {
-> +		dev_err(sec->dev, "%s bad sha num bytes %d\n", __func__,
-> +			sha_num_bytes);
-> +		return -EINVAL;
-> +	}
-> +
-> +	WARN_ON(sha_num_bytes % stride);
-> +	ret = regmap_bulk_read(sec->m10bmc->regmap, reh_addr,
-> +			       hash, sha_num_bytes / stride);
-> +	if (ret) {
-> +		dev_err(dev, "failed to read root entry hash: %x cnt %x: %d\n",
-> +			reh_addr, sha_num_bytes / stride, ret);
-> +		return ret;
-> +	}
-> +
-> +	cnt = sprintf(buf, "0x");
-> +	for (i = 0; i < sha_num_bytes; i++)
-> +		cnt += sprintf(buf + cnt, "%02x", hash[i]);
-> +	cnt += sprintf(buf + cnt, "\n");
-> +
-> +	return cnt;
-> +}
-> +
-> +#define DEVICE_ATTR_SEC_REH_RO(_name, _magic, _prog_addr, _reh_addr) \
-> +static ssize_t _name##_root_entry_hash_show(struct device *dev, \
-> +					    struct device_attribute *attr, \
-> +					    char *buf) \
-> +{ return show_root_entry_hash(dev, _magic, _prog_addr, _reh_addr, buf); } \
-> +static DEVICE_ATTR_RO(_name##_root_entry_hash)
-> +
-> +DEVICE_ATTR_SEC_REH_RO(bmc, BMC_PROG_MAGIC, BMC_PROG_ADDR, BMC_REH_ADDR);
-> +DEVICE_ATTR_SEC_REH_RO(sr, SR_PROG_MAGIC, SR_PROG_ADDR, SR_REH_ADDR);
-> +DEVICE_ATTR_SEC_REH_RO(pr, PR_PROG_MAGIC, PR_PROG_ADDR, PR_REH_ADDR);
-> +
-> +static struct attribute *m10bmc_security_attrs[] = {
-> +	&dev_attr_bmc_root_entry_hash.attr,
-> +	&dev_attr_sr_root_entry_hash.attr,
-> +	&dev_attr_pr_root_entry_hash.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group m10bmc_security_attr_group = {
-> +	.name = "security",
-> +	.attrs = m10bmc_security_attrs,
-> +};
-> +
-> +static const struct attribute_group *m10bmc_sec_attr_groups[] = {
-> +	&m10bmc_security_attr_group,
-> +	NULL,
-> +};
-> +
-> +static const struct fpga_image_load_ops m10bmc_lops = { };
-> +
-> +static int m10bmc_secure_probe(struct platform_device *pdev)
-> +{
-> +	struct fpga_image_load *imgld;
-> +	struct m10bmc_sec *sec;
-> +
-> +	sec = devm_kzalloc(&pdev->dev, sizeof(*sec), GFP_KERNEL);
-> +	if (!sec)
-> +		return -ENOMEM;
-> +
-> +	sec->dev = &pdev->dev;
-> +	sec->m10bmc = dev_get_drvdata(pdev->dev.parent);
-> +	dev_set_drvdata(&pdev->dev, sec);
-> +
-> +	imgld = fpga_image_load_register(sec->dev, &m10bmc_lops, sec);
-> +	if (IS_ERR(imgld)) {
-> +		dev_err(sec->dev, "FPGA Image Load driver failed to start\n");
-> +		return PTR_ERR(imgld);
-> +	}
-> +
-> +	sec->imgld = imgld;
-> +	return 0;
-> +}
-> +
-> +static int m10bmc_secure_remove(struct platform_device *pdev)
-> +{
-> +	struct m10bmc_sec *sec = dev_get_drvdata(&pdev->dev);
-> +
-> +	fpga_image_load_unregister(sec->imgld);
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver intel_m10bmc_secure_driver = {
-> +	.probe = m10bmc_secure_probe,
-> +	.remove = m10bmc_secure_remove,
-> +	.driver = {
-> +		.name = "n3000bmc-secure",
-> +		.dev_groups = m10bmc_sec_attr_groups,
-> +	},
-> +};
-> +module_platform_driver(intel_m10bmc_secure_driver);
-> +
-> +MODULE_ALIAS("platform:n3000bmc-secure");
-> +MODULE_AUTHOR("Intel Corporation");
-> +MODULE_DESCRIPTION("Intel MAX10 BMC Secure Update");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.25.1
+>         ratio = 1000000 / var->pixclock;
+>         remainder = 1000000 % var->pixclock;
+>         Ftarget = 1000000 * ratio + (1000000 * remainder) / var->pixclock;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
