@@ -2,247 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F4B406684
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA3F40668A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhIJEeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 00:34:18 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32284 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhIJEeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 00:34:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="284692312"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="284692312"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 21:33:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="504909752"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Sep 2021 21:33:05 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOYDo-0003qa-O2; Fri, 10 Sep 2021 04:33:04 +0000
-Date:   Fri, 10 Sep 2021 12:32:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- e5480572706da1b2c2dc2c6484eab64f92b9263b
-Message-ID: <613adff8.lBk3DUJ1gsNWKRuB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230182AbhIJEkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 00:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhIJEkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 00:40:05 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D9DC061574;
+        Thu,  9 Sep 2021 21:38:54 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id u18so759928pgf.0;
+        Thu, 09 Sep 2021 21:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=dLF2todN1aPrWmxZU8AtPPgKIlwOohGYoESKSQlQKM8=;
+        b=QmoNX/FX5DXbc0LPHRXxpHvC+43FzjMRDDgaeLamMlJQMpKZTl9gBb27LfDghRIKo5
+         URV59jBpMz6OkNWXSm2winyjnSfVP+thl58cB2tKu3JP9HFgGE83AHlYc53Z4LMIDFg7
+         dPWi0OpUd9y23Z3ArqGDEsVJIMGPbiLs2BOeBGRJZIXMqIgxuH9VscdszhlttaGGSmbH
+         2JXwDL7enCUNyP4RAyvtzn2C4TD9Vq5wwyS+Kgci7b4ULT8XDZqm2NaUyLch4nzMivJ1
+         rIndXPFRup+/BOfN3Y03S+EP3Y9JRsmFWRiSix5cz1D9YsyfIdZPYrZHCUNPBT1bgDqy
+         NzMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dLF2todN1aPrWmxZU8AtPPgKIlwOohGYoESKSQlQKM8=;
+        b=w5mnElIypFHetawFl/Ee60wNrdLGAOu0FRgTBf9bPZhFg2JulrJR3PyqbvZ6E2ULUB
+         qmvAt7Lnklq1YRS9rCUBoxPzvbZVfS1PCG7GAA8p4KPSjWUAeiJjwFPILMzQcgWL22db
+         yA1rd2AIfXlFUSbKbuMoyTw1lj2pelU4T8dQkzWUx/lN50qfZ642KEg+G7Nmuf9Hiq7S
+         9a5A5EuDjGs35+YQeCHDuTpzRh9C2lzPEjl11kfijQHGhpeQia9du3fw9aSVH8xxgrsK
+         7K7sEA+mZJgvgW1PxZsj7PZFeValA0vaQzhoz8d+KeytQsNAY0DMfgcTIGAQb/6ilCqd
+         SMNg==
+X-Gm-Message-State: AOAM530LVeaPHKkb0zVK3EK1bfoX7pcFqT+8rd7Cwosz2SYNftpxfJIK
+        6BmFfxkLnSu55ELygKFYfi+G7Eg5X60=
+X-Google-Smtp-Source: ABdhPJw6/hAo1hDi21qYVeEtsV+6CNh1IynMF0p471tx1xBmRTg027BpVejviYmFpfXdV8SYgDEctA==
+X-Received: by 2002:a05:6a00:1823:b0:42a:ee71:d74a with SMTP id y35-20020a056a00182300b0042aee71d74amr4794189pfa.63.1631248734191;
+        Thu, 09 Sep 2021 21:38:54 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:acdc:1d22:e20a:2796])
+        by smtp.gmail.com with ESMTPSA id y22sm3293126pju.41.2021.09.09.21.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 21:38:53 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 21:38:50 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v5.15-rc0
+Message-ID: <YTrhWrjCkK8ttRDt@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: e5480572706da1b2c2dc2c6484eab64f92b9263b  locking/rtmutex: Fix ww_mutex deadlock check
+Hi Linus,
 
-elapsed time: 1158m
+Please pull from:
 
-configs tested: 188
-configs skipped: 3
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+to receive updates for the input subsystem. You will get:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210908
-powerpc                 xes_mpc85xx_defconfig
-parisc                generic-64bit_defconfig
-arm                             ezx_defconfig
-powerpc                     mpc83xx_defconfig
-arm                       aspeed_g4_defconfig
-sh                   sh7724_generic_defconfig
-arm                            hisi_defconfig
-mips                        nlm_xlr_defconfig
-mips                  decstation_64_defconfig
-um                           x86_64_defconfig
-mips                        omega2p_defconfig
-powerpc                     asp8347_defconfig
-arm                         lpc32xx_defconfig
-powerpc                       eiger_defconfig
-h8300                            alldefconfig
-powerpc                 mpc834x_itx_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          collie_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-sparc                       sparc32_defconfig
-arm                         axm55xx_defconfig
-mips                     loongson2k_defconfig
-mips                      fuloong2e_defconfig
-ia64                            zx1_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                     mpc5200_defconfig
-arm                        spear6xx_defconfig
-alpha                            allyesconfig
-arc                        nsimosci_defconfig
-s390                                defconfig
-arm                         lpc18xx_defconfig
-sh                             sh03_defconfig
-sh                            titan_defconfig
-sh                            shmin_defconfig
-arm                      integrator_defconfig
-mips                      maltaaprp_defconfig
-mips                         tb0287_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      chrp32_defconfig
-arm                         socfpga_defconfig
-powerpc                     ep8248e_defconfig
-arm                          pxa168_defconfig
-sh                           se7206_defconfig
-um                             i386_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    klondike_defconfig
-openrisc                            defconfig
-mips                          ath79_defconfig
-m68k                       m5208evb_defconfig
-m68k                        m5407c3_defconfig
-arm                       versatile_defconfig
-arm                        cerfcube_defconfig
-arm                          ixp4xx_defconfig
-sh                               j2_defconfig
-sh                             espt_defconfig
-ia64                        generic_defconfig
-arm                         vf610m4_defconfig
-mips                           ip32_defconfig
-arm                  colibri_pxa300_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      obs600_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                     sequoia_defconfig
-sh                           se7750_defconfig
-mips                        workpad_defconfig
-powerpc                        warp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7343_defconfig
-powerpc                     redwood_defconfig
-sh                          r7785rp_defconfig
-x86_64                           alldefconfig
-mips                         tb0219_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         palmz72_defconfig
-powerpc                mpc7448_hpc2_defconfig
-m68k                          multi_defconfig
-powerpc                  iss476-smp_defconfig
-arm                      tct_hammer_defconfig
-sh                           se7712_defconfig
-arm                         assabet_defconfig
-ia64                             allyesconfig
-powerpc                      pmac32_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                      ppc6xx_defconfig
-sh                        apsh4ad0a_defconfig
-mips                       rbtx49xx_defconfig
-mips                        vocore2_defconfig
-powerpc                      makalu_defconfig
-microblaze                      mmu_defconfig
-powerpc                    sam440ep_defconfig
-openrisc                         alldefconfig
-arm                           viper_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                    xip_kc705_defconfig
-sh                        edosk7760_defconfig
-mips                        qi_lb60_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     ppa8548_defconfig
-x86_64               randconfig-c001-20210908
-x86_64               randconfig-c001-20210910
-i386                 randconfig-c001-20210910
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                             allmodconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210908
-x86_64               randconfig-a006-20210908
-x86_64               randconfig-a003-20210908
-x86_64               randconfig-a001-20210908
-x86_64               randconfig-a005-20210908
-x86_64               randconfig-a002-20210908
-i386                 randconfig-a005-20210908
-i386                 randconfig-a004-20210908
-i386                 randconfig-a006-20210908
-i386                 randconfig-a002-20210908
-i386                 randconfig-a001-20210908
-i386                 randconfig-a003-20210908
-arc                  randconfig-r043-20210908
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+- several device tree bindings for input devices have been converted
+  to yaml
+- dropped no longer used ixp4xx-beeper and CSR Prima2 PWRC drivers
+- analog joystick has been converted to use ktime API and no longer
+  warn about low resolution timers
+- a few driver fixes
 
-clang tested configs:
-s390                 randconfig-c005-20210908
-powerpc              randconfig-c003-20210908
-mips                 randconfig-c004-20210908
-i386                 randconfig-c001-20210908
-x86_64               randconfig-a016-20210908
-x86_64               randconfig-a011-20210908
-x86_64               randconfig-a012-20210908
-x86_64               randconfig-a015-20210908
-x86_64               randconfig-a014-20210908
-x86_64               randconfig-a013-20210908
-i386                 randconfig-a012-20210908
-i386                 randconfig-a015-20210908
-i386                 randconfig-a011-20210908
-i386                 randconfig-a013-20210908
-i386                 randconfig-a014-20210908
-i386                 randconfig-a016-20210908
-s390                 randconfig-r044-20210908
-riscv                randconfig-r042-20210908
-hexagon              randconfig-r045-20210908
-hexagon              randconfig-r041-20210908
+Changelog:
+---------
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Alexander Sverdlin (1):
+      Input: ep93xx_keypad - prepare clock before using it
+
+Andy Shevchenko (1):
+      Input: parkbd - switch to use module_parport_driver()
+
+Colin Ian King (2):
+      Input: Fix spelling mistake in Kconfig "Modul" -> "Module"
+      Input: Fix spelling mistake in Kconfig "useable" -> "usable"
+
+Dmitry Torokhov (3):
+      Input: serio - make write method mandatory
+      Revert "Input: serio - make write method mandatory"
+      Input: pm8941-pwrkey - fix comma vs semicolon issue
+
+Geert Uytterhoeven (1):
+      Input: adc-keys - drop bogus __refdata annotation
+
+Guenter Roeck (1):
+      Input: analog - always use ktime functions
+
+Linus Walleij (4):
+      Input: ixp4xx-beeper - delete driver
+      Input: adp5588-keys - use the right header
+      Input: adp5589-keys - use the right header
+      Input: mms114 - support MMS134S
+
+Lukas Bulwahn (1):
+      Input: remove dead CSR Prima2 PWRC driver
+
+Marek Vasut (1):
+      dt-bindings: input: tsc2005: Convert to YAML schema
+
+Maxime Ripard (4):
+      dt-bindings: input: Convert ChipOne ICN8318 binding to a schema
+      dt-bindings: input: Convert Pixcir Touchscreen binding to a schema
+      dt-bindings: input: Convert Regulator Haptic binding to a schema
+      dt-bindings: input: sun4i-lradc: Add wakeup-source
+
+Oliver Graute (1):
+      Input: edt-ft5x06 - added case for EDT EP0110M09
+
+jingle.wu (1):
+      Input: elan_i2c - reduce the resume time for controller in Whitebox
+
+satya priya (3):
+      dt-bindings: power: reset: Change 'additionalProperties' to true
+      dt-bindings: input: pm8941-pwrkey: Convert pm8941 power key binding to yaml
+      dt-bindings: power: reset: qcom-pon: Convert qcom PON binding to yaml
+
+Diffstat:
+--------
+
+ .../input/allwinner,sun4i-a10-lradc-keys.yaml      |   2 +
+ .../bindings/input/qcom,pm8941-pwrkey.txt          |  55 ------
+ .../bindings/input/qcom,pm8941-pwrkey.yaml         |  51 +++++
+ .../devicetree/bindings/input/regulator-haptic.txt |  21 ---
+ .../bindings/input/regulator-haptic.yaml           |  43 +++++
+ .../input/touchscreen/chipone,icn8318.yaml         |  62 ++++++
+ .../bindings/input/touchscreen/chipone_icn8318.txt |  44 -----
+ .../input/touchscreen/pixcir,pixcir_ts.yaml        |  68 +++++++
+ .../bindings/input/touchscreen/pixcir_i2c_ts.txt   |  31 ---
+ .../bindings/input/touchscreen/ti,tsc2005.yaml     | 128 +++++++++++++
+ .../bindings/input/touchscreen/tsc2005.txt         |  64 -------
+ .../devicetree/bindings/power/reset/qcom,pon.txt   |  49 -----
+ .../devicetree/bindings/power/reset/qcom,pon.yaml  |  80 ++++++++
+ .../bindings/power/reset/reboot-mode.yaml          |   2 +-
+ drivers/input/joystick/analog.c                    | 107 ++---------
+ drivers/input/keyboard/Kconfig                     |   2 +-
+ drivers/input/keyboard/adc-keys.c                  |   2 +-
+ drivers/input/keyboard/adp5588-keys.c              |   2 +-
+ drivers/input/keyboard/adp5589-keys.c              |   2 +-
+ drivers/input/keyboard/ep93xx_keypad.c             |   4 +-
+ drivers/input/misc/Kconfig                         |  22 ---
+ drivers/input/misc/Makefile                        |   2 -
+ drivers/input/misc/ixp4xx-beeper.c                 | 183 ------------------
+ drivers/input/misc/pm8941-pwrkey.c                 |   2 +-
+ drivers/input/misc/sirfsoc-onkey.c                 | 207 ---------------------
+ drivers/input/mouse/elan_i2c.h                     |   3 +-
+ drivers/input/mouse/elan_i2c_core.c                |   1 +
+ drivers/input/serio/parkbd.c                       |  14 +-
+ drivers/input/touchscreen/Kconfig                  |   2 +-
+ drivers/input/touchscreen/edt-ft5x06.c             |   1 +
+ drivers/input/touchscreen/mms114.c                 |  15 +-
+ 31 files changed, 472 insertions(+), 799 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
+ create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/regulator-haptic.txt
+ create mode 100644 Documentation/devicetree/bindings/input/regulator-haptic.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/chipone,icn8318.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/chipone_icn8318.txt
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/pixcir,pixcir_ts.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/pixcir_i2c_ts.txt
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti,tsc2005.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/tsc2005.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.txt
+ create mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
+ delete mode 100644 drivers/input/misc/ixp4xx-beeper.c
+ delete mode 100644 drivers/input/misc/sirfsoc-onkey.c
+
+Thanks.
+
+
+-- 
+Dmitry
