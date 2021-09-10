@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5145B406A9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CD3406AA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbhIJLRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:17:01 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:5536 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232746AbhIJLQx (ORCPT
+        id S232747AbhIJLSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:18:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55429 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232662AbhIJLSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:16:53 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18AAjKfY026567;
-        Fri, 10 Sep 2021 06:15:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=O4jwH34gE1vbthRuJ40psmfZwxQx+zsgFe207ESh774=;
- b=QPXrPuiUlDvoHihx2M9v42d01b4HJhU8hTXozV2B39qhjclV4+Vrt9zQKKaAijTgpOUN
- ZE7wBi9IJ4J4/1uO7jWGLUfXJNnCHd5xGC9l/DlRfsJ4E+A0ywwCKXfEVmA1BiANZ18X
- 6xB7fEMU/ERuqyPDE9ryIHl5NtLltQgubW1+yRe/S1HDgMoSuUnqxe4pfNY1nE5Jxmnb
- Y0aoN6g1MPo7lU8LgjtagDIplurYeN67yJaxel8Gwyb7DB7f1dq9yL3pk5vT5mkb+Hnj
- 89AZQTcAePvkSoerMPDHZ/yBUb+XoUXw7r5UJGttvdjG/mAJWpHx8NKf2hX4HTCciqCJ Qg== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3aytvr10en-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Sep 2021 06:15:41 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 10 Sep
- 2021 12:15:37 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Fri, 10 Sep 2021 12:15:37 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.231])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A3D41B10;
-        Fri, 10 Sep 2021 11:15:37 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v2 4/4] spi: amd: Don't wait for a write-only transfer to finish
-Date:   Fri, 10 Sep 2021 12:15:29 +0100
-Message-ID: <20210910111529.12539-4-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910111529.12539-1-tanureal@opensource.cirrus.com>
-References: <20210910111529.12539-1-tanureal@opensource.cirrus.com>
+        Fri, 10 Sep 2021 07:18:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631272622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RgmNRK2XXvsyGHVA6iNyBLA7OD3Fi+KxaZPYTjoMmoI=;
+        b=d8mBW6iUzt2G8QZGpKB+kcDyePu631lh5kilVpEXMTh0jn6ZcWnqAI7dnEoj0uZsshtC9D
+        w23ijycRY0IZ+trVW/+jdpo8rZvKsBXPCG5SWjOUyFRdOwdvLF+ali64bkacRxivrHjL9b
+        IHj4+a2klQTa7ZIs2qMp9xPS0w59CMs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-rFVb1SEBOSinlBLnAyam8g-1; Fri, 10 Sep 2021 07:16:40 -0400
+X-MC-Unique: rFVb1SEBOSinlBLnAyam8g-1
+Received: by mail-wm1-f69.google.com with SMTP id m16-20020a7bca50000000b002ee5287d4bfso517492wml.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 04:16:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RgmNRK2XXvsyGHVA6iNyBLA7OD3Fi+KxaZPYTjoMmoI=;
+        b=qKhsZKU7dlCVeDdjw4UEBvTR993a5nuaav006m3b123bkro1DESM0Lnsh2VClhi40d
+         tKQ8QiZ8JwQz4QNMZmBRE6z2uMn8gr+NX+U4Ipa8R7ykcnUoMiWCNXhqxebhvUhrCCfJ
+         twyIHyn9gvaz8nG4IK0fTE8qOsVQpxI/qTNY8oeVeHarKqDJjSzzoEI5JWZr0vPVOa0/
+         IDrre1k5EPYI/LOm002xYvz+Q4uv8BzOs4BU/0JYRdHELF1AhSumE6qkA+faj8Lo5ZAJ
+         EPfSlmQuozo7VcCrkRGGlJN98J4G3ZUjgL1tcLLgvM0Sh/7619D+IQEEbWqtmgyf6WjS
+         6aTg==
+X-Gm-Message-State: AOAM532xYhwXpupA4ts59wJN0wuSdsqBTfISpFAzuRtwadbah6xk3MJB
+        HCc2ziIuKeCJxpi7f6T2CdcVIHJHzc87zL7mKHyK9ZKPvnjEij1bunpyJvWjEvDDtW3pODbuCv4
+        1puNkApjIgSy14lPC1Mx6M/bFpp7fdTralnvH+/HMczXrBQZaT23iZPwCmufAahBNo8zucV45
+X-Received: by 2002:adf:9e4d:: with SMTP id v13mr9086823wre.419.1631272598978;
+        Fri, 10 Sep 2021 04:16:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyJLflrPG0WzXGNJPgjOaLhkhTxeC/E3viJvptGpEjecvRADyKjbCDjSo6K/8XTEIDMgl6pw==
+X-Received: by 2002:adf:9e4d:: with SMTP id v13mr9086791wre.419.1631272598767;
+        Fri, 10 Sep 2021 04:16:38 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c600c.dip0.t-ipconnect.de. [91.12.96.12])
+        by smtp.gmail.com with ESMTPSA id a6sm3974580wmb.7.2021.09.10.04.16.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 04:16:38 -0700 (PDT)
+Subject: Re: [PATCH v1] mm, hwpoison: add is_free_buddy_page() in
+ HWPoisonHandlable()
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20210909004131.163221-1-naoya.horiguchi@linux.dev>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <0363dc08-64af-8e59-7e1e-930194710e51@redhat.com>
+Date:   Fri, 10 Sep 2021 13:16:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 4YlgfPDQG0V-4vKbZGORjENnLtMG4uq-
-X-Proofpoint-ORIG-GUID: 4YlgfPDQG0V-4vKbZGORjENnLtMG4uq-
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20210909004131.163221-1-naoya.horiguchi@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return from a write-only transfer without waiting for
-it to finish
-But wait before a new transfer as the previous may
-still happening and also wait before reading the data
-from the FIFO
+On 09.09.21 02:41, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> commit fcc00621d88b ("mm/hwpoison: retry with shake_page() for
+> unhandlable pages") changes the return value of __get_hwpoison_page() to
+> retry for transiently unhandlable cases.  However, __get_hwpoison_page()
+> currently fails to properly judge buddy pages as handlable, so hard/soft
+> offline for buddy pages always fail as "unhandlable page".  This is
+> totally regrettable.
+> 
+> So let's add is_free_buddy_page() in HWPoisonHandlable(), so that
+> __get_hwpoison_page() returns different return values between buddy
+> pages and unhandlable pages as intended.
+> 
+> Fixes: fcc00621d88b ("mm/hwpoison: retry with shake_page() for unhandlable pages")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> ---
+>   mm/memory-failure.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git v5.14-rc7-mmotm-2021-08-23-16-42/mm/memory-failure.c v5.14-rc7-mmotm-2021-08-23-16-42_patched/mm/memory-failure.c
+> index 60df8fcd0444..3416c55be810 100644
+> --- v5.14-rc7-mmotm-2021-08-23-16-42/mm/memory-failure.c
+> +++ v5.14-rc7-mmotm-2021-08-23-16-42_patched/mm/memory-failure.c
+> @@ -1126,7 +1126,7 @@ static int page_action(struct page_state *ps, struct page *p,
+>    */
+>   static inline bool HWPoisonHandlable(struct page *page)
+>   {
+> -	return PageLRU(page) || __PageMovable(page);
+> +	return PageLRU(page) || __PageMovable(page) || is_free_buddy_page(page);
+>   }
+>   
+>   static int __get_hwpoison_page(struct page *page)
+> 
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
+LGTM and I agree that code might desrve some cleanups.
 
-Changes in v2:
-Add wait before read data
-New explanation
+Acked-by: David Hildenbrand <david@redhat.com>
 
- drivers/spi/spi-amd.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
-index 97838b57871c..4b3ac7aceaf6 100644
---- a/drivers/spi/spi-amd.c
-+++ b/drivers/spi/spi-amd.c
-@@ -115,11 +115,18 @@ static int amd_spi_busy_wait(struct amd_spi *amd_spi)
- 	return 0;
- }
- 
--static void amd_spi_execute_opcode(struct amd_spi *amd_spi)
-+static int amd_spi_execute_opcode(struct amd_spi *amd_spi)
- {
-+	int ret;
-+
-+	ret = amd_spi_busy_wait(amd_spi);
-+	if (ret)
-+		return ret;
-+
- 	/* Set ExecuteOpCode bit in the CTRL0 register */
- 	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, AMD_SPI_EXEC_CMD, AMD_SPI_EXEC_CMD);
--	amd_spi_busy_wait(amd_spi);
-+
-+	return 0;
- }
- 
- static int amd_spi_master_setup(struct spi_device *spi)
-@@ -178,6 +185,7 @@ static inline int amd_spi_fifo_xfer(struct amd_spi *amd_spi,
- 			amd_spi_clear_fifo_ptr(amd_spi);
- 			/* Execute command */
- 			amd_spi_execute_opcode(amd_spi);
-+			amd_spi_busy_wait(amd_spi);
- 			/* Read data from FIFO to receive buffer  */
- 			for (i = 0; i < rx_len; i++)
- 				buf[i] = amd_spi_readreg8(amd_spi, AMD_SPI_FIFO_BASE + tx_len + i);
 -- 
-2.33.0
+Thanks,
+
+David / dhildenb
 
