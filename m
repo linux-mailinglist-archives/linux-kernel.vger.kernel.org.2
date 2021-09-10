@@ -2,64 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F0140653A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A8C40653D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhIJBd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230487AbhIJBdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:33:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E9E61167;
-        Fri, 10 Sep 2021 01:32:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631237565;
-        bh=gXveKeTWNExVQFgjnaiJLlZAeV+wFFV1ElNwTuB3Kc8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CABSVTxn5GN9KiqlpXGZOHbnHIVjbQiU1s74N42eUu+0fx8ExIp0wKRWg/5tFMSVO
-         VZuBGwC3EgZlv72wCo5SxCU9c77FbQYAtGyjZlHnDGI8puTBKh3rQyfzRjT1V7fKar
-         e4oXAgz9aLHRgCbgzMSNm6S7tkg91g4W0C519BaHtM7kYLjyqvYHqNdrxXR3n/b33x
-         5TxlVeEN7vWPcFqKy33bXdnGghNc78mokhDJkFxZyVLJXbw9Or61R3Q5p8LcSs+HfB
-         C+Ib/uVUs2OR2Kdo71GwXSQZPxthhPy9I5LeQsG6b1pgXNaLvmMW1Ba1TA4Ed7P7PC
-         GBo/1h6aXxuUw==
-Date:   Fri, 10 Sep 2021 03:32:40 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 02/15] leds: trigger: blkdev: Add build
- infrastructure
-Message-ID: <20210910033240.581ebcea@thinkpad>
-In-Reply-To: <20210909222513.2184795-3-arequipeno@gmail.com>
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
-        <20210909222513.2184795-3-arequipeno@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229942AbhIJBfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhIJBe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 21:34:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4CBC061574;
+        Thu,  9 Sep 2021 18:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631237626;
+        bh=TTNbzhm/WJ9aozQQd5bRAmPji9SmhQnxav+eScNroaM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NPEBRlH61bo4hQLFGTog4AH6xU3UfTJ7IZzvzZaJkl1JWhQ61YH7KbBHs6B9rTVVJ
+         D9gfrqi0XWoX4qqVKHjluPg6KbbUvEJGNALZYpB0EsgGX+ONLzz7+a9UOuqt5Pnpcz
+         dB05vsjQJr9TZkXJs9aiAPxi4j92WyhroX7hbBFZrMoJ7bNzdu7KrpNm1CRg6QIHv3
+         2/Pi50tMoHbhzx/+Atc5iMPcB5oN6xuo29opVxSAfuvmuueFILE/DC1nBfkCEZ578C
+         25XDl4LYawTc32t2Gf0+dCCr/fcYB4KDHF6UGYlfyUsdMyUYY9UpplSjwa+r7d+rEB
+         lHN5RNds7O87w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H5JLL4229z9sVw;
+        Fri, 10 Sep 2021 11:33:46 +1000 (AEST)
+Date:   Fri, 10 Sep 2021 11:33:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: linux-next: manual merge of the kspp tree with the
+ compiler-attributes tree
+Message-ID: <20210910113345.62bda9e6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/fYJFVjRFtPZsOpVaQ4FZ30b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Sep 2021 17:25:00 -0500
-Ian Pilcher <arequipeno@gmail.com> wrote:
+--Sig_/fYJFVjRFtPZsOpVaQ4FZ30b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Add files:
->   * ledtrig-blkdev-core.c - trigger components that are always built-in
->   * ledtrig-blkdev.c - trigger components that can be built as a module
->   * ledtrig-blkdev.h - common declarations
+Hi all,
 
-I have never seen this done this way. Add new files once you have
-content for them. I think this entire proposal should be done as one
-patch, since it atomically adds functionality.
+Today's linux-next merge of the kspp tree got conflicts in:
 
-Now I have to jump between various e-mail when I want to create a mind
-map of what this code is doing, and it is annoying.
+  include/linux/compiler-gcc.h
+  include/linux/compiler_types.h
 
-Please resend this as:
- - one patch adding sysfs docs
- - one patch for the rest
+between commit:
 
-Marek
+  b83a908498d6 ("compiler_attributes.h: move __compiletime_{error|warning}")
+
+from the compiler-attributes tree and commit:
+
+  122b05c65c5d ("compiler_types.h: Remove __compiletime_object_size()")
+
+from the kspp tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/compiler-gcc.h
+index 21c36b69eb06,01985821944b..000000000000
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@@ -41,8 -41,9 +41,6 @@@
+ =20
+  #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUN=
+TER__)
+ =20
+- #define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
+ -#define __compiletime_warning(message) __attribute__((__warning__(message=
+)))
+ -#define __compiletime_error(message) __attribute__((__error__(message)))
+--
+  #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
+  #define __latent_entropy __attribute__((latent_entropy))
+  #endif
+diff --cc include/linux/compiler_types.h
+index b6ff83a714ca,c43308b0a9a9..000000000000
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@@ -290,11 -290,13 +290,6 @@@ struct ftrace_likely_data=20
+  	(sizeof(t) =3D=3D sizeof(char) || sizeof(t) =3D=3D sizeof(short) || \
+  	 sizeof(t) =3D=3D sizeof(int) || sizeof(t) =3D=3D sizeof(long))
+ =20
+- /* Compile time object size, -1 for unknown */
+- #ifndef __compiletime_object_size
+- # define __compiletime_object_size(obj) -1
+ -#ifndef __compiletime_warning
+ -# define __compiletime_warning(message)
+ -#endif
+ -#ifndef __compiletime_error
+ -# define __compiletime_error(message)
+--#endif
+--
+  #ifdef __OPTIMIZE__
+  # define __compiletime_assert(condition, msg, prefix, suffix)		\
+  	do {								\
+
+--Sig_/fYJFVjRFtPZsOpVaQ4FZ30b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE6tfkACgkQAVBC80lX
+0GxSPQf/cZwU1II1Qwt4wzRxqYbubzCmSiul2SrdUy99zS32KhUWwuatDtZFkUcb
+QZQgZ4mFA/m1QKnEgZqHhG4CoCNmOrkSQmTf5V8ZrfJUKu+8Aujt+ulUXouimIeJ
+GLf/+6ypT5OW4B2BBPkVS3b866MEdv4Kl5KduxHQz9fNbFM1k4wUs88qGVZzR6cf
+EPvi5nTcahTMhY0HpYybKjCRWY4tpv/Xl1Sbrua3dr2F6kZUu27mxjnF08EKANG5
+4Ri0t4RXukVVnE3S984sH3MjCf46BdQjZbDQehnq8ElHR/WblwZ+0qMwxl0U27U1
+Uk9fRcACjMUehDwgfQOwRvI1siY2pQ==
+=bLgg
+-----END PGP SIGNATURE-----
+
+--Sig_/fYJFVjRFtPZsOpVaQ4FZ30b--
