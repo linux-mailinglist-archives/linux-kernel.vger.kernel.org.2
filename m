@@ -2,149 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA58406AA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA0A406AA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhIJLTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:19:06 -0400
-Received: from mail-dm6nam11on2046.outbound.protection.outlook.com ([40.107.223.46]:56193
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232613AbhIJLTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:19:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S7SpzQEBM858a6ARAyO8zg+FzcLBgtavJoZA3ArMeng+RkIxsANzlhbikrdzCnNhrftGQFKoVtfJU/MGDQUAWanyQX9bUQNbhFnMOp3YHnZBFfqy4IYDL+ZnOgxfX76ZQvDZpp0d4HdQR3HapdODqjXE67vf2P652wPp5kZEj9WXIKcK2i1c11WFZbEfIlCTzOMNMMdiNoF9NoTOn6vez46RrUiVCfz5AzScDpnPJeRy55Ud2T1OVSx/QxHrAho/9yj0jQzQH0PKZqwhBjHkM6tYwtfTac5xpSUVW3sUACDyIQuBK4WmrioC705aQrIyne1XXxPK8cRQxf94+iWe0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ZrckAIluAAdkvqLWIuqZ6GrXJrC+EOj4iTAeWXj6770=;
- b=KDt0gBgst/dJsD2bgSmkyVp+EZ56XHPPKxMUXZOy6mhyZsihSGwgkR/QEfzaOwKyk49a1Fh3aUPII4NwRa/CDth5XB4XJAknIbp3BxW+VAbSqVT65GlTL7u4uhAjxewoY/sOEsBt6L2fuYaVIfnE9eoTqWoGfJNMtQdM5AzBGpm9+/ipSkudQmmgwY3kASBxwBH8Hrd6SNf3FEpkXZDtlte85HbZNCgBCxYV6bjp3oYnj19ShckPIiVeGzvyytR577B1BhVnjYZkngc/zsr+PA7/Ym/g9DJAqbel6ZaxoOfI9+F5fub++M58sqKPPWlASf+IsdoJKA4dkEvXv2OvvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZrckAIluAAdkvqLWIuqZ6GrXJrC+EOj4iTAeWXj6770=;
- b=0ED8wdpG9OboZ3H+zGA/p+3WpcqbRgg66Yn9xpv9uKYriieHc2kZNrCSzYimQ6kVHGjyEzAKRfwVjXbgH+q0UIavRloXq7z3HgOpHwNgANdRUDsiEd01qr2ZTLRbTbE/1rgRZtPuvDzhSKHNjXZzIdnQdbAGd2mnNb6SjoXYWHA=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2654.namprd12.prod.outlook.com (2603:10b6:805:73::28)
- by SA0PR12MB4400.namprd12.prod.outlook.com (2603:10b6:806:95::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Fri, 10 Sep
- 2021 11:17:51 +0000
-Received: from SN6PR12MB2654.namprd12.prod.outlook.com
- ([fe80::2d6a:be90:d87d:2ef8]) by SN6PR12MB2654.namprd12.prod.outlook.com
- ([fe80::2d6a:be90:d87d:2ef8%6]) with mapi id 15.20.4478.026; Fri, 10 Sep 2021
- 11:17:51 +0000
-Subject: Re: [PATCH 2/2] perf annotate: Add fusion logic for AMD microarchs
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, yao.jin@linux.intel.com, namhyung@kernel.org,
-        kim.phillips@amd.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ravi.bangoria@amd.com
-References: <20210906105640.1040-1-ravi.bangoria@amd.com>
- <20210906105640.1040-2-ravi.bangoria@amd.com> <YTpveO0qqKFTaxTk@kernel.org>
-From:   Ravi Bangoria <ravi.bangoria@amd.com>
-Message-ID: <6a987cad-6c46-280e-f791-6c59b6628a45@amd.com>
-Date:   Fri, 10 Sep 2021 16:47:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <YTpveO0qqKFTaxTk@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BM1PR01CA0102.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00::18)
- To SN6PR12MB2654.namprd12.prod.outlook.com (2603:10b6:805:73::28)
+        id S232768AbhIJLTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:19:43 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:45679 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232537AbhIJLTm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 07:19:42 -0400
+Received: by mail-oi1-f170.google.com with SMTP id q39so2401606oiw.12;
+        Fri, 10 Sep 2021 04:18:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mc0xPslGZj9sy1U7IiLU0vE11/d4ChU3H+1S8KTMkf8=;
+        b=t/exzw+EAAB1Lb6ptNFV4VsanYDttNI6btyE9NlQJHTkiIF8kgONdBe1jx0UeFJYG+
+         zBhB+fwW3NqRdNSsbsOW+3XFTEhiVYIDTv+tX9YyKFFMkOp4mCWUeeKe1G5PusyG+U02
+         s9YmMlykR6dQgH9xvq/YiTyY9cMtA1pBcrfWGKIh4rHSCw2rCZ8o1Xbfuh41zFuGjiVN
+         NPuGJ6y98C6ZBX9G95IpOYNtl4N+k6SFH2pntqaykB8DfPA/KSgwUfig6QIpi0ayMJTu
+         kI5cRNVjknKX4/8DWellORgk5zPe+sXBzw2xdAwJYhAsHNNTZS8jrUlYJRWh/0n2dmNi
+         pKcQ==
+X-Gm-Message-State: AOAM532wxUP/vYRm1me0oBJxWF2+clxAHffNR7Mopd5KU2bCQ1AUSLE7
+        3/s5yMyPFJh/RBFgLnoeIzzYlK4N2ZPVttoCvhQ=
+X-Google-Smtp-Source: ABdhPJzT8Mi7i73LpYOilDpG2Ad+eBHrwm2iC4sIYkQi4Xb4mXRbxLlbdk0UuxX+QSYv2b73cgTNW4cL9IKeu6S7Xqg=
+X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr3523425ois.69.1631272711378;
+ Fri, 10 Sep 2021 04:18:31 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [10.252.93.92] (165.204.159.242) by BM1PR01CA0102.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 11:17:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a20508e8-c664-4979-c2d2-08d9744ca0e1
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4400:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4400BADC90C5E00F41774AB6E0D69@SA0PR12MB4400.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B6wh/Te8iOkleSvjgsCgEVCnK8BMwvaW9VJfR8V8WZlAcO0H/ChGnxM3pS/K9zrcU2R6pBvGbF8z3K9nmj8eMgvtaNdFYHe2V1BEQHUrO+LGWzAKO5LTaQUkWKABRedKu/pXDZ8osnQ27H6jDu8QRJVkq0BQXuuoWUEWqG+rsO/J7DbNDtE+Foo6t4B0mHRjBhjLzWv8T+cOXFwpZQOdYjeT7UsgzwrQtQrVlEbKSt5E8YIktClllww3JKh9MvNwWcgmtQaMF9ZhJh2RHRwqCTTrrj5k0vbtce4/xkL3Inh5EuvSZga0CQ6vnv3MRzcsd2KZuwQ/skxF3rVyhuYVxalpus8+/NzjF05Qiuo5DEsyjDEwmS7OYGUQAOu1MLG7/imKYFGiKH9T303YQUL0V/CZVYkZuOZUsgfmM2VeNI+nHY3HBVRLnLsCmZMK6qf8wqD+LBNcOK47JISHijZiaBjm898sNocsW5mhxa45+0H+Cm5VYCQ7+6/1KL3PjQeu5pg2EvPi8c+Q9K/zXAS83C+FgQOJXKkYXW6yXZhELXbIXtoIyPvWqpfdYgJFL5ogjyQwQIjaUOkdfitxT22RLHbyd4MjBgO2QtDrzWYNVGzBgpB9TbjnxrcecfYlrCa/oNYRZyzpu9wJ5QDQPxnVIko9fLXTAjNZUNOJ4PWcXOkIluBo+xbYvdB+2Lyzod/R5DWsozn7v+7PTooMrljniRRkVgOOd5/rcNtQWI4UUeE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2654.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(366004)(39850400004)(31686004)(5660300002)(6666004)(66556008)(66476007)(2906002)(4326008)(2616005)(66946007)(8936002)(36756003)(38100700002)(478600001)(16576012)(316002)(26005)(31696002)(6486002)(6916009)(186003)(8676002)(44832011)(956004)(4744005)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Yzk4R2ljdHRDTEJDSGNoNEJ5ME5iR2pvQjZhOGltYTBMckJRaU5KdjJLNkQ0?=
- =?utf-8?B?cXUyU056cjFMT1A2OXMwOEJBVTY1ckVZNWd2Q2wvUkpjSFpDbDRZZWNkeEhL?=
- =?utf-8?B?anlUUnRmc1hFb01ocXhsdE1pRTBMZ1dqZ0ZaVGRTeCtqMStMaVoxeWUyRTBz?=
- =?utf-8?B?b0lvSjlKcXFZT0UzWm91VWFGY3hNelU4NGZ5NXp3V1FyZlcrTGhhS0dHV3Rs?=
- =?utf-8?B?dFpLUjFOd3RvOGI3cFJlaml2TEU2TlNQUEdsNVpnTXZpdWQ3QlhtOCtLQkE2?=
- =?utf-8?B?blVNSHVRMDdXYjlSTThjYlkyVVBNKzRnZk52c2NNU0VhZVNCVWFHRmxpUURB?=
- =?utf-8?B?N3ZrczBmUllGWkR5b3JsTVV6ZTlKcmpHdXkvcVpNS0xKZWFNZkNKZnlUY1pa?=
- =?utf-8?B?VzN4emZxU0l3UEdmZU9HT0Y2bFhybHVROS9zMFZrcDR0SGVOU3piNEpCNVB5?=
- =?utf-8?B?WjlyRjJrSWF3ampialRraTRIckxuaUVnekxMY0srVCsrd2dHOHM1ek5hdlg3?=
- =?utf-8?B?WFozQlFDS2VMY2prNmhVYlBwa1ByQmRGcTBDNVNoQWxUU2I3NkxUMm5RaHp1?=
- =?utf-8?B?b0VNMDhUM2QwcFRMYmlPQ0krWDhlclhVQkdOSjdNUms1VVl1S3k4aXk3Uk03?=
- =?utf-8?B?bkhRYWE2WUNUbVZLV2JleEYwak95M216S3g2QTdVK0U4OFlJTjNnVWVHbU11?=
- =?utf-8?B?dnplMDN0MHV6MU10b3FqMi8xU2FnemRpUTdoZ2NzY2xqcW9HeEtyYkVrbmFv?=
- =?utf-8?B?NDQ1aENZUG9vVmM3dUMwQnN3UjFkTlVZRHNFZHdrdGwvQ2RNL0NMaU1BcG1T?=
- =?utf-8?B?QW5HNWlPVWdsNzJKYVhXTHRQUDZGVXBBNkFreVpOWVhrYTNEZXl6TGZlZzlJ?=
- =?utf-8?B?ejlHbmhlamp0UVFScjhKc0RhVTA2T1hqSUEvTkhVYmcydG96NVQ2czJLY0dH?=
- =?utf-8?B?eFpzTmExYmJmdW9tWTN1VWsvZnBCV1lhRHdRakN3NFZMN0k3VGhHekExQldK?=
- =?utf-8?B?STVqakNNUENjZkZIUkJ5NXg3QklQMG9TdHIwd0g2dGF1cmg0R241U2xsZjRs?=
- =?utf-8?B?dE12bVJydWd3ay9QdFoxbFEvdUZzSmh4TFlUcGxQK1AwRVdIeGovdkgvdDRp?=
- =?utf-8?B?MDJvYjE5TktBRklVOFN2RkEwU2ROY2QzdzBEdnM3cEFOdjZUUm9SQytSeURU?=
- =?utf-8?B?VUhVeG9tcHJYNCszb0l1K2tmcUVJQWR2UmtOVlFxc2tCYzJMZnZTQ3dRdENt?=
- =?utf-8?B?cUMzV0t4QVJJZ0FPVkdtZHlCbmlpQ0tyOFUzckdZSE5oQ3k2Zlk0ak43KzFk?=
- =?utf-8?B?azdXVDJLb0FjdmFxN2EzYXpJTGhQeDltTVpDaUpTQnB1NVRpOHNCNXpPR1VO?=
- =?utf-8?B?dkhaSWo5cFBrTFJaTEhwS1EyN0FiSFkxNGgvVVVRbkZvbTZsZ2tRVlRCVC9R?=
- =?utf-8?B?dlY4anV0NWIzczBiQkN1eWpDcHBiVVV1QW5WSFZQbnR5bE02NkZtY1RNT1U0?=
- =?utf-8?B?bkVobnpQRlhBWllNS05tY0pYcW1FRldTQWp4aDFoNzNsMjVTTHR5RU1SdENl?=
- =?utf-8?B?OVl6alJmTWNJa09SVkJadGRJNzBkdFB5RkxIbjRCcW5FeGI1aHJDVWw2MGRD?=
- =?utf-8?B?VGtuekdob3pTS0t0WXdZb2M0U1A1ZEJ6YzY2L1FNWUp5Wlo5UEhqdzcrRUdo?=
- =?utf-8?B?UnMrajVoVTJCRjZkbEpta21Qa1ZTUVZlYjdaVCs5Q1Zpb0tSSWxiR0Foenky?=
- =?utf-8?Q?1VRW06t1Nq38/tmzrXlT3xLGcKbe4Pza/OWXAQ0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a20508e8-c664-4979-c2d2-08d9744ca0e1
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2654.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 11:17:51.7121
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z0wgg3zsYD/55dMqwyCobabXbSFfGBev89J67r5DmD4exmTaX8v56sT6/4TWJW1gaLYLrJPa2hUEX2t34mL0jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4400
+References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+ <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+ <CAAYoRsWdFwiwo8j2Nc-vhk2mnoZqJC9fyS7URtEz3E1VxfNbLQ@mail.gmail.com>
+ <CAJZ5v0hO7SajJ5HFVDcma6nOfzy-289MdwUSiJbY8Hm3mxvXnQ@mail.gmail.com>
+ <CAJZ5v0j1JjLr0co06yJCCNV2p06e91Zh7tkMXoGTE=waB5Xo1Q@mail.gmail.com> <CAAYoRsUun0_tXTEGi6m1L0A9ffRWZ8FbLs1kFEZ0d0QQi+ssQw@mail.gmail.com>
+In-Reply-To: <CAAYoRsUun0_tXTEGi6m1L0A9ffRWZ8FbLs1kFEZ0d0QQi+ssQw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 10 Sep 2021 13:18:19 +0200
+Message-ID: <CAJZ5v0jMDbxXt_EWN-GUOGBDCpDGHUoqRoTtfR8-rUOQjDBUyw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
+ by BIOS
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000007e802005cba246a4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--0000000000007e802005cba246a4
+Content-Type: text/plain; charset="UTF-8"
 
->> +static bool x86__ins_is_fused(struct arch *arch, const char *ins1,
->> +			      const char *ins2)
->> +{
->> +	if (strstarts(arch->vendor, "AuthenticAMD"))
->> +		return amd__ins_is_fused(arch, ins1, ins2);
->> +
->> +	return intel__ins_is_fused(arch, ins1, ins2);
->> +}
->> +
-> 
-> Can we instead make x86__ins_is_fused be a pointer and instead of
-> storing arch->vendor we set it to one of amd__ins_is_fused() or
-> intel__ins_is_fused()?
-> 
-> I.e. here:
-> 
->>  static int x86__cpuid_parse(struct arch *arch, char *cpuid)
->>  {
->>  	unsigned int family, model, stepping;
->> @@ -184,6 +216,9 @@ static int x86__cpuid_parse(struct arch *arch, char *cpuid)
->>  	if (ret == 3) {
->>  		arch->family = family;
->>  		arch->model = model;
->> +		arch->vendor = strndup(cpuid, 12);
-> 
-> 		x86__ins_is_fused = strstarts(cpuid, "AuthenticAMD") ?
-> 					amd__ins_is_fused :
-> 					intel__ins_is_fused;
+On Fri, Sep 10, 2021 at 5:14 AM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> On Thu, Sep 9, 2021 at 10:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Thu, Sep 9, 2021 at 6:12 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > On Thu, Sep 9, 2021 at 3:20 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > > > On Thu, Sep 9, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > On Thu, Sep 9, 2021 at 8:52 AM Srinivas Pandruvada
+> > > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > >
+> > > > > > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > > > > > > If HWP has been already been enabled by BIOS, it may be
+> > > > > > > necessary to override some kernel command line parameters.
+> > > > > > > Once it has been enabled it requires a reset to be disabled.
+> > > > > > >
+> > > > > > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > > > > > ---
+> > > > > > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> > > > > > >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > > > > b/drivers/cpufreq/intel_pstate.c
+> > > > > > > index bb4549959b11..073bae5d4498 100644
+> > > > > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > > > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> > > > > > >                  */
+> > > > > > >                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> > > > > > >                     intel_pstate_hwp_is_enabled()) {
+> > > > > > > -                       hwp_active++;
+> > > > > > > +                       hwp_active = 1;
+> > > > > > Why this change?
+> > > > >
+> > > > > I think hwp_active can be changed to bool and then it would make sense
+> > > > > to update this line.
+> > > > >
+> > > > > > >                         hwp_mode_bdw = id->driver_data;
+> > > > > > >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> > > > > > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > > > > > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> > > > > > >
+> > > > > > >  static int __init intel_pstate_setup(char *str)
+> > > > > > >  {
+> > > > > > > +       /*
+> > > > > > > +        * If BIOS is forcing HWP, then parameter
+> > > > > > > +        * overrides might be needed. Only print
+> > > > > > > +        * the message once, and regardless of
+> > > > > > > +        * any overrides.
+> > > > > > > +        */
+> > > > > > > +       if(!hwp_active
+> > > > > > This part of code is from early_param, Is it possible that
+> > > > > > hwp_active is not 0?
+> > > > >
+> > > > > Well, it wouldn't matter even if it were nonzero.  This check is just
+> > > > > pointless anyway.
+> > > > >
+> > > > > > > && boot_cpu_has(X86_FEATURE_HWP))
+> > > > > > > +               if(intel_pstate_hwp_is_enabled()){
+> > > > >
+> > > > > This should be
+> > > > >
+> > > > > if (boot_cpu_has(X86_FEATURE_HWP) && intel_pstate_hwp_is_enabled()) {
+> > > >
+> > > > Disagree.
+> > > > This routine gets executed once per intel_pstate related grub command
+> > > > line entry. The purpose of the "if(!hwp_active" part is to prevent the
+> > > > printing of the message to the logs multiple times.
+> > >
+> > > Ah OK.  Fair enough.
+> > >
+> > > You can do all of the checks in one conditional, though.  They will be
+> > > processed left-to-right anyway.
+> > >
+> > > But then it would be good to avoid calling
+> > > intel_pstate_hwp_is_enabled() multiple times if it returns false.
+> > >
+> > > And having said all that I'm not sure why you are trying to make
+> > > no_hwp depend on !hwp_active?  I will not be taken into account anyway
+> > > if intel_pstate_hwp_is_enabled() returns 'true'?
+> > >
+> > > So if no_hwp is covered regardless, you may move the
+> > > intel_pstate_hwp_is_enabled() inside the no_load conditional.
+> > >
+> > > Alternatively, and I would do that, intel_pstate_hwp_is_enabled()
+> > > could be evaluated earlier in intel_pstate_init() and if it returned
+> > > 'true', both no_load and no_hwp would be disregarded.
+> >
+> > Something like the attached, for the record.
+>
+> O.K. and Thanks.
+> I was trying to avoid this line getting into the log:
+>
+> [    0.000000] intel_pstate: HWP disabled
+>
+> only to overridden later by, now, these lines:
+>
+> [    0.373742] intel_pstate: HWP enabled by BIOS
+> [    0.374177] intel_pstate: Intel P-state driver initializing
+> [    0.375097] intel_pstate: HWP enabled
+>
+> Let me see if I can go with your suggestion and get to
+> what I had hoped to get in the logs.
 
-Sure. Will post v2.
+It would be sufficient to put the "disabled" printk() after the
+"no_hwp" if () statement in intel_pstate_init().  See attached.
 
-Thanks for the review Arnaldo,
-Ravi
+BTW, I've changed the message to "HWP not enabled", because that's
+what really happens to be precise.
+
+--0000000000007e802005cba246a4
+Content-Type: text/x-patch; charset="US-ASCII"; name="intel_pstate-arguments.patch"
+Content-Disposition: attachment; filename="intel_pstate-arguments.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kte9jpzq0>
+X-Attachment-Id: f_kte9jpzq0
+
+LS0tCiBkcml2ZXJzL2NwdWZyZXEvaW50ZWxfcHN0YXRlLmMgfCAgIDIyICsrKysrKysrKysrKysr
+LS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygt
+KQoKSW5kZXg6IGxpbnV4LXBtL2RyaXZlcnMvY3B1ZnJlcS9pbnRlbF9wc3RhdGUuYwo9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09Ci0tLSBsaW51eC1wbS5vcmlnL2RyaXZlcnMvY3B1ZnJlcS9pbnRlbF9wc3RhdGUuYworKysg
+bGludXgtcG0vZHJpdmVycy9jcHVmcmVxL2ludGVsX3BzdGF0ZS5jCkBAIC0zMjA1LDExICszMjA1
+LDE1IEBAIHN0YXRpYyBpbnQgX19pbml0IGludGVsX3BzdGF0ZV9pbml0KHZvaWQKIAlpZiAoYm9v
+dF9jcHVfZGF0YS54ODZfdmVuZG9yICE9IFg4Nl9WRU5ET1JfSU5URUwpCiAJCXJldHVybiAtRU5P
+REVWOwogCi0JaWYgKG5vX2xvYWQpCi0JCXJldHVybiAtRU5PREVWOwotCiAJaWQgPSB4ODZfbWF0
+Y2hfY3B1KGh3cF9zdXBwb3J0X2lkcyk7CiAJaWYgKGlkKSB7CisJCWJvb2wgaHdwX2ZvcmNlZCA9
+IGludGVsX3BzdGF0ZV9od3BfaXNfZW5hYmxlZCgpOworCisJCWlmIChod3BfZm9yY2VkKQorCQkJ
+cHJfaW5mbygiSFdQIGVuYWJsZWQgYnkgQklPU1xuIik7CisJCWVsc2UgaWYgKG5vX2xvYWQpCisJ
+CQlyZXR1cm4gLUVOT0RFVjsKKwogCQljb3B5X2NwdV9mdW5jcygmY29yZV9mdW5jcyk7CiAJCS8q
+CiAJCSAqIEF2b2lkIGVuYWJsaW5nIEhXUCBmb3IgcHJvY2Vzc29ycyB3aXRob3V0IEVQUCBzdXBw
+b3J0LApAQCAtMzIxOSw4ICszMjIzLDcgQEAgc3RhdGljIGludCBfX2luaXQgaW50ZWxfcHN0YXRl
+X2luaXQodm9pZAogCQkgKiBJZiBIV1AgaXMgZW5hYmxlZCBhbHJlYWR5LCB0aG91Z2gsIHRoZXJl
+IGlzIG5vIGNob2ljZSBidXQgdG8KIAkJICogZGVhbCB3aXRoIGl0LgogCQkgKi8KLQkJaWYgKCgh
+bm9faHdwICYmIGJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9IV1BfRVBQKSkgfHwKLQkJICAgIGlu
+dGVsX3BzdGF0ZV9od3BfaXNfZW5hYmxlZCgpKSB7CisJCWlmICgoIW5vX2h3cCAmJiBib290X2Nw
+dV9oYXMoWDg2X0ZFQVRVUkVfSFdQX0VQUCkpIHx8IGh3cF9mb3JjZWQpIHsKIAkJCWh3cF9hY3Rp
+dmUrKzsKIAkJCWh3cF9tb2RlX2JkdyA9IGlkLT5kcml2ZXJfZGF0YTsKIAkJCWludGVsX3BzdGF0
+ZS5hdHRyID0gaHdwX2NwdWZyZXFfYXR0cnM7CkBAIC0zMjM1LDcgKzMyMzgsMTEgQEAgc3RhdGlj
+IGludCBfX2luaXQgaW50ZWxfcHN0YXRlX2luaXQodm9pZAogCiAJCQlnb3RvIGh3cF9jcHVfbWF0
+Y2hlZDsKIAkJfQorCQlwcl9pbmZvKCJIV1Agbm90IGVuYWJsZWRcbiIpOwogCX0gZWxzZSB7CisJ
+CWlmIChub19sb2FkKQorCQkJcmV0dXJuIC1FTk9ERVY7CisKIAkJaWQgPSB4ODZfbWF0Y2hfY3B1
+KGludGVsX3BzdGF0ZV9jcHVfaWRzKTsKIAkJaWYgKCFpZCkgewogCQkJcHJfaW5mbygiQ1BVIG1v
+ZGVsIG5vdCBzdXBwb3J0ZWRcbiIpOwpAQCAtMzMxNCwxMCArMzMyMSw5IEBAIHN0YXRpYyBpbnQg
+X19pbml0IGludGVsX3BzdGF0ZV9zZXR1cChjaGEKIAllbHNlIGlmICghc3RyY21wKHN0ciwgInBh
+c3NpdmUiKSkKIAkJZGVmYXVsdF9kcml2ZXIgPSAmaW50ZWxfY3B1ZnJlcTsKIAotCWlmICghc3Ry
+Y21wKHN0ciwgIm5vX2h3cCIpKSB7Ci0JCXByX2luZm8oIkhXUCBkaXNhYmxlZFxuIik7CisJaWYg
+KCFzdHJjbXAoc3RyLCAibm9faHdwIikpCiAJCW5vX2h3cCA9IDE7Ci0JfQorCiAJaWYgKCFzdHJj
+bXAoc3RyLCAiZm9yY2UiKSkKIAkJZm9yY2VfbG9hZCA9IDE7CiAJaWYgKCFzdHJjbXAoc3RyLCAi
+aHdwX29ubHkiKSkK
+--0000000000007e802005cba246a4--
