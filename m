@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722C6406E49
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408A4406E54
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhIJPiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        id S234542AbhIJPkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhIJPiE (ORCPT
+        with ESMTP id S234604AbhIJPkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:38:04 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34835C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:36:53 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id n24so2837742ion.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=AYck59OKJZl5BcylX0MJhTaAQIkCo5TFvs+U+o+CvCM=;
-        b=PsjLWpqZkjZL8k+exDpnFsTCSa3LOcGfZckr4n4wMrkKYWhpndpIg/AU2wpuF2JJVF
-         /a91bZJS8UTvSOvlRHu50dSSb9NENS8OFWbr9GBM2eDevTHBcaQoKZprbHPT6jokGQ30
-         kByqyS/6VpasGQjcmphcR4ThRJkhKdRL/beifueXmcFvl6Hs5IWYrxmA8/TjJJ8bbnXR
-         x4QIAUY48XxjPM3mkCJqw0b7GOcpHi0MKORyBZ02umTd5WyVPvBxNIHjn58yrnesYMvX
-         CpJpo8o1eLP19AJmJnZXbgi8DTVJ3tgOhvHFCciqYzxl6g7Rgxj/Cnt5AKk7j2iNVSWY
-         Ln+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=AYck59OKJZl5BcylX0MJhTaAQIkCo5TFvs+U+o+CvCM=;
-        b=qoPXikIKFwyZLjY2XJ+DqoWo29p4tDTI8/oQ9MjOui8mjS+Md5MnNPCzvYjIWCAOnk
-         I+rC3NJeecIrNj+hFrlBRhQhPCvvC+sjrxaMqVKTx/npJfT9P+fRAfzvix+IxbnOQO/x
-         gaWZbFcvROk1bPPHe5ta9qN5QVzquQmNv86L6RQLumo3G1ZohvAWR8Sdv7jukSlO7Sfa
-         VHb3GmkIDFrgsF4e1lDUXCrv5VD/C40cLeCPxgl8zbGnUcFZdeQF3+xXxIQicjK7VPx8
-         TeN2A3QOeXVACFAxxP9Sx5bdbKU/2J8dLEsKlu5JTwdtbWg47/OYjCgP+I/RG0M8GjVm
-         D8JA==
-X-Gm-Message-State: AOAM531jNzXZ1L5p17LpXPgETnv/2ZS7IK3Q2zC9DDNuBxlH3fhUpt7a
-        0YDuL181EQtDCXSuHVXX1+65TrC7VR9wiVLE5qs=
-X-Google-Smtp-Source: ABdhPJx0kg2jAtOhtfulDWRVZ8Bf3g7ceGEi0nF3ME6kCMQBi6otGoQQ4RFqsClA7EBd0+p8xg94MXOV8BnusW4s3+Q=
-X-Received: by 2002:a02:c6b3:: with SMTP id o19mr4973956jan.5.1631288212697;
- Fri, 10 Sep 2021 08:36:52 -0700 (PDT)
+        Fri, 10 Sep 2021 11:40:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DDDC0613C1;
+        Fri, 10 Sep 2021 08:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=beG8h/qzme+fTyiQhIuWR7Lf7uWlwUHjpcQJDRpcyHY=; b=RzOxiElj7RvGJsvpuwvBFOJxSH
+        JvA723cw93ZhYz4BqLFZ5UiChcpd3271tdgSuwoIHjgjVQac3h0sX9KKijsN3andNdq3r3OKBuWni
+        mQoUnbC2CkaUxu2RPKi/KfVvQ3JDNnvIlM3fadP1QGXjtHr3zKvqVzh6B51v3wc1m2l/gBjPyzqXK
+        eSpXkntybGl0vmDeU7iQjRyRs0hPpKGio2D7vb0Ib5kGimJvSAgr8A6R0XnLe+BY4y0yz/kXHjgtW
+        /DyW6KJpTaEHYFMHXMX5jHhgBdNtDKnKqodXfWo7bHCUreEo29yTheeMuJgsgvv1EBTQoAlQKvRQ2
+        x0EOtq0A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOibw-002AHo-S3; Fri, 10 Sep 2021 15:38:41 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DBA9F98627A; Fri, 10 Sep 2021 17:38:39 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 17:38:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
+ perf_log_throttle
+Message-ID: <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
 MIME-Version: 1.0
-Reply-To: mohammadouattara53@gmail.com
-Sender: mohammadouattara27@gmail.com
-Received: by 2002:a5e:8b09:0:0:0:0:0 with HTTP; Fri, 10 Sep 2021 08:36:52
- -0700 (PDT)
-From:   Mohammad Ouattara <mohammad.ouattara3238@gmail.com>
-Date:   Fri, 10 Sep 2021 08:36:52 -0700
-X-Google-Sender-Auth: FtOkhoF34l-_PBRo6yI67wLAw_8
-Message-ID: <CAJ4jTgpG4_mOvntF7UT+fPbB9mM0ttUBddoc+65PKHJ5j+-h=w@mail.gmail.com>
-Subject: I am expecting your urgent respond.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Thu, Sep 09, 2021 at 11:13:21AM +0800, 王贇 wrote:
+> When running with ftrace function enabled, we observed panic
+> as below:
+> 
+>   traps: PANIC: double fault, error_code: 0x0
+>   [snip]
+>   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+>   [snip]
+>   Call Trace:
+>    <NMI>
+>    perf_trace_buf_alloc+0x26/0xd0
+>    perf_ftrace_function_call+0x18f/0x2e0
+>    kernelmode_fixup_or_oops+0x5/0x120
+>    __bad_area_nosemaphore+0x1b8/0x280
+>    do_user_addr_fault+0x410/0x920
+>    exc_page_fault+0x92/0x300
+>    asm_exc_page_fault+0x1e/0x30
+>   RIP: 0010:__get_user_nocheck_8+0x6/0x13
+>    perf_callchain_user+0x266/0x2f0
+>    get_perf_callchain+0x194/0x210
+>    perf_callchain+0xa3/0xc0
+>    perf_prepare_sample+0xa5/0xa60
+>    perf_event_output_forward+0x7b/0x1b0
+>    __perf_event_overflow+0x67/0x120
+>    perf_swevent_overflow+0xcb/0x110
+>    perf_swevent_event+0xb0/0xf0
+>    perf_tp_event+0x292/0x410
+>    perf_trace_run_bpf_submit+0x87/0xc0
+>    perf_trace_lock_acquire+0x12b/0x170
+>    lock_acquire+0x1bf/0x2e0
+>    perf_output_begin+0x70/0x4b0
+>    perf_log_throttle+0xe2/0x1a0
+>    perf_event_nmi_handler+0x30/0x50
+>    nmi_handle+0xba/0x2a0
+>    default_do_nmi+0x45/0xf0
+>    exc_nmi+0x155/0x170
+>    end_repeat_nmi+0x16/0x55
 
-I know that this message will come to you as a surprise. I am the
-Auditing and Accounting section manager in (BOA BANK) Ouagadougou
-Burkina Faso.
+kernel/events/Makefile has:
 
-I Hope that you will not expose or betray this trust and confident
-that I am about to repose on you for the mutual benefit of our both
-families.
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+endif
 
-I need your assistance in transferring the sum of ($12.5M) Twelve
-Million, Five Hundred Thousand United Dollars into your account within
-7 to 10 banking days,as one of my Bank foriegn clients who died few
-years ago without indicating his next of kin to the fund.
-
-If you are really interested in my proposal further details of the
-Transfer will be forwarded unto you as soon as I receive your
-willingness mail for a successful transfer.
-
-I am expecting your urgent respond.
-
-Have a great day,
-Mr mohammad ouattara.
+Which, afaict, should avoid the above, no?
