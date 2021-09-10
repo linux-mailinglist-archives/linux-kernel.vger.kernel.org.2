@@ -2,172 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F994072D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4524072DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhIJVSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhIJVR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:17:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB07600D4;
-        Fri, 10 Sep 2021 21:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631308607;
-        bh=pf81SXcWaCjZzcuiThhuTv2m8ko+HM+2Hb+5ew+QlqI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=eXajeUkQgDiwDXVHBcaoEUNTia35jQVxw2Qslzdrp90Kih980R7ui+oQ1drtZvWCB
-         5BwuwHe/UYtqLi0jX/7Ug4gVmf/HNX/1s6U452OuX63MVifBv7muZRBTZFNcbgvCSs
-         CX1dfZEaP6XY7RuOwESNHKkfibQS8IPI50UnX+0Ig4x9oOGKeLD6KHj/xTmUFyBdNq
-         UNitMl6iDdf+vJ7SABRcsGQmNCyGKerzF4j1FXCju7avyfzgC3A9VEiwdNoWXpPfJk
-         oe8IfF6wb/X1r7FNCdWLASWjHSkEr6NXqSWwhIRrWJVL/Z0JUjjwsM6vpKgLfJzndg
-         Td+VxgKyWnzEA==
-Subject: Re: [PATCH v2] Compiler Attributes: Check GCC version for
- __alloc_size attribute
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
-        Will Deacon <will@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210910201132.3809437-1-keescook@chromium.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <7e77cbc8-4aa9-9607-2b87-6a9ff27c468e@kernel.org>
-Date:   Fri, 10 Sep 2021 14:16:43 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234486AbhIJVUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232925AbhIJVU0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 17:20:26 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0810C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:19:14 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b10so4061665ioq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5lhyZTASH4SJRYSNnAF6nepknOxCtJqItrbtMVPCI0I=;
+        b=HqKsNG9+E/mQtTSc/qswsz3jUSkK53rxZSIixGE9gzqlmB/R5arNOEIhFALiap9nOZ
+         Qh4qv/DoUYwk3jrqlEpTng0e56wwgvnUoqWbc9CAb8q2XlxLEGrmbKEEmlZUWDOm3ZVC
+         fZ5eKKXsnu6FK6QIN+kKvYtG5i8SC/c0vlCI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5lhyZTASH4SJRYSNnAF6nepknOxCtJqItrbtMVPCI0I=;
+        b=AGUfRVU3E03UVWqyjveui/7SnFM1R4tKB3Lwau2+zA5bquqT62daVIaDELFuHQkSoa
+         tZrWZxzVTX8wvMznGbppPhXssSotdvZKbZ2y7lYrxeI5RaLXpp+GB/4WqjTyAL0BWf4r
+         xA6gPs6TnHaPFS8USXUP+fNeTKoXnYG4j97SdRs7vN2c/1KE2bPVVgI8Qhc6bUEGUgOP
+         sFY3/qMirOLG1ogrqSosCbZbMWqruV994CKKNrFutexxM4JzImHc8VbtW9ToAfRsdp8H
+         C6ZJK1gYSqjr/q7vEium0CHfyckxkrAkvDF43lwuH0NQ/6UToHxgmjNC2uKc1NevxkU0
+         LzEg==
+X-Gm-Message-State: AOAM532QT3BNt1to6xcFv9mxoq8VVFcYipyD9jHabHtWMWw8ey4AXcWZ
+        XV8degl4lsiDxb3fGcaC0J/RB48GrwTTaQ==
+X-Google-Smtp-Source: ABdhPJw0vR+gIiBhWBeWypr9p80KI/se9JbFEWwP09YU855rdn1DPqvNXu6Iq/HFrIZfgYNb4AM38g==
+X-Received: by 2002:a6b:c8c7:: with SMTP id y190mr8555243iof.210.1631308754102;
+        Fri, 10 Sep 2021 14:19:14 -0700 (PDT)
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
+        by smtp.gmail.com with ESMTPSA id d17sm3051970ilf.49.2021.09.10.14.19.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 14:19:13 -0700 (PDT)
+Received: by mail-il1-f180.google.com with SMTP id b15so2986951ils.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:19:12 -0700 (PDT)
+X-Received: by 2002:a92:da0c:: with SMTP id z12mr6317818ilm.120.1631308752557;
+ Fri, 10 Sep 2021 14:19:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210910201132.3809437-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210909122053.1.Ieafda79b74f74a2b15ed86e181c06a3060706ec5@changeid>
+In-Reply-To: <20210909122053.1.Ieafda79b74f74a2b15ed86e181c06a3060706ec5@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 10 Sep 2021 14:19:01 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UV_TG+zCsdYc5mqHFP5Cd8QuQNgYMtWNX9kENXpJXn4w@mail.gmail.com>
+Message-ID: <CAD=FV=UV_TG+zCsdYc5mqHFP5Cd8QuQNgYMtWNX9kENXpJXn4w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: Add sc7180-trogdor-homestar
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 1:11 PM, Kees Cook wrote:
-> Unfortunately, just version checking the use of -Wno-alloc-size-larger-than
-> is not sufficient to make the __alloc_size attribute behave correctly
-> under older GCC versions. The attribute itself must be disabled in those
-> situations too, as there appears to be no way to reliably silence the
-> SIZE_MAX constant expression cases for GCC versions less than 9.1:
-> 
-> In file included from ./include/linux/resource_ext.h:11,
->                   from ./include/linux/pci.h:40,
->                   from drivers/net/ethernet/intel/ixgbe/ixgbe.h:9,
->                   from drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c:4:
-> In function 'kmalloc_node',
->      inlined from 'ixgbe_alloc_q_vector' at ./include/linux/slab.h:743:9:
-> ./include/linux/slab.h:618:9: error: argument 1 value '18446744073709551615' exceeds maximum object size 9223372036854775807 [-Werror=alloc-size-larger-than=]
->    return __kmalloc_node(size, flags, node);
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/slab.h: In function 'ixgbe_alloc_q_vector':
-> ./include/linux/slab.h:455:7: note: in a call to allocation function '__kmalloc_node' declared here
->   void *__kmalloc_node(size_t size, gfp_t flags, int node) __assume_slab_alignment __malloc;
->         ^~~~~~~~~~~~~~
-> 
-> Specifically:
-> -Wno-alloc-size-larger-than is not correctly handled by GCC < 9.1
->    https://godbolt.org/z/hqsfG7q84 (doesn't disable)
->    https://godbolt.org/z/P9jdrPTYh (doesn't admit to not knowing about option)
->    https://godbolt.org/z/465TPMWKb (only warns when other warnings appear)
-> 
-> -Walloc-size-larger-than=18446744073709551615 is not handled by GCC < 8.2
->    https://godbolt.org/z/73hh1EPxz (ignores numeric value)
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Sami Tolvanen <samitolvanen@google.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: llvm@lists.linux.dev
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hi,
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-One open-ended comment below.
-
+On Thu, Sep 9, 2021 at 12:21 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> Homestar is a trogdor variant. The DT bits are essentially the same as
+> in the downstream tree, except for:
+>
+> - skip -rev0 and rev1 which were early builds and have their issues,
+>   it's not very useful to support them upstream
+> - don't include the .dtsi for the MIPI cameras, which doesn't exist
+>   upstream
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
-> And now I've added GCC 4.9, 5, and 6 to my build configs... 4.9 is so
-> old I have to turn off RETPOLIN in defconfig. :P
-> 
-> v2:
-> - fix lack of VARARGS in fall-back macro
-> - add reviewed-by
-> ---
->   include/linux/compiler-gcc.h        | 9 +++++++++
->   include/linux/compiler_attributes.h | 6 ------
->   include/linux/compiler_types.h      | 5 +++++
->   3 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index 01985821944b..3f3efbb651e0 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -151,3 +151,12 @@
->   #else
->   #define __diag_GCC_8(s)
->   #endif
-> +
-> +/*
-> + * https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
-> + * However, prior to 9.1, -Wno-alloc-size-larger-than does not work,
-> + * making this attribute unusable.
-> + */
-> +#if GCC_VERSION < 90100
-> +#define __alloc_size(x, ...)	/**/
-> +#endif
-> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-> index 19f178e20e61..2487be0e7199 100644
-> --- a/include/linux/compiler_attributes.h
-> +++ b/include/linux/compiler_attributes.h
-> @@ -53,12 +53,6 @@
->   #define __aligned(x)                    __attribute__((__aligned__(x)))
->   #define __aligned_largest               __attribute__((__aligned__))
->   
-> -/*
-> - *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
-> - * clang: https://clang.llvm.org/docs/AttributeReference.html#alloc-size
+>
+>  arch/arm64/boot/dts/qcom/Makefile             |   2 +
+>  .../dts/qcom/sc7180-trogdor-homestar-r2.dts   |  20 ++
+>  .../dts/qcom/sc7180-trogdor-homestar-r3.dts   |  15 +
+>  .../dts/qcom/sc7180-trogdor-homestar.dtsi     | 335 ++++++++++++++++++
+>  4 files changed, 372 insertions(+)
 
-It might be nice to keep a link to the clang documentation somewhere as 
-I like the example a little bit more but I guess it does not make sense 
-in compiler_types.h...
-
-> - */
-> -#define __alloc_size(x, ...)		__attribute__((__alloc_size__(x, ## __VA_ARGS__)))
-> -
->   /*
->    * Note: users of __always_inline currently do not write "inline" themselves,
->    * which seems to be required by gcc to apply the attribute according
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index c43308b0a9a9..91de9bead40d 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -254,6 +254,11 @@ struct ftrace_likely_data {
->   #define asm_volatile_goto(x...) asm goto(x)
->   #endif
->   
-> +/* If not specifically disabled, allow the use of __alloc_size attribute. */
-> +#ifndef __alloc_size
-> +# define __alloc_size(x, ...)		__attribute__((__alloc_size__(x, ## __VA_ARGS__)))
-> +#endif
-> +
->   #ifdef CONFIG_CC_HAS_ASM_INLINE
->   #define asm_inline asm __inline
->   #else
-> 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
