@@ -2,180 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5566C4068CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D526D4068C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhIJJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:00:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:62019 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231771AbhIJJAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:00:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="219170877"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="219170877"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:59:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="470465066"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga007.jf.intel.com with ESMTP; 10 Sep 2021 01:59:09 -0700
-Date:   Fri, 10 Sep 2021 16:52:38 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v15 5/6] fpga: image-load: create status sysfs node
-Message-ID: <20210910085238.GD754505@yilunxu-OptiPlex-7050>
-References: <20210909021846.681121-1-russell.h.weight@intel.com>
- <20210909021846.681121-6-russell.h.weight@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909021846.681121-6-russell.h.weight@intel.com>
+        id S231867AbhIJIyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:54:49 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37489 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231731AbhIJIys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:54:48 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 2276932009F0;
+        Fri, 10 Sep 2021 04:53:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 10 Sep 2021 04:53:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
+        from:content-type:content-transfer-encoding:mime-version:subject
+        :message-id:date:cc:to; s=fm2; bh=iJpONL4AqPRFYodHgX8qaQC1HnvrTc
+        94YdA+uyxnPf8=; b=mQ5ldECQEBEzzCoBTinbYAjksN5nd8qSsFS/c7KJQhBX1N
+        tzmxA0Au9Bcs9870f9iUPk6Hv8j3ntGnqnufqorKB4oLeRvDAhDXIRNQyC1bvbxt
+        LG2n0I0bRea/O+Z3mRd7XQUFg7Mh7+R6YkYFIQ4wGGjIWhyyqsIxAKpywxJnaB62
+        C+i75kWws3OIe/x7vh7ETITut96bkJgXRSPv1GuLuv6cWV8C6N55nR1U1vUp6XvT
+        cnkCpRAPUFNPTuaxSIA2yXy394PunOsK1ha+ig29LEcWtlHfZoyT0sXLOoDIxwbQ
+        X3L7IDJznrNhayu7fIr2DMs53WnnjG0DCxm+cGgw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=iJpONL
+        4AqPRFYodHgX8qaQC1HnvrTc94YdA+uyxnPf8=; b=ZT3xy/EXTIEe2oA3YPkwEz
+        qIlR6s2YAsHgtvcP21pArgWt8FLLpRiOd5gshyMns7ny0lr5Pro1ZoVldtwyJYjc
+        psPgoQDW1lT9/EeBxcCJN37FYRxj4K4NYFNvyFuCptOhHHfoywGcvfspCVrbZKtL
+        cgRIQGESoPGjb2TB6v8mcnfl4GONUz7NbpelbQZBmxNy/d6BakL2uHNuelsigzee
+        HN/MnCcAeytynCdms0IWGxGrMzocGpAmyqI3l1PGTXQf+dK56DWgS1l5AsNxwiBZ
+        xxgA6nQ1jD/y03UWlgqlDg6oecKIbqA+4X8oPzEE3Y/8Dv6S618aDffmLZJ88i0Q
+        ==
+X-ME-Sender: <xms:EB07YZD9OJXvlAhPc59AuamRyRfPtMC6kA8R1KXs5Qkv2i3vCqTvjQ>
+    <xme:EB07YXhyyaX1CW5RMoRd5QeYwEtpiutc3qOLY-Q0G3NZlhVVxs4qad2EaSBijoIQM
+    00oGIoM3KNW7i7KY1A>
+X-ME-Received: <xmr:EB07YUnlnSEN-e9IdFR116QG3IwTLAqmSbOUo0mPkiIGLMNTV-LMeyrvea3slZ3u9vo4iKnBM6oRIWO_MCboaHO-UiscjpFn1jbQ5qb3qQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephfgtgfgguffkfffvofesthhqmhdthhdtvdenucfhrhhomheptehlvgigvghi
+    ucfnohiiohhvshhkhicuoehmvgesihhlrghmmhihrdhnvghtqeenucggtffrrghtthgvrh
+    hnpeevieegjefhuefggfdtgeekjeeljeduvdehvdeuueegleegteevheegiedvueelfeen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgvsehilhgrmhhmhidrnhgvth
+X-ME-Proxy: <xmx:EB07YTyiaR6LDt2geVNE3zZLfaWuUl9TxittDwLG2-GjeJ8GjHw9dg>
+    <xmx:EB07YeS_T648pxOvGaxBuLvNyxdpjZWlECHkuwDcy5QyuGxkK59Mhw>
+    <xmx:EB07YWYocv11-jGR3i6hxfB7TXhPdXyY-eWQwQ5vVXI4JwDWAtdRsA>
+    <xmx:EB07Ycf0NKkAk9rpMNpxO8e-Yl17HGGhcw8FgW5e6DM7JICzXzsbGw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Sep 2021 04:53:34 -0400 (EDT)
+From:   Alexei Lozovsky <me@ilammy.net>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: /proc/stat interrupt counter wrap-around
+Message-Id: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
+Date:   Fri, 10 Sep 2021 17:53:28 +0900
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+To:     Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 07:18:45PM -0700, Russ Weight wrote:
-> Extend the FPGA Image Load class driver to include a status sysfs node that
-> can be viewed to determine from the command line if an image load is in
-> progress. Status will be one of: idle, starting, preparing, writing, or
-> programming.
+A monitoring dashboard caught my attention when it displayed weird
+spikes in computed interrupt rates. A machine with constant network
+load shows about ~250k interrupts per second, then every 4-5 hours
+there's a one-off spike to 11 billions.
 
-The FPGA_IMAGE_LOAD_STATUS ioctl already provides the progress info.
-Why we need 2 user interfaces for the same information?
+Turns out, if you plot the interrupt counter, you get a graph like this:
 
-Thanks,
-Yilun
+                                     ###.                          =20
+                                  ###   | ####.              #######
+                  #####.     #####      ##    |     #########      =20
+             #####     |   ##                 ######               =20
+            #          ####                                        =20
+        ####                                                       =20
+       #                                                           =20
+    ###                                                            =20
 
-> 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v15:
->  - Compare to previous patch:
->      [PATCH v14 3/6] fpga: sec-mgr: expose sec-mgr update status
->  - Changed file, symbol, and config names to reflect the new driver name
->  - Removed signed-off/reviewed-by tags
-> v14:
->  - Updated ABI documentation date and kernel version
-> v13:
->   - No change
-> v12:
->   - Updated Date and KernelVersion fields in ABI documentation
->   - Changed syntax of sec_mgr_prog_str[] array definition from:
-> 	"idle",			/* FPGA_SEC_PROG_IDLE */
->     to:
-> 	[FPGA_SEC_PROG_IDLE]	    = "idle",
-> v11:
->   - No change
-> v10:
->   - Rebased to 5.12-rc2 next
->   - Updated Date and KernelVersion in ABI documentation
-> v9:
->   - Updated Date and KernelVersion in ABI documentation
-> v8:
->   - No change
-> v7:
->   - Changed Date in documentation file to December 2020
-> v6:
->   - No change
-> v5:
->   - Use new function sysfs_emit() in the status_show() function
-> v4:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->     and removed unnecessary references to "Intel".
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> v3:
->   - Use a local variable to read progress once in status_show()
->   - Use dev_err to report invalid progress status
-> v2:
->   - Bumped documentation date and version
->   - Changed progress state "read_file" to "reading"
-> ---
->  .../ABI/testing/sysfs-class-fpga-image-load   |  7 ++++
->  MAINTAINERS                                   |  1 +
->  drivers/fpga/fpga-image-load.c                | 33 +++++++++++++++++++
->  3 files changed, 41 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-image-load
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-image-load b/Documentation/ABI/testing/sysfs-class-fpga-image-load
-> new file mode 100644
-> index 000000000000..6c04a49f01cc
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-class-fpga-image-load
-> @@ -0,0 +1,7 @@
-> +What: 		/sys/class/fpga_image_load/fpga_imageX/status
-> +Date:		Aug 2021
-> +KernelVersion:	5.15
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read-only. Returns a string describing the current status
-> +		of an FPGA image upload. The string will be one of the
-> +		following: idle, starting, preparing, writing, programming.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 637bc003ca81..e3fbc1bde9bc 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7362,6 +7362,7 @@ FPGA SECURITY MANAGER DRIVERS
->  M:	Russ Weight <russell.h.weight@intel.com>
->  L:	linux-fpga@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/ABI/testing/sysfs-class-fpga-image-load
->  F:	Documentation/fpga/fpga-image-load.rst
->  F:	drivers/fpga/fpga-image-load.c
->  F:	include/linux/fpga/fpga-image-load.h
-> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-> index 99a47b21c995..6ec0a39f07b3 100644
-> --- a/drivers/fpga/fpga-image-load.c
-> +++ b/drivers/fpga/fpga-image-load.c
-> @@ -236,6 +236,38 @@ static const struct file_operations fpga_image_load_fops = {
->  	.unlocked_ioctl = fpga_image_load_ioctl,
->  };
->  
-> +static const char * const image_load_prog_str[] = {
-> +	[FPGA_IMAGE_PROG_IDLE]	      = "idle",
-> +	[FPGA_IMAGE_PROG_STARTING]    = "starting",
-> +	[FPGA_IMAGE_PROG_PREPARING]   = "preparing",
-> +	[FPGA_IMAGE_PROG_WRITING]     = "writing",
-> +	[FPGA_IMAGE_PROG_PROGRAMMING] = "programming"
-> +};
-> +
-> +static ssize_t
-> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct fpga_image_load *imgld = to_image_load(dev);
-> +	const char *status = "unknown-status";
-> +	enum fpga_image_prog progress;
-> +
-> +	progress = imgld->progress;
-> +	if (progress < FPGA_IMAGE_PROG_MAX)
-> +		status = image_load_prog_str[progress];
-> +	else
-> +		dev_err(dev, "Invalid status during secure update: %d\n",
-> +			progress);
-> +
-> +	return sysfs_emit(buf, "%s\n", status);
-> +}
-> +static DEVICE_ATTR_RO(status);
-> +
-> +static struct attribute *fpga_image_load_attrs[] = {
-> +	&dev_attr_status.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(fpga_image_load);
-> +
->  /**
->   * fpga_image_load_register - create and register an FPGA Image Load Device
->   *
-> @@ -373,6 +405,7 @@ static int __init fpga_image_load_class_init(void)
->  	if (ret)
->  		goto exit_destroy_class;
->  
-> +	fpga_image_load_class->dev_groups = fpga_image_load_groups;
->  	fpga_image_load_class->dev_release = fpga_image_load_dev_release;
->  
->  	return 0;
-> -- 
-> 2.25.1
+While monitoring tools are typically used to handling counter
+wrap-arounds, they may not be ready to handle dips like this.
+
+
+What is the impact
+------------------
+
+Not much, actually.
+
+The counters always decrement by exactly 2^32 (which is suggestive),
+so if you mask out the high bits of the counter and consider only
+the low 32 bits, then the value sequence actually make sense,
+given an appropriate sampling rate.
+
+However, if you don't mask out the value and assume it to be accurate --
+well, that assumption is incorrect. Interrupt sums might look correct
+and contain some big number, but it could be arbitrarily distant from
+the actual number of interrupts serviced since the boot time.
+
+This concerns only the total value of "intr" and "softirq" rows:
+
+    intr    14390913189 32 11 0 0 238 0 0 0 0 0 0 0 88 0 [...]
+    softirq 14625063745 0 596000256 300149 272619841 0 0 [...]
+            ^^^^^^^^^^^
+            these ones
+
+
+Why this happens
+----------------
+
+The reason for such behaviour is that the "total" interrupt counters
+presented by /proc/stat are actually computed by adding up per-interrupt
+per-CPU counters. Most of these are "unsigned int", while some of them
+are "unsigned long", and the accumulator is "u64". What a mess...
+
+Individual counters are monotonically increasing (modulo wrapping),
+however if you add multiple values with different bit widths then
+the sum is *not* guaranteed to be monotonically increasing.
+
+
+What can be done
+----------------
+
+ 1. Do nothing.
+
+    Userspace can trivially compensate for this 'curious' behavior
+    by masking out the high bits, observing only the low
+    sizeof(unsigned) part, and taking care to handle wrap-arounds.
+
+    This maintains status quo, but the "issue" of interrupt sums
+    not being quite accurate remains.
+
+
+ 2. Change the presentation type to the lowest denominator.
+
+    That is, unsigned int. Make the kernel mask out not-quite-accurate
+    bits from the value it reports. Keep it that way until every
+    underlying counter type is changed to something wider.
+
+    The benefit here is that users that *are* ready to handle proper
+    wrap-arounds will be able to handle them automagically without
+    undocumented hacks (see option 1).
+
+    This changes the observed value and will cause "unexpected"
+    wrap-arounds to happen earlier in some use-cases, which might
+    upset users that are not ready to handle them, or don't want
+    to poll /proc/stat more frequently.
+
+    It's debatable what's better: a lower-width value that might
+    need to be polled more often, or a wider-width value that is
+    not completely accurate.
+
+
+ 3. Change the interrupt counter types to be wider.
+
+    A different take on the issue: instead of narrowing the presentation
+    from faux-u64 to unsigned it, widen the interrupt counters from
+    unsigned int to... something else:
+
+    - u64             interrupt counters are 64-bit everywhere, period
+
+    - unsigned long   interrupt counters are 64-bit if the platform
+                      thinks that "long" is longer than "int"
+
+    Whatever the type is used, it must be the same for all interrupt
+    counters across the kernel as well as the type used to compute
+    and display the sum of all these counters by /proc/stat.
+
+    The advantage here is that 64-bit counters will be probably enough
+    for *anything* to not overflow anytime soon before the heat death
+    of the universe, thus making the wrap-around problem irrelevant.
+
+    The disadvantage here is that some hardware counters are 32-bit,
+    and you can't make them wider. Some platforms also don't have
+    proper atomic support for 64-bit integers, making wider counters
+    problematic to implement efficiently.
+
+
+So what do we do?
+-----------------
+
+I suggest to wrap interrupt counter sum at "unsigned int", the same
+type used for (most) individual counters. That makes for the most
+predictable behavior.
+
+I have a patch set cooking that does this.
+
+Will this be of any interest? Or do you think changing the behavior
+of /proc/stat will cause more trouble than merit?
+
+
+Prior discussion
+----------------
+
+This question is by no means new, it has been discussed several times:
+
+2019 - genirq, proc: Speedup /proc/stat interrupt statistics
+
+    The issue of overflow and wrap-around has been touched upon,
+    suggesting that userspace should just deal with it. The issue of
+    using u64 for the sum has been brought up too, but it did not
+    go anywhere.
+
+=
+https://lore.kernel.org/all/20190208143255.9dec696b15f03bf00f4c60c2@linux-=
+foundation.org/
+=
+https://lore.kernel.org/all/3460540b50784dca813a57ddbbd41656@AcuMS.aculab.=
+com/
+
+
+2014 - Why do we still have 32 bit counters? Interrupt counters overflow =
+within 50 days
+
+    Discussion on whether it's appropriate to bump counter width to
+    64 bits in order to avoid the overflow issues entirely.
+
+=
+https://lore.kernel.org/lkml/alpine.DEB.2.11.1410030435260.8324@gentwo.org=
+/
+
