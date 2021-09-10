@@ -2,120 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0626E406A34
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B886A406A3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhIJKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 06:36:48 -0400
-Received: from mout.web.de ([212.227.17.12]:53279 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232157AbhIJKgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:36:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1631270120;
-        bh=NkaF6yzyaw3gMwcBE5iEi8F34hLhYgz9u3+0igXeSrM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=m0s4tDItyYkg5wwuAwxXO5se0uejWOfgWwZngwOIQAX3KKgIM5cOjQ7O4nCX+N6qz
-         Tag2epZb/JSNJz/0K23Z267ckKwcEqFzge17+WxWBNgyax2woIbVd26vmuaaGMsK/v
-         rQmXiuLjuOZh2zedZWmVfGBNz2lZS4X4VKAy4XQk=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [10.0.0.17] ([185.159.157.24]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0Le4Tw-1mjd9I0ur6-00psTr; Fri, 10
- Sep 2021 12:35:20 +0200
-Subject: Re: [PATCH] of: property: Disable fw_devlink DT support for X86
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210910011446.3208894-1-saravanak@google.com>
- <YTr4CZW+rOXAjNq9@kroah.com>
-From:   Andre Muller <andre.muller@web.de>
-Message-ID: <5064e6ca-344d-7eda-3264-50fb63e2e3f3@web.de>
-Date:   Fri, 10 Sep 2021 12:37:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232426AbhIJKn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232360AbhIJKn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 06:43:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4097C061574;
+        Fri, 10 Sep 2021 03:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DXrJBxKcsbepOR9WSPVVjIBdjJnJxeIocqbecuTYqnY=; b=sZCILqfSU5B2cA/LvNr+NVQ3b1
+        WXIZhbzbI6+KLNgARqJ2ZGIA7Ng+uwxf21W2m6YUmeIdg4IeK7V1poYVBhcnbG7QBDhQugjNp70HI
+        Qb5tixqfFRSyqlmLOrq4ouQu+IYysbURbekJlNDzb1mmUXCLI5RdAMU28QHLSo+347J0+1g7CN9L/
+        HwHz/sCTZv5gqsXPSazUJUDp6HGN3tHrDngCciW2YAyrt+3RGcdm7uViNDyDcquXDQyDDkwQFBWv+
+        k2xWdX7juqR6QPp7SdHy/SZvFGBoQO8UkqHPr8VnQphwVpcLDpjq7DvMht+7G4seWS2u9ff/RUvFg
+        VHMdQy6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOdxk-00AvCi-Mc; Fri, 10 Sep 2021 10:41:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29435300047;
+        Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 078BF2BC05F1B; Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 12:40:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
+References: <20210907202802.3675104-1-songliubraving@fb.com>
+ <20210907202802.3675104-2-songliubraving@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <YTr4CZW+rOXAjNq9@kroah.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wPimF1SPwTSrk6vH6Mnw/WxrIttEdY5oCk9Fbcef4RsFjrxVNLL
- YUCpz/wG/ahPxsNR/AyEp2mVy+D5CwCR8tVvGuUVbMNYXR4+geSqsidcWvOOpEHXIcQ9lrM
- lEUE5cR+VUjzpK5QzfQPpARKd4j7daIKQML8Ll95zpAkgqWk+H4/7bGL0j7DwQMKKMG7QVh
- xpioQrZcvMv2Lji8Xivag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6HjYgy6odGY=:mtnZVk3N0IuPRnd92mAyC0
- Umfg0FIZgJgNuQ8Fv1KSEk+XAUIKlWTiyPn+p2KkzW4S08os4fD4M4veYXEAUcPaZXOiy7P1u
- NzBd6zPrdUSQ+7qXOZZGL/zi2/du28H611JxOdbwX/n5joyyJCTeFkJYnIuj/SYf9bBggPSar
- we0UBkGjg4ydorF3yeuPQNLjPedqJ/TPA9yTmgAzmuZsPatRXtOUnCuJZVzUq+EKGq3ftwGVu
- SxZvJrE34ZBKiLONHTuNQo53I8AVUDbFn1zr2LqWVdddj1vKBYqhUa8VrDbFXt3pjTcmHJRfn
- EiWvtUBdxAm/gfC5lVbOMh0favWxWKWOyDAMwWaTA7/FRGnidm4tiIpS8s9T4Ex5vN3HnBEFW
- UtdmDPcsKDUf6C+hPHLfpgO3w2oRbjtc4PbLPNCOllEDg+nK1A/k43fbx8Oyxs3z56lr0AWBk
- wnn/yTFudhrtY79wg1r4+ECeGk4GPKeb8brMh6sNzGtEGiC5DgCI3VQ+7/3GMggERR0QxXhhj
- /p/oAyG65dR048ULpicNAipXZp32cv5xlMdwoyqzX97QqnectJUf3qOEuGr3EaEAw8F9nmGkw
- SLtNffL3kEhTZ87C+fN11cTgSuSI9KO9IYIaagmUkgO9epSLFXdpY9RI+KojdZPRlR5t1fxR9
- D7XfXZ9RjGW0JlQkToObmPQdCyi6G2u5Z9peQDB9aKB9ymukj2PxkUHw74bTiHB++j+3GIaRc
- TyI4f+VYrwKlXWRRISnqw8XY7fjR3J0L34X5SCeVuZZeWfxCgnCh1Rq/msm4sWxlyUedZ7KU0
- vCscmYtcOlgF9q9EaAvc0peeSO1m+Bb5itHj75h25o/H0JCfBHX/zGClKOE5tXdyoZnQ7uEOK
- LI/lSO2A5ErO2w/ULhCQmHhDJOxWiDGl7hwZNeExEYGTxgzHqoi/cJaEq2i9d8t1LK2L214yN
- jllOYE9cpJ/Z2yFozQCpha+g4zL3n6G2FCja+N0yhg9gbqqAJqHaRGVfBnM+fR/naJQP0k1Jf
- Jc8u8hd0CzDkexmtERR3g+HTtMn7rdhO2ZmnH0n2WN6R30vbH3zRwqKRfq5maEuwUOZPcvrei
- w7uIoCzRk4Z8A4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907202802.3675104-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09/2021 08.15, Greg Kroah-Hartman wrote:
-> On Thu, Sep 09, 2021 at 06:14:45PM -0700, Saravana Kannan wrote:
->> Andre reported fw_devlink=3Don breaking OLPC XO-1.5 [1].
->>
->> OLPC XO-1.5 is an X86 system that uses a mix of ACPI and OF to populate
->> devices. The root cause seems to be ISA devices not setting their fwnod=
-e
->> field. But trying to figure out how to fix that doesn't seem worth the
->> trouble because the OLPC devicetree is very sparse/limited and fw_devli=
-nk
->> only adds the links causing this issue. Considering that there aren't m=
-any
->> users of OF in an X86 system, simply fw_devlink DT support for X86.
->>
->> [1] - https://lore.kernel.org/lkml/3c1f2473-92ad-bfc4-258e-a5a08ad73dd0=
-@web.de/
->> Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=3Don =
-by default""")
->> Signed-off-by: Saravana Kannan <saravanak@google.com>
->> Cc: Andre Muller <andre.muller@web.de>
->> ---
->>   drivers/of/property.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/of/property.c b/drivers/of/property.c
->> index 0c0dc2e369c0..3fd74bb34819 100644
->> --- a/drivers/of/property.c
->> +++ b/drivers/of/property.c
->> @@ -1444,6 +1444,9 @@ static int of_fwnode_add_links(struct fwnode_hand=
-le *fwnode)
->>   	struct property *p;
->>   	struct device_node *con_np =3D to_of_node(fwnode);
->>
->> +	if (IS_ENABLED(CONFIG_X86))
->> +		return 0;
->
-> I love it :)
->
-> Anyway, getting a "Tested-by:" would be great to have here.  Andre, can
-> you verify this solves your issue?
+On Tue, Sep 07, 2021 at 01:28:00PM -0700, Song Liu wrote:
 
-Yes, this patch fixes the issue, the drives work fine.
-Tested-by: Andre M=FCller <andre.muller@web.de>
+> +static int
+> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	intel_pmu_disable_all();
+> +	intel_pmu_lbr_read();
+> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+> +
+> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
+> +	intel_pmu_enable_all(0);
+> +	local_irq_restore(flags);
+> +	return cnt;
+> +}
 
-Thanks all,
-Andre
+So elsewhere you state:
 
->
-> thanks,
->
-> greg k-h
->
++       /* Given we stop LBR in software, we will waste a few entries.
++        * But we should try to waste as few as possible entries. We are at
++        * about 11 on x86_64 systems.
++        * Add a check for < 15 so that we get heads-up when something
++        * changes and wastes too many entries.
++        */
++       ASSERT_LT(skel->bss->wasted_entries, 15, "check_wasted_entries");
+
+Which is atrocious.. so I disassembled the new function to get horrible
+crap. The below seems to cure that.
+
+---
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2143,19 +2143,19 @@ static __initconst const u64 knl_hw_cach
+  * However, there are some cases which may change PEBS status, e.g. PMI
+  * throttle. The PEBS_ENABLE should be updated where the status changes.
+  */
+-static __always_inline void __intel_pmu_disable_all(void)
++static __always_inline void __intel_pmu_disable_all(bool bts)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+ 
+ 	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+ 
+-	if (test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
++	if (bts && test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
+ 		intel_pmu_disable_bts();
+ }
+ 
+ static __always_inline void intel_pmu_disable_all(void)
+ {
+-	__intel_pmu_disable_all();
++	__intel_pmu_disable_all(true);
+ 	intel_pmu_pebs_disable_all();
+ 	intel_pmu_lbr_disable_all();
+ }
+@@ -2186,14 +2186,12 @@ static void intel_pmu_enable_all(int add
+ 	__intel_pmu_enable_all(added, false);
+ }
+ 
+-static int
+-intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++static noinline int
++__intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries,
++				  unsigned int cnt, unsigned long flags)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	unsigned long flags;
+ 
+-	local_irq_save(flags);
+-	intel_pmu_disable_all();
+ 	intel_pmu_lbr_read();
+ 	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+ 
+@@ -2203,6 +2201,36 @@ intel_pmu_snapshot_branch_stack(struct p
+ 	return cnt;
+ }
+ 
++static int
++intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++{
++	unsigned long flags;
++
++	/* must not have branches... */
++	local_irq_save(flags);
++	__intel_pmu_disable_all(false); /* we don't care about BTS */
++	__intel_pmu_pebs_disable_all();
++	__intel_pmu_lbr_disable();
++	/*            ... until here */
++
++	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
++}
++
++static int
++intel_pmu_snapshot_arch_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++{
++	unsigned long flags;
++
++	/* must not have branches... */
++	local_irq_save(flags);
++	__intel_pmu_disable_all(false); /* we don't care about BTS */
++	__intel_pmu_pebs_disable_all();
++	__intel_pmu_arch_lbr_disable();
++	/*            ... until here */
++
++	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
++}
++
+ /*
+  * Workaround for:
+  *   Intel Errata AAK100 (model 26)
+@@ -2946,7 +2974,7 @@ static int intel_pmu_handle_irq(struct p
+ 		apic_write(APIC_LVTPC, APIC_DM_NMI);
+ 	intel_bts_disable_local();
+ 	cpuc->enabled = 0;
+-	__intel_pmu_disable_all();
++	__intel_pmu_disable_all(true);
+ 	handled = intel_pmu_drain_bts_buffer();
+ 	handled += intel_bts_interrupt();
+ 	status = intel_pmu_get_status();
+@@ -6304,9 +6332,15 @@ __init int intel_pmu_init(void)
+ 		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
+ 
+ 		/* only support branch_stack snapshot for perfmon >= v2 */
+-		if (x86_pmu.disable_all == intel_pmu_disable_all)
+-			static_call_update(perf_snapshot_branch_stack,
+-					   intel_pmu_snapshot_branch_stack);
++		if (x86_pmu.disable_all == intel_pmu_disable_all) {
++			if (boot_cpu_has(X86_FEATURE_ARCH_LBR)) {
++				static_call_update(perf_snapshot_branch_stack,
++						   intel_pmu_snapshot_arch_branch_stack);
++			} else {
++				static_call_update(perf_snapshot_branch_stack,
++						   intel_pmu_snapshot_branch_stack);
++			}
++		}
+ 	}
+ 
+ 	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1296,6 +1296,14 @@ void intel_pmu_pebs_enable_all(void)
+ 		wrmsrl(MSR_IA32_PEBS_ENABLE, cpuc->pebs_enabled);
+ }
+ 
++void intel_pmu_pebs_disable_all(void)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++
++	if (cpuc->pebs_enabled)
++		__intel_pmu_pebs_disable_all();
++}
++
+ static int intel_pmu_pebs_fixup_ip(struct pt_regs *regs)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1240,12 +1240,23 @@ static inline bool intel_pmu_has_bts(str
+ 	return intel_pmu_has_bts_period(event, hwc->sample_period);
+ }
+ 
+-static __always_inline void intel_pmu_pebs_disable_all(void)
++static __always_inline void __intel_pmu_pebs_disable_all(void)
+ {
+-	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
++}
+ 
+-	if (cpuc->pebs_enabled)
+-		wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
++static __always_inline void __intel_pmu_arch_lbr_disable(void)
++{
++	wrmsrl(MSR_ARCH_LBR_CTL, 0);
++}
++
++static __always_inline void __intel_pmu_lbr_disable(void)
++{
++	u64 debugctl;
++
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
++	debugctl &= ~(DEBUGCTLMSR_LBR | DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+ }
+ 
+ int intel_pmu_save_and_restart(struct perf_event *event);
+@@ -1322,6 +1333,8 @@ void intel_pmu_pebs_disable(struct perf_
+ 
+ void intel_pmu_pebs_enable_all(void);
+ 
++void intel_pmu_pebs_disable_all(void);
++
+ void intel_pmu_pebs_sched_task(struct perf_event_context *ctx, bool sched_in);
+ 
+ void intel_pmu_auto_reload_read(struct perf_event *event);
 
