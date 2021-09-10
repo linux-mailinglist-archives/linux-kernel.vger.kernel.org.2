@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CA0407067
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C4F407069
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhIJRSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        id S231717AbhIJRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhIJRSf (ORCPT
+        with ESMTP id S231190AbhIJRTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:18:35 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69068C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:17:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id g14so4324531ljk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:17:24 -0700 (PDT)
+        Fri, 10 Sep 2021 13:19:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CD9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:17:55 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id oc9so1799665pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nVQhctFDZ494oNwBH6gZ4cbrFJOKVOXq8XesRbY6VI8=;
-        b=X3ZeLOv7Q89I9RQFoFeRBRpC6KFK599HOifkIv4mt+CDHlTcxp+0UZzQfGIac7s/WU
-         su9klzfHpoo2JCuO5V6sdmD9Pjv0Son2DzEwAUYK1Fb8fESck+P/K3BB3zpVFrrzbqoq
-         fWiP8VjGyW5ujY+25dO79xLu0fCjv0GYy1PM7qxJAFJmxBfOetkWzo/gjjGwE3rxVHqq
-         CoLWcgmrUkPIZI87CrcDasqd8fwS5E5jtPfD9rUiYU7zpGP7aHBwySf4Ahj2YzofjZT3
-         sXJTf1zEDcGFkN25gOgJHiiScjdCRPauxVCQ+ZXyuaflxySs2RuMdOyrppCWX6Yp1rkc
-         Zjcw==
+        d=itbhu.ac.in; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYD2n/bm80yFsEOIoHqmRvRvE9j03/5QQwdCIDeVouU=;
+        b=g6xs6P54IkYtF5FK7SspjiY78aJPPYvQRHcCJm6RP9CLyvtXFOfksrkurUDezPMuK1
+         5UwrSybwYWU7b9Z2PgFR8SW91AExhnMPaFN5cxwEEuUHKiSmSpboXNy5BLlrFY2Gq7sQ
+         Ha+aYR3mkliESuWELCSfFMaXv0g71tBGrVkJk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nVQhctFDZ494oNwBH6gZ4cbrFJOKVOXq8XesRbY6VI8=;
-        b=LnQe3iaDuKuZQDcDMRs2H3pdXlAsSvVFfJopPE5BxkXyJ7KSjiNXx89LC53KIpGSFn
-         wjCoG7x66CCbGq+MJ9Rg7xC4zQn/eCN6mXJ6miO/2+JjyqwqZGM051lOAW5bm01X1tXE
-         yiwrOtQpEu6VHxRbw0YeqNDhtKB1dFo6iCZ5rmLPA6vhgfOR1p++D8Z9tRz95usJpy0L
-         jj5gvJNmiLilqh236uK/DMNe3Kk4BjvoRKDzh2EFNHEz/e4X48h0r1cAv9yIRp4NdkU6
-         mG8tnJY4QBN5PNPgtx54d2ZqNxEFjRtPmdpcRrCbYKW+5RgpjC+TwyhSdPIXRyEG474c
-         mg+Q==
-X-Gm-Message-State: AOAM530ykxBFx7+yS7P5HU8zGgPsw33LzW85y4uc8B5rgPx5/VXUQ++R
-        O4vhbEGk1D9fLar2qPYHLWMpqA4l0Dc74/Bh1a9Zvg==
-X-Google-Smtp-Source: ABdhPJxuSFmjJAz4+yQEFqKFceCVS/DwoXXiLxCnZRQlzKqsxH9ZXu8FjpT1qbLP2ejb4nwzXgEVms4z2EvPr/ik44Q=
-X-Received: by 2002:a2e:858e:: with SMTP id b14mr4949174lji.508.1631294242440;
- Fri, 10 Sep 2021 10:17:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYD2n/bm80yFsEOIoHqmRvRvE9j03/5QQwdCIDeVouU=;
+        b=6AFjojGfMrYrca/659t4e9Jm4NLc4huGdkUoVxMWkFPI5Kzlotfl/7z8A8PlD8EIb3
+         USiDLGxjaY8jtL4t9af7cuTxW63kDGXRrL98KbAapXQm/4ubntUqixuDDEs9Mdw5jFMn
+         Pr1upQRYm4NotLQUfWb5ghHm/FTtzOFwgFnbWGEysbrUcw7PeUcemD5ui8jyMBEfq9Wh
+         J+ye3iggdtZhzV93gvEAan7FM6g7Hybtusog2HR2QGAsTzh8gAxytOIi2se2ah9z2SrD
+         1Gm98HcGlPE1CMgPoLFc1aREO7/8u4TZfvkaD/t3rtrxgOI3KlmTOmwba+enLRNpklFI
+         jtzw==
+X-Gm-Message-State: AOAM532mLGgKUgWXBiDENw4wBm604qtxauuJFdulEk3ZWKRYkWH8iwyy
+        17cz1jR8TfhVpkNL3L1+47XSUJ/OsnAYMGvDNaJleg==
+X-Google-Smtp-Source: ABdhPJzWk0gtuIYMobzAVCVYLNT+B7v6FD3bl44SoFprjDvseTdwAb1XRDNu/8GxxYCQ4eCwwoGAiw==
+X-Received: by 2002:a17:90a:c89:: with SMTP id v9mr10519405pja.71.1631294274829;
+        Fri, 10 Sep 2021 10:17:54 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:8015:105a:2a52:f3e7:aa6a:4b8a])
+        by smtp.gmail.com with ESMTPSA id a194sm5541181pfa.119.2021.09.10.10.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 10:17:54 -0700 (PDT)
+From:   Siddhartha Das <siddhartha.das.min19@itbhu.ac.in>
+To:     ysato@users.sourceforge.jp
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Siddhartha Das <siddhartha.das.min19@itbhu.ac.in>
+Subject: [PATCH] arch: sh: drivers: dma: dma-api.c: Changed preferred function strscpy over strlcpy issue arch: sh: drivers: dma: dma-sysfs.c: Changed preferred function simple_strtoul over kstrtout issue arch: sh: drivers: dma: dmabrg.c: Fixed pointer declaration code issue arch: sh: drivers: heartbeat.c: Fixed preferred unsigned int over unsigned issue
+Date:   Fri, 10 Sep 2021 22:47:33 +0530
+Message-Id: <20210910171733.105486-1-siddhartha.das.min19@itbhu.ac.in>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
- <20210909143720.GA14709@blackbody.suse.cz> <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
- <YTpY0G3+IJYmGbdd@blackbook> <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
- <20210910092310.GA18084@blackbody.suse.cz> <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
- <20210910153609.GC24156@blackbody.suse.cz> <YTuH9fULTx+pLuuH@slm.duckdns.org>
-In-Reply-To: <YTuH9fULTx+pLuuH@slm.duckdns.org>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Fri, 10 Sep 2021 10:16:46 -0700
-Message-ID: <CAHVum0ezWW=4x2YgXHhEUFQOkFGBpP+R1Uc-KedHr+r0LGibwA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        "brookxu.cn" <brookxu.cn@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 9:29 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, Sep 10, 2021 at 05:36:09PM +0200, Michal Koutn=C4=B1 wrote:
-> > If there's a limit on certain level with otherwise unconstrained cgroup
-> > structure below (a valid config too), the 'fail' counter would help
-> > determining what the affected cgroup is. Does that make sense to you?
->
-> While the desire to make the interface complete is understandable, I don'=
-t
-> think we need to go too far in that direction given that debugging these
-> configuration issues requires human intervention anyway and providing
-> overall information is often enough of aid especially for simple controll=
-ers
-> like misc/pid. So, let's stick to something consistent and simple even if
-> not complete and definitely not name them "fail" even if we add them.
->
+Fixed Code style issues and prefer cases
 
-I understand what Michal is proposing regarding fail vs max and local
-vs hierarchical. I think this will provide complete information but it
-will be too many interfaces for a simple controller like misc and
-might not even get used by anyone.
+Signed-off-by: Siddhartha Das <siddhartha.das.min19@itbhu.ac.in>
+---
+ arch/sh/drivers/dma/dma-api.c   | 2 +-
+ arch/sh/drivers/dma/dma-sysfs.c | 2 +-
+ arch/sh/drivers/dma/dmabrg.c    | 2 +-
+ arch/sh/drivers/heartbeat.c     | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Chunguang's case was to avoid printing so many messages, I agree we
-should remove the log message and add a file event.
+diff --git a/arch/sh/drivers/dma/dma-api.c b/arch/sh/drivers/dma/dma-api.c
+index ab9170494dcc..89cd4a3b4cca 100644
+--- a/arch/sh/drivers/dma/dma-api.c
++++ b/arch/sh/drivers/dma/dma-api.c
+@@ -198,7 +198,7 @@ int request_dma(unsigned int chan, const char *dev_id)
+ 	if (atomic_xchg(&channel->busy, 1))
+ 		return -EBUSY;
+ 
+-	strlcpy(channel->dev_id, dev_id, sizeof(channel->dev_id));
++	strscpy(channel->dev_id, dev_id, sizeof(channel->dev_id));
+ 
+ 	if (info->ops->request) {
+ 		result = info->ops->request(channel);
+diff --git a/arch/sh/drivers/dma/dma-sysfs.c b/arch/sh/drivers/dma/dma-sysfs.c
+index 8ef318150f84..6d20f2ed3b7a 100644
+--- a/arch/sh/drivers/dma/dma-sysfs.c
++++ b/arch/sh/drivers/dma/dma-sysfs.c
+@@ -80,7 +80,7 @@ static ssize_t dma_store_config(struct device *dev,
+ 	struct dma_channel *channel = to_dma_channel(dev);
+ 	unsigned long config;
+ 
+-	config = simple_strtoul(buf, NULL, 0);
++	config = kstrtoul(buf, NULL, 0);
+ 	dma_configure_channel(channel->vchan, config);
+ 
+ 	return count;
+diff --git a/arch/sh/drivers/dma/dmabrg.c b/arch/sh/drivers/dma/dmabrg.c
+index 5b2c1fd254d7..04c66a8d893f 100644
+--- a/arch/sh/drivers/dma/dmabrg.c
++++ b/arch/sh/drivers/dma/dmabrg.c
+@@ -122,7 +122,7 @@ static void dmabrg_enable_irq(unsigned int dmairq)
+ 	__raw_writel(dcr, DMABRGCR);
+ }
+ 
+-int dmabrg_request_irq(unsigned int dmairq, void(*handler)(void*),
++int dmabrg_request_irq(unsigned int dmairq, void(*handler)(void *),
+ 		       void *data)
+ {
+ 	if ((dmairq > 9) || !handler)
+diff --git a/arch/sh/drivers/heartbeat.c b/arch/sh/drivers/heartbeat.c
+index 24391b444b28..07f04ed0d517 100644
+--- a/arch/sh/drivers/heartbeat.c
++++ b/arch/sh/drivers/heartbeat.c
+@@ -30,7 +30,7 @@
+ static unsigned char default_bit_pos[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+ 
+ static inline void heartbeat_toggle_bit(struct heartbeat_data *hd,
+-					unsigned bit, unsigned int inverted)
++					unsigned int bit, unsigned int inverted)
+ {
+ 	unsigned int new;
+ 
+@@ -59,7 +59,7 @@ static inline void heartbeat_toggle_bit(struct heartbeat_data *hd,
+ static void heartbeat_timer(struct timer_list *t)
+ {
+ 	struct heartbeat_data *hd = from_timer(hd, t, timer);
+-	static unsigned bit = 0, up = 1;
++	static unsigned int bit = 0, up = 1;
+ 
+ 	heartbeat_toggle_bit(hd, bit, hd->flags & HEARTBEAT_INVERTED);
+ 
+-- 
+2.25.1
 
-For now, I think we can just have one file, events.local
-(non-hierarchical) which has %s.max type entries. This will tell us
-which cgroup is under pressure and I believe this is helpful.
-
-Regarding the original cgroup which started the charge should be
-easier to identify because those processes will not be able to proceed
-or will use some alternate logic, and the job owner should be able to
-notice it.
-
-If in future there is a need to find the originating cgroup we can
-resume this discussion during that time.
