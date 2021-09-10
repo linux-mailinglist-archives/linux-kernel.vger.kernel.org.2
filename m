@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DD1407084
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A86407086
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhIJR3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
+        id S231797AbhIJR3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhIJR3L (ORCPT
+        with ESMTP id S229664AbhIJR3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:29:11 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089E4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OTxau3AdSN4tDFRUxI6gORGommmAmNVfMMPMQXzGUyU=; b=ij9GE29HqGaK2cB+L9akGPszYz
-        BH0USb9JYW9ysF3DG/XwKg5eCllXYmpWkMphGbnaDpTMddkRHzhznyQPmOcGbovd3Y6g/B130n/QJ
-        SBTvR9rchhIuT+tIjScZi5M1uRRREuLMOY+8JBAfc9Lxasxbpfat3FmK9JItatqJfnGvpwPiHxs/d
-        SzBxye4rKXL0WRLYyNgpIZxZlhs7dsmldt7i+CB0OInqZ4CtgRrkX/ZH7TWRx1chkKdK+ulcnPz9l
-        8jtaEIc7SZe0ZPafw+k73fuGiXWX7TZq26b8uXdzEhzldJQGxPDE/POSuI1jSv9f1+YA60upY73SU
-        rUBwRj3Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOkJc-002BEG-85; Fri, 10 Sep 2021 17:27:52 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 70C1698627A; Fri, 10 Sep 2021 19:27:51 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 19:27:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
-Message-ID: <20210910172751.GB5106@worktop.programming.kicks-ass.net>
-References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
- <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
- <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
- <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
- <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
- <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
+        Fri, 10 Sep 2021 13:29:44 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D1DC061574;
+        Fri, 10 Sep 2021 10:28:33 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id g14so4371018ljk.5;
+        Fri, 10 Sep 2021 10:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=BhHuc7Cjlx8Uws6mK4+1ThnTH6hFaC10ASuiWh5hFCE=;
+        b=qv45Ea7vxtjrefJIVv+WLaFopsIDKTCxymXO09US5GHfhMRQuyrbFRdu6vsgzmw8DP
+         AL1gl3Ueh2BU2Ns4o19SrnIgkBGL43SA4oKjCr6rAEtY7tPHLCWlsj+z7PgYw05gJB8r
+         rsBZP54+dj/W8RN2lWD6b39zTUX3uu1zRfkJJtG7SAkU/Qp8AmMU511lkzog97/WhFmv
+         65u3Aoxbld2gAfBEW7LjS7MytBgCyIYt0voqfUshYcUSFZsA6eZcXkNJxy0AOQTkdYXb
+         htqz9ndrBQR8HJI3Yex9KbVJD+18E/A0HCDdg6N8oycPTE6y0I3PvyQ0RLhcLqHXqxPC
+         sonw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BhHuc7Cjlx8Uws6mK4+1ThnTH6hFaC10ASuiWh5hFCE=;
+        b=TwMJUracyfEzeZK61n0hXEkGNfVFAZ5tV6WcQfxRl9kIazgy6Avf7p/XwZ4rXh2+BB
+         GWH5xLWcXK90SzmqsTgMdL4oMMdwik/rTdxg3m0hisKN2zLK90hWvVZlQeLeckZRZ6k9
+         rI8STtF6rPGJnQfGdmLfndsiVy+qx7bMZ8WllKceWrhR1v2eMECVJtDazpp0XXAbWjmX
+         LhHTqDiGYcA7UB+QXC0RgtwqIMu6ICLsmM8I7nSkW80Icxj6UXNln+dqt6oGTcc0yZcX
+         4d0TDJfwN+4IntL3huSGP3QNQn52qhzk5ZivX+rCQgdS21hrDL2bYbxPLUUSTxMGl412
+         TGZw==
+X-Gm-Message-State: AOAM530I7syzFYaUN+V2nyMJrsKEmwdc1Y//hZwdDySqWHQCuRG16ENO
+        d7dgSr4a3mxqPnX6bFgyKUwJSenB8yCZeQ==
+X-Google-Smtp-Source: ABdhPJwSBQ6v5ZHbTXA6zQuREQfbmodC2z+uYCqtOijsZuoj7lR2ycruSDUwnEKdi4BdxWj+lDKklQ==
+X-Received: by 2002:a2e:8511:: with SMTP id j17mr4954431lji.407.1631294911915;
+        Fri, 10 Sep 2021 10:28:31 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id t11sm614979lfc.54.2021.09.10.10.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 10:28:31 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 20:28:29 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 31/31] staging: wfx: indent functions arguments
+Message-ID: <20210910172829.3ulrvnl7d5kz43wt@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
+ <20210910165743.jm7ssqak7gouyl5j@kari-VirtualBox>
+ <2462401.Ex1rHSgKji@pc-42>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2462401.Ex1rHSgKji@pc-42>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 05:02:54PM +0200, Peter Zijlstra wrote:
+On Fri, Sep 10, 2021 at 07:12:28PM +0200, Jérôme Pouiller wrote:
+> On Friday 10 September 2021 18:57:43 CEST Kari Argillander wrote:
+> > 
+> > On Fri, Sep 10, 2021 at 06:05:04PM +0200, Jerome Pouiller wrote:
+> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > Function arguments must be aligned with left parenthesis. Apply that
+> > > rule.
+> > 
+> > To my eyes something still go wrong with this patch. Might be my email
+> > fault, but every other patch looks ok. Now these are too left.
+> 
+> I don't try anymore to check alignments with my email viewer. The
+> original patch is as I expect (and I take care to send my patch with
+> base64 to avoid pitfalls with MS Exchange). So, I think the is correct.
 
-> That doesn't look right, how's this for you?
+It was correct. Nice to now know about that something funny is happening
+with my part.
 
-Full patch for the robots here:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=locking/core&id=826e7b8826f0af185bb93249600533c33fd69a95
+> 
+> > Also it should alight with first argument not left parenthesis?
+> 
+> Absolutely.
+> 
+> 
+> -- 
+> Jérôme Pouiller
+> 
+> 
