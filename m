@@ -2,128 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569704070A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67D4070AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhIJRuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S231879AbhIJRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJRuT (ORCPT
+        with ESMTP id S229476AbhIJRz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:50:19 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9EEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:49:08 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id q21so4478656ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:49:08 -0700 (PDT)
+        Fri, 10 Sep 2021 13:55:57 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B22C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:54:46 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id w8so2515950pgf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZvmshrhRRHf+OonCKONixU3Sueg2FEGkMUdYO67ivdc=;
-        b=nRwczmrLwdY24+0iOzfvLMv7zbOplKlYUVYrxS4yakIb7jNpRbGK1CMdpIj+VSWKVi
-         sSxEPhOK8ff+oVlQDZmuPWDOg2Vb091nKGzmuUS2mAIeLNcz4ZeyT7lNxrfmW1MLjv0f
-         eEHEFPOJum7M8dK4CM5F6ZF77uzwwn6V2v8bClziKGbXLD+x8pgqSGjEfOAEGHFKy25A
-         ut82zveh+rHnKaCywQipWTLfQwVYrPuvH+Ebr/2Rx1UOOq2cyOrKJIE/0Nny+wDtkt+t
-         GThwT449G9PXEM1F2Oigy0b+g3na21ZnkC2tpbG7a9mns59v2F0eFHQ/xlLCljO/YkZr
-         /Gpg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=aNdAt3bIyCf0OKCvnDHfldR4f9Z2Y9u67akOXp3+z54=;
+        b=ZAvsshhZZBaZiHNl9M8e9qw1Sp8NuOS5+VedetlWLCqPs5SMzt5OJPHeX/dDDI7Q8m
+         A2SiSKiJmI/y/keXRa8fNt3mr1U5I6Pjs0Ia60LfIn39mvgqgKC2KYTnvCXOxAJqqqqk
+         qRp37zb7dVXk4s/zaVNP0WMCbD/un1Y8U3X+qaTJZId97lT5Vs75kSkeHgFU7BlfSrap
+         Kkb+hyXk4ztYMWkQ/fWALZ37x+2lGV8brRgNqRd87QoaAggxF+05rvhqujhTJrp7LbWy
+         MiX5l6g1w4bciKVlveZfJGMHvq4byU44BGcuxXf8f1J/KWB5WZ9yACLI+fAOAuYWwMpa
+         oalg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZvmshrhRRHf+OonCKONixU3Sueg2FEGkMUdYO67ivdc=;
-        b=OCuPGQ6uBajCibcscXTJKzwLIsn00J2I76U4vCiQsov3AbW1cjMo4RfaoAk00hGBHe
-         hyOTjLEUTervSXesUZ1l7OY7l6tQfojFzZtoskU/vfySaDlLZiw89J1cmqyFxfUJAirN
-         aigoFFSMqBgQiboYL8T9uYwCTVVlghNahCZ+qd5LmoMXWCdIRtyGekFqV++aIKDZPWcg
-         26DcCaHxiPYZDRux8D35lpLBuf8pbB5qeYvanwD6771iOCs32heL4tqyK5NlV15sMP2F
-         QUtUb7h1NRlwlQ4wnWfLf4dOQKN0sGhMbY/Us9SC4LpErY8wT9Wn6qoK5QIObC8za+3X
-         dOtA==
-X-Gm-Message-State: AOAM532qyZZgIDLIYoFjShjnIabz+EkmrWBHnCDKMfdN+Z0XCev7c1vb
-        GGVXIjwB3BOlee96/ZmG+uDlMfaB+7xKyP3U2AOYpg==
-X-Google-Smtp-Source: ABdhPJzvcciiaT2SwMFnRgYH6WVSzzw0BqgnVEoTyxrAWzLcHjaGQDD+bcpesnpXnRlmMl35IMOt5Qk+VZSC14njvQc=
-X-Received: by 2002:a2e:9150:: with SMTP id q16mr5002276ljg.418.1631296146232;
- Fri, 10 Sep 2021 10:49:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=aNdAt3bIyCf0OKCvnDHfldR4f9Z2Y9u67akOXp3+z54=;
+        b=zl8C/83ub7jrAOBVfhBBSOG/HmAX7hA/WxXU3rJRiinkOeGJDEl0r+cDvRRg031/fU
+         6VcAruYBm/3oSCCBMp3fTsJz6HdbngXfuLyrPa/DZjzRRtHwgh9+YzET4OQOvmPWkQqS
+         RTk1j/99prmmLR+efBqNpoHiBGXxYRIj64wKcTkeUwHXMs2Q8eD55Xu9DXu+A7TVK+tW
+         lFkH1RVoi3TX+cDZqTTG3afLInEO9EayMnBwgm439OHpYyRXvD/W2mYGHwYPykqY4YXk
+         AdDc/o8VcvntBY5YJDlyLGK78i/Y0vyAdfpViVTDSvkkXR8zHbd53UgxxGNbcf+zOP+j
+         Wa7Q==
+X-Gm-Message-State: AOAM532ERHqv2276A3//b926WQrewEIsHCfFwbioWT0lGwc/lpQqn7GP
+        DWcN2D/QHj5WZEz4e5s0oes=
+X-Google-Smtp-Source: ABdhPJwR236U1teahdmj4d8BkQvVQ4ygrxUYFsq342vIic5uJhW63bhYrd3OuLYLvFH8SRBibynpBQ==
+X-Received: by 2002:a63:33cb:: with SMTP id z194mr8370058pgz.380.1631296485508;
+        Fri, 10 Sep 2021 10:54:45 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id h8sm5550218pfr.219.2021.09.10.10.54.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 10:54:45 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 23:24:39 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove the function
+ power_saving_wk_hdl
+Message-ID: <YTub30ZRG3oLbxQW@user>
 MIME-Version: 1.0
-References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
- <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
- <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
- <8735qcgzdu.fsf@oldenburg.str.redhat.com> <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Fri, 10 Sep 2021 10:48:54 -0700
-Message-ID: <CAPNVh5d0jd=ks6WBnsheiAE394=31X963X+ZUG6x=ZZLHZ=jbQ@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Prakash Sangappa <prakash.sangappa@oracle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 10:33 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Sep 10, 2021, at 12:37 PM, Florian Weimer fweimer@redhat.com wrote:
->
-> > * Peter Oskolkov:
-> >
-> >> In short, due to the need to read/write to the userspace from
-> >> non-sleepable contexts in the kernel it seems that we need to have some
-> >> form of per task/thread kernel/userspace shared memory that is pinned,
-> >> similar to what your sys_task_getshared does.
-> >
-> > In glibc, we'd also like to have this for PID and TID.  Eventually,
-> > rt_sigprocmask without kernel roundtrip in most cases would be very nice
-> > as well.  For performance and simplicity in userspace, it would be best
-> > if the memory region could be at the same offset from the TCB for all
-> > threads.
-> >
-> > For KTLS, the idea was that the auxiliary vector would contain size and
-> > alignment of the KTLS.  Userspace would reserve that memory, register it
-> > with the kernel like rseq (or the robust list pointers), and pass its
-> > address to the vDSO functions that need them.  The last part ensures
-> > that the vDSO functions do not need non-global data to determine the
-> > offset from the TCB.  Registration is still needed for the caches.
-> >
-> > I think previous discussions (in the KTLS and rseq context) did not have
-> > the pinning constraint.
->
-> If this data is per-thread, and read from user-space, why is it relevant
-> to update this data from non-sleepable kernel context rather than update it as
-> needed on return-to-userspace ? When returning to userspace, sleeping due to a
-> page fault is entirely acceptable. This is what we currently do for rseq.
->
-> In short, the data could be accessible from the task struct. Flags in the
-> task struct can let return-to-userspace know that it has outdated ktls
-> data. So before returning to userspace, the kernel can copy the relevant data
-> from the task struct to the shared memory area, without requiring any pinning.
->
-> What am I missing ?
+Remove the function power_saving_wk_hdl() as it just calling
+the rtw_ps_processor().Instead of power_saving_wk_hdl() call directly
+rtw_ps_processor().
 
-I can't speak about other use cases, but in the context of userspace
-scheduling, the information that a task has blocked in the kernel and
-is going to be removed from its runqueue cannot wait to be delivered
-to the userspace until the task wakes up, as the userspace scheduler
-needs to know of the even when it happened so that it can schedule
-another task in place of the blocked one. See the discussion here:
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_cmd.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-https://lore.kernel.org/lkml/CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com/
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index ce73ac7cf973..35e6a943c556 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -1669,11 +1669,6 @@ u8 rtw_antenna_select_cmd(struct adapter *padapter, u8 antenna, u8 enqueue)
+ 	return res;
+ }
 
->
-> Thanks,
->
-> Mathieu
->
->
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+-static void power_saving_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
+-{
+-	 rtw_ps_processor(padapter);
+-}
+-
+ #ifdef CONFIG_88EU_P2P
+ u8 p2p_protocol_wk_cmd(struct adapter *padapter, int intCmdType)
+ {
+@@ -1941,7 +1936,7 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
+ 		break;
+ 	case POWER_SAVING_CTRL_WK_CID:
+-		power_saving_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
++		rtw_ps_processor(padapter);
+ 		break;
+ 	case LPS_CTRL_WK_CID:
+ 		lps_ctrl_wk_hdl(padapter, (u8)pdrvextra_cmd->type_size);
+--
+2.32.0
+
