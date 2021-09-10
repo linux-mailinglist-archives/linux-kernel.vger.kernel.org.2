@@ -2,99 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E33B4064E1
+	by mail.lfdr.de (Postfix) with ESMTP id B83054064E2
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234522AbhIJBHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:03 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:56840 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236385AbhIJA3x (ORCPT
+        id S231733AbhIJBHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:07:05 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:52095 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238360AbhIJAfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:29:53 -0400
-X-Greylist: delayed 41542 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Sep 2021 20:29:52 EDT
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 18A0SMaI003027;
-        Fri, 10 Sep 2021 09:28:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 18A0SMaI003027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1631233703;
-        bh=3BKQgzHIpldXuMHUJ6SaQQUNOmT0VJRr0GBhL34/P2c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SmQ8gJjUW5qCQBoxvKCfTgv+uQUgADXrxiSO193JbR71wEGJyRpeybxD2r0j1cPrk
-         zVX9Fffjuuo7MIRpkPN83vlH2Q6gKuT9nAzta5B4BMvbx2xFEOOqFhg2oMjLcvjqTJ
-         z6kDeJv+HUvKDXTVjkCDSAHsmvfZZ3piODTPpDaLPMwpM6+FNq71m7ItsS58WVagp9
-         Au8s99s9lYkVD08kEo1Z+wis3O/T2OIBOFUux3Ip3Cdk3loqUJhDz6YAZIqu4bGMew
-         /y8qfTMLvcSbizAjb3M2laEliIJ65HyyLIJZLCl6NiZEZOBQtxIXbePMFOh9TpA3mS
-         PEDccKuURGdmg==
-X-Nifty-SrcIP: [209.85.216.50]
-Received: by mail-pj1-f50.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso243508pjb.3;
-        Thu, 09 Sep 2021 17:28:22 -0700 (PDT)
-X-Gm-Message-State: AOAM531jWlcz5xXyH4LGxcSAgloLjkFMF3E7tV2CYi2ZwWQN4w0a1LIP
-        mKcezbH7CXL9GfMCx4eaTgmgFdV9wnJ17WUC4bU=
-X-Google-Smtp-Source: ABdhPJzD06aFs0p/r4Q9yVgjNgi9sLrgBCBxV2NQtWqdP6NM/aEatdL0eTrM0VaY63R0ni0GHq0J+dlHnIb5BVBDpwI=
-X-Received: by 2002:a17:90a:192:: with SMTP id 18mr6573730pjc.119.1631233702032;
- Thu, 09 Sep 2021 17:28:22 -0700 (PDT)
+        Thu, 9 Sep 2021 20:35:43 -0400
+Received: by mail-io1-f70.google.com with SMTP id i11-20020a056602134b00b005be82e3028bso98950iov.18
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:34:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1O5hU6TyMNcP/MwbrO6g7VP+Xas2iH+bxKbo7AXlS5I=;
+        b=315BDX0hp/eZpgovaooKyvAPUDKRvGaatg0HGahTxuusZT3dLjynnvAv6DBsraZQSc
+         xUhI2H4FaU5JwQsxQ90F1c/bkCDV/Aersw9xhZIzNyaivDyJzatmyEodx0KEO9G3mEM3
+         yMPeo3lrX5wD+KZfH/4THIE6Fd3sxNB7tlRI4l6Ju1sZKiACAvH8OGGYrwTp8x5Zy8ar
+         AfoCWZ35PSjZfyXefYrjlNastz9jwGaQZ7EYi8+eqk7t8xVPHp5y5XhIjF01j8GI0v27
+         zlLGoVKWMf3TBcKR+yvvVofY1GZ+H4Y0o8Tk1IDwK8qU80XZJoB2fNqBO8Fg4vVHjFqK
+         kA/g==
+X-Gm-Message-State: AOAM531TC+cqFUcl9pZ79FrrdC1I/QGxyk/MXFuSq5ckgT1li0ACV0N0
+        VRgfXGP/DcAOBcLXbuHdA+jMPAF8vH8tpYxxJkpYs4n4Mhb/
+X-Google-Smtp-Source: ABdhPJxPKmb9D6Akfc4/FgAiL4Nkl5zWGsSB03X8fpdIsfFJJcTIhrPBTV63/ZbdsU6x2wtVFlNWsUoN/ozp/G/oYWBR08rUTdqw
 MIME-Version: 1.0
-References: <20210909213118.1087083-1-robh@kernel.org> <20210909213118.1087083-9-robh@kernel.org>
-In-Reply-To: <20210909213118.1087083-9-robh@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 10 Sep 2021 09:27:45 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQx8yqUdEWOmYqq2Mqk5BVuqc1w3rOcVm2Bb5wDSFRXaA@mail.gmail.com>
-Message-ID: <CAK7LNAQx8yqUdEWOmYqq2Mqk5BVuqc1w3rOcVm2Bb5wDSFRXaA@mail.gmail.com>
-Subject: Re: [PATCH 8/8] kbuild: Enable dtc 'unit_address_format' warning by default
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+X-Received: by 2002:a6b:fb0b:: with SMTP id h11mr4930961iog.59.1631234072808;
+ Thu, 09 Sep 2021 17:34:32 -0700 (PDT)
+Date:   Thu, 09 Sep 2021 17:34:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000074934705cb994769@google.com>
+Subject: [syzbot] bpf-next test error: KFENCE: use-after-free in kvm_fastop_exception
+From:   syzbot <syzbot+19d0d18201298c185c4f@syzkaller.appspotmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 6:31 AM Rob Herring <robh@kernel.org> wrote:
->
-> With all the 'unit_address_format' warnings fixed, enable the warning by
-> default.
->
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
+Hello,
 
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+syzbot found the following issue on:
 
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: linux-kbuild@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  scripts/Makefile.lib | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 54582673fc1a..56d50eb0cd80 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -310,7 +310,6 @@ DTC_FLAGS += -Wno-interrupt_provider
->  # Disable noisy checks by default
->  ifeq ($(findstring 1,$(KBUILD_EXTRA_WARN)),)
->  DTC_FLAGS += -Wno-unit_address_vs_reg \
-> -       -Wno-unit_address_format \
->         -Wno-avoid_unnecessary_addr_size \
->         -Wno-alias_paths \
->         -Wno-graph_child_address \
-> --
-> 2.30.2
->
+HEAD commit:    27151f177827 Merge tag 'perf-tools-for-v5.15-2021-09-04' o..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=112e0b15300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=19d0d18201298c185c4f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+19d0d18201298c185c4f@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KFENCE: use-after-free read in kvm_fastop_exception+0xf6d/0x105b
+
+Use-after-free read at 0xffff88823bd7c020 (in kfence-#189):
+ kvm_fastop_exception+0xf6d/0x105b
+ d_lookup+0xd8/0x170 fs/dcache.c:2370
+ lookup_dcache+0x1e/0x130 fs/namei.c:1520
+ __lookup_hash+0x29/0x180 fs/namei.c:1543
+ kern_path_locked+0x17e/0x320 fs/namei.c:2567
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+kfence-#189 [0xffff88823bd7c000-0xffff88823bd7cfff, size=4096, cache=names_cache] allocated by task 22:
+ getname_kernel+0x4e/0x370 fs/namei.c:226
+ kern_path_locked+0x71/0x320 fs/namei.c:2558
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+freed by task 22:
+ putname.part.0+0xe1/0x120 fs/namei.c:270
+ putname include/linux/err.h:41 [inline]
+ filename_parentat fs/namei.c:2547 [inline]
+ kern_path_locked+0xc2/0x320 fs/namei.c:2558
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvm_fastop_exception+0xf6d/0x105b
+Code: d3 ed e9 54 03 6f f8 49 8d 0e 48 83 e1 f8 4c 8b 21 41 8d 0e 83 e1 07 c1 e1 03 49 d3 ec e9 aa 10 6f f8 49 8d 4d 00 48 83 e1 f8 <4c> 8b 21 41 8d 4d 00 83 e1 07 c1 e1 03 49 d3 ec e9 9a 1a 6f f8 bd
+RSP: 0018:ffffc90000dcfae8 EFLAGS: 00010282
+RAX: 0000003461736376 RBX: ffff88806f6feef0 RCX: ffff88823bd7c020
+RDX: ffffed100dedfde5 RSI: 0000000000000005 RDI: 0000000000000007
+RBP: 0000000000000005 R08: 0000000000000000 R09: ffff88806f6fef20
+R10: ffffed100dedfde4 R11: 0000000000000000 R12: ffff88823bd7c020
+R13: ffff88823bd7c020 R14: ffff88806f6fef20 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823bd7c020 CR3: 00000000723c1000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ d_lookup+0xd8/0x170 fs/dcache.c:2370
+ lookup_dcache+0x1e/0x130 fs/namei.c:1520
+ __lookup_hash+0x29/0x180 fs/namei.c:1543
+ kern_path_locked+0x17e/0x320 fs/namei.c:2567
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+==================================================================
+----------------
+Code disassembly (best guess):
+   0:	d3 ed                	shr    %cl,%ebp
+   2:	e9 54 03 6f f8       	jmpq   0xf86f035b
+   7:	49 8d 0e             	lea    (%r14),%rcx
+   a:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
+   e:	4c 8b 21             	mov    (%rcx),%r12
+  11:	41 8d 0e             	lea    (%r14),%ecx
+  14:	83 e1 07             	and    $0x7,%ecx
+  17:	c1 e1 03             	shl    $0x3,%ecx
+  1a:	49 d3 ec             	shr    %cl,%r12
+  1d:	e9 aa 10 6f f8       	jmpq   0xf86f10cc
+  22:	49 8d 4d 00          	lea    0x0(%r13),%rcx
+  26:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
+* 2a:	4c 8b 21             	mov    (%rcx),%r12 <-- trapping instruction
+  2d:	41 8d 4d 00          	lea    0x0(%r13),%ecx
+  31:	83 e1 07             	and    $0x7,%ecx
+  34:	c1 e1 03             	shl    $0x3,%ecx
+  37:	49 d3 ec             	shr    %cl,%r12
+  3a:	e9 9a 1a 6f f8       	jmpq   0xf86f1ad9
+  3f:	bd                   	.byte 0xbd
 
 
--- 
-Best Regards
-Masahiro Yamada
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
