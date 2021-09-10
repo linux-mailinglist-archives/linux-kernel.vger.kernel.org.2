@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF56C4070A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569704070A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhIJRon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
+        id S231815AbhIJRuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJRol (ORCPT
+        with ESMTP id S229476AbhIJRuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:44:41 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52E5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id q3so3354054iot.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
+        Fri, 10 Sep 2021 13:50:19 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9EEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:49:08 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id q21so4478656ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Qw3i7ZkRYyRAIDKAvMyUaqPTTRDJN0J3gzh1YtLJNZI=;
-        b=H0qmjbKYUEvyXyLOKZSh7axYPu5rWika6mv2MFuBPBKYYGY7sLSyUD16rVZbR9Iig3
-         bOK2yBJ9w1rvQBTuHa84A/SdI+JFHBlrzRZtRmrPydwIUcoj9lvSkFf6IzB9UiB5Stxt
-         0R3p4cFeKAlcXs/PGQ6OHHkr7OxH95OaY6Srk=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZvmshrhRRHf+OonCKONixU3Sueg2FEGkMUdYO67ivdc=;
+        b=nRwczmrLwdY24+0iOzfvLMv7zbOplKlYUVYrxS4yakIb7jNpRbGK1CMdpIj+VSWKVi
+         sSxEPhOK8ff+oVlQDZmuPWDOg2Vb091nKGzmuUS2mAIeLNcz4ZeyT7lNxrfmW1MLjv0f
+         eEHEFPOJum7M8dK4CM5F6ZF77uzwwn6V2v8bClziKGbXLD+x8pgqSGjEfOAEGHFKy25A
+         ut82zveh+rHnKaCywQipWTLfQwVYrPuvH+Ebr/2Rx1UOOq2cyOrKJIE/0Nny+wDtkt+t
+         GThwT449G9PXEM1F2Oigy0b+g3na21ZnkC2tpbG7a9mns59v2F0eFHQ/xlLCljO/YkZr
+         /Gpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qw3i7ZkRYyRAIDKAvMyUaqPTTRDJN0J3gzh1YtLJNZI=;
-        b=KqcBFAOjUZE2XUGWXvu8HOvIJFoJWjzznYoEs9b7TE0VP2NF4Y8m5IO/gAARbl0Pk7
-         zIFAmhbNXZIvwpVhZhrAGntdZMxeEXbv4PIdn7IdG40C41hmUkezBE4hLRL25ZE9gwUm
-         XDY8FHJ0kYj44R2N+yqEC/Y/2XxmdWqzA4SzqzmwNsPxUvvOeZy6moj9FvEsZJdGN2PS
-         T4ENZr11yrdeqV9LE7PH4xMApieLV8rguG18BFlOTnMnyzSnpkI1nAmHpuWbhOCRLxaq
-         SevJ6HTbR8TAdR3ITqBHbcqWmsSXnrFbzozfPPann2FEZVxTOH0rXakyRhfACGutoT+y
-         rrfQ==
-X-Gm-Message-State: AOAM531FEBfsSSK662/LsIv9w9YqyLHLKLP5/P6hl3AA73SWowSmq+BU
-        FFhrwlxY2rn/2Q9hOvPWcORVnw==
-X-Google-Smtp-Source: ABdhPJxbeVole14DxMmq7hdrTu6bspXWv6Dh2xY5aXGIAfaszutk1niQpVx0lIia221XbGJCTsH67w==
-X-Received: by 2002:a5d:9145:: with SMTP id y5mr7905456ioq.200.1631295810144;
-        Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l1sm2867638ilc.65.2021.09.10.10.43.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 10:43:29 -0700 (PDT)
-Subject: Re: After KUnit update for Linux 5.15-rc1 - unable to share VFAT
- filesystem via samba
-To:     Arthur Marsh <arthur.marsh@internode.on.net>
-Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f1d84102-6edf-271f-52f9-0d4bbc85c0c7@linuxfoundation.org>
-Date:   Fri, 10 Sep 2021 11:43:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZvmshrhRRHf+OonCKONixU3Sueg2FEGkMUdYO67ivdc=;
+        b=OCuPGQ6uBajCibcscXTJKzwLIsn00J2I76U4vCiQsov3AbW1cjMo4RfaoAk00hGBHe
+         hyOTjLEUTervSXesUZ1l7OY7l6tQfojFzZtoskU/vfySaDlLZiw89J1cmqyFxfUJAirN
+         aigoFFSMqBgQiboYL8T9uYwCTVVlghNahCZ+qd5LmoMXWCdIRtyGekFqV++aIKDZPWcg
+         26DcCaHxiPYZDRux8D35lpLBuf8pbB5qeYvanwD6771iOCs32heL4tqyK5NlV15sMP2F
+         QUtUb7h1NRlwlQ4wnWfLf4dOQKN0sGhMbY/Us9SC4LpErY8wT9Wn6qoK5QIObC8za+3X
+         dOtA==
+X-Gm-Message-State: AOAM532qyZZgIDLIYoFjShjnIabz+EkmrWBHnCDKMfdN+Z0XCev7c1vb
+        GGVXIjwB3BOlee96/ZmG+uDlMfaB+7xKyP3U2AOYpg==
+X-Google-Smtp-Source: ABdhPJzvcciiaT2SwMFnRgYH6WVSzzw0BqgnVEoTyxrAWzLcHjaGQDD+bcpesnpXnRlmMl35IMOt5Qk+VZSC14njvQc=
+X-Received: by 2002:a2e:9150:: with SMTP id q16mr5002276ljg.418.1631296146232;
+ Fri, 10 Sep 2021 10:49:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
+ <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
+ <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
+ <8735qcgzdu.fsf@oldenburg.str.redhat.com> <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Fri, 10 Sep 2021 10:48:54 -0700
+Message-ID: <CAPNVh5d0jd=ks6WBnsheiAE394=31X963X+ZUG6x=ZZLHZ=jbQ@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arthur,
-
-On 9/10/21 5:57 AM, Arthur Marsh wrote:
-> 
->   Hi, I have been sharing an old VFAT formatted hard disk on one pc to
-> another using Samba and sometime after kernel 5.14.0 it stopped working (apparently no longer being shared as the mount.smbfs command
-> on the client failed with error -13 yet mount.smbfs still worked for
-> ext3 filesytems shared from the same machine which had the VFAT
-> filesystem).
->   The only error I saw on the machine with the VFAT formatted hard disk
-> was the output of the mount command had truncated the name of the
-> mount to only include the first 4 characters of the base name of the
-> mount point.
->   e.g. when VFAT filesystem was mounted on /mnt/victoria, the output of
-> the mount command showed the filesytem mounted on /mnt/vict
-> 
-
-This could be path name related to the second bad commit in your bisect.
-
-> The kernel build used was i386 with gcc 11.2.0-4 using
-> 
-> make - j2 menuconfig bindeb-pkg
-> 
-> .config available on request.
-> 
-
-Can you send your config and dmesg? This will help determine if
-KUNIT is enabled - it shouldn't be.
-
->   The git-bisect was:
-> victoria:/usr/src/linux# git bisect loggit bisect start '--' 'fs/fat'#
-> good: [7d2a07b769330c34b4deabeed939325c77a7ec2f] Linux 5.14git bisect
-> good 7d2a07b769330c34b4deabeed939325c77a7ec2f# bad:
-> [a3fa7a101dcff93791d1b1bdb3affcad1410c8c1] Merge branches 'akpm' and
-> 'akpm-hotfixes' (patches from Andrew)git bisect bad
-> a3fa7a101dcff93791d1b1bdb3affcad1410c8c1# good:
-> [edb0872f44ec9976ea6d052cb4b93cd2d23ac2ba] block: move the bdi from
-> the request_queue to the gendiskgit bisect good
-> edb0872f44ec9976ea6d052cb4b93cd2d23ac2ba# good:
-> [b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd] fat: Add KUnit tests for
-> checksums and timestampsgit bisect good
-
-
-> b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd# bad:
-
-This one is a KUnit patch
-Subject: [PATCH] fat: Add KUnit tests for checksums and timestamps
-
-
-> [c815f04ba94940fbc303a6ea9669e7da87f8e77d] Merge tag
-> 'linux-kselftest-kunit-5.15-rc1' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftestgit
-> bisect bad c815f04ba94940fbc303a6ea9669e7da87f8e77d# first bad commit:
-> [c815f04ba94940fbc303a6ea9669e7da87f8e77d] Merge tag
-
-Subject: [PATCH] d_path: make 'prepend()' fill up the buffer exactly on
-  overflow
-
-> 'linux-kselftest-kunit-5.15-rc1' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
+On Fri, Sep 10, 2021 at 10:33 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-thanks,
--- Shuah
+> ----- On Sep 10, 2021, at 12:37 PM, Florian Weimer fweimer@redhat.com wrote:
+>
+> > * Peter Oskolkov:
+> >
+> >> In short, due to the need to read/write to the userspace from
+> >> non-sleepable contexts in the kernel it seems that we need to have some
+> >> form of per task/thread kernel/userspace shared memory that is pinned,
+> >> similar to what your sys_task_getshared does.
+> >
+> > In glibc, we'd also like to have this for PID and TID.  Eventually,
+> > rt_sigprocmask without kernel roundtrip in most cases would be very nice
+> > as well.  For performance and simplicity in userspace, it would be best
+> > if the memory region could be at the same offset from the TCB for all
+> > threads.
+> >
+> > For KTLS, the idea was that the auxiliary vector would contain size and
+> > alignment of the KTLS.  Userspace would reserve that memory, register it
+> > with the kernel like rseq (or the robust list pointers), and pass its
+> > address to the vDSO functions that need them.  The last part ensures
+> > that the vDSO functions do not need non-global data to determine the
+> > offset from the TCB.  Registration is still needed for the caches.
+> >
+> > I think previous discussions (in the KTLS and rseq context) did not have
+> > the pinning constraint.
+>
+> If this data is per-thread, and read from user-space, why is it relevant
+> to update this data from non-sleepable kernel context rather than update it as
+> needed on return-to-userspace ? When returning to userspace, sleeping due to a
+> page fault is entirely acceptable. This is what we currently do for rseq.
+>
+> In short, the data could be accessible from the task struct. Flags in the
+> task struct can let return-to-userspace know that it has outdated ktls
+> data. So before returning to userspace, the kernel can copy the relevant data
+> from the task struct to the shared memory area, without requiring any pinning.
+>
+> What am I missing ?
+
+I can't speak about other use cases, but in the context of userspace
+scheduling, the information that a task has blocked in the kernel and
+is going to be removed from its runqueue cannot wait to be delivered
+to the userspace until the task wakes up, as the userspace scheduler
+needs to know of the even when it happened so that it can schedule
+another task in place of the blocked one. See the discussion here:
+
+https://lore.kernel.org/lkml/CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com/
+
+>
+> Thanks,
+>
+> Mathieu
+>
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
