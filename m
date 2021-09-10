@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B404072BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926044072C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbhIJUwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhIJUwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:52:03 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D13C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:50:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x6so4348850wrv.13
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 13:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DFP20JdLWO44Og/uNow71PnOPRiaV70lhBMuJXoTRec=;
-        b=LoKTUaI4giA4ss0KYOFiQc32KJcI6yJd1HI2Iveo4EiqbkSgfk4PITSi6YFtdFhsUx
-         gtazEO54B4rAMlud//IKHFAMS2jbnYG77SAK+tPOslXDiS0oQkhG/wsEvhGDMVvLBw+g
-         NRxTi94fLwEBFL3jeE98NTXlLHfviiwmha25n77ckVejLK8gKb0xFQC8fkhc7ax4grou
-         ZlyyYKYPgKTdRAVht/ogrfSwo5mK0VuogOkDi92S1H1/SWWWqrop01MiqHq9K2k52R6F
-         w+1Dv3C+3HZgss+ejFdf8ulb8dRsLGuNJnXh4V6303yt7dfEA7w4ivS1+4vYuSXN3Snn
-         rtOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DFP20JdLWO44Og/uNow71PnOPRiaV70lhBMuJXoTRec=;
-        b=f0pTQSFj+xnnTYx51zlJ05rjkRlxHK7pqLt2cWsamijCkv7A/9U3SI3zAzNrRl9s8+
-         FlqhRN23FkLDEyqCwT/BO0p8epU/+Ka3PpWTxACWEmlC/vfpqgjWWFjN8NusKY+jjy3R
-         gR8v6LME2Iy9XayWZ9V2zidPWh4+Yp2mlueuaZzNcP4Ec7Az/J6wskx7RLiPryMEim8u
-         M60IS9GYJJTqhYcUlAXBE8L2N+eq0QeopjlkNh7imrLF4eBxWj/7vYV7QOQAZVMY2haP
-         psIooA7N9rnASQciwZI9kClIlZEl+TPkiltWmcW5kgt2CjHndO5JAWSrzxyxEyNX3myh
-         qo2g==
-X-Gm-Message-State: AOAM532IhMUQxUWwIBP7YmPv13or5Vjit4QlToOfc5NlnhHr+rPVLYEy
-        CsHCIsJII180g46aWmoB4vLpA7K5Z+lAsg==
-X-Google-Smtp-Source: ABdhPJyDH6/NnvBEQjD+DiWZ/4IqsxX6uYqAr1fTReaCT+WQD1b5UKIJtdXSkZ6BeVogDqr386cQOw==
-X-Received: by 2002:adf:902b:: with SMTP id h40mr11621131wrh.342.1631307050571;
-        Fri, 10 Sep 2021 13:50:50 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id g11sm5592427wrx.30.2021.09.10.13.50.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 13:50:50 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 7/7] staging: r8188eu: remove rtl8188e_set_hal_ops()
-Date:   Fri, 10 Sep 2021 22:50:33 +0200
-Message-Id: <20210910205033.3778-8-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910205033.3778-1-straube.linux@gmail.com>
-References: <20210910205033.3778-1-straube.linux@gmail.com>
+        id S234252AbhIJU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233736AbhIJU72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 16:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96EEC611B0;
+        Fri, 10 Sep 2021 20:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631307496;
+        bh=l5Ivykoso88H+KKCpsO0QyRS8W6t/eGHvvPwWtnaN3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qX+/WD5PnnbGQSDV5JYDRBXg8HcRFbghVzE2DCa4VzoVS/HKY/o4mK0+nugQjlTCU
+         hOOrTImtX0M646Rw8NOHLGIMBmFZbbAJUzLu9H4Jy17itwE7Ele908tVOzElRy1Zn/
+         58kbdIE2StD31dXxtc95j87MPZEAuVe84Gbd9FIAqSosqxPVD6IX3pVnlOGewMnz+K
+         pZd8ku6odDeW+g93uuK1ch7Ew9w67PS427h8wO6ZByPsco6rQuRUU1EGC2jAtnTYoq
+         kum5YheM4egBejhAY6UOnTf2RD+LO9yDzSyFAfLcyk+48EG+ONvdvNedctkS5apERU
+         zi14m7tLn+7/w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2799E4038F; Fri, 10 Sep 2021 17:58:14 -0300 (-03)
+Date:   Fri, 10 Sep 2021 17:58:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: Another bug: Re: [PATCH 0/3] perf report: Add support to print a
+ textual representation of IBS raw sample data
+Message-ID: <YTvG5ndtSQtRHte2@kernel.org>
+References: <20210817221509.88391-1-kim.phillips@amd.com>
+ <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
+ <YTth5DLWGbyAzxvQ@kernel.org>
+ <YTtmwrZ6iy0TzG3l@kernel.org>
+ <YTtnpAcaCNYozoJF@kernel.org>
+ <YTto5xw/XSMuiGrG@kernel.org>
+ <YTu2mu6a4lkx92ee@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTu2mu6a4lkx92ee@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the removal of some pointers from struct hal_ops the function
-rtl8188e_set_hal_ops() is empty now. Remove it.
+Em Fri, Sep 10, 2021 at 04:48:42PM -0300, Arnaldo Carvalho de Melo escreveu:
+> 
+> All the cross builds are failing:
+> 
+>   28     9.20 debian:experimental-x-arm64   : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+>     util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+>        12 | #include <asm/amd-ibs.h>
+>           |          ^~~~~~~~~~~~~~~
+>     compilation terminated.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 3 ---
- drivers/staging/r8188eu/hal/usb_halinit.c       | 2 --
- drivers/staging/r8188eu/include/rtl8188e_hal.h  | 2 --
- 3 files changed, 7 deletions(-)
+Trying with the same trick used by intel-pt to build on all arches:
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 0d6c3adff27e..027dcfb95547 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1748,9 +1748,6 @@ void hal_notch_filter_8188e(struct adapter *adapter, bool enable)
- 		rtw_write8(adapter, rOFDM0_RxDSP + 1, rtw_read8(adapter, rOFDM0_RxDSP + 1) & ~BIT(1));
- 	}
- }
--void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
--{
--}
+diff --git a/tools/perf/util/amd-sample-raw.c b/tools/perf/util/amd-sample-raw.c
+index fbb7d61c50489374..d19d765195c54b79 100644
+--- a/tools/perf/util/amd-sample-raw.c
++++ b/tools/perf/util/amd-sample-raw.c
+@@ -9,7 +9,7 @@
+ #include <inttypes.h>
  
- u8 GetEEPROMSize8188E(struct adapter *padapter)
- {
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index aeaf53c1cfbf..0c317a8723ef 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -2227,6 +2227,4 @@ void rtl8188eu_set_hal_ops(struct adapter *adapt)
- 	halfunc->GetHwRegHandler = &GetHwReg8188EU;
- 	halfunc->GetHalDefVarHandler = &GetHalDefVar8188EUsb;
- 	halfunc->SetHalDefVarHandler = &SetHalDefVar8188EUsb;
--
--	rtl8188e_set_hal_ops(halfunc);
- }
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index a9ca29b5b9c1..537a8d17642c 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -432,8 +432,6 @@ void Hal_ReadPowerSavingMode88E(struct adapter *pAdapter, u8 *hwinfo,
+ #include <linux/string.h>
+-#include <asm/amd-ibs.h>
++#include "../../arch/x86/include/asm/amd-ibs.h"
  
- bool HalDetectPwrDownMode88E(struct adapter *Adapter);
- 
--void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc);
--
- void rtl8188e_read_chip_version(struct adapter *padapter);
- 
- void rtw_IOL_cmd_tx_pkt_buf_dump(struct adapter  *Adapter, int len);
--- 
-2.33.0
-
+ #include "debug.h"
+ #include "session.h"
