@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D5E4068BB
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8C24068BA
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhIJIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:50:56 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:52748 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231815AbhIJIux (ORCPT
+        id S231851AbhIJIuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 04:50:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19024 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhIJIux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 10 Sep 2021 04:50:53 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18A4vuV0005222;
-        Fri, 10 Sep 2021 03:49:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=+VVlZj3Buq5MZo0EYCefttH8P2g8kmajHGA5esW942Q=;
- b=IsuJLGNLjYu5kIBYQAJXmQfIudyC0gaBP+Fmwt66VRKoy+jsPhwpaDLDtmuIGHSMrX10
- yY5IReko5UHACsIIBSfhQtzyPL4WIEfwf4REg7g0IBjcgaqCZC/njrqB1yeiCBo/IBq+
- M+0cziEdNQm8WKQ6bp4i75RngCCvcMzTvM6K9bgDnVxCM1791v/xw3xNkBdNje4PaJE5
- 5wwcDvpQgWo3YPRGe8bnOyQ2L6j4fy9Xu9oGA8EoEkS0hamHhBjAlZutPh8rG1WwnlLe
- C0PLBbFN2OccpLSC/FgrAlsf9DMEupZ7XulZWVyzmLuh+Ina9C/uqt6TtJVR2+HrCygm MQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3aytg78s5m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Sep 2021 03:49:40 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 10 Sep
- 2021 09:49:38 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Fri, 10 Sep 2021 09:49:38 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D3E13B10;
-        Fri, 10 Sep 2021 08:49:38 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 08:49:38 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 3/4] spi: amd: Remove unneeded variable
-Message-ID: <20210910084938.GW9223@ediswmail.ad.cirrus.com>
-References: <20210909111005.304101-1-tanureal@opensource.cirrus.com>
- <20210909111005.304101-3-tanureal@opensource.cirrus.com>
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H5Twf31TJzbmQD;
+        Fri, 10 Sep 2021 16:45:38 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 10 Sep 2021 16:49:40 +0800
+Subject: Re: [PATCH -next 2/6] ext4: introduce last_check_time record previous
+ check time
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+References: <20210906144754.2601607-1-yebin10@huawei.com>
+ <20210906144754.2601607-3-yebin10@huawei.com>
+ <03bd0982-f0ad-78b4-7b98-cbfdbab9deec@linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <613B1C24.4040901@huawei.com>
+Date:   Fri, 10 Sep 2021 16:49:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210909111005.304101-3-tanureal@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: WkD8SVxy-HM6ylY1QV00SD7GIfXQXj5z
-X-Proofpoint-ORIG-GUID: WkD8SVxy-HM6ylY1QV00SD7GIfXQXj5z
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <03bd0982-f0ad-78b4-7b98-cbfdbab9deec@linux.dev>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 12:10:04PM +0100, Lucas Tanure wrote:
-> Remove internal cs from amd_spi
-> 
-> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> ---
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
+On 2021/9/9 10:20, Guoqing Jiang wrote:
+>
+>
+> On 9/6/21 10:47 PM, Ye Bin wrote:
+>> kmmpd:
+>> ...
+>>      diff = jiffies - last_update_time;
+>>      if (diff > mmp_check_interval * HZ) {
+>> ...
+>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+>> than 'mmp_update_interval', so there will never trigger detection.
+>> Introduce last_check_time record previous check time.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/mmp.c | 14 +++++++++-----
+>>   1 file changed, 9 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+>> index 12af6dc8457b..89797f12a815 100644
+>> --- a/fs/ext4/mmp.c
+>> +++ b/fs/ext4/mmp.c
+>> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
+>>       int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
+>>       unsigned mmp_check_interval;
+>>       unsigned long last_update_time;
+>> +    unsigned long last_check_time;
+>>       unsigned long diff;
+>>       int retval = 0;
+>>   @@ -170,6 +171,7 @@ static int kmmpd(void *data)
+>>         memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+>>              sizeof(mmp->mmp_nodename));
+>> +    last_update_time = jiffies;
+I'm sorry, actually i want to init 'last_check_time' at here,  I will 
+fix it in v2.
 Thanks,
-Charles
+YeBin
+>>         while (!kthread_should_stop() && !sb_rdonly(sb)) {
+>>           if (!ext4_has_feature_mmp(sb)) {
+>> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
+>>           }
+>>             diff = jiffies - last_update_time;
+>> -        if (diff < mmp_update_interval * HZ)
+>> +        if (diff < mmp_update_interval * HZ) {
+>>               schedule_timeout_interruptible(mmp_update_interval *
+>>                                  HZ - diff);
+>> +            diff = jiffies - last_update_time;
+>> +        }
+>>             /*
+>>            * We need to make sure that more than mmp_check_interval
+>> -         * seconds have not passed since writing. If that has happened
+>> -         * we need to check if the MMP block is as we left it.
+>> +         * seconds have not passed since check. If that has happened
+>> +         * we need to check if the MMP block is as we write it.
+>>            */
+>> -        diff = jiffies - last_update_time;
+>> -        if (diff > mmp_check_interval * HZ) {
+>> +        if (jiffies - last_check_time > mmp_check_interval * HZ) {
+>
+> Before the above checking, seems last_check_time is not initialized yet.
+>>               struct buffer_head *bh_check = NULL;
+>>               struct mmp_struct *mmp_check;
+>>   @@ -234,6 +237,7 @@ static int kmmpd(void *data)
+>>                   goto wait_to_exit;
+>>               }
+>>               put_bh(bh_check);
+>> +            last_check_time = jiffies;
+>>           }
+>>              /*
+>
+> Thanks,
+> Guoqing
+> .
+>
+
