@@ -2,76 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23E9406720
+	by mail.lfdr.de (Postfix) with ESMTP id DA51C406721
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhIJGRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43938 "EHLO mail.kernel.org"
+        id S231134AbhIJGRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:17:48 -0400
+Received: from mga06.intel.com ([134.134.136.31]:31026 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhIJGRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:17:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA69A611B0;
-        Fri, 10 Sep 2021 06:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631254559;
-        bh=I9jfoZPzgk5wgindVIV+Rty1kIvDXNjltpXvOCUC4LM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=smqJnTAIi6gpQGZmfdJk4Xa0pEas3D5h9xKu3DiAwL2kziBEwvDN+rPnEE7nouI+j
-         YTRMBLod9zPsjBLvj7TUdnvYNaTOs4uCUoRqo1qr6p+YF2r+3i27F5HSgcJAmV5GES
-         lgk6Lz2gSN6yk51PdD8TwQ0J4HNla6DmEfviK49s=
-Date:   Fri, 10 Sep 2021 08:15:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Andre Muller <andre.muller@web.de>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: property: Disable fw_devlink DT support for X86
-Message-ID: <YTr4CZW+rOXAjNq9@kroah.com>
-References: <20210910011446.3208894-1-saravanak@google.com>
+        id S230417AbhIJGRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:17:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="282021832"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="282021832"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 23:16:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="466951230"
+Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Sep 2021 23:16:31 -0700
+Received: from kbuild by 730d49888f40 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mOZpv-0003vt-4S; Fri, 10 Sep 2021 06:16:31 +0000
+Date:   Fri, 10 Sep 2021 14:15:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:auto-latest] BUILD SUCCESS
+ 5448a9e9f16a1b95790df7ef58686331aa3935a6
+Message-ID: <613af80a.9oU2Y+CuuhnNIG4e%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910011446.3208894-1-saravanak@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 06:14:45PM -0700, Saravana Kannan wrote:
-> Andre reported fw_devlink=on breaking OLPC XO-1.5 [1].
-> 
-> OLPC XO-1.5 is an X86 system that uses a mix of ACPI and OF to populate
-> devices. The root cause seems to be ISA devices not setting their fwnode
-> field. But trying to figure out how to fix that doesn't seem worth the
-> trouble because the OLPC devicetree is very sparse/limited and fw_devlink
-> only adds the links causing this issue. Considering that there aren't many
-> users of OF in an X86 system, simply fw_devlink DT support for X86.
-> 
-> [1] - https://lore.kernel.org/lkml/3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de/
-> Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Cc: Andre Muller <andre.muller@web.de>
-> ---
->  drivers/of/property.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 0c0dc2e369c0..3fd74bb34819 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1444,6 +1444,9 @@ static int of_fwnode_add_links(struct fwnode_handle *fwnode)
->  	struct property *p;
->  	struct device_node *con_np = to_of_node(fwnode);
->  
-> +	if (IS_ENABLED(CONFIG_X86))
-> +		return 0;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
+branch HEAD: 5448a9e9f16a1b95790df7ef58686331aa3935a6  Merge branch 'x86/urgent'
 
-I love it :)
+elapsed time: 1132m
 
-Anyway, getting a "Tested-by:" would be great to have here.  Andre, can
-you verify this solves your issue?
+configs tested: 187
+configs skipped: 3
 
-thanks,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-greg k-h
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210908
+powerpc                 xes_mpc85xx_defconfig
+parisc                generic-64bit_defconfig
+arm                             ezx_defconfig
+powerpc                     mpc83xx_defconfig
+mips                     cu1830-neo_defconfig
+sh                          kfr2r09_defconfig
+sh                        apsh4ad0a_defconfig
+arm                       aspeed_g4_defconfig
+sh                   sh7724_generic_defconfig
+arm                            hisi_defconfig
+mips                        nlm_xlr_defconfig
+mips                  decstation_64_defconfig
+mips                        omega2p_defconfig
+powerpc                     asp8347_defconfig
+arm                         lpc32xx_defconfig
+powerpc                       eiger_defconfig
+h8300                            alldefconfig
+um                           x86_64_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                        sh7763rdp_defconfig
+xtensa                    smp_lx200_defconfig
+arm                          collie_defconfig
+nios2                            alldefconfig
+powerpc                      pcm030_defconfig
+powerpc                  storcenter_defconfig
+arm                          ep93xx_defconfig
+sparc                       sparc32_defconfig
+arm                         axm55xx_defconfig
+mips                     loongson2k_defconfig
+mips                      fuloong2e_defconfig
+ia64                            zx1_defconfig
+openrisc                 simple_smp_defconfig
+arm                         lpc18xx_defconfig
+sh                             sh03_defconfig
+sh                            titan_defconfig
+sh                            shmin_defconfig
+arm                      integrator_defconfig
+mips                      maltaaprp_defconfig
+mips                      pic32mzda_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                       ppc64_defconfig
+xtensa                           alldefconfig
+sh                           se7206_defconfig
+um                             i386_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                    klondike_defconfig
+openrisc                            defconfig
+mips                          ath79_defconfig
+arc                          axs101_defconfig
+parisc                generic-32bit_defconfig
+arm                       versatile_defconfig
+sh                               j2_defconfig
+sh                             espt_defconfig
+ia64                        generic_defconfig
+arm                         vf610m4_defconfig
+mips                           ip32_defconfig
+powerpc                    sam440ep_defconfig
+mips                        workpad_defconfig
+h8300                    h8300h-sim_defconfig
+arm                         nhk8815_defconfig
+arm                  colibri_pxa300_defconfig
+m68k                        m5307c3_defconfig
+powerpc                      obs600_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     redwood_defconfig
+sh                          r7785rp_defconfig
+x86_64                           alldefconfig
+mips                         tb0219_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         palmz72_defconfig
+powerpc                mpc7448_hpc2_defconfig
+m68k                          multi_defconfig
+powerpc                  iss476-smp_defconfig
+arm                      tct_hammer_defconfig
+sh                           se7712_defconfig
+arm                         assabet_defconfig
+arm                          ixp4xx_defconfig
+ia64                             allyesconfig
+powerpc                      pmac32_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                      ppc6xx_defconfig
+mips                       rbtx49xx_defconfig
+mips                        vocore2_defconfig
+powerpc                      makalu_defconfig
+m68k                        m5407c3_defconfig
+microblaze                      mmu_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                           se7724_defconfig
+csky                             alldefconfig
+sh                            hp6xx_defconfig
+xtensa                    xip_kc705_defconfig
+sh                        edosk7760_defconfig
+mips                        qi_lb60_defconfig
+m68k                       bvme6000_defconfig
+powerpc                     ppa8548_defconfig
+x86_64               randconfig-c001-20210908
+x86_64               randconfig-c001-20210910
+i386                 randconfig-c001-20210910
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a004-20210908
+x86_64               randconfig-a006-20210908
+x86_64               randconfig-a003-20210908
+x86_64               randconfig-a001-20210908
+x86_64               randconfig-a005-20210908
+x86_64               randconfig-a002-20210908
+i386                 randconfig-a005-20210908
+i386                 randconfig-a004-20210908
+i386                 randconfig-a006-20210908
+i386                 randconfig-a002-20210908
+i386                 randconfig-a001-20210908
+i386                 randconfig-a003-20210908
+i386                 randconfig-a016-20210910
+i386                 randconfig-a011-20210910
+i386                 randconfig-a012-20210910
+i386                 randconfig-a013-20210910
+i386                 randconfig-a014-20210910
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+s390                 randconfig-c005-20210908
+powerpc              randconfig-c003-20210908
+mips                 randconfig-c004-20210908
+i386                 randconfig-c001-20210908
+x86_64               randconfig-a002-20210910
+x86_64               randconfig-a003-20210910
+x86_64               randconfig-a004-20210910
+x86_64               randconfig-a006-20210910
+x86_64               randconfig-a001-20210910
+x86_64               randconfig-a016-20210908
+x86_64               randconfig-a011-20210908
+x86_64               randconfig-a012-20210908
+x86_64               randconfig-a015-20210908
+x86_64               randconfig-a014-20210908
+x86_64               randconfig-a013-20210908
+i386                 randconfig-a012-20210908
+i386                 randconfig-a015-20210908
+i386                 randconfig-a011-20210908
+i386                 randconfig-a013-20210908
+i386                 randconfig-a014-20210908
+i386                 randconfig-a016-20210908
+s390                 randconfig-r044-20210908
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
