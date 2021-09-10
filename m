@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E432406554
+	by mail.lfdr.de (Postfix) with ESMTP id E8EF0406556
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbhIJBnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhIJBnU (ORCPT
+        id S229526AbhIJBn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:43:26 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35538 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhIJBnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:43:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902BCC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=EEsL2Ua4JKiBuEtvP+hN91RNOSRfb0BEIz1GBTlyL28=; b=ItvbIjG6CBNfdQX20OGwAIjjxx
-        RvMBUGZLltEmI5/xFRrZtp02xj9k8eABgFWVpySMvJLzl557ZvX9vzl8mZr2mKY79eAgFZid4q8JK
-        7PUkgC0AWTe6edEUtui4BYJ80jx7xwibUVw09I6JPyLQWFLTQo9UifWIGoUy1avaejg628TwCCU0+
-        1+s0N4nqu/Oz4H/xJ/58P/UGZKf4RiPF2QbVbszSAz1W44glpt4BWt4c8rty6G8DvEYSXHJMptwwg
-        qYQZWG0K6vo/AGO+Yh8rYBlPZPVTILTEp+zcs9cUbgODlj6s2tuFW63NTB/k+FiX6AwKzNWBpSXJW
-        p2zNcDRw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOVYL-00BXZP-9T; Fri, 10 Sep 2021 01:42:05 +0000
-Subject: Re: [PATCH] ASoC: mediatek: add required config dependency
-To:     Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
-        tiwai@suse.com, matthias.bgg@gmail.com
-Cc:     alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        geert@linux-m68k.org, wenst@chromium.org,
-        bicycle.tsai@mediatek.com, jiaxin.yu@mediatek.com,
-        shane.chien@mediatek.com
-References: <20210909065533.2114-1-trevor.wu@mediatek.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <46bf2061-7a00-c6f0-d2e9-5605b13f1c3f@infradead.org>
-Date:   Thu, 9 Sep 2021 18:42:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210909065533.2114-1-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 9 Sep 2021 21:43:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18A1g6Qb098422;
+        Thu, 9 Sep 2021 20:42:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631238126;
+        bh=T2O7Vgkw8W6SU2hJ+lMl1dxjW6VuIFMJa+2lb+T3+O8=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=jjbqEEOQLqnRnQ3DuzdjcKMRZThx2qZzPw2xhsjZi89ToOx61dtVhuGAQHBwvRXSP
+         TfL5ZLNHGW1PXykZHhzZRAqKhLZXkKIsnAYRn5mvuihwWdWG/yYIECOkscN1x4mMLA
+         hoqDvuSNtKGsqp+KUJlK1Dvv0x9LzuwsSQgajYTo=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18A1g5Ei004711
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 9 Sep 2021 20:42:05 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
+ Sep 2021 20:42:05 -0500
+Received: from DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14]) by
+ DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14%17]) with mapi id
+ 15.01.2308.014; Thu, 9 Sep 2021 20:42:05 -0500
+From:   "Modi, Geet" <geet.modi@ti.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "Nagalla, Hari" <hnagalla@ti.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sharma, Vikram" <vikram.sharma@ti.com>,
+        "dmurphy@ti.com" <dmurphy@ti.com>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re:
+ [PATCH] net: phy: dp83tc811: modify list of interrupts enabled at
+ initialization
+Thread-Topic: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re:
+ [PATCH] net: phy: dp83tc811: modify list of interrupts enabled at
+ initialization
+Thread-Index: AQHXoC4XSSkBWxKBYUuzA52mb5z+zauRtoAAgAWhA4CAAZ4BAIADCCgAgACK0YD//66ZAIAAo1YA//+NyAA=
+Date:   Fri, 10 Sep 2021 01:42:05 +0000
+Message-ID: <4FD7DBD6-C10A-44D8-BD3C-59751BA8FE5A@ti.com>
+References: <20210902190944.4963-1-hnagalla@ti.com> <YTFc6pyEtlRO/4r/@lunn.ch>
+ <99232B33-1C2F-45AF-A259-0868AC7D3FBC@ti.com> <YTdxBMVeqZVyO4Tf@lunn.ch>
+ <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com> <YTpwjWEUmJWo0mwr@lunn.ch>
+ <E3DBDC45-111F-4744-82A8-95C7D5CCEBE5@ti.com> <YTq1SATpNvwo+ojg@lunn.ch>
+In-Reply-To: <YTq1SATpNvwo+ojg@lunn.ch>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.52.21080801
+x-originating-ip: [10.250.200.196]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2CC37384FBD9994681053968656F88CB@owa.mail.ti.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 11:55 PM, Trevor Wu wrote:
-> Because SND_SOC_MT8195 depends on COMPILE_TEST, it's possible to build
-> MT8195 driver in many different config combinations.
-> Add all dependent config for SND_SOC_MT8195 in case some errors happen
-> when COMPILE_TEST is enabled.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-
-> ---
->   sound/soc/mediatek/Kconfig | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-> index 5a2f4667d50b..81ad2dcee9eb 100644
-> --- a/sound/soc/mediatek/Kconfig
-> +++ b/sound/soc/mediatek/Kconfig
-> @@ -1,6 +1,7 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   config SND_SOC_MEDIATEK
->   	tristate
-> +	select REGMAP_MMIO
->   
->   config SND_SOC_MT2701
->   	tristate "ASoC support for Mediatek MT2701 chip"
-> @@ -188,7 +189,9 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
->   config SND_SOC_MT8195
->   	tristate "ASoC support for Mediatek MT8195 chip"
->   	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	depends on COMMON_CLK
->   	select SND_SOC_MEDIATEK
-> +	select MFD_SYSCON if SND_SOC_MT6359
->   	help
->   	  This adds ASoC platform driver support for Mediatek MT8195 chip
->   	  that can be used with other codecs.
-> 
-
-
--- 
-~Randy
-
+SGkgQW5kcmV3LA0KDQpQbGVhc2UgYmUgYXNzdXJlIHRoZSBtb25pdG9ycyBhcmUgcGFydCBvZiB0
+aGUgUEhZIGFuZCB3ZWxsIGNhcHR1cmVkIGluIGRldmljZSBkYXRhc2hlZXQuICAgVGhlIG9ubHkg
+cmVhc29uIHRvIGdvIHNlbGVjdGl2ZWx5IGlzIGFzIHdlIGhhdmUgbm90IGNhcmVmdWxseSByZXZp
+ZXdlZCB0aGUgb3RoZXIgIGludGVycnVwdHMgdXNhZ2UgYnkgYXBwbGljYXRpb24sIGhlbmNlIGRv
+bid0IHdhbnQgdG8gbWFrZSB0aGUgY2hhbmdlIGluIGhhc3RlLg0KDQpSZWdhcmRzLA0KR2VldA0K
+DQoNCg0KDQrvu79PbiA5LzkvMjEsIDY6MzEgUE0sICJBbmRyZXcgTHVubiIgPGFuZHJld0BsdW5u
+LmNoPiB3cm90ZToNCg0KICAgIE9uIEZyaSwgU2VwIDEwLCAyMDIxIGF0IDEyOjQxOjUzQU0gKzAw
+MDAsIE1vZGksIEdlZXQgd3JvdGU6DQogICAgPiBIaSBBbmRyZXcsDQogICAgPiANCiAgICA+IEFz
+IG1lbnRpb25lZCB3ZSB3YW50IHRvIGRvIHRoaXMgaW4gcGhhc2VzOiANCiAgICA+IGEpIHRoaXMg
+cGF0Y2ggdG8gZGlzYWJsZSB0aGUgT3ZlcnZvbHRhZ2UgZHJpdmVyIGludGVycnVwdA0KICAgID4g
+YikgQWZ0ZXIgY2FyZWZ1bGx5IGNvbnNpZGVyaW5nIG90aGVyIGludGVycnVwdHMsIHBsYW4gYSAg
+Zm9sbG93LW9uIHBhdGNoIHRvIHRha2UgY2FyZSBvZiBvdGhlciBpbnRlcnJ1cHRzLg0KDQogICAg
+SSBzdGlsbCBkb24ndCBnZXQgaXQuIFdoeSBqdXN0IE92ZXIgdm9sdCBub3cgYW5kIG5vdCB0aGUg
+cmVzdCwgd2hpY2gNCiAgICBhcmUgZXF1YWxseSB1c2VsZXNzPyBJdCBtYWtlcyBtZSB0aGluayB0
+aGVyZSBpcyBzb21ldGhpbmcgc2VyaW91c2x5DQogICAgd3Jvbmcgd2l0aCBvdmVyIHZvbHRhZ2Us
+IHdoaWNoIHlvdSBhcmUgbm90IHRlbGxpbmcgdXMgYWJvdXQuIE1heWJlIGFuDQogICAgaW50ZXJy
+dXB0IHN0b3JtPyBJZiB0aGVyZSBpcyBzb21ldGhpbmcgYnJva2VuIGhlcmUsIHRoaXMgcGF0Y2gg
+bmVlZHMNCiAgICB0byBiZSBiYWNrIHBvcnRlZCB0byBzdGFibGUuDQoNCiAgICAgICBBbmRyZXcN
+Cg0K
