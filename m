@@ -2,149 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C9140657B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461EF40657E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhIJCAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:00:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:7224 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhIJCAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:00:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="208073443"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="208073443"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:59:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="540085015"
-Received: from unknown (HELO [10.239.13.122]) ([10.239.13.122])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 18:59:25 -0700
-Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
- <20210827070249.924633-7-xiaoyao.li@intel.com> <YTp/oGmiin19q4sQ@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
-Date:   Fri, 10 Sep 2021 09:59:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S229636AbhIJCBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhIJCBv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:01:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4B8C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 19:00:41 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id k4so839908lfj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 19:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Uum+eXxKl7E8Vfz4IYs1ZYTXVuqCttV8A2hHBap2fOM=;
+        b=qSj4q/9yh6h2yl7YEKfiMk4cvNkvdKrqNDYlO7ADJT3RtNf8rmf61v4hUVkMCGHGtm
+         rthuMbi3bIlUbpqQA3Oc86W6AoundTNhq/2NQBwlfIgPYq939s9mr9aziER9fyXjtCPC
+         L/iBCvXMioWN7Fb24TliD/xMM4VOHXGAz8xg41vopC0rNFS9kn3GZGXdafVX2fVYZDoD
+         MZSKhiMwgvIg5u7F+O6lJrWtBI48M3S0BlyKrri95bi6Q94LDodaBnUpH5Exj1U6V/l1
+         v15kn6/YhKxyKhXGNtUu1Lloi3WpCk18xkOA0Yk3XHa0iy5lBVrub/SSgaeqRy87aO3x
+         1hhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Uum+eXxKl7E8Vfz4IYs1ZYTXVuqCttV8A2hHBap2fOM=;
+        b=ZKN5VrwOe31PsTiIvXlIDdf+lun/yq/R2wtBTA2CuGyAyu0lCmkzm0AGoUHb3pEmp7
+         71Rk55B/uRW08dtLfBgzw/NsJPaxWjzA/g66q3L5n8jeac9NCAkIq2G7HdiZryjv9ypm
+         4bPSj5I7TrE0A1puorufSNGdtUp9T0j9fDzsN1PUqJs0quCnwglVlyKWnoKtl3saf5aD
+         wM/MDMDtU/3SomwhxyicXPX1UgPfxchHs8da1FcQ7igjpqzxu2QhdRVdkpkbS9XZi6c/
+         9rDlU4aLHSwSHvI2ZDbc1amZs/AWSkOW5tAWiDpB5N0EaWE5ULR7KzSzAIB3AvKG5kOM
+         nysA==
+X-Gm-Message-State: AOAM531KFPGH5O6Opgy3+Og8dQlc8HRj8BFNPEtcwrGjQcrtTaDfmBkB
+        hXBH0OrFte6Zr4tzWj0B1LlDHOWefhIvgtVBRLBgUg==
+X-Google-Smtp-Source: ABdhPJxH2uBdeST0nduzHRbFIGPhvw7XFM2pjJsogidqxTFgzaqyizJgKW+U8VqG0FXj6j4icB+UuBwd5B4iXQaokSc=
+X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr1915757lfa.523.1631239239581;
+ Thu, 09 Sep 2021 19:00:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTp/oGmiin19q4sQ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210908061611.69823-1-mie@igel.co.jp> <CAD=hENcYPRQXB4NVfpm+_R2qn3czW3oSOS6rS=CEKWwhHEfkZA@mail.gmail.com>
+In-Reply-To: <CAD=hENcYPRQXB4NVfpm+_R2qn3czW3oSOS6rS=CEKWwhHEfkZA@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Fri, 10 Sep 2021 11:00:28 +0900
+Message-ID: <CANXvt5qv1wyYZnChG3b0s6WVgv0wUEYTJB_aV09ZsYXwCsfKoQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>, taki@igel.co.jp,
+        etom@igel.co.jp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 5:41 AM, Sean Christopherson wrote:
-> On Fri, Aug 27, 2021, Xiaoyao Li wrote:
->> CPUID 0xD leaves reports the capabilities of Intel PT, e.g. it decides
->> which bits are valid to be set in MSR_IA32_RTIT_CTL, and reports the
->> number of PT ADDR ranges.
->>
->> KVM needs to check that guest CPUID values set by userspace doesn't
->> enable any bit which is not supported by bare metal. Otherwise,
->> 1. it will trigger vm-entry failure if hardware unsupported bit is
->>     exposed to guest and set by guest.
->> 2. it triggers #GP when context switch PT MSRs if exposing more
->>     RTIT_ADDR* MSRs than hardware capacity.
->>
->> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->> ---
->> There is bit 31 of CPUID(0xD, 0).ECX that doesn't restrict any bit in
->> MSR_IA32_RTIT_CTL. If guest has different value than host, it won't
->> cause any vm-entry failure, but guest will parse the PT packet with
->> wrong format.
->>
->> I also check it to be same as host to ensure the virtualization correctness.
->>
->> Changes in v2:
->> - Call out that if configuring more PT ADDR MSRs than hardware, it can
->>    cause #GP when context switch.
->> ---
->>   arch/x86/kvm/cpuid.c | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 739be5da3bca..0c8e06a24156 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -76,6 +76,7 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
->>   static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
->>   {
->>   	struct kvm_cpuid_entry2 *best;
->> +	u32 eax, ebx, ecx, edx;
->>   
->>   	/*
->>   	 * The existing code assumes virtual address is 48-bit or 57-bit in the
->> @@ -89,6 +90,30 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
->>   			return -EINVAL;
->>   	}
->>   
->> +	/*
->> +	 * CPUID 0xD leaves tell Intel PT capabilities, which decides
-> 
-> CPUID.0xD is XSAVE state, CPUID.0x14 is Intel PT.  This series needs tests...
+2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 14:45 Zhu Yanjun <zyjzyj2000@g=
+mail.com>:
+> After applying the patches, please run rdma-core tests with the patched k=
+ernel.
+> Then fix all the problems in rdma-core.
 
-My apologize.
+I understand. I'd like to do the tests and fix it before posting the next
+patches
 
->> +	 * pt_desc.ctl_bitmask in later update_intel_pt_cfg().
->> +	 *
->> +	 * pt_desc.ctl_bitmask decides the legal value for guest
->> +	 * MSR_IA32_RTIT_CTL. KVM cannot support PT capabilities beyond native,
->> +	 * otherwise it will trigger vm-entry failure if guest sets native
->> +	 * unsupported bits in MSR_IA32_RTIT_CTL.
->> +	 */
->> +	best = cpuid_entry2_find(entries, nent, 0xD, 0);
->> +	if (best) {
->> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
->> +		if (best->ebx & ~ebx || best->ecx & ~ecx)
->> +			return -EINVAL;
->> +	}
->> +	best = cpuid_entry2_find(entries, nent, 0xD, 1);
->> +	if (best) {
->> +		cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
->> +		if (((best->eax & 0x7) > (eax & 0x7)) ||
-> 
-> Ugh, looking at the rest of the code, even this isn't sufficient because
-> pt_desc.guest.addr_{a,b} are hardcoded at 4 entries, i.e. running KVM on hardware
-> with >4 entries will lead to buffer overflows.
-
-it's hardcoded to 4 because there is a note of "no processors support 
-more than 4 address ranges" in SDM vol.3 Chapter 31.3.1, table 31-11
-
-> One option would be to bump that to the theoretical max of 15, which doesn't seem
-> too horrible, especially if pt_desc as a whole is allocated on-demand, which it
-> probably should be since it isn't exactly tiny (nor ubiquitous)
-> 
-> A different option would be to let userspace define whatever it wants for guest
-> CPUID, and instead cap nr_addr_ranges at min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
-> 
-> Letting userspace generate a bad MSR_IA32_RTIT_CTL is not problematic, there are
-> plenty of ways userspace can deliberately trigger VM-Entry failure due to invalid
-> guest state (even if this is a VM-Fail condition, it's not a danger to KVM).
-
-I'm fine to only safe guard the nr_addr_range if VM-Entry failure 
-doesn't matter.
-
-> 
->> +		    ((best->eax & ~eax) >> 16) ||
->> +		    (best->ebx & ~ebx))
->> +			return -EINVAL;
->> +	}
->> +
->>   	return 0;
->>   }
->>   
->> -- 
->> 2.27.0
->>
-
+Regards,
+Shunsuke
