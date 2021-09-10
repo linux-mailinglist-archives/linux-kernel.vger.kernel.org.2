@@ -2,162 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4777406537
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F0140653A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhIJBdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhIJBdv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:33:51 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56445C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:32:41 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id c6so484544ybm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mRiYcvdIn/aIEmoI5IOHlPi9c0uTR/p2l9AM+C5qzoE=;
-        b=Pk6JlJ5+3PF9YT39h3z/kI4BCr7l0eaEAVOdoIEmk/VaBHSUbuMfkdMkj0wyDeWD/S
-         W8O7GHAmoMtdiYdFRczKtWogOmI22BKWnzfcMYlucsu3VSZOTV1H7k0ld2K34qN/ogQS
-         +SH6DQSU5Zc2TUfRFMzQNJHbeH4L0EthiL2q/0MYs2q8jCGi1OBZ8KyXyqcAKoa88h2V
-         NRIICbILy5Hw/ot7dFCRq/Q+1PMsv66ehj2KONrpX811JdFZ/45qImAQDBX0eIKNbW6l
-         8DJdP/N7b2xEe6uu6kYksLVUjHHoH/E4J3Tx5DqEGCgXv/cxhAVBznfaRf79kLZnXhNI
-         uZyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mRiYcvdIn/aIEmoI5IOHlPi9c0uTR/p2l9AM+C5qzoE=;
-        b=r3IPg+lrryijPAGwlMQ4s3ckQXuKupgNg/dDB7TVl1UCaOpujUQclO9u3NwgsRhKxA
-         5kYkygE75whhnmkuzAbwop3Z6YPjrTFXfuBtFBV2Lf/MYfAY/UHRmRX0DCSw15EDHM2I
-         dbmCm+FURlQgdZdMsoalfsJgeLs9iF+DH8YtUK3d8hvBOZMhF/NHasgf4o8YBj0F/WwY
-         K+RLFan0RqVbePcg6Jwl1Ykq6Fz2Rqf6pFPbB4hrh+cW5WQotwQ9zTMh5VMmFCCeITDB
-         vipk/MXdVh0vixc+TiTTh53J21q/sA4IZmTmrWd85Mi/tbNubN7nRFmZ2wMxb8cTWjii
-         +IXw==
-X-Gm-Message-State: AOAM533bti7CBHyVVnNBusG7i6masWFcqNt+DeOunhlamSp6fUdyTHp4
-        I6E2WJvxFnrof4RvvggIJhB2hpBX5uJsz79njokMkf4E3us=
-X-Google-Smtp-Source: ABdhPJyy96OTE8WKils6yM2cKUTOISLgSatOYHdOyX7HiKP4NWC3PnrAMdTW/JXUMUwZI1tMmXodv2hgtUr0quHGWXU=
-X-Received: by 2002:a25:e0d4:: with SMTP id x203mr7090909ybg.391.1631237560343;
- Thu, 09 Sep 2021 18:32:40 -0700 (PDT)
+        id S230523AbhIJBd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:33:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230487AbhIJBdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 21:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E9E61167;
+        Fri, 10 Sep 2021 01:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631237565;
+        bh=gXveKeTWNExVQFgjnaiJLlZAeV+wFFV1ElNwTuB3Kc8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CABSVTxn5GN9KiqlpXGZOHbnHIVjbQiU1s74N42eUu+0fx8ExIp0wKRWg/5tFMSVO
+         VZuBGwC3EgZlv72wCo5SxCU9c77FbQYAtGyjZlHnDGI8puTBKh3rQyfzRjT1V7fKar
+         e4oXAgz9aLHRgCbgzMSNm6S7tkg91g4W0C519BaHtM7kYLjyqvYHqNdrxXR3n/b33x
+         5TxlVeEN7vWPcFqKy33bXdnGghNc78mokhDJkFxZyVLJXbw9Or61R3Q5p8LcSs+HfB
+         C+Ib/uVUs2OR2Kdo71GwXSQZPxthhPy9I5LeQsG6b1pgXNaLvmMW1Ba1TA4Ed7P7PC
+         GBo/1h6aXxuUw==
+Date:   Fri, 10 Sep 2021 03:32:40 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 02/15] leds: trigger: blkdev: Add build
+ infrastructure
+Message-ID: <20210910033240.581ebcea@thinkpad>
+In-Reply-To: <20210909222513.2184795-3-arequipeno@gmail.com>
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+        <20210909222513.2184795-3-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210909095324.12978-1-LinoSanfilippo@gmx.de> <20210909101451.jhfk45gitpxzblap@skbuf>
- <81c1a19f-c5dc-ab4a-76ff-59704ea95849@gmx.de> <20210909114248.aijujvl7xypkh7qe@skbuf>
- <20210909125606.giiqvil56jse4bjk@skbuf> <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <20210909154734.ujfnzu6omcjuch2a@skbuf> <92ad3d7d-78db-289b-47d7-55b33b83c24e@gmail.com>
-In-Reply-To: <92ad3d7d-78db-289b-47d7-55b33b83c24e@gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 9 Sep 2021 18:32:04 -0700
-Message-ID: <CAGETcx_Nq1dxAd84sHPtNjkeJNcA+u6xybCGg=QEoficmDT=+Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        p.rosenberger@kunbus.com, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 9:00 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> +Saravana,
->
-> On 9/9/2021 8:47 AM, Vladimir Oltean wrote:
-> > On Thu, Sep 09, 2021 at 03:19:52PM +0200, Lino Sanfilippo wrote:
-> >>> Do you see similar things on your 5.10 kernel?
-> >>
-> >> For the master device is see
-> >>
-> >> lrwxrwxrwx 1 root root 0 Sep  9 14:10 /sys/class/net/eth0/device/consumer:spi:spi3.0 -> ../../../virtual/devlink/platform:fd580000.ethernet--spi:spi3.0
-> >
-> > So this is the worst of the worst, we have a device link but it doesn't help.
-> >
-> > Where the device link helps is here:
-> >
-> > __device_release_driver
-> >       while (device_links_busy(dev))
-> >               device_links_unbind_consumers(dev);
-> >
-> > but during dev_shutdown, device_links_unbind_consumers does not get called
-> > (actually I am not even sure whether it should).
-> >
-> > I've reproduced your issue by making this very simple change:
-> >
-> > diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> > index 60d94e0a07d6..ec00f34cac47 100644
-> > --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> > +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> > @@ -1372,6 +1372,7 @@ static struct pci_driver enetc_pf_driver = {
-> >       .id_table = enetc_pf_id_table,
-> >       .probe = enetc_pf_probe,
-> >       .remove = enetc_pf_remove,
-> > +     .shutdown = enetc_pf_remove,
-> >   #ifdef CONFIG_PCI_IOV
-> >       .sriov_configure = enetc_sriov_configure,
-> >   #endif
-> >
-> > on my DSA master driver. This is what the genet driver has "special".
-> >
-> > I was led into grave error by Documentation/driver-api/device_link.rst,
-> > which I've based my patch on, where it clearly says that device links
-> > are supposed to help with shutdown ordering (how?!).
->
-> I was also under the impression that device links were supposed to help
-> with shutdown ordering, because it does matter a lot. One thing that I
-> had to work before (and seems like it came back recently) is the
-> shutdown ordering between gpio_keys.c and the GPIO controller. If you
-> suspend the GPIO controller first, gpio_keys.c never gets a chance to
-> keep the GPIO pin configured for a wake-up interrupt, therefore no
-> wake-up event happens on key presses, whoops.
+On Thu,  9 Sep 2021 17:25:00 -0500
+Ian Pilcher <arequipeno@gmail.com> wrote:
 
-This is more of a Rafael question. Adding him. I haven't looked too
-closely at device links and shutdown.
+> Add files:
+>   * ledtrig-blkdev-core.c - trigger components that are always built-in
+>   * ledtrig-blkdev.c - trigger components that can be built as a module
+>   * ledtrig-blkdev.h - common declarations
 
--Saravana
+I have never seen this done this way. Add new files once you have
+content for them. I think this entire proposal should be done as one
+patch, since it atomically adds functionality.
 
->
-> >
-> > So the question is, why did my DSA trees get torn down on shutdown?
-> > Basically the short answer is that my SPI controller driver does
-> > implement .shutdown, and calls the same code path as the .remove code,
-> > which calls spi_unregister_controller which removes all SPI children..
-> >
-> > When I added this device link, one of the main objectives was to not
-> > modify all DSA drivers. I was certain based on the documentation that
-> > device links would help, now I'm not so sure anymore.
-> >
-> > So what happens is that the DSA master attempts to unregister its net
-> > device on .shutdown, but DSA does not implement .shutdown, so it just
-> > sits there holding a reference (supposedly via dev_hold, but where from?!)
-> > to the master, which makes netdev_wait_allrefs to wait and wait.
->
-> It's not coming from of_find_net_device_by_node() that's for sure and
-> with OF we don't go through the code path calling
-> dsa_dev_to_net_device() which does call dev_hold() and then shortly
-> thereafter the caller calls dev_put() anyway.
->
-> >
-> > I need more time for the denial phase to pass, and to understand what
-> > can actually be done. I will also be away from the keyboard for the next
-> > few days, so it might take a while. Your patches obviously offer a
-> > solution only for KSZ switches, we need something more general. If I
-> > understand your solution, it works not by virtue of there being any
-> > shutdown ordering guarantee at all, but simply due to the fact that
-> > DSA's .shutdown hook gets called eventually, and the reference to the
-> > master gets freed eventually, which unblocks the unregister_netdevice
-> > call from the master. I don't yet understand why DSA holds a long-term
-> > reference to the master, that's one thing I need to figure out.
-> >
->
-> Agreed.
-> --
-> Florian
+Now I have to jump between various e-mail when I want to create a mind
+map of what this code is doing, and it is annoying.
+
+Please resend this as:
+ - one patch adding sysfs docs
+ - one patch for the rest
+
+Marek
