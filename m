@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5CC406CCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9E9406CC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhIJNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        id S233499AbhIJNS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbhIJNUS (ORCPT
+        with ESMTP id S233443AbhIJNS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:20:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD53C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ninElOyv81dMVidL5ufjaZyKTFmzPaIwU+OoWpq1OOg=; b=FO+tHfueTJF3RSFawxG4/G5rGB
-        Wq8V1O12TjM6OEKiEwWqxOlR73xTN8p986jwFfYGSmODuFFNg5lk8CFxD8oq7LMN9Z2Y94m/Gn7Ns
-        rnlGrqUDGzELw+AOpSz+rZCWDOyC3Pr30RP5FToYPEGx7yTZwibSf12PNbAV7cOfWAL+sZgJVfx2I
-        G5vKJxeVsyN2YZlX/dC+kxXGJ89TqQFH6y+qfMqJ/fJHN3ChTcOfmp0u8kng558gZl6ufoKAP3OV7
-        T56vK/vfnyKtezZ6uoHFtYYP9pa9WEcGCW2GmqlrrIDNRFET0cxy5j8Q9SN90ZgPafB4L0qZCeH5v
-        obEhWm0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOgOw-00B2DC-Fa; Fri, 10 Sep 2021 13:17:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5AAB300047;
-        Fri, 10 Sep 2021 15:17:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A75042C1B51C5; Fri, 10 Sep 2021 15:17:04 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 15:17:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     tglx@linutronix.de, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
- current_save_and_set_rtlock_wait_state()
-Message-ID: <YTta0Kkz4OeFzUvJ@hirez.programming.kicks-ass.net>
-References: <20210909105915.757320973@infradead.org>
- <20210909110203.767330253@infradead.org>
- <20210909134524.GB9722@willie-the-truck>
- <YToZ4h/nfsrD3JfY@hirez.programming.kicks-ass.net>
- <20210910125658.GA1454@willie-the-truck>
+        Fri, 10 Sep 2021 09:18:28 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471BCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:17:17 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id r4so3774066ybp.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QUTLtwXLUjfxOMwwCkVC2MzQatgqxlfkVT2ny2bxECk=;
+        b=fXaPnGcAznaUA3B1hBspE7kTkmYHXyNpZqbO3Mojt7CDWtVzBV4hLNUk3pukQe2prn
+         9vUn+gIrniMOKcEMNsonsdn2J+GUFCnrlCP4T88WxMp4grhWi3C8nKzCrecoufJEQVzQ
+         zwj9Ql1+uXRqZd/2OYkSj/nc8EzYramo8MjWj3utvP72bP42ScAeVpfJpOjnLmStJ6/p
+         25hz/YpReJPfyNhgXCjvftR0852EnCixSytT9PJv7mgdXwuvqbN7gCiHihaBRmdtBUUJ
+         siEBEouDZu3OFEig+qt/RZ/R4FF3lAVJzVbp81svg1tkCrIfkVUhqb8E5/4zyVC89fvT
+         +KhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QUTLtwXLUjfxOMwwCkVC2MzQatgqxlfkVT2ny2bxECk=;
+        b=APqKnXgoMjJ+U25lqaMUOcqP7w5OhmVQPvKpkDb+LGvtpqDJU/CdZlMDaWqD3dCbuE
+         NhXsQw22NxpRMVwZqdnGQeerUxiEiJkJp5VyyLfipuhYOBFyD0j5Q87kvfWOCPqFGsRl
+         +UEJgHsmRpf8D6ertPsKJo85GRXTjRn0T+eCV8ClWROjDLhXGQWLcsYuCkWMFd84bm1t
+         XYTFrR+tqlhM84F7hn3Gss9XjK6AcHPr4TR+6VcOW8a1M+++30zIJ8/cfyvO1M3JDZO+
+         U4Gx00pKE+Wy6mZRrqi3ZPbNYxCSoU2SrM/81hcvHMhlM02kOC9a+utcdZUrl9YrBTj2
+         qB5g==
+X-Gm-Message-State: AOAM530WqOBd2pECSfTWrSBh/RRDq45xHIL+D4IoeR4YIyDaM/0NRjr2
+        8Ph5NfHnh/Lwufhm+9BQR0klInzwM3T9R5IjCoBHGg==
+X-Google-Smtp-Source: ABdhPJzGR2cuGGSuZYVGlWtKSf5nAiDrqUef/qGoWjFGfy4YUaXHK7RGUZ4oI8AviPTrbL3tHkrV0FK//FgLBPyEZwI=
+X-Received: by 2002:a25:802:: with SMTP id 2mr11014314ybi.61.1631279836534;
+ Fri, 10 Sep 2021 06:17:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910125658.GA1454@willie-the-truck>
+References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-2-mkoutny@suse.com>
+ <CAKfTPtDkOcAwQtfHhQ_OZH7UZ0fDuhqoNrGLPFO3ikkWMPuSFw@mail.gmail.com> <20210910113544.GB24156@blackbody.suse.cz>
+In-Reply-To: <20210910113544.GB24156@blackbody.suse.cz>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 10 Sep 2021 15:17:05 +0200
+Message-ID: <CAKfTPtA+q0PEJtzkZAe=6bMFjD4JrA3k34mGMpDfmMUr5nPfiA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/5] sched/fair: Add ancestors of unthrottled
+ undecayed cfs_rq
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 01:57:26PM +0100, Will Deacon wrote:
-> On Thu, Sep 09, 2021 at 04:27:46PM +0200, Peter Zijlstra wrote:
-> > Moo yes, so the earlier changelog I wrote was something like:
-> > 
-> > 	current_save_and_set_rtlock_wait_state();
-> > 	for (;;) {
-> > 		if (try_lock())
-> > 			break;
-> > 
-> > 		raw_spin_unlock_irq(&lock->wait_lock);
-> > 		if (!cond)
-> > 			schedule();
-> > 		raw_spin_lock_irq(&lock->wait_lock);
-> > 
-> > 		set_current_state(TASK_RTLOCK_WAIT);
-> > 	}
-> > 	current_restore_rtlock_saved_state();
-> > 
-> > which is more what the code looks like before these patches, and in that
-> > case the @cond load can be lifted before __state.
-> 
-> Ah, so that makes more sense, thanks. I can't see how the try_lock() could
-> be reordered though, as it's going to have to do an atomic rmw.
+On Fri, 10 Sept 2021 at 13:35, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> Hello Vincent.
+>
+> Thank you for looking into this!
+>
+> On Thu, Sep 09, 2021 at 03:57:37PM +0200, Vincent Guittot <vincent.guitto=
+t@linaro.org> wrote:
+> > > +               /* Nothing to run but something to decay? Complete th=
+e branch */
+> > > +               if (cfs_rq->on_list)
+> >
+> > Could you use !cfs_rq_is decayed(cfs_rq) ?
+>
+> What needs to be checked here is whether the list was modified by adding
+> the cfs_rq (and branch needs closing).
+>
+> It'd appear that the equal condition like in tg_unthrottle_up() would
+> make do, i.e.
+>         !cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running
+> but the unthrottle_cfs_rq() can be called under a still throttled
+> ancestor (i.e. throttle_count not dropping to zero) and in such a case
+> cfs_rq should not be added to the list yet.
+>
+> Therefore, mere !cfs_rq_is_decayed(cfs_rq) doesn't seem correct to me.
 
-OK, lemme go update the Changelog and make it __flags for bigeasy :-)
+fair enough
+
+>
+> > > +                       for_each_sched_entity(se) {
+> > > +                               if (list_add_leaf_cfs_rq(group_cfs_rq=
+(se)))
+> > > +                                       break;
+> > > +                       }
+> > > +               assert_list_leaf_cfs_rq(rq);
+> >
+> > Instead of adding  a loop here you should better jump to unthrottle_thr=
+ottle ?
+>
+> Oh, that looks a bit clumsy now (it's an artifact I've left when
+> reordering the patch in the series to be backport-friendly).
+> Jump to unthrottle_throttle seems easier indeed, there would be just the
+> additional check
+>         if (rq->curr =3D=3D rq->idle && rq->cfs.nr_running)
+> . Besides unnecessary work, it should be harmless.
+
+yes the condition should be always false
+
+>
+> Is the jump the preferred form?
+
+yes compared to adding the exact same loop
+
+>
+> Michal
