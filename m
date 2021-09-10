@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C69406519
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B8840651B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbhIJBYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
+        id S235965AbhIJBYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239042AbhIJBXx (ORCPT
+        with ESMTP id S235278AbhIJBYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:23:53 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6689C0613A8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:20:12 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id n18so317545pgm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:20:12 -0700 (PDT)
+        Thu, 9 Sep 2021 21:24:01 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AD5C061A2E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:20:38 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id i21so877977ejd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l1BaiJ0gkfVc+LassnfOFyf+t5gSZ1M94cRU4Np2S3E=;
-        b=lRZULPzquMYXgjWpDLxvVy0w2xSJmX+cTY5Vo1mT7JVv4iOOIHpuhallgZBWM3UV8Y
-         g5zvaF+AXZmGPXoF994p9zbyTSrNg8eVjDoMXkbVaEsLKkQCyiKxoRk/O64LYQHWIoRX
-         mLEMDAFihI3lvz0+x1U5zk/YbBx7jug7JGvgdOoUSm2BCSQT/gxzv3Cya28Z00vjvrxs
-         NJFh8f7d2Hkk4j4eVYdvR47Z2FK8lHFIkp6oS+ZkEhFLzlhwYHMPgiiac2Q2vWK8KOcF
-         BGRnQZc6E3IkALkdxl6TZ3cPslOydT7LcxHiZBq/0v4cW4nWvV5or2vXVLTwbyPd7NyD
-         qGlQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=s87a4kLYskz8I39/PMyVgm/9D4JsaFL+PLylS+GVBGk=;
+        b=fL8l6HIwbgPW3mMVDvj1Hjiys1GcMJa3bBiUhh8+cTHGnjh9M+y7HAqL6977h1BYpl
+         3LHqtx19njgpUhdih0lKM3qdx8dkSbTSlF36/md+61rzF82PJAx5IolN2P7rnIOMuFAk
+         obAsrSPHsej/+lxjhtVUgjMrhraj8qVnhCJKkKGkOr37oB1xdFiD/bSbWWYmzd+kBvcd
+         ulxbBWu5dZYO1+BT56JRYhzgnBtB6mdUHzS2C3hENlwPIAgYAjxU9gtPIfPkr1v8Ocp2
+         SRFCTNOVpaP6rB/nuphOG0issdOSucP6GoUZoMA84cFpp2yu1RX4s9F7sqbUj6xqpgr4
+         U9Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l1BaiJ0gkfVc+LassnfOFyf+t5gSZ1M94cRU4Np2S3E=;
-        b=ot4+HFh9NMHlMhSNgGqe+YavHa3RIHwxaRrf2c0jI7m/Jpuz31wyzsHE07ifFKOTnd
-         Zr60+TBdgRZmjNUpQRy0ZwvLxA3IL7tYPLZ1CeQTHIhVZ+llZBcTPxWEVgZH2O1/FCsr
-         WOU3B1Gwt92NC5UtXZsxa6JAxNZHBxG54s41uInhziGM9/JAYGicGPgg0FgvXKrVmune
-         deZjjr2Apa+Ep8Kq2idA0QH10YsS3Ug51rbWewKExOB0Z7srrSerxAaN0wByUXLredVx
-         HahutAWHUtzVxLG2YE7f94XBO/fssYxWtiwLTodm/mim+EaxtUA7YKeS7/MwSHui0QQV
-         5+/g==
-X-Gm-Message-State: AOAM53007Mmhg6H/zVzUZB0z9r0oTRPUkoSjfBYxLOf9SaO2q3sHorRX
-        2lSPeZwNY6atv+VLFWDf2RC6LQ==
-X-Google-Smtp-Source: ABdhPJzHzyqGH27s4iQz3a74J/nl5ISKqP8M0YqLRj+/BKN0zmR4qpUN/S5JSa+y73tnLcrpAgSpTg==
-X-Received: by 2002:a05:6a00:1789:b0:3f9:5ce1:9677 with SMTP id s9-20020a056a00178900b003f95ce19677mr5738445pfg.50.1631236812187;
-        Thu, 09 Sep 2021 18:20:12 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w24sm3381673pjh.30.2021.09.09.18.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 18:20:11 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 01:20:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3 V7] KVM, SEV: Add support for SEV-ES intra host
- migration
-Message-ID: <YTqyx0J0Ik7wqx/+@google.com>
-References: <20210902181751.252227-1-pgonda@google.com>
- <20210902181751.252227-3-pgonda@google.com>
- <YTqr4nuXYVFz81kD@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=s87a4kLYskz8I39/PMyVgm/9D4JsaFL+PLylS+GVBGk=;
+        b=MFv9FTW27TVtN90H3I8aJjqtccPnkx40UbaNJdBrefQZQqBV3/GOlyLt0erAZobBlu
+         KoFSKgzQOrYreB5tPSH+/wrKdZZCRtF91HOHwf6l6tvdtbZB46ZuFTjaJ7Kvbqlvi2FW
+         Uq0pPqvj7vrNaEhzy+IunKwbIsse/gz7nco3iUiTmnUTtk/Z811U61IH2hZgY766SA7x
+         HDdvRComE87pQWlUyULBDB0QRccOsudDvEtjXhXyUNQvDEFDviEyn2k/d4ndky7wVS27
+         Ry8GFfctYiSaWu51AKvBcOKYA5oXh9HqtKcLT+lv5/EZkjjk6Ruq0nJdxPhwB6ld1soN
+         hbjQ==
+X-Gm-Message-State: AOAM5339+vppxkp2mMb3SJ2L4jlGHEGnB+yrGFaGQw1AhX07/ld1lAqp
+        wlCOzg+PWhylB36aSVND4DAA16kXGoPimRWpugM=
+X-Google-Smtp-Source: ABdhPJzenYYErzdjhufpvlHoanxR6kti4HROlAGdyVuF2NEdLPYXgau8d66hPZv+Yh+WFbjLl88L8B7f4BGh1JS6We8=
+X-Received: by 2002:a17:906:144e:: with SMTP id q14mr6475371ejc.19.1631236836530;
+ Thu, 09 Sep 2021 18:20:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTqr4nuXYVFz81kD@google.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Fri, 10 Sep 2021 10:20:25 +0900
+Message-ID: <CAM7-yPRHKg-=7ezm5PpxAvhmBx6_bXRkeLsmCNuAWH-DN4MKCA@mail.gmail.com>
+Subject: About Full c3-stop status.
+To:     Thomas Gleixner <tglx@linutronix.de>, preeti@linux.vnet.ibm.com,
+        mingo@elte.hu, rmk+lkml@arm.linux.org.uk,
+        dmitri.vorobiev@movial.com
+Cc:     youngjun.park@ahnlab.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021, Sean Christopherson wrote:
-> On Thu, Sep 02, 2021, Peter Gonda wrote:
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index 8db666a362d4..fac21a82e4de 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -1545,6 +1545,59 @@ static void migrate_info_from(struct kvm_sev_info *dst,
-> >  	list_replace_init(&src->regions_list, &dst->regions_list);
-> >  }
-> >  
-> > +static int migrate_vmsa_from(struct kvm *dst, struct kvm *src)
+Hi all.
 
-Better to call this sev_es_migrate_from()...
+Sorry to interrupt you but I have a question while I am reading the
+tick-broadcast codes.
 
-> > +{
-> > +	int i, num_vcpus;
-> > +	struct kvm_vcpu *dst_vcpu, *src_vcpu;
-> > +	struct vcpu_svm *dst_svm, *src_svm;
-> > +
+When a cpu goes to c3-stop, I confirm it calls the
+tick_broadcast_enter function with TICK_BROADCAST_ENTER.
 
-...because this should also clear kvm->es_active.  KVM_SEV_INIT isn't problematic
-(as currently written) because the common sev_guest_init() explicitly writes es_active,
-but I think a clever userspace could get an SEV ASID into an "ES" guest via
-KVM_CAP_VM_COPY_ENC_CONTEXT_FROM, which requires its dst to be !SEV and thus
-doesn't touch es_active.
+While entering, it calls the broadcast_needs_cpu with current cpu.
 
-Huh, that's a bug, svm_vm_copy_asid_from() should explicitly disallow copying the
-ASID from an SEV-ES guest.  I'll send a patch for that.
+In the last condition of broadcast_needs_cpu, it checks whether the
+broadcast device is bound on this cpu.
 
-Last thought, it's probably worth renaming migrate_info_from() to sev_migrate_from()
-to pair with sev_es_migrate_from().
+However, except the ce_broadcast_hrtimer in tick-broadcast-hrtimer.c,
+all other real devices set bound_on fields as 0, Therefore, it seems
+that cpu 0 couldn't enter c3-stop though it has the feature.
+
+My question is
+     1. Couldn't cpu 0 enter c3-stop?
+     2. If true, why don't we set bound_on fields specifically?
+
+Thanks.
+
+HTH.
+Levi.
