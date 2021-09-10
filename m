@@ -2,217 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24376406F9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA79406FA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhIJQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
+        id S229869AbhIJQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhIJQ2e (ORCPT
+        with ESMTP id S229543AbhIJQ3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:28:34 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D6C061574;
-        Fri, 10 Sep 2021 09:27:23 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id y6so4114057lje.2;
-        Fri, 10 Sep 2021 09:27:23 -0700 (PDT)
+        Fri, 10 Sep 2021 12:29:24 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41500C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:28:13 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id i28so4086178ljm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G+xktSFAQ1dxOc7V/JtqKYyvJz/KlBsA2cIgn6rLykI=;
-        b=Agn/JD3Ot2TRz/RjQF11nIZA94FgPL4W9t9jnu4fYLekvU1tIy+t4MbzdS10aAFa6h
-         pevuJh/ivk3MdQSFxe9BFIKLMl8XBSPzqUHNkju/oxAhzHd7HtFJ+eXw4TAYdQLImKAR
-         J7fFTtftkAWo70TJh4zedVzUDfEM/5I1G+oJYfx6rUJFF14F+FCq1C62sq798AYG5Iss
-         KKg58U0pqcqH+0mbxbbh87Dxbyi/g6Gz8HwETtzYIQn1pR6r0L8feRfKZVkqKxDGneTV
-         3PmMR7fnhQV1IriYwPVWlE3OUUhHAaJE/dIqLKx9oE+Wwns6KVjFcMhr8QB+IcyNTZ2P
-         7C8Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ni2JhLZQgk9Q6G2MUbeVWPBAuWIrAdHFzB95UL3/Sis=;
+        b=FZrorI4CFj/1QAA+qnqt0Jg0yZPa9EKmXgA0exenFIey7++LpW0YpJ6Kh1Ivx2Y0Sx
+         gfSJWmMk8X7/4+gITPhZ1eaBubFCD17NGZKsh6jm/hjttEpQTypNZWCuLJsfsmhEORAg
+         B5N5vLra29/4UdTLPH/rZCa9+TS0+W399jX6uH8VwEwtky4tpSxUQOAAHwOxs765IWVN
+         5RuRkvlkKZlMtSeitRNWPZaLgDSvcsiwiqeypfkwVXwCZ7754AdKLGr0ZD6el3+6bkBE
+         lts09uJPRmZ3/wa6KujBoPA6mhewvVqFIKD85835Fi/m7EtCP66voRar5DXtHCN0ah8P
+         1PFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G+xktSFAQ1dxOc7V/JtqKYyvJz/KlBsA2cIgn6rLykI=;
-        b=4esedYcEivApDDAGIGS5tNr/6VBa9IwvxWZc5GIrET40O/ZvqZgJ5d/W4v6nEhqtnn
-         jvAp3CQe6vUM9ISbGvT/zlNmmxz95o/Fv+9Ziqrgof8DnYpwz+W+2ExnfAbH1NK+C9Bl
-         3BmHCMsYDAZKHBP3NMj67AeHh7J46CedG7drftA8io+ohOoIXchScsLJb5x0cvUiVidX
-         TStwCaHniDW6LTjTbFR+brIDD1zg7tXuODlVhxOUL7v40Ayvq/FMWHtKipFJA2zzltcF
-         hJTzBdDrSimOZRxngmcMdKIcqYAf6xUcgIUBb6d+/zXEPSmMUqnkL23WtbLB6uPDoEZS
-         Tqnw==
-X-Gm-Message-State: AOAM533+SEyr7RIsG61yVNkroOjPgyVNpwOrV7BEoiEg8iyZuSyl2S1E
-        KFWKHV+Ytc4PyLSF4dneoxs=
-X-Google-Smtp-Source: ABdhPJxzeqFCXFBMkhVksOW3ZfVt/hIvQ54oFj4QqJ95uMcOiOhtgcxDjP4OQT5RauSBV7Zr+Cg8JQ==
-X-Received: by 2002:a2e:7d13:: with SMTP id y19mr4805711ljc.344.1631291241537;
-        Fri, 10 Sep 2021 09:27:21 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id 10sm620378ljp.12.2021.09.10.09.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:27:20 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 19:27:18 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 29/31] staging: wfx: remove useless comments after #endif
-Message-ID: <20210910162718.tjcwwxtxbr3ugdgf@kari-VirtualBox>
-References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
- <20210910160504.1794332-30-Jerome.Pouiller@silabs.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ni2JhLZQgk9Q6G2MUbeVWPBAuWIrAdHFzB95UL3/Sis=;
+        b=a++o0V5tHf3/PCTcXpji9mJ98R3ghU4Uo/ZKRFoQVVAk9QRGNakUDYj7PgnihO8gTs
+         9GDmNW6JjoSaXNyf4H586sxvjnUuk2f2ezUoCP9aWYrrxLYyLGEUECq0aeaev/LrotC8
+         30POtoNj4EWfvC2KTsP8Ry8VjeOYisxnB/t6jTsGYLXSmSl8zZ/+vp158GOIrry0PSxH
+         Nno5rkRlanwF972hrtyTLNV1AX99TSLAAodCY9uLVs62nu+NtuAH35PUu6E8rfmg36Bu
+         /MNXn9EXfZEhC5zTzl9hFXzHDU5q9JaQzwWDNJbjAUzIVTwOwXeGptxKtvOtzlLqZ+HG
+         s6qQ==
+X-Gm-Message-State: AOAM5305rfV31VASRNrnq/Vsf1wkzoXx7QDw+xRUeRIwBdR0g2sbZZcK
+        EMNeYe+5izLTGjQRxZI0GJ7TOGKtUFtjMAxuTlo+pQ==
+X-Google-Smtp-Source: ABdhPJz4eFhp7mu1CoZeB0tGR4NbpNaTNku0TpUUxYeznocD2fVHVGVwoV8mh/6htHy4a0DYUGHwoQCLHqPcRnXSzYQ=
+X-Received: by 2002:a2e:b44f:: with SMTP id o15mr4889575ljm.430.1631291291374;
+ Fri, 10 Sep 2021 09:28:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210910160504.1794332-30-Jerome.Pouiller@silabs.com>
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
+ <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
+ <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com> <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com>
+In-Reply-To: <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Fri, 10 Sep 2021 09:28:00 -0700
+Message-ID: <CAPNVh5fMUQCa37iprcAykgkHzY5Rj8DSiwtZBU6FbnzjOv8ciw@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
+To:     Prakash Sangappa <prakash.sangappa@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:05:02PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> Comments after the last #endif of header files don't bring any
-> information and are redundant with the name of the file. Drop them.
+On Fri, Sep 10, 2021 at 9:13 AM Prakash Sangappa
+<prakash.sangappa@oracle.com> wrote:
+>
+>
+>
+> > On Sep 10, 2021, at 8:18 AM, Peter Oskolkov <posk@google.com> wrote:
+> >
+> > On Wed, Sep 8, 2021 at 5:16 PM Prakash Sangappa
+> > <prakash.sangappa@oracle.com> wrote:
+> >>
+> >> Including liunx-kernel..
+> >>
+> >> Resending RFC. This patchset is not final. I am looking for feedback o=
+n
+> >> this proposal to share thread specific data for us in latency sensitiv=
+e
+> >> codepath.
+> >
+> > Hi Prakash,
+>
+>
+> >
+> > I'd like to add here that Jann and I have been discussing a similar
+> > feature for my UMCG patchset:
+> >
+> > https://lore.kernel.org/lkml/CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=3DxG8H=
+Zqj2n+OPoKw@mail.gmail.com/
+>
+> Hi Peter,
+>
+> I will take  a look.
+>
+> >
+> > In short, due to the need to read/write to the userspace from
+> > non-sleepable contexts in the kernel it seems that we need to have some
+> > form of per task/thread kernel/userspace shared memory that is pinned,
+> > similar to what your sys_task_getshared does.
+>
+> Exactly. For this reason wanted kernel to allocate the pinned memory.
+> Didn=E2=80=99t want to deal with files etc as a large number threads will=
+ be using
+> the shared structure mechanism.
+>
+> >
+> > Do you think your sys_task_getshared can be tweaked to return an
+> > arbitrarily-sized block of memory (subject to overall constraints)
+> > rather than a fixed number of "options"?
+>
+> I suppose it could. How big of a size? We don=E2=80=99t want to hold on t=
+o
+> arbitrarily large  amount of pinned memory. The preference would
+> be for the kernel to decide what is going to be shared based on
+> what functionality/data sharing is supported. In that sense the size
+> is pre defined not something the userspace/application can ask.
 
-How so? You see right away that this indeed is header guard and not some
-other random thing. Also kernel coding standard says:
+There could be a sysctl or some other mechanism that limits the amount
+of memory pinned per mm (or per task). Having "options" hardcoded for
+such a generally useful feature seems limiting...
 
-	At the end of any non-trivial #if or #ifdef block (more than a
-	few line), place a comment after the #endif on the same line,
-	noting the conditional expression used.
-
-There is no point dropping them imo. If you think about space saving
-this patch will take more space. Because it will be in version history.
-So nack from me unless some one can trun my head around.
-
-> 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/staging/wfx/bh.h      | 2 +-
->  drivers/staging/wfx/data_rx.h | 2 +-
->  drivers/staging/wfx/data_tx.h | 2 +-
->  drivers/staging/wfx/debug.h   | 2 +-
->  drivers/staging/wfx/fwio.h    | 2 +-
->  drivers/staging/wfx/hwio.h    | 2 +-
->  drivers/staging/wfx/key.h     | 2 +-
->  drivers/staging/wfx/queue.h   | 2 +-
->  drivers/staging/wfx/scan.h    | 2 +-
->  drivers/staging/wfx/sta.h     | 2 +-
->  drivers/staging/wfx/wfx.h     | 2 +-
->  11 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/wfx/bh.h b/drivers/staging/wfx/bh.h
-> index f08c62ed039c..6c121ce4dd3f 100644
-> --- a/drivers/staging/wfx/bh.h
-> +++ b/drivers/staging/wfx/bh.h
-> @@ -30,4 +30,4 @@ void wfx_bh_request_rx(struct wfx_dev *wdev);
->  void wfx_bh_request_tx(struct wfx_dev *wdev);
->  void wfx_bh_poll_irq(struct wfx_dev *wdev);
->  
-> -#endif /* WFX_BH_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/data_rx.h b/drivers/staging/wfx/data_rx.h
-> index f79545c06130..84d0e3c0507b 100644
-> --- a/drivers/staging/wfx/data_rx.h
-> +++ b/drivers/staging/wfx/data_rx.h
-> @@ -15,4 +15,4 @@ struct hif_ind_rx;
->  void wfx_rx_cb(struct wfx_vif *wvif,
->  	       const struct hif_ind_rx *arg, struct sk_buff *skb);
->  
-> -#endif /* WFX_DATA_RX_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/data_tx.h b/drivers/staging/wfx/data_tx.h
-> index dafd8fef44cf..15590a8faefe 100644
-> --- a/drivers/staging/wfx/data_tx.h
-> +++ b/drivers/staging/wfx/data_tx.h
-> @@ -65,4 +65,4 @@ static inline struct hif_req_tx *wfx_skb_txreq(struct sk_buff *skb)
->  	return req;
->  }
->  
-> -#endif /* WFX_DATA_TX_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/debug.h b/drivers/staging/wfx/debug.h
-> index 6f2f84d64c9e..4b9c49a9fffb 100644
-> --- a/drivers/staging/wfx/debug.h
-> +++ b/drivers/staging/wfx/debug.h
-> @@ -16,4 +16,4 @@ const char *get_hif_name(unsigned long id);
->  const char *get_mib_name(unsigned long id);
->  const char *get_reg_name(unsigned long id);
->  
-> -#endif /* WFX_DEBUG_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/fwio.h b/drivers/staging/wfx/fwio.h
-> index 6028f92503fe..eeea61210eca 100644
-> --- a/drivers/staging/wfx/fwio.h
-> +++ b/drivers/staging/wfx/fwio.h
-> @@ -12,4 +12,4 @@ struct wfx_dev;
->  
->  int wfx_init_device(struct wfx_dev *wdev);
->  
-> -#endif /* WFX_FWIO_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/hwio.h b/drivers/staging/wfx/hwio.h
-> index 9a361ed95ecb..ff09575dd1af 100644
-> --- a/drivers/staging/wfx/hwio.h
-> +++ b/drivers/staging/wfx/hwio.h
-> @@ -72,4 +72,4 @@ int control_reg_write_bits(struct wfx_dev *wdev, u32 mask, u32 val);
->  int igpr_reg_read(struct wfx_dev *wdev, int index, u32 *val);
->  int igpr_reg_write(struct wfx_dev *wdev, int index, u32 val);
->  
-> -#endif /* WFX_HWIO_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/key.h b/drivers/staging/wfx/key.h
-> index dd189788acf1..2d135eff7af2 100644
-> --- a/drivers/staging/wfx/key.h
-> +++ b/drivers/staging/wfx/key.h
-> @@ -17,4 +17,4 @@ int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
->  		struct ieee80211_vif *vif, struct ieee80211_sta *sta,
->  		struct ieee80211_key_conf *key);
->  
-> -#endif /* WFX_STA_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/queue.h b/drivers/staging/wfx/queue.h
-> index 54b5def2e24c..edd0d018b198 100644
-> --- a/drivers/staging/wfx/queue.h
-> +++ b/drivers/staging/wfx/queue.h
-> @@ -42,4 +42,4 @@ unsigned int wfx_pending_get_pkt_us_delay(struct wfx_dev *wdev,
->  					  struct sk_buff *skb);
->  void wfx_pending_dump_old_frames(struct wfx_dev *wdev, unsigned int limit_ms);
->  
-> -#endif /* WFX_QUEUE_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/scan.h b/drivers/staging/wfx/scan.h
-> index 562ca1321daf..78e3b984f375 100644
-> --- a/drivers/staging/wfx/scan.h
-> +++ b/drivers/staging/wfx/scan.h
-> @@ -19,4 +19,4 @@ int wfx_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
->  void wfx_cancel_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
->  void wfx_scan_complete(struct wfx_vif *wvif, int nb_chan_done);
->  
-> -#endif /* WFX_SCAN_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/sta.h b/drivers/staging/wfx/sta.h
-> index f359f375cc56..4d7e38be4235 100644
-> --- a/drivers/staging/wfx/sta.h
-> +++ b/drivers/staging/wfx/sta.h
-> @@ -70,4 +70,4 @@ int wfx_update_pm(struct wfx_vif *wvif);
->  void wfx_reset(struct wfx_vif *wvif);
->  u32 wfx_rate_mask_to_hw(struct wfx_dev *wdev, u32 rates);
->  
-> -#endif /* WFX_STA_H */
-> +#endif
-> diff --git a/drivers/staging/wfx/wfx.h b/drivers/staging/wfx/wfx.h
-> index a4770f59f7d2..f8df59ad1639 100644
-> --- a/drivers/staging/wfx/wfx.h
-> +++ b/drivers/staging/wfx/wfx.h
-> @@ -161,4 +161,4 @@ static inline int memzcmp(void *src, unsigned int size)
->  	return memcmp(buf, buf + 1, size - 1);
->  }
->  
-> -#endif /* WFX_H */
-> +#endif
-> -- 
-> 2.33.0
-> 
+>
+> I have not looked at your use case.
+>
+> >
+> > On a more general note, we have a kernel extension internally at
+> > Google, named "kuchannel", that is similar to what you propose here:
+> > per task/thread shared memory with counters and other stat fields that
+> > the kernel populates and the userspace reads (and some additional
+> > functionality that is not too relevant to the discussion).
+>
+> We have few other use cases for this we are looking at, which I can
+> describe later.
+>
+> -Prakash
+>
+> >
+> > Thanks,
+> > Peter
+> >
+> > [...]
+>
