@@ -2,135 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D75C406C66
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D594406C63
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234824AbhIJMnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbhIJMnF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:43:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085E1C0611DD
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:40:16 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mOfp7-0004n5-Fj; Fri, 10 Sep 2021 14:40:05 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mOfp7-0002Qf-3B; Fri, 10 Sep 2021 14:40:05 +0200
-Date:   Fri, 10 Sep 2021 14:40:05 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     robin@protonic.nl, linux@rempel-privat.de, socketcan@hartkopp.net,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: fix errant WARN_ON_ONCE in
- j1939_session_deactivate
-Message-ID: <20210910124005.GJ26100@pengutronix.de>
-References: <20210906094200.95868-1-william.xuanziyang@huawei.com>
+        id S234366AbhIJMmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:42:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233545AbhIJMmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:42:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7054B60E94;
+        Fri, 10 Sep 2021 12:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631277686;
+        bh=Ny+TBmYm0Glx2ncjaBaqRJOzvS8UE8xM7y5YZjKFfVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1ZI5+bC6IkGmQaSoxUudj5Ol8ZkgoStlRl7s3g4kiirHqqxwFP+ccQMYgOPzvixbp
+         XOybQxFkh0hzxy9NQzHMI1KONgViQ+wY4Z7pWRZp4cQpALPsNksyFgfLZbU8BkCFHw
+         o0g8Hmh0cz9F2Rnf/t3e2WyAYtsFQ2ef9RwWgQfM=
+Date:   Fri, 10 Sep 2021 14:41:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] USB: serial: allow hung up ports to be suspended
+Message-ID: <YTtSdGTYAv53XdoI@kroah.com>
+References: <20210910121128.18664-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210906094200.95868-1-william.xuanziyang@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:35:42 up 204 days, 15:59, 98 users,  load average: 0.16, 0.17,
- 0.18
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210910121128.18664-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 05:42:00PM +0800, Ziyang Xuan wrote:
-> The conclusion "j1939_session_deactivate() should be called with a
-> session ref-count of at least 2" is incorrect. In some concurrent
-> scenarios, j1939_session_deactivate can be called with the session
-> ref-count less than 2. But there is not any problem because it
-> will check the session active state before session putting in
-> j1939_session_deactivate_locked().
+On Fri, Sep 10, 2021 at 02:11:26PM +0200, Johan Hovold wrote:
+> User space can keep a tty open indefinitely and that should not prevent
+> a hung up port and its USB device from being runtime suspended.
 > 
-> Here is the concurrent scenario of the problem reported by syzbot
-> and my reproduction log.
+> Also clean up a few related error labels in a preparatory patch.
 > 
->         cpu0                            cpu1
->                                 j1939_xtp_rx_eoma
-> j1939_xtp_rx_abort_one
->                                 j1939_session_get_by_addr [kref == 2]
-> j1939_session_get_by_addr [kref == 3]
-> j1939_session_deactivate [kref == 2]
-> j1939_session_put [kref == 1]
-> 				j1939_session_completed
-> 				j1939_session_deactivate
-> 				WARN_ON_ONCE(kref < 2)
+> Johan
 > 
-
-Ok, I see, this warning makes sense only if session will actually be
-deactivated.
-
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
-Thank you!
-
-> =====================================================
-> WARNING: CPU: 1 PID: 21 at net/can/j1939/transport.c:1088 j1939_session_deactivate+0x5f/0x70
-> CPU: 1 PID: 21 Comm: ksoftirqd/1 Not tainted 5.14.0-rc7+ #32
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-> RIP: 0010:j1939_session_deactivate+0x5f/0x70
-> Call Trace:
->  j1939_session_deactivate_activate_next+0x11/0x28
->  j1939_xtp_rx_eoma+0x12a/0x180
->  j1939_tp_recv+0x4a2/0x510
->  j1939_can_recv+0x226/0x380
->  can_rcv_filter+0xf8/0x220
->  can_receive+0x102/0x220
->  ? process_backlog+0xf0/0x2c0
->  can_rcv+0x53/0xf0
->  __netif_receive_skb_one_core+0x67/0x90
->  ? process_backlog+0x97/0x2c0
->  __netif_receive_skb+0x22/0x80
 > 
-> Fixes: 0c71437dd50d ("can: j1939: j1939_session_deactivate(): clarify lifetime of session object")
-> Reported-by: syzbot+9981a614060dcee6eeca@syzkaller.appspotmail.com
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> ---
->  net/can/j1939/transport.c | 4 ----
->  1 file changed, 4 deletions(-)
+> Johan Hovold (2):
+>   USB: serial: clean up core error labels
+>   USB: serial: allow hung up ports to be suspended
 > 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index bdc95bd7a851..0f8309314075 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1079,10 +1079,6 @@ static bool j1939_session_deactivate(struct j1939_session *session)
->  	bool active;
->  
->  	j1939_session_list_lock(priv);
-> -	/* This function should be called with a session ref-count of at
-> -	 * least 2.
-> -	 */
-> -	WARN_ON_ONCE(kref_read(&session->kref) < 2);
->  	active = j1939_session_deactivate_locked(session);
->  	j1939_session_list_unlock(priv);
->  
+>  drivers/usb/serial/usb-serial.c | 59 +++++++++++++++++----------------
+>  1 file changed, 30 insertions(+), 29 deletions(-)
+> 
 > -- 
-> 2.25.1
-> 
+> 2.32.0
 > 
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
