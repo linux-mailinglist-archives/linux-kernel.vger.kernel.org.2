@@ -2,177 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C8D40705C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7443407073
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhIJRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        id S231235AbhIJRU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhIJRPi (ORCPT
+        with ESMTP id S229664AbhIJRU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:15:38 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9FAC061574;
-        Fri, 10 Sep 2021 10:14:27 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id g16so3652481wrb.3;
-        Fri, 10 Sep 2021 10:14:27 -0700 (PDT)
+        Fri, 10 Sep 2021 13:20:57 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F1CC061574;
+        Fri, 10 Sep 2021 10:19:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id v123so2431559pfb.11;
+        Fri, 10 Sep 2021 10:19:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ECe+aP8GlByGFzXgaD0C2iedycpmqMk8h4mAhvXdWJw=;
-        b=O8Gki5ybtBEla/sBKtBCrHndI7fwisew1eOn6Lqthw4E0mPl6UACjbMXL456nF1z1v
-         sFJU96piX3j+957pqio2XG+LxHv+Pv/u5VZA/WjnR0PF2aRLV//oBlG9nlx+a3wVTDwe
-         1z2Njy9dwkHBoYGCfrMcte3FHgHtqENJr9zIiSrJYL0Bdssim6b4fiU3eihhXWh62Cbk
-         Z4l4wLDucLp9iTFZ9fOzL8ihiYH21Hd57eIKXaJcVdOxziOWtpKd4a8b5/VNBi2QqQjF
-         uO4bG6LzF1MBpD2NbCus9exjTGpwz0Ve1E5z8gzcYXXLnw11WPXiAoUhuGKLd9j2u0x3
-         /WAw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=02ZeBZU29R1KVCqeFtK2ESzdkVxQ2Opf6evacdtFUxc=;
+        b=jl8XqBWfp5XyTB7oUD+ZWxcBGzhuAaxwldfYoiqmwmuu7Q0tAtyjae8AMreWOPvW0s
+         utgdOKweJtvVQcMTuQ860R6K3q7BZQo0LJTzsQVnaQvtYdiETNccC5381EUxPVRlJlA6
+         jPx4X7/7G8WVSG0iCUHBUCEUsDbi4iT0tEMDPmmuyWch7/8OgT3uCyodv2A7qlFXBLY+
+         /bM/jU2Uo3q/m02kK2akuucklj/Utk2fFTD5NhE2h9E4qrhZdZ4QKIHqwOTF0lQIjUAL
+         kRpdxSfJqTzxYKGCgk3MimG/MHNoTxEHF8ARtzieLsNFAMi8d3kqQYWjgrr4zftGIHr5
+         jBog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ECe+aP8GlByGFzXgaD0C2iedycpmqMk8h4mAhvXdWJw=;
-        b=oTHIXrCr+49jd4V0AtbMsQTC1VGyYU09aMvSUEHj7bAcrtz5JW7IJbQs3YXezeZVvf
-         KcXr+H3/7ftzUw3FMPAp6HbXZtolnuxDsYvI6APQKQ/qGa7SbmIEvO5QMomIL90VzOKv
-         KSLlZNJ+kzZm0JhyOe3bqzaBEeY6Y1FaMyoRl4bl8kIfE3UhjNZGcu7TJVJ1b/SDgSwB
-         DMDzlzVjclnxDtc1Av+OuptWqb6nqdnXUfZZOt1ZV333P3lDMj/874kZgQPaCI56dq+S
-         7zo5QEkSbQXQPjSSxCV0kHr4jmkF3p9jP+l6gQsjHKJwjjeloaJkH66tI4NZPsiULpUc
-         xtjg==
-X-Gm-Message-State: AOAM5335UG4+EmxRsAoblcWMkMoPnovd3YZ2HWTXhPS/O9dHdy/PzxRG
-        mA7A6Vc60xTb8XYXtB9XTkQAMr1u+UGJHdHFvRU=
-X-Google-Smtp-Source: ABdhPJzkpO6p14WF+dyNq4gfagXI6lwls9aScw/TuEZXv5bfemK8KoMGdQYf9uP/IxaevG/gM3MYwLRA5kUAAE7QUWQ=
-X-Received: by 2002:a5d:4803:: with SMTP id l3mr11111785wrq.61.1631294065520;
- Fri, 10 Sep 2021 10:14:25 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=02ZeBZU29R1KVCqeFtK2ESzdkVxQ2Opf6evacdtFUxc=;
+        b=U3Ll7RlflB9kOdjU1b3Jebch8F1oi2XLEqVCvcFei/d4E7Y08capYJTATvoY66D/6d
+         kHBoOnGP/sW05YzLL2OWIGp2XoIg7l1xRBmKQ52YanjKE1VjN2zBgGDk997zin+WTFrT
+         0Vz6pRECk/1tdBuZUpQFdqMTafhtBza18vKDCFlVWE/+Gjznpi4XP7doj7BU8zGbNCvk
+         AAhB135edg/yLfxYksqKExAoFYsyH3vchOFmZr2IQB1SQgrPsRCd2hjdvx7iUWA0VyVK
+         MNnlr/IfGaA0zknuMOzdBZXRXSpQH8Crw0J87FMZBCc3TFgpPzS+1tIFe4bQ0k/tOjWk
+         vhYw==
+X-Gm-Message-State: AOAM531LkIoDDvNSYusdVh+XinEQSxxxR/aD9iESS2vqIL/cxX2DHYnm
+        HzoKHU18FDJhxOH1Y88+cbI=
+X-Google-Smtp-Source: ABdhPJyg4fikHCnCyr342MUfOjek1jRcCj4F3IcHyMNGDa8n3FYTHX3jKAcv9ylEqc9Xj0GIZp4vBg==
+X-Received: by 2002:a63:4b53:: with SMTP id k19mr8040709pgl.3.1631294385294;
+        Fri, 10 Sep 2021 10:19:45 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id n22sm5455331pff.57.2021.09.10.10.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 10:19:44 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 10 Sep 2021 07:19:43 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        "brookxu.cn" <brookxu.cn@gmail.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
+Message-ID: <YTuTr5Hw4hPIWepd@slm.duckdns.org>
+References: <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
+ <20210909143720.GA14709@blackbody.suse.cz>
+ <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+ <YTpY0G3+IJYmGbdd@blackbook>
+ <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
+ <20210910092310.GA18084@blackbody.suse.cz>
+ <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
+ <20210910153609.GC24156@blackbody.suse.cz>
+ <YTuH9fULTx+pLuuH@slm.duckdns.org>
+ <CAHVum0ezWW=4x2YgXHhEUFQOkFGBpP+R1Uc-KedHr+r0LGibwA@mail.gmail.com>
 MIME-Version: 1.0
-References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
- <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org> <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
- <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org> <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
- <YTgeIuwumPoR9ZTE@ripper>
-In-Reply-To: <YTgeIuwumPoR9ZTE@ripper>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 10 Sep 2021 10:18:52 -0700
-Message-ID: <CAF6AEGt2f16=WWpKgGiWw1OJLrWMSunzrm853H+mGxPQuf2Xug@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHVum0ezWW=4x2YgXHhEUFQOkFGBpP+R1Uc-KedHr+r0LGibwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 7:20 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
->
-> > On 8/9/2021 9:48 PM, Caleb Connolly wrote:
-> > >
-> > >
-> > > On 09/08/2021 17:12, Rob Clark wrote:
-> > > > On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
-> > > > <akhilpo@codeaurora.org> wrote:
-> [..]
-> > > > > I am a bit confused. We don't define a power domain for gpu in dt,
-> > > > > correct? Then what exactly set_opp do here? Do you think this usleep is
-> > > > > what is helping here somehow to mask the issue?
-> > > The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
-> > > the GPU DT. For the sake of simplicity I'll refer to the lowest
-> > > frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
-> > > the "min" state, and the highest frequency (710000000) and OPP level
-> > > (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
-> > > sdm845.dtsi under the gpu node.
-> > >
-> > > The new devfreq behaviour unmasks what I think is a driver bug, it
-> > > inadvertently puts much more strain on the GPU regulators than they
-> > > usually get. With the new behaviour the GPU jumps from it's min state to
-> > > the max state and back again extremely rapidly under workloads as small
-> > > as refreshing UI. Where previously the GPU would rarely if ever go above
-> > > 342MHz when interacting with the device, it now jumps between min and
-> > > max many times per second.
-> > >
-> > > If my understanding is correct, the current implementation of the GMU
-> > > set freq is the following:
-> > >   - Get OPP for frequency to set
-> > >   - Push the frequency to the GMU - immediately updating the core clock
-> > >   - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
-> > > up somewhere in power management code and causes the gx regulator level
-> > > to be updated
-> >
-> > Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else. We
-> > were using a different api earlier which got deprecated -
-> > dev_pm_opp_set_bw().
-> >
->
-> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
-> I'm lucky I managed to hit a few keys before it crashes, so I spent a
-> few hours looking into this as well...
->
-> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
-> The opp-level is just there for show and isn't used by anything, at
-> least not on 845.
->
-> Further more, I'm missing something in my tree, so the interconnect
-> doesn't hit sync_state, and as such we're not actually scaling the
-> buses. So the problem is not that Linux doesn't turn on the buses in
-> time.
->
-> So I suspect that the "AHB bus error" isn't saying that we turned off
-> the bus, but rather that the GPU becomes unstable or something of that
-> sort.
->
->
-> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
-> Aquarium for 20 minutes without a problem. I then switched the gpu
-> devfreq governor to "userspace" and ran the following:
->
-> while true; do
->   echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
->   echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
-> done
->
-> It took 19 iterations of this loop to crash the GPU.
+Hello,
 
-I assume you still had aquarium running, to keep the gpu awake while
-you ran that loop?
+On Fri, Sep 10, 2021 at 10:16:46AM -0700, Vipin Sharma wrote:
+> For now, I think we can just have one file, events.local
+> (non-hierarchical) which has %s.max type entries. This will tell us
+> which cgroup is under pressure and I believe this is helpful.
 
-Fwiw, I modified this slightly to match sc7180's min/max gpu freq and
-could not trigger any issue.. interestingly sc7180 has a lower min
-freq (180) and higher max freq (800) so it was toggling over a wider
-freq range.  I also tried on a device that  had the higher 825MHz opp
-(since I noticed that was the only opp that used
-RPMH_REGULATOR_LEVEL_TURBO_L1 and wanted to rule that out), but could
-not reproduce.
+How about just sticking with hierarchical events? Do you see a lot of
+downsides with that compared to .local?
 
-I guess a630 (sdm845) should have higher power draw (it is 2x # of
-shader cores and 2x GMEM size, but lower max freq).. the question is,
-is this the reason we see this on sdm845 and not sc7180?  Or is there
-some other difference.  On the gpu side of this, they are both closely
-related (ie. the same "sub-generation" of a6xx, same gmu fw, etc)..
-I'm less sure about the other parts (icc, rpmh, etc)
+Thanks.
 
-BR,
--R
-
-> So the problem doesn't seem to be Rob's change, it's just that prior to
-> it the chance to hitting it is way lower. Question is still what it is
-> that we're triggering.
->
-> Regards,
-> Bjorn
+-- 
+tejun
