@@ -2,141 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32430407205
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B158407207
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhIJTbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
+        id S232649AbhIJTdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbhIJTbB (ORCPT
+        with ESMTP id S230513AbhIJTdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:31:01 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E5C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:29:20 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id w4so4861685ljh.13
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:29:20 -0700 (PDT)
+        Fri, 10 Sep 2021 15:33:02 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DD1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:31:50 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id k124so1030077vke.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4106171iyruquc6tsn3sJ73L23Envq9y9gb7Tkr3Js8=;
-        b=Sbx9cYlMH6RNCNfgWQKJU9uLVzoUJlaFno4UiRW9KsKlNEW8ZAN0RdHh2NgMZq6C9o
-         e3mehRNuX5LtPaKxPMXeqlcBmfm8sURx7khjg8ErV4fm9RlO+HkXVobI5CV42u11X3B+
-         zS4RgMtkz4dPickrPQ7/qBfhFtG7ji38o08kDaVFK6SAzR4CLPiY6ixiJWcHwH63xYUU
-         Yrk/FAGyq4sy4LcNzRZqfZTb4C7tetxBGB5M/FkUAmAvqGCPpdMbkSR2ioWHivR5uK2c
-         hND30wzAJuKaKv2Mjr4gGSXaF5CIPn8VX5QeXlJU4pZjfay3MOek6SanZ0GV7XRc3HF/
-         XeXA==
+        bh=2RWMKyeRq3zB+VVkCByOR8MWd1gjzuVpvdfMSHO5pgQ=;
+        b=cRko4OJ2+tUVMePUngyAH6pxJ8jqBmo/FpQqNj80nRV+klUSZzuzGEmBQIbZc0PdEz
+         sOVM8TVKA1GR4GQfPOjbFzC99R2usw5T3Kw1YUf77GtZURtltSZIKZOhp2OSwmvquTNS
+         jL4d0tu+4MKT08mm0VKLdk3bZMQxLe9PSnqR50f05DTIOs6qImQPY6KutE1ZFttQFX7V
+         hUuB5ghGDmmzkn9uik5WFKA0ZspDhpGL3ar2kYuaJ4rHU8VRfYl8FyX2J8p/UzN9RYgM
+         gkM7WE9EnVhbtbCwI7wBqdz+FU+LT2vFzarkUFAGZ8EwJE0fycvd7p6bAisFgueV4/9z
+         SOdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4106171iyruquc6tsn3sJ73L23Envq9y9gb7Tkr3Js8=;
-        b=hH4v17UwGBaVZO0gI1EnLvlj8e9ZUwRcvaZB2RfLsmnUVN9DJb1n93Gm7CDvuqQRge
-         5AYOVE8tE0kwxyNmWaY9zCwJ4dp0oONXSReOG2/WrDuOIRR0KGGmruq5+kvkxYuvNjwJ
-         XOWn8pzAjZQ9V7zKAuRlG2zVJ/uPLCixpR/VjOif8x8DzhMKxY3tIAbMHh/xUVIvaCQR
-         GroZNqvwZgT4pHwmb3L9HwfeNy//hf0OJNhjRImm8nMKDDrd/P9C+fxc5TNs3bkGlz39
-         ZWEN3bE6EbugrzW4NbSSGzzVKwoiHDmBEkJDKmnrf618IslymQhb6nMQqSzIsSBQlDIR
-         OhsA==
-X-Gm-Message-State: AOAM533iMXnlthYQNE3LmABv/Iqcz+J6CDmscUsHa9M03pJOa8wst4ob
-        HAObkK9It0JySmaKLQXaLw04cu4RalDs4QjkKmH1rw==
-X-Google-Smtp-Source: ABdhPJw7204XMnLRYaCCb5ZZ2RHlO4S8cc7Z3nMU7nKKuC8uEYefhxLX8FFJ42oRPfYCPgFA+mERHc/+dmy+Gs1E7O8=
-X-Received: by 2002:a05:651c:1305:: with SMTP id u5mr5310763lja.198.1631302158776;
- Fri, 10 Sep 2021 12:29:18 -0700 (PDT)
+        bh=2RWMKyeRq3zB+VVkCByOR8MWd1gjzuVpvdfMSHO5pgQ=;
+        b=KVvrUEMxNCX+HxEmLB7qxxd2QiteaMbesYKDU/h/Lu2VxU4qUFrwUTGBpoQGfrCvvX
+         Qf3dFowiXFrMLpCcxBYoWEiliFN6aTFw8p2xlUVDcFfOdLtZR/0uvhno7e3Lk6Z22vvK
+         fwP0Ce+R2T7Dy/J8odBJFtLBHzAWXDCSzEc1fbt8yz4/cqqFRiIcNaNYjOkscTBHgCDo
+         S9GnWKczJpSttwRP1ukVvANB/jWJc+cJrbOnmh+11BLNdjcc7fNP2XbvT20PyTOaUhsU
+         8qYy2iF91jcDpirYkNuXvMWppWSYrectkTb4cwHylN3TCf3OzNlXoox4p00JAXVBs5Ga
+         UDRw==
+X-Gm-Message-State: AOAM533FosFEO2suBMXRSJuvvf38LIuW5E9PCvUC0nJCjJnJwWZm1dlB
+        FJyVlzXgoGQRlXIS+A9FgI/jbTn9XjV5cCalkvU=
+X-Google-Smtp-Source: ABdhPJwOzaiSriwfPRjre/GCZxp7LdRt7tQXeGkySZWnt2N68EM/Su4w7gfXpeP2ha8Xxi5mfnFjRM6df+VsCkstmSU=
+X-Received: by 2002:a1f:6407:: with SMTP id y7mr6893423vkb.15.1631302308373;
+ Fri, 10 Sep 2021 12:31:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910113345.62bda9e6@canb.auug.org.au>
-In-Reply-To: <20210910113345.62bda9e6@canb.auug.org.au>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 10 Sep 2021 12:29:08 -0700
-Message-ID: <CAKwvOd=JQZXPstMsJOirXxRb8iFOCnpNW4SdmmGu1WOpZ5JS2Q@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the kspp tree with the
- compiler-attributes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
+References: <20210909161755.61743-1-ahalaney@redhat.com> <0849504a-b7ed-f448-6d66-1a9fd5ad70ce@akamai.com>
+ <CAJfuBxzX9nEvxC1s-4uRCzLwN0=3gbFT__9vO_coEM5CrpnJng@mail.gmail.com> <20210910182445.vao7uhqveaen25tk@halaneylaptop>
+In-Reply-To: <20210910182445.vao7uhqveaen25tk@halaneylaptop>
+From:   jim.cromie@gmail.com
+Date:   Fri, 10 Sep 2021 13:31:22 -0600
+Message-ID: <CAJfuBxzWwXCmw+YsonMCOaHq=21C-rVPL8BhZpDU0NPQW0B_8w@mail.gmail.com>
+Subject: Re: [PATCH] dyndbg: make dyndbg a known cli param
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 6:33 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Fri, Sep 10, 2021 at 12:24 PM Andrew Halaney <ahalaney@redhat.com> wrote:
 >
-> Hi all,
+> On Fri, Sep 10, 2021 at 11:14:45AM -0600, jim.cromie@gmail.com wrote:
+> > On Thu, Sep 9, 2021 at 3:34 PM Jason Baron <jbaron@akamai.com> wrote:
+> >
+> > >
+> > >
+> > > On 9/9/21 12:17 PM, Andrew Halaney wrote:
+> > > > Right now dyndbg shows up as an unknown parameter if used on boot:
+> > > >
+> > > >     Unknown command line parameters: dyndbg=module params +p ; module
+> > > sys +p
+> > > >
+> > > > That's because it is unknown, it doesn't sit in the __param
+> > > > section, so the processing done to warn users supplying an unknown
+> > > > parameter doesn't think it is legitimate.
+> > > >
+> >
+> >
+> > your usage is incorrect for what youre trying to do in that example
+> > what you need is:
+> >
+> >   params.dyndbg=+p  sys.dyndbg=+p
+> >
+> > dyndbg is properly unknown as a kernel param, it isnt one.
+> > ( it was called a "fake" module param when added.)
+> > $module.dyndbg is good, since its after the $module. (and the dot)
+> > it also then inherits the "scan bootargs for relevant ones on module load"
+> > behavior
+> >
+> >
 >
-> Today's linux-next merge of the kspp tree got conflicts in:
->
->   include/linux/compiler-gcc.h
->   include/linux/compiler_types.h
->
-> between commit:
->
->   b83a908498d6 ("compiler_attributes.h: move __compiletime_{error|warning}")
->
-> from the compiler-attributes tree and commit:
->
->   122b05c65c5d ("compiler_types.h: Remove __compiletime_object_size()")
->
-> from the kspp tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+> That example is (slightly altered) from
+> Documentation/admin-guide/dynamic-debug-howto.rst,
 
-Thanks Stephen,
-Kees, Miguel just sent the patch from his tree to Linus in a PR:
-https://lore.kernel.org/lkml/20210910191734.GA8688@kernel.org/T/#u
+oh dear, I see the lines youre referring to.
+I am surprised.
+fyi, those lines are:
+    // enable pr_debugs in 2 builtins, #cmt is stripped
+    dyndbg="module params +p #cmt ; module sys +p"
 
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc include/linux/compiler-gcc.h
-> index 21c36b69eb06,01985821944b..000000000000
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@@ -41,8 -41,9 +41,6 @@@
->
->   #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
->
-> - #define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
->  -#define __compiletime_warning(message) __attribute__((__warning__(message)))
->  -#define __compiletime_error(message) __attribute__((__error__(message)))
-> --
->   #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
->   #define __latent_entropy __attribute__((latent_entropy))
->   #endif
-> diff --cc include/linux/compiler_types.h
-> index b6ff83a714ca,c43308b0a9a9..000000000000
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@@ -290,11 -290,13 +290,6 @@@ struct ftrace_likely_data
->         (sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
->          sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
->
-> - /* Compile time object size, -1 for unknown */
-> - #ifndef __compiletime_object_size
-> - # define __compiletime_object_size(obj) -1
->  -#ifndef __compiletime_warning
->  -# define __compiletime_warning(message)
->  -#endif
->  -#ifndef __compiletime_error
->  -# define __compiletime_error(message)
-> --#endif
-> --
->   #ifdef __OPTIMIZE__
->   # define __compiletime_assert(condition, msg, prefix, suffix)         \
->         do {                                                            \
+is your patchset removing those lines ?
+if so, ack that part.
+
+> I can change the example used to be a little less confusing (using the
+> module keyword is confusing, I could use something like
+> func or file instead of what the docs use as an example).
+
+yes please, I saw bad usage, thought faulty premise.
+
+> Is that what you're after, a better example usage of dyndbg= being
+> whined about in dmesg for the commit message, or am I misunderstanding?
+
+I guess Im inured to it.  Heres my regular version with a similar addition.
+
+Unknown command line parameters:
+virtme_link_mods=/home/jimc/projects/lx/wk-next/builds/local-i915m/.virtme_mods/lib/modules/0.0.0
+virtme_initmount0=/root virtme_initmount1=/root/sbin
+virtme_stty_con=rows 27 cols 109 iutf8
+virtme_chdir=home/jimc/projects/lx dyndbg=+p
+
+most of them do something, just not for the kernel.
+
+I dont think this is worth explicitly silencing.
+rather rip out the misleading doc.
 
 
-
--- 
-Thanks,
-~Nick Desaulniers
+> I agree that dyndbg right now (both dyndbg= and $module.dyndbg=) are
+> "fake" params, but I'd like to remove that message for dyndbg= as it is
+> misleading. The code for module loading luckily already handles it all
+> properly and doesn't warn on proper usage:
+>
+>     static int unknown_module_param_cb(char *param, char *val, const char *modname,
+>                        void *arg)
+>     {
+>         struct module *mod = arg;
+>         int ret;
+>
+>         if (strcmp(param, "async_probe") == 0) {
+>             mod->async_probe_requested = true;
+>             return 0;
+>         }
+>
+>         /* Check for magic 'dyndbg' arg */
+>         ret = ddebug_dyndbg_module_param_cb(param, val, modname);
+>         if (ret != 0)
+>             pr_warn("%s: unknown parameter '%s' ignored\n", modname, param);
+>         return 0;
+>     }
+>
+>
+> >
+> >
+> >
+> > >
+> > > > Install a dummy handler to register it. This was chosen instead of the
+> > > > approach the (deprecated) ddebug_query param takes, which is to
+> > > > have a real handler that copies the string taking up a KiB memory.
+> > > >
+> > > > Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
+> > > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > > > ---
+> > > >
+> > > > This is the last valid param I know of that was getting flagged on boot
+> > > > if used correctly. Please let me know if the alternative approach of
+> > > > actually copying the string is preferred and I'll spin that up instead.
+> > > >
+> > >
+> > > Hi Andrew,
+> > >
+> > > So I think you are referring to the string copying that ddebug_query= does.
+> > > I don't think that works for 'dyndbg=' b/c its actually looking through
+> > > the entire command line for stuff like <module_name>.dyndbg="blah".
+> > >
+> > > So I think what you prposed below makes sense, we could perhaps add a note
+> > > as to why it's a noop. As I mentioned it needs to look through the entire
+> > > string.
+> > >
+> > >
+> > > > Sort of an aside, but what's the policy for removing deprecated cli
+> > > > params? ddebug_query has been deprecated for a very long time now, but I
+> > > > am not sure if removing params like that is considered almost as bad as
+> > > > breaking userspace considering some systems might update their kernels
+> > > > but not the bootloader supplying the param.
+> > >
+> > > I think it's probably ok to remove at this point, especially now that
+> > > we are going to flag it as unknown, right? So I feel like that change
+> > > can logically go with this series if you want as a separate patch.
+> > >
+> > > Thanks,
+> > >
+> > > -Jason
+> > >
+> > >
+> > > >
+> > > >  lib/dynamic_debug.c | 12 ++++++++++++
+> > > >  1 file changed, 12 insertions(+)
+> > > >
+> > > > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> > > > index cb5abb42c16a..84c16309cc63 100644
+> > > > --- a/lib/dynamic_debug.c
+> > > > +++ b/lib/dynamic_debug.c
+> > > > @@ -761,6 +761,18 @@ static __init int ddebug_setup_query(char *str)
+> > > >
+> > > >  __setup("ddebug_query=", ddebug_setup_query);
+> > > >
+> > > > +/*
+> > > > + * Install a noop handler to make dyndbg look like a normal kernel cli
+> > > param.
+> > > > + * This avoids warnings about dyndbg being an unknown cli param when
+> > > supplied
+> > > > + * by a user.
+> > > > + */
+> > > > +static __init int dyndbg_setup(char *str)
+> > > > +{
+> > > > +     return 1;
+> > > > +}
+> > > > +
+> > > > +__setup("dyndbg=", dyndbg_setup);
+> > > > +
+> > > >  /*
+> > > >   * File_ops->write method for <debugfs>/dynamic_debug/control.  Gathers
+> > > the
+> > > >   * command text from userspace, parses and executes it.
+> > > >
+> > >
+>
