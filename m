@@ -2,297 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7D44065CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7759A4065C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhIJCol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:44:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229898AbhIJCok (ORCPT
+        id S229870AbhIJCoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhIJCo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:44:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631241809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=c0Qqn1R6NM2ft9tQ6JqKfdeZB/DHI04ObjgVzFBUDVc=;
-        b=jOvgH5ngoYpXVZmAZuTgWNWkdY06LDzYMHuKWyX6PVx7fO454KIFBRVYLzSt/p6tnYbO96
-        T5UbZEZJnpTLsO650jlj3rEb9qz8f6AYa+ZsfaCrRe3lRXk+5A/JMJaXXBJLYipmP5xlF4
-        LbmKL4vhvHYfWvmL5SmA8rhHqwEBY2w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-2sN03F2PPrqc46xIDQLQLQ-1; Thu, 09 Sep 2021 22:43:28 -0400
-X-MC-Unique: 2sN03F2PPrqc46xIDQLQLQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B9CF80196C;
-        Fri, 10 Sep 2021 02:43:27 +0000 (UTC)
-Received: from llong.com (unknown [10.22.10.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B6D760E1C;
-        Fri, 10 Sep 2021 02:43:26 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] cgroup/cpuset: Change references of cpuset_mutex to cpuset_rwsem
-Date:   Thu,  9 Sep 2021 22:42:56 -0400
-Message-Id: <20210910024256.7615-2-longman@redhat.com>
-In-Reply-To: <20210910024256.7615-1-longman@redhat.com>
-References: <20210910024256.7615-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 9 Sep 2021 22:44:27 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB697C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 19:43:16 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id b200so494102iof.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 19:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=02ZyrqMIMcWEGomSTPmglUtr8KQ7G6TZbRod+nJ6PZA=;
+        b=TxPXCCwbR3Pvp6IyG0Ly+FhyQqaUQeIeYTpgmKUBadBHjzVRNM2Xq3i5ec8b2RNbBT
+         ZoCu6AyWVHoWMsCyL3SGdLsjsrt3jTDV9El5RDYvInPUq6l99/hQ9yiX8w5UqtJcQJrb
+         nkj9O/AvGAnWJ/pDaqOpspm5jqxwLnCRfx7+kHvzmLCjvIlPnFHMKQRJujQZJKYyPxll
+         6Ef7tA27B7J1cp1rPIGDKTsuxrBsYKTuT6JQXizQFwpz20Oc84yw6mwi1LNotseuwuVC
+         iW2KE46pt4JElMXwCSGbdWcfUJ9yVPmv8F/t4MvunhgDcr11RImhK4GBluNTdqQnLC7R
+         bIxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=02ZyrqMIMcWEGomSTPmglUtr8KQ7G6TZbRod+nJ6PZA=;
+        b=zjZIW8CVOKNgg6IMYXbxvOrFIQu/qZhIeZi0WdJKG4Ko890evhx9KmPNoLEW/SnXX2
+         ZVNoxMesG2OfEvBjf5JxLCrPltPBmxEz6OXxwPtjcJF7vKXq/WAq4DLnxejeC9lXkJGo
+         1cAe/Hu+uroDus8weKNAeXNRgVoOujQnN8IEWvbYJ3zkwKSmccDakQKViaevi9iJs+11
+         m9teRThUpFZkfSZcJTPc1AERBiClb/XdOue8FlfpsOvGqOcLDI5WVYfJWOWg55AGIi96
+         +kDPbDSxkMzfbttMdY9Ed829FfcRF861k+F06TfoO2AIgR0yoP+M5EJ70aR227jq5nxf
+         7M/w==
+X-Gm-Message-State: AOAM531ZqakSqf3Dwn358EHOyRG6dyqk6tu+UDZotU6PMTq9In+ahpwb
+        4V6Yl7UlTfK9AsLRAyta2MLlDQ==
+X-Google-Smtp-Source: ABdhPJyOv+iUkrJUzN+X8cykdtW5LZO1zT+pKoSHgUHmDasDPVIfsLM8P4hHqrN1koi3trGXpzPvww==
+X-Received: by 2002:a05:6602:584:: with SMTP id v4mr5303148iox.85.1631241796273;
+        Thu, 09 Sep 2021 19:43:16 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id t15sm1769480ioi.7.2021.09.09.19.43.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 19:43:15 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <ebc6cc5e-dd43-6370-b462-228e142beacb@kernel.dk>
+ <CAHk-=whoMLW-WP=8DikhfE4xAu_Tw9jDNkdab4RGEWWMagzW8Q@mail.gmail.com>
+ <ebb7b323-2ae9-9981-cdfd-f0f460be43b3@kernel.dk>
+ <CAHk-=wi2fJ1XrgkfSYgn9atCzmJZ8J3HO5wnPO0Fvh5rQx9mmA@mail.gmail.com>
+ <88f83037-0842-faba-b68f-1d4574fb45cb@kernel.dk>
+Message-ID: <f9748c63-b89d-5a00-e509-db4a6d44655a@kernel.dk>
+Date:   Thu, 9 Sep 2021 20:43:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <88f83037-0842-faba-b68f-1d4574fb45cb@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 1243dc518c9d ("cgroup/cpuset: Convert cpuset_mutex to
-percpu_rwsem"), cpuset_mutex has been replaced by cpuset_rwsem which is
-a percpu rwsem. However, the comments in kernel/cgroup/cpuset.c still
-reference cpuset_mutex which are now incorrect.
+On 9/9/21 7:35 PM, Jens Axboe wrote:
+> On 9/9/21 4:56 PM, Linus Torvalds wrote:
+>> On Thu, Sep 9, 2021 at 3:21 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>
+>>> On 9/9/21 3:56 PM, Linus Torvalds wrote:
+>>>>
+>>>> IOW, can't we have  that
+>>>>
+>>>>         ret = io_iter_do_read(req, iter);
+>>>>
+>>>> return partial success - and if XFS does that "update iovec on
+>>>> failure", I could easily see that same code - or something else -
+>>>> having done the exact same thing.
+>>>>
+>>>> Put another way: if the iovec isn't guaranteed to be coherent when an
+>>>> actual error occurs, then why would it be guaranteed to be coherent
+>>>> with a partial success value?
+>>>>
+>>>> Because in most cases - I'd argue pretty much all - those "partial
+>>>> success" cases are *exactly* the same as the error cases, it's just
+>>>> that we had a loop and one or more iterations succeeded before it hit
+>>>> the error case.
+>>>
+>>> Right, which is why the reset would be nice, but reexpand + revert at
+>>> least works and accomplishes the same even if it doesn't look as pretty.
+>>
+>> You miss my point.
+>>
+>> The partial success case seems to do the wrong thing.
+>>
+>> Or am I misreading things? Lookie here, in io_read():
+>>
+>>         ret = io_iter_do_read(req, iter);
+>>
+>> let's say that something succeeds partially, does X bytes, and returns
+>> a positive X.
+>>
+>> The if-statements following it then do not trigger:
+>>
+>>         if (ret == -EAGAIN || (req->flags & REQ_F_REISSUE)) {
+>>   .. not this case ..
+>>         } else if (ret == -EIOCBQUEUED) {
+>>   .. nor this ..
+>>         } else if (ret <= 0 || ret == io_size || !force_nonblock ||
+>>                    (req->flags & REQ_F_NOWAIT) || !(req->flags & REQ_F_ISREG)) {
+>>   .. nor this ..
+>>         }
+>>
+>> so nothing has been done to the iovec at all.
+>>
+>> Then it does
+>>
+>>         ret2 = io_setup_async_rw(req, iovec, inline_vecs, iter, true);
+>>
+>> using that iovec that has *not* been reset, even though it really
+>> should have been reset to "X bytes read".
+>>
+>> See what I'm trying to say?
+> 
+> Yep ok I follow you now. And yes, if we get a partial one but one that
+> has more consumed than what was returned, that would not work well. I'm
+> guessing that a) we've never seen that, or b) we always end up with
+> either correctly advanced OR fully advanced, and the fully advanced case
+> would then just return 0 next time and we'd just get a short IO back to
+> userspace.
+> 
+> The safer way here would likely be to import the iovec again. We're
+> still in the context of the original submission, and the sqe hasn't been
+> consumed in the ring yet, so that can be done safely.
 
-Change all the references of cpuset_mutex to cpuset_rwsem.
+Totally untested, but something like this could be a better solution.
+If we're still in the original submit path, then re-import the iovec and
+set the iter again before doing retry. If we do get a partial
+read/write return, then advance the iter to avoid re-doing parts of the
+IO.
 
-Fixes: 1243dc518c9d ("cgroup/cpuset: Convert cpuset_mutex to percpu_rwsem")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c | 56 ++++++++++++++++++++++--------------------
- 1 file changed, 29 insertions(+), 27 deletions(-)
+If we're already in the io-wq retry path, short IO will just be ended
+anyway. That's no different than today.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index df1ccf4558f8..2a9695ccb65f 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -311,17 +311,19 @@ static struct cpuset top_cpuset = {
- 		if (is_cpuset_online(((des_cs) = css_cs((pos_css)))))
+Will take a closer look at this tomorrow and run some testing, but I
+think the idea is sound and it avoids any kind of guessing on what was
+done or not. Just re-setup the iter/iov and advance if we got a positive
+result on the previous attempt.
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 855ea544807f..89c4c568d785 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2608,8 +2608,6 @@ static bool io_resubmit_prep(struct io_kiocb *req)
  
- /*
-- * There are two global locks guarding cpuset structures - cpuset_mutex and
-+ * There are two global locks guarding cpuset structures - cpuset_rwsem and
-  * callback_lock. We also require taking task_lock() when dereferencing a
-  * task's cpuset pointer. See "The task_lock() exception", at the end of this
-- * comment.
-+ * comment.  The cpuset code uses only cpuset_rwsem write lock.  Other
-+ * kernel subsystems can use cpuset_read_lock()/cpuset_read_unlock() to
-+ * prevent change to cpuset structures.
-  *
-  * A task must hold both locks to modify cpusets.  If a task holds
-- * cpuset_mutex, then it blocks others wanting that mutex, ensuring that it
-+ * cpuset_rwsem, it blocks others wanting that rwsem, ensuring that it
-  * is the only task able to also acquire callback_lock and be able to
-  * modify cpusets.  It can perform various checks on the cpuset structure
-  * first, knowing nothing will change.  It can also allocate memory while
-- * just holding cpuset_mutex.  While it is performing these checks, various
-+ * just holding cpuset_rwsem.  While it is performing these checks, various
-  * callback routines can briefly acquire callback_lock to query cpusets.
-  * Once it is ready to make the changes, it takes callback_lock, blocking
-  * everyone else.
-@@ -393,7 +395,7 @@ static inline bool is_in_v2_mode(void)
-  * One way or another, we guarantee to return some non-empty subset
-  * of cpu_online_mask.
-  *
-- * Call with callback_lock or cpuset_mutex held.
-+ * Call with callback_lock or cpuset_rwsem held.
-  */
- static void guarantee_online_cpus(struct task_struct *tsk,
- 				  struct cpumask *pmask)
-@@ -435,7 +437,7 @@ static void guarantee_online_cpus(struct task_struct *tsk,
-  * One way or another, we guarantee to return some non-empty subset
-  * of node_states[N_MEMORY].
-  *
-- * Call with callback_lock or cpuset_mutex held.
-+ * Call with callback_lock or cpuset_rwsem held.
-  */
- static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
- {
-@@ -447,7 +449,7 @@ static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
- /*
-  * update task's spread flag if cpuset's page/slab spread flag is set
-  *
-- * Call with callback_lock or cpuset_mutex held.
-+ * Call with callback_lock or cpuset_rwsem held.
-  */
- static void cpuset_update_task_spread_flag(struct cpuset *cs,
- 					struct task_struct *tsk)
-@@ -468,7 +470,7 @@ static void cpuset_update_task_spread_flag(struct cpuset *cs,
-  *
-  * One cpuset is a subset of another if all its allowed CPUs and
-  * Memory Nodes are a subset of the other, and its exclusive flags
-- * are only set if the other's are set.  Call holding cpuset_mutex.
-+ * are only set if the other's are set.  Call holding cpuset_rwsem.
-  */
- 
- static int is_cpuset_subset(const struct cpuset *p, const struct cpuset *q)
-@@ -577,7 +579,7 @@ static inline void free_cpuset(struct cpuset *cs)
-  * If we replaced the flag and mask values of the current cpuset
-  * (cur) with those values in the trial cpuset (trial), would
-  * our various subset and exclusive rules still be valid?  Presumes
-- * cpuset_mutex held.
-+ * cpuset_rwsem held.
-  *
-  * 'cur' is the address of an actual, in-use cpuset.  Operations
-  * such as list traversal that depend on the actual address of the
-@@ -700,7 +702,7 @@ static void update_domain_attr_tree(struct sched_domain_attr *dattr,
- 	rcu_read_unlock();
+ 	if (!rw)
+ 		return !io_req_prep_async(req);
+-	/* may have left rw->iter inconsistent on -EIOCBQUEUED */
+-	iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
+ 	return true;
  }
  
--/* Must be called with cpuset_mutex held.  */
-+/* Must be called with cpuset_rwsem held.  */
- static inline int nr_cpusets(void)
- {
- 	/* jump label reference count + the top-level cpuset */
-@@ -726,7 +728,7 @@ static inline int nr_cpusets(void)
-  * domains when operating in the severe memory shortage situations
-  * that could cause allocation failures below.
-  *
-- * Must be called with cpuset_mutex held.
-+ * Must be called with cpuset_rwsem held.
-  *
-  * The three key local variables below are:
-  *    cp - cpuset pointer, used (together with pos_css) to perform a
-@@ -1005,7 +1007,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-  * 'cpus' is removed, then call this routine to rebuild the
-  * scheduler's dynamic sched domains.
-  *
-- * Call with cpuset_mutex held.  Takes cpus_read_lock().
-+ * Call with cpuset_rwsem held.  Takes cpus_read_lock().
-  */
- static void rebuild_sched_domains_locked(void)
- {
-@@ -1078,7 +1080,7 @@ void rebuild_sched_domains(void)
-  * @cs: the cpuset in which each task's cpus_allowed mask needs to be changed
-  *
-  * Iterate through each task of @cs updating its cpus_allowed to the
-- * effective cpuset's.  As this function is called with cpuset_mutex held,
-+ * effective cpuset's.  As this function is called with cpuset_rwsem held,
-  * cpuset membership stays stable.
-  */
- static void update_tasks_cpumask(struct cpuset *cs)
-@@ -1347,7 +1349,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
-  *
-  * On legacy hierarchy, effective_cpus will be the same with cpu_allowed.
-  *
-- * Called with cpuset_mutex held
-+ * Called with cpuset_rwsem held
-  */
- static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
- {
-@@ -1704,12 +1706,12 @@ static void *cpuset_being_rebound;
-  * @cs: the cpuset in which each task's mems_allowed mask needs to be changed
-  *
-  * Iterate through each task of @cs updating its mems_allowed to the
-- * effective cpuset's.  As this function is called with cpuset_mutex held,
-+ * effective cpuset's.  As this function is called with cpuset_rwsem held,
-  * cpuset membership stays stable.
-  */
- static void update_tasks_nodemask(struct cpuset *cs)
- {
--	static nodemask_t newmems;	/* protected by cpuset_mutex */
-+	static nodemask_t newmems;	/* protected by cpuset_rwsem */
- 	struct css_task_iter it;
- 	struct task_struct *task;
- 
-@@ -1722,7 +1724,7 @@ static void update_tasks_nodemask(struct cpuset *cs)
- 	 * take while holding tasklist_lock.  Forks can happen - the
- 	 * mpol_dup() cpuset_being_rebound check will catch such forks,
- 	 * and rebind their vma mempolicies too.  Because we still hold
--	 * the global cpuset_mutex, we know that no other rebind effort
-+	 * the global cpuset_rwsem, we know that no other rebind effort
- 	 * will be contending for the global variable cpuset_being_rebound.
- 	 * It's ok if we rebind the same mm twice; mpol_rebind_mm()
- 	 * is idempotent.  Also migrate pages in each mm to new nodes.
-@@ -1768,7 +1770,7 @@ static void update_tasks_nodemask(struct cpuset *cs)
-  *
-  * On legacy hierarchy, effective_mems will be the same with mems_allowed.
-  *
-- * Called with cpuset_mutex held
-+ * Called with cpuset_rwsem held
-  */
- static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
- {
-@@ -1821,7 +1823,7 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
-  * mempolicies and if the cpuset is marked 'memory_migrate',
-  * migrate the tasks pages to the new memory.
-  *
-- * Call with cpuset_mutex held. May take callback_lock during call.
-+ * Call with cpuset_rwsem held. May take callback_lock during call.
-  * Will take tasklist_lock, scan tasklist for tasks in cpuset cs,
-  * lock each such tasks mm->mmap_lock, scan its vma's and rebind
-  * their mempolicies to the cpusets new mems_allowed.
-@@ -1911,7 +1913,7 @@ static int update_relax_domain_level(struct cpuset *cs, s64 val)
-  * @cs: the cpuset in which each task's spread flags needs to be changed
-  *
-  * Iterate through each task of @cs updating its spread flags.  As this
-- * function is called with cpuset_mutex held, cpuset membership stays
-+ * function is called with cpuset_rwsem held, cpuset membership stays
-  * stable.
-  */
- static void update_tasks_flags(struct cpuset *cs)
-@@ -1931,7 +1933,7 @@ static void update_tasks_flags(struct cpuset *cs)
-  * cs:		the cpuset to update
-  * turning_on: 	whether the flag is being set or cleared
-  *
-- * Call with cpuset_mutex held.
-+ * Call with cpuset_rwsem held.
-  */
- 
- static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
-@@ -1980,7 +1982,7 @@ static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
-  * cs: the cpuset to update
-  * new_prs: new partition root state
-  *
-- * Call with cpuset_mutex held.
-+ * Call with cpuset_rwsem held.
-  */
- static int update_prstate(struct cpuset *cs, int new_prs)
- {
-@@ -2167,7 +2169,7 @@ static int fmeter_getrate(struct fmeter *fmp)
- 
- static struct cpuset *cpuset_attach_old_cs;
- 
--/* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
-+/* Called by cgroups to determine if a cpuset is usable; cpuset_rwsem held */
- static int cpuset_can_attach(struct cgroup_taskset *tset)
- {
- 	struct cgroup_subsys_state *css;
-@@ -2219,7 +2221,7 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
+@@ -3431,6 +3429,28 @@ static bool need_read_all(struct io_kiocb *req)
+ 		S_ISBLK(file_inode(req->file)->i_mode);
  }
  
- /*
-- * Protected by cpuset_mutex.  cpus_attach is used only by cpuset_attach()
-+ * Protected by cpuset_rwsem.  cpus_attach is used only by cpuset_attach()
-  * but we can't allocate it dynamically there.  Define it global and
-  * allocate from cpuset_init().
-  */
-@@ -2227,7 +2229,7 @@ static cpumask_var_t cpus_attach;
- 
- static void cpuset_attach(struct cgroup_taskset *tset)
++static int io_prep_for_retry(int rw, struct io_kiocb *req, struct iovec **vecs,
++			     struct iov_iter *iter, ssize_t did_bytes)
++{
++	ssize_t ret;
++
++	/*
++	 * io-wq path cannot retry, as we cannot safely re-import vecs. It
++	 * would be perfectly legal for non-vectored IO, but we handle them
++	 * all the same.
++	 */
++	if (WARN_ON_ONCE(io_wq_current_is_worker()))
++		return did_bytes;
++
++	ret = io_import_iovec(rw, req, vecs, iter, false);
++	if (ret < 0)
++		return ret;
++	if (did_bytes > 0)
++		iov_iter_advance(iter, did_bytes);
++
++	return 0;
++}
++
+ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
  {
--	/* static buf protected by cpuset_mutex */
-+	/* static buf protected by cpuset_rwsem */
- 	static nodemask_t cpuset_attach_nodemask_to;
- 	struct task_struct *task;
- 	struct task_struct *leader;
-@@ -2417,7 +2419,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	 * operation like this one can lead to a deadlock through kernfs
- 	 * active_ref protection.  Let's break the protection.  Losing the
- 	 * protection is okay as we check whether @cs is online after
--	 * grabbing cpuset_mutex anyway.  This only happens on the legacy
-+	 * grabbing cpuset_rwsem anyway.  This only happens on the legacy
- 	 * hierarchies.
- 	 */
- 	css_get(&cs->css);
-@@ -3672,7 +3674,7 @@ void __cpuset_memory_pressure_bump(void)
-  *  - Used for /proc/<pid>/cpuset.
-  *  - No need to task_lock(tsk) on this tsk->cpuset reference, as it
-  *    doesn't really matter if tsk->cpuset changes after we read it,
-- *    and we take cpuset_mutex, keeping cpuset_attach() from changing it
-+ *    and we take cpuset_rwsem, keeping cpuset_attach() from changing it
-  *    anyway.
-  */
- int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
+@@ -3479,9 +3499,6 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		/* no retry on NONBLOCK nor RWF_NOWAIT */
+ 		if (req->flags & REQ_F_NOWAIT)
+ 			goto done;
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = 0;
+ 	} else if (ret == -EIOCBQUEUED) {
+ 		goto out_free;
+@@ -3491,6 +3508,13 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		goto done;
+ 	}
+ 
++	iovec = inline_vecs;
++	ret2 = io_prep_for_retry(READ, req, &iovec, iter, ret);
++	if (ret2 < 0) {
++		ret = ret2;
++		goto done;
++	}
++
+ 	ret2 = io_setup_async_rw(req, iovec, inline_vecs, iter, true);
+ 	if (ret2)
+ 		return ret2;
+@@ -3614,14 +3638,16 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	if (!force_nonblock || ret2 != -EAGAIN) {
+ 		/* IOPOLL retry should happen for io-wq threads */
+ 		if ((req->ctx->flags & IORING_SETUP_IOPOLL) && ret2 == -EAGAIN)
+-			goto copy_iov;
++			goto copy_import;
+ done:
+ 		kiocb_done(kiocb, ret2, issue_flags);
+ 	} else {
++copy_import:
++		iovec = inline_vecs;
++		ret = io_prep_for_retry(WRITE, req, &iovec, iter, ret2);
++		if (ret < 0)
++			goto out_free;
+ copy_iov:
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+ 		return ret ?: -EAGAIN;
+ 	}
+
 -- 
-2.18.1
+Jens Axboe
 
