@@ -2,128 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FF44072EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422A74072F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbhIJV3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
+        id S234586AbhIJVaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhIJV32 (ORCPT
+        with ESMTP id S229669AbhIJVaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:29:28 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2557BC061574;
-        Fri, 10 Sep 2021 14:28:16 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso4115533otv.3;
-        Fri, 10 Sep 2021 14:28:16 -0700 (PDT)
+        Fri, 10 Sep 2021 17:30:07 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6779CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:28:56 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id w6so1976129pll.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YG4d0aep/TNMRw1KpckESI6vf67MLwQR2wy0QWQ9xXs=;
-        b=Yt6MAy9qjGRokXhzTVtFUySrBahi6qUNswM4Ai7zmBfl3fA9MMDMQi0y3zMQfPxFtZ
-         CaS7JF9Kr4Tt9ZFA3tp7zz3jbpQoUkk8Lfa9dKhA7hPCgcFAYT+eEZr4BCNJ6nNdik+D
-         qOwieIHXFg2YsgMh1OhlnDX/wXFwnTU+64sWPx9NW9uJKYJDslUP73nEDpXuZtsdWqSQ
-         st3C7sYwrBmphnH3EnqI+40kLzw2hF9mrv0fyy46V/i8jvAsw/fEgvRyATCvDJjkFZ9B
-         fl7/Q1mOfMkh/iWRzJcw6VFEAwrx2Py2fTghMTLh24yYu6HKV/wrjdr7FMi1QgtwyZjv
-         T+xw==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gG9IwTokKzd7dSKb8PeJxanH6u5ukkUKIIJ5lnDDNxI=;
+        b=l/+q/oSUDmPIKALXMZ3wqCtJEI78CDp8YhLDB0hTM1i/xoQaF2NJUFB2hU0OSNPn6j
+         8EguJiZuSqHXLv6mukv7N6+jp0HKzKe9MncTbtbNjrj5oGr3hvzuz5iRpnO9VLpqTdnI
+         SnRUBXZu3KFv/2yjOFSWMYotHqt375Z37om2C8tHekDo8qXK/kcjpsMzsC6nizejtx1U
+         HNE5/5fbyIVRf5iPSj1CWkscu82lKU7c6rFFn+eDCnkE7McNCmnFgCktxI3a/VqJHOA9
+         ux6zGpUpV6BQGPjnvpSB8TG4lnxiHCot901phaBjcUZBMRaPdpkzPJOjrKO1ugJ4G7+k
+         w3FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YG4d0aep/TNMRw1KpckESI6vf67MLwQR2wy0QWQ9xXs=;
-        b=U1DZOKFJKlRvZGxuNSkqVXmqdNEej2sItTC8Q/qSvMj2dxg5J3kdVur9lTHiuo2Si4
-         VrbBZ/Xz/axSzZ2NeNHQTquNfSfh25es2GQY7SX5Vb2greWuUJ3zNdwGz2/wZYmIy1c7
-         9d4LSnpO6xnSy20i+RpgJHRx5guHw90422kRnshSvfcoWSy9vlgZngdAYpwbdCx3JanF
-         ZBuMOUcGzcmqZ5P6FChUNmU5OO+vHwUl/f/ldlA2JP/XNGIVBr5NDHx4ymRFcwhFNrjF
-         LMSzLUmjHOUfmXTNE96obgPCcGDe+r+o3M/o65z7OZS60j14Ow4WD5OurRMXEsfuQaNX
-         s91Q==
-X-Gm-Message-State: AOAM530GRorxP7wtyBbIcC2cTDuRGJtpZoc5LF8e4CMa1hIOwlDNKU2N
-        +MNlDpcIIV+3VUTi40wACmY=
-X-Google-Smtp-Source: ABdhPJwtlgQ1EzbFfdB2WCs6X/FMYznXip+dyso2iEI++wARyt5EpMirfWTmjXSAtYeXsBNS9KkXsA==
-X-Received: by 2002:a9d:2037:: with SMTP id n52mr6209112ota.361.1631309296325;
-        Fri, 10 Sep 2021 14:28:16 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m2sm1479651ooa.42.2021.09.10.14.28.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 14:28:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Oskar Senft <osk@google.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210910130337.2025426-1-osk@google.com>
- <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
- <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
-Message-ID: <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
-Date:   Fri, 10 Sep 2021 14:28:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gG9IwTokKzd7dSKb8PeJxanH6u5ukkUKIIJ5lnDDNxI=;
+        b=rsX1HR7Lv5Oy9/02798F73hVKzdNSG8A9sW132X8nOqRdnkEMfLY8NeYUwOcW99Px2
+         Jr0PVHhUxMsxE073Tj2QWQHsgGl7NCH9yUgKbDiHJgpbxIDWfEis4aeHnHzW3dgwh6iA
+         uog1vc/RlrTIxCAIlOnZdzewt8hCvSRbKW583HrUBgtVkPWIbIbLGWOVjVS5yEKOCqON
+         OnWg3ARQTEaO0LwIJ5aOpGjF357/zP9DioIL7F5UOr/Ilf52dgzK56Ef5yHrlFcY0WdH
+         vhdtLYeZ7KeGQFxj+ySG6tWoRQMSIFTJNNkgXfW1dEgZ7367DGQ8KPAKFx/CZYjMdTzl
+         Za9g==
+X-Gm-Message-State: AOAM5311L4JpwuowuKzVY+juaA1LC88Dkf3QVJWBDdFd9A9o9TEN79Yc
+        tkSDObkMRSbUi3FjDBmwDyoxTw==
+X-Google-Smtp-Source: ABdhPJxNtsdV+HthlH6Eua/ONGurdm934+6DceWpILF+CAFY1RN1ZUzv02K1zg2EL5p8esPE1sy/7Q==
+X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr11540807pjb.97.1631309335655;
+        Fri, 10 Sep 2021 14:28:55 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u12sm10827pjx.31.2021.09.10.14.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 14:28:55 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 21:28:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zeng Guang <guang.zeng@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Gao Chao <chao.gao@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+Subject: Re: [PATCH v4 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
+ support 64-bit variation
+Message-ID: <YTvOE3p7WRGYUg9h@google.com>
+References: <20210809032925.3548-1-guang.zeng@intel.com>
+ <20210809032925.3548-3-guang.zeng@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809032925.3548-3-guang.zeng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 1:44 PM, Oskar Senft wrote:
-> Hi Guenter
-> 
-> Thanks for the quick feedback!
-> 
->>> +  nuvoton,rtd-modes:
->>> +    description: |
->>> +      Select modes for the three RTDs.
->>> +
->> At the very least, "RTD" should be defined. The datasheet doesn't say explicitly,
->> but I suspect it means "Remote Temperature Diode".
-> Ha, good point. As I understand, RTD means "Resistance Temperature
-> Detector". But TBH, I'm not sure how that squares with Nuvoton's use
-> of "LTD" for the local sensor ... sigh.
-> 
->>> +      Valid values for RTD1 and RTD2 are:
->>> +        "closed",
->>> +        "current",
->>> +        "thermistor",
->>> +        "voltage"
->> I am not sure what "closed" means (the datasheet doesn't say), but I suspect it means
->> that the sensor is disabled (?). For the other modes, the translation to the standard
->> ABI is:
-> Thanks for that pointer, I now found that in
-> Documentation/hwmon/sysfs-interface. Given that there's no definition
-> for "disabled", I guess I'll just leave that out of the device tree
-> binding for now? That way we'll stay consistent with the sysfs ABI.
-> 
+On Mon, Aug 09, 2021, Zeng Guang wrote:
+> +static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)	\
+> +{									\
+> +	return vmx->loaded_vmcs->controls_shadow.lname;			\
+> +}									\
 
-Sure there is. A possible set of bindings - in that case for tmp421 -
-is suggested with the series at
-https://lore.kernel.org/linux-hwmon/cover.1631021349.git.krzysztof.adamski@nokia.com/
+This conflicts with commit 389ab25216c9 ("KVM: nVMX: Pull KVM L0's desired controls
+directly from vmcs01"), I believe the correct resolution is:
 
-That specifically includes the ability to enable or disable channels
-using the standard 'status' property. While that series is primarily
-for the n-factor property supported by the tmp421, the same approach
-can be used for [temperature] sensor properties on other chips as well.
+---
+ arch/x86/kvm/vmx/vmx.h | 59 ++++++++++++++++++++++--------------------
+ 1 file changed, 31 insertions(+), 28 deletions(-)
 
-I put [temperature] in [] because we'd need to find a means to express
-if the sub-nodes are for temperature, voltage, or something else, but
-I think the basic principle is sound.
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 4858c5fd95f2..1ae43afe52a7 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -408,35 +408,38 @@ static inline u8 vmx_get_rvi(void)
+ 	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
+ }
 
-Guenter
+-#define BUILD_CONTROLS_SHADOW(lname, uname)				    \
+-static inline void lname##_controls_set(struct vcpu_vmx *vmx, u32 val)	    \
+-{									    \
+-	if (vmx->loaded_vmcs->controls_shadow.lname != val) {		    \
+-		vmcs_write32(uname, val);				    \
+-		vmx->loaded_vmcs->controls_shadow.lname = val;		    \
+-	}								    \
+-}									    \
+-static inline u32 __##lname##_controls_get(struct loaded_vmcs *vmcs)	    \
+-{									    \
+-	return vmcs->controls_shadow.lname;				    \
+-}									    \
+-static inline u32 lname##_controls_get(struct vcpu_vmx *vmx)		    \
+-{									    \
+-	return __##lname##_controls_get(vmx->loaded_vmcs);		    \
+-}									    \
+-static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u32 val)   \
+-{									    \
+-	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);	    \
+-}									    \
+-static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u32 val) \
+-{									    \
+-	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);	    \
++#define BUILD_CONTROLS_SHADOW(lname, uname, bits)			\
++static inline								\
++void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val)		\
++{									\
++	if (vmx->loaded_vmcs->controls_shadow.lname != val) {		\
++		vmcs_write##bits(uname, val);				\
++		vmx->loaded_vmcs->controls_shadow.lname = val;		\
++	}								\
++}									\
++static inline u##bits __##lname##_controls_get(struct loaded_vmcs *vmcs)\
++{									\
++	return vmcs->controls_shadow.lname;				\
++}									\
++static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)	\
++{									\
++	return __##lname##_controls_get(vmx->loaded_vmcs);		\
++}									\
++static inline								\
++void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)		\
++{									\
++	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);	\
++}									\
++static inline								\
++void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val)	\
++{									\
++	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);	\
+ }
+-BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
+-BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
+-BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
+-BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
+-BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
++BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
++BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
++BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
++BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
++BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
 
-> That gives us the following mapping for sysfs / device tree -> nct7802 HW:
-> 2 (3904 transistor) -> 3 (voltage)
-> 3 (thermal diode) -> 1 (current)
-> 4 (thermistor) -> 2 (thermistor)
-> 
-> I'll update the device tree binding to be an array then. I also update
-> the temp_type functions to support all 3 values.
-> 
-> Oskar.
-> 
-
+ static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
+ {
+--
