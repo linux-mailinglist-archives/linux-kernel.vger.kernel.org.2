@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D453540650F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAB5406513
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhIJBXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
+        id S238975AbhIJBXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237590AbhIJBXU (ORCPT
+        with ESMTP id S232304AbhIJBXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 21:23:20 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4DFC061226;
-        Thu,  9 Sep 2021 18:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631236587;
-        bh=oc7tZR+KeNwMUHPKR2Q77kfHas/Q0/ikomXLgkYdZm4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s4qBzyYhza2LK3+BC2f7121igUqLGOXidPkncccg9o/LwyN1T6+kYJQ+yEZLiuAxy
-         Fv5diyt/BS4QJARDAhLTTCY/NdaRWVd5DC1BcCOZ7Z78fpt9hywrEmW0Jz9HPSUzwB
-         CliNQ96yCUFuxZNxtPzBPCO8UW6bJXSAqB12Op+5CIBwckiGWjMxlUDLbQtE22AeOB
-         +OxKivkH93RlEFceNTTqhxgR7RUjdDNmPWuhDPKLJ/xP82iiiUsuwAqxi4axb/EuLE
-         j6laYACYH9jC272NVH509MXHqqBLD6RcUO3WIW6sxhNS/UsJS02YV8KIbupqybNk6z
-         p4WcyYin438RA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H5HyK4XC8z9sVw;
-        Fri, 10 Sep 2021 11:16:25 +1000 (AEST)
-Date:   Fri, 10 Sep 2021 11:16:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: linux-next: manual merge of the amdgpu tree with Linus' tree
-Message-ID: <20210910111615.50aa19aa@canb.auug.org.au>
-In-Reply-To: <20210902112208.23c226c8@canb.auug.org.au>
-References: <20210902112208.23c226c8@canb.auug.org.au>
+        Thu, 9 Sep 2021 21:23:38 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926CFC061147
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 18:18:13 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id k124so79806vke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 18:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HbI2yiRU/jgiPI9Y0Qhq4XSNxGMyHQg/AsGVWpKiMPQ=;
+        b=N/bV7DdzgzJX9tuD0gJ1oHWXMKjVIilDlTsd8CQdy9OcY+PYpLT/7StxhscRnc0n+X
+         aHKf+SFbMiacCnfIm4gERFIDgquBJKQCAzX6eqvcwJObzw/lXlvYIzwbpd8nBNmjzE2f
+         bBmO0P0lchrN8m8Zvi7E90n7aXB89xt1IPhFmL+Vza+M8LeKFpfNXbV1ZGdFCdyw+2EK
+         sK1gkFyI3ofYwnp0dBfNxdkuFzesuyeGuSXXLAl+gxgK5M0EQYd9TMvh0N9dvtFgDcPy
+         HiexPcqDYeAQiYrKzHOnxlvAp/LB2348/Mbc7USim1Kyfcsd45prwMumK1l3i8fOEPxv
+         B8iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HbI2yiRU/jgiPI9Y0Qhq4XSNxGMyHQg/AsGVWpKiMPQ=;
+        b=XbbcHarvKqSPT81bjUcd2mvE4QAZ3hrSPWT+ESpiNmDRj50JAfykaH8CWpNGWaDMM5
+         Ytyq/7zVjv7zoZ1BPgstQlQmYRKiwe7ZhDH83XwsTyVriqKJbcxCwSIyffFWKKeObXiA
+         CZxgPZbAucDkbkCXhTbwec+Lg7db56v8j1YX89XT9j3YOEFmDnDqlcQmXT+gBbxiNoXm
+         bZ7m5489B5xPrnfOjJ1G24O2vMcWYLkEDK1VCXyKhzHqWRlbGmq/aegeAupkAu0bErF7
+         s7dp30Q4bRIFckIlTqRsVUo/nyx/1CHC/jax0c2r8OdJiGCJxcGDasBeOPl2DiviBIpq
+         NQQQ==
+X-Gm-Message-State: AOAM532TQGAfsNneaxtogCnY7BiUc+d+UaqtX54SmapBLO/1MbYidBDq
+        C5zMG5u5ygWhkxBIBBUMqipugFzwfotJO5XAdaSDPA==
+X-Google-Smtp-Source: ABdhPJxVSmdutczIf+UKMJ5gDc9dI7OkFsH5fiUg1yZl4BNkB4w32KXzudQ2/8MTi7GZaj+yfhm0JyI1KEkD6NBtVz8=
+X-Received: by 2002:a1f:43:: with SMTP id 64mr4038849vka.6.1631236692396; Thu,
+ 09 Sep 2021 18:18:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BCp7KyTTiIFwpL2JVsB5mnd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210818053908.1907051-1-mizhang@google.com> <20210818053908.1907051-4-mizhang@google.com>
+ <YTJ5wjNShaHlDVAp@google.com> <fcb83a85-8150-9617-01e6-c6bcc249c485@amd.com>
+ <YTf3udAv1TZzW+xA@google.com> <8421f104-34e8-cc68-1066-be95254af625@amd.com>
+ <YTpOsUAqHjQ9DDLd@google.com> <CAL715W+u6mt5grwoT6DBhUtzN6xx=OjWPu6M0=p0sxLZ4JTvDg@mail.gmail.com>
+ <48af420f-20e3-719a-cf5c-e651a176e7c2@amd.com>
+In-Reply-To: <48af420f-20e3-719a-cf5c-e651a176e7c2@amd.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Thu, 9 Sep 2021 18:18:00 -0700
+Message-ID: <CAL715WL6g3P6QKv1w-zSDvY3jjLVdbfxaqyr2XV_NicnuP2+EQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] KVM: SVM: move sev_bind_asid to psp
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        David Rienjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BCp7KyTTiIFwpL2JVsB5mnd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Thu, 2 Sep 2021 11:22:08 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+> I believe once we are done with it, will have 5 functions that will need
+>  >=8 arguments. I don't know if its acceptable.
 >
-> Today's linux-next merge of the amdgpu tree got a conflict in:
->=20
->   drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
->=20
-> between commit:
->=20
->   477f70cd2a67 ("Merge tag 'drm-next-2021-08-31-1' of git://anongit.freed=
-esktop.org/drm/drm")
->=20
-> from Linus' tree and commit:
->=20
->   cc947bf91bad ("drm/amdgpu: Process any VBIOS RAS EEPROM address")
->=20
-> from the amdgpu tree.
->=20
-> I fixed it up (I used the latter version) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+> > In addition, having to construct each sev_data_* structure in KVM code
+> > is also a pain and  consumes a lot of irrelevant lines as well.
+> >
+>
+> Maybe I am missing something, aren't those lines will be moved from KVM
+> to PSP driver?
+>
+> I am in full support for restructuring, but lets look at full set of PSP
+> APIs before making the final decision.
+>
+> thanks
+>
 
-This is now a conflict between the drm tree and Linus' tree.
+Oh, sorry for the confusion. I think the current feedback I got is
+that my restructuring patchset was blocked due to the fact that it is
+a partial one. So, if this patchset got checked in, then the psp-sev.h
+will have two types of APIs: ones that use sev_data_* structure and
+ones that do not. So one of the worries is that this would make the
+situation even worse.
 
---=20
-Cheers,
-Stephen Rothwell
+So that's why I am thinking that maybe it is fine to just avoid using
+sev_data_* for all PSP functions exposed to KVM? I use the number of
+arguments as the justification. But that might not be a good one.
 
---Sig_/BCp7KyTTiIFwpL2JVsB5mnd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+In anycase, I will not rush into any code change before we reach a consensus.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE6seAACgkQAVBC80lX
-0GxBrggAnHHX2ADaOdAsEV4PBTzxzBW2MPGieyYcPSGn/oAPVIBaDh/Wc1IlUt9b
-UrRH9ldAeb6Z9JGFb8q3KSb1add/K8HHH+2r+7PkiDoK9DnN6guJZebP+6cWDU6b
-olK/B7/EX23+kbHAICzchXvqiJca09VjPxgtp0o0xgceIODdA3qlMmCiMKpIYrso
-ffXask+VZSLxxdWTIYyf6KACXluzpLCXY488zgAZMjAP1T+YgIAfWjAmW+Y/Itvm
-j+jwSHOhqSwrUFMIG8xFxDYuPI+Q953aX9KgCRHw70JqvK9cngACWH2Y46sXvHgD
-QyQ6MK5f/LdqPlxO5+vGDzTvnTMhUg==
-=ZAHz
------END PGP SIGNATURE-----
-
---Sig_/BCp7KyTTiIFwpL2JVsB5mnd--
+Thanks.
+-Mingwei
