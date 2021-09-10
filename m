@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F8E406FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C2A406FE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhIJQon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
+        id S230188AbhIJQqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhIJQol (ORCPT
+        with ESMTP id S229573AbhIJQqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:44:41 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED78C061574;
-        Fri, 10 Sep 2021 09:43:30 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id t19so5208117lfe.13;
-        Fri, 10 Sep 2021 09:43:30 -0700 (PDT)
+        Fri, 10 Sep 2021 12:46:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170CFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:45:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id l10so5278044lfg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CpppGfWdA8BK4TEonYP/3MMVluD0lccSfMd5MNwKeZI=;
-        b=TeOEMXQv69sxAJJRBo9B4lk3fpM/E0/Egxfjkx2Whvw1euWeJGEKX/A4YT9I361Tg2
-         xfx600hqLxUjGOIChRARytJCOEO6ofvlQZajymlSPvItFy3U0XczbGn2Brda8Dkhbhyq
-         Lhw/5FVJXFBXM+yrMeh4stgVVSkaJxm8B4EfkmWxtnutQszIUpdlCY5bWlOa7aGP0n8v
-         ehlVF96bIjqCU2F6TffATDo15AqEBg6cibUeQk8AK4vfHZGO08vrhNtoRsGG/kYZaQ/J
-         SCe6RBjjYYJPiZ8W9mXymIQZpiObjeSLqbhOEZfBbQcFrMRGf/bkNGs6lIsW/FmETVJ0
-         K84A==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NbDem+vz4vsFCSw7QFewQOYLmpPGceE2lX9++EL1i90=;
+        b=cMoTMio4moJQpik9wWZWR2NxvpgiGXWe+ZMgp+cO9faXBY6cl3zqdZMOlk6kovQvMS
+         JK7NBi4ZMmYzR4zvSFwSPag1UnPpVOdaFCqwVoaqknabSfwAd3/bZYuZp/LGhHJdyqPq
+         ebouPDJ1usgUAH0Wij5KeTTwzsTz8iLyGlXD8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CpppGfWdA8BK4TEonYP/3MMVluD0lccSfMd5MNwKeZI=;
-        b=aVilj4OSuseeKujlaIcAL0hSh3pYpZDpC9mY6KX+HBG+aY0q/P+J30B3Lesl4UZ9QS
-         K8lu8OJMmqHRsN+3H57v7T3IdbQlyGYCS2jwI/3RR7Z3R5u1efR4Wdfx5csepNKW27iu
-         LPZMoi3ubCCE6pvgx4hu8J3gAQL02ouoW49usmg6Gz8LJ9szZb8HfujuN+zqPta5O55O
-         UlZKlbjWP1Q+hzzydDnofRklHknXmv0EwFD2wwOUdNDQv/1j4ACsNoMuBWM248JR8+oW
-         lSL+aogN0Fkt++LhW5TFnWl+UJY6DQIAymB8N/S1rDAkKNUrQYDmgtMYBrK4aVRAOos5
-         BJyg==
-X-Gm-Message-State: AOAM531xwtMr2QQwM6pd6KxfN2PPCI/Ge26KStl0DFOb2JzwOmTsJxOP
-        4OKVzui2jyh6jWlshHOmqUQ=
-X-Google-Smtp-Source: ABdhPJz7K6g1w0gHsQO3ayMRireXIkr5lTLQy7Usi5dYuUKhB2c/o2cUiEPAw4W0lHFRbegttgMqhQ==
-X-Received: by 2002:a05:6512:4005:: with SMTP id br5mr4592372lfb.560.1631292208860;
-        Fri, 10 Sep 2021 09:43:28 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id f20sm666074ljc.81.2021.09.10.09.43.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:43:28 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 19:43:26 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 13/31] staging: wfx: update with API 3.8
-Message-ID: <20210910164326.ivhlbnaq6526wcso@kari-VirtualBox>
-References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
- <20210910160504.1794332-14-Jerome.Pouiller@silabs.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NbDem+vz4vsFCSw7QFewQOYLmpPGceE2lX9++EL1i90=;
+        b=hPbBl1hby9NV1aqgfWmCPTo7P7AAI3niVwO0oVMTu49Kl7JrshU4T9rB2TYbAlt7fQ
+         wARRTRsTWzm8GO3SmhdtUMWKoFRG6RKYvV4gydfYgoRxDL6oeT4gCHjWjIpD4F0akbdY
+         sMHOvS2vBLo4tYGcE/SUKD9y9CKgaO5zbfK29kQTJzQ8mdqy1tYauyhyygFmRxSRA3Xm
+         iIuCLjzaaa/u0wIlw/ojD9oS+xmgUEvT6Y1Da1udUUaYBiF/cDEErvtipgPElk6felq5
+         6fBMzhMaBkb4BfelLt3lqrdxm7xOKWCzoIvKEEtVVTua8MiyiiwaC7G2Y+0GFHgn9LWd
+         Ecrg==
+X-Gm-Message-State: AOAM533lM+yjNIz7t4VhuJsPH/GU488IkqaTPeA9BiaGhh04n01MZL2/
+        118dfBaCblcUPQ2hWY6/edWNPsed3TXEtjy2f9o=
+X-Google-Smtp-Source: ABdhPJyaFrLb3ZoYVLt61eHdmJRtbW7Vmu9k8Qnufn8epQ+HBWx+HwLnnqqIWxoG/Q7rM1B8PMxpLA==
+X-Received: by 2002:ac2:5f99:: with SMTP id r25mr4666672lfe.119.1631292299782;
+        Fri, 10 Sep 2021 09:44:59 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id g2sm598854lfu.139.2021.09.10.09.44.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 09:44:58 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id h16so5246857lfk.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:44:58 -0700 (PDT)
+X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr4638854lfv.655.1631292298401;
+ Fri, 10 Sep 2021 09:44:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210910160504.1794332-14-Jerome.Pouiller@silabs.com>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk> <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk> <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk> <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk> <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk> <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk> <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
+ <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+In-Reply-To: <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 10 Sep 2021 09:44:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi9Oknen3Wd2_C+9PogvbsjTD1-knK7FVjPK7gyBRmo_Q@mail.gmail.com>
+Message-ID: <CAHk-=wi9Oknen3Wd2_C+9PogvbsjTD1-knK7FVjPK7gyBRmo_Q@mail.gmail.com>
+Subject: Re: [git pull] iov_iter fixes
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:04:46PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> API 3.8 introduces new statistic counters. These changes are backward
-> compatible.
+On Fri, Sep 10, 2021 at 9:06 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> +static void io_iter_restore(struct iov_iter *iter, struct iov_iter_state *state,
+> +                           ssize_t did_bytes)
+> +{
+> +       iov_iter_restore_state(iter, state);
+> +       if (did_bytes > 0)
+> +               iov_iter_advance(iter, did_bytes);
+> +}
 
-It will be obvious to some what API 3.8 is. But at least me can rise my
-hand and admit that I do not. Probably wfx api but ig there is any
-public info but it here. If there is not just say Wfx api 3.8.
+This approach looks conceptually good to me.
 
-> 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/staging/wfx/debug.c       | 3 +++
->  drivers/staging/wfx/hif_api_mib.h | 5 ++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
-> index eedada78c25f..e67ca0d818ba 100644
-> --- a/drivers/staging/wfx/debug.c
-> +++ b/drivers/staging/wfx/debug.c
-> @@ -109,6 +109,9 @@ static int wfx_counters_show(struct seq_file *seq, void *v)
->  
->  	PUT_COUNTER(rx_beacon);
->  	PUT_COUNTER(miss_beacon);
-> +	PUT_COUNTER(rx_dtim);
-> +	PUT_COUNTER(rx_dtim_aid0_clr);
-> +	PUT_COUNTER(rx_dtim_aid0_set);
->  
->  #undef PUT_COUNTER
->  
-> diff --git a/drivers/staging/wfx/hif_api_mib.h b/drivers/staging/wfx/hif_api_mib.h
-> index ace924720ce6..b2dc47c314cc 100644
-> --- a/drivers/staging/wfx/hif_api_mib.h
-> +++ b/drivers/staging/wfx/hif_api_mib.h
-> @@ -158,7 +158,10 @@ struct hif_mib_extended_count_table {
->  	__le32 count_rx_bipmic_errors;
->  	__le32 count_rx_beacon;
->  	__le32 count_miss_beacon;
-> -	__le32 reserved[15];
-> +	__le32 count_rx_dtim;
-> +	__le32 count_rx_dtim_aid0_clr;
-> +	__le32 count_rx_dtim_aid0_set;
-> +	__le32 reserved[12];
->  } __packed;
->  
->  struct hif_mib_count_table {
-> -- 
-> 2.33.0
-> 
+Just name it "iov_iter_restore()", and (together with the actual
+iov_iter_restore_state() - I don't think it makes much sense to inline
+something like this that is by definition for the slow path when
+something failed) move it to lib/iov_iter.c
+
+If this allows us to remove the 'truncated' field from the iov_iter, I
+think it's a win overall.
+
+That said, I think your actual implementation of
+iov_iter_restore_state() is buggy. It's not just those state bits you
+need to restore, you do need to do all the "back out the i->iov/bvec
+pointers" games too. All the stuff that iov_iter_revert() does.
+
+Which means that I think your tricks to try to share the 'struct
+iov_iter_state' with the 'struct iov_iter' using unions are just ugly
+and pointless and make for more complex code. Because you can't just
+save/restore the 'state part' of it all, you do have to do more than
+that.
+
+So instead of the union, just have the state in some sane (different)
+form, and do the revert/advance thing taking different types of
+iterators into account. This is not supposed to be
+performance-critical code.
+
+Alternatively, you'd need to make the state part be *both* the unions,
+and restore the pointers that don't need restoring too. You end up
+with pretty much all of iov_iter.
+
+Al, what do you think?
+
+               Linus
