@@ -2,111 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA34406E2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD905406E40
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhIJP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:29:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39332 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbhIJP3c (ORCPT
+        id S234467AbhIJPgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:36:04 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:40486 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhIJPgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:29:32 -0400
-Date:   Fri, 10 Sep 2021 17:28:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631287700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EI3QVBpMpmvzHjzxfllWn6UuMbjPLIo79cBtSieAgwY=;
-        b=ol31PPlDXDfl+M5gSmepoP9EKuJUmJsp8JJkOV05HaEFdXil1HBYXUccnaSkldCpGVSMwv
-        2m8so64VziRj+v4bYNBow7z+MoMwEWytH2gwip8XuwRa7fQwlCfVqMmq3J8nvMmNnQfXUJ
-        GB3bRwAAnQfl+NGZV4OBfnBzY7fwV8h1LVrHpJoFfOi9tk6AmvWKpBAVrV6wHJR62EB1oo
-        4VoBvHzrj5LUWih47DumUm3N/rsGGmaTG2MV4CCs1oOzg+h8ZFiBiJVqbJOektAnR6tzn1
-        XF1khQe5YB1upskf7gQ70gMZhsF5Cul6RtPus5Ob4bqbfRGiWn6fVKSF3NAeIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631287700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EI3QVBpMpmvzHjzxfllWn6UuMbjPLIo79cBtSieAgwY=;
-        b=CTBuqRuz3Txo5V8Vb1FWxUyua1rQ2Bn2petDtwbDPd8lPf/aFLi22NPSg+P8fz5CeUVGde
-        HuHq2ya8kCWcvZCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 0/6] stackdepot, kasan, workqueue: Avoid expanding
- stackdepot slabs when holding raw_spin_lock
-Message-ID: <20210910152819.ir5b2yijkqly3o6l@linutronix.de>
-References: <20210907141307.1437816-1-elver@google.com>
- <69f98dbd-e754-c34a-72cf-a62c858bcd2f@linuxfoundation.org>
- <1b1569ac-1144-4f9c-6938-b9d79c6743de@suse.cz>
+        Fri, 10 Sep 2021 11:36:03 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOiW7-002vpN-NE; Fri, 10 Sep 2021 15:32:39 +0000
+Date:   Fri, 10 Sep 2021 15:32:39 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [git pull] iov_iter fixes
+Message-ID: <YTt6l9gDX+kXwtBW@zeniv-ca.linux.org.uk>
+References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+ <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
+ <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b1569ac-1144-4f9c-6938-b9d79c6743de@suse.cz>
+In-Reply-To: <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-10 12:50:51 [+0200], Vlastimil Babka wrote:
-> > Thank you. Tested all the 6 patches in this series on Linux 5.14. This problem
-> > exists in 5.13 and needs to be marked for both 5.14 and 5.13 stable releases.
+On Fri, Sep 10, 2021 at 09:08:02AM -0600, Jens Axboe wrote:
+
+> > You actually can cut it down even more - nr_segs + iov remains constant
+> > all along, so you could get away with just 3 words here...  I would be
 > 
-> I think if this problem manifests only with CONFIG_PROVE_RAW_LOCK_NESTING
-> then it shouldn't be backported to stable. CONFIG_PROVE_RAW_LOCK_NESTING is
-> an experimental/development option to earlier discover what will collide
-> with RT lock semantics, without needing the full RT tree.
-> Thus, good to fix going forward, but not necessary to stable backport.
+> Mmm, the iov pointer remains constant? Maybe I'm missing your point, but
+> the various advance functions are quite happy to increment iter->iov or
+> iter->bvec, so we need to restore them. From a quick look, looks like
+> iter->nr_segs is modified for advancing too.
+> 
+> What am I missing?
 
-  Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-for the series. Thank you.
-
-As for the backport I agree here with Vlastimil.
-
-I pulled it into my RT tree for some testing and it looked good. I had
-to
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3030,7 +3030,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-        head->func = func;
-        head->next = NULL;
-        local_irq_save(flags);
--       kasan_record_aux_stack(head);
-+       kasan_record_aux_stack_noalloc(head);
-        rdp = this_cpu_ptr(&rcu_data);
- 
-        /* Add the callback to our list. */
-
-We could move kasan_record_aux_stack() before that local_irq_save() but
-then call_rcu() can be called preempt-disabled section so we would have
-the same problem.
-
-The second warning came from kasan_quarantine_remove_cache(). At the end
-per_cpu_remove_cache() -> qlist_free_all() will free memory with
-disabled interrupts (due to that smp-function call).
-Moving it to kworker would solve the problem. I don't mind keeping that
-smp_function call assuming that it is all debug-code and it increases
-overall latency anyway. But then could we maybe move all those objects
-to a single list which freed after on_each_cpu()?
-
-Otherwise I haven't seen any new warnings showing up with KASAN enabled.
-
-Sebastian
+i->iov + i->nr_segs does not change - the places incrementing the former
+will decrement the latter by the same amount.  So it's enough to store
+either of those - the other one can be recovered by subtracting the
+saved value from the current i->iov + i->nr_segs.
