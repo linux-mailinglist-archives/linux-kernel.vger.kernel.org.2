@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0176A406C00
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0724F406C51
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhIJMgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S234013AbhIJMi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:38:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234009AbhIJMfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:35:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA80D61026;
-        Fri, 10 Sep 2021 12:33:48 +0000 (UTC)
+        id S234816AbhIJMhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:37:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF3FD6120C;
+        Fri, 10 Sep 2021 12:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277229;
-        bh=yNeSV/+GvOhN4sGBzmArfpkfRCnC8Sxs6NJWjqbipQw=;
+        s=korg; t=1631277346;
+        bh=F8QdmjtKL6/Wu8pkJufAIMMyWMxfPCEJTjYlh+/hMGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LHZFyb2EUBk7BAxkofj426PI4XOj4TL52V3v2la2OBS61V5rMVs/IG+dm/ZO5Lb4o
-         EX37UUkSZynKfWMm6GqzVMnFSk/WGEhHLppTRsAj1KPZ4k7AYacZU2r8GPBp98Maex
-         ck2WLeDZicYD5VlTRTe4oXpd/YwTTiYlXmdHZVK8=
+        b=07U5XhhCCHVoXSzh9155DYuciT2cS5pWSeI2xsMH7MKREFthOEv+hFs1qL2pot3Qk
+         pxaoOpMSvGgz7D1QMMYI4nopHjb1VEMQg+9T4RT2JKBfPliAHNmsnWaIifqFVP7ZTC
+         wppmh1tIRk1il1IvuVE6U3olw6D+m+qV8szj3BgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.10 26/26] PCI: Call Max Payload Size-related fixup quirks early
-Date:   Fri, 10 Sep 2021 14:30:30 +0200
-Message-Id: <20210910122917.104729046@linuxfoundation.org>
+        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 28/37] Revert "r8169: avoid link-up interrupt issue on RTL8106e if user enables ASPM"
+Date:   Fri, 10 Sep 2021 14:30:31 +0200
+Message-Id: <20210910122918.093706379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
-References: <20210910122916.253646001@linuxfoundation.org>
+In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+References: <20210910122917.149278545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Hayes Wang <hayeswang@realtek.com>
 
-commit b8da302e2955fe4d41eb9d48199242674d77dbe0 upstream.
+commit 2115d3d482656ea702f7cf308c0ded3500282903 upstream.
 
-pci_device_add() calls HEADER fixups after pci_configure_device(), which
-configures Max Payload Size.
+This reverts commit 1ee8856de82faec9bc8bd0f2308a7f27e30ba207.
 
-Convert MPS-related fixups to EARLY fixups so pci_configure_mps() takes
-them into account.
+This is used to re-enable ASPM on RTL8106e, if it is possible.
 
-Fixes: 27d868b5e6cfa ("PCI: Set MPS to match upstream bridge")
-Link: https://lore.kernel.org/r/20210624171418.27194-1-kabel@kernel.org
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/realtek/r8169_main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3246,12 +3246,12 @@ static void fixup_mpss_256(struct pci_de
- {
- 	dev->pcie_mpss = 1; /* 256 bytes */
- }
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -4713,6 +4713,7 @@ static void rtl_hw_start_8168g(struct rt
+ 	rtl_eri_clear_bits(tp, 0x1b0, ERIAR_MASK_0011, BIT(12));
  
- /*
-  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
+ 	rtl_pcie_state_l2l3_disable(tp);
++	rtl_hw_aspm_clkreq_enable(tp, true);
+ }
+ 
+ static void rtl_hw_start_8168g_1(struct rtl8169_private *tp)
 
 
