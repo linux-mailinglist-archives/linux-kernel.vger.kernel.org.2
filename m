@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74A2407103
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830D1407108
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 20:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhIJSkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 14:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
+        id S232108AbhIJSlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 14:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJSkF (ORCPT
+        with ESMTP id S229476AbhIJSlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:40:05 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4717DC061574;
-        Fri, 10 Sep 2021 11:38:54 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id j2so1720729pll.1;
-        Fri, 10 Sep 2021 11:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=fvpioIslolc0tYmZPPlkIYX+HxkKV9gDZuohkxnEZ4U=;
-        b=fDM/GNSegGerb2hbt312Td4wq8or5SqGP8HZzCMbLOKIDxvVs+6XRzYmKCowGg4aMw
-         j8D+yFvbCUNg+jQ4mILf1x9qjg0HOR7W0tXyItVcsdWuVo9T8ta06g6Kg6sccoQZXBbg
-         WoXxnldAj8Hd5v33rheJe/pKergLrFUmfjoJljCIyYCzoZF3sQurUFcoyLdy3J5H6V8F
-         IpRLklN2C3nSGPERf2GiTkkP77uV6nuw1xvpMLXAuwaWCKXpVmUJ4/eZtBRXUZl9WZ+u
-         QdeePTyCObJ8OiOyuf9rr0rYNAvsWURRx98lmVjQYL9lUufnJ8yVC1FBgyZcnNvpKmy+
-         QzXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=fvpioIslolc0tYmZPPlkIYX+HxkKV9gDZuohkxnEZ4U=;
-        b=4/Zu19B4SVozvhAJ7P/GkVJ0kj79x4au9IdtEBFNdW/7uYut9by/+wKJAJs7t7scqN
-         cGduanchgDDDNoQXOcKTTcfbUzvmJjheqfXR5IlqPqI6iOGckIi5d8XMeYDxGm91vCGA
-         /yFB+ea8cn2IdH4hk6DC8vxM9D2zwmYp9EDitgTATLXi4cLW1m+atj5IOQfoQFYvYyiz
-         Z6sx1GORqHVXTEEVo0rImwh73xfxZcF4juPpH6QbYzjRpF61QJJfHJLwnrZq1UiPVCl1
-         23KBfkxg8Ge5RCdBkG7gG2I7Poq2fIoEElNZIHzXxSoJ7J8TNGyzveWPZRPd5/J8lpc8
-         3n9w==
-X-Gm-Message-State: AOAM531KuVjNI6BzeoVc2tm31pABq7+6Liiuo2XQWz9OlaOjLjv/yl1Y
-        67fHwMFD5AWUCZmQozKaHaFOiscwLG/F+UYLA0g=
-X-Google-Smtp-Source: ABdhPJxTPyvzN23SZKD8CL0uzDp8+XO377H8VF/C0mNvSyP/ZGB9i8oTCvxU8gGA8IXzYfxhTBcOKA==
-X-Received: by 2002:a17:902:ec06:b0:138:c3af:d085 with SMTP id l6-20020a170902ec0600b00138c3afd085mr8890091pld.56.1631299133191;
-        Fri, 10 Sep 2021 11:38:53 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id x19sm5862658pfa.104.2021.09.10.11.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 11:38:52 -0700 (PDT)
-Message-ID: <613ba63c.1c69fb81.cc6c0.09fb@mx.google.com>
-Date:   Fri, 10 Sep 2021 11:38:52 -0700 (PDT)
-X-Google-Original-Date: Fri, 10 Sep 2021 18:38:46 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-Subject: RE: [PATCH 5.13 00/22] 5.13.16-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Fri, 10 Sep 2021 14:41:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0B4C061574;
+        Fri, 10 Sep 2021 11:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h4jPQ7Zdr5Ida+XAg8yR3XSpVV86/qySljCfBrpPhJQ=; b=i3xiCww++hTiz5JqZRPOVQX7Gi
+        C6sQr8nV7lGvueiQy8NPgpQmXWZgFO5db9flVZvPYgtYrFXt3g54fBQ7s90XeOwKj6saipHh0Cy3A
+        aZbMkCl0m/RjThlWDMCEz0SnFQSiZVHf4M1ypAQy3zwMDoACDlciEJxcv89b+RHwhSCo/l4p9WiRr
+        5s7tl/PbMXr2cz3VHJJSqQWBJU2o/YsvDHuk2oaCo8bXJKSJeaXLZe6lP781wRNKKTB4WRYHp551s
+        xCUSDR+4FRNC9zpsRyxSpCgW/nW2J1959tYQkSJ5ypDlLig5S5D1h6WhXNE4h8fNapoSG3g1WmFct
+        XkILBtJg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOlRs-002BtX-EB; Fri, 10 Sep 2021 18:40:28 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4ED5B98627A; Fri, 10 Sep 2021 20:40:27 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 20:40:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <20210910184027.GQ4323@worktop.programming.kicks-ass.net>
+References: <20210907202802.3675104-1-songliubraving@fb.com>
+ <20210907202802.3675104-2-songliubraving@fb.com>
+ <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
+ <YTtjeyfJXXiDielu@hirez.programming.kicks-ass.net>
+ <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96445733-055E-41E3-986B-5E1DC04ADEFA@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 14:29:59 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.13.16 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri, Sep 10, 2021 at 06:27:36PM +0000, Song Liu wrote:
 
-5.13.16-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+> This works great and saves 3 entries! We have the following now:
 
+Yay!
+
+> ID: 0 from bpf_get_branch_snapshot+18 to intel_pmu_snapshot_branch_stack+0
+
+is unavoidable, we need to end up in intel_pmu_snapshot_branch_stack()
+eventually.
+
+> ID: 1 from __brk_limit+477143934 to bpf_get_branch_snapshot+0
+
+could be elided by having the JIT emit the call to
+intel_pmu_snapshot_branch_stack directly, instead of laundering it
+through that helper I suppose.
+
+> ID: 2 from __brk_limit+477192263 to __brk_limit+477143880  # trampoline 
+> ID: 3 from __bpf_prog_enter+34 to __brk_limit+477192251
+
+-ENOCLUE
+
+> ID: 4 from migrate_disable+60 to __bpf_prog_enter+9
+> ID: 5 from __bpf_prog_enter+4 to migrate_disable+0
+
+I suppose we can reduce that to a single branch if we inline
+migrate_disable() here, that thing unfortunately needs one branch
+itself.
+
+> ID: 6 from bpf_testmod_loop_test+20 to __bpf_prog_enter+0
+
+And this is the first branch out of the test program, giving 7 entries
+now, of which we can remove at least 2 more with a bit of elbow greace,
+right?
+
+> ID: 7 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+> ID: 8 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+> 
+> I will fold this in and send v7. 
+
+Excellent.
