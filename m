@@ -2,135 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8F9406B30
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE647406B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbhIJMKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhIJMKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:10:36 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB9EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1631275760;
-        bh=pb1Nmeuk6fmE1u4MF/nb7SoeJbvxphmpweu8NYMXWG0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FpyqFjWNe6GQOwYAFkVnCFD/CJtU/FeJJ8bjdiHqSBdJTXLDo+8lnn3jQ//cQe71v
-         AjZCT4iPZe74NSnCisluphzHZGybROjY+5GpCT56fWjmaz0B1kLbUzwRO7w62FNLcg
-         lpcp2Nen+RMRL+Ka6HnqusUvBwiwVAfBN6Kh/r2WlnbfJbB7F28xMIdfTZMqrP9App
-         ZBsB8Re2jgMejPC+wX56Yo/bQnNf8GD4kKIroTyqbkK3/zoxTTsIyJZ1vtsSnmUQ38
-         RPvS87awgC+KG1wloKAeXiD8488kCUDqVeqdR15ykQUtNX+oCQGobsfrZoSrtN01RP
-         uArZnch0plSxw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H5ZRf6jq5z9sW5;
-        Fri, 10 Sep 2021 22:09:18 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
-        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com
-Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
-In-Reply-To: <20210909190342.GE4323@worktop.programming.kicks-ass.net>
-References: <20210909075700.4025355-1-eranian@google.com>
- <20210909075700.4025355-2-eranian@google.com>
- <20210909190342.GE4323@worktop.programming.kicks-ass.net>
-Date:   Fri, 10 Sep 2021 22:09:12 +1000
-Message-ID: <878s04my3b.fsf@mpe.ellerman.id.au>
+        id S233077AbhIJMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232954AbhIJMNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:13:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2CF5611CA;
+        Fri, 10 Sep 2021 12:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631275934;
+        bh=RKmdETPSsxWeVIvn7/yhxi2WRQdN2DlSgvZA9UKyG8Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=By3Bs7kIs5Fcyac4aNRXKBsZwTcLD4PogNBS38ZSxeuBZ399Zw/JIkIQWreGt8vmQ
+         Shr/FFe46GC1HLPu6LhwPltsdveZuiVAIlxUsiriKhBomkGfGXJXphuFlmZ3zEXUTH
+         2a8UD8ukoed+S7bPhmJjx70xCgihAuyKD/rFrMAY6BiZEhobGGnHacoFAd7Wq9ihYI
+         dnKLGOrmNm8gi3D8WE5WllorzB2EHC6K8eqlwgY0eiBqAiUHWTq/0F2c+2bPI46U+K
+         HhckCNwwKmpv04Hu133uCUzpz53hm6epKUKYhMB875LGLqSz9LV1XOTu2g+X1xMtsF
+         ykUCJH0j4OUAQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mOfO1-0004rx-Cg; Fri, 10 Sep 2021 14:12:06 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] USB: serial: allow hung up ports to be suspended
+Date:   Fri, 10 Sep 2021 14:11:26 +0200
+Message-Id: <20210910121128.18664-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
->> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
->> index f92880a15645..eb11f383f4be 100644
->> --- a/include/uapi/linux/perf_event.h
->> +++ b/include/uapi/linux/perf_event.h
->> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
->>  struct perf_branch_entry {
->>  	__u64	from;
->>  	__u64	to;
->> -	__u64	mispred:1,  /* target mispredicted */
->> -		predicted:1,/* target predicted */
->> -		in_tx:1,    /* in transaction */
->> -		abort:1,    /* transaction abort */
->> -		cycles:16,  /* cycle count to last branch */
->> -		type:4,     /* branch type */
->> -		reserved:40;
->> +	union {
->> +		__u64	val;	    /* to make it easier to clear all fields */
->> +		struct {
->> +			__u64	mispred:1,  /* target mispredicted */
->> +				predicted:1,/* target predicted */
->> +				in_tx:1,    /* in transaction */
->> +				abort:1,    /* transaction abort */
->> +				cycles:16,  /* cycle count to last branch */
->> +				type:4,     /* branch type */
->> +				reserved:40;
->> +		};
->> +	};
->>  };
->
->
-> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
-> one. Power folks, could you please have a look?
+User space can keep a tty open indefinitely and that should not prevent
+a hung up port and its USB device from being runtime suspended.
 
-The bit number of each field changes between big and little endian, but
-as long as kernel and userspace are the same endian, and both only
-access values via the bitfields then it works.
+Also clean up a few related error labels in a preparatory patch.
 
-It's preferable to have the ENDIAN_BITFIELD thing, so that the bit
-numbers are stable, but we can't change it now without breaking ABI :/
-
-Adding the union risks having code that accesses val and expects to see
-mispred in bit 0 for example, which it's not on big endian.
-
-If it's just for clearing easily we could do that with a static inline
-that sets all the bitfields. With my compiler here (GCC 10) it's smart
-enough to just turn it into a single unsigned long store of 0.
-
-eg:
-
-static inline void clear_perf_branch_entry_flags(struct perf_branch_entry *e)
-{
-        e->mispred = 0;
-        e->predicted = 0;
-        e->in_tx = 0;
-        e->abort = 0;
-        e->cycles = 0;
-        e->type = 0;
-        e->reserved = 0;
-}
+Johan
 
 
-It does look like we have a bug in perf tool though, if I take a
-perf.data from a big endian system to a little endian one I don't see
-any of the branch flags decoded. eg:
+Johan Hovold (2):
+  USB: serial: clean up core error labels
+  USB: serial: allow hung up ports to be suspended
 
-BE:
+ drivers/usb/serial/usb-serial.c | 59 +++++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 29 deletions(-)
 
-2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-... branch stack: nr:28
-.....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
+-- 
+2.32.0
 
-LE:
-
-2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-... branch stack: nr:28
-.....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
-                                                         ^
-                                                         missing P
-
-I guess we're missing a byte swap somewhere.
-
-cheers
