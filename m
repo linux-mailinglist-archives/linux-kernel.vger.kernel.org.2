@@ -2,196 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5524069EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A8C4069EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbhIJKQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 06:16:05 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:44983 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233014AbhIJKPt (ORCPT
+        id S232757AbhIJKQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:16:07 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39939 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233028AbhIJKPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:15:49 -0400
+        Fri, 10 Sep 2021 06:15:52 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 789FF2B013F5;
-        Fri, 10 Sep 2021 06:14:36 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id B458D5C0134;
+        Fri, 10 Sep 2021 06:14:40 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 10 Sep 2021 06:14:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=THjyt/udMqvIS
-        g7/C7BNDCUAlJStjMNR1MB6XhOeOzg=; b=os1ue1yYQlHuSypaKJXgRcobxzFOn
-        KLQPB1ItAoZPXtNimByXgLZFOft9KD0rswZ/ljtTjM803FvgmpVpgUh3CLnBbTY0
-        +nMXLnN1xuzdWGCM5HhgkBxW/u+yA3y2Q3UHB6rT3n1YWbdFpca1GY4UtHRchBKm
-        COpjCIHHZcTBmkQdwgiv4Uan1QPqDKasI+L08A/RNNnbEf9+NDKdffpAvetiF9kq
-        7MmNdm3LKfo1L5+uLBVrSc3eLYb5YJJZzBHJsttc2qEIEKPHKof41uhufmhduPtV
-        7qewwX66bSERofVMxgg79lZNXb/5mnxIVCcwOWVnPBnpSDqFVSumenz9Q==
+  by compute4.internal (MEProxy); Fri, 10 Sep 2021 06:14:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=THjyt/udMqvISg7/C7BNDCUAlJStjMNR1MB6XhOeOzg=; b=Q0KUlGP3
-        5KdAE/kmRk0YcujRCdB7e0GLja4wNw1lQuGdErGpwpOt5o1Uai7qISUJbKfU9E5u
-        DhS0pRuYcChRHkPQFazXVXDlAHccyRoOK9NVgT9c5oAZImoMzxNR9f9+9kdp/dRG
-        iUE7yPvIUE8MUKygMsPUkFNVJDPl9opXwhwiq2thmkvbGF5/+cI95sGw0Fah+//x
-        GWG5N0HHME0qpbhavr8SY11w1e8nFmNd8P10rfb5bKliuavo/PGAsGEVJlKCq/Ca
-        fkiu2l0oI4N8JMKVs5NT7f7qAh1n/gWS9+W7WzRBuSOlz5j1jyXyA0sY6+qNGlzl
-        c3MnO7MJ+pBysQ==
-X-ME-Sender: <xms:CzA7YdMhu3iTLixe02I63ClFyYUVOUN8nfj0rK3R9JKRSYSfj_L0vQ>
-    <xme:CzA7Yf8Ui_id_eU3GTRWD7wVpCll385nG2thLcVrjNR4gasOJITCAxo01nymlRzUV
-    SUScKHLJNxHH5LiLbo>
-X-ME-Received: <xmr:CzA7YcRiiTw5xkGl5JhaHflTJyl8q92nAL3PnKZHqdmx4bUNbxe4VQLTBrOxPR2-3Jq9lux5Ft5all6m16a03fE9u31wvkPu5soW>
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/wNS6+
+        or464rDz3sY0LcWdGJtIegU66I3vn7RxITel4=; b=ixc+is5ewLeMt2ZWDhbj5L
+        LfY9wtMjuhJ5SjEko9OAPNqOeOlC3UirV1YLhye04C6w3G7P07EPSbWk6sargoaR
+        ektsl/n6lNBCK7OGAxG28qpTWDU8aPfbfMcKX/xQJOlgn4uy+Q2aT0vh+qHHJld6
+        1oUnvpCbtEK2NL3/Q64R+XwssHRECXjXIcaqw3zg9oJy0Dlv6pnl64IQhLbWp+dk
+        c36aze02e4H4q9caIlTiFRBp89dI3+wN9KBp9ZMflYJUAF+cVhkA0p5FDBjSZByA
+        IU18tkfmEMnEH4GQ9GBb/ELPnomqy7iQsmuGbeke18aB2eahJ0AaDuCb9D3etSHw
+        ==
+X-ME-Sender: <xms:EDA7YUwM28sR5NGGJjXqMSnz_hn3JYUHBtFMjbC94lJl7Nj_8k2eTA>
+    <xme:EDA7YYSgVh-JJK3SK8VidWG6aBBC1pw7HLLmmPt9LESE1CNgGC7NLnIPFHiUgj6ZU
+    4Wf8LZHHnoE1g>
+X-ME-Received: <xmr:EDA7YWVIKZU4XlPPDoryRgVvTVOPSeVyUFJM1w9pDfs52i5IVsr-zl9N5o5Sm9eWAlpoI8T5U6gTCaRpgwVM8hdpr4V3SJJO>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgvdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:CzA7YZuRzn4u0_5t8-e10A6krjJKBbwScWzVS7UBTUZ0TXXbtoTSqw>
-    <xmx:CzA7YVcF7XWqV-91dmSyu7PK3C9oKOHKnvlxCFgM5JRGK5RBKhQdDA>
-    <xmx:CzA7YV0M0gcE2OpSMZJvVcnwSBB5Q5kzC-YyvnuY33zK9_xBuUt8ww>
-    <xmx:DDA7YaOrqgA3bperzcYGWWGF1DaEU7uJHdSFWXcLg1h3edluSjMMDJ-sZ5c>
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
+    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
+    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeetveff
+    iefghfekhffggeeffffhgeevieektedthfehveeiheeiiedtudegfeetffenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhes
+    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:EDA7YSj9nTHQKF1bDS1CtxKM6t9TLU6eSM29aS1M9dg8424dbutpPw>
+    <xmx:EDA7YWB-2l5VUhCyPkEZHHBamW5_0jRPiUmo8iMH5lRmF-wiOeLu5A>
+    <xmx:EDA7YTKr-PE2ixBo5wmEQ7vv8tBMV7JiaquyjmJYnsR99TEBRjDLvw>
+    <xmx:EDA7YcBTedB7etV_vVbWJQW8gzxfjc2co8Md5IrRLq998BojXTywnA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Sep 2021 06:14:35 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+ 10 Sep 2021 06:14:38 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 12:14:35 +0200
+From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        John Stultz <john.stultz@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: [PATCH v4 24/24] drm/exynos: dsi: Adjust probe order
-Date:   Fri, 10 Sep 2021 12:12:18 +0200
-Message-Id: <20210910101218.1632297-25-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210910101218.1632297-1-maxime@cerno.tech>
-References: <20210910101218.1632297-1-maxime@cerno.tech>
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Beulich <jbeulich@suse.com>
+Subject: Re: [PATCH v3 2/3] xen/blkfront: don't take local copy of a request
+ from the ring page
+Message-ID: <YTswC2T2cvsEw2dP@mail-itl>
+References: <20210730103854.12681-1-jgross@suse.com>
+ <20210730103854.12681-3-jgross@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bm4wVgWanBEqw53D"
+Content-Disposition: inline
+In-Reply-To: <20210730103854.12681-3-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without proper care and an agreement between how DSI hosts and devices
-drivers register their MIPI-DSI entities and potential components, we can
-end up in a situation where the drivers can never probe.
 
-Most drivers were taking evasive maneuvers to try to workaround this,
-but not all of them were following the same conventions, resulting in
-various incompatibilities between DSI hosts and devices.
+--bm4wVgWanBEqw53D
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 10 Sep 2021 12:14:35 +0200
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Juergen Gross <jgross@suse.com>
+Cc: xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Jan Beulich <jbeulich@suse.com>
+Subject: Re: [PATCH v3 2/3] xen/blkfront: don't take local copy of a request
+ from the ring page
 
-Now that we have a sequence agreed upon and documented, let's convert
-exynos to it.
+On Fri, Jul 30, 2021 at 12:38:53PM +0200, Juergen Gross wrote:
+> In order to avoid a malicious backend being able to influence the local
+> copy of a request build the request locally first and then copy it to
+> the ring page instead of doing it the other way round as today.
+>=20
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Reviewed-by: Jan Beulich <jbeulich@suse.com>
+> Acked-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+> ---
+> V2:
+> - init variable to avoid potential compiler warning (Jan Beulich)
+> ---
+>  drivers/block/xen-blkfront.c | 25 +++++++++++++++----------
+>  1 file changed, 15 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> index 15e840287734..b7301006fb28 100644
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/exynos/exynos_drm_dsi.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+(...)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-index e39fac889edc..dfda2b259c44 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-@@ -1529,6 +1529,7 @@ static const struct drm_encoder_helper_funcs exynos_dsi_encoder_helper_funcs = {
- 
- MODULE_DEVICE_TABLE(of, exynos_dsi_of_match);
- 
-+static const struct component_ops exynos_dsi_component_ops;
- static int exynos_dsi_host_attach(struct mipi_dsi_host *host,
- 				  struct mipi_dsi_device *device)
- {
-@@ -1536,6 +1537,7 @@ static int exynos_dsi_host_attach(struct mipi_dsi_host *host,
- 	struct drm_encoder *encoder = &dsi->encoder;
- 	struct drm_device *drm = encoder->dev;
- 	struct drm_bridge *out_bridge;
-+	struct device *dev = host->dev;
- 
- 	out_bridge  = of_drm_find_bridge(device->dev.of_node);
- 	if (out_bridge) {
-@@ -1585,7 +1587,7 @@ static int exynos_dsi_host_attach(struct mipi_dsi_host *host,
- 	if (drm->mode_config.poll_enabled)
- 		drm_kms_helper_hotplug_event(drm);
- 
--	return 0;
-+	return component_add(dev, &exynos_dsi_component_ops);
- }
- 
- static int exynos_dsi_host_detach(struct mipi_dsi_host *host,
-@@ -1593,6 +1595,9 @@ static int exynos_dsi_host_detach(struct mipi_dsi_host *host,
- {
- 	struct exynos_dsi *dsi = host_to_dsi(host);
- 	struct drm_device *drm = dsi->encoder.dev;
-+	struct device *dev = host->dev;
-+
-+	component_del(dev, &exynos_dsi_component_ops);
- 
- 	if (dsi->panel) {
- 		mutex_lock(&drm->mode_config.mutex);
-@@ -1716,7 +1721,7 @@ static int exynos_dsi_bind(struct device *dev, struct device *master,
- 		of_node_put(in_bridge_node);
- 	}
- 
--	return mipi_dsi_host_register(&dsi->dsi_host);
-+	return 0;
- }
- 
- static void exynos_dsi_unbind(struct device *dev, struct device *master,
-@@ -1726,8 +1731,6 @@ static void exynos_dsi_unbind(struct device *dev, struct device *master,
- 	struct drm_encoder *encoder = &dsi->encoder;
- 
- 	exynos_dsi_disable(encoder);
--
--	mipi_dsi_host_unregister(&dsi->dsi_host);
- }
- 
- static const struct component_ops exynos_dsi_component_ops = {
-@@ -1821,7 +1824,7 @@ static int exynos_dsi_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(dev);
- 
--	ret = component_add(dev, &exynos_dsi_component_ops);
-+	ret = mipi_dsi_host_register(&dsi->dsi_host);
- 	if (ret)
- 		goto err_disable_runtime;
- 
-@@ -1835,10 +1838,12 @@ static int exynos_dsi_probe(struct platform_device *pdev)
- 
- static int exynos_dsi_remove(struct platform_device *pdev)
- {
-+	struct exynos_dsi *dsi = platform_get_drvdata(pdev);
-+
-+	mipi_dsi_host_unregister(&dsi->dsi_host);
-+
- 	pm_runtime_disable(&pdev->dev);
- 
--	component_del(&pdev->dev, &exynos_dsi_component_ops);
--
- 	return 0;
- }
- 
--- 
-2.31.1
+> @@ -827,10 +832,10 @@ static int blkif_queue_rw_req(struct request *req, =
+struct blkfront_ring_info *ri
+>  	if (setup.segments)
+>  		kunmap_atomic(setup.segments);
+> =20
+> -	/* Keep a private copy so we can reissue requests when recovering. */
+> -	rinfo->shadow[id].req =3D *ring_req;
+> +	/* Copy request(s) to the ring page. */
+> +	*final_ring_req =3D *ring_req;
 
+Is this guaranteed to not be optimized by the compiler in an unsafe way
+(like, do the operation the other way around)?
+My version of the patch had "wmb()" just before, maybe a good idea to
+add it here too?
+
+>  	if (unlikely(require_extra_req))
+> -		rinfo->shadow[extra_id].req =3D *extra_ring_req;
+> +		*final_extra_ring_req =3D *extra_ring_req;
+> =20
+>  	if (new_persistent_gnts)
+>  		gnttab_free_grant_references(setup.gref_head);
+> --=20
+> 2.26.2
+>=20
+>=20
+
+--=20
+Best Regards,
+Marek Marczykowski-G=C3=B3recki
+Invisible Things Lab
+
+--bm4wVgWanBEqw53D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmE7MAwACgkQ24/THMrX
+1ywDTgf/cDDueolNeVBsdSwc5Iux/HGLE7puVzmumjIhi8y29ZXfN2PQ2sb2B/dj
+/cQLAGsch4KXU0IzHIAzzG8RHMLAToSTCisFHArlrpIYkxy1MlmbpboffrxqTohl
+GEbW+f3lh+NT2/z5bA/iBVNnbWk4fLX/IdxuohxpsDKC/W1LKihh5HDO1lJAWmCj
+uw+Ijvw7ljCAHlQaJVoGjjZv21OOu0bnT5+SCJjceL32UFQhOmBdL5bcGfvpcJRL
+lLF27Bw4jMLYwF7uhZVxPthldKLqCz2x4vqCNMQWc17bSAJzXTdSFxE9KeyaYy1l
+spoh1nVkPtrC+hrflObZihp/IQPX6g==
+=mjV6
+-----END PGP SIGNATURE-----
+
+--bm4wVgWanBEqw53D--
