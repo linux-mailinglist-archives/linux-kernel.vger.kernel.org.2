@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE6B40709C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF56C4070A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhIJRi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        id S231594AbhIJRon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhIJRi5 (ORCPT
+        with ESMTP id S229476AbhIJRol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:38:57 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74031C061574;
-        Fri, 10 Sep 2021 10:37:46 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id j6so2179007pfa.4;
-        Fri, 10 Sep 2021 10:37:46 -0700 (PDT)
+        Fri, 10 Sep 2021 13:44:41 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52E5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id q3so3354054iot.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jL2YbilCduyWVuLH2nyWGfZ9AabnwMlBBSRytcjIHVA=;
-        b=GgBEAjpyJudHJW1qXwmNtoQyZEkoV+deBT9s3t6hEcqTihdSKoJEvrP13wsSDQ40hA
-         ZSn9iYRFxbjcu5jnWG7iujvujUDDXs82ys+0QLYnpH+D6ghZYdSu8ylk8Y1Y/WpKTavC
-         c35/jfw/5cwmI20noQzrqxpRY0lENcALsrDY/AzTB13OSLbkpo4sABmnANkk6ZmJ9IbK
-         9duYffwM7wGLWyZVdbP+krzQNNtgcKbnU+lq2GUdwb4iN8lhAQVjg2psAPXZ3Rnzab5U
-         OB2j8Q2RUw1tqPt7uR4orpTvMBtmwroHwH4E4SniulU6kgOgJoZO8zc1moR3Vy52Sqn3
-         4dLg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Qw3i7ZkRYyRAIDKAvMyUaqPTTRDJN0J3gzh1YtLJNZI=;
+        b=H0qmjbKYUEvyXyLOKZSh7axYPu5rWika6mv2MFuBPBKYYGY7sLSyUD16rVZbR9Iig3
+         bOK2yBJ9w1rvQBTuHa84A/SdI+JFHBlrzRZtRmrPydwIUcoj9lvSkFf6IzB9UiB5Stxt
+         0R3p4cFeKAlcXs/PGQ6OHHkr7OxH95OaY6Srk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jL2YbilCduyWVuLH2nyWGfZ9AabnwMlBBSRytcjIHVA=;
-        b=5KmHih7wvnOnvlaFXOhb6fYdlkc8Jnt0QRzMG2JTp9Enmif7AQTuJYvClREBWjoVjD
-         ziqE9sFUlbvnKBCmv5ij5FOPoiZbNjNfBTKLCk7xPP8/pSIC72H6aY0F15f8drV4l4hZ
-         FvasT7CSPNjsoMIk7nfhvDMEjH00T3NS1gOP96wgAPDJzSjR66fmOp2Qeu1nSDN80ShK
-         gLWCA6RWHbsyhtTlzW/yGcvLAwmsePYmzUsWZW/TMtpa+QyFG3ryB1yk+VKAdqflUyFR
-         auJsbBkC+D7VQpGdnpEV+yVjPBBN/qeub0CTRHNxM1ye+OJ3ccZie+UYRr59E946FngG
-         UBjw==
-X-Gm-Message-State: AOAM530WZ+zOH5/sbtHFIzh3fNE/vF61v1LCJYiSq253iH1aOQNX9OMo
-        63zb58dCURiaCWwBHSoMdXE=
-X-Google-Smtp-Source: ABdhPJy5yItH1fYG9jOhsOPwY97ij9yRuH3XG0IVVG0R6TASUN1cCGQDdhHUVpz6ETbhv+lWeHxGFA==
-X-Received: by 2002:a62:7802:0:b0:3f3:7300:a602 with SMTP id t2-20020a627802000000b003f37300a602mr9150817pfc.52.1631295465697;
-        Fri, 10 Sep 2021 10:37:45 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id j25sm4513671pff.34.2021.09.10.10.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 10:37:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 10 Sep 2021 07:37:44 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        "brookxu.cn" <brookxu.cn@gmail.com>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-Message-ID: <YTuX6Cpv1kg+DHmJ@slm.duckdns.org>
-References: <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
- <YTpY0G3+IJYmGbdd@blackbook>
- <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
- <20210910092310.GA18084@blackbody.suse.cz>
- <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
- <20210910153609.GC24156@blackbody.suse.cz>
- <YTuH9fULTx+pLuuH@slm.duckdns.org>
- <CAHVum0ezWW=4x2YgXHhEUFQOkFGBpP+R1Uc-KedHr+r0LGibwA@mail.gmail.com>
- <YTuTr5Hw4hPIWepd@slm.duckdns.org>
- <CAHVum0e+68df7b_e0RoCGgA1h_SLdTt9t2MZ0VgA9afPW9iEvg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Qw3i7ZkRYyRAIDKAvMyUaqPTTRDJN0J3gzh1YtLJNZI=;
+        b=KqcBFAOjUZE2XUGWXvu8HOvIJFoJWjzznYoEs9b7TE0VP2NF4Y8m5IO/gAARbl0Pk7
+         zIFAmhbNXZIvwpVhZhrAGntdZMxeEXbv4PIdn7IdG40C41hmUkezBE4hLRL25ZE9gwUm
+         XDY8FHJ0kYj44R2N+yqEC/Y/2XxmdWqzA4SzqzmwNsPxUvvOeZy6moj9FvEsZJdGN2PS
+         T4ENZr11yrdeqV9LE7PH4xMApieLV8rguG18BFlOTnMnyzSnpkI1nAmHpuWbhOCRLxaq
+         SevJ6HTbR8TAdR3ITqBHbcqWmsSXnrFbzozfPPann2FEZVxTOH0rXakyRhfACGutoT+y
+         rrfQ==
+X-Gm-Message-State: AOAM531FEBfsSSK662/LsIv9w9YqyLHLKLP5/P6hl3AA73SWowSmq+BU
+        FFhrwlxY2rn/2Q9hOvPWcORVnw==
+X-Google-Smtp-Source: ABdhPJxbeVole14DxMmq7hdrTu6bspXWv6Dh2xY5aXGIAfaszutk1niQpVx0lIia221XbGJCTsH67w==
+X-Received: by 2002:a5d:9145:: with SMTP id y5mr7905456ioq.200.1631295810144;
+        Fri, 10 Sep 2021 10:43:30 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l1sm2867638ilc.65.2021.09.10.10.43.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 10:43:29 -0700 (PDT)
+Subject: Re: After KUnit update for Linux 5.15-rc1 - unable to share VFAT
+ filesystem via samba
+To:     Arthur Marsh <arthur.marsh@internode.on.net>
+Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f1d84102-6edf-271f-52f9-0d4bbc85c0c7@linuxfoundation.org>
+Date:   Fri, 10 Sep 2021 11:43:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHVum0e+68df7b_e0RoCGgA1h_SLdTt9t2MZ0VgA9afPW9iEvg@mail.gmail.com>
+In-Reply-To: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Arthur,
 
-On Fri, Sep 10, 2021 at 10:31:02AM -0700, Vipin Sharma wrote:
-> I don't have a strong aversion to hierarchical events only as well if
-> that is more suited for the cgroup v2 style.
+On 9/10/21 5:57 AM, Arthur Marsh wrote:
+> 
+>   Hi, I have been sharing an old VFAT formatted hard disk on one pc to
+> another using Samba and sometime after kernel 5.14.0 it stopped working (apparently no longer being shared as the mount.smbfs command
+> on the client failed with error -13 yet mount.smbfs still worked for
+> ext3 filesytems shared from the same machine which had the VFAT
+> filesystem).
+>   The only error I saw on the machine with the VFAT formatted hard disk
+> was the output of the mount command had truncated the name of the
+> mount to only include the first 4 characters of the base name of the
+> mount point.
+>   e.g. when VFAT filesystem was mounted on /mnt/victoria, the output of
+> the mount command showed the filesytem mounted on /mnt/vict
+> 
 
-It's not a hard requirement but I'd prefer hierarchical over local unless
-there are strong reasons against doing so.
+This could be path name related to the second bad commit in your bisect.
 
-Thanks.
+> The kernel build used was i386 with gcc 11.2.0-4 using
+> 
+> make - j2 menuconfig bindeb-pkg
+> 
+> .config available on request.
+> 
 
--- 
-tejun
+Can you send your config and dmesg? This will help determine if
+KUNIT is enabled - it shouldn't be.
+
+>   The git-bisect was:
+> victoria:/usr/src/linux# git bisect loggit bisect start '--' 'fs/fat'#
+> good: [7d2a07b769330c34b4deabeed939325c77a7ec2f] Linux 5.14git bisect
+> good 7d2a07b769330c34b4deabeed939325c77a7ec2f# bad:
+> [a3fa7a101dcff93791d1b1bdb3affcad1410c8c1] Merge branches 'akpm' and
+> 'akpm-hotfixes' (patches from Andrew)git bisect bad
+> a3fa7a101dcff93791d1b1bdb3affcad1410c8c1# good:
+> [edb0872f44ec9976ea6d052cb4b93cd2d23ac2ba] block: move the bdi from
+> the request_queue to the gendiskgit bisect good
+> edb0872f44ec9976ea6d052cb4b93cd2d23ac2ba# good:
+> [b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd] fat: Add KUnit tests for
+> checksums and timestampsgit bisect good
+
+
+> b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd# bad:
+
+This one is a KUnit patch
+Subject: [PATCH] fat: Add KUnit tests for checksums and timestamps
+
+
+> [c815f04ba94940fbc303a6ea9669e7da87f8e77d] Merge tag
+> 'linux-kselftest-kunit-5.15-rc1' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftestgit
+> bisect bad c815f04ba94940fbc303a6ea9669e7da87f8e77d# first bad commit:
+> [c815f04ba94940fbc303a6ea9669e7da87f8e77d] Merge tag
+
+Subject: [PATCH] d_path: make 'prepend()' fill up the buffer exactly on
+  overflow
+
+> 'linux-kselftest-kunit-5.15-rc1' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
+>
+thanks,
+-- Shuah
