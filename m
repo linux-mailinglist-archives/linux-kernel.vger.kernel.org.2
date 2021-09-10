@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528734073D0
+	by mail.lfdr.de (Postfix) with ESMTP id 9B58A4073D1
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhIJXY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbhIJXYR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:24:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2E9C061574;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id j16so3244062pfc.2;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
-        b=N5V+KCdsfUx5v0OAtOaJpLOyWhfp2PFnTDIlXSfYl6DhWMWY2OA6H7h6umO2TXxRT/
-         49nXIVUa5GR46TWfet4+KNH+r62lpZFr6wi1DTUSutyLMRJhRyIO5XmALb4y3m/03Skd
-         AeVKKWr82P9ZHprxWBlJ85khqt6elbfpOcVbfDwrwXb+yOBo5Va/o+aKETRjv0nOTlb7
-         36e+hMIx8fd+ZuRK+YWLgOHTTYvvb6CVQoA0BgC+LgJeVfyJ0legT7ZaJPjs5bK19X3P
-         fmVEUftPr2HVZ6h6JwKJSgu6CKlUV6/wA/9N6NSIo3iDrF4pq9gBoMlF0fbzl6MQF6iq
-         b4Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
-        b=LSouG6jRhr74r7qufuyL8+RN+UyVcG2LUlVQRTc6yLqUtkv+M/Jh9LNDwbAHYXPxWf
-         gzpnNt62QA9YHSvxzHaqeMfWOq5ntu/oXdDo33Uma7SDDsG8QBOnZaOrMGuF/Xn9niB0
-         8h6h1wUY+oqylvViiIN/965F8Ubojjw+OobOgtYL02+W/A3KqQFLc0FnWWuVdT3mq972
-         30XTW2YD7cHBr1yXGM9DdwC+LGXXcbuP+nNiQroBC+N39f7hzJbqeomeoys+cAyK0iMy
-         77UlEsJA0qqhvkZenIqKqvdnw+4MDTmldocUjMmcrfdnoRwjJUJkR/EpKV7lUiTeQFwu
-         PLuA==
-X-Gm-Message-State: AOAM531DHjE94/HolVtqqPByuW5BjhYl5IcSg5Q+W51kAMRxGrZcocry
-        HaaKTqi8Az+chlf+dHiAySM=
-X-Google-Smtp-Source: ABdhPJwrI+P4sIrm36OEQcMJbs9b+blsntJXiPWjIGX17mkNBaW3eacpOKw/O0GDa6tigKfbnfjxew==
-X-Received: by 2002:a63:7e11:: with SMTP id z17mr139932pgc.436.1631316185321;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5d1f])
-        by smtp.gmail.com with ESMTPSA id f6sm5058pfa.110.2021.09.10.16.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 16:23:03 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
-Message-ID: <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
-References: <20210910225207.3272766-1-keescook@chromium.org>
+        id S234845AbhIJXYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234798AbhIJXYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:24:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2949961206;
+        Fri, 10 Sep 2021 23:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631316201;
+        bh=N7LKktutD+QwQybp5f/rKrBsVZiJeC/R7umGYSMMqXk=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=TYKH7ZNKWMXywDAwVeL41AEHBwT+2Vzt7M/6twb7POXVBhQz+P2DkIFADYuFtOdGx
+         LF5gd7EKeDKaPExyAi4PbCfFtOpf4PZKeC0CAoYYc7ez0923ROqEZUr7zW85B4ktpa
+         lDlIki6s0Z4rv0McrrYS37v9U87OlK9g27aPge3XQfDC23vaKfSY+DESsMrbkfCJf6
+         VosSrN7sZEIiDmiae/9ba5j5NXfePWjNrK56ye2MER1IFu1M4Imlq6wZv8foOSJtF8
+         8QDQKcxjTlAh5c1MqN8Q6IUytTWPH7eBVXeIsK3kgdDK5RHZuOPPn4d6ft5vBuA0me
+         boG9DR4Cs9CZA==
+Date:   Fri, 10 Sep 2021 16:23:20 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Jan Beulich <jbeulich@suse.com>
+cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH 06/12] swiotlb-xen: limit init retries
+In-Reply-To: <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
+Message-ID: <alpine.DEB.2.21.2109101621430.10523@sstabellini-ThinkPad-T480s>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com> <984fa426-2b7b-4b77-5ce8-766619575b7f@suse.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910225207.3272766-1-keescook@chromium.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 03:52:07PM -0700, Kees Cook wrote:
-> GCC 4.9 does not like having struct assignments to 0 when members may be
-> compound types. For example, there are 186 instances of these kinds of
-> errors:
+On Tue, 7 Sep 2021, Jan Beulich wrote:
+> Due to the use of max(1024, ...) there's no point retrying (and issuing
+> bogus log messages) when the number of slabs is already no larger than
+> this minimum value.
 > 
-> drivers/virtio/virtio_vdpa.c:146:9: error: missing braces around initializer [-Werror=missing-braces ]
-> drivers/cxl/core/regs.c:40:17: error: missing braces around initializer [-Werror=missing-braces]
-> 
-> Since "= { 0 }" and "= { }" have the same meaning ("incomplete
-> initializer") they will both initialize the given variable to zero
-> (modulo padding games).
-> 
-> After this change, I can almost build the "allmodconfig" target with
-> GCC 4.9 again.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-...
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
 
->  .../selftests/bpf/prog_tests/perf_branches.c  |   4 +-
->  .../selftests/bpf/prog_tests/sk_lookup.c      |  12 +-
->  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
->  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
->  .../selftests/bpf/progs/test_sk_assign.c      |   6 +-
->  .../selftests/bpf/progs/test_xdp_vlan.c       |   8 +-
 
-Those have nothing to do with GCC. They are compiled with clang with -target bpf.
-Did you check that bpf selftests still pass?
-We've had issues with older clang generating different code with zero and non-zero
-assignments and libbpf was confused.
-It should all work now, but please run the tests.
+> --- a/drivers/xen/swiotlb-xen.c
+> +++ b/drivers/xen/swiotlb-xen.c
+> @@ -207,7 +207,7 @@ retry:
+>  	swiotlb_set_max_segment(PAGE_SIZE);
+>  	return 0;
+>  error:
+> -	if (repeat--) {
+> +	if (nslabs > 1024 && repeat--) {
+>  		/* Min is 2MB */
+>  		nslabs = max(1024UL, ALIGN(nslabs >> 1, IO_TLB_SEGSIZE));
+>  		bytes = nslabs << IO_TLB_SHIFT;
+> @@ -243,7 +243,7 @@ retry:
+>  	rc = xen_swiotlb_fixup(start, nslabs);
+>  	if (rc) {
+>  		memblock_free(__pa(start), PAGE_ALIGN(bytes));
+> -		if (repeat--) {
+> +		if (nslabs > 1024 && repeat--) {
+>  			/* Min is 2MB */
+>  			nslabs = max(1024UL, ALIGN(nslabs >> 1, IO_TLB_SEGSIZE));
+>  			bytes = nslabs << IO_TLB_SHIFT;
+> 
