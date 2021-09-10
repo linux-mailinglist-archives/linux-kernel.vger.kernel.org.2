@@ -2,203 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86E5406E37
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F488406E42
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbhIJPfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        id S234490AbhIJPgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhIJPfB (ORCPT
+        with ESMTP id S232438AbhIJPgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:35:01 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB069C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:33:50 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id r21so1740616qtw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:33:50 -0700 (PDT)
+        Fri, 10 Sep 2021 11:36:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B38AC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:35:12 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id i25so889848lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EWICIH/bq9+JnJ6UbUy8392Y6bG2Wmd0DTEhVvgAdSk=;
-        b=RrZz3pmDMkUm2WvqXyeQVkaDx75dgcj9ymJQXb5PlhEEPG2EAPKR2dFWGAGU7Au6Dx
-         TI/CsBAdHPunzz8wdXp3ewRkKr0yiO/CjhbvcxyxKpVwztbF3HhybZQCTArPHAo4nv98
-         UqZJpTBKmPIB6Rtyeyxnry0F4tn9hAI38OtDjaDCukQXAA+dTvb1z/dFCgk/zHNrzf8S
-         H+pyj4rKT3mTIdbxvyOrIal4A6meO/ThftqIOlUE1myNQ+lZNFd2QGX0R/c8YAFiZaqU
-         nnpKY2E82Q2pab2qHnE3cCern2KSeJ7UKGj1mIEnSvfeY1T8bYq2uUtPH7/mEPKqwLf/
-         JFdA==
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KnvzNi+rxgycVJiXwuyBHq+TROY+i/0lp8Qo1/L/oj4=;
+        b=f7vwDM02YJYqezAPda9pI/Ba+C+u+2E6w2Q8tGtD4Sg16wjEf9XSYgkk+VjBIcoo90
+         Pro4xK3pQH+UlvBJFlnPqiOBHem4pxqUbmPwNyhuABqiv8voFNG2ozAU+tQJpHV/QCPB
+         3dneg5DsbRjeSKuGXdmw5uVT3aCO6GD3GHP8y5aFghHoReTAYMcwRk0awxfYVvGaYjcC
+         XyjOkZJrBRJ6ChWG7iZFDxDEXvxlPb4TzFFLrgO9Ejpr6iEzXY1GnuO4H97hc+J0aOKA
+         5R5G8gwAs/6cbuGcqHX/0DVag+43oqy+uI/4IS+HxY7pRI8Z4nF6aLkK/EFGiTBNQt+V
+         BSvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=EWICIH/bq9+JnJ6UbUy8392Y6bG2Wmd0DTEhVvgAdSk=;
-        b=LKZ1B3UzufkVxTIpA7upvgLJJTXGVNi5z/WWEEKCvLYJIyV25LbaZKte6XzUZcivZP
-         QiEYHDqh1MQMPb2hiDNVMQdHuyPKm480X8DQLmJxRx1QJm0IhgE/Z6c7JPTHzKagZZp9
-         JigQGSNbqDDfnDKQZYxp6iunXC0ZTK7gtJvZcbrdzOJcZRyw/jW1lhyRvj8ZkFBUbUim
-         BODnWNOcYe9FHQeA5CVrXfUxEPgkbaNpRGrmGzJCJe5xlaFcEofz+HatpUHUUwupHEvB
-         G6/nOfh/zZ+OBbVttcsKaDDumXJ2y4oQoX/YBng0Ya4Oal+s/Mhg4I8+y2rwgE05m/q2
-         ddAw==
-X-Gm-Message-State: AOAM532IfpjgeHK7vJA06lUeO4/kLbYL92r33KYekkhN2iiFEG54Rmx+
-        i73LSZZymsMcR7IrRg8UufMcYA==
-X-Google-Smtp-Source: ABdhPJzyQYhHdQGKVKbI/i75l3yvzFJEcnugJidFZIkDTkUZgqF5Z8sJDxShrGNeA4vhOAU8AGHrog==
-X-Received: by 2002:ac8:5a08:: with SMTP id n8mr8889673qta.58.1631288029683;
-        Fri, 10 Sep 2021 08:33:49 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id q18sm3361829qtx.73.2021.09.10.08.33.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 08:33:49 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 08:33:49 -0700 (PDT)
-X-Google-Original-Date: Fri, 10 Sep 2021 08:33:43 PDT (-0700)
-Subject:     Re: [tip:locking/core] tools/memory-model: Add extra ordering for locks and remove it for ordinary release/acquire
-In-Reply-To: <YTtpnZuSId9yDUjB@boqun-archlinux>
-CC:     paulmck@kernel.org, Daniel Lustig <dlustig@nvidia.com>,
-        will@kernel.org, peterz@infradead.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stern@rowland.harvard.edu, alexander.shishkin@linux.intel.com,
-        hpa@zytor.com, parri.andrea@gmail.com, mingo@kernel.org,
-        vincent.weaver@maine.edu, tglx@linutronix.de, jolsa@redhat.com,
-        acme@redhat.com, linux-kernel@vger.kernel.org, eranian@google.com,
-        linux-tip-commits@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, mpe@ellerman.id.au
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     boqun.feng@gmail.com
-Message-ID: <mhng-8110fb1f-a92b-454e-8f12-3868a60efcc7@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KnvzNi+rxgycVJiXwuyBHq+TROY+i/0lp8Qo1/L/oj4=;
+        b=YReG1Q/j0auavw3LvkhJiG+1Yrw4dkGWbDYnfbHNr4841fyAGhcpsmsM6k86A06Q2G
+         W72lyTxf38ZGFEsxNqu2Aebyt0u8R5j3vfrVz46R7f024dPtkpfKi3WFIvkq1nzaBsPi
+         2uxZkgxCS/BRPn+2ihXNnaA6th4GxRf3+TDnaEbfY2U9wCm3XHwY1jE8bRyjvBrRN6wU
+         SIw2tRFIfy//LO1RWQLYZlyQBlTil6ozHoQTsOJbsULo0cmayE1d+Mgjn4OF7jloU7Mk
+         d5W7U2TtHmQgM/kt7xbyQRy24jURoR6v2Ai3pvtRHUw0OkvF6SLkLUNKdPVCJRz28wMy
+         QAyg==
+X-Gm-Message-State: AOAM533qgtHHAyf+A+nFXV23zJBJKTOyR2n486Io0G97cTXORlDA5xr/
+        kTUyNVVyuzPIlTJZdYHlap1EswMYCDSCi0k2iCwO3ILApuw=
+X-Google-Smtp-Source: ABdhPJw0lOG+xuw1e6VT3qS6a8EP7AGldsfwe4OsgG6rKePYoIbKObw5NUyA8SvX//Md5AYH168JvHVEWkYNIWh3tW8=
+X-Received: by 2002:a05:6512:4003:: with SMTP id br3mr4352150lfb.465.1631288110669;
+ Fri, 10 Sep 2021 08:35:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210909034802.1708-1-dsmythies@telus.net> <223a72d91cfda9b13230e4f8cd6a29f853535277.camel@linux.intel.com>
+ <CAJZ5v0gn8rpTiVqkXgGqPFDH8-BKTYGiypM-2A2q1jJLm6HbCQ@mail.gmail.com>
+ <CAAYoRsWdFwiwo8j2Nc-vhk2mnoZqJC9fyS7URtEz3E1VxfNbLQ@mail.gmail.com>
+ <CAJZ5v0hO7SajJ5HFVDcma6nOfzy-289MdwUSiJbY8Hm3mxvXnQ@mail.gmail.com>
+ <CAJZ5v0j1JjLr0co06yJCCNV2p06e91Zh7tkMXoGTE=waB5Xo1Q@mail.gmail.com>
+ <CAAYoRsUun0_tXTEGi6m1L0A9ffRWZ8FbLs1kFEZ0d0QQi+ssQw@mail.gmail.com> <CAJZ5v0jMDbxXt_EWN-GUOGBDCpDGHUoqRoTtfR8-rUOQjDBUyw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jMDbxXt_EWN-GUOGBDCpDGHUoqRoTtfR8-rUOQjDBUyw@mail.gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Fri, 10 Sep 2021 08:34:59 -0700
+Message-ID: <CAAYoRsVOh+TxZK8BWfM=u6YqEhSY-Pgpt+aavZGBLogVTEocKw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Override parameters if HWP forced
+ by BIOS
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 07:20:13 PDT (-0700), boqun.feng@gmail.com wrote:
-> On Thu, Sep 09, 2021 at 11:00:05AM -0700, Paul E. McKenney wrote:
-> [...]
->>
->> Boqun, I vaguely remember a suggested change from you along these lines,
->> but now I cannot find it.  Could you please send it as a formal patch
->> if you have not already done so or point me at it if you have?
->>
+On Fri, Sep 10, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Fri, Sep 10, 2021 at 5:14 AM Doug Smythies <dsmythies@telus.net> wrote:
+> > On Thu, Sep 9, 2021 at 10:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > On Thu, Sep 9, 2021 at 6:12 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > On Thu, Sep 9, 2021 at 3:20 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > > > > On Thu, Sep 9, 2021 at 4:18 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > On Thu, Sep 9, 2021 at 8:52 AM Srinivas Pandruvada
+> > > > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, 2021-09-08 at 20:48 -0700, Doug Smythies wrote:
+> > > > > > > > If HWP has been already been enabled by BIOS, it may be
+> > > > > > > > necessary to override some kernel command line parameters.
+> > > > > > > > Once it has been enabled it requires a reset to be disabled.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > > > > > > ---
+> > > > > > > >  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++++------
+> > > > > > > >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > index bb4549959b11..073bae5d4498 100644
+> > > > > > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > @@ -3267,7 +3267,7 @@ static int __init intel_pstate_init(void)
+> > > > > > > >                  */
+> > > > > > > >                 if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> > > > > > > >                     intel_pstate_hwp_is_enabled()) {
+> > > > > > > > -                       hwp_active++;
+> > > > > > > > +                       hwp_active = 1;
+> > > > > > > Why this change?
+> > > > > >
+> > > > > > I think hwp_active can be changed to bool and then it would make sense
+> > > > > > to update this line.
+> > > > > >
+> > > > > > > >                         hwp_mode_bdw = id->driver_data;
+> > > > > > > >                         intel_pstate.attr = hwp_cpufreq_attrs;
+> > > > > > > >                         intel_cpufreq.attr = hwp_cpufreq_attrs;
+> > > > > > > > @@ -3347,17 +3347,27 @@ device_initcall(intel_pstate_init);
+> > > > > > > >
+> > > > > > > >  static int __init intel_pstate_setup(char *str)
+> > > > > > > >  {
+> > > > > > > > +       /*
+> > > > > > > > +        * If BIOS is forcing HWP, then parameter
+> > > > > > > > +        * overrides might be needed. Only print
+> > > > > > > > +        * the message once, and regardless of
+> > > > > > > > +        * any overrides.
+> > > > > > > > +        */
+> > > > > > > > +       if(!hwp_active
+> > > > > > > This part of code is from early_param, Is it possible that
+> > > > > > > hwp_active is not 0?
+> > > > > >
+> > > > > > Well, it wouldn't matter even if it were nonzero.  This check is just
+> > > > > > pointless anyway.
+> > > > > >
+> > > > > > > > && boot_cpu_has(X86_FEATURE_HWP))
+> > > > > > > > +               if(intel_pstate_hwp_is_enabled()){
+> > > > > >
+> > > > > > This should be
+> > > > > >
+> > > > > > if (boot_cpu_has(X86_FEATURE_HWP) && intel_pstate_hwp_is_enabled()) {
+> > > > >
+> > > > > Disagree.
+> > > > > This routine gets executed once per intel_pstate related grub command
+> > > > > line entry. The purpose of the "if(!hwp_active" part is to prevent the
+> > > > > printing of the message to the logs multiple times.
+> > > >
+> > > > Ah OK.  Fair enough.
+> > > >
+> > > > You can do all of the checks in one conditional, though.  They will be
+> > > > processed left-to-right anyway.
+> > > >
+> > > > But then it would be good to avoid calling
+> > > > intel_pstate_hwp_is_enabled() multiple times if it returns false.
+> > > >
+> > > > And having said all that I'm not sure why you are trying to make
+> > > > no_hwp depend on !hwp_active?  I will not be taken into account anyway
+> > > > if intel_pstate_hwp_is_enabled() returns 'true'?
+> > > >
+> > > > So if no_hwp is covered regardless, you may move the
+> > > > intel_pstate_hwp_is_enabled() inside the no_load conditional.
+> > > >
+> > > > Alternatively, and I would do that, intel_pstate_hwp_is_enabled()
+> > > > could be evaluated earlier in intel_pstate_init() and if it returned
+> > > > 'true', both no_load and no_hwp would be disregarded.
+> > >
+> > > Something like the attached, for the record.
+> >
+> > O.K. and Thanks.
+> > I was trying to avoid this line getting into the log:
+> >
+> > [    0.000000] intel_pstate: HWP disabled
+> >
+> > only to overridden later by, now, these lines:
+> >
+> > [    0.373742] intel_pstate: HWP enabled by BIOS
+> > [    0.374177] intel_pstate: Intel P-state driver initializing
+> > [    0.375097] intel_pstate: HWP enabled
+> >
+> > Let me see if I can go with your suggestion and get to
+> > what I had hoped to get in the logs.
 >
-> Here is a draft patch based on the change I did when I discussed with
-> Peter, and I really want to hear Alan's thought first. Ideally, we
-> should also have related litmus tests and send to linux-arch list so
-> that we know the ordering is provided by every architecture.
->
-> Regards,
-> Boqun
->
-> --------------------------------->8
-> Subject: [PATCH] tools/memory-model: Provide extra ordering for
->  lock-{release,acquire} on the same CPU
->
-> A recent discussion[1] shows that we are in favor of strengthening the
-> ordering of lock-release + lock-acquire on the same CPU: a lock-release
-> and a po-after lock-acquire should provide the so-called RCtso ordering,
-> that is a memory access S po-before the lock-release should be ordered
-> against a memory access R po-after the lock-acquire, unless S is a store
-> and R is a load.
->
-> The strengthening meets programmers' expection that "sequence of two
-> locked regions to be ordered wrt each other" (from Linus), and can
-> reduce the mental burden when using locks. Therefore add it in LKMM.
->
-> [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
->
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  .../Documentation/explanation.txt             | 28 +++++++++++++++++++
->  tools/memory-model/linux-kernel.cat           |  6 ++--
->  2 files changed, 31 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/memory-model/Documentation/explanation.txt b/tools/memory-model/Documentation/explanation.txt
-> index 5d72f3112e56..d62de21f32c4 100644
-> --- a/tools/memory-model/Documentation/explanation.txt
-> +++ b/tools/memory-model/Documentation/explanation.txt
-> @@ -1847,6 +1847,34 @@ therefore the load of x must execute before the load of y.  Thus we
->  cannot have r1 = 1 and r2 = 0 at the end (this is an instance of the
->  MP pattern).
->
-> +This requirement also applies to a lock-release and a lock-acquire
-> +on different locks, as long as the lock-acquire is po-after the
-> +lock-release. Note that "po-after" means the lock-acquire and the
-> +lock-release are on the same cpu. An example simliar to the above:
-> +
-> +	int x, y;
-> +	spinlock_t s;
-> +	spinlock_t t;
-> +
-> +	P0()
-> +	{
-> +		int r1, r2;
-> +
-> +		spin_lock(&s);
-> +		r1 = READ_ONCE(x);
-> +		spin_unlock(&s);
-> +		spin_lock(&t);
-> +		r2 = READ_ONCE(y);
-> +		spin_unlock(&t);
-> +	}
-> +
-> +	P1()
-> +	{
-> +		WRITE_ONCE(y, 1);
-> +		smp_wmb();
-> +		WRITE_ONCE(x, 1);
-> +	}
-> +
->  This requirement does not apply to ordinary release and acquire
->  fences, only to lock-related operations.  For instance, suppose P0()
->  in the example had been written as:
-> diff --git a/tools/memory-model/linux-kernel.cat b/tools/memory-model/linux-kernel.cat
-> index 2a9b4fe4a84e..d70315fddef6 100644
-> --- a/tools/memory-model/linux-kernel.cat
-> +++ b/tools/memory-model/linux-kernel.cat
-> @@ -27,7 +27,7 @@ include "lock.cat"
->  (* Release Acquire *)
->  let acq-po = [Acquire] ; po ; [M]
->  let po-rel = [M] ; po ; [Release]
-> -let po-unlock-rf-lock-po = po ; [UL] ; rf ; [LKR] ; po
-> +let po-unlock-lock-po = po ; [UL] ; (po|rf) ; [LKR] ; po
->
->  (* Fences *)
->  let R4rmb = R \ Noreturn	(* Reads for which rmb works *)
-> @@ -70,12 +70,12 @@ let rwdep = (dep | ctrl) ; [W]
->  let overwrite = co | fr
->  let to-w = rwdep | (overwrite & int) | (addr ; [Plain] ; wmb)
->  let to-r = addr | (dep ; [Marked] ; rfi)
-> -let ppo = to-r | to-w | fence | (po-unlock-rf-lock-po & int)
-> +let ppo = to-r | to-w | fence | (po-unlock-lock-po & int)
->
->  (* Propagation: Ordering from release operations and strong fences. *)
->  let A-cumul(r) = (rfe ; [Marked])? ; r
->  let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
-> -	po-unlock-rf-lock-po) ; [Marked]
-> +	po-unlock-lock-po) ; [Marked]
->  let prop = [Marked] ; (overwrite & ext)? ; cumul-fence* ;
->  	[Marked] ; rfe? ; [Marked]
+> It would be sufficient to put the "disabled" printk() after the
+> "no_hwp" if () statement in intel_pstate_init().  See attached.
 
-I'm not a memory model person so I don't really feel comfortable 
-reviewing this, but I can follow the non-formal discussion so
+Agreed, thanks. Yes, I was thinking similar.
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com> # For the RISC-V fallout
+> BTW, I've changed the message to "HWP not enabled", because that's
+> what really happens to be precise.
 
-So far we've been sticking with the "fastest implementation allowed by 
-the spec" mentality, but TBH I think we'd have ended up moving to RCsc 
-locks regardless of where LKMM ended up just to be in line with the more 
-popular architectures.  With mmiowb gone I think this was the last bit 
-of memory model weirdness we'd been carrying around in the RISC-V port, 
-so it would have always just been a worry.
+Agreed. Good idea.
 
-We don't really have any hardware to evaluate the performance 
-implications of this change, as there are no interestingly aggressive 
-implementations of the memory model availiable today.  Like Dan said 
-we've got all the ISA mechanisms in place to adequently describe these 
-orderings to hardware, so in theory implementations should be able to 
-handle this without falling off any performance cliffs.
+Give me a fews days to create and test a formal patch.
+I currently have limited access to a computer that doesn't force
+HWP via BIOS.
 
-Happy to take a look and an implementation of this on RISC-V, but if 
-nothing arises I'll go sort it out.  It does remind me that we were 
-supposed to move over to those generic ticket spinlocks, though...
-
-Thanks!
+... Doug
