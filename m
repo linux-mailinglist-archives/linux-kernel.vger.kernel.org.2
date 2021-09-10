@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E3A406FB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E7F406FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhIJQd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhIJQdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:33:55 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534FBC061574;
-        Fri, 10 Sep 2021 09:32:44 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so1010146pjb.5;
-        Fri, 10 Sep 2021 09:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tgXe1DESruN+/rTizBx5p8iE+/E14BLor/fcAtYbb1Y=;
-        b=JuMs70r+VpXKmfURn7r1xAkHa84J7MIyXxrJkKqeGRSLmcEHeI6eBYHRj/UlwtCdzT
-         tLuzHwmJ9HIREMcgiVTeB0/5kfb+2ErkdRQLAp5Abzt2CIgawsp6KCa+/x/nJgz2sKxE
-         S70frEvrS6JAwVg0zTv9BzJDl/0YytEaj82TLB5AbjAB6cilXZ3nhzAnzwJwMHyzL6DT
-         XdmrQ9PcZ8mbVvUigWepdGNjzfdEAr29KT03oozkZhUIfJOCtZI5DODbwWmtTpjcD//X
-         OKv9R0gJdnYpeSAFMA6JK4X3AyZRf/3SHjAj883RH1wneUsLki+feIcHSowtHFWucbeb
-         tOzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=tgXe1DESruN+/rTizBx5p8iE+/E14BLor/fcAtYbb1Y=;
-        b=Iyw/ofn8hPloeDay3T8q41bm1AuKcKSf+x//lFwPByhJvcI8te07IyIJuFiU0hGjMx
-         9S53O99J5il5WQXLpDrj6LKmDww/Y9v+jI0SYfJBtSDZHSPR+AnxKyyphSQqYKn7ZCc6
-         1B4y3theycU82mE4xjRLfWJSjj1F24pbVqCluEDuvV44/BCKLX8PXHxUPP1LDdLMX5w2
-         6gWd1MeEXzYI7eIAfQ4R7uVo+2T1WpCrg8Ap4qQtd5pQQ8DxQ3YDVsghnD1M9MdDJ1H1
-         gFysWPk4Lg24/OYejFADuiPr7hf2scCgER2qTO8sjY4lVF74mp1nT5aTl1KoWTPD9Q3+
-         79YQ==
-X-Gm-Message-State: AOAM531Ts8Av40fIe4wVhEsKvprEaYikq7EsapdXBt5O1wLzPUvO3D40
-        8viSfqjM0VEyVv0vDcwyBMw=
-X-Google-Smtp-Source: ABdhPJwAB+ZqfvMWnfvJ2jXzVt7EtKEwT3dbc8Bbn1e/ypFOlipg1TVHRfQlVGHpav8AVh2r14CDZg==
-X-Received: by 2002:a17:902:724b:b0:131:ab33:1e4e with SMTP id c11-20020a170902724b00b00131ab331e4emr8437154pll.12.1631291563520;
-        Fri, 10 Sep 2021 09:32:43 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id p9sm5526834pfn.97.2021.09.10.09.32.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:32:42 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 10 Sep 2021 06:32:41 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     brookxu <brookxu.cn@gmail.com>, Vipin Sharma <vipinsh@google.com>,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] misc_cgroup: introduce misc.events and
- misc_events.local
-Message-ID: <YTuIqecqjPKEZcrn@slm.duckdns.org>
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <20210909143702.GA13761@blackbody.suse.cz>
- <CAHVum0eGN=v1kLqHQg7HBESp8Kg4aGZFNd4XTpxfeyToXPmPVg@mail.gmail.com>
- <8259b666-f3a4-6788-880c-38d679414bcb@gmail.com>
- <20210910103306.GA24156@blackbody.suse.cz>
+        id S229877AbhIJQgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:36:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41169 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229448AbhIJQf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:35:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="208226577"
+X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
+   d="scan'208";a="208226577"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 09:34:47 -0700
+X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
+   d="scan'208";a="581420171"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.255.212]) ([10.212.255.212])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 09:34:46 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+ <20210829181635-mutt-send-email-mst@kernel.org>
+ <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+ <20210830163723-mutt-send-email-mst@kernel.org>
+ <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
+ <20210910054044-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
+Date:   Fri, 10 Sep 2021 09:34:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210910103306.GA24156@blackbody.suse.cz>
+In-Reply-To: <20210910054044-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Fri, Sep 10, 2021 at 12:33:06PM +0200, Michal Koutný wrote:
-> On Fri, Sep 10, 2021 at 01:20:37PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> > Yeah, this is more reasonable. But there is still one question, whether we
-> > need to be consistent with other cgroup subsystems, events and events.local
-> > under v1 should not support hierarchy？
-> 
-> My take is that it's acceptable to present the v2-like files in v1 too
-> for the sake of simplicity since:
-> - this is not used yet,
-> - the v1 is less conventional and
-> - the presence of events.local would cater even to cases with tasks in
->   inner nodes.
-> 
-> It'd be good to have Tejun's insight on this too.
+>>>> And we've been avoiding that drivers can self declare auditing, we've been
+>>>> trying to have a separate centralized list so that it's easier to enforce
+>>>> and avoids any cut'n'paste mistakes.
+>>>>
+>>>> -Andi
+>>> Now I'm confused. What is proposed here seems to be basically that,
+>>> drivers need to declare auditing by replacing ioremap with
+>>> ioremap_shared.
+>> Auditing is declared on the device model level using a central allow list.
+> Can we not have an init call allow list instead of, or in addition to, a
+> device allow list?
 
-My general appraoch is
 
-* If it's trivial both in terms of complexity and effort to add support for
-  cgroup1, oh well, why not?
+That would be quite complicated and intrusive. In fact I'm not even sure 
+how to do maintain something like this. There are a lot of needed 
+initcalls, they would all need to be marked. How can we distinguish 
+them? It would be a giant auditing project. And of course how would you 
+prevent it from bitrotting?
 
-* Otherwise, don't bother.
 
-* cgroup1 interface is wildly inconsistent anyway, so I wouldn't worry much
-  about that.
+Basically it would be hundreds of changes all over the tree, just to 
+avoid two changes in virtio and MSI. Approach of just stopping the 
+initcalls from doing bad things is much less intrusive.
 
-Thanks.
+>
+>> But this cannot do anything to initcalls that run before probe,
+> Can't we extend module_init so init calls are validated against the
+> allow list?
 
--- 
-tejun
+See above.
+
+
+Also the problem isn't really with modules (we rely on udev not loading 
+them), but with builtin initcalls
+
+
+>
+>> that's why
+>> an extra level of defense of ioremap opt-in is useful.
+> OK even assuming this, why is pci_iomap opt-in useful?
+> That never happens before probe - there's simply no pci_device then.
+
+
+Hmm, yes that's true. I guess we can make it default to opt-in for 
+pci_iomap.
+
+It only really matters for device less ioremaps.
+
+>
+> It looks suspiciously like drivers self-declaring auditing to me which
+> we both seem to agree is undesirable. What exactly is the difference?
+
+
+Just allow listing the ioremaps is not self declaration because the 
+device will still not initialize due to the central device filter. If 
+you want to use it that has to be changed.
+
+It's just an additional safety net to contain code running before probe.
+
+
+>
+> Or are you just trying to disable anything that runs before probe?
+
+
+Well anything that could do dangerous host interactions (like processing 
+ioremap data) A lot of things are harmless and can be allowed, or 
+already blocked elsewhere (e.g. we have a IO port filter). This just 
+handles the ioremap/MMIO case.
+
+> In that case I don't see a reason to touch pci drivers though.
+> These should be fine with just the device model list.
+
+
+That won't stop initcalls.
+
+
+-Andi
+
+
+>
