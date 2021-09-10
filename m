@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A277940722D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D759B407232
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbhIJT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:57:05 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:58336 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230489AbhIJT5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:57:04 -0400
+        id S233354AbhIJT6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhIJT6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 15:58:17 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92654C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:57:06 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b200so3799716iof.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:57:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1631303753;
-  x=1662839753;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RxHsFDpgPb8WljFHoMd0jVOTaLKbxwOshUbSMEYRLiE=;
-  b=aUdh8gYDg1z9HLxVzjuZfPHk7QRGtAZVH6tzgrn+bt3icfcIpklWOThM
-   abLetnVkMnaikdNa2WBC0oDybvdbSFDFxqTe/VRggwZsPGg2MWK3SNZD9
-   Qa9+tXycJHWgv9GPGo7mzLP1aQhsuvfjn3iEvhFqoKAlfe7MTcTw8Z1U0
-   Y9q0YiFOFM35uYmn+Cua0FcWu4Mp9n4Jn0vJIzICCZuIsdslyWENTE5ZM
-   gpYyWjE2nB7bHsVEBVK1cGNySO8EOag8k+1AdSqRbx3HoAwYJS/6uJyfn
-   8f2j4WEFoBjt23lykILb0fV5sqIRKy+3K42I5Z79mDwmDbDy1cZYVbECR
-   g==;
-From:   Jesper Nilsson <jesper.nilsson@axis.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <kernel@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] net: stmmac: allow CSR clock of 300MHz
-Date:   Fri, 10 Sep 2021 21:55:34 +0200
-Message-ID: <20210910195535.12533-1-jesper.nilsson@axis.com>
-X-Mailer: git-send-email 2.20.1
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tBrvKO9A/dPwPbpROFlIDW4gM0sK3mcNXTt1Pn9aYHY=;
+        b=Wr4Gh3KIEFBM+ACEtKQQkB6ZOkXVsSDftDicx8567wKbGFHG5dCUuH68Dx+CuM8TK6
+         gQ7djhp5EGDI/HV2+EvnV7cWz7JpEknCAap1HFt6xk8PkkNW9U41GiHMY9RrY2jHgCC4
+         CKNW6+usqWdG2oQzFX3bYmPoBwgjJQdRUpxKw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tBrvKO9A/dPwPbpROFlIDW4gM0sK3mcNXTt1Pn9aYHY=;
+        b=cTq0JbUSDbQr5IiqeMxgju4OvGyw8cTZR+Q9QQZ9tAS/JMAKkPNmKTglm48NtBqI53
+         iKK/qwN0C16jmBtZA4rNrOBFsxh6MItLLNJXSSS/6P0a3jj+3Q9OAqexXXfFd4Boo89+
+         c/cw4sRh0ymuVWz3rpcHPNCoevOQ0sWddaVUherDjS4F4en45HyCLRi3K+zPEuz7Kso2
+         W49CSafnFw3ucOZhGlsUgZT+HGJvCWZtGRKRDKzcUaaUp9rG2TAF0fCElbDzyIZ8MpJK
+         DHKwmFFPG6MhQRcG4eXO7dRWTbLmcAOb+zY3TkLtGgt47mG53Uw2nmUg+NmZOg7iv66p
+         +qRw==
+X-Gm-Message-State: AOAM532Ow4+38sue4QXBe35f//RJzCZKV0ZsbdlXK1kIg34a8K/phcGv
+        YCUEEXxTna1pJ7kef3PjVCyLcQ==
+X-Google-Smtp-Source: ABdhPJyP48qJEKgFnhFD8cbEzB1AQlheLGpbQaL1VD3/gyzpnzXEXw6tsqrQNdt45Z3xGwS0dvg2og==
+X-Received: by 2002:a6b:3f02:: with SMTP id m2mr8297816ioa.136.1631303825973;
+        Fri, 10 Sep 2021 12:57:05 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a17sm2999141ilp.75.2021.09.10.12.57.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 12:57:05 -0700 (PDT)
+Subject: Re: After KUnit update for Linux 5.15-rc1 - unable to share VFAT
+ filesystem via samba
+To:     Arthur Marsh <arthur.marsh@internode.on.net>
+Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <6A72EAE4-A0F7-4CD2-89BB-36A8F4A7D321@internode.on.net>
+ <f1d84102-6edf-271f-52f9-0d4bbc85c0c7@linuxfoundation.org>
+ <C1ACE9E0-2EDF-4F55-A6F1-B9143F62514B@internode.on.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <843ce49e-4adf-c3c4-83e1-8fb114589cc6@linuxfoundation.org>
+Date:   Fri, 10 Sep 2021 13:57:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <C1ACE9E0-2EDF-4F55-A6F1-B9143F62514B@internode.on.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Synopsys Ethernet IP uses the CSR clock as a base clock for MDC.
-The divisor used is set in the MAC_MDIO_Address register field CR
-(Clock Rate)
+On 9/10/21 12:33 PM, Arthur Marsh wrote:
+>> Can you send your config and dmesg? This will help determine if
+>> KUNIT is enabled - it shouldn't be.
+> 
+> # CONFIG_KUNIT is not set
+> 
+> I am re-running the git-bisect without the " - - fs/fat" qualifier but it will take a few days.
+> 
 
-The divisor is there to change the CSR clock into a clock that falls
-below the IEEE 802.3 specified max frequency of 2.5MHz.
+Can you run a quick test reverting the following one
+at a time to isolate:
 
-If the CSR clock is 300MHz, the code falls back to using the reset
-value in the MAC_MDIO_Address register, as described in the comment
-above this code.
+b0d4adaf3b3c4402d9c3b6186e02aa1e4f7985cd (this is the other one in
+you bisect log)
 
-However, 300MHz is actually an allowed value and the proper divider
-can be estimated quite easily (it's just 1Hz difference!)
+c815f04ba94940fbc303a6ea9669e7da87f8e77d (This is the KUnit patch)
+(This one shouldn't be in play without CONFIG_KUNIT)
 
-A CSR frequency of 300MHz with the maximum clock rate value of 0x5
-(STMMAC_CSR_250_300M, a divisor of 124) gives somewhere around
-~2.42MHz which is below the IEEE 802.3 specified maximum.
-
-For the ARTPEC-8 SoC, the CSR clock is this problematic 300MHz,
-and unfortunately, the reset-value of the MAC_MDIO_Address CR field
-is 0x0.
-
-This leads to a clock rate of zero and a divisor of 42, and gives an
-MDC frequency of ~7.14MHz.
-
-Allow CSR clock of 300MHz by making the comparison inclusive.
-
-Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ece02b35a6ce..6560d9f24715 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -309,7 +309,7 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
- 			priv->clk_csr = STMMAC_CSR_100_150M;
- 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
- 			priv->clk_csr = STMMAC_CSR_150_250M;
--		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
-+		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
- 			priv->clk_csr = STMMAC_CSR_250_300M;
- 	}
- 
--- 
-2.20.1
-
+thanks,
+-- Shuah
