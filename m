@@ -2,202 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEF54065B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33A34065BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhIJCbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:31:07 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55826 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229720AbhIJCbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:31:06 -0400
-X-UUID: 5e411f4b6eb547f0aa51d73d2212102a-20210910
-X-UUID: 5e411f4b6eb547f0aa51d73d2212102a-20210910
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 507428610; Fri, 10 Sep 2021 10:29:53 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 10 Sep 2021 10:29:51 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 10 Sep 2021 10:29:51 +0800
-Message-ID: <f47decf6d1fa0f1b375a531dc44736a0ca63b2d4.camel@mediatek.com>
-Subject: Re: [PATCH v7 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
-From:   moudy ho <moudy.ho@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Nicolas Boichat" <drinkcat@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>, <menghui.lin@mediatek.com>,
-        Sj Huang =?UTF-8?Q?=28=E9=BB=83=E4=BF=A1=E7=92=8B=29?= 
-        <sj.huang@mediatek.com>, <ben.lok@mediatek.com>,
-        <randy.wu@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@google.com>
-Date:   Fri, 10 Sep 2021 10:29:51 +0800
-In-Reply-To: <CAAOTY_8GFP0utAVSw1JY6=y9hsJTbf8mtiKCnUmTcG2e9Zwdxg@mail.gmail.com>
-References: <20210824100027.25989-1-moudy.ho@mediatek.com>
-         <20210824100027.25989-4-moudy.ho@mediatek.com>
-         <CAAOTY_8GFP0utAVSw1JY6=y9hsJTbf8mtiKCnUmTcG2e9Zwdxg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S229824AbhIJCfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:35:31 -0400
+Received: from mga11.intel.com ([192.55.52.93]:31844 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhIJCfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:35:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="217806030"
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="217806030"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 19:34:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
+   d="scan'208";a="540095773"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 09 Sep 2021 19:34:16 -0700
+Date:   Fri, 10 Sep 2021 10:34:15 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        0day robot <lkp@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Koutn?? <mkoutny@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
+Message-ID: <20210910023415.GB94434@shbuild999.sh.intel.com>
+References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
+ <20210905124439.GA15026@xsang-OptiPlex-9020>
+ <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
+ <20210907033000.GA88160@shbuild999.sh.intel.com>
+ <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
+ <20210910010842.GA94434@shbuild999.sh.intel.com>
+ <CALvZod5_L55RLzwOXh_5C+v9rjVQ4_FEaEB2QYS5+6kuHpHpQg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5_L55RLzwOXh_5C+v9rjVQ4_FEaEB2QYS5+6kuHpHpQg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 08:11 +0800, Chun-Kuang Hu wrote:
-> Hi, Moudy:
+On Thu, Sep 09, 2021 at 06:19:06PM -0700, Shakeel Butt wrote:
+[...]
+> > > > > I am looking into this. I was hoping we have resolution for [1] as
+> > > > > these patches touch similar data structures.
+> > > > >
+> > > > > [1] https://lore.kernel.org/all/20210811031734.GA5193@xsang-OptiPlex-9020/T/#u
+> > > >
+> > > > I tried 2 debug methods for that 36.4% vm-scalability regression:
+> > > >
+> > > > 1. Disable the HW cache prefetcher, no effect on this case
+> > > > 2. relayout and add padding to 'struct cgroup_subsys_state', reduce
+> > > >    the regression to 3.1%
+> > > >
+> > >
+> > > Thanks Feng but it seems like the issue for this commit is different.
+> > > Rearranging the layout didn't help. Actually the cause of slowdown is
+> > > the call to queue_work() inside __mod_memcg_lruvec_state().
+> > >
+> > > At the moment, queue_work() is called after 32 updates. I changed it
+> > > to 128 and the slowdown of will-it-scale:page_fault[1|2|3] halved
+> > > (from around 10% to 5%). I am unable to run reaim or
+> > > will-it-scale:fallocate2 as I was getting weird errors.
+> > >
+> > > Feng, is it possible for you to run these benchmarks with the change
+> > > (basically changing MEMCG_CHARGE_BATCH to 128 in the if condition
+> > > before queue_work() inside __mod_memcg_lruvec_state())?
+> >
+> > When I checked this, I tried different changes, including this batch
+> > number change :), but it didn't recover the regression (the regression
+> > is slightly reduced to about 12%)
+[...]
 > 
-> Moudy Ho <moudy.ho@mediatek.com> 於 2021年8月24日 週二 下午6:02寫道：
-> > 
-> > This patch adds DT binding document for Media Data Path 3 (MDP3)
-> > a unit in multimedia system used for scaling and color format
-> > convert.
-> > 
-> > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> > ---
-> >  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  57 +++++
-> >  .../bindings/media/mediatek,mdp3-rdma.yaml    | 207
-> > ++++++++++++++++++
-> >  .../bindings/media/mediatek,mdp3-rsz.yaml     |  65 ++++++
-> >  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
-> >  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
-> >  5 files changed, 471 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
-> 
-> I've compared ccorr driver in display [1] and ccorr in mdp [2], both
-> are similar. So I would like both binding document are placed
-> together. In display folder? In mdp folder? In SoC folder? I've no
-> idea which one is better. At lease put together.
-> 
-> [1] 
-> https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c?h=v5.14__;!!CTRNKA9wMg0ARbw!xOYd8SaiDSRvJBgpaQpLzMxqPOAstMX7cGXkhEnuYa1Wb3EMiiElNEPeycP_k2IQ$
->  
-> [2] 
-> https://urldefense.com/v3/__https://patchwork.kernel.org/project/linux-mediatek/patch/20210824100027.25989-6-moudy.ho@mediatek.com/__;!!CTRNKA9wMg0ARbw!xOYd8SaiDSRvJBgpaQpLzMxqPOAstMX7cGXkhEnuYa1Wb3EMiiElNEPeyTwjz4UU$
->  
-> 
-> Regards,
-> Chun-Kuang.
+> Another change we can try is to remove this specific queue_work()
+> altogether because this is the only significant change for the
+> workload. That will give us the base performance number. If that also
+> has regression then there are more issues to debug. Thanks a lot for
+> your help.
 
-Hi Chun-Kuang,
+I just tested with patch removing the queue_work() in __mod_memcg_lruvec_state(),
+and the regression is gone.
 
-Thank you for your recommendation.
-I will integrate the same component binding files in MDP and DISP, and
-place them in the folder same with MMSYS instead.
-(
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-)
-The first version of RDMA, CCORR, AAL, COLOR and WDMA will be provided
-by MDP and then DISP add it own property later.
+Also to avoid some duplication of debugging, here are some other tries
+I did:
+* add padding in 'struct lruvec' for 'lru_lock', no effect
+* add padding in 'mem_cgroup_per_node' between 'lruvec_stats_percpu' and
+  'lruvec_stats', no effect.
 
-Thanks & Regards,
-Moudy Ho
-> 
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > ccorr.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > ccorr.yaml
-> > new file mode 100644
-> > index 000000000000..59fd68b46022
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > ccorr.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: 
-> > https://urldefense.com/v3/__http://devicetree.org/schemas/media/mediatek,mdp3-ccorr.yaml*__;Iw!!CTRNKA9wMg0ARbw!xOYd8SaiDSRvJBgpaQpLzMxqPOAstMX7cGXkhEnuYa1Wb3EMiiElNEPeyW4MmXUY$
-> >  
-> > +$schema: 
-> > https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!xOYd8SaiDSRvJBgpaQpLzMxqPOAstMX7cGXkhEnuYa1Wb3EMiiElNEPeydwX0gSy$
-> >  
-> > +
-> > +title: Mediatek Media Data Path 3 CCORR Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Daoyuan Huang <daoyuan.huang@mediatek.com>
-> > +  - Moudy Ho <moudy.ho@mediatek.com>
-> > +
-> > +description: |
-> > +  One of Media Data Path 3 (MDP3) components used to do color
-> > correction with 3X3 matrix.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +        - mediatek,mt8183-mdp3-ccorr
-> > +
-> > +  mediatek,mdp3-id:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    maxItems: 1
-> > +    description: |
-> > +      HW index to distinguish same functionality modules.
-> > +
-> > +  reg:
-> > +    description: |
-> > +      Physical base address and length of the function block
-> > +      register space, the number aligns with the component
-> > +      and its own subcomponent.
-> > +
-> > +  mediatek,gce-client-reg:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    description: |
-> > +      sub-system id corresponding to the global command engine
-> > (GCE)
-> > +      register address.
-> > +      $ref: /schemas/mailbox/mtk-gce.txt
-> > +
-> > +  clocks:
-> > +    minItems: 1
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/mt8183-clk.h>
-> > +    #include <dt-bindings/gce/mt8183-gce.h>
-> > +
-> > +    mdp3_ccorr: mdp3_ccorr@1401c000 {
-> > +      compatible = "mediatek,mt8183-mdp3-ccorr";
-> > +      mediatek,mdp3-id = <0>;
-> > +      reg = <0x1401c000 0x1000>;
-> > +      mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0xc000
-> > 0x1000>;
-> > +      clocks = <&mmsys CLK_MM_MDP_CCORR>;
-> > +    };
+Thanks,
+Feng
 
