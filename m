@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA377406DF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7906F406DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhIJPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        id S234228AbhIJPKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhIJPJQ (ORCPT
+        with ESMTP id S234141AbhIJPKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:09:16 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEA2C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:08:05 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id i13so2364348ilm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:08:05 -0700 (PDT)
+        Fri, 10 Sep 2021 11:10:22 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D45C061574;
+        Fri, 10 Sep 2021 08:09:11 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w19so3294849oik.10;
+        Fri, 10 Sep 2021 08:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BrxzTCRXFeWgHCONUvuL7grava4MVAVW3Zocp6vU7jo=;
-        b=my+xizXrJkbSt6xkUqSxuB8Jm0KThrQH0s5xj6MBSAfvx+JU7850qyZgWajaZpDFrT
-         WmFxjKFRXLPGGQ76Q1lwASuTMVAkaHSizZtI2EfNKV6d4iZNjJYZ85U1gVeHVglkkkza
-         JKC0ruBtS2gPVXi8FMRiZjAQ3u0ysMjMA3GaGwsESADei7dpcuDw18KOcdygZtHcVTNU
-         eWOy8ESo4T2oNCniSNpkBg1ID2kcP6DlSVzRIKs9bKmdpBk+BSUiMCZMSaAkDpoyI+ti
-         tytk1h9R2QNkiwz1AsCjQSLQMFBrPL6N6wNULWFWD9LS239T6cXJIAjGUEMFnORQe8tG
-         CRfA==
+        bh=hL1zCwUiJ6hoIGlHwhgGP4f+imH+ev7xCevX0zajur0=;
+        b=aJWH063vakKMa/mWbAQvIPrxcWojIL00+4tEJylPGRzokbZNmQvDYbby+E+63mi8Si
+         3rvZFYky++YjRWuzixJNhA3WuTh/ette7OK6GE9NRJ01uZiZKYz60ijCfJrPEOa/PlyM
+         8aXL8IUdctEvfsJOUBPZzYBscnKWesO+dPTAQvFs36Ab0403Qap0ZIWAjmSPZ6u/kQQh
+         etGaHNzZaePtMjemDrzfkCd8Unzy/NM7t/ful/GCVwqTsB1yxqyOiLsSD/HKwMkkRB8F
+         73XN5RPWSIyp4IVXEBI6aXl8sBohpTg5GzPDF7vRevuU0yCmjz01NwNn19vasRWo7pPZ
+         qFAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BrxzTCRXFeWgHCONUvuL7grava4MVAVW3Zocp6vU7jo=;
-        b=dsXuQfQYhZk8ZZ4Qa4/pQH/RxbR9yr3HyY76Dvdl5mB1EMWG1xONBFqBWgWGWuOoQi
-         sWbE67QhSa9eHKwX9gIvUpRP48851Q/EG5Y0+yOw0x2iqxJsMMSjwp0wmZ9jp0Mrb9IJ
-         CTk4DFKlw0rzcy4+7y4/p0IpCTbvXqXf3xVBhGBe2UXhrYd+KE9+YK1G7wXGQ0WF4xrD
-         r4RHYl1Qi/qfwrDazpRDZpTsT21T0X4dyVhkYE7FY5JJsAeSZyKvUH7GiV78MfH6hN6Z
-         6Cddxm45iurm6+WTSMmfrCF4UgfsY7k2pAmlGzEpS3wapOjnPhr85ee/YF3UNTUXp9vo
-         NYpw==
-X-Gm-Message-State: AOAM531+yVz6/HD68Hsxmgjd6QTYwaoUffCQLxrHEyG4JSuvDuFJoG87
-        tBuRJRzEBCYC/zUH0s0VFnb/pxdd3CDZUlgOAFE=
-X-Google-Smtp-Source: ABdhPJxKSMqljOv4kq4sT7iCXHFFs4i40ciAQ4hNIZSI59SAfmiS7XM4mhBu6+bVF974ULWxJcFAuw==
-X-Received: by 2002:a05:6e02:68a:: with SMTP id o10mr6969504ils.72.1631286484904;
-        Fri, 10 Sep 2021 08:08:04 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id z16sm2660078ile.72.2021.09.10.08.08.03
+        bh=hL1zCwUiJ6hoIGlHwhgGP4f+imH+ev7xCevX0zajur0=;
+        b=R0xFBFNYFN0R8USXbvba9il66sXDftNuHp/w/0TpV27aO0Of29gki/Dc1/h1bnNzu8
+         1lJGAycwNtOxikWkradE1IS9uBxNyH9xLAR2UUskJbZVAfRz8COPhpbwF8c7cPG1erK8
+         GI0YhDuE/3r2edEvIeVUMIBuG06Co7hHR0E83fPxqKS5tYgwD5bFOWFdmdYvSgOwRKrz
+         gd5MKXoDnWCHLGXeNgqpEspm9N9tm/g52EjJ5PqxMMgWzPiMcoL6N6d+povS34us4jgN
+         lMobld6wkpz4X6kE7sDPaJUAuj8jpx0/VLbok2vbPnXHb+/73X4p63BIinXHmFgntdqN
+         SnhQ==
+X-Gm-Message-State: AOAM532/dELsj0WXtvtqvwZ23/0ATXsNhxIZFSoWsHqssWEpqIF16KGu
+        4asmHG0LP0IJJ1bnsTT3p6A=
+X-Google-Smtp-Source: ABdhPJzvBmE+4S7BdRw082cXwBi53czb+PLL/ElPThwO/9okMEjivrPpTvLPARkX7Aq8ZIS78njrSg==
+X-Received: by 2002:aca:5344:: with SMTP id h65mr4587386oib.117.1631286550365;
+        Fri, 10 Sep 2021 08:09:10 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id w23sm1327423oih.4.2021.09.10.08.09.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 08:08:03 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
-Date:   Fri, 10 Sep 2021 09:08:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Sep 2021 08:09:10 -0700 (PDT)
+Subject: Re: [PATCH v2 09/15] leds: trigger: blkdev: Check devices for
+ activity and blink LEDs
+To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+ <20210909222513.2184795-10-arequipeno@gmail.com>
+ <20210910041713.4722760a@thinkpad>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <77111c57-dfb5-44c6-c4e9-e18afb468b6e@gmail.com>
+Date:   Fri, 10 Sep 2021 10:09:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210910041713.4722760a@thinkpad>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 8:42 AM, Al Viro wrote:
-> On Fri, Sep 10, 2021 at 07:57:49AM -0600, Jens Axboe wrote:
+On 9/9/21 9:17 PM, Marek Behún wrote:
+> So your code allows me to use a partition block device (like sda2) to
+> register with the blkdev LED trigger, but when I do this, the code will
+> disregard that I just want the LED to blink on activity on that one
+> partition. Instead you will blink for whole sda, since you are looking
+> at stats of only part0.
 > 
->> It was just a quick hack, might very well be too eager to go through
->> those motions. But pondering this instead of sleeping, we don't need to
->> copy all of iov_iter in order to restore the state, and we can use the
->> same advance after restoring. So something like this may be more
->> palatable. Caveat - again untested, and I haven't tested the performance
->> impact of this at all.
-> 
-> You actually can cut it down even more - nr_segs + iov remains constant
-> all along, so you could get away with just 3 words here...  I would be
+> Am I right?
 
-Mmm, the iov pointer remains constant? Maybe I'm missing your point, but
-the various advance functions are quite happy to increment iter->iov or
-iter->bvec, so we need to restore them. From a quick look, looks like
-iter->nr_segs is modified for advancing too.
+You can't add partitions, only whole devices.
 
-What am I missing?
+# echo vda2 > link_device
+-bash: echo: write error: No such device
 
-> surprised if extra memory traffic had shown up - it's well within the
-> noise from register spills, (un)inlining, etc.  We are talking about
-> 3 (or 4, with your variant) extra words on one stack frame (and that'd
-> be further offset by removal of ->truncated); I'd still like to see the
-> profiling data, but concerns about extra memory traffic due to that
-> are, IMO, misplaced.
+static int blkdev_match_name(struct device *const dev, const void *const 
+name)
+{
+	return dev->type == &disk_type
+			&& sysfs_streq(dev_to_disk(dev)->disk_name, name);
+}
 
-See other email that was just sent out, it is measurable but pretty
-minimal. But that's also down to about 1/3rd of copying the whole
-thing blindly, so definitely a better case.
+Partitions fail the dev->type == &disk_type check.
 
 -- 
-Jens Axboe
-
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
