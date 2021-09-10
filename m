@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4611E406BC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3187B406BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhIJMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
+        id S234046AbhIJMfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233841AbhIJMdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA0060E94;
-        Fri, 10 Sep 2021 12:32:32 +0000 (UTC)
+        id S233394AbhIJMe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:34:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F853611F2;
+        Fri, 10 Sep 2021 12:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277152;
-        bh=ScMyRx5hzzycEeIp806gQ990mz42kGL2xozFShREGxM=;
+        s=korg; t=1631277199;
+        bh=N+X6dDOdaFYryrWTgzWwsS6fY5MCzcMnHkhpuV1FUEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JlV7DZet7Qqw2Qrhp0M9cUGZ/eRx3Fh3o7q6erR+5df/uZC4hqjjThh+pfVKzriex
-         Z+4ImMlUc887ABnTav+F6WNi7Xys656AND4TtHs7vQhkFgdWUbv8rgHpPwf9mJ+UrI
-         yzBcdO5pgxwtlSWmZQ5w7JzgbtRz6bEq/sJ3uF48=
+        b=J3VGrslV3p9IapjnBfEfI5+Wkfv34Ljix/9KdCWDuU0yKZAP9U3NFfGLvy5dYzFC5
+         +WD8O7g/cpjfBE74G9jDrkQEsKRDSfvTL5HnIFB3wIqbIxUh80OsJStT+pTkNjigPc
+         TwT6fIv5v9GbiBeakEJSrC50XlqGn+UB3KMqiY9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.13 21/22] x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS versions
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Jeffery <djeffery@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 16/26] blk-mq: clearing flush request reference in tags->rqs[]
 Date:   Fri, 10 Sep 2021 14:30:20 +0200
-Message-Id: <20210910122916.629055122@linuxfoundation.org>
+Message-Id: <20210910122916.774523957@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit a729691b541f6e63043beae72e635635abe5dc09 upstream.
+commit 364b61818f65045479e42e76ed8dd6f051778280 upstream.
 
-When this platform was relatively new in November 2011, with early BIOS
-revisions, a reboot quirk was added in commit 6be30bb7d750 ("x86/reboot:
-Blacklist Dell OptiPlex 990 known to require PCI reboot")
+Before we free request queue, clearing flush request reference in
+tags->rqs[], so that potential UAF can be avoided.
 
-However, this quirk (and several others) are open-ended to all BIOS
-versions and left no automatic expiry if/when the system BIOS fixed the
-issue, meaning that nobody is likely to come along and re-test.
+Based on one patch written by David Jeffery.
 
-What is really problematic with using PCI reboot as this quirk does, is
-that it causes this platform to do a full power down, wait one second,
-and then power back on.  This is less than ideal if one is using it for
-boot testing and/or bisecting kernels when legacy rotating hard disks
-are installed.
-
-It was only by chance that the quirk was noticed in dmesg - and when
-disabled it turned out that it wasn't required anymore (BIOS A24), and a
-default reboot would work fine without the "harshness" of power cycling the
-machine (and disks) down and up like the PCI reboot does.
-
-Doing a bit more research, it seems that the "newest" BIOS for which the
-issue was reported[1] was version A06, however Dell[2] seemed to suggest
-only up to and including version A05, with the A06 having a large number of
-fixes[3] listed.
-
-As is typical with a new platform, the initial BIOS updates come frequently
-and then taper off (and in this case, with a revival for CPU CVEs); a
-search for O990-A<ver>.exe reveals the following dates:
-
-        A02     16 Mar 2011
-        A03     11 May 2011
-        A06     14 Sep 2011
-        A07     24 Oct 2011
-        A10     08 Dec 2011
-        A14     06 Sep 2012
-        A16     15 Oct 2012
-        A18     30 Sep 2013
-        A19     23 Sep 2015
-        A20     02 Jun 2017
-        A23     07 Mar 2018
-        A24     21 Aug 2018
-
-While it's overkill to flash and test each of the above, it would seem
-likely that the issue was contained within A0x BIOS versions, given the
-dates above and the dates of issue reports[4] from distros.  So rather than
-just throw out the quirk entirely, limit the scope to just those early BIOS
-versions, in case people are still running systems from 2011 with the
-original as-shipped early A0x BIOS versions.
-
-[1] https://lore.kernel.org/lkml/1320373471-3942-1-git-send-email-trenn@suse.de/
-[2] https://www.dell.com/support/kbdoc/en-ca/000131908/linux-based-operating-systems-stall-upon-reboot-on-optiplex-390-790-990-systems
-[3] https://www.dell.com/support/home/en-ca/drivers/driversdetails?driverid=85j10
-[4] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/768039
-
-Fixes: 6be30bb7d750 ("x86/reboot: Blacklist Dell OptiPlex 990 known to require PCI reboot")
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210530162447.996461-4-paul.gortmaker@windriver.com
+Tested-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: David Jeffery <djeffery@redhat.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210511152236.763464-5-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/reboot.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ block/blk-mq.c |   35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -388,10 +388,11 @@ static const struct dmi_system_id reboot
- 	},
- 	{	/* Handle problems with rebooting on the OptiPlex 990. */
- 		.callback = set_pci_reboot,
--		.ident = "Dell OptiPlex 990",
-+		.ident = "Dell OptiPlex 990 BIOS A0x",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "A0"),
- 		},
- 	},
- 	{	/* Handle problems with rebooting on Dell 300's */
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2589,16 +2589,49 @@ static void blk_mq_remove_cpuhp(struct b
+ 					    &hctx->cpuhp_dead);
+ }
+ 
++/*
++ * Before freeing hw queue, clearing the flush request reference in
++ * tags->rqs[] for avoiding potential UAF.
++ */
++static void blk_mq_clear_flush_rq_mapping(struct blk_mq_tags *tags,
++		unsigned int queue_depth, struct request *flush_rq)
++{
++	int i;
++	unsigned long flags;
++
++	/* The hw queue may not be mapped yet */
++	if (!tags)
++		return;
++
++	WARN_ON_ONCE(refcount_read(&flush_rq->ref) != 0);
++
++	for (i = 0; i < queue_depth; i++)
++		cmpxchg(&tags->rqs[i], flush_rq, NULL);
++
++	/*
++	 * Wait until all pending iteration is done.
++	 *
++	 * Request reference is cleared and it is guaranteed to be observed
++	 * after the ->lock is released.
++	 */
++	spin_lock_irqsave(&tags->lock, flags);
++	spin_unlock_irqrestore(&tags->lock, flags);
++}
++
+ /* hctx->ctxs will be freed in queue's release handler */
+ static void blk_mq_exit_hctx(struct request_queue *q,
+ 		struct blk_mq_tag_set *set,
+ 		struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
+ {
++	struct request *flush_rq = hctx->fq->flush_rq;
++
+ 	if (blk_mq_hw_queue_mapped(hctx))
+ 		blk_mq_tag_idle(hctx);
+ 
++	blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
++			set->queue_depth, flush_rq);
+ 	if (set->ops->exit_request)
+-		set->ops->exit_request(set, hctx->fq->flush_rq, hctx_idx);
++		set->ops->exit_request(set, flush_rq, hctx_idx);
+ 
+ 	if (set->ops->exit_hctx)
+ 		set->ops->exit_hctx(hctx, hctx_idx);
 
 
