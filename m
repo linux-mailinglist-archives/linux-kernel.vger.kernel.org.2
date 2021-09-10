@@ -2,90 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE268406A96
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C3B406A9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhIJLQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:16:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232513AbhIJLQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:16:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 533D660FE3;
-        Fri, 10 Sep 2021 11:15:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631272515;
-        bh=wqZHkOETegfv4rOlmrPi3OSOXK3l/6cS5xQfWfMI/qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RLeL11IIh08iqK5hbesqBO2B3pd9+OPRcbll/fop+sIVKCO2Msf/vyVyM3h5efOzh
-         y0NlPkF5OctYtvSQTz3jTlm77UKvY6YWbQ+KLoYjUCqOgt3JA8UiG3/mhAQDaN6Vwe
-         yZPS7JIYWOmOCvAy5Eson2siU+J30iwLiKlxCgPE=
-Date:   Fri, 10 Sep 2021 13:15:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andre Muller <andre.muller@web.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: property: Disable fw_devlink DT support for X86
-Message-ID: <YTs+QSJ+eCBbS2ew@kroah.com>
-References: <20210910011446.3208894-1-saravanak@google.com>
- <YTr4CZW+rOXAjNq9@kroah.com>
- <5064e6ca-344d-7eda-3264-50fb63e2e3f3@web.de>
+        id S232759AbhIJLQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:16:56 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:58734 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232513AbhIJLQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 07:16:52 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18A4xLfx008537;
+        Fri, 10 Sep 2021 06:15:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ATame/oFg5qeK4UU7xR8VPNOhBfupi2f1Oga2JRrj38=;
+ b=qcYTkDx2EiE5cKYtuvikBE8omlqN7KOae60zf8EV4LgoFcy+v4dg9bcdue9CPrspBF/6
+ fgptNFtfZGBv85P+e6BIFTV6rwD0TOf9pTf7DpbORMHqtJLLtiTDq4XqBpwjnF5K8Zu8
+ bn9PnwIg1SkgIF2s0Qj7UG6evxxs2mz4mmlS6e01qeCHheqLvhL7Kq82Q1HRlgQFKwEX
+ GQqrPiYVhd1hl2z/HlRcOTAWd7vX4C8Z5sCv6AkNmT3qmyog4DlwXyJVEg0jsVIdNfK7
+ L3uXOfFy50Oz3kWnLnhYA7MGj2xfpytrqTy5kkbKwZLMn6faoe5M4Nh/+35lUMlYmQC8 2A== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3aytg78w7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 10 Sep 2021 06:15:38 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 10 Sep
+ 2021 12:15:37 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Fri, 10 Sep 2021 12:15:37 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.231])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1C7812A9;
+        Fri, 10 Sep 2021 11:15:31 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 1/4] spi: amd: Refactor code to use less spi_master_get_devdata
+Date:   Fri, 10 Sep 2021 12:15:26 +0100
+Message-ID: <20210910111529.12539-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5064e6ca-344d-7eda-3264-50fb63e2e3f3@web.de>
+Content-Type: text/plain
+X-Proofpoint-GUID: yfX1FmSKMLHFrUAxsxDuzTnvcnwo-ya3
+X-Proofpoint-ORIG-GUID: yfX1FmSKMLHFrUAxsxDuzTnvcnwo-ya3
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 12:37:01PM +0200, Andre Muller wrote:
-> On 10/09/2021 08.15, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 09, 2021 at 06:14:45PM -0700, Saravana Kannan wrote:
-> > > Andre reported fw_devlink=on breaking OLPC XO-1.5 [1].
-> > > 
-> > > OLPC XO-1.5 is an X86 system that uses a mix of ACPI and OF to populate
-> > > devices. The root cause seems to be ISA devices not setting their fwnode
-> > > field. But trying to figure out how to fix that doesn't seem worth the
-> > > trouble because the OLPC devicetree is very sparse/limited and fw_devlink
-> > > only adds the links causing this issue. Considering that there aren't many
-> > > users of OF in an X86 system, simply fw_devlink DT support for X86.
-> > > 
-> > > [1] - https://lore.kernel.org/lkml/3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de/
-> > > Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > Cc: Andre Muller <andre.muller@web.de>
-> > > ---
-> > >   drivers/of/property.c | 3 +++
-> > >   1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > index 0c0dc2e369c0..3fd74bb34819 100644
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1444,6 +1444,9 @@ static int of_fwnode_add_links(struct fwnode_handle *fwnode)
-> > >   	struct property *p;
-> > >   	struct device_node *con_np = to_of_node(fwnode);
-> > > 
-> > > +	if (IS_ENABLED(CONFIG_X86))
-> > > +		return 0;
-> > 
-> > I love it :)
-> > 
-> > Anyway, getting a "Tested-by:" would be great to have here.  Andre, can
-> > you verify this solves your issue?
-> 
-> Yes, this patch fixes the issue, the drives work fine.
-> Tested-by: Andre Müller <andre.muller@web.de>
+Get master data in the start and then just use struct amd_spi
+as it has the needed variable
 
-Wonderful!
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ drivers/spi/spi-amd.c | 94 ++++++++++++++++---------------------------
+ 1 file changed, 34 insertions(+), 60 deletions(-)
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
+index 3cf76096a76d..f23467cf6acd 100644
+--- a/drivers/spi/spi-amd.c
++++ b/drivers/spi/spi-amd.c
+@@ -41,85 +41,66 @@ struct amd_spi {
+ 	u8 chip_select;
+ };
+ 
+-static inline u8 amd_spi_readreg8(struct spi_master *master, int idx)
++static inline u8 amd_spi_readreg8(struct amd_spi *amd_spi, int idx)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-
+ 	return ioread8((u8 __iomem *)amd_spi->io_remap_addr + idx);
+ }
+ 
+-static inline void amd_spi_writereg8(struct spi_master *master, int idx,
+-				     u8 val)
++static inline void amd_spi_writereg8(struct amd_spi *amd_spi, int idx, u8 val)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-
+ 	iowrite8(val, ((u8 __iomem *)amd_spi->io_remap_addr + idx));
+ }
+ 
+-static inline void amd_spi_setclear_reg8(struct spi_master *master, int idx,
+-					 u8 set, u8 clear)
++static void amd_spi_setclear_reg8(struct amd_spi *amd_spi, int idx, u8 set, u8 clear)
+ {
+-	u8 tmp = amd_spi_readreg8(master, idx);
++	u8 tmp = amd_spi_readreg8(amd_spi, idx);
+ 
+ 	tmp = (tmp & ~clear) | set;
+-	amd_spi_writereg8(master, idx, tmp);
++	amd_spi_writereg8(amd_spi, idx, tmp);
+ }
+ 
+-static inline u32 amd_spi_readreg32(struct spi_master *master, int idx)
++static inline u32 amd_spi_readreg32(struct amd_spi *amd_spi, int idx)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-
+ 	return ioread32((u8 __iomem *)amd_spi->io_remap_addr + idx);
+ }
+ 
+-static inline void amd_spi_writereg32(struct spi_master *master, int idx,
+-				      u32 val)
++static inline void amd_spi_writereg32(struct amd_spi *amd_spi, int idx, u32 val)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-
+ 	iowrite32(val, ((u8 __iomem *)amd_spi->io_remap_addr + idx));
+ }
+ 
+-static inline void amd_spi_setclear_reg32(struct spi_master *master, int idx,
+-					  u32 set, u32 clear)
++static inline void amd_spi_setclear_reg32(struct amd_spi *amd_spi, int idx, u32 set, u32 clear)
+ {
+-	u32 tmp = amd_spi_readreg32(master, idx);
++	u32 tmp = amd_spi_readreg32(amd_spi, idx);
+ 
+ 	tmp = (tmp & ~clear) | set;
+-	amd_spi_writereg32(master, idx, tmp);
++	amd_spi_writereg32(amd_spi, idx, tmp);
+ }
+ 
+-static void amd_spi_select_chip(struct spi_master *master)
++static void amd_spi_select_chip(struct amd_spi *amd_spi)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-	u8 chip_select = amd_spi->chip_select;
+-
+-	amd_spi_setclear_reg8(master, AMD_SPI_ALT_CS_REG, chip_select,
++	amd_spi_setclear_reg8(amd_spi, AMD_SPI_ALT_CS_REG, amd_spi->chip_select,
+ 			      AMD_SPI_ALT_CS_MASK);
+ }
+ 
+-static void amd_spi_clear_fifo_ptr(struct spi_master *master)
++static void amd_spi_clear_fifo_ptr(struct amd_spi *amd_spi)
+ {
+-	amd_spi_setclear_reg32(master, AMD_SPI_CTRL0_REG, AMD_SPI_FIFO_CLEAR,
+-			       AMD_SPI_FIFO_CLEAR);
++	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, AMD_SPI_FIFO_CLEAR, AMD_SPI_FIFO_CLEAR);
+ }
+ 
+-static void amd_spi_set_opcode(struct spi_master *master, u8 cmd_opcode)
++static void amd_spi_set_opcode(struct amd_spi *amd_spi, u8 cmd_opcode)
+ {
+-	amd_spi_setclear_reg32(master, AMD_SPI_CTRL0_REG, cmd_opcode,
+-			       AMD_SPI_OPCODE_MASK);
++	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, cmd_opcode, AMD_SPI_OPCODE_MASK);
+ }
+ 
+-static inline void amd_spi_set_rx_count(struct spi_master *master,
+-					u8 rx_count)
++static inline void amd_spi_set_rx_count(struct amd_spi *amd_spi, u8 rx_count)
+ {
+-	amd_spi_setclear_reg8(master, AMD_SPI_RX_COUNT_REG, rx_count, 0xff);
++	amd_spi_setclear_reg8(amd_spi, AMD_SPI_RX_COUNT_REG, rx_count, 0xff);
+ }
+ 
+-static inline void amd_spi_set_tx_count(struct spi_master *master,
+-					u8 tx_count)
++static inline void amd_spi_set_tx_count(struct amd_spi *amd_spi, u8 tx_count)
+ {
+-	amd_spi_setclear_reg8(master, AMD_SPI_TX_COUNT_REG, tx_count, 0xff);
++	amd_spi_setclear_reg8(amd_spi, AMD_SPI_TX_COUNT_REG, tx_count, 0xff);
+ }
+ 
+ static inline int amd_spi_busy_wait(struct amd_spi *amd_spi)
+@@ -142,22 +123,18 @@ static inline int amd_spi_busy_wait(struct amd_spi *amd_spi)
+ 	return 0;
+ }
+ 
+-static void amd_spi_execute_opcode(struct spi_master *master)
++static void amd_spi_execute_opcode(struct amd_spi *amd_spi)
+ {
+-	struct amd_spi *amd_spi = spi_master_get_devdata(master);
+-
+ 	/* Set ExecuteOpCode bit in the CTRL0 register */
+-	amd_spi_setclear_reg32(master, AMD_SPI_CTRL0_REG, AMD_SPI_EXEC_CMD,
+-			       AMD_SPI_EXEC_CMD);
+-
++	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, AMD_SPI_EXEC_CMD, AMD_SPI_EXEC_CMD);
+ 	amd_spi_busy_wait(amd_spi);
+ }
+ 
+ static int amd_spi_master_setup(struct spi_device *spi)
+ {
+-	struct spi_master *master = spi->master;
++	struct amd_spi *amd_spi = spi_master_get_devdata(spi->master);
+ 
+-	amd_spi_clear_fifo_ptr(master);
++	amd_spi_clear_fifo_ptr(amd_spi);
+ 
+ 	return 0;
+ }
+@@ -185,19 +162,18 @@ static inline int amd_spi_fifo_xfer(struct amd_spi *amd_spi,
+ 			tx_len = xfer->len - 1;
+ 			cmd_opcode = *(u8 *)xfer->tx_buf;
+ 			buf++;
+-			amd_spi_set_opcode(master, cmd_opcode);
++			amd_spi_set_opcode(amd_spi, cmd_opcode);
+ 
+ 			/* Write data into the FIFO. */
+ 			for (i = 0; i < tx_len; i++) {
+-				iowrite8(buf[i],
+-					 ((u8 __iomem *)amd_spi->io_remap_addr +
++				iowrite8(buf[i], ((u8 __iomem *)amd_spi->io_remap_addr +
+ 					 AMD_SPI_FIFO_BASE + i));
+ 			}
+ 
+-			amd_spi_set_tx_count(master, tx_len);
+-			amd_spi_clear_fifo_ptr(master);
++			amd_spi_set_tx_count(amd_spi, tx_len);
++			amd_spi_clear_fifo_ptr(amd_spi);
+ 			/* Execute command */
+-			amd_spi_execute_opcode(master);
++			amd_spi_execute_opcode(amd_spi);
+ 		}
+ 		if (m_cmd & AMD_SPI_XFER_RX) {
+ 			/*
+@@ -206,15 +182,13 @@ static inline int amd_spi_fifo_xfer(struct amd_spi *amd_spi,
+ 			 */
+ 			rx_len = xfer->len;
+ 			buf = (u8 *)xfer->rx_buf;
+-			amd_spi_set_rx_count(master, rx_len);
+-			amd_spi_clear_fifo_ptr(master);
++			amd_spi_set_rx_count(amd_spi, rx_len);
++			amd_spi_clear_fifo_ptr(amd_spi);
+ 			/* Execute command */
+-			amd_spi_execute_opcode(master);
++			amd_spi_execute_opcode(amd_spi);
+ 			/* Read data from FIFO to receive buffer  */
+ 			for (i = 0; i < rx_len; i++)
+-				buf[i] = amd_spi_readreg8(master,
+-							  AMD_SPI_FIFO_BASE +
+-							  tx_len + i);
++				buf[i] = amd_spi_readreg8(amd_spi, AMD_SPI_FIFO_BASE + tx_len + i);
+ 		}
+ 	}
+ 
+@@ -234,7 +208,7 @@ static int amd_spi_master_transfer(struct spi_master *master,
+ 	struct spi_device *spi = msg->spi;
+ 
+ 	amd_spi->chip_select = spi->chip_select;
+-	amd_spi_select_chip(master);
++	amd_spi_select_chip(amd_spi);
+ 
+ 	/*
+ 	 * Extract spi_transfers from the spi message and
+-- 
+2.33.0
 
-Or Rob, want me to take this through my tree?
-
-thanks,
-
-greg k-h
