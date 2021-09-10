@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E7E40684B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 10:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DC640696E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhIJIYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 04:24:30 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40633 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231750AbhIJIY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:24:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="306592052"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="306592052"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:23:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="504974445"
-Received: from kailun-nuc9i9qnx.sh.intel.com ([10.239.160.139])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2021 01:23:12 -0700
-From:   Kailun Qin <kailun.qin@intel.com>
-To:     tj@kernel.org, bsegall@google.com, linux-kernel@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, changhuaixin@linux.alibaba.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, Kailun Qin <kailun.qin@intel.com>
-Subject: [PATCH] sched/core: Fix wrong burst unit in cgroup2 cpu.max write
-Date:   Fri, 10 Sep 2021 12:25:09 -0400
-Message-Id: <20210910162509.622222-1-kailun.qin@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S232240AbhIJKDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:03:17 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:32836
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232187AbhIJKDP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 06:03:15 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 45B7C4017D;
+        Fri, 10 Sep 2021 10:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631268123;
+        bh=CLu82bq5SWKeIc/2RlhTe1WwLhYQwCATV9tHg0yoIUI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=KxW7shY4l4HMrOtyTk0llxEcnqsRn06pUSZaWASEYRNefbBxdxa3rBqXzBGxUjDbd
+         uydUBiT0wBgCS7HKjQTLqdugvQfs5Wmuk1+HahX8hkIBk53OAB0GFPauaDbzkwjf72
+         P3NMxt7/bzehSSZzsNPngLQTfWYkVSVPVyXBqWQj8wI+5u0odltlBWxlxBUfg+PB8V
+         jtfpKsflJb9ZKaJbIQju2OQsFvs5VWx80tUPSNyufZO4PDIayGVgRvsZy3tZ87WzoH
+         1ls0189rswfKoHZNe+55aQdqBK4j089rl4/DiSXiysxNJX5L0l1HqPxEEBIuNnhFz8
+         fcoqhv/wcqd+Q==
+From:   Colin King <colin.king@canonical.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] fs/ntfs3: Fix a memory leak on object opts
+Date:   Fri, 10 Sep 2021 11:02:02 +0100
+Message-Id: <20210910100202.29254-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cpu_max_write(), as the eventual tg_set_cfs_bandwidth() operates on
-the burst in nsec which is input from tg_get_cfs_burst() in usec, it
-should be converted into nsec accordingly.
+From: Colin Ian King <colin.king@canonical.com>
 
-If not, this may cause a write into cgroup2 cpu.max to unexpectedly
-change an already set cpu.max.burst.
+Currently a failed allocation on sbi->upcase will cause an exit via
+the label free_sbi causing a memory leak on object opts. Fix this by
+re-ordering the exit paths free_opts and free_sbi so that kfree's occur
+in the reverse allocation order.
 
-This patch addresses the above issue.
-
-Signed-off-by: Kailun Qin <kailun.qin@intel.com>
+Addresses-Coverity: ("Resource leak")
+Fixes: 27fac77707a1 ("fs/ntfs3: Init spi more in init_fs_context than fill_super")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ntfs3/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c4462c454ab9..fc9fcc56149f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -10711,7 +10711,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
- {
- 	struct task_group *tg = css_tg(of_css(of));
- 	u64 period = tg_get_cfs_period(tg);
--	u64 burst = tg_get_cfs_burst(tg);
-+	u64 burst = (u64)tg_get_cfs_burst(tg) * NSEC_PER_USEC;
- 	u64 quota;
- 	int ret;
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 3cba0b5e7ac7..69f23db0d727 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -1450,10 +1450,10 @@ static int ntfs_init_fs_context(struct fs_context *fc)
+ 	fc->ops = &ntfs_context_ops;
+ 
+ 	return 0;
+-free_opts:
+-	kfree(opts);
+ free_sbi:
+ 	kfree(sbi);
++free_opts:
++	kfree(opts);
+ 	return -ENOMEM;
+ }
  
 -- 
-2.25.1
+2.32.0
 
