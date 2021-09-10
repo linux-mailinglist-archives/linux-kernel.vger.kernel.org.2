@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D1240669E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0294066A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 07:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhIJFFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 01:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        id S230288AbhIJFPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 01:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhIJFFb (ORCPT
+        with ESMTP id S230037AbhIJFPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 01:05:31 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C339C061574;
-        Thu,  9 Sep 2021 22:04:21 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id w6so401664pll.3;
-        Thu, 09 Sep 2021 22:04:21 -0700 (PDT)
+        Fri, 10 Sep 2021 01:15:40 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7069C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 22:14:29 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so339937wmh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 22:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d5eOmTxE1ZD/E42iqd3uKR/Y6MHuYpwLI55f3E0La5E=;
-        b=D8jXj9DJpL/epFZdDk8+HpYXMdp57OTLkSPCkszhGUOuPyjnPP6Vbnal1jn4yQUTBT
-         9nZdTQ6d+9CcIYBiCeVdZjN/2YANVlY/9mIGI7uCjKRrTs2DdN2cauGI/GERiGfDq/Ql
-         e4XxaoCaGS7rexQA0wOf13jNJVXvJgTqxf2qwCO97lNCqpor+J36XaQNS0XUUSE5fbG7
-         zXDOhg1lhiavFfLbS/paCIECSnMhn2x2zoU+34et0ZRZrYsYluYfmrNiWS/kiSkp5iHH
-         M7anLDr4fSc0pYqtetsYftjfVdspeuxSNRjq/6pu04PJ5FnrQcl+nrc1Eb6F+40zq/Lk
-         gH7Q==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Ze6s6wpN9KzSNecgrpczzQzoITVtf1Ztfs5jirK1uUk=;
+        b=cQSJAESg4dmWb4d4ICyt1NWM2thsfbW6vSYv7CcRTbat/7gqpr2/U2+W63DdUG/R7J
+         xq6zUSHQ/867i8GMsQT7WT+lDp2Qe6WiYOsuKqHBGiBDIhjI7WTOO4wNjlx0kC1x8dYa
+         ygo++2fSBsjPN8D+GCe2Kw1vnlqzvt+x77sLUcNG6OELPyUa8NxpivuVl94Hp+OKMfts
+         aUoRN40rzbUVE64qCeG7/6DL8DrusjJzUcSr14TZ6EK6QTZlHK7JXciVmFfeo4IEbNTL
+         G/pzhZ/vlVP98i9ENc8PCxpEbYcyGcDV7PKxeNQ06CbgvMRSZw3euZMtbNxiWd4UXuY3
+         yAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d5eOmTxE1ZD/E42iqd3uKR/Y6MHuYpwLI55f3E0La5E=;
-        b=jWvYP7DheRkzxx6a9fvqLPEo0pMUoIdJUOdAzfE2O5h6PBSPuGFxgxAb/qjucNw16r
-         ZzgvljNFquGjeY/Zo8aJnZDAxVZk39eUajgK3JUtaZ4XBILUzuhkYr8NwMJP9jKSctPO
-         gP9bKlT7AXYdhAzWlNzWiK5vyMFYP7QgA0421oLKgMN76/EK2x6+NnMjD1lX4QoF/Y9C
-         PPAxFga8Qq5XBTb8QQU4y0NpL3oHSp/0eRDBHSNhaETbp6oDRAZF61oMMQomwp2nWO5O
-         lQi22aU7Vzsf/GoUjTGEJSkgmPZJ5e0F+/RUhsZWzuiQg/7KSf5hM3nGkjBuY+blnWIt
-         TM+w==
-X-Gm-Message-State: AOAM533mBCDN64D1JojkZkytatr7pUScjom2vV39YY8ThF+9dDj/yz26
-        bj+PatLbs6DHONJTgCnStq4=
-X-Google-Smtp-Source: ABdhPJzHTI+b4/VBBzRYnWIhKBe6tQMwl0FszM9/LHsx0pAHwPEtWEcpLlfJ+ynZ5AoGCf0SWDW+Qw==
-X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr5899371plt.4.1631250260605;
-        Thu, 09 Sep 2021 22:04:20 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:acdc:1d22:e20a:2796])
-        by smtp.gmail.com with ESMTPSA id s192sm4053556pgc.23.2021.09.09.22.04.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 22:04:19 -0700 (PDT)
-Date:   Thu, 9 Sep 2021 22:04:16 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>,
-        kernel test robot <lkp@intel.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1] Input: ads7846: ads7846_get_value - fix unaligned
- pointer value warning
-Message-ID: <YTrnUFI53iwvwxrj@google.com>
-References: <20210707124115.20028-1-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Ze6s6wpN9KzSNecgrpczzQzoITVtf1Ztfs5jirK1uUk=;
+        b=5TJEY5ZuZr+PEYR2KzWDznk1cubviep1uM8emdGYroCjp5H1oHsnd48JsaDqgwyrga
+         lTm0DufVnvYdxsLmzca6Kzdg9X/aDRsffNjPURR6+1ePV/6bk67mePuepkHVjjnCMt9S
+         3cMBxt4lXhf9FhXVK2emsBCGGLaKLkYd82K/y8lppX4psPcmU6e41pO/QNYgmgS24nuH
+         lU7UXhGI2uKmxFMQVeJe/NTczTWBuDIxvqwVbvwLLA+ipMYxIWcaH8HUjTyCSmpHFw6h
+         VPPfT78EB2/L49iVR9o8AtlZsNrMAI/hc65COPU/W5cBk54bxhIeB2kwEuSOL08XPKYn
+         152w==
+X-Gm-Message-State: AOAM531Iy6t8kM36coHtUNmKnnU/QRgNbX7snz+nhQIKec9bCKpLICV9
+        kDmf6OpgOFflwHlmuTwTHRqE+PkC31F+2cKFbis=
+X-Google-Smtp-Source: ABdhPJwQzvDzNx0WFozDu7KdnOsj+HDmrOnw+NOYKipYN/e411rnJgnhHYvXiAxzO3vIllEZ2Z6SzyhvWfda/u+t+vY=
+X-Received: by 2002:a05:600c:4c17:: with SMTP id d23mr6310889wmp.92.1631250867967;
+ Thu, 09 Sep 2021 22:14:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707124115.20028-1-o.rempel@pengutronix.de>
+Reply-To: sanamohamad906@gmail.com
+Sender: christbebe7@gmail.com
+Received: by 2002:a1c:f216:0:0:0:0:0 with HTTP; Thu, 9 Sep 2021 22:14:27 -0700 (PDT)
+From:   Sana Mohamad <msana6897@gmail.com>
+Date:   Fri, 10 Sep 2021 06:14:27 +0100
+X-Google-Sender-Auth: vwYDsUpz7MuLfzE5EaUppIcqQ10
+Message-ID: <CAMOqPknJR1s1y1H13H8YHwaymw22UTL_GYui4m85fH=tyjq_zw@mail.gmail.com>
+Subject: Dear intended recipient
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+Greetings,
 
-On Wed, Jul 07, 2021 at 02:41:15PM +0200, Oleksij Rempel wrote:
-> Fix warning reported by the kernel test robot:
-> drivers/input/touchscreen/ads7846.c:705:24: warning: taking address
-> of packed member 'data' of class or structure 'ads7846_buf' may result
-> in an unaligned pointer value [-Waddress-of-packed-member]
-> 
-> Fixes: 6965eece2a89 ("Input: ads7846 - convert to one message")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/input/touchscreen/ads7846.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-> index adb4c2230c31..1987dedac94f 100644
-> --- a/drivers/input/touchscreen/ads7846.c
-> +++ b/drivers/input/touchscreen/ads7846.c
-> @@ -702,7 +702,7 @@ static int ads7846_get_value(struct ads7846_buf *buf)
->  {
->  	int value;
->  
-> -	value = be16_to_cpup(&buf->data);
-> +	value = get_unaligned_be16(&buf->data);
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you independently
+of my investigation and no one is informed of this communication.
+I need your urgent assistance in transferring the sum of
+$12,300,000.00 USD immediately to your private account.The money has
+been here in our Bank lying dormant for years now without anybody
+coming for the claim of it.I want to release the money to you as a
+relative to our deceased customer (the account owner) who died along
+with his supposed NEXT OF KIN on 16th October 2005.
 
-ds7846_buf is declared as packed so I believe using be16_to_cpu(buf->data)
-will suffice.
+The Banking laws here do not allow such money to stay more than 15
+years, because the money will be recalled to the Bank treasury account
+as an unclaimed fund.By indicating your interest I will send you the
+full details on how the business will be executed.
 
-I can adjust on my side if you agree.
+Please respond urgently and delete if you are not interested.
 
-Thanks.
-
--- 
-Dmitry
+Best Regards,
+Mr. Sana Mohamad
