@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC27406C38
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B968F406C48
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbhIJMh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:37:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        id S234311AbhIJMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234032AbhIJMgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5333F61209;
-        Fri, 10 Sep 2021 12:35:11 +0000 (UTC)
+        id S233741AbhIJMg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:36:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2AD86121F;
+        Fri, 10 Sep 2021 12:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277311;
-        bh=/mxhlj9bAGDApe25lknaTLaU1AYEJqivuXTuRtv0OL0=;
+        s=korg; t=1631277333;
+        bh=HRYt+w4rh3mflXhyz3JiNRj8hMqLQ2bq6430B8eWofc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V8B0/njDPtr/qw0UXd4Dk69tLWXtUyETvMOp9lazqsUVK+ttCLhIUjY4oAMPJoRwE
-         XpRNpAIg0M3ksN/iZ6hpjr9OKCUMCnETrhqTnf6KfMMo/jfWAIs3z0Qc9/WHgM00cF
-         yNetEDiCIK20g8vMfBapBaN6ZrDbHLg3qERcAV98=
+        b=l9BaUI5Gq88Bc0lklUir+My0Dx6v0IOxkwoN1mugSTlolhqZ621y3ZWiVyYfgCs2G
+         SjAqTKEyR96A2TsoPPTVLK8vdl1v8pLutDDPw2UMA6uJKKx9m3wR6aXBJoC9w89Zho
+         +t1EaOoi8xFiJFkFqs8kqDbfBaePP25zWTn1U6SU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.4 22/37] igmp: Add ip_mc_list lock in ip_check_mc_rcu
-Date:   Fri, 10 Sep 2021 14:30:25 +0200
-Message-Id: <20210910122917.893921909@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 23/37] USB: serial: mos7720: improve OOM-handling in read_mos_reg()
+Date:   Fri, 10 Sep 2021 14:30:26 +0200
+Message-Id: <20210910122917.926396667@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
 References: <20210910122917.149278545@linuxfoundation.org>
@@ -40,75 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Tom Rix <trix@redhat.com>
 
-commit 23d2b94043ca8835bd1e67749020e839f396a1c2 upstream.
+commit 161a582bd1d8681095f158d11bc679a58f1d026b upstream.
 
-I got below panic when doing fuzz test:
+clang static analysis reports this problem
 
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 4056 Comm: syz-executor.3 Tainted: G    B             5.14.0-rc1-00195-gcff5c4254439-dirty #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
-dump_stack_lvl+0x7a/0x9b
-panic+0x2cd/0x5af
-end_report.cold+0x5a/0x5a
-kasan_report+0xec/0x110
-ip_check_mc_rcu+0x556/0x5d0
-__mkroute_output+0x895/0x1740
-ip_route_output_key_hash_rcu+0x2d0/0x1050
-ip_route_output_key_hash+0x182/0x2e0
-ip_route_output_flow+0x28/0x130
-udp_sendmsg+0x165d/0x2280
-udpv6_sendmsg+0x121e/0x24f0
-inet6_sendmsg+0xf7/0x140
-sock_sendmsg+0xe9/0x180
-____sys_sendmsg+0x2b8/0x7a0
-___sys_sendmsg+0xf0/0x160
-__sys_sendmmsg+0x17e/0x3c0
-__x64_sys_sendmmsg+0x9e/0x100
-do_syscall_64+0x3b/0x90
-entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x462eb9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8
- 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48>
- 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3df5af1c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000462eb9
-RDX: 0000000000000312 RSI: 0000000020001700 RDI: 0000000000000007
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3df5af26bc
-R13: 00000000004c372d R14: 0000000000700b10 R15: 00000000ffffffff
+mos7720.c:352:2: warning: Undefined or garbage value returned to caller
+        return d;
+        ^~~~~~~~
 
-It is one use-after-free in ip_check_mc_rcu.
-In ip_mc_del_src, the ip_sf_list of pmc has been freed under pmc->lock protection.
-But access to ip_sf_list in ip_check_mc_rcu is not protected by the lock.
+In the parport_mos7715_read_data()'s call to read_mos_reg(), 'd' is
+only set after the alloc block.
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+	buf = kmalloc(1, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+Although the problem is reported in parport_most7715_read_data(),
+none of the callee's of read_mos_reg() check the return status.
+
+Make sure to clear the return-value buffer also on allocation failures.
+
+Fixes: 0d130367abf5 ("USB: serial: mos7720: fix control-message error handling")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/20210111220904.1035957-1-trix@redhat.com
+[ johan: only clear the buffer on errors, amend commit message ]
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/igmp.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/mos7720.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2730,6 +2730,7 @@ int ip_check_mc_rcu(struct in_device *in
- 		rv = 1;
- 	} else if (im) {
- 		if (src_addr) {
-+			spin_lock_bh(&im->lock);
- 			for (psf = im->sources; psf; psf = psf->sf_next) {
- 				if (psf->sf_inaddr == src_addr)
- 					break;
-@@ -2740,6 +2741,7 @@ int ip_check_mc_rcu(struct in_device *in
- 					im->sfcount[MCAST_EXCLUDE];
- 			else
- 				rv = im->sfcount[MCAST_EXCLUDE] != 0;
-+			spin_unlock_bh(&im->lock);
- 		} else
- 			rv = 1; /* unspecified source; tentatively allow */
- 	}
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -226,8 +226,10 @@ static int read_mos_reg(struct usb_seria
+ 	int status;
+ 
+ 	buf = kmalloc(1, GFP_KERNEL);
+-	if (!buf)
++	if (!buf) {
++		*data = 0;
+ 		return -ENOMEM;
++	}
+ 
+ 	status = usb_control_msg(usbdev, pipe, request, requesttype, value,
+ 				     index, buf, 1, MOS_WDR_TIMEOUT);
 
 
