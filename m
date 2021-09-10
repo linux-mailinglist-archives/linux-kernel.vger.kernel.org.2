@@ -2,253 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240E040604E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55078406058
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhIJAEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S229557AbhIJAMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhIJAEC (ORCPT
+        with ESMTP id S229480AbhIJAMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:04:02 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53538C061574;
-        Thu,  9 Sep 2021 17:02:52 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id i13so200008ilm.4;
-        Thu, 09 Sep 2021 17:02:52 -0700 (PDT)
+        Thu, 9 Sep 2021 20:12:43 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E09C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:11:32 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n4so5724plh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=qfK7KKl8oFnAFH+nw9DM1NT8Mmm4+KRvCOrQXBPc9YQ=;
-        b=JSw6gegC8T2qItiD+mR81bE9kG69ZL9oFEyQX0T9e8eeGTmewX4cK6osqNg085Swip
-         wqhJEUtXgpnp7p1NHuhWQKyWQj5tE49RZtBP78yh4ijmqrFWa3eGf6wAG/xfagmexEAE
-         TqV/q2XehhTAWGipnNNCuvTFrwXgFbYP1Gm1KhiobVy1JUpQSIMWGBBm6D9xYBv0RncY
-         fxv+zExVbKcTIYuctmoZjYPHBLacLHg6+8g5iGNRoL49PMGuGKlJUNXIacJ4f8CBJR2q
-         KN+ef499hhIkwM8GOFEct4vlVlrpBtP6CwRCny+bx8s07n5FlUZ742k+PxetG9u/MSGR
-         eExg==
+        bh=llclJQfTdy0DutAA/POV20L5BXhuUdNNHscF47502uw=;
+        b=arrikypm7FMQHJNO+MMHj7r/UZn2uEEwEsUEvSZBmsv484Vob7fvITbMxiMvJWWkEK
+         QjyrbglXAE9f9ucU3kXuvYvLriWFjEQYgoWK374TqvQ+IVXBZuy3+7haSX5NVD9Jhyid
+         EBM2Mq1X9rHBpsg9J1oeAulYrNGyOyrFKjz9XcNFEajMZO30+uwHDG+dg2/7ua4Y+HW+
+         LwLNis3WpX7ztOaDcla69d683GUTGpWccMN86VLuL2NOK5jTU4HdWeWYr2c4auRsvE5k
+         FcSPs2cawfiSLpAJf/PKIejRFYtSMaWI2boe+vdZGCgLQ/3AUpORLQPfTGEpfFhy5k/u
+         KPqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qfK7KKl8oFnAFH+nw9DM1NT8Mmm4+KRvCOrQXBPc9YQ=;
-        b=i8rsCsFYWK410Ltf+IEpm8y1UJUKokz7YIenJelOKW9yULqk6LzsBhwEyyFcqRNgkA
-         AqLgGWojknfYskkZjo82WpmFjJuy5PqL3GIYkvMfIEbpXGWrTxr0K+NrJYZashW5vJJh
-         89uShmu0IQbyMT/zEqmFNEazzEMdxsUQ4Kp0T+ZYZVVQWjN63SiRg7J9oNQ+7J1QAx3F
-         c2ODroK2NleAQNmbT8Hjj0M6p1HPI2Y/xAH6HeEMEsfR+6vKOzw2OPTVeNSd6a2LNvCd
-         HjHsX3vLmm4cxvuNtfuYPJmP2+hvdwJHCLSLFtfDXK/4Z1w7Z6pEAO/3+BJxd/feT5aa
-         FS2Q==
-X-Gm-Message-State: AOAM533WubqJ1xsiRAopqcd4QtxgitMPpYA4SEKhr/SBqO1npn1QBitB
-        86yOE8wEGx4H4uqfOrks+7Y=
-X-Google-Smtp-Source: ABdhPJx3XgSSt7P4jwLJpMfTeIhUnjm7pdclbaRsqiUqCdh3RY8o19sP5CF6ckLWEsFYIQp36R0pfA==
-X-Received: by 2002:a92:ad12:: with SMTP id w18mr4235005ilh.181.1631232171550;
-        Thu, 09 Sep 2021 17:02:51 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id o5sm1548868iow.48.2021.09.09.17.02.50
+        bh=llclJQfTdy0DutAA/POV20L5BXhuUdNNHscF47502uw=;
+        b=I02v3gBWrzdx0qNmv4Cnbcw5an9KWGC/uPFDqwUOHZdxpdFIVNGp9/iv01gMkPLPav
+         lxlfpC5FAFc5S/w77o5LweitSLfQOMUxrdKkqY7BeqAoNMjDnyU4h5tOmx+Zv/dHa72K
+         lejGWDkMcjgGWqfXDmM9iypToPYA+JcR7+wkKakK5nktnb5VZR9AURYyJ8Hh1tHQ1dbD
+         HRQZfUyvm9SMvaQTHPNXgA7p/l1KpdNI99o/8Ns3lA4l0UqOT+HK+uzmZRyXpSxKMKFH
+         5CUVuDbHn22hHDx5uJLGewEcfKhLMoe7ukBwBmAn8hNMyB90syEZiLAo4Ds4MrhagqfF
+         R9+w==
+X-Gm-Message-State: AOAM532AgXC7lOhTtLNz9/kCfaYu670vn64yqWQBPMjVtA9PkmoY/x3u
+        ITeAnuxtGZ7/7OWWxKTGtgAniA==
+X-Google-Smtp-Source: ABdhPJwW8gKxoPCfhLI++WbmUF0njySHSLgkUmtSr58LvyDcJhAtRKypIWUSW2/AAWBpVZXv3gtekQ==
+X-Received: by 2002:a17:90a:4d4e:: with SMTP id l14mr6185192pjh.4.1631232692195;
+        Thu, 09 Sep 2021 17:11:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b5sm3353491pfr.26.2021.09.09.17.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 17:02:50 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id D562E27C005B;
-        Thu,  9 Sep 2021 20:02:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 09 Sep 2021 20:02:49 -0400
-X-ME-Sender: <xms:p6A6YUmNsdhmXNN91aaqq4MX4rCXPQn80F7Sxfq1RZ_nQ-Hu3HRemA>
-    <xme:p6A6YT3ayp0tewFu7fHSP36FuOgzS5s93WKCIORZBWwwbgcSiQmCxTykI7mcW2w2y
-    av1NJNrWxldXiZBWQ>
-X-ME-Received: <xmr:p6A6YSoSDn0EjQnN5aWX-eyBq3949Vyd3XNRWEUiG7rYwpY3tMxiPZ1WXDRCow>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegtddgvdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
-    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:p6A6YQnk6lJmDWoJRNiTYNks_VK5QQ64K_LI1jYDH4x8iu57vKvggg>
-    <xmx:p6A6YS3ycplbyx1D3pvahiPq5sKmJYPSj6U1vYWM9BKRBcAtV3S4KA>
-    <xmx:p6A6YXsn6GMEqhGpjx9VUAc1TI6Ybz9IotbmoWPaJb88qtiysD63_w>
-    <xmx:qKA6Yb6k4veRvD76QJQBR5t8JeSzp7luwPqHlUXlIf3prBsZVDk3V9kezV8>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 9 Sep 2021 20:02:46 -0400 (EDT)
-Date:   Fri, 10 Sep 2021 08:01:14 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Dan Lustig <dlustig@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
+        Thu, 09 Sep 2021 17:11:31 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 00:11:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mpe@ellerman.id.au
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-Message-ID: <YTqgSmX57l2hCMk0@boqun-archlinux>
-References: <20180926182920.27644-2-paulmck@linux.ibm.com>
- <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
- <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
- <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
- <20210908144217.GA603644@rowland.harvard.edu>
- <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
- <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
- <20210909133535.GA9722@willie-the-truck>
- <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3 V7] KVM, SEV: Add support for SEV intra host migration
+Message-ID: <YTqirwnu0rOcfDCq@google.com>
+References: <20210902181751.252227-1-pgonda@google.com>
+ <20210902181751.252227-2-pgonda@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+In-Reply-To: <20210902181751.252227-2-pgonda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 01:03:18PM -0400, Dan Lustig wrote:
-> On 9/9/2021 9:35 AM, Will Deacon wrote:
-> > [+Palmer, PaulW, Daniel and Michael]
-> > 
-> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
-> >> On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
-> >>
-> >>> So if this is purely a RISC-V thing,
-> >>
-> >> Just to clarify, I think the current RISC-V thing is stonger than
-> >> PowerPC, but maybe not as strong as say ARM64, but RISC-V memory
-> >> ordering is still somewhat hazy to me.
-> >>
-> >> Specifically, the sequence:
-> >>
-> >> 	/* critical section s */
-> >> 	WRITE_ONCE(x, 1);
-> >> 	FENCE RW, W
-> >> 	WRITE_ONCE(s.lock, 0);		/* store S */
-> >> 	AMOSWAP %0, 1, r.lock		/* store R */
-> >> 	FENCE R, RW
-> >> 	WRITE_ONCE(y, 1);
-> >> 	/* critical section r */
-> >>
-> >> fully separates section s from section r, as in RW->RW ordering
-> >> (possibly not as strong as smp_mb() though), while on PowerPC it would
-> >> only impose TSO ordering between sections.
-> >>
-> >> The AMOSWAP is a RmW and as such matches the W from the RW->W fence,
-> >> similarly it marches the R from the R->RW fence, yielding an:
-> >>
-> >> 	RW->  W
-> >> 	    RmW
-> >> 	    R  ->RW
-> >>
-> >> ordering. It's the stores S and R that can be re-ordered, but not the
-> >> sections themselves (same on PowerPC and many others).
-> >>
-> >> Clarification from a RISC-V enabled person would be appreciated.
-> 
-> To first order, RISC-V's memory model is very similar to ARMv8's.  It
-> is "other-multi-copy-atomic", unlike Power, and respects dependencies.
-> It also has AMOs and LR/SC with optional RCsc acquire or release
-> semantics.  There's no need to worry about RISC-V somehow pushing the
-> boundaries of weak memory ordering in new ways.
-> 
-> The tricky part is that unlike ARMv8, RISC-V doesn't have load-acquire
-> or store-release opcodes at all.  Only AMOs and LR/SC have acquire or
-> release options.  That means that while certain operations like swap
-> can be implemented with native RCsc semantics, others like store-release
-> have to fall back on fences and plain writes.
-> 
-> That's where the complexity came up last time this was discussed, at
-> least as it relates to RISC-V: how to make sure the combination of RCsc
-> atomics and plain operations+fences gives the semantics everyone is
-> asking for here.  And to be clear there, I'm not asking for LKMM to
-> weaken anything about critical section ordering just for RISC-V's sake.
-> TSO/RCsc ordering between critical sections is a perfectly reasonable
-> model in my opinion.  I just want to make sure RISC-V gets it right
-> given whatever the decision is.
-> 
-> >>> then I think it's entirely reasonable to
-> >>>
-> >>>         spin_unlock(&r);
-> >>>         spin_lock(&s);
-> >>>
-> >>> cannot be reordered.
-> >>
-> >> I'm obviously completely in favour of that :-)
-> > 
-> > I don't think we should require the accesses to the actual lockwords to
-> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
-> > architectures where you'd end up with an extra barrier either after the
-> > unlock() or before the lock() operation. However, I remain absolutely in
-> > favour of strengthening the ordering of the _critical sections_ guarded by
-> > the locks to be RCsc.
-> 
-> I agree with Will here.  If the AMOSWAP above is actually implemented with
-> a RISC-V AMO, then the two critical sections will be separated as if RW,RW,
-> as Peter described.  If instead it's implemented using LR/SC, then RISC-V
+Nit, preferred shortlog scope is "KVM: SEV:"
 
-Just out of curiosity, in the following code, can the store S and load L
-be reordered?
+On Thu, Sep 02, 2021, Peter Gonda wrote:
+> For SEV to work with intra host migration, contents of the SEV info struct
+> such as the ASID (used to index the encryption key in the AMD SP) and
+> the list of memory regions need to be transferred to the target VM.
+> This change adds a commands for a target VMM to get a source SEV VM's sev
+> info.
+> 
+> The target is expected to be initialized (sev_guest_init), but not
+> launched state (sev_launch_start) when performing receive. Once the
+> target has received, it will be in a launched state and will not
+> need to perform the typical SEV launch commands.
+> 
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  Documentation/virt/kvm/api.rst  |  15 +++++
+>  arch/x86/include/asm/kvm_host.h |   1 +
+>  arch/x86/kvm/svm/sev.c          | 101 ++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c          |   1 +
+>  arch/x86/kvm/svm/svm.h          |   2 +
+>  arch/x86/kvm/x86.c              |   5 ++
+>  include/uapi/linux/kvm.h        |   1 +
+>  7 files changed, 126 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 4ea1bb28297b..e8cecc024649 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6702,6 +6702,21 @@ MAP_SHARED mmap will result in an -EINVAL return.
+>  When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+>  perform a bulk copy of tags to/from the guest.
+>  
+> +7.29 KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
+> +-------------------------------------
 
-	WRITE_ONCE(x, 1); // store S
-	FENCE RW, W
- 	WRITE_ONCE(s.lock, 0); // unlock(s)
- 	AMOSWAP %0, 1, s.lock  // lock(s)
-	FENCE R, RW
-	r1 = READ_ONCE(y); // load L
+Do we really want to bury this under KVM_CAP?  Even KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
+is a bit of a stretch, but at least that's a one-way "enabling", whereas this
+migration routine should be able to handle multiple migrations, e.g. migrate A->B
+and B->A.  Peeking at your selftest, it should be fairly easy to add in this edge
+case.
 
-I think they can, because neither "FENCE RW, W" nor "FENCE R, RW" order
-them. Note that the reordering is allowed in LKMM, because unlock-lock
-only need to be as strong as RCtso.
+This is probably a Paolo question, I've no idea if there's a desire to expand
+KVM_CAP versus adding a new ioctl().
 
-Moreover, how about the outcome of the following case:
+> +Architectures: x86 SEV enabled
+> +Type: vm
+> +Parameters: args[0] is the fd of the source vm
+> +Returns: 0 on success
 
-	{ 
-	r1, r2 are registers (variables) on each CPU, X, Y are memory
-	locations, and initialized as 0
+It'd be helpful to provide a brief description of the error cases.  Looks like
+-EINVAL is the only possible error?
+
+> +This capability enables userspace to migrate the encryption context
+
+I would prefer to scope this beyond "encryption context".  Even for SEV, it
+copies more than just the "context", which was an abstraction of SEV's ASID,
+e.g. this also hands off the set of encrypted memory regions.  Looking toward
+the future, if TDX wants to support this it's going to need to hand over a ton
+of stuff, e.g. S-EPT tables.
+
+Not sure on a name, maybe MIGRATE_PROTECTED_VM_FROM?
+
+> from the vm
+
+Capitalize VM in the description, if only to be consistent within these two
+paragraphs.  If it helps, oretend all the terrible examples in this file don't
+exist ;-)
+
+> +indicated by the fd to the vm this is called on.
+> +
+> +This is intended to support intra-host migration of VMs between userspace VMMs.
+> +in-guest workloads scheduled by the host. This allows for upgrading the VMMg
+
+This snippet (and the lowercase "vm") looks like it was left behind after a
+copy-paste from KVM_CAP_VM_COPY_ENC_CONTEXT_FROM.
+
+> +process without interrupting the guest.
+> +
+>  8. Other capabilities.
+>  ======================
+>  
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 09b256db394a..f06d87a85654 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1456,6 +1456,7 @@ struct kvm_x86_ops {
+>  	int (*mem_enc_reg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+>  	int (*mem_enc_unreg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+>  	int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+> +	int (*vm_migrate_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+>  
+>  	int (*get_msr_feature)(struct kvm_msr_entry *entry);
+>  
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 46eb1ba62d3d..8db666a362d4 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1501,6 +1501,107 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  	return sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, &data, &argp->error);
+>  }
+>  
+> +static int svm_sev_lock_for_migration(struct kvm *kvm)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	/*
+> +	 * Bail if this VM is already involved in a migration to avoid deadlock
+> +	 * between two VMs trying to migrate to/from each other.
+> +	 */
+> +	if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
+> +		return -EBUSY;
+> +
+> +	mutex_lock(&kvm->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static void svm_unlock_after_migration(struct kvm *kvm)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	mutex_unlock(&kvm->lock);
+> +	atomic_set_release(&sev->migration_in_progress, 0);
+> +}
+> +
+> +static void migrate_info_from(struct kvm_sev_info *dst,
+> +			      struct kvm_sev_info *src)
+> +{
+> +	sev_asid_free(dst);
+
+Ooh, this brings up a potential shortcoming of requiring @dst to be SEV-enabled.
+If every SEV{-ES} ASID is allocated, then there won't be an available ASID to
+(temporarily) allocate for the intra-host migration.  But that temporary ASID
+isn't actually necessary, i.e. there's no reason intra-host migration should fail
+if all ASIDs are in-use.
+
+I don't see any harm in requiring the @dst to _not_ be SEV-enabled.  sev_info
+is not dynamically allocated, i.e. migration_in_progress is accessible either
+way.  That would also simplify some of the checks, e.g. the regions_list check
+goes away because svm_register_enc_region() fails on non-SEV guests.
+
+I believe this will also fix multiple bugs in the next patch (SEV-ES support).
+
+Bug #1, SEV-ES support changes the checks to:
+
+	if (!sev_guest(kvm)) {
+		ret = -EINVAL;
+		pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
+		goto out_unlock;
 	}
 
-	CPU 0
-	=====
-	AMOSWAP r1, 1, X
-	FENCE R, RW
-	r2 = READ_ONCE(Y);
+	...
 
-	CPU 1
-	=====
-	WRITE_ONCE(Y, 1);
-	FENCE RW, RW
-	r2 = READ_ONCE(X);
+	if (!sev_guest(source_kvm)) {
+		ret = -EINVAL;
+		pr_warn_ratelimited(
+			"Source VM must be SEV enabled to migrate from.\n");
+		goto out_source;
+	}
 
-can we observe the result where r2 on CPU0 is 0 while r2 on CPU1 is 1?
+	if (sev_es_guest(kvm)) {
+		ret = migrate_vmsa_from(kvm, source_kvm);
+		if (ret)
+			goto out_source;
+	}
 
-Regards,
-Boqun
+and fails to handle the scenario where dst.SEV_ES != src.SEV_ES.  If @dst is
+SEV_ES-enabled and @src has created vCPUs, migrate_vmsa_from() will still fail
+due to guest_state_protected being false, but the reverse won't hold true and
+KVM will "successfully" migrate an SEV-ES guest to an SEV guest.  I'm guessing
+fireworks will ensue, e.g. due to running with the wrong ASID.
 
-> gives only TSO (R->R, R->W, W->W), because the two pieces of the AMO are
-> split, and that breaks the chain.  Getting full RW->RW between the critical
-> sections would therefore require an extra fence.  Also, the accesses to the
-> lockwords themselves would not be ordered without an extra fence.
-> 
-> > Last time this came up, I think the RISC-V folks were generally happy to
-> > implement whatever was necessary for Linux [1]. The thing that was stopping
-> > us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
-> > Michael saw quite a bit of variety in the impact on benchmarks [2] across
-> > different machines. So the question is whether newer Power machines are less
-> > affected to the degree that we could consider making this change again.
-> 
-> Yes, as I said above, RISC-V will implement what is needed to make this work.
-> 
-> Dan
-> 
-> > Will
-> > 
-> > [1] https://lore.kernel.org/lkml/11b27d32-4a8a-3f84-0f25-723095ef1076@nvidia.com/
-> > [2] https://lore.kernel.org/lkml/87tvp3xonl.fsf@concordia.ellerman.id.au/
+Bug #2, migrate_vmsa_from() leaks dst->vmsa, as this
+
+		dst_svm->vmsa = src_svm->vmsa;
+		src_svm->vmsa = NULL;
+
+overwrites dst_svm->vmsa that was allocated by svm_create_vcpu().
+
+AFAICT, there isn't anything that will break by forcing @dst to be !SEV (except
+stuff that's already broken, see below).  For SEV{-ES} specific stuff, anything
+that is allocated/set vCPU creation likely needs to be migrated, e.g. VMSA and
+the GHCB MSR value.  The only missing action is kvm_free_guest_fpu().
+
+Side topic, the VMSA really should be allocated in sev_es_create_vcpu(), and
+guest_fpu should never be allocated for SEV-ES guests (though that doesn't change
+the need for kvm_free_guest_fpu() in this case).  I'll send patches for that.
+
+> +	dst->asid = src->asid;
+> +	dst->misc_cg = src->misc_cg;
+> +	dst->handle = src->handle;
+> +	dst->pages_locked = src->pages_locked;
+> +
+> +	src->asid = 0;
+> +	src->active = false;
+> +	src->handle = 0;
+> +	src->pages_locked = 0;
+> +	src->misc_cg = NULL;
+> +
+> +	INIT_LIST_HEAD(&dst->regions_list);
+> +	list_replace_init(&src->regions_list, &dst->regions_list);
+> +}
+> +
+> +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
+> +{
+> +	struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
+> +	struct file *source_kvm_file;
+> +	struct kvm *source_kvm;
+> +	int ret;
+> +
+> +	ret = svm_sev_lock_for_migration(kvm);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!sev_guest(kvm) || sev_es_guest(kvm)) {
+> +		ret = -EINVAL;
+> +		pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
+
+Linux generally doesn't log user errors to dmesg.  They can be helpful during
+development, but aren't actionable and thus are of limited use in production.
+
+> +		goto out_unlock;
+> +	}
+
+Hmm, I was going to say that migration should be rejected if @dst has created
+vCPUs, but the SEV-ES support migrates VMSA state and so must run after vCPUs
+are created.  Holding kvm->lock does not prevent invoking per-vCPU ioctls(),
+including KVM_RUN.  Modifying vCPU SEV{-ES} state while a vCPU is actively running
+is bound to cause explosions.
+
+One option for this patch would be to check kvm->created_vcpus and then add
+different logic for SEV-ES, but that's probably not desirable for userspace as
+it will mean triggering intra-host migration at different points for SEV vs. SEV-ES.
+
+So I think the only option is to take vcpu->mutex for all vCPUs in both @src and
+@dst.  Adding that after acquiring kvm->lock in svm_sev_lock_for_migration()
+should Just Work.  Unless userspace is misbehaving, the lock won't be contended
+since all vCPUs need to be quiesced, though it's probably worth using the
+mutex_lock_killable() variant just to be safe.
+
+> +	if (!list_empty(&dst_sev->regions_list)) {
+> +		ret = -EINVAL;
+> +		pr_warn_ratelimited(
+> +			"VM must not have encrypted regions to migrate to.\n");
+> +		goto out_unlock;
+> +	}
+> +
+> +	source_kvm_file = fget(source_fd);
+> +	if (!file_is_kvm(source_kvm_file)) {
+> +		ret = -EBADF;
+> +		pr_warn_ratelimited(
+> +				"Source VM must be SEV enabled to migrate from.\n");
+
+Case in point for not logging errors, this is arguably inaccurate as the source
+"VM" isn't a VM.
+
+> +		goto out_fput;
+> +	}
+> +
+> +	source_kvm = source_kvm_file->private_data;
+> +	ret = svm_sev_lock_for_migration(source_kvm);
+> +	if (ret)
+> +		goto out_fput;
+> +
+> +	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
+> +		ret = -EINVAL;
+> +		pr_warn_ratelimited(
+> +			"Source VM must be SEV enabled to migrate from.\n");
+> +		goto out_source;
+> +	}
+> +
+> +	migrate_info_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
+> +	ret = 0;
+> +
+> +out_source:
+> +	svm_unlock_after_migration(source_kvm);
+> +out_fput:
+> +	if (source_kvm_file)
+> +		fput(source_kvm_file);
+> +out_unlock:
+> +	svm_unlock_after_migration(kvm);
+> +	return ret;
+> +}
