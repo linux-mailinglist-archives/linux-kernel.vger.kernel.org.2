@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF752406764
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A84406768
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhIJGuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:50:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
+        id S231296AbhIJGxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:53:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231223AbhIJGuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA6960F9C;
-        Fri, 10 Sep 2021 06:48:59 +0000 (UTC)
+        id S231223AbhIJGxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:53:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A3760F9C;
+        Fri, 10 Sep 2021 06:51:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631256540;
-        bh=vXJAXbhhRVXEIInC57PKl2Etg+1VL0ZTnPPtyJWXfQE=;
+        s=korg; t=1631256718;
+        bh=M2BIei3PONXzybAxwQQL8UC7HatLwyKfEKfePJw8s74=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g3/0iqK+l0/n6VvnkF0pXW7nCoy+Qy8uqoRX55nHBcMT0rP5IStNe5aBlGnE1+QwB
-         kLAu3CKJ2LXdPiiA5s3jmDP6SeIBhDT57NHkAj562QrzcJhJlra+qy7kSITaDZ16MC
-         ITYahQcfTmvsQqQ49FxBdevomUXLMuf14NIXAujo=
-Date:   Fri, 10 Sep 2021 08:48:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kabel@kernel.org
-Subject: Re: [PATCH v2 11/15] leds: trigger: blkdev: Enable linking block
- devices to LEDs
-Message-ID: <YTr/2bflThomjHqL@kroah.com>
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
- <20210909222513.2184795-12-arequipeno@gmail.com>
+        b=d8uobNZ9/6oKqlPUAnGpOBoxKWFQdyKeKGrFb0M4b11/2BniwqgZ7giXr9e77YRKr
+         DT0lhCE7KzoJmaHel+Pb4EqB38fSIGaS46NVqx/VwrHW7QDRvEThlmYWAx6tN6NVOB
+         i3Y+Wvpj00NUzBrvd7DaEjXxM9shwcdWNWBVWsrI=
+Date:   Fri, 10 Sep 2021 08:51:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
+ /sys/devices/system/node/node*/meminfo
+Message-ID: <YTsAjCZQ6AaWDjD1@kroah.com>
+References: <20210910001726.811497-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210909222513.2184795-12-arequipeno@gmail.com>
+In-Reply-To: <20210910001726.811497-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 05:25:09PM -0500, Ian Pilcher wrote:
-> Add /sys/class/leds/<led>/link_device sysfs attribute
+On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
+> The amount of SGX memory on the system is determined by the BIOS and it
+> varies wildly between systems.  It can be from dozens of MB's on desktops
+> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> sometimes useful to know the amount of usable SGX memory in the system.
 > 
-> If this is the first LED associated with the device, create the
-> /sys/block/<disk>/blkdev_leds directory.  Otherwise, increment its
-> reference count.
+> Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
+> showing the total SGX memory in each NUMA node. The total memory for
+> each NUMA node is calculated by adding the sizes of contained EPC
+> sections together.
 > 
-> Create symlinks in /sys/class/leds/<led>/block_devices and
-> /sys/block/<disk>/blkdev_leds
+> Introduce arch_node_read_meminfo(), which can optionally be rewritten by
+> the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
 > 
-> If this the first device associated with *any* LED, schedule delayed work
-> to periodically check associated devices and blink LEDs
-> 
-> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 > ---
->  drivers/leds/trigger/ledtrig-blkdev.c | 160 ++++++++++++++++++++++++++
->  1 file changed, 160 insertions(+)
+> v4:
+> * A new patch.
+>  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
+>  drivers/base/node.c            | 10 +++++++++-
+>  3 files changed, 29 insertions(+), 1 deletion(-)
+
+Where is the Documentation/ABI/ update for this new sysfs file?
+
 > 
-> diff --git a/drivers/leds/trigger/ledtrig-blkdev.c b/drivers/leds/trigger/ledtrig-blkdev.c
-> index 6f78a9515976..26509837f037 100644
-> --- a/drivers/leds/trigger/ledtrig-blkdev.c
-> +++ b/drivers/leds/trigger/ledtrig-blkdev.c
-> @@ -71,6 +71,9 @@ static unsigned int ledtrig_blkdev_interval;
->  static void blkdev_process(struct work_struct *const work);
->  static DECLARE_DELAYED_WORK(ledtrig_blkdev_work, blkdev_process);
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 63d3de02bbcc..4c6da5f4a9d4 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -717,6 +717,7 @@ static bool __init sgx_page_cache_init(void)
+>  		}
 >  
-> +/* Total number of device-to-LED associations */
-> +static unsigned int ledtrig_blkdev_count;
-> +
+>  		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
+> +		sgx_numa_nodes[nid].size += size;
 >  
->  /*
->   *
-> @@ -220,6 +223,162 @@ static int blkdev_activate(struct led_classdev *const led_dev)
+>  		sgx_nr_epc_sections++;
+>  	}
+> @@ -790,6 +791,19 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
 >  }
+>  EXPORT_SYMBOL_GPL(sgx_set_attribute);
 >  
->  
-> +/*
-> + *
-> + *	link_device sysfs attribute - assocate a block device with this LED
-> + *
-> + */
-> +
-> +/* Gets or allocs & initializes the blkdev disk for a gendisk */
-> +static int blkdev_get_disk(struct gendisk *const gd)
+> +ssize_t arch_node_read_meminfo(struct device *dev,
+> +			       struct device_attribute *attr,
+> +			       char *buf, int len)
 > +{
-> +	struct ledtrig_blkdev_disk *disk;
-> +	struct kobject *dir;
+> +	struct sgx_numa_node *node = &sgx_numa_nodes[dev->id];
 > +
-> +	if (gd->ledtrig != NULL) {
-> +		kobject_get(gd->ledtrig->dir);
+> +	len += sysfs_emit_at(buf, len,
+> +			     "Node %d SGX_MemTotal:   %8lu kB\n",
+> +			     dev->id, node->size);
 
-When do you decrement this kobject?
-
-> +		return 0;
-> +	}
-> +
-> +	disk = kmalloc(sizeof(*disk), GFP_KERNEL);
-> +	if (disk == NULL)
-> +		return -ENOMEM;
-> +
-> +	dir = kobject_create_and_add("linked_leds", &disk_to_dev(gd)->kobj);
-> +	if (dir == NULL) {
-> +		kfree(disk);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	INIT_HLIST_HEAD(&disk->leds);
-> +	disk->gd = gd;
-> +	disk->dir = dir;
-> +	disk->read_ios = 0;
-> +	disk->write_ios = 0;
-> +
-> +	gd->ledtrig = disk;
-> +
-> +	return 0;
-> +}
-> +
-> +static void blkdev_put_disk(struct ledtrig_blkdev_disk *const disk)
-> +{
-> +	kobject_put(disk->dir);
-> +
-> +	if (hlist_empty(&disk->leds)) {
-> +		disk->gd->ledtrig = NULL;
-> +		kfree(disk);
-
-This should happen in the kobject release function, not here, right?
-
-Did you try this out with removable block devices yet?
+Wait, that is not how sysfs files work.  they are "one value per file"
+Please do not have multiple values in a single sysfs file, that is not
+acceptable at all.
 
 thanks,
 
