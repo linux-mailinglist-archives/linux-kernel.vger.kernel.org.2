@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4101A40672D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449A5406739
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhIJGZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:25:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230417AbhIJGZm (ORCPT
+        id S231244AbhIJGad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhIJGaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:25:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631255071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnqlEhLtfhytMeRqppmfXFCckHKhqrWYsJrwlC/wIv4=;
-        b=erByxi5Js2WtirE9MePbb//F6382h3Y/0nEIesNz7pWIj5PHiM4mu2DLGvNXlNxEOfRhaG
-        GEspjQTUiTB+YXbgWqdm0jy2WcI+YC6SwBub8JV2FbDQeHOY1adfs+3t+QYLcAK4k384Q4
-        Oh/LXaix3STF4UN27C/8rSTPa5DzV0A=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-L9C-uhQqNLGEa0d5oZnbmA-1; Fri, 10 Sep 2021 02:24:29 -0400
-X-MC-Unique: L9C-uhQqNLGEa0d5oZnbmA-1
-Received: by mail-ej1-f69.google.com with SMTP id o14-20020a1709062e8e00b005d37183e041so516510eji.21
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:24:29 -0700 (PDT)
+        Fri, 10 Sep 2021 02:30:30 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F98C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 23:29:20 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id v123so988049pfb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SqoyNLPV12UI+aH0KY3hvzjuZwQ2VZlAP4igBb/D7xg=;
+        b=aB535l98SeNAaY1Uh99F7nuRtdDDNPyqFS0oRlPK59Shl5turlqFkRRF2pIc7Se6Kk
+         JXCs1tGQtTIYyP5AYMNY7sf1sUAKiJeDBQPXbD2wxT7ivIM8staCntTB+GC1LIbFllPa
+         YVnLB4Qr5a+15SBQs1uksXr+Q9A64TPOLXCl0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pnqlEhLtfhytMeRqppmfXFCckHKhqrWYsJrwlC/wIv4=;
-        b=2UiQAg9Lvl6IonD1UqYq6SmTM//41YeEogogJsVzGTYYz+fubi5+NsWgPVnkp/gntt
-         92aNe9Cuvc8mCUncblK07fzASDw4SsszAzjNXjVTIuzm5+7ybcGzFopJEhVTDYX8HU6N
-         n4K6KwkKlbekuvHq+QdFnIlHATPaMSCdQl+FlNDe9iRrMTkhonoZO//OAan+yUXSNpXw
-         EcCYR9GHIntNJ6F6wzAOwMVEUGYEbIe5xWFLF2D5rhzj+Dj+3rBg1XnFt4snA8II7dMb
-         OLSQei1v2qLqg6OfI4hmdrbojgPMbl2+SB5dbz5pUD18M8COO/YR5AnfFNAnWTopHO9P
-         1XLw==
-X-Gm-Message-State: AOAM533w0Pgng/ObJRgwdSXUZe8rQ0BG+HSr/pi2a45Pw3U4DZZQspHn
-        oLa8xCeWX1BkGRXlb2olI+YXtUrWBk3TVB9JAwvcYUIg9R1qk+VK8bWhttgY/lnA4VcagGbx3nb
-        pOnbsZRKzTnoyc8qJe0Zyx+0Q5MfSiwYdAuIcjTImw7kWr5BmnCFjIJ6SgKPPUt6i1mT/vAcdHs
-        JT
-X-Received: by 2002:a17:906:5408:: with SMTP id q8mr7398376ejo.54.1631255068517;
-        Thu, 09 Sep 2021 23:24:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJySHpKwGqt60OguV1nAVbYXS6ixd+RRfr7vvv0dTOupfqnEpbcGDztj8pVK2vfAO7tCNUk0eg==
-X-Received: by 2002:a17:906:5408:: with SMTP id q8mr7398351ejo.54.1631255068242;
-        Thu, 09 Sep 2021 23:24:28 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gz22sm1926879ejb.15.2021.09.09.23.24.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Sep 2021 23:24:27 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: remove unused macros from
- ioctl_linux.c
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210909211922.24872-1-straube.linux@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d39f410e-ac89-54e1-5c54-a17bdc5ebc49@redhat.com>
-Date:   Fri, 10 Sep 2021 08:24:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SqoyNLPV12UI+aH0KY3hvzjuZwQ2VZlAP4igBb/D7xg=;
+        b=6O9NM1sm60c02MidBCRNwBJ2gAY8Yu+zg8MoaLYFjKNwQ1liE2nqm0EWv8cZ/hq7Vy
+         nlK4+Ste1AW9Nj6+IxS25Z2S9UKN5s+Fi1jRjzVb9iaqphabPzVAs/kGgypOglK3/22i
+         e7iEbZgWBp1rZzcPqsciyYZH5JbPNahkFxyXsWyml7F+f6aG5+324KHFMqUZqXbSm1gU
+         I9R1+7xy++PulUzh3Eld7HU67XYFak4CgkwY0W7M9mgnaym/bI+jwIgz8UxyKvbpjL0K
+         mmZ/Nxv6U/quZrjAjZ8qviXW53IVdxjB/vyrAQHgi9AUIaQim36ikzIICO3Ctk3PB/RM
+         2vkg==
+X-Gm-Message-State: AOAM5330kI72JXLnsvabDE4tWXvH4Cgy7tDBC8loA2qPts8SMsyFXfes
+        zC/zjVlKP1Cnnb+z0ltFzmY8zQ==
+X-Google-Smtp-Source: ABdhPJz4r+H2RdiVoqM5I7lfYVhiC53JkDnmzl8bnZp3A/ckLw3UuC3EUho9rSj/GkL+QQ5jkOeVFQ==
+X-Received: by 2002:a63:5c51:: with SMTP id n17mr5975475pgm.376.1631255360120;
+        Thu, 09 Sep 2021 23:29:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a11sm4064214pgj.75.2021.09.09.23.29.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 23:29:19 -0700 (PDT)
+Date:   Thu, 9 Sep 2021 23:29:18 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] rapidio: Avoid bogus __alloc_size warning
+Message-ID: <202109092327.C582B074C@keescook>
+References: <20210909161409.2250920-1-keescook@chromium.org>
+ <20210909132752.4bde36ccf50720e56160f00c@linux-foundation.org>
+ <202109091549.FF8E0C61E2@keescook>
+ <20210909161109.14b147628de07ed7c20d84ae@linux-foundation.org>
+ <202109091849.53C9A8AD@keescook>
+ <20210910045010.GO1935@kadam>
+ <20210909224814.7460f8dfa3134742b90b34eb@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210909211922.24872-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909224814.7460f8dfa3134742b90b34eb@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/9/21 11:19 PM, Michael Straube wrote:
-> These macros are not used in the driver, remove them.
-> Found with GCC -Wunused-macros.
+On Thu, Sep 09, 2021 at 10:48:14PM -0700, Andrew Morton wrote:
+> On Fri, 10 Sep 2021 07:50:10 +0300 Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > This is how the email looks like to Andrew.
+> > 
+> > https://sylpheed.sraoss.jp/images/sylpheed2-mainwindow.png
+> > 
+> > Try to find the subject in that nonsense.  Same for everyone else on
+> > email as well.
+> > 
+> > https://marc.info/?l=linux-kernel&m=163120404328790&w=2
+> > 
+> > I only either read the subject or the body of the commit message and
+> > never both.  :P
 > 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 14 --------------
->  1 file changed, 14 deletions(-)
+> I read the body if the subject looks relevant ;)
 > 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> index 908022a17b3f..27fb1be036b8 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> @@ -15,20 +15,6 @@
->  
->  #define RTL_IOCTL_WPA_SUPPLICANT	(SIOCIWFIRSTPRIV+30)
->  
-> -#define SCAN_ITEM_SIZE 768
-> -#define MAX_CUSTOM_LEN 64
-> -#define RATE_COUNT 4
-> -
-> -/*  combo scan */
-> -#define WEXT_CSCAN_HEADER		"CSCAN S\x01\x00\x00S\x00"
-> -#define WEXT_CSCAN_HEADER_SIZE		12
-> -#define WEXT_CSCAN_SSID_SECTION		'S'
-> -#define WEXT_CSCAN_CHANNEL_SECTION	'C'
-> -#define WEXT_CSCAN_ACTV_DWELL_SECTION	'A'
-> -#define WEXT_CSCAN_PASV_DWELL_SECTION	'P'
-> -#define WEXT_CSCAN_HOME_DWELL_SECTION	'H'
-> -#define WEXT_CSCAN_TYPE_SECTION		'T'
-> -
->  static int wpa_set_auth_algs(struct net_device *dev, u32 value)
->  {
->  	struct adapter *padapter = rtw_netdev_priv(dev);
+> But that subject reads to me as "rapidio: Avoid bogus *blah* warning". 
+> We have soooooo many alloc_foo functions that one's eyes glaze over
+> something like "alloc_size"
 > 
+> Why?  Because the identifier "__alloc_size" is of great significance
+> to Kees because he wrote the thing.  Everyone else just sees "*blah*".
 
+Heh. Okay, fair enough. I will make Subject/body independent. It felt
+redundant to me before, but greater verbosity is a good idea. Sorry!
+
+-- 
+Kees Cook
