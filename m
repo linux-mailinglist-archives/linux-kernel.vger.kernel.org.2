@@ -2,88 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2C44067F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8404067FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhIJHqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 03:46:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42610 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbhIJHqs (ORCPT
+        id S231620AbhIJHsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 03:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231548AbhIJHsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 03:46:48 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2EC0A1C0B76; Fri, 10 Sep 2021 09:45:36 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 09:45:36 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bob Moore <robert.moore@intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org
-Subject: Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT table with
- no command-line arguments
-Message-ID: <20210910074535.GA454@amd>
-References: <20210909120116.150912-1-sashal@kernel.org>
- <20210909120116.150912-24-sashal@kernel.org>
+        Fri, 10 Sep 2021 03:48:33 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5D6C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 00:47:22 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id j2so627869pll.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 00:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SM4gxs9XjX0uBbpU8UEiIwwD+CDm0lpp+C8IphN8qTY=;
+        b=XfXxMqnb/ez1gIo7dVeNiFQkM2ztbEv5x5lAO8RaoFR8VDlfPgFZymvDX4KsBTYOtO
+         Tco5x/lVlygmW7mYCSihej026lHudEca0pCrCF8sb5o4ZckHWzc5l+65k8DynjxXXSaH
+         Be7Hd7VFyPZjL1LiDL1zwmdvfgO0h31tSXAJs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SM4gxs9XjX0uBbpU8UEiIwwD+CDm0lpp+C8IphN8qTY=;
+        b=h15x+FIpStx/YEdupbHEjf0UaKke2LM6uHQAWzUKK/EUgvaOBQ1gMo0CfB108yxM04
+         MfvmMelfgd2QErP4mZEQsK1ozm1CEFDAQcDEpfqfi41zhpjBwMcvpMvhNUjT0Hni0Bk2
+         5GZNBjf1N284TSUTJi/3LCJCooLozeVyf8nZEjlFdzQqRBHVwAwybgzExbfY5VW4D/zo
+         ll5w7ItSE9xJ9kFwULdFXrTDAgYdrGtL9ayLMttsOkW9K4aNPBU7XPcTa4sKoCauDs8c
+         OKKjuSuWy1D57xmrKxq8lNip+QLq50XCIwKYnPzjqFuqSTfHEpZEWOuqf5L/rYoGB0IV
+         bWjw==
+X-Gm-Message-State: AOAM531U/iQyIzsAvm56997Re0V6agUmrr/mvekjZohdLNDJ1o+k/DyD
+        22zoi/fNIbshW8qQs7JqNOO3jA==
+X-Google-Smtp-Source: ABdhPJzzbFTvqEhkngPbSrojBBVkm7UY+A/nqb1uIBwa2bNJTfGdfsoUsy36m53Q2Qvuj1C6ETP2dQ==
+X-Received: by 2002:a17:902:834b:b0:13a:347b:8a00 with SMTP id z11-20020a170902834b00b0013a347b8a00mr6444471pln.54.1631260041974;
+        Fri, 10 Sep 2021 00:47:21 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c1fe:57b:eb6:58a5])
+        by smtp.gmail.com with UTF8SMTPSA id bx2sm4110027pjb.35.2021.09.10.00.47.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 00:47:21 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 00:47:19 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, tjiang@codeaurora.org
+Subject: Re: [PATCH v8] Bluetooth: btusb: Add support using different nvm for
+ variant WCN6855 controller
+Message-ID: <YTsNh+Y9eTD6id7e@google.com>
+References: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210909120116.150912-24-sashal@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1630641758-22281-1-git-send-email-zijuhu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 03, 2021 at 12:02:38PM +0800, Zijun Hu wrote:
+> From: Tim Jiang <tjiang@codeaurora.org>
+> 
+> the RF perfermance of wcn6855 soc chip from different foundries will be
 
---nFreZHaLTZJo0R7j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+as Marcel commented on a previous version: 'perfermence' => 'performance'
 
-Hi!
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 
-> Handle the case where the Command-line Arguments table field
-> does not exist.
->=20
-> ACPICA commit d6487164497fda170a1b1453c5d58f2be7c873d6
+For the third time, you should also add your own 'Signed-off-by' tag, i.e.
+'Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>'
 
-I'm not sure what is going on here, but adding unused definition will
-not make any difference for 4.4 users, so we don't need this in
--stable...?
+If you have any doubts about comments you receive ask for clarification,
+just ignoring them generally won't satisfy your reviewers.
 
-Best regards,
-								Pavel
-
-> +++ b/include/acpi/actbl3.h
-> @@ -738,6 +738,10 @@ struct acpi_table_wpbt {
->  	u16 arguments_length;
->  };
-> =20
-> +struct acpi_wpbt_unicode {
-> +	u16 *unicode_string;
-> +};
+> ---
+>  drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 37 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 928cbfa4c42d..0f5d2222d624 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+>  #define QCA_DFU_TIMEOUT		3000
+>  #define QCA_FLAG_MULTI_NVM      0x80
+>  
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
 > +
->  /***********************************************************************=
-********
->   *
->   * XENV - Xen Environment Table (ACPI 6.0)
+>  struct qca_version {
+>  	__le32	rom_version;
+>  	__le32	patch_version;
+> @@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
+>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>  };
+>  
+>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+>  	return err;
+>  }
+>  
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					struct qca_version *ver,
+> +					char *variant)
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+The variant parameter should probably be removed (see coment below), if it is
+kept it should be 'const char *'.
 
---nFreZHaLTZJo0R7j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> +{
+> +	char *sep = (strlen(variant) == 0) ? "" : "_";
+> +	u16 board_id = le16_to_cpu(ver->board_id);
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +
+> +	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		/* if boardid equal 0, use default nvm without suffix */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+This comment isn't useful, please remove it.
 
-iEYEARECAAYFAmE7DR8ACgkQMOfwapXb+vLqlQCfR6jkW6ewcpQLuqX3A5YfZExW
-ASwAnjx+EjRw46urNMfB2LxUZY1RhH0c
-=/vN1
------END PGP SIGNATURE-----
+Ok, it was already in btusb_setup_qca_load_nvm(), but still it's a
+good opportunity to remove it.
 
---nFreZHaLTZJo0R7j--
+> +		if (board_id == 0x0) {
+
+Just use '0' instead of the single digit hex number.
+
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
+> +				rom_version, sep, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
+> +				rom_version, sep, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+
+delete empty line
+
+> +}
+> +
+>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>  				    struct qca_version *ver,
+>  				    const struct qca_device_info *info)
+> @@ -3354,19 +3383,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>  	char fwname[64];
+>  	int err;
+>  
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> +	switch (ver->ram_version) {
+> +	case WCN6855_2_0_RAM_VERSION_GF:
+> +	case WCN6855_2_1_RAM_VERSION_GF:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
+> +		break;
+> +	default:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
+> +		break;
+
+Actually it would make more sense to have the above switch statement in
+btusb_generate_qca_nvm_name(), rather than passing the variant string.
