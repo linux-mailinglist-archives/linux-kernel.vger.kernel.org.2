@@ -2,146 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA79406FA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE68C406FA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhIJQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
+        id S229720AbhIJQ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhIJQ3Y (ORCPT
+        with ESMTP id S229464AbhIJQ3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:29:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41500C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:28:13 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id i28so4086178ljm.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:28:13 -0700 (PDT)
+        Fri, 10 Sep 2021 12:29:23 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D89AC061574;
+        Fri, 10 Sep 2021 09:28:12 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w144so3610728oie.13;
+        Fri, 10 Sep 2021 09:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ni2JhLZQgk9Q6G2MUbeVWPBAuWIrAdHFzB95UL3/Sis=;
-        b=FZrorI4CFj/1QAA+qnqt0Jg0yZPa9EKmXgA0exenFIey7++LpW0YpJ6Kh1Ivx2Y0Sx
-         gfSJWmMk8X7/4+gITPhZ1eaBubFCD17NGZKsh6jm/hjttEpQTypNZWCuLJsfsmhEORAg
-         B5N5vLra29/4UdTLPH/rZCa9+TS0+W399jX6uH8VwEwtky4tpSxUQOAAHwOxs765IWVN
-         5RuRkvlkKZlMtSeitRNWPZaLgDSvcsiwiqeypfkwVXwCZ7754AdKLGr0ZD6el3+6bkBE
-         lts09uJPRmZ3/wa6KujBoPA6mhewvVqFIKD85835Fi/m7EtCP66voRar5DXtHCN0ah8P
-         1PFw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8G7cvQswihFWAazcGsIyLUOsBBl0E9MiiAh80yrTnGw=;
+        b=KPU2Q4wSB9SzEp4o1d0Kw8OTn60RUAozaxLOAq60CTuCjrXULRuI/IAf5ZkF5xvYPJ
+         QHBk7dWDPpOotULVBBiHAgKTHfCDaDi4KPXh1qw06pv2Zyp/BiEQ99RROXdeHcpk5/bh
+         Tt4ZRYV60YkmsbiuI4ZQq9OzXssUB58HzpjlnNK0A9Nk6kpGPFVK9F6V6lcRbxmNElX+
+         7mBW5K/pizRrpmmRsEg+iPCgvN3hTcptvmCdCz7TBPB301DZ0h42ArRK86zDaKmoec1g
+         Ohr8mD7BrRMydZuCtbF8JNuXgZj1kLWTiqSF6EU33gvax0RVVpS3KMOmU7Z8V2wdiiFp
+         Ho5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ni2JhLZQgk9Q6G2MUbeVWPBAuWIrAdHFzB95UL3/Sis=;
-        b=a++o0V5tHf3/PCTcXpji9mJ98R3ghU4Uo/ZKRFoQVVAk9QRGNakUDYj7PgnihO8gTs
-         9GDmNW6JjoSaXNyf4H586sxvjnUuk2f2ezUoCP9aWYrrxLYyLGEUECq0aeaev/LrotC8
-         30POtoNj4EWfvC2KTsP8Ry8VjeOYisxnB/t6jTsGYLXSmSl8zZ/+vp158GOIrry0PSxH
-         Nno5rkRlanwF972hrtyTLNV1AX99TSLAAodCY9uLVs62nu+NtuAH35PUu6E8rfmg36Bu
-         /MNXn9EXfZEhC5zTzl9hFXzHDU5q9JaQzwWDNJbjAUzIVTwOwXeGptxKtvOtzlLqZ+HG
-         s6qQ==
-X-Gm-Message-State: AOAM5305rfV31VASRNrnq/Vsf1wkzoXx7QDw+xRUeRIwBdR0g2sbZZcK
-        EMNeYe+5izLTGjQRxZI0GJ7TOGKtUFtjMAxuTlo+pQ==
-X-Google-Smtp-Source: ABdhPJz4eFhp7mu1CoZeB0tGR4NbpNaTNku0TpUUxYeznocD2fVHVGVwoV8mh/6htHy4a0DYUGHwoQCLHqPcRnXSzYQ=
-X-Received: by 2002:a2e:b44f:: with SMTP id o15mr4889575ljm.430.1631291291374;
- Fri, 10 Sep 2021 09:28:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8G7cvQswihFWAazcGsIyLUOsBBl0E9MiiAh80yrTnGw=;
+        b=1MADpFClL/xf20gq9RPtRmpwZ+5BSid4O4Kke5mpYF17DBOIQif6gS0b17hcSz2Urx
+         KTeDyGGRq3n2iuXeLzD1JUILxi25QHMAAjKmHEkoJfZAWLr+UDamKjU63hs08r4qC+2+
+         wX6FLKLutmWevRITWvyk1r5IuMSVCW5nz+0xO8p616rTDukpbMLdOeCykue0KsTENYH6
+         FVbVhq77APFasSqkFJieieqSJlda1mtza7MCzQgcy2u5GnK9RrvdJ889oODBOoASgw0M
+         FZVHBmlD+s5d3Ik5sB7bdvffNGxdFsmczZsMIciGULJW5CxxRSHlM05pNcKemqD5D5IL
+         kyYQ==
+X-Gm-Message-State: AOAM533PfK/OnXKgkfsdMFCwltPbEgxWF9YaMOOSsLv4QMuj8sryYizu
+        NI4vda1LGrC/hfFXcPIpYRY=
+X-Google-Smtp-Source: ABdhPJwKhmGH8Ry9crSHy946O1RDEza5R0WDpHrtJfwT8v3oho8sEzaemJ43fx3K+bzTzER7jj0YLA==
+X-Received: by 2002:a05:6808:56a:: with SMTP id j10mr4892216oig.79.1631291291473;
+        Fri, 10 Sep 2021 09:28:11 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id v19sm1331738oic.31.2021.09.10.09.28.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 09:28:11 -0700 (PDT)
+Subject: Re: [PATCH v2 06/15] leds: trigger: blkdev: Add function to get
+ gendisk by name
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kabel@kernel.org
+References: <20210909222513.2184795-1-arequipeno@gmail.com>
+ <20210909222513.2184795-7-arequipeno@gmail.com> <YTr+8h12z7kMLlV/@kroah.com>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <4a69b13f-6f7e-98ba-7b9b-35bde571462e@gmail.com>
+Date:   Fri, 10 Sep 2021 11:28:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
- <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
- <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com> <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com>
-In-Reply-To: <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Fri, 10 Sep 2021 09:28:00 -0700
-Message-ID: <CAPNVh5fMUQCa37iprcAykgkHzY5Rj8DSiwtZBU6FbnzjOv8ciw@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
-To:     Prakash Sangappa <prakash.sangappa@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YTr+8h12z7kMLlV/@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 9:13 AM Prakash Sangappa
-<prakash.sangappa@oracle.com> wrote:
->
->
->
-> > On Sep 10, 2021, at 8:18 AM, Peter Oskolkov <posk@google.com> wrote:
-> >
-> > On Wed, Sep 8, 2021 at 5:16 PM Prakash Sangappa
-> > <prakash.sangappa@oracle.com> wrote:
-> >>
-> >> Including liunx-kernel..
-> >>
-> >> Resending RFC. This patchset is not final. I am looking for feedback o=
-n
-> >> this proposal to share thread specific data for us in latency sensitiv=
-e
-> >> codepath.
-> >
-> > Hi Prakash,
->
->
-> >
-> > I'd like to add here that Jann and I have been discussing a similar
-> > feature for my UMCG patchset:
-> >
-> > https://lore.kernel.org/lkml/CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=3DxG8H=
-Zqj2n+OPoKw@mail.gmail.com/
->
-> Hi Peter,
->
-> I will take  a look.
->
-> >
-> > In short, due to the need to read/write to the userspace from
-> > non-sleepable contexts in the kernel it seems that we need to have some
-> > form of per task/thread kernel/userspace shared memory that is pinned,
-> > similar to what your sys_task_getshared does.
->
-> Exactly. For this reason wanted kernel to allocate the pinned memory.
-> Didn=E2=80=99t want to deal with files etc as a large number threads will=
- be using
-> the shared structure mechanism.
->
-> >
-> > Do you think your sys_task_getshared can be tweaked to return an
-> > arbitrarily-sized block of memory (subject to overall constraints)
-> > rather than a fixed number of "options"?
->
-> I suppose it could. How big of a size? We don=E2=80=99t want to hold on t=
-o
-> arbitrarily large  amount of pinned memory. The preference would
-> be for the kernel to decide what is going to be shared based on
-> what functionality/data sharing is supported. In that sense the size
-> is pre defined not something the userspace/application can ask.
+On 9/10/21 1:45 AM, Greg KH wrote:
+> On Thu, Sep 09, 2021 at 05:25:04PM -0500, Ian Pilcher wrote:
+>> +/* Must be built-in to access block_class */
+>> +struct gendisk *ledtrig_blkdev_get_disk(const char *const name)
+>> +{
+>> +	struct device *dev;
+>> +
+>> +	dev = class_find_device(&block_class, NULL, name, blkdev_match_name);
+>> +	if (dev == NULL)
+>> +		return NULL;
+> 
+> You now have bumped the reference count on this structure.  Where do you
+> decrement it when you are finished with it?
 
-There could be a sysctl or some other mechanism that limits the amount
-of memory pinned per mm (or per task). Having "options" hardcoded for
-such a generally useful feature seems limiting...
+With context this time.  Sorry about that.
 
->
-> I have not looked at your use case.
->
-> >
-> > On a more general note, we have a kernel extension internally at
-> > Google, named "kuchannel", that is similar to what you propose here:
-> > per task/thread shared memory with counters and other stat fields that
-> > the kernel populates and the userspace reads (and some additional
-> > functionality that is not too relevant to the discussion).
->
-> We have few other use cases for this we are looking at, which I can
-> describe later.
->
-> -Prakash
->
-> >
-> > Thanks,
-> > Peter
-> >
-> > [...]
->
+
+That happens when I "unlink" the block device from the LED in
+blkdev_disk_unlink_locked() at ledtrig-blkdev.c:410.
+
+(And also in the error path of link_device_store() at
+ledtrig-blkdev.c:372.)
+
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
