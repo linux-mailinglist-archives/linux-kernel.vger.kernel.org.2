@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92BF406D4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BEF406D51
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhIJOJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233588AbhIJOJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:09:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9338261026;
-        Fri, 10 Sep 2021 14:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631282887;
-        bh=jy8iX7u8N4kahz8YNLrYTS1/6jQuiJV9E8sScRt+fbs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TEVZL4qhDtpLJT4O9J6GdfWlXs8ZBQwzGvrpixIarIdLGiw+i3eD3D2Md7fRrlSrJ
-         fy8gfOtYT4u9Fxg+I5OBnqKWzFQpRbK4DSNOgsgdGXhMr8ak8ONujz+U9hmxh8j+IZ
-         73u7lrQRRP0Pdwh6KXyjJdbEK5x+TSrsDz76wUukOkFk/wAA4C/AFHgZKALwi3nENR
-         cDzjcS2Q+r7/d2GwYGSYFSyM3t10D5vVyoDqwsjzMnL+PXAO9gpzOeWXAYfxAhbPgP
-         saPut2BhoqZDw6c+i8GXXTCPBqJJr2CzlrCHoQBJwp5940CZ0txHZFTJ0lQea1CVFw
-         4fLpCmohatEdg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6E42A4038F; Fri, 10 Sep 2021 11:08:02 -0300 (-03)
-Date:   Fri, 10 Sep 2021 11:08:02 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Robert Richter <robert.richter@amd.com>,
-        Stephane Eranian <eranian@google.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 0/3] perf report: Add support to print a textual
- representation of IBS raw sample data
-Message-ID: <YTtmwrZ6iy0TzG3l@kernel.org>
-References: <20210817221509.88391-1-kim.phillips@amd.com>
- <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
- <YTth5DLWGbyAzxvQ@kernel.org>
+        id S233812AbhIJOJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233784AbhIJOJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:09:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF21C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:08:15 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 16:08:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631282891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bSyyP9yahgxFA1b8RnoWYThoroPSM6gbfo1YmaotaKo=;
+        b=tIMCArcKFzMnU5Qw4KZv75f/XpNJ5QosPdywYAK3mKVRKDj5ndlnpeKcU0PrPzXo5kttMs
+        qIdgMQNlbhMZyRcg9T5/nEqUa8CKeFwLcdWfILSSF/BHyBxars+Tu159CdlCBb82vuASq2
+        hDAfeAviVKKpylcfxQdRCRN64G4+XoY5fXQsfP0voveFFIa/QkL7mjQT1/99ewfARlMgX/
+        QxjD/taJlOCV1O3Axu/4uQfPcnr4BHPLQHdR74ogN/faNjLLQYfBMpGiiuP1VY2RANo2q1
+        JmZo0nwSl+4mqSXPCEMekVj5buFVemOqu8kVy5T2BRZkPkiJRBNqwrYZoI+Ang==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631282891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bSyyP9yahgxFA1b8RnoWYThoroPSM6gbfo1YmaotaKo=;
+        b=7JsiFf4a9XWtWjkLYLcPu7V7CzWcBWXfEhw7EmXVMPCJ9OuhjMWbhKdaNnEcvd8ugkIuEy
+        B/C0bg7ZrlSuLcBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Subject: Re: [PATCH 3/6] lib/stackdepot: introduce __stack_depot_save()
+Message-ID: <20210910140810.jxb6sfgkdzefqgio@linutronix.de>
+References: <20210907141307.1437816-1-elver@google.com>
+ <20210907141307.1437816-4-elver@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YTth5DLWGbyAzxvQ@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210907141307.1437816-4-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Sep 10, 2021 at 10:47:16AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Sep 09, 2021 at 04:58:12PM -0500, Kim Phillips escreveu:
-> > Hi Arnaldo,
-> > 
-> > Can you please take a look at applying this series?  Its kernel-side
-> > dependent series has already been applied and is in Linus' master.
-> 
-> Sure, I'm now trying to fix this:
-> 
->   CC      /tmp/build/perf/util/amd-sample-raw.o
-> util/amd-sample-raw.c: In function ‘evlist__amd_sample_raw’:
-> util/amd-sample-raw.c:125:42: error: ‘ bytes’ directive output may be truncated writing 6 bytes into a region of size between 4 and 7 [-Werror=format-truncation=]
->   125 |                          " OpMemWidth %2d bytes", 1 << (reg.op_mem_width - 1));
->       |                                          ^~~~~~
-> In file included from /usr/include/stdio.h:866,
->                  from util/amd-sample-raw.c:7:
-> /usr/include/bits/stdio2.h:71:10: note: ‘__builtin___snprintf_chk’ output between 21 and 24 bytes into a destination of size 21
->    71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
->       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    72 |                                    __glibc_objsize (__s), __fmt,
->       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    73 |                                    __va_arg_pack ());
->       |                                    ~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
-> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/amd-sample-raw.o] Error 1
+On 2021-09-07 16:13:04 [+0200], Marco Elver wrote:
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index c80a9f734253..cab6cf117290 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -339,6 +350,25 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>  fast_exit:
+>  	return retval;
+>  }
+> +EXPORT_SYMBOL_GPL(__stack_depot_save);
+> +
+> +/**
+> + * stack_depot_save - Save a stack trace from an array
+> + *
+> + * @entries:		Pointer to storage array
+> + * @nr_entries:		Size of the storage array
+> + * @alloc_flags:	Allocation gfp flags
+> + *
+> + * Context: Contexts where allocations via alloc_pages() are allowed.
 
-So, that trick with using sizeof and that string 3 times is cumbersome
-and prone to truncation, at least the compiler can't say that the number
-you're passing to %2d will have just 2 digits:
+Could we add here something like (see __stack_depot_save() for details)
+since it has more verbose.
 
-[acme@quaco c]$ cat printf.c
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(int argc, char *argv[])
-{
-	char bf[64];
-	int len = snprintf(bf, sizeof(bf), "%2d", atoi(argv[1]));
-
-	printf("strlen(%s): %u\n", bf, len);
-
-	return 0;
-}
-[acme@quaco c]$ ./printf 1234567
-strlen(1234567): 7
-[acme@quaco c]$
-
-I'm trying to rework this.
-
-- Arnaldo
+Sebastian
