@@ -2,230 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B5D406D81
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5D3406D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhIJOUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbhIJOUv (ORCPT
+        id S234110AbhIJOVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:21:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233702AbhIJOVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:20:51 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565B3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:19:40 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id z18so4155780ybg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0OzOFuk4ubjeI+x60p6cW88fCENPpA30Niqgu5QX/9Q=;
-        b=ZKu5a+2gk7BtVJuPGCSdPpHU5XS7LixsPoloNuLN60MuyFhRR4TVyFIUoEDHsbscSD
-         m9L15LI7SlhnwNc4ol14QfMM3P0+ejpKh/XfPHmyPMMazQvU4d6JmMuXbuFAUQWPaHZ0
-         Slmb2+ookvs/GDNrTIwE4Wpn31GaGFFpeQNUufST0hPnXKdI0cwDPSL3eIc3IwOLSjUz
-         EJifdr8d8LZ9rLduglrvXv0+A25lm2/i9yllXJzT/0G4WMlerOzr8neh7xDTB+1OHlnG
-         48Zo3uqj83vS2WESu8pGQUupO0qeL/I5bbSbOkJ49xtli8oBtngSGfaUn09ictbP4q4u
-         V8tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0OzOFuk4ubjeI+x60p6cW88fCENPpA30Niqgu5QX/9Q=;
-        b=YZxlZJ0l4zqnHwxg/qQaM/CkIKwUWWUz0mgIi95qTpjje+WlMTBv+FOxCwYweATuW8
-         QDlppFZIvgupt55wfk4MzWvjC3puC9aIfGMcNHyAmfQUgD8XGcNCkQRldlg+u1Ssw6A1
-         XUBuRXQ5GxvEyokum7X27EFjBaAo6FAnk7rEzBnQGNzRIwpJwc/t88XGJqyvreZS/RpV
-         1CoGuFrr+Xc3eWx0+uHryTBtnwD6JI70Eh1baxEpRWJT/hbd+Q/1u+2xIvqMxKSJGcow
-         KUTcqyqGY4GAK4dxI4Vb7CyMEuotT8AsLL/5cKkmlDpufvRKZGmif9BUkUC8sKlUTZkq
-         i8Gg==
-X-Gm-Message-State: AOAM533Xxe4ZhFuWyHprmeA/we++aE1eYHiD1h/672ZRtV8v6A5JYz8b
-        h3pvWo3un9Pd36slBx7sWKcyKYqjdF4jW/x/b7FTCQ==
-X-Google-Smtp-Source: ABdhPJz9QimJxyuff1/kHqDGwMe5uKBanc22qaDwHIXS1GUQlleqkl3e0INMFJzPIvF6741Fve9uvVPpycVa6bqLxmY=
-X-Received: by 2002:a25:9001:: with SMTP id s1mr11223592ybl.191.1631283579371;
- Fri, 10 Sep 2021 07:19:39 -0700 (PDT)
+        Fri, 10 Sep 2021 10:21:06 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AE5ji5039716;
+        Fri, 10 Sep 2021 10:19:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=PfIERT94r8KWB7wKTizxKr3P2nXViGr51CxIZH0y6sM=;
+ b=pTcvMsCW47ShOucmyi/PUqr1v1syhRuYjKO5KbyDQrNaPLva7MLOK50dtJS7RIoVmFZm
+ hN1hcwpHuUbOXEU0F5a32Cll6jsZjmRhzEhD/6dBhklfQLH2d8iG7uaeLaZEl6i+S2W9
+ ajbqhDUxBXf46+HwVntkS070O7DaVQ38jBzT2SCIb9TJAi9wxUQUegDC6chMvt6cbMIM
+ nJk4Jfqw31+NP4lR7SNGZ/Qmbet9HthkjvMLY1vcVsC37Uoo+rnlUv8CP3Eukxxc48nY
+ 0bDnSlNn1GDBciBN3kpvfTuDC9lc0G1dmG3TrMBzseNnsQsufuJ78I5/kRJTAzxiSqiC cQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b03w6f6m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 10:19:46 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18AEHO9w095809;
+        Fri, 10 Sep 2021 10:19:46 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b03w6f6kd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 10:19:46 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18AEHSdf023042;
+        Fri, 10 Sep 2021 14:19:43 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 3axcnqh3xr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Sep 2021 14:19:43 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18AEJeaW19399044
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Sep 2021 14:19:40 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A35A042045;
+        Fri, 10 Sep 2021 14:19:40 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44D6942042;
+        Fri, 10 Sep 2021 14:19:40 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Sep 2021 14:19:40 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 0/1] Arch use of pci_dev_is_added()
+Date:   Fri, 10 Sep 2021 16:19:39 +0200
+Message-Id: <20210910141940.2598035-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: by-YoMG8o-pqUpc-DA3c6dWzN51QqSPj
+X-Proofpoint-ORIG-GUID: fjJriTmyYKZbUNw-sVUpT5p2YdvAISYe
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
-In-Reply-To: <20210819175034.4577-5-mkoutny@suse.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 10 Sep 2021 16:19:27 +0200
-Message-ID: <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-10_04:2021-09-09,2021-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=810 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109100081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 at 19:50, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> load_cfs_rq_list should contain cfs_rqs that have runnable entities in
-> them.  When we're operating under a throttled hierarchy we always
-> update the load_cfs_rq_list in order not to break list_add_load_cfs_rq
-> invariant of adding complete branches.
->
-> This caused troubles when an entity became runnable (enqueue_entity)
-> under a throttled hierarchy (see commit b34cb07dde7c ("sched/fair: Fix
-> enqueue_task_fair() warning some more")). (Basically when we add to the
-> load list, we have to ensure all the ancestors are added and when
-> deleting we have to delete whole subtree.)
->
-> This patch simplifies the code by no updates of load_cfs_rq_list when
-> we're operating under the throttled hierarchy and defers the
-> load_cfs_rq_list update to the point when whole hierarchy is unthrottled
-> (tg_unthrottle_up). Specifically, subtrees of a throttled cfs_rq are not
-> decaying their PELT when they're being throttled (but the parent of the
-> throttled cfs_rq is decayed).
+Hi Bjorn, Hi Michael,
 
-Your proposal looks interesting but I need more time to make sure that
-all cases are covered. We have faced several odd corner cases and
-sequences in the past that I need time to check that you don't put
-some back
+In my proposal to make pci_dev_is_added() more regularly usable by arch code
+you mentioned[0] that you believe the uses in arch/powerpc are not necessary
+anymore. From code reading I agree and so does Oliver O'Halloran[1].
 
->
-> The code is now simpler and load_cfs_rq_list contains only cfs_rqs that
-> have load to decay.
->
-> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
-> ---
->  kernel/sched/fair.c | 58 ++++++++++-----------------------------------
->  1 file changed, 12 insertions(+), 46 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6f4d5d4dcdd9..9978485334ec 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3086,6 +3086,8 @@ void reweight_task(struct task_struct *p, int prio)
->         load->inv_weight =3D sched_prio_to_wmult[prio];
->  }
->
-> +static inline int throttled_hierarchy(struct cfs_rq *cfs_rq);
-> +
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->  #ifdef CONFIG_SMP
->  /*
-> @@ -3196,8 +3198,6 @@ static long calc_group_shares(struct cfs_rq *cfs_rq=
-)
->  }
->  #endif /* CONFIG_SMP */
->
-> -static inline int throttled_hierarchy(struct cfs_rq *cfs_rq);
-> -
->  /*
->   * Recomputes the group entity based on the current state of its group
->   * runqueue.
-> @@ -4294,10 +4294,11 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sche=
-d_entity *se, int flags)
->
->         /*
->          * When bandwidth control is enabled, cfs might have been removed
-> -        * because of a parent been throttled but cfs->nr_running > 1. Tr=
-y to
-> -        * add it unconditionally.
-> +        * because of a parent been throttled. We'll add it later (with
-> +        * complete branch up to se->on_rq/cfs_eq->on_list) in
-> +        * tg_unthrottle_up() and unthrottle_cfs_rq().
->          */
-> -       if (cfs_rq->nr_running =3D=3D 1 || cfs_bandwidth_used())
-> +       if (cfs_rq->nr_running =3D=3D 1 && !throttled_hierarchy(cfs_rq))
->                 list_add_load_cfs_rq(cfs_rq);
->
->         if (cfs_rq->nr_running =3D=3D 1)
-> @@ -4936,31 +4937,13 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->                 /* end evaluation on encountering a throttled cfs_rq */
->                 if (cfs_rq_throttled(cfs_rq))
->                         goto unthrottle_throttle;
-> -
-> -               /*
-> -                * One parent has been throttled and cfs_rq removed from =
-the
-> -                * list. Add it back to not break the load list.
-> -                */
-> -               if (throttled_hierarchy(cfs_rq))
-> -                       list_add_load_cfs_rq(cfs_rq);
->         }
->
->         /* At this point se is NULL and we are at root level*/
->         add_nr_running(rq, task_delta);
->
->  unthrottle_throttle:
-> -       /*
-> -        * The cfs_rq_throttled() breaks in the above iteration can resul=
-t in
-> -        * incomplete load list maintenance, resulting in triggering the
-> -        * assertion below.
-> -        */
-> -       for_each_sched_entity(se) {
-> -               cfs_rq =3D cfs_rq_of(se);
-> -
-> -               if (list_add_load_cfs_rq(cfs_rq))
-> -                       break;
-> -       }
-> -
-> +       /* See enqueue_task_fair:enqueue_throttle */
->         assert_list_load_cfs_rq(rq);
->
->         /* Determine whether we need to wake up potentially idle CPU: */
-> @@ -5600,13 +5583,6 @@ enqueue_task_fair(struct rq *rq, struct task_struc=
-t *p, int flags)
->                 /* end evaluation on encountering a throttled cfs_rq */
->                 if (cfs_rq_throttled(cfs_rq))
->                         goto enqueue_throttle;
-> -
-> -               /*
-> -                * One parent has been throttled and cfs_rq removed from =
-the
-> -                * list. Add it back to not break the load list.
-> -                */
-> -               if (throttled_hierarchy(cfs_rq))
-> -                       list_add_load_cfs_rq(cfs_rq);
->         }
->
->         /* At this point se is NULL and we are at root level*/
-> @@ -5630,21 +5606,11 @@ enqueue_task_fair(struct rq *rq, struct task_stru=
-ct *p, int flags)
->                 update_overutilized_status(rq);
->
->  enqueue_throttle:
-> -       if (cfs_bandwidth_used()) {
-> -               /*
-> -                * When bandwidth control is enabled; the cfs_rq_throttle=
-d()
-> -                * breaks in the above iteration can result in incomplete
-> -                * load list maintenance, resulting in triggering the ass=
-ertion
-> -                * below.
-> -                */
-> -               for_each_sched_entity(se) {
-> -                       cfs_rq =3D cfs_rq_of(se);
-> -
-> -                       if (list_add_load_cfs_rq(cfs_rq))
-> -                               break;
-> -               }
-> -       }
-> -
-> +       /*
-> +        * If we got here, subtree of a cfs_rq must have been throttled a=
-nd
-> +        * therefore we did not modify load list or we climbed up to root=
- (or
-> +        * joined to an ancestor cfs_rq with on_rq =3D=3D 1 =3D> on_list)=
-.
-> +        */
->         assert_list_load_cfs_rq(rq);
->
->         hrtick_update(rq);
-> --
-> 2.32.0
->
+So as promised here is a patch removing them. I only compile tested this as
+I don't have access to a powerpc system.
+
+I've also looked a bit more into our use in s390 and as dicussed previously
+I don't think we can cleanly get rid of the existing one in
+arch/s390/pci_sysfs.c:recover_store() because we need to distinguish an already
+removed pdev just by looking at the pdev itself.
+
+As for new uses I think in the upcoming automatic recovery code we can rely on
+the fact that a removed device has pdev->driver == NULL and don't need
+pci_dev_is_added() but it would make things clearer. I also noticed that before
+commit 44bda4b7d26e9 ("PCI: Fix is_added/is_busmaster race condition") there
+was simply a pdev->is_added flag that was cleanly accessible by arch code. So
+I wanted to ask for your advice.
+
+Thanks,
+Niklas
+
+[0] https://lore.kernel.org/lkml/20210825190444.GA3593752@bjorn-Precision-5520/
+[1] https://lore.kernel.org/lkml/CAOSf1CFyuf9FaeSNparj+7W0mKTPvtcM8vxjHDSFsNDC6k_7xQ@mail.gmail.com/
+
+Niklas Schnelle (1):
+  powerpc: Drop superfluous pci_dev_is_added() calls
+
+ arch/powerpc/platforms/powernv/pci-sriov.c | 6 ------
+ arch/powerpc/platforms/pseries/setup.c     | 3 +--
+ 2 files changed, 1 insertion(+), 8 deletions(-)
+
+-- 
+2.25.1
+
