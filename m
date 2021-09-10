@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1B94072CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483074072CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 23:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhIJVFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 17:05:48 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:44852 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbhIJVFp (ORCPT
+        id S234418AbhIJVHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 17:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233736AbhIJVH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:05:45 -0400
-Received: by mail-ot1-f53.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so3998028otg.11;
-        Fri, 10 Sep 2021 14:04:33 -0700 (PDT)
+        Fri, 10 Sep 2021 17:07:28 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95A7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:06:16 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id z9-20020a7bc149000000b002e8861aff59so2386184wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 14:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=TLj/ONS/sld60sqpERNMaRNSbW3piuAZR1aelVesNnA=;
+        b=oqt0cnUo8pv7evLVlDPWL3BXa3YP8fcn/cOCTgH8vK/bPCqsSpNX5Xh4U20UwQo8M7
+         +ASBUrAHSx7h2DXlCsDS3XNFhYoR3mbl1vMqAc2bwGYrj2724OitCf8Ue9xHQrTY4yjX
+         8OmZIBo4gxd836Zs/m3/HrL1VAYITLn+HwsEm+mKjCYGr1n0WLRMBJIBLKUJ69Irdbpi
+         UgANyYYdt3TMjaON4V+XzJy+5l2JAFWB2RJHkqTzywYDLL6GzvN5mqu0NoKbCTfUoluK
+         QGf1EWzl6PlTtt98g8sPqYhbJVCilGqZrg0u03JCKLSIrNxXdDn/YfIicRH4sBqLeg01
+         iYGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=vgHIM4Ct31Y31nZq6uyxNUaBJB+NoA1rPrBjIZ9bcLA=;
-        b=e68TXzk4aApcZzQg9iYVfFHa3LQXf8yUIkdufWEoXYDRwbiE7a4eDFq8d5RfxjlfkI
-         4D9DW3SzHc7exeSmF0xy/4TKfMGOZ8sW4bH9cE5Z1/V+/CleW0HVP66moP/glYt/L5M/
-         30X0nfWfosWT1o4c4egOH9X95w3XyenKaoQF6qb9qXJH7V4zGK9wWCc89mpnvK9yLE06
-         R0gG0mWwajZ3NAZLX7l3YU5iUvszgY68Q9s1Bz1gq+y0F49MFcCSsSXon4SjloJEF65O
-         jpM+QpgGYywqzy5p7Xk1JUT0zptj0i5PmH83642iQTHeMrojgY836Pt8Qx1M93efk/zP
-         T0gw==
-X-Gm-Message-State: AOAM533Lfcx2DRyUjCDMaMe+ieCdTNdea0PTyjS3jQVazb54Mc5ojtSi
-        61OZg0wvS30C8/DbJJ2DwaU5vR/7TQ==
-X-Google-Smtp-Source: ABdhPJz667Jb44ra/AD13hNO/0SIw8b6ZHh1K4XA6Lv3SBIW3AcpdVu1n2MvnNI17kqtZ1EKdXL4kQ==
-X-Received: by 2002:a05:6830:78c:: with SMTP id w12mr4357491ots.196.1631307872751;
-        Fri, 10 Sep 2021 14:04:32 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 99sm1499759otd.2.2021.09.10.14.04.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 14:04:32 -0700 (PDT)
-Received: (nullmailer pid 3378802 invoked by uid 1000);
-        Fri, 10 Sep 2021 21:04:31 -0000
-Date:   Fri, 10 Sep 2021 16:04:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for 5.15, take 1
-Message-ID: <YTvIXzO2QJ4n9RmM@robh.at.kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TLj/ONS/sld60sqpERNMaRNSbW3piuAZR1aelVesNnA=;
+        b=IwxJ1pTXZ2bBxH81+1SKb58YHXf7Nd9blkCVJB3FRWOCrlPSeHLvueMbHR/cr1WmRQ
+         fMvS87eJaCiMqfFHretYJAE1M1jrS1yfnSa17ANtOZj1kBMqeOA7k2N28PtbN1X1BgvD
+         1/iotZKcFYarY83i+CiPPV2byn6uiZFWm0vXmwWRr6zPZPEupWi6Gf3OZhNGfCmr42wL
+         lK/9rFshxGgETPhFDHGstktbEf9PunqzGnkZaCYddlIlywLmvZNjoLLzQCbiSsDnmQFY
+         xzbL3vOqskdjfP59GB8qCo337AOZYtkqVo2e9/vFwK/1jRopmCzmDFPJ/LworVYQA9/n
+         Xmrg==
+X-Gm-Message-State: AOAM530rLkd+gdYOrJYZv+42wbV9jNOiD/8xiWiCx+RaCgsZV7O+IRck
+        33zDvd+O8UNsIHbR9Jjr8H0=
+X-Google-Smtp-Source: ABdhPJwSciMCagUQIW5NgDmk7rlPZNnNKEx4aYuocKIOMM/Xa+9+e9yPCBSsYmmvEvjGKxe2xfkTMw==
+X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr10302816wmq.98.1631307975545;
+        Fri, 10 Sep 2021 14:06:15 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
+        by smtp.gmail.com with ESMTPSA id m18sm3132448wrn.85.2021.09.10.14.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 14:06:15 -0700 (PDT)
+Message-ID: <79d75d2f-c55f-eb4a-a03a-c54d00b50de5@gmail.com>
+Date:   Fri, 10 Sep 2021 23:06:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 0/4] remove unused usb endpoint functions
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210910202151.4007-1-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20210910202151.4007-1-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 9/10/21 22:21, Martin Kaiser wrote:
+> Remove driver-specific functions to detect the type and direction of a
+> usb endpoint. Their callers have already been updated to use the helper
+> functions from the usb core.
+> 
+> Martin Kaiser (4):
+>    staging: r8188eu: remove unused function usb_endpoint_is_int
+>    staging: r8188eu: remove unused function RT_usb_endpoint_is_bulk_in
+>    staging: r8188eu: remove unused function RT_usb_endpoint_num
+>    staging: r8188eu: remove the remaining usb endpoint functions
+> 
+>   drivers/staging/r8188eu/os_dep/usb_intf.c | 40 -----------------------
+>   1 file changed, 40 deletions(-)
+> 
 
-Please pull a couple of DT fixes.
+Compiles and looks good to me.
 
-Rob
+For all 4 patches
 
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
-The following changes since commit bf9f243f23e6623f310ba03fbb14e10ec3a61290:
-
-  Merge tag '5.15-rc-ksmbd-part2' of git://git.samba.org/ksmbd (2021-09-09 16:17:14 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.15-1
-
-for you to fetch changes up to 094b147c766289baa0f370d124609c3ac2b5a420:
-
-  spi: dt-bindings: xilinx: Drop type reference on *-bits properties (2021-09-10 14:54:27 -0500)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.15, take 1:
-
-- Disable fw_devlinks on x86 DT platforms to fix OLPC
-
-- More replacing oneOf+const with enum on a few new schemas
-
-- Drop unnecessary type references on Xilinx SPI binding schema
-
-----------------------------------------------------------------
-Rob Herring (2):
-      dt-bindings: More use 'enum' instead of 'oneOf' plus 'const' entries
-      spi: dt-bindings: xilinx: Drop type reference on *-bits properties
-
-Saravana Kannan (1):
-      of: property: Disable fw_devlink DT support for X86
-
- .../devicetree/bindings/display/msm/dsi-phy-7nm.yaml       |  8 ++++----
- Documentation/devicetree/bindings/spi/omap-spi.yaml        |  6 +++---
- Documentation/devicetree/bindings/spi/spi-xilinx.yaml      |  2 --
- .../devicetree/bindings/watchdog/maxim,max63xx.yaml        | 14 +++++++-------
- drivers/of/property.c                                      |  3 +++
- 5 files changed, 17 insertions(+), 16 deletions(-)
