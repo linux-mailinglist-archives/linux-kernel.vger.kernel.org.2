@@ -2,274 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DE5407340
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A0B407343
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbhIJWNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232896AbhIJWNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1FF96120A;
-        Fri, 10 Sep 2021 22:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631311925;
-        bh=tHxGN3Byr4l/+w+nW4Hu6Su0mSnSTw9EciOu9MUBou8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jD1XbrqgBGXE2b9e4adZ5Tu7bqWi9zIXr30MVQz4p0zupt1+btGLtGQJYZuAZ5+U6
-         tTRtZ4XeRlMA82AwHEpRqqDt20Rir4OobMvAzYpttnRZk113lw6Y/sQIqVSwaO1ycd
-         iB7Rfdk70OW7X9GeG+MXNs+UZcyuf1Kb0TiE//7Uagi69NdwxcIlGxLpVoOH2alkDv
-         m0umABqECB5TQjgWUkCYvWiDIvPNQdCdnaHn9fUuBcaqQ1MrZAnJw6Ng9+Zey6f3aO
-         8xs9OO//U7xHubyCTY47HXhst3Mzlb4JA0f4QxtijplCLWovmCdQaL6NEQjUGt6ghA
-         fDHdPTiON9Cqw==
-Message-ID: <c92d6258369b7a7dbf8fb4925fe6a27736463f64.camel@kernel.org>
-Subject: Re: [PATCH] locks: remove LOCK_MAND flock lock support
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, Matthew Wilcox <willy@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Fri, 10 Sep 2021 18:12:03 -0400
-In-Reply-To: <20210910205940.GA789@fieldses.org>
-References: <20210910201915.95170-1-jlayton@kernel.org>
-         <20210910205940.GA789@fieldses.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S234711AbhIJWPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234712AbhIJWPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 18:15:43 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E91C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:14:31 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id bq5so6934513lfb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TA6suC0Bve+igd/7LKYeC0ZIyexn7MlL+eU3pyKRHoI=;
+        b=bYZoX19xoaM5s7DcJBrMQFUgxfbCPxVbpJXouHY7eGkfkYHaXSHmOam3/yOxf8Di3z
+         isWJWgBMNObSH87mJFjKHazi7UoX9fB/0wz/RNz18giS9XnnNKKNQlaHYZsFENmSaCiO
+         uv/fRzutb1OapEDZ72m2siua19bXYtagwkyzMzR0a03y7dbcbkfITPExc0wU4M7X9mKl
+         N103bEmYF9XpJZP6W6b1oOP8/+jEVfAy2A0aPtldn9kO3IQnugzv5t8tU+QebUblVAIY
+         N6UGJhk8FsXOAsgAfCpBFrt/YjBYjMgRuYeJeW9sXaiUpVMqlRzrq/VrQuDrrSQZ8dXo
+         a/Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TA6suC0Bve+igd/7LKYeC0ZIyexn7MlL+eU3pyKRHoI=;
+        b=igOcsPQw31fpgEE36eOH1BbrvXrN+Uh5o6Aahmy+yYT1+zjjSQJm6nvXokTAfak905
+         7ZPxO0wVaq0O5aXySalaArow8cAc/osvg5+b+UV+39M9/vkW3naIj7dcNeQfkrnNN8pI
+         637p1aNgs/87DiExCPd0l+KT2062A6RaMZjeSNzrkYtUAKSjxgVzUyxcsAJuTWuTJ0Nf
+         e5Ow1cz40zrgr0slh0yXi4eWXWmSt+FSM2Kec7WEN5y76Zrm/iuQtkv6gHb76IwYIzIU
+         /FarjBFgoeYlJqOe5NUZplO4INvAhSDBPShF4az/PPWGgrr3wKFfeqEYHuTIrV09aWOB
+         95sA==
+X-Gm-Message-State: AOAM531vmV8tub8qafl7OftvpirYGuAYYWU7Kz7wXfU1VK0vBUYdw2+6
+        2FviopNpp422fnSnCXEue0yMNcisaaJJzGQsHOcfUg==
+X-Google-Smtp-Source: ABdhPJxvfovj3ZwasyBWO+STHHSS9r49tm28A55PXd3hIkMnx3ED8JWjaI0m2XZEBdZbk6+gnDMBTnyFeEDmpJBozsw=
+X-Received: by 2002:a19:c313:: with SMTP id t19mr5368510lff.644.1631312069409;
+ Fri, 10 Sep 2021 15:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210902181751.252227-1-pgonda@google.com> <20210902181751.252227-4-pgonda@google.com>
+ <YTuS3iHN7GgK4oQr@google.com>
+In-Reply-To: <YTuS3iHN7GgK4oQr@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Fri, 10 Sep 2021 16:14:17 -0600
+Message-ID: <CAMkAt6rDYdKOQniszX=zq6F92TDCfKQC+0PGFabAXtYWgCmC1A@mail.gmail.com>
+Subject: Re: [PATCH 3/3 V7] selftest: KVM: Add intra host migration tests
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 16:59 -0400, J. Bruce Fields wrote:
-> On Fri, Sep 10, 2021 at 04:19:15PM -0400, Jeff Layton wrote:
-> > As best I can tell, the logic for these has been broken for a long time
-> > (at least before the move to git), such that they never conflict with
-> > anything.
-> 
-> I've wondered about that!
-> 
-> But a grep of the Samba code shows it actually uses LOCK_MAND, why?
-> Looking closer now, I see that it sets LOCK_MAND in some cases but never
-> checks for LOCK_MAND, so there's absolutely no point unless the kernel
-> is doing something useful, which it isn't.  Huh.
-> 
-> Looking back at the kernel...  LOCK_MAND was introduced in Linux
-> 2.4.0-test9pre6, and it was only checked in nfsd read and write code,
-> and only only on exports that had an "msnfs" export option set.
-> 
-> So it was a mandatory lock that only worked against NFS readers and
-> writers, and only if the admin knew to set this export option.
-> 
-> And, oh, look, I'd forgotten about this, but apparently in 2011 I
-> noticed that the msnfs option was totally undocumented and ripped it
-> out, in 9ce137eee4fe "nfsd: don't support msnfs export option".
-> 
-> I've heard no complaints since, so I guess that was an OK decision.
-> 
-> But I should have noticed at the same time that this also made LOCK_MAND
-> a no-op.
-> 
-> OK, sorry for the novel, and thanks for cleaning this up!
-> 
-> (Are you sending Samba a patch too?)
-> 
-> --b.
-> 
-
-Ahh, thanks for the archaeology! That makes sense. I took a look at
-Samba, but haven't cooked up a patch for it yet.
-
-After taking a look, I sort of wonder whether there might be out of tree
-filesystems (GPFS?) that do support these flags properly. OTOH, I'm not
-inclined to worry about them too much. Maybe if they want to chime in we
-can work with them to ease the transition.
-
-I'll probably do a patch for samba soon, just to kick off the discussion
-with those guys. I'll see what I can come up with.
-
-> > Also, nothing checks for these flags and prevented opens or
-> > read/write behavior on the files. They don't seem to do anything.
-> > 
-> > Given that, we can rip these symbols out of the kernel, and just make
-> > flock(2) return 0 when LOCK_MAND is set in order to preserve existing
-> > behavior.
-> > 
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/ceph/locks.c                  |  3 ---
-> >  fs/gfs2/file.c                   |  2 --
-> >  fs/locks.c                       | 46 +++++++++++++++-----------------
-> >  fs/nfs/file.c                    |  9 -------
-> >  include/uapi/asm-generic/fcntl.h |  4 +++
-> >  5 files changed, 25 insertions(+), 39 deletions(-)
-> > 
-> > Note that I do see some occurrences of LOCK_MAND in samba codebase, but
-> > I think it's probably best that those are removed.
-> > 
-> > diff --git a/fs/ceph/locks.c b/fs/ceph/locks.c
-> > index bdeb271f47d9..d8c31069fbf2 100644
-> > --- a/fs/ceph/locks.c
-> > +++ b/fs/ceph/locks.c
-> > @@ -302,9 +302,6 @@ int ceph_flock(struct file *file, int cmd, struct file_lock *fl)
-> >  
-> >  	if (!(fl->fl_flags & FL_FLOCK))
-> >  		return -ENOLCK;
-> > -	/* No mandatory locks */
-> > -	if (fl->fl_type & LOCK_MAND)
-> > -		return -EOPNOTSUPP;
-> >  
-> >  	dout("ceph_flock, fl_file: %p\n", fl->fl_file);
-> >  
-> > diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> > index c559827cb6f9..078ef29e31bc 100644
-> > --- a/fs/gfs2/file.c
-> > +++ b/fs/gfs2/file.c
-> > @@ -1338,8 +1338,6 @@ static int gfs2_flock(struct file *file, int cmd, struct file_lock *fl)
-> >  {
-> >  	if (!(fl->fl_flags & FL_FLOCK))
-> >  		return -ENOLCK;
-> > -	if (fl->fl_type & LOCK_MAND)
-> > -		return -EOPNOTSUPP;
-> >  
-> >  	if (fl->fl_type == F_UNLCK) {
-> >  		do_unflock(file, fl);
-> > diff --git a/fs/locks.c b/fs/locks.c
-> > index 3d6fb4ae847b..0e1d8a637e9c 100644
-> > --- a/fs/locks.c
-> > +++ b/fs/locks.c
-> > @@ -461,8 +461,6 @@ static void locks_move_blocks(struct file_lock *new, struct file_lock *fl)
-> >  }
-> >  
-> >  static inline int flock_translate_cmd(int cmd) {
-> > -	if (cmd & LOCK_MAND)
-> > -		return cmd & (LOCK_MAND | LOCK_RW);
-> >  	switch (cmd) {
-> >  	case LOCK_SH:
-> >  		return F_RDLCK;
-> > @@ -942,8 +940,6 @@ static bool flock_locks_conflict(struct file_lock *caller_fl,
-> >  	 */
-> >  	if (caller_fl->fl_file == sys_fl->fl_file)
-> >  		return false;
-> > -	if ((caller_fl->fl_type & LOCK_MAND) || (sys_fl->fl_type & LOCK_MAND))
-> > -		return false;
-> >  
-> >  	return locks_conflict(caller_fl, sys_fl);
-> >  }
-> > @@ -2116,11 +2112,9 @@ EXPORT_SYMBOL(locks_lock_inode_wait);
-> >   *	- %LOCK_SH -- a shared lock.
-> >   *	- %LOCK_EX -- an exclusive lock.
-> >   *	- %LOCK_UN -- remove an existing lock.
-> > - *	- %LOCK_MAND -- a 'mandatory' flock.
-> > - *	  This exists to emulate Windows Share Modes.
-> > + *	- %LOCK_MAND -- a 'mandatory' flock. (DEPRECATED)
-> >   *
-> > - *	%LOCK_MAND can be combined with %LOCK_READ or %LOCK_WRITE to allow other
-> > - *	processes read and write access respectively.
-> > + *	%LOCK_MAND support has been removed from the kernel.
-> >   */
-> >  SYSCALL_DEFINE2(flock, unsigned int, fd, unsigned int, cmd)
-> >  {
-> > @@ -2137,9 +2131,22 @@ SYSCALL_DEFINE2(flock, unsigned int, fd, unsigned int, cmd)
-> >  	cmd &= ~LOCK_NB;
-> >  	unlock = (cmd == LOCK_UN);
-> >  
-> > -	if (!unlock && !(cmd & LOCK_MAND) &&
-> > -	    !(f.file->f_mode & (FMODE_READ|FMODE_WRITE)))
-> > +	if (!unlock && !(f.file->f_mode & (FMODE_READ|FMODE_WRITE)))
-> > +		goto out_putf;
-> > +
-> > +	/*
-> > +	 * LOCK_MAND locks were broken for a long time in that they never
-> > +	 * conflicted with one another and didn't prevent any sort of open,
-> > +	 * read or write activity.
-> > +	 *
-> > +	 * Just ignore these requests now, to preserve legacy behavior, but
-> > +	 * throw a warning to let people know that they don't actually work.
-> > +	 */
-> > +	if (cmd & LOCK_MAND) {
-> > +		pr_warn_once("Attempt to set a LOCK_MAND lock via flock(2). This support has been removed and the request ignored.\n");
-> > +		error = 0;
-> >  		goto out_putf;
-> > +	}
-> >  
-> >  	lock = flock_make_lock(f.file, cmd, NULL);
-> >  	if (IS_ERR(lock)) {
-> > @@ -2745,11 +2752,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
-> >  		seq_printf(f, " %s ",
-> >  			     (inode == NULL) ? "*NOINODE*" : "ADVISORY ");
-> >  	} else if (IS_FLOCK(fl)) {
-> > -		if (fl->fl_type & LOCK_MAND) {
-> > -			seq_puts(f, "FLOCK  MSNFS     ");
-> > -		} else {
-> > -			seq_puts(f, "FLOCK  ADVISORY  ");
-> > -		}
-> > +		seq_puts(f, "FLOCK  ADVISORY  ");
-> >  	} else if (IS_LEASE(fl)) {
-> >  		if (fl->fl_flags & FL_DELEG)
-> >  			seq_puts(f, "DELEG  ");
-> > @@ -2765,17 +2768,10 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
-> >  	} else {
-> >  		seq_puts(f, "UNKNOWN UNKNOWN  ");
-> >  	}
-> > -	if (fl->fl_type & LOCK_MAND) {
-> > -		seq_printf(f, "%s ",
-> > -			       (fl->fl_type & LOCK_READ)
-> > -			       ? (fl->fl_type & LOCK_WRITE) ? "RW   " : "READ "
-> > -			       : (fl->fl_type & LOCK_WRITE) ? "WRITE" : "NONE ");
-> > -	} else {
-> > -		int type = IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_type;
-> > +	int type = IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_type;
-> >  
-> > -		seq_printf(f, "%s ", (type == F_WRLCK) ? "WRITE" :
-> > -				     (type == F_RDLCK) ? "READ" : "UNLCK");
-> > -	}
-> > +	seq_printf(f, "%s ", (type == F_WRLCK) ? "WRITE" :
-> > +			     (type == F_RDLCK) ? "READ" : "UNLCK");
-> >  	if (inode) {
-> >  		/* userspace relies on this representation of dev_t */
-> >  		seq_printf(f, "%d %02x:%02x:%lu ", fl_pid,
-> > diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-> > index aa353fd58240..24e7dccce355 100644
-> > --- a/fs/nfs/file.c
-> > +++ b/fs/nfs/file.c
-> > @@ -843,15 +843,6 @@ int nfs_flock(struct file *filp, int cmd, struct file_lock *fl)
-> >  	if (!(fl->fl_flags & FL_FLOCK))
-> >  		return -ENOLCK;
-> >  
-> > -	/*
-> > -	 * The NFSv4 protocol doesn't support LOCK_MAND, which is not part of
-> > -	 * any standard. In principle we might be able to support LOCK_MAND
-> > -	 * on NFSv2/3 since NLMv3/4 support DOS share modes, but for now the
-> > -	 * NFS code is not set up for it.
-> > -	 */
-> > -	if (fl->fl_type & LOCK_MAND)
-> > -		return -EINVAL;
-> > -
-> >  	if (NFS_SERVER(inode)->flags & NFS_MOUNT_LOCAL_FLOCK)
-> >  		is_local = 1;
-> >  
-> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> > index 9dc0bf0c5a6e..ecd0f5bdfc1d 100644
-> > --- a/include/uapi/asm-generic/fcntl.h
-> > +++ b/include/uapi/asm-generic/fcntl.h
-> > @@ -181,6 +181,10 @@ struct f_owner_ex {
-> >  				   blocking */
-> >  #define LOCK_UN		8	/* remove lock */
-> >  
+On Fri, Sep 10, 2021 at 11:16 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Thu, Sep 02, 2021, Peter Gonda wrote:
 > > +/*
-> > + * LOCK_MAND support has been removed from the kernel. We leave the symbols
-> > + * here to not break legacy builds, but these should not be used in new code.
+> > + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
+> > + *
+> > + * Input Args:
+> > + *   flags - The flags to pass when opening SEV_DEV_PATH.
+> > + *
+> > + * Return:
+> > + *   The opened file descriptor of /dev/sev.
 > > + */
-> >  #define LOCK_MAND	32	/* This is a mandatory flock ... */
-> >  #define LOCK_READ	64	/* which allows concurrent read operations */
-> >  #define LOCK_WRITE	128	/* which allows concurrent write operations */
-> > -- 
-> > 2.31.1
+> > +static int open_sev_dev_path_or_exit(int flags)
+> > +{
+> > +     static int fd;
+> > +
+> > +     if (fd != 0)
+> > +             return fd;
+>
+> Caching the file here is unnecessary, it's used in exactly one function.
+>
+> > +     fd = open(SEV_DEV_PATH, flags);
+> > +     if (fd < 0) {
+> > +             print_skip("%s not available, is SEV not enabled? (errno: %d)",
+> > +                        SEV_DEV_PATH, errno);
+> > +             exit(KSFT_SKIP);
+> > +     }
+> > +
+> > +     return fd;
+> > +}
+>
+> Rather than copy-paste _open_kvm_dev_path_or_exit(), it's probably worth factoring
+> out a helper in a separate patch, e.g.
 
--- 
-Jeff Layton <jlayton@kernel.org>
+So the suggestion would be to move open_sev_dev_path_or_exit into
+tools/testing/selftests/kvm/include/x86_64/svm_util.h
 
+If so, wouldn't it make sense to keep the caching of the FD?
+
+>
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 10a8ed691c66..06a6c04010fb 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -31,6 +31,19 @@ static void *align(void *x, size_t size)
+>         return (void *) (((size_t) x + mask) & ~mask);
+>  }
+>
+> +int open_path_or_exit(const char *path, int flags)
+> +{
+> +       int fd;
+> +
+> +       fd = open(path, flags);
+> +       if (fd < 0) {
+> +               print_skip("%s not available (errno: %d)", path, errno);
+> +               exit(KSFT_SKIP);
+> +       }
+> +
+> +       return fd;
+> +}
+> +
+>  /*
+>   * Open KVM_DEV_PATH if available, otherwise exit the entire program.
+>   *
+> @@ -42,16 +55,7 @@ static void *align(void *x, size_t size)
+>   */
+>  static int _open_kvm_dev_path_or_exit(int flags)
+>  {
+> -       int fd;
+> -
+> -       fd = open(KVM_DEV_PATH, flags);
+> -       if (fd < 0) {
+> -               print_skip("%s not available, is KVM loaded? (errno: %d)",
+> -                          KVM_DEV_PATH, errno);
+> -               exit(KSFT_SKIP);
+> -       }
+> -
+> -       return fd;
+> +       return open_path_or_exit(KVM_DEV_PATH, flags);
+>  }
+>
+>  int open_kvm_dev_path_or_exit(void)
+>
+>
+> > +
+> > +static void sev_ioctl(int vm_fd, int cmd_id, void *data)
+> > +{
+> > +     struct kvm_sev_cmd cmd = {
+> > +             .id = cmd_id,
+> > +             .data = (uint64_t)data,
+> > +             .sev_fd = open_sev_dev_path_or_exit(0),
+> > +     };
+> > +     int ret;
+> > +
+> > +     TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX && cmd_id >= 0,
+> > +                 "Unknown SEV CMD : %d\n", cmd_id);
+>
+> LOL, I like sanity checks, but asserting that the test itself isn't horrendously
+> broken is a bit much.  And someone manages to screw up that badly, the ioctl()
+> below will fail.
+
+Ack. I'll remove this.
+
+>
+> > +     ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > +     TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> > +                 "%d failed: return code: %d, errno: %d, fw error: %d",
+> > +                 cmd_id, ret, errno, cmd.error);
+> > +}
+> > +
+> > +static struct kvm_vm *sev_vm_create(bool es)
+> > +{
+> > +     struct kvm_vm *vm;
+> > +     struct kvm_sev_launch_start start = { 0 };
+> > +     int i;
+>
+> Rather than cache /dev/sev in a helper, you can do:
+>
+>         int sev_fd = open_path_or_exit(SEV_DEV_PATH, 0);
+>
+>         sev_ioctl(vm, sev_fd, ...);
+>
+> > +     vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +     sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> > +     for (i = 0; i < MIGRATE_TEST_NUM_VCPUS; ++i)
+> > +             vm_vcpu_add(vm, i);
+> > +     start.policy |= (es) << 2;
+>
+> I had to go spelunking to confirm this is the "ES" policy, please do:
+>
+>         if (es)
+>                 start.policy |= SEV_POLICY_ES;
+>
+> > +     sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> > +     if (es)
+> > +             sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+>
+>
+> And with sev_fd scoped to this function:
+>
+>         close(sev_fd);
+>
+> which I think is legal?
+>
+> > +     return vm;
+> > +}
+> > +
+> > +static void test_sev_migrate_from(bool es)
+> > +{
+> > +     struct kvm_vm *vms[MIGRATE_TEST_VMS];
+>
+> Prefix this and LOCK_TESTING_THREAD with NR_ so that it's clear these are arbitrary
+> numbers of things.  And I guess s/MIGRATE_TEST_NUM_VCPUS/NR_MIGRATE_TEST_VCPUS to
+> be consistent.
+>
+> > +     struct kvm_enable_cap cap = {
+> > +             .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
+> > +     };
+> > +     int i;
+> > +
+> > +     for (i = 0; i < MIGRATE_TEST_VMS; ++i) {
+> > +             vms[i] = sev_vm_create(es);
+>
+> It doesn't really matter, but closing these fds tests that KVM doesn't explode
+> when VMs are destroyed without the process exiting.
+>
+
+Can do, I spot checked a couple other tests and didn't see any close
+calls so didn't clutter the test here.
+
+> > +             if (i > 0) {
+> > +                     cap.args[0] = vms[i - 1]->fd;
+> > +                     vm_enable_cap(vms[i], &cap);
+> > +             }
+> > +     }
+>
+> For giggles, we can also test migrating back (with some feedback from below
+> mixed in):
+>
+>         /* Initial migration from the src to the first dst. */
+>         sev_migrate_from(dst_vms[0]->fd, src_vm->fd);
+>
+>         for (i = 1; i < NR_MIGRATE_TEST_VMS; i++)
+>                 sev_migrate_from(vms[i]->fd, vms[i - 1]->fd);
+>
+>         /* Migrate the guest back to the original VM. */
+>         sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
+>
+> > +}
+> > +
+> > +struct locking_thread_input {
+> > +     struct kvm_vm *vm;
+> > +     int source_fds[LOCK_TESTING_THREADS];
+> > +};
+> > +
+> > +static void *locking_test_thread(void *arg)
+> > +{
+> > +     /*
+> > +      * This test case runs a number of threads all trying to use the intra
+> > +      * host migration ioctls. This tries to detect if a deadlock exists.
+> > +      */
+> > +     struct kvm_enable_cap cap = {
+> > +             .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
+> > +     };
+> > +     int i, j;
+> > +     struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> > +
+> > +     for (i = 0; i < LOCK_TESTING_ITERATIONS; ++i) {
+> > +             j = input->source_fds[i % LOCK_TESTING_THREADS];
+> > +             cap.args[0] = input->source_fds[j];
+>
+> This looks wrong, it's indexing source_fds with a value from source_fds.  Did
+> you intend?
+>
+>                 j = i % LOCK_TESTING_THREADS;
+>                 cap.args[0] = input->source_fds[j];
+>
+
+Yup that's wrong I'll update.
+
+> > +             /*
+> > +              * Call IOCTL directly without checking return code or
+> > +              * asserting. We are * simply trying to confirm there is no
+> > +              * deadlock from userspace * not check correctness of
+> > +              * migration here.
+> > +              */
+> > +             ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
+>
+> For readability and future extensibility, I'd say create a single helper and use
+> it even in the happy case, e.g.
+>
+> static int __sev_migrate_from(int dst_fd, int src_fd)
+> {
+>         struct kvm_enable_cap cap = {
+>                 .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM,
+>                 .args = { src_fd } // No idea if this is correct syntax
+>         };
+>
+>         return ioctl(dst_fd, KVM_ENABLE_CAP, &cap);
+> }
+>
+>
+> static void sev_migrate_from(...)
+> {
+>         ret = __sev_migrate_from(...);
+>         TEST_ASSERT(!ret, "Migration failed, blah blah blah");
+> }
+>
+> > +     }
+> > +}
+> > +
+> > +static void test_sev_migrate_locking(void)
+> > +{
+> > +     struct locking_thread_input input[LOCK_TESTING_THREADS];
+> > +     pthread_t pt[LOCK_TESTING_THREADS];
+> > +     int i;
+> > +
+> > +     for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
+>
+> With a bit of refactoring, the same VMs from the happy case can be reused for
+> the locking test, and we can also get concurrent SEV+SEV-ES migration (see below).
+>
+> > +             input[i].vm = sev_vm_create(/* es= */ false);
+> > +             input[0].source_fds[i] = input[i].vm->fd;
+> > +     }
+> > +     for (i = 1; i < LOCK_TESTING_THREADS; ++i)
+> > +             memcpy(input[i].source_fds, input[0].source_fds,
+> > +                    sizeof(input[i].source_fds));
+> > +
+> > +     for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > +             pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> > +
+> > +     for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > +             pthread_join(pt[i], NULL);
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +     test_sev_migrate_from(/* es= */ false);
+> > +     test_sev_migrate_from(/* es= */ true);
+> > +     test_sev_migrate_locking();
+>
+>
+> With a little refactoring, this can add other tests, e.g. illegal dst.  Assuming
+> KVM requires the dst to be !SEV, SEV and SEV-ES can use the same set of destination
+> VMs.  And the locking test can take 'em all.  E.g. something like:
+>
+>         struct kvm_vm *sev_vm, *sev_es_vm;
+>
+>         sev_vm = sev_vm_create(false);
+>         sev_es_vm = sev_vm_create(true);
+>
+>         for (i = 0; i < NR_MIGRATE_TEST_VMS; i++)
+>                 dst_vms[i] = sev_dst_vm_create();
+>
+>         test_sev_migrate_from(sev_vms, dst_vms);
+>         test_sev_migrate_from(sev_es_vms, dst_vms);
+>
+>         ret = __sev_migrate_from(sev_es_vms[0], sev_vms[0]);
+>         TEST_ASSERT(ret == -EINVAL, ...);
+>
+>         ret = __sev_migrate_from(sev_vms[0], sev_es_vms[0]);
+>         TEST_ASSERT(ret == -EINVAL, ...);
+>
+>         ret = __sev_migrate_from(dst_vms[0], dst_vms[1]);
+>         TEST_ASSERT(ret == -EINVAL, ....);
+>
+>         test_sev_migrate_locking(sev_vm, sev_es_vm, dst_vms);
+>
+
+Ack. I'll add these parameter validation tests.
+
+> > +     return 0;
+> > +}
+> > --
+> > 2.33.0.153.gba50c8fa24-goog
+> >
