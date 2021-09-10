@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C078406B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BA1406BB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhIJMcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
+        id S233811AbhIJMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhIJMch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:32:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 209B7611C8;
-        Fri, 10 Sep 2021 12:31:25 +0000 (UTC)
+        id S233689AbhIJMdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:33:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF663611C8;
+        Fri, 10 Sep 2021 12:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277086;
-        bh=UFPg6g8EZ67ThjPvwToE4GQwtABdHpwXOQSFTDPLs5g=;
+        s=korg; t=1631277124;
+        bh=S3aSsPJhcrwOalra13GitF0GO+XMFjSeZ21XewDVOZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=psaOW3JDTX8YkrLTWUua26OlWY1KkPNT7ZbvRKAz8M3Rzv7n7O+KqY2gsKoXXjIDV
-         EK0vk3V6ayknCobgkgmOKBNTQ8sziqS/KLr8imvDIoAhWEuxBp2bsiH1bHcvp+Simj
-         uCCvZQ+xiKv+U88aZN9hlCt47cRc+6voYSPogcME=
+        b=miOgtIvYoX8s12G7LAaxwd6pVlnb3P3bOoSQtn9rEnqYFGnOLd95EAG+K9qAWBuKO
+         wlmO4A8V2NZrvy/ixMRQ8yWaPd3S/OpswgQLjLrUpaavb01apwp/znjEVEx1qRZNl2
+         3cClMOtHjR9r06sx/ZXMuvSJHuNcdyfVf2NdbEsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Li Qiang (Johnny Li)" <johnny.li@montage-tech.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.14 21/23] cxl/pci: Fix debug message in cxl_probe_regs()
+        stable@vger.kernel.org, Stan Lu <stan.lu@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 5.13 12/22] usb: xhci-mtk: fix issue of out-of-bounds array access
 Date:   Fri, 10 Sep 2021 14:30:11 +0200
-Message-Id: <20210910122916.678625088@linuxfoundation.org>
+Message-Id: <20210910122916.336471239@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
-References: <20210910122916.022815161@linuxfoundation.org>
+In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
+References: <20210910122915.942645251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Qiang (Johnny Li) <johnny.li@montage-tech.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit da582aa5ad5787c46e3f475ab3f4602ec84c1617 upstream.
+commit de5107f473190538a65aac7edea85209cd5c1a8f upstream.
 
-Indicator string for mbox and memdev register set to status
-incorrectly in error message.
+Bus bandwidth array access is based on esit, increase one
+will cause out-of-bounds issue; for example, when esit is
+XHCI_MTK_MAX_ESIT, will overstep boundary.
 
+Fixes: 7c986fbc16ae ("usb: xhci-mtk: get the microframe boundary for ESIT")
 Cc: <stable@vger.kernel.org>
-Fixes: 30af97296f48 ("cxl/pci: Map registers based on capabilities")
-Signed-off-by: Li Qiang (Johnny Li) <johnny.li@montage-tech.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/163072205089.2250120.8103605864156687395.stgit@dwillia2-desk3.amr.corp.intel.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Reported-by: Stan Lu <stan.lu@mediatek.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1629189389-18779-5-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cxl/pci.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1022,8 +1022,8 @@ static int cxl_probe_regs(struct cxl_mem
- 		    !dev_map->memdev.valid) {
- 			dev_err(dev, "registers not found: %s%s%s\n",
- 				!dev_map->status.valid ? "status " : "",
--				!dev_map->mbox.valid ? "status " : "",
--				!dev_map->memdev.valid ? "status " : "");
-+				!dev_map->mbox.valid ? "mbox " : "",
-+				!dev_map->memdev.valid ? "memdev " : "");
- 			return -ENXIO;
- 		}
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -590,10 +590,12 @@ static u32 get_esit_boundary(struct mu3h
+ 	u32 boundary = sch_ep->esit;
+ 
+ 	if (sch_ep->sch_tt) { /* LS/FS with TT */
+-		/* tune for CS */
+-		if (sch_ep->ep_type != ISOC_OUT_EP)
+-			boundary++;
+-		else if (boundary > 1) /* normally esit >= 8 for FS/LS */
++		/*
++		 * tune for CS, normally esit >= 8 for FS/LS,
++		 * not add one for other types to avoid access array
++		 * out of boundary
++		 */
++		if (sch_ep->ep_type == ISOC_OUT_EP && boundary > 1)
+ 			boundary--;
+ 	}
  
 
 
