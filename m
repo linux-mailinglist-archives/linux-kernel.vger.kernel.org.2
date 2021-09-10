@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974CB40658E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F05406594
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhIJCN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:13:56 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46026 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhIJCNz (ORCPT
+        id S229761AbhIJCPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:15:10 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:32783 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhIJCPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:13:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Unqfudi_1631239952;
-Received: from B-W5MSML85-1937.local(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Unqfudi_1631239952)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 10:12:33 +0800
-From:   "taoyi.ty" <escape@linux.alibaba.com>
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-To:     Tejun Heo <tj@kernel.org>
-Cc:     gregkh@linuxfoundation.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-References: <cover.1631102579.git.escape@linux.alibaba.com>
- <YTjmP0EGEWGYhroM@slm.duckdns.org>
-Message-ID: <7b8d68c6-9a1c-dc19-e430-e044e4c4f210@linux.alibaba.com>
-Date:   Fri, 10 Sep 2021 10:12:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Thu, 9 Sep 2021 22:15:09 -0400
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 18A2Djon010955;
+        Fri, 10 Sep 2021 11:13:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 18A2Djon010955
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1631240026;
+        bh=udWjwfq60F1tLUm1m72YBO5+pyGaJaRnnlyiYr4sAfE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0XX9KQjQjryldcYbWVmumEwcAwLbQvGI71V4r9jNi5tE/NScXniByF9byz7RBE/6X
+         mrRztoQgkQfumszF/YjLIAgZYi3nfaAa0P3aMkefxpjS8Kgn/vFue62f1SUaRD0L74
+         t2TRt4YcUgyQhRM9zYoZPjqVpvSczO1BxlgPnti3R/U+WLmkEcNj0rIlNE8Vb3XdCJ
+         MeHu48ANoDQYKFm7f1zC6uTO4xcIwOO6n21XiyUgzFytVANcZ7Y2BREo0mPbznHFJS
+         nAl9g2HBZdXJmNpc2O0sdA4LgjO7L/mqGZ1k2CZLjk4E4C0bf44yhzVuIC0u45HBo7
+         MwdIlhNeBUfsA==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id k23-20020a17090a591700b001976d2db364so418224pji.2;
+        Thu, 09 Sep 2021 19:13:46 -0700 (PDT)
+X-Gm-Message-State: AOAM532PF+sYMl7Jo7ZuJoLLKDy1vPs0sOwJ9hjZ7p2gxXo6jj9RTvKh
+        cwH6YoOcIG6OAikS88fAQ78Qtw1Ho9DihX9g4Zs=
+X-Google-Smtp-Source: ABdhPJzsQEVxfZfrPHtmSoiJqpIaQCbePzktoUaB9fjFhHO8qjDLzEBmXpWaRfbbZkOqp2DwuT5bFmnqZJO2BlsLKL0=
+X-Received: by 2002:a17:902:e04d:b0:13a:70c9:11b8 with SMTP id
+ x13-20020a170902e04d00b0013a70c911b8mr5250710plx.82.1631240025345; Thu, 09
+ Sep 2021 19:13:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTjmP0EGEWGYhroM@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210901145212.478066-1-arielmarcovitch@gmail.com>
+In-Reply-To: <20210901145212.478066-1-arielmarcovitch@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 10 Sep 2021 11:13:08 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQHTL_djSLXVyuvn1mOtvumNAKo8iE7tQiyONxtJ3a4xg@mail.gmail.com>
+Message-ID: <CAK7LNAQHTL_djSLXVyuvn1mOtvumNAKo8iE7tQiyONxtJ3a4xg@mail.gmail.com>
+Subject: Re: [PATCH v2] checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
+To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Valentin Rothberg <valentinrothberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am glad to receive your reply.
-
-cgroup pool is a relatively simple solution that I think can
-
-solve the problem.
-
-I have tried making locking more granular, but in the end found
-
-it too diffcult. cgroup_mutex protects almost all operation related
-
-to cgroup. If not use cgroup_mutex, I have no idea how to design
-
-lock mechanism to take both concurrent performance and
-
-existing interfaces into account. Do you have any good advice?
-
-
-thanks,
-
-
-Yi Tao
-
-
-On 2021/9/9 上午12:35, Tejun Heo wrote:
-> Hello,
+On Wed, Sep 1, 2021 at 11:52 PM Ariel Marcovitch
+<arielmarcovitch@gmail.com> wrote:
 >
-> On Wed, Sep 08, 2021 at 08:15:11PM +0800, Yi Tao wrote:
->> In order to solve this long-tail delay problem, we designed a cgroup
->> pool. The cgroup pool will create a certain number of cgroups in advance.
->> When a user creates a cgroup through the mkdir system call, a clean cgroup
->> can be quickly obtained from the pool. Cgroup pool draws on the idea of
->> cgroup rename. By creating pool and rename in advance, it reduces the
->> critical area of cgroup creation, and uses a spinlock different from
->> cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
->> competition with attaching processes on the other hand.
-> I'm not sure this is the right way to go about it. There are more
-> conventional ways to improve scalability - making locking more granular and
-> hunting down specific operations which take long time. I don't think cgroup
-> management operations need the level of scalability which requires front
-> caching.
+> As opposed to the --diff option, --commit can get ref names instead of
+> commit hashes.
 >
-> Thanks.
+> When using the --commit option, the script resets the working directory
+> to the commit before the given ref, by adding '~' to the end of the ref.
 >
+> However, the 'HEAD' ref is relative, and so when the working directory
+> is reset to 'HEAD~', 'HEAD' points to what was 'HEAD~'. Then when the
+> script resets to 'HEAD' it actually stays in the same commit. In this
+> case, the script won't report any cases because there is no diff between
+> the cases of the two refs.
+>
+> Prevent the user from using HEAD refs.
+>
+> A better solution might be to resolve the refs before doing the
+> reset, but for now just disallow such refs.
+>
+> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>  scripts/checkkconfigsymbols.py | 3 +++
+>  1 file changed, 3 insertions(+)
+
+
+Applied to linux-kbuild. Thanks.
+
+> diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
+> index b9b0f15e5880..c57c990c3244 100755
+> --- a/scripts/checkkconfigsymbols.py
+> +++ b/scripts/checkkconfigsymbols.py
+> @@ -102,6 +102,9 @@ def parse_options():
+>                       "continue.")
+>
+>      if args.commit:
+> +        if args.commit.startswith('HEAD'):
+> +            sys.exit("The --commit option can't use the HEAD ref")
+> +
+>          args.find = False
+>
+>      if args.ignore:
+>
+> base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
+> --
+> 2.25.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
