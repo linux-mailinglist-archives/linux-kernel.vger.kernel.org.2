@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF2C407219
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F12640721F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhIJTop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbhIJTom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:44:42 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CE0C061574;
-        Fri, 10 Sep 2021 12:43:31 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id j2so1826951pll.1;
-        Fri, 10 Sep 2021 12:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zP4/nffKr4bI3HwAdVBpCEeNB3Dia7SwYemgZ8xo4zw=;
-        b=nnYPByhtFas8eCAsV0OToYAzYFFqU5hriDks7pkqBVSkB2bvYaWmkZTAo3DxkjSn3g
-         lx4uw5I7yRQ8Kti2WOw49SguvR7THzU6zMOustoQcyLpSLyaphv+sYLhU5eDXX3oOjTp
-         utoKG8U5hte51JqnLbchOn3IUYQ2pD5WzL4VSI+YTCcs25YocfsgZCQ4kMrPoeMJC9O5
-         sxPk0jMjBGef0yQXsryqfVQK//FVNt7wAZykRSlpb4NZJDsJKGCk5bqTiXVU25NievOk
-         QEz+dtVAlA+xvc5H+m/YscFmpmlGGcN3up9WrpLLiz2Dr9oWFQpZq6yYrhuR5WIpyFXj
-         FdOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zP4/nffKr4bI3HwAdVBpCEeNB3Dia7SwYemgZ8xo4zw=;
-        b=aftPKmNJAFFD2Cf5JdhSgmFUekWfjoIs4PTgkssWkTIxtMFvHqDVXPdMs4U7VMf+Ez
-         i6wXc5d7FxGoUFsn4WQ3bD/VrIZMRX3i1VWS6WmJnH2hcLuuQ3IpQKhL9ilXq7v7k6Qn
-         uxP+h0ogRAQr0g3dXWxTc0W7LVq2CnZ6kIasshgKM8Y8Ud+X9qTmDnE3pkfO1HShFdlh
-         D7Nqaol4mMSJmqe5AV0J4Q7jCkwOTfdh8jZWgGlZ1bDkl/t4zVzqu976yo1sjR7j9Nlj
-         Z7deritah/SYUll1aueI8kx7HLFWIJNdFLOKARggA/526fH5ffGW9eZ2iYVLfQJ9QP0a
-         Nbsg==
-X-Gm-Message-State: AOAM533NU9UcLqkzyr8ohbEY0dlXITXm+3Y+ue+NohBlzzp5TPDw82vi
-        /UfI5Wb2pTPCxevp+POOrh0=
-X-Google-Smtp-Source: ABdhPJz9LZKW904HHVRbLAq0sFpG2cZqClkGUXRXkRsgm8vb++oB89kwKb+RguehtMBSzk7BJYoa+g==
-X-Received: by 2002:a17:90b:3e84:: with SMTP id rj4mr11442560pjb.211.1631303011034;
-        Fri, 10 Sep 2021 12:43:31 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id 192sm5966040pfz.140.2021.09.10.12.43.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 12:43:30 -0700 (PDT)
-Message-ID: <d919813e-582f-08c9-0c3f-f6712d23f0d1@gmail.com>
-Date:   Fri, 10 Sep 2021 12:43:28 -0700
+        id S233116AbhIJTuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230489AbhIJTt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 15:49:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BED1611B0;
+        Fri, 10 Sep 2021 19:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631303327;
+        bh=WlKvndzneJd2e9JKCiQzIZcOsLW//thETeJFkvlCOyk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C9DBJNgXq2rUSme1cNWHgjKrMG5CMI5STZ/+mXmvvpRqLaFzL25CHNscZeLS32EtX
+         fsJ6bL6EIOIi600ewX3TFfiII2vGP7HSkLPPCmPlbWe4xaOLdk8RBmvDijaDsHfTBA
+         7VJ3ir8qGJikks64ZMuNqW/NwN3k3fdVUqG/rjMOUpnfjyYdMRfJodCWDwRJ9vr3gH
+         ktwMOZ00a4jFTn6StLEAIZzkJza21t85kdwMUta5BXV5/8L1POCRUSGhsVU4YpKAJK
+         DO2yOCjFEcc+2K50UWYRYmgPY4wS5ViFS9bCWKoe/IOGmvwy6dTu4ECa5EjBQZGPF0
+         Maqf6wEndtzjw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E3FC44038F; Fri, 10 Sep 2021 16:48:42 -0300 (-03)
+Date:   Fri, 10 Sep 2021 16:48:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Another bug: Re: [PATCH 0/3] perf report: Add support to print a
+ textual representation of IBS raw sample data
+Message-ID: <YTu2mu6a4lkx92ee@kernel.org>
+References: <20210817221509.88391-1-kim.phillips@amd.com>
+ <c4979e5c-13b8-0311-0660-355551ce45f2@amd.com>
+ <YTth5DLWGbyAzxvQ@kernel.org>
+ <YTtmwrZ6iy0TzG3l@kernel.org>
+ <YTtnpAcaCNYozoJF@kernel.org>
+ <YTto5xw/XSMuiGrG@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 5.13 00/22] 5.13.16-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210910122915.942645251@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTto5xw/XSMuiGrG@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+All the cross builds are failing:
 
-On 9/10/2021 5:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.16 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+  28     9.20 debian:experimental-x-arm64   : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+    util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+       12 | #include <asm/amd-ibs.h>
+          |          ^~~~~~~~~~~~~~~
+    compilation terminated.
+  29     7.29 debian:experimental-x-mips    : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+    util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+       12 | #include <asm/amd-ibs.h>
+          |          ^~~~~~~~~~~~~~~
+    compilation terminated.
+  30     8.50 debian:experimental-x-mips64  : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+    util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+       12 | #include <asm/amd-ibs.h>
+          |          ^~~~~~~~~~~~~~~
+    compilation terminated.
+  31     8.50 debian:experimental-x-mipsel  : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+    util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+       12 | #include <asm/amd-ibs.h>
+          |          ^~~~~~~~~~~~~~~
+    compilation terminated.
+  32    26.37 fedora:22                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.5.0 (tags/RELEASE_350/final)
+  33    66.13 fedora:23                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.7.0 (tags/RELEASE_370/final)
+  34    79.47 fedora:24                     : Ok   gcc (GCC) 6.3.1 20161221 (Red Hat 6.3.1-1) , clang version 3.8.1 (tags/RELEASE_381/final)
+  35     6.89 fedora:24-x-ARC-uClibc        : FAIL gcc version 7.1.1 20170710 (ARCompact ISA Linux uClibc toolchain 2017.09-rc2)
+    util/amd-sample-raw.c:12:10: fatal error: asm/amd-ibs.h: No such file or directory
+     #include <asm/amd-ibs.h>
+              ^~~~~~~~~~~~~~~
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
