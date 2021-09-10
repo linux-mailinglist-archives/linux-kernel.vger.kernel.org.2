@@ -2,388 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C864073B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6B34073B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhIJXOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58996 "EHLO mail.kernel.org"
+        id S234712AbhIJXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhIJXOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:14:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB392611F0;
-        Fri, 10 Sep 2021 23:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631315591;
-        bh=OFBF5WRw6gq2n+ISXnJ8iKjdcytMc1NAa1mukkXy5nE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hETRDApLgkyfld4vxGhtQKIXoztiGiPzunOuePtro5HWAJHV4u75NiqIdUigxIxhw
-         6S1QkAsrhlb1QFs+jvQrhF7nzcngvr11yL4gQ9N24v7Sl1TvFNSOfdDX5hJS6uCqiQ
-         PAQdSslnE078gBdmDGpgOkWXta55oy3tJbVmmLwfoL0M6Xzl17kH2XlPXNGEUKdWrp
-         MQ5LKBFhcbkUEoxnThNtJKc12FUSndE6BwV9W46BUctGqv8pE/d8WH9uUiGoP2fPa0
-         6OxZvnlqCjoXBcIY1Bbkxh52KPJAtUaKahNCdhgwSt/bQXZtmk3mqxuCuBgV8N55a/
-         bIlK0+cKyMVDg==
-Date:   Fri, 10 Sep 2021 16:13:09 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [PATCH v4] f2fs: introduce fragment allocation mode mount option
-Message-ID: <YTvmhVhLlBPeASHT@google.com>
-References: <20210902172404.3517626-1-daeho43@gmail.com>
+        id S231742AbhIJXOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:14:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 707CC611AD;
+        Fri, 10 Sep 2021 23:13:25 +0000 (UTC)
+Date:   Fri, 10 Sep 2021 19:13:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] tracing: Minor fixes to the bootconfig processing
+Message-ID: <20210910191324.217c2812@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902172404.3517626-1-daeho43@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Added three options into "mode=" mount option to make it possible for
-> developers to make the filesystem fragmented or simulate filesystem
-> fragmentation/after-GC situation itself. The developers use these modes
-> to understand filesystem fragmentation/after-GC condition well,
-> and eventually get some insights to handle them better.
-> 
-> "fragment:segment": f2fs allocates a new segment in ramdom position.
-> 		With this, we can simulate the after-GC condition.
-> "fragment:fixed_block" : We can scatter block allocation with
-> 		"fragment_chunk_size" and "fragment_hole_size" sysfs
-> 		nodes. f2fs will allocate <fragment_chunk_size> blocks
-> 		in a chunk and make a hole in the length of
-> 		<fragment_hole_size> by turns in a newly allocated free
-> 		segment.
 
-Wait. Why do we need to add so many options here? I was expecting to see
-performance difference when getting random segments or random blocks as
-an extreme case. I don't get the point why we need the middle of those cases.
+Linus,
 
-> "fragment:rand_block" : Working like "fragment:fixed_block" mode, but
-> 		added some randomness to both chunk and hole size. So,
-> 		f2fs will allocate 1..<fragment_chunk_size> blocks in a
-> 		chunk and make a hole in the nodes. f2fs will allocate
-> 		1..<fragment_chunk_size> blocks in a chunk and make a
-> 		hole in the length of 1..<fragment_hole_size> by turns
-> 		in a newly allocated free segment.
-> 		Plus, f2fs implicitly enables "fragment:segment" option
-> 		for more randomness in allocation in "fragment:rand_block".
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
-> v4: implicitly enabled "fragment:segment" option only in
->     "fragment:rand_block".
-> v3: divided "fragment:block" mode and fixed a race condition related to
->     making chunks.
-> v2: changed mode name and added sysfs nodes to control the fragmentation
->     pattern.
-> ---
->  Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++++++++++++
->  Documentation/filesystems/f2fs.rst      | 22 +++++++++++++++++++
->  fs/f2fs/f2fs.h                          | 20 +++++++++++++++--
->  fs/f2fs/gc.c                            |  5 ++++-
->  fs/f2fs/segment.c                       | 29 +++++++++++++++++++++++--
->  fs/f2fs/segment.h                       |  1 +
->  fs/f2fs/super.c                         | 14 ++++++++++++
->  fs/f2fs/sysfs.c                         | 20 +++++++++++++++++
->  8 files changed, 130 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-> index f627e705e663..d56ecfd16abf 100644
-> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> @@ -512,3 +512,27 @@ Date:		July 2021
->  Contact:	"Daeho Jeong" <daehojeong@google.com>
->  Description:	You can	control the multiplier value of	bdi device readahead window size
->  		between 2 (default) and 256 for POSIX_FADV_SEQUENTIAL advise option.
-> +
-> +What:		/sys/fs/f2fs/<disk>/fragment_chunk_size
-> +Date:		August 2021
-> +Contact:	"Daeho Jeong" <daehojeong@google.com>
-> +Description:	With "mode=fragment:fixed_block" and "mode=fragment:rand_block" mount options,
-> +		we can scatter block allocation. Using this node, in "fragment:fixed_block"
-> +		mode, f2fs will allocate <fragment_chunk_size> blocks in a chunk and make
-> +		a hole in the length of	<fragment_hole_size> by turns in a newly allocated
-> +		free segment. Plus, in "fragment:rand_block" mode, f2fs will allocate
-> +		1..<fragment_chunk_size> blocks in a chunk and make a hole in the length of
-> +		1..<fragment_hole_size> by turns. This value can be set between 1..512 and
-> +		the default value is 4.
-> +
-> +What:		/sys/fs/f2fs/<disk>/fragment_hole_size
-> +Date:		August 2021
-> +Contact:	"Daeho Jeong" <daehojeong@google.com>
-> +Description:	With "mode=fragment:fixed_block" and "mode=fragment:rand_block" mount options,
-> +		we can scatter block allocation. Using this node, in "fragment:fixed_block"
-> +		mode, f2fs will allocate <fragment_chunk_size> blocks in a chunk and make
-> +		a hole in the length of	<fragment_hole_size> by turns in a newly allocated
-> +		free segment. Plus, in "fragment:rand_block" mode, f2fs will allocate
-> +		1..<fragment_chunk_size> blocks in a chunk and make a hole in the length of
-> +		1..<fragment_hole_size> by turns. This value can be set between 1..512 and
-> +		the default value is 4.
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index 09de6ebbbdfa..04ddae8754cc 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -201,6 +201,28 @@ fault_type=%d		 Support configuring fault injection type, should be
->  mode=%s			 Control block allocation mode which supports "adaptive"
->  			 and "lfs". In "lfs" mode, there should be no random
->  			 writes towards main area.
-> +			 "fragment:segment", "fragment:fixed_block" and "fragment:rand_block"
-> +			 are newly added here. These are developer options for experiments
-> +			 to make the filesystem fragmented or simulate filesystem
-> +			 fragmentation/after-GC situation itself. The developers use these
-> +			 modes to understand filesystem fragmentation/after-GC condition well,
-> +			 and eventually get some insights to handle them better.
-> +			 In "fragment:segment", f2fs allocates a new segment in ramdom
-> +			 position. With this, we can simulate the after-GC condition.
-> +			 In "fragment:fixed_block" and "fragment:rand_block", we can scatter
-> +			 block allocation with "fragment_chunk_size" and "fragment_hole_size"
-> +			 sysfs nodes. In "fragment:fixed_block" mode, f2fs will allocate
-> +			 <fragment_chunk_size> blocks in a chunk and make a hole in the length
-> +			 of <fragment_hole_size> by turns in a newly allocated free segment.
-> +			 But, in "fragment:rand_block" mode, f2fs adds some randomness to
-> +			 both chunk and hole size. So, f2fs will allocate
-> +			 1..<fragment_chunk_size> blocks in a chunk and make a hole in the
-> +			 length of 1..<fragment_hole_size> by turns. With these, the newly
-> +			 allocated blocks will be scattered throughout the whole partition.
-> +			 Plus, f2fs implicitly enables "fragment:segment" option for more
-> +			 randomness in allocation in "fragment:rand_block".
-> +			 Please, use these options for your experiments and we strongly
-> +			 recommend to re-format the filesystem after using these options.
->  io_bits=%u		 Set the bit size of write IO requests. It should be set
->  			 with "mode=lfs".
->  usrquota		 Enable plain user disk quota accounting.
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index c24f03e054cb..f9aa00b92222 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1285,8 +1285,11 @@ enum {
->  };
->  
->  enum {
-> -	FS_MODE_ADAPTIVE,	/* use both lfs/ssr allocation */
-> -	FS_MODE_LFS,		/* use lfs allocation only */
-> +	FS_MODE_ADAPTIVE,		/* use both lfs/ssr allocation */
-> +	FS_MODE_LFS,			/* use lfs allocation only */
-> +	FS_MODE_FRAGMENT_SEG,		/* segment fragmentation mode */
-> +	FS_MODE_FRAGMENT_FIXED_BLK,	/* fixed block fragmentation mode */
-> +	FS_MODE_FRAGMENT_RAND_BLK,	/* randomized block fragmentation mode */
->  };
->  
->  enum {
-> @@ -1757,6 +1760,9 @@ struct f2fs_sb_info {
->  
->  	unsigned long seq_file_ra_mul;		/* multiplier for ra_pages of seq. files in fadvise */
->  
-> +	int fragment_chunk_size;		/* the chunk size for block fragmentation mode */
-> +	int fragment_hole_size;			/* the hole size for block fragmentation mode */
-> +
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
->  	struct kmem_cache *page_array_slab;	/* page array entry */
->  	unsigned int page_array_slab_size;	/* default page array slab size */
-> @@ -3517,6 +3523,16 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
->  unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
->  			unsigned int segno);
->  
-> +#define DEF_FRAGMENT_SIZE	4
-> +#define MIN_FRAGMENT_SIZE	1
-> +#define MAX_FRAGMENT_SIZE	512
-> +
-> +static inline bool f2fs_need_rand_seg(struct f2fs_sb_info *sbi)
-> +{
-> +	return F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_SEG ||
-> +		F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_RAND_BLK;
-> +}
-> +
->  /*
->   * checkpoint.c
->   */
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index 2c18443972b6..72cfad99bbbe 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -14,6 +14,7 @@
->  #include <linux/delay.h>
->  #include <linux/freezer.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/random.h>
->  
->  #include "f2fs.h"
->  #include "node.h"
-> @@ -257,7 +258,9 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
->  		p->max_search = sbi->max_victim_search;
->  
->  	/* let's select beginning hot/small space first in no_heap mode*/
-> -	if (test_opt(sbi, NOHEAP) &&
-> +	if (f2fs_need_rand_seg(sbi))
-> +		p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
-> +	else if (test_opt(sbi, NOHEAP) &&
->  		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
->  		p->offset = 0;
->  	else
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index a135d2247415..954c06728b94 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -15,6 +15,7 @@
->  #include <linux/timer.h>
->  #include <linux/freezer.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/random.h>
->  
->  #include "f2fs.h"
->  #include "segment.h"
-> @@ -2630,6 +2631,8 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
->  	unsigned short seg_type = curseg->seg_type;
->  
->  	sanity_check_seg_type(sbi, seg_type);
-> +	if (f2fs_need_rand_seg(sbi))
-> +		return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
->  
->  	/* if segs_per_sec is large than 1, we need to keep original policy. */
->  	if (__is_large_section(sbi))
-> @@ -2681,6 +2684,11 @@ static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
->  	curseg->next_segno = segno;
->  	reset_curseg(sbi, type, 1);
->  	curseg->alloc_type = LFS;
-> +	if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_FIXED_BLK)
-> +		curseg->fragment_remained_chunk = sbi->fragment_chunk_size;
-> +	else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_RAND_BLK)
-> +		curseg->fragment_remained_chunk =
-> +				prandom_u32() % sbi->fragment_chunk_size + 1;
->  }
->  
->  static int __next_free_blkoff(struct f2fs_sb_info *sbi,
-> @@ -2707,12 +2715,29 @@ static int __next_free_blkoff(struct f2fs_sb_info *sbi,
->  static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
->  				struct curseg_info *seg)
->  {
-> -	if (seg->alloc_type == SSR)
-> +	if (seg->alloc_type == SSR) {
->  		seg->next_blkoff =
->  			__next_free_blkoff(sbi, seg->segno,
->  						seg->next_blkoff + 1);
-> -	else
-> +	} else {
->  		seg->next_blkoff++;
-> +		if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_FIXED_BLK) {
-> +			if (--seg->fragment_remained_chunk <= 0) {
-> +				seg->fragment_remained_chunk =
-> +				   sbi->fragment_chunk_size;
-> +				seg->next_blkoff +=
-> +				   sbi->fragment_hole_size;
-> +			}
-> +		} else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_RAND_BLK) {
-> +			/* To allocate block chunks in different sizes, use random number */
-> +			if (--seg->fragment_remained_chunk <= 0) {
-> +				seg->fragment_remained_chunk =
-> +				   prandom_u32() % sbi->fragment_chunk_size + 1;
-> +				seg->next_blkoff +=
-> +				   prandom_u32() % sbi->fragment_hole_size + 1;
-> +			}
-> +		}
-> +	}
->  }
->  
->  bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
-> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> index 89fff258727d..46fde9f3f28e 100644
-> --- a/fs/f2fs/segment.h
-> +++ b/fs/f2fs/segment.h
-> @@ -314,6 +314,7 @@ struct curseg_info {
->  	unsigned short next_blkoff;		/* next block offset to write */
->  	unsigned int zone;			/* current zone number */
->  	unsigned int next_segno;		/* preallocated segment */
-> +	int fragment_remained_chunk;		/* remained block size in a chunk for block fragmentation mode */
->  	bool inited;				/* indicate inmem log is inited */
->  };
->  
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 49e153fd8183..60067b6d9fea 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -817,6 +817,12 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  				F2FS_OPTION(sbi).fs_mode = FS_MODE_ADAPTIVE;
->  			} else if (!strcmp(name, "lfs")) {
->  				F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
-> +			} else if (!strcmp(name, "fragment:segment")) {
-> +				F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_SEG;
-> +			} else if (!strcmp(name, "fragment:fixed_block")) {
-> +				F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK;
-> +			} else if (!strcmp(name, "fragment:rand_block")) {
-> +				F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_RAND_BLK;
->  			} else {
->  				kfree(name);
->  				return -EINVAL;
-> @@ -1897,6 +1903,12 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->  		seq_puts(seq, "adaptive");
->  	else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS)
->  		seq_puts(seq, "lfs");
-> +	else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_SEG)
-> +		seq_puts(seq, "fragment:segment");
-> +	else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_FIXED_BLK)
-> +		seq_puts(seq, "fragment:fixed_block");
-> +	else if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_RAND_BLK)
-> +		seq_puts(seq, "fragment:rand_block");
->  	seq_printf(seq, ",active_logs=%u", F2FS_OPTION(sbi).active_logs);
->  	if (test_opt(sbi, RESERVE_ROOT))
->  		seq_printf(seq, ",reserve_root=%u,resuid=%u,resgid=%u",
-> @@ -3515,6 +3527,8 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
->  	sbi->max_victim_search = DEF_MAX_VICTIM_SEARCH;
->  	sbi->migration_granularity = sbi->segs_per_sec;
->  	sbi->seq_file_ra_mul = MIN_RA_MUL;
-> +	sbi->fragment_chunk_size = DEF_FRAGMENT_SIZE;
-> +	sbi->fragment_hole_size = DEF_FRAGMENT_SIZE;
->  
->  	sbi->dir_level = DEF_DIR_LEVEL;
->  	sbi->interval_time[CP_TIME] = DEF_CP_INTERVAL;
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index a1a3e0f6d658..ab34b3c2e09d 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -551,6 +551,22 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
->  		return count;
->  	}
->  
-> +	if (!strcmp(a->attr.name, "fragment_chunk_size")) {
-> +		if (t >= MIN_FRAGMENT_SIZE && t <= MAX_FRAGMENT_SIZE)
-> +			sbi->fragment_chunk_size = t;
-> +		else
-> +			return -EINVAL;
-> +		return count;
-> +	}
-> +
-> +	if (!strcmp(a->attr.name, "fragment_hole_size")) {
-> +		if (t >= MIN_FRAGMENT_SIZE && t <= MAX_FRAGMENT_SIZE)
-> +			sbi->fragment_hole_size = t;
-> +		else
-> +			return -EINVAL;
-> +		return count;
-> +	}
-> +
->  	*ui = (unsigned int)t;
->  
->  	return count;
-> @@ -781,6 +797,8 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
->  F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, seq_file_ra_mul, seq_file_ra_mul);
->  F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_segment_mode, gc_segment_mode);
->  F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_reclaimed_segments, gc_reclaimed_segs);
-> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, fragment_chunk_size, fragment_chunk_size);
-> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, fragment_hole_size, fragment_hole_size);
->  
->  #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
->  static struct attribute *f2fs_attrs[] = {
-> @@ -859,6 +877,8 @@ static struct attribute *f2fs_attrs[] = {
->  	ATTR_LIST(seq_file_ra_mul),
->  	ATTR_LIST(gc_segment_mode),
->  	ATTR_LIST(gc_reclaimed_segments),
-> +	ATTR_LIST(fragment_chunk_size),
-> +	ATTR_LIST(fragment_hole_size),
->  	NULL,
->  };
->  ATTRIBUTE_GROUPS(f2fs);
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
+Minor fixes to the processing of the bootconfig tree.
+
+
+Please pull the latest trace-v5.15-3 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.15-3
+
+Tag SHA1: 38cd35cdd85430a99c001ef2bbf9077f125b07db
+Head SHA1: 5dfe50b05588010f347cb2f436434bf22b7a84ed
+
+
+Masami Hiramatsu (3):
+      tracing/boot: Fix trace_boot_hist_add_array() to check array is value
+      tracing/boot: Fix to check the histogram control param is a leaf node
+      bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
+
+----
+ include/linux/bootconfig.h |  4 ++--
+ kernel/trace/trace_boot.c  | 37 ++++++++++++++++++-------------------
+ lib/bootconfig.c           |  8 ++++----
+ 3 files changed, 24 insertions(+), 25 deletions(-)
+---------------------------
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index abe089c27529..537e1b991f11 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -110,7 +110,7 @@ static inline __init bool xbc_node_is_leaf(struct xbc_node *node)
+ }
+ 
+ /* Tree-based key-value access APIs */
+-struct xbc_node * __init xbc_node_find_child(struct xbc_node *parent,
++struct xbc_node * __init xbc_node_find_subkey(struct xbc_node *parent,
+ 					     const char *key);
+ 
+ const char * __init xbc_node_find_value(struct xbc_node *parent,
+@@ -148,7 +148,7 @@ xbc_find_value(const char *key, struct xbc_node **vnode)
+  */
+ static inline struct xbc_node * __init xbc_find_node(const char *key)
+ {
+-	return xbc_node_find_child(NULL, key);
++	return xbc_node_find_subkey(NULL, key);
+ }
+ 
+ /**
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 388e65d05978..8d252f63cd78 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -219,13 +219,12 @@ static int __init
+ trace_boot_hist_add_array(struct xbc_node *hnode, char **bufp,
+ 			  char *end, const char *key)
+ {
+-	struct xbc_node *knode, *anode;
++	struct xbc_node *anode;
+ 	const char *p;
+ 	char sep;
+ 
+-	knode = xbc_node_find_child(hnode, key);
+-	if (knode) {
+-		anode = xbc_node_get_child(knode);
++	p = xbc_node_find_value(hnode, key, &anode);
++	if (p) {
+ 		if (!anode) {
+ 			pr_err("hist.%s requires value(s).\n", key);
+ 			return -EINVAL;
+@@ -263,9 +262,9 @@ trace_boot_hist_add_one_handler(struct xbc_node *hnode, char **bufp,
+ 	append_printf(bufp, end, ":%s(%s)", handler, p);
+ 
+ 	/* Compose 'action' parameter */
+-	knode = xbc_node_find_child(hnode, "trace");
++	knode = xbc_node_find_subkey(hnode, "trace");
+ 	if (!knode)
+-		knode = xbc_node_find_child(hnode, "save");
++		knode = xbc_node_find_subkey(hnode, "save");
+ 
+ 	if (knode) {
+ 		anode = xbc_node_get_child(knode);
+@@ -284,7 +283,7 @@ trace_boot_hist_add_one_handler(struct xbc_node *hnode, char **bufp,
+ 				sep = ',';
+ 		}
+ 		append_printf(bufp, end, ")");
+-	} else if (xbc_node_find_child(hnode, "snapshot")) {
++	} else if (xbc_node_find_subkey(hnode, "snapshot")) {
+ 		append_printf(bufp, end, ".snapshot()");
+ 	} else {
+ 		pr_err("hist.%s requires an action.\n",
+@@ -315,7 +314,7 @@ trace_boot_hist_add_handlers(struct xbc_node *hnode, char **bufp,
+ 			break;
+ 	}
+ 
+-	if (xbc_node_find_child(hnode, param))
++	if (xbc_node_find_subkey(hnode, param))
+ 		ret = trace_boot_hist_add_one_handler(hnode, bufp, end, handler, param);
+ 
+ 	return ret;
+@@ -375,7 +374,7 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
+ 	if (p)
+ 		append_printf(&buf, end, ":name=%s", p);
+ 
+-	node = xbc_node_find_child(hnode, "var");
++	node = xbc_node_find_subkey(hnode, "var");
+ 	if (node) {
+ 		xbc_node_for_each_key_value(node, knode, p) {
+ 			/* Expression must not include spaces. */
+@@ -386,21 +385,21 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
+ 	}
+ 
+ 	/* Histogram control attributes (mutual exclusive) */
+-	if (xbc_node_find_child(hnode, "pause"))
++	if (xbc_node_find_value(hnode, "pause", NULL))
+ 		append_printf(&buf, end, ":pause");
+-	else if (xbc_node_find_child(hnode, "continue"))
++	else if (xbc_node_find_value(hnode, "continue", NULL))
+ 		append_printf(&buf, end, ":continue");
+-	else if (xbc_node_find_child(hnode, "clear"))
++	else if (xbc_node_find_value(hnode, "clear", NULL))
+ 		append_printf(&buf, end, ":clear");
+ 
+ 	/* Histogram handler and actions */
+-	node = xbc_node_find_child(hnode, "onmax");
++	node = xbc_node_find_subkey(hnode, "onmax");
+ 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
+ 		return -EINVAL;
+-	node = xbc_node_find_child(hnode, "onchange");
++	node = xbc_node_find_subkey(hnode, "onchange");
+ 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
+ 		return -EINVAL;
+-	node = xbc_node_find_child(hnode, "onmatch");
++	node = xbc_node_find_subkey(hnode, "onmatch");
+ 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "event") < 0)
+ 		return -EINVAL;
+ 
+@@ -437,7 +436,7 @@ trace_boot_init_histograms(struct trace_event_file *file,
+ 		}
+ 	}
+ 
+-	if (xbc_node_find_child(hnode, "keys")) {
++	if (xbc_node_find_subkey(hnode, "keys")) {
+ 		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0) {
+ 			tmp = kstrdup(buf, GFP_KERNEL);
+ 			if (trigger_process_regex(file, buf) < 0)
+@@ -496,7 +495,7 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
+ 			else if (trigger_process_regex(file, buf) < 0)
+ 				pr_err("Failed to apply an action: %s\n", p);
+ 		}
+-		anode = xbc_node_find_child(enode, "hist");
++		anode = xbc_node_find_subkey(enode, "hist");
+ 		if (anode)
+ 			trace_boot_init_histograms(file, anode, buf, ARRAY_SIZE(buf));
+ 	} else if (xbc_node_find_value(enode, "actions", NULL))
+@@ -518,7 +517,7 @@ trace_boot_init_events(struct trace_array *tr, struct xbc_node *node)
+ 	bool enable, enable_all = false;
+ 	const char *data;
+ 
+-	node = xbc_node_find_child(node, "event");
++	node = xbc_node_find_subkey(node, "event");
+ 	if (!node)
+ 		return;
+ 	/* per-event key starts with "event.GROUP.EVENT" */
+@@ -621,7 +620,7 @@ trace_boot_init_instances(struct xbc_node *node)
+ 	struct trace_array *tr;
+ 	const char *p;
+ 
+-	node = xbc_node_find_child(node, "instance");
++	node = xbc_node_find_subkey(node, "instance");
+ 	if (!node)
+ 		return;
+ 
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index 927017431fb6..f8419cff1147 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -142,16 +142,16 @@ xbc_node_match_prefix(struct xbc_node *node, const char **prefix)
+ }
+ 
+ /**
+- * xbc_node_find_child() - Find a child node which matches given key
++ * xbc_node_find_subkey() - Find a subkey node which matches given key
+  * @parent: An XBC node.
+  * @key: A key string.
+  *
+- * Search a node under @parent which matches @key. The @key can contain
++ * Search a key node under @parent which matches @key. The @key can contain
+  * several words jointed with '.'. If @parent is NULL, this searches the
+  * node from whole tree. Return NULL if no node is matched.
+  */
+ struct xbc_node * __init
+-xbc_node_find_child(struct xbc_node *parent, const char *key)
++xbc_node_find_subkey(struct xbc_node *parent, const char *key)
+ {
+ 	struct xbc_node *node;
+ 
+@@ -191,7 +191,7 @@ const char * __init
+ xbc_node_find_value(struct xbc_node *parent, const char *key,
+ 		    struct xbc_node **vnode)
+ {
+-	struct xbc_node *node = xbc_node_find_child(parent, key);
++	struct xbc_node *node = xbc_node_find_subkey(parent, key);
+ 
+ 	if (!node || !xbc_node_is_key(node))
+ 		return NULL;
