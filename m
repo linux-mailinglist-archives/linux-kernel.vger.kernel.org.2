@@ -2,326 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7391E406F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E76406EDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhIJQLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbhIJQJj (ORCPT
+        id S232883AbhIJQIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:08:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57428 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229972AbhIJQHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:09:39 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A62AC06139F
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:06:27 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id a15so2978141iot.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/3V2asYgEL3IE7mdskqpgHQZ4oGGrM9O3oWQARXZJX8=;
-        b=HIjCu36ckpson0cUVfNHptlBNTsv81dBc5K/3SNUPKS1dLPAxX+G+Tvl/XTAVTkfbX
-         GOlsFa+/89uxxKZEIkppbJA0uTOkLzZHsGNkn24F1L7JqHRQBGO7C0wnMjA0oIBwhso+
-         1W0Xl/GJaIkq92imBG+cZZdNHLxWchbsHNMERmi3CNebtGvBFAt4N9Lo16wnD78chlvA
-         4WhppEWsp8it46Jxxv4zV+No/qH4pJnKATCBZq6HmSo34+S64j5vat9swUro0aAZnCAz
-         7OqXTqHwcMT6sV0pqQCfnrv5bHemasGZ1idhqAj1i1/m+RUPSoNLu0ukQFR19YsA5pOe
-         K9cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/3V2asYgEL3IE7mdskqpgHQZ4oGGrM9O3oWQARXZJX8=;
-        b=fDJ50tSUSojvtczHexCtFr32FtxrYIrdaBQPo0N+vSqTe8iz9L/8gGE7ZASqFlvm+e
-         3gbc/xV7rYnYZm3LetBCrq5WLkyMy4PHEaCN9ipxpHS6FDSEmBCvItNWB5J2FHkHaYs9
-         3E/0ec3EAutdtQeCLOngnSJJIBxRy4P+dabJPB/jb03pZSBLS/9YY5Oij7emqvvNY7pf
-         o6QgGpHNN1T+aE+yEJRZ39dPvqDL2xN/h84fxdGPL6D6Tx7zpH+nzS9olAL6p+EwGRHE
-         As48xq+CRYGa5XcchJmm2syoWeZxFJ4E1EEzgVw79cDgudlpzUJBeUZPUkIr3E/q0sdp
-         HL2A==
-X-Gm-Message-State: AOAM532eZySVBWKmCQ46YJ25humgqDOSDWmj/BTbw85M2wit/5yRmD0v
-        CsV76fojpFyR8RvXP4SzEPAmjQ==
-X-Google-Smtp-Source: ABdhPJwl4SWp8hlYVyStkdT3piQw4dgF0sMX6zBsoiIi3AnjHUggyeDOkkfkI99vY816jpRcPlCztw==
-X-Received: by 2002:a6b:3e89:: with SMTP id l131mr7794490ioa.74.1631289986259;
-        Fri, 10 Sep 2021 09:06:26 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id x12sm2683824ilm.56.2021.09.10.09.06.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 09:06:25 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
-Message-ID: <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
-Date:   Fri, 10 Sep 2021 10:06:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Sep 2021 12:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631289999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7FIHzSBbNjLJLP/TbCUVl6AXA2FHU6lfKWV0UxZklGM=;
+        b=X0lfDnCD4W+4syNY77bF9RZJzDdv1+byq3L0+IgpmKluOjkU2MMzyROJQESQlAHbFlQJDK
+        KCkV4EqeO4cpQq0WnSU937b6thuhQf2E1CwX2dy/fFNewr75Ft4NL/VJftpOfIj8E3puak
+        w+AO0/NJiLiDW2IUcThmkpodRcw6pW0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-YM_DiuZvPb2ae_oT8K4kgA-1; Fri, 10 Sep 2021 12:06:38 -0400
+X-MC-Unique: YM_DiuZvPb2ae_oT8K4kgA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65C14101F000;
+        Fri, 10 Sep 2021 16:06:37 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.192.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CB205C1A1;
+        Fri, 10 Sep 2021 16:06:35 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] KVM: nVMX: Enlightened MSR Bitmap feature for Hyper-V on KVM
+Date:   Fri, 10 Sep 2021 18:06:29 +0200
+Message-Id: <20210910160633.451250-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 9:04 AM, Jens Axboe wrote:
-> We could pretty this up and have the state part be explicit in iov_iter,
-> and have the store/restore parts end up in uio.h. That'd tie them closer
-> together, though I don't expect iov_iter changes to be an issue. It
-> would make it more maintainable, though. I'll try and hack up this
-> generic solution, see if that looks any better.
+Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
+offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
+inform L0 when it changes MSR bitmap, this eliminates the need to examine
+L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
+constructed.
 
-Looks something like this. Not super pretty in terms of needing a define
-for this, and maybe I'm missing something, but ideally we'd want it as
-an anonymous struct that's defined inside iov_iter. Anyway, gets the
-point across. Alternatively, since we're down to just a few members now,
-we just duplicate them in each struct...
+When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
+cycles from a nested vmexit cost (tight cpuid loop test).
 
-Would be split into two patches, one for the iov_state addition and
-the save/restore helpers, and then one switching io_uring to use them.
-Figured we'd need some agreement on this first...
+First patch of the series is unrelated to the newly implemented feature,
+it fixes a bug in Enlightened MSR Bitmap usage when KVM runs as a nested
+hypervisor on top of Hyper-V.
 
+Vitaly Kuznetsov (4):
+  KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
+  KVM: VMX: Introduce vmx_msr_bitmap_l01_changed() helper
+  KVM: nVMX: Track whether changes in L0 require MSR bitmap for L2 to be
+    rebuilt
+  KVM: nVMX: Implement Enlightened MSR Bitmap feature
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 855ea544807f..539c94299d64 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2608,8 +2608,6 @@ static bool io_resubmit_prep(struct io_kiocb *req)
- 
- 	if (!rw)
- 		return !io_req_prep_async(req);
--	/* may have left rw->iter inconsistent on -EIOCBQUEUED */
--	iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
- 	return true;
- }
- 
-@@ -3431,14 +3429,23 @@ static bool need_read_all(struct io_kiocb *req)
- 		S_ISBLK(file_inode(req->file)->i_mode);
- }
- 
-+static void io_iter_restore(struct iov_iter *iter, struct iov_iter_state *state,
-+			    ssize_t did_bytes)
-+{
-+	iov_iter_restore_state(iter, state);
-+	if (did_bytes > 0)
-+		iov_iter_advance(iter, did_bytes);
-+}
-+
- static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- {
- 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
- 	struct kiocb *kiocb = &req->rw.kiocb;
- 	struct iov_iter __iter, *iter = &__iter;
- 	struct io_async_rw *rw = req->async_data;
--	ssize_t io_size, ret, ret2;
- 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
-+	struct iov_iter_state state;
-+	ssize_t ret, ret2;
- 
- 	if (rw) {
- 		iter = &rw->iter;
-@@ -3448,8 +3455,8 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 		if (ret < 0)
- 			return ret;
- 	}
--	io_size = iov_iter_count(iter);
--	req->result = io_size;
-+	req->result = iov_iter_count(iter);
-+	iov_iter_save_state(iter, &state);
- 
- 	/* Ensure we clear previously set non-block flag */
- 	if (!force_nonblock)
-@@ -3463,7 +3470,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 		return ret ?: -EAGAIN;
- 	}
- 
--	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), io_size);
-+	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), state.count);
- 	if (unlikely(ret)) {
- 		kfree(iovec);
- 		return ret;
-@@ -3479,18 +3486,17 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 		/* no retry on NONBLOCK nor RWF_NOWAIT */
- 		if (req->flags & REQ_F_NOWAIT)
- 			goto done;
--		/* some cases will consume bytes even on error returns */
--		iov_iter_reexpand(iter, iter->count + iter->truncated);
--		iov_iter_revert(iter, io_size - iov_iter_count(iter));
- 		ret = 0;
- 	} else if (ret == -EIOCBQUEUED) {
- 		goto out_free;
--	} else if (ret <= 0 || ret == io_size || !force_nonblock ||
-+	} else if (ret <= 0 || ret == state.count || !force_nonblock ||
- 		   (req->flags & REQ_F_NOWAIT) || !need_read_all(req)) {
- 		/* read all, failed, already did sync or don't want to retry */
- 		goto done;
- 	}
- 
-+	io_iter_restore(iter, &state, ret);
-+
- 	ret2 = io_setup_async_rw(req, iovec, inline_vecs, iter, true);
- 	if (ret2)
- 		return ret2;
-@@ -3501,7 +3507,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 	iter = &rw->iter;
- 
- 	do {
--		io_size -= ret;
-+		state.count -= ret;
- 		rw->bytes_done += ret;
- 		/* if we can retry, do so with the callbacks armed */
- 		if (!io_rw_should_retry(req)) {
-@@ -3520,7 +3526,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 			return 0;
- 		/* we got some bytes, but not all. retry. */
- 		kiocb->ki_flags &= ~IOCB_WAITQ;
--	} while (ret > 0 && ret < io_size);
-+	} while (ret > 0 && ret < state.count);
- done:
- 	kiocb_done(kiocb, ret, issue_flags);
- out_free:
-@@ -3543,8 +3549,9 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 	struct kiocb *kiocb = &req->rw.kiocb;
- 	struct iov_iter __iter, *iter = &__iter;
- 	struct io_async_rw *rw = req->async_data;
--	ssize_t ret, ret2, io_size;
- 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
-+	struct iov_iter_state state;
-+	ssize_t ret, ret2;
- 
- 	if (rw) {
- 		iter = &rw->iter;
-@@ -3554,8 +3561,9 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 		if (ret < 0)
- 			return ret;
- 	}
--	io_size = iov_iter_count(iter);
--	req->result = io_size;
-+	req->result = iov_iter_count(iter);
-+	iov_iter_save_state(iter, &state);
-+	ret2 = 0;
- 
- 	/* Ensure we clear previously set non-block flag */
- 	if (!force_nonblock)
-@@ -3572,7 +3580,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 	    (req->flags & REQ_F_ISREG))
- 		goto copy_iov;
- 
--	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), io_size);
-+	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), state.count);
- 	if (unlikely(ret))
- 		goto out_free;
- 
-@@ -3619,9 +3627,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 		kiocb_done(kiocb, ret2, issue_flags);
- 	} else {
- copy_iov:
--		/* some cases will consume bytes even on error returns */
--		iov_iter_reexpand(iter, iter->count + iter->truncated);
--		iov_iter_revert(iter, io_size - iov_iter_count(iter));
-+		io_iter_restore(iter, &state, ret2);
- 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
- 		return ret ?: -EAGAIN;
- 	}
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 5265024e8b90..4f9d483096cd 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -27,11 +27,25 @@ enum iter_type {
- 	ITER_DISCARD,
- };
- 
-+#define IOV_ITER_STATE					\
-+	size_t iov_offset;				\
-+	size_t count;					\
-+	union {						\
-+		unsigned long nr_segs;			\
-+		struct {				\
-+			unsigned int head;		\
-+			unsigned int start_head;	\
-+		};					\
-+		loff_t xarray_start;			\
-+	};						\
-+
-+struct iov_iter_state {
-+	IOV_ITER_STATE;
-+};
-+
- struct iov_iter {
- 	u8 iter_type;
- 	bool data_source;
--	size_t iov_offset;
--	size_t count;
- 	union {
- 		const struct iovec *iov;
- 		const struct kvec *kvec;
-@@ -40,12 +54,10 @@ struct iov_iter {
- 		struct pipe_inode_info *pipe;
- 	};
- 	union {
--		unsigned long nr_segs;
-+		struct iov_iter_state state;
- 		struct {
--			unsigned int head;
--			unsigned int start_head;
-+			IOV_ITER_STATE;
- 		};
--		loff_t xarray_start;
- 	};
- 	size_t truncated;
- };
-@@ -55,6 +67,33 @@ static inline enum iter_type iov_iter_type(const struct iov_iter *i)
- 	return i->iter_type;
- }
- 
-+static inline void iov_iter_save_state(struct iov_iter *iter,
-+				       struct iov_iter_state *state)
-+{
-+	*state = iter->state;
-+}
-+
-+static inline void iov_iter_restore_state(struct iov_iter *iter,
-+					  struct iov_iter_state *state)
-+{
-+	iter->iov_offset = state->iov_offset;
-+	iter->count = state->count;
-+
-+	switch (iov_iter_type(iter)) {
-+	case ITER_IOVEC:
-+	case ITER_KVEC:
-+	case ITER_BVEC:
-+		iter->iov -= state->nr_segs - iter->nr_segs;
-+		fallthrough;
-+	case ITER_PIPE:
-+	case ITER_XARRAY:
-+		iter->nr_segs = state->nr_segs;
-+		break;
-+	case ITER_DISCARD:
-+		break;
-+	}
-+}
-+
- static inline bool iter_is_iovec(const struct iov_iter *i)
- {
- 	return iov_iter_type(i) == ITER_IOVEC;
+ arch/x86/kvm/hyperv.c     |  2 ++
+ arch/x86/kvm/vmx/nested.c | 28 +++++++++++++++++++++++---
+ arch/x86/kvm/vmx/vmx.c    | 41 ++++++++++++++++++++++++++-------------
+ arch/x86/kvm/vmx/vmx.h    |  6 ++++++
+ 4 files changed, 61 insertions(+), 16 deletions(-)
 
 -- 
-Jens Axboe
+2.31.1
 
