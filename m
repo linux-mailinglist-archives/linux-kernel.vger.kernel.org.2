@@ -2,222 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE7C407261
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDB4407263
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 22:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbhIJUUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 16:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233384AbhIJUU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 16:20:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D53566101A;
-        Fri, 10 Sep 2021 20:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631305157;
-        bh=5vbmB0dZmdFG20fTrApAHJUla4KGwvWUSAg/yHG90uk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pAvbY8PCJ1x/76aGPDy1xRxrnPAiBa7J0Ln5+AVr1XOe13b6dedFhG/j5L6Jzjwap
-         tkZyuX4YlJqFZRvXNGDJ2TLJgaWf+Dh+CFsHvDPyZffbz1KYEk98ZqFoysq0l9FrN/
-         Eu6/dkRX7EVwc1KbGPK+A0i7R3stV4ckKuIul7UCyTvLKavXs2wzf09ih4iBCdaQL7
-         6hjl8sxAhbBjdlKi9Jl/pVisKtSsVFrvnBcfZZMFSaxBC9bhrAymer8YyewrDKrsRV
-         CeleuXYz6p2+db+aFauinFXrWOF0hWa7d4Xz/BLzqPezT3MRkNqti4hBvqsEyxFk3V
-         cbYIa/IQanNww==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bfields@fieldses.org,
-        viro@zeniv.linux.org.uk, Matthew Wilcox <willy@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] locks: remove LOCK_MAND flock lock support
-Date:   Fri, 10 Sep 2021 16:19:15 -0400
-Message-Id: <20210910201915.95170-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S233641AbhIJUU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 16:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhIJUU5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 16:20:57 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66044C061574;
+        Fri, 10 Sep 2021 13:19:46 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id bg1so1858868plb.13;
+        Fri, 10 Sep 2021 13:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=y/gZSR8qkoQo9P9xvHcf3mSQUvxlAlQxXPeEFN7ETGk=;
+        b=Fy5CAolk0RZE6VracL2Mw62YYTxNaYa18v+5gcCmCailBMnv5+U+vrps2mFNNGNFoc
+         dYAZWY0WaGyOLISIifwUgNDLIs83AzsgC4iZL+Y7KNtS71danS7ie22qz5mbCfOQDDk4
+         D+UBUw++JvhXRFGZtVaw08kT29DWSD7BjBwcUOc76cRhuN4TE19K2wOJ/qTItAKX+WvA
+         /i/dcrKodo+3qvclcZbBgLcMrseJUa/Q4anF27jLxtBw89QmnINTjnS7ZJ7hsMtbJXDB
+         7BCpteP8WLLo+MeUXlUe7g7+Mn27ihZBk3CKWvlgtriC0dyyga18c3saTZhwljYDVg8e
+         GuHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=y/gZSR8qkoQo9P9xvHcf3mSQUvxlAlQxXPeEFN7ETGk=;
+        b=6de5SrkL+woQPRimNlzlEnIcthP+Rsy6CccskNQDaHJErMSdBEaGkBeXOT7auOB1Q+
+         oF7S0+LfKJ7LKQqvOGAr61J+3s00tpybaSt/2KoZySorwEUCSNbE2vwuM1ty8a1vX6Yo
+         WIFJGGaoS0LHHgJk4/9Ilyb6cURm1YRErqEY7e8GCSWJ53AJ1NBsonHZoKSz6U7uFacL
+         8Na6mD9/QC/JrmLQK581AA1DhcGYEi+Z50eFO4ewf79rLXfKzv/AqTYcTcEVMKRIJzRV
+         8KxmN6I3HDmDeTYLnLNgbc+YILjK4Ro8pnBAyzCGTM2Jnp3Gte0bvMAxwAg+7xUd/sN5
+         dfhA==
+X-Gm-Message-State: AOAM531BfcSQGzdRm13E2jhWtXTiUuj10/dp62xwVVQt951pkcQ3DlRD
+        d4WUb3xgAOWXqqt6MnzO5/NhV7Cf5JQ=
+X-Google-Smtp-Source: ABdhPJz0/DDLpI8Eo5MbH/LxQhG1mu/BcBtDSxe42sOenaLF67nLPI4/N04uKW4qWD1uQ3L6piyaLQ==
+X-Received: by 2002:a17:90a:1282:: with SMTP id g2mr11343648pja.230.1631305185877;
+        Fri, 10 Sep 2021 13:19:45 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id v25sm5538823pfm.202.2021.09.10.13.19.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 13:19:45 -0700 (PDT)
+Message-ID: <4723bf26-2795-dfd7-b00f-2a6ae1d8b4ee@gmail.com>
+Date:   Fri, 10 Sep 2021 13:19:40 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 5.14 00/23] 5.14.3-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210910122916.022815161@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As best I can tell, the logic for these has been broken for a long time
-(at least before the move to git), such that they never conflict with
-anything. Also, nothing checks for these flags and prevented opens or
-read/write behavior on the files. They don't seem to do anything.
 
-Given that, we can rip these symbols out of the kernel, and just make
-flock(2) return 0 when LOCK_MAND is set in order to preserve existing
-behavior.
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ceph/locks.c                  |  3 ---
- fs/gfs2/file.c                   |  2 --
- fs/locks.c                       | 46 +++++++++++++++-----------------
- fs/nfs/file.c                    |  9 -------
- include/uapi/asm-generic/fcntl.h |  4 +++
- 5 files changed, 25 insertions(+), 39 deletions(-)
+On 9/10/2021 5:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.3 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Note that I do see some occurrences of LOCK_MAND in samba codebase, but
-I think it's probably best that those are removed.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-diff --git a/fs/ceph/locks.c b/fs/ceph/locks.c
-index bdeb271f47d9..d8c31069fbf2 100644
---- a/fs/ceph/locks.c
-+++ b/fs/ceph/locks.c
-@@ -302,9 +302,6 @@ int ceph_flock(struct file *file, int cmd, struct file_lock *fl)
- 
- 	if (!(fl->fl_flags & FL_FLOCK))
- 		return -ENOLCK;
--	/* No mandatory locks */
--	if (fl->fl_type & LOCK_MAND)
--		return -EOPNOTSUPP;
- 
- 	dout("ceph_flock, fl_file: %p\n", fl->fl_file);
- 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index c559827cb6f9..078ef29e31bc 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -1338,8 +1338,6 @@ static int gfs2_flock(struct file *file, int cmd, struct file_lock *fl)
- {
- 	if (!(fl->fl_flags & FL_FLOCK))
- 		return -ENOLCK;
--	if (fl->fl_type & LOCK_MAND)
--		return -EOPNOTSUPP;
- 
- 	if (fl->fl_type == F_UNLCK) {
- 		do_unflock(file, fl);
-diff --git a/fs/locks.c b/fs/locks.c
-index 3d6fb4ae847b..0e1d8a637e9c 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -461,8 +461,6 @@ static void locks_move_blocks(struct file_lock *new, struct file_lock *fl)
- }
- 
- static inline int flock_translate_cmd(int cmd) {
--	if (cmd & LOCK_MAND)
--		return cmd & (LOCK_MAND | LOCK_RW);
- 	switch (cmd) {
- 	case LOCK_SH:
- 		return F_RDLCK;
-@@ -942,8 +940,6 @@ static bool flock_locks_conflict(struct file_lock *caller_fl,
- 	 */
- 	if (caller_fl->fl_file == sys_fl->fl_file)
- 		return false;
--	if ((caller_fl->fl_type & LOCK_MAND) || (sys_fl->fl_type & LOCK_MAND))
--		return false;
- 
- 	return locks_conflict(caller_fl, sys_fl);
- }
-@@ -2116,11 +2112,9 @@ EXPORT_SYMBOL(locks_lock_inode_wait);
-  *	- %LOCK_SH -- a shared lock.
-  *	- %LOCK_EX -- an exclusive lock.
-  *	- %LOCK_UN -- remove an existing lock.
-- *	- %LOCK_MAND -- a 'mandatory' flock.
-- *	  This exists to emulate Windows Share Modes.
-+ *	- %LOCK_MAND -- a 'mandatory' flock. (DEPRECATED)
-  *
-- *	%LOCK_MAND can be combined with %LOCK_READ or %LOCK_WRITE to allow other
-- *	processes read and write access respectively.
-+ *	%LOCK_MAND support has been removed from the kernel.
-  */
- SYSCALL_DEFINE2(flock, unsigned int, fd, unsigned int, cmd)
- {
-@@ -2137,9 +2131,22 @@ SYSCALL_DEFINE2(flock, unsigned int, fd, unsigned int, cmd)
- 	cmd &= ~LOCK_NB;
- 	unlock = (cmd == LOCK_UN);
- 
--	if (!unlock && !(cmd & LOCK_MAND) &&
--	    !(f.file->f_mode & (FMODE_READ|FMODE_WRITE)))
-+	if (!unlock && !(f.file->f_mode & (FMODE_READ|FMODE_WRITE)))
-+		goto out_putf;
-+
-+	/*
-+	 * LOCK_MAND locks were broken for a long time in that they never
-+	 * conflicted with one another and didn't prevent any sort of open,
-+	 * read or write activity.
-+	 *
-+	 * Just ignore these requests now, to preserve legacy behavior, but
-+	 * throw a warning to let people know that they don't actually work.
-+	 */
-+	if (cmd & LOCK_MAND) {
-+		pr_warn_once("Attempt to set a LOCK_MAND lock via flock(2). This support has been removed and the request ignored.\n");
-+		error = 0;
- 		goto out_putf;
-+	}
- 
- 	lock = flock_make_lock(f.file, cmd, NULL);
- 	if (IS_ERR(lock)) {
-@@ -2745,11 +2752,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
- 		seq_printf(f, " %s ",
- 			     (inode == NULL) ? "*NOINODE*" : "ADVISORY ");
- 	} else if (IS_FLOCK(fl)) {
--		if (fl->fl_type & LOCK_MAND) {
--			seq_puts(f, "FLOCK  MSNFS     ");
--		} else {
--			seq_puts(f, "FLOCK  ADVISORY  ");
--		}
-+		seq_puts(f, "FLOCK  ADVISORY  ");
- 	} else if (IS_LEASE(fl)) {
- 		if (fl->fl_flags & FL_DELEG)
- 			seq_puts(f, "DELEG  ");
-@@ -2765,17 +2768,10 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
- 	} else {
- 		seq_puts(f, "UNKNOWN UNKNOWN  ");
- 	}
--	if (fl->fl_type & LOCK_MAND) {
--		seq_printf(f, "%s ",
--			       (fl->fl_type & LOCK_READ)
--			       ? (fl->fl_type & LOCK_WRITE) ? "RW   " : "READ "
--			       : (fl->fl_type & LOCK_WRITE) ? "WRITE" : "NONE ");
--	} else {
--		int type = IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_type;
-+	int type = IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_type;
- 
--		seq_printf(f, "%s ", (type == F_WRLCK) ? "WRITE" :
--				     (type == F_RDLCK) ? "READ" : "UNLCK");
--	}
-+	seq_printf(f, "%s ", (type == F_WRLCK) ? "WRITE" :
-+			     (type == F_RDLCK) ? "READ" : "UNLCK");
- 	if (inode) {
- 		/* userspace relies on this representation of dev_t */
- 		seq_printf(f, "%d %02x:%02x:%lu ", fl_pid,
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index aa353fd58240..24e7dccce355 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -843,15 +843,6 @@ int nfs_flock(struct file *filp, int cmd, struct file_lock *fl)
- 	if (!(fl->fl_flags & FL_FLOCK))
- 		return -ENOLCK;
- 
--	/*
--	 * The NFSv4 protocol doesn't support LOCK_MAND, which is not part of
--	 * any standard. In principle we might be able to support LOCK_MAND
--	 * on NFSv2/3 since NLMv3/4 support DOS share modes, but for now the
--	 * NFS code is not set up for it.
--	 */
--	if (fl->fl_type & LOCK_MAND)
--		return -EINVAL;
--
- 	if (NFS_SERVER(inode)->flags & NFS_MOUNT_LOCAL_FLOCK)
- 		is_local = 1;
- 
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 9dc0bf0c5a6e..ecd0f5bdfc1d 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -181,6 +181,10 @@ struct f_owner_ex {
- 				   blocking */
- #define LOCK_UN		8	/* remove lock */
- 
-+/*
-+ * LOCK_MAND support has been removed from the kernel. We leave the symbols
-+ * here to not break legacy builds, but these should not be used in new code.
-+ */
- #define LOCK_MAND	32	/* This is a mandatory flock ... */
- #define LOCK_READ	64	/* which allows concurrent read operations */
- #define LOCK_WRITE	128	/* which allows concurrent write operations */
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.31.1
-
+Florian
