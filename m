@@ -2,117 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03DE406D6D
+	by mail.lfdr.de (Postfix) with ESMTP id 56508406D6C
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhIJORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:17:48 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40641 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233806AbhIJORp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:17:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1631283390;
-        bh=K/rOvSuYgaLnknL2KSEDyeYf85pxBp1RfczcK2sf6XI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Hj8dW57Pww3U3V7+GtXE5mdCuH0Ws+FugjziObUxVTAR4zC9IcQbj38K9e2XVgkp2
-         BqLpy8WpZ4uR7klbK/lIGyNdRP7PmMI3/uczieTB8dotWagtPC5xP1r02lrXNZdXF/
-         Pi6spJzIvNvsPeuZvWwLQtY0Ajf0y4TgmBMR5D8uYlesS/2I0wqP/Q+iGS4/GcG39t
-         IdJbQf+fcKLszSbCKyfoUuRFuthd2+kKvQYWRtox82H7Lil0TqgDOLqGev43ds4j0k
-         T7RYG69xX8EMFZ1JcmtDZBQRAEZeuR8/zhx0OAFN/Bu5tiB5fK4qhs+LxWnBeWjTCz
-         CNmaogFhUZX3A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H5dGP47xJz9sW4;
-        Sat, 11 Sep 2021 00:16:29 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
-        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com
-Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
-In-Reply-To: <878s04my3b.fsf@mpe.ellerman.id.au>
-References: <20210909075700.4025355-1-eranian@google.com>
- <20210909075700.4025355-2-eranian@google.com>
- <20210909190342.GE4323@worktop.programming.kicks-ass.net>
- <878s04my3b.fsf@mpe.ellerman.id.au>
-Date:   Sat, 11 Sep 2021 00:16:20 +1000
-Message-ID: <875yv8ms7f.fsf@mpe.ellerman.id.au>
+        id S233917AbhIJORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233879AbhIJORo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:17:44 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FBAC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso1617894pjj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gw+gLCH4fCh3RyF148MnGJMCmmJ7GK/O+08Kg6ZzZIU=;
+        b=iGKa/dQ/+1b2SCObj5WlpAPCGiElDzjo26XEpjecBcMIOUB+ABwSNwYetiNhbPpjjP
+         BtSbRcbsv8OjFrr8xovigvNf7WiTiIocIAATducN2RkKRBxpCRx2ZXDia3mZptZQTLWb
+         Vl4jDx1kT4QYXTRkK4WNOpMo4w7e/YOknPwS8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gw+gLCH4fCh3RyF148MnGJMCmmJ7GK/O+08Kg6ZzZIU=;
+        b=19GqFgB6d5eWA9lHNx98eeUL6hIJHrB8Xzl+f5meBsrRGm7txWywSBzimlY/pmP721
+         qds0WTgEN/OJXddjrnLXuaXCoB/vxAjp7O42JjchcC1kp0sfI+l5vbL1hPhUedu5yv8r
+         Y8nqLtXlnRx8eu/0krJXqcukjaxTW9HveNrP81Y4B76YTonPzJnZk1VoKzeQZbclAZQu
+         Wn6xhNpG2v7RKParuveZnzFBOhmiON9LNQYLVldsRPb8TDegD+cDgVRoshUxQrMSno67
+         4GkPgwejvmTgqpEuX5sELiJah/16HNtj0htVnYsJP9KP2aftn5dNGby2XKhKYCHuB0cN
+         oJvw==
+X-Gm-Message-State: AOAM530KA8KYC2+VjOY9/TJm2Pb+96z1wPWKQM5gCDjfvsl1vU+VtcPs
+        umWyviPiQWUbBD5H/I4TXW8Z7G7Rq1wLGw==
+X-Google-Smtp-Source: ABdhPJx/ZYE/fslknnTb9EgXTfXCY/KJOZR+QfvjM/8WANgcJTX0p3oHcALf2sE4fe/3ZRje9ASGgQ==
+X-Received: by 2002:a17:902:be0f:b0:13a:95e:a51 with SMTP id r15-20020a170902be0f00b0013a095e0a51mr7888442pls.44.1631283392125;
+        Fri, 10 Sep 2021 07:16:32 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:7627:5944:d90:b374])
+        by smtp.gmail.com with ESMTPSA id e13sm270051pfc.137.2021.09.10.07.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 07:16:31 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 23:16:27 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache
+ hints tests
+Message-ID: <YTtouz4IG/UPq84K@google.com>
+References: <20210709092227.1051346-1-senozhatsky@chromium.org>
+ <619afe51-4cba-95e0-69bc-bb96e1f88aae@xs4all.nl>
+ <YTtUOXF1qGbL+q0V@google.com>
+ <YTtePjJoynZ4imCp@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTtePjJoynZ4imCp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> Peter Zijlstra <peterz@infradead.org> writes:
->> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
->>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
->>> index f92880a15645..eb11f383f4be 100644
->>> --- a/include/uapi/linux/perf_event.h
->>> +++ b/include/uapi/linux/perf_event.h
->>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
->>>  struct perf_branch_entry {
->>>  	__u64	from;
->>>  	__u64	to;
->>> -	__u64	mispred:1,  /* target mispredicted */
->>> -		predicted:1,/* target predicted */
->>> -		in_tx:1,    /* in transaction */
->>> -		abort:1,    /* transaction abort */
->>> -		cycles:16,  /* cycle count to last branch */
->>> -		type:4,     /* branch type */
->>> -		reserved:40;
->>> +	union {
->>> +		__u64	val;	    /* to make it easier to clear all fields */
->>> +		struct {
->>> +			__u64	mispred:1,  /* target mispredicted */
->>> +				predicted:1,/* target predicted */
->>> +				in_tx:1,    /* in transaction */
->>> +				abort:1,    /* transaction abort */
->>> +				cycles:16,  /* cycle count to last branch */
->>> +				type:4,     /* branch type */
->>> +				reserved:40;
->>> +		};
->>> +	};
->>>  };
->>
->>
->> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
->> one. Power folks, could you please have a look?
->
-> The bit number of each field changes between big and little endian, but
-> as long as kernel and userspace are the same endian, and both only
-> access values via the bitfields then it works.
-...
->
-> It does look like we have a bug in perf tool though, if I take a
-> perf.data from a big endian system to a little endian one I don't see
-> any of the branch flags decoded. eg:
->
-> BE:
->
-> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-> ... branch stack: nr:28
-> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
->
-> LE:
->
-> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-> ... branch stack: nr:28
-> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
->                                                          ^
->                                                          missing P
->
-> I guess we're missing a byte swap somewhere.
+On (21/09/10 22:31), Sergey Senozhatsky wrote:
+> > Looking into it now. I ran v4l2-compliance, but not "contrib/test/test-media"
+> 
+> AFAICT the problem is in v4l2-compliance patch.
+> 
+> We clear request flags if queue does not support user-space cache hints:
+> 
+> 	 q->allow_cache_hints && q->memory == VB2_MEMORY_MMAP
+> 
+> But for DMABUF buffers (only) we set cache hints internally in
+> set_buffer_cache_hints() and always skip cache sync/flush on
+> prepare/finish regardless of what is passed from the user-space:
+> 
+>        if (q->memory == VB2_MEMORY_DMABUF) {
+>                vb->skip_cache_sync_on_finish = 1;
+>                vb->skip_cache_sync_on_prepare = 1;
+>                return;
+>        }
+> 
+> Technically we don't support user-space cache hints for DMABUF, so we
+> clear passed user-space cache hint flags.
+> 
+> I think the fix should look like this (tested with "test-media vivid"):
+> 
+> ---
+> 
+> diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+> index 9b87c90f..baa306f1 100644
+> --- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
+> +++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+> @@ -1865,9 +1865,10 @@ static int setupDmaBuf(struct node *expbuf_node, struct node *node,
+>  				fail_on_test(!buf.g_bytesused(p));
+>  		}
+>  		flags = buf.g_flags();
+> -		/* We always skip cache sync/flush for DMABUF memory type */
+> -		fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
+> -		fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
+> +
+> +		/* Make sure that flags are cleared */
+> +		fail_on_test((flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
+> +		fail_on_test((flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
+>  		fail_on_test(flags & V4L2_BUF_FLAG_DONE);
+>  		fail_on_test(buf.querybuf(node, i));
+>  		fail_on_test(buf.check(q, Queued, i));
 
-Ugh. We _do_ have a byte swap, but we also need a bit swap.
 
-That works for the single bit fields, not sure if it will for the
-multi-bit fields.
+Alternatively, we can do something like below on the kernel side instead:
+do nothing in v4l2 for DMABUF and preserve b->flags (if user-space has
+passed cache management flags).
 
-So that's a bit of a mess :/
+// But I think it'll be better to clear b->flags cache hints for DMABUF. To
+// indicate that we don't accept cache-hints for DMABUF.
 
-cheers
+
+---
+
+diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+index 6edf4508c636..fc8e31b7dced 100644
+--- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
++++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+@@ -345,6 +345,13 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
+ 				   struct vb2_buffer *vb,
+ 				   struct v4l2_buffer *b)
+ {
++	/*
++	 * No user-space cache hints for DMABUF, but we preserve b->flags
++	 * cache hints (if user-space has passed any).
++	 */
++	if (q->memory == VB2_MEMORY_DMABUF)
++		return;
++
+ 	if (!vb2_queue_allows_cache_hints(q)) {
+ 		/*
+ 		 * Clear buffer cache flags if queue does not support user
