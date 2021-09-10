@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD7D407413
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF4A407415
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbhIJXzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:55:40 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:47383 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232897AbhIJXzj (ORCPT
+        id S234893AbhIJX4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233946AbhIJX4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:55:39 -0400
-Received: from MTA-15-3.privateemail.com (MTA-15-1.privateemail.com [198.54.118.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 945EE829C2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:54:26 -0400 (EDT)
-Received: from mta-15.privateemail.com (localhost [127.0.0.1])
-        by mta-15.privateemail.com (Postfix) with ESMTP id 2C61B18000B2;
-        Fri, 10 Sep 2021 19:54:25 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.209])
-        by mta-15.privateemail.com (Postfix) with ESMTPA id 4FAAF18000A3;
-        Fri, 10 Sep 2021 19:54:24 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Hamza Mahfooz <someguy@effective-light.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH v2] dma-debug: prevent an error message from causing runtime problems
-Date:   Fri, 10 Sep 2021 19:53:37 -0400
-Message-Id: <20210910235337.13172-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 10 Sep 2021 19:56:41 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D05C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:55:30 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso2516304pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Lj4EQSAtjojNeOo+5AIxnfhqBrNwaP0Usia46GVY1oQ=;
+        b=P2Y9yL/ptNBIkgV2RV1ndLR/eMSVc/fsViMjX3kFRfgr6q4MrkOMcgd2f5ArvU/vQD
+         xal7x4pdT+BNm7K7oodlNFs5rfif4USN/CVluAoxvUAYVAqL5BWnqFH8V1m9ZotHj/FV
+         WEH5ZklYjE90+sxvPNoKKhV8iXPvLrqWIxSqzDfOW1nHFyDF9s3WUCMrTXud7dOLxE74
+         gNBGBcSpa/95/ClNgU+Xd8QaN+ReSUJFdryu/CBrGHmAOlu0KevlhgjtxB76wKHhQLZJ
+         PqoTZp9ltAYrzoPT/fX7pxFveU3Bvd9WSOGjEymXtMONBS44d4uOK7Y+JKt/VUprf0DJ
+         G2YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Lj4EQSAtjojNeOo+5AIxnfhqBrNwaP0Usia46GVY1oQ=;
+        b=DkcH8ppF3LojLlplyMFkjPgeQkh8RiRsQo6JQjIvsJa/K1EM+fJZGK2K6zlCNhusR8
+         5WxMMSXTgKKPCRXR2yS5A/j7ZB6+cFFNwpXpvlimai8H7CXp4jW3D9Ey58CGnpsRYhxV
+         Ky0OFi0zJjxBgY90o3U+QNiof1mxNomSD/Z95dygJI4HHqQ0X551byXANGEcnQjjZELJ
+         WrmbpOAWZ1Cwepk9z4zJ2m8Gj2J4p9pfA5iabDXNJV/HNN7h3Ju0xvbG34jPvd28iAe3
+         dbM5+WVwcUgJpCq0v6v8bzRbFDa45p3tiqnw6Lgi23S8tk7HEjkWl8sZRsbr3QrDQ8Kx
+         EjhQ==
+X-Gm-Message-State: AOAM5314YcuQV59mnwIMHkrkIfD7WBxJdT96c5VKZqdc7NBsoNTOQOQE
+        XDlxtdywddmhBCavKfS8tzK2zQ==
+X-Google-Smtp-Source: ABdhPJwR9DZl1UautfziIWEvTjfS+Ek/Jql8tysBLQBAE49gKvvzNab7WfTaGvKbi8veNTD7znt/4g==
+X-Received: by 2002:a17:90b:198c:: with SMTP id mv12mr125644pjb.223.1631318129721;
+        Fri, 10 Sep 2021 16:55:29 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n14sm60042pgd.48.2021.09.10.16.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 16:55:29 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 23:55:25 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zeng Guang <guang.zeng@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Gao Chao <chao.gao@intel.com>
+Subject: Re: [PATCH v4 6/6] KVM: VMX: enable IPI virtualization
+Message-ID: <YTvwbUhofR3Fv7bV@google.com>
+References: <20210809032925.3548-1-guang.zeng@intel.com>
+ <20210809032925.3548-7-guang.zeng@intel.com>
+ <YTvttCcfqF7D/CXt@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTvttCcfqF7D/CXt@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some drivers, that use the DMA API. This error message can be reached
-several millions of times per second, causing spam to the kernel's printk
-buffer and bringing the CPU usage up to 100% (so, it should be rate
-limited). However, since there is at least one driver that is in the
-mainline and suffers from the error condition, it is more useful to
-err_printk() here instead of just rate limiting the error message (in hopes
-that it will make it easier for other drivers that suffer from this issue
-to be spotted).
+On Fri, Sep 10, 2021, Sean Christopherson wrote:
+> On Mon, Aug 09, 2021, Zeng Guang wrote:
+> > +		if (!pages)
+> > +			return -ENOMEM;
+> > +
+> > +		to_kvm_vmx(kvm)->pid_table = (void *)page_address(pages);
+> > +		to_kvm_vmx(kvm)->pid_last_index = KVM_MAX_VCPU_ID;
+> 
+> I don't see the point of pid_last_index if we're hardcoding it to KVM_MAX_VCPU_ID.
+> If I understand the ucode pseudocode, there's no performance hit in the happy
+> case, i.e. it only guards against out-of-bounds accesses.
+> 
+> And I wonder if we want to fail the build if this grows beyond an order-1
+> allocation, e.g.
+> 
+> 		BUILD_BUG_ON(PID_TABLE_ORDER > 1);
+> 
+> Allocating two pages per VM isn't terrible, but 4+ starts to get painful when
+> considering the fact that most VMs aren't going to need more than one page.  For
+> now I agree the simplicity of not dynamically growing the table is worth burning
+> a page.
 
-Link: https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com
-Reported-by: Jeremy Linton <jeremy.linton@arm.com>
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
-v2: use err_printk() and make some clarifications in the commit message.
----
- kernel/dma/debug.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Ugh, Paolo has queued a series which bumps KVM_MAX_VCPU_ID to 4096[*].  That makes
+this an order-3 allocation, which is quite painful.  One thought would be to let
+userspace declare the max vCPU it wants to create, not sure if that would work for
+xAPIC though.
 
-diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index 6c90c69e5311..718a7f455df6 100644
---- a/kernel/dma/debug.c
-+++ b/kernel/dma/debug.c
-@@ -567,7 +567,8 @@ static void add_dma_entry(struct dma_debug_entry *entry)
- 		pr_err("cacheline tracking ENOMEM, dma-debug disabled\n");
- 		global_disable = true;
- 	} else if (rc == -EEXIST) {
--		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported\n");
-+		err_printk(entry->dev, entry, "cacheline tracking EEXIST, "
-+			   "overlapping mappings aren't supported\n");
- 	}
- }
- 
--- 
-2.33.0
-
+[*] https://lkml.kernel.org/r/1111efc8-b32f-bd50-2c0f-4c6f506b544b@redhat.com
