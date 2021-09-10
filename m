@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD905406E40
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E9A406E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhIJPgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:36:04 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:40486 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhIJPgD (ORCPT
+        id S234434AbhIJPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhIJPfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:36:03 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOiW7-002vpN-NE; Fri, 10 Sep 2021 15:32:39 +0000
-Date:   Fri, 10 Sep 2021 15:32:39 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [git pull] iov_iter fixes
-Message-ID: <YTt6l9gDX+kXwtBW@zeniv-ca.linux.org.uk>
-References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <YTtu1V1c1emiYII9@zeniv-ca.linux.org.uk>
- <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
+        Fri, 10 Sep 2021 11:35:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC638C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oaN7qY6S4Isxzy4JLgqhBnxwl4cPBYd1rT3odrvAhkE=; b=EYYEyWNgiYgbFcjd+HEoEf0qsI
+        E/NiSQdKohkj9lefBwKagRRodVIVjbSMhH/Nd6zTtsjGQZOkMHWdXIcF9ck8V8jjRO+Yyt7jATzA4
+        ygVPaWwXVkeJVAI6gnxHJlG47N4f2BE0H1H4RKMi198dkX99cj13uX4fsSQR75HonFXRXkIlDQZWZ
+        xyAurHH5zFa9SsRrojeSBHz7uYQmuxjGaq6eRvvLrDZR1fL+9MG0NIDetC2wEtm5rw2y8Sqs9Z29a
+        6swk9LV78PuI9uDVmMgdavDAkkl7I2plJ1TKhMtyplS0gD0Bpfl/Hcg3KuNpNhboVYMs5ClmmZCIG
+        dSfwqlXg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOiWi-00B7IE-HX; Fri, 10 Sep 2021 15:33:27 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B735198627A; Fri, 10 Sep 2021 17:33:15 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 17:33:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ravi Singh <ravi.singh1@samsung.com>
+Cc:     hannes@cmpxchg.org, mingo@redhat.com, linux-kernel@vger.kernel.org,
+        a.sahrawat@samsung.com, v.narang@samsung.com,
+        vishal.goel@samsung.com
+Subject: Re: [PATCH] psi: fix integer overflow on unsigned int multiply on 32
+ bit systems
+Message-ID: <20210910153315.GG4323@worktop.programming.kicks-ass.net>
+References: <CGME20210906122653epcas5p19c46576f0be4d4a101f851a751addde8@epcas5p1.samsung.com>
+ <1630931124-27197-1-git-send-email-ravi.singh1@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <75caf6d6-26d4-7146-c497-ed89b713d878@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <1630931124-27197-1-git-send-email-ravi.singh1@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 09:08:02AM -0600, Jens Axboe wrote:
-
-> > You actually can cut it down even more - nr_segs + iov remains constant
-> > all along, so you could get away with just 3 words here...  I would be
+On Mon, Sep 06, 2021 at 05:55:24PM +0530, Ravi Singh wrote:
+> psi accepts window sizes upto WINDOW_MAX_US(10000000). In the case
+> where window_us is larger than 4294967, the result of an
+> multiplication overflows an unsigned int/long(4 bytes on 32 bit
+> system).
 > 
-> Mmm, the iov pointer remains constant? Maybe I'm missing your point, but
-> the various advance functions are quite happy to increment iter->iov or
-> iter->bvec, so we need to restore them. From a quick look, looks like
-> iter->nr_segs is modified for advancing too.
+> For example, this can happen when the window_us is 5000000 so 5000000
+> * 1000 (NSEC_PER_USEC) will result in 5000000000 which is greater than
+> UINT_MAX(4294967295). Due to this overflow, 705032704 is stored in
+> t->win.size instead of 5000000000. Now psi will be monitoring the
+> window size of 705 msecs instead of 5 secs as expected by user.
 > 
-> What am I missing?
+> Fix this by type casting the first term of the mutiply to a u64.
+> 
+> Issue doesnot occur on 64 bit systems because NSEC_PER_USEC is of type
+> long which is 8 bytes on 64 bit systems.
+> 
+> Signed-off-by: Ravi Singh <ravi.singh1@samsung.com>
+> Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
 
-i->iov + i->nr_segs does not change - the places incrementing the former
-will decrement the latter by the same amount.  So it's enough to store
-either of those - the other one can be recovered by subtracting the
-saved value from the current i->iov + i->nr_segs.
+That's not a valid SoB chain.
