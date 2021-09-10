@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B98406BBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92511406BE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhIJMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51290 "EHLO mail.kernel.org"
+        id S234268AbhIJMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233763AbhIJMdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8336F61026;
-        Fri, 10 Sep 2021 12:32:20 +0000 (UTC)
+        id S233737AbhIJMeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:34:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD2C7611EF;
+        Fri, 10 Sep 2021 12:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277141;
-        bh=oGn6b8TTbbzCafZgHK+NymXrEkOk/MXxNEJIqNRA49s=;
+        s=korg; t=1631277190;
+        bh=Bkk1cmLGO+RFsmedEvWb0IG08er6IeUWhxQfQo5c388=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d9cXvmiHThe5UJuMds9mdsUg3HfNX7jJ9VJNcm/ExL/4wO38Z93MbZyKFWbfe1F22
-         wfyrXwyF6gplx0ENswf7nodsF1owMmDDgMparyVN5h5kSb/OHxaNR5JGkfn9vcnaEl
-         cmUSRMzdqG23fn06T9x3e8E9Fz2lCl+IbT3FvjQ8=
+        b=aqOjWMrO5TMYvgbZG9N5O/V25TpKtTCrVoXbJLiIZN79M8BtRqdAmIL6eL+8rnScb
+         zYDSfY0XjtNp9H8hvWSFK06dw/jm7UGCUDf0JaY/FZ/uTJ/1q5WpBVNUkAl4sRLLhQ
+         YRjCMttCOtPyguhyjzrS6HwXjswZWQNIqK/YVb1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.13 18/22] xhci: fix even more unsafe memory usage in xhci tracing
+        Eric Dumazet <edumazet@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH 5.10 13/26] netfilter: nftables: avoid potential overflows on 32bit arches
 Date:   Fri, 10 Sep 2021 14:30:17 +0200
-Message-Id: <20210910122916.543013192@linuxfoundation.org>
+Message-Id: <20210910122916.682588706@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,223 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 4843b4b5ec64b875a5e334f280508f1f75e7d3e4 upstream.
+commit 6c8774a94e6ad26f29ef103c8671f55c255c6201 upstream.
 
-Removes static char buffer usage in the following decode functions:
-	xhci_decode_ctrl_ctx()
-	xhci_decode_slot_context()
-	xhci_decode_usbsts()
-	xhci_decode_doorbell()
-	xhci_decode_ep_context()
+User space could ask for very large hash tables, we need to make sure
+our size computations wont overflow.
 
-Caller must provide a buffer to use.
-In tracing use __get_str() as recommended to pass buffer.
+nf_tables_newset() needs to double check the u64 size
+will fit into size_t field.
 
-Minor changes are needed in other xhci code as these functions are also
-used elsewhere
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210820123503.2605901-3-mathias.nyman@linux.intel.com
+Fixes: 0ed6389c483d ("netfilter: nf_tables: rename set implementations")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-debugfs.c |    8 ++++++--
- drivers/usb/host/xhci-ring.c    |    3 ++-
- drivers/usb/host/xhci-trace.h   |   18 +++++++++++-------
- drivers/usb/host/xhci.h         |   21 ++++++++-------------
- 4 files changed, 27 insertions(+), 23 deletions(-)
+ net/netfilter/nf_tables_api.c |    7 +++++--
+ net/netfilter/nft_set_hash.c  |   10 +++++-----
+ 2 files changed, 10 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -260,11 +260,13 @@ static int xhci_slot_context_show(struct
- 	struct xhci_slot_ctx	*slot_ctx;
- 	struct xhci_slot_priv	*priv = s->private;
- 	struct xhci_virt_device	*dev = priv->dev;
-+	char			str[XHCI_MSG_MAX];
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -4115,6 +4115,7 @@ static int nf_tables_newset(struct net *
+ 	struct nft_table *table;
+ 	struct nft_set *set;
+ 	struct nft_ctx ctx;
++	size_t alloc_size;
+ 	char *name;
+ 	u64 size;
+ 	u64 timeout;
+@@ -4263,8 +4264,10 @@ static int nf_tables_newset(struct net *
+ 	size = 0;
+ 	if (ops->privsize != NULL)
+ 		size = ops->privsize(nla, &desc);
+-
+-	set = kvzalloc(sizeof(*set) + size + udlen, GFP_KERNEL);
++	alloc_size = sizeof(*set) + size + udlen;
++	if (alloc_size < size)
++		return -ENOMEM;
++	set = kvzalloc(alloc_size, GFP_KERNEL);
+ 	if (!set)
+ 		return -ENOMEM;
  
- 	xhci = hcd_to_xhci(bus_to_hcd(dev->udev->bus));
- 	slot_ctx = xhci_get_slot_ctx(xhci, dev->out_ctx);
- 	seq_printf(s, "%pad: %s\n", &dev->out_ctx->dma,
--		   xhci_decode_slot_context(le32_to_cpu(slot_ctx->dev_info),
-+		   xhci_decode_slot_context(str,
-+					    le32_to_cpu(slot_ctx->dev_info),
- 					    le32_to_cpu(slot_ctx->dev_info2),
- 					    le32_to_cpu(slot_ctx->tt_info),
- 					    le32_to_cpu(slot_ctx->dev_state)));
-@@ -280,6 +282,7 @@ static int xhci_endpoint_context_show(st
- 	struct xhci_ep_ctx	*ep_ctx;
- 	struct xhci_slot_priv	*priv = s->private;
- 	struct xhci_virt_device	*dev = priv->dev;
-+	char			str[XHCI_MSG_MAX];
- 
- 	xhci = hcd_to_xhci(bus_to_hcd(dev->udev->bus));
- 
-@@ -287,7 +290,8 @@ static int xhci_endpoint_context_show(st
- 		ep_ctx = xhci_get_ep_ctx(xhci, dev->out_ctx, ep_index);
- 		dma = dev->out_ctx->dma + (ep_index + 1) * CTX_SIZE(xhci->hcc_params);
- 		seq_printf(s, "%pad: %s\n", &dma,
--			   xhci_decode_ep_context(le32_to_cpu(ep_ctx->ep_info),
-+			   xhci_decode_ep_context(str,
-+						  le32_to_cpu(ep_ctx->ep_info),
- 						  le32_to_cpu(ep_ctx->ep_info2),
- 						  le64_to_cpu(ep_ctx->deq),
- 						  le32_to_cpu(ep_ctx->tx_info)));
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -1212,6 +1212,7 @@ void xhci_stop_endpoint_command_watchdog
- 	struct xhci_hcd *xhci = ep->xhci;
- 	unsigned long flags;
- 	u32 usbsts;
-+	char str[XHCI_MSG_MAX];
- 
- 	spin_lock_irqsave(&xhci->lock, flags);
- 
-@@ -1225,7 +1226,7 @@ void xhci_stop_endpoint_command_watchdog
- 	usbsts = readl(&xhci->op_regs->status);
- 
- 	xhci_warn(xhci, "xHCI host not responding to stop endpoint command.\n");
--	xhci_warn(xhci, "USBSTS:%s\n", xhci_decode_usbsts(usbsts));
-+	xhci_warn(xhci, "USBSTS:%s\n", xhci_decode_usbsts(str, usbsts));
- 
- 	ep->ep_state &= ~EP_STOP_CMD_PENDING;
- 
---- a/drivers/usb/host/xhci-trace.h
-+++ b/drivers/usb/host/xhci-trace.h
-@@ -323,6 +323,7 @@ DECLARE_EVENT_CLASS(xhci_log_ep_ctx,
- 		__field(u32, info2)
- 		__field(u64, deq)
- 		__field(u32, tx_info)
-+		__dynamic_array(char, str, XHCI_MSG_MAX)
- 	),
- 	TP_fast_assign(
- 		__entry->info = le32_to_cpu(ctx->ep_info);
-@@ -330,8 +331,8 @@ DECLARE_EVENT_CLASS(xhci_log_ep_ctx,
- 		__entry->deq = le64_to_cpu(ctx->deq);
- 		__entry->tx_info = le32_to_cpu(ctx->tx_info);
- 	),
--	TP_printk("%s", xhci_decode_ep_context(__entry->info,
--		__entry->info2, __entry->deq, __entry->tx_info)
-+	TP_printk("%s", xhci_decode_ep_context(__get_str(str),
-+		__entry->info, __entry->info2, __entry->deq, __entry->tx_info)
- 	)
- );
- 
-@@ -368,6 +369,7 @@ DECLARE_EVENT_CLASS(xhci_log_slot_ctx,
- 		__field(u32, info2)
- 		__field(u32, tt_info)
- 		__field(u32, state)
-+		__dynamic_array(char, str, XHCI_MSG_MAX)
- 	),
- 	TP_fast_assign(
- 		__entry->info = le32_to_cpu(ctx->dev_info);
-@@ -375,9 +377,9 @@ DECLARE_EVENT_CLASS(xhci_log_slot_ctx,
- 		__entry->tt_info = le64_to_cpu(ctx->tt_info);
- 		__entry->state = le32_to_cpu(ctx->dev_state);
- 	),
--	TP_printk("%s", xhci_decode_slot_context(__entry->info,
--			__entry->info2, __entry->tt_info,
--			__entry->state)
-+	TP_printk("%s", xhci_decode_slot_context(__get_str(str),
-+			__entry->info, __entry->info2,
-+			__entry->tt_info, __entry->state)
- 	)
- );
- 
-@@ -432,12 +434,13 @@ DECLARE_EVENT_CLASS(xhci_log_ctrl_ctx,
- 	TP_STRUCT__entry(
- 		__field(u32, drop)
- 		__field(u32, add)
-+		__dynamic_array(char, str, XHCI_MSG_MAX)
- 	),
- 	TP_fast_assign(
- 		__entry->drop = le32_to_cpu(ctrl_ctx->drop_flags);
- 		__entry->add = le32_to_cpu(ctrl_ctx->add_flags);
- 	),
--	TP_printk("%s", xhci_decode_ctrl_ctx(__entry->drop, __entry->add)
-+	TP_printk("%s", xhci_decode_ctrl_ctx(__get_str(str), __entry->drop, __entry->add)
- 	)
- );
- 
-@@ -555,13 +558,14 @@ DECLARE_EVENT_CLASS(xhci_log_doorbell,
- 	TP_STRUCT__entry(
- 		__field(u32, slot)
- 		__field(u32, doorbell)
-+		__dynamic_array(char, str, XHCI_MSG_MAX)
- 	),
- 	TP_fast_assign(
- 		__entry->slot = slot;
- 		__entry->doorbell = doorbell;
- 	),
- 	TP_printk("Ring doorbell for %s",
--		xhci_decode_doorbell(__entry->slot, __entry->doorbell)
-+		  xhci_decode_doorbell(__get_str(str), __entry->slot, __entry->doorbell)
- 	)
- );
- 
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -2452,10 +2452,9 @@ static inline const char *xhci_decode_tr
- 	return str;
+--- a/net/netfilter/nft_set_hash.c
++++ b/net/netfilter/nft_set_hash.c
+@@ -604,7 +604,7 @@ static u64 nft_hash_privsize(const struc
+ 			     const struct nft_set_desc *desc)
+ {
+ 	return sizeof(struct nft_hash) +
+-	       nft_hash_buckets(desc->size) * sizeof(struct hlist_head);
++	       (u64)nft_hash_buckets(desc->size) * sizeof(struct hlist_head);
  }
  
--static inline const char *xhci_decode_ctrl_ctx(unsigned long drop,
--					       unsigned long add)
-+static inline const char *xhci_decode_ctrl_ctx(char *str,
-+		unsigned long drop, unsigned long add)
- {
--	static char	str[1024];
- 	unsigned int	bit;
- 	int		ret = 0;
+ static int nft_hash_init(const struct nft_set *set,
+@@ -644,8 +644,8 @@ static bool nft_hash_estimate(const stru
+ 		return false;
  
-@@ -2481,10 +2480,9 @@ static inline const char *xhci_decode_ct
- 	return str;
- }
+ 	est->size   = sizeof(struct nft_hash) +
+-		      nft_hash_buckets(desc->size) * sizeof(struct hlist_head) +
+-		      desc->size * sizeof(struct nft_hash_elem);
++		      (u64)nft_hash_buckets(desc->size) * sizeof(struct hlist_head) +
++		      (u64)desc->size * sizeof(struct nft_hash_elem);
+ 	est->lookup = NFT_SET_CLASS_O_1;
+ 	est->space  = NFT_SET_CLASS_O_N;
  
--static inline const char *xhci_decode_slot_context(u32 info, u32 info2,
--		u32 tt_info, u32 state)
-+static inline const char *xhci_decode_slot_context(char *str,
-+		u32 info, u32 info2, u32 tt_info, u32 state)
- {
--	static char str[1024];
- 	u32 speed;
- 	u32 hub;
- 	u32 mtt;
-@@ -2614,9 +2612,8 @@ static inline const char *xhci_decode_po
- 	return str;
- }
+@@ -662,8 +662,8 @@ static bool nft_hash_fast_estimate(const
+ 		return false;
  
--static inline const char *xhci_decode_usbsts(u32 usbsts)
-+static inline const char *xhci_decode_usbsts(char *str, u32 usbsts)
- {
--	static char str[256];
- 	int ret = 0;
+ 	est->size   = sizeof(struct nft_hash) +
+-		      nft_hash_buckets(desc->size) * sizeof(struct hlist_head) +
+-		      desc->size * sizeof(struct nft_hash_elem);
++		      (u64)nft_hash_buckets(desc->size) * sizeof(struct hlist_head) +
++		      (u64)desc->size * sizeof(struct nft_hash_elem);
+ 	est->lookup = NFT_SET_CLASS_O_1;
+ 	est->space  = NFT_SET_CLASS_O_N;
  
- 	if (usbsts == ~(u32)0)
-@@ -2643,9 +2640,8 @@ static inline const char *xhci_decode_us
- 	return str;
- }
- 
--static inline const char *xhci_decode_doorbell(u32 slot, u32 doorbell)
-+static inline const char *xhci_decode_doorbell(char *str, u32 slot, u32 doorbell)
- {
--	static char str[256];
- 	u8 ep;
- 	u16 stream;
- 	int ret;
-@@ -2712,10 +2708,9 @@ static inline const char *xhci_ep_type_s
- 	}
- }
- 
--static inline const char *xhci_decode_ep_context(u32 info, u32 info2, u64 deq,
--		u32 tx_info)
-+static inline const char *xhci_decode_ep_context(char *str, u32 info,
-+		u32 info2, u64 deq, u32 tx_info)
- {
--	static char str[1024];
- 	int ret;
- 
- 	u32 esit;
 
 
