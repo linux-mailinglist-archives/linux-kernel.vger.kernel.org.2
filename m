@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E09406AC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3B0406ACB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbhIJLhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:37:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35674 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhIJLhF (ORCPT
+        id S232862AbhIJLlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:41:11 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:60550
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232613AbhIJLlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:37:05 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Fri, 10 Sep 2021 07:41:10 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A9B6020061;
-        Fri, 10 Sep 2021 11:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631273753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L2U6FvYLow74Hanu1/xbaQi9/pD51ihI7LomCd82Koc=;
-        b=jituyff69IGj8vx3My6wYSDyaixrFPy4oqB+l/3hkoQgrLJN7YEuVZ4qvfyJCpBNTI9LUR
-        t43nmEW2fR10hc31kk5qely8svMvJ8Yyu3lIOdmOteIf7QKL+hYBkrBVufoSKmYirfal9Y
-        l16A5d189WcFIWmYirnmXGRXIg3clPY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8293513D34;
-        Fri, 10 Sep 2021 11:35:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id h2VRHxlDO2EcNQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 10 Sep 2021 11:35:53 +0000
-Date:   Fri, 10 Sep 2021 13:35:52 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [RFC PATCH v2 5/5] sched/fair: Simplify ancestor enqueue loops
-Message-ID: <20210910113552.GA30004@blackbody.suse.cz>
-References: <20210819175034.4577-1-mkoutny@suse.com>
- <20210819175034.4577-6-mkoutny@suse.com>
- <CAKfTPtDwOGu9kkMdXDx=+mGVGq_EmF0wgLen7hYO+VEy+j6rig@mail.gmail.com>
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id ABC164017A;
+        Fri, 10 Sep 2021 11:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631273998;
+        bh=mfuA1EgBTXy+iiataNB51ALiNt+E78oZZkzMZc4FNvg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=hMuWZs23xadRY769Vco1XWflgZHsm/I51SK9Soi0VCsWx81jb1a8htcx8M8mG/RgI
+         ORldhSgPLMhCfXlBxEESv6jtXwkiOoMlQdPQ0yPTCC3JGWXIbMj2NYqxtjCrIS7vmZ
+         7tcv298C/4cqr+fYTAKqjr6xeEenVVETGWv3qcz9LCb/WfGUqF49H9GX7nv721xhU8
+         6y3LBtfPACW5jm86c7ZjtqLiIH5hX8g3PrMAu/3vDFdZ90qqcEF0V/JTqN5Pwg4lLp
+         vyp9qywBNqmUffhpLMv0GFPI0+BGk9/eFHZ8/nMYwhVX5OSgMMvy9E3P6/jNb99A3Q
+         4rtbey+hsbFpA==
+From:   Colin King <colin.king@canonical.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: saa7164: Remove redundant assignment of pointer t
+Date:   Fri, 10 Sep 2021 12:39:57 +0100
+Message-Id: <20210910113957.42182-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDwOGu9kkMdXDx=+mGVGq_EmF0wgLen7hYO+VEy+j6rig@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 04:04:02PM +0200, Vincent Guittot <vincent.guittot@linaro.org> wrote:
-> These multiple break loops have been done to make unthrottle_cfs_rq,
-> throttle_cfs_rq, enqueue_task_fair and dequeue_task_fair to follow the
-> same pattern 
+From: Colin Ian King <colin.king@canonical.com>
 
-Ah, I watched only the unthrottle_cfs_rq and enqueue_task_fair pair and
-missed the consistency with the other two.
+The pointer t is being assigned a value that is never read, it is being
+updated later on inside the for-loop. The assignment is redundant and
+can be removed.
 
-> and I don't see any good reason to break this
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/pci/saa7164/saa7164-api.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Isn't this a good reason
->  21 insertions(+), 36 deletions(-)
-?
+diff --git a/drivers/media/pci/saa7164/saa7164-api.c b/drivers/media/pci/saa7164/saa7164-api.c
+index 4ddd0f5b50f1..5526bcc7a9bd 100644
+--- a/drivers/media/pci/saa7164/saa7164-api.c
++++ b/drivers/media/pci/saa7164/saa7164-api.c
+@@ -1057,8 +1057,6 @@ static int saa7164_api_dump_subdevs(struct saa7164_dev *dev, u8 *buf, int len)
+ 			dprintk(DBGLVL_API, "  numformats   = 0x%x\n",
+ 				vcoutputtermhdr->numformats);
+ 
+-			t = (struct tmComResDescrHeader *)
+-				((struct tmComResDMATermDescrHeader *)(buf + idx));
+ 			next_offset = idx + (vcoutputtermhdr->len);
+ 			for (i = 0; i < vcoutputtermhdr->numformats; i++) {
+ 				t = (struct tmComResDescrHeader *)
+-- 
+2.32.0
 
-(The stats are with a grain of salt, I'd need to recheck how these stats
-would hold if throttle_cfs_rq, dequeue_task_fair would be modified too +
-they look a bit better because of the loop from 1/5.)
-
-Michal
