@@ -2,93 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE31F406597
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9035C40659E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhIJCPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:15:44 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50104 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhIJCPm (ORCPT
+        id S229835AbhIJCRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:17:15 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:49919 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhIJCRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:15:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UnqXATB_1631240069;
-Received: from B-W5MSML85-1937.local(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0UnqXATB_1631240069)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 10:14:29 +0800
-From:   "taoyi.ty" <escape@linux.alibaba.com>
-Subject: Re: [RFC PATCH 1/2] add pinned flags for kernfs node
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
-References: <cover.1631102579.git.escape@linux.alibaba.com>
- <e753e449240bfc43fcb7aa26dca196e2f51e0836.1631102579.git.escape@linux.alibaba.com>
- <YTiuBaiVZhe3db9O@kroah.com>
-Message-ID: <3d871bd0-dab5-c9ca-61b9-6aa137fa9fdf@linux.alibaba.com>
-Date:   Fri, 10 Sep 2021 10:14:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Thu, 9 Sep 2021 22:17:14 -0400
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 18A2FX2P009316;
+        Fri, 10 Sep 2021 11:15:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 18A2FX2P009316
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1631240133;
+        bh=7gootp9O4wXfYwFe7ItspToaq1GC2C7fuCeIs01oPRA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kf4rXseJysJvIb7HHBGdgBJaUVb37r7dBQOumyjzrbPl0AhomEb6aSkWihANy1pk4
+         CUj+dvcLmwglmP55EIHPfwbT0JCKfWxbQ0NS7mzYuIGvPpl2KSaEhCOlfdQ2ebGxod
+         YXFdOXLsWW+wqjvy6lmpbcFCpCOqqgahSORrS1OENzEPiaTwiGlioHzM3OnXszZqqN
+         PLoY6JHaqDVQX36Bq1CEoc+C2G01rsxR9bQPcMNWiENlYYDWgxCOI0gygqmnoLQgZm
+         BlWcf0MbjmJzv/+UZef+u+8k4NX9R2LVmsfOFTu0kALHvCOWoqI8DuHnLXyUC6C8+i
+         11TY5L7pWOhEA==
+X-Nifty-SrcIP: [209.85.214.171]
+Received: by mail-pl1-f171.google.com with SMTP id n18so183174plp.7;
+        Thu, 09 Sep 2021 19:15:33 -0700 (PDT)
+X-Gm-Message-State: AOAM53039cS5OEgJAssi1z8Rt0dOOz441HsFshtdiJBiOEyM21Y6YWlw
+        wwMHEJrKJtecMEoXpJTiFSgZ8bt7EmWbJx3AqiI=
+X-Google-Smtp-Source: ABdhPJwFaASA+3q61HDfTo1a+LFxZXKVWtflYH/3nJWMG2HMfCIro78z/6ihz8sEV9Em2NUj53ZBVCazA72sf8kxIRQ=
+X-Received: by 2002:a17:90a:d307:: with SMTP id p7mr5918490pju.144.1631240132781;
+ Thu, 09 Sep 2021 19:15:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTiuBaiVZhe3db9O@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210901175326.568535-1-arielmarcovitch@gmail.com>
+In-Reply-To: <20210901175326.568535-1-arielmarcovitch@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 10 Sep 2021 11:14:56 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS2AA=0UxJudhuxmRJkWfXb2=fELc9cA6eH+cvSkOc=7Q@mail.gmail.com>
+Message-ID: <CAK7LNAS2AA=0UxJudhuxmRJkWfXb2=fELc9cA6eH+cvSkOc=7Q@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Create links to main menu items in search
+To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/9/8 下午8:35, Greg KH wrote:
-> Why are kernfs changes needed for this?  kernfs creation is not
-> necessarily supposed to be "fast", what benchmark needs this type of
-> change to require the addition of this complexity?
-
-The implementation of the cgroup pool should have nothing
-
-to do with kernfs, but during the development process,
-
-I found that when there is a background cpu load, it takes
-
-a very significant time for a process to get the mutex from
-
-being awakened to starting execution.
-
-To create 400 cgroups concurrently, if there is no background
-
-cpu load, it takes about 80ms, but if the cpu usage rate is
-
-40%, it takes about 700ms. If you reduce
-
-sched_wakeup_granularity_ns, the time consumption will also
-
-be reduced. If you change mutex to spinlock, the situation
-
-will be very much improved.
-
-So to solve this problem, mutex should not be used. The
-
-cgroup pool relies on kernfs_rename which uses
-
-kernfs_mutex, so I need to bypass kernfs_mutex and
-
-add a pinned flag for this.
-
-Because the lock mechanism of kernfs_rename has been
-
-changed, in order to maintain data consistency, the creation
-
-and deletion of kernfs have also been changed accordingly
-
-I admit that this is really not a very elegant design, but I don’t
-
-know how to make it better, so I throw out the problem and
-
-try to seek help from the community.
+On Thu, Sep 2, 2021 at 2:53 AM Ariel Marcovitch
+<arielmarcovitch@gmail.com> wrote:
+>
+> When one searches for a main menu item, links aren't created for it like
+> with the rest of the symbols.
+>
+> This happens because we trace the item until we get to the rootmenu, but
+> we don't include it in the path of the item. The rationale was probably
+> that we don't want to show the main menu in the path of all items,
+> because it is redundant.
+>
+> However, when an item has only the rootmenu in its path it should be
+> included, because this way the user can jump to its location.
+>
+> In case the item is a direct child of the rootmenu, show it in the
+> 'Location:' section as 'Main Menu'.
+>
+> This makes the 'if (i > 0)' superfluous because each item with prompt
+> will have at least one menu in its path.
+>
+> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+> ---
+>  scripts/kconfig/menu.c | 40 ++++++++++++++++++++++++++--------------
+>  1 file changed, 26 insertions(+), 14 deletions(-)
+>
+> diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+> index 606ba8a63c24..8d7e3b07bf93 100644
+> --- a/scripts/kconfig/menu.c
+> +++ b/scripts/kconfig/menu.c
+> @@ -712,6 +712,7 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
+>         int i, j;
+>         struct menu *submenu[8], *menu, *location = NULL;
+>         struct jump_key *jump = NULL;
+> +       const char *prompt = NULL;
 
 
-thanks,
+Can you move this to the for-loop ?
+
+The initializer is unneeded.
 
 
-Yi Tao
+>
+>         str_printf(r, "  Prompt: %s\n", prop->text);
+>
+> @@ -735,6 +736,13 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
+>                 if (location == NULL && accessible)
+>                         location = menu;
+>         }
+> +
+> +       /* If we have only the root menu, show it */
+> +       if (i == 0) {
+> +               location = &rootmenu;
+> +               submenu[i++] = location;
+> +       }
 
+
+Instead of handling this as a special case,
+can we include the rootmenu all the time?
+
+We can change the for-loop condition to:
+
+        for (i = 0; menu && i < 8; menu = menu->parent) {
+
+
+
+
+
+
+>         if (head && location) {
+>                 jump = xmalloc(sizeof(struct jump_key));
+>
+> @@ -758,21 +766,25 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
+>                 list_add_tail(&jump->entries, head);
+>         }
+>
+> -       if (i > 0) {
+> -               str_printf(r, "  Location:\n");
+> -               for (j = 4; --i >= 0; j += 2) {
+> -                       menu = submenu[i];
+> -                       if (jump && menu == location)
+> -                               jump->offset = strlen(r->s);
+> -                       str_printf(r, "%*c-> %s", j, ' ',
+> -                                  menu_get_prompt(menu));
+> -                       if (menu->sym) {
+> -                               str_printf(r, " (%s [=%s])", menu->sym->name ?
+> -                                       menu->sym->name : "<choice>",
+> -                                       sym_get_string_value(menu->sym));
+> -                       }
+> -                       str_append(r, "\n");
+> +       str_printf(r, "  Location:\n");
+> +       for (j = 4; --i >= 0; j += 2) {
+> +               menu = submenu[i];
+> +               if (jump && menu == location)
+> +                       jump->offset = strlen(r->s);
+> +
+> +               /* The real rootmenu prompt is ugly */
+> +               if (menu == &rootmenu)
+> +                       prompt = "Main Menu";
+
+Can you use "Main menu" for the consistency
+with scripts/kconfig/parser.y line 501?
+
+
+> +               else
+> +                       prompt = menu_get_prompt(menu);
+
+
+I think it is better to omit '->' for the rootmenu.
+
+
+               if (menu == &rootmenu) {
+                       prompt = "Main menu";
+                       marker = "";
+               } else {
+                       prompt = menu_get_prompt(menu);
+                       marker = "->";
+               }
+
+               str_printf(r, "%*c%s %s", j, ' ', marker, prompt);
+
+
+
+Maybe, this will make the help look cleaner.
+
+
+
+
+
+> +               str_printf(r, "%*c-> %s", j, ' ', prompt);
+> +               if (menu->sym) {
+> +                       str_printf(r, " (%s [=%s])", menu->sym->name ?
+> +                               menu->sym->name : "<choice>",
+> +                               sym_get_string_value(menu->sym));
+>                 }
+> +               str_append(r, "\n");
+>         }
+>  }
+>
+>
+> base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
+> --
+> 2.25.1
+>
+
+
+--
+Best Regards
+
+Masahiro Yamada
