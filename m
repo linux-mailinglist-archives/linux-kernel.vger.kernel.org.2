@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5084073CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528734073D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhIJXYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S234775AbhIJXY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhIJXYI (ORCPT
+        with ESMTP id S234809AbhIJXYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:24:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D64C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:22:56 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id f8-20020a2585480000b02905937897e3daso4588031ybn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:22:56 -0700 (PDT)
+        Fri, 10 Sep 2021 19:24:17 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2E9C061574;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id j16so3244062pfc.2;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=A/ezR4Ofeh4QWbDFg8gsprJ3lNIyVX/YPJuv/wW2Gu0=;
-        b=PmML4m6yioSdQsuVAS57iaRzPFYLUZB+JA1EnNTkKm3JgmkyHmSzznPo8jIrWBranS
-         +J76FA9CQbtyJKeHVFSLtByZi9HIfG9yv1XTbh4E0krjQwWPi+VDi8FZqcZuYgra1H4W
-         yXOk+aY1Vx51COkhHTCDqSEfhtwPPpn82bj1G+kb992++/b+L1F/JrjbwUD3vpMDRHZI
-         6AhF3/Z0003ABiOqjz27pxEybEsQ4I7VxFNo3unT2EeW6TrzGg0K+vWuO+xqRh6hI1/z
-         TcIT2sYgPEhUMJ9ZN44VoOvMQPch5eQCNQRL1WM2Mfkb+x3urGTJzyIpDhzSSalgoPSM
-         FzRg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
+        b=N5V+KCdsfUx5v0OAtOaJpLOyWhfp2PFnTDIlXSfYl6DhWMWY2OA6H7h6umO2TXxRT/
+         49nXIVUa5GR46TWfet4+KNH+r62lpZFr6wi1DTUSutyLMRJhRyIO5XmALb4y3m/03Skd
+         AeVKKWr82P9ZHprxWBlJ85khqt6elbfpOcVbfDwrwXb+yOBo5Va/o+aKETRjv0nOTlb7
+         36e+hMIx8fd+ZuRK+YWLgOHTTYvvb6CVQoA0BgC+LgJeVfyJ0legT7ZaJPjs5bK19X3P
+         fmVEUftPr2HVZ6h6JwKJSgu6CKlUV6/wA/9N6NSIo3iDrF4pq9gBoMlF0fbzl6MQF6iq
+         b4Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=A/ezR4Ofeh4QWbDFg8gsprJ3lNIyVX/YPJuv/wW2Gu0=;
-        b=WPEyeLX7vBuBQOWRP/BgKxXJ08KvaZbbjpDdNryvDxlDQYoCLpAMKwh3de/5xsG8Tn
-         09m4acketezR1yJCZzRjfqhj1kwUdjAYbmjLV7aUE6POOsBS/Yuqmn7Pf01/DsQPeTcI
-         oc+vId3Eapn+5jsB4igzew/m5caSpc+/VH3qgd+pC6OFT0cqfVTuXOnpqGFLZf9VoPuP
-         LtTkZ6qlX8T0RROMHEm0U9YSLDtw/vwuUkfWNfL3UPRxHgWyZoz0rIQoL8Fxwuu74a6o
-         lzokrGukTCMWEI59hEWDxmeEDaKjw710KFYtWW/ZPUq46NCXNoyf9QqDzxTO+F/qxILc
-         RRYg==
-X-Gm-Message-State: AOAM533MBv/ogMoaHgCnFlnv9mrJPCSUWpO+V0hNAoxkIRbGJKqK9n5m
-        uK9OGvH7f0YuCJmBbGFYG3R6HR1i+6fg
-X-Google-Smtp-Source: ABdhPJwcxpjPWnvKHsOhaNyaVrgUPsC18bqDB+wPG9fEOtT1cU7h4Cq+ZDJ0DcJU0xQeEc+dszZhbWBByfTB
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:245:160a:d9eb:a3dc])
- (user=irogers job=sendgmr) by 2002:a05:6902:150d:: with SMTP id
- q13mr275812ybu.515.1631316175887; Fri, 10 Sep 2021 16:22:55 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 16:22:49 -0700
-Message-Id: <20210910232249.739661-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] perf tools: Ignore Documentation dependency file
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
+        b=LSouG6jRhr74r7qufuyL8+RN+UyVcG2LUlVQRTc6yLqUtkv+M/Jh9LNDwbAHYXPxWf
+         gzpnNt62QA9YHSvxzHaqeMfWOq5ntu/oXdDo33Uma7SDDsG8QBOnZaOrMGuF/Xn9niB0
+         8h6h1wUY+oqylvViiIN/965F8Ubojjw+OobOgtYL02+W/A3KqQFLc0FnWWuVdT3mq972
+         30XTW2YD7cHBr1yXGM9DdwC+LGXXcbuP+nNiQroBC+N39f7hzJbqeomeoys+cAyK0iMy
+         77UlEsJA0qqhvkZenIqKqvdnw+4MDTmldocUjMmcrfdnoRwjJUJkR/EpKV7lUiTeQFwu
+         PLuA==
+X-Gm-Message-State: AOAM531DHjE94/HolVtqqPByuW5BjhYl5IcSg5Q+W51kAMRxGrZcocry
+        HaaKTqi8Az+chlf+dHiAySM=
+X-Google-Smtp-Source: ABdhPJwrI+P4sIrm36OEQcMJbs9b+blsntJXiPWjIGX17mkNBaW3eacpOKw/O0GDa6tigKfbnfjxew==
+X-Received: by 2002:a63:7e11:: with SMTP id z17mr139932pgc.436.1631316185321;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5d1f])
+        by smtp.gmail.com with ESMTPSA id f6sm5058pfa.110.2021.09.10.16.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 16:23:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
+Message-ID: <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
+References: <20210910225207.3272766-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910225207.3272766-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Fixes: a81df63a5df3 ("perf doc: Fix doc.dep")
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+On Fri, Sep 10, 2021 at 03:52:07PM -0700, Kees Cook wrote:
+> GCC 4.9 does not like having struct assignments to 0 when members may be
+> compound types. For example, there are 186 instances of these kinds of
+> errors:
+> 
+> drivers/virtio/virtio_vdpa.c:146:9: error: missing braces around initializer [-Werror=missing-braces ]
+> drivers/cxl/core/regs.c:40:17: error: missing braces around initializer [-Werror=missing-braces]
+> 
+> Since "= { 0 }" and "= { }" have the same meaning ("incomplete
+> initializer") they will both initialize the given variable to zero
+> (modulo padding games).
+> 
+> After this change, I can almost build the "allmodconfig" target with
+> GCC 4.9 again.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-index e555e9729758..8e0163b7ef01 100644
---- a/tools/perf/.gitignore
-+++ b/tools/perf/.gitignore
-@@ -39,3 +39,4 @@ pmu-events/jevents
- feature/
- fixdep
- libtraceevent-dynamic-list
-+Documentation/doc.dep
--- 
-2.33.0.309.g3052b89438-goog
+...
 
+>  .../selftests/bpf/prog_tests/perf_branches.c  |   4 +-
+>  .../selftests/bpf/prog_tests/sk_lookup.c      |  12 +-
+>  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
+>  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
+>  .../selftests/bpf/progs/test_sk_assign.c      |   6 +-
+>  .../selftests/bpf/progs/test_xdp_vlan.c       |   8 +-
+
+Those have nothing to do with GCC. They are compiled with clang with -target bpf.
+Did you check that bpf selftests still pass?
+We've had issues with older clang generating different code with zero and non-zero
+assignments and libbpf was confused.
+It should all work now, but please run the tests.
