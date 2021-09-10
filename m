@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1E340708A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1883D40708B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhIJRaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231731AbhIJRaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6AB2611CB;
-        Fri, 10 Sep 2021 17:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631294941;
-        bh=EHYCZa70bOceXqNDdDVeupdOzJn9wCS6p4a7peW8XKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=chYiiH4xPl8dtMdO0K1zgS2A2NYPAO5mdMjhHzhEjWZqHrVZ1LgowFtKDW5aykomr
-         5QOvRhVZBHAiU1au8Q2Pg0DvkcyGB6OHkejmsRufEgnxv153cc/KvAQbigh9YHwD66
-         jWrgOOZ8p5ov3faOAppaY6ZMfdZ44Oyj093c9N0qJ571AFspigavfuadlBKEQohlyz
-         L0ZFeImWr7YIFAc65Sl3ZrgRjo7fTP8lW1qOprBM08hesaz8MnxVViBwUpPdlb1OnG
-         CbCQZAlKJTdUEIDTWuG/P3RSkJRufXxuccLNO+NYD6OMsOLJbMse8E//k+zuNcaV7u
-         lZ6WwnN9iT71g==
-Received: by mail-ot1-f45.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so3193011otk.9;
-        Fri, 10 Sep 2021 10:29:01 -0700 (PDT)
-X-Gm-Message-State: AOAM531hXdoQ+UWVnVzQxwHEWpQ8tzBGLOfTToDl0xCxCwFHIv63cJRA
-        j0magm6cKAOo3kJGTqJyKxVfsw+v5YTGcgPuux4=
-X-Google-Smtp-Source: ABdhPJz27Hrx8nyBHi9b2wqnAZZVjoxZKErfMgZq+ttDL4xBLvLbEOV4GMoMa+Y4eTgygaldzsxJwTK+Kk7viJWD1MA=
-X-Received: by 2002:a05:6830:603:: with SMTP id w3mr5442085oti.147.1631294941031;
- Fri, 10 Sep 2021 10:29:01 -0700 (PDT)
+        id S231614AbhIJRcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhIJRca (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 13:32:30 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8229EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:31:19 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq5so5519996lfb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TUgCj/lJopc0GwjVatWiteMeBV8t5YRgw6JDQsFTQ7o=;
+        b=Hi0tAii0nMOtwacqzu8IZaGMEp7ICkxhr7NLakzC6M+Q7SL4Wvl5+8y67U3RycwtZ6
+         vGeyzL7VxnXJDGoZW6peZk58phA/fDES6k0uCAqUhgYMj1rFC4b4PVhooiXP1/HRZpeT
+         XTWd30Wr9y+VE+2+lEs+nEFQ2Ou5n+9fS27XY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TUgCj/lJopc0GwjVatWiteMeBV8t5YRgw6JDQsFTQ7o=;
+        b=pn8TeHVrsmb7GyhGkacpjyN/E9CLSyCcStH6QZpQo7sCHvTqxKm8XUAcj9v7czQXvq
+         svWLepWa5l3Z7tjdAM1c6PlHQjQs/C1Qg4rbijdWtqwQ81FuJQVHTZh4NtqY0V1v/pFf
+         FylItrNsgt9ciaUC/Y5uHgSHQ/rYwK8UD/6wHjO7Rq9lsqxbltCOdOiQ4gCvyccmMSVr
+         sQ7jvQlyogMf3ar1kRRLT1LzGb6wiLNEeLBH9f5bT2tnNYfgkUU5gEmhOE05Ax7N14m7
+         z1zyUx2C12dp2ygQw5mz/XHrQxrW1b+SuOP4GtUQx18hnNaO7iamMcFv7RaJmC7xlzHR
+         T2JQ==
+X-Gm-Message-State: AOAM5331KfHxjRmdxIX4dtvwRqHpCH3foKmPOs9WVuTnAA8CXLEpko+d
+        YQSbDeUPx16u2DttshN0HwB1O+hWdbwFAZQaL4E=
+X-Google-Smtp-Source: ABdhPJwseMO8+qym/EZP2qPBMZySxgNKGyqaFtvPy37fZSKaQ4T+Q56WyTlNlYTEgn0WU+6xdooFEQ==
+X-Received: by 2002:ac2:46d3:: with SMTP id p19mr4721254lfo.689.1631295077534;
+        Fri, 10 Sep 2021 10:31:17 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id q17sm616794lfo.232.2021.09.10.10.31.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 10:31:17 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id i25so1579550lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:31:16 -0700 (PDT)
+X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr4847412lfb.141.1631295076349;
+ Fri, 10 Sep 2021 10:31:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910122820.26886-1-justin.he@arm.com> <20210910143223.6705-1-justin.he@arm.com>
-In-Reply-To: <20210910143223.6705-1-justin.he@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 10 Sep 2021 19:28:49 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
-Message-ID: <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
-To:     Jia He <justin.he@arm.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk> <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk> <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk> <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk> <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+ <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk> <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+ <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk> <CAHk-=wiPEZypYDnoDF7mRE=u1y6E_etmCTuOx3v2v6a_Wj=z3g@mail.gmail.com>
+ <b1944570-0e72-fd64-a453-45f17e7c1e56@kernel.dk>
+In-Reply-To: <b1944570-0e72-fd64-a453-45f17e7c1e56@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 10 Sep 2021 10:31:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
+Message-ID: <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
+Subject: Re: [git pull] iov_iter fixes
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
+On Fri, Sep 10, 2021 at 10:26 AM Jens Axboe <axboe@kernel.dk> wrote:
 >
-> This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> On 9/10/21 10:58 AM, Linus Torvalds wrote:
+> > On Fri, Sep 10, 2021 at 9:56 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >>
+> >> What's the point of all those contortions, anyway?  You only need it for
+> >> iovec case; don't mix doing that and turning it into flavour-independent
+> >> primitive.
+> >
+> > Good point, making it specific to iovec only gets rid of a lot of
+> > special cases and worries.
+> >
+> > This is fairly specialized, no need to always cater to every possible case.
 >
-> After this commit, a boot panic is alway hit on an Ampere EMAG server
-> with call trace as follows:
->  Internal error: synchronous external abort: 96000410 [#1] SMP
->  Modules linked in:
->  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
->  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
->  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [...snip...]
->  Call trace:
->   acpi_ex_system_memory_space_handler+0x26c/0x2c8
->   acpi_ev_address_space_dispatch+0x228/0x2c4
->   acpi_ex_access_region+0x114/0x268
->   acpi_ex_field_datum_io+0x128/0x1b8
->   acpi_ex_extract_from_field+0x14c/0x2ac
->   acpi_ex_read_data_from_field+0x190/0x1b8
->   acpi_ex_resolve_node_to_value+0x1ec/0x288
->   acpi_ex_resolve_to_value+0x250/0x274
->   acpi_ds_evaluate_name_path+0xac/0x124
->   acpi_ds_exec_end_op+0x90/0x410
->   acpi_ps_parse_loop+0x4ac/0x5d8
->   acpi_ps_parse_aml+0xe0/0x2c8
->   acpi_ps_execute_method+0x19c/0x1ac
->   acpi_ns_evaluate+0x1f8/0x26c
->   acpi_ns_init_one_device+0x104/0x140
->   acpi_ns_walk_namespace+0x158/0x1d0
->   acpi_ns_initialize_devices+0x194/0x218
->   acpi_initialize_objects+0x48/0x50
->   acpi_init+0xe0/0x498
+> Alright, split into three patches:
 >
-> As mentioned by Lorenzo:
->   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
->   eMAG does not like at all and I'd need to understand why. It looks
->   like the issue happen in SystemMemory Opregion handler."
->
-> Hence just revert it before everything is clear.
->
+> https://git.kernel.dk/cgit/linux-block/log/?h=iov_iter
 
-Can we try to find the root cause first? -rc1 is not even out yet, and
-reverting it now means we can not resubmit it until the next merge
-window.
+That looks sane to me.
+
+Please add some comment about how that
+
+        i->iov -= state->nr_segs - i->nr_segs;
+
+actually is the right thing for all the three cases (iow how 'iov',
+'kvec' and 'bvec' all end up having a union member that acts the same
+way).
+
+But yeah, I like how the io_uring.c code looks better this way too.
+
+Al, what do you think?
+
+              Linus
