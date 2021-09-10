@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A9406F3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE857406F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbhIJQMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:12:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhIJQKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:10:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A12E6120E;
-        Fri, 10 Sep 2021 16:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631290168;
-        bh=6iwvSZ8jp5kA04e1JPK/6mq3OGC3NvF1BQ05VjMVO44=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pcC5QJb8RtxJmQaU4B5d5Mdkn6sEJg/KPx0G91ox3184J8N9EzSFWxk1eXPcICBee
-         5lf5KiqJ4ZGpyLfB9y4kmS1RDe1WrgMXHcvTgNxxhK/efnCZlLHkJ3hIKBmQWcJEIq
-         rhW/CKt+6BNFS5Ag+AT3v2njZlt8s2Qq+w8uswkVawHiDsBYHyR7KI9yVvbR+HYWn0
-         36TfFaWGnw9VSy83g2InmoTMWH+YX6o0/Y224ROLV844IKkTqdGfXcygRq7SrJQp+4
-         9mTUQwhdbb/hUZkwEXUyiBcH6+eB+64m72ZG2vma4t0LBvc+/vTohNZPz+hMQ5f/Hu
-         x8AqofQYhapoA==
-From:   Mark Brown <broonie@kernel.org>
-To:     matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>,
-        tiwai@suse.com
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in suspend/resume function
-Date:   Fri, 10 Sep 2021 17:08:45 +0100
-Message-Id: <163128974014.2897.15699318985041527361.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210910092613.30188-1-trevor.wu@mediatek.com>
-References: <20210910092613.30188-1-trevor.wu@mediatek.com>
+        id S231827AbhIJQO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230431AbhIJQOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:14:52 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C27C05BD41
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:10:04 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id n27so3647657oij.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YP9Ab5m+Hjg9ARQLrR23rN0JCja+NHLmenUVBYO1EeA=;
+        b=V2GARmrFRKtY79d6yGjXeWzc7+bpdEesWhQfEEl2jqHoa5Mhati/mkq0zWI2Mi8v+o
+         QGpiiMmPx3JQIwIekGlmr6Za36w2rAzk3x0nHVTbhy2G7/K/m1aN28nHRdtD/JwMMKuG
+         7XdMlbs8TlY60NeXHNYKBhUHNF9eC5PJUUauY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YP9Ab5m+Hjg9ARQLrR23rN0JCja+NHLmenUVBYO1EeA=;
+        b=GfTUd3eEPb9vO7rl1ifkScWymGN/KEzREltrv9Edyo/qnNTJjDudkilSg8IvfNUM9s
+         2YSzRQtSxP5rWWXKN9Wy4PhveRR77TDERgTBLTEk3dKFJupnWHONegbfHS0QysYtsAKX
+         mp6skXkBxawAxPXgirYNbTA0Thr9Y4S/PM0lHtEvJKHcdKPlFjs93SiKlocViKb0spug
+         OBZnR4ayUCcX+W45cMKtBZTKx3q64ja4IDRogxR6mI4VADBWPfiqXB1yW8zfugKy0Bmk
+         uuV4R23MDdqyC+vbdc5xF1qp1CVlur0sJAk3ReuwtBMqa9WCfanx5CVYuPtTcC0uU+OZ
+         AFcQ==
+X-Gm-Message-State: AOAM5322fAS+TNlVdV+ZqVvG2aB+meWdJai0zbZ3dJVLXU+z8K7DY5FF
+        wffolxDriW92HaFodM3L6Ct0J3+y08K7mCYYD6fGSbJyPDo=
+X-Google-Smtp-Source: ABdhPJxs4fUn/m+MuqnjHOM/VEB/8+xSNMIgT5ivkOgkv/cVfd3dTEFPoj6zI/tIGdT6k10pMqInUsZpbfo1ObTvDls=
+X-Received: by 2002:a05:6808:2116:: with SMTP id r22mr4802701oiw.128.1631290203092;
+ Fri, 10 Sep 2021 09:10:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com>
+ <YTsQJ753sm701R/n@kroah.com>
+In-Reply-To: <YTsQJ753sm701R/n@kroah.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 10 Sep 2021 18:09:51 +0200
+Message-ID: <CAKMK7uFLBmdHphtnEa1nyAGUHdcP1KgmaK+vtV_GOU6wZZAOxg@mail.gmail.com>
+Subject: Re: Habanalabs Open-Source TPC LLVM compiler and SynapseAI Core library
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, mzuckerman@habana.ai,
+        dsinger@habana.ai, Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 17:26:13 +0800, Trevor Wu wrote:
-> When memory allocation for afe->reg_back_up fails, reg_back_up can't
-> be used.
-> Keep the suspend/resume flow but skip register backup when
-> afe->reg_back_up is NULL, in case illegal memory access happens.
-> 
-> 
+On Fri, Sep 10, 2021 at 9:58 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Fri, Sep 10, 2021 at 10:26:56AM +0300, Oded Gabbay wrote:
+> > Hi Greg,
+> >
+> > Following our conversations a couple of months ago, I'm happy to tell you that
+> > Habanalabs has open-sourced its TPC (Tensor Processing Core) LLVM compiler,
+> > which is a fork of the LLVM open-source project.
+> >
+> > The project can be found on Habanalabs GitHub website at:
+> > https://github.com/HabanaAI/tpc_llvm
+> >
+> > There is a companion guide on how to write TPC kernels at:
+> > https://docs.habana.ai/en/latest/TPC_User_Guide/TPC_User_Guide.html
+>
+> That's great news, thanks for pushing for this and releasing it all!
 
-Applied to
+Yeah this is neat.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+There's still the problem that we spent the past 2.5 years pissing off
+a lot of people for an imo questionable political project, bypassing
+all the technical review and expertise. Now that the political
+nonsense is resolved I think we need to look at at least the technical
+cleanup. The angered people are much harder to fix, so let's maybe
+ignore that (or perhaps a ks topic, no idea, I'm honestly not super
+motivated to rehash this entire story again). Here's what I think we
+should do:
 
-Thanks!
+- move drivers/misc/habanalabs under drivers/gpu/habanalabs and
+review/discussions on dri-devel
+- grandfather the entire current situation in as-is, it's not the only
+driver we have with a funny uapi of its own (but the other driver did
+manage to get their compiler into upstream llvm even, and not like 2
+years late)
+- review the dma-buf stuff on dri-devel and then land it through
+standard flows, not the gregk-misc bypass
+- close drivers/misc backdoor for further accel driver submissions,
+I'd like to focus on technical stuff in this area going forward and
+not pointless exercises in bypassing due process and all that
 
-[1/1] ASoC: mediatek: common: handle NULL case in suspend/resume function
-      commit: 1dd038522615b70f5f8945c5631e9e2fa5bd58b1
+I expect we'll have a proper discussion what the stack should look
+like with the next submission (from a different vendor maybe), that
+ship kinda sailed with habanalabs.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
