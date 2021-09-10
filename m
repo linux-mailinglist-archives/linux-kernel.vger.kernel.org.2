@@ -2,158 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E7F406FBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D341A406FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhIJQgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:36:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:41169 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhIJQf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:35:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="208226577"
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="208226577"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 09:34:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,283,1624345200"; 
-   d="scan'208";a="581420171"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.255.212]) ([10.212.255.212])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 09:34:46 -0700
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        id S229688AbhIJQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:37:45 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39019 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229466AbhIJQho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:37:44 -0400
+Received: (qmail 43535 invoked by uid 1000); 10 Sep 2021 12:36:32 -0400
+Date:   Fri, 10 Sep 2021 12:36:32 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
- <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
- <20210824053830-mutt-send-email-mst@kernel.org>
- <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
- <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
- <20210830163723-mutt-send-email-mst@kernel.org>
- <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
- <20210910054044-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
-Date:   Fri, 10 Sep 2021 09:34:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+Message-ID: <20210910163632.GC39858@rowland.harvard.edu>
+References: <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <5412ab37-2979-5717-4951-6a61366df0f2@nvidia.com>
+ <20210909180005.GA2230712@paulmck-ThinkPad-P17-Gen-1>
+ <YTtpnZuSId9yDUjB@boqun-archlinux>
 MIME-Version: 1.0
-In-Reply-To: <20210910054044-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/mixed; boundary="OgqxwSJOaUobr8KG"
+Content-Disposition: inline
+In-Reply-To: <YTtpnZuSId9yDUjB@boqun-archlinux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
->>>> And we've been avoiding that drivers can self declare auditing, we've been
->>>> trying to have a separate centralized list so that it's easier to enforce
->>>> and avoids any cut'n'paste mistakes.
->>>>
->>>> -Andi
->>> Now I'm confused. What is proposed here seems to be basically that,
->>> drivers need to declare auditing by replacing ioremap with
->>> ioremap_shared.
->> Auditing is declared on the device model level using a central allow list.
-> Can we not have an init call allow list instead of, or in addition to, a
-> device allow list?
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Sep 10, 2021 at 10:20:13PM +0800, Boqun Feng wrote:
+> On Thu, Sep 09, 2021 at 11:00:05AM -0700, Paul E. McKenney wrote:
+> [...]
+> > 
+> > Boqun, I vaguely remember a suggested change from you along these lines,
+> > but now I cannot find it.  Could you please send it as a formal patch
+> > if you have not already done so or point me at it if you have?
+> > 
+> 
+> Here is a draft patch based on the change I did when I discussed with
+> Peter, and I really want to hear Alan's thought first. Ideally, we
+> should also have related litmus tests and send to linux-arch list so
+> that we know the ordering is provided by every architecture.
+> 
+> Regards,
+> Boqun
+> 
+> --------------------------------->8
+> Subject: [PATCH] tools/memory-model: Provide extra ordering for
+>  lock-{release,acquire} on the same CPU
+> 
+> A recent discussion[1] shows that we are in favor of strengthening the
+> ordering of lock-release + lock-acquire on the same CPU: a lock-release
+> and a po-after lock-acquire should provide the so-called RCtso ordering,
+> that is a memory access S po-before the lock-release should be ordered
+> against a memory access R po-after the lock-acquire, unless S is a store
+> and R is a load.
+> 
+> The strengthening meets programmers' expection that "sequence of two
+> locked regions to be ordered wrt each other" (from Linus), and can
+> reduce the mental burden when using locks. Therefore add it in LKMM.
+> 
+> [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+
+The change to linux-kernel.cat looks fine.  However, I didn't like your 
+update to explanation.txt.  Instead I wrote my own, given below.
+
+I also wrote a couple of litmus tests which Paul can add to the 
+appropriate archive.  They are attached to this email.  As expected, 
+they fail (result Sometimes) with the current LKMM and succeed (Never) 
+with Boqun's updated model.
+
+Alan
 
 
-That would be quite complicated and intrusive. In fact I'm not even sure 
-how to do maintain something like this. There are a lot of needed 
-initcalls, they would all need to be marked. How can we distinguish 
-them? It would be a giant auditing project. And of course how would you 
-prevent it from bitrotting?
+--- usb-devel.orig/tools/memory-model/Documentation/explanation.txt
++++ usb-devel/tools/memory-model/Documentation/explanation.txt
+@@ -1813,15 +1813,16 @@ spin_trylock() -- we can call these thin
+ lock-acquires -- have two properties beyond those of ordinary releases
+ and acquires.
+ 
+-First, when a lock-acquire reads from a lock-release, the LKMM
+-requires that every instruction po-before the lock-release must
+-execute before any instruction po-after the lock-acquire.  This would
+-naturally hold if the release and acquire operations were on different
+-CPUs, but the LKMM says it holds even when they are on the same CPU.
+-For example:
++First, when a lock-acquire reads from or is po-after a lock-release,
++the LKMM requires that every instruction po-before the lock-release
++must execute before any instruction po-after the lock-acquire.  This
++would naturally hold if the release and acquire operations were on
++different CPUs and accessed the same lock variable, but the LKMM says
++it also holds when they are on the same CPU, even if they access
++different lock variables.  For example:
+ 
+ 	int x, y;
+-	spinlock_t s;
++	spinlock_t s, t;
+ 
+ 	P0()
+ 	{
+@@ -1830,9 +1831,9 @@ For example:
+ 		spin_lock(&s);
+ 		r1 = READ_ONCE(x);
+ 		spin_unlock(&s);
+-		spin_lock(&s);
++		spin_lock(&t);
+ 		r2 = READ_ONCE(y);
+-		spin_unlock(&s);
++		spin_unlock(&t);
+ 	}
+ 
+ 	P1()
+@@ -1842,10 +1843,10 @@ For example:
+ 		WRITE_ONCE(x, 1);
+ 	}
+ 
+-Here the second spin_lock() reads from the first spin_unlock(), and
+-therefore the load of x must execute before the load of y.  Thus we
+-cannot have r1 = 1 and r2 = 0 at the end (this is an instance of the
+-MP pattern).
++Here the second spin_lock() is po-after the first spin_unlock(), and
++therefore the load of x must execute before the load of y, even tbough
++the two locking operations use different locks.  Thus we cannot have
++r1 = 1 and r2 = 0 at the end (this is an instance of the MP pattern).
+ 
+ This requirement does not apply to ordinary release and acquire
+ fences, only to lock-related operations.  For instance, suppose P0()
+@@ -1872,13 +1873,13 @@ instructions in the following order:
+ 
+ and thus it could load y before x, obtaining r2 = 0 and r1 = 1.
+ 
+-Second, when a lock-acquire reads from a lock-release, and some other
+-stores W and W' occur po-before the lock-release and po-after the
+-lock-acquire respectively, the LKMM requires that W must propagate to
+-each CPU before W' does.  For example, consider:
++Second, when a lock-acquire reads from or is po-after a lock-release,
++and some other stores W and W' occur po-before the lock-release and
++po-after the lock-acquire respectively, the LKMM requires that W must
++propagate to each CPU before W' does.  For example, consider:
+ 
+ 	int x, y;
+-	spinlock_t x;
++	spinlock_t s;
+ 
+ 	P0()
+ 	{
+@@ -1908,7 +1909,12 @@ each CPU before W' does.  For example, c
+ 
+ If r1 = 1 at the end then the spin_lock() in P1 must have read from
+ the spin_unlock() in P0.  Hence the store to x must propagate to P2
+-before the store to y does, so we cannot have r2 = 1 and r3 = 0.
++before the store to y does, so we cannot have r2 = 1 and r3 = 0.  But
++if P1 had used a lock variable different from s, the writes could have
++propagated in either order.  (On the other hand, if the code in P0 and
++P1 had all executed on a single CPU, as in the example before this
++one, then the writes would have propagated in order even if the two
++critical sections used different lock variables.)
+ 
+ These two special requirements for lock-release and lock-acquire do
+ not arise from the operational model.  Nevertheless, kernel developers
 
 
-Basically it would be hundreds of changes all over the tree, just to 
-avoid two changes in virtio and MSI. Approach of just stopping the 
-initcalls from doing bad things is much less intrusive.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ullk-rw.litmus"
 
->
->> But this cannot do anything to initcalls that run before probe,
-> Can't we extend module_init so init calls are validated against the
-> allow list?
+C ullk-rw
 
-See above.
+(*
+ * Result: Never
+ *
+ * If two locked critical sections execute on the same CPU, all accesses
+ * in the first must execute before any accesses in the second, even if
+ * the critical sections are protected by different locks.
+ *)
 
+{}
 
-Also the problem isn't really with modules (we rely on udev not loading 
-them), but with builtin initcalls
+P0(spinlock_t *s, spinlock_t *t, int *x, int *y)
+{
+	int r1;
 
+	spin_lock(s);
+	r1 = READ_ONCE(*x);
+	spin_unlock(s);
+	spin_lock(t);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(t);
+}
 
->
->> that's why
->> an extra level of defense of ioremap opt-in is useful.
-> OK even assuming this, why is pci_iomap opt-in useful?
-> That never happens before probe - there's simply no pci_device then.
+P1(int *x, int *y)
+{
+	int r2;
 
+	r2 = smp_load_acquire(y);
+	WRITE_ONCE(*x, 1);
+}
 
-Hmm, yes that's true. I guess we can make it default to opt-in for 
-pci_iomap.
+exists (0:r1=1 /\ 1:r2=1)
 
-It only really matters for device less ioremaps.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ullk-ww.litmus"
 
->
-> It looks suspiciously like drivers self-declaring auditing to me which
-> we both seem to agree is undesirable. What exactly is the difference?
+C ullk-ww
 
+(*
+ * Result: Never
+ *
+ * If two locked critical sections execute on the same CPU, stores in the
+ * first must propagate to each CPU before stores in the second do, even if
+ * the critical sections are protected by different locks.
+ *)
 
-Just allow listing the ioremaps is not self declaration because the 
-device will still not initialize due to the central device filter. If 
-you want to use it that has to be changed.
+{}
 
-It's just an additional safety net to contain code running before probe.
+P0(spinlock_t *s, spinlock_t *t, int *x, int *y)
+{
+	spin_lock(s);
+	WRITE_ONCE(*x, 1);
+	spin_unlock(s);
+	spin_lock(t);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(t);
+}
 
+P1(int *x, int *y)
+{
+	int r1;
+	int r2;
 
->
-> Or are you just trying to disable anything that runs before probe?
+	r1 = READ_ONCE(*y);
+	smp_rmb();
+	r2 = READ_ONCE(*x);
+}
 
+exists (1:r1=1 /\ 1:r2=0)
 
-Well anything that could do dangerous host interactions (like processing 
-ioremap data) A lot of things are harmless and can be allowed, or 
-already blocked elsewhere (e.g. we have a IO port filter). This just 
-handles the ioremap/MMIO case.
-
-> In that case I don't see a reason to touch pci drivers though.
-> These should be fine with just the device model list.
-
-
-That won't stop initcalls.
-
-
--Andi
-
-
->
+--OgqxwSJOaUobr8KG--
