@@ -2,379 +2,503 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D624065B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ACA4065B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhIJC2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:28:10 -0400
-Received: from m12-13.163.com ([220.181.12.13]:47612 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhIJC2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:28:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hhPBH
-        /AGmNXeDRA+7MV4gJYYBNXBcNZ9QWtRHPEVEZE=; b=NUXOJb4dRY+YjftsfhGla
-        DV36MUbGu9IKthPkn7tJ4tga/wzeVpk/ldrvcgilhczIsMsQv1uIPyTG2XiSQTBC
-        sD0FAeE2mJy2oTplkpXyJl+6YEKIcUvnBGHhOYV8e8rSxJDrWfDW3/CCcxvikKqU
-        q1DW4J+bF/NUEcU3bR38uU=
-Received: from ubuntu.localdomain (unknown [183.220.91.20])
-        by smtp9 (Coremail) with SMTP id DcCowADHBuNZwjphcFVnDQ--.5829S2;
-        Fri, 10 Sep 2021 10:26:34 +0800 (CST)
-From:   Junhua Huang <junhuahuangdream@163.com>
-To:     alexs@kernel.org, corbet@lwn.net, bobwxc@email.cn,
-        sterlingteng@gmail.com
-Cc:     siyanteng01@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Junhua Huang <huang.junhua@zte.com.cn>,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: [PATCH v4] docs/zh_CN: Add zh_CN/admin-guide/sysrq.rst
-Date:   Thu,  9 Sep 2021 19:25:31 -0700
-Message-Id: <20210910022531.243882-1-junhuahuangdream@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229820AbhIJC33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:29:29 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:44384 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229628AbhIJC32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:29:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnqXCQB_1631240896;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnqXCQB_1631240896)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 10:28:16 +0800
+Date:   Fri, 10 Sep 2021 10:28:18 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH 6/6] vp_vdpa: introduce legacy virtio pci driver
+Message-ID: <20210910022818.GB17535@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <8b084e5beb1111ad98bb64177ebd0e9845c178fa.1631101392.git.wuzongyong@linux.alibaba.com>
+ <20210909095725-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowADHBuNZwjphcFVnDQ--.5829S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUk4EEUUUUU
-X-Originating-IP: [183.220.91.20]
-X-CM-SenderInfo: xmxqx3pdkxt05jguvtrp6rljoofrz/1tbipRoKZVUMgaN9xwAAsR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909095725-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junhua Huang <huang.junhua@zte.com.cn>
+On Thu, Sep 09, 2021 at 09:57:50AM -0400, Michael S. Tsirkin wrote:
+> On Wed, Sep 08, 2021 at 08:20:37PM +0800, Wu Zongyong wrote:
+> > This patch implements a vdpa driver for legacy virtio-pci device. And
+> > this has been tested with the ENI(Elastic Network Interface) which is a
+> > hardware virtio network device in Alibaba ECS baremetal instance.
+> > 
+> > Note that legacy device doesn't support to change the virtqueue size, so
+> > users should use get_vq_num_unchangeable callback to check if the
+> > virqueue size can be changed.
+> 
+> Hmm isn't this implicit in this being a legacy device?
+> 
+Yes, but there is no way to report the backend device is legacy for
+users. So I add a new callback get_vq_num_unchangeable to indicate it.
 
-Add translation zh_CN/admin-guide/sysrq.rst and link it to
-zh_CN/admin-guide/index.rst while clean its todo entry.
-
-Signed-off-by: Junhua Huang <huang.junhua@zte.com.cn>
-Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
----
-
-v4:
-* add the Reviewed-by tag after approved by Yanteng.
-
-v3:
-* fix the building warnings and some format issues in presentation.
-* remove the Reviewed-by tag.
-
-v2:
-* modify some translation issues according to review from Yanteng.
-* add the Reviewed-by tag.
----
- .../translations/zh_CN/admin-guide/index.rst  |   2 +-
- .../translations/zh_CN/admin-guide/sysrq.rst  | 280 ++++++++++++++++++
- 2 files changed, 281 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/translations/zh_CN/admin-guide/sysrq.rst
-
-diff --git a/Documentation/translations/zh_CN/admin-guide/index.rst b/Documentation/translations/zh_CN/admin-guide/index.rst
-index 460034cbc2ab..83db84282562 100644
---- a/Documentation/translations/zh_CN/admin-guide/index.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/index.rst
-@@ -67,6 +67,7 @@ Todolist:
-    cpu-load
-    lockup-watchdogs
-    unicode
-+   sysrq
- 
- Todolist:
- 
-@@ -118,7 +119,6 @@ Todolist:
-    rtc
-    serial-console
-    svga
--   sysrq
-    thunderbolt
-    ufs
-    vga-softcursor
-diff --git a/Documentation/translations/zh_CN/admin-guide/sysrq.rst b/Documentation/translations/zh_CN/admin-guide/sysrq.rst
-new file mode 100644
-index 000000000000..8276d70f3b40
---- /dev/null
-+++ b/Documentation/translations/zh_CN/admin-guide/sysrq.rst
-@@ -0,0 +1,280 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: Documentation/admin-guide/sysrq.rst
-+
-+:翻译:
-+
-+ 黄军华 Junhua Huang <huang.junhua@zte.com.cn>
-+
-+:校译:
-+
-+ 司延腾 Yanteng Si <siyanteng@loongson.cn>
-+
-+.. _cn_admin-guide_sysrq:
-+
-+Linux 魔法系统请求键骇客
-+========================
-+
-+针对 sysrq.c 的文档说明
-+
-+什么是魔法 SysRq 键？
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+它是一个你可以输入的具有魔法般的组合键。
-+无论内核在做什么，内核都会响应 SysRq 键的输入，除非内核完全卡死。
-+
-+如何使能魔法 SysRq 键？
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+在配置内核时，我们需要设置 'Magic SysRq key (CONFIG_MAGIC_SYSRQ)' 为 'Y'。
-+当运行一个编译进 sysrq 功能的内核时，/proc/sys/kernel/sysrq 控制着被
-+SysRq 键调用的功能许可。这个文件的默认值由 CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE
-+配置符号设定，文件本身默认设置为 1。以下是 /proc/sys/kernel/sysrq 中可能的
-+值列表：
-+
-+   -  0 - 完全不使能 SysRq 键
-+   -  1 - 使能 SysRq 键的全部功能
-+   - >1 - 对于允许的 SysRq 键功能的比特掩码（参见下面更详细的功能描述）::
-+
-+          2 =   0x2 - 使能对控制台日志记录级别的控制
-+          4 =   0x4 - 使能对键盘的控制 (SAK, unraw)
-+          8 =   0x8 - 使能对进程的调试导出等
-+         16 =  0x10 - 使能同步命令
-+         32 =  0x20 - 使能重新挂载只读
-+         64 =  0x40 - 使能对进程的信号操作 (term, kill, oom-kill)
-+        128 =  0x80 - 允许重启、断电
-+        256 = 0x100 - 允许让所有实时任务变普通任务
-+
-+你可以通过如下命令把值设置到这个文件中::
-+
-+    echo "number" >/proc/sys/kernel/sysrq
-+
-+这里被写入的 number 可以是 10 进制数，或者是带着 0x 前缀的 16 进制数。
-+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE 必须是以 16 进制数写入。
-+
-+注意，``/proc/sys/kernel/sysrq`` 的值只影响通过键盘触发 SySRq 的调用，对于
-+通过 ``/proc/sysrq-trigger`` 的任何操作调用都是允许的
-+（通过具有系统权限的用户）。
-+
-+如何使用魔法 SysRq 键？
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+在 x86 架构上
-+	你可以按下键盘组合键 :kbd:`ALT-SysRq-<command key>`。
-+
-+	.. note::
-+	   一些键盘可能没有标识 'SySRq' 键。'SySRq' 键也被当做 'Print Screen'键。
-+	   同时有些键盘无法处理同时按下这么多键，因此你可以先按下键盘 :kbd:`Alt` 键，
-+	   然后按下键盘 :kbd:`SysRq` 键，再释放键盘 :kbd:`SysRq` 键，之后按下键盘上命令键
-+	   :kbd:`<command key>`，最后释放所有键。
-+
-+在 SPARC 架构上
-+	你可以按下键盘组合键 :kbd:`ALT-STOP-<command key>` 。
-+
-+在串行控制台（只针对 PC 类型的标准串口）
-+        你可以发一个 ``BREAK`` ，然后在 5 秒内发送一个命令键，
-+	发送 ``BREAK`` 两次将被翻译为一个正常的 BREAK 操作。
-+
-+在 PowerPC 架构上
-+	按下键盘组合键 :kbd:`ALT - Print Screen` （或者 :kbd:`F13`） - :kbd:`<命令键>` 。
-+        :kbd:`Print Screen` （或者 :kbd:`F13`） - :kbd:`<命令键>` 或许也能实现。
-+
-+在其他架构上
-+	如果你知道其他架构的组合键，请告诉我，我可以把它们添加到这部分。
-+
-+在所有架构上
-+	写一个字符到 /proc/sysrq-trigger 文件，例如::
-+
-+		echo t > /proc/sysrq-trigger
-+
-+这个命令键 :kbd:`<command key>` 是区分大小写的。
-+
-+什么是命令键？
-+~~~~~~~~~~~~~~
-+
-+=========== ================================================================
-+命令键	    功能
-+=========== ================================================================
-+``b``	    将立即重启系统，不会同步或者卸载磁盘。
-+
-+``c``	    将执行系统 crash，如果配置了系统 crashdump，将执行 crashdump。
-+
-+``d``	    显示所有持有的锁。
-+
-+``e``	    发送 SIGTERM 信号给所有进程，除了 init 进程。
-+
-+``f``	    将调用 oom killer 杀掉一个过度占用内存的进程，如果什么任务都没杀，
-+            也不会 panic。
-+
-+``g``	    kgdb 使用（内核调试器）。
-+
-+``h``	    将会显示帮助。（实际上除了这里列举的键，其他的都将显示帮助，
-+	    但是 ``h`` 容易记住）:-)
-+
-+``i``	    发送 SIGKILL 给所有进程，除了 init 进程。
-+
-+``j``	    强制性的 “解冻它” - 用于被 FIFREEZE ioctl 操作冻住的文件系统。
-+
-+``k``	    安全访问秘钥(SAK)杀掉在当前虚拟控制台的所有程序，注意：参考
-+            下面 SAK 节重要论述。
-+
-+``l``	    显示所有活动 cpu 的栈回溯。
-+
-+``m``	    将导出当前内存信息到你的控制台。
-+
-+``n``	    用于使所有实时任务变成普通任务。
-+
-+``o``	    将关闭系统（如果配置和支持的话）。
-+
-+``p``	    将导出当前寄存器和标志位到控制台。
-+
-+``q``	    将导出每个 cpu 上所有已装备的高精度定时器（不是完整的
-+            time_list 文件显示的 timers）和所有时钟事件设备的详细信息。
-+
-+``r``	    关闭键盘的原始模式，设置为转换模式。
-+
-+``s``	    将尝试同步所有的已挂载文件系统。
-+
-+``t``	    将导出当前所有任务列表和它们的信息到控制台。
-+
-+``u``	    将尝试重新挂载已挂载文件系统为只读。
-+
-+``v``	    强制恢复帧缓存控制台。
-+``v``	    触发 ETM 缓存导出 [ARM 架构特有]
-+
-+``w``	    导出处于不可中断状态（阻塞）的任务。
-+
-+``x``	    在 ppc/powerpc 架构上用于 xmon 接口。
-+            在 sparc64 架构上用于显示全局的 PMU（性能监控单元）寄存器。
-+            在 MIPS 架构上导出所有的 tlb 条目。
-+
-+``y``	    显示全局 cpu 寄存器 [SPARC-64 架构特有]
-+
-+``z``	    导出 ftrace 缓存信息
-+
-+``0``-``9`` 设置控制台日志级别，该级别控制什么样的内核信息将被打印到你的
-+	    控制台。（比如 ``0`` ，将使得只有紧急信息，像 PANICs or OOPSes
-+	    才能到你的控制台。）
-+=========== ================================================================
-+
-+好了，我能用他们做什么呢？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+嗯，当你的 X 服务端或者 svgalib 程序崩溃，unraw(r) 非原始模式命令键是非常
-+方便的。
-+
-+sak(k)（安全访问秘钥）在你尝试登陆的同时，又想确保当前控制台没有可以获取你的
-+密码的特洛伊木马程序运行时是有用的。它会杀掉给定控制台的所有程序，这样你
-+就可以确认当前的登陆提示程序是实际来自 init 进程的程序，而不是某些特洛伊
-+木马程序。
-+
-+.. important::
-+
-+   在其实际的形式中，在兼容 C2 安全标准的系统上，它不是一个真正的 SAK，
-+   它也不应该误认为此。
-+
-+似乎其他人发现其可以作为（系统终端联机键）当你想退出一个程序，
-+同时不会让你切换控制台的方法。（比如，X 服务端或者 svgalib 程序）
-+
-+``reboot(b)`` 是个好方法，当你不能关闭机器时，它等同于按下"复位"按钮。
-+
-+``crash(c)`` 可以用于手动触发一个 crashdump，当系统卡住时。
-+注意当 crashdump 机制不可用时，这个只是触发一个内核 crash。
-+
-+``sync(s)`` 在拔掉可移动介质之前，或者在使用不提供优雅关机的
-+救援 shell 之后很方便 -- 它将确保你的数据被安全地写入磁盘。注意，在你看到
-+屏幕上出现 "OK" 和 "Done" 之前，同步还没有发生。
-+
-+``umount(u)`` 可以用来标记文件系统正常卸载，从正在运行的系统角度来看，它们将
-+被重新挂载为只读。这个重新挂载动作直到你看到 "OK" 和 "Done" 信息出现在屏幕上
-+才算完成。
-+
-+日志级别 ``0`` - ``9`` 用于当你的控制台被大量的内核信息冲击，你不想看见的时候。
-+选择 ``0`` 将禁止除了最紧急的内核信息外的所有的内核信息输出到控制台。（但是如果
-+syslogd/klogd 进程是运行的，它们仍将被记录。）
-+
-+``term(e)`` 和 ``kill(i)`` 用于当你有些有点失控的进程，你无法通过其他方式杀掉
-+它们的时候，特别是它正在创建其他进程。
-+
-+"just thaw ``it(j)`` " 用于当你的系统由于一个 FIFREEZE ioctl 调用而产生的文件
-+系统冻结，而导致的不响应时。
-+
-+有的时候 SysRq 键在使用它之后，看起来像是“卡住”了，我能做些什么？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+这也会发生在我这，我发现轻敲键盘两侧的 shift、alt 和 control 键，然后再次敲击
-+一个无效的 SysRq 键序列可以解决问题。（比如，像键盘组合键 :kbd:`alt-sysrq-z` ）
-+切换到另一个虚拟控制台（键盘操作 :kbd:`ALT+Fn` ），然后再切回来应该也有帮助。
-+
-+我敲击了 SysRq 键，但像是什么都没发生，发生了什么错误？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+有一些键盘对于 SysRq 键设置了不同的键值，而不是提前定义的 99
-+(查看在 ``include/uapi/linux/input-event-codes.h`` 文件中 ``KEY_SYSRQ`` 的定义)
-+或者就根本没有 SysRq 键。在这些场景下，执行 ``showkey -s`` 命令来找到一个合适
-+的扫描码序列，然后使用 ``setkeycodes <sequence> 99`` 命令映射这个序列值到通用
-+的 SysRq 键编码上（比如 ``setkeycodes e05b 99`` ）。最好将这个命令放在启动脚本
-+中。
-+哦，顺便说一句，你十秒钟不输入任何东西就将退出 “showkey”。
-+
-+我想添加一个 SysRq 键事件到一个模块中，如何去做呢？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+为了注册一个基础函数到这个表中，首先你必须包含 ``include/linux/sysrq.h`` 头
-+文件，这个头文件定义了你所需要的所有东西。然后你必须创建一个 ``sysrq_key_op``
-+结构体，然后初始化它，使用如下内容，A） 你将使用的这个键的处理函数， B） 一个
-+help_msg 字符串，在 SysRq 键打印帮助信息时将打印出来，C） 一个 action_msg 字
-+符串，就在你的处理函数调用前打印出来。你的处理函数必须符合在 'sysrq.h' 文件中
-+的函数原型。
-+
-+在 ``sysrq_key_op`` 结构体被创建后，你可以调用内核函数
-+``register_sysrq_key(int key, const struct sysrq_key_op *op_p);``，
-+该函数在表中的 'key' 对应位置内容是空的情况下，将通过 ``op_p`` 指针注册这个操作
-+函数到表中 'key' 对应位置上。在模块卸载的时候，你必须调用
-+``unregister_sysrq_key(int key, const struct sysrq_key_op *op_p)`` 函数，该函数
-+只有在当前该键对应的处理函数被注册到了 'key' 对应位置时，才会移除 'op_p' 指针
-+对应的键值操作函数。这是为了防止在你注册之后，该位置被改写的情况。
-+
-+魔法 SysRq 键系统的工作原理是将键对应操作函数注册到键的操作查找表，
-+该表定义在 'drivers/tty/sysrq.c' 文件中。
-+该键表有许多在编译时候就注册进去的操作函数，但是是可变的。
-+并且有两个函数作为操作该表的接口被导出::
-+
-+	register_sysrq_key 和 unregister_sysrq_key.
-+
-+当然，永远不要在表中留下无效指针，即，当你的模块存在调用 register_sysrq_key()
-+函数，它一定要调用 unregister_sysrq_key() 来清除它使用过的 SysRq 键表条目。
-+表中的空指针是安全的。:)
-+
-+如果对于某种原因，在 handle_sysrq 调用的处理函数中，你认为有必要调用
-+handle_sysrq 函数时，你必须意识到当前你处于一个锁中（你同时也处于一个中断处理
-+函数中，这意味着不能睡眠）。所以这时你必须使用 ``__handle_sysrq_nolock`` 替代。
-+
-+当我敲击一个 SysRq 组合键时，只有标题打印出现在控制台？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+SysRq 键的输出和所有其他控制台输出一样，受制于控制台日志级别控制。
-+这意味着，如果内核以发行版内核中常见的 "quiet" 方式启动，则输出可能不会出现在实际
-+的控制台上，即使它会出现在 dmesg 缓存中，也可以通过 dmesg 命令和 ``/proc/kmsg``
-+文件的消费访问到。作为一个特例，来自 sysrq 命令的标题行将被传递给所有控制台
-+使用者，就好像当前日志级别是最大的一样。如果只发出标题头，则几乎可以肯定内核日志
-+级别太低。如果你需要控制台上的输出，那么你将需要临时提高控制台日志级别，通过使用
-+键盘组合键 :kbd:`alt-sysrq-8` 或者::
-+
-+    echo 8 > /proc/sysrq-trigger
-+
-+在触发了你感兴趣的 SysRq 键命令后，记得恢复日志级别到正常情况。
-+
-+我有很多问题时，可以请教谁？
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+请教在内核邮件列表上的人，邮箱：
-+	linux-kernel@vger.kernel.org
-+
-+致谢
-+~~~~
-+
-+- Mydraal <vulpyne@vulpyne.net> 撰写了该文件
-+- Adam Sulmicki <adam@cfar.umd.edu> 进行了更新
-+- Jeremy M. Dolan <jmd@turbogeek.org> 在 2001/01/28 10:15:59 进行了更新
-+- Crutcher Dunnavant <crutcher+kernel@datastacks.com> 添加键注册部分
--- 
-2.25.1
-
-
+> > If not, users should get the virqueue size
+> > first by the get_vq_num_max callback first then allocate same size
+> > memory for the virtqueue otherwise the device won't work correctly.
+> > 
+> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > ---
+> >  drivers/vdpa/Kconfig                     |   7 +
+> >  drivers/vdpa/virtio_pci/Makefile         |   1 +
+> >  drivers/vdpa/virtio_pci/vp_vdpa_common.c |   5 +
+> >  drivers/vdpa/virtio_pci/vp_vdpa_common.h |  11 +
+> >  drivers/vdpa/virtio_pci/vp_vdpa_legacy.c | 346 +++++++++++++++++++++++
+> >  5 files changed, 370 insertions(+)
+> >  create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
+> > 
+> > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > index a503c1b2bfd9..ccb4fdb11f0f 100644
+> > --- a/drivers/vdpa/Kconfig
+> > +++ b/drivers/vdpa/Kconfig
+> > @@ -67,4 +67,11 @@ config VP_VDPA
+> >  	help
+> >  	  This kernel module bridges virtio PCI device to vDPA bus.
+> >  
+> > +config VP_VDPA_LEGACY
+> > +	bool "Support legacy virtio pci device"
+> > +	depends on VP_VDPA
+> > +	select VIRTIO_PCI_LIB_LEGACY
+> > +	help
+> > +	  This option enables bridges legacy virito PCI device to vDPA bus.
+> > +
+> >  endif # VDPA
+> > diff --git a/drivers/vdpa/virtio_pci/Makefile b/drivers/vdpa/virtio_pci/Makefile
+> > index a772d86952b1..77c52dfb8b56 100644
+> > --- a/drivers/vdpa/virtio_pci/Makefile
+> > +++ b/drivers/vdpa/virtio_pci/Makefile
+> > @@ -1,4 +1,5 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >  
+> >  vp_vdpa-y += vp_vdpa_common.o vp_vdpa_modern.o
+> > +vp_vdpa-$(CONFIG_VP_VDPA_LEGACY) += vp_vdpa_legacy.o
+> >  obj-$(CONFIG_VP_VDPA) += vp_vdpa.o
+> > diff --git a/drivers/vdpa/virtio_pci/vp_vdpa_common.c b/drivers/vdpa/virtio_pci/vp_vdpa_common.c
+> > index 3ff24c9ad6e4..fa91dc153244 100644
+> > --- a/drivers/vdpa/virtio_pci/vp_vdpa_common.c
+> > +++ b/drivers/vdpa/virtio_pci/vp_vdpa_common.c
+> > @@ -8,6 +8,7 @@
+> >   * Based on virtio_pci_modern.c.
+> >   */
+> >  
+> > +#include "linux/err.h"
+> >  #include <linux/irqreturn.h>
+> >  #include <linux/interrupt.h>
+> >  #include "vp_vdpa_common.h"
+> > @@ -172,6 +173,10 @@ static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  		return ret;
+> >  
+> >  	vp_vdpa = vp_vdpa_modern_probe(pdev);
+> > +	if (PTR_ERR(vp_vdpa) == -ENODEV) {
+> > +		dev_info(&pdev->dev, "Tring legacy driver");
+> > +		vp_vdpa = vp_vdpa_legacy_probe(pdev);
+> > +	}
+> >  	if (IS_ERR(vp_vdpa))
+> >  		return PTR_ERR(vp_vdpa);
+> >  
+> > diff --git a/drivers/vdpa/virtio_pci/vp_vdpa_common.h b/drivers/vdpa/virtio_pci/vp_vdpa_common.h
+> > index 57886b55a2e9..39f241d8321b 100644
+> > --- a/drivers/vdpa/virtio_pci/vp_vdpa_common.h
+> > +++ b/drivers/vdpa/virtio_pci/vp_vdpa_common.h
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/virtio_ring.h>
+> >  #include <linux/virtio_pci.h>
+> >  #include <linux/virtio_pci_modern.h>
+> > +#include <linux/virtio_pci_legacy.h>
+> >  
+> >  #define VP_VDPA_DRIVER_NAME "vp_vdpa"
+> >  #define VP_VDPA_NAME_SIZE 256
+> > @@ -26,6 +27,7 @@ struct vp_vdpa {
+> >  	struct vdpa_device vdpa;
+> >  	struct pci_dev *pci_dev;
+> >  	struct virtio_pci_modern_device mdev;
+> > +	struct virtio_pci_legacy_device ldev;
+> >  	struct vp_vring *vring;
+> >  	struct vdpa_callback config_cb;
+> >  	char msix_name[VP_VDPA_NAME_SIZE];
+> > @@ -53,4 +55,13 @@ void vp_vdpa_free_irq_vectors(void *data);
+> >  
+> >  struct vp_vdpa *vp_vdpa_modern_probe(struct pci_dev *pdev);
+> >  
+> > +#if IS_ENABLED(CONFIG_VP_VDPA_LEGACY)
+> > +struct vp_vdpa *vp_vdpa_legacy_probe(struct pci_dev *pdev);
+> > +#else
+> > +static inline struct vp_vdpa *vp_vdpa_legacy_probe(struct pci_dev *pdev)
+> > +{
+> > +	return ERR_PTR(-ENODEV);
+> > +}
+> > +#endif
+> > +
+> >  #endif
+> > diff --git a/drivers/vdpa/virtio_pci/vp_vdpa_legacy.c b/drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
+> > new file mode 100644
+> > index 000000000000..75a6879a27ca
+> > --- /dev/null
+> > +++ b/drivers/vdpa/virtio_pci/vp_vdpa_legacy.c
+> > @@ -0,0 +1,346 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * vDPA bridge driver for legacy virtio-pci device
+> > + *
+> > + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
+> > + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > + */
+> > +
+> > +#include "linux/pci.h"
+> > +#include "linux/virtio_byteorder.h"
+> > +#include "linux/virtio_pci_legacy.h"
+> > +#include <uapi/linux/virtio_net.h>
+> > +#include <uapi/linux/virtio_blk.h>
+> > +#include <linux/virtio_ids.h>
+> > +#include <linux/virtio_pci.h>
+> > +#include "vp_vdpa_common.h"
+> > +
+> > +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
+> > +{
+> > +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> > +
+> > +	return &vp_vdpa->ldev;
+> > +}
+> > +
+> > +static u64 vp_vdpa_get_features(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	return vp_legacy_get_features(ldev);
+> > +}
+> > +
+> > +static int vp_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	vp_legacy_set_features(ldev, features);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static u8 vp_vdpa_get_status(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	return vp_legacy_get_status(ldev);
+> > +}
+> > +
+> > +static int vp_vdpa_set_vq_state_split(struct vdpa_device *vdpa,
+> > +				      const struct vdpa_vq_state *state)
+> > +{
+> > +	const struct vdpa_vq_state_split *split = &state->split;
+> > +
+> > +	if (split->avail_index == 0)
+> > +		return 0;
+> > +
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static int vp_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
+> > +				const struct vdpa_vq_state *state)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	/* Note that this is not supported by virtio specification.
+> > +	 * But if the state is by chance equal to the device initial
+> > +	 * state, we can let it go.
+> > +	 */
+> > +	if (!vp_legacy_get_queue_enable(ldev, qid))
+> > +		return vp_vdpa_set_vq_state_split(vdpa,	state);
+> > +
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static void vp_vdpa_set_vq_ready(struct vdpa_device *vdpa,
+> > +				 u16 qid, bool ready)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	/* Legacy devices can only be activated by setting vq address,
+> > +	 * and queue_enable is not supported by specification. So for
+> > +	 * legacy devices, we use @vp_vdpa_set_vq_address to set vq
+> > +	 * ready instead.
+> > +	 */
+> > +	if (!ready)
+> > +		vp_legacy_set_queue_address(ldev, qid, 0);
+> > +}
+> > +
+> > +static bool vp_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	return vp_legacy_get_queue_enable(ldev, qid);
+> > +}
+> > +
+> > +/* Legacy devices don't support set vq num by specification,
+> > + * just report an error if someone try to set it.
+> > + */
+> > +static void vp_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
+> > +			       u32 num)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	dev_err(&ldev->pci_dev->dev, "legacy device don't support set vq num\n");
+> > +}
+> > +
+> > +static u16 vp_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	/* assume all virtqueues have the same size */
+> > +	return vp_legacy_get_queue_size(ldev, 0);
+> > +}
+> > +
+> > +static int vp_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
+> > +				  u64 desc_area, u64 driver_area,
+> > +				  u64 device_area)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	vp_legacy_set_queue_address(ldev, qid, desc_area >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static u32 vp_vdpa_get_device_id(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	return ldev->id.device;
+> > +}
+> > +
+> > +static u32 vp_vdpa_get_vendor_id(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +
+> > +	return ldev->id.vendor;
+> > +}
+> > +
+> > +static size_t vp_vdpa_get_config_size(struct vdpa_device *vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > +	size_t size;
+> > +
+> > +	switch (ldev->id.device) {
+> > +	case VIRTIO_ID_NET:
+> > +		size = sizeof(struct virtio_net_config);
+> > +		break;
+> > +	case VIRTIO_ID_BLOCK:
+> > +		size = sizeof(struct virtio_blk_config);
+> > +		break;
+> > +	default:
+> > +		size = 0;
+> > +		dev_err(&ldev->pci_dev->dev, "VIRTIO ID %u not support\n", ldev->id.device);
+> > +	}
+> > +
+> > +	return size;
+> > +}
+> > +
+> > +static void vp_vdpa_get_config(struct vdpa_device *vdpa,
+> > +			       unsigned int offset,
+> > +			       void *buf, unsigned int len)
+> > +{
+> > +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> > +	struct virtio_pci_legacy_device *ldev = &vp_vdpa->ldev;
+> > +	void __iomem *ioaddr = ldev->ioaddr +
+> > +		VIRTIO_PCI_CONFIG_OFF(vp_vdpa->vectors) +
+> > +		offset;
+> > +	u8 *p = buf;
+> > +	int i;
+> > +
+> > +	/* legacy devices don't have a configuration generation field,
+> > +	 * so we just read it once.
+> > +	 */
+> > +	for (i = 0; i < len; i++)
+> > +		*p++ = ioread8(ioaddr + i);
+> > +}
+> > +
+> > +static void vp_vdpa_set_config(struct vdpa_device *vdpa,
+> > +			       unsigned int offset, const void *buf,
+> > +			       unsigned int len)
+> > +{
+> > +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> > +	struct virtio_pci_legacy_device *ldev = &vp_vdpa->ldev;
+> > +	void __iomem *ioaddr = ldev->ioaddr +
+> > +		VIRTIO_PCI_CONFIG_OFF(vp_vdpa->vectors) +
+> > +		offset;
+> > +	const u8 *p = buf;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < len; i++)
+> > +		iowrite8(*p++, ioaddr + i);
+> > +}
+> > +
+> > +static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
+> > +{
+> > +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> > +	struct virtio_pci_legacy_device *ldev = &vp_vdpa->ldev;
+> > +	u8 s = vp_vdpa_get_status(vdpa);
+> > +
+> > +	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
+> > +	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
+> > +		vp_vdpa_request_irq(vp_vdpa);
+> > +	}
+> > +
+> > +	vp_legacy_set_status(ldev, status);
+> > +
+> > +	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
+> > +	    (s & VIRTIO_CONFIG_S_DRIVER_OK)) {
+> > +		vp_vdpa_free_irq(vp_vdpa);
+> > +	}
+> > +}
+> > +
+> > +static bool vp_vdpa_get_vq_num_unchangeable(struct vdpa_device *vdpa)
+> > +{
+> > +	return true;
+> > +}
+> > +
+> > +static const struct vdpa_config_ops vp_vdpa_ops = {
+> > +	.get_features	= vp_vdpa_get_features,
+> > +	.set_features	= vp_vdpa_set_features,
+> > +	.get_status	= vp_vdpa_get_status,
+> > +	.set_status	= vp_vdpa_set_status,
+> > +	.get_vq_num_max	= vp_vdpa_get_vq_num_max,
+> > +	.get_vq_state	= vp_vdpa_get_vq_state,
+> > +	.set_vq_state	= vp_vdpa_set_vq_state,
+> > +	.set_vq_cb	= vp_vdpa_set_vq_cb,
+> > +	.set_vq_ready	= vp_vdpa_set_vq_ready,
+> > +	.get_vq_ready	= vp_vdpa_get_vq_ready,
+> > +	.set_vq_num	= vp_vdpa_set_vq_num,
+> > +	.set_vq_address	= vp_vdpa_set_vq_address,
+> > +	.kick_vq	= vp_vdpa_kick_vq,
+> > +	.get_device_id	= vp_vdpa_get_device_id,
+> > +	.get_vendor_id	= vp_vdpa_get_vendor_id,
+> > +	.get_vq_align	= vp_vdpa_get_vq_align,
+> > +	.get_config_size = vp_vdpa_get_config_size,
+> > +	.get_config	= vp_vdpa_get_config,
+> > +	.set_config	= vp_vdpa_set_config,
+> > +	.set_config_cb  = vp_vdpa_set_config_cb,
+> > +	.get_vq_irq	= vp_vdpa_get_vq_irq,
+> > +	.get_vq_num_unchangeable = vp_vdpa_get_vq_num_unchangeable,
+> > +};
+> > +
+> > +static u16 vp_vdpa_get_num_queues(struct vp_vdpa *vp_vdpa)
+> > +{
+> > +	struct virtio_pci_legacy_device *ldev = &vp_vdpa->ldev;
+> > +	u32 features = vp_legacy_get_features(ldev);
+> > +	u16 num;
+> > +
+> > +	switch (ldev->id.device) {
+> > +	case VIRTIO_ID_NET:
+> > +		num = 2;
+> > +		if (features & VIRTIO_NET_F_MQ) {
+> > +			__virtio16 max_virtqueue_pairs;
+> > +
+> > +			vp_vdpa_get_config(&vp_vdpa->vdpa,
+> > +				offsetof(struct virtio_net_config, max_virtqueue_pairs),
+> > +				&max_virtqueue_pairs,
+> > +				sizeof(max_virtqueue_pairs));
+> > +			num = 2 * __virtio16_to_cpu(virtio_legacy_is_little_endian(),
+> > +						max_virtqueue_pairs);
+> > +		}
+> > +
+> > +		if (features & VIRTIO_NET_F_CTRL_VQ)
+> > +			num += 1;
+> > +		break;
+> > +	case VIRTIO_ID_BLOCK:
+> > +		num = 1;
+> > +		break;
+> > +	default:
+> > +		num = 0;
+> > +		dev_err(&ldev->pci_dev->dev, "VIRTIO ID %u not support\n", ldev->id.device);
+> > +	}
+> > +
+> > +	return num;
+> > +}
+> > +
+> > +static u16 vp_vdpa_queue_vector(struct vp_vdpa *vp_vdpa, u16 idx, u16 vector)
+> > +{
+> > +	return vp_legacy_queue_vector(&vp_vdpa->ldev, idx, vector);
+> > +}
+> > +
+> > +static u16 vp_vdpa_config_vector(struct vp_vdpa *vp_vdpa, u16 vector)
+> > +{
+> > +	return vp_legacy_config_vector(&vp_vdpa->ldev, vector);
+> > +}
+> > +
+> > +struct vp_vdpa *vp_vdpa_legacy_probe(struct pci_dev *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct vp_vdpa *vp_vdpa;
+> > +	struct virtio_pci_legacy_device *ldev;
+> > +	int ret, i;
+> > +
+> > +	vp_vdpa = vdpa_alloc_device(struct vp_vdpa, vdpa, dev, &vp_vdpa_ops, NULL);
+> > +	if (vp_vdpa == NULL) {
+> > +		dev_err(dev, "vp_vdpa: Failed to allocate vDPA structure\n");
+> > +		return ERR_PTR(-ENOMEM);
+> > +	}
+> > +
+> > +	ldev = &vp_vdpa->ldev;
+> > +	ldev->pci_dev = pdev;
+> > +
+> > +	ret = vp_legacy_probe(ldev);
+> > +	if (ret) {
+> > +		dev_err(dev, "Failed to probe legacy PCI device\n");
+> > +		goto err;
+> > +	}
+> > +
+> > +	pci_set_master(pdev);
+> > +	pci_set_drvdata(pdev, vp_vdpa);
+> > +
+> > +	vp_vdpa->vdpa.dma_dev = &pdev->dev;
+> > +	vp_vdpa->queues = vp_vdpa_get_num_queues(vp_vdpa);
+> > +
+> > +	ret = devm_add_action_or_reset(dev, vp_vdpa_free_irq_vectors, pdev);
+> > +	if (ret) {
+> > +		dev_err(dev,
+> > +			"Failed for adding devres for freeing irq vectors\n");
+> > +		goto err;
+> > +	}
+> > +
+> > +	vp_vdpa->vring = devm_kcalloc(dev, vp_vdpa->queues,
+> > +				      sizeof(*vp_vdpa->vring),
+> > +				      GFP_KERNEL);
+> > +	if (!vp_vdpa->vring) {
+> > +		ret = -ENOMEM;
+> > +		dev_err(dev, "Fail to allocate virtqueues\n");
+> > +		goto err;
+> > +	}
+> > +
+> > +	for (i = 0; i < vp_vdpa->queues; i++) {
+> > +		vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+> > +		vp_vdpa->vring[i].notify = ldev->ioaddr + VIRTIO_PCI_QUEUE_NOTIFY;
+> > +		vp_vdpa->vring[i].notify_pa = pci_resource_start(pdev, 0) + VIRTIO_PCI_QUEUE_NOTIFY;
+> > +	}
+> > +	vp_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
+> > +
+> > +	vp_vdpa->queue_vector = vp_vdpa_queue_vector;
+> > +	vp_vdpa->config_vector = vp_vdpa_config_vector;
+> > +
+> > +	return vp_vdpa;
+> > +
+> > +err:
+> > +	put_device(&vp_vdpa->vdpa.dev);
+> > +	return ERR_PTR(ret);
+> > +}
+> > -- 
+> > 2.31.1
