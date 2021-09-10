@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FEA406AEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB80406AF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhIJLpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:45:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36828 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhIJLpL (ORCPT
+        id S232905AbhIJLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 07:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhIJLp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:45:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8A1A92005C;
-        Fri, 10 Sep 2021 11:43:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631274239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w86BLDTkoihpTkMV+bmcVu+5NgKjI1pW8yCMRIcNiRk=;
-        b=aEmdav0TlL1DhoCmFgKBUDEb9LdZuGAI7g1zjKNtqSQ2Dhefhfx68Ix3YOXahsgN8qiAYj
-        05XfYluXf3avyedy+S9Yw8KKgj+x5AffZ6aNc7w1EKMR2kRfxVcrmIJ0vxXWozNBx24//m
-        A3s5B9RwfBY0x3U76Iyr7zMkHrtAPZg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E2A8FA3BAB;
-        Fri, 10 Sep 2021 11:43:58 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 13:43:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
- bail out early
-Message-ID: <YTtE+/w1I/6uj70f@dhcp22.suse.cz>
-References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
- <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
- <20210908015014.GA28091@shbuild999.sh.intel.com>
- <YThg8Mp42b194k0/@dhcp22.suse.cz>
- <20210910074400.GA18707@shbuild999.sh.intel.com>
- <YTsYxbMhGIunUPZr@dhcp22.suse.cz>
- <20210910092132.GA54659@shbuild999.sh.intel.com>
- <YTs01sPa5MojLGqO@dhcp22.suse.cz>
- <20210910112953.GB54659@shbuild999.sh.intel.com>
+        Fri, 10 Sep 2021 07:45:28 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35EAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 04:44:17 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id y144so1548136qkb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 04:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+sNrClIRmKT39DXtlmngVLlo+ZAbFPvIJCSeUYEI0gw=;
+        b=W3KawHv25sca09OHMXXsSx9jinI5IGxVA4u+TBi7/ZccoOdj/05pVya+fdn2Uv8NG6
+         znx+S3ky21ocFeY8WeTbMNQ3YPFmv+4FhnVys6hulPumngd3GAHAHS4Ahw90toLsYHEp
+         WS+Px4tcXrS1sp0deWhygiBOxxabgkb5lYF5cIJqvPSskoGBuRnJzcHIbTDuu7Gt+ThQ
+         Q1BYLS+PjaugXM0w+aNhxAqqDn9k0kjKyHXDHwCfE9Mlqvnf8U1j5kAxutMJxEzw7BNT
+         4BirtTccrsPay2tef3fSlbrFdRoy8M7Wp5xm+lKGTgU134vqQKF6bEf2KTnXu0Psa9iU
+         Olkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+sNrClIRmKT39DXtlmngVLlo+ZAbFPvIJCSeUYEI0gw=;
+        b=YldpkQb2feTUt2j8o8aY/y2RzPyRQgRcl3h0zron+vLtCJLREQOmvLW8WBDUtMTs6K
+         a0riEHngQTGU0ujSlUarex5oRz4P9EY2ch4hI8IS5enEVlCmrXU9r71IEq0JIZ0Hb3+E
+         1BonceaZ3YrG2rdHpC0UFVhIOG0dPC5g5nZAlhK4THJeajti1zVJaGsCLN4ZLg4pU4xM
+         UTMQUK35GVTFks9CCIgBmoABdlxJ53/ckrxmqJ/rLw3wvdrvzHmZAQhbxdtO2ZQix1UE
+         sPBFL2rEWaPBSTKncAhF01aa8XfsbD5NTIjghodIGvM5zrTyV1UDpAbjqmInuhC09/Ox
+         xseA==
+X-Gm-Message-State: AOAM533EyWYMPucJ80eLVAuUEDP6FPETNXl/01Wvlnbk55IVQEBuLF5j
+        oO7QeAkHuafBitUH9VXvSPo6aSIuf/LwjJE6sumU4mQuEyDsEA==
+X-Google-Smtp-Source: ABdhPJxljxd4MZntzMSRtGTYxE8bT9PcPHRPF0kSsskgic35Do8kFW6ZsNTJeKfyfmh1G91CkbKnFDOhAZnGUxvrBsc=
+X-Received: by 2002:a05:620a:69b:: with SMTP id f27mr7220864qkh.287.1631274256924;
+ Fri, 10 Sep 2021 04:44:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910112953.GB54659@shbuild999.sh.intel.com>
+From:   Du Dengke <pinganddu90@gmail.com>
+Date:   Fri, 10 Sep 2021 19:44:05 +0800
+Message-ID: <CAKHP1dt+X_A=0=inaav5nLnJFdmhhEiD47eBJvTnzNzL2_o73Q@mail.gmail.com>
+Subject: scripts/checkstack.pl: fix minor spelling mistake
+To:     linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="0000000000009dc94105cba2a2e0"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 10-09-21 19:29:53, Feng Tang wrote:
-[...]
-> > Sorry I didn't really get to read this previously. The implementation
-> > works but I find it harder to read than really necessary. Why don't you
-> > use first_zones_zonelist here as well?
-> 
-> The concern I had was which zonelist to use, local node or the first node
-> of nodemask's node_zonelists[ZONELIST_FALLBACK],
+--0000000000009dc94105cba2a2e0
+Content-Type: text/plain; charset="UTF-8"
 
-I am not sure I see your concern. Either of the two should work just
-fine because all nodes should be reachable from the zonelist. But why
-don't you simply do the same kind of check as in the page allocator?
--- 
-Michal Hocko
-SUSE Labs
+Hi maintainer:
+    This is a patch to fix scripts/checkstack.pl minor spelling mistake.
+Thanks!
+
+--0000000000009dc94105cba2a2e0
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-scripts-checkstack.pl-fix-spelling-mistakes.patch"
+Content-Disposition: attachment; 
+	filename="0001-scripts-checkstack.pl-fix-spelling-mistakes.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kteak9dj0>
+X-Attachment-Id: f_kteak9dj0
+
+RnJvbSA3YmEzZGQ0Njk0OTQ3NmJkNmVhODg3MWNkN2FmM2Q1MjQxN2Y4NzVjIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiB6aGFveGluY2hhbyA8d2FuZ2h1b0B1Y2FzLmNvbS5jbj4KRGF0
+ZTogVGh1LCA5IFNlcCAyMDIxIDAxOjQ1OjU5IC0wNzAwClN1YmplY3Q6IFtQQVRDSF0gc2NyaXB0
+cy9jaGVja3N0YWNrLnBsOiBmaXggbWlub3Igc3BlbGxpbmcgbWlzdGFrZXMuCgpTaWduZWQtb2Zm
+LWJ5OiB6aGFveGluY2hhbyA8d2FuZ2h1b0B1Y2FzLmNvbS5jbj4KLS0tCiBzY3JpcHRzL2NoZWNr
+c3RhY2sucGwgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
+b24oLSkKCmRpZmYgLS1naXQgYS9zY3JpcHRzL2NoZWNrc3RhY2sucGwgYi9zY3JpcHRzL2NoZWNr
+c3RhY2sucGwKaW5kZXggZDJjMzg1ODRlY2U2Li5hNDM5MTEyOGIwNTUgMTAwNzU1Ci0tLSBhL3Nj
+cmlwdHMvY2hlY2tzdGFjay5wbAorKysgYi9zY3JpcHRzL2NoZWNrc3RhY2sucGwKQEAgLTMwLDcg
+KzMwLDcgQEAgdXNlIHN0cmljdDsKICMgJCYgKHdob2xlIHJlKSBtYXRjaGVzIHRoZSBjb21wbGV0
+ZSBvYmpkdW1wIGxpbmUgd2l0aCB0aGUgc3RhY2sgZ3Jvd3RoCiAjICQxIChmaXJzdCBicmFja2V0
+KSBtYXRjaGVzIHRoZSBzaXplIG9mIHRoZSBzdGFjayBncm93dGgKICMKLSMgJGRyZSBpcyBzaW1p
+bGFyLCBidXQgZm9yIGR5bmFtaWMgc3RhY2sgcmVkdXRpb25zOgorIyAkZHJlIGlzIHNpbWlsYXIs
+IGJ1dCBmb3IgZHluYW1pYyBzdGFjayByZWR1Y3Rpb25zOgogIyAkJiAod2hvbGUgcmUpIG1hdGNo
+ZXMgdGhlIGNvbXBsZXRlIG9iamR1bXAgbGluZSB3aXRoIHRoZSBzdGFjayBncm93dGgKICMgJDEg
+KGZpcnN0IGJyYWNrZXQpIG1hdGNoZXMgdGhlIGR5bmFtaWMgYW1vdW50IG9mIHRoZSBzdGFjayBn
+cm93dGgKICMKLS0gCjIuMTcuMQoK
+--0000000000009dc94105cba2a2e0--
