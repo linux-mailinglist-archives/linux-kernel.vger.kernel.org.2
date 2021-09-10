@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF4A407415
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B405E407416
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbhIJX4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233946AbhIJX4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:56:41 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D05C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:55:30 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso2516304pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 16:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lj4EQSAtjojNeOo+5AIxnfhqBrNwaP0Usia46GVY1oQ=;
-        b=P2Y9yL/ptNBIkgV2RV1ndLR/eMSVc/fsViMjX3kFRfgr6q4MrkOMcgd2f5ArvU/vQD
-         xal7x4pdT+BNm7K7oodlNFs5rfif4USN/CVluAoxvUAYVAqL5BWnqFH8V1m9ZotHj/FV
-         WEH5ZklYjE90+sxvPNoKKhV8iXPvLrqWIxSqzDfOW1nHFyDF9s3WUCMrTXud7dOLxE74
-         gNBGBcSpa/95/ClNgU+Xd8QaN+ReSUJFdryu/CBrGHmAOlu0KevlhgjtxB76wKHhQLZJ
-         PqoTZp9ltAYrzoPT/fX7pxFveU3Bvd9WSOGjEymXtMONBS44d4uOK7Y+JKt/VUprf0DJ
-         G2YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lj4EQSAtjojNeOo+5AIxnfhqBrNwaP0Usia46GVY1oQ=;
-        b=DkcH8ppF3LojLlplyMFkjPgeQkh8RiRsQo6JQjIvsJa/K1EM+fJZGK2K6zlCNhusR8
-         5WxMMSXTgKKPCRXR2yS5A/j7ZB6+cFFNwpXpvlimai8H7CXp4jW3D9Ey58CGnpsRYhxV
-         Ky0OFi0zJjxBgY90o3U+QNiof1mxNomSD/Z95dygJI4HHqQ0X551byXANGEcnQjjZELJ
-         WrmbpOAWZ1Cwepk9z4zJ2m8Gj2J4p9pfA5iabDXNJV/HNN7h3Ju0xvbG34jPvd28iAe3
-         dbM5+WVwcUgJpCq0v6v8bzRbFDa45p3tiqnw6Lgi23S8tk7HEjkWl8sZRsbr3QrDQ8Kx
-         EjhQ==
-X-Gm-Message-State: AOAM5314YcuQV59mnwIMHkrkIfD7WBxJdT96c5VKZqdc7NBsoNTOQOQE
-        XDlxtdywddmhBCavKfS8tzK2zQ==
-X-Google-Smtp-Source: ABdhPJwR9DZl1UautfziIWEvTjfS+Ek/Jql8tysBLQBAE49gKvvzNab7WfTaGvKbi8veNTD7znt/4g==
-X-Received: by 2002:a17:90b:198c:: with SMTP id mv12mr125644pjb.223.1631318129721;
-        Fri, 10 Sep 2021 16:55:29 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id n14sm60042pgd.48.2021.09.10.16.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 16:55:29 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 23:55:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>
-Subject: Re: [PATCH v4 6/6] KVM: VMX: enable IPI virtualization
-Message-ID: <YTvwbUhofR3Fv7bV@google.com>
-References: <20210809032925.3548-1-guang.zeng@intel.com>
- <20210809032925.3548-7-guang.zeng@intel.com>
- <YTvttCcfqF7D/CXt@google.com>
+        id S234918AbhIJX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233946AbhIJX5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:57:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 270AC6052B;
+        Fri, 10 Sep 2021 23:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631318158;
+        bh=DNbYPXmd3IEaN88m25hO+5ZGRjkmqcd4V/ITcTDtlJ8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZthXR82/C9yEorBA8YiAX0b2E2fFmoJkua0IZVv/q72g2apayUeTCMDZEL+8Dy9g4
+         LDII2t6/ey5bAQgqpVdbft6M8C4dsR2cWvqFwwL5xxxJCj0iU2cuNOyUCiJ2TgKvZs
+         QXFeAzkv62k9eEuqzlUtXlcMRV8qh2PuGwMTmRWq4CJds1gcSvvKs9WYrlOK4ApSYm
+         Leuo6iDnpBV4ATweXcRxEY5j0C0YHlIhAvmtB0Ew9bZRZ0KTVlE9XIyfBQwsYqioen
+         GXiIuzme6LkBFx6fIxiLoYrkQJIPT0d4jcOrDOOzH3MNucVYhLoXIYX6nsfgppHP1L
+         aotqFKwOA3R3Q==
+Subject: Re: [PATCH 01/10] Documentation: raise minimum supported version of
+ GCC to 5.1
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <20210910234047.1019925-2-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <cb42c578-d037-3297-d0c2-ab107b7a838f@kernel.org>
+Date:   Fri, 10 Sep 2021 16:55:55 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTvttCcfqF7D/CXt@google.com>
+In-Reply-To: <20210910234047.1019925-2-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021, Sean Christopherson wrote:
-> On Mon, Aug 09, 2021, Zeng Guang wrote:
-> > +		if (!pages)
-> > +			return -ENOMEM;
-> > +
-> > +		to_kvm_vmx(kvm)->pid_table = (void *)page_address(pages);
-> > +		to_kvm_vmx(kvm)->pid_last_index = KVM_MAX_VCPU_ID;
+On 9/10/2021 4:40 PM, Nick Desaulniers wrote:
+> commit fad7cd3310db ("nbd: add the check to prevent overflow in
+> __nbd_ioctl()")
 > 
-> I don't see the point of pid_last_index if we're hardcoding it to KVM_MAX_VCPU_ID.
-> If I understand the ucode pseudocode, there's no performance hit in the happy
-> case, i.e. it only guards against out-of-bounds accesses.
+> raised an issue from the fallback helpers added in
 > 
-> And I wonder if we want to fail the build if this grows beyond an order-1
-> allocation, e.g.
+> commit f0907827a8a9 ("compiler.h: enable builtin overflow checkers and add fallback code")
 > 
-> 		BUILD_BUG_ON(PID_TABLE_ORDER > 1);
-> 
-> Allocating two pages per VM isn't terrible, but 4+ starts to get painful when
-> considering the fact that most VMs aren't going to need more than one page.  For
-> now I agree the simplicity of not dynamically growing the table is worth burning
-> a page.
+> Specifically, the helpers for checking whether the results of a
+> multiplication overflowed (__unsigned_mul_overflow,
+> __signed_add_overflow) use the division operator when
+> !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW. This is problematic for 64b
+> operands on 32b hosts.
 
-Ugh, Paolo has queued a series which bumps KVM_MAX_VCPU_ID to 4096[*].  That makes
-this an order-3 allocation, which is quite painful.  One thought would be to let
-userspace declare the max vCPU it wants to create, not sure if that would work for
-xAPIC though.
+"hosts" -> "targets" or "architectures"?
 
-[*] https://lkml.kernel.org/r/1111efc8-b32f-bd50-2c0f-4c6f506b544b@redhat.com
+It might be worth putting the error that Stephen found here?
+
+> Also, because the macro is type agnostic, it is very difficult to write
+> a similarly type generic macro that dispatches to one of:
+> * div64_s64
+> * div64_u64
+> * div_s64
+> * div_u64
+> 
+> Raising the minimum supported versions allows us to remove all of the
+> fallback helpers for !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW, instead
+> dispatching the compiler builtins.
+> 
+> arm64 has already raised the minimum supported GCC version to 5.1, do
+> this for all targets now. See the link below for the previous
+> discussion.
+> 
+> Link: https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
+> Link: https://lore.kernel.org/lkml/CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com/
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1438
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+> ---
+>   Documentation/process/changes.rst | 2 +-
+>   scripts/min-tool-version.sh       | 8 +-------
+>   2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+> index d3a8557b66a1..e35ab74a0f80 100644
+> --- a/Documentation/process/changes.rst
+> +++ b/Documentation/process/changes.rst
+> @@ -29,7 +29,7 @@ you probably needn't concern yourself with pcmciautils.
+>   ====================== ===============  ========================================
+>           Program        Minimal version       Command to check the version
+>   ====================== ===============  ========================================
+> -GNU C                  4.9              gcc --version
+> +GNU C                  5.1              gcc --version
+>   Clang/LLVM (optional)  10.0.1           clang --version
+>   GNU make               3.81             make --version
+>   binutils               2.23             ld -v
+> diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+> index 319f92104f56..4edc708baa63 100755
+> --- a/scripts/min-tool-version.sh
+> +++ b/scripts/min-tool-version.sh
+> @@ -17,13 +17,7 @@ binutils)
+>   	echo 2.23.0
+>   	;;
+>   gcc)
+> -	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+> -	# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+> -	if [ "$SRCARCH" = arm64 ]; then
+> -		echo 5.1.0
+> -	else
+> -		echo 4.9.0
+> -	fi
+> +	echo 5.1.0
+>   	;;
+>   icc)
+>   	# temporary
+> 
