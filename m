@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ED04064EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D29D4064F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240615AbhIJBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        id S233870AbhIJBMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbhIJAzz (ORCPT
+        with ESMTP id S230454AbhIJBMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:55:55 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C2EC06114C
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:43:55 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id w4so385953ljh.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:43:55 -0700 (PDT)
+        Thu, 9 Sep 2021 21:12:13 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13060C0698DA;
+        Thu,  9 Sep 2021 17:45:50 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id m11so231966ioo.6;
+        Thu, 09 Sep 2021 17:45:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7uuVd30s2WHbNN7lmdDhnwmn6gKKOjm5ZXOnnVPJOAc=;
-        b=gHtlqt+DwPRv1ejJ4sOoZNXBRm7rh4PT1EOgN6JuPS+IpgiuiwPgrOsidYVLyj3dLp
-         PMG/QeOd1hk+EwhqyFBdc6dT7F/fLM0/2aYgcriLKtO7Mj9jft8z8qN1+rbjMq++qbLp
-         CDaqK3Va1LGh9NGm0a7cgsmKOkz/hd/8/r0RXmYCDbP2/dcQ9uRwdbnk//d8ta8fCxqM
-         +A/PWqa8+YYIpm8uSrdpE4hrzS3pNXXjHK7OknZ8zBNYEWiRpLhho8In6csV3u1++gqU
-         Lvc+4pVAbxzSXQRVWDDBobX9oZPxBo4aPEa1dFn+QIjEbQ2b+g5t3Kg+zYr+eta2QMvl
-         sVCg==
+        bh=H9y8H6QOl79WQKF3o6TMJOZw1Wb4+/uT/dZLumITW4A=;
+        b=Nh2OuGStj34DcE5wDIX/unXlXbeq8oW6E+c7X7QlPGDMGLbg2mFT+xeu3eWmddsnBo
+         AnDW7/w48XY/1fC8rZ4GcABgXQDdrHofdgfGOjH22Lb7cqkDMJTQ8O5qGY8c0n7qYyW+
+         ZGklISa8lfV8tRiEa/bW1Cjv50VKIvO2PTVkKcVYy61GT859uVrLVUJvOIgWyRX0uyvZ
+         0rTeR1CdWHZrohWHZ04+jlShW6SUPPOktciMTF21fmBeb51w3ZxTwLsGEcZ9VPluTJuI
+         NYQtCT7tL3kUl2/1XbzDJKoHi5Yp4tXIQJWr0s2Of7iFTelNGAnRBobRI9lhCsg1LnaI
+         wRdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7uuVd30s2WHbNN7lmdDhnwmn6gKKOjm5ZXOnnVPJOAc=;
-        b=QbJwMH4VK6p+DtRg+3UMraJzhAQV2WK8QMD0UO6cx+aSBIDg3WqztIDDF/iJwnbUOM
-         fcL6h4SOq2biYEmSoVKlVdAt7vG2J9L/WiVeVRCg81LjZA1pMr3e3xJOXTu3lmhSxLUm
-         oyDJO7pWC2CA/paMaISQfXhvLakUfYaZXQTn75kJN4r99O8grUhvQAhC5hNzvUCym4dw
-         SHL9NjpAMJQkKwF7Vf80JxP+NCWqRYMqIZ1ietsHo8+U/ptfldsugCkHZy3AAN/bDUxA
-         hPdKxzcIPEdQ1R8RLBngOBxYFc0s/STqdw3FW9qOnbwYYSyaMjNiv2EoPm3NG5aNqUfE
-         LGfg==
-X-Gm-Message-State: AOAM533W5bpnbSMnWoRJ3eZ2YGF5wTE3t9M1akHFrpMsOYPS0FgS3Anx
-        ZkYTMYglS/Tu7qI6yyj7Qfeu9MrFjkz6+gX9a1nIeg==
-X-Google-Smtp-Source: ABdhPJzeCz6w0q2U+ulvoyoJWdHD+nGGyY4JW/MWaqGjcHA3gGLSDaljkucvPJBwYPGeR5s6gbQ6arp4upt1qhQTYN8=
-X-Received: by 2002:a2e:a363:: with SMTP id i3mr2168651ljn.86.1631234632179;
- Thu, 09 Sep 2021 17:43:52 -0700 (PDT)
+        bh=H9y8H6QOl79WQKF3o6TMJOZw1Wb4+/uT/dZLumITW4A=;
+        b=7uiGig03c1JDS3eBtUIU8h0Oyl59/IM24VbCXc4HhfPZS9TL4U84m4x+o9Q1l4/yG/
+         r3EqVY3KjMDjZ2IJ/P1cW/hsAvxdiVizwIqfNZQXmAXbVbIGOfafrf21irSsGRhm1eR2
+         yqGfs7BqGbkWKrAJXqbxAz718LN5OH7xfu8JVOYVkEM6LMAvYrqe51BbXmmTP/ORwR21
+         4nPQ4GwsOpHjDKRRNHrs62CBNqNwN1sWVUiQ80OLdsPxTW17zXTTsbRFhIKCqMPvfnJh
+         Nzsg90mEZ8X/6meHu1uG1cYRHOMkYyTob4b+AMYGNDyPohyB8I9fuSIinwWR1NgchWEs
+         5eaw==
+X-Gm-Message-State: AOAM530paR2W0BISN+tLEkG6+oFhLY3ahjEmhUyNVpcXDzaevYWm2RCq
+        8V+8hBoiLM28+11MPekP+BcgZcZTyck7nS7TgByMG7ZaJ0Q=
+X-Google-Smtp-Source: ABdhPJxgh40885LGDF1Y8duB3BiiIUqjNpckUI4hV0vDw+Mlj+oFyNHDNb8BneWrcWkFLiU3nhSWVC+1uQToqlxoKKU=
+X-Received: by 2002:a05:6638:e8f:: with SMTP id p15mr2196917jas.114.1631234749514;
+ Thu, 09 Sep 2021 17:45:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
- <20210905124439.GA15026@xsang-OptiPlex-9020> <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
- <20210907033000.GA88160@shbuild999.sh.intel.com>
-In-Reply-To: <20210907033000.GA88160@shbuild999.sh.intel.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 9 Sep 2021 17:43:40 -0700
-Message-ID: <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
-Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        0day robot <lkp@intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Michal Koutn??" <mkoutny@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210909042543.1982893-1-alistair.francis@opensource.wdc.com> <CAK8P3a1Udjzy=M4Vs8pGCKdedwtv-vPRjxbTcvTL6kP=yXSs0A@mail.gmail.com>
+In-Reply-To: <CAK8P3a1Udjzy=M4Vs8pGCKdedwtv-vPRjxbTcvTL6kP=yXSs0A@mail.gmail.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 10 Sep 2021 10:45:23 +1000
+Message-ID: <CAKmqyKOO5DiEBUJRY_2Be97LfqoSyatHDB_iCeZqw0toTsrkXw@mail.gmail.com>
+Subject: Re: [PATCH] perf bench: Add support for 32-bit systems with 64-bit time_t
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <alistair.francis@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 8:30 PM Feng Tang <feng.tang@intel.com> wrote:
+On Thu, Sep 9, 2021 at 6:20 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Hi Shakeel,
->
-> On Sun, Sep 05, 2021 at 03:15:46PM -0700, Shakeel Butt wrote:
-> > On Sun, Sep 5, 2021 at 5:27 AM kernel test robot <oliver.sang@intel.com> wrote:
-> [...]
-> > > =========================================================================================
-> > > compiler/cpufreq_governor/disk/fs/kconfig/load/rootfs/tbox_group/test/testcase/ucode:
-> > >   gcc-9/performance/1BRD_48G/xfs/x86_64-rhel-8.3/3000/debian-10.4-x86_64-20200603.cgz/lkp-icl-2sp2/disk_rr/aim7/0xd000280
-> > >
-> > > commit:
-> > >   3c28c7680e ("memcg: switch lruvec stats to rstat")
-> > >   45208c9105 ("memcg: infrastructure to flush memcg stats")
+> On Thu, Sep 9, 2021 at 6:25 AM Alistair Francis
+> <alistair.francis@opensource.wdc.com> wrote:
 > >
-> > I am looking into this. I was hoping we have resolution for [1] as
-> > these patches touch similar data structures.
+> > From: Alistair Francis <alistair.francis@wdc.com>
 > >
-> > [1] https://lore.kernel.org/all/20210811031734.GA5193@xsang-OptiPlex-9020/T/#u
+> > Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+> > time_t and as such don't have the SYS_futex syscall. This patch will
+> > allow us to use the SYS_futex_time64 syscall on those platforms.
+> >
+> > This patch does not attempt to gracefully allow 32-bit architectures
+> > with both SYS_futex and SYS_futex_time64 to support a 64-bit time_t.
+> > This patch only applies to 32-bit architectures with a 64-bit time_t.
+> >
+> > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 >
-> I tried 2 debug methods for that 36.4% vm-scalability regression:
+> Hi Alistair,
 >
-> 1. Disable the HW cache prefetcher, no effect on this case
-> 2. relayout and add padding to 'struct cgroup_subsys_state', reduce
->    the regression to 3.1%
+> I know you've made this mistake before and I've pointed it out
+> several times. Please don't do this again, and try to fix up the
+> ones you already broke!
 >
+> > +/**
+> > + * Some newer 32-bit architectures (such as RISC-V 32-bit) don't have
+> > + * the SYS_futex syscall and instead only have the SYS_futex_time64 call.
+> > + * Let's ensure that those still compile and run by just using the
+> > + * SYS_futex_time64 syscall. On these systems `struct timespec` will use a
+> > + * 64-bit time_t so the SYS_futex_time64 call will work.
+> > + */
+> > +#if !defined(SYS_futex) && defined(SYS_futex_time64)
+> > + #define SYS_futex SYS_futex_time64
+> > +#endif
+>
+> This cannot work, as two system calls take different arguments: futex() takes
+> a __kernel_old_timespec and futex_time64() takes a __kernel_timespec.
+>
+> You cannot derive anything about the ABI of the C library based on whether
+> the macros are defined or not. Either you convert the arguments passed into
+> the system call into the format expected by the kernel, or you pick the
+> correct system call based on sizeof(struct timespec).
 
-Thanks Feng but it seems like the issue for this commit is different.
-Rearranging the layout didn't help. Actually the cause of slowdown is
-the call to queue_work() inside __mod_memcg_lruvec_state().
+Thanks Arnd. Sorry I hadn't looked at this in a while and forgot that
+it's more complex.
 
-At the moment, queue_work() is called after 32 updates. I changed it
-to 128 and the slowdown of will-it-scale:page_fault[1|2|3] halved
-(from around 10% to 5%). I am unable to run reaim or
-will-it-scale:fallocate2 as I was getting weird errors.
+I have some patches to fix this up. I'll send them later today.
 
-Feng, is it possible for you to run these benchmarks with the change
-(basically changing MEMCG_CHARGE_BATCH to 128 in the if condition
-before queue_work() inside __mod_memcg_lruvec_state())?
+Alistair
 
-For the formal patch/fix, I will write down a better explanation on
-what should be the batch size.
-
-thanks,
-Shakeel
+>
+>        Arnd
