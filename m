@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0233B407091
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A9B407094
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhIJRdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhIJRdg (ORCPT
+        id S231916AbhIJReh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:34:37 -0400
+Received: from mail.efficios.com ([167.114.26.124]:57684 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhIJRee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:33:36 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C1CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:32:25 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id h29so2821527ila.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f2dLcPzX7cfQUaVCs15ea8SZuZgriTIC7Sx2pMINImo=;
-        b=lxKG7dCsVsIRT3WhD1ltjaCzU3IouFtkfz322POaURYR56JVHdi3jaV+mNenJrMAoO
-         0S9cNvEUcNm54FnlTJuf4/qRgoO3zj0fuLfoO730BCXdhJQbd/GFJgQXJcrLbAt/Rywe
-         oaI30prUcl/0lgKvwBCSXaT5qFjSbWw3gH0VX3kuAaBhR+1XYA5xKyMp5FfOvKFRI1w0
-         leQCiVdEZBiG/t+MxFVb+bmyGCXrjS9/s06K1ubLpsvybARPMtDseXIvh1PEDOsoZMbD
-         wfsYPr8EZa0WIFJs1K3SJLfff8mVh4byI9ijH2URXVjMgcFKVsGp/sqYsc0lopRwHoCI
-         wlbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f2dLcPzX7cfQUaVCs15ea8SZuZgriTIC7Sx2pMINImo=;
-        b=WLWLUZEDSEQgpGJb2s2JIf6rE2FTd8XudJEi0Jfgz6hu4F7k4qy07U/aEW4vRV+rZT
-         6QK+HSEDKCj+ioLFvDFuCWb6TwzdDZ69wHhwLgVaV74n7MdWk3K/aM3yP6w/e7kuobGq
-         zVhLbo/7eTJPNTTjqBwBfDmvuS+joaE/w0diknG6Rn4zRjgyZ5qJjerr26m/izitb8KJ
-         lEXFmIfGAn5PQlkYUZgDtqic5D3lizzmaMhNqALw3ixynPVrW6Ccpw2OHtmpp2JqFMBA
-         m/aex0N03A7Y1cj6xncuwvcxA52gvBFbfCijw9yTJg2uTfu+STlKMoCCOAVY/T1OWD5v
-         ViJg==
-X-Gm-Message-State: AOAM530nezq5LgSD4l3eVESphfThltAotVqxgfVp2a3kRz4A3au/1LwZ
-        Gl6EO//+bBuMscIKSdRiJ8L2XL4KYPky/WWe4Pc=
-X-Google-Smtp-Source: ABdhPJxFWU8gqCBBryXuxzlo/F8fVDK17G6WpdOf0SxaOP/bOrZ2G8UndlhT+g5ZEv0m1OGKDJZGtA==
-X-Received: by 2002:a05:6e02:1888:: with SMTP id o8mr7489223ilu.124.1631295145252;
-        Fri, 10 Sep 2021 10:32:25 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id n11sm2722887ilq.21.2021.09.10.10.32.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 10:32:24 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
- <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
- <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk>
- <CAHk-=wiPEZypYDnoDF7mRE=u1y6E_etmCTuOx3v2v6a_Wj=z3g@mail.gmail.com>
- <b1944570-0e72-fd64-a453-45f17e7c1e56@kernel.dk>
- <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cfe9e6d6-dd1c-a500-b3b0-a92d0b66c3c0@kernel.dk>
-Date:   Fri, 10 Sep 2021 11:32:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Sep 2021 13:34:34 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4B76F380B91;
+        Fri, 10 Sep 2021 13:33:22 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id U-n7XFefRKdb; Fri, 10 Sep 2021 13:33:19 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D45CB380B90;
+        Fri, 10 Sep 2021 13:33:19 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D45CB380B90
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1631295199;
+        bh=fyBfAPWK72tcGWzAw1LjOaKjhaPvI3SvgBP8CFWtZkA=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ESuIYvVl7StxMYZ03ixttEVHeTUpTTtOM49yHd55P26zzEiQ03OYppALGQDZijl8W
+         HK10x7PJBmxOHl3aNiUmZ7d9+kstS/z9ko89vJkuXqI3JvLmBAym0w6U5DEllaBtWW
+         Z5YKlpZU8rlP3JCR8rP1/dWW5yfqzYRQyUMVK6rNRu0G96bRO7+2Tjy5P07KF6PoxX
+         Wq3Z+LFvGcEFgfc0xUROcUouyG3iZIdMJaHJlWKORYrcZOGEbaTd9mqy4pMsSh/bHU
+         wCZ45iu+rWGBztrVY5OK6yzZmvZpVwV8pXVTQ2ezd2y+GtiYWWjebo8dIGCv71ml/Q
+         Q3BrV2mXCcPWg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id eslYRUy70XKU; Fri, 10 Sep 2021 13:33:19 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id C336B3807C6;
+        Fri, 10 Sep 2021 13:33:19 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 13:33:19 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Peter Oskolkov <posk@google.com>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com>
+In-Reply-To: <8735qcgzdu.fsf@oldenburg.str.redhat.com>
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com> <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com> <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com> <8735qcgzdu.fsf@oldenburg.str.redhat.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific
+ data
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjWQtXmtOK9nMdM68CKavejv=p-0B81WazbjxaD-e3JXw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF91 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Provide fast access to thread specific data
+Thread-Index: 6E5ZkJnM0M7ffcKiAOClEV+FqAn9Iw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 11:31 AM, Linus Torvalds wrote:
-> On Fri, Sep 10, 2021 at 10:26 AM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 9/10/21 10:58 AM, Linus Torvalds wrote:
->>> On Fri, Sep 10, 2021 at 9:56 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>>>
->>>> What's the point of all those contortions, anyway?  You only need it for
->>>> iovec case; don't mix doing that and turning it into flavour-independent
->>>> primitive.
->>>
->>> Good point, making it specific to iovec only gets rid of a lot of
->>> special cases and worries.
->>>
->>> This is fairly specialized, no need to always cater to every possible case.
->>
->> Alright, split into three patches:
->>
->> https://git.kernel.dk/cgit/linux-block/log/?h=iov_iter
-> 
-> That looks sane to me.
-> 
-> Please add some comment about how that
-> 
->         i->iov -= state->nr_segs - i->nr_segs;
-> 
-> actually is the right thing for all the three cases (iow how 'iov',
-> 'kvec' and 'bvec' all end up having a union member that acts the same
-> way).
+----- On Sep 10, 2021, at 12:37 PM, Florian Weimer fweimer@redhat.com wrote:
 
-Good idea, I'll add that right now.
+> * Peter Oskolkov:
+> 
+>> In short, due to the need to read/write to the userspace from
+>> non-sleepable contexts in the kernel it seems that we need to have some
+>> form of per task/thread kernel/userspace shared memory that is pinned,
+>> similar to what your sys_task_getshared does.
+> 
+> In glibc, we'd also like to have this for PID and TID.  Eventually,
+> rt_sigprocmask without kernel roundtrip in most cases would be very nice
+> as well.  For performance and simplicity in userspace, it would be best
+> if the memory region could be at the same offset from the TCB for all
+> threads.
+> 
+> For KTLS, the idea was that the auxiliary vector would contain size and
+> alignment of the KTLS.  Userspace would reserve that memory, register it
+> with the kernel like rseq (or the robust list pointers), and pass its
+> address to the vDSO functions that need them.  The last part ensures
+> that the vDSO functions do not need non-global data to determine the
+> offset from the TCB.  Registration is still needed for the caches.
+> 
+> I think previous discussions (in the KTLS and rseq context) did not have
+> the pinning constraint.
 
-> But yeah, I like how the io_uring.c code looks better this way too.
+If this data is per-thread, and read from user-space, why is it relevant
+to update this data from non-sleepable kernel context rather than update it as
+needed on return-to-userspace ? When returning to userspace, sleeping due to a
+page fault is entirely acceptable. This is what we currently do for rseq.
 
-Me too :-)
+In short, the data could be accessible from the task struct. Flags in the
+task struct can let return-to-userspace know that it has outdated ktls
+data. So before returning to userspace, the kernel can copy the relevant data
+from the task struct to the shared memory area, without requiring any pinning.
+
+What am I missing ?
+
+Thanks,
+
+Mathieu
+
 
 -- 
-Jens Axboe
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
