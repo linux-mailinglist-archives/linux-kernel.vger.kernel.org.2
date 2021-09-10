@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6C7406937
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50F14068FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhIJJnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:43:00 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40276 "EHLO inva020.nxp.com"
+        id S232079AbhIJJU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:20:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhIJJmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:42:50 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D5311A258D;
-        Fri, 10 Sep 2021 11:41:39 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D95DA1A2591;
-        Fri, 10 Sep 2021 11:41:38 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 649AB183AD26;
-        Fri, 10 Sep 2021 17:41:37 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_xcvr: Fix channel swap issue with ARC
-Date:   Fri, 10 Sep 2021 17:18:30 +0800
-Message-Id: <1631265510-27384-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231950AbhIJJU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CFE60E54;
+        Fri, 10 Sep 2021 09:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631265555;
+        bh=MMdXWy9QH0CzGaZwwChXTBW5lxYyYuHrr1/bvcKTO20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F8JcAKGjm89rFblCLpR+Tlttk8cyjZwZ6IjQe8rcKDaWLIChbb8lKu4LRiXkNu1zU
+         7zOvkS2atN/JENfcou79ze/peTxu7QZgJLtF+jFSb/8gveQ37vT5Vgbvq45iuQ033W
+         djHtyCbnG/3SqLCsUVHebjEfcBJrcW7jZrqHzQUqBYa0zFJFnuWbUP/gFnqBYZ9Jll
+         DhL12KibM5lY4NCLzoa/GxShPqNxTVqC239ao2kcG2jaIXzlm8M8Q/jyrYJ2VqzteH
+         qawRXAhIcj/lB/LQfkq6/HCr0/FmDeIPZaB32NBEnBLe+dapcpPM7mK8DUP7psSGC5
+         RbfwRSCRnqWqA==
+Date:   Fri, 10 Sep 2021 12:19:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dave Ertman <david.m.ertman@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, yongxin.liu@windriver.com,
+        shiraz.saleem@intel.com, anthony.l.nguyen@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jesse.brandeburg@intel.com, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, jgg@ziepe.ca
+Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Message-ID: <YTsjDsFbBggL2X/8@unreal>
+References: <20210909151223.572918-1-david.m.ertman@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909151223.572918-1-david.m.ertman@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With pause and resume test for ARC, there is occasionally
-channel swap issue. The reason is that currently driver set
-the DPATH out of reset first, then start the DMA, the first
-data got from FIFO may not be the Left channel.
+On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
+> There are two cases where the current PF does not support RDMA
+> functionality.  The first is if the NVM loaded on the device is set
+> to not support RDMA (common_caps.rdma is false).  The second is if
+> the kernel bonding driver has included the current PF in an active
+> link aggregate.
+> 
+> When the driver has determined that this PF does not support RDMA, then
+> auxiliary devices should not be created on the auxiliary bus. 
 
-Moving DPATH out of reset operation after the dma enablement
-to fix this issue.
+This part is wrong, auxiliary devices should always be created, in your case it
+will be one eth device only without extra irdma device.
 
-Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_xcvr.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Your "bug" is that you mixed auxiliary bus devices with "regular" ones
+and created eth device not as auxiliary one. This is why you are calling
+to auxiliary_device_init() for RDMA only and fallback to non-auxiliary mode.
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 31c5ee641fe7..6e67033b6cde 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -487,8 +487,9 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	/* clear DPATH RESET */
-+	/* set DPATH RESET */
- 	m_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
-+	v_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
- 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, m_ctl, v_ctl);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Error while setting EXT_CTRL: %d\n", ret);
-@@ -590,10 +591,6 @@ static void fsl_xcvr_shutdown(struct snd_pcm_substream *substream,
- 		val  |= FSL_XCVR_EXT_CTRL_CMDC_RESET(tx);
- 	}
- 
--	/* set DPATH RESET */
--	mask |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
--	val  |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
--
- 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, mask, val);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Err setting DPATH RESET: %d\n", ret);
-@@ -643,6 +640,16 @@ static int fsl_xcvr_trigger(struct snd_pcm_substream *substream, int cmd,
- 			dev_err(dai->dev, "Failed to enable DMA: %d\n", ret);
- 			return ret;
- 		}
-+
-+		/* clear DPATH RESET */
-+		ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
-+					 FSL_XCVR_EXT_CTRL_DPTH_RESET(tx),
-+					 0);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "Failed to clear DPATH RESET: %d\n", ret);
-+			return ret;
-+		}
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--- 
-2.17.1
+I hope that this is simple mistake while Intel folks rushed to merge irdma
+and not deliberate decision to find a way to support out-of-tree drivers.
 
+As a reminder, the whole idea of auxiliary bus is to have small,
+independent vendor driver core logic that manages capabilities and
+based on that creates/removes sub-devices (eth, rdma, vdpa ...), so
+driver core can properly load/unload their respective drivers.
+
+Thanks
