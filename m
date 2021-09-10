@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB775406697
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A86F406698
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 06:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhIJEwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 00:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhIJEv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 00:51:57 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB08C061574;
-        Thu,  9 Sep 2021 21:50:47 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id oc9so559051pjb.4;
-        Thu, 09 Sep 2021 21:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cjSmIHPUHZu3PXZxtunolSLa7lCsMSC8ZCX89a3t5/U=;
-        b=dni72Vs90m2jtyPO9hgsKKXOBBcsnyujnePL+Fhu/R53skgeXbHxGUQ/d5x36QPa6y
-         wyHdB8r+CcYMyOCNFTWNhsejCTTjyrGnqQKt43wmYElAe5Uviwn5+qzgrnucSxPQ9Mbh
-         SRboZv4DuZvtZHPsz0F71/K8qSZ4ZRojMkiqqUzM8XwdLbhkZmORedf9UoqGjMdaQibx
-         PD888Ez2zjUMq1/eqBBkLnUv2RISIYE4tjHeBMaD+S6xMY2TjoC7as+oqAVHJme2wzme
-         Xq8pewP3r+ojuinLQemEJguYKiB1QPFlpby9QShF92CHhDk7goGNMQPJbbwZlCp9A5rh
-         Cg1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cjSmIHPUHZu3PXZxtunolSLa7lCsMSC8ZCX89a3t5/U=;
-        b=HqH5TihyhTsKw5bTtz15gFqaaf2u1T/3EdCAm5Bq5lD8icrx8OcKllWGx0CXXdZYZ3
-         xgW0Ki/dyzv4LLnRzIE0637j/ar+2qkJ0Ovy8yutXFXzkO1AlpnZNVhvDALUrE/1RC48
-         D/8R4aWjR8EJnXSsTORqF35E+n5QSOGNVJT5MK12dU+T6EV8BLdYFBphRmZrlN/CA/fl
-         uPgOOO2f8Sk2+8rW54sOmmtRyXb7TalRNb/XScbc0jfnVVBr0lTtECcov59Z2MK7sOcP
-         uCvA8BEHEx/iB+ZfNKZGJnzYgpLmf02fzFgNWy+wDI+hJaFpJ8zYT4rkgZtZ4jwsMC8m
-         z2FQ==
-X-Gm-Message-State: AOAM5336e3G1borsJ8LgvscFd/WwOzZ1GlwcwluEwInqW/dybjQBUS1x
-        JWeY4F5QO6cSrIRYW+eNfTE=
-X-Google-Smtp-Source: ABdhPJxBJVPI6rNNYaaewdYsXKDcyLBValdkgZjCqs4T0f6MWB7mrz1Z4RM1J4M7PoIZ4knrkfWVAg==
-X-Received: by 2002:a17:90a:bb12:: with SMTP id u18mr7522504pjr.110.1631249446896;
-        Thu, 09 Sep 2021 21:50:46 -0700 (PDT)
-Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:acdc:1d22:e20a:2796])
-        by smtp.gmail.com with ESMTPSA id y4sm3555477pjw.57.2021.09.09.21.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 21:50:46 -0700 (PDT)
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Daniel Mack <daniel@zonque.org>,
-        Marco Felsch <m.felsch@pengutronix.de>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Input: ads7846 - do not attempt IRQ workaround when deferring probe
-Date:   Thu,  9 Sep 2021 21:50:39 -0700
-Message-Id: <20210910045039.4020199-3-dmitry.torokhov@gmail.com>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-In-Reply-To: <20210910045039.4020199-1-dmitry.torokhov@gmail.com>
-References: <20210910045039.4020199-1-dmitry.torokhov@gmail.com>
+        id S230302AbhIJEw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 00:52:26 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:47033 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230271AbhIJEwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 00:52:25 -0400
+Received: from [IPv6:::1] ([IPv6:2601:646:8600:3c71:fdf9:cf28:325e:596])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18A4omM7316701
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 9 Sep 2021 21:50:49 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18A4omM7316701
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021083001; t=1631249450;
+        bh=zqsyicqOh+MoTU5jCeHGmjPTmKLmQbQguskMRBEEIbA=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=nQ8MItUsO/m8BIY3s2OE4H64CcQD4Tx1zLG84eW+qkGCD6Id2aCVPtDIJdYdjeXII
+         JyoMB5lS4XXbksjjb1IXAAL3PYLAKGKQEqRBIP3zTEshD2kXyd3uRNpUyu+jvXvrSX
+         o9VqpvfoKJiX6wAZ9xzpQvjdYikrVc8uUoMxv48PV/sFM5GFnlt6HQZR2+7qFOzWPi
+         h2n2EjAqMDamz92YrEJyGIdfJaGZSRMPQruTjJkWRrqXdmp2mQGL1MEUpzvyYnrw+e
+         Ri6NxabGHYmsL2IxuLsJ1q5b1zQeblzcktNkeyGDiYl7PJCUE0O2PskRJuHFLllYaW
+         ZUWtboSFTI99g==
+Date:   Thu, 09 Sep 2021 21:50:40 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+CC:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Youquan Song <youquan.song@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH 17/24] x86/entry: Introduce struct ist_regs
+User-Agent: K-9 Mail for Android
+In-Reply-To: <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com> <20210831175025.27570-18-jiangshanlai@gmail.com> <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
+Message-ID: <286DCB70-B36E-4229-966E-BE45F2AEA703@zytor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When request_irq() returns -EPORBE_DEFER we should abort probe and try
-again later instead of trying to engage IRQ trigger workaround.
+It may affect your design, I don't know, but FRED exception delivery (as cu=
+rrently architected per draft 2=2E0; it is subject to change still) pushes =
+several fields above the conventional stack frame (and thus above pt_regs=
+=2E)
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/touchscreen/ads7846.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On September 9, 2021 5:18:47 PM PDT, Lai Jiangshan <laijs@linux=2Ealibaba=
+=2Ecom> wrote:
+>
+>
+>On 2021/9/1 01:50, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux=2Ealibaba=2Ecom>
+>>=20
+>> struct ist_regs is the upmost stack frame for IST interrupt, it
+>> consists of struct pt_regs and other fields which will be added in
+>> later patch=2E
+>>=20
+>> Make vc_switch_off_ist() take ist_regs as its argument and it will swit=
+ch
+>> the whole ist_regs if needed=2E
+>>=20
+>> Make the frame before calling paranoid_entry() and paranoid_exit() be
+>> struct ist_regs=2E
+>>=20
+>> This patch is prepared for converting paranoid_entry() and paranoid_exi=
+t()
+>> into C code which will need the additinal fields to store the results i=
+n
+>> paranoid_entry() and to use them in paranoid_exit()=2E
+>
+>This patch was over designed=2E
+>
+>In ASM code, we can easily save results in the callee-saved registers=2E
+>For example, rc3 is saved in %r14, gsbase info is saved in %rbx=2E
+>
+>And in C code, we can't save results in registers=2E  And I thought there=
+ was
+>no place to save the results because the CR3 and gsbase are not kernel's=
+=2E
+>So I extended the pt_regs to ist_regs to save the results=2E
+>
+>But it was incorrect=2E  The results can be saved in percpu data at the e=
+nd of
+>paranoid_entry() after the CR3/gsbase are settled down=2E  And the result=
+s
+>can be read at the beginning of paranoid_exit() before the CR3/gsbase are
+>switched to the interrupted context's=2E
+>
+>sigh=2E
+>
+>>=20
+>> The C interrupt handlers don't use struct ist_regs due to they don't ne=
+ed
+>> the additional fields in the struct ist_regs, and they still use pt_reg=
+s=2E
+>>=20
+>
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 0f973351bc67..a25a77dd9a32 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -1361,7 +1361,7 @@ static int ads7846_probe(struct spi_device *spi)
- 	err = devm_request_threaded_irq(dev, spi->irq,
- 					ads7846_hard_irq, ads7846_irq,
- 					irq_flags, dev->driver->name, ts);
--	if (err && !pdata->irq_flags) {
-+	if (err && err != -EPROBE_DEFER && !pdata->irq_flags) {
- 		dev_info(dev,
- 			"trying pin change workaround on irq %d\n", spi->irq);
- 		irq_flags |= IRQF_TRIGGER_RISING;
--- 
-2.33.0.309.g3052b89438-goog
-
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
