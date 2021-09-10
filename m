@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD0B4068F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6C7406937
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhIJJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:19:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39382 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhIJJTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:19:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0EDF62004E;
-        Fri, 10 Sep 2021 09:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631265472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=moHXYj60rmUxw69TqVB2I1EUdoaGUyAX40Cx2K50WEg=;
-        b=DSoJfhyDOrfPRQPgAYdin7CPWS3zQcUAfCeDyzdTG5WEr+vz+E5JEdKralyWWuHysshepo
-        WPWuT6A5m7cz+4o4CHlIJu0kApzMApvR2Z9BsifaRmXBQLLmn9Z+PzgUvY78+y8AJKUffP
-        BmCxzu9zKuD6vAU/ixOpsDD/25JIyRw=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D7E78A3B99;
-        Fri, 10 Sep 2021 09:17:51 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 11:17:51 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] livepatch: Fix idle cpu's tasks transition
-Message-ID: <YTsiv1xtiLT37iQR@alley>
-References: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
+        id S232123AbhIJJnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:43:00 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:40276 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231916AbhIJJmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:42:50 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D5311A258D;
+        Fri, 10 Sep 2021 11:41:39 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D95DA1A2591;
+        Fri, 10 Sep 2021 11:41:38 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 649AB183AD26;
+        Fri, 10 Sep 2021 17:41:37 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_xcvr: Fix channel swap issue with ARC
+Date:   Fri, 10 Sep 2021 17:18:30 +0800
+Message-Id: <1631265510-27384-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-09-09 11:16:01, Vasily Gorbik wrote:
-> On an idle system with large amount of cpus it might happen that
-> klp_update_patch_state() is not reached in do_idle() for a long periods
-> of time. With debug messages enabled log is filled with:
-> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
-> 
-> without any signs of progress. Ending up with "failed to complete
-> transition".
-> 
-> On s390 LPAR with 128 cpus not a single transition is able to complete
-> and livepatch kselftests fail. Tests on idling x86 kvm instance with 128
-> cpus demonstrate similar symptoms with and without CONFIG_NO_HZ.
-> 
-> To deal with that, since runqueue is already locked in
-> klp_try_switch_task() identify idling cpus and trigger rescheduling
-> potentially waking them up and making sure idle tasks break out of
-> do_idle() inner loop and reach klp_update_patch_state(). This helps to
-> speed up transition time while avoiding unnecessary extra system load.
-> 
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-> ---
-> Previous discussion and RFC PATCH:
-> lkml.kernel.org/r/patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours
-> 
->  kernel/livepatch/transition.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index 3a4beb9395c4..c5832b2dd081 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -308,6 +308,8 @@ static bool klp_try_switch_task(struct task_struct *task)
+With pause and resume test for ARC, there is occasionally
+channel swap issue. The reason is that currently driver set
+the DPATH out of reset first, then start the DMA, the first
+data got from FIFO may not be the Left channel.
 
-Please, update also the comment above klp_try_switch_task(). I would
-write something like:
+Moving DPATH out of reset operation after the dma enablement
+to fix this issue.
 
-/*
- * Try to safely switch a task to the target patch state.  If it's currently
- * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
- * if the stack is unreliable, return false.
- *
- * Idle tasks are switched in the main loop when running.
- */
+Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
->  	rq = task_rq_lock(task, &flags);
->  
->  	if (task_running(rq, task) && task != current) {
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 31c5ee641fe7..6e67033b6cde 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -487,8 +487,9 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
+-	/* clear DPATH RESET */
++	/* set DPATH RESET */
+ 	m_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
++	v_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, m_ctl, v_ctl);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Error while setting EXT_CTRL: %d\n", ret);
+@@ -590,10 +591,6 @@ static void fsl_xcvr_shutdown(struct snd_pcm_substream *substream,
+ 		val  |= FSL_XCVR_EXT_CTRL_CMDC_RESET(tx);
+ 	}
+ 
+-	/* set DPATH RESET */
+-	mask |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
+-	val  |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
+-
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, mask, val);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Err setting DPATH RESET: %d\n", ret);
+@@ -643,6 +640,16 @@ static int fsl_xcvr_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			dev_err(dai->dev, "Failed to enable DMA: %d\n", ret);
+ 			return ret;
+ 		}
++
++		/* clear DPATH RESET */
++		ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
++					 FSL_XCVR_EXT_CTRL_DPTH_RESET(tx),
++					 0);
++		if (ret < 0) {
++			dev_err(dai->dev, "Failed to clear DPATH RESET: %d\n", ret);
++			return ret;
++		}
++
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-- 
+2.17.1
 
-This would deserve a comment, for example:
-
-		/*
-		 * Idle task might stay running for a long time. Switch them
-		 * in the main loop.
-		 */
-
-> +		if (is_idle_task(task))
-> +			resched_curr(rq);
->  		snprintf(err_buf, STACK_ERR_BUF_SIZE,
->  			 "%s: %s:%d is running\n", __func__, task->comm,
->  			 task->pid);
-
-Otherwise, it looks good to me. With the two comments:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
