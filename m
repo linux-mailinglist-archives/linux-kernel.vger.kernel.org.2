@@ -2,202 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BF4406F9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24376406F9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhIJQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:27:01 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:41646 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229664AbhIJQ0z (ORCPT
+        id S229769AbhIJQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhIJQ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:26:55 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18ADqICY023985;
-        Fri, 10 Sep 2021 16:25:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=lELrYPwvoZoZl+rvgn5ButryQMOhTGkeDMLLqHv0cGc=;
- b=isSY00IY1O++VPhBw6a705YLjMRofQSQKHw/6HUQsJ7QSFYeAsSzumZbQVA+c+DNPOJZ
- jUmjILk61VijDgEAIWKpxQKJZ/Sl/5lNnaSx+tUJ1fB/8HnRYf6V3t1CtnVODXQ/S5nE
- 6tZysIp9rWeDKhakPFgxY/cvANRxl6m53cZ6eH47ZOT6ZyFMdUctb4Om4MRJeiEicCeN
- 1ZJXI6VaQ1vr6kJaeB1dEWXh/qOlZdkZs8iiFJxlfNJroerAZ3f7tGbc5oimeLx8Grt8
- SyQWwIczGu5nCdHn2OFWzkzOuDqSl1o59fTUJu2PUtd/YyxykxWPH+6CXmq9QO1Y/bdf xA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=lELrYPwvoZoZl+rvgn5ButryQMOhTGkeDMLLqHv0cGc=;
- b=TvkPKlvvYSrEPpf+FVZUOt/AGZG/X0lp6J7uRArT6XEXGJxAm/sbzulCviv4OZH5xDDR
- hceZFb3yiVWQ3LUwqpIY0vfe5OKZDm60llVb83eyx3o59enImKWupg1X7RmHyb7l9CYE
- FJcBcO5kb3zPIGmO55zLcd2CTlkbPWhuD5U+Puw9yjcFAQSiG1sajjVS4M4grWWzeTNm
- iRy6Q0d+kuygJPWeGOpBYCpfK7u+IgqUnOMbuGUzr1zdBn3ooJZJ/FHnLArG9tYGaHlt
- buSh1Bh5s74OO3NG9O/kzzgxr4bIw70K+ej/xeAxQq0S8oNDGaFX1B0UAD/L9U6SF9PS ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3aytfkad44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 16:25:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18AGGAeG150364;
-        Fri, 10 Sep 2021 16:25:31 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2042.outbound.protection.outlook.com [104.47.51.42])
-        by aserp3020.oracle.com with ESMTP id 3aytfyh59k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 16:25:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=diimFTwvAtYgY7h9NXol4l/hvN0jWUWKAxwQunj1pPxcs+j+N8Hjok9gLPsvZ+e7T5UL3Z3rZl90yDgENvvZ2nqQpM/PhD0yVpk8Pbjs4B1OW5hyyB1FEwlySTetcy0K19bxJnmnR7NolrfDQsLwbmXvYnfUMkKH2VdAY0sEfdxXGBZV6ajWlO0HPTiH14TpGVXUBJf6W7G/e+ycoo18RYiy7S/aeH2ib173Yh7wP5VZdWhrYBOCdS982lG1zR1FSruM+iGZtS8G8Ts3qBoIUiqg13yoKVPMiQ8Szqhd/N3F17mxpTT+MU4eioNGsFeluUS7gVcLewdhOJwfCVhDLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=lELrYPwvoZoZl+rvgn5ButryQMOhTGkeDMLLqHv0cGc=;
- b=QtyUHb9YfwBg+Z/3KfkphyDM/AxpjMH2lzrrCAfl6IIluDPbr3Ym/ZLMokwM/RN5eLC3sj38GB5mXbAnI/+Ne8zSf3J//vOnEe7dgnIE9Jx3z6Hrk17QtQqdjK/H/Bq677hA7W+M6Vtfv8oIfJgvc//87dEbiL2qozZAZRxtGOqQtsAEOGcv1B3nGvQg3V/wYotfJRiAxfu9AyWlF8TsZJag2KabdkSZC8SlEsTMkCCtSsdTv+aBZIfwg1rZHq5IrZspZwyiuoPU7d8w/oyDldzzfm97f1DvOhlyCYmTFKvd9g+EgQTO55Ni/izMHnKBKyaHuKOLES6qO8uby+hetg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 10 Sep 2021 12:28:34 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D6C061574;
+        Fri, 10 Sep 2021 09:27:23 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id y6so4114057lje.2;
+        Fri, 10 Sep 2021 09:27:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lELrYPwvoZoZl+rvgn5ButryQMOhTGkeDMLLqHv0cGc=;
- b=U4VR/a0gGM34mbTnyRurLSafiapmy93fq92PUHA1G5f0pqoiL2HnwFe1TRT8+D4YQKg+bbcsAGGsPmysovpHJJC59dDa2sgUdLPB17VYCiW9TF2bDU6OX/AXzudQe8ElH1yPqaiHX6GBevGWzN/WgiWipvCi/tHL6eQ72rsq8Oo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by BYAPR10MB3622.namprd10.prod.outlook.com (2603:10b6:a03:120::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 10 Sep
- 2021 16:25:29 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701%6]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 16:25:29 +0000
-Subject: Re: [PATCH 1/3] scsi: libiscsi: move init ehwait to
- iscsi_session_setup()
-To:     Ding Hui <dinghui@sangfor.com.cn>, lduncan@suse.com,
-        cleech@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210910010220.24073-1-dinghui@sangfor.com.cn>
- <20210910010220.24073-2-dinghui@sangfor.com.cn>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <03817f8e-8fed-6e7a-e76f-8608f8cfd979@oracle.com>
-Date:   Fri, 10 Sep 2021 11:25:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210910010220.24073-2-dinghui@sangfor.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0325.namprd03.prod.outlook.com
- (2603:10b6:8:2b::34) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=G+xktSFAQ1dxOc7V/JtqKYyvJz/KlBsA2cIgn6rLykI=;
+        b=Agn/JD3Ot2TRz/RjQF11nIZA94FgPL4W9t9jnu4fYLekvU1tIy+t4MbzdS10aAFa6h
+         pevuJh/ivk3MdQSFxe9BFIKLMl8XBSPzqUHNkju/oxAhzHd7HtFJ+eXw4TAYdQLImKAR
+         J7fFTtftkAWo70TJh4zedVzUDfEM/5I1G+oJYfx6rUJFF14F+FCq1C62sq798AYG5Iss
+         KKg58U0pqcqH+0mbxbbh87Dxbyi/g6Gz8HwETtzYIQn1pR6r0L8feRfKZVkqKxDGneTV
+         3PmMR7fnhQV1IriYwPVWlE3OUUhHAaJE/dIqLKx9oE+Wwns6KVjFcMhr8QB+IcyNTZ2P
+         7C8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=G+xktSFAQ1dxOc7V/JtqKYyvJz/KlBsA2cIgn6rLykI=;
+        b=4esedYcEivApDDAGIGS5tNr/6VBa9IwvxWZc5GIrET40O/ZvqZgJ5d/W4v6nEhqtnn
+         jvAp3CQe6vUM9ISbGvT/zlNmmxz95o/Fv+9Ziqrgof8DnYpwz+W+2ExnfAbH1NK+C9Bl
+         3BmHCMsYDAZKHBP3NMj67AeHh7J46CedG7drftA8io+ohOoIXchScsLJb5x0cvUiVidX
+         TStwCaHniDW6LTjTbFR+brIDD1zg7tXuODlVhxOUL7v40Ayvq/FMWHtKipFJA2zzltcF
+         hJTzBdDrSimOZRxngmcMdKIcqYAf6xUcgIUBb6d+/zXEPSmMUqnkL23WtbLB6uPDoEZS
+         Tqnw==
+X-Gm-Message-State: AOAM533+SEyr7RIsG61yVNkroOjPgyVNpwOrV7BEoiEg8iyZuSyl2S1E
+        KFWKHV+Ytc4PyLSF4dneoxs=
+X-Google-Smtp-Source: ABdhPJxzeqFCXFBMkhVksOW3ZfVt/hIvQ54oFj4QqJ95uMcOiOhtgcxDjP4OQT5RauSBV7Zr+Cg8JQ==
+X-Received: by 2002:a2e:7d13:: with SMTP id y19mr4805711ljc.344.1631291241537;
+        Fri, 10 Sep 2021 09:27:21 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id 10sm620378ljp.12.2021.09.10.09.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:27:20 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 19:27:18 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 29/31] staging: wfx: remove useless comments after #endif
+Message-ID: <20210910162718.tjcwwxtxbr3ugdgf@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-30-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Received: from [20.15.0.204] (73.88.28.6) by DS7PR03CA0325.namprd03.prod.outlook.com (2603:10b6:8:2b::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 16:25:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1eac337f-0a3a-4ffe-ca60-08d974779a79
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3622:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3622EA1A6AB1C3601ABFD208F1D69@BYAPR10MB3622.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: epAznOdoCsEUX8a1woIYyh9eSPEQoRcWBzj4K0MV7JXZrbVvtyCoHGWV1i2F1OgNfBtecg4jKqOy993WKzWKIBY7BUMTFaJm9tnlV+qpPemtCxLKafvJWCFL9k0vniXqtyv7RR0AVwG7uwiDwQls1qSVOsQRR1xwi6FxmF2doUErHS+vGMYx5jB1uHEhpA64JNWhCHJm6yyy7pppZulWEH3At3UKOJVaXbbI6NmWAOuhCwtBVJ79aELQcghkfSJvM0mDNyBPlYhZEnn/4TdEVRy0vNqCQ3mPZNJDzqDAGbgheJVVUWAoPjH3Vk8AWewlAZMtiPUuUT1tZfJaCDQPRhZK/oG2WEX56+KY970UciXNe8ELJRxxSAV/08ghBX487dUi6BQpRF+sltIDeCV5DIKLTwuapAza1zbTG62WrHIqML0adDizNyPO86aF5iyoV+G2UrCnGTRL7QnBC1/zvZt+ScQ5U4qsp5GEilJFlsjdbla6Ja/ffjZijfcHJHtnTSaSBf0AKT9jSB48hbGR6CTO/fs6HUsEwYVOHv40aZMQlqNBQmLb4XwB0Hbho1qUz5MRWNL1RR3CkbGRLwwQgCEoHnMtNGrRs5VHO3EQ+MI2hNaG7SueHbv4jCqLtCdeLmHWmfhoM5PT3tiATaNxW2HdIN6E06LA39URlgZtuTF8XCUzR8rBRZ5b17BGSdfjuzk+xiFNENfj4S8+2u/Z0kdSxAV+YvUikO+RqOI1ayeYDGUWIISKl77+Ylm8YqXA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(366004)(136003)(376002)(478600001)(956004)(66476007)(8676002)(26005)(6706004)(8936002)(31696002)(66556008)(53546011)(66946007)(38100700002)(86362001)(316002)(36756003)(16576012)(83380400001)(31686004)(2906002)(2616005)(5660300002)(6486002)(186003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUErTVJnZTE2WnVQaXA4MTVlNmdXd0hBSE9FLzVTeWY3RWl1M3Q4dFIvdFRD?=
- =?utf-8?B?cDZTOHlYLy9UbnVDaHJEN1ZoK3Rnam9oM0dJUGg5N0ZxYlZ6TnA1cmNNZDJR?=
- =?utf-8?B?N2xnQ0FhTERIYlNDUXVUWUk0dnhyaFVQU3JwNnBvSTYvclM3K2pKOFNFbHht?=
- =?utf-8?B?U3VQeVFEVTZBU2VNZTR2eXJSbElRcWdCeU9FTEhOMzh5SytzS1ZibGVkdnhD?=
- =?utf-8?B?ckpiN0hsTE9mMVE3Wml1OUZsZloyN3hLZDdUckljS1hiVllTaUo0NDRkSFBK?=
- =?utf-8?B?b0o5aUxVa3NwaFJXeDY2UXVONExHOWluaGE2a2Q5RjBiWDhWYjdqUW9yVDg5?=
- =?utf-8?B?NzU5N3hhQm8xZWZPNWRYOGpLZ2hja2o0YWRIUlVHT251M1dIRmZTamdLWm5V?=
- =?utf-8?B?Sm91bzRHTWFvL1pxTzRpd0pSTGM1V3IxZDZCVVhMV0tlMFAwUWpwdUh1czNK?=
- =?utf-8?B?UGJBaTkvZnYweVY4cmc2SXpzbnk5ZHZaWmdtUjVKcDhPR20wQTRxNVNlUU1o?=
- =?utf-8?B?eXhreXpEY0VPS21uK1M4OStjRGtRR1FXaWovSEtRTW5JR21VUlAxRmFxRnE4?=
- =?utf-8?B?QmRIYzRHbU5NZ2s5dkNlZEt3WHZhVVhVQ1B0YS9Zc1NEYVh2TGc0WFRubS9k?=
- =?utf-8?B?eUhIVERPWVNsdjU4R3BQbU5MWXJIdkxNQTc0RVQySzA1cVNTNU5KOEVMbkxj?=
- =?utf-8?B?WlRRS2lIUmlWM2xPZHE4ekxNY3NsbTNDalNQOTNRNVB4VVFXZTlOcmxuaHha?=
- =?utf-8?B?dVdZd3ZTSmZhTis2UEtmT3RVWEFQZGhXOTVNdHVablAvbXFlSGFqaVpKa3pr?=
- =?utf-8?B?WDc1UjRSSE9NVGFaSDhMeUNqd3R5SzlUa0FmMW9YMWh4LzdvWFY4RldNb05I?=
- =?utf-8?B?b0YyOHMwY3ozbjhMdVpCK2J5K1lBd2tkWEwzOCtoaCtNbVJXb0FMd0xCSU5Y?=
- =?utf-8?B?bW1NUXdlcUZOVWE5THNySUdzeVJnbDRyZmlXbVJVSm53Q0hVamlwdXhWelVi?=
- =?utf-8?B?ZDdaNmxpZ3p3YnF0UXVTMmRMV21YbTZTaGVwZGtpa1NtS3psaEt5N242ZE5Q?=
- =?utf-8?B?RGZuMTNsSnh1MHhzc1d1eExHQXlVWitDUGswbnRuVlo4VUszVTM4Y0JndnFi?=
- =?utf-8?B?VkFBY1FZaUx6Um03WUJTMXd6RDZxdlVoVURvWjBhWE1VODZjTTZHMVQ1TG5Z?=
- =?utf-8?B?c0RPSS8rN1VYd3RzOXkrdkZOeDA1eGlrSitFRkI4T0xVSmYxY3JtN3BHaFV4?=
- =?utf-8?B?SER3M1hEVXYrUCt2MXNNQ3E1WlROV1plUHgrbHdvNXFWc2VnK2ExMXhhQy9D?=
- =?utf-8?B?T0RxZWIyTjZlNUxDQjJLajZSWGh1SUlMRTVvVFZ3WU1WZTcybjJzaWZEd0Y5?=
- =?utf-8?B?dTc5d0p1TkFvcHNPcGMwMjg3UkRVQWRiVzUyV1pKQWdNUktNejBMSzNnR0Fx?=
- =?utf-8?B?REVVdy90Y0dpcXZiVS94M2d6cldJSXZmUXE1QXNQQTM1R1d6ZUFRdU5HTzFj?=
- =?utf-8?B?aUNuOS80YWgxRWxnTUdMSVJXaUFyb0xjcWZxVFlFMmFycVNXdmlJT2RDcUlP?=
- =?utf-8?B?Qjh2VEhqaFltWGRQQmtFV1RiZ1Mxb0VkMUlUSENzc1FGcmZBSFAyK2lGVk44?=
- =?utf-8?B?VU02TFNkaWh4WVpLTU1Vblh1L041OXRlUkR5MmlrUytETXBMQWN0UTBpTVFX?=
- =?utf-8?B?YmhzZTg4REJLNStiRktxN2xOeTJvdnFpZHpnUzNyMWZJSGRwQmgwalV2a2Jp?=
- =?utf-8?Q?JCPQ1VWK8932427GewtTmdRkvmcDyRldx139gj+?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1eac337f-0a3a-4ffe-ca60-08d974779a79
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 16:25:29.4856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /yptZkzzhhkciyqxM7nBg4TsGzlTzEPQPuYavZAC1hCGGZloBR1Ty2C0aELBq62WUxWYw9awgA+tY2v7UK5ylGu32cU0Fq5HyuCYJlKcLaU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3622
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10103 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
- suspectscore=0 spamscore=0 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109100095
-X-Proofpoint-GUID: kcrqLyluTDgdDwKuIus5X-7KMkHjmN-F
-X-Proofpoint-ORIG-GUID: kcrqLyluTDgdDwKuIus5X-7KMkHjmN-F
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210910160504.1794332-30-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 8:02 PM, Ding Hui wrote:
-> commit ec29d0ac29be ("scsi: iscsi: Fix conn use after free during
-> resets") move member ehwait from conn to session, but left init ehwait
-> in iscsi_conn_setup().
+On Fri, Sep 10, 2021 at 06:05:02PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> Due to one session can be binded by multi conns, the conn after the
+> Comments after the last #endif of header files don't bring any
+> information and are redundant with the name of the file. Drop them.
 
-A session can only have 1 conn. There is some code that makes it look
-like we can do multiple conns or swap the single conn, but it was never
-fully implemented/supported upstream.
+How so? You see right away that this indeed is header guard and not some
+other random thing. Also kernel coding standard says:
 
-However, I like the patch. The init should be done in iscsi_session_setup,
-so could you fix up the commit, so it's correct?
+	At the end of any non-trivial #if or #ifdef block (more than a
+	few line), place a comment after the #endif on the same line,
+	noting the conditional expression used.
 
-> first will reinit the session->ehwait, move init ehwait to
-> iscsi_session_setup() to fix it.
+There is no point dropping them imo. If you think about space saving
+this patch will take more space. Because it will be in version history.
+So nack from me unless some one can trun my head around.
+
 > 
-> Fixes: ec29d0ac29be ("scsi: iscsi: Fix conn use after free during resets")
-> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > ---
->  drivers/scsi/libiscsi.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/staging/wfx/bh.h      | 2 +-
+>  drivers/staging/wfx/data_rx.h | 2 +-
+>  drivers/staging/wfx/data_tx.h | 2 +-
+>  drivers/staging/wfx/debug.h   | 2 +-
+>  drivers/staging/wfx/fwio.h    | 2 +-
+>  drivers/staging/wfx/hwio.h    | 2 +-
+>  drivers/staging/wfx/key.h     | 2 +-
+>  drivers/staging/wfx/queue.h   | 2 +-
+>  drivers/staging/wfx/scan.h    | 2 +-
+>  drivers/staging/wfx/sta.h     | 2 +-
+>  drivers/staging/wfx/wfx.h     | 2 +-
+>  11 files changed, 11 insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-> index 4683c183e9d4..712a45368385 100644
-> --- a/drivers/scsi/libiscsi.c
-> +++ b/drivers/scsi/libiscsi.c
-> @@ -2947,6 +2947,7 @@ iscsi_session_setup(struct iscsi_transport *iscsit, struct Scsi_Host *shost,
->  	session->tmf_state = TMF_INITIAL;
->  	timer_setup(&session->tmf_timer, iscsi_tmf_timedout, 0);
->  	mutex_init(&session->eh_mutex);
-> +	init_waitqueue_head(&session->ehwait);
+> diff --git a/drivers/staging/wfx/bh.h b/drivers/staging/wfx/bh.h
+> index f08c62ed039c..6c121ce4dd3f 100644
+> --- a/drivers/staging/wfx/bh.h
+> +++ b/drivers/staging/wfx/bh.h
+> @@ -30,4 +30,4 @@ void wfx_bh_request_rx(struct wfx_dev *wdev);
+>  void wfx_bh_request_tx(struct wfx_dev *wdev);
+>  void wfx_bh_poll_irq(struct wfx_dev *wdev);
 >  
->  	spin_lock_init(&session->frwd_lock);
->  	spin_lock_init(&session->back_lock);
-> @@ -3074,8 +3075,6 @@ iscsi_conn_setup(struct iscsi_cls_session *cls_session, int dd_size,
->  		goto login_task_data_alloc_fail;
->  	conn->login_task->data = conn->data = data;
+> -#endif /* WFX_BH_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/data_rx.h b/drivers/staging/wfx/data_rx.h
+> index f79545c06130..84d0e3c0507b 100644
+> --- a/drivers/staging/wfx/data_rx.h
+> +++ b/drivers/staging/wfx/data_rx.h
+> @@ -15,4 +15,4 @@ struct hif_ind_rx;
+>  void wfx_rx_cb(struct wfx_vif *wvif,
+>  	       const struct hif_ind_rx *arg, struct sk_buff *skb);
 >  
-> -	init_waitqueue_head(&session->ehwait);
-> -
->  	return cls_conn;
+> -#endif /* WFX_DATA_RX_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/data_tx.h b/drivers/staging/wfx/data_tx.h
+> index dafd8fef44cf..15590a8faefe 100644
+> --- a/drivers/staging/wfx/data_tx.h
+> +++ b/drivers/staging/wfx/data_tx.h
+> @@ -65,4 +65,4 @@ static inline struct hif_req_tx *wfx_skb_txreq(struct sk_buff *skb)
+>  	return req;
+>  }
 >  
->  login_task_data_alloc_fail:
+> -#endif /* WFX_DATA_TX_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/debug.h b/drivers/staging/wfx/debug.h
+> index 6f2f84d64c9e..4b9c49a9fffb 100644
+> --- a/drivers/staging/wfx/debug.h
+> +++ b/drivers/staging/wfx/debug.h
+> @@ -16,4 +16,4 @@ const char *get_hif_name(unsigned long id);
+>  const char *get_mib_name(unsigned long id);
+>  const char *get_reg_name(unsigned long id);
+>  
+> -#endif /* WFX_DEBUG_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/fwio.h b/drivers/staging/wfx/fwio.h
+> index 6028f92503fe..eeea61210eca 100644
+> --- a/drivers/staging/wfx/fwio.h
+> +++ b/drivers/staging/wfx/fwio.h
+> @@ -12,4 +12,4 @@ struct wfx_dev;
+>  
+>  int wfx_init_device(struct wfx_dev *wdev);
+>  
+> -#endif /* WFX_FWIO_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/hwio.h b/drivers/staging/wfx/hwio.h
+> index 9a361ed95ecb..ff09575dd1af 100644
+> --- a/drivers/staging/wfx/hwio.h
+> +++ b/drivers/staging/wfx/hwio.h
+> @@ -72,4 +72,4 @@ int control_reg_write_bits(struct wfx_dev *wdev, u32 mask, u32 val);
+>  int igpr_reg_read(struct wfx_dev *wdev, int index, u32 *val);
+>  int igpr_reg_write(struct wfx_dev *wdev, int index, u32 val);
+>  
+> -#endif /* WFX_HWIO_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/key.h b/drivers/staging/wfx/key.h
+> index dd189788acf1..2d135eff7af2 100644
+> --- a/drivers/staging/wfx/key.h
+> +++ b/drivers/staging/wfx/key.h
+> @@ -17,4 +17,4 @@ int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+>  		struct ieee80211_vif *vif, struct ieee80211_sta *sta,
+>  		struct ieee80211_key_conf *key);
+>  
+> -#endif /* WFX_STA_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/queue.h b/drivers/staging/wfx/queue.h
+> index 54b5def2e24c..edd0d018b198 100644
+> --- a/drivers/staging/wfx/queue.h
+> +++ b/drivers/staging/wfx/queue.h
+> @@ -42,4 +42,4 @@ unsigned int wfx_pending_get_pkt_us_delay(struct wfx_dev *wdev,
+>  					  struct sk_buff *skb);
+>  void wfx_pending_dump_old_frames(struct wfx_dev *wdev, unsigned int limit_ms);
+>  
+> -#endif /* WFX_QUEUE_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/scan.h b/drivers/staging/wfx/scan.h
+> index 562ca1321daf..78e3b984f375 100644
+> --- a/drivers/staging/wfx/scan.h
+> +++ b/drivers/staging/wfx/scan.h
+> @@ -19,4 +19,4 @@ int wfx_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>  void wfx_cancel_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
+>  void wfx_scan_complete(struct wfx_vif *wvif, int nb_chan_done);
+>  
+> -#endif /* WFX_SCAN_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/sta.h b/drivers/staging/wfx/sta.h
+> index f359f375cc56..4d7e38be4235 100644
+> --- a/drivers/staging/wfx/sta.h
+> +++ b/drivers/staging/wfx/sta.h
+> @@ -70,4 +70,4 @@ int wfx_update_pm(struct wfx_vif *wvif);
+>  void wfx_reset(struct wfx_vif *wvif);
+>  u32 wfx_rate_mask_to_hw(struct wfx_dev *wdev, u32 rates);
+>  
+> -#endif /* WFX_STA_H */
+> +#endif
+> diff --git a/drivers/staging/wfx/wfx.h b/drivers/staging/wfx/wfx.h
+> index a4770f59f7d2..f8df59ad1639 100644
+> --- a/drivers/staging/wfx/wfx.h
+> +++ b/drivers/staging/wfx/wfx.h
+> @@ -161,4 +161,4 @@ static inline int memzcmp(void *src, unsigned int size)
+>  	return memcmp(buf, buf + 1, size - 1);
+>  }
+>  
+> -#endif /* WFX_H */
+> +#endif
+> -- 
+> 2.33.0
 > 
-
