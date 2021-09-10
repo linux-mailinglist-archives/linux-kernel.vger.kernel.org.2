@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3385D407201
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC93A407203
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhIJTab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:30:31 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:29551 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbhIJT3h (ORCPT
+        id S233971AbhIJTan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234089AbhIJTaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:29:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631302103; x=1662838103;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DAp64paU3TCuJOhu7apCE+cFKSV+lH5b3Cp62qoHD/M=;
-  b=gC4uokdKMMOjufz6zAgK1EjqajKBGz+w/5dIMxBQeoH1UBFFXWvyyf+h
-   fguozGkMlDXULc2vgpDLIPY647HfAHJpOwipw7dTZFsJMgZpE3fERSFyE
-   A3A6PifCeZ4LWHxiaJXsAaC6aw1Pk5OxA6kzo6AuDZxP0SfgeHVVe1xKW
-   B7rdxsKRABbA/RfdAUsoyP/od6mEdptNL0Exo87uWl/R/5hTJ2TJNjHgu
-   eS5fcx/8JEWEvYMs27deQVcAOYgJJNXYAZ+luS/KQC4qgRwCi7LnPHkL4
-   2k/hnIfyMCXrCsWbPd/jEZyLzr6B17VhmIEOz7zlTxZcn+2ROSwh1VW9a
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,283,1624291200"; 
-   d="scan'208";a="179706179"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2021 03:28:23 +0800
-IronPort-SDR: 71rxKR+WOluqrSvrLCPoMAmwDpWBZY8jnG5RBIAtogwamhtOEh0t/R86S8jaavics2IZwDvF5y
- Y/F8V97Vmizy9nVKXOsMT74t0QioWpPVXGkXGIcw3LU1EpQhT+dj9qAC0KFyxVn8wMd8m3o1Rq
- aI9ZOVT+Q/9AakuyH5Gb9TDlimloovLFskCoEiZgPm4g6e9NUvSrkwtXK2x5XL25B8TzRoiNvt
- cBxKQZcsaX1D97p2tTmwUiSatBh6pC5PRCa7fJyjOK16nHciEJrSRkbdaYTJfp1Uc8MrcAMM6g
- d8OINkCbzv9tepetOC4nnexy
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 12:03:20 -0700
-IronPort-SDR: Gp6nfrIAxPnXUZWBQE8ZGO4hoQRY+xfQh7dd87UsREg+elLIcD6Iov/il9cDNn8EnJdndekvqB
- DEbII0uc7YtTV9d5KSVzCDrl8GyjA0NUplaCtybKXKPAfhubO174mcFEqvbk3ckLiuiUMmTuFe
- 6GHn2iLGIAGriS3Zr6eGFL78P9oBvENYSoYbgCCCjXNSOl8Mww+xu/8VM2sI9cx33N4+gzjZSg
- /GwXXH4i1FcSgdYrpWhqg4xN3mkce+RY7Hb8pQUUTn7KHiQKztMOly/ITcwOEmLLWObpRmrjSx
- 52g=
-WDCIronportException: Internal
-Received: from unknown (HELO hulk.wdc.com) ([10.225.167.73])
-  by uls-op-cesaip01.wdc.com with ESMTP; 10 Sep 2021 12:28:25 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, devicetree@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Chen <vincent.chen@sifive.com>
-Subject: [v3 10/10] MAINTAINERS: Add entry for RISC-V PMU drivers
-Date:   Fri, 10 Sep 2021 12:27:57 -0700
-Message-Id: <20210910192757.2309100-11-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210910192757.2309100-1-atish.patra@wdc.com>
-References: <20210910192757.2309100-1-atish.patra@wdc.com>
+        Fri, 10 Sep 2021 15:30:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233A3C061756;
+        Fri, 10 Sep 2021 12:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6jlEs7B165almJRLRE31tW+xA96GS78RIfJR4xnCYbg=; b=PL265S7y2ZrKBxAQknmUxxk6IB
+        Aguj777Hn3MNTpKzo4XgmpG3fkwj5QEPCohKYCOKBOp92wiIPxFnr1dSYYv+wIgCXd/qRYPuiPcX/
+        HcFkxsCp4UTc/iYvtsb7Jg814M7S5lXI5sS6rHb6Hoaqu5XGCFYrBREwCEI5AzKSC4DFgyXXA2j8E
+        J8yUeX4WkSUKCkCfpaxR1bu2gUpVf/tQwLnWbdWacIYf05oUSwCUHkw9xn6CxrRfpEAkWElIHdnK4
+        ILdqf7NBdUP+g7nRdZyNG0lHwLN38GrVDQLu66NfJJupMdQ6NCFKSLJQU16oogf5UyE1ly7MFYUCp
+        66tc4f7w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOmCb-002CZS-PL; Fri, 10 Sep 2021 19:28:46 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3557898627A; Fri, 10 Sep 2021 21:28:45 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 21:28:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v7 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <20210910192845.GT4323@worktop.programming.kicks-ass.net>
+References: <20210910183352.3151445-1-songliubraving@fb.com>
+ <20210910183352.3151445-2-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910183352.3151445-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself and Anup as maintainer for RISC-V PMU drivers.
+On Fri, Sep 10, 2021 at 11:33:50AM -0700, Song Liu wrote:
+> The typical way to access branch record (e.g. Intel LBR) is via hardware
+> perf_event. For CPUs with FREEZE_LBRS_ON_PMI support, PMI could capture
+> reliable LBR. On the other hand, LBR could also be useful in non-PMI
+> scenario. For example, in kretprobe or bpf fexit program, LBR could
+> provide a lot of information on what happened with the function. Add API
+> to use branch record for software use.
+> 
+> Note that, when the software event triggers, it is necessary to stop the
+> branch record hardware asap. Therefore, static_call is used to remove some
+> branch instructions in this process.
+> 
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9af529acb6a6..6a184a4162b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16056,6 +16056,16 @@ S:	Maintained
- F:	drivers/mtd/nand/raw/r852.c
- F:	drivers/mtd/nand/raw/r852.h
- 
-+RISC-V PMU DRIVERS
-+M:	Atish Patra <atish.patra@wdc.com>
-+M:	Anup Patel <anup.patel@wdc.com>
-+L:	linux-riscv@lists.infradead.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/pmu/riscv,pmu.yaml
-+F:	drivers/perf/riscv_pmu.c
-+F:	drivers/perf/riscv_pmu_legacy.c
-+F:	drivers/perf/riscv_pmu_sbi.c
-+
- RISC-V ARCHITECTURE
- M:	Paul Walmsley <paul.walmsley@sifive.com>
- M:	Palmer Dabbelt <palmer@dabbelt.com>
--- 
-2.31.1
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
