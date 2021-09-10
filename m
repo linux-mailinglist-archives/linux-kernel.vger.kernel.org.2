@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EE04070B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B404070B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhIJR4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJR4i (ORCPT
+        id S232012AbhIJR5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:57:09 -0400
+Received: from mail.efficios.com ([167.114.26.124]:37242 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhIJR5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:56:38 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0169C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:55:27 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n4so1627523plh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=74br1N0NBz3VAESrVPeVqbSv4KpvlUpZC5wb7BVH5bM=;
-        b=PoMBT5PzZXpKtCxjsX/Fld3niyqTFQTJjrnbjxl22WWNvHGWfD3bdB0IiukTT5/T2m
-         U5lyc00oHBvpOWjq2DGox4Cctkd4i6lRb2SoWvoH5pcIQEfkorPNdRgbzBmfmntSWKXV
-         7iX1e/se+bux8EjhtPtfZ79ou55zlTOSM8B4FbWY1tDIwbmFhmY5xq05r0kfOOBllEQ6
-         PLrpL4zQM89JZ8dNbS/NiOFb7fXms/Tp39FzOijmzTOmvd09isUJ8+S6rEOt17UD+xsL
-         XtrUs17yUp+CTl+sP2ZrsAb8C1wzaPBcc84g1KC0c8pL6nz+BZ+P4/VOTsSSlJzhwrwH
-         8/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=74br1N0NBz3VAESrVPeVqbSv4KpvlUpZC5wb7BVH5bM=;
-        b=0Obv7oSDRvqE9rr31BdbekC2Ril3l30nW40lQYLvrVciwVTveMOGHGWWu+uDy6zLZB
-         lCdwoiOpOyaLT7yWlkU1Sn2Qa7vLOKgBCByVpyS49cojVs2ki54McuVqmk/rxWoO5/2f
-         vvJuAXh+tcwk4H8pisg4+KkLWMbIjCCUufg9aMasjaFKSu2iNaIH+1Vxc8XSgoR/0oc6
-         FjpI/erCo1P14+nSqYShx7aEsqlNxSfMxhbjnsIKX8ZSgtf9pmCEGuaZJ/7SgWF1fGAf
-         ZhdumfkhhZonuXcov8M2m+wLNRSpfoIOdgiidj2Ms5JOdYnv+1nieQvvIPYQcEucLXJy
-         Pstg==
-X-Gm-Message-State: AOAM530NzinhBP7PN+WEJ1HHDElOnB/YxeYAb/qNylrWrgeD6nlAtV3u
-        JpiEk2ZU83mOAZrAFsTOjWjCFA==
-X-Google-Smtp-Source: ABdhPJx+wMohUP/daiNsbnsj/P33eYsOJ6z7uBSLf55XZZ3IuD7jQEyqiAzTKGYWyEzS0McFfWHsVA==
-X-Received: by 2002:a17:902:ea11:b0:13a:db38:cfcf with SMTP id s17-20020a170902ea1100b0013adb38cfcfmr4790469plg.3.1631296527096;
-        Fri, 10 Sep 2021 10:55:27 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b17sm5635774pfo.98.2021.09.10.10.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 10:55:26 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 17:55:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, Tao Xu <tao3.xu@intel.com>,
-        pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-Message-ID: <YTucCk8cVVvES2mx@google.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
- <4079f0c9-e34c-c034-853a-b26908a58182@intel.com>
- <YTD7+v2t0dSZqVHF@google.com>
- <c7ff247a-0046-e461-09bf-bcf8b5d0f426@intel.com>
- <YTpW3M8Iyh8kLpyx@google.com>
- <ce2dfc44-d1cf-8d09-6a38-9befb6f65885@intel.com>
+        Fri, 10 Sep 2021 13:57:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8276B380BB7;
+        Fri, 10 Sep 2021 13:55:56 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id IuMMT8J-4IRd; Fri, 10 Sep 2021 13:55:56 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 02421380BB6;
+        Fri, 10 Sep 2021 13:55:56 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 02421380BB6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1631296556;
+        bh=5+hAG8XNzsa04MG+fqOR9+Yfgc7sEdxUWr0qmmVfCfY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=D2Y/BDbCbe3M+6qV+k1Ku+t9zQP6MKY9svVkACnUBAxoa6TPj3ucPG6abAXe+G3HL
+         tZz0TPPyvqbl9zwjLKyElCw+aNQKcUFampR72oaEiGDyrhXE/QaieXV6W1gKYo1n9s
+         f285Abk/Q74G/4sRi96Yy46x7bEPUhguUfyMGy5EiAcMXcleRRPntVs7ozASxZMQ2i
+         zQqziskxboGMELSktXPskxE5geC8+oXc3ijBU7bpVZdgNgqHyGpDVwaYhrk7UY5SNN
+         hl/JI44yuWz1aT4lAIw6fiO+EwxsIqJQk6ZMq55qw3n7UVBAoNyplrq5tCJcCAKMpW
+         7A11IyMoYIojA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FVcMjE_yDwv4; Fri, 10 Sep 2021 13:55:55 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id E492C380BB5;
+        Fri, 10 Sep 2021 13:55:55 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 13:55:55 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Peter Oskolkov <posk@posk.io>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Message-ID: <872090791.15342.1631296555821.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CAPNVh5d0jd=ks6WBnsheiAE394=31X963X+ZUG6x=ZZLHZ=jbQ@mail.gmail.com>
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com> <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com> <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com> <8735qcgzdu.fsf@oldenburg.str.redhat.com> <1297400717.15316.1631295199656.JavaMail.zimbra@efficios.com> <CAPNVh5d0jd=ks6WBnsheiAE394=31X963X+ZUG6x=ZZLHZ=jbQ@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific
+ data
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce2dfc44-d1cf-8d09-6a38-9befb6f65885@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF91 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Provide fast access to thread specific data
+Thread-Index: cCPc3M0lsPgAFLR7AFntnYw+6ICTsA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021, Xiaoyao Li wrote:
-> On 9/10/2021 2:47 AM, Sean Christopherson wrote:
-> > On Tue, Sep 07, 2021, Xiaoyao Li wrote:
-> > > On 9/3/2021 12:29 AM, Sean Christopherson wrote:
-> > > > > After syncing internally, we know that the internal threshold is not
-> > > > > architectural but a model-specific value. It will be published in some place
-> > > > > in future.
-> > > > 
-> > > > Any chance it will also be discoverable, e.g. via an MSR?
-> > > 
-> > > I also hope we can expose it via MSR. If not, we can maintain a table per
-> > > FMS in KVM to get the internal threshold. However, per FMS info is not
-> > > friendly to be virtualized (when we are going to enable the nested support).
-> > 
-> > Yeah, FMS is awful.  If the built-in buffer isn't discoverable, my vote is to
-> > assume the worst, i.e. a built-in buffer of '0', and have the notify_window
-> > param default to a safe value, e.g. 25k or maybe even 150k (to go above what the
-> > hardware folks apparently deemed safe for SPR).  It's obviously not idea, but
-> > it's better than playing FMS guessing games.
-> > 
-> > > I'll try to persuade internal to expose it via MSR, but I guarantee nothing.
-> > 
-> > ...
-> > 
-> > > > On a related topic, this needs tests.  One thought would be to stop unconditionally
-> > > > intercepting #AC if NOTIFY_WINDOW is enabled, and then have the test set up the
-> > > > infinite #AC vectoring scenario.
-> > > > 
-> > > 
-> > > yes, we have already tested with this case with notify_window set to 0. No
-> > > false positive.
-> > 
-> > Can you send a selftest or kvm-unit-test?
-> > 
+----- On Sep 10, 2021, at 1:48 PM, Peter Oskolkov posk@google.com wrote:
+
+> On Fri, Sep 10, 2021 at 10:33 AM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> ----- On Sep 10, 2021, at 12:37 PM, Florian Weimer fweimer@redhat.com wrote:
+>>
+>> > * Peter Oskolkov:
+>> >
+>> >> In short, due to the need to read/write to the userspace from
+>> >> non-sleepable contexts in the kernel it seems that we need to have some
+>> >> form of per task/thread kernel/userspace shared memory that is pinned,
+>> >> similar to what your sys_task_getshared does.
+>> >
+>> > In glibc, we'd also like to have this for PID and TID.  Eventually,
+>> > rt_sigprocmask without kernel roundtrip in most cases would be very nice
+>> > as well.  For performance and simplicity in userspace, it would be best
+>> > if the memory region could be at the same offset from the TCB for all
+>> > threads.
+>> >
+>> > For KTLS, the idea was that the auxiliary vector would contain size and
+>> > alignment of the KTLS.  Userspace would reserve that memory, register it
+>> > with the kernel like rseq (or the robust list pointers), and pass its
+>> > address to the vDSO functions that need them.  The last part ensures
+>> > that the vDSO functions do not need non-global data to determine the
+>> > offset from the TCB.  Registration is still needed for the caches.
+>> >
+>> > I think previous discussions (in the KTLS and rseq context) did not have
+>> > the pinning constraint.
+>>
+>> If this data is per-thread, and read from user-space, why is it relevant
+>> to update this data from non-sleepable kernel context rather than update it as
+>> needed on return-to-userspace ? When returning to userspace, sleeping due to a
+>> page fault is entirely acceptable. This is what we currently do for rseq.
+>>
+>> In short, the data could be accessible from the task struct. Flags in the
+>> task struct can let return-to-userspace know that it has outdated ktls
+>> data. So before returning to userspace, the kernel can copy the relevant data
+>> from the task struct to the shared memory area, without requiring any pinning.
+>>
+>> What am I missing ?
 > 
-> Actually we implement the attacking case of CVE-2015-5307 with
-> kvm-unit-test, while manually disabling the intercept of #AC.
+> I can't speak about other use cases, but in the context of userspace
+> scheduling, the information that a task has blocked in the kernel and
+> is going to be removed from its runqueue cannot wait to be delivered
+> to the userspace until the task wakes up, as the userspace scheduler
+> needs to know of the even when it happened so that it can schedule
+> another task in place of the blocked one. See the discussion here:
 > 
-> First, it requires modification of KVM that only posting the kvm-unit-test
-> doesn't help.
+> https://lore.kernel.org/lkml/CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com/
 
-It helps in that hacking KVM to disable #AC interception is a lot easier than
-re-writing a test from scratch.
+OK, just to confirm my understanding, so the use-case here is per-thread
+state which can be read by other threads (in this case the userspace scheduler) ?
 
-> Second, release the attacking case is not the correct action.
+Thanks,
 
-As in it's irresponsible to provide code that can be used to DoS a hypervisor?
-The CVE is six years old, IMO security-through-obscurity is unnecessary at this
-point.
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
