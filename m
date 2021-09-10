@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E51F407368
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD4740736B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbhIJWgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S231929AbhIJWha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhIJWgX (ORCPT
+        with ESMTP id S230210AbhIJWh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:36:23 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49578C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:35:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id k4so7021645lfj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:35:11 -0700 (PDT)
+        Fri, 10 Sep 2021 18:37:28 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9D7C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:36:17 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id f129so3143962pgc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DWQGZrSo/Do81bAjpKTAeUBjh1IoG/kzcaTcruy7fk4=;
-        b=saxjUAPFfGK5B7x+nTYAT8yzhPqGdjMcWQvcVRiW147le2Hcl7k+yEuEEnfNw/9TyA
-         Y3vf1VNph4TncTlTx1IMM/x9uNvAzX3wbgQIHTeOsQXQnzlQQTTX15AxY3FnsB67Ggf3
-         hPEOE5t3ZyCWbbXJnDY0pU3XBxYNqcfTk8P8wQI/yV8Ql4708KRfCApaMROmhVXXUmvC
-         6vNrZTJjoCkt63PL5L1xSjXhzoB5MVuuQs4fqVCzbWHDR093c6Jv9i8aadzA57XFVCCR
-         rL8F5phsIJ8TYBNg3M5uNOWc58OpDrhiOJ2paxP3MNbYc5BrOb92wi//AKbIbJOfwyfK
-         U1ow==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3hRvD55AlzDiLkgU8O9lPB5ydkM58COgww4lK+xPKNA=;
+        b=dpRA7ez275uqyRkLGORHUCTMk/8G0HtxdMZkxlxRihNXrl2ZoTus5twwsplRPDAJGq
+         LPRu7cpDcaVy7m5FDm9DYofpU6odEqix822/WDwSYAbS5+izVmB5NG08olewAx98uUjX
+         oMlP334dbBmyMTPJdUObMj4BH0XxW5cRc2qH4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DWQGZrSo/Do81bAjpKTAeUBjh1IoG/kzcaTcruy7fk4=;
-        b=RmM7IgSo/bzupjbn/h6aFAAoI/3bIas5IvR+614x25fLtt+fKYJvrMGwgdC9BPOPsP
-         uE4t29HygrmLtlgxET3kWAnE/svOc21K8x2y4nGMinTU3ufNA0zoxIB9ONYv6uUYT+Jy
-         Aa2X/Yqaf7gkZWBPRZPLImXutH5+uji19JiIgQTlA/ZXlhSTA5VryN0ypyjR2vcFm5kS
-         PBFpwO/3XbiwBYB06yq/5wxCe5BstYFYJagHHQVBWzv3PYusmXLKZm8WfGjF3YFHG7C4
-         gqFIBt/3y3hayu+Ql3FKxyhXux1LcFjkS8XuiMSDkXZzMPCBwYHuvdss3EPO656BxFp4
-         ITNw==
-X-Gm-Message-State: AOAM5315kC6O++tNdSNKhg410rRNufHC7UzMuHvtTr6XmHV61HyJd78m
-        qiWy1hC2HWGiWNhjj6kNHZNZUO7iYathGmosXqWLeg==
-X-Google-Smtp-Source: ABdhPJw541SsRoH3llrdeNz3D2AuhbrsNp86DUKg8d4moYQ1Lm0on5D/RGg9t2gjrSVV/TE6HoXob88bUDTMzYSAKfk=
-X-Received: by 2002:ac2:4c46:: with SMTP id o6mr5569552lfk.240.1631313309434;
- Fri, 10 Sep 2021 15:35:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3hRvD55AlzDiLkgU8O9lPB5ydkM58COgww4lK+xPKNA=;
+        b=CIGoO5RckXHIqTb4t91cVmGbtAHoJQaVE6eFYT6cj497c4jsI9pnbLTrp8yLimYrih
+         OJydVNC+eY1sgcCWZByQtQ+mlDkjIfT7S1/uoscelXM+TwPBA8BJxIxgOQuMm0w4bRSk
+         YGsZKPd+MW3wHvq0dpXdnAg9t6B1O0BVUeKZnOtuSw6c6yo72AkknG7CHA3WQbw0ojzR
+         YcDGN/m+HmG1r53xNtDe8EIMB74MuDfftIVyt/qaUyWOk/2JfiAQGuVDxwVqZWOAt5ya
+         leybzR+Rsh3bBZKJOMn4tfBMVVuNXPpH2PV7jfgQ2FsPaqMj8oUjqTmCiVxL+P8Gtg7E
+         qlMg==
+X-Gm-Message-State: AOAM530jktcXU0MYKOWUs6qcZwQYfNzSK6BuEHproEbnyzp4nZpKe8NO
+        oDbB4mynl37Y8VEEUzug6FY/eg==
+X-Google-Smtp-Source: ABdhPJxx4Wit0Qftq06uh3Cat42JuEm3a7XOFH1pu3N0oC8WjAG8iOMSri5ZckEHwBjtsymKIQWpuA==
+X-Received: by 2002:a63:841:: with SMTP id 62mr4745pgi.354.1631313376938;
+        Fri, 10 Sep 2021 15:36:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m64sm6192774pga.55.2021.09.10.15.36.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 15:36:16 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] landlock: Drop "const" argument qualifier to avoid GCC 4.9 warnings
+Date:   Fri, 10 Sep 2021 15:36:13 -0700
+Message-Id: <20210910223613.3225685-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210909182525.372ee687@canb.auug.org.au> <20210909225035.3990728-1-ndesaulniers@google.com>
- <CAKwvOd=hoPv2GMZws6UsnMHop6+662wer=Hfo2Tw2=1XXCY2JA@mail.gmail.com>
- <CAKwvOdmXVLjd9ukYpORDgPeqFcM4nRiOYE_1Mtr_bGa=FPo4Cg@mail.gmail.com> <CAKwvOdnDOQPRe3v7ZD6SRR=TgbLqo1wfn_zmgfJpbqGEZyJ1-Q@mail.gmail.com>
-In-Reply-To: <CAKwvOdnDOQPRe3v7ZD6SRR=TgbLqo1wfn_zmgfJpbqGEZyJ1-Q@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 10 Sep 2021 15:34:58 -0700
-Message-ID: <CAKwvOdkc9oQWh8tFobxS9NTGsyyeWHLz9+RQ2bgxFawob0hEwQ@mail.gmail.com>
-Subject: Re: linux-next: build failure while building Linus' tree
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, libaokun1@huawei.com,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        llvm@lists.linux.dev, Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, sfr@canb.auug.org.au
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2292; h=from:subject; bh=iSCHjkob/n8sXCvfeWoki7FcCa2YHoXRmVIzTgHXdDw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhO93d+UF0sB8wKqxFZeWzbz/6fQSst1worP6xVvlG h7cEzeaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTvd3QAKCRCJcvTf3G3AJp9aEA CpQq+EIq1+kfJ3pXfrc9dJ8SmatIREczqwN8997WehcYNz1Xtzx3/SgFfdS7/N2AQIhmGBgqJIaG7Z gp9/7r6HtpzGNaUZ2SsI2n14SgDEonvySHwGoAB3W8ItzUT640UDajRSEKrGwRsEiPFKpkYdQDJ373 OvCO6JKKqJ6JBvw/5mmRRgU/nMdbYiJ7E3LTJ91OHF6abPQObupwZ/rMt9CP+yAVpxivC4BiJkE7Ds BG+oCo94uVEwxB/oTNSb6iK+GcRic5Mp3vGDfN7BG8eWCVD594codlePQFQh//j6bNfPVsnbuaGrW1 UPjO9CRiu6WFHFb0Kt3jYpQnQZPC71THlZ3z5N+mFlRfjU+LzAxwgOMhwpbMW83Kh0lqj+RYxP0Ipf ls/7VXgxj3jEJbxtV9nLSLObcmHSUyBL3fil8eKL7Jx76nbSqllTTc26OPHMmOGV9X6KyvwlCQWD5n xnQu23MO66kwIZPcio9W+HI+XgiW4H6uHxHBP0bWSIvnnxG/5lZYsGfNg0920PCyl0tSvoEwIwhhRx QgcH6FViLYp1mM2lzHftz21HiQzXtaGrsi8xFy5+SEin7hemmFD7Vv9C1Uw8w/xbkoTSubmwYpqfVK mMM0EPNLgcl51mLx2gDuoR1wJ5yMyxJwW9t4WV9Mq2GumgFwBuxZj6aLJIew==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 3:26 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Sep 10, 2021 at 3:17 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Sep 10, 2021 at 3:02 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Thu, Sep 9, 2021 at 3:50 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > >
-> > > > + Rasmus
-> > > >
-> > > > This was introduced in
-> > > > commit f0907827a8a91 ("compiler.h: enable builtin overflow checkers and add
-> > > > fallback code")
-> > > > which added division using the `/` operator, which is problematic when checking
-> > > > for overflows of 64b operands on 32b targets.
-> > > >
-> > > > We'll probably need helpers from linux/math64.h and some combination of
-> > > > __builtin_choose_expr/__builtin_types_compatible_p.
-> > > >
-> > > > That will help us fix another compiler bug for older clang releases, too.
-> > > > https://github.com/ClangBuiltLinux/linux/issues/1438.
-> > >
-> > > Ok, I have something hacked up that I think will work:
-> > > https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863
-> >
-> > hmm...playing around with adding some static asserts to the above, I
->
-> ah! static_assert can't be used for the type agnostic macros,
-> BUILD_BUG_ON needs to be used in its place. Ok, let me add a few and
-> see if that can help instill some confidence here.
+When building under GCC 4.9, the compiler warns about const mismatches:
 
-Ah, I just saw your comment now about raising the minimum required
-version of gcc to 5.1.
-https://github.com/ClangBuiltLinux/linux/issues/1438#issuecomment-916745801
+security/landlock/ruleset.c: In function 'insert_rule':
+security/landlock/ruleset.c:196:34: error: passing argument 2 of 'create_rule' from incompatible pointer type [-Werror]
+   new_rule = create_rule(object, &this->layers, this->num_layers,
+                                  ^
+security/landlock/ruleset.c:69:30: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[]'
+ static struct landlock_rule *create_rule(
+                              ^
+security/landlock/ruleset.c: In function 'landlock_insert_rule':
+security/landlock/ruleset.c:240:38: error: passing argument 3 of 'insert_rule' from incompatible pointer type [-Werror]
+  return insert_rule(ruleset, object, &layers, ARRAY_SIZE(layers));
+                                      ^
+security/landlock/ruleset.c:144:12: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[1]'
+ static int insert_rule(struct landlock_ruleset *const ruleset,
+            ^
 
-> > > This incomplete diff is a little hacked up to reproduce the issue with
-> > > a known-bad revision of clang that demonstrates a similar issue to GCC
-> > > 4.9.  You can ignore the movement of check_mul_overflow and friends in
-> > > include/linux/overflow.h.
-> > >
-> > > I think I'm going to break that up into 2 or 3 patches:
-> > > 1. move is_signed_type from include/linux/overflow.h to perhaps
-> > > include/linux/typecheck.h.
-> > > 2. add div64_x64, div_x64, and div_64 to include/linux/math64.h, use
-> > > them in include/linux/overflow.h to fix GCC 4.9
-> > > 3. move multiply fallbacks out of
-> > > COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW for clang < 14.
+Drop "const" from the function definition.
 
-In that case, I do have __mulodi4() rewritten from compiler-rt to be
-usable in the kernel.
+Cc: "Mickaël Salaün" <mic@digikod.net>
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-security-module@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ security/landlock/ruleset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
+index ec72b9262bf3..64c37af88ee7 100644
+--- a/security/landlock/ruleset.c
++++ b/security/landlock/ruleset.c
+@@ -68,7 +68,7 @@ static void build_check_rule(void)
+ 
+ static struct landlock_rule *create_rule(
+ 		struct landlock_object *const object,
+-		const struct landlock_layer (*const layers)[],
++		struct landlock_layer (*layers)[],
+ 		const u32 num_layers,
+ 		const struct landlock_layer *const new_layer)
+ {
+@@ -143,7 +143,7 @@ static void build_check_ruleset(void)
+  */
+ static int insert_rule(struct landlock_ruleset *const ruleset,
+ 		struct landlock_object *const object,
+-		const struct landlock_layer (*const layers)[],
++		struct landlock_layer (*layers)[],
+ 		size_t num_layers)
+ {
+ 	struct rb_node **walker_node;
 -- 
-Thanks,
-~Nick Desaulniers
+2.30.2
+
