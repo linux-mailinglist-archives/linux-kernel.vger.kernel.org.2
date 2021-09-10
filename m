@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A30A40740B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7078D40740D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhIJXti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
+        id S234895AbhIJXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhIJXtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:49:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53CDF611BF;
-        Fri, 10 Sep 2021 23:48:22 +0000 (UTC)
+        id S234787AbhIJXt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:49:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6A561209;
+        Fri, 10 Sep 2021 23:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631317703;
-        bh=3W+6f0wuipTibyjTQaN5vgjbRHyQ1UrUz0L6qzxUplo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KrXuEsLQIXYeh9eXjpq16ZYWxHkH1WKFaE5hG2+4bXOmbBKajE6+K36WBkyjLHeyS
-         eKFv24TqMQXYQqVMk6mrx+RU19w1nOz9pH9XF2rOZ95sCLmquwI9BE51WUXEkYpaBF
-         8RkK8UfnGtQA3x4rATph8qC3uKDp9d2VQz/hAbFxMKvK4hDbew9QgCKm55he2f3w1v
-         YrUP8LHlt6PJhToOv4sAeceahYMsxDn4WfexupxoLJM9GTQbht9lxUCWgUg8tzdWoI
-         WHMy+eff9sVxectgaPmxHdq7NHT5WCoQXjgQNJARg7qXBmd4+Te7RyzLss+7SM92v6
-         5gpQvxgkkyESw==
-Subject: Re: [PATCH 06/10] powerpc: remove GCC version check for UPD_CONSTR
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210910234047.1019925-1-ndesaulniers@google.com>
- <20210910234047.1019925-7-ndesaulniers@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <b940bd2c-21d2-dfe9-e171-e265085a2b11@kernel.org>
-Date:   Fri, 10 Sep 2021 16:48:20 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        s=k20201202; t=1631317725;
+        bh=CT+zN2hvsAGlq3FXd8oqicFmjUPdT7vc0738cJVqDhc=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=NBh9bj15FRDBR+BDeOLotaclfeKGuxxEoc4JgAJKKHSox00tTCMgZLOGby7uUyLYQ
+         pUtT8PJgxMce1q0BfXQGk+qIw445gAvZ6NLhM4y8jA3YmI46zR+zNzroZXVu/pZbaM
+         pTbn7Eto3WbEs5hwCEQxgUa7pk5OieVIazdXrixmWnVA0ZXVHOPpeLJa2vQT1Ei7aF
+         /ufGH9sxsebTeWF+phKh0lNfjV8oBhSvhX22Iap+CYZELu0dBswL/q/Q1LCFKtPJe6
+         t2CcUFqSt5aknM/ek0YF2QSjZKjYczxCuqCMGiGxDka+iZ6w5jVDpn2rd6xDDUxgLZ
+         AD+jGYwhQZKlw==
+Date:   Fri, 10 Sep 2021 16:48:44 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Christoph Hellwig <hch@infradead.org>
+cc:     Jan Beulich <jbeulich@suse.com>, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH 12/12] swiotlb-xen: this is PV-only on x86
+In-Reply-To: <YThiyxG0d2tmCtb+@infradead.org>
+Message-ID: <alpine.DEB.2.21.2109101636470.10523@sstabellini-ThinkPad-T480s>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com> <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com> <YThiyxG0d2tmCtb+@infradead.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210910234047.1019925-7-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 4:40 PM, Nick Desaulniers wrote:
-> Now that GCC 5.1 is the minimum supported version, we can drop this
-> workaround for older versions of GCC. This adversely affected clang,
-> too.
+On Wed, 8 Sep 2021, Christoph Hellwig wrote:
+> On Tue, Sep 07, 2021 at 02:13:21PM +0200, Jan Beulich wrote:
+> > The code is unreachable for HVM or PVH, and it also makes little sense
+> > in auto-translated environments. On Arm, with
+> > xen_{create,destroy}_contiguous_region() both being stubs, I have a hard
+> > time seeing what good the Xen specific variant does - the generic one
+> > ought to be fine for all purposes there. Still Arm code explicitly
+> > references symbols here, so the code will continue to be included there.
 > 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Segher Boessenkool <segher@kernel.crashing.org>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->   arch/powerpc/include/asm/asm-const.h | 10 ----------
->   1 file changed, 10 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/asm-const.h b/arch/powerpc/include/asm/asm-const.h
-> index 0ce2368bd20f..dbfa5e1e3198 100644
-> --- a/arch/powerpc/include/asm/asm-const.h
-> +++ b/arch/powerpc/include/asm/asm-const.h
-> @@ -12,16 +12,6 @@
->   #  define ASM_CONST(x)		__ASM_CONST(x)
->   #endif
->   
-> -/*
-> - * Inline assembly memory constraint
-> - *
-> - * GCC 4.9 doesn't properly handle pre update memory constraint "m<>"
-> - *
-> - */
-> -#if defined(GCC_VERSION) && GCC_VERSION < 50000
-> -#define UPD_CONSTR ""
-> -#else
->   #define UPD_CONSTR "<>"
-> -#endif
+> Can the Xen/arm folks look into that?  Getting ARM out of using
+> swiotlb-xen would be a huge step forward cleaning up some DMA APIs.
 
-The only reason this exists is because of commit 592bbe9c505d 
-("powerpc/uaccess: Don't use "m<>" constraint with GCC 4.9"). It is 
-probably just worth sinking "<>" into all of the callsites and removing
-UPD_CONSTR.
+On ARM swiotlb-xen is used for a different purpose compared to x86.
 
->   
->   #endif /* _ASM_POWERPC_ASM_CONST_H */
+Many ARM SoCs still don't have an IOMMU covering all DMA-mastering
+devices (e.g. Raspberry Pi 4). As a consequence we map Dom0 1:1 (guest
+physical == physical address).
+
+Now if it was just for Dom0, thanks to the 1:1 mapping, we wouldn't need
+swiotlb-xen. But when we start using PV drivers to share the network or
+disk between Dom0 and DomU we are going to get DomU pages mapped in
+Dom0, we call them "foreign pages".  They are not mapped 1:1. It can
+happen that one of these foreign pages are used for DMA operations
+(e.g. related to the NIC). swiotlb-xen is used to detect these
+situations and translate the guest physical address to physical address
+of foreign pages appropriately.
+
+If an IOMMU is available and the DMA-mastering device is behind it, then
+swiotlb-xen is not necessary. FYI there is community interest in
+selectively disabling swiotlb-xen for devices that are behind an IOMMU.
+
+
+> > Instead of making PCI_XEN's "select" conditional, simply drop it -
+> > SWIOTLB_XEN will be available unconditionally in the PV case anyway, and
+> > is - as explained above - dead code in non-PV environments.
+> > 
+> > This in turn allows dropping the stubs for
+> > xen_{create,destroy}_contiguous_region(), the former of which was broken
+> > anyway - it failed to set the DMA handle output.
 > 
+> Looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
