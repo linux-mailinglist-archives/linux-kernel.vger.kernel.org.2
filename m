@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30544064E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75DC4064E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 03:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhIJBH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 21:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240199AbhIJAmC (ORCPT
+        id S240209AbhIJBHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 21:07:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60432 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240861AbhIJAnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:42:02 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7752C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 17:40:52 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id s25so117064vsa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 17:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=u99A3nTsEcjLLtFLYfw0zQdAAXoFdW/AuvMLvdfo3s4=;
-        b=TW7VBVq6dK6hsRFpDVJJBgboDluU3a+UwpCW4hBgVvH8sOBE5QfR/PI5spsa0KR+tR
-         xRsSXywROggbTW7FX9pv8vo6R/cO5JMcm5lJp3ZriRuTnOwD85QLKGbxFvYSu+EqDRAp
-         cg7sGGMsrbZI6VyOKbIgE7SSi2A5ArNHO9bfoWx4bU0+bknhS4FitHbJlyABXOxKDuTD
-         LoObBJ0IdP+DiLyAdmvGEH5BjnzH44OtT6fjZUOFs8uAXjp0DfGktG0bWwOGobDzUozz
-         /boUVhlxqmxwen9I0ktEp1cZvN6szGSfSjrO71UHDMT0fZU798j5PqCjg8QxnpTLU2zn
-         rVBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=u99A3nTsEcjLLtFLYfw0zQdAAXoFdW/AuvMLvdfo3s4=;
-        b=SUzBmeJCTDHsK4vvy9CBVjhEg9NoKhfY9qsUHJDjxKqSA9jylYp44Li9uQHvS6jOCe
-         esl9Dya9Z3BeNoV+1fZbftwNC8FCqt3ctD1BsQBqzz+SIbbxme+mz7Ym6dHRdFQJKtR1
-         nHKwXFS4m7uNo4CtAUo4mHJkp5ehgq5rYLtNWm8x4rp9wIMAnhDjsHq8Nna2JEqf+GEF
-         kN7YiN66zXPZM44tqICFUS3k4x3+YEYqfK+J0ZzTigQqu8A5DWNnejGJxQktg9bkg1+A
-         SOx7Sj5Q7C3VRdX6B/eNrV2POrTUHEMXGQmw4pJhcz3aGYuEUJ+HEOxDidiC5ZN3/VBz
-         sfIQ==
-X-Gm-Message-State: AOAM533Ui+TY3Eop4fs2O2rOCBgz7g5t4MLt975C0QVN4tBNSA6diZOD
-        HQ8EBli17qFHz03v9uZFprSR5FzJYXr+88ledMqA
-X-Google-Smtp-Source: ABdhPJwkaBrAuiHABMu8IcTdvxJeg1KK4aP27a3qLiVaj8iQxGCaBhVotOsv0c4stecCCk4+BPxRMpAgcT494uzIS7o=
-X-Received: by 2002:a67:6245:: with SMTP id w66mr4292730vsb.34.1631234451815;
- Thu, 09 Sep 2021 17:40:51 -0700 (PDT)
+        Thu, 9 Sep 2021 20:43:11 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18A0fsbh098329;
+        Thu, 9 Sep 2021 19:41:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631234514;
+        bh=7WpQ0UQcRckhL2KZvB4oX9WAhqkdJztE4q4lICX7bYU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=mX2WPCfx3MZRw55KF2xHWdHz3xgCzW0ei13jc9kwpVfeXiH3QdwkTQqeytDenEfvL
+         8Cukd8LpP99EttSCHqqEUNTMmLaoqL7BmePzpGEzURRKQ0Tu7PrM0OlNYtMn/YdDIi
+         Ad4yYI6dSWOiHVx3r28LQfMRMpnsS3UpD0pCRqDY=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18A0fs5U059866
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 9 Sep 2021 19:41:54 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 9
+ Sep 2021 19:41:53 -0500
+Received: from DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14]) by
+ DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14%17]) with mapi id
+ 15.01.2308.014; Thu, 9 Sep 2021 19:41:53 -0500
+From:   "Modi, Geet" <geet.modi@ti.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "Nagalla, Hari" <hnagalla@ti.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sharma, Vikram" <vikram.sharma@ti.com>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
+ dp83tc811: modify list of interrupts enabled at initialization
+Thread-Topic: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
+ dp83tc811: modify list of interrupts enabled at initialization
+Thread-Index: AQHXoC4XSSkBWxKBYUuzA52mb5z+zauRtoAAgAWhA4CAAZ4BAIADCCgAgACK0YD//66ZAA==
+Date:   Fri, 10 Sep 2021 00:41:53 +0000
+Message-ID: <E3DBDC45-111F-4744-82A8-95C7D5CCEBE5@ti.com>
+References: <20210902190944.4963-1-hnagalla@ti.com> <YTFc6pyEtlRO/4r/@lunn.ch>
+ <99232B33-1C2F-45AF-A259-0868AC7D3FBC@ti.com> <YTdxBMVeqZVyO4Tf@lunn.ch>
+ <E61A9519-DBA6-4931-A2A0-78856819C362@ti.com> <YTpwjWEUmJWo0mwr@lunn.ch>
+In-Reply-To: <YTpwjWEUmJWo0mwr@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.52.21080801
+x-originating-ip: [10.250.200.196]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <04DAA7E225833244AA978630095B1EB7@owa.mail.ti.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <f58c6a58-86a6-1b37-7cec-6a9d801189ed@gmail.com>
-In-Reply-To: <f58c6a58-86a6-1b37-7cec-6a9d801189ed@gmail.com>
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Date:   Fri, 10 Sep 2021 09:40:25 +0900
-Message-ID: <CABMQnVJ8z6Tcbee6rv2vCR48ZDesC9f_ZnH6gx7rFONYT8iTpg@mail.gmail.com>
-Subject: Re: [PATCH] rtc: rx8010: select REGMAP_I2C
-To:     Yu-Tung Chang <mtwget@gmail.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-2021=E5=B9=B48=E6=9C=8830=E6=97=A5(=E6=9C=88) 12:56 Yu-Tung Chang <mtwget@g=
-mail.com>:
->
-> From 45801967ad80578161485937a0833b27b90210f9 Mon Sep 17 00:00:00 2001
-> From: Yu-Tung Chang <mtwget@gmail.com>
-> Date: Mon, 30 Aug 2021 10:59:17 +0800
-> Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
->
-> The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
-> depending on the configuration the build may fail. Fix it.
->
-> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
-> ---
->  drivers/rtc/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-
-Reviewed-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-
->
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index 12153d5801ce..f7bf87097a9f 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -624,6 +624,7 @@ config RTC_DRV_FM3130
->
->  config RTC_DRV_RX8010
->         tristate "Epson RX8010SJ"
-> +       select REGMAP_I2C
->         help
->           If you say yes here you get support for the Epson RX8010SJ RTC
->           chip.
-> --
-> 2.33.0
-
-Best regards,
-  Nobuhiro
-
---=20
-Nobuhiro Iwamatsu
-   iwamatsu at {nigauri.org / debian.org / kernel.org}
-   GPG ID: 40AD1FA6
+SGkgQW5kcmV3LA0KDQpBcyBtZW50aW9uZWQgd2Ugd2FudCB0byBkbyB0aGlzIGluIHBoYXNlczog
+DQphKSB0aGlzIHBhdGNoIHRvIGRpc2FibGUgdGhlIE92ZXJ2b2x0YWdlIGRyaXZlciBpbnRlcnJ1
+cHQNCmIpIEFmdGVyIGNhcmVmdWxseSBjb25zaWRlcmluZyBvdGhlciBpbnRlcnJ1cHRzLCBwbGFu
+IGEgIGZvbGxvdy1vbiBwYXRjaCB0byB0YWtlIGNhcmUgb2Ygb3RoZXIgaW50ZXJydXB0cy4NCg0K
+UGF0Y2ggY29tbWVudCB3aWxsIGJlIGlubGluZSB3aXRoIHlvdXIgc3VnZ2VzdGlvbg0KDQoiVGhl
+IG92ZXIgdm9sdGFnZSBpbnRlcnJ1cHQgaXMgZW5hYmxlZCwgYnV0IGlmIGl0IGV2ZXIgb2NjdXJz
+LCB0aGVyZSBpcyBubyBjb2RlIHRvIG1ha2UgdXNlIG9mIGl0LiBTbyByZW1vdmluZyBpdC4gSXQN
+CiAgICBjYW4gcmUtZW5hYmxlZCB3aGVuIEhXTU9OIHN1cHBvcnQgaXMgYWRkZWQgIg0KDQpSZWdh
+cmZkcywNCkdlZXQNCg0KDQrvu79PbiA5LzkvMjEsIDE6MzcgUE0sICJBbmRyZXcgTHVubiIgPGFu
+ZHJld0BsdW5uLmNoPiB3cm90ZToNCg0KICAgID4gSSBhbSBwbGFubmluZyB0byBoYXZlIGZvbGxv
+d2luZyBjb21taXQgbXNnOw0KICAgID4gDQogICAgPiAgDQogICAgPiANCiAgICA+IOKAnFRoaXMg
+ZmVhdHVyZSBpcyBub3QgdXNlZCBieSBvdXIgbWFpbnN0cmVhbSBjdXN0b21lcnMgYXMgdGhleSBo
+YXZlIGFkZGl0aW9uYWwNCg0KICAgIEFzIGkgc2FpZCwgdGhpcyBpcyBub3QgeW91ciBkcml2ZXIs
+IGZvciB5b3UgY3VzdG9tZXJzLiBJdCBpcyB0aGUgTGludXgNCiAgICBrZXJuZWwgZHJpdmVyLiBQ
+bGVhc2UgZHJvcCBhbGwgcmVmZXJlbmNlcyB0byB5b3VyIGN1c3RvbWVycy4gSWYgeW91DQogICAg
+bmVlZCB0byBhZGRyZXNzIGFueWJvZHksIGl0IHNob3VsZCBiZSB0aGUgTGludXggY29tbXVuaXR5
+IGFzIGEgd2hvbGUsDQogICAgb3IgbWF5YmUgdGhlIHVzZXJzIG9mIHRoaXMgZHJpdmVyLg0KDQog
+ICAgPiBtZWNoYW5pc20gdG8gbW9uaXRvciB0aGUgc3VwcGx5IGF0IFN5c3RlbSBsZXZlbCBhcyBh
+Y2N1cmFjeSByZXF1aXJlbWVudHMgYXJlDQogICAgPiBkaWZmZXJlbnQgZm9yIGVhY2ggYXBwbGlj
+YXRpb24uICBUaGUgZGV2aWNlIGlzIGRlc2lnbmVkIHdpdGggaW5idWlsdCBtb25pdG9yDQogICAg
+PiB3aXRoIGludGVycnVwdCBkaXNhYmxlZCBieSBkZWZhdWx0IGFuZCBsZXQgdXNlciBjaG9vc2Ug
+aWYgdGhleSB3YW50IHRvIGV4ZXJjaXNlDQogICAgPiB0aGUgbW9uaXRvci4gSG93ZXZlciwgdGhl
+IGRyaXZlciBoYWQgdGhpcyBpbnRlcnJ1cHQgZW5hYmxlZCwgdGhlIHJlcXVlc3QgaGVyZQ0KICAg
+ID4gaXMgZGlzYWJsZSBpdCBieSBkZWZhdWx0IGluIGRyaXZlciBob3dldmVyIG5vdCBjaGFuZ2Ug
+aW4gZGF0YXNoZWV0LiAgTGV0IHVzZXINCiAgICA+IG9mIHRoZSBkcml2ZXIgcmV2aWV3IHRoZSBh
+Y2N1cmFjeSBvZmZlcmVkIGJ5IG1vbml0b3IgYW5kIGlmIG1lZXRzIHRoZQ0KICAgID4gZXhwZWN0
+YXRpb24sIHRoZXkgY2FuIGFsd2F5cyBlbmFibGUgaXQu4oCdDQoNCiAgICBJIHdvdWxkIG11Y2gg
+bW9yZSBwcmVmZXIgc29tZXRoaW5nIGxpa2UuLi4NCg0KICAgIFRoZSBvdmVyIHZvbHRhZ2UgaW50
+ZXJydXB0IGlzIGVuYWJsZWQsIGJ1dCBpZiBpdCBldmVyeSBvY2N1cnMsIHRoZXJlIGlzDQogICAg
+bm8gY29kZSB0byBtYWtlIHVzZSBvZiBpdC4gU28gcmVtb3ZlIHRoZSBwb2ludGxlc3MgZW5hYmxp
+bmcgb2YgaXQuIEl0DQogICAgY2FuIHJlLWVuYWJsZWQgd2hlbiBIV01PTiBzdXBwb3J0IGlzIGFk
+ZGVkLiBGb3IgdGhlIHNhbWUgcmVhc29uLA0KICAgIGVuYWJsaW5nIG9mIHRoZSBpbnRlcnJ1cHRz
+IERQODM4MTFfUlhfRVJSX0hGX0lOVF9FTiwNCiAgICBEUDgzODExX01TX1RSQUlOSU5HX0lOVF9F
+TiwgRFA4MzgxMV9FU0RfRVZFTlRfSU5UX0VOLA0KICAgIERQODM4MTFfRU5FUkdZX0RFVF9JTlRf
+RU4sIERQODM4MTFfTElOS19RVUFMX0lOVF9FTiwNCiAgICBEUDgzODExX0pBQkJFUl9ERVRfSU5U
+X0VOLCBEUDgzODExX1BPTEFSSVRZX0lOVF9FTiwNCiAgICBEUDgzODExX1NMRUVQX01PREVfSU5U
+X0VOLCBEUDgzODExX09WRVJURU1QX0lOVF9FTiwNCiAgICBEUDgzODExX1VOREVSVk9MVEFHRV9J
+TlRfRU4gaXMgYWxzbyByZW1vdmVkLCBzaW5jZSB0aGVyZSBpcyBubyBjb2RlDQogICAgd2hpY2gg
+YWN0cyBvbiB0aGVzZSBpbnRlcnJ1cHRzLg0KDQogICAgQW5kIHVwZGF0ZSB0aGUgcGF0Y2ggdG8g
+Zml0Lg0KDQogICAgICAgICAgQW5kcmV3DQoNCg==
