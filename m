@@ -2,136 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE6C406DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD0C406DB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhIJOf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbhIJOf6 (ORCPT
+        id S233918AbhIJOnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:43:41 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:35376 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhIJOnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:35:58 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE03C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:34:46 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id m4so3530499ljq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ojA9ujletv5QxfO9Te+K34PRpc/+f6NKN+aRBBnpz4=;
-        b=OvOsA4iL/y6czweDJab/Mb2HHqt31KkhfdQKe8vwqLrdrBAReJpvyiczPL56F6BHPB
-         QJN7Kiz+VxVTm8YCssJwhTeY+ei1JZUD/bWzun9dYtRCw+no7fM8XndKBt0ORAK1808h
-         dpB3hIcGcA9MObPc/nyj4EbbOBLCrC1cRy10tvTrH2llR+DQ/Hu8yHjBIUQjzV7F1lVP
-         BSdi5kXf8fwxDvQsj1AczF/DmOktL0dDLuACIhs3bDEvOiQDezqpCrU48tiOAmce++WV
-         hzo2f4Gs6PU61xXEAsJtCOKsaRss0/W27o25zQ9ZGxgDanG3Xq/T5U50WdvS70MfPXC4
-         DT1w==
+        Fri, 10 Sep 2021 10:43:39 -0400
+Received: by mail-il1-f199.google.com with SMTP id f4-20020a056e0204c400b0022dbd3f8b18so2323569ils.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:42:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ojA9ujletv5QxfO9Te+K34PRpc/+f6NKN+aRBBnpz4=;
-        b=VUNag/haiRa2dwBGQ1mH9zp8s4HN9pRJyZcwP/3YCWiN1HYZHVY6JlyZ0+EP4NqxsF
-         0wfJsgwtyyGHnahienf1/sP9aNJkZLBBXYXe291pXXAka1XOXDQsDwwEgEss/IcZ0/c/
-         L2A3BfGX8yAJw33arQRRt4NAPRiT6HHB1WUb1T3j+UmnLj4O5KsAbhfSNf+EdVjMExau
-         xZDx/a69KxIXXjVsnoYTL94osJ0rs6Abync08G55n8HK4IIfu9kySG023j5wRPXFuST9
-         ia1/2po0uOn5Slpu37QaPmMNyuj7NZmok9zs/ZXgEi9hlj/liyjXg1OF3WD+o77C3IEh
-         w4iw==
-X-Gm-Message-State: AOAM532vlvOtZvzRbWEb+HPAu7Lpv70kdeWoK4faV8f3CGKLu32fyddR
-        05R+l89Z5xovIfexrWxP4KpVX/bw8SkKpWBfVJ0=
-X-Google-Smtp-Source: ABdhPJyPX865eWg+dzanuqZD4b0HhSTswfSGc6hpn1m/eZcvgvQXVSoJDJyHN3j9KK9oZe/seWfYRdAdhPzZwzf2Zbg=
-X-Received: by 2002:a05:651c:88e:: with SMTP id d14mr4352030ljq.472.1631284485067;
- Fri, 10 Sep 2021 07:34:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=D6ipSBinxwEjpTWl+5ibPA+j01Zg4SEDU51j224F9Y8=;
+        b=7Txz4BUBg7/Q3COMBiuIRVVkN6fDqKoeEXAYOIBPEWK5YaK9g0TR+AQCHm5oxr9MDh
+         B5/rZ/ZDVoAZFFRluBB//3ZskhkyxksrctEEoClNODb+g5JTwaV/G6Vui+/ZXZdcimdv
+         Qdw8Xb1JhY41F9+nzTK6zChMDAhJmXIGbfpl4DGJZLPTFkG3pi+2oryDZzJhhnqv9BPD
+         Y6OPBvQwu4ERtmFJCwygtEmdl35aDGlfUsN9mxmNv5acuMhiuCmbZIlS7zOdCTtzVIVU
+         RwihIxr0+C6NCC2VgB6pzhLHSbnoGEI1tQKMlKOqLXUGTSNd8Bc03UafwA0pFv1vDpd4
+         FI7A==
+X-Gm-Message-State: AOAM533sE67LyBL2eeCzh0qtDap4s5fYmJ0ni77XcYVXHe1FLXV5eQbQ
+        rGG5tYSF48Fn8tvQm8PTC3+SknC8QiUwEJb1/Gz0NaKy6Q5P
+X-Google-Smtp-Source: ABdhPJx9IosYfIK0a/6aKGcdv7Zq23qhPXBECBQHNvOqe2uBG63biwn5PbaXRSwgejWBWXgowEO5Dh6H5GaBCZp4VJcTy3w8vsKq
 MIME-Version: 1.0
-References: <20210902172404.3517626-1-daeho43@gmail.com> <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
- <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
- <8f8e4695-4062-60c4-0f91-2a1f6a5b0a11@kernel.org> <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
- <f64cb941-2bb7-eed2-732d-c9537f46f67c@kernel.org> <CACOAw_zxq=SX0OdXV77HyFytJc6aCMbYuS6KZAR_JoQeGZ26Sw@mail.gmail.com>
- <a59d23b9-961f-4129-7491-59f88923366a@kernel.org>
-In-Reply-To: <a59d23b9-961f-4129-7491-59f88923366a@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 10 Sep 2021 07:34:34 -0700
-Message-ID: <CACOAw_z+yfNN3p3U3Ji0vLe7xDP4vkVy11RdzwwcRwwnSTjsFg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
+X-Received: by 2002:a5e:d80c:: with SMTP id l12mr7410193iok.120.1631284948527;
+ Fri, 10 Sep 2021 07:42:28 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 07:42:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e272fb05cba51fe4@google.com>
+Subject: [syzbot] possible deadlock in bd_register_pending_holders
+From:   syzbot <syzbot+f5608de5d89cc0d998c7@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 4:50 PM Chao Yu <chao@kernel.org> wrote:
->
-> On 2021/9/8 2:12, Daeho Jeong wrote:
-> > On Fri, Sep 3, 2021 at 11:45 PM Chao Yu <chao@kernel.org> wrote:
-> >>
-> >> On 2021/9/4 12:40, Daeho Jeong wrote:
-> >>>> As a per curseg field.
-> >>>>
-> >>>>> Maybe, we run into the same race condition issue you told before for
-> >>>>> fragment_remained_chunk.
-> >>>>> Could you clarify this more?
-> >>>>
-> >>>> e.g.
-> >>>>
-> >>>> F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK
-> >>>> fragment_chunk_size = 384
-> >>>> fragment_hole_size = 384
-> >>>>
-> >>>> When creating hole:
-> >>>>
-> >>>> - f2fs_allocate_data_block
-> >>>>     - __refresh_next_blkoff
-> >>>>       chunk locates in [0, 383] of current segment
-> >>>>       seg->next_blkoff = 384
-> >>>>       sbi->fragment_remained_chunk = 0
-> >>>>       then we will reset sbi->fragment_remained_chunk to 384
-> >>>>       and move seg->next_blkoff forward to 768 (384 + 384)
-> >>>>     - __has_curseg_space() returns false
-> >>>>     - allocate_segment() allocates new current segment
-> >>>>
-> >>>> So, for such case that hole may cross two segments, hole size may be truncated
-> >>>> to left size of previous segment.
-> >>>
-> >>> First, sbi->fragment_remained_chunk should be seg->fragment_remained_chunk.
-> >>
-> >> Oh, correct.
-> >>
-> >>> I understand what you mean, so you mean we need to take the leftover
-> >>> "hole" size over to the next segment?
-> >>> In the example, the leftover hole size will be (384 - (512-384)). Do
-> >>> you want to take this over to the next segment?
-> >>
-> >> Yes, the left 256 block-sized hole should be created before next chunk
-> >> in next opened segment.
-> >>
-> >
-> > Chao,
-> >
-> > Do you have any decent idea to pass the left hole size to the next
-> > segment which will be allocated?
->
-> Daeho,
->
-> I guess we can record left hole size in seg->fragment_remained_hole.
->
+Hello,
 
-I understand we need a new fragment_remained_hole variable in segment structure.
-But, I mean.. How can we pass over the left hole size from the
-previous segment to the next segment?
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    27151f177827 Merge tag 'perf-tools-for-v5.15-2021-09-04' o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=104612b3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac2f9cc43f6b17e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=f5608de5d89cc0d998c7
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-> Thanks,
->
-> >
-> > Thanks,
-> >
-> >> Thanks,
-> >>
-> >>>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f5608de5d89cc0d998c7@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.14.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.1/10219 is trying to acquire lock:
+ffff8880288d5918 (&disk->open_mutex){+.+.}-{3:3}, at: bd_register_pending_holders+0x2c/0x470 block/holder.c:160
+
+but task is already holding lock:
+ffff8880996a0230 (&mddev->open_mutex){+.+.}-{3:3}, at: md_alloc+0x911/0x1150 drivers/md/md.c:5706
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #8 (&mddev->open_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       md_alloc+0x911/0x1150 drivers/md/md.c:5706
+       md_probe+0x69/0x70 drivers/md/md.c:5738
+       blk_request_module+0x111/0x1d0 block/genhd.c:632
+       blkdev_get_no_open+0x178/0x1e0 fs/block_dev.c:1150
+       blkdev_get_by_dev.part.0+0x22/0xb60 fs/block_dev.c:1214
+       blkdev_get_by_dev fs/block_dev.c:1323 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1329
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:822
+       do_open fs/namei.c:3426 [inline]
+       path_openat+0x1c9a/0x2740 fs/namei.c:3559
+       do_filp_open+0x1aa/0x400 fs/namei.c:3586
+       do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
+       do_sys_open fs/open.c:1216 [inline]
+       __do_sys_openat fs/open.c:1232 [inline]
+       __se_sys_openat fs/open.c:1227 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1227
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #7 (disks_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       md_alloc+0x37/0x1150 drivers/md/md.c:5644
+       md_probe+0x69/0x70 drivers/md/md.c:5738
+       blk_request_module+0x111/0x1d0 block/genhd.c:632
+       blkdev_get_no_open+0x178/0x1e0 fs/block_dev.c:1150
+       blkdev_get_by_dev.part.0+0x22/0xb60 fs/block_dev.c:1214
+       blkdev_get_by_dev fs/block_dev.c:1323 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1329
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:822
+       do_open fs/namei.c:3426 [inline]
+       path_openat+0x1c9a/0x2740 fs/namei.c:3559
+       do_filp_open+0x1aa/0x400 fs/namei.c:3586
+       do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
+       do_sys_open fs/open.c:1216 [inline]
+       __do_sys_openat fs/open.c:1232 [inline]
+       __se_sys_openat fs/open.c:1227 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1227
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #6 (major_names_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       blkdev_show+0x27/0x160 block/genhd.c:198
+       devinfo_show+0xc1/0xf0 fs/proc/devices.c:22
+       seq_read_iter+0xbb0/0x1240 fs/seq_file.c:272
+       proc_reg_read_iter+0x1fb/0x2d0 fs/proc/inode.c:300
+       call_read_iter include/linux/fs.h:2157 [inline]
+       new_sync_read+0x421/0x6e0 fs/read_write.c:404
+       vfs_read+0x35c/0x600 fs/read_write.c:485
+       ksys_read+0x12d/0x250 fs/read_write.c:623
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #5 (&p->lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       seq_read_iter+0xdf/0x1240 fs/seq_file.c:182
+       call_read_iter include/linux/fs.h:2157 [inline]
+       generic_file_splice_read+0x453/0x6d0 fs/splice.c:311
+       do_splice_to+0x1bf/0x250 fs/splice.c:796
+       splice_direct_to_actor+0x2c2/0x8c0 fs/splice.c:870
+       do_splice_direct+0x1b3/0x280 fs/splice.c:979
+       do_sendfile+0xae9/0x1240 fs/read_write.c:1249
+       __do_sys_sendfile64 fs/read_write.c:1314 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1300 [inline]
+       __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1300
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #4 (sb_writers#3){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1812 [inline]
+       sb_start_write include/linux/fs.h:1882 [inline]
+       file_start_write include/linux/fs.h:3008 [inline]
+       lo_write_bvec+0x3b6/0x6d0 drivers/block/loop.c:327
+       lo_write_simple drivers/block/loop.c:350 [inline]
+       do_req_filebacked drivers/block/loop.c:668 [inline]
+       loop_handle_cmd drivers/block/loop.c:2202 [inline]
+       loop_process_work+0xc60/0x24e0 drivers/block/loop.c:2242
+       process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+       worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+       kthread+0x3e5/0x4d0 kernel/kthread.c:319
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+-> #3 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
+       process_one_work+0x92e/0x16b0 kernel/workqueue.c:2273
+       worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+       kthread+0x3e5/0x4d0 kernel/kthread.c:319
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+-> #2 ((wq_completion)loop5){+.+.}-{0:0}:
+       flush_workqueue+0x110/0x15b0 kernel/workqueue.c:2817
+       drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2982
+       destroy_workqueue+0x71/0x800 kernel/workqueue.c:4419
+       __loop_clr_fd+0x212/0x15e0 drivers/block/loop.c:1368
+       lo_release+0x1ac/0x1f0 drivers/block/loop.c:2068
+       blkdev_put_whole fs/block_dev.c:1102 [inline]
+       blkdev_put+0x2fb/0x9e0 fs/block_dev.c:1393
+       btrfs_close_bdev fs/btrfs/volumes.c:1108 [inline]
+       btrfs_close_bdev fs/btrfs/volumes.c:1098 [inline]
+       btrfs_close_one_device fs/btrfs/volumes.c:1127 [inline]
+       close_fs_devices+0x26a/0xa20 fs/btrfs/volumes.c:1157
+       btrfs_close_devices+0x8e/0x4b0 fs/btrfs/volumes.c:1172
+       close_ctree+0x752/0x795 fs/btrfs/disk-io.c:4438
+       generic_shutdown_super+0x14c/0x370 fs/super.c:465
+       kill_anon_super+0x36/0x60 fs/super.c:1057
+       btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2348
+       deactivate_locked_super+0x94/0x160 fs/super.c:335
+       deactivate_super+0xad/0xd0 fs/super.c:366
+       cleanup_mnt+0x3a2/0x540 fs/namespace.c:1137
+       task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+       exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+       do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #1 (&lo->lo_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       lo_open+0x75/0x120 drivers/block/loop.c:2040
+       blkdev_get_whole+0x99/0x2a0 fs/block_dev.c:1079
+       blkdev_get_by_dev.part.0+0x354/0xb60 fs/block_dev.c:1234
+       blkdev_get_by_dev fs/block_dev.c:1323 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1329
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:822
+       do_open fs/namei.c:3426 [inline]
+       path_openat+0x1c9a/0x2740 fs/namei.c:3559
+       do_filp_open+0x1aa/0x400 fs/namei.c:3586
+       do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
+       do_sys_open fs/open.c:1216 [inline]
+       __do_sys_open fs/open.c:1224 [inline]
+       __se_sys_open fs/open.c:1220 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1220
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&disk->open_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+       validate_chain kernel/locking/lockdep.c:3789 [inline]
+       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+       lock_acquire kernel/locking/lockdep.c:5625 [inline]
+       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+       bd_register_pending_holders+0x2c/0x470 block/holder.c:160
+       device_add_disk+0x74c/0xfc0 block/genhd.c:470
+       add_disk include/linux/genhd.h:221 [inline]
+       md_alloc+0x91d/0x1150 drivers/md/md.c:5707
+       md_probe+0x69/0x70 drivers/md/md.c:5738
+       blk_request_module+0x111/0x1d0 block/genhd.c:632
+       blkdev_get_no_open+0x178/0x1e0 fs/block_dev.c:1150
+       blkdev_get_by_dev.part.0+0x22/0xb60 fs/block_dev.c:1214
+       blkdev_get_by_dev fs/block_dev.c:1323 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1329
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:822
+       do_open fs/namei.c:3426 [inline]
+       path_openat+0x1c9a/0x2740 fs/namei.c:3559
+       do_filp_open+0x1aa/0x400 fs/namei.c:3586
+       do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
+       do_sys_open fs/open.c:1216 [inline]
+       __do_sys_openat fs/open.c:1232 [inline]
+       __se_sys_openat fs/open.c:1227 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1227
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  &disk->open_mutex --> disks_mutex --> &mddev->open_mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&mddev->open_mutex);
+                               lock(disks_mutex);
+                               lock(&mddev->open_mutex);
+  lock(&disk->open_mutex);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.1/10219:
+ #0: ffffffff8c204908 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x25/0x1d0 block/genhd.c:629
+ #1: ffffffff8cd2fc48 (disks_mutex){+.+.}-{3:3}, at: md_alloc+0x37/0x1150 drivers/md/md.c:5644
+ #2: ffff8880996a0230 (&mddev->open_mutex){+.+.}-{3:3}, at: md_alloc+0x911/0x1150 drivers/md/md.c:5706
+
+stack backtrace:
+CPU: 1 PID: 10219 Comm: syz-executor.1 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+ validate_chain kernel/locking/lockdep.c:3789 [inline]
+ __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __mutex_lock_common kernel/locking/mutex.c:596 [inline]
+ __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
+ bd_register_pending_holders+0x2c/0x470 block/holder.c:160
+ device_add_disk+0x74c/0xfc0 block/genhd.c:470
+ add_disk include/linux/genhd.h:221 [inline]
+ md_alloc+0x91d/0x1150 drivers/md/md.c:5707
+ md_probe+0x69/0x70 drivers/md/md.c:5738
+ blk_request_module+0x111/0x1d0 block/genhd.c:632
+ blkdev_get_no_open+0x178/0x1e0 fs/block_dev.c:1150
+ blkdev_get_by_dev.part.0+0x22/0xb60 fs/block_dev.c:1214
+ blkdev_get_by_dev fs/block_dev.c:1323 [inline]
+ blkdev_open+0x295/0x300 fs/block_dev.c:1329
+ do_dentry_open+0x4c8/0x11d0 fs/open.c:822
+ do_open fs/namei.c:3426 [inline]
+ path_openat+0x1c9a/0x2740 fs/namei.c:3559
+ do_filp_open+0x1aa/0x400 fs/namei.c:3586
+ do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
+ do_sys_open fs/open.c:1216 [inline]
+ __do_sys_openat fs/open.c:1232 [inline]
+ __se_sys_openat fs/open.c:1227 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1227
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f99121a3188 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 00000000200020c0 RDI: ffffffffffffff9c
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+R13: 00007ffea339c34f R14: 00007f99121a3300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
