@@ -2,171 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFDC407031
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3041407035
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 19:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhIJRFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 13:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        id S231313AbhIJRG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 13:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhIJRFS (ORCPT
+        with ESMTP id S229448AbhIJRGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 13:05:18 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D23C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:04:05 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z1so3190936ioh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 10:04:05 -0700 (PDT)
+        Fri, 10 Sep 2021 13:06:18 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE667C061574;
+        Fri, 10 Sep 2021 10:05:06 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id q21so4279434ljj.6;
+        Fri, 10 Sep 2021 10:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dPY57pXXmLuXq/8ojNnsVtZFnOXIRJbcHBZHaFHpN64=;
-        b=WYPbcGdEBib4+HH53NpvxdNL24M6lJ3go0CU95GfbFk5EXT6+cIY4+MzC+bPdVGfDf
-         syrAGKLsZN7XO9qRBdZLFm0vdaMQvanEAfcWKlDJazkkewm+kBiM08xHInfBsFvsmbk4
-         n/zBYu0Kg3P/zTD09e4JRcqlcnxeF3KbbvlFdeOwIOVvst5gR8uyF1sz/HlgIyU9n84q
-         s9HCxoWoJKvOEht4NE0mogamM4bMFbok95A3QYLnB881358CFV6BUJmtKaJ7VXHJzs/9
-         NM3XSxHdfxs2lmtY/fFgbdIHFJuqDfkGOb4Z8g8E0zGKgBji3h2T2jLLHwu65C7REfMx
-         RDvQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=v2uHo0KL4tP8i7F5Ezn7qF1nuW399RUbWTYsco45lbE=;
+        b=Gh0rtBaEd97D+5SpIuEt2bCTCCw4UDFXm8Ymf2Sh0tn/rWqMUvhO7CDl/W/kgHOv11
+         rFotXtDOuMes+OhBWneyrv9LgUwGFNOQOFXqEN/9i/oBiyOGyM6j49ugH4Jxe6KmiUBi
+         X7naAqA/WJkuhzzVNwVncYFqkgd3CntmVdkLko3SV+KhSeX0+wBkFgvx7eXNLybM4JPh
+         3d3u23cA/wMPZWm4I50i3yvowNK4XgK30L+MDen5iHPECFyEanEbFrsX+HIoaJhzwuYE
+         Aq7IN/rKw0gR4IX4bTLJ9vs4zdhCt7kz3Ug70o+dfQo97khbQb2GRGCu5hhNPhxGCsgF
+         r/nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dPY57pXXmLuXq/8ojNnsVtZFnOXIRJbcHBZHaFHpN64=;
-        b=hEerh0+Qaol1iWTGoXShypJWeZKOWQpgDTxyniKWX1oLPq1wBrpjwKrPozT2mnkiah
-         1IFz+ckrwTDEBJ+8qGn4Wo3s+JzmI3g9t0LbxQMmXT220uH2ZaOGA6vHVxqLulVdhcGi
-         1k7aIDIN3J2vr+1vDRTKGOgPhkhJ2shCMQJVbBq6p2wLRKoUJh98U5hPdKKVh01LTWtD
-         FKOCSf6hXBwkeJRYUDbjtep50/HXF0hr/L00JeNC5JM+yHgg6UqXuCfuuBHDOe6LPxpf
-         gf4G3EZyIjJ0v2htCLHdgNuMcIh+pJBDX0txrYYw/YjR9CHfX1xX1Hx/U/JSwwdzEt+i
-         Lfyg==
-X-Gm-Message-State: AOAM530F+8tbmivtDy0l7dqE0K/UQZZeXsXJLTJ3cETohrM2aSiDeI0+
-        M0L2Qfbj1iu7I6Eh1IiGyTR/6PwxNhoIg8RKRZU=
-X-Google-Smtp-Source: ABdhPJzBJ+M8lfXu3IJXPBiaK7NxnMVjsYwFzN5NLU1UrSoK2hzCUdTefIsj5Ik1pikQTxq9HpPG6Q==
-X-Received: by 2002:a6b:8f4e:: with SMTP id r75mr8063556iod.172.1631293443925;
-        Fri, 10 Sep 2021 10:04:03 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id h1sm2611455iow.12.2021.09.10.10.04.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 10:04:03 -0700 (PDT)
-Subject: Re: [git pull] iov_iter fixes
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
- <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
- <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
- <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
- <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
- <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
- <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
- <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
- <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
- <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
- <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <345a0b26-0c60-db7c-231f-3ea713147b1b@kernel.dk>
-Date:   Fri, 10 Sep 2021 11:04:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=v2uHo0KL4tP8i7F5Ezn7qF1nuW399RUbWTYsco45lbE=;
+        b=5ZCY+hUA075vILh6C90/wztdFZaPDivO73C3zZczxKoqZRvLET5LDJjhkcrDUGvU4e
+         Vxg6edieYDBIaeW64N0wf73HgBPIgUXpRSDrX2/xEDPGV9EW6BPMI7i7OBdhlHPKnkfh
+         YwFwpk08lgmH/ZR1yc0MXDusx+SvN20o4sLdkBDlKCv4TaP1qSeZomDLR3cg7VT/H0qn
+         nWXw8BR8UA3mEetoWKemmLbeRbGlblzfneHxDhrgofUPaENz+FAHRgxpvF4y7zrk4O7/
+         z9RvfU6OJyIr9R6Y0o+vR3yhQttN7GTcIp+5o31G5a3TX0Q9QzmP9nDunk25O1Z89e3i
+         u5FA==
+X-Gm-Message-State: AOAM532PF+1qJIMfEzjvnmmDXfWKudMYiSlDe1XTXP5Vlzcl1Cwcr4yT
+        pDN9pGjaajL41LxdkiKM1uCTfL+dVWwBjw==
+X-Google-Smtp-Source: ABdhPJzYw419oOrtRsYCDIM2D1Cfjgfaqc/Oq/JMFlKMR88lfrIfVzm2rVNNT/3gy32wAVZCdFMqGw==
+X-Received: by 2002:a2e:bb85:: with SMTP id y5mr5045243lje.207.1631293505129;
+        Fri, 10 Sep 2021 10:05:05 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id h21sm608079lfv.273.2021.09.10.10.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 10:05:04 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 20:05:03 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 29/31] staging: wfx: remove useless comments after #endif
+Message-ID: <20210910170503.cnc2eri32v3bgo65@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-30-Jerome.Pouiller@silabs.com>
+ <20210910162718.tjcwwxtxbr3ugdgf@kari-VirtualBox>
+ <3556920.DX4m0svyV5@pc-42>
 MIME-Version: 1.0
-In-Reply-To: <YTuOPAFvGpayTBpp@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3556920.DX4m0svyV5@pc-42>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 10:56 AM, Al Viro wrote:
-> On Fri, Sep 10, 2021 at 10:06:25AM -0600, Jens Axboe wrote:
+On Fri, Sep 10, 2021 at 06:49:30PM +0200, Jérôme Pouiller wrote:
+> On Friday 10 September 2021 18:27:18 CEST Kari Argillander wrote:
+> > On Fri, Sep 10, 2021 at 06:05:02PM +0200, Jerome Pouiller wrote:
+> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > Comments after the last #endif of header files don't bring any
+> > > information and are redundant with the name of the file. Drop them.
+> > 
+> > How so? You see right away that this indeed is header guard and not some
+> > other random thing. Also kernel coding standard says:
+> > 
+> >         At the end of any non-trivial #if or #ifdef block (more than a
+> >         few line), place a comment after the #endif on the same line,
+> >         noting the conditional expression used.
+> > 
+> > There is no point dropping them imo. If you think about space saving
+> > this patch will take more space. Because it will be in version history.
+> > So nack from me unless some one can trun my head around.
 > 
->> Looks something like this. Not super pretty in terms of needing a define
->> for this, and maybe I'm missing something, but ideally we'd want it as
->> an anonymous struct that's defined inside iov_iter. Anyway, gets the
->> point across. Alternatively, since we're down to just a few members now,
->> we just duplicate them in each struct...
->>
->> Would be split into two patches, one for the iov_state addition and
->> the save/restore helpers, and then one switching io_uring to use them.
->> Figured we'd need some agreement on this first...
+> IMHO, the #endif on the last line of an header file terminates a trivial
+> #ifdef block.
+> Moreover, they are often out-of-sync with the #ifndef statement, like here:
+
+That one is of course true. 
+
 > 
->> +#define IOV_ITER_STATE					\
->> +	size_t iov_offset;				\
->> +	size_t count;					\
->> +	union {						\
->> +		unsigned long nr_segs;			\
->> +		struct {				\
->> +			unsigned int head;		\
->> +			unsigned int start_head;	\
->> +		};					\
->> +		loff_t xarray_start;			\
->> +	};						\
->> +
->> +struct iov_iter_state {
->> +	IOV_ITER_STATE;
->> +};
->> +
->>  struct iov_iter {
->>  	u8 iter_type;
->>  	bool data_source;
->> -	size_t iov_offset;
->> -	size_t count;
->>  	union {
->>  		const struct iovec *iov;
->>  		const struct kvec *kvec;
->> @@ -40,12 +54,10 @@ struct iov_iter {
->>  		struct pipe_inode_info *pipe;
->>  	};
->>  	union {
->> -		unsigned long nr_segs;
->> +		struct iov_iter_state state;
->>  		struct {
->> -			unsigned int head;
->> -			unsigned int start_head;
->> +			IOV_ITER_STATE;
->>  		};
->> -		loff_t xarray_start;
->>  	};
->>  	size_t truncated;
->>  };
+> [...]
+> > > diff --git a/drivers/staging/wfx/key.h b/drivers/staging/wfx/key.h
+> > > index dd189788acf1..2d135eff7af2 100644
+> > > --- a/drivers/staging/wfx/key.h
+> > > +++ b/drivers/staging/wfx/key.h
+> > > @@ -17,4 +17,4 @@ int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+> > >               struct ieee80211_vif *vif, struct ieee80211_sta *sta,
+> > >               struct ieee80211_key_conf *key);
+> > >
+> > > -#endif /* WFX_STA_H */
+> > > +#endif
+> [...]
 > 
-> No.  This is impossible to read *and* wrong for flavours other than
-> iovec anyway.
+> -- 
+> Jérôme Pouiller
 > 
-> Rules:
-> 	count is flavour-independent
-> 	iovec: iov, nr_segs, iov_offset.  nr_segs + iov is constant
-> 	kvec: kvec, nr_segs, iov_offset.  nr_segs + kvec is constant
-> 	bvec: bvec, nr_segs, iov_offset.  nr_segs + bvec is constant
-> 	xarray: xarray, xarray_start, iov_offset.  xarray and xarray_start are constant.
-> 	pipe: pipe, head, start_head, iov_offset.  pipe and start_head are constant,
-> 						   iov_offset can be derived from the rest.
-> 	discard: nothing.
 > 
-> What's more, for pipe (output-only) the situation is much trickier and
-> there this "reset + advance" won't work at all.  Simply not applicable.
-> 
-> What's the point of all those contortions, anyway?  You only need it for
-> iovec case; don't mix doing that and turning it into flavour-independent
-> primitive.
-
-Yes that's a good point, BVEC as well fwiw. But those two are very
-similar.
-
-> Especially since you turn around and access the fields of that sucker
-> (->count, that is) directly in your code.  Keep it simple and readable,
-> please.  We'll sort the sane flavour-independent API later.  And get
-> rid of ->truncate, while we are at it.
-
-Alright, so how about I just make the state a bit dumber and only work
-for iovec/bvec. That gets rid of the weirdo macro. Add a WARN_ON_ONCE()
-for using restore on anything that isn't an IOVEC/BVEC.
-
-Sound reasonable?
-
--- 
-Jens Axboe
-
