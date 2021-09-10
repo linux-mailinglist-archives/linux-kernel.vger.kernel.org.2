@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D70406CB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D876406CBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhIJNLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhIJNLP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:11:15 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A0AC061574;
-        Fri, 10 Sep 2021 06:10:03 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id n2so4055624lfk.0;
-        Fri, 10 Sep 2021 06:10:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=439WSCXghGLfxplaln+p2Ld0eH8qy3v3OuLBfSe5paw=;
-        b=Olo36lTI6w1D4K/USoWPbMfsUWM84YPKKQ8GzfyOJe8Ct5D8akwQrFvX/Y6PHDjIq8
-         oUEHNf0kiZV6uUWNH/rtKZOCebDPG5Dm+ohB/ofc5OFQ76lGpsL/H80BZnpLKfAVR5Hw
-         3kJX7ypayVXm/OtFfGiJIYeADCyNWmWhaLJAKSxebdWcOFoG6lqGXrBGuNHLegGSqGh0
-         oPYYHnLST7MzVQYp0UrarZfhIH+z19TOVMdsaaq7Dn8oDKykMjM1XD+t+TwQeNt9BpLH
-         2e9DbM0Qo5V62kW+sfwgNr+SiE3U1WDSQKUcPmu3LjSd+QXq+Otq5sd3zHP7xCJpY/OJ
-         b41Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=439WSCXghGLfxplaln+p2Ld0eH8qy3v3OuLBfSe5paw=;
-        b=G0vYXKW+hl7odGPDpye5fkjtLmGAXxp8HgmNinsRt+FhzKMiFA9qn7f00aR+djuG4q
-         TsjD7gakChabwl1MSa8wA849ckKiMmR4SOjEryEtSYqb/kbZwS8ciHaIEibaQz0ciLCG
-         6n3j35VETmcd+C9ii0ciVmzMpzXX2U6iduUeFmiev4IirWMeaDwR/fPfXsN/fif60/yP
-         AwzUd0vo9C3WJK3hlKT46y6nO9DR0JfGJZgl363CMTcVChx6e4OqlP9pu8CtGpP7meBd
-         u/8YXi1nB81f6c5/1LDzzrl7IZmGWJsuwoJvTLl+2cJvRynXgLy9IEIYXqT4aUvYX8sh
-         dyHQ==
-X-Gm-Message-State: AOAM533Dai1Z/aK5U6bheGG0hAA4yYRF8IuN52pcTsw1ypq0cpQgVksP
-        cAtX1qm7sZCUsqBJtZYkIp9cihfNsIPhjw==
-X-Google-Smtp-Source: ABdhPJwFKbYIctuBc85bTEN7vgMikt755m6pZHqu8DQNw7X8HcvavPlwEzC7YXRteiEIA2p2tSZEGA==
-X-Received: by 2002:a05:6512:3e28:: with SMTP id i40mr3851671lfv.10.1631279401506;
-        Fri, 10 Sep 2021 06:10:01 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a31a:e13a:eb00:c5cf:27cc:1ef2:859])
-        by smtp.gmail.com with ESMTPSA id u21sm547999lfc.239.2021.09.10.06.10.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:10:01 -0700 (PDT)
-From:   Piotr Gorski <lucjan.lucjanov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>
-Subject: [PATCH] kbuild: use smaller dictionary size for zstd module compression
-Date:   Fri, 10 Sep 2021 15:09:54 +0200
-Message-Id: <20210910130954.1392104-1-lucjan.lucjanov@gmail.com>
-X-Mailer: git-send-email 2.33.0.142.ge0a2f5cbc5
+        id S233445AbhIJNNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:13:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231266AbhIJNNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 09:13:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5663461074;
+        Fri, 10 Sep 2021 13:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631279528;
+        bh=xHga66dm4Y9qq0uRqhXsaAzyDsRHpSACVQyB1egW9K0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eJsE8Ta6uMCzj83BNAPi3TWJsU/ek87eyc1cyWmWRbEY6LSIylTILxeLBPcCh3VqM
+         +UuMDdXOzL2lQa3ZO+22QXyIvPaBNRxbm5bJPOijU2PIlnw+VUUwwBk6Qq944OmjEt
+         RxLXy/en9uHOqzUYaD2jNDahx9TyJep9QujaFP2GGBjlD9gAgAVV2LhCdNWEnasLZG
+         uI2891BkzeNzXWtWsobyVrHnvL4wBnpSFLqWoM3EZBy8CtrltF35zKoWtE82xJZSl7
+         6dcRlyMvMJZE9sfRGf2NFUywvBlJ731VryKu7qmG6o8My6JZQ8tLbZ1xLv9HzTGXXY
+         qhT9n3wq0f8MQ==
+Received: by mail-ej1-f44.google.com with SMTP id a25so4173451ejv.6;
+        Fri, 10 Sep 2021 06:12:08 -0700 (PDT)
+X-Gm-Message-State: AOAM53075Aojjeephn1s2w1j0GtYcE22Gg43TIcWRirB/poj0IGt0NjH
+        SONdVDODKY6Z+zLolJxGxSLNE/tCzwEND1LHOA==
+X-Google-Smtp-Source: ABdhPJwxGWq0xviAjQ1uqiQ6zFb2APY00BFbtVFZJIy9PKNY22PNbijurhvlFBUTtPgsvxhftkZqTIJ49BSdm3GEVUw=
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr9323698ejk.466.1631279526962;
+ Fri, 10 Sep 2021 06:12:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210909213118.1087083-1-robh@kernel.org> <20210909213118.1087083-5-robh@kernel.org>
+In-Reply-To: <20210909213118.1087083-5-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 10 Sep 2021 08:11:55 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJS2V959cbybBDHnj_X4OXiSeHocpknDN97u6r2y17PyA@mail.gmail.com>
+Message-ID: <CAL_JsqJS2V959cbybBDHnj_X4OXiSeHocpknDN97u6r2y17PyA@mail.gmail.com>
+Subject: Re: [PATCH 4/8] dt-bindings: clock: arm,syscon-icst: Use 'reg'
+ instead of 'vco-offset' for VCO register address
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>
+Cc:     Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, zstd without parameters uses a dictionary size of 8 MB.
-However, most modules are much smaller than that.
-Use a dictionary size of 2 MB for module compression, resulting in
-slightly higher compression speed while still maintaining a good
-compression ratio.
-The --zstd=wlog=21 option is equivalent to --lzma2=dict=2MiB used in XZ compression.
+On Thu, Sep 9, 2021 at 4:31 PM Rob Herring <robh@kernel.org> wrote:
+>
+> 'reg' is the standard property for defining register banks/addresses. Add
+> it to use for the VCO register address and deprecate 'vco-offset'. This
+> will also allow for using standard node names with unit-addresses.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml b/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
+> index 118c5543e037..c346287ca15d 100644
+> --- a/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
+> +++ b/Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
+> @@ -69,6 +69,10 @@ properties:
+>        - arm,impd1-vco1
+>        - arm,impd1-vco2
+>
+> +  reg:
+> +    maxItems: 1
+> +    description: The VCO register
+> +
+>    clocks:
+>      description: Parent clock for the ICST VCO
+>      maxItems: 1
+> @@ -83,6 +87,7 @@ properties:
+>    vco-offset:
+>      $ref: '/schemas/types.yaml#/definitions/uint32'
+>      description: Offset to the VCO register for the oscillator
+> +    deprecated
 
-Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
----
- scripts/Makefile.modinst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sigh, that should be 'deprecated: true'.
 
-diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-index ff9b09e4cfca..c3475e5aca7c 100644
---- a/scripts/Makefile.modinst
-+++ b/scripts/Makefile.modinst
-@@ -97,7 +97,7 @@ quiet_cmd_gzip = GZIP    $@
- quiet_cmd_xz = XZ      $@
-       cmd_xz = $(XZ) --lzma2=dict=2MiB -f $<
- quiet_cmd_zstd = ZSTD    $@
--      cmd_zstd = $(ZSTD) -T0 --rm -f -q $<
-+      cmd_zstd = $(ZSTD) --zstd=wlog=21 -T0 --rm -f -q $<
- 
- $(dst)/%.ko.gz: $(dst)/%.ko FORCE
- 	$(call cmd,gzip)
--- 
-2.33.0.142.ge0a2f5cbc5
-
+Rob
