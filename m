@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA559406F4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B70406F5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhIJQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhIJQOz (ORCPT
+        id S229629AbhIJQOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:14:08 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:34537 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233354AbhIJQNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:14:55 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEFEC06175F;
-        Fri, 10 Sep 2021 09:10:30 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so2912833otf.2;
-        Fri, 10 Sep 2021 09:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZpN0iIGii/dNNt/92JOfuMuOZnTWraO3oqP936hLCa0=;
-        b=C37HAF5Kpldyo9cgCEo5cokWpShbQuujvpcAiv3xZgJrttVoAKbXjP06UxSTwledVS
-         JCBHZv5N/NqKEFFNQ3Qoxn+UHe+zf26//N9vqqIRvvJwev8RzN9D1BM+JTJzfu1r58eZ
-         p9EVw13W8NbT0AkLcqNgYKJcCT85lc7xmWNYzTnixx8vhJrE4D823KVyrBQaEX+pahKI
-         ulR7ZIpwIkPXqNAnHgnAhIDhbxlgWHm4OCIn9TcWJPxXT+01/SGJmQAGUcmYgmMtJsSu
-         BKM0eI7gZjLvNFrXDBxu8SZ/h4Oo3zR9f68RPP79zeUpQ5gXvsMhFE5NL4jWD8CDSlKi
-         DF2w==
+        Fri, 10 Sep 2021 12:13:32 -0400
+Received: by mail-oi1-f181.google.com with SMTP id p2so3611751oif.1;
+        Fri, 10 Sep 2021 09:12:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZpN0iIGii/dNNt/92JOfuMuOZnTWraO3oqP936hLCa0=;
-        b=fo20tVKVXdxcHkw3NvaGepPKixmtjruucXPT1nK7M6T2WB50L2rzwXssOsg95stu7b
-         Glgfe/0fXnpfJUzNuT9HFtlceBARy/GSP3QXyZmKEw7tv4l23id2gInklkrZvOsSZami
-         uPPTQ+QHedlfnAat6gyEEOqymLaYuWyAUP0mcNfZdEYb3qLrA1DvHb+f6A/Mm4YPwz48
-         /hfdQKRvTq/3DcQS+We1CUHjFgHV6lD89IxRMay9Xy4nCidR7hd8cE1+fQWwET1/ACaj
-         S4ca2MQD7ZdhmEL/4SHX+BxKIzLJdF78x7UR234MN1/cWPjr99Ll78kzz9nJZO2C6BQE
-         z0lQ==
-X-Gm-Message-State: AOAM531U2Sy8EDSqdNBFBNInrQDF8+0H1kCV6j+5voUBx7oaFv31bXzG
-        FsEWR/XZSHL9wEmuzzsKrtE=
-X-Google-Smtp-Source: ABdhPJw9KPrwtW1zzQhTKpK1nmI/rC3Q+YmmOB5kCS15jG/aMfTrpDHjUJkOxzdV9OwDAtWUjiwqvg==
-X-Received: by 2002:a9d:7f90:: with SMTP id t16mr5149490otp.269.1631290229750;
-        Fri, 10 Sep 2021 09:10:29 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id c14sm1323480otd.62.2021.09.10.09.10.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 09:10:29 -0700 (PDT)
-Subject: Re: [PATCH v2 10/15] leds: trigger: blkdev: Add LED trigger activate
- function
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kabel@kernel.org
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
- <20210909222513.2184795-11-arequipeno@gmail.com> <YTr/iQBYclqjFri2@kroah.com>
-From:   Ian Pilcher <arequipeno@gmail.com>
-Message-ID: <8ef9f5c7-ce5c-26ce-b076-35716a15fed8@gmail.com>
-Date:   Fri, 10 Sep 2021 11:10:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aTACTH+bqUqqQb48Lw5xQr1Hpj3NEFTPtcT1LDOj2n0=;
+        b=eZQ2sFXRm2E8K4kIEYiGbVu7Qpt1vUqAff7WME9rYscDrjprQgIPTqNlq4MA/Nu514
+         ebNnB8iLmalG3ey9RL3Yqx/MnAKN6l5mXoqQIEgsFSDMDHV7SVU1V0iJznAJngJ0ea4g
+         m+lCT3iIRJCM2j97I3xSUb3fMUSAPp/kF30NW05z2seZ43gyAxuA5Pf96cxH5TjlNOnH
+         pLQOsvoq4cuDdbbv1FfRts9ZISO34R/6BLI9tJn8B+Sdq9GD1eUkm2xgGlItT/STcqYj
+         TY6tJtSmK2pXY1MyMm2Gpg2BBsi0pbxRTftLLUau3y53i7pTrXZh9oOSZAMy+mk2JB52
+         Em5g==
+X-Gm-Message-State: AOAM532Acu3UeKB8ulCFBTM3igs/YjWVsleK/5gOjNMcsd5eGrK079Yg
+        mV816pbYSKJcUE8/mMQDsQ==
+X-Google-Smtp-Source: ABdhPJwOfLk76cZaYabj9CW1ZCNHAL/1McTB+Ki9yn8bejUdyhBJZW7m1bZDb6ZSZS+L6mQvK9ui9A==
+X-Received: by 2002:aca:6008:: with SMTP id u8mr4812086oib.127.1631290340300;
+        Fri, 10 Sep 2021 09:12:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v8sm1301839ota.16.2021.09.10.09.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 09:12:19 -0700 (PDT)
+Received: (nullmailer pid 2782029 invoked by uid 1000);
+        Fri, 10 Sep 2021 16:12:18 -0000
+Date:   Fri, 10 Sep 2021 11:12:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Andre Muller <andre.muller@web.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] of: property: Disable fw_devlink DT support for X86
+Message-ID: <YTuD4vxkklqLNOyd@robh.at.kernel.org>
+References: <20210910011446.3208894-1-saravanak@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YTr/iQBYclqjFri2@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910011446.3208894-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 1:47 AM, Greg KH wrote:
->> +	/* Don't allow module to be removed while any LEDs are linked */
->> +	if (WARN_ON(!try_module_get(THIS_MODULE))) {
+On Thu, 09 Sep 2021 18:14:45 -0700, Saravana Kannan wrote:
+> Andre reported fw_devlink=on breaking OLPC XO-1.5 [1].
 > 
-> That pattern is racy and broken and never ever ever add it to the kernel
-> again please.  All existing in-kernel users of it are also wrong, we
-> have been removing them for decades now.
+> OLPC XO-1.5 is an X86 system that uses a mix of ACPI and OF to populate
+> devices. The root cause seems to be ISA devices not setting their fwnode
+> field. But trying to figure out how to fix that doesn't seem worth the
+> trouble because the OLPC devicetree is very sparse/limited and fw_devlink
+> only adds the links causing this issue. Considering that there aren't many
+> users of OF in an X86 system, simply fw_devlink DT support for X86.
+> 
+> [1] - https://lore.kernel.org/lkml/3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de/
+> Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Cc: Andre Muller <andre.muller@web.de>
+> ---
+>  drivers/of/property.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-OK.  (I was misled by the instances that you haven't gotten to yet.)
-
-> You have created a "raw" kobject in the device tree now, which means
-> that userspace will not be notified of it and will have a "hole" in it's
-> knowledge.  Why not just create a named attribute group to this device
-> instead?
-
-What would I pass as the first argument to sysfs_create_link() in that
-case?
-
--- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+Applied, thanks!
