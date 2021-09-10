@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C015406B36
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39DE406B40
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhIJMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:13:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232952AbhIJMNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:13:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D062D611C7;
-        Fri, 10 Sep 2021 12:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631275934;
-        bh=OGpeKe8qlKrKG2MWCkAbVaugcCWxiuy7ISiHVSw/oOs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UyAKLVfE0WPaM/hiFJaves446nQfPAhOHKZ16jHFcadokK40JHGWDQMxOm97sSx97
-         R+9yQUDk721dloiz72HxcwPVui90q1xUM/xy2RjumvzeXr7uIU9Pww6wDj+zLQPMGj
-         wedM0eGNh1VhjnCxmBJFscNtSn53joXGgp6r4f/ks4YFUkpa9SloagnVbEvUrIwcEu
-         9iiU6oZhEgOOafGrsgLnKaGAU6hyskjKgBRFCzu2vxoIC4k96nEXUkSehSdr+0Wmw0
-         FXVlDstzABo3OypSM9sdE+ALRDjHMkMvmq11ihLgxrL3Svf53/W7gt2baE8E4ll06p
-         Me+WWWvwYuFWg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mOfO2-0004s1-8h; Fri, 10 Sep 2021 14:12:06 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] USB: serial: allow hung up ports to be suspended
-Date:   Fri, 10 Sep 2021 14:11:28 +0200
-Message-Id: <20210910121128.18664-3-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210910121128.18664-1-johan@kernel.org>
-References: <20210910121128.18664-1-johan@kernel.org>
+        id S233065AbhIJMP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232941AbhIJMPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:15:24 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7172C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id m26so1719451pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:subject:message-id:mime-version:content-disposition;
+        bh=sNHZqX51zHFqUb1YJWg9QJwyqCeOzXRPdRsjUY5I6Ag=;
+        b=bC2Ym7PmBYdQuYL34sSgVk9+vw84Hqc1VxjQB+4q3j+c6PZgB2qbSoOm09EsEwDC3P
+         3pqTBzd6W7biYNnnSCJT4zYdEqrA7OI7GaPXOA2HUKE5Dwhq+HoDMzBSQT023SB+qV96
+         BcLZwzGabNcmim25SNVJsYwZnSb1/+GdtFJblqVlGLMaFvZZ6lmzYiNA/oD2Mp7jFXwm
+         /9EyKQSolzAy/UeuSyi4+3jsOoFwQOWkdLpci+BaQ6v/gFJKDzCWdTPtzXqpcIVCVOS6
+         Vx2zQKmzzw7e8V/zCDscHVkYZ0mBGG4hEgEMY3jpRl8M+PG9QSbkgIV1rjLernUWehZs
+         uNsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=sNHZqX51zHFqUb1YJWg9QJwyqCeOzXRPdRsjUY5I6Ag=;
+        b=SsEPvTzmjJIFyJuIAcY5J1P/dMDxcZn9Kf8rkU+RRosjC9Iz4LHjYgNWmcuwJVZmd1
+         hbSA9Hym7/6QFxRelS/Jl8Yh2Zz8LL9w8UFgzvhIhT7LwNb38/sJR9SETxUdmQ+qKyJb
+         +DGx5QvF3V83Iu2M5r1UgxcgaxVmBmhQZJa0WSQL2/v9wVGw5Rdgc4SxqAuUMbn+mFIM
+         fbiJ3+kbT/8x6y5cnzvSAw5NtskVwbcIwaXt33XGI188+srbCIBv3c6srEMUtc437jDF
+         ImctF+E0qwbDwXI0xdICYTUMNEdkze0acGzhVpxiz1vEa38yM7GTZtS1HHpTvDo7bJ/p
+         QeLQ==
+X-Gm-Message-State: AOAM533D1T/bs/OKoaeiDJNC1kn94i0CtRSGRxJzpl7yDrZjDg+jH8IQ
+        x1Wr+Ki8y8+GCwl9VQAx0iT6SquN9fc=
+X-Google-Smtp-Source: ABdhPJwiHhAXDkoi0ZyNcUTMvHDAoy8ENP57u8sblZ675Ua2l23verVId7F2bB71NTzc7sSYpCIUrw==
+X-Received: by 2002:aa7:8d10:0:b0:414:ab01:656c with SMTP id j16-20020aa78d10000000b00414ab01656cmr7591632pfe.13.1631276053097;
+        Fri, 10 Sep 2021 05:14:13 -0700 (PDT)
+Received: from ws2 (node-12h5.pool-101-51.dynamic.totinternet.net. [101.51.194.201])
+        by smtp.gmail.com with ESMTPSA id k12sm5347866pjm.52.2021.09.10.05.14.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 05:14:12 -0700 (PDT)
+From:   Andreas Bauer <andreas.bauer.nexus@gmail.com>
+X-Google-Original-From: Andreas Bauer <Andreas.Bauer.Nexus@gmail.com>
+Date:   Fri, 10 Sep 2021 19:14:07 +0700
+To:     linux-kernel@vger.kernel.org
+Subject: 9pnet_virtio missing dependency
+Message-ID: <YTtMD6Zm0FeXIR7m@ws2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User space can keep a tty open indefinitely and that should not prevent
-a hung up port and its USB device from being runtime suspended.
+Dear all,
 
-Fix this by incrementing the PM usage counter when the port it activated
-and decrementing the counter when the port is shutdown rather than when
-the tty is installed and the last reference is dropped, respectively.
+While compiling a minimal qemu kernel 5.14.2 with 9p root fs, I encountered a
+problem with the 9pnet_virtio code:
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/usb-serial.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+| [    0.553249] 9pnet: Installing 9P2000 support
+[...]
+| [    0.561547] 9pnet: -- v9fs_mount (1): 
+| [    0.562156] 9pnet_virtio: no channels available for device /dev/root
 
-diff --git a/drivers/usb/serial/usb-serial.c b/drivers/usb/serial/usb-serial.c
-index abc657fec8c5..b357361d5d1e 100644
---- a/drivers/usb/serial/usb-serial.c
-+++ b/drivers/usb/serial/usb-serial.c
-@@ -208,8 +208,8 @@ void usb_serial_put(struct usb_serial *serial)
-  *
-  * This is the first place a new tty gets used.  Hence this is where we
-  * acquire references to the usb_serial structure and the driver module,
-- * where we store a pointer to the port, and where we do an autoresume.
-- * All these actions are reversed in serial_cleanup().
-+ * where we store a pointer to the port.  All these actions are reversed
-+ * in serial_cleanup().
-  */
- static int serial_install(struct tty_driver *driver, struct tty_struct *tty)
- {
-@@ -227,15 +227,11 @@ static int serial_install(struct tty_driver *driver, struct tty_struct *tty)
- 	if (!try_module_get(serial->type->driver.owner))
- 		goto err_put_serial;
- 
--	retval = usb_autopm_get_interface(serial->interface);
--	if (retval)
--		goto err_put_module;
--
- 	init_termios = (driver->termios[idx] == NULL);
- 
- 	retval = tty_standard_install(driver, tty);
- 	if (retval)
--		goto err_put_autopm;
-+		goto err_put_module;
- 
- 	mutex_unlock(&serial->disc_mutex);
- 
-@@ -247,8 +243,6 @@ static int serial_install(struct tty_driver *driver, struct tty_struct *tty)
- 
- 	return retval;
- 
--err_put_autopm:
--	usb_autopm_put_interface(serial->interface);
- err_put_module:
- 	module_put(serial->type->driver.owner);
- err_put_serial:
-@@ -265,10 +259,19 @@ static int serial_port_activate(struct tty_port *tport, struct tty_struct *tty)
- 	int retval;
- 
- 	mutex_lock(&serial->disc_mutex);
--	if (serial->disconnected)
-+	if (serial->disconnected) {
- 		retval = -ENODEV;
--	else
--		retval = port->serial->type->open(tty, port);
-+		goto out_unlock;
-+	}
-+
-+	retval = usb_autopm_get_interface(serial->interface);
-+	if (retval)
-+		goto out_unlock;
-+
-+	retval = port->serial->type->open(tty, port);
-+	if (retval)
-+		usb_autopm_put_interface(serial->interface);
-+out_unlock:
- 	mutex_unlock(&serial->disc_mutex);
- 
- 	if (retval < 0)
-@@ -304,6 +307,8 @@ static void serial_port_shutdown(struct tty_port *tport)
- 
- 	if (drv->close)
- 		drv->close(port);
-+
-+	usb_autopm_put_interface(port->serial->interface);
- }
- 
- static void serial_hangup(struct tty_struct *tty)
-@@ -352,8 +357,6 @@ static void serial_cleanup(struct tty_struct *tty)
- 	serial = port->serial;
- 	owner = serial->type->driver.owner;
- 
--	usb_autopm_put_interface(serial->interface);
--
- 	usb_serial_put(serial);
- 	module_put(owner);
- }
--- 
-2.32.0
+9p_virtio_create() is called and the list of channels in this loop
 
+|        list_for_each_entry(chan, &virtio_chan_list, chan_list) {
+
+turns out to be empty. After instrumenting the code with a few more
+debug outputs, it turns out p9_virtio_probe() is not called. I am 
+not familiar enough with the code flow to see exactly where the
+problem lies.
+
+I think all relevant kernel options are enabled:
+
+| $ cat .config | grep -Ei '9P|VIRTIO' | grep -v "^#" | sort
+| CONFIG_9P_FS_POSIX_ACL=y
+| CONFIG_9P_FS_SECURITY=y
+| CONFIG_9P_FS=y
+| CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS=y
+| CONFIG_BLK_MQ_VIRTIO=y
+| CONFIG_HW_RANDOM_VIRTIO=y
+| CONFIG_NET_9P_DEBUG=y
+| CONFIG_NET_9P_VIRTIO=y
+| CONFIG_NET_9P=y
+| CONFIG_VIRTIO_BLK=y
+| CONFIG_VIRTIO_CONSOLE=y
+| CONFIG_VIRTIO_FS=y
+| CONFIG_VIRTIO_INPUT=y
+| CONFIG_VIRTIO_MEM=y
+| CONFIG_VIRTIO_MENU=y
+| CONFIG_VIRTIO_NET=y
+| CONFIG_VIRTIO_PCI_LEGACY=y
+| CONFIG_VIRTIO_PCI_LIB=y
+| CONFIG_VIRTIO_PCI=y
+| CONFIG_VIRTIO=y
+
+It seems that there is a dependecy on some other kernel code that is neither
+documented nor instrumented in config-logic.
+
+When I compile a distribution kernel (i.e. almost everything compiled in) 
+with "localyesconfig" the 9p root fs is found and mounted properly.
+
+What code is missing?
+
+Thanks,
+
+Andreas
