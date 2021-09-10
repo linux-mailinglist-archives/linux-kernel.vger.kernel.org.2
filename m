@@ -2,172 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5B7406CC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC1B406CC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 15:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhIJNS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 09:18:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233253AbhIJNS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F2BC61167;
-        Fri, 10 Sep 2021 13:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631279866;
-        bh=M+SGRiM/ET5iAZ80Cp7a3dW3puaSEQYT3O9A2vlwfec=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=OuMFbSpMWru7vQlFsNzzXIDYUq2T/F+B91sW45UKV5uMqlJkfNjTvz0VZvK3mRZaL
-         JT5/ulplxQ0K1/wDH5fw5Pe5l+I2lKWOZAQ/vbuZJRWtVzhIbTY+DSc/2PhUrrdzEq
-         89s53I8nLOW74rb5PHOkGKcFj+MM1rqQ5RgMubX+v8hWLOuo/WhOQJCzsZmCriXlAu
-         Q4dQzeWtft1SBqO5y5jf8CTwYE0rsYH7hTGdmId6d99uXdJpX6aLKXeG4UUfqMe2yc
-         v4IgkasGxNoG+nIBIrwwrfbiLhrwQe90l5xzt16Y8fDQaZH+prSN1UHJh5PjBYz2xs
-         9mhV5veviPPeQ==
-Message-ID: <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
-Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
- /sys/devices/system/node/node*/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 10 Sep 2021 16:17:44 +0300
-In-Reply-To: <YTsAjCZQ6AaWDjD1@kroah.com>
-References: <20210910001726.811497-1-jarkko@kernel.org>
-         <YTsAjCZQ6AaWDjD1@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S233437AbhIJNRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 09:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhIJNRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 09:17:38 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C9DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:16:27 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id m21so1824366qkm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 06:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FknGQ9U1stlutagos+WV3Ucyd5NnLYRQGwrPVMjtmBo=;
+        b=TbDff5UwK7jL2WwkG+GpBV/pmTYT/Z3CRM36LIrpLo2uiLmBvGcqRynJGEz+5ChF9n
+         BDKLGC/lw4VrqwYqS30YQsnGhabPphs/iYBG7KRV0mgjfd2DZV9HqhaCmOQ46z+sTjB1
+         V8absrSqMTXPy4pyf/wjrFz6QJVk3GTjNO2E8w9AkrJGU/RxAELS+GsdEnay71s4sI2C
+         L/aboAIR6xkIQ029f5ZL5WPjcmz/ekQ/09bLeOCGTHtBZw/SendhYlOkZ6Jt/bhQi0Ne
+         1MTKrRhcUqQkjdwjj0aJy51gKh9KmgjtKKVFK3I1Pq66TnMQSdg2jCQe54lM/K8Z9nAE
+         cr8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FknGQ9U1stlutagos+WV3Ucyd5NnLYRQGwrPVMjtmBo=;
+        b=617hSMhw3O4sNf6uFXJa33MQJNW3rq/+rQ9kDbiNCasGZbYHG5VyDvdJWrwf/2vwwn
+         fhPURXbAWOu3jlTRjtfbGv0+dMfz7IKFF7SJGA8D+xd9YkbiB12tY/qnrldo+vGeDHxp
+         njLkpWWEF5HB5M8SdM0edSJNDY/p75VdWD2ocL5lRasa0NxhxMAS+2Bdian/HAXzIFgI
+         PemCZo3TIJDXRGTHlVghxQFErzzwS4Rf64I4ju3H4fsZNUiK5GgfuzziBz1IrEdudfDp
+         Id6/YK/iKq3RBve06HMFI8TY4+OuIy61ZJs327ykX5mZFiQ6kKSB+T+vFLV9Q1R2+XKZ
+         dELQ==
+X-Gm-Message-State: AOAM533D5t19T//soRIv2UEvLRrlV3v8VuABXewFxnS28cGQpXGK/uIV
+        2dG6iyCSG6kEmFAVxLRtH5hQcA==
+X-Google-Smtp-Source: ABdhPJylSD2bI37pKEr+yNoLv5WZcg/wQ9gQeAkSZnF6j1d6YwzMa5GWH4ADys4uzJ4DQswDQp9EpQ==
+X-Received: by 2002:a05:620a:1658:: with SMTP id c24mr7540497qko.354.1631279786462;
+        Fri, 10 Sep 2021 06:16:26 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id s6sm3593907qkf.80.2021.09.10.06.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 06:16:26 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 09:18:18 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Huangzhaoyang <huangzhaoyang@gmail.com>
+Cc:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        ke.wang@unisoc.com
+Subject: Re: [PATCH] psi : calc cfs task  memstall time more precisely
+Message-ID: <YTtbGpE8/1ZxjtP2@cmpxchg.org>
+References: <1631260486-6735-1-git-send-email-huangzhaoyang@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631260486-6735-1-git-send-email-huangzhaoyang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 08:51 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
-> > The amount of SGX memory on the system is determined by the BIOS and it
-> > varies wildly between systems.  It can be from dozens of MB's on deskto=
-ps
-> > or VM's, up to many GB's on servers.  Just like for regular memory, it =
-is
-> > sometimes useful to know the amount of usable SGX memory in the system.
-> >=20
-> > Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
-> > showing the total SGX memory in each NUMA node. The total memory for
-> > each NUMA node is calculated by adding the sizes of contained EPC
-> > sections together.
-> >=20
-> > Introduce arch_node_read_meminfo(), which can optionally be rewritten b=
-y
-> > the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
-> >=20
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> > v4:
-> > * A new patch.
-> >  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
-> >  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
-> >  drivers/base/node.c            | 10 +++++++++-
-> >  3 files changed, 29 insertions(+), 1 deletion(-)
->=20
-> Where is the Documentation/ABI/ update for this new sysfs file?
+Please don't send new revisions without replying to previous feedback.
 
-It's has been existed for a long time, e.g.
-
- cat /sys/devices/system/node/node0/meminfo
-Node 0 MemTotal:       32706792 kB
-Node 0 MemFree:         5382988 kB
-Node 0 MemUsed:        27323804 kB
-Node 0 SwapCached:            8 kB
-Node 0 Active:          3640612 kB
-Node 0 Inactive:       21757684 kB
-Node 0 Active(anon):    2833772 kB
-Node 0 Inactive(anon):    14392 kB
-Node 0 Active(file):     806840 kB
-Node 0 Inactive(file): 21743292 kB
-Node 0 Unevictable:       80640 kB
-Node 0 Mlocked:           80640 kB
-Node 0 Dirty:                36 kB
-Node 0 Writeback:             0 kB
-Node 0 FilePages:      22833124 kB
-Node 0 Mapped:          1112832 kB
-Node 0 AnonPages:       2645812 kB
-Node 0 Shmem:            282984 kB
-Node 0 KernelStack:       18544 kB
-Node 0 PageTables:        46704 kB
-Node 0 NFS_Unstable:          0 kB
-Node 0 Bounce:                0 kB
-Node 0 WritebackTmp:          0 kB
-Node 0 KReclaimable:    1311812 kB
-Node 0 Slab:            1542220 kB
-Node 0 SReclaimable:    1311812 kB
-Node 0 SUnreclaim:       230408 kB
-Node 0 AnonHugePages:         0 kB
-Node 0 ShmemHugePages:        0 kB
-Node 0 ShmemPmdMapped:        0 kB
-Node 0 FileHugePages:        0 kB
-Node 0 FilePmdMapped:        0 kB
-Node 0 HugePages_Total:     0
-Node 0 HugePages_Free:      0
-Node 0 HugePages_Surp:      0
-
-This file is undocumented but the fields seem to reflect what is in
-/proc/meminfo, so I added additional patch for documentation:
-
-https://lore.kernel.org/linux-sgx/20210910001726.811497-3-jarkko@kernel.org=
-/
-
-I have no idea why things are how they are. I'm just merely trying to follo=
-w
-the existing patterns. I'm also fully aware of the defacto sysfs pattern, i=
-.e.
-one value per file.
-
-I figured, since the situation is how it is, that I end up doing this wrong
-in a way or another, so this the anti-pattern I picked for my wrong doings
-:-) I'm sorry about it.
-
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/m=
-ain.c
-> > index 63d3de02bbcc..4c6da5f4a9d4 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -717,6 +717,7 @@ static bool __init sgx_page_cache_init(void)
-> >  		}
-> > =20
-> >  		sgx_epc_sections[i].node =3D  &sgx_numa_nodes[nid];
-> > +		sgx_numa_nodes[nid].size +=3D size;
-> > =20
-> >  		sgx_nr_epc_sections++;
-> >  	}
-> > @@ -790,6 +791,19 @@ int sgx_set_attribute(unsigned long *allowed_attri=
-butes,
-> >  }
-> >  EXPORT_SYMBOL_GPL(sgx_set_attribute);
-> > =20
-> > +ssize_t arch_node_read_meminfo(struct device *dev,
-> > +			       struct device_attribute *attr,
-> > +			       char *buf, int len)
-> > +{
-> > +	struct sgx_numa_node *node =3D &sgx_numa_nodes[dev->id];
-> > +
-> > +	len +=3D sysfs_emit_at(buf, len,
-> > +			     "Node %d SGX_MemTotal:   %8lu kB\n",
-> > +			     dev->id, node->size);
->=20
-> Wait, that is not how sysfs files work.  they are "one value per file"
-> Please do not have multiple values in a single sysfs file, that is not
-> acceptable at all.
-
-Yeah, I'm wondering what would be the right corrective steps, given the
-"established science".
-
-> thanks,
->=20
-> greg k-h
-
-/Jarkko
-
+On Fri, Sep 10, 2021 at 03:54:46PM +0800, Huangzhaoyang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> 
+> cfs task's memstall time is counted as simple as exit - entry so far, which
+> ignore the preempted time by rt, dl and irq time. Eliminating them by calc the
+> time growth via the proportion of cfs_rq's utilization on the whole rq.
+> 
+> eg.
+> Here is the scenario which this commit want to fix, that is the rt and irq consume
+> some utilization of the whole rq. This scenario could be typical in a core
+> which is assigned to deal with all irqs. Furthermore, the rt task used to run on
+> little core under EAS.
+> 
+> Binder:305_3-314    [002] d..1   257.880195: psi_memtime_fixup: original:30616,adjusted:25951,se:89,cfs:353,rt:139,dl:0,irq:18
+> droid.phone-1525    [001] d..1   265.145492: psi_memtime_fixup: original:61616,adjusted:53492,se:55,cfs:225,rt:121,dl:0,irq:15
+> 
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  kernel/sched/psi.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index cc25a3c..754a836 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -182,6 +182,8 @@ struct psi_group psi_system = {
+>  
+>  static void psi_avgs_work(struct work_struct *work);
+>  
+> +static unsigned long psi_memtime_fixup(u32 growth);
+> +
+>  static void group_init(struct psi_group *group)
+>  {
+>  	int cpu;
+> @@ -492,6 +494,21 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
+>  	return growth;
+>  }
+>  
+> +static unsigned long psi_memtime_fixup(u32 growth)
+> +{
+> +	struct rq *rq = task_rq(current);
+> +	unsigned long growth_fixed = (unsigned long)growth;
+> +
+> +	if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
+> +		return growth_fixed;
+> +
+> +	if (current->in_memstall)
+> +		growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
+> +					- rq->avg_irq.util_avg + 1) * growth, 1024);
+> +
+> +	return growth_fixed;
+> +}
+> +
+>  static void init_triggers(struct psi_group *group, u64 now)
+>  {
+>  	struct psi_trigger *t;
+> @@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+>  	}
+>  
+>  	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
+> +		delta = psi_memtime_fixup(delta);
+>  		groupc->times[PSI_MEM_SOME] += delta;
+>  		if (groupc->state_mask & (1 << PSI_MEM_FULL))
+>  			groupc->times[PSI_MEM_FULL] += delta;
+> @@ -928,8 +946,8 @@ void psi_memstall_leave(unsigned long *flags)
+>  	 */
+>  	rq = this_rq_lock_irq(&rf);
+>  
+> -	current->in_memstall = 0;
+>  	psi_task_change(current, TSK_MEMSTALL, 0);
+> +	current->in_memstall = 0;
+>  
+>  	rq_unlock_irq(rq, &rf);
+>  }
+> -- 
+> 1.9.1
+> 
