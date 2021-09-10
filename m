@@ -2,221 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC114067B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E62E4067BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 09:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhIJHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 03:33:43 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48510 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231340AbhIJHdm (ORCPT
+        id S231514AbhIJHfB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Sep 2021 03:35:01 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:38777 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231408AbhIJHfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 03:33:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnsAVKx_1631259149;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UnsAVKx_1631259149)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Sep 2021 15:32:30 +0800
-Date:   Fri, 10 Sep 2021 15:32:31 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH 5/6] vdpa: add get_vq_num_unchangeable callback in
- vdpa_config_ops
-Message-ID: <20210910073231.GA17715@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <ebd83066e3897aae63e4b02f8729a73dd09931c6.1631101392.git.wuzongyong@linux.alibaba.com>
- <CACGkMEtAZg+Nkx_1WJAP2=xQ6o6G9Vd=xYvFmR6YRp8vBg2Tqg@mail.gmail.com>
- <20210909080157.GA17383@L-PF27918B-1352.localdomain>
- <CACGkMEsnp7-axbZWuB_w7ZkSWKa0Y+Ej-Kq0QSfO2-DNN=ShVA@mail.gmail.com>
- <20210909095726.GA17469@L-PF27918B-1352.localdomain>
- <CACGkMEvy-DWjAD636+YshY5VUE_mDQo0JBxEw7uBp5rExMj2_w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEvy-DWjAD636+YshY5VUE_mDQo0JBxEw7uBp5rExMj2_w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Fri, 10 Sep 2021 03:35:00 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 5973CCED3D;
+        Fri, 10 Sep 2021 09:33:46 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH -next] Bluetooth: btusb: Fix the application of sizeof to
+ pointer
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1630653392-45523-1-git-send-email-yang.lee@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 09:33:45 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <AE0FD6C9-75DA-49E3-91F9-6F095284BCB2@holtmann.org>
+References: <1630653392-45523-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 09:45:53AM +0800, Jason Wang wrote:
-> On Thu, Sep 9, 2021 at 5:57 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > On Thu, Sep 09, 2021 at 05:28:26PM +0800, Jason Wang wrote:
-> > > On Thu, Sep 9, 2021 at 4:02 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> > > >
-> > > > On Thu, Sep 09, 2021 at 10:55:03AM +0800, Jason Wang wrote:
-> > > > > On Wed, Sep 8, 2021 at 8:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> > > > > >
-> > > > > > This new callback is used to indicate whether the vring size can be
-> > > > > > change or not. It is useful when we have a legacy virtio pci device as
-> > > > > > the vdpa device for there is no way to negotiate the vring num by the
-> > > > > > specification.
-> > > > >
-> > > > > So I'm not sure it's worth bothering. E.g what if we just fail
-> > > > > VHOST_SET_VRING_NUM it the value doesn't match what hardware has?
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > I think we should not call VHOST_SET_VRING_NUM in that case.
-> > > >
-> > > > If the hardware reports that the virtqueue size cannot be changed, we
-> > > > should call VHOST_GET_VRING_NUM to get the static virtqueue size
-> > > > firstly, then allocate the same size memory for the virtqueues and write
-> > > > the address to hardware finally.
-> > > >
-> > > > For QEMU, we will ignore the properties rx/tx_queue_size and just get it
-> > > > from the hardware if this new callback return true.
-> > >
-> > > This will break live migration. My understanding is that we can
-> > > advertise those capability/limitation via the netlink management
-> > > protocol then management layer can choose to use the correct queue
-> > > size.
-> > >
-> > > Thanks
-> > I agree, it is a good idea.
-> > BTW, can we also advertise mac address of network device? I found the
-> > mac address generated by libvirt or qemu will break the network datapath
-> > down if I don't specify the right mac explicitly in the XML or qemu
-> > commandline.
+Hi Yang,
+
+> sizeof() when applied to a pointer typed expression gives the size of
+> the pointer.
 > 
-> We never saw this before, AFAIK when vhost-vdpa is used, currently
-> qemu will probably ignore the mac address set via command line since
-> the config space is read from the device instead of qemu itself?
+> Clean up coccicheck warning:
+> ./drivers/bluetooth/btusb.c:2210:36-42: ERROR: application of sizeof to
+> pointer
 > 
-
-I saw the code below in qemu:
-
-static void virtio_net_device_realize(DeviceState *dev, Error **errp)
-{
-    ...
-    if (nc->peer && nc->peer->info->type == NET_CLIENT_DRIVER_VHOST_VDPA) {
-        struct virtio_net_config netcfg = {};
-        memcpy(&netcfg.mac, &n->nic_conf.macaddr, ETH_ALEN);
-        vhost_net_set_config(get_vhost_net(nc->peer),
-            (uint8_t *)&netcfg, 0, ETH_ALEN, VHOST_SET_CONFIG_TYPE_MASTER);
-    }
-    ...
-}
-
-This write the mac address set via cmdline into vdpa device config, and
-then guest will read it back.
-If I remove these codes, it behaves like you said.
-
-
-> Thanks
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+> drivers/bluetooth/btusb.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > >
-> > > >
-> > > > What do you think?
-> > > > > >
-> > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > > > > ---
-> > > > > >  drivers/vhost/vdpa.c         | 19 +++++++++++++++++++
-> > > > > >  drivers/virtio/virtio_vdpa.c |  5 ++++-
-> > > > > >  include/linux/vdpa.h         |  4 ++++
-> > > > > >  include/uapi/linux/vhost.h   |  2 ++
-> > > > > >  4 files changed, 29 insertions(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > > > > > index 9479f7f79217..2204d27d1e5d 100644
-> > > > > > --- a/drivers/vhost/vdpa.c
-> > > > > > +++ b/drivers/vhost/vdpa.c
-> > > > > > @@ -350,6 +350,22 @@ static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
-> > > > > >         return 0;
-> > > > > >  }
-> > > > > >
-> > > > > > +static long vhost_vdpa_get_vring_num_unchangeable(struct vhost_vdpa *v,
-> > > > > > +                                                 u32 __user *argp)
-> > > > > > +{
-> > > > > > +       struct vdpa_device *vdpa = v->vdpa;
-> > > > > > +       const struct vdpa_config_ops *ops = vdpa->config;
-> > > > > > +       bool unchangeable = false;
-> > > > > > +
-> > > > > > +       if (ops->get_vq_num_unchangeable)
-> > > > > > +               unchangeable = ops->get_vq_num_unchangeable(vdpa);
-> > > > > > +
-> > > > > > +       if (copy_to_user(argp, &unchangeable, sizeof(unchangeable)))
-> > > > > > +               return -EFAULT;
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > >  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
-> > > > > >                                    void __user *argp)
-> > > > > >  {
-> > > > > > @@ -487,6 +503,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
-> > > > > >         case VHOST_VDPA_GET_IOVA_RANGE:
-> > > > > >                 r = vhost_vdpa_get_iova_range(v, argp);
-> > > > > >                 break;
-> > > > > > +       case VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE:
-> > > > > > +               r = vhost_vdpa_get_vring_num_unchangeable(v, argp);
-> > > > > > +               break;
-> > > > > >         default:
-> > > > > >                 r = vhost_dev_ioctl(&v->vdev, cmd, argp);
-> > > > > >                 if (r == -ENOIOCTLCMD)
-> > > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > > > > > index 72eaef2caeb1..afb47465307a 100644
-> > > > > > --- a/drivers/virtio/virtio_vdpa.c
-> > > > > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > > > > @@ -146,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > > > > >         struct vdpa_vq_state state = {0};
-> > > > > >         unsigned long flags;
-> > > > > >         u32 align, num;
-> > > > > > +       bool may_reduce_num = true;
-> > > > > >         int err;
-> > > > > >
-> > > > > >         if (!name)
-> > > > > > @@ -171,8 +172,10 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > > > > >
-> > > > > >         /* Create the vring */
-> > > > > >         align = ops->get_vq_align(vdpa);
-> > > > > > +       if (ops->get_vq_num_unchangeable)
-> > > > > > +               may_reduce_num = !ops->get_vq_num_unchangeable(vdpa);
-> > > > > >         vq = vring_create_virtqueue(index, num, align, vdev,
-> > > > > > -                                   true, true, ctx,
-> > > > > > +                                   true, may_reduce_num, ctx,
-> > > > > >                                     virtio_vdpa_notify, callback, name);
-> > > > > >         if (!vq) {
-> > > > > >                 err = -ENOMEM;
-> > > > > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > > > > > index 35648c11e312..f809b7ada00d 100644
-> > > > > > --- a/include/linux/vdpa.h
-> > > > > > +++ b/include/linux/vdpa.h
-> > > > > > @@ -195,6 +195,9 @@ struct vdpa_iova_range {
-> > > > > >   *                             @vdev: vdpa device
-> > > > > >   *                             Returns the iova range supported by
-> > > > > >   *                             the device.
-> > > > > > + * @get_vq_num_unchangeable    Check if size of virtqueue is unchangeable (optional)
-> > > > > > + *                             @vdev: vdpa device
-> > > > > > + *                             Returns boolean: unchangeable (true) or not (false)
-> > > > > >   * @set_map:                   Set device memory mapping (optional)
-> > > > > >   *                             Needed for device that using device
-> > > > > >   *                             specific DMA translation (on-chip IOMMU)
-> > > > > > @@ -262,6 +265,7 @@ struct vdpa_config_ops {
-> > > > > >                            const void *buf, unsigned int len);
-> > > > > >         u32 (*get_generation)(struct vdpa_device *vdev);
-> > > > > >         struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
-> > > > > > +       bool (*get_vq_num_unchangeable)(struct vdpa_device *vdev);
-> > > > > >
-> > > > > >         /* DMA ops */
-> > > > > >         int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> > > > > > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> > > > > > index c998860d7bbc..184f1f7f8498 100644
-> > > > > > --- a/include/uapi/linux/vhost.h
-> > > > > > +++ b/include/uapi/linux/vhost.h
-> > > > > > @@ -150,4 +150,6 @@
-> > > > > >  /* Get the valid iova range */
-> > > > > >  #define VHOST_VDPA_GET_IOVA_RANGE      _IOR(VHOST_VIRTIO, 0x78, \
-> > > > > >                                              struct vhost_vdpa_iova_range)
-> > > > > > +/* Check if the vring size can be change */
-> > > > > > +#define VHOST_VDPA_GET_VRING_NUM_UNCHANGEABLE _IOR(VHOST_VIRTIO, 0X79, bool)
-> > > > > >  #endif
-> > > > > > --
-> > > > > > 2.31.1
-> > > > > >
-> > > >
-> >
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 928cbfa..5bf479e 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -2207,7 +2207,7 @@ static int btusb_set_bdaddr_mtk(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+> 	struct sk_buff *skb;
+> 	long ret;
+> 
+> -	skb = __hci_cmd_sync(hdev, 0xfc1a, sizeof(bdaddr), bdaddr, HCI_INIT_TIMEOUT);
+> +	skb = __hci_cmd_sync(hdev, 0xfc1a, sizeof(*bdaddr), bdaddr, HCI_INIT_TIMEOUT);
+
+lets just do 0xfc1a, 6, bdaddr like the other functions do as well.
+
+Regards
+
+Marcel
+
