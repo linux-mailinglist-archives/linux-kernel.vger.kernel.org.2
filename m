@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F29406616
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3131E406619
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhIJDZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 23:25:18 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:59272 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhIJDZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 23:25:17 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOX8y-002n4l-Ew; Fri, 10 Sep 2021 03:24:00 +0000
-Date:   Fri, 10 Sep 2021 03:24:00 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [git pull] iov_iter fixes
-Message-ID: <YTrP0EbPaZ4c67Ij@zeniv-ca.linux.org.uk>
-References: <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <ebc6cc5e-dd43-6370-b462-228e142beacb@kernel.dk>
- <CAHk-=whoMLW-WP=8DikhfE4xAu_Tw9jDNkdab4RGEWWMagzW8Q@mail.gmail.com>
- <ebb7b323-2ae9-9981-cdfd-f0f460be43b3@kernel.dk>
- <CAHk-=wi2fJ1XrgkfSYgn9atCzmJZ8J3HO5wnPO0Fvh5rQx9mmA@mail.gmail.com>
- <88f83037-0842-faba-b68f-1d4574fb45cb@kernel.dk>
- <YTrHYYEQslQzvnWW@zeniv-ca.linux.org.uk>
- <8d9e4f7c-bcf4-2751-9978-6283cabeda52@kernel.dk>
- <YTrN16wu/KE0X/QZ@zeniv-ca.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTrN16wu/KE0X/QZ@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S230008AbhIJD1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 23:27:46 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:35878 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229461AbhIJD1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 23:27:43 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowACHaaJV0Dph4vkNAA--.29783S2;
+        Fri, 10 Sep 2021 11:26:13 +0800 (CST)
+From:   Jiang Jiasheng <jiasheng@iscas.ac.cn>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Jiang Jiasheng <jiasheng@iscas.ac.cn>
+Subject: [PATCH 6/6] irq: Potentially 'offset out of size' bug
+Date:   Fri, 10 Sep 2021 03:26:12 +0000
+Message-Id: <1631244372-1817960-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowACHaaJV0Dph4vkNAA--.29783S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFy3JFWkuFykGF13ArW5Jrb_yoW3GrX_Gr
+        9YyF1DWr48JryrAw4rtw4xAF1jy348AF48uw1Syay5J390vFn3Aw43XFZ0krsxXrWxAw1x
+        A34Y9FW3tr4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU2FALUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 03:15:35AM +0000, Al Viro wrote:
-> On Thu, Sep 09, 2021 at 09:06:58PM -0600, Jens Axboe wrote:
-> > On 9/9/21 8:48 PM, Al Viro wrote:
-> > > On Thu, Sep 09, 2021 at 07:35:13PM -0600, Jens Axboe wrote:
-> > > 
-> > >> Yep ok I follow you now. And yes, if we get a partial one but one that
-> > >> has more consumed than what was returned, that would not work well. I'm
-> > >> guessing that a) we've never seen that, or b) we always end up with
-> > >> either correctly advanced OR fully advanced, and the fully advanced case
-> > >> would then just return 0 next time and we'd just get a short IO back to
-> > >> userspace.
-> > >>
-> > >> The safer way here would likely be to import the iovec again. We're
-> > >> still in the context of the original submission, and the sqe hasn't been
-> > >> consumed in the ring yet, so that can be done safely.
-> > > 
-> > > ... until you end up with something assuming that you've got the same
-> > > iovec from userland the second time around.
-> > > 
-> > > IOW, generally it's a bad idea to do that kind of re-imports.
-> > 
-> > That's really no different than having one thread do the issue, and
-> > another modify the iovec while it happens. It's only an issue if you
-> > don't validate it, just like you did the first time you imported. No
-> > assumptions need to be made here.
-> 
-> 	It's not "need to be made", it's "will be mistakenly made by
-> somebody several years down the road"...
+The find_next_bit() use nr_irqs as size, and using it without
+any check might cause its returned value out of the size
 
-E.g. somebody blindly assuming that the amount of data read the last
-time around will not exceed the size of reimported iov_iter.  What I'm
-saying is that there's a plenty of ways to fuck up in that direction,
-and they will *not* be caught by normal fuzzers.
+Signed-off-by: Jiang Jiasheng <jiasheng@iscas.ac.cn>
+---
+ kernel/irq/irqdesc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'm not arguing in favour of an uncoditional copy, BTW - I would like to
-see something resembling profiling data, but it's obviously not a pretty
-solution.
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index 4a617d73..5bb310a 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -820,7 +820,8 @@ EXPORT_SYMBOL_GPL(__irq_alloc_descs);
+  */
+ unsigned int irq_get_next_irq(unsigned int offset)
+ {
+-	return find_next_bit(allocated_irqs, nr_irqs, offset);
++	offset = find_next_bit(allocated_irqs, nr_irqs, offset);
++	return offset < nr_irqs ? offset : nr_irqs;
+ }
+ 
+ struct irq_desc *
+-- 
+2.7.4
+
