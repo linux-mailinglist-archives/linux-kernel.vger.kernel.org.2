@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2883A4071B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786724071B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 21:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhIJTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 15:08:15 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46036 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbhIJTIM (ORCPT
+        id S233267AbhIJTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 15:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232711AbhIJTIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:08:12 -0400
-Received: by mail-ot1-f49.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso3560510otv.12;
-        Fri, 10 Sep 2021 12:07:01 -0700 (PDT)
+        Fri, 10 Sep 2021 15:08:37 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE27C061574;
+        Fri, 10 Sep 2021 12:07:25 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id l10so6047033lfg.4;
+        Fri, 10 Sep 2021 12:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nbTL9R97Ke/lh7QPNGiJCVVZOB6w129a/LtSq9pDVx0=;
+        b=AhAkLbfHag1+GQrZjvSiR1U9MCGIj/PK3aBrteDkbqZEQjiUP3bqxuD/n3gR+JmI14
+         BFsLx2B2MUl0nDTtsCKSgNAumBL8ACM9o+DvCO2YJLxLpSfFjJ36rHS1j8DpEfhDAAwb
+         MR3QVoeg8Y+rwVPX5QJKu20pbYfBHtvcC6K05fhpdpK81EjxJl0cGLJbHl0JLEe+CGZj
+         e18VWI8NVrWpYscRi6FxRyMocUF83vdcHrdvvgY33FmnWd0YAhoskYR65MOKhLpq6E0M
+         7sGuQZrVD1IN1p6zXpUG1SjXAMBTyR1HEgazwmuqMSZYRmC5VVyl40pnZRSKlnX5Rgk/
+         cK0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=uFOZEV6ekgzmEVVQbYxxF+K/ci1h3bEPDPVoxSGAi5c=;
-        b=FU858GXrsxSeoR8+HpxtckfH8I35EqEW6PvdqfHJIXYt2WecJWKPMN/4R0qy5u82gA
-         /Gkfn0XXStn2kFv0FkIdovyY1vndo1XKhRb2VKFwu+Axfm+ZYFhNg1mYoc9jd45HmBSZ
-         tJh664evmYk02o9NXTlHPCQujcn8x+dTioDvgyWHLCK23pK7D3mhzkOc55y65x6BkHYB
-         t2ZauCH1q3YQaNlpi1iGENp8sNjR+9YyFhokMvpZt3YemBAF3l8gbgV1uknDUhhDucZY
-         L89ABgHfGH2MdlmEE+NgDVCeIw4aFwGxBVswDZvovgn1uufXEneLOKJ+A7Fj4A1oLWVP
-         Oj5w==
-X-Gm-Message-State: AOAM532TcxAcrlE2aDZ3osYfvdZXSixE9+BMXrN1N+h4kgYcAxTfvHiV
-        3PaPDswpUnD0WYtS/FIhBFtTjM834Tm3MT+xqPOQP8HG/j8=
-X-Google-Smtp-Source: ABdhPJx+eNjmU0FR3SzW5vWL8ki3u9UHBEARUkxudB1fof64Hhbpla+7N61K02LCt1TwB4EoENAL1T/vnF3PCCxHyqU=
-X-Received: by 2002:a9d:4d93:: with SMTP id u19mr6026686otk.86.1631300821154;
- Fri, 10 Sep 2021 12:07:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nbTL9R97Ke/lh7QPNGiJCVVZOB6w129a/LtSq9pDVx0=;
+        b=fb+ejmN49oXb9OH3RVgAwMUddoC0WWfXEN6t/A7GSFAoF4jDcA3euuNAZcQn5QOUby
+         lhn9poJ6F9+9B+CIsPA6Aded3nBtwskW9fLuM0S5WroS7jbKxK5lCIafFBgWOHTUZETp
+         LLZv2J4nBS4N1+epSzqf/o3RXyd3WAnv+t1yeAY2K7egM9z59Zr4B7Yp2j1aDXDQp86I
+         cOzU71WKRcH5rq1p8gMKGqvQ4Hjx0KLtRODcGsuA+1QXN3a/zYaivPTUR8cjkRMpEqEl
+         mai7UzPAHvkfvxj76OE9ncXuRrCt/+LCxTTHSMD7QzFdykYy5IY+DCuuMvwwtlpW3ROB
+         bX1g==
+X-Gm-Message-State: AOAM533ZbCB1VeSHQq/jLbCMjAdGK9S0ZIOJnHCL+w2XtIiqa0/7Rl3d
+        eufMkWPvksx8JJTPS+hjioKXONaQClk=
+X-Google-Smtp-Source: ABdhPJwYghBQHugttMu6yPGiRebRP6F/J+LTI9uOYxio78N9HSE7lTJYL5iqOXpWoaDnD91/pB7/og==
+X-Received: by 2002:ac2:4c0a:: with SMTP id t10mr5111852lfq.481.1631300844112;
+        Fri, 10 Sep 2021 12:07:24 -0700 (PDT)
+Received: from [192.168.1.102] ([31.173.81.230])
+        by smtp.gmail.com with ESMTPSA id v14sm670070lji.32.2021.09.10.12.07.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 12:07:23 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: usb: atmel: add USB PHY type property
+To:     cristian.birsan@microchip.com, stern@rowland.harvard.edu,
+        gregkh@linuxfoundation.org, nicolas.ferre@microchip.com,
+        ada@thorsis.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210910163842.1596407-1-cristian.birsan@microchip.com>
+ <20210910163842.1596407-2-cristian.birsan@microchip.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <55c75f95-6a14-7f05-c15c-64d4dbc1dee8@gmail.com>
+Date:   Fri, 10 Sep 2021 22:07:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 10 Sep 2021 21:06:50 +0200
-Message-ID: <CAJZ5v0ha6P6u8pC6nXUipY7ZVDBCh6jMum0A5viFUUamVc=V2w@mail.gmail.com>
-Subject: [GIT PULL] More ACPI updates for v5.15-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210910163842.1596407-2-cristian.birsan@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello!
 
-Please pull from the tag
+On 9/10/21 7:38 PM, cristian.birsan@microchip.com wrote:
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.15-rc1-3
+> From: Cristian Birsan <cristian.birsan@microchip.com>
+> 
+> Add USB PHY type property for controllers with HSIC support.
+> 
+> Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/usb/atmel-usb.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/atmel-usb.txt b/Documentation/devicetree/bindings/usb/atmel-usb.txt
+> index a4002624ba14..f512f0290728 100644
+> --- a/Documentation/devicetree/bindings/usb/atmel-usb.txt
+> +++ b/Documentation/devicetree/bindings/usb/atmel-usb.txt
+> @@ -39,6 +39,10 @@ Required properties:
+>  		"ehci_clk" for the peripheral clock
+>  		"usb_clk" for the UTMI clock
+>  
+> +Optional properties:
+> + - phy_type : For multi port host USB controllers, should be one of
 
-with top-most commit 8fbc1c5b91133f7ae5254061d2cb3326992635c4
+   Hyphens are preferred to underscores in the property names.
 
- Merge branches 'acpi-scan' and 'acpi-prm'
+> +   "utmi", or "hsic".
+> +
+>  usb1: ehci@800000 {
+>  	compatible = "atmel,at91sam9g45-ehci", "usb-ehci";
+>  	reg = <0x00800000 0x100000>;
 
-on top of commit 30f349097897c115345beabeecc5e710b479ff1e
-
- Merge tag 'pm-5.15-rc1-2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive additional ACPI updates for 5.15-rc1.
-
-These prevent a confusing PRMT-related message from being printed,
-drop an unnecessary header file include and update the list of
-ACPICA maintainers.
-
-Specifics:
-
- - Prevent a message about missing PRMT from being printed on systems
-   that do not support PRM, which are the majority now (Aubrey Li).
-
- - Drop unnecessary header include from scan.c (Kari Argillander).
-
- - Update the list of ACPICA maintainers after recent departure of
-   one of them (Rafael Wysocki).
-
-Thanks!
-
-
----------------
-
-Aubrey Li (1):
-      ACPI: PRM: Find PRMT table before parsing it
-
-Kari Argillander (1):
-      ACPI: scan: Remove unneeded header linux/nls.h
-
-Rafael J. Wysocki (1):
-      ACPICA: Update the list of maintainers
-
----------------
-
- MAINTAINERS         |  1 -
- drivers/acpi/prmt.c | 10 +++++++++-
- drivers/acpi/scan.c |  1 -
- 3 files changed, 9 insertions(+), 3 deletions(-)
+MBR, Sergei
