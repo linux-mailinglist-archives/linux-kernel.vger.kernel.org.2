@@ -2,236 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D0A406FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F8E406FE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhIJQn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        id S230157AbhIJQon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhIJQnZ (ORCPT
+        with ESMTP id S229466AbhIJQol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:43:25 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C10AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:42:14 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1898982pjc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:42:14 -0700 (PDT)
+        Fri, 10 Sep 2021 12:44:41 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED78C061574;
+        Fri, 10 Sep 2021 09:43:30 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id t19so5208117lfe.13;
+        Fri, 10 Sep 2021 09:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D5wOmmxvEtnTHLM9D1J1H3m26b1fVlAkaw2R8MzvMJE=;
-        b=LwN+LeajNrJVYqWx4HzdEiyfGcUBWaE8eJDO0158AKYaRjVQL6xLvCj4NzQh8Wgk9Z
-         upL2LbrF1JEwe9BD8EXdZJtLv6dRh6QGEcvWS7SazYa9rig5ru/sqDjLznhMFPJiU9K3
-         n37jCmlkjv/Rz01xByo+8AdfY4tUju6JmTBs0=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=CpppGfWdA8BK4TEonYP/3MMVluD0lccSfMd5MNwKeZI=;
+        b=TeOEMXQv69sxAJJRBo9B4lk3fpM/E0/Egxfjkx2Whvw1euWeJGEKX/A4YT9I361Tg2
+         xfx600hqLxUjGOIChRARytJCOEO6ofvlQZajymlSPvItFy3U0XczbGn2Brda8Dkhbhyq
+         Lhw/5FVJXFBXM+yrMeh4stgVVSkaJxm8B4EfkmWxtnutQszIUpdlCY5bWlOa7aGP0n8v
+         ehlVF96bIjqCU2F6TffATDo15AqEBg6cibUeQk8AK4vfHZGO08vrhNtoRsGG/kYZaQ/J
+         SCe6RBjjYYJPiZ8W9mXymIQZpiObjeSLqbhOEZfBbQcFrMRGf/bkNGs6lIsW/FmETVJ0
+         K84A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D5wOmmxvEtnTHLM9D1J1H3m26b1fVlAkaw2R8MzvMJE=;
-        b=oM0s5RnDpnCrmGIO+2Nzwfdnd08TZCjjxiCkd+pcTiK/7nNPe5I/Nsa3mAHNvLCU81
-         D1KfH2+g2xjc4I1XYjCLBlInov2rACKFf2wVWtaeq5o9RURgDauIJWBntvNSQfsZT2aM
-         4ZU80zrdzyZvIWXdYsDdnr9E17IcdSn/YfN1ggFFasdWY3+hCrXVC0Xt0iHmycPWcOCI
-         DU88S4m7bODjXxRIbCsAmNrA6nKXAGM516E/oGQd7Nvl2cYKy9wtLCZT8OK1uCoJ7AVg
-         60a/OfAGpWlcYcu51tfqMHLiI0WcuHZy6RfyuvtlcOOVt0E/ai75z8aITFymYllFZtAc
-         utSQ==
-X-Gm-Message-State: AOAM530qU15fb/xNDsM+gTta+LNXkLYp3/klOejFJ/ZLKxtwphh4DpMq
-        H5iHDhdu07QIcpmPlq3pwiaiZg==
-X-Google-Smtp-Source: ABdhPJwnsNVdIo1ZWDoaakvFe4lZSV//xkhZFGe12j5igJZdOToeOgyKDIcESUHIt0r/JmiBdI9oiA==
-X-Received: by 2002:a17:902:e743:b0:13a:eb0:d124 with SMTP id p3-20020a170902e74300b0013a0eb0d124mr8325551plf.38.1631292134015;
-        Fri, 10 Sep 2021 09:42:14 -0700 (PDT)
-Received: from li-cloudtop.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id c133sm5546948pfb.39.2021.09.10.09.42.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CpppGfWdA8BK4TEonYP/3MMVluD0lccSfMd5MNwKeZI=;
+        b=aVilj4OSuseeKujlaIcAL0hSh3pYpZDpC9mY6KX+HBG+aY0q/P+J30B3Lesl4UZ9QS
+         K8lu8OJMmqHRsN+3H57v7T3IdbQlyGYCS2jwI/3RR7Z3R5u1efR4Wdfx5csepNKW27iu
+         LPZMoi3ubCCE6pvgx4hu8J3gAQL02ouoW49usmg6Gz8LJ9szZb8HfujuN+zqPta5O55O
+         UlZKlbjWP1Q+hzzydDnofRklHknXmv0EwFD2wwOUdNDQv/1j4ACsNoMuBWM248JR8+oW
+         lSL+aogN0Fkt++LhW5TFnWl+UJY6DQIAymB8N/S1rDAkKNUrQYDmgtMYBrK4aVRAOos5
+         BJyg==
+X-Gm-Message-State: AOAM531xwtMr2QQwM6pd6KxfN2PPCI/Ge26KStl0DFOb2JzwOmTsJxOP
+        4OKVzui2jyh6jWlshHOmqUQ=
+X-Google-Smtp-Source: ABdhPJz7K6g1w0gHsQO3ayMRireXIkr5lTLQy7Usi5dYuUKhB2c/o2cUiEPAw4W0lHFRbegttgMqhQ==
+X-Received: by 2002:a05:6512:4005:: with SMTP id br5mr4592372lfb.560.1631292208860;
+        Fri, 10 Sep 2021 09:43:28 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id f20sm666074ljc.81.2021.09.10.09.43.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:42:13 -0700 (PDT)
-From:   Li Li <dualli@chromium.org>
-To:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
-        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
-        surenb@google.com
-Cc:     joel@joelfernandes.org, kernel-team@android.com
-Subject: [PATCH v3 1/1] binder: fix freeze race
-Date:   Fri, 10 Sep 2021 09:42:10 -0700
-Message-Id: <20210910164210.2282716-2-dualli@chromium.org>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-In-Reply-To: <20210910164210.2282716-1-dualli@chromium.org>
-References: <20210910164210.2282716-1-dualli@chromium.org>
+        Fri, 10 Sep 2021 09:43:28 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 19:43:26 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 13/31] staging: wfx: update with API 3.8
+Message-ID: <20210910164326.ivhlbnaq6526wcso@kari-VirtualBox>
+References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
+ <20210910160504.1794332-14-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210910160504.1794332-14-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Li <dualli@google.com>
+On Fri, Sep 10, 2021 at 06:04:46PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> 
+> API 3.8 introduces new statistic counters. These changes are backward
+> compatible.
 
-Currently cgroup freezer is used to freeze the application threads, and
-BINDER_FREEZE is used to freeze the corresponding binder interface.
-There's already a mechanism in ioctl(BINDER_FREEZE) to wait for any
-existing transactions to drain out before actually freezing the binder
-interface.
+It will be obvious to some what API 3.8 is. But at least me can rise my
+hand and admit that I do not. Probably wfx api but ig there is any
+public info but it here. If there is not just say Wfx api 3.8.
 
-But freezing an app requires 2 steps, freezing the binder interface with
-ioctl(BINDER_FREEZE) and then freezing the application main threads with
-cgroupfs. This is not an atomic operation. The following race issue
-might happen.
-
-1) Binder interface is frozen by ioctl(BINDER_FREEZE);
-2) Main thread A initiates a new sync binder transaction to process B;
-3) Main thread A is frozen by "echo 1 > cgroup.freeze";
-4) The response from process B reaches the frozen thread, which will
-unexpectedly fail.
-
-This patch provides a mechanism to check if there's any new pending
-transaction happening between ioctl(BINDER_FREEZE) and freezing the
-main thread. If there's any, the main thread freezing operation can
-be rolled back to finish the pending transaction.
-
-Furthermore, the response might reach the binder driver before the
-rollback actually happens. That will still cause failed transaction.
-
-As the other process doesn't wait for another response of the response,
-the response transaction failure can be fixed by treating the response
-transaction like an oneway/async one, allowing it to reach the frozen
-thread. And it will be consumed when the thread gets unfrozen later.
-
-NOTE: This patch reuses the existing definition of struct
-binder_frozen_status_info but expands the bit assignments of __u32
-member sync_recv.
-
-To ensure backward compatibility, bit 0 of sync_recv still indicates
-there's an outstanding sync binder transaction. This patch adds new
-information to bit 1 of sync_recv, indicating the binder transaction
-happens exactly when there's a race.
-
-If an existing userspace app runs on a new kernel, a sync binder call
-will set bit 0 of sync_recv so ioctl(BINDER_GET_FROZEN_INFO) still
-return the expected value (true). The app just doesn't check bit 1
-intentionally so it doesn't have the ability to tell if there's a race.
-This behavior is aligned with what happens on an old kernel which
-doesn't set bit 1 at all.
-
-A new userspace app can 1) check bit 0 to know if there's a sync binder
-transaction happened when being frozen - same as before; and 2) check
-bit 1 to know if that sync binder transaction happened exactly when
-there's a race - a new information for rollback decision.
-
-Fixes: 432ff1e91694 ("binder: BINDER_FREEZE ioctl")
-Test: stress test with apps being frozen and initiating binder calls at
-the same time, confirmed the pending transactions succeeded.
-Signed-off-by: Li Li <dualli@google.com>
----
- drivers/android/binder.c            | 35 ++++++++++++++++++++++++-----
- drivers/android/binder_internal.h   |  2 ++
- include/uapi/linux/android/binder.h |  7 ++++++
- 3 files changed, 38 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index d9030cb6b1e4..1a68c2f590cf 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -3038,9 +3038,8 @@ static void binder_transaction(struct binder_proc *proc,
- 	if (reply) {
- 		binder_enqueue_thread_work(thread, tcomplete);
- 		binder_inner_proc_lock(target_proc);
--		if (target_thread->is_dead || target_proc->is_frozen) {
--			return_error = target_thread->is_dead ?
--				BR_DEAD_REPLY : BR_FROZEN_REPLY;
-+		if (target_thread->is_dead) {
-+			return_error = BR_DEAD_REPLY;
- 			binder_inner_proc_unlock(target_proc);
- 			goto err_dead_proc_or_thread;
- 		}
-@@ -4648,6 +4647,22 @@ static int binder_ioctl_get_node_debug_info(struct binder_proc *proc,
- 	return 0;
- }
- 
-+static bool binder_txns_pending_ilocked(struct binder_proc *proc)
-+{
-+	struct rb_node *n;
-+	struct binder_thread *thread;
-+
-+	if (proc->outstanding_txns > 0)
-+		return true;
-+
-+	for (n = rb_first(&proc->threads); n; n = rb_next(n)) {
-+		thread = rb_entry(n, struct binder_thread, rb_node);
-+		if (thread->transaction_stack)
-+			return true;
-+	}
-+	return false;
-+}
-+
- static int binder_ioctl_freeze(struct binder_freeze_info *info,
- 			       struct binder_proc *target_proc)
- {
-@@ -4679,8 +4694,13 @@ static int binder_ioctl_freeze(struct binder_freeze_info *info,
- 			(!target_proc->outstanding_txns),
- 			msecs_to_jiffies(info->timeout_ms));
- 
--	if (!ret && target_proc->outstanding_txns)
--		ret = -EAGAIN;
-+	/* Check pending transactions that wait for reply */
-+	if (ret >= 0) {
-+		binder_inner_proc_lock(target_proc);
-+		if (binder_txns_pending_ilocked(target_proc))
-+			ret = -EAGAIN;
-+		binder_inner_proc_unlock(target_proc);
-+	}
- 
- 	if (ret < 0) {
- 		binder_inner_proc_lock(target_proc);
-@@ -4696,6 +4716,7 @@ static int binder_ioctl_get_freezer_info(
- {
- 	struct binder_proc *target_proc;
- 	bool found = false;
-+	__u32 txns_pending;
- 
- 	info->sync_recv = 0;
- 	info->async_recv = 0;
-@@ -4705,7 +4726,9 @@ static int binder_ioctl_get_freezer_info(
- 		if (target_proc->pid == info->pid) {
- 			found = true;
- 			binder_inner_proc_lock(target_proc);
--			info->sync_recv |= target_proc->sync_recv;
-+			txns_pending = binder_txns_pending_ilocked(target_proc);
-+			info->sync_recv |= target_proc->sync_recv |
-+					(txns_pending << 1);
- 			info->async_recv |= target_proc->async_recv;
- 			binder_inner_proc_unlock(target_proc);
- 		}
-diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-index 810c0b84d3f8..402c4d4362a8 100644
---- a/drivers/android/binder_internal.h
-+++ b/drivers/android/binder_internal.h
-@@ -378,6 +378,8 @@ struct binder_ref {
-  *                        binder transactions
-  *                        (protected by @inner_lock)
-  * @sync_recv:            process received sync transactions since last frozen
-+ *                        bit 0: received sync transaction after being frozen
-+ *                        bit 1: new pending sync transaction during freezing
-  *                        (protected by @inner_lock)
-  * @async_recv:           process received async transactions since last frozen
-  *                        (protected by @inner_lock)
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-index 20e435fe657a..3246f2c74696 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -225,7 +225,14 @@ struct binder_freeze_info {
- 
- struct binder_frozen_status_info {
- 	__u32            pid;
-+
-+	/* process received sync transactions since last frozen
-+	 * bit 0: received sync transaction after being frozen
-+	 * bit 1: new pending sync transaction during freezing
-+	 */
- 	__u32            sync_recv;
-+
-+	/* process received async transactions since last frozen */
- 	__u32            async_recv;
- };
- 
--- 
-2.33.0.309.g3052b89438-goog
-
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/staging/wfx/debug.c       | 3 +++
+>  drivers/staging/wfx/hif_api_mib.h | 5 ++++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
+> index eedada78c25f..e67ca0d818ba 100644
+> --- a/drivers/staging/wfx/debug.c
+> +++ b/drivers/staging/wfx/debug.c
+> @@ -109,6 +109,9 @@ static int wfx_counters_show(struct seq_file *seq, void *v)
+>  
+>  	PUT_COUNTER(rx_beacon);
+>  	PUT_COUNTER(miss_beacon);
+> +	PUT_COUNTER(rx_dtim);
+> +	PUT_COUNTER(rx_dtim_aid0_clr);
+> +	PUT_COUNTER(rx_dtim_aid0_set);
+>  
+>  #undef PUT_COUNTER
+>  
+> diff --git a/drivers/staging/wfx/hif_api_mib.h b/drivers/staging/wfx/hif_api_mib.h
+> index ace924720ce6..b2dc47c314cc 100644
+> --- a/drivers/staging/wfx/hif_api_mib.h
+> +++ b/drivers/staging/wfx/hif_api_mib.h
+> @@ -158,7 +158,10 @@ struct hif_mib_extended_count_table {
+>  	__le32 count_rx_bipmic_errors;
+>  	__le32 count_rx_beacon;
+>  	__le32 count_miss_beacon;
+> -	__le32 reserved[15];
+> +	__le32 count_rx_dtim;
+> +	__le32 count_rx_dtim_aid0_clr;
+> +	__le32 count_rx_dtim_aid0_set;
+> +	__le32 reserved[12];
+>  } __packed;
+>  
+>  struct hif_mib_count_table {
+> -- 
+> 2.33.0
+> 
