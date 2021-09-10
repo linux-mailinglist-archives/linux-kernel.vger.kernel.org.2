@@ -2,229 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559C34065DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7924065E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 05:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhIJDFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 23:05:09 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16246 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhIJDFI (ORCPT
+        id S229946AbhIJDG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 23:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhIJDGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 23:05:08 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H5LKm4qvpz8sx1;
-        Fri, 10 Sep 2021 11:03:24 +0800 (CST)
-Received: from huawei.com (10.67.189.83) by dggeme759-chm.china.huawei.com
- (10.3.19.105) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Fri, 10
- Sep 2021 11:03:56 +0800
-From:   Zhenliang Wei <weizhenliang@huawei.com>
-To:     <akpm@linux-foundation.org>, <tangbin@cmss.chinamobile.com>,
-        <zhangshengju@cmss.chinamobile.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weizhenliang@huawei.com>, <nixiaoming@huawei.com>,
-        <xiaoqian9@huawei.com>
-Subject: [PATCH] tools/vm/page_owner_sort.c: count and sort by mem
-Date:   Fri, 10 Sep 2021 11:03:43 +0800
-Message-ID: <1631243023-47849-1-git-send-email-weizhenliang@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
+        Thu, 9 Sep 2021 23:06:25 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9378C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 20:05:15 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b7so574633iob.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 20:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ckHEoUSZG06/v0xdmjoglvI+4kzhx1aBPoVlF1LTWhE=;
+        b=HROPzrfaFpiM1E4ykNGOLXBxtZIhRdkQKnw0lcMLVTlhM9/MEoi4ZouuJ43EdrZsKU
+         BVqpVQvHv8gCW6fOu2LJcnsviGDSYfDfE7vArHf0WzYPsQUFAzKMboanKLzJti/6V7iR
+         Xakm/4xHp4w10kPFpJLfqngb9WVOU1lgg9dWKiy0GCkjxivcit9OIeUDa3IzmUdy08Ni
+         R7UQOWYUREEqMCY3wC9KASvJg4aZ4J7wAM+E+CZXrdAQXkXzsZjFX94DZ29rhRbpAX/B
+         EVOGcaKgbwKgwexZLEkoYcFoA/XOy0JSJj3zIDf6/D+YJv3MUG2FqOl076Mclw9oUfhA
+         JRNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ckHEoUSZG06/v0xdmjoglvI+4kzhx1aBPoVlF1LTWhE=;
+        b=eLZtEpMEldT8tiVNMPa9Ez3ZPbelrzB58dG2ORFsvsISmi9P9N1IuzOL/8vbV1WG8v
+         NFa+VMkcJWMU4nuwYkhgQDL5hdRloJvPKrvuOkBBEXGwPN09fDEnyTiqp4eaIBTUG22B
+         j/TzKrAfeSBuIk7o77wPGI3RgqT4psE1H39foTpKHAEEk0T9wO4k0cHbvNXnC6xC92Aj
+         CWZkWKm9YYa+PUC8TPK83So08tpoNJ9o5aWtKmjAmM2f7E52/vxCy/zn4am2WoH+YaL0
+         Y14zEh2ewr0cl9zeAR/g+0yXDc3U227qqmkO5iNjedr4tOlFcjiPBCcRD8BhvWNu9VIw
+         HRmw==
+X-Gm-Message-State: AOAM533wXmSaP4KN3kZ2Hy+DRufeDk+NExdwwq5CQpQQzxwQEeqjVnNt
+        3tl5hdLNwCeRYg0FLEw4yMEINQ==
+X-Google-Smtp-Source: ABdhPJwoj5RGTA++VCvN7Up/YDu7Ra1urWH5EBcmwuWgjCaj0gCKJ3CUtTiEqd4O0/1AndH0GQIwjQ==
+X-Received: by 2002:a02:c6b3:: with SMTP id o19mr2613095jan.5.1631243115081;
+        Thu, 09 Sep 2021 20:05:15 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id u15sm1854658ilk.53.2021.09.09.20.05.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 20:05:14 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+Date:   Thu, 9 Sep 2021 21:05:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.83]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme759-chm.china.huawei.com (10.3.19.105)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When viewing page owner information, we may be more concerned about the
-total memory than the number of stack occurrences. Therefore, the
-following adjustments are made:
-1. Added the statistics on the total number of pages.
-2. Added the optional parameter "-m" to configure the program to sort by
-   memory (total pages).
+On 9/9/21 8:57 PM, Al Viro wrote:
+> On Thu, Sep 09, 2021 at 03:19:56PM -0600, Jens Axboe wrote:
+> 
+>> Not sure how we'd do that, outside of stupid tricks like copy the
+>> iov_iter before we pass it down. But that's obviously not going to be
+>> very efficient. Hence we're left with having some way to reset/reexpand,
+>> even in the presence of someone having done truncate on it.
+> 
+> "Obviously" why, exactly?  It's not that large a structure; it's not
+> the optimal variant, but I'd like to see profiling data before assuming
+> that it'll cause noticable slowdowns.
 
-Signed-off-by: Zhenliang Wei <weizhenliang@huawei.com>
----
- tools/vm/page_owner_sort.c | 94 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 85 insertions(+), 9 deletions(-)
+It's 48 bytes, and we have to do it upfront. That means we'd be doing it
+for _all_ requests, not just when we need to retry. As an example, current
+benchmarks are at ~4M read requests per core. That'd add ~200MB/sec of
+memory traffic just doing this copy.
 
-diff --git a/tools/vm/page_owner_sort.c b/tools/vm/page_owner_sort.c
-index 0e75f22c9475..30dcc606c493 100644
---- a/tools/vm/page_owner_sort.c
-+++ b/tools/vm/page_owner_sort.c
-@@ -5,6 +5,8 @@
-  * Example use:
-  * cat /sys/kernel/debug/page_owner > page_owner_full.txt
-  * ./page_owner_sort page_owner_full.txt sorted_page_owner.txt
-+ * Or sort by total memory:
-+ * ./page_owner_sort -m page_owner_full.txt sorted_page_owner.txt
-  *
-  * See Documentation/vm/page_owner.rst
- */
-@@ -16,14 +18,18 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include <string.h>
-+#include <regex.h>
-+#include <errno.h>
- 
- struct block_list {
- 	char *txt;
- 	int len;
- 	int num;
-+	int page_num;
- };
- 
--
-+static int sort_by_memory;
-+static regex_t order_pattern;
- static struct block_list *list;
- static int list_size;
- static int max_size;
-@@ -59,12 +65,50 @@ static int compare_num(const void *p1, const void *p2)
- 	return l2->num - l1->num;
- }
- 
-+static int compare_page_num(const void *p1, const void *p2)
-+{
-+	const struct block_list *l1 = p1, *l2 = p2;
-+
-+	return l2->page_num - l1->page_num;
-+}
-+
-+static int get_page_num(char *buf)
-+{
-+	int err, val_len, order_val;
-+	char order_str[4] = {0};
-+	char *endptr;
-+	regmatch_t pmatch[2];
-+
-+	err = regexec(&order_pattern, buf, 2, pmatch, REG_NOTBOL);
-+	if (err != 0 || pmatch[1].rm_so == -1) {
-+		printf("no order pattern in %s\n", buf);
-+		return 0;
-+	}
-+	val_len = pmatch[1].rm_eo - pmatch[1].rm_so;
-+	if (val_len > 2) /* max_order should not exceed 2 digits */
-+		goto wrong_order;
-+
-+	memcpy(order_str, buf + pmatch[1].rm_so, val_len);
-+
-+	errno = 0;
-+	order_val = strtol(order_str, &endptr, 10);
-+	if (errno != 0 || endptr == order_str || *endptr != '\0')
-+		goto wrong_order;
-+
-+	return 1 << order_val;
-+
-+wrong_order:
-+	printf("wrong order in follow buf:\n%s\n", buf);
-+	return 0;
-+}
-+
- static void add_list(char *buf, int len)
- {
- 	if (list_size != 0 &&
- 	    len == list[list_size-1].len &&
- 	    memcmp(buf, list[list_size-1].txt, len) == 0) {
- 		list[list_size-1].num++;
-+		list[list_size-1].page_num += get_page_num(buf);
- 		return;
- 	}
- 	if (list_size == max_size) {
-@@ -74,6 +118,7 @@ static void add_list(char *buf, int len)
- 	list[list_size].txt = malloc(len+1);
- 	list[list_size].len = len;
- 	list[list_size].num = 1;
-+	list[list_size].page_num = get_page_num(buf);
- 	memcpy(list[list_size].txt, buf, len);
- 	list[list_size].txt[len] = 0;
- 	list_size++;
-@@ -85,6 +130,13 @@ static void add_list(char *buf, int len)
- 
- #define BUF_SIZE	(128 * 1024)
- 
-+static void usage(void)
-+{
-+	printf("Usage: ./page_owner_sort [-m] <input> <output>\n"
-+		"-m	Sort by total memory. If not set this option, sort by times\n"
-+	);
-+}
-+
- int main(int argc, char **argv)
- {
- 	FILE *fin, *fout;
-@@ -92,21 +144,39 @@ int main(int argc, char **argv)
- 	int ret, i, count;
- 	struct block_list *list2;
- 	struct stat st;
-+	int err;
-+	int opt;
- 
--	if (argc < 3) {
--		printf("Usage: ./program <input> <output>\n");
--		perror("open: ");
-+	while ((opt = getopt(argc, argv, "m")) != -1)
-+		switch (opt) {
-+		case 'm':
-+			sort_by_memory = 1;
-+			break;
-+		default:
-+			usage();
-+			exit(1);
-+		}
-+
-+	if (optind >= (argc - 1)) {
-+		usage();
- 		exit(1);
- 	}
- 
--	fin = fopen(argv[1], "r");
--	fout = fopen(argv[2], "w");
-+	fin = fopen(argv[optind], "r");
-+	fout = fopen(argv[optind + 1], "w");
- 	if (!fin || !fout) {
--		printf("Usage: ./program <input> <output>\n");
-+		usage();
- 		perror("open: ");
- 		exit(1);
- 	}
- 
-+	err = regcomp(&order_pattern, "order\\s*([0-9]*),", REG_EXTENDED|REG_NEWLINE);
-+	if (err != 0 || order_pattern.re_nsub != 1) {
-+		printf("%s: Invalid pattern 'order\\s*([0-9]*),' code %d\n",
-+			argv[0], err);
-+		exit(1);
-+	}
-+
- 	fstat(fileno(fin), &st);
- 	max_size = st.st_size / 100; /* hack ... */
- 
-@@ -145,13 +215,19 @@ int main(int argc, char **argv)
- 			list2[count++] = list[i];
- 		} else {
- 			list2[count-1].num += list[i].num;
-+			list2[count-1].page_num += list[i].page_num;
- 		}
- 	}
- 
--	qsort(list2, count, sizeof(list[0]), compare_num);
-+	if (sort_by_memory)
-+		qsort(list2, count, sizeof(list[0]), compare_page_num);
-+	else
-+		qsort(list2, count, sizeof(list[0]), compare_num);
- 
- 	for (i = 0; i < count; i++)
--		fprintf(fout, "%d times:\n%s\n", list2[i].num, list2[i].txt);
-+		fprintf(fout, "%d times, %d pages:\n%s\n",
-+				list2[i].num, list2[i].page_num, list2[i].txt);
- 
-+	regfree(&order_pattern);
- 	return 0;
- }
+Besides, I think that's moot as there's a better way.
+
 -- 
-2.12.3
+Jens Axboe
 
