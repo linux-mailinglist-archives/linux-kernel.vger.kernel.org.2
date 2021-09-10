@@ -2,240 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6B34073B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0302E4073BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 01:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhIJXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 19:14:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59082 "EHLO mail.kernel.org"
+        id S234776AbhIJXPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 19:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhIJXOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:14:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 707CC611AD;
-        Fri, 10 Sep 2021 23:13:25 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 19:13:24 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] tracing: Minor fixes to the bootconfig processing
-Message-ID: <20210910191324.217c2812@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231742AbhIJXPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:15:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0CAB611F0;
+        Fri, 10 Sep 2021 23:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631315638;
+        bh=x7e9cLPUW/pbuHEZ/AuFwFyTTw5YzjRufmPeYjszeo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ub3hsbRRH8FAesug2TqSNd5AWs13V+Kc0iT5CDo0WhssY5FGuC6+oiwRjIH5Pear2
+         FK/ogSuV1om5O62nDMIscz1hycnVp7l6fRBHfxwGl+BfTNRtPFw+BvkqfapYguR6QB
+         r/aj+dSLRzomR/DBX6MQcmpxGeKXu14vm0WyQRLSdgr/hHMnuaFlk1c9vA7ZLFa8Kz
+         Gs3d2GMu7a9jdUMkO6F2AyV4PBRU+Nj0zjK5aAACvF4mHOP4/UE3h/dDlsZV8ECoBr
+         A+KNk7b1H0QPVYsbrduDnaP37W/2qtAabWpMT2Nj99lDXi+HwNAHIzO5ZEHilSCnzh
+         Y3ORA1g9nFMzg==
+Received: by pali.im (Postfix)
+        id 752DC2828; Sat, 11 Sep 2021 01:13:55 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 01:13:55 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
+ CRS response
+Message-ID: <20210910231355.snahfp52pkpzyu5b@pali>
+References: <20210823120214.24837-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210823120214.24837-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 23 August 2021 14:02:14 Pali Rohár wrote:
+> Commit 43f5c77bcbd2 ("PCI: aardvark: Fix reporting CRS value") fixed
+> handling of CRS response and when CRSSVE flag was not enabled it marked CRS
+> response as failed transaction (due to simplicity).
+> 
+> But pci-aardvark.c driver is already waiting up to the PIO_RETRY_CNT count
+> for PIO config response and implementation of re-issuing config requests
+> according to PCIe base specification is therefore simple.
+> 
+> This change implements re-issuing of config requests when response is CRS.
+> And to prevent infinite loop set upper bound to around PIO_RETRY_CNT value,
+> after which is transaction marked as failed and 0xFFFFFFFF is returned like
+> before.
+> 
+> Implementation is done by returning appropriate error codes from function
+> advk_pcie_check_pio_status(). On CRS is returned -EAGAIN and caller then
+> reissue transaction up to the PIO_RETRY_CNT count. As advk_pcie_wait_pio()
+> function waits some cycles, return number of these cycles and add them to
+> the retry count. So the total time for config request would be only linear
+> O(PIO_RETRY_CNT) and not quadratic O(PIO_RETRY_CNT^2) in the worst case.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Fixes: 43f5c77bcbd2 ("PCI: aardvark: Fix reporting CRS value")
 
-Linus,
+Hello! Could you review this patch?
 
-Minor fixes to the processing of the bootconfig tree.
-
-
-Please pull the latest trace-v5.15-3 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.15-3
-
-Tag SHA1: 38cd35cdd85430a99c001ef2bbf9077f125b07db
-Head SHA1: 5dfe50b05588010f347cb2f436434bf22b7a84ed
-
-
-Masami Hiramatsu (3):
-      tracing/boot: Fix trace_boot_hist_add_array() to check array is value
-      tracing/boot: Fix to check the histogram control param is a leaf node
-      bootconfig: Rename xbc_node_find_child() to xbc_node_find_subkey()
-
-----
- include/linux/bootconfig.h |  4 ++--
- kernel/trace/trace_boot.c  | 37 ++++++++++++++++++-------------------
- lib/bootconfig.c           |  8 ++++----
- 3 files changed, 24 insertions(+), 25 deletions(-)
----------------------------
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index abe089c27529..537e1b991f11 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -110,7 +110,7 @@ static inline __init bool xbc_node_is_leaf(struct xbc_node *node)
- }
- 
- /* Tree-based key-value access APIs */
--struct xbc_node * __init xbc_node_find_child(struct xbc_node *parent,
-+struct xbc_node * __init xbc_node_find_subkey(struct xbc_node *parent,
- 					     const char *key);
- 
- const char * __init xbc_node_find_value(struct xbc_node *parent,
-@@ -148,7 +148,7 @@ xbc_find_value(const char *key, struct xbc_node **vnode)
-  */
- static inline struct xbc_node * __init xbc_find_node(const char *key)
- {
--	return xbc_node_find_child(NULL, key);
-+	return xbc_node_find_subkey(NULL, key);
- }
- 
- /**
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 388e65d05978..8d252f63cd78 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -219,13 +219,12 @@ static int __init
- trace_boot_hist_add_array(struct xbc_node *hnode, char **bufp,
- 			  char *end, const char *key)
- {
--	struct xbc_node *knode, *anode;
-+	struct xbc_node *anode;
- 	const char *p;
- 	char sep;
- 
--	knode = xbc_node_find_child(hnode, key);
--	if (knode) {
--		anode = xbc_node_get_child(knode);
-+	p = xbc_node_find_value(hnode, key, &anode);
-+	if (p) {
- 		if (!anode) {
- 			pr_err("hist.%s requires value(s).\n", key);
- 			return -EINVAL;
-@@ -263,9 +262,9 @@ trace_boot_hist_add_one_handler(struct xbc_node *hnode, char **bufp,
- 	append_printf(bufp, end, ":%s(%s)", handler, p);
- 
- 	/* Compose 'action' parameter */
--	knode = xbc_node_find_child(hnode, "trace");
-+	knode = xbc_node_find_subkey(hnode, "trace");
- 	if (!knode)
--		knode = xbc_node_find_child(hnode, "save");
-+		knode = xbc_node_find_subkey(hnode, "save");
- 
- 	if (knode) {
- 		anode = xbc_node_get_child(knode);
-@@ -284,7 +283,7 @@ trace_boot_hist_add_one_handler(struct xbc_node *hnode, char **bufp,
- 				sep = ',';
- 		}
- 		append_printf(bufp, end, ")");
--	} else if (xbc_node_find_child(hnode, "snapshot")) {
-+	} else if (xbc_node_find_subkey(hnode, "snapshot")) {
- 		append_printf(bufp, end, ".snapshot()");
- 	} else {
- 		pr_err("hist.%s requires an action.\n",
-@@ -315,7 +314,7 @@ trace_boot_hist_add_handlers(struct xbc_node *hnode, char **bufp,
- 			break;
- 	}
- 
--	if (xbc_node_find_child(hnode, param))
-+	if (xbc_node_find_subkey(hnode, param))
- 		ret = trace_boot_hist_add_one_handler(hnode, bufp, end, handler, param);
- 
- 	return ret;
-@@ -375,7 +374,7 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
- 	if (p)
- 		append_printf(&buf, end, ":name=%s", p);
- 
--	node = xbc_node_find_child(hnode, "var");
-+	node = xbc_node_find_subkey(hnode, "var");
- 	if (node) {
- 		xbc_node_for_each_key_value(node, knode, p) {
- 			/* Expression must not include spaces. */
-@@ -386,21 +385,21 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
- 	}
- 
- 	/* Histogram control attributes (mutual exclusive) */
--	if (xbc_node_find_child(hnode, "pause"))
-+	if (xbc_node_find_value(hnode, "pause", NULL))
- 		append_printf(&buf, end, ":pause");
--	else if (xbc_node_find_child(hnode, "continue"))
-+	else if (xbc_node_find_value(hnode, "continue", NULL))
- 		append_printf(&buf, end, ":continue");
--	else if (xbc_node_find_child(hnode, "clear"))
-+	else if (xbc_node_find_value(hnode, "clear", NULL))
- 		append_printf(&buf, end, ":clear");
- 
- 	/* Histogram handler and actions */
--	node = xbc_node_find_child(hnode, "onmax");
-+	node = xbc_node_find_subkey(hnode, "onmax");
- 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
- 		return -EINVAL;
--	node = xbc_node_find_child(hnode, "onchange");
-+	node = xbc_node_find_subkey(hnode, "onchange");
- 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
- 		return -EINVAL;
--	node = xbc_node_find_child(hnode, "onmatch");
-+	node = xbc_node_find_subkey(hnode, "onmatch");
- 	if (node && trace_boot_hist_add_handlers(node, &buf, end, "event") < 0)
- 		return -EINVAL;
- 
-@@ -437,7 +436,7 @@ trace_boot_init_histograms(struct trace_event_file *file,
- 		}
- 	}
- 
--	if (xbc_node_find_child(hnode, "keys")) {
-+	if (xbc_node_find_subkey(hnode, "keys")) {
- 		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0) {
- 			tmp = kstrdup(buf, GFP_KERNEL);
- 			if (trigger_process_regex(file, buf) < 0)
-@@ -496,7 +495,7 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
- 			else if (trigger_process_regex(file, buf) < 0)
- 				pr_err("Failed to apply an action: %s\n", p);
- 		}
--		anode = xbc_node_find_child(enode, "hist");
-+		anode = xbc_node_find_subkey(enode, "hist");
- 		if (anode)
- 			trace_boot_init_histograms(file, anode, buf, ARRAY_SIZE(buf));
- 	} else if (xbc_node_find_value(enode, "actions", NULL))
-@@ -518,7 +517,7 @@ trace_boot_init_events(struct trace_array *tr, struct xbc_node *node)
- 	bool enable, enable_all = false;
- 	const char *data;
- 
--	node = xbc_node_find_child(node, "event");
-+	node = xbc_node_find_subkey(node, "event");
- 	if (!node)
- 		return;
- 	/* per-event key starts with "event.GROUP.EVENT" */
-@@ -621,7 +620,7 @@ trace_boot_init_instances(struct xbc_node *node)
- 	struct trace_array *tr;
- 	const char *p;
- 
--	node = xbc_node_find_child(node, "instance");
-+	node = xbc_node_find_subkey(node, "instance");
- 	if (!node)
- 		return;
- 
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index 927017431fb6..f8419cff1147 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -142,16 +142,16 @@ xbc_node_match_prefix(struct xbc_node *node, const char **prefix)
- }
- 
- /**
-- * xbc_node_find_child() - Find a child node which matches given key
-+ * xbc_node_find_subkey() - Find a subkey node which matches given key
-  * @parent: An XBC node.
-  * @key: A key string.
-  *
-- * Search a node under @parent which matches @key. The @key can contain
-+ * Search a key node under @parent which matches @key. The @key can contain
-  * several words jointed with '.'. If @parent is NULL, this searches the
-  * node from whole tree. Return NULL if no node is matched.
-  */
- struct xbc_node * __init
--xbc_node_find_child(struct xbc_node *parent, const char *key)
-+xbc_node_find_subkey(struct xbc_node *parent, const char *key)
- {
- 	struct xbc_node *node;
- 
-@@ -191,7 +191,7 @@ const char * __init
- xbc_node_find_value(struct xbc_node *parent, const char *key,
- 		    struct xbc_node **vnode)
- {
--	struct xbc_node *node = xbc_node_find_child(parent, key);
-+	struct xbc_node *node = xbc_node_find_subkey(parent, key);
- 
- 	if (!node || !xbc_node_is_key(node))
- 		return NULL;
+> ---
+>  drivers/pci/controller/pci-aardvark.c | 36 ++++++++++++++++++++++-----
+>  1 file changed, 30 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index abc93225ba20..99f244190eae 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -470,6 +470,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  	u32 reg;
+>  	unsigned int status;
+>  	char *strcomp_status, *str_posted;
+> +	int ret;
+>  
+>  	reg = advk_readl(pcie, PIO_STAT);
+>  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
+> @@ -494,6 +495,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  	case PIO_COMPLETION_STATUS_OK:
+>  		if (reg & PIO_ERR_STATUS) {
+>  			strcomp_status = "COMP_ERR";
+> +			ret = -EFAULT;
+>  			break;
+>  		}
+>  		/* Get the read result */
+> @@ -501,9 +503,11 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  			*val = advk_readl(pcie, PIO_RD_DATA);
+>  		/* No error */
+>  		strcomp_status = NULL;
+> +		ret = 0;
+>  		break;
+>  	case PIO_COMPLETION_STATUS_UR:
+>  		strcomp_status = "UR";
+> +		ret = -EOPNOTSUPP;
+>  		break;
+>  	case PIO_COMPLETION_STATUS_CRS:
+>  		if (allow_crs && val) {
+> @@ -521,6 +525,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  			 */
+>  			*val = CFG_RD_CRS_VAL;
+>  			strcomp_status = NULL;
+> +			ret = 0;
+>  			break;
+>  		}
+>  		/* PCIe r4.0, sec 2.3.2, says:
+> @@ -536,21 +541,24 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  		 * Request and taking appropriate action, e.g., complete the
+>  		 * Request to the host as a failed transaction.
+>  		 *
+> -		 * To simplify implementation do not re-issue the Configuration
+> -		 * Request and complete the Request as a failed transaction.
+> +		 * So return -EAGAIN and caller (pci-aardvark.c driver) will
+> +		 * re-issue request again up to the PIO_RETRY_CNT retries.
+>  		 */
+>  		strcomp_status = "CRS";
+> +		ret = -EAGAIN;
+>  		break;
+>  	case PIO_COMPLETION_STATUS_CA:
+>  		strcomp_status = "CA";
+> +		ret = -ECANCELED;
+>  		break;
+>  	default:
+>  		strcomp_status = "Unknown";
+> +		ret = -EINVAL;
+>  		break;
+>  	}
+>  
+>  	if (!strcomp_status)
+> -		return 0;
+> +		return ret;
+>  
+>  	if (reg & PIO_NON_POSTED_REQ)
+>  		str_posted = "Non-posted";
+> @@ -560,7 +568,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+>  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
+>  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
+>  
+> -	return -EFAULT;
+> +	return ret;
+>  }
+>  
+>  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+> @@ -568,13 +576,13 @@ static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+>  	struct device *dev = &pcie->pdev->dev;
+>  	int i;
+>  
+> -	for (i = 0; i < PIO_RETRY_CNT; i++) {
+> +	for (i = 1; i <= PIO_RETRY_CNT; i++) {
+>  		u32 start, isr;
+>  
+>  		start = advk_readl(pcie, PIO_START);
+>  		isr = advk_readl(pcie, PIO_ISR);
+>  		if (!start && isr)
+> -			return 0;
+> +			return i;
+>  		udelay(PIO_RETRY_DELAY);
+>  	}
+>  
+> @@ -764,6 +772,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+>  			     int where, int size, u32 *val)
+>  {
+>  	struct advk_pcie *pcie = bus->sysdata;
+> +	int retry_count;
+>  	bool allow_crs;
+>  	u32 reg;
+>  	int ret;
+> @@ -816,6 +825,9 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+>  	/* Program the data strobe */
+>  	advk_writel(pcie, 0xf, PIO_WR_DATA_STRB);
+>  
+> +	retry_count = 0;
+> +
+> +retry:
+>  	/* Clear PIO DONE ISR and start the transfer */
+>  	advk_writel(pcie, 1, PIO_ISR);
+>  	advk_writel(pcie, 1, PIO_START);
+> @@ -834,8 +846,12 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+>  		return PCIBIOS_SET_FAILED;
+>  	}
+>  
+> +	retry_count += ret;
+> +
+>  	/* Check PIO status and get the read result */
+>  	ret = advk_pcie_check_pio_status(pcie, allow_crs, val);
+> +	if (ret == -EAGAIN && retry_count < PIO_RETRY_CNT)
+> +		goto retry;
+>  	if (ret < 0) {
+>  		*val = 0xffffffff;
+>  		return PCIBIOS_SET_FAILED;
+> @@ -855,6 +871,7 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+>  	struct advk_pcie *pcie = bus->sysdata;
+>  	u32 reg;
+>  	u32 data_strobe = 0x0;
+> +	int retry_count;
+>  	int offset;
+>  	int ret;
+>  
+> @@ -896,6 +913,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+>  	/* Program the data strobe */
+>  	advk_writel(pcie, data_strobe, PIO_WR_DATA_STRB);
+>  
+> +	retry_count = 0;
+> +
+> +retry:
+>  	/* Clear PIO DONE ISR and start the transfer */
+>  	advk_writel(pcie, 1, PIO_ISR);
+>  	advk_writel(pcie, 1, PIO_START);
+> @@ -904,7 +924,11 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+>  	if (ret < 0)
+>  		return PCIBIOS_SET_FAILED;
+>  
+> +	retry_count += ret;
+> +
+>  	ret = advk_pcie_check_pio_status(pcie, false, NULL);
+> +	if (ret == -EAGAIN && retry_count < PIO_RETRY_CNT)
+> +		goto retry;
+>  	if (ret < 0)
+>  		return PCIBIOS_SET_FAILED;
+>  
+> -- 
+> 2.20.1
+> 
