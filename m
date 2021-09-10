@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7DC40642E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5576F4063DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243257AbhIJAyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhIJAVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8136F610E9;
-        Fri, 10 Sep 2021 00:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233226;
-        bh=dcMN18hCQ+HoYY7mN0kEg/7owgCb7/zijP7JEOL6MuU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IRb+cZnBpw8kG1GD8vMmNXFnoqso+l7EO4NDb3MAwl5pTVJYnGhMK7X0vK2uOb1C/
-         OuWh/h/lKXhehh5IsB3lN2YYmci2mTxRmMvPDUEuQ/Kl4qcaK/TOZDyN8l2ei0A6Nv
-         ScEKnTJ9/zXmMq5NL7BZSw565eN5IhIib3CPA+hOsAl7HJU/V9tEAEfU6QP6MvGGVe
-         QqUhRmQuvJGX95HROxt6W57GYbaqoVR/bYYhekXmj7YTmDU9TCSsaDYNBSTX5QK8xN
-         B5VWJdgOx6T7vs/mCTP+BQG7/pBMZh4y/mOF9x4/ljglUnGht1cd0fxmgujoHZDLaP
-         s6jLLxmyavJPA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, kasan-dev@googlegroups.com
-Subject: [PATCH AUTOSEL 5.13 88/88] kasan: test: avoid corrupting memory in kasan_rcu_uaf
-Date:   Thu,  9 Sep 2021 20:18:20 -0400
-Message-Id: <20210910001820.174272-88-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210910001820.174272-1-sashal@kernel.org>
-References: <20210910001820.174272-1-sashal@kernel.org>
+        id S243267AbhIJAtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:49:55 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36237 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233498AbhIJAUM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:20:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UnpwgrP_1631233127;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UnpwgrP_1631233127)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 08:18:49 +0800
+Subject: Re: [PATCH 17/24] x86/entry: Introduce struct ist_regs
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Youquan Song <youquan.song@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-18-jiangshanlai@gmail.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <eb294b5d-82f2-be80-b3e3-db556c155d95@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 08:18:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210831175025.27570-18-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
 
-[ Upstream commit f16de0bcdb55bf18e2533ca625f3e4b4952f254c ]
 
-kasan_rcu_uaf() writes to freed memory via kasan_rcu_reclaim(), which is
-only safe with the GENERIC mode (as it uses quarantine).  For other modes,
-this test corrupts kernel memory, which might result in a crash.
+On 2021/9/1 01:50, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> struct ist_regs is the upmost stack frame for IST interrupt, it
+> consists of struct pt_regs and other fields which will be added in
+> later patch.
+> 
+> Make vc_switch_off_ist() take ist_regs as its argument and it will switch
+> the whole ist_regs if needed.
+> 
+> Make the frame before calling paranoid_entry() and paranoid_exit() be
+> struct ist_regs.
+> 
+> This patch is prepared for converting paranoid_entry() and paranoid_exit()
+> into C code which will need the additinal fields to store the results in
+> paranoid_entry() and to use them in paranoid_exit().
 
-Turn the write into a read.
+This patch was over designed.
 
-Link: https://lkml.kernel.org/r/b6f2c3bf712d2457c783fa59498225b66a634f62.1628779805.git.andreyknvl@gmail.com
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
-Reviewed-by: Marco Elver <elver@google.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- lib/test_kasan_module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In ASM code, we can easily save results in the callee-saved registers.
+For example, rc3 is saved in %r14, gsbase info is saved in %rbx.
 
-diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-index fa73b9df0be4..7ebf433edef3 100644
---- a/lib/test_kasan_module.c
-+++ b/lib/test_kasan_module.c
-@@ -71,7 +71,7 @@ static noinline void __init kasan_rcu_reclaim(struct rcu_head *rp)
- 						struct kasan_rcu_info, rcu);
- 
- 	kfree(fp);
--	fp->i = 1;
-+	((volatile struct kasan_rcu_info *)fp)->i;
- }
- 
- static noinline void __init kasan_rcu_uaf(void)
--- 
-2.30.2
+And in C code, we can't save results in registers.  And I thought there was
+no place to save the results because the CR3 and gsbase are not kernel's.
+So I extended the pt_regs to ist_regs to save the results.
+
+But it was incorrect.  The results can be saved in percpu data at the end of
+paranoid_entry() after the CR3/gsbase are settled down.  And the results
+can be read at the beginning of paranoid_exit() before the CR3/gsbase are
+switched to the interrupted context's.
+
+sigh.
+
+> 
+> The C interrupt handlers don't use struct ist_regs due to they don't need
+> the additional fields in the struct ist_regs, and they still use pt_regs.
+> 
 
