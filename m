@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07C54063EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B3740628F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 02:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240690AbhIJAvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 20:51:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46516 "EHLO mail.kernel.org"
+        id S232289AbhIJAqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 20:46:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233553AbhIJAUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:20:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A92D4611C2;
-        Fri, 10 Sep 2021 00:19:06 +0000 (UTC)
+        id S232419AbhIJAS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:18:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB0C061212;
+        Fri, 10 Sep 2021 00:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233147;
-        bh=EzVc4+9z8jJm3006a4PiHOFkM6wMDw2uoZJqKWC7Rz8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjK8XoY61T71LIr3dIYYdc01p6UJMuamzPA6uha8dgRoRgcp3vanJrY3HKnegvV/C
-         ngLva2mWvFNYmfuuL8PIcgCVgIywlocDI0a8Lt1ihT+UU/9wyeY57e4iMNuPnuwP3d
-         oqToHElSyqnHkmajCHnDDybvP1QuI+aDRRM26urT8yClQEuloNwnrAaOOxxdC+ZAGs
-         EZFr4WkFB+OYYk7xhX4CLKJbNyJq7eK3TQ/uxhPNB314Yhz9FLdcvVbToSx+R0abn2
-         EEYcqGKGDuCKOXA/WZuyDsBzZpmYt1agm4qruW1BusJRbU8RyI+lrYTD8ZQ8hrK03Z
-         F/JAQ0y6JkKQA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.13 32/88] KVM: PPC: Book3S HV: XICS: Fix mapping of passthrough interrupts
-Date:   Thu,  9 Sep 2021 20:17:24 -0400
-Message-Id: <20210910001820.174272-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210910001820.174272-1-sashal@kernel.org>
-References: <20210910001820.174272-1-sashal@kernel.org>
+        s=k20201202; t=1631233053;
+        bh=13Wxtx8dhv8/yMBbWj3kGQZLEmPK0oZNdwQ81jc+SQo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a5M8Ddkj5MOBLjDKwxdegK3JgQoFqGCC6bcDzj+ArBSZyCOiUG7OixmBTp/bHyuwM
+         M1GRbbPfJ/9u+RO9NtcV5Kog9wA4Wxzo3oE/qgONRen+57GFVUzsI+iqVVebxxcJom
+         aURPDfbR/rPf9vSJ4AKHUVk8ItiwBVBSJDxMofm5bpae/+NtFHH57TNEefv/OmdN9p
+         EOzyvhFX3pYVawUomexNVYhrSJfO6lwtPF9SGAr74gyCTSjKXNWncL5gGBvJrCFali
+         93Akv+ry588Bf1y0r9PunGu/qkaWoU4Tv/JFZl1jmEPqRpebl386RzIyulNzB8N/Dj
+         deNiSF1o1gXCg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/3] x86/sgx: Report SGX memory in /sys/devices/system/node/node*/meminfo
+Date:   Fri, 10 Sep 2021 03:17:24 +0300
+Message-Id: <20210910001726.811497-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+The amount of SGX memory on the system is determined by the BIOS and it
+varies wildly between systems.  It can be from dozens of MB's on desktops
+or VM's, up to many GB's on servers.  Just like for regular memory, it is
+sometimes useful to know the amount of usable SGX memory in the system.
 
-[ Upstream commit 1753081f2d445f9157550692fcc4221cd3ff0958 ]
+Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
+showing the total SGX memory in each NUMA node. The total memory for
+each NUMA node is calculated by adding the sizes of contained EPC
+sections together.
 
-PCI MSIs now live in an MSI domain but the underlying calls, which
-will EOI the interrupt in real mode, need an HW IRQ number mapped in
-the XICS IRQ domain. Grab it there.
+Introduce arch_node_read_meminfo(), which can optionally be rewritten by
+the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
 
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210701132750.1475580-31-clg@kaod.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+v4:
+* A new patch.
+ arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
+ arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
+ drivers/base/node.c            | 10 +++++++++-
+ 3 files changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 395f98158e81..a284999a3171 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -5170,6 +5170,7 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
- 	struct kvmppc_passthru_irqmap *pimap;
- 	struct irq_chip *chip;
- 	int i, rc = 0;
-+	struct irq_data *host_data;
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..4c6da5f4a9d4 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -717,6 +717,7 @@ static bool __init sgx_page_cache_init(void)
+ 		}
  
- 	if (!kvm_irq_bypass)
- 		return 1;
-@@ -5234,7 +5235,14 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
- 	 * the KVM real mode handler.
- 	 */
- 	smp_wmb();
--	irq_map->r_hwirq = desc->irq_data.hwirq;
+ 		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
++		sgx_numa_nodes[nid].size += size;
+ 
+ 		sgx_nr_epc_sections++;
+ 	}
+@@ -790,6 +791,19 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
+ }
+ EXPORT_SYMBOL_GPL(sgx_set_attribute);
+ 
++ssize_t arch_node_read_meminfo(struct device *dev,
++			       struct device_attribute *attr,
++			       char *buf, int len)
++{
++	struct sgx_numa_node *node = &sgx_numa_nodes[dev->id];
 +
-+	/*
-+	 * The 'host_irq' number is mapped in the PCI-MSI domain but
-+	 * the underlying calls, which will EOI the interrupt in real
-+	 * mode, need an HW IRQ number mapped in the XICS IRQ domain.
-+	 */
-+	host_data = irq_domain_get_irq_data(irq_get_default_host(), host_irq);
-+	irq_map->r_hwirq = (unsigned int)irqd_to_hwirq(host_data);
++	len += sysfs_emit_at(buf, len,
++			     "Node %d SGX_MemTotal:   %8lu kB\n",
++			     dev->id, node->size);
++
++	return len;
++}
++
+ static int __init sgx_init(void)
+ {
+ 	int ret;
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 4628acec0009..74713b98a859 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -39,6 +39,7 @@ struct sgx_epc_page {
+  */
+ struct sgx_numa_node {
+ 	struct list_head free_page_list;
++	unsigned long size;
+ 	spinlock_t lock;
+ };
  
- 	if (i == pimap->n_mapped)
- 		pimap->n_mapped++;
-@@ -5242,7 +5250,7 @@ static int kvmppc_set_passthru_irq(struct kvm *kvm, int host_irq, int guest_gsi)
- 	if (xics_on_xive())
- 		rc = kvmppc_xive_set_mapped(kvm, guest_gsi, desc);
- 	else
--		kvmppc_xics_set_mapped(kvm, guest_gsi, desc->irq_data.hwirq);
-+		kvmppc_xics_set_mapped(kvm, guest_gsi, irq_map->r_hwirq);
- 	if (rc)
- 		irq_map->r_hwirq = 0;
+@@ -95,4 +96,9 @@ static inline int __init sgx_vepc_init(void)
  
+ void sgx_update_lepubkeyhash(u64 *lepubkeyhash);
+ 
++extern ssize_t arch_node_read_meminfo(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf, int len);
++
++
+ #endif /* _X86_SGX_H */
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 4a4ae868ad9f..91eaa2e2ce33 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -361,6 +361,13 @@ static void node_init_caches(unsigned int nid) { }
+ static void node_remove_caches(struct node *node) { }
+ #endif
+ 
++ssize_t __weak arch_node_read_meminfo(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf, int len)
++{
++	return len;
++}
++
+ #define K(x) ((x) << (PAGE_SHIFT - 10))
+ static ssize_t node_read_meminfo(struct device *dev,
+ 			struct device_attribute *attr, char *buf)
+@@ -473,7 +480,8 @@ static ssize_t node_read_meminfo(struct device *dev,
+ #endif
+ 			    );
+ 	len += hugetlb_report_node_meminfo(buf, len, nid);
+-	return len;
++
++	return arch_node_read_meminfo(dev, attr, buf, len);
+ }
+ 
+ #undef K
 -- 
-2.30.2
+2.25.1
 
