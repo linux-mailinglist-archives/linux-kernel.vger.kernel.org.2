@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88B0406ABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 13:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EB5406A62
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhIJLdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 07:33:07 -0400
-Received: from 3.mo178.mail-out.ovh.net ([46.105.44.197]:37253 "EHLO
-        3.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhIJLdG (ORCPT
+        id S232525AbhIJKxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:53:36 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52112 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232415AbhIJKxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 07:33:06 -0400
-X-Greylist: delayed 1202 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Sep 2021 07:33:06 EDT
-Received: from player758.ha.ovh.net (unknown [10.109.146.132])
-        by mo178.mail-out.ovh.net (Postfix) with ESMTP id 8F5C6D9795
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 12:51:54 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player758.ha.ovh.net (Postfix) with ESMTPSA id BA65621F68EE9;
-        Fri, 10 Sep 2021 10:51:49 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-97G0024541a0f2-7580-44e4-9d72-f6fc93e3f470,
-                    C73725976D6A61EA55E4E62C2A2E1C1EB10F42AA) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] docs: block: fix discard_max_bytes references
-Date:   Fri, 10 Sep 2021 12:51:42 +0200
-Message-Id: <20210910105142.2116749-1-steve@sk2.org>
-X-Mailer: git-send-email 2.27.0
+        Fri, 10 Sep 2021 06:53:36 -0400
+X-UUID: 7afaeee5e7e64cec9ab4614b76c303e0-20210910
+X-UUID: 7afaeee5e7e64cec9ab4614b76c303e0-20210910
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1730091123; Fri, 10 Sep 2021 18:52:22 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 10 Sep 2021 18:52:21 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 10 Sep 2021 18:52:21 +0800
+Message-ID: <3b21154346c0a36868fb5e9ac187379be97a69c1.camel@mediatek.com>
+Subject: Re: [v2 11/24] clk: mediatek: Add MT8195 ccusys clock support
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        "Devicetree List" <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Fri, 10 Sep 2021 18:52:21 +0800
+In-Reply-To: <CAGXv+5EMoZq8BohUA_OoChmEdHL988pphxUJX077hO88htRUtA@mail.gmail.com>
+References: <20210820111504.350-1-chun-jie.chen@mediatek.com>
+         <20210820111504.350-12-chun-jie.chen@mediatek.com>
+         <CAGXv+5EMoZq8BohUA_OoChmEdHL988pphxUJX077hO88htRUtA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 4092083213097797254
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeguddgfedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehkedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When discard_max_hw_bytes was introduced, in commit 0034af036554
-("block: make /sys/block/<dev>/queue/discard_max_bytes writeable"),
-the discard_max_bytes documentation section was renamed to
-discard_max_hw_bytes, but the references it contains to
-discard_max_bytes weren't updated.
+On Mon, 2021-08-23 at 20:13 +0800, Chen-Yu Tsai wrote:
+> On Fri, Aug 20, 2021 at 7:23 PM Chun-Jie Chen
+> <chun-jie.chen@mediatek.com> wrote:
+> > 
+> > Add MT8195 ccusys clock controller which provides clock gate
+> > control in Camera Computing Unit.
+> 
+> Could you offer a bit more explanation about this unit? Is it an ISP?
+> Or some other function that does computation on images?
+> 
 
-This patch refers to discard_max_hw_bytes instead. It also reflows the
-paragraph so that sentences end lines.
+CCU could access ISP HW control register and could be used for ISP
+pipeline control. The use case is like secure camera or doing post-
+processing on ISP statistic data.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- Documentation/block/queue-sysfs.rst | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Thanks!
+Best Regards,
+Chun-Jie
 
-diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
-index 4dc7f0d499a8..5fb4299cdb23 100644
---- a/Documentation/block/queue-sysfs.rst
-+++ b/Documentation/block/queue-sysfs.rst
-@@ -40,10 +40,11 @@ discard_max_hw_bytes (RO)
- -------------------------
- Devices that support discard functionality may have internal limits on
- the number of bytes that can be trimmed or unmapped in a single operation.
--The discard_max_bytes parameter is set by the device driver to the maximum
--number of bytes that can be discarded in a single operation. Discard
--requests issued to the device must not exceed this limit. A discard_max_bytes
--value of 0 means that the device does not support discard functionality.
-+The `discard_max_hw_bytes` parameter is set by the device driver to the
-+maximum number of bytes that can be discarded in a single operation.
-+Discard requests issued to the device must not exceed this limit.
-+A `discard_max_hw_bytes` value of 0 means that the device does not support
-+discard functionality.
- 
- discard_max_bytes (RW)
- ----------------------
-
-base-commit: 7c60610d476766e128cc4284bb6349732cbd6606
--- 
-2.27.0
+> > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> > Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> >  drivers/clk/mediatek/Makefile         |  3 +-
+> >  drivers/clk/mediatek/clk-mt8195-ccu.c | 50
+> > +++++++++++++++++++++++++++
+> >  2 files changed, 52 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/clk/mediatek/clk-mt8195-ccu.c
+> > 
+> > diff --git a/drivers/clk/mediatek/Makefile
+> > b/drivers/clk/mediatek/Makefile
+> > index 718bbb04191b..03fb020834f3 100644
+> > --- a/drivers/clk/mediatek/Makefile
+> > +++ b/drivers/clk/mediatek/Makefile
+> > @@ -80,6 +80,7 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-
+> > mt8192-msdc.o
+> >  obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
+> >  obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
+> >  obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
+> > -obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195-apmixedsys.o clk-
+> > mt8195-topckgen.o clk-mt8195-peri_ao.o clk-mt8195-infra_ao.o clk-
+> > mt8195-cam.o
+> > +obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195-apmixedsys.o clk-
+> > mt8195-topckgen.o clk-mt8195-peri_ao.o clk-mt8195-infra_ao.o clk-
+> > mt8195-cam.o \
+> > +                                       clk-mt8195-ccu.o
+> 
+> When wrapping, please align with previous line. "clk-mt8195-ccu.o"
+> should
+> align with "clk-mt8195-apmixedsys.o".
+> 
+> 
+> ChenYu
 
