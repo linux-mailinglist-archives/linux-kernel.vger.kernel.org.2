@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD411406BD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B62406BD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhIJMe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:34:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51716 "EHLO mail.kernel.org"
+        id S233850AbhIJMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234009AbhIJMeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:34:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2848360E94;
-        Fri, 10 Sep 2021 12:32:59 +0000 (UTC)
+        id S233918AbhIJMd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:33:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77022611EF;
+        Fri, 10 Sep 2021 12:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277180;
-        bh=/yC7W9LN4mYejE5LbVaxqYQGFtSqa66F/TYC9rkSmgo=;
+        s=korg; t=1631277166;
+        bh=ZBqY2Sh08tkx1x7/Pj9gi0ePyXfVZYSCpi/cQzQDo+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oc/JoVICZQUfF9dfU6Y081NdDy4WcJIcwrI4cH5vQxyX1bf9Q2rhWvNXQZlwCCsxw
-         0A0eePOXCOYbXRrgOwAAuRh93l0SDcwpWKjwB5QlosvuZzOS4qJSP4FPR1AXNbjygS
-         qx4GSryhspLkllX3NVuhOR8s2Ypwz7ao7ZeSWTUc=
+        b=Ae1k5S9eOp74CFHIOYBRJTv2TbQkTjf4lgzHNhFNgjlXM1qORGDhNpePxfbdQY/g0
+         tBGZ/LbjKaMQPP+OFQeL0IHDUG9GiII33gqgmlUXfphFX/a4+qwG8kixvvabgEY6K3
+         lxQrwBLfh4kAbWyTry+012HI4ASxBg5xDiLDUBOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.10 01/26] igmp: Add ip_mc_list lock in ip_check_mc_rcu
+        stable@vger.kernel.org,
+        "Blank-Burian, Markus, Dr." <blankburian@uni-muenster.de>,
+        Yufen Yu <yuyufen@huawei.com>, Ming Lei <ming.lei@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Yi Zhang <yi.zhang@redhat.com>
+Subject: [PATCH 5.13 06/22] blk-mq: fix is_flush_rq
 Date:   Fri, 10 Sep 2021 14:30:05 +0200
-Message-Id: <20210910122916.300325741@linuxfoundation.org>
+Message-Id: <20210910122916.147508479@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
-References: <20210910122916.253646001@linuxfoundation.org>
+In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
+References: <20210910122915.942645251@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,75 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit 23d2b94043ca8835bd1e67749020e839f396a1c2 upstream.
+commit a9ed27a764156929efe714033edb3e9023c5f321 upstream.
 
-I got below panic when doing fuzz test:
+is_flush_rq() is called from bt_iter()/bt_tags_iter(), and runs the
+following check:
 
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 4056 Comm: syz-executor.3 Tainted: G    B             5.14.0-rc1-00195-gcff5c4254439-dirty #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
-dump_stack_lvl+0x7a/0x9b
-panic+0x2cd/0x5af
-end_report.cold+0x5a/0x5a
-kasan_report+0xec/0x110
-ip_check_mc_rcu+0x556/0x5d0
-__mkroute_output+0x895/0x1740
-ip_route_output_key_hash_rcu+0x2d0/0x1050
-ip_route_output_key_hash+0x182/0x2e0
-ip_route_output_flow+0x28/0x130
-udp_sendmsg+0x165d/0x2280
-udpv6_sendmsg+0x121e/0x24f0
-inet6_sendmsg+0xf7/0x140
-sock_sendmsg+0xe9/0x180
-____sys_sendmsg+0x2b8/0x7a0
-___sys_sendmsg+0xf0/0x160
-__sys_sendmmsg+0x17e/0x3c0
-__x64_sys_sendmmsg+0x9e/0x100
-do_syscall_64+0x3b/0x90
-entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x462eb9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8
- 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48>
- 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3df5af1c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000462eb9
-RDX: 0000000000000312 RSI: 0000000020001700 RDI: 0000000000000007
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3df5af26bc
-R13: 00000000004c372d R14: 0000000000700b10 R15: 00000000ffffffff
+	hctx->fq->flush_rq == req
 
-It is one use-after-free in ip_check_mc_rcu.
-In ip_mc_del_src, the ip_sf_list of pmc has been freed under pmc->lock protection.
-But access to ip_sf_list in ip_check_mc_rcu is not protected by the lock.
+but the passed hctx from bt_iter()/bt_tags_iter() may be NULL because:
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+1) memory re-order in blk_mq_rq_ctx_init():
+
+	rq->mq_hctx = data->hctx;
+	...
+	refcount_set(&rq->ref, 1);
+
+OR
+
+2) tag re-use and ->rqs[] isn't updated with new request.
+
+Fix the issue by re-writing is_flush_rq() as:
+
+	return rq->end_io == flush_end_io;
+
+which turns out simpler to follow and immune to data race since we have
+ordered WRITE rq->end_io and refcount_set(&rq->ref, 1).
+
+Fixes: 2e315dc07df0 ("blk-mq: grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter")
+Cc: "Blank-Burian, Markus, Dr." <blankburian@uni-muenster.de>
+Cc: Yufen Yu <yuyufen@huawei.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210818010925.607383-1-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: Yi Zhang <yi.zhang@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/igmp.c |    2 ++
- 1 file changed, 2 insertions(+)
+ block/blk-flush.c |    5 +++++
+ block/blk-mq.c    |    2 +-
+ block/blk.h       |    6 +-----
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2720,6 +2720,7 @@ int ip_check_mc_rcu(struct in_device *in
- 		rv = 1;
- 	} else if (im) {
- 		if (src_addr) {
-+			spin_lock_bh(&im->lock);
- 			for (psf = im->sources; psf; psf = psf->sf_next) {
- 				if (psf->sf_inaddr == src_addr)
- 					break;
-@@ -2730,6 +2731,7 @@ int ip_check_mc_rcu(struct in_device *in
- 					im->sfcount[MCAST_EXCLUDE];
- 			else
- 				rv = im->sfcount[MCAST_EXCLUDE] != 0;
-+			spin_unlock_bh(&im->lock);
- 		} else
- 			rv = 1; /* unspecified source; tentatively allow */
- 	}
+--- a/block/blk-flush.c
++++ b/block/blk-flush.c
+@@ -262,6 +262,11 @@ static void flush_end_io(struct request
+ 	spin_unlock_irqrestore(&fq->mq_flush_lock, flags);
+ }
+ 
++bool is_flush_rq(struct request *rq)
++{
++	return rq->end_io == flush_end_io;
++}
++
+ /**
+  * blk_kick_flush - consider issuing flush request
+  * @q: request_queue being kicked
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -911,7 +911,7 @@ static bool blk_mq_req_expired(struct re
+ 
+ void blk_mq_put_rq_ref(struct request *rq)
+ {
+-	if (is_flush_rq(rq, rq->mq_hctx))
++	if (is_flush_rq(rq))
+ 		rq->end_io(rq, 0);
+ 	else if (refcount_dec_and_test(&rq->ref))
+ 		__blk_mq_free_request(rq);
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -44,11 +44,7 @@ static inline void __blk_get_queue(struc
+ 	kobject_get(&q->kobj);
+ }
+ 
+-static inline bool
+-is_flush_rq(struct request *req, struct blk_mq_hw_ctx *hctx)
+-{
+-	return hctx->fq->flush_rq == req;
+-}
++bool is_flush_rq(struct request *req);
+ 
+ struct blk_flush_queue *blk_alloc_flush_queue(int node, int cmd_size,
+ 					      gfp_t flags);
 
 
