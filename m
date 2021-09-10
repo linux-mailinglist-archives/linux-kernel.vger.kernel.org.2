@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14127406586
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C974740658A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhIJCLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:11:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhIJCLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:11:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7E6610E8;
-        Fri, 10 Sep 2021 02:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631239803;
-        bh=14On0rcaDezxbH9UPvQ6IzG/K0p2ja5CEwdNBBTMIbA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W/xZGTf7eknCyaup/1kGx7lADH0Ux1yFiR9+NcWrwjqFzi9IfuZsPqAVueSnkUwV9
-         Dfezlg+k8THQILM5fOP4ifMkEMnU1G34qEjwOa3TirsM4HH0coRDNbxHPlWYLzQwnW
-         vyW4TfkRbJvtLxBfKQu8KzGTI5rVRBuscSBElQkk5qGmYduj7j/f0GjuWkG/gmDllQ
-         G+Pod8NRnpmwCNnAZWlLwu1d2G4alJZ5+pRS2R+q28/D4k5TaPwOGVq4fqttmJw1fC
-         O1AXW7piiQC8gupLpmbMyalvRkiKA2BwIeCH4PQ5P5p4uV4eGkfWmib4w1/HhQeC+y
-         SvkPZv7AiljsA==
-Date:   Fri, 10 Sep 2021 04:09:59 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 00/15] Introduce block device LED trigger
-Message-ID: <20210910040959.5ae4a6a1@thinkpad>
-In-Reply-To: <20210909222513.2184795-1-arequipeno@gmail.com>
-References: <20210909222513.2184795-1-arequipeno@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229689AbhIJCNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:13:08 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:48205 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhIJCNH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 22:13:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UnqtAnz_1631239913;
+Received: from B-W5MSML85-1937.local(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0UnqtAnz_1631239913)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 10:11:54 +0800
+From:   "taoyi.ty" <escape@linux.alibaba.com>
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+Message-ID: <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
+Date:   Fri, 10 Sep 2021 10:11:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YTiugxO0cDge47x6@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Ian,
+On 2021/9/8 下午8:37, Greg KH wrote:
 
-I have tried to look into this and replied to some of your patches.
+> Perhaps you shouldn't be creating that many containers all at once?
+> What normal workload requires this?
 
-There are still many things to do, and I think the reviewing would be
-much easier to review if you sent all the code changes as one patch
-(since the changes are doing an atomic change: adding support for blkdev
-LED trigger). Keep only the sysfs doc change in a separate patch.
+Thank you for your reply.
 
-You are unnecessary using the const keyword in places where it is not
-needed and not customary for Linux kernel codebase. See in another of
-my replies.
 
-You are using a weird comment style, i.e.
-  /*
-   *
-   *	Disassociate an LED from the trigger
-   *
-   */
+The scenario is the function computing of the public
 
-  static void blkdev_deactivate(struct led_classdev *const led_dev)
+cloud. Each instance of function computing will be
 
-Please look at how functions are documented in led-class.c, for example.
+allocated about 0.1 core cpu and 100M memory. On
 
-There are many other things I would like you to change and fix,
-I will comment on them once you send this proposal as two commits:
-one sysfs docs change, one code change.
+a high-end server, for example, 104 cores and 384G,
 
-Marek
+it is normal to create hundreds of containers at the
+
+same time if burst of requests comes.
+
+thanks,
+
+Yi Tao
+
