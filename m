@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2004068F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD0B4068F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhIJJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:20:21 -0400
-Received: from mout.gmx.net ([212.227.17.20]:57581 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231962AbhIJJUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:20:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631265539;
-        bh=KC8PBZPAKY6mB63juMjuHGYQPgWXdI2KoK1vz5ZL8GY=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=k/f9tf4dEGLDXmYZEDG5Eg9TkuZKybZN3No7+eLtHiU+njly9UE/sb25THAWQED9m
-         aNLLI/EYiLexYaBsPoyg/p3RCYc5SfLWaR4bdmD/o0hBnAuWcIJAN3nnqNQp8GlIKf
-         0CHDPfy2Gm9w1IeTBcIcksNM3ChRu7THOhYRwByY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([80.187.121.129]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7zBb-1n1aAD2zT9-014zMH; Fri, 10
- Sep 2021 11:18:58 +0200
-Date:   Fri, 10 Sep 2021 11:17:20 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture fixes for kernel v5.15-rc1
-Message-ID: <YTsioP7hPOP47cfn@ls3530>
+        id S232031AbhIJJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:19:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39382 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhIJJTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 05:19:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0EDF62004E;
+        Fri, 10 Sep 2021 09:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631265472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=moHXYj60rmUxw69TqVB2I1EUdoaGUyAX40Cx2K50WEg=;
+        b=DSoJfhyDOrfPRQPgAYdin7CPWS3zQcUAfCeDyzdTG5WEr+vz+E5JEdKralyWWuHysshepo
+        WPWuT6A5m7cz+4o4CHlIJu0kApzMApvR2Z9BsifaRmXBQLLmn9Z+PzgUvY78+y8AJKUffP
+        BmCxzu9zKuD6vAU/ixOpsDD/25JIyRw=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D7E78A3B99;
+        Fri, 10 Sep 2021 09:17:51 +0000 (UTC)
+Date:   Fri, 10 Sep 2021 11:17:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] livepatch: Fix idle cpu's tasks transition
+Message-ID: <YTsiv1xtiLT37iQR@alley>
+References: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Provags-ID: V03:K1:TV4ueebJTrFNQK8+ByJZcVLoLf9VVT2Ywu1cwYD5e2aV2nHJi+y
- pEvKsMZDKBZcWJQePbSy0kbpK+NFz1G+EbLViWBS9tewN1aZ+/6cX0sewU25yF7RJxxMDCv
- NEa1D+F9c58ieO2JnaJrlTgtWZZIMNYituQoopQ/o2XD8MEj40icoOwRTclTi4gITfPTgyG
- /NC/1fXrJszp1GtHBsnUQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vJHlsmIwOe4=:qiHUuAHOec1E/4mEPDArmW
- N4Rwu+9k0ICXc+4nlN2J+eCdzr7anXtRmC11dEa38jSwztKzqs9QsIiHwMJV6UmvgCJAUNwde
- 7x2lJG0ioBaHeQT8qJJP7mzGCgsdETT+fCZau9kdTQpcYedesSNGwc/7bwcHDXJp2eEKsAgZl
- 6tsrIDPWfxDm5tBWweXm1HCRRcxqFxnJkxTB7wI63WNelSWdOU76oaos0sPT57GZ/agCMCRB0
- pJ7A3qlm9K8DErPFgO0+MOp2hxfAL45JmnbY/KEjXmGG7qXq53vpbqm9WFnx5XDN/nnrLBP/m
- VkDVzKtOgNF9Nxsva730rAhawTxQsyAPDF8AeJxhPbdMk8xP/nAsL6+qUzullMDOBP8Ve7a/I
- MNsFKpuhSrmmg5T8NLUciaFJEz9Ze7B6+qMTYlua8qA17qV2zdphSQuRZkJi9xnpKeUS7CP8o
- PQH9UvG4z7TPU9GFdfRBE0h07hR1sLtkjmsgzPWdqhzAWqT7b97MvmwRqxsyXZI+2yHGtXrx9
- Qsp6rDfVe5O2j4qaSGNL2BSu1jbfBox7QAag1v552VKc0ZyzkHano6iCtNkn7BZO7o6gVdhVI
- ykl4HaXm1KO4+2iWJwUP5+LaIbZKVIOFDLLoefXjS+GX2ZtTbvAJl+l7x8Ew2ezujXabfvZmi
- +x8OBWyw/E/dFf+xpWlWHebRpeELRIRp9BubdR3lDxRLmcXWWePF2TyntYtPzcLePDp2vfshP
- yhvvdXbiQ8HI/NsCco7sf0a8YXZiGfW5/OL7HvWYQCqkzaNddyu2Tfh2Z62iQpmeozX1NrNgh
- ZmVyVUgoj9hohT+TDlyG/O+5MZqrzUTRrkbnhnrKLSUqCtbiAVOW0fmOnwJ9t0SGAS6hExvsC
- lgOYRcFME22/d9I+4asa+q9kiZWRnIcYAxGu8PIFFbxgfFiXtINp+aUJmMIU3Ow7iWstt9eBv
- jruCZhz7eAhZVhF2Skeh5B1VFvauOI6ZAJXFK6Q0eyYGxZS6TsrK6tcmhdvKlobuaXvNF1Xkt
- ZUghzZkxdgT47Qig+rv25GF870/uNegqhr3xhrLuFY0HVv8kS4K8wii6V7I6l7vRMlesXITZJ
- DRMkfI31RCc6J8=
+In-Reply-To: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu 2021-09-09 11:16:01, Vasily Gorbik wrote:
+> On an idle system with large amount of cpus it might happen that
+> klp_update_patch_state() is not reached in do_idle() for a long periods
+> of time. With debug messages enabled log is filled with:
+> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
+> 
+> without any signs of progress. Ending up with "failed to complete
+> transition".
+> 
+> On s390 LPAR with 128 cpus not a single transition is able to complete
+> and livepatch kselftests fail. Tests on idling x86 kvm instance with 128
+> cpus demonstrate similar symptoms with and without CONFIG_NO_HZ.
+> 
+> To deal with that, since runqueue is already locked in
+> klp_try_switch_task() identify idling cpus and trigger rescheduling
+> potentially waking them up and making sure idle tasks break out of
+> do_idle() inner loop and reach klp_update_patch_state(). This helps to
+> speed up transition time while avoiding unnecessary extra system load.
+> 
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
+> Previous discussion and RFC PATCH:
+> lkml.kernel.org/r/patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours
+> 
+>  kernel/livepatch/transition.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+> index 3a4beb9395c4..c5832b2dd081 100644
+> --- a/kernel/livepatch/transition.c
+> +++ b/kernel/livepatch/transition.c
+> @@ -308,6 +308,8 @@ static bool klp_try_switch_task(struct task_struct *task)
 
-please pull some more parisc architecture fixes for kernel 5.15-rc1 from:
+Please, update also the comment above klp_try_switch_task(). I would
+write something like:
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-3
+/*
+ * Try to safely switch a task to the target patch state.  If it's currently
+ * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
+ * if the stack is unreliable, return false.
+ *
+ * Idle tasks are switched in the main loop when running.
+ */
 
-Fixes:
-* Build warning fixes in Makefile and Dino PCI driver
-* Fix when sched_clock is marked unstable
-* Drop strnlen_user() in favour of generic version
-* Prevent kernel to write outside userspace signal stack
-* Remove CONFIG_SET_FS incl. KERNEL_DS and USER_DS from parisc and switch to
-  __get/put_kernel_nofault()
+>  	rq = task_rq_lock(task, &flags);
+>  
+>  	if (task_running(rq, task) && task != current) {
 
-Thanks,
-Helge
+This would deserve a comment, for example:
 
-------------
-The following changes since commit a3fa7a101dcff93791d1b1bdb3affcad1410c8c1:
+		/*
+		 * Idle task might stay running for a long time. Switch them
+		 * in the main loop.
+		 */
 
-  Merge branches 'akpm' and 'akpm-hotfixes' (patches from Andrew) (2021-09-08 18:52:05 -0700)
+> +		if (is_idle_task(task))
+> +			resched_curr(rq);
+>  		snprintf(err_buf, STACK_ERR_BUF_SIZE,
+>  			 "%s: %s:%d is running\n", __func__, task->comm,
+>  			 task->pid);
 
-are available in the Git repository at:
+Otherwise, it looks good to me. With the two comments:
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.15-3
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-for you to fetch changes up to 671028728083e856e9919221b109e3b2cd2ccc49:
-
-  parisc: Implement __get/put_kernel_nofault() (2021-09-09 22:53:09 +0200)
-
-----------------------------------------------------------------
-Guenter Roeck (1):
-      parisc: Move pci_dev_is_behind_card_dino to where it is used
-
-Helge Deller (7):
-      parisc: Add missing FORCE prerequisite in Makefile
-      parisc: Drop strnlen_user() in favour of generic version
-      parisc: Drop useless debug info and comments from signal.c
-      parisc: Check user signal stack trampoline is inside TASK_SIZE
-      parisc: Reduce sigreturn trampoline to 3 instructions
-      parisc: Mark sched_clock unstable only if clocks are not syncronized
-      parisc: Implement __get/put_kernel_nofault()
-
- arch/parisc/Kconfig                   |   2 -
- arch/parisc/boot/compressed/Makefile  |  18 ++---
- arch/parisc/include/asm/processor.h   |   4 --
- arch/parisc/include/asm/rt_sigframe.h |   2 +-
- arch/parisc/include/asm/thread_info.h |   2 -
- arch/parisc/include/asm/uaccess.h     | 125 +++++++++++++++++-----------------
- arch/parisc/kernel/asm-offsets.c      |   1 -
- arch/parisc/kernel/parisc_ksyms.c     |   1 -
- arch/parisc/kernel/setup.c            |   2 -
- arch/parisc/kernel/signal.c           |  45 +++++-------
- arch/parisc/kernel/signal32.h         |   2 +-
- arch/parisc/kernel/time.c             |   7 +-
- arch/parisc/lib/lusercopy.S           |  52 +-------------
- drivers/parisc/dino.c                 |  18 ++---
- 14 files changed, 102 insertions(+), 179 deletions(-)
+Best Regards,
+Petr
