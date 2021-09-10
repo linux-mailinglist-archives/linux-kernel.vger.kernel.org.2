@@ -2,89 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F8540691F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772C9406926
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 11:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhIJJdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 05:33:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40614 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbhIJJdb (ORCPT
+        id S232102AbhIJJeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 05:34:46 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:57785 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231818AbhIJJeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:33:31 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5A41A2004D;
-        Fri, 10 Sep 2021 09:32:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631266339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9iI6Wt8n6cT0+L9+pbZEEjlML5n5sKDS59UITJvFnag=;
-        b=JkFpVAN5ovANPnAV4jiTcsRYWOZmTQTZAsOiVHy65+s4AJKWSrmZYhxR5rn410yB4HRIuY
-        V2g+4+uCz46wPJLJ8Y2Es/ND3TcNoMNGvXME1OhzfMh4irPdW9qK3fV8mc+UFbAFab+pTX
-        g+v6Te7mqhWFEUF2WDcVjH+7THZIEco=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631266339;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9iI6Wt8n6cT0+L9+pbZEEjlML5n5sKDS59UITJvFnag=;
-        b=tUdlh5nWKaFu6yKj7wQaf+1/pZIWrfbR2c8RbSAqT07RklPVW8KH2B/kHLcgVH3TTKYWwF
-        OgqJZ6yyFF6+hZDQ==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 32200A3B9E;
-        Fri, 10 Sep 2021 09:32:19 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 11:32:19 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] livepatch: Fix idle cpu's tasks transition
-In-Reply-To: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
-Message-ID: <alpine.LSU.2.21.2109101130560.19415@pobox.suse.cz>
-References: <patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 10 Sep 2021 05:34:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UntYNdL_1631266409;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UntYNdL_1631266409)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 17:33:31 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, anna.schumaker@netapp.com,
+        trond.myklebust@hammerspace.com, chuck.lever@oracle.com,
+        bfields@fieldses.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] UNRPC: Return specific error code on kmalloc failure
+Date:   Fri, 10 Sep 2021 17:33:24 +0800
+Message-Id: <1631266404-29698-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Sep 2021, Vasily Gorbik wrote:
+Although the callers of this function only care about whether the
+return value is null or not, we should still give a rigorous
+error code.
 
-> On an idle system with large amount of cpus it might happen that
-> klp_update_patch_state() is not reached in do_idle() for a long periods
-> of time. With debug messages enabled log is filled with:
-> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
-> 
-> without any signs of progress. Ending up with "failed to complete
-> transition".
-> 
-> On s390 LPAR with 128 cpus not a single transition is able to complete
-> and livepatch kselftests fail. Tests on idling x86 kvm instance with 128
-> cpus demonstrate similar symptoms with and without CONFIG_NO_HZ.
-> 
-> To deal with that, since runqueue is already locked in
-> klp_try_switch_task() identify idling cpus and trigger rescheduling
-> potentially waking them up and making sure idle tasks break out of
-> do_idle() inner loop and reach klp_update_patch_state(). This helps to
-> speed up transition time while avoiding unnecessary extra system load.
-> 
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Smatch tool warning:
+net/sunrpc/auth_gss/svcauth_gss.c:784 gss_write_verf() warn: returning
+-1 instead of -ENOMEM is sloppy
 
-Seems reasonable to me.
+No functional change, just more standardized.
 
-Acked-by: Miroslav Benes <mbenes@suse.cz>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ net/sunrpc/auth_gss/svcauth_gss.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-M
+diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
+index 3e776e3..7dba6a9 100644
+--- a/net/sunrpc/auth_gss/svcauth_gss.c
++++ b/net/sunrpc/auth_gss/svcauth_gss.c
+@@ -781,7 +781,7 @@ static inline u32 round_up_to_quad(u32 i)
+ 	svc_putnl(rqstp->rq_res.head, RPC_AUTH_GSS);
+ 	xdr_seq = kmalloc(4, GFP_KERNEL);
+ 	if (!xdr_seq)
+-		return -1;
++		return -ENOMEM;
+ 	*xdr_seq = htonl(seq);
+ 
+ 	iov.iov_base = xdr_seq;
+-- 
+1.8.3.1
+
