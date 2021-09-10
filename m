@@ -2,167 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822E74065C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68224065C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 04:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhIJCir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 22:38:47 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:36175 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhIJCiq (ORCPT
+        id S229863AbhIJCna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 22:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhIJCn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 22:38:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631241456; x=1662777456;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=BWtePkt9PqofwLtfWCZGDbYW9YD8b8ZbKaVXyrz3aAg=;
-  b=rh7vjvPrOOMInQtUE61LrJWJgZrgThIsLkgMcdNs7YAczzTCk+gV+wOs
-   +R0FBC03JzdhRXO46M/u76vmgHIrrOPaM1FP90zQuQlU8dMYH9mYVTZ65
-   17W31LWAwMb+dbdwwWdLahs4ssFAe+5X2L1PXlKv8u+5La3+qEfvm9nI0
-   QdVtEr83KhHDjqFD6b3MDXcYdE+7bjfIErZ6K+rkbrrrk/bgai7j8F5G9
-   T8flZex7gEJ1wwS9eUUYG635EUKlPEGThnCyqgFqN5SBzu3ToIasrk39J
-   P2aA4xDsL/VQLTyAywrJfebi1s+vZZRqtUUB8fFqM8MaLf0xdFDaYMV6b
-   w==;
-X-IronPort-AV: E=Sophos;i="5.85,282,1624291200"; 
-   d="scan'208";a="283438093"
-Received: from mail-dm6nam08lp2048.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.48])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Sep 2021 10:37:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dJm6Pj0ylW4qumBod0yYvP4JZqaH+MpFb796W0DF1friqlQZfwBS8fE26325SlgdSsIPPHJFzwtWhYIg4ERpHHexSOSS+1VydCHwFReK0TAJaeFYQLSVKwTj+HkP5ArRRMQafjM1E97AZS5aFYijBAs63g1+1Lv87avNy/N+ag9ToD2fPFRHIe0HYmYjsvuEkhJfTEchW4AT6MuvfqCLfasV6yyniD7naiN15gg4DDBwPX0sQQsklxG8n0luWx8Ish6vOBvBUXedo9rHJRiUFmNay5VIRpM8xSOTjeOcp+iVMVCObTOAQw4vPtt9/l9lddYFmttdqngKNrmlu/TTxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=a932QBPzLDfxarVXbsNqNaEU7H/Ny5RsOuK78mSbhUY=;
- b=WKrb47leA9cEri7Y+QJ3+SgAkFjIRWDSQOhQ4Ymh9RnErAGhQZ0DAaRh9MR4S3IVKGj5zk/5944RySanJaJ3QTdTOZ4HjxfrG+I43sDHjB0ITsIlyRh2ugE4w/NY3wTcgNwJIZGyLArzlmMR5Dq6mnBAC0buyr+P3pPRcojpNbz6T+k+x6u9BJ0qnzSHrrIqDS6fupNMf89qqxayzp78/J9yYXIzEUJkmml63gO3sNHyVdxsjVwKWPrsY9OWi6g+59nM3x/wIe8KodOj/Jcqfyy2ccTs9sPVQHWgcB+gsJtqsfTkoEYGJhTxof+rrW2JWOFVcyeBshfFPB5R+Mk3gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Thu, 9 Sep 2021 22:43:28 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ABBC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 19:42:18 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id c206so752600ybb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 19:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a932QBPzLDfxarVXbsNqNaEU7H/Ny5RsOuK78mSbhUY=;
- b=oONdsTbHnm1vOQLV2hkVhfNLt1Gt4vD6EF3F7Dva4KA7ZH/C5xyUBatzLrRDFaNwqRxULadaWdSMQ5Pr3kqthjILa1Aq4Q9zJwwKhRx6C5jLSjEvDXL73+/Denff3ndMoDdzu4AVEaLVsD964ksr/ZqH2kNkMVYWT/tikpsGi9I=
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com (2603:10b6:5:244::21)
- by DM6PR04MB5372.namprd04.prod.outlook.com (2603:10b6:5:10f::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.25; Fri, 10 Sep
- 2021 02:37:34 +0000
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::7c0e:3e95:80d3:7a70]) by DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::7c0e:3e95:80d3:7a70%6]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 02:37:34 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Xu Wang <vulab@iscas.ac.cn>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkback: Remove needless request_queue NULL pointer
- check
-Thread-Topic: [PATCH] xen-blkback: Remove needless request_queue NULL pointer
- check
-Thread-Index: AQHXpewIpomVCHmkEEmflQIfj6rk6w==
-Date:   Fri, 10 Sep 2021 02:37:33 +0000
-Message-ID: <DM6PR04MB7081D2E353283692759CECFAE7D69@DM6PR04MB7081.namprd04.prod.outlook.com>
-References: <20210910022457.22963-1-vulab@iscas.ac.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: iscas.ac.cn; dkim=none (message not signed)
- header.d=none;iscas.ac.cn; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f8351f02-c6b5-45d8-ab4b-08d97403f1cc
-x-ms-traffictypediagnostic: DM6PR04MB5372:
-x-microsoft-antispam-prvs: <DM6PR04MB5372D497BE8495BDA0973CD9E7D69@DM6PR04MB5372.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Olnaf6l0wJxiCrkZd1P+rmP1Sk6v+hljmxOhTi+2//rk23Eowa5mj+V4lazZFjizZSW9udnjzyHiJMHMHt5QBv21IKvSc6iORRK57a7XUVSOl+XveJJoAub+tOsVCjy2wZ+1DMAbGxq1BwzBQaWrmi2o+dZR7eFmyKyUN7mmDP6cJRQu8pnMQfu3+MmedpRaK+B0JDDoyt7b0Hih1ZriSmo5/T0U8BqE/BOyUpV0vvKV28b58YAnZ+5MtduiI/3mJFdCVmprxSVf2Y93d7j9BDECDoK7jYMJHOQfddDglqgg/TEwjH9xHh/UxcplWAajJL2y2BQlJuZaTtk33v1BeGjn0zTAoE167qmIP8kJNsT8pjnJBbrvcEUSCtYnt96IWsH4JcgaQKbmFRhdW4MkHLMCqI4VN3TyKSY76UX45mRkNEwcZ6Xu6oS1tBvT3G+YjVFGMIw5oGfJVEz9u1/4QVIL2Y1AINAaZ06M7tdHVwK0DqukCFsyg6n/d62GTbBfRgourvkrOvWK9nhGI/02DVK92uPzXXDGdbhL+eM0NwwzjAPouKzvV7JqjgixlcK8nBhOw0k0+vp7onsW8aQ7i0YofqpqNKeDvrKyjWKNHQmtMBzrIJcuRjeijtTzHUKmUJJC4eTGAFHCZCo34dLaDtAoliafYAK9/g/ThStarkmnF7hQwrc707YWY5V1yMnQWz+9/EFQpZfRL++4nIsadw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB7081.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(376002)(136003)(39860400002)(5660300002)(55016002)(38100700002)(186003)(54906003)(110136005)(86362001)(52536014)(66476007)(8676002)(4744005)(38070700005)(9686003)(83380400001)(7696005)(478600001)(33656002)(71200400001)(6506007)(4326008)(316002)(64756008)(66446008)(66556008)(66946007)(53546011)(8936002)(91956017)(76116006)(2906002)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xeAtoRMah3qLQB1367F3KDHQBBt2S9K6sQw0QoizCTVB3o35LiTp+JsbbEHQ?=
- =?us-ascii?Q?M3ks9w170AbvbfqfPNlvBxvR80v2Cy1UpHbOMRiYQ1CsLO1X7zuGsGX+cdtF?=
- =?us-ascii?Q?hsv3OQ9MP3wHCm6lXpnDCo37nCChqanA+WrWG4lbcfQkOWLnPwdeznB1eb5A?=
- =?us-ascii?Q?pqx9QlJ7CpZAt20oREfJXU/DfF6UI0BtpJYq9+pcAHfXCuTnwLKG3Zt8tmBz?=
- =?us-ascii?Q?39V8kurg21WL+KjdiYjx4sFxiR+fVIqqwr2MwD3VYlsxrLFx8eLz3gwFo8eq?=
- =?us-ascii?Q?oA8jz3H+tWMHSX/kzZC9q+n4WzhU7i+VTRagZBQUjAJkAJfAU5p6KL3fuhpp?=
- =?us-ascii?Q?f1k7M3aQffd04gZek8Kz9Gy8VZTtzXqGOUSWhcdexTeAlzLEDtOzqQHcD4zF?=
- =?us-ascii?Q?WhUA0ytC9RJooOKXHCvvyinf7vmZtGrVw/B/GBUh4Dk8ai4/N/KFqWLyoqPq?=
- =?us-ascii?Q?9LxXojKujNcJ0VtFCCJDYfg8y5QqBXLEe3PvCp0WzIta8Wa4U95heR+Kq+IO?=
- =?us-ascii?Q?vKZPXZFJImvYlJ7dSfdkjWjpHb9VGOLMFkQya2ejeB6sI0hHb5jZis5+NCy/?=
- =?us-ascii?Q?GX7jnBXmfvaNRRsH004koDrTV12M1uZmPYbcwSnN8/OcO+M7xFzGgCzdbNGv?=
- =?us-ascii?Q?9JEMqtqwoxWdENx0UCTYLfzE63v40iMpVcVKMR+eJc57VhK7fNPIOADnuPAR?=
- =?us-ascii?Q?gVhw6DuoUip3W25VXiCGOmBC5YyrjHA7nxmFC3zKF7z6cOZhSLipwYgy249T?=
- =?us-ascii?Q?D1x462NWmBXXp/nlMeIQ5J6BZ8CY7lJaHeYTUdu34rykeJqk5C9w1bWEG7uu?=
- =?us-ascii?Q?swHUjFvHo3HSYJMt6Gb9Dez7hiP8xAssBL6gOUVQhH43zWGZRWH93C/EJ2H/?=
- =?us-ascii?Q?E9/FnjcqMMDwEdTlRc1UevpW91YtdjrNcoeJQYfiG3WYkvpcneC2qWTC1KM8?=
- =?us-ascii?Q?A6GaJ4ohX0JldHtrOZAiZTrFYO5+kURkDtZX612NroHzMHVcVCc35msY7ARR?=
- =?us-ascii?Q?S9sqIbwkRdG8lj5emk3URedlrM3sVYYN2zSCs+su3Uxtp7g3nXl2IfTv0r9B?=
- =?us-ascii?Q?9HUB+FVa+0JO4yp6FG+2HB5Zx6xCkTg6C2n3fpYr+xqLygd92smV07Vj7qSZ?=
- =?us-ascii?Q?mQnGPvXWTrQqcnrF/KZPmZfUPLHFZnouF51k50TmYg2NgaRapKN7Ez+XGUfd?=
- =?us-ascii?Q?50rxGhsqxM6MHoHqmbmk+KFdCfIJ4o/aDbWAloKmY695BNQrW7r6muGOuUf8?=
- =?us-ascii?Q?mA2ztVaOB+eaYE8UpQUCJ01rf/LMlxfuPOeB3zxZLig2h81dYDMd5atatD4o?=
- =?us-ascii?Q?5BzBZnxRUuYWwSOEcKKgmE6DRxEI9oV6ShW1d33L20Fd5B/HCMZQvpqq8Uci?=
- =?us-ascii?Q?XXkLw604nlot2VHzgDgVUeDzpHMqOj/sM316VLgmRGONjCB8QQ=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vevm67U6XLhtx4sgfe4TH7dfrXJJnbnonxcluBbCc2U=;
+        b=I8a7JSqA9KshyuhPcpOEkoHMJrTRj/3CrO7jXHcI+za5PSiNfAeFm/zuJZzRzbqv/O
+         j8fgZ53TufHkL60nDk+a8n2771KB1dqQsbKxvhl9llNm8gF3N9K0nJxZ7KZWsK9BUlBn
+         OSgx0OoxjT9WWWDzzr7+7+m6pAwJpnWKh8aNqS+LUcy/y+XEQ2EE44ltu7QrQJ1Y+OQA
+         CJzP+RiStlcFBVGiLDkXwBdVxiLz4K2yT99dRwqSjLo69lp1zhsXJ6jIv+QZUDPe4Uzi
+         N6pLxugVK2pmha97Rg4zTL7W7cBJNN8ZNcUWen8T7SGvA7vGPxy34CYLgVdqyzAW+WJL
+         AM2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vevm67U6XLhtx4sgfe4TH7dfrXJJnbnonxcluBbCc2U=;
+        b=U/f0K5B8+bARiwqS5hfRQa279D6yYl3GxAKM58Vsj7K4LCRuN5mamej3Pt4nJ3oddi
+         PV0f4E4NZnitQ3ebp2i4ptBG17tfPpIF4VUOF7GRQ8ydySDNUWzmfDaQPN2XvoIlS+Y0
+         3f2YPxW46GvGX4B/vaEAsQ5IgzqakzjyLs/NQ79T7Yv1aB/TBGxIsPh8CcT2MBjNmrov
+         mAW2/NyfjQyyCYDdr533JBMtOqKuNziIxrlh3JXXzLnBmZ71N+eNFPpOus4qU8RdkLPG
+         MYsfZ0WNyd9+50nLB9qhvDvrNBrYvOsfK/kF61x4TevyyTE5I28B65mAa55eVxWWVZ2Q
+         WJzw==
+X-Gm-Message-State: AOAM530OOZuyV6XZVxn1/30SWGJRkvLQzLBO3Nsa5awrgulPaq2jPFbF
+        5SSqkIE9K20eCyWBXJlWtkn16ABlWXkfMM08LrnWTOYC2Su7cg==
+X-Google-Smtp-Source: ABdhPJymvUyw29SZRUnlB/AZg/lp3eZDUFaR1tbpDbRG9INJ1ZufNnAgSfHTQdhcj1K5svJ7OOLvhyc/HE1RHoKwF0w=
+X-Received: by 2002:a25:21c5:: with SMTP id h188mr7433936ybh.23.1631241736936;
+ Thu, 09 Sep 2021 19:42:16 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB7081.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8351f02-c6b5-45d8-ab4b-08d97403f1cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2021 02:37:33.9036
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pF7HjWnuwerALbxpOaiWw1qasGv50ELlt80EJfm8h3Fl+v5N4qCTSMDd66gD3Q5ZD5PVp/d5qAipYiCVMD+tPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5372
+References: <3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de> <CAGETcx9eFg7jR=ibBLhU3q+VnpqJXQCVmQcEyMpozddRiCXFLQ@mail.gmail.com>
+ <97044cb9-b7a9-d8af-93e7-d33a81a1cfe2@web.de> <CAGETcx9NpKou1jOEksX4tayRuEVYcy-T4H6QhQU-AUz3Zg1NaQ@mail.gmail.com>
+ <CAL_JsqL8sGc7sA7q+SFcMKF02NWpqOUUEWew1qOY+vdpKVFJ6w@mail.gmail.com>
+ <ac715ac4-eb2d-7dd0-9752-4cbe95b0e88d@web.de> <CAL_Jsq+mqpHF5hn0iD8+nz3iOH4-doqqB0hgiV-MLKS2_s9oBg@mail.gmail.com>
+ <CAGETcx-qbmmPOH4+pyHGSnukTA3PgXTxYyZg5fSEuD=Uy3YVMQ@mail.gmail.com> <CAL_JsqKsMdv8rTUB936SU-JnZ3ULrF=jeN6V_3hY_eVg1D-yUw@mail.gmail.com>
+In-Reply-To: <CAL_JsqKsMdv8rTUB936SU-JnZ3ULrF=jeN6V_3hY_eVg1D-yUw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 9 Sep 2021 19:41:40 -0700
+Message-ID: <CAGETcx-drHSNug-9wHdWKq7YWKq=jE69NN_5EL1RSWQT2syCag@mail.gmail.com>
+Subject: Re: [Bisected Regression] OLPC XO-1.5: Internal drive and SD card
+ (mmcblk*) gone since commit ea718c699055
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andre Muller <andre.muller@web.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/10 11:32, Xu Wang wrote:=0A=
-> The request_queue pointer returned from bdev_get_queue() shall=0A=
-> never be NULL, so the null check is unnecessary, just remove it.=0A=
-> =0A=
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>=0A=
-> ---=0A=
->  drivers/block/xen-blkback/xenbus.c | 2 +-=0A=
->  1 file changed, 1 insertion(+), 1 deletion(-)=0A=
-> =0A=
-> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkba=
-ck/xenbus.c=0A=
-> index 33eba3df4dd9..f05132b9ddbf 100644=0A=
-> --- a/drivers/block/xen-blkback/xenbus.c=0A=
-> +++ b/drivers/block/xen-blkback/xenbus.c=0A=
-> @@ -516,7 +516,7 @@ static int xen_vbd_create(struct xen_blkif *blkif, bl=
-kif_vdev_t handle,=0A=
->  		vbd->type |=3D VDISK_REMOVABLE;=0A=
->  =0A=
->  	q =3D bdev_get_queue(bdev);=0A=
-> -	if (q && test_bit(QUEUE_FLAG_WC, &q->queue_flags))=0A=
-> +	if test_bit(QUEUE_FLAG_WC, &q->queue_flags)=0A=
-=0A=
-Missing parenthesis. Did you even compile this ?=0A=
-=0A=
-=0A=
->  		vbd->flush_support =3D true;=0A=
->  =0A=
->  	if (q && blk_queue_secure_erase(q))=0A=
-=0A=
-And why not change this one too ?=0A=
-=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+On Thu, Sep 9, 2021 at 4:10 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Thu, Sep 9, 2021 at 2:24 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Sep 9, 2021 at 8:15 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Thu, Sep 9, 2021 at 9:09 AM Andre Muller <andre.muller@web.de> wrote:
+> > > >
+> > > > On 09/09/2021 00.31, Rob Herring wrote:
+> > > > > On Tue, Sep 7, 2021 at 10:15 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > >>
+> > > > >> On Tue, Sep 7, 2021 at 7:12 PM Andre Muller <andre.muller@web.de> wrote:
+> > > > >>>
+> > > > >>> On 08/09/2021 00.05, Saravana Kannan wrote:
+> > > > >>>> On Sun, Sep 5, 2021 at 1:15 AM Andre Muller <andre.muller@web.de> wrote:
+> > > > >>>>>
+> > > > >>>>> With linux-5.13 and linux-5.14, the internal drive and SD card reader are gone from the XO-1.5. I bisected the issue to come up with ea718c699055:
+> > > > >>>>>
+> > > > >>>>> # first bad commit: [ea718c699055c8566eb64432388a04974c43b2ea] Revert "Revert "driver core: Set fw_devlink=on by default""
+> > > > >>>>>
+> > > > >>>>> The /dev/mmcblk* nodes are not generated since this patch.
+> > > > >>>>>
+> > > > >>>>> Please find the output of lspsi -vv and lshw below.
+> > > > >>>>>
+> > > > >>>>> I will be happy to provide more info and/or test patches.
+> > > > >>>>
+> > > > >>>> Hi Andre,
+> > > > >>>>
+> > > > >>>> Can you point me to the dts file in upstream that corresponds to this system?
+> > > > >>>>
+> > > > >>>> Also, if you can give the output of:
+> > > > >>>> cat /sys/kernel/debug/devices_deferred
+> > > > >>>
+> > > > >>> Hi Saravana,
+> > > > >>>
+> > > > >>>
+> > > > >>> /sys/kernel/debug/devices_deferred is empty.
+> > > > >>> I used the last good commit b6f617.
+> > > > >>
+> > > > >> Sorry, I wanted that with the bad commit.
+> > > >
+> > > > Uh-oh, my bad...
+> > > >
+> > > > The bad case says
+> > > > # cat devices_deferred
+> > > > 0000:00:0c.0
+> > > >
+> > > > That's the SD Host controller.
+> > > >
+> > > > >>
+> > > > >>>
+> > > > >>> The XO-1.5 has an x86 compatible VIA C7 processor.
+> > > > >>> It uses the VX855 chip for about all I/O tasks, including SDIO.
+> > > > >>> I am not aware of a device tree file for it.
+> > > > >>>
+> > > > >>> It is a bit of a strange beast, it uses OFW to initialize the hardware and provide a FORTH shell.
+> > > > >>> Which also is the boot manager, configured via FORTH scripts.
+> > > > >>>
+> > > > >>>   From the linux side of the fence, dmesg's line 2 is:
+> > > > >>>
+> > > > >>> "OFW detected in memory, cif @ 0xff83ae68 (reserving top 8MB)"
+> > > > >>>
+> > > > >>> AIUI, this mechanism is used in lieu of a device tree file, like UEFI on most x86 hardware.
+> > > > >>> But my understanding of device trees is severely limited, I might be allwrong.
+> > > > >>
+> > > > >> Uhh... I'm so confused. If Linux doesn't use OF, then none of the code
+> > > > >> enabled by fw_devlink=on should be executed.
+> > > > >
+> > > > > Linux does, but maybe not for memory (like UEFI on arm64).
+> > > > >
+> > > > >> The only thing that might remotely even execute is:
+> > > > >> efifb_add_links() in drivers/firmware/efi/efi-init.c
+> > > > >>
+> > > > >> If you want you can just do an early return 0; in that to see if it
+> > > > >> makes a difference (unlikely).
+> > > > >>
+> > > > >> Rob, Do you know what's going on with OLPC and DT?
+> > > > >
+> > > > > Not really. I have an XO-1 DT dump[1]. It's probably a similar looking
+> > > > > DT though. It's pretty ancient lacking anything we've invented for DT
+> > > > > in the last 10 years. There's not really much to it as about the only
+> > > > > phandle I see is for interrupts.
+> > > > >
+> > > > >>> Anyway, the firmware source is here:
+> > > > >>> http://dev.laptop.org/git/users/quozl/openfirmware/
+> > > > >>>
+> > > > >>> This file is the closest dt-analogous thing for the XO-1.5 I can find therein:
+> > > > >>> cpu/x86/pc/olpc/via/devices.fth
+> > > > >>
+> > > > >> That file is all gibberish to me.
+> > > > >
+> > > > > Running this on a booted system would help:
+> > > > >
+> > > > > dtc -f -I fs -O dts /proc/device-tree > dump.dts
+> > > >
+> > > > Ah, thanks. I never knew about the DT in there...
+> > > > XO-1.5_dump.dts is attached.
+> > > >
+> > > > >
+> > > > > If you don't have dtc on the system, then you'll have to zip up
+> > > > > /proc/device-tree contents and run dtc elsewhere (or just post that).
+> > > > >
+> > > > >>> My machine runs the latest version:
+> > > > >>> http://wiki.laptop.org/go/OLPC_Firmware_q3c17
+> > > > >>>
+> > > > >>> The XO-1.5 hardware specs are here:
+> > > > >>> http://wiki.laptop.org/images/f/f0/CL1B_Hdwe_Design_Spec.pdf
+> > > > >>> http://wiki.laptop.org/go/Hardware_specification_1.5
+> > > > >>>
+> > > > >>> Would the .config or dmesg help?
+> > > > >>
+> > > > >> At this point, why not? When you do send them, please send them as
+> > > > >> attachments and not inline.
+> > > > >>
+> > > > >> Also, when you collect the dmesg logs, the following could help:
+> > > > >> Enable the existing dev_dbg logs in these functions:
+> > > > >> device_link_add()
+> > > > >> device_links_check_suppliers()
+> > > > >>
+> > > > >> And add the following log to fwnode_link_add():
+> > > > >> +++ b/drivers/base/core.c
+> > > > >> @@ -87,6 +87,8 @@ int fwnode_link_add(struct fwnode_handle *con,
+> > > > >> struct fwnode_handle *sup)
+> > > > >>                  goto out;
+> > > > >>          }
+> > > > >>
+> > > > >> +       pr_info("Link fwnode %pfwP as a consumer of fwnode %pfwP\n", con, sup);
+> > > > >> +
+> > > > >
+> > > >
+> > > > OK. The dmesg with debug info is attached as well (for the broken case).
+> > >
+> > > Humm, ACPI and DT together...
+> > >
+> > > Looks to me like it's waiting for the wrong interrupt-parent. The log
+> > > says it is waiting for 'interrupt-controller@i20' which is the only
+> > > interrupt-controller found in the DT, but the parent is the PCI bridge
+> > > with whatever interrupt-map is pointing to. That's not clear as the
+> > > phandle (0x767a4) doesn't exist in the DT. I suppose the parent is
+> > > defined in ACPI?
+> >
+> > After staring at it for a while, I realized that
+> > interrupt-controller@i20 is indeed the right node. Looks like we need
+> > to do endian conversion of the ".node" property in the interrupt
+> > controller and it would match with 0x767a4.
+>
+> Ah yes, I failed on doing the endian conversion.
+>
+> > > pci 0000:00:0c.0: probe deferral - wait for supplier interrupt-controller@i20
+> > The SD controller is waiting forever on interrupt-controller@i20 to be
+> > added as a device.
+> >
+> > Rob,
+> >
+> > My guess is that the fwnode value is not getting set for ISA devices
+> > populated when isa@11 is added. Any idea how/where those child devices
+> > are populated? I thought they'd be platform devices, but it doesn't
+> > look like that's the case?
+>
+> Sometimes they are. Sometimes there's no driver I think. I couldn't
+> figure out what code corresponds to this node in the kernel.
+>
+> > > If there's not an easy fix, just disable devlinks for x86. There's
+> > > only one other DT platform, ce4100, and I really doubt it is even used
+> > > at all.
+> >
+> > I think the easy fix is to set the ISA device's fwnode when it's
+> > added, but I can't tell how they are getting added. But yeah, if that
+> > turns out to be hard, then I'd vote for disabling it for x86 too.
+>
+> Just disable it.
+
+Done
+https://lore.kernel.org/lkml/20210910011446.3208894-1-saravanak@google.com/
+
+Andre, can you give it a shot please?
+
+-Saravana
