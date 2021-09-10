@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B62406BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D783E406C2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbhIJMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:34:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51934 "EHLO mail.kernel.org"
+        id S233949AbhIJMhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:37:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233918AbhIJMd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77022611EF;
-        Fri, 10 Sep 2021 12:32:45 +0000 (UTC)
+        id S233676AbhIJMfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A6361211;
+        Fri, 10 Sep 2021 12:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277166;
-        bh=ZBqY2Sh08tkx1x7/Pj9gi0ePyXfVZYSCpi/cQzQDo+k=;
+        s=korg; t=1631277284;
+        bh=c2eehZyxdpCfZd+L/JgDAN2SCfxNGwa95SwIPzCVOT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ae1k5S9eOp74CFHIOYBRJTv2TbQkTjf4lgzHNhFNgjlXM1qORGDhNpePxfbdQY/g0
-         tBGZ/LbjKaMQPP+OFQeL0IHDUG9GiII33gqgmlUXfphFX/a4+qwG8kixvvabgEY6K3
-         lxQrwBLfh4kAbWyTry+012HI4ASxBg5xDiLDUBOQ=
+        b=t4P7OX9jg9jt6u+9kFTpit2Zd/v01vnvpgmekdoBr8ISyiOrMwfAUrYLKwNdZD9cd
+         5fQXpoMbkx3k8RnicNvfB6U6+S9wyUInXIWKXu7wOpPtROBHQaey96SH8Npf3ZgHtt
+         tM9ZejRGTOGBJHTa7fh7Q6PulP8+00wrRK12RkNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Blank-Burian, Markus, Dr." <blankburian@uni-muenster.de>,
-        Yufen Yu <yuyufen@huawei.com>, Ming Lei <ming.lei@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCH 5.13 06/22] blk-mq: fix is_flush_rq
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.4 02/37] fscrypt: add fscrypt_symlink_getattr() for computing st_size
 Date:   Fri, 10 Sep 2021 14:30:05 +0200
-Message-Id: <20210910122916.147508479@linuxfoundation.org>
+Message-Id: <20210910122917.228125255@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+References: <20210910122917.149278545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,87 +38,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit a9ed27a764156929efe714033edb3e9023c5f321 upstream.
+commit d18760560593e5af921f51a8c9b64b6109d634c2 upstream.
 
-is_flush_rq() is called from bt_iter()/bt_tags_iter(), and runs the
-following check:
+Add a helper function fscrypt_symlink_getattr() which will be called
+from the various filesystems' ->getattr() methods to read and decrypt
+the target of encrypted symlinks in order to report the correct st_size.
 
-	hctx->fq->flush_rq == req
+Detailed explanation:
 
-but the passed hctx from bt_iter()/bt_tags_iter() may be NULL because:
+As required by POSIX and as documented in various man pages, st_size for
+a symlink is supposed to be the length of the symlink target.
+Unfortunately, st_size has always been wrong for encrypted symlinks
+because st_size is populated from i_size from disk, which intentionally
+contains the length of the encrypted symlink target.  That's slightly
+greater than the length of the decrypted symlink target (which is the
+symlink target that userspace usually sees), and usually won't match the
+length of the no-key encoded symlink target either.
 
-1) memory re-order in blk_mq_rq_ctx_init():
+This hadn't been fixed yet because reporting the correct st_size would
+require reading the symlink target from disk and decrypting or encoding
+it, which historically has been considered too heavyweight to do in
+->getattr().  Also historically, the wrong st_size had only broken a
+test (LTP lstat03) and there were no known complaints from real users.
+(This is probably because the st_size of symlinks isn't used too often,
+and when it is, typically it's for a hint for what buffer size to pass
+to readlink() -- which a slightly-too-large size still works for.)
 
-	rq->mq_hctx = data->hctx;
-	...
-	refcount_set(&rq->ref, 1);
+However, a couple things have changed now.  First, there have recently
+been complaints about the current behavior from real users:
 
-OR
+- Breakage in rpmbuild:
+  https://github.com/rpm-software-management/rpm/issues/1682
+  https://github.com/google/fscrypt/issues/305
 
-2) tag re-use and ->rqs[] isn't updated with new request.
+- Breakage in toybox cpio:
+  https://www.mail-archive.com/toybox@lists.landley.net/msg07193.html
 
-Fix the issue by re-writing is_flush_rq() as:
+- Breakage in libgit2: https://issuetracker.google.com/issues/189629152
+  (on Android public issue tracker, requires login)
 
-	return rq->end_io == flush_end_io;
+Second, we now cache decrypted symlink targets in ->i_link.  Therefore,
+taking the performance hit of reading and decrypting the symlink target
+in ->getattr() wouldn't be as big a deal as it used to be, since usually
+it will just save having to do the same thing later.
 
-which turns out simpler to follow and immune to data race since we have
-ordered WRITE rq->end_io and refcount_set(&rq->ref, 1).
+Also note that eCryptfs ended up having to read and decrypt symlink
+targets in ->getattr() as well, to fix this same issue; see
+commit 3a60a1686f0d ("eCryptfs: Decrypt symlink target for stat size").
 
-Fixes: 2e315dc07df0 ("blk-mq: grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter")
-Cc: "Blank-Burian, Markus, Dr." <blankburian@uni-muenster.de>
-Cc: Yufen Yu <yuyufen@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210818010925.607383-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Cc: Yi Zhang <yi.zhang@redhat.com>
+So, let's just bite the bullet, and read and decrypt the symlink target
+in ->getattr() in order to report the correct st_size.  Add a function
+fscrypt_symlink_getattr() which the filesystems will call to do this.
+
+(Alternatively, we could store the decrypted size of symlinks on-disk.
+But there isn't a great place to do so, and encryption is meant to hide
+the original size to some extent; that property would be lost.)
+
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210702065350.209646-2-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-flush.c |    5 +++++
- block/blk-mq.c    |    2 +-
- block/blk.h       |    6 +-----
- 3 files changed, 7 insertions(+), 6 deletions(-)
+ fs/crypto/hooks.c       |   44 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fscrypt.h |    7 +++++++
+ 2 files changed, 51 insertions(+)
 
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -262,6 +262,11 @@ static void flush_end_io(struct request
- 	spin_unlock_irqrestore(&fq->mq_flush_lock, flags);
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -305,3 +305,47 @@ err_kfree:
+ 	return ERR_PTR(err);
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_get_symlink);
++
++/**
++ * fscrypt_symlink_getattr() - set the correct st_size for encrypted symlinks
++ * @path: the path for the encrypted symlink being queried
++ * @stat: the struct being filled with the symlink's attributes
++ *
++ * Override st_size of encrypted symlinks to be the length of the decrypted
++ * symlink target (or the no-key encoded symlink target, if the key is
++ * unavailable) rather than the length of the encrypted symlink target.  This is
++ * necessary for st_size to match the symlink target that userspace actually
++ * sees.  POSIX requires this, and some userspace programs depend on it.
++ *
++ * This requires reading the symlink target from disk if needed, setting up the
++ * inode's encryption key if possible, and then decrypting or encoding the
++ * symlink target.  This makes lstat() more heavyweight than is normally the
++ * case.  However, decrypted symlink targets will be cached in ->i_link, so
++ * usually the symlink won't have to be read and decrypted again later if/when
++ * it is actually followed, readlink() is called, or lstat() is called again.
++ *
++ * Return: 0 on success, -errno on failure
++ */
++int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat)
++{
++	struct dentry *dentry = path->dentry;
++	struct inode *inode = d_inode(dentry);
++	const char *link;
++	DEFINE_DELAYED_CALL(done);
++
++	/*
++	 * To get the symlink target that userspace will see (whether it's the
++	 * decrypted target or the no-key encoded target), we can just get it in
++	 * the same way the VFS does during path resolution and readlink().
++	 */
++	link = READ_ONCE(inode->i_link);
++	if (!link) {
++		link = inode->i_op->get_link(dentry, inode, &done);
++		if (IS_ERR(link))
++			return PTR_ERR(link);
++	}
++	stat->size = strlen(link);
++	do_delayed_call(&done);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(fscrypt_symlink_getattr);
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -298,6 +298,7 @@ extern int __fscrypt_encrypt_symlink(str
+ extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
+ 				       unsigned int max_size,
+ 				       struct delayed_call *done);
++int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat);
+ static inline void fscrypt_set_ops(struct super_block *sb,
+ 				   const struct fscrypt_operations *s_cop)
+ {
+@@ -585,6 +586,12 @@ static inline const char *fscrypt_get_sy
+ 	return ERR_PTR(-EOPNOTSUPP);
  }
  
-+bool is_flush_rq(struct request *rq)
++static inline int fscrypt_symlink_getattr(const struct path *path,
++					  struct kstat *stat)
 +{
-+	return rq->end_io == flush_end_io;
++	return -EOPNOTSUPP;
 +}
 +
- /**
-  * blk_kick_flush - consider issuing flush request
-  * @q: request_queue being kicked
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -911,7 +911,7 @@ static bool blk_mq_req_expired(struct re
- 
- void blk_mq_put_rq_ref(struct request *rq)
+ static inline void fscrypt_set_ops(struct super_block *sb,
+ 				   const struct fscrypt_operations *s_cop)
  {
--	if (is_flush_rq(rq, rq->mq_hctx))
-+	if (is_flush_rq(rq))
- 		rq->end_io(rq, 0);
- 	else if (refcount_dec_and_test(&rq->ref))
- 		__blk_mq_free_request(rq);
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -44,11 +44,7 @@ static inline void __blk_get_queue(struc
- 	kobject_get(&q->kobj);
- }
- 
--static inline bool
--is_flush_rq(struct request *req, struct blk_mq_hw_ctx *hctx)
--{
--	return hctx->fq->flush_rq == req;
--}
-+bool is_flush_rq(struct request *req);
- 
- struct blk_flush_queue *blk_alloc_flush_queue(int node, int cmd_size,
- 					      gfp_t flags);
 
 
