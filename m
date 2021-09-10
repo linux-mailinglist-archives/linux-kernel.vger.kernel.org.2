@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D104A406BB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46E6406C19
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 14:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhIJMdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 08:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51122 "EHLO mail.kernel.org"
+        id S234741AbhIJMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 08:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233725AbhIJMd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 08:33:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91EE3611EF;
-        Fri, 10 Sep 2021 12:32:14 +0000 (UTC)
+        id S233466AbhIJMfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 08:35:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EADB60E94;
+        Fri, 10 Sep 2021 12:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631277135;
-        bh=JXBXh8hZj8/YaKg68tlhAOnJsIsEUQr5MOtYuacc0Bc=;
+        s=korg; t=1631277262;
+        bh=EWlAHoPb3doGGBjlC3rxknodtu/d/Dmix/quZJ8/u2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+/Sg/GfSnCeT0I1FlA00NwAQtQavxxte1ZCuPkDbTklgRHSwN/XzBMPjtiO5WvRU
-         Oo4vZLwr66hoA0MVnfDR7BU+k9qO0fsqY7lqxuVwEMKt7NHQiWh/UWkdHMlhIF/0Tz
-         l2jvwu+D+5qqcuGAF1UoRFKdCnxure8Z7y7ClMaM=
+        b=EhHiJT5NEJC48ep5U92/RNXiu8RfWgbgmUoZ9A5+zTxR5iNVEl5QlECDHhuqAu8xA
+         BOIStql0NajcXsVWSiRg2zBRIubnYDouwfcFMxhgjaB/juyQSkLCHcXrpn6AU0rWQD
+         42emlH9jaPaG8hiUyKLfdvKrMK9pX01r/k31HGMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 5.13 16/22] usb: mtu3: use @mult for HS isoc or intr
+        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 12/37] qede: Fix memset corruption
 Date:   Fri, 10 Sep 2021 14:30:15 +0200
-Message-Id: <20210910122916.469517556@linuxfoundation.org>
+Message-Id: <20210910122917.580399550@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
-References: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+References: <20210910122917.149278545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Shai Malin <smalin@marvell.com>
 
-commit fd7cb394ec7efccc3985feb0978cee4d352e1817 upstream.
+[ Upstream commit e543468869e2532f5d7926e8f417782b48eca3dc ]
 
-For HS isoc or intr, should use @mult but not @burst
-to save mult value.
+Thanks to Kees Cook who detected the problem of memset that starting
+from not the first member, but sized for the whole struct.
+The better change will be to remove the redundant memset and to clear
+only the msix_cnt member.
 
-Fixes: 4d79e042ed8b ("usb: mtu3: add support for usb3.1 IP")
-Cc: stable@vger.kernel.org
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1628836253-7432-2-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Reported-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/mtu3/mtu3_gadget.c |    2 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/mtu3/mtu3_gadget.c
-+++ b/drivers/usb/mtu3/mtu3_gadget.c
-@@ -92,7 +92,7 @@ static int mtu3_ep_enable(struct mtu3_ep
- 				usb_endpoint_xfer_int(desc)) {
- 			interval = desc->bInterval;
- 			interval = clamp_val(interval, 1, 16) - 1;
--			burst = (max_packet & GENMASK(12, 11)) >> 11;
-+			mult = (max_packet & GENMASK(12, 11)) >> 11;
- 		}
- 		break;
- 	default:
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+index ce3e62e73e4c..1133f6fe21a0 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -1773,6 +1773,7 @@ static void qede_sync_free_irqs(struct qede_dev *edev)
+ 	}
+ 
+ 	edev->int_info.used_cnt = 0;
++	edev->int_info.msix_cnt = 0;
+ }
+ 
+ static int qede_req_msix_irqs(struct qede_dev *edev)
+@@ -2317,7 +2318,6 @@ static int qede_load(struct qede_dev *edev, enum qede_load_mode mode,
+ 	goto out;
+ err4:
+ 	qede_sync_free_irqs(edev);
+-	memset(&edev->int_info.msix_cnt, 0, sizeof(struct qed_int_info));
+ err3:
+ 	qede_napi_disable_remove(edev);
+ err2:
+-- 
+2.30.2
+
 
 
