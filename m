@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724FC406E23
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA34406E2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 17:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhIJP0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 11:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbhIJP0G (ORCPT
+        id S234372AbhIJP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 11:29:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39332 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234130AbhIJP3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 11:26:06 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09F6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:24:55 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id p15so3789247ljn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 08:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZjKxxJhljDYpS5pxLUIvBKfKDGClyt9lfbrixdEiN4=;
-        b=CZk4eHjRRB0S9IDx1rrvd74xMZaLkjNkabIbLnVpAD5dYl1SUSxOxZs+Yyz4LS2dMj
-         6Lfmu9lfrmJ+1/KsSIOPy5baFmFjfnMjUK+pW3Mi5+0/ifGafMfzw8iWZ/WSyX1DhB41
-         XNMftHbTzzlwa1mAJUW0m1RgL52Kcjg4K6MfALvHsiOUBVwDxbAXLzVR0/79zrqh9PGv
-         54UeGbiPKNYtvbZOzCcNhQYfxyJnFjO63aikC+ijKSjptGbD8qM2w6rU11pGccdhHaj+
-         zO+zDBFqNNMGU/T8DfCmQgXhNUVggWpq6+GIpAWQRJbh9zZlVom1NUGPKUp7hmWqYJUu
-         f94Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZjKxxJhljDYpS5pxLUIvBKfKDGClyt9lfbrixdEiN4=;
-        b=4fTpjFY1cutriv2dzSkjfV75rkghdgGzpRW1in6JywFLLxg6bKDlKzenhLxwyYM0fm
-         2y6T2W8JrQb6MeWI3HupqvxShmmj8OFMfLW8mTahZP+r/RbpdHHzWO+MVcMzKXn0w1Wd
-         6gv6JOLE0MiWhFNihcCDpaQWk8Nxrwbe14DRD/qmD/oK5H7ayEEwLsVVLv/JpjDP3Adc
-         Fi9B9MhNObB1n58bdxzwgMpYu6JoDBfmFIJflmvoWydLTDoA0q7uQHRDS3P3nYEyTwO5
-         kC41jt+nKL/XbvJu0Ruwx6v5CzL9V2vJjLwtJ8CCwRZTubm/UUVZWy3pLHpMSZ+0z80o
-         O4Vw==
-X-Gm-Message-State: AOAM530dC3rA8TSgqvn+FFbKCF3vm2Pj5x+3fp5WOxg64hz1WePx43pb
-        3yls6PIX2bed6MNYTbFmU9a6GgSb+R8vB+j1PW4=
-X-Google-Smtp-Source: ABdhPJzmV9HMQrYPGkgG2aWLS9B2OTLtQ7N720iigCvWL3xhTZlgn8ddrP3+7jnZSJJVHrjQSlCp0YddqRNbPvFLS3Q=
-X-Received: by 2002:a05:651c:88e:: with SMTP id d14mr4541154ljq.472.1631287493966;
- Fri, 10 Sep 2021 08:24:53 -0700 (PDT)
+        Fri, 10 Sep 2021 11:29:32 -0400
+Date:   Fri, 10 Sep 2021 17:28:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631287700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EI3QVBpMpmvzHjzxfllWn6UuMbjPLIo79cBtSieAgwY=;
+        b=ol31PPlDXDfl+M5gSmepoP9EKuJUmJsp8JJkOV05HaEFdXil1HBYXUccnaSkldCpGVSMwv
+        2m8so64VziRj+v4bYNBow7z+MoMwEWytH2gwip8XuwRa7fQwlCfVqMmq3J8nvMmNnQfXUJ
+        GB3bRwAAnQfl+NGZV4OBfnBzY7fwV8h1LVrHpJoFfOi9tk6AmvWKpBAVrV6wHJR62EB1oo
+        4VoBvHzrj5LUWih47DumUm3N/rsGGmaTG2MV4CCs1oOzg+h8ZFiBiJVqbJOektAnR6tzn1
+        XF1khQe5YB1upskf7gQ70gMZhsF5Cul6RtPus5Ob4bqbfRGiWn6fVKSF3NAeIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631287700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EI3QVBpMpmvzHjzxfllWn6UuMbjPLIo79cBtSieAgwY=;
+        b=CTBuqRuz3Txo5V8Vb1FWxUyua1rQ2Bn2petDtwbDPd8lPf/aFLi22NPSg+P8fz5CeUVGde
+        HuHq2ya8kCWcvZCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 0/6] stackdepot, kasan, workqueue: Avoid expanding
+ stackdepot slabs when holding raw_spin_lock
+Message-ID: <20210910152819.ir5b2yijkqly3o6l@linutronix.de>
+References: <20210907141307.1437816-1-elver@google.com>
+ <69f98dbd-e754-c34a-72cf-a62c858bcd2f@linuxfoundation.org>
+ <1b1569ac-1144-4f9c-6938-b9d79c6743de@suse.cz>
 MIME-Version: 1.0
-References: <20210902172404.3517626-1-daeho43@gmail.com> <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
- <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
- <8f8e4695-4062-60c4-0f91-2a1f6a5b0a11@kernel.org> <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
- <f64cb941-2bb7-eed2-732d-c9537f46f67c@kernel.org> <CACOAw_zxq=SX0OdXV77HyFytJc6aCMbYuS6KZAR_JoQeGZ26Sw@mail.gmail.com>
- <a59d23b9-961f-4129-7491-59f88923366a@kernel.org> <CACOAw_z+yfNN3p3U3Ji0vLe7xDP4vkVy11RdzwwcRwwnSTjsFg@mail.gmail.com>
-In-Reply-To: <CACOAw_z+yfNN3p3U3Ji0vLe7xDP4vkVy11RdzwwcRwwnSTjsFg@mail.gmail.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 10 Sep 2021 08:24:42 -0700
-Message-ID: <CACOAw_y24AdH2Mpx4uhYbhmHnVRtUU2_4USUmi0Q61HGtE95RA@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1b1569ac-1144-4f9c-6938-b9d79c6743de@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 7:34 AM Daeho Jeong <daeho43@gmail.com> wrote:
->
-> On Thu, Sep 9, 2021 at 4:50 PM Chao Yu <chao@kernel.org> wrote:
-> >
-> > On 2021/9/8 2:12, Daeho Jeong wrote:
-> > > On Fri, Sep 3, 2021 at 11:45 PM Chao Yu <chao@kernel.org> wrote:
-> > >>
-> > >> On 2021/9/4 12:40, Daeho Jeong wrote:
-> > >>>> As a per curseg field.
-> > >>>>
-> > >>>>> Maybe, we run into the same race condition issue you told before for
-> > >>>>> fragment_remained_chunk.
-> > >>>>> Could you clarify this more?
-> > >>>>
-> > >>>> e.g.
-> > >>>>
-> > >>>> F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK
-> > >>>> fragment_chunk_size = 384
-> > >>>> fragment_hole_size = 384
-> > >>>>
-> > >>>> When creating hole:
-> > >>>>
-> > >>>> - f2fs_allocate_data_block
-> > >>>>     - __refresh_next_blkoff
-> > >>>>       chunk locates in [0, 383] of current segment
-> > >>>>       seg->next_blkoff = 384
-> > >>>>       sbi->fragment_remained_chunk = 0
-> > >>>>       then we will reset sbi->fragment_remained_chunk to 384
-> > >>>>       and move seg->next_blkoff forward to 768 (384 + 384)
-> > >>>>     - __has_curseg_space() returns false
-> > >>>>     - allocate_segment() allocates new current segment
-> > >>>>
-> > >>>> So, for such case that hole may cross two segments, hole size may be truncated
-> > >>>> to left size of previous segment.
-> > >>>
-> > >>> First, sbi->fragment_remained_chunk should be seg->fragment_remained_chunk.
-> > >>
-> > >> Oh, correct.
-> > >>
-> > >>> I understand what you mean, so you mean we need to take the leftover
-> > >>> "hole" size over to the next segment?
-> > >>> In the example, the leftover hole size will be (384 - (512-384)). Do
-> > >>> you want to take this over to the next segment?
-> > >>
-> > >> Yes, the left 256 block-sized hole should be created before next chunk
-> > >> in next opened segment.
-> > >>
-> > >
-> > > Chao,
-> > >
-> > > Do you have any decent idea to pass the left hole size to the next
-> > > segment which will be allocated?
-> >
-> > Daeho,
-> >
-> > I guess we can record left hole size in seg->fragment_remained_hole.
-> >
->
-> I understand we need a new fragment_remained_hole variable in segment structure.
-> But, I mean.. How can we pass over the left hole size from the
-> previous segment to the next segment?
->
+On 2021-09-10 12:50:51 [+0200], Vlastimil Babka wrote:
+> > Thank you. Tested all the 6 patches in this series on Linux 5.14. This problem
+> > exists in 5.13 and needs to be marked for both 5.14 and 5.13 stable releases.
+> 
+> I think if this problem manifests only with CONFIG_PROVE_RAW_LOCK_NESTING
+> then it shouldn't be backported to stable. CONFIG_PROVE_RAW_LOCK_NESTING is
+> an experimental/development option to earlier discover what will collide
+> with RT lock semantics, without needing the full RT tree.
+> Thus, good to fix going forward, but not necessary to stable backport.
 
-I mean we don't know which segment will be the next segment, do we?
+  Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+for the series. Thank you.
 
-> Thanks,
->
-> > Thanks,
-> >
-> > >
-> > > Thanks,
-> > >
-> > >> Thanks,
-> > >>
-> > >>>
+As for the backport I agree here with Vlastimil.
+
+I pulled it into my RT tree for some testing and it looked good. I had
+to
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3030,7 +3030,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+        head->func = func;
+        head->next = NULL;
+        local_irq_save(flags);
+-       kasan_record_aux_stack(head);
++       kasan_record_aux_stack_noalloc(head);
+        rdp = this_cpu_ptr(&rcu_data);
+ 
+        /* Add the callback to our list. */
+
+We could move kasan_record_aux_stack() before that local_irq_save() but
+then call_rcu() can be called preempt-disabled section so we would have
+the same problem.
+
+The second warning came from kasan_quarantine_remove_cache(). At the end
+per_cpu_remove_cache() -> qlist_free_all() will free memory with
+disabled interrupts (due to that smp-function call).
+Moving it to kworker would solve the problem. I don't mind keeping that
+smp_function call assuming that it is all debug-code and it increases
+overall latency anyway. But then could we maybe move all those objects
+to a single list which freed after on_each_cpu()?
+
+Otherwise I haven't seen any new warnings showing up with KASAN enabled.
+
+Sebastian
