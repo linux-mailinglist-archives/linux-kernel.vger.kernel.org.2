@@ -2,252 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED5D406DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE6C406DA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 16:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbhIJOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 10:33:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:58314 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233120AbhIJOdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 10:33:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57D881FB;
-        Fri, 10 Sep 2021 07:32:35 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E94323F59C;
-        Fri, 10 Sep 2021 07:32:30 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        Jia He <justin.he@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Subject: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
-Date:   Fri, 10 Sep 2021 22:32:23 +0800
-Message-Id: <20210910143223.6705-1-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210910122820.26886-1-justin.he@arm.com>
-References: <20210910122820.26886-1-justin.he@arm.com>
+        id S233975AbhIJOf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 10:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233120AbhIJOf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 10:35:58 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE03C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:34:46 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m4so3530499ljq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 07:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ojA9ujletv5QxfO9Te+K34PRpc/+f6NKN+aRBBnpz4=;
+        b=OvOsA4iL/y6czweDJab/Mb2HHqt31KkhfdQKe8vwqLrdrBAReJpvyiczPL56F6BHPB
+         QJN7Kiz+VxVTm8YCssJwhTeY+ei1JZUD/bWzun9dYtRCw+no7fM8XndKBt0ORAK1808h
+         dpB3hIcGcA9MObPc/nyj4EbbOBLCrC1cRy10tvTrH2llR+DQ/Hu8yHjBIUQjzV7F1lVP
+         BSdi5kXf8fwxDvQsj1AczF/DmOktL0dDLuACIhs3bDEvOiQDezqpCrU48tiOAmce++WV
+         hzo2f4Gs6PU61xXEAsJtCOKsaRss0/W27o25zQ9ZGxgDanG3Xq/T5U50WdvS70MfPXC4
+         DT1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ojA9ujletv5QxfO9Te+K34PRpc/+f6NKN+aRBBnpz4=;
+        b=VUNag/haiRa2dwBGQ1mH9zp8s4HN9pRJyZcwP/3YCWiN1HYZHVY6JlyZ0+EP4NqxsF
+         0wfJsgwtyyGHnahienf1/sP9aNJkZLBBXYXe291pXXAka1XOXDQsDwwEgEss/IcZ0/c/
+         L2A3BfGX8yAJw33arQRRt4NAPRiT6HHB1WUb1T3j+UmnLj4O5KsAbhfSNf+EdVjMExau
+         xZDx/a69KxIXXjVsnoYTL94osJ0rs6Abync08G55n8HK4IIfu9kySG023j5wRPXFuST9
+         ia1/2po0uOn5Slpu37QaPmMNyuj7NZmok9zs/ZXgEi9hlj/liyjXg1OF3WD+o77C3IEh
+         w4iw==
+X-Gm-Message-State: AOAM532vlvOtZvzRbWEb+HPAu7Lpv70kdeWoK4faV8f3CGKLu32fyddR
+        05R+l89Z5xovIfexrWxP4KpVX/bw8SkKpWBfVJ0=
+X-Google-Smtp-Source: ABdhPJyPX865eWg+dzanuqZD4b0HhSTswfSGc6hpn1m/eZcvgvQXVSoJDJyHN3j9KK9oZe/seWfYRdAdhPzZwzf2Zbg=
+X-Received: by 2002:a05:651c:88e:: with SMTP id d14mr4352030ljq.472.1631284485067;
+ Fri, 10 Sep 2021 07:34:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210902172404.3517626-1-daeho43@gmail.com> <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
+ <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
+ <8f8e4695-4062-60c4-0f91-2a1f6a5b0a11@kernel.org> <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
+ <f64cb941-2bb7-eed2-732d-c9537f46f67c@kernel.org> <CACOAw_zxq=SX0OdXV77HyFytJc6aCMbYuS6KZAR_JoQeGZ26Sw@mail.gmail.com>
+ <a59d23b9-961f-4129-7491-59f88923366a@kernel.org>
+In-Reply-To: <a59d23b9-961f-4129-7491-59f88923366a@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 10 Sep 2021 07:34:34 -0700
+Message-ID: <CACOAw_z+yfNN3p3U3Ji0vLe7xDP4vkVy11RdzwwcRwwnSTjsFg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
+ mount option
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+On Thu, Sep 9, 2021 at 4:50 PM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2021/9/8 2:12, Daeho Jeong wrote:
+> > On Fri, Sep 3, 2021 at 11:45 PM Chao Yu <chao@kernel.org> wrote:
+> >>
+> >> On 2021/9/4 12:40, Daeho Jeong wrote:
+> >>>> As a per curseg field.
+> >>>>
+> >>>>> Maybe, we run into the same race condition issue you told before for
+> >>>>> fragment_remained_chunk.
+> >>>>> Could you clarify this more?
+> >>>>
+> >>>> e.g.
+> >>>>
+> >>>> F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK
+> >>>> fragment_chunk_size = 384
+> >>>> fragment_hole_size = 384
+> >>>>
+> >>>> When creating hole:
+> >>>>
+> >>>> - f2fs_allocate_data_block
+> >>>>     - __refresh_next_blkoff
+> >>>>       chunk locates in [0, 383] of current segment
+> >>>>       seg->next_blkoff = 384
+> >>>>       sbi->fragment_remained_chunk = 0
+> >>>>       then we will reset sbi->fragment_remained_chunk to 384
+> >>>>       and move seg->next_blkoff forward to 768 (384 + 384)
+> >>>>     - __has_curseg_space() returns false
+> >>>>     - allocate_segment() allocates new current segment
+> >>>>
+> >>>> So, for such case that hole may cross two segments, hole size may be truncated
+> >>>> to left size of previous segment.
+> >>>
+> >>> First, sbi->fragment_remained_chunk should be seg->fragment_remained_chunk.
+> >>
+> >> Oh, correct.
+> >>
+> >>> I understand what you mean, so you mean we need to take the leftover
+> >>> "hole" size over to the next segment?
+> >>> In the example, the leftover hole size will be (384 - (512-384)). Do
+> >>> you want to take this over to the next segment?
+> >>
+> >> Yes, the left 256 block-sized hole should be created before next chunk
+> >> in next opened segment.
+> >>
+> >
+> > Chao,
+> >
+> > Do you have any decent idea to pass the left hole size to the next
+> > segment which will be allocated?
+>
+> Daeho,
+>
+> I guess we can record left hole size in seg->fragment_remained_hole.
+>
 
-After this commit, a boot panic is alway hit on an Ampere EMAG server
-with call trace as follows:
- Internal error: synchronous external abort: 96000410 [#1] SMP
- Modules linked in:
- CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
- Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
- pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[...snip...]
- Call trace:
-  acpi_ex_system_memory_space_handler+0x26c/0x2c8
-  acpi_ev_address_space_dispatch+0x228/0x2c4
-  acpi_ex_access_region+0x114/0x268
-  acpi_ex_field_datum_io+0x128/0x1b8
-  acpi_ex_extract_from_field+0x14c/0x2ac
-  acpi_ex_read_data_from_field+0x190/0x1b8
-  acpi_ex_resolve_node_to_value+0x1ec/0x288
-  acpi_ex_resolve_to_value+0x250/0x274
-  acpi_ds_evaluate_name_path+0xac/0x124
-  acpi_ds_exec_end_op+0x90/0x410
-  acpi_ps_parse_loop+0x4ac/0x5d8
-  acpi_ps_parse_aml+0xe0/0x2c8
-  acpi_ps_execute_method+0x19c/0x1ac
-  acpi_ns_evaluate+0x1f8/0x26c
-  acpi_ns_init_one_device+0x104/0x140
-  acpi_ns_walk_namespace+0x158/0x1d0
-  acpi_ns_initialize_devices+0x194/0x218
-  acpi_initialize_objects+0x48/0x50
-  acpi_init+0xe0/0x498
+I understand we need a new fragment_remained_hole variable in segment structure.
+But, I mean.. How can we pass over the left hole size from the
+previous segment to the next segment?
 
-As mentioned by Lorenzo:
-  "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-  eMAG does not like at all and I'd need to understand why. It looks
-  like the issue happen in SystemMemory Opregion handler."
+Thanks,
 
-Hence just revert it before everything is clear.
-
-Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Harb Abdulhamid <harb@amperecomputing.com>
-
-Signed-off-by: Jia He <justin.he@arm.com>
----
-v2: Improve the commit message
-
- arch/arm64/include/asm/acpi.h |  3 ---
- arch/arm64/kernel/acpi.c      | 19 +++----------------
- drivers/acpi/osl.c            | 23 +++++++----------------
- include/acpi/acpi_io.h        |  8 --------
- 4 files changed, 10 insertions(+), 43 deletions(-)
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 7535dc7cc5aa..bd68e1b7f29f 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
- void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
--void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
--#define acpi_os_memmap acpi_os_memmap
--
- typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HWID
- 
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index 1c9c2f7a1c04..f3851724fe35 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
- 	return __pgprot(PROT_DEVICE_nGnRnE);
- }
- 
--static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
--				       acpi_size size, bool memory)
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- {
- 	efi_memory_desc_t *md, *region = NULL;
- 	pgprot_t prot;
-@@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
- 	 * It is fine for AML to remap regions that are not represented in the
- 	 * EFI memory map at all, as it only describes normal memory, and MMIO
- 	 * regions that require a virtual mapping to make them accessible to
--	 * the EFI runtime services. Determine the region default
--	 * attributes by checking the requested memory semantics.
-+	 * the EFI runtime services.
- 	 */
--	prot = memory ? __pgprot(PROT_NORMAL_NC) :
--			__pgprot(PROT_DEVICE_nGnRnE);
-+	prot = __pgprot(PROT_DEVICE_nGnRnE);
- 	if (region) {
- 		switch (region->type) {
- 		case EFI_LOADER_CODE:
-@@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
- 	return __ioremap(phys, size, prot);
- }
- 
--void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_ioremap(phys, size, false);
--}
--
--void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_ioremap(phys, size, true);
--}
--
- /*
-  * Claim Synchronous External Aborts as a firmware first notification.
-  *
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index a43f1521efe6..45c5c0e45e33 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- #define should_use_kmap(pfn)   page_is_ram(pfn)
- #endif
- 
--static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
--			      bool memory)
-+static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
- {
- 	unsigned long pfn;
- 
-@@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
- 			return NULL;
- 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
- 	} else
--		return memory ? acpi_os_memmap(pg_off, pg_sz) :
--				acpi_os_ioremap(pg_off, pg_sz);
-+		return acpi_os_ioremap(pg_off, pg_sz);
- }
- 
- static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-@@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- }
- 
- /**
-- * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-  * @phys: Start of the physical address range to map.
-  * @size: Size of the physical address range to map.
-- * @memory: true if remapping memory, false if IO
-  *
-  * Look up the given physical address range in the list of existing ACPI memory
-  * mappings.  If found, get a reference to it and return a pointer to it (its
-@@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-  * During early init (when acpi_permanent_mmap has not been set yet) this
-  * routine simply calls __acpi_map_table() to get the job done.
-  */
--static void __iomem __ref
--*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
-+void __iomem __ref
-+*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -356,7 +353,7 @@ static void __iomem __ref
- 
- 	pg_off = round_down(phys, PAGE_SIZE);
- 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
--	virt = acpi_map(phys, size, memory);
-+	virt = acpi_map(phys, size);
- 	if (!virt) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		kfree(map);
-@@ -375,17 +372,11 @@ static void __iomem __ref
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
--
--void __iomem *__ref
--acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_map_iomem(phys, size, false);
--}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- {
--	return (void *)__acpi_os_map_iomem(phys, size, true);
-+	return (void *)acpi_os_map_iomem(phys, size);
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-index a0212e67d6f4..027faa8883aa 100644
---- a/include/acpi/acpi_io.h
-+++ b/include/acpi/acpi_io.h
-@@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
- }
- #endif
- 
--#ifndef acpi_os_memmap
--static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
--					    acpi_size size)
--{
--	return ioremap_cache(phys, size);
--}
--#endif
--
- extern bool acpi_permanent_mmap;
- 
- void __iomem __ref
--- 
-2.17.1
-
+> Thanks,
+>
+> >
+> > Thanks,
+> >
+> >> Thanks,
+> >>
+> >>>
