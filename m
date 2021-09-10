@@ -2,106 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A20B406723
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC4C40672A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhIJGTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S231187AbhIJGWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhIJGTG (ORCPT
+        with ESMTP id S230450AbhIJGWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:19:06 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BCCC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 23:17:55 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id i6so937607edu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:17:55 -0700 (PDT)
+        Fri, 10 Sep 2021 02:22:49 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81AFC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 23:21:38 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso752558pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:21:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iPswZAW7o0vaf27MkZYYDJ2cBqEgZHCY6/Z7/D3pu6Y=;
-        b=OIG72E4XQRFTroK4LjVAqB9sdceeW3kBBgRmk22e5RESV1QFT1tqZTIpOXM53SNVth
-         5Y69qV6WAqZ7hrRauk3WQEWhFS5h6hKeL0s7X9tIcQ8Yl1zq3E9PJLXakvfH+j8d8CCt
-         dbP/q4atNyVOxNoB8cdG6eykTxR7n3JZbKWSw=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YZ1Cg3jt7kSg/s1Z6W7j84UpRGbFtuFXUdAmMNqttek=;
+        b=pbBh2lafzMJ8pxp+1se+PF13P2h8nvIrrXnsc+fXSy/Oem1T2BRrXwSg0C5CQD2NQu
+         VbNYxlYunBJZUaEXaGzIQh/Oaq5tXnCbL58yAKdWdHewniJ2v6kdsZwM9VxBHJU76Kyj
+         g9cMZmRVeVAl7oy40nl9BzN7Voj6taD7U2ocrFfZMhjxwaK7Z+MpyRLjNts9oSx8FXVU
+         K/ep3uVQlxHIdXILQsFTaKTpyioeYn2fgzAuHwCih9UI1qe9L/DXWOxtnevTdZBGvaGZ
+         LM3g926xWS56jNLGuLF1SxKji//fb5PS/ZsSMKu8Iqx+tXfe8M+DGru4WBvTMvm4GMiJ
+         sKig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPswZAW7o0vaf27MkZYYDJ2cBqEgZHCY6/Z7/D3pu6Y=;
-        b=4kdmdmOyzzb5r/rtqRZIVDO9/ls2el6BAso9ujs/bGm8LnF9yShGOSVAuxec5KJfaT
-         zR//321OGzxbhg3rJXVGlJCMzFNGydz4Mv/V3nOLSTkmwJkRv7yCQz9JptTauYU83pmy
-         7kfNzFhAtyyHWxvw19YvbyGBuMR5sfYOCiEgBOHvdtwUdguemSgMATtVM4BfqQFcJpTw
-         SYp64cwOdnHPsa83jCn+mQ8Po9yBJdwipUjsSfb4xVt0BHefJgfYLfG4Yq4ykek5TwF7
-         22RYNApDmR8G2cJj3qptCeM47pUrynWV95Keyw6yxDfa1TI0WIqD3a7e5sadE6jf726W
-         DlfQ==
-X-Gm-Message-State: AOAM532HXLi2Mv1LWYPA3JRPquXQBC91Ju3bJpYKLco0n75YN4IvUuq8
-        Qgg4RJi4XrAz2CqkGkpNzlrl9z76LMr9lw4fwiFo7Q==
-X-Google-Smtp-Source: ABdhPJz2hNYb7IsJ/Z8ul3E6XYe/l4+sdHrR6jy4LrPlGs8rfMGdv5WmctwUjSEI2TNaaGaZkKTfcXcMz1tOeHWCFCA=
-X-Received: by 2002:a50:ed09:: with SMTP id j9mr7227355eds.164.1631254673244;
- Thu, 09 Sep 2021 23:17:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YZ1Cg3jt7kSg/s1Z6W7j84UpRGbFtuFXUdAmMNqttek=;
+        b=UiH6OUzzm2BZ66umzHjnZPQwBV4zVDgQojQsWC5AGOduiS1dUEFUi2WDkOuP7cTbq5
+         H0JslAjHVUNnxw8DHYUBx+w6nBdS0LbMZ3gWTiKAJznSUlsdA7gLn1hdSExFB9oqgnPT
+         PpMRGzLwZN/WC9KJXTI/QZJgiqWYu1RIpww7O72BO+3iYR0l+jFJgFZNT8F9BnhkQvXW
+         DqF/zZzEIcJO1idL6wyT6OH3xSldVTAikW2cmVxYAiVBZW9bdSGdIJzqc72HOpO+bdxI
+         Wd78S1Mcl5mMElgx03eucApLMmJbLJ1HiWNlCdf72K6nlBFx9m2Ep2lvl7VbPG6dvdNY
+         wF3Q==
+X-Gm-Message-State: AOAM533MpqN90S5WRzu65n9PER4esHPJkp2a8RSS+I0BTRJZ0ujJm+xA
+        OgE8rYeVj/5K8JP3O1P/k/h8uIeohcX2Fg==
+X-Google-Smtp-Source: ABdhPJwUgdwGRc1oUeS6iivmnlzKwt980w8DajfjUlPGPVCR2WPjnS94g4QYxvhHSg9Y1SGLH5k79A==
+X-Received: by 2002:a17:90b:1b06:: with SMTP id nu6mr7749738pjb.15.1631254898261;
+        Thu, 09 Sep 2021 23:21:38 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id b10sm2922570pfl.220.2021.09.09.23.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 23:21:37 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 11:51:32 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH v2] staging: r8188eu: core: remove duplicate structure
+Message-ID: <YTr5bFrc1C4CUqZU@user>
 MIME-Version: 1.0
-References: <20210910035316.2873554-1-dualli@chromium.org> <20210910035316.2873554-2-dualli@chromium.org>
- <YTrvMSm2oB91IhuK@kroah.com>
-In-Reply-To: <YTrvMSm2oB91IhuK@kroah.com>
-From:   Li Li <dualli@chromium.org>
-Date:   Thu, 9 Sep 2021 23:17:42 -0700
-Message-ID: <CANBPYPgEbFusdyrcV1EqridahQGTH7X=s8ufUA9SMR8SefAO2g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] binder: fix freeze race
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Li Li <dualli@google.com>, Todd Kjos <tkjos@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 10:38 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Sep 09, 2021 at 08:53:16PM -0700, Li Li wrote:
-> >  struct binder_frozen_status_info {
-> >       __u32            pid;
-> > +
-> > +     /* process received sync transactions since last frozen
-> > +      * bit 0: received sync transaction after being frozen
-> > +      * bit 1: new pending sync transaction during freezing
-> > +      */
-> >       __u32            sync_recv;
->
-> You just changed a user/kernel api here, did you just break existing
-> userspace applications?  If not, how did that not happen?
->
+Remove duplicate structure mlme_handler. struct action_handler and
+mlme_handler both are having same member. Replace mlme_handler with
+action_handler.
 
-That's a good question. This design does keep backward compatibility.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
 
-The existing userspace applications call ioctl(BINDER_GET_FROZEN_INFO)
-to check if there's sync or async binder transactions sent to a frozen
-process.
+ChangeLog V2:
 
-If the existing userspace app runs on a new kernel, a sync binder call
-still sets bit 1 of sync_recv (as it's a bool variable) so the ioctl
-will return the expected value (TRUE). The app just doesn't check bit
-1 intentionally so it doesn't have the ability to tell if there's a
-race - this behavior is aligned with what happens on an old kernel as
-the old kernel doesn't have bit 1 set at all.
+- Replace the struct mlme_handler by action_handler.
 
-The bit 1 of sync_recv enables new userspace app the ability to tell
-1) there's a sync binder transaction happened when being frozen - same
-as before; and 2) if that sync binder transaction happens exactly when
-there's a race - a new information for rollback decision.
+ChangeLog V1:
 
-> thanks,
->
-> greg k-h
+-Remove duplicate structure mlme_handler and action_handler. Both
+ structure are having same member. Replace it with mlme_action_handler.
 
-Thanks,
-Li
+
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c    | 6 +++---
+ drivers/staging/r8188eu/include/rtw_mlme_ext.h | 6 ------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index f314f55997bf..499eda43fd69 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -11,7 +11,7 @@
+ #include "../include/mlme_osdep.h"
+ #include "../include/recv_osdep.h"
+
+-static struct mlme_handler mlme_sta_tbl[] = {
++static struct action_handler mlme_sta_tbl[] = {
+ 	{WIFI_ASSOCREQ,		"OnAssocReq",	&OnAssocReq},
+ 	{WIFI_ASSOCRSP,		"OnAssocRsp",	&OnAssocRsp},
+ 	{WIFI_REASSOCREQ,	"OnReAssocReq",	&OnAssocReq},
+@@ -391,7 +391,7 @@ void free_mlme_ext_priv(struct mlme_ext_priv *pmlmeext)
+ 	}
+ }
+
+-static void _mgt_dispatcher(struct adapter *padapter, struct mlme_handler *ptable, struct recv_frame *precv_frame)
++static void _mgt_dispatcher(struct adapter *padapter, struct action_handler *ptable, struct recv_frame *precv_frame)
+ {
+ 	u8 bc_addr[ETH_ALEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ 	u8 *pframe = precv_frame->rx_data;
+@@ -408,7 +408,7 @@ static void _mgt_dispatcher(struct adapter *padapter, struct mlme_handler *ptabl
+ void mgt_dispatcher(struct adapter *padapter, struct recv_frame *precv_frame)
+ {
+ 	int index;
+-	struct mlme_handler *ptable;
++	struct action_handler *ptable;
+ #ifdef CONFIG_88EU_AP_MODE
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ #endif /* CONFIG_88EU_AP_MODE */
+diff --git a/drivers/staging/r8188eu/include/rtw_mlme_ext.h b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
+index d2f4d3ce7b90..6175abbc5029 100644
+--- a/drivers/staging/r8188eu/include/rtw_mlme_ext.h
++++ b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
+@@ -213,12 +213,6 @@ enum SCAN_STATE {
+ 	SCAN_STATE_MAX,
+ };
+
+-struct mlme_handler {
+-	unsigned int   num;
+-	char *str;
+-	unsigned int (*func)(struct adapter *adapt, struct recv_frame *frame);
+-};
+-
+ struct action_handler {
+ 	unsigned int   num;
+ 	char* str;
+--
+2.32.0
+
