@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A84406768
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD08440676D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhIJGxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:53:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231223AbhIJGxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A3760F9C;
-        Fri, 10 Sep 2021 06:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631256718;
-        bh=M2BIei3PONXzybAxwQQL8UC7HatLwyKfEKfePJw8s74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d8uobNZ9/6oKqlPUAnGpOBoxKWFQdyKeKGrFb0M4b11/2BniwqgZ7giXr9e77YRKr
-         DT0lhCE7KzoJmaHel+Pb4EqB38fSIGaS46NVqx/VwrHW7QDRvEThlmYWAx6tN6NVOB
-         i3Y+Wvpj00NUzBrvd7DaEjXxM9shwcdWNWBVWsrI=
-Date:   Fri, 10 Sep 2021 08:51:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
- /sys/devices/system/node/node*/meminfo
-Message-ID: <YTsAjCZQ6AaWDjD1@kroah.com>
-References: <20210910001726.811497-1-jarkko@kernel.org>
+        id S231328AbhIJG5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231223AbhIJG5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:57:46 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD63C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 23:56:35 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id kt8so2147858ejb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qe4YuiYO6FDy+8wy0Cuuh6ezcNY8ZPHO9nOpUPv7rJI=;
+        b=wLdL2CtIobSHzFTi1orr6157r6AxMlSZOYeUcxBSBoCxfVQMcvC3r9zq8QxGSgm2dk
+         aV4+xXpTZJ7LIPAgSYVKFpzdXnylig3r/tVHwOgEBF/sLuz/0EmMIBHrE0kfCQu0LugH
+         p/fPKFWtmiGee83mFhX+2fy+uo4a257OAfhxM1BrlRrPU1qnTR0fapGLJuRPe+pslsNn
+         VZVs/lTskp0aN677OfV10NoQadB+Nwsxu6R8qlfoxhoINGc3pi/sFXVdarIW/mOcslrc
+         eLWJhfabHRpmWI1sPTMzP+6i7q4NhaolOo4BS3HamQMxcQOPnOrW9ETANXAnNxjsa2YC
+         4S8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qe4YuiYO6FDy+8wy0Cuuh6ezcNY8ZPHO9nOpUPv7rJI=;
+        b=f0+qyARcYX42uobXDzRXwy7VMeaTOEIRMVImm7Z9s6df+jIaCSub6LU2LPrWWcVqm4
+         3naE50WU4XqNZnTxiwnQERV3A6G1hCu4uIFiTDchm5ZMh6O0Hrzf3EJODoqL2ZiAE2fA
+         /eZ8Co/tqI2Kil6sNPAvXw9xnuI5q7PKCKYJ//GTvMuHiV86BMFIRNroSN89QPntqTzz
+         QEA99cgJlFVJdvktFBuul3+zimSPiNp0F6CZEglV7cy7p/8vPJlkLZoKLSVhO8s8OEz9
+         JH3ujZNaBDOufe4bAD9KMBMaeH7+dqc4UG/E+3iLavpfW+ewiejqZhWFU6c+2lu2ZVRt
+         NWwA==
+X-Gm-Message-State: AOAM533yzpouPQfXzQ78hHMJ2x4Hf/cMj5dVcxXYsNjX1GxaF8Yjjt4n
+        0zwmvMpJbp0/H37K9YvaHvKjNWKecs/jKQ==
+X-Google-Smtp-Source: ABdhPJwaE7mB7X2UQ4DAPK52lKus+Ck7UNwYLhd7APaKbaZX4iMC+SyixQr//QBW+89mH7/g8aairg==
+X-Received: by 2002:a17:906:51d4:: with SMTP id v20mr7892059ejk.9.1631256993850;
+        Thu, 09 Sep 2021 23:56:33 -0700 (PDT)
+Received: from blmsp (dynamic-046-114-035-064.46.114.pool.telefonica.de. [46.114.35.64])
+        by smtp.gmail.com with ESMTPSA id a5sm2252540edm.37.2021.09.09.23.56.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 23:56:33 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 08:56:32 +0200
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: info@cestasdeplastico.com spam
+Message-ID: <20210910065632.uwp6bfwy6mrdxnkj@blmsp>
+References: <20210809132751.kwmgd2movxgoc4v6@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210910001726.811497-1-jarkko@kernel.org>
+In-Reply-To: <20210809132751.kwmgd2movxgoc4v6@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
-> The amount of SGX memory on the system is determined by the BIOS and it
-> varies wildly between systems.  It can be from dozens of MB's on desktops
-> or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> sometimes useful to know the amount of usable SGX memory in the system.
+Hi,
+
+On Mon, Aug 09, 2021 at 04:27:51PM +0300, Vladimir Oltean wrote:
+> Every time I send an email to a few mailing lists, like
+> linux-kernel@vger.kernel.org, and (I believe)
+> linux-arm-kernel@lists.infradead.org, I get an auto-reply from said
+> email address which says:
 > 
-> Add SGX_MemTotal field to /sys/devices/system/node/node*/meminfo,
-> showing the total SGX memory in each NUMA node. The total memory for
-> each NUMA node is calculated by adding the sizes of contained EPC
-> sections together.
+> 	Hemos recibido correctamente su consulta, en breve le contestaremos. Gracias.
 > 
-> Introduce arch_node_read_meminfo(), which can optionally be rewritten by
-> the arch code, and rewrite it for x86 so it prints SGX_MemTotal.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> v4:
-> * A new patch.
->  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
->  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
->  drivers/base/node.c            | 10 +++++++++-
->  3 files changed, 29 insertions(+), 1 deletion(-)
+> It is really annoying. Can we make it stop?
 
-Where is the Documentation/ABI/ update for this new sysfs file?
+Same here. For me it is probably linux-arm-kernel, I didn't send to
+linux-kernel.
 
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 63d3de02bbcc..4c6da5f4a9d4 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -717,6 +717,7 @@ static bool __init sgx_page_cache_init(void)
->  		}
->  
->  		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
-> +		sgx_numa_nodes[nid].size += size;
->  
->  		sgx_nr_epc_sections++;
->  	}
-> @@ -790,6 +791,19 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
->  }
->  EXPORT_SYMBOL_GPL(sgx_set_attribute);
->  
-> +ssize_t arch_node_read_meminfo(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       char *buf, int len)
-> +{
-> +	struct sgx_numa_node *node = &sgx_numa_nodes[dev->id];
-> +
-> +	len += sysfs_emit_at(buf, len,
-> +			     "Node %d SGX_MemTotal:   %8lu kB\n",
-> +			     dev->id, node->size);
-
-Wait, that is not how sysfs files work.  they are "one value per file"
-Please do not have multiple values in a single sysfs file, that is not
-acceptable at all.
-
-thanks,
-
-greg k-h
+Best,
+Markus
