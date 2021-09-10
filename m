@@ -2,246 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA51C406721
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A20B406723
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 08:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhIJGRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 02:17:48 -0400
-Received: from mga06.intel.com ([134.134.136.31]:31026 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhIJGRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:17:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="282021832"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="282021832"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2021 23:16:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="466951230"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Sep 2021 23:16:31 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mOZpv-0003vt-4S; Fri, 10 Sep 2021 06:16:31 +0000
-Date:   Fri, 10 Sep 2021 14:15:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 5448a9e9f16a1b95790df7ef58686331aa3935a6
-Message-ID: <613af80a.9oU2Y+CuuhnNIG4e%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231172AbhIJGTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 02:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230474AbhIJGTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 02:19:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BCCC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Sep 2021 23:17:55 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id i6so937607edu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Sep 2021 23:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iPswZAW7o0vaf27MkZYYDJ2cBqEgZHCY6/Z7/D3pu6Y=;
+        b=OIG72E4XQRFTroK4LjVAqB9sdceeW3kBBgRmk22e5RESV1QFT1tqZTIpOXM53SNVth
+         5Y69qV6WAqZ7hrRauk3WQEWhFS5h6hKeL0s7X9tIcQ8Yl1zq3E9PJLXakvfH+j8d8CCt
+         dbP/q4atNyVOxNoB8cdG6eykTxR7n3JZbKWSw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iPswZAW7o0vaf27MkZYYDJ2cBqEgZHCY6/Z7/D3pu6Y=;
+        b=4kdmdmOyzzb5r/rtqRZIVDO9/ls2el6BAso9ujs/bGm8LnF9yShGOSVAuxec5KJfaT
+         zR//321OGzxbhg3rJXVGlJCMzFNGydz4Mv/V3nOLSTkmwJkRv7yCQz9JptTauYU83pmy
+         7kfNzFhAtyyHWxvw19YvbyGBuMR5sfYOCiEgBOHvdtwUdguemSgMATtVM4BfqQFcJpTw
+         SYp64cwOdnHPsa83jCn+mQ8Po9yBJdwipUjsSfb4xVt0BHefJgfYLfG4Yq4ykek5TwF7
+         22RYNApDmR8G2cJj3qptCeM47pUrynWV95Keyw6yxDfa1TI0WIqD3a7e5sadE6jf726W
+         DlfQ==
+X-Gm-Message-State: AOAM532HXLi2Mv1LWYPA3JRPquXQBC91Ju3bJpYKLco0n75YN4IvUuq8
+        Qgg4RJi4XrAz2CqkGkpNzlrl9z76LMr9lw4fwiFo7Q==
+X-Google-Smtp-Source: ABdhPJz2hNYb7IsJ/Z8ul3E6XYe/l4+sdHrR6jy4LrPlGs8rfMGdv5WmctwUjSEI2TNaaGaZkKTfcXcMz1tOeHWCFCA=
+X-Received: by 2002:a50:ed09:: with SMTP id j9mr7227355eds.164.1631254673244;
+ Thu, 09 Sep 2021 23:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210910035316.2873554-1-dualli@chromium.org> <20210910035316.2873554-2-dualli@chromium.org>
+ <YTrvMSm2oB91IhuK@kroah.com>
+In-Reply-To: <YTrvMSm2oB91IhuK@kroah.com>
+From:   Li Li <dualli@chromium.org>
+Date:   Thu, 9 Sep 2021 23:17:42 -0700
+Message-ID: <CANBPYPgEbFusdyrcV1EqridahQGTH7X=s8ufUA9SMR8SefAO2g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] binder: fix freeze race
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Li Li <dualli@google.com>, Todd Kjos <tkjos@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martijn Coenen <maco@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: 5448a9e9f16a1b95790df7ef58686331aa3935a6  Merge branch 'x86/urgent'
+On Thu, Sep 9, 2021 at 10:38 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Sep 09, 2021 at 08:53:16PM -0700, Li Li wrote:
+> >  struct binder_frozen_status_info {
+> >       __u32            pid;
+> > +
+> > +     /* process received sync transactions since last frozen
+> > +      * bit 0: received sync transaction after being frozen
+> > +      * bit 1: new pending sync transaction during freezing
+> > +      */
+> >       __u32            sync_recv;
+>
+> You just changed a user/kernel api here, did you just break existing
+> userspace applications?  If not, how did that not happen?
+>
 
-elapsed time: 1132m
+That's a good question. This design does keep backward compatibility.
 
-configs tested: 187
-configs skipped: 3
+The existing userspace applications call ioctl(BINDER_GET_FROZEN_INFO)
+to check if there's sync or async binder transactions sent to a frozen
+process.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+If the existing userspace app runs on a new kernel, a sync binder call
+still sets bit 1 of sync_recv (as it's a bool variable) so the ioctl
+will return the expected value (TRUE). The app just doesn't check bit
+1 intentionally so it doesn't have the ability to tell if there's a
+race - this behavior is aligned with what happens on an old kernel as
+the old kernel doesn't have bit 1 set at all.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210908
-powerpc                 xes_mpc85xx_defconfig
-parisc                generic-64bit_defconfig
-arm                             ezx_defconfig
-powerpc                     mpc83xx_defconfig
-mips                     cu1830-neo_defconfig
-sh                          kfr2r09_defconfig
-sh                        apsh4ad0a_defconfig
-arm                       aspeed_g4_defconfig
-sh                   sh7724_generic_defconfig
-arm                            hisi_defconfig
-mips                        nlm_xlr_defconfig
-mips                  decstation_64_defconfig
-mips                        omega2p_defconfig
-powerpc                     asp8347_defconfig
-arm                         lpc32xx_defconfig
-powerpc                       eiger_defconfig
-h8300                            alldefconfig
-um                           x86_64_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          collie_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-sparc                       sparc32_defconfig
-arm                         axm55xx_defconfig
-mips                     loongson2k_defconfig
-mips                      fuloong2e_defconfig
-ia64                            zx1_defconfig
-openrisc                 simple_smp_defconfig
-arm                         lpc18xx_defconfig
-sh                             sh03_defconfig
-sh                            titan_defconfig
-sh                            shmin_defconfig
-arm                      integrator_defconfig
-mips                      maltaaprp_defconfig
-mips                      pic32mzda_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                       ppc64_defconfig
-xtensa                           alldefconfig
-sh                           se7206_defconfig
-um                             i386_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    klondike_defconfig
-openrisc                            defconfig
-mips                          ath79_defconfig
-arc                          axs101_defconfig
-parisc                generic-32bit_defconfig
-arm                       versatile_defconfig
-sh                               j2_defconfig
-sh                             espt_defconfig
-ia64                        generic_defconfig
-arm                         vf610m4_defconfig
-mips                           ip32_defconfig
-powerpc                    sam440ep_defconfig
-mips                        workpad_defconfig
-h8300                    h8300h-sim_defconfig
-arm                         nhk8815_defconfig
-arm                  colibri_pxa300_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      obs600_defconfig
-powerpc                     sequoia_defconfig
-powerpc                     redwood_defconfig
-sh                          r7785rp_defconfig
-x86_64                           alldefconfig
-mips                         tb0219_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         palmz72_defconfig
-powerpc                mpc7448_hpc2_defconfig
-m68k                          multi_defconfig
-powerpc                  iss476-smp_defconfig
-arm                      tct_hammer_defconfig
-sh                           se7712_defconfig
-arm                         assabet_defconfig
-arm                          ixp4xx_defconfig
-ia64                             allyesconfig
-powerpc                      pmac32_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                      ppc6xx_defconfig
-mips                       rbtx49xx_defconfig
-mips                        vocore2_defconfig
-powerpc                      makalu_defconfig
-m68k                        m5407c3_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                           se7724_defconfig
-csky                             alldefconfig
-sh                            hp6xx_defconfig
-xtensa                    xip_kc705_defconfig
-sh                        edosk7760_defconfig
-mips                        qi_lb60_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     ppa8548_defconfig
-x86_64               randconfig-c001-20210908
-x86_64               randconfig-c001-20210910
-i386                 randconfig-c001-20210910
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210908
-x86_64               randconfig-a006-20210908
-x86_64               randconfig-a003-20210908
-x86_64               randconfig-a001-20210908
-x86_64               randconfig-a005-20210908
-x86_64               randconfig-a002-20210908
-i386                 randconfig-a005-20210908
-i386                 randconfig-a004-20210908
-i386                 randconfig-a006-20210908
-i386                 randconfig-a002-20210908
-i386                 randconfig-a001-20210908
-i386                 randconfig-a003-20210908
-i386                 randconfig-a016-20210910
-i386                 randconfig-a011-20210910
-i386                 randconfig-a012-20210910
-i386                 randconfig-a013-20210910
-i386                 randconfig-a014-20210910
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+The bit 1 of sync_recv enables new userspace app the ability to tell
+1) there's a sync binder transaction happened when being frozen - same
+as before; and 2) if that sync binder transaction happens exactly when
+there's a race - a new information for rollback decision.
 
-clang tested configs:
-s390                 randconfig-c005-20210908
-powerpc              randconfig-c003-20210908
-mips                 randconfig-c004-20210908
-i386                 randconfig-c001-20210908
-x86_64               randconfig-a002-20210910
-x86_64               randconfig-a003-20210910
-x86_64               randconfig-a004-20210910
-x86_64               randconfig-a006-20210910
-x86_64               randconfig-a001-20210910
-x86_64               randconfig-a016-20210908
-x86_64               randconfig-a011-20210908
-x86_64               randconfig-a012-20210908
-x86_64               randconfig-a015-20210908
-x86_64               randconfig-a014-20210908
-x86_64               randconfig-a013-20210908
-i386                 randconfig-a012-20210908
-i386                 randconfig-a015-20210908
-i386                 randconfig-a011-20210908
-i386                 randconfig-a013-20210908
-i386                 randconfig-a014-20210908
-i386                 randconfig-a016-20210908
-s390                 randconfig-r044-20210908
+> thanks,
+>
+> greg k-h
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Li
