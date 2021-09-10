@@ -2,192 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48137406F11
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7391E406F27
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 18:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhIJQLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 12:11:04 -0400
-Received: from mail-bn8nam11on2056.outbound.protection.outlook.com ([40.107.236.56]:31936
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233050AbhIJQI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:08:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NPKjQ5WXf/EeCL1r9Pn22BQCWK0SzREnVjo0V7/xNayXEUu+2su5v6FrNX4igaPGrzDEPnUiucnb48oHM9pFsyZaG1GAH4yv1k13cfiviaMnEAJ76Pk60F3mGW/TCzeGl2v6mV9hcIgBZmrpxrgHM0JrKdIS2HVpBp5+dc4a0Ge6UUNbbSu4At7UPw6w43xTQwwKp5eiMCzhPf9eh4VkghMNa6QiqwYU4HMQRKXdC5hnmnNH1rFXSvEWVGD+a7UA4FUuxb/aAkQT+NxL1Kezpi8DImAjx0eMBx/l1wHlcRu9XX8azv7mjUN0pErHOVB0Q1+vO5G6dQ4fssf743vNIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=xN4+7gc0FnJx3MvoIvCbVWojWzEUHWgpv9NIeAgt6mU=;
- b=SY+2VLtfaNlKyzK3tzJmRtmsTmPvsz/i5gEBbEBb/6YYAh47SxaudynqrqSRbkT2hFyqPsh2htNcBR/JDVRimdh2EbC2HBPfGW3r4Rolh4tYqJ9b0Raf7lRUaGw7ws3XlRmCdtePy7ZH8vKMR99nYr/L7Ho8XeZ473dZYpGZAw2qw2v1Ah6vIaj3WMq0HJbdZaC2M84FiWm3LiPmoH0Kzyze9vvv4cUnMBbXW+OidALdyRJaWv63KZPbWaLjgrhA3oK7y41SmtjdiGxkjHQqB1F0XpOayW/6ppEmAdASkLE5sxv5dU32anyzVGYScRAS6jmUn5qJ/knljsRvrs6o6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+        id S233431AbhIJQLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 12:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233728AbhIJQJj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 12:09:39 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A62AC06139F
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:06:27 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id a15so2978141iot.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 09:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xN4+7gc0FnJx3MvoIvCbVWojWzEUHWgpv9NIeAgt6mU=;
- b=U79gSkbPpXZHxHjPRXPCf+JNdTZLCa6xNEC618fTACCEOga/8NNgpJJ9/Rbg5fmziH2ctCVPiUkLt/+9/YkeQ54IP03ldq/BMAT+GWrTRo8R2CWO6FCPgnKaVRrG2aTVNBfxC+LUt7RmZ2VHWJp3mRmlSJep9/R7fXnWSbI8JTY=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SA2PR11MB5099.namprd11.prod.outlook.com (2603:10b6:806:f9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 10 Sep
- 2021 16:07:00 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::7050:a0a:415:2ccd]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::7050:a0a:415:2ccd%7]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 16:07:00 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>
-Subject: [PATCH 31/31] staging: wfx: indent functions arguments
-Date:   Fri, 10 Sep 2021 18:05:04 +0200
-Message-Id: <20210910160504.1794332-32-Jerome.Pouiller@silabs.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
-References: <20210910160504.1794332-1-Jerome.Pouiller@silabs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: SN4PR0601CA0006.namprd06.prod.outlook.com
- (2603:10b6:803:2f::16) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/3V2asYgEL3IE7mdskqpgHQZ4oGGrM9O3oWQARXZJX8=;
+        b=HIjCu36ckpson0cUVfNHptlBNTsv81dBc5K/3SNUPKS1dLPAxX+G+Tvl/XTAVTkfbX
+         GOlsFa+/89uxxKZEIkppbJA0uTOkLzZHsGNkn24F1L7JqHRQBGO7C0wnMjA0oIBwhso+
+         1W0Xl/GJaIkq92imBG+cZZdNHLxWchbsHNMERmi3CNebtGvBFAt4N9Lo16wnD78chlvA
+         4WhppEWsp8it46Jxxv4zV+No/qH4pJnKATCBZq6HmSo34+S64j5vat9swUro0aAZnCAz
+         7OqXTqHwcMT6sV0pqQCfnrv5bHemasGZ1idhqAj1i1/m+RUPSoNLu0ukQFR19YsA5pOe
+         K9cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/3V2asYgEL3IE7mdskqpgHQZ4oGGrM9O3oWQARXZJX8=;
+        b=fDJ50tSUSojvtczHexCtFr32FtxrYIrdaBQPo0N+vSqTe8iz9L/8gGE7ZASqFlvm+e
+         3gbc/xV7rYnYZm3LetBCrq5WLkyMy4PHEaCN9ipxpHS6FDSEmBCvItNWB5J2FHkHaYs9
+         3E/0ec3EAutdtQeCLOngnSJJIBxRy4P+dabJPB/jb03pZSBLS/9YY5Oij7emqvvNY7pf
+         o6QgGpHNN1T+aE+yEJRZ39dPvqDL2xN/h84fxdGPL6D6Tx7zpH+nzS9olAL6p+EwGRHE
+         As48xq+CRYGa5XcchJmm2syoWeZxFJ4E1EEzgVw79cDgudlpzUJBeUZPUkIr3E/q0sdp
+         HL2A==
+X-Gm-Message-State: AOAM532eZySVBWKmCQ46YJ25humgqDOSDWmj/BTbw85M2wit/5yRmD0v
+        CsV76fojpFyR8RvXP4SzEPAmjQ==
+X-Google-Smtp-Source: ABdhPJwl4SWp8hlYVyStkdT3piQw4dgF0sMX6zBsoiIi3AnjHUggyeDOkkfkI99vY816jpRcPlCztw==
+X-Received: by 2002:a6b:3e89:: with SMTP id l131mr7794490ioa.74.1631289986259;
+        Fri, 10 Sep 2021 09:06:26 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id x12sm2683824ilm.56.2021.09.10.09.06.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 09:06:25 -0700 (PDT)
+Subject: Re: [git pull] iov_iter fixes
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
+ <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
+ <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
+ <YTrJsrXPbu1jXKDZ@zeniv-ca.linux.org.uk>
+ <b8786a7e-5616-ce83-c2f2-53a4754bf5a4@kernel.dk>
+ <YTrM130S32ymVhXT@zeniv-ca.linux.org.uk>
+ <9ae5f07f-f4c5-69eb-bcb1-8bcbc15cbd09@kernel.dk>
+ <YTrQuvqvJHd9IObe@zeniv-ca.linux.org.uk>
+ <f02eae7c-f636-c057-4140-2e688393f79d@kernel.dk>
+ <YTrSqvkaWWn61Mzi@zeniv-ca.linux.org.uk>
+ <9855f69b-e67e-f7d9-88b8-8941666ab02f@kernel.dk>
+ <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
+Message-ID: <1a61c333-680d-71a0-3849-5bfef555a49f@kernel.dk>
+Date:   Fri, 10 Sep 2021 10:06:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: from pc-42.silabs.com (2a01:e34:ecb5:66a0:9876:e1d7:65be:d294) by SN4PR0601CA0006.namprd06.prod.outlook.com (2603:10b6:803:2f::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15 via Frontend Transport; Fri, 10 Sep 2021 16:06:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4cd6e4b2-150e-4d82-7e1b-08d97474f447
-X-MS-TrafficTypeDiagnostic: SA2PR11MB5099:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA2PR11MB5099E9E6646DAC7F1632E54A93D69@SA2PR11MB5099.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:378;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OWPrUOMDWre9YfY3QGE1Ty9OJYN04Im6w6V4FTNWqAylM6wWgi/n0dEn3fRyttPIMcdtUEqvLQteH9O4n44kLDxU3PhOVIxJiYdJoB6HinPcKKZ1Sgk4gGv1PDZVaKeh/Wej5CUeud2u/jEIPY77EZlgcQARdkrka0gv94CTa66szanlafA+Yp1XaQ/VNFHFUfrv5ks0DHUjN6oc6CmqT7Ieb6wvKVWPitd+Ys1wHaHUyk6ryq8f0g4YLhfP0hWNw4J9z4vTf0YsObgIYLmREIIkT3JyhUsPMqq29ravkCArD0iXj4Q8pSf9L9wpShIHvIPpmuKodoGmBnKJKa1fp78t1qslIfo0nBOWRYTQUgAahWtS5VkpdhjINHtX6HL0DnMkMYhVKN5TLvG5U/k1QxnH9b/Bs+7u8TNcv1mtt+obXnEa39dudDS9cJeGRpQbaLGHc7cpnQPTDY1l+3ynohEXIKAM8ZPPgA1C3j9HANBrgDaAtlsMNHswkD3sYK3Qqhfo9YSZetitDca3pYZkLyBEwhdahcUvbh8Hvj1KYEpuTxKmdgIDZkvE0KXK2gnwW4tilxdH4vmoVPtfhY6FMik7927FBk4nkLQ+ZtIijhxk+0kSDAD5ymE6+B0LLx63Q9aYwrV+SosxMSb/mYyhnw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39850400004)(396003)(136003)(346002)(83380400001)(316002)(66556008)(2906002)(6666004)(6486002)(86362001)(66946007)(54906003)(36756003)(1076003)(5660300002)(38100700002)(186003)(8936002)(2616005)(4326008)(8676002)(66476007)(478600001)(52116002)(7696005)(107886003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmduc0FhY0w5TGZhYXB4aG1vdEE5RXEycEM2UmcweHVkL0dpU1FOcGNhV253?=
- =?utf-8?B?S3hzSTlKWFJSMEVGczN3R0lWUWZJTDBUWTVPbVVXMzFtK1NadDMwaGFyVnlr?=
- =?utf-8?B?U3pFbm9ocG9oYThQYllDNE4rKzJGMld0ejI4YnA5TVM2aFhJc045bHRiUkZZ?=
- =?utf-8?B?bmYzL1lsNmlNUHdEcFFVUHZEVlRHMXNhbEVYWlpoa3QzTWtsbDl2TnI0a3Rh?=
- =?utf-8?B?WFI4UUJFbTlPcnd0cDVsbVNUVGs3eG4ycGp4bXk2Z2tueFJpTlJsL3phWndy?=
- =?utf-8?B?NWVXTmlUOHU2WmFwR2o4UVJQTmY3ZDRoUTk4ZVBoTUgyRTUrUldzNllzcTMz?=
- =?utf-8?B?K2c0QXpiMmpWc3EzNFRnbEVUUDltS1IvQ3ZZOTJBT0JTMUhHVTJiMVZsdStZ?=
- =?utf-8?B?WkFtVzBHaHpUU3JFZzRZY3ExWDBuZ0g1S2dRaHhsMEZ6RWFaeGtSTWYvd1Q3?=
- =?utf-8?B?Ri8rWFpyMjRVN3IxTjJscWFZdDlBSk51RUV5cHpsODB4cjF1UW9ld29sSGVr?=
- =?utf-8?B?cEY5VXpGUm1rWUdXaWhOZGVOQkVmaTkrRVkwcjZrb2VuQWVaQ2lHSXd5aWRP?=
- =?utf-8?B?Z1hKSkMyQUFNalhZazZJY0NRQXVRbzhpM2YzMC80a1BiaTZkVlRVeDRENTdw?=
- =?utf-8?B?UElJMzR4dXRBSGdJc25GOEs1UC8zRkZrK0R6MHZnMEVzTXR6K2pkYnZEdnhW?=
- =?utf-8?B?TmpnTzlPVnhhQ29JL3YrSzIrdkpnR1FRU2lLSWIvcFl0dGpSekhTYjFWeGho?=
- =?utf-8?B?alB6RnBSM3FpaFVOUVc2b2NWWFpTb2dzR0JIS2ZrK3NoUmZSNDN5N2RsZ1RY?=
- =?utf-8?B?dkx3Mk1McEpkeE52R09YNXgvY1VsOTh1MzZQQzBzM1Uwa3d5TGFPWENZRVhD?=
- =?utf-8?B?U1A4RXp5Y2FvM3ZDWnBINmpkRTl2WHZBcExrNmM4eFNQRTNuT3JaTWxEdVJ5?=
- =?utf-8?B?N2FkRTgxTEs0Y0pkaW96M2p0ekVYMFlwaXRoa214bHdjZzZ5emlHSkJUbmh2?=
- =?utf-8?B?UXpnSUJLTHp1U2tQVGhURWkwamliM0JTYnd4ZTFpNEQvRVB4a2R6VzdVZXhn?=
- =?utf-8?B?TUJvTWQrTndjWURiR0FrZ0FnNVFyeVQwOHZaaTZ2Q1l0SXhYNCtVTkVmeUJr?=
- =?utf-8?B?c1FKOHJPMXhKbmtKNHdjY3R6dEVuaTFtOG5oZ0NSOFlEZE9qMFdEdGg2OUtC?=
- =?utf-8?B?ODI5RGZDZWZTQUc2VTNkOGJaKzhMTjU3c3hvMENEK0NMMURxeHRhMnV0azlV?=
- =?utf-8?B?WG5EcmkwSXFTKytMc21GQVRQN2p3R1VFTVpycHRoSG5GTlp4TWJUNWRKc002?=
- =?utf-8?B?dmtBODIzNTJBLzh1NHpFL1YwR2RCTk91NWhiNmovM2UxTlZmdC9MbThxeHYw?=
- =?utf-8?B?d1JvZU4rNE82bFpiaFdscjFvd1ZZSitsOUI5cnQrdHBlNG9vekZKUitqUEhW?=
- =?utf-8?B?bGVXK0lDY0RUT2lwclVXZWFFS0NTQ3VXVUR0VDhUL1VKMStBNU5ZNnhIWVpR?=
- =?utf-8?B?blB0dVZGOUJGdyt3cFhkYXNtNFdReWt0cVM1RGpsS29ienNtYnlqZkxpdjV6?=
- =?utf-8?B?bHMyUjRQQ1hISXBwTUYvUVVOZmlCY1hBTUFQcHdHRllWclpCcC8vU3FWbWRq?=
- =?utf-8?B?OGVLRTdZLzZBRFAraTJ6NlRzY1J4QmlGanh4TE9OSTRHQ05meFEzZ1dscklK?=
- =?utf-8?B?Q0krMVM4N2JaUnNrUnNRT1pYM1gxeG83NWJnc2NNMDMzZGpFcGtEeGZVQTZH?=
- =?utf-8?B?RG01ZFFyd2VqSVZlR0h2UWVjTWFqNkFITXhEU2R6UDBWSWw2amNFTytYaTNo?=
- =?utf-8?B?QWlYUzZlYzVKb256SCtRS25OamxyZWoyZjdBaWsxeFZDVStseFMyOWFOY0Na?=
- =?utf-8?Q?Zq1b6n7dyRbpA?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cd6e4b2-150e-4d82-7e1b-08d97474f447
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 16:06:31.5568
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UzOTUTYpu/kLQcX7gdqFEdPBjHP0MG80UT1hUFrVLecN3CmhxFxWI0LnRuPSaFywgSqJDSQzzY8KNqEt5K7DPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5099
+In-Reply-To: <4b26d8cd-c3fa-8536-a295-850ecf052ecd@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKRnVu
-Y3Rpb24gYXJndW1lbnRzIG11c3QgYmUgYWxpZ25lZCB3aXRoIGxlZnQgcGFyZW50aGVzaXMuIEFw
-cGx5IHRoYXQKcnVsZS4KClNpZ25lZC1vZmYtYnk6IErDqXLDtG1lIFBvdWlsbGVyIDxqZXJvbWUu
-cG91aWxsZXJAc2lsYWJzLmNvbT4KLS0tCiBkcml2ZXJzL3N0YWdpbmcvd2Z4L2hpZl90eF9taWIu
-YyB8ICAyICstCiBkcml2ZXJzL3N0YWdpbmcvd2Z4L2tleS5jICAgICAgICB8IDI2ICsrKysrKysr
-KysrKystLS0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDE0
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy93ZngvaGlmX3R4X21p
-Yi5jIGIvZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfdHhfbWliLmMKaW5kZXggNDVlNTMxZDk5NmJk
-Li45N2U5NjFlNmJjZjYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc3RhZ2luZy93ZngvaGlmX3R4X21p
-Yi5jCisrKyBiL2RyaXZlcnMvc3RhZ2luZy93ZngvaGlmX3R4X21pYi5jCkBAIC03NSw3ICs3NSw3
-IEBAIGludCBoaWZfZ2V0X2NvdW50ZXJzX3RhYmxlKHN0cnVjdCB3ZnhfZGV2ICp3ZGV2LCBpbnQg
-dmlmX2lkLAogCX0gZWxzZSB7CiAJCXJldHVybiBoaWZfcmVhZF9taWIod2RldiwgdmlmX2lkLAog
-CQkJCSAgICBISUZfTUlCX0lEX0VYVEVOREVEX0NPVU5URVJTX1RBQkxFLCBhcmcsCi0JCQkJc2l6
-ZW9mKHN0cnVjdCBoaWZfbWliX2V4dGVuZGVkX2NvdW50X3RhYmxlKSk7CisJCQkJICAgIHNpemVv
-ZihzdHJ1Y3QgaGlmX21pYl9leHRlbmRlZF9jb3VudF90YWJsZSkpOwogCX0KIH0KIApkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9zdGFnaW5nL3dmeC9rZXkuYyBiL2RyaXZlcnMvc3RhZ2luZy93Zngva2V5
-LmMKaW5kZXggNTFhNTI4MTAyMDE2Li42NTEzNGExNzQ2ODMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
-c3RhZ2luZy93Zngva2V5LmMKKysrIGIvZHJpdmVycy9zdGFnaW5nL3dmeC9rZXkuYwpAQCAtMzEs
-NyArMzEsNyBAQCBzdGF0aWMgdm9pZCB3ZnhfZnJlZV9rZXkoc3RydWN0IHdmeF9kZXYgKndkZXYs
-IGludCBpZHgpCiB9CiAKIHN0YXRpYyB1OCBmaWxsX3dlcF9wYWlyKHN0cnVjdCBoaWZfd2VwX3Bh
-aXJ3aXNlX2tleSAqbXNnLAotCQkJICAgICBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXks
-IHU4ICpwZWVyX2FkZHIpCisJCQlzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXksIHU4ICpw
-ZWVyX2FkZHIpCiB7CiAJV0FSTihrZXktPmtleWxlbiA+IHNpemVvZihtc2ctPmtleV9kYXRhKSwg
-ImluY29uc2lzdGVudCBkYXRhIik7CiAJbXNnLT5rZXlfbGVuZ3RoID0ga2V5LT5rZXlsZW47CkBA
-IC00MSw3ICs0MSw3IEBAIHN0YXRpYyB1OCBmaWxsX3dlcF9wYWlyKHN0cnVjdCBoaWZfd2VwX3Bh
-aXJ3aXNlX2tleSAqbXNnLAogfQogCiBzdGF0aWMgdTggZmlsbF93ZXBfZ3JvdXAoc3RydWN0IGhp
-Zl93ZXBfZ3JvdXBfa2V5ICptc2csCi0JCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25m
-ICprZXkpCisJCQkgc3RydWN0IGllZWU4MDIxMV9rZXlfY29uZiAqa2V5KQogewogCVdBUk4oa2V5
-LT5rZXlsZW4gPiBzaXplb2YobXNnLT5rZXlfZGF0YSksICJpbmNvbnNpc3RlbnQgZGF0YSIpOwog
-CW1zZy0+a2V5X2lkID0ga2V5LT5rZXlpZHg7CkBAIC01MSw3ICs1MSw3IEBAIHN0YXRpYyB1OCBm
-aWxsX3dlcF9ncm91cChzdHJ1Y3QgaGlmX3dlcF9ncm91cF9rZXkgKm1zZywKIH0KIAogc3RhdGlj
-IHU4IGZpbGxfdGtpcF9wYWlyKHN0cnVjdCBoaWZfdGtpcF9wYWlyd2lzZV9rZXkgKm1zZywKLQkJ
-CSAgICAgIHN0cnVjdCBpZWVlODAyMTFfa2V5X2NvbmYgKmtleSwgdTggKnBlZXJfYWRkcikKKwkJ
-CSBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXksIHU4ICpwZWVyX2FkZHIpCiB7CiAJdTgg
-KmtleWJ1ZiA9IGtleS0+a2V5OwogCkBAIC02OCw5ICs2OCw5IEBAIHN0YXRpYyB1OCBmaWxsX3Rr
-aXBfcGFpcihzdHJ1Y3QgaGlmX3RraXBfcGFpcndpc2Vfa2V5ICptc2csCiB9CiAKIHN0YXRpYyB1
-OCBmaWxsX3RraXBfZ3JvdXAoc3RydWN0IGhpZl90a2lwX2dyb3VwX2tleSAqbXNnLAotCQkJICAg
-ICAgIHN0cnVjdCBpZWVlODAyMTFfa2V5X2NvbmYgKmtleSwKLQkJCSAgICAgICBzdHJ1Y3QgaWVl
-ZTgwMjExX2tleV9zZXEgKnNlcSwKLQkJCSAgICAgICBlbnVtIG5sODAyMTFfaWZ0eXBlIGlmdHlw
-ZSkKKwkJCSAgc3RydWN0IGllZWU4MDIxMV9rZXlfY29uZiAqa2V5LAorCQkJICBzdHJ1Y3QgaWVl
-ZTgwMjExX2tleV9zZXEgKnNlcSwKKwkJCSAgZW51bSBubDgwMjExX2lmdHlwZSBpZnR5cGUpCiB7
-CiAJdTggKmtleWJ1ZiA9IGtleS0+a2V5OwogCkBAIC05Myw3ICs5Myw3IEBAIHN0YXRpYyB1OCBm
-aWxsX3RraXBfZ3JvdXAoc3RydWN0IGhpZl90a2lwX2dyb3VwX2tleSAqbXNnLAogfQogCiBzdGF0
-aWMgdTggZmlsbF9jY21wX3BhaXIoc3RydWN0IGhpZl9hZXNfcGFpcndpc2Vfa2V5ICptc2csCi0J
-CQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXksIHU4ICpwZWVyX2FkZHIpCisJ
-CQkgc3RydWN0IGllZWU4MDIxMV9rZXlfY29uZiAqa2V5LCB1OCAqcGVlcl9hZGRyKQogewogCVdB
-Uk4oa2V5LT5rZXlsZW4gIT0gc2l6ZW9mKG1zZy0+YWVzX2tleV9kYXRhKSwgImluY29uc2lzdGVu
-dCBkYXRhIik7CiAJZXRoZXJfYWRkcl9jb3B5KG1zZy0+cGVlcl9hZGRyZXNzLCBwZWVyX2FkZHIp
-OwpAQCAtMTAyLDggKzEwMiw4IEBAIHN0YXRpYyB1OCBmaWxsX2NjbXBfcGFpcihzdHJ1Y3QgaGlm
-X2Flc19wYWlyd2lzZV9rZXkgKm1zZywKIH0KIAogc3RhdGljIHU4IGZpbGxfY2NtcF9ncm91cChz
-dHJ1Y3QgaGlmX2Flc19ncm91cF9rZXkgKm1zZywKLQkJCSAgICAgICBzdHJ1Y3QgaWVlZTgwMjEx
-X2tleV9jb25mICprZXksCi0JCQkgICAgICAgc3RydWN0IGllZWU4MDIxMV9rZXlfc2VxICpzZXEp
-CisJCQkgIHN0cnVjdCBpZWVlODAyMTFfa2V5X2NvbmYgKmtleSwKKwkJCSAgc3RydWN0IGllZWU4
-MDIxMV9rZXlfc2VxICpzZXEpCiB7CiAJV0FSTihrZXktPmtleWxlbiAhPSBzaXplb2YobXNnLT5h
-ZXNfa2V5X2RhdGEpLCAiaW5jb25zaXN0ZW50IGRhdGEiKTsKIAltZW1jcHkobXNnLT5hZXNfa2V5
-X2RhdGEsIGtleS0+a2V5LCBrZXktPmtleWxlbik7CkBAIC0xMTQsNyArMTE0LDcgQEAgc3RhdGlj
-IHU4IGZpbGxfY2NtcF9ncm91cChzdHJ1Y3QgaGlmX2Flc19ncm91cF9rZXkgKm1zZywKIH0KIAog
-c3RhdGljIHU4IGZpbGxfc21zNF9wYWlyKHN0cnVjdCBoaWZfd2FwaV9wYWlyd2lzZV9rZXkgKm1z
-ZywKLQkJCSAgICAgIHN0cnVjdCBpZWVlODAyMTFfa2V5X2NvbmYgKmtleSwgdTggKnBlZXJfYWRk
-cikKKwkJCSBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXksIHU4ICpwZWVyX2FkZHIpCiB7
-CiAJdTggKmtleWJ1ZiA9IGtleS0+a2V5OwogCkBAIC0xMjksNyArMTI5LDcgQEAgc3RhdGljIHU4
-IGZpbGxfc21zNF9wYWlyKHN0cnVjdCBoaWZfd2FwaV9wYWlyd2lzZV9rZXkgKm1zZywKIH0KIAog
-c3RhdGljIHU4IGZpbGxfc21zNF9ncm91cChzdHJ1Y3QgaGlmX3dhcGlfZ3JvdXBfa2V5ICptc2cs
-Ci0JCQkgICAgICAgc3RydWN0IGllZWU4MDIxMV9rZXlfY29uZiAqa2V5KQorCQkJICBzdHJ1Y3Qg
-aWVlZTgwMjExX2tleV9jb25mICprZXkpCiB7CiAJdTggKmtleWJ1ZiA9IGtleS0+a2V5OwogCkBA
-IC0xNDMsOCArMTQzLDggQEAgc3RhdGljIHU4IGZpbGxfc21zNF9ncm91cChzdHJ1Y3QgaGlmX3dh
-cGlfZ3JvdXBfa2V5ICptc2csCiB9CiAKIHN0YXRpYyB1OCBmaWxsX2Flc19jbWFjX2dyb3VwKHN0
-cnVjdCBoaWZfaWd0a19ncm91cF9rZXkgKm1zZywKLQkJCQkgICBzdHJ1Y3QgaWVlZTgwMjExX2tl
-eV9jb25mICprZXksCi0JCQkJICAgc3RydWN0IGllZWU4MDIxMV9rZXlfc2VxICpzZXEpCisJCQkg
-ICAgICBzdHJ1Y3QgaWVlZTgwMjExX2tleV9jb25mICprZXksCisJCQkgICAgICBzdHJ1Y3QgaWVl
-ZTgwMjExX2tleV9zZXEgKnNlcSkKIHsKIAlXQVJOKGtleS0+a2V5bGVuICE9IHNpemVvZihtc2ct
-PmlndGtfa2V5X2RhdGEpLCAiaW5jb25zaXN0ZW50IGRhdGEiKTsKIAltZW1jcHkobXNnLT5pZ3Rr
-X2tleV9kYXRhLCBrZXktPmtleSwga2V5LT5rZXlsZW4pOwotLSAKMi4zMy4wCgo=
+On 9/10/21 9:04 AM, Jens Axboe wrote:
+> We could pretty this up and have the state part be explicit in iov_iter,
+> and have the store/restore parts end up in uio.h. That'd tie them closer
+> together, though I don't expect iov_iter changes to be an issue. It
+> would make it more maintainable, though. I'll try and hack up this
+> generic solution, see if that looks any better.
+
+Looks something like this. Not super pretty in terms of needing a define
+for this, and maybe I'm missing something, but ideally we'd want it as
+an anonymous struct that's defined inside iov_iter. Anyway, gets the
+point across. Alternatively, since we're down to just a few members now,
+we just duplicate them in each struct...
+
+Would be split into two patches, one for the iov_state addition and
+the save/restore helpers, and then one switching io_uring to use them.
+Figured we'd need some agreement on this first...
+
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 855ea544807f..539c94299d64 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2608,8 +2608,6 @@ static bool io_resubmit_prep(struct io_kiocb *req)
+ 
+ 	if (!rw)
+ 		return !io_req_prep_async(req);
+-	/* may have left rw->iter inconsistent on -EIOCBQUEUED */
+-	iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
+ 	return true;
+ }
+ 
+@@ -3431,14 +3429,23 @@ static bool need_read_all(struct io_kiocb *req)
+ 		S_ISBLK(file_inode(req->file)->i_mode);
+ }
+ 
++static void io_iter_restore(struct iov_iter *iter, struct iov_iter_state *state,
++			    ssize_t did_bytes)
++{
++	iov_iter_restore_state(iter, state);
++	if (did_bytes > 0)
++		iov_iter_advance(iter, did_bytes);
++}
++
+ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ {
+ 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
+ 	struct kiocb *kiocb = &req->rw.kiocb;
+ 	struct iov_iter __iter, *iter = &__iter;
+ 	struct io_async_rw *rw = req->async_data;
+-	ssize_t io_size, ret, ret2;
+ 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
++	struct iov_iter_state state;
++	ssize_t ret, ret2;
+ 
+ 	if (rw) {
+ 		iter = &rw->iter;
+@@ -3448,8 +3455,8 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	io_size = iov_iter_count(iter);
+-	req->result = io_size;
++	req->result = iov_iter_count(iter);
++	iov_iter_save_state(iter, &state);
+ 
+ 	/* Ensure we clear previously set non-block flag */
+ 	if (!force_nonblock)
+@@ -3463,7 +3470,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		return ret ?: -EAGAIN;
+ 	}
+ 
+-	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), io_size);
++	ret = rw_verify_area(READ, req->file, io_kiocb_ppos(kiocb), state.count);
+ 	if (unlikely(ret)) {
+ 		kfree(iovec);
+ 		return ret;
+@@ -3479,18 +3486,17 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		/* no retry on NONBLOCK nor RWF_NOWAIT */
+ 		if (req->flags & REQ_F_NOWAIT)
+ 			goto done;
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = 0;
+ 	} else if (ret == -EIOCBQUEUED) {
+ 		goto out_free;
+-	} else if (ret <= 0 || ret == io_size || !force_nonblock ||
++	} else if (ret <= 0 || ret == state.count || !force_nonblock ||
+ 		   (req->flags & REQ_F_NOWAIT) || !need_read_all(req)) {
+ 		/* read all, failed, already did sync or don't want to retry */
+ 		goto done;
+ 	}
+ 
++	io_iter_restore(iter, &state, ret);
++
+ 	ret2 = io_setup_async_rw(req, iovec, inline_vecs, iter, true);
+ 	if (ret2)
+ 		return ret2;
+@@ -3501,7 +3507,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 	iter = &rw->iter;
+ 
+ 	do {
+-		io_size -= ret;
++		state.count -= ret;
+ 		rw->bytes_done += ret;
+ 		/* if we can retry, do so with the callbacks armed */
+ 		if (!io_rw_should_retry(req)) {
+@@ -3520,7 +3526,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 			return 0;
+ 		/* we got some bytes, but not all. retry. */
+ 		kiocb->ki_flags &= ~IOCB_WAITQ;
+-	} while (ret > 0 && ret < io_size);
++	} while (ret > 0 && ret < state.count);
+ done:
+ 	kiocb_done(kiocb, ret, issue_flags);
+ out_free:
+@@ -3543,8 +3549,9 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	struct kiocb *kiocb = &req->rw.kiocb;
+ 	struct iov_iter __iter, *iter = &__iter;
+ 	struct io_async_rw *rw = req->async_data;
+-	ssize_t ret, ret2, io_size;
+ 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
++	struct iov_iter_state state;
++	ssize_t ret, ret2;
+ 
+ 	if (rw) {
+ 		iter = &rw->iter;
+@@ -3554,8 +3561,9 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	io_size = iov_iter_count(iter);
+-	req->result = io_size;
++	req->result = iov_iter_count(iter);
++	iov_iter_save_state(iter, &state);
++	ret2 = 0;
+ 
+ 	/* Ensure we clear previously set non-block flag */
+ 	if (!force_nonblock)
+@@ -3572,7 +3580,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	    (req->flags & REQ_F_ISREG))
+ 		goto copy_iov;
+ 
+-	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), io_size);
++	ret = rw_verify_area(WRITE, req->file, io_kiocb_ppos(kiocb), state.count);
+ 	if (unlikely(ret))
+ 		goto out_free;
+ 
+@@ -3619,9 +3627,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		kiocb_done(kiocb, ret2, issue_flags);
+ 	} else {
+ copy_iov:
+-		/* some cases will consume bytes even on error returns */
+-		iov_iter_reexpand(iter, iter->count + iter->truncated);
+-		iov_iter_revert(iter, io_size - iov_iter_count(iter));
++		io_iter_restore(iter, &state, ret2);
+ 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+ 		return ret ?: -EAGAIN;
+ 	}
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index 5265024e8b90..4f9d483096cd 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -27,11 +27,25 @@ enum iter_type {
+ 	ITER_DISCARD,
+ };
+ 
++#define IOV_ITER_STATE					\
++	size_t iov_offset;				\
++	size_t count;					\
++	union {						\
++		unsigned long nr_segs;			\
++		struct {				\
++			unsigned int head;		\
++			unsigned int start_head;	\
++		};					\
++		loff_t xarray_start;			\
++	};						\
++
++struct iov_iter_state {
++	IOV_ITER_STATE;
++};
++
+ struct iov_iter {
+ 	u8 iter_type;
+ 	bool data_source;
+-	size_t iov_offset;
+-	size_t count;
+ 	union {
+ 		const struct iovec *iov;
+ 		const struct kvec *kvec;
+@@ -40,12 +54,10 @@ struct iov_iter {
+ 		struct pipe_inode_info *pipe;
+ 	};
+ 	union {
+-		unsigned long nr_segs;
++		struct iov_iter_state state;
+ 		struct {
+-			unsigned int head;
+-			unsigned int start_head;
++			IOV_ITER_STATE;
+ 		};
+-		loff_t xarray_start;
+ 	};
+ 	size_t truncated;
+ };
+@@ -55,6 +67,33 @@ static inline enum iter_type iov_iter_type(const struct iov_iter *i)
+ 	return i->iter_type;
+ }
+ 
++static inline void iov_iter_save_state(struct iov_iter *iter,
++				       struct iov_iter_state *state)
++{
++	*state = iter->state;
++}
++
++static inline void iov_iter_restore_state(struct iov_iter *iter,
++					  struct iov_iter_state *state)
++{
++	iter->iov_offset = state->iov_offset;
++	iter->count = state->count;
++
++	switch (iov_iter_type(iter)) {
++	case ITER_IOVEC:
++	case ITER_KVEC:
++	case ITER_BVEC:
++		iter->iov -= state->nr_segs - iter->nr_segs;
++		fallthrough;
++	case ITER_PIPE:
++	case ITER_XARRAY:
++		iter->nr_segs = state->nr_segs;
++		break;
++	case ITER_DISCARD:
++		break;
++	}
++}
++
+ static inline bool iter_is_iovec(const struct iov_iter *i)
+ {
+ 	return iov_iter_type(i) == ITER_IOVEC;
+
+-- 
+Jens Axboe
+
