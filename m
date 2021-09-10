@@ -2,106 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A4C406A5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ADB406A5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Sep 2021 12:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhIJKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 06:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232415AbhIJKvd (ORCPT
+        id S232506AbhIJKwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 06:52:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55268 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232415AbhIJKwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:51:33 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CAAC061574;
-        Fri, 10 Sep 2021 03:50:22 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id s10so3143806lfr.11;
-        Fri, 10 Sep 2021 03:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eKzR9oqZtxb76e9ajCaeipteTFurfCH3JAineo6pIuM=;
-        b=VJ6fhld+oMLvdqeJZJ4x+KXrdwelIlyHC6Y1HU9DXoN9zQagksco0D3jSyu7brffEL
-         qqGLIVxK139LXLhvwHlPB1YD+Nbq498Z2BKU/0H/bRQhy9FTzxSgmzy2peIstkWmnzgC
-         rwUJKpqiJGsXEFobGoqVT4BaCMggfJ2klvjAtlPINHqus8eM55kWkJWem7udMndHxh8b
-         eryJxzjyTnrndyQlik14jaD6xoaWMAEfNfmZWTzNb2VMC095MfY8Aln8//ex/25LWd6x
-         z8I9rVdeX7kpehWcLRys9/Z4c33/G3zs0TvBAfpvIgDbpsY6KWE9mYd4ogVLIUaXhX+D
-         896Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eKzR9oqZtxb76e9ajCaeipteTFurfCH3JAineo6pIuM=;
-        b=Sr3Mu5fHRmn+RJO+4am3X6/BCl+JO1CeVjBBvJDC8J30SPRAnQce0Y4GVZqSbwtzNC
-         LMI5zkuwiWN0zdlX1konFU+B++WpZEZWxSdl7ur3obcXm1K+cpDIvqXeG8XyeqYt41kY
-         XFl8icXBH6o6qUPw1j0BAVVaAXPcxj+hSIGAG3EQt0XtOaZ7FDWWWggvRM1l+BGpgKo/
-         SaDo4Y8AsFQzJaB93aIP0k1/cbUPq05rQWi3yYjvv74IibtXB24hNTcKv8Kmojz2UI+o
-         VwLhgMn4Y8o3MZDuN58pQ1luX2XOJkK+5IXHqQFQopMQTIr5E5pQUeG1LZuJY6XO0Bov
-         A+pw==
-X-Gm-Message-State: AOAM530Q1UtsHAYAUp3EP+gsYdZpzSVuyqQPRgGn5oUy+MzAqgowRNqZ
-        NH2kGABGEUMJ+/0EsWsuWPI=
-X-Google-Smtp-Source: ABdhPJx4g/HVf1ebfdBtL/JfNxGhY6W+Q0U4hjhZol5YQdSf8f3MtKVIR+0Kn3ZWjKrx/qFlC/tkjg==
-X-Received: by 2002:a05:6512:2202:: with SMTP id h2mr3411408lfu.494.1631271020592;
-        Fri, 10 Sep 2021 03:50:20 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id z16sm535665lfu.110.2021.09.10.03.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 03:50:20 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 13:50:18 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] fs/ntfs3: Fix a memory leak on object opts
-Message-ID: <20210910105018.asvmzihjdqeqm25v@kari-VirtualBox>
-References: <20210910100202.29254-1-colin.king@canonical.com>
+        Fri, 10 Sep 2021 06:52:04 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5AF9021AD9;
+        Fri, 10 Sep 2021 10:50:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631271052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cLa40tf04nYkoytYOxqmcnFcOjSkFNnyh5QKFWN0cDQ=;
+        b=UmM/PXCv3DjaKbFsOu+/cD98ovCVmoRIUYn1YAMeXxhTCzmGDFwv9po5FdMa5eWu2covb+
+        WwvwlDwN1xLZcHsxuE2WWehpzw7yCzgYwqJiNiE/LLt+Wnpd8Lgs8VAOHnoy3rmKPfKZTQ
+        9GnWim+bLE/vjrZlLvv2o1HdAvYM8Ws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631271052;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cLa40tf04nYkoytYOxqmcnFcOjSkFNnyh5QKFWN0cDQ=;
+        b=7h9cOBNJV0/tF44d4MDtH45pjx5vGDfQq7wTwZV8ZhT5XifVZXkyrFhUI/1NTlDdemjkSo
+        kvU4CVNX/q3HdoBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B64A13D27;
+        Fri, 10 Sep 2021 10:50:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zunNAYw4O2F5HgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 10 Sep 2021 10:50:52 +0000
+Message-ID: <1b1569ac-1144-4f9c-6938-b9d79c6743de@suse.cz>
+Date:   Fri, 10 Sep 2021 12:50:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910100202.29254-1-colin.king@canonical.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/6] stackdepot, kasan, workqueue: Avoid expanding
+ stackdepot slabs when holding raw_spin_lock
+Content-Language: en-US
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20210907141307.1437816-1-elver@google.com>
+ <69f98dbd-e754-c34a-72cf-a62c858bcd2f@linuxfoundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <69f98dbd-e754-c34a-72cf-a62c858bcd2f@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:02:02AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 9/7/21 22:05, Shuah Khan wrote:
+> On 9/7/21 8:13 AM, Marco Elver wrote:
+>> Shuah Khan reported [1]:
+>>
+>>   | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
+>>   | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
+>>   | it tries to allocate memory attempting to acquire spinlock in page
+>>   | allocation code while holding workqueue pool raw_spinlock.
+>>   |
+>>   | There are several instances of this problem when block layer tries
+>>   | to __queue_work(). Call trace from one of these instances is below:
+>>   |
+>>   |     kblockd_mod_delayed_work_on()
+>>   |       mod_delayed_work_on()
+>>   |         __queue_delayed_work()
+>>   |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
+>>   |             insert_work()
+>>   |               kasan_record_aux_stack()
+>>   |                 kasan_save_stack()
+>>   |                   stack_depot_save()
+>>   |                     alloc_pages()
+>>   |                       __alloc_pages()
+>>   |                         get_page_from_freelist()
+>>   |                           rm_queue()
+>>   |                             rm_queue_pcplist()
+>>   |                               local_lock_irqsave(&pagesets.lock, flags);
+>>   |                               [ BUG: Invalid wait context triggered ]
+>>
+>> [1]
+>> https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
+>>
+>> PROVE_RAW_LOCK_NESTING is pointing out that (on RT kernels) the locking
+>> rules are being violated. More generally, memory is being allocated from
+>> a non-preemptive context (raw_spin_lock'd c-s) where it is not allowed.
+>>
+>> To properly fix this, we must prevent stackdepot from replenishing its
+>> "stack slab" pool if memory allocations cannot be done in the current
+>> context: it's a bug to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+>> non-preemptive contexts, including raw_spin_locks (see gfp.h and
+>> ab00db216c9c7).
+>>
+>> The only downside is that saving a stack trace may fail if: stackdepot
+>> runs out of space AND the same stack trace has not been recorded before.
+>> I expect this to be unlikely, and a simple experiment (boot the kernel)
+>> didn't result in any failure to record stack trace from insert_work().
+>>
+>> The series includes a few minor fixes to stackdepot that I noticed in
+>> preparing the series. It then introduces __stack_depot_save(), which
+>> exposes the option to force stackdepot to not allocate any memory.
+>> Finally, KASAN is changed to use the new stackdepot interface and
+>> provide kasan_record_aux_stack_noalloc(), which is then used by
+>> workqueue code.
+>>
+>> Marco Elver (6):
+>>    lib/stackdepot: include gfp.h
+>>    lib/stackdepot: remove unused function argument
+>>    lib/stackdepot: introduce __stack_depot_save()
+>>    kasan: common: provide can_alloc in kasan_save_stack()
+>>    kasan: generic: introduce kasan_record_aux_stack_noalloc()
+>>    workqueue, kasan: avoid alloc_pages() when recording stack
+>>
+>>   include/linux/kasan.h      |  2 ++
+>>   include/linux/stackdepot.h |  6 +++++
+>>   kernel/workqueue.c         |  2 +-
+>>   lib/stackdepot.c           | 51 ++++++++++++++++++++++++++++++--------
+>>   mm/kasan/common.c          |  6 ++---
+>>   mm/kasan/generic.c         | 14 +++++++++--
+>>   mm/kasan/kasan.h           |  2 +-
+>>   7 files changed, 65 insertions(+), 18 deletions(-)
+>>
 > 
-> Currently a failed allocation on sbi->upcase will cause an exit via
-> the label free_sbi causing a memory leak on object opts. Fix this by
-> re-ordering the exit paths free_opts and free_sbi so that kfree's occur
-> in the reverse allocation order.
-> 
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 27fac77707a1 ("fs/ntfs3: Init spi more in init_fs_context than fill_super")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+> Thank you. Tested all the 6 patches in this series on Linux 5.14. This problem
+> exists in 5.13 and needs to be marked for both 5.14 and 5.13 stable releases.
 
-Thanks Colin.
+I think if this problem manifests only with CONFIG_PROVE_RAW_LOCK_NESTING
+then it shouldn't be backported to stable. CONFIG_PROVE_RAW_LOCK_NESTING is
+an experimental/development option to earlier discover what will collide
+with RT lock semantics, without needing the full RT tree.
+Thus, good to fix going forward, but not necessary to stable backport.
 
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+> Here is my
+> 
+> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> thanks,
+> -- Shuah
+> 
 
->  fs/ntfs3/super.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index 3cba0b5e7ac7..69f23db0d727 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -1450,10 +1450,10 @@ static int ntfs_init_fs_context(struct fs_context *fc)
->  	fc->ops = &ntfs_context_ops;
->  
->  	return 0;
-> -free_opts:
-> -	kfree(opts);
->  free_sbi:
->  	kfree(sbi);
-> +free_opts:
-> +	kfree(opts);
->  	return -ENOMEM;
->  }
->  
-> -- 
-> 2.32.0
-> 
