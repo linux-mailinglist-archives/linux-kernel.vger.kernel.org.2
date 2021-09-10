@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA47B40736F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30EC407371
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 00:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhIJWiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 18:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhIJWiP (ORCPT
+        id S231156AbhIJWj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 18:39:56 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:45945 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhIJWjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:38:15 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D1FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:37:03 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id y18so4315853ioc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IFaDdxqmF/T13hXPY+icTVWA4xnaWqbUGckikX+9UCU=;
-        b=KApiJDO81GVjSe/Z5tZbiWT7xBq6x+evwNXRfNs5RxZEPC2ify4IT0CqzG77T4ST0Q
-         X6scXMZl6SsRESo/jZKRhAjsAtrYu3UdNdWj6DxiySx8DrSs2E+wmVvV0gMTCVP4gbDd
-         AQGB/Mp3fziOhTu8BRTusYT07k4kOvvMt0+JY=
+        Fri, 10 Sep 2021 18:39:53 -0400
+Received: by mail-lf1-f53.google.com with SMTP id f18so7000289lfk.12
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 15:38:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IFaDdxqmF/T13hXPY+icTVWA4xnaWqbUGckikX+9UCU=;
-        b=8D1TPWLiKznHwXoA9Hd6iIYCheaLnO+2zocfniSjGT/u286gH7sgmSk40I+oZj1v0A
-         pLgQnsweMrAqjnHWl5plIJ/FjqZ1zOAeMyqC+z7o5Rf7qBhBwxlMcTqA0YHIFDya55lR
-         1GGythnsl2FFUNUaPCrEH+kF7XqURYJWlG4trEIuqrXhQ2i3GofGTtsmgfSl4gEhFwbI
-         zehPgtEGaV8yl+q8Ep2366kPPo1+YuZfXfCTTWF3U+Qs3CiFHFpb5X3dtQVibsjfSSN4
-         K/4dZFtZ54eaTkg6ZoDU7Amqsnu2LP3EYCLBDOurlkYeSzLIcRTpWU8pMzkRFKVaB19H
-         bT2Q==
-X-Gm-Message-State: AOAM530BmDygBQbUhKL8gI31njaehnR7LTkPjNIpaKdtJwwghVznhL5d
-        bCiQLsOWFSaJFhcUusf3JaVZxmEslZhSGQ==
-X-Google-Smtp-Source: ABdhPJyo1Zzq8WZa3h6TAc80j+2p7KisrmCeonOgHtXV/Hhm9GdGRLW7KTmjd6/XBPFJGcOPMU6sWg==
-X-Received: by 2002:a05:6638:d1:: with SMTP id w17mr46388jao.33.1631313422678;
-        Fri, 10 Sep 2021 15:37:02 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c23sm21623ioi.31.2021.09.10.15.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 15:37:02 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, paskripkin@gmail.com
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: atomisp: fix control reaches end of non-void function error
-Date:   Fri, 10 Sep 2021 16:37:00 -0600
-Message-Id: <20210910223700.32494-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6hO7tt7JFJNw/BA9XIANLBqKyXIbkzwwiROuGeANkVQ=;
+        b=aeErx1G8GQ7iPYVtomn6TP4ucgCPkZwu4ymZiPaqPRbXnS8BW8C9iaOgTT9If1WItO
+         iCifAECgEY7fAuxmqb7bFO1NcbCtFJFcIv6alXQnee8LxRxaBIY49w+/iD8/Bds3mlRu
+         sSd1gGaxmpwd1CR/wGa/x3/M156BdtCebkVYBZ3CZOEfas0Jum+S6h3A8tfJMGgNWtWD
+         lGEwIHQkq9PSkFMm/FSwYUii06/F9zA+/NjOUpZaRyMkKbgQhaoYdChJWERsWQt07+ZB
+         3VpXwYvcONoi/4hUpRykLBHkqZ6JsC+dTQK3pMnj6F+IDi78CaV4xn4xpvIREq+43x1d
+         4mtw==
+X-Gm-Message-State: AOAM533h1FaORjniBj3Q0lyn4LIvDTf4i087ZA2x6GVb6dBUadTWJHeQ
+        r05Cyqc9cRIlcGktjRba9HE5uZ56naqxclaYfHX0DCne
+X-Google-Smtp-Source: ABdhPJz176fIA+cNCzGr7q5i58Tv2FDhytJc3WbFR5rc25wbNpWXtUbfnKUuurnDfzETd7+jmSaGzsxsGMh3ODZnS6A=
+X-Received: by 2002:a05:6512:1286:: with SMTP id u6mr5862275lfs.528.1631313520797;
+ Fri, 10 Sep 2021 15:38:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210910164150.1028294-1-namhyung@kernel.org> <YTu07uPsA2/uxvRs@krava>
+In-Reply-To: <YTu07uPsA2/uxvRs@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 10 Sep 2021 15:38:29 -0700
+Message-ID: <CAM9d7chp-B3i0KURk5ptKZsQOE-UJ=jwfAtvADEg-PObNysFAQ@mail.gmail.com>
+Subject: Re: [PATCH] perf tools: Allow build-id with trailing zeros
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build error with -Werror=return-type enabled. Fix
-input_system_configure_channel_sensor() to return status when control
-reaches the end.
+Hi Jiri,
 
-drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o
-drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
-drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
- 1649 | }
+On Fri, Sep 10, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Fri, Sep 10, 2021 at 09:41:50AM -0700, Namhyung Kim wrote:
+> > Current perf saves a build-id with size but old versions assumes the
+> > size of 20.  In case the build-id is less than 20 (like for MD5), it'd
+> > fill the rest with 0s.
+> >
+> > I saw a problem when old version of perf record saved binary in the
+> > build-id cache and new version of perf reads the data.  The symbols
+> > should be read from the build-id cache (as the path no longer has the
+> > same binary) but it failed due to mismatch in the build-id.
+> >
+> >   symsrc__init: build id mismatch for /home/namhyung/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf.
+> >
+> > The build-id event in the data has 20 byte build-ids, but it saw a
+> > different size (16) when it reads the build-id of the elf file in the
+> > build-id cache.
+> >
+> >   $ readelf -n ~/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf
+> >
+> >   Displaying notes found in: .note.gnu.build-id
+> >     Owner                Data size    Description
+> >     GNU                  0x00000010   NT_GNU_BUILD_ID (unique build ID bitstring)
+> >       Build ID: 53e4c2f42a4c61a2d632d92a72afa08f
+> >
+> > Let's fix this by allowing trailing zeros if the size is different.
+> >
+> > Fixes: 39be8d0115b3 ("perf tools: Pass build_id object to dso__build_id_equal()")
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/dso.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> >
+> > diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+> > index ee15db2be2f4..0c0dd877d4e9 100644
+> > --- a/tools/perf/util/dso.c
+> > +++ b/tools/perf/util/dso.c
+> > @@ -1349,6 +1349,18 @@ void dso__set_build_id(struct dso *dso, struct build_id *bid)
+> >
+> >  bool dso__build_id_equal(const struct dso *dso, struct build_id *bid)
+> >  {
+> > +     static const char zeros[BUILD_ID_SIZE];
+> > +
+> > +     if (dso->bid.size > bid->size && dso->bid.size == BUILD_ID_SIZE) {
+> > +             /*
+> > +              * For the backward compatibility, it allows a build-id has
+> > +              * trailing zeros.
+> > +              */
+> > +             return !memcmp(dso->bid.data, bid->data, bid->size) &&
+> > +                     !memcmp(&dso->bid.data[bid->size], zeros,
+> > +                             dso->bid.size - bid->size);
+>
+> we now have memchr_inv in tools, so you could use:
+>   memchr_inv(&dso->bid.data[bid->size], 0, dso->bid.size - bid->size);
+>
+> and save 20 bytes in bss ;-) other than that, nice catch
+>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 +
- 1 file changed, 1 insertion(+)
+right, will update!
 
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-index 8e085dda0c18..5d088d6fb01f 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-@@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_channel_sensor(
- 	default:
- 		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
- 	}
-+	return status;
- }
- 
- // Test flags and set structure.
--- 
-2.30.2
-
+Thanks,
+Namhyung
