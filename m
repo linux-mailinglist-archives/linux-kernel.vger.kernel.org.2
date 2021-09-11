@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFCF407A58
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 21:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCF9407A5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 22:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhIKTr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 15:47:56 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:41815 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhIKTrz (ORCPT
+        id S233842AbhIKUPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 16:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233387AbhIKUPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 15:47:55 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 3549A40002;
-        Sat, 11 Sep 2021 19:46:41 +0000 (UTC)
-Date:   Sat, 11 Sep 2021 21:46:40 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] RTC changes for 5.15
-Message-ID: <YT0HoCMW6nGEnpPL@piout.net>
-References: <YTzSVk5Scx/nRP7K@piout.net>
- <CAHk-=wgPJrMhr1_62O2xwD1QbT9oxJJ_uXw2mm6sa0hNDrFuwQ@mail.gmail.com>
+        Sat, 11 Sep 2021 16:15:04 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BE0C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 13:13:50 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mP9Ne-000250-8j; Sat, 11 Sep 2021 22:13:42 +0200
+Date:   Sat, 11 Sep 2021 22:13:42 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/12] staging: r8188eu: remove rtw_set_rpwm
+Message-ID: <20210911201342.jiratddjuniccisc@viti.kaiser.cx>
+References: <20210911141521.24901-1-martin@kaiser.cx>
+ <20210911141521.24901-6-martin@kaiser.cx>
+ <760ac39a-5562-cac5-0b7b-e42f6628743c@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgPJrMhr1_62O2xwD1QbT9oxJJ_uXw2mm6sa0hNDrFuwQ@mail.gmail.com>
+In-Reply-To: <760ac39a-5562-cac5-0b7b-e42f6628743c@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2021 10:05:02-0700, Linus Torvalds wrote:
-> On Sat, Sep 11, 2021 at 8:59 AM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> >
-> > The broken down time conversion is similar to what is done
-> > in the time subsystem since v5.14.
-> 
-> By "similar" you mean "identical", no?
-> 
-> Why is the rtc subsystem not just using the generic time64_to_tm()?
-> 
-> Yes, yes, I realize that due to historical mistakes, there's a
-> duplicate 'struct rtc_time' struct, but it turns out that that is
-> _identical_ to 'struct tm' except it also has a 'int tm_isdst' at the
-> end.
-> 
-> So you could literally make a union of the two, pass the 'struct tm'
-> part down to the generic code, and just do
-> 
->      rtc_tm->tm_isdst = 0;
-> 
-> at the end.
-> 
-> Rather than have a duplicate copy of that admittedly clever Neri and
-> Schneider algorithm.
-> 
-> Hmm?
-> 
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-Yes, most of it is historical, I did have a look at removing the copy
-but at the time, rtc_time64_to_tm was slightly more efficient because
-it knew the time was positive.
+> On 9/11/21 16:15, Martin Kaiser wrote:
+> > After we dropped the call to set HW_VAR_SET_RPWM, the rtw_set_rpwm
+> > function doesn't do anything useful.
 
-The other issue is that struct rtc_time is exposed to userspace while
-the kernel struct tm is not and this would tie both struct and if you
-look close enough, struct tm has long tm_year and struct rtc_time has
-int tm_year which on 32-bit ARM has a different size.
+> > Remove the function and the rpwm component of struct pwrctrl_priv,
+> > which is not used outside of rtw_set_rpwm.
 
-I've been reluctant to change struct tm because I didn't take the time
-to check the impact on all the users (IIRC, mainly in filesystems).
+> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> > ---
+> >   .../realtek/rtl8192cu/include/rtw_pwrctrl.h   |  1 -
+> >   drivers/staging/r8188eu/core/rtw_pwrctrl.c    | 34 -------------------
+> >   drivers/staging/r8188eu/include/rtw_pwrctrl.h |  2 --
+> >   3 files changed, 37 deletions(-)
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> > diff --git a/drivers/net/wireless/realtek/rtl8192cu/include/rtw_pwrctrl.h b/drivers/net/wireless/realtek/rtl8192cu/include/rtw_pwrctrl.h
+> > index a4cb292e1aea..303df55c521a 100644
+> > --- a/drivers/net/wireless/realtek/rtl8192cu/include/rtw_pwrctrl.h
+> > +++ b/drivers/net/wireless/realtek/rtl8192cu/include/rtw_pwrctrl.h
+> > @@ -309,7 +309,6 @@ extern void cpwm_int_hdl(PADAPTER padapter, struct reportpwrstate_parm *preportp
+> >   #endif
+
+
+> The patch does not apply to staging-testing.
+
+> Looks to me that the change in
+
+> .../realtek/rtl8192cu/include/rtw_pwrctrl.h
+
+> made it into this patch by accident?
+
+thanks for spotting this, Michael. I'll send a v2 on Monday.
+
+Best regards,
+Martin
