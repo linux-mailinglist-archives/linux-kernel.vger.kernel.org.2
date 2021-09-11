@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEFF407875
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31451407872
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhIKN4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:56:35 -0400
-Received: from mail-m17642.qiye.163.com ([59.111.176.42]:37164 "EHLO
-        mail-m17642.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhIKN4d (ORCPT
+        id S236039AbhIKNyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:54:43 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:54992 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235983AbhIKNym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 09:56:33 -0400
-Received: from localhost.localdomain (unknown [113.116.176.115])
-        by mail-m17642.qiye.163.com (Hmail) with ESMTPA id 42E20220148;
-        Sat, 11 Sep 2021 21:55:19 +0800 (CST)
-From:   Ding Hui <dinghui@sangfor.com.cn>
-To:     lduncan@suse.com, cleech@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, michael.christie@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ding Hui <dinghui@sangfor.com.cn>
-Subject: [PATCH v2] scsi: libiscsi: move init ehwait to iscsi_session_setup()
-Date:   Sat, 11 Sep 2021 21:51:59 +0800
-Message-Id: <20210911135159.20543-1-dinghui@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlJTRlWH00YQkhCGRhDGh
-        lKVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mkk6FQw5MD4XDhxCQxcpMRIp
-        NTkwCTVVSlVKTUhKSE1DTkpCQ0pJVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkhVSkpNVUpMTVVKSk5ZV1kIAVlBSUhMTzcG
-X-HM-Tid: 0a7bd5241f57d998kuws42e20220148
+        Sat, 11 Sep 2021 09:54:42 -0400
+Received: by mail-io1-f70.google.com with SMTP id e2-20020a056602044200b005c23c701e26so10893010iov.21
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:53:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=KpL7BP3z/hVNFmo9YP7Q9+ewRQkOssx6pF+EU1BmXmY=;
+        b=JJ/rZ+M5TBkXycLjtL7SmtQ2jVbxej9hHhp9CciMup2kYwDVW2DUputetjnbwFe08p
+         5oBHmC6feadmDPRPxgJbtbkV0KeMPcP4rv3dYa2zk82GPbdWaddyi2ug2DObHQS2/k8Q
+         LbdzR6e1zB6aZahIvZajru05BAfftuPtm3f9a+IjffgGDmP8vhkozcRRRCPTXHZ0gMuf
+         gziab9eV7wPp2d4oBd8toNHBxT6Imi6qEr/3+IQMep4Af4L1w1GgIuvxYJufAHL1o+ru
+         +2+x7DMUq6SyR49B/RzFRfaAjcnxlDIAJKbN+ucZhu6zop8K2xaeJMZZE9Y5ankb7/Cf
+         Le+w==
+X-Gm-Message-State: AOAM533ao/cGagPxNAmAdYM1wDl4UuUihsVSpvZb06HbXWk1fCRp1Gzb
+        b+WGWBIVdWLgw9WfVIpyGFpCvCCL/6u8lGtQ897DET7vK2PH
+X-Google-Smtp-Source: ABdhPJxcyLNv+1JIYshftyp6J+/W7J6p1g4JRtW9CCaSvyG2F6emlWd+OeaZ44Wb5ZIozNCAUbNWB35rTdxpZRHxAvizuWqo6uTT
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr1819664ill.86.1631368409925;
+ Sat, 11 Sep 2021 06:53:29 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 06:53:29 -0700
+In-Reply-To: <0000000000004bda3905cb84cfc0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092509d05cbb88ebc@google.com>
+Subject: Re: [syzbot] WARNING in io_wq_submit_work (2)
+From:   syzbot <syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit ec29d0ac29be ("scsi: iscsi: Fix conn use after free during
-resets") move member ehwait from conn to session, but left init ehwait
-in iscsi_conn_setup().
+syzbot has found a reproducer for the following issue on:
 
-Although a session can only have 1 conn currently, it is better to
-do init ehwait in iscsi_session_setup() to prevent reinit by mistake,
-also in case we can handle multiple conns in the future.
+HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fefe8b300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc2d90f602545761f287
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4357d300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1173a663300000
 
-Fixes: ec29d0ac29be ("scsi: iscsi: Fix conn use after free during resets")
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
----
-v2:
-  update commit log
- 
- drivers/scsi/libiscsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The issue was bisected to:
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 4683c183e9d4..712a45368385 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -2947,6 +2947,7 @@ iscsi_session_setup(struct iscsi_transport *iscsit, struct Scsi_Host *shost,
- 	session->tmf_state = TMF_INITIAL;
- 	timer_setup(&session->tmf_timer, iscsi_tmf_timedout, 0);
- 	mutex_init(&session->eh_mutex);
-+	init_waitqueue_head(&session->ehwait);
- 
- 	spin_lock_init(&session->frwd_lock);
- 	spin_lock_init(&session->back_lock);
-@@ -3074,8 +3075,6 @@ iscsi_conn_setup(struct iscsi_cls_session *cls_session, int dd_size,
- 		goto login_task_data_alloc_fail;
- 	conn->login_task->data = conn->data = data;
- 
--	init_waitqueue_head(&session->ehwait);
--
- 	return cls_conn;
- 
- login_task_data_alloc_fail:
--- 
-2.17.1
+commit 3146cba99aa284b1d4a10fbd923df953f1d18035
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Wed Sep 1 17:20:10 2021 +0000
+
+    io-wq: make worker creation resilient against signals
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11098e0d300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13098e0d300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15098e0d300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com
+Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
+
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 000000000043f6d9
+RDX: 0000000000000000 RSI: 0000000000000304 RDI: 0000000000000003
+RBP: 00007ffed8512ba0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6524 at fs/io_uring.c:1164 req_ref_get fs/io_uring.c:1164 [inline]
+WARNING: CPU: 0 PID: 6524 at fs/io_uring.c:1164 io_wq_submit_work+0x272/0x300 fs/io_uring.c:6733
+Modules linked in:
+CPU: 0 PID: 6524 Comm: syz-executor339 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:req_ref_get fs/io_uring.c:1164 [inline]
+RIP: 0010:io_wq_submit_work+0x272/0x300 fs/io_uring.c:6733
+Code: e8 43 33 91 ff 83 fb 7f 76 1b e8 f9 2b 91 ff be 04 00 00 00 4c 89 ef e8 3c 7a d8 ff f0 ff 45 a4 e9 41 fe ff ff e8 de 2b 91 ff <0f> 0b eb dc e8 d5 2b 91 ff 4c 89 e7 e8 ed db fb ff 48 85 c0 49 89
+RSP: 0018:ffffc9000116fae8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000000000007f RCX: 0000000000000000
+RDX: ffff88801be91c80 RSI: ffffffff81e4e162 RDI: 0000000000000003
+RBP: ffff88801a793978 R08: 000000000000007f R09: ffff88801a79391f
+R10: ffffffff81e4e13d R11: 0000000000000000 R12: ffff88801a7938c0
+R13: ffff88801a79391c R14: ffff88801a793918 R15: 0000000000100000
+FS:  0000000000a12300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000480310 CR3: 00000000778f6000 CR4: 0000000000350ef0
+Call Trace:
+ io_run_cancel fs/io-wq.c:809 [inline]
+ io_acct_cancel_pending_work.isra.0+0x2a9/0x5e0 fs/io-wq.c:950
+ io_wqe_cancel_pending_work+0x6c/0x130 fs/io-wq.c:968
+ io_wq_destroy fs/io-wq.c:1185 [inline]
+ io_wq_put_and_exit+0x7d1/0xc70 fs/io-wq.c:1198
+ io_uring_clean_tctx fs/io_uring.c:9609 [inline]
+ io_uring_cancel_generic+0x5fe/0x740 fs/io_uring.c:9689
+ io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+ do_exit+0x265/0x2a30 kernel/exit.c:780
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43e3d9
+Code: 90 49 c7 c0 c0 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
+RSP: 002b:00007ffed8512b78 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004af3b0 RCX: 000000000043e3d9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004af3b0
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
 
