@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F37240764A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F4B407650
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235742AbhIKLiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 07:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhIKLiX (ORCPT
+        id S235741AbhIKLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 07:50:23 -0400
+Received: from einhorn.in-berlin.de ([192.109.42.8]:34469 "EHLO
+        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230249AbhIKLuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 07:38:23 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22A8C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 04:37:10 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso3285526wmb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 04:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=SjKNUXthimxXHO1brBv10EzulF+OCTblRjyhKTtUr7xcAIvTGKfBOq7PRY905V2vRP
-         oECQpPmfemBcHphW6ftwDWs30GA7wqgmTTR+Nk6a4k1dLF3/nhSdJJvhYzR0rB9F/twV
-         gZjFxtkxcYOGXCWKWROjwqKc3hEvg996EhaPbvG7N39Bc9jCiK8FI+2rJFJ+t98zqu2n
-         IXAWciP5oBly7ZbPoTYGF7ReqPVgWB/ipFu74W7U/NYJvAYiuSdm5UBSovqXkm4wt+2E
-         ugASqj6Y7/LAyQIUl3USWRYXad7hr3KC+bS7URK22G6rRlumN/7OM8tIwjIPllQDb+CU
-         rXvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=tImTiqNuh56p6iFAnViGsu+s3g7axvAKPNWYC8/RZp4d0TF0Rb4AziSuj5/nha3E29
-         EIfbS7xmud/xaeIGLW06mQpd7PiAA1b5TrFhvcYzNT/M9u1m0fmNRbFnHkCYR8RzmgQT
-         /BcZ1QCM85MLGq1Y+N6TAtab/lUnQyFfuefpipW71XlRkxOcdxjiqQhUw+AcLW2sd1lL
-         P90ddJ1UXPNa4Dtqy1rT79sJU+YNX7POJl50xjOvyp+9RbH+gYhQeVDpbtaQQ71Wqmk6
-         d266KP0L7fmXLphuGWr2zQ9NdSG1nnuCsbx+umM5W1U2K9gNcBgmTHYZ8zQt/Z6ZZ78T
-         FGOw==
-X-Gm-Message-State: AOAM533K2f7PU0zSWUEKS0G045FuxoHNh1UC7lkU8s0HK98Fc5nvuOJ/
-        eJR0zLrC31jc7l09eU0CRgFpSkvp21X8B9rwzL0=
-X-Google-Smtp-Source: ABdhPJxEPkjPF6wfpZ+NXo8ZHzu2N71lq6/+J7kLiJOnO1pVyYdAo6o0INUmxkE0pvWYenH74F1v/gnUww5boZr1mzo=
-X-Received: by 2002:a7b:c1c5:: with SMTP id a5mr2424293wmj.144.1631360229275;
- Sat, 11 Sep 2021 04:37:09 -0700 (PDT)
+        Sat, 11 Sep 2021 07:50:20 -0400
+X-Greylist: delayed 352 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Sep 2021 07:50:19 EDT
+X-Envelope-From: stefanr@s5r6.in-berlin.de
+Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 18BBge3X031428
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 11 Sep 2021 13:43:00 +0200
+Date:   Sat, 11 Sep 2021 13:42:36 +0200
+From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net
+Subject: [git pull] FireWire (IEEE 1394) update post v5.14
+Message-ID: <20210911134236.58da0be9@kant>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Sender: misssamiraibrahim@gmail.com
-Received: by 2002:a1c:29c4:0:0:0:0:0 with HTTP; Sat, 11 Sep 2021 04:37:08
- -0700 (PDT)
-From:   "Mrs. Aisha Gaddafi" <mrsaishaalqaddafi40@gmail.com>
-Date:   Sat, 11 Sep 2021 13:37:08 +0200
-X-Google-Sender-Auth: iBSk_y8eEzC981duMqdCFhiH61M
-Message-ID: <CAD2KnJK99Z97mAQOB+Vjk_g=wxfytyFTJVd393NYPiUGa3RHXA@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/qIXG0B.=9T1GyME9K.JO/Ba";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+--Sig_/qIXG0B.=9T1GyME9K.JO/Ba
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. My name is Aisha Gaddafi, a single Mother and
-a Widow with three Children. I am the only biological Daughter of the
-late Libyan President (Late Colonel Muammar Gaddafi).
+Linus,
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and I need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+please pull from the tag "firewire-update" at
 
-Best Regards
-Mrs Aisha Gaddafi
+    git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git
+    firewire-update
+
+to receive the following FireWire (IEEE 1394) subsystem updates:
+
+  - Migrate the bus snooper driver 'nosy' from PCI to DMA API.
+
+  - Small janitorial cleanup in the IPv4/v6-over-1394 driver.
+
+Christophe JAILLET (1):
+      firewire: nosy: switch from 'pci_' to 'dma_' API
+
+Pu Lehui (1):
+      firewire: net: remove unused variable 'guid'
+
+ drivers/firewire/net.c  |  4 ----
+ drivers/firewire/nosy.c | 43 ++++++++++++++++++++++++-------------------
+ 2 files changed, 24 insertions(+), 23 deletions(-)
+
+Thank you,
+--=20
+Stefan Richter
+-=3D=3D=3D=3D=3D=3D--=3D-=3D =3D--=3D -=3D-=3D=3D
+http://arcgraph.de/sr/
+
+--Sig_/qIXG0B.=9T1GyME9K.JO/Ba
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElVwAmOXEbvmhUkgUefNvslRdedAFAmE8li0ACgkQefNvslRd
+edBfqxAAgOhfHtfVPC44m/8hZHUqVeRNCwdFmsDd3teqbunXsrD3lagSgzLhysZD
+b/KciVbe8vRDreNxtH3KaGTWOhMeGL7BcrKJhQPlizwW3NrQketEzkh6OXLfJmQw
+bwT/+fPUFNrXEWKN0iPLEDwkN15JbRX1oQqsA/OK+gOToASNznjEG6cyUwZjz5Yo
+n9QBa4pCtZd9WPzklvbYRbYHlhDxoaqyGVVu+2bVqfhtSCmhfHHweuAN+O4zXgMm
+mgkdEACXhZITTPd/KTyOP53OyR6N+uugTAgdIDcorKET8oqOcjbP4WnqiVpgTwxj
+2PSzqYsIisuYWEqQkWWvSE+V8YIGqkvuDbXJ7DP8GQnOnZMUXAdE6nDKArL51/BD
+eer7uHF88kk7H66rkejrg0Q0oJS2F6ZsUjfxF4YdorILQ1+0HOJW0chfg0ZvvsNu
+OakWaVfohqkICoLrbWBBZlUQDYg7iU6UqrZ1IAtZxb0Y7olN4VpCNRZZZ+5rHDMR
+hwqjNf5wZHjl8L6N3fMFsopVETx62jRwV53Td4bS+RcincH/CDZM67Wf1Cx50NTA
++I7kouSI7nrEbIuFcbmVVxX2zx3YMvB9YVgdlJ30kBzf64ExuqIWo34jvizDx+y3
+YeiTULOvTXRi0nFSTqzcubMn27pyB80YJctpROtFmNFXtzNCkTY=
+=Ak0q
+-----END PGP SIGNATURE-----
+
+--Sig_/qIXG0B.=9T1GyME9K.JO/Ba--
