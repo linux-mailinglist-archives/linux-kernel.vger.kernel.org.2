@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA14A40797A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 18:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C075840797B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 18:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhIKQLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 12:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57760 "EHLO
+        id S232059AbhIKQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 12:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhIKQLs (ORCPT
+        with ESMTP id S230018AbhIKQLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 11 Sep 2021 12:11:48 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0815EC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 09:10:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566CDC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 09:10:35 -0700 (PDT)
 Received: from dslb-084-059-243-091.084.059.pools.vodafone-ip.de ([84.59.243.91] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1mP5aI-0007nr-Gp; Sat, 11 Sep 2021 18:10:30 +0200
+        id 1mP5aJ-0007nr-HW; Sat, 11 Sep 2021 18:10:31 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
@@ -27,9 +27,9 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 2/4] staging: r8188eu: brfoffbyhw is always false
-Date:   Sat, 11 Sep 2021 18:10:17 +0200
-Message-Id: <20210911161019.26881-3-martin@kaiser.cx>
+Subject: [PATCH 3/4] staging: r8188eu: remove rtw_hw_suspend
+Date:   Sat, 11 Sep 2021 18:10:18 +0200
+Message-Id: <20210911161019.26881-4-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210911161019.26881-1-martin@kaiser.cx>
 References: <20210911161019.26881-1-martin@kaiser.cx>
@@ -39,66 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a consequence of the bHWPwrPindetect removal, brfoffbyhw is never set
-to true any more. Remove the variable and code that depends on
-brfoffbyhw == true.
+The bHWPwrPindetect cleanup removed the only call to rtw_hw_suspend.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/staging/r8188eu/include/rtw_pwrctrl.h | 1 -
- drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 7 -------
- drivers/staging/r8188eu/os_dep/usb_intf.c     | 1 -
- 3 files changed, 9 deletions(-)
+ drivers/staging/r8188eu/include/osdep_intf.h |  1 -
+ drivers/staging/r8188eu/os_dep/usb_intf.c    | 59 --------------------
+ 2 files changed, 60 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/rtw_pwrctrl.h b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-index 28e4041acb98..a77fb76a0b09 100644
---- a/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-+++ b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-@@ -114,7 +114,6 @@ struct pwrctrl_priv {
- 	u8		wepkeymask;
- 	u8		bHWPowerdown;/* if support hw power down */
- 	u8		bkeepfwalive;
--	u8		brfoffbyhw;
- };
+diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
+index 3ea60feee2db..5a2c7a98f023 100644
+--- a/drivers/staging/r8188eu/include/osdep_intf.h
++++ b/drivers/staging/r8188eu/include/osdep_intf.h
+@@ -58,7 +58,6 @@ void rtw_ips_dev_unload(struct adapter *padapter);
  
- #define rtw_get_ips_mode_req(pwrctrlpriv) \
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 911bcb69d008..b6f2fa3abb6e 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -1289,11 +1289,6 @@ static int rtw_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
- 	int wait_status;
- 	struct	wifidirect_info *pwdinfo = &padapter->wdinfo;
+ int rtw_ips_pwr_up(struct adapter *padapter);
+ void rtw_ips_pwr_down(struct adapter *padapter);
+-int rtw_hw_suspend(struct adapter *padapter);
+ int rtw_hw_resume(struct adapter *padapter);
  
--	if (padapter->pwrctrlpriv.brfoffbyhw && padapter->bDriverStopped) {
--		ret = -EINVAL;
--		goto exit;
--	}
--
- 	if (!rtw_p2p_chk_state(pwdinfo, P2P_STATE_NONE)) {
- 		/*	P2P is enabled */
- 		wait_for_surveydone = 200;
-@@ -1336,8 +1331,6 @@ static int rtw_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
- 	wrqu->data.length = ev - extra;
- 	wrqu->data.flags = 0;
- 
--exit:
--
- 	return ret;
- }
- 
+ #endif	/* _OSDEP_INTF_H_ */
 diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index b174cc69ded7..fc5ed770cb71 100644
+index fc5ed770cb71..f532dab0254c 100644
 --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
 +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -364,7 +364,6 @@ int rtw_hw_resume(struct adapter *padapter)
- 		netif_wake_queue(pnetdev);
+@@ -278,65 +278,6 @@ static void process_spec_devid(const struct usb_device_id *pdid)
+ 	}
+ }
  
- 	pwrpriv->bkeepfwalive = false;
--	pwrpriv->brfoffbyhw = false;
- 
- 	pwrpriv->rf_pwrstate = rf_on;
- 	pwrpriv->bips_processing = false;
+-int rtw_hw_suspend(struct adapter *padapter)
+-{
+-	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+-	struct net_device *pnetdev = padapter->pnetdev;
+-
+-	if ((!padapter->bup) || (padapter->bDriverStopped) ||
+-	    (padapter->bSurpriseRemoved)) {
+-		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
+-			padapter->bup, padapter->bDriverStopped,
+-			padapter->bSurpriseRemoved);
+-		goto error_exit;
+-	}
+-
+-	LeaveAllPowerSaveMode(padapter);
+-
+-	DBG_88E("==> rtw_hw_suspend\n");
+-	_enter_pwrlock(&pwrpriv->lock);
+-	pwrpriv->bips_processing = true;
+-	/* s1. */
+-	if (pnetdev) {
+-		netif_carrier_off(pnetdev);
+-		rtw_netif_stop_queue(pnetdev);
+-	}
+-
+-	/* s2. */
+-	rtw_disassoc_cmd(padapter, 500, false);
+-
+-	/* s2-2.  indicate disconnect to os */
+-	{
+-		struct	mlme_priv *pmlmepriv = &padapter->mlmepriv;
+-
+-		if (check_fwstate(pmlmepriv, _FW_LINKED)) {
+-			_clr_fwstate_(pmlmepriv, _FW_LINKED);
+-
+-			rtw_led_control(padapter, LED_CTL_NO_LINK);
+-
+-			rtw_os_indicate_disconnect(padapter);
+-
+-			/* donnot enqueue cmd */
+-			rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_DISCONNECT, 0);
+-		}
+-	}
+-	/* s2-3. */
+-	rtw_free_assoc_resources(padapter, 1);
+-
+-	/* s2-4. */
+-	rtw_free_network_queue(padapter, true);
+-	rtw_ips_dev_unload(padapter);
+-	pwrpriv->rf_pwrstate = rf_off;
+-	pwrpriv->bips_processing = false;
+-
+-	_exit_pwrlock(&pwrpriv->lock);
+-	return 0;
+-
+-error_exit:
+-	DBG_88E("%s, failed\n", __func__);
+-	return -1;
+-}
+-
+ int rtw_hw_resume(struct adapter *padapter)
+ {
+ 	struct pwrctrl_priv *pwrpriv;
 -- 
 2.20.1
 
