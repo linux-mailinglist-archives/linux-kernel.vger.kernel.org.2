@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7D4407468
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 03:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D48407476
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 03:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhIKBYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 21:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbhIKBYi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 21:24:38 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A21C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 18:23:26 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id h1so6053728ljl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 18:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4IZXGqyyPS/3gl1bsfFMnsNboMEKQsnCSzncunEclBM=;
-        b=jCX9zDMo49nOV3IOfezERHmktfCTBaQmMBv9QK1ta5zGQvukqzL/gDxAxIelisPUT9
-         BU5p91qDXyTEypoJxnHJoMqpSZTMd1Gfd/qFrJ3+Hx0G/3Jj4mb9qWgcZLItSTEVxvDM
-         fRukEQ9K9oPJKZI+PwlcuAnJ6v/jIZs2MN7ufHRqf7C6g1B1BJRJoWwna8bNsVM8LAGJ
-         9dR5JbJamURRO0wJM9Tz5kzHF7zekW19L1Ya6Ymsp+j2wVk6S/zGw8yyJR16qvaKlyd2
-         Lk1PfqAixr4bbpyOaS6nKeDJj7Ow7saZ4q30NPJ/pyp/nAaKFriyKN9mbBfJrhIZHgbL
-         SPSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4IZXGqyyPS/3gl1bsfFMnsNboMEKQsnCSzncunEclBM=;
-        b=UZKB/6zxHBkHc5Bn4n3psEeYFVK1tnXIBPfpwnLdxRzf2u44EgHq///1L0qiNNAI7v
-         TuW9jMAfW9AvhPZ5NPhZz1RxkL9DilHIXe5SwFwi/kT4hR/TbIYWPgCLDVV9WmgiYb8+
-         Ty46MTqT/4s5Qa5USIszbEd/ZN4BdyeXf1S0p//KQZXKmYkVfIEByUfpI3kLpyYe59Js
-         1VQuYNtcV4p999kTJkEToQjVZEJBdmTKqRgMFicKTVQjj8rMX+Z6JaVY8DcuGdVCfIAM
-         NvOaPeRXnhkAdhLI5EMb0W/lHksyJV+2YNJZMhJxycA3ZSrjDyixWPhnog/3ofwkU5ev
-         LzAw==
-X-Gm-Message-State: AOAM530p5Z9p6TFeVMnRBPsmeODUe5w/geF99oBI62Wq+68AY3TDOr2F
-        hTAwp5oUo8halKSdtO1NMRt73kS76GKqAg==
-X-Google-Smtp-Source: ABdhPJxtZY/KCpu89PNzdv+QdbNeRfB7TooMICYo8cBT5ONUxDVhUaQeoToWaG3xicjMUmSINR0udQ==
-X-Received: by 2002:a2e:9bc2:: with SMTP id w2mr395498ljj.266.1631323405005;
-        Fri, 10 Sep 2021 18:23:25 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u15sm38657lfk.26.2021.09.10.18.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 18:23:24 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E7F9A1027D1; Sat, 11 Sep 2021 04:23:24 +0300 (+03)
-Date:   Sat, 11 Sep 2021 04:23:24 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <20210911012324.6vb7tjbxvmpjfhxv@box.shutemov.name>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
+        id S235069AbhIKBiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 21:38:04 -0400
+Received: from mga03.intel.com ([134.134.136.65]:20148 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231864AbhIKBiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 21:38:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="221274076"
+X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
+   d="scan'208";a="221274076"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 18:36:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
+   d="scan'208";a="541062669"
+Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Sep 2021 18:36:49 -0700
+Date:   Sat, 11 Sep 2021 09:28:53 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [kbuild-all] Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+Message-ID: <20210911012853.GA834679@pl-dbox>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
+ <YTv817Srt8hoySP5@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTu9HIu+wWWvZLxp@moria.home.lan>
+In-Reply-To: <YTv817Srt8hoySP5@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:16:28PM -0400, Kent Overstreet wrote:
-> So we should listen to the MM people.
+On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
+> On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+> > head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+> > commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+> > config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+> >         git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+> >         git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+> >         git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> > >> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+> >    bool firmware_is_builtin(const struct firmware *fw)
+> 
+> This is a lie though its defined on drivers/base/firmware_loader/firmware.h
+> 
+> >         ^
+> >    drivers/base/firmware_loader/builtin/main.c:36:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> >    bool firmware_is_builtin(const struct firmware *fw)
+> >    ^
+> >    static 
+> >    1 error generated.
+> 
+> I get these odd errors:
+> 
+> Compiler will be installed in /home/mcgrof/0day
+hi Luis, would you mind to download the make.cross tool again to give a try, it
+was updated recently to use latest clang instead of this 12.0.0?
 
-Count me here.
-
-I think the problem with folio is that everybody wants to read in her/his
-hopes and dreams into it and gets disappointed when see their somewhat
-related problem doesn't get magically fixed with folio.
-
-Folio started as a way to relief pain from dealing with compound pages.
-It provides an unified view on base pages and compound pages. That's it.
-
-It is required ground work for wider adoption of compound pages in page
-cache. But it also will be useful for anon THP and hugetlb.
-
-Based on adoption rate and resulting code, the new abstraction has nice
-downstream effects. It may be suitable for more than it was intended for
-initially. That's great.
-
-But if it doesn't solve your problem... well, sorry...
-
-The patchset makes a nice step forward and cuts back on mess I created on
-the way to huge-tmpfs.
-
-I would be glad to see the patchset upstream.
-
--- 
- Kirill A. Shutemov
+> cd: received redirection to
+> `https://download.01.org/0day-ci/cross-package/'
+> lftpget -c
+> https://download.01.org/0day-ci/cross-package/./clang_hexagon/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+> tar Jxf
+> clang_hexagon/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+> -C /home/mcgrof/0day                                                    
+> make --keep-going
+> HOSTCC=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang
+> CC=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang
+> LD=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/ld.lld
+> HOSTLD=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/ld.lld
+> AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJDUMP=llvm-objdump
+> OBJSIZE=llvm-size READELF=llvm-readelf HOSTCXX=clang++ HOSTAR=llvm-ar
+> LLVM_IAS=1 CROSS_COMPILE=hexagon-unknown-linux-musl- --jobs=24
+> ARCH=hexagon
+>   SYNC    include/config/auto.conf.cmd
+>     HOSTCC  scripts/basic/fixdep
+>     /home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang:
+>     error while loading shared libraries: libtinfo.so.5: cannot open
+>     shared object file: No such file or directory
+>     make[2]: *** [scripts/Makefile.host:95: scripts/basic/fixdep] Error
+>     127
+>     make[2]: Target '__build' not remade because of errors.
+>     make[1]: *** [Makefile:594: scripts_basic] Error 2
+>     make[1]: Target 'syncconfig' not remade because of errors.
+>     make: *** [Makefile:771: include/config/auto.conf.cmd] Error 2
+>     make: Failed to remake makefile 'include/config/auto.conf.cmd'.
+>     make: Failed to remake makefile 'include/config/auto.conf'.
+>       HOSTCC  scripts/basic/fixdep
+>       /home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang:
+>       error while loading shared libraries: libtinfo.so.5: cannot open
+>       shared object file: No such file or directory
+>       make[1]: *** [scripts/Makefile.host:95: scripts/basic/fixdep]
+>       Error 127
+> 
+> 
+> I have a feeling these issues are not correct...
+> 
+>   Luis
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
