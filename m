@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ECF407574
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 09:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9364940758D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 10:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235375AbhIKHlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 03:41:04 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9417 "EHLO
+        id S235425AbhIKIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 04:17:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9418 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhIKHlC (ORCPT
+        with ESMTP id S235334AbhIKIR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 03:41:02 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H64K90RnGz8xZP;
-        Sat, 11 Sep 2021 15:35:25 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+        Sat, 11 Sep 2021 04:17:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H657l2fDqz8yFx;
+        Sat, 11 Sep 2021 16:12:19 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 15:39:48 +0800
-Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
- (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ 15.1.2308.8; Sat, 11 Sep 2021 16:16:42 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
- 2021 15:39:47 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <colyli@suse.de>, <kent.overstreet@gmail.com>
-CC:     <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linfeilong@huawei.com>, <wubo40@huawei.com>
-Subject: [PATCH] bcache: Fix memory leak when cache_alloc() return failed
-Date:   Sat, 11 Sep 2021 16:08:54 +0800
-Message-ID: <1631347734-9950-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+ 2021 16:16:41 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <matthias.bgg@gmail.com>,
+        <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: mediatek: mt8195: Add missing of_node_put()
+Date:   Sat, 11 Sep 2021 16:12:46 +0800
+Message-ID: <20210911081246.33867-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500019.china.huawei.com (7.185.36.137)
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+The platform_node is returned by of_parse_phandle() should have
+of_node_put() before return.
 
-If cache_alloc() get error when register a cache device,
-the ca->kobj is not initialized, the bch_cache_release() no chance 
-to be called. So "ca" object will not be released.
-
-In addition, if register_cache_set() return failed 
-when register a cache device, kobject_put(&ca->kobj) will be called 
-and "ca" objects will be released in bch_cache_release() function. 
-But pr_notice() called after kobject_put(&ca->kobj),
-the "ca->cache_dev_name" access memory that has been freed.
-
-Signed-off-by: Wu Bo <wubo40@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 ---
- drivers/md/bcache/super.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index f2874c7..30569f4 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -2366,13 +2366,17 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
- 		 * explicitly call blkdev_put() here.
- 		 */
- 		blkdev_put(bdev, FMODE_READ|FMODE_WRITE|FMODE_EXCL);
-+		if (ca->sb_disk)
-+			put_page(virt_to_page(ca->sb_disk));
- 		if (ret == -ENOMEM)
- 			err = "cache_alloc(): -ENOMEM";
- 		else if (ret == -EPERM)
- 			err = "cache_alloc(): cache device is too small";
- 		else
- 			err = "cache_alloc(): unknown error";
--		goto err;
-+		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-+		kfree(ca);
-+		return ret;
+diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+index c97ace7387b4..8cd8450409e8 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
++++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+@@ -1041,8 +1041,10 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
  	}
  
- 	if (kobject_add(&ca->kobj, bdev_kobj(bdev), "bcache")) {
-@@ -2393,11 +2397,9 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
- 	pr_info("registered cache device %s\n", ca->cache_dev_name);
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
++	if (!priv) {
++		of_node_put(platform_node);
+ 		return -ENOMEM;
++	}
  
- out:
--	kobject_put(&ca->kobj);
--
--err:
- 	if (err)
- 		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-+	kobject_put(&ca->kobj);
+ 	snd_soc_card_set_drvdata(card, priv);
  
+@@ -1050,6 +1052,8 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
+ 			__func__, ret);
++
++	of_node_put(platform_node);
  	return ret;
  }
+ 
 -- 
-1.8.3.1
+2.17.1
 
