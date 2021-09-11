@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48D74078FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BA84078FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhIKPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 11:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44030 "EHLO
+        id S232227AbhIKPJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 11:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhIKPJP (ORCPT
+        with ESMTP id S232110AbhIKPJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 11:09:15 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BBAC061574;
-        Sat, 11 Sep 2021 08:08:03 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a25so10620965ejv.6;
-        Sat, 11 Sep 2021 08:08:03 -0700 (PDT)
+        Sat, 11 Sep 2021 11:09:37 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABF3C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 08:08:24 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bt14so10646734ejb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 08:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oM7XF1uFs9UTa/foVY6d5+oceSdFNljdu/vD3xDjyZM=;
-        b=S9vz87VSobel3WVd8MkbjsZq3rLmApPX3jtgsvbPpYpXc3RyLE5GwcCvKkdH1JZq79
-         UyMZEY4MGmuMCeelqLsw7PaZWbH+9pfNG4G9FY6vx4z5dgVEQQkjEFI7D3ro3+DsoI2z
-         /74ypdjAVqE7mI/Myc0zTy7JakrFP7ydbs1FqlwqHvAOZmDHsJhi8sCvAanU99eMrdhc
-         VPqxwu60nBjCIPky+ogRHsuJcCcIvuq13Z3LguXPM5tt3mkPvl8j9S0YC4Gbu83lJKcC
-         UMUgt1aKNAxr4WysLZqZ1pT4kD6bKJkeR/U7iKqBwpTnuHWTP2w03l3XPGLYpJoLkWit
-         +PLw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=luLtgVsRYvhjNV2R6skXurVla6FjYBVfUo7wHBZR2Jc=;
+        b=Ol506r990pF34gH1cyki1sCND0sCyZfV9xHf5t7mYTLdSR7vAQvvExRD7EhZCcsmGc
+         oatBgvFeUc4fg+V6Zssvg47ufSRB/1zBbSj7ne8vGUf2yCRN9VWbPcEZyH4xudmbsVUP
+         YOli0u6aNVoOPx63PAcvkKXOPS3QZSE6N1pJdES1323NBThWzif9HhJY2wXdLjNaJBRo
+         g9hh8i9gAot2fUrx4xzdljTjVLpzWOUlCagtSN1CTNqaHiKlKS29NseJ/eHb0T6c3J7F
+         VTMcPdKw0JkSNrEx8K+uzopYFgCXJf9v50ws9ckLVYfec6a5TtRJGzTm72EsnwAb10zi
+         xNlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oM7XF1uFs9UTa/foVY6d5+oceSdFNljdu/vD3xDjyZM=;
-        b=15hqpKsO7trtoSuXoHph7twriNo0CESl9hzY0d1pgMv2iuPSgOOqYslIuc7EvPhbbl
-         xOE7tD4pFbPKZ1x8tgeeMuqVqGj4zcktJnTKYZ9I7ShJZnHu+rUoAkrRxvP0pp+StdCm
-         l+6ELnsrnr6A+uxrLWjy3eGR71yLpxiOtUppFnoPJqNRQYvvQdhBRvgxyRj3Lj7jEpRZ
-         65sRBg9XKmrIdtgv1f6XsXEOMVTUIv30rpPYDoH1S2DLgZsGhcVVv+gbtDXSeTpRgtHl
-         RWM0L4uR3chwkRz0lobi8ftz7w+4dLolmg8rlwjS+beFmbVJPMcRvAqHcwGjyrQwIkC1
-         wi7Q==
-X-Gm-Message-State: AOAM532bv1ODn3PzimYNxjDTW+3Gweu1roEdQzl9qepuSq+OVSigfP4S
-        1ahvLDO8Me7JLLiXCQSJ1W4=
-X-Google-Smtp-Source: ABdhPJzRJ+TGa41Qh5gA0oGgXcQkxdwOt9jVRz/d0dswqBiYK3SNFB3EgmjQ4yzOkzOSuPfLwJbD2w==
-X-Received: by 2002:a17:906:3745:: with SMTP id e5mr3320151ejc.400.1631372881612;
-        Sat, 11 Sep 2021 08:08:01 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (host-87-21-249-69.retail.telecomitalia.it. [87.21.249.69])
-        by smtp.googlemail.com with ESMTPSA id l16sm882107eje.67.2021.09.11.08.08.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=luLtgVsRYvhjNV2R6skXurVla6FjYBVfUo7wHBZR2Jc=;
+        b=1XdQZ9wFhy+BpjuIMPGZysZmDXS6Gak2usDvC2uwGsq5O+oCHu8iO+/TtaEN8rsELL
+         v78TvVbZlJCy5waEpFNNcA4OIXPxKXLfzQXOb/2TNxrSOWMerUON2TX5UPjgtzutSzCw
+         Gm32zA9QH2EPvpTuEkdK1butAIFn/rtrxXsfVQ+zzPci4LCEhbJ+uV/9daZAASbaqKNd
+         aMaAI5StIDc3qdZCiiCx7c5rwNNaOSWgC0r1EOW1hBTJfmLhW4K6yLI38thCXSYR5glt
+         UHWJDZvyVHv02x0lbIJ+gpFfsrKKTpRyiBFEMGLC/3VlJPonEB1BK+Aln2EIhLkN076V
+         F4sg==
+X-Gm-Message-State: AOAM5334TXZlai21yqPtKEUbo1zcu9xvjA62U4jk8SBJxP3WIaib9Fbx
+        2WFOns4GxghjH6Vey8u2iPE=
+X-Google-Smtp-Source: ABdhPJzcdyQrGjadBfMfKIIvdHGyri/f/+WFTtB1NWcii3TbqSW5IL+cpZjR2wIXoan6uB5LyRU0dA==
+X-Received: by 2002:a17:906:9401:: with SMTP id q1mr3258675ejx.313.1631372903369;
+        Sat, 11 Sep 2021 08:08:23 -0700 (PDT)
+Received: from agape.jhs ([5.171.73.66])
+        by smtp.gmail.com with ESMTPSA id q15sm884722ejx.3.2021.09.11.08.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 08:08:01 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: dsa: qca8k: fix kernel panic with legacy mdio mapping
-Date:   Sat, 11 Sep 2021 17:07:31 +0200
-Message-Id: <20210911150731.16586-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 11 Sep 2021 08:08:23 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 17:08:19 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v2] staging: rtl8723bs: remove possible deadlock when
+ disconnect
+Message-ID: <20210911150818.GC1367@agape.jhs>
+References: <20210902093559.9779-1-fabioaiuto83@gmail.com>
+ <c730848c-3c8d-1e49-fa74-b956400a5d3d@redhat.com>
+ <20210911105307.GB1407@agape.jhs>
+ <bc640665-2768-6add-d523-6ee80849eb98@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc640665-2768-6add-d523-6ee80849eb98@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the mdio legacy mapping is used the mii_bus priv registred by DSA
-refer to the dsa switch struct instead of the qca8k_priv struct and
-cause a kernel panic. Create dedicated function when the internal
-dedicated mdio driver is used to proprely handle the 2 different
-implementation.
+Hi Hans,
 
-Fixes: 759bafb8a322 ("net: dsa: qca8k: add support for internal phy and internal mdio")
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/dsa/qca8k.c | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+On Sat, Sep 11, 2021 at 01:33:59PM +0200, Hans de Goede wrote:
+> Hi All,
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 1f63f50f73f1..a701323daf72 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -643,10 +643,8 @@ qca8k_mdio_busy_wait(struct mii_bus *bus, u32 reg, u32 mask)
- }
- 
- static int
--qca8k_mdio_write(struct mii_bus *salve_bus, int phy, int regnum, u16 data)
-+qca8k_mdio_write(struct mii_bus *bus, int phy, int regnum, u16 data)
- {
--	struct qca8k_priv *priv = salve_bus->priv;
--	struct mii_bus *bus = priv->bus;
- 	u16 r1, r2, page;
- 	u32 val;
- 	int ret;
-@@ -682,10 +680,8 @@ qca8k_mdio_write(struct mii_bus *salve_bus, int phy, int regnum, u16 data)
- }
- 
- static int
--qca8k_mdio_read(struct mii_bus *salve_bus, int phy, int regnum)
-+qca8k_mdio_read(struct mii_bus *bus, int phy, int regnum)
- {
--	struct qca8k_priv *priv = salve_bus->priv;
--	struct mii_bus *bus = priv->bus;
- 	u16 r1, r2, page;
- 	u32 val;
- 	int ret;
-@@ -726,6 +722,24 @@ qca8k_mdio_read(struct mii_bus *salve_bus, int phy, int regnum)
- 	return ret;
- }
- 
-+static int
-+qca8k_internal_mdio_write(struct mii_bus *salve_bus, int phy, int regnum, u16 data)
-+{
-+	struct qca8k_priv *priv = salve_bus->priv;
-+	struct mii_bus *bus = priv->bus;
-+
-+	return qca8k_mdio_write(bus, phy, regnum, data);
-+}
-+
-+static int
-+qca8k_internal_mdio_read(struct mii_bus *salve_bus, int phy, int regnum)
-+{
-+	struct qca8k_priv *priv = salve_bus->priv;
-+	struct mii_bus *bus = priv->bus;
-+
-+	return qca8k_mdio_read(bus, phy, regnum);
-+}
-+
- static int
- qca8k_phy_write(struct dsa_switch *ds, int port, int regnum, u16 data)
- {
-@@ -775,8 +789,8 @@ qca8k_mdio_register(struct qca8k_priv *priv, struct device_node *mdio)
- 
- 	bus->priv = (void *)priv;
- 	bus->name = "qca8k slave mii";
--	bus->read = qca8k_mdio_read;
--	bus->write = qca8k_mdio_write;
-+	bus->read = qca8k_internal_mdio_read;
-+	bus->write = qca8k_internal_mdio_write;
- 	snprintf(bus->id, MII_BUS_ID_SIZE, "qca8k-%d",
- 		 ds->index);
- 
--- 
-2.32.0
+<snip>
 
+> 
+> Ah I missed that this was already merged. Since this is already merged
+> the issue which I noticed should be fixed with a separate follow-up
+> patch (with a Fixes: tag, thanks.
+
+ok, I'll do that.
+
+> 
+> Regards,
+> 
+> Hans
+> 
+
+thank you,
+
+fabio
