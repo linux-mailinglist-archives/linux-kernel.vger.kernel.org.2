@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA9C407661
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584D6407669
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235735AbhIKMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 08:06:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:50250 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230249AbhIKMGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 08:06:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="221342731"
-X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
-   d="scan'208";a="221342731"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2021 05:05:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
-   d="scan'208";a="649742301"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2021 05:05:24 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf tools: Fix perf_event_attr__fprintf()  missing/dupl. fields
-Date:   Sat, 11 Sep 2021 15:05:50 +0300
-Message-Id: <20210911120550.12203-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S235760AbhIKMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 08:15:11 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:58561 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233559AbhIKMPK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 08:15:10 -0400
+Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 4C96F3F350;
+        Sat, 11 Sep 2021 14:13:55 +0200 (CEST)
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] msm8998 clock-controller cleanup
+Date:   Sat, 11 Sep 2021 14:13:32 +0200
+Message-Id: <20210911121340.261920-1-marijn.suijten@somainline.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some fields are missing and text_poke is duplicated. Fix that up.
+Clean up the clock-controllers for msm8998 similar to sdm660 by:
+- Using parent_data/hws for internal relations;
+- Removing the "xo" fixed-factor clock that only existed for drivers
+  that rely on this global name (the DT only provides "xo_board");
+- Using ARRAY_SIZE for num_parents instead of hardcoding array length;
+- Removing unnecessary fallbacks to global names of parent clocks, these
+  are already specified in the DT;
+- Updating DT-bindings to reflect the clocks used by gcc.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/util/perf_event_attr_fprintf.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Note that this should land some time after [1] to give users time to
+update their firmware (DT) before updating the kernel.  Additionally [2]
+should make it in before DSI PLL nodes are added.
 
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index 30481825515b..47b7531f51da 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -137,6 +137,9 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 	PRINT_ATTRf(cgroup, p_unsigned);
- 	PRINT_ATTRf(text_poke, p_unsigned);
- 	PRINT_ATTRf(build_id, p_unsigned);
-+	PRINT_ATTRf(inherit_thread, p_unsigned);
-+	PRINT_ATTRf(remove_on_exec, p_unsigned);
-+	PRINT_ATTRf(sigtrap, p_unsigned);
- 
- 	PRINT_ATTRn("{ wakeup_events, wakeup_watermark }", wakeup_events, p_unsigned);
- 	PRINT_ATTRf(bp_type, p_unsigned);
-@@ -150,7 +153,7 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 	PRINT_ATTRf(aux_watermark, p_unsigned);
- 	PRINT_ATTRf(sample_max_stack, p_unsigned);
- 	PRINT_ATTRf(aux_sample_size, p_unsigned);
--	PRINT_ATTRf(text_poke, p_unsigned);
-+	PRINT_ATTRf(sig_data, p_unsigned);
- 
- 	return ret;
- }
+[1]: https://lore.kernel.org/linux-arm-msm/20210911120101.248476-1-marijn.suijten@somainline.org/
+[2]: https://lore.kernel.org/linux-arm-msm/20210830182445.167527-2-marijn.suijten@somainline.org/
+
+Marijn Suijten (8):
+  clk: qcom: gcc-msm8998: Move parent names and mapping below GPLLs
+  clk: qcom: gcc-msm8998: Use parent_data/hws for internal clock
+    relations
+  clk: qcom: gcc-msm8998: Remove transient global "xo" clock
+  clk: qcom: gpucc-msm8998: Use ARRAY_SIZE for num_parents
+  clk: qcom: mmcc-msm8998: Use ARRAY_SIZE for num_parents
+  dt-bindings: clocks: qcom,gcc-msm8998: Reflect actually referenced
+    clks
+  clk: qcom: gpucc-msm8998: Remove unnecessary fallbacks to global
+    clocks
+  clk: qcom: mmcc-msm8998: Remove unnecessary fallbacks to global clocks
+
+ .../bindings/clock/qcom,gcc-msm8998.yaml      |  26 +-
+ drivers/clk/qcom/gcc-msm8998.c                | 705 ++++++++++--------
+ drivers/clk/qcom/gpucc-msm8998.c              |  13 +-
+ drivers/clk/qcom/mmcc-msm8998.c               | 183 +++--
+ 4 files changed, 475 insertions(+), 452 deletions(-)
+
 -- 
-2.17.1
+2.33.0
 
