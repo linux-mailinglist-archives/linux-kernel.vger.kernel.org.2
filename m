@@ -2,112 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1322407690
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFCC407692
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhIKMWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 08:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
+        id S235854AbhIKMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 08:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhIKMWW (ORCPT
+        with ESMTP id S230249AbhIKMXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 08:22:22 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F368C061574;
-        Sat, 11 Sep 2021 05:21:10 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id t19so1616414vkk.2;
-        Sat, 11 Sep 2021 05:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JFcWtn6lUh5qSG7OOiLxD5ZahmIxrMGf1j5Q5s8lXfU=;
-        b=ooYnU0AqSisGN9gV0Nwzw8AH4IeUcF8jgJbCHu0G/PUcShcVArw2J6lI2X4Ms4B2My
-         VpvWZfww5r2EQVNIv1MC3z7HRTimN0vh8BfUVCXbih0m78iAIFaPRrSfjdn3tmCCVYec
-         tKSNWscw2gSKm14wIE7CFOR5w1kPL8d8CwlKE3E0GS7QFG/OHsPep/YqMUpEXobd462U
-         JG+3L/mknZJR5/6b8wFabqtBlBeEuZkVmV/PhtwOw/ToE5Mg8sFKjLfsmYBebAk4EPtU
-         fGVxCh+OSqWgE5520DU5Cqy8EKC1ljmMT18ly+2QeIDL/EibCMN5fPQenbiU/SDSulAU
-         Tugw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JFcWtn6lUh5qSG7OOiLxD5ZahmIxrMGf1j5Q5s8lXfU=;
-        b=l5CbmGT41XZCW/nkYUJmZzuEbpkrLqt5btXN0Flt6k349B8n1JbkPhgtUnzwqRkc5r
-         isDmB9wU/yvp3Tue1FcgkKkrEptcR7f+yBAc+n/VPm3jnDopIea3PXfNU2GecSFzX7Ie
-         YJn64BzrdCOJvDQ9Et1+BQpZWig23/CBKBYMuxbnPotJP/0K5jslQeA1AdMGhm2dNkRp
-         ApC4kMrfUWuUVBJkDPMrle0QA3CB5rG1vlrNBZpQCo66yUHriIRJSVJjsFa0DG/iSppj
-         PQMw+QdBp19Ug/exEQ8OlxBmMAnbbL68KQCoynAC+R7b6XHfbk5q9AwRaUF6hEJoi7ef
-         u1Sg==
-X-Gm-Message-State: AOAM532DgvlnaYokNRqgDTotyLvVzAIMzSeQaWL8NmnBO+qiHgpf6rgg
-        6APxJZdCvX3Ju37ZHHuQsNWWZbyrsxZjdXzupeM=
-X-Google-Smtp-Source: ABdhPJwrH1e4m8h6HaHj1QK9JEMdnD/N4f+EvyVU7cY41tx7OAAFn/bJT6S+BdYNEzFERGS/IXAURi3UdeeLL+l6HTI=
-X-Received: by 2002:a1f:9e11:: with SMTP id h17mr785852vke.16.1631362869518;
- Sat, 11 Sep 2021 05:21:09 -0700 (PDT)
+        Sat, 11 Sep 2021 08:23:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3523EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 05:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GUNcEutT0mEBhENHiF0F3UXb+JNzNoJHfhcJSMtDZCI=; b=NzESvma6fyq52V87bsGMq4yXgV
+        4ILtCo6/hbS+L2UPQ2Oxvg/qmIANgVtKvy0jIpPJEm79aSN7XAk2GsODoqwL8ppkSfc4iXdGXfd8s
+        Uz22cpOKOX11A0BluXHUeCacvTLWUHlQda28fxtwRVgJcaLXmWEI1Zc1AAhhQH/WclAvOvL2Tgxpc
+        BcU71TNP3vM13VyTHbAQ+gOr2ZGl5QEdOllhtz7MRoY4ftXHZW4kYfur4LQMGp6Iexni+Xl8RJqze
+        uZU2NvNNZ6zz/w86XU8N/9BSyoZ6BzbyketHm19qSGQ8h+LgjzKV0MqHqOKwH6MiBIRtXzETEKF3C
+        2wDrdwUQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mP21R-002N6d-2y; Sat, 11 Sep 2021 12:22:17 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A7D379862C9; Sat, 11 Sep 2021 14:22:16 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 14:22:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH peterz-queue:sched/core] sched: fix build warning with W=1
+Message-ID: <20210911122216.GX4323@worktop.programming.kicks-ass.net>
+References: <20210911082505.115758-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20210910190322.27058-1-romain.perier@gmail.com>
- <20210910190322.27058-4-romain.perier@gmail.com> <CAFr9PXmwRDfXmDR9UOGoQ2+_LDaSGgmg7n=Ek4RtBdiC2kfuLA@mail.gmail.com>
-In-Reply-To: <CAFr9PXmwRDfXmDR9UOGoQ2+_LDaSGgmg7n=Ek4RtBdiC2kfuLA@mail.gmail.com>
-From:   Romain Perier <romain.perier@gmail.com>
-Date:   Sat, 11 Sep 2021 14:20:58 +0200
-Message-ID: <CABgxDo+9WnjE5pu=ijN01htLucFYko--w2fJ+ZVazBg_cSLZ1w@mail.gmail.com>
-Subject: Re: [PATCH 3/4] dt-bindings: add vendor prefix for Wireless Tag
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911082505.115758-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Sat, Sep 11, 2021 at 08:25:05AM +0000, Yafang Shao wrote:
+> kernel test robot reported some build warnings with W=1 as below,
+> 
+> kernel/sched/fair.c:892:34: warning: variable 'stats' set but not used
+> kernel/sched/core.c:10238:42: warning: variable 'stats' set but not used
+> kernel/sched/fair.c:893:29: warning: variable 'p' set but not used
+> kernel/sched/rt.c:1292:29: warning: variable 'p' set but not used
+> kernel/sched/deadline.c:1486:34: warning: variable 'stats' set but not used
+> arch/nds32/include/asm/current.h:10:13: warning: variable '$r25' set but not used
+> 
+> These warnings happen when CONFIG_SCHEDSTATS is not set, in which
+> case the schedstat_* functions will be none. We should add
+> '__maybe_unused' to fix it
 
-Le sam. 11 sept. 2021 =C3=A0 04:59, Daniel Palmer <daniel@0x0f.com> a =C3=
-=A9crit :
->
-> Hi Romain,
-> Sorry for sending this again. Gmail decided to switch to html email so
-> the first version bounced from the mailing lists.
->
-> On Sat, 11 Sept 2021 at 04:03, Romain Perier <romain.perier@gmail.com> wr=
-ote:
-> >
-> > This adds a vendor prefix for wireless tag boards and SOMs.
-> >
-> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/D=
-ocumentation/devicetree/bindings/vendor-prefixes.yaml
-> > index a867f7102c35..b50d62dde7c5 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -517,6 +517,8 @@ patternProperties:
-> >      description: International Business Machines (IBM)
-> >    "^icplus,.*":
-> >      description: IC Plus Corp.
-> > +  "^wirelesstag,.*":
-> > +    description: Wireless Tag (qiming yunduan)
-> >    "^idt,.*":
-> >      description: Integrated Device Technologies, Inc.
-> >    "^ifi,.*":
-> > --
-> > 2.33.0
-> >
->
-> This should be in alphabetical order.
-> Also, this commit should be before adding the DT for the board I think.
-> The prefix should be in before something that uses it.
->
-> Thanks,
-
-Ack, I will fix it.
-
-Cheers,
-Romain
+I really hate all of this, I think the compiler is just being unhelpful
+in the extreme. Also, I spupose the warning is in W=1 for a reason,
+let's just completely ignore all of this.
