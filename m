@@ -2,180 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3324074D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB7B4074DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhIKDT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 23:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhIKDT5 (ORCPT
+        id S235214AbhIKDpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:45:17 -0400
+Received: from mail-m972.mail.163.com ([123.126.97.2]:51080 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhIKDpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 23:19:57 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1191C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:18:43 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id f22so4314250qkm.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yglhQiqMuWRPXEcp/S7cp6xw4g2Boo9OI0xnp6CMYq0=;
-        b=WIz8lZM8PLGizh5UoEnFP8TfCrOQRzhtjoMSFgBW6nZVGw1g7pIgTv2s7R4uf7BE7i
-         1Vcn6md5a/DpD/uE0Z0jbqm3xF+uW+OJ5FNv465mG9zup5WjKMvfgXkPtpdqUb6ibXaD
-         +ebjUbCnGE5zhrzDu0fCNtIWBpGDOoWEO3TC0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yglhQiqMuWRPXEcp/S7cp6xw4g2Boo9OI0xnp6CMYq0=;
-        b=KMUsEki2W8BHaX0TFlco/eDSVJe9AKTrFY5x444fX2ni0UbZwjoypmq1iVqCh6L7r8
-         xpcadGYFIxrx44bgVfVwMQ7XD0UC6k1y1iXZTbkJkJYCEWXCUrrKzlq62aTQ+qFK8TFS
-         pR/lRl3tQahkCVvb5htlDp/C5AFcO1nVJLvhcWovcNU2Y9ric1I9IuIiYnGuBL2D1NEa
-         uTgauza+hzrz+1VGcA9I6y8OAc9DAUFHpF5fkK/60Ex7NCBKkXbTznxxdiLLlMhhmCa9
-         23zwAK5XXwexWiaiBuMDJduUcPRfVBbtvXdUPya2hzw0y4JGctWrV6ElbgFS11akdBix
-         0a5Q==
-X-Gm-Message-State: AOAM533dN2nJIXvppn31h+sV6lcFt3cyxLK50xbWBEvimwd3l5bIRfHq
-        9DBDDievIvwnt416UmcikTmusW9r8Or5UcfxwUzTQw==
-X-Google-Smtp-Source: ABdhPJxrshc0/e0qK2u4rQeCBzQr0P9W4mE/w2bCGPbHuyvvD1MoYhyx+d2tpScTXawu9idjHi4apmLNG0MU0Rawwm4=
-X-Received: by 2002:a05:620a:228a:: with SMTP id o10mr545406qkh.342.1631330322890;
- Fri, 10 Sep 2021 20:18:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210910190322.27058-1-romain.perier@gmail.com> <20210910190322.27058-3-romain.perier@gmail.com>
-In-Reply-To: <20210910190322.27058-3-romain.perier@gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sat, 11 Sep 2021 12:18:32 +0900
-Message-ID: <CAFr9PXmRXcu_ifE62dT5AwZv2uFbYVfAc5ZX5qBoRkEPKGB+JA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ARM: dts: mstar: Add the Wireless Tag IDO-SBC2D06-V1B-22W
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 10 Sep 2021 23:45:16 -0400
+X-Greylist: delayed 927 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Sep 2021 23:45:15 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=FH+USxEfweAJl8Lxzo
+        japaWWh0n2lXlPBIHKiYTBzcE=; b=TsRTo/8nvSqrW9Zq1Zghdddq0zgub3MLY5
+        0VwHe93khXD7RuRGgDLG6dyC5hlOmwbsSm2PefGcTba/nfNpZMTswnf+NyDF27IA
+        pG+TkR3jgiwJ5BU4t5fOYeF3ciBn3txLWePN3gBGB2yB2+VpVtZgUxWr9ZibLj63
+        gXrzQttus=
+Received: from ubuntu.localdomain (unknown [124.64.16.40])
+        by smtp2 (Coremail) with SMTP id GtxpCgAnGycUIjxhDHDuSQ--.500S2;
+        Sat, 11 Sep 2021 11:27:17 +0800 (CST)
+From:   18341265598@163.com
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhaoge Zhang <18341265598@163.com>
+Subject: [PATCH] kvm: x86: i8259: Converts mask values to logical binary values.
+Date:   Sat, 11 Sep 2021 11:27:21 +0800
+Message-Id: <1631330841-3507-1-git-send-email-18341265598@163.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: GtxpCgAnGycUIjxhDHDuSQ--.500S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GF1UCr13GryrJry7Gw45Jrb_yoWfXrbEka
+        48t397C3yfGrW8Z3yfCa1FyFn3Kw4qgrWfXw18tas0vr9IvFWUZrW5G3W7tr48urZ3GrZr
+        WrySvFnYkr1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8b6pPUUUUU==
+X-Originating-IP: [124.64.16.40]
+X-CM-SenderInfo: jpryjkyrswkkmzybiqqrwthudrp/xtbB+AYL+12MaQ7z1AAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
+From: Zhaoge Zhang <18341265598@163.com>
 
-On Sat, 11 Sept 2021 at 04:03, Romain Perier <romain.perier@gmail.com> wrote:
-> +              - wirelesstag,ido-som2d01 # Wireless Tag IDO-SOM2D01
-> +              - wirelesstag,ido-sbc2d06-v1b-22w # Wireless Tag IDO-SBC2D06-1VB-22W
+Signed-off-by: Zhaoge Zhang <18341265598@163.com>
+---
+ arch/x86/kvm/i8259.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-For anyone wondering why we have two strings here:
-The SBC board is made up of a SoM and a board with the connectors.
-The SoM could be used standalone so we might as well have a compatible
-for it too.
-We have some dtsis for the SoM but really those could be built as is
-to support someone using the SoM on it's own.
+diff --git a/arch/x86/kvm/i8259.c b/arch/x86/kvm/i8259.c
+index 0b80263..a8f1d60 100644
+--- a/arch/x86/kvm/i8259.c
++++ b/arch/x86/kvm/i8259.c
+@@ -92,7 +92,7 @@ static inline int pic_set_irq1(struct kvm_kpic_state *s, int irq, int level)
+ 	mask = 1 << irq;
+ 	if (s->elcr & mask)	/* level triggered */
+ 		if (level) {
+-			ret = !(s->irr & mask);
++			ret = !!!(s->irr & mask);
+ 			s->irr |= mask;
+ 			s->last_irr |= mask;
+ 		} else {
+@@ -102,7 +102,7 @@ static inline int pic_set_irq1(struct kvm_kpic_state *s, int irq, int level)
+ 	else	/* edge triggered */
+ 		if (level) {
+ 			if ((s->last_irr & mask) == 0) {
+-				ret = !(s->irr & mask);
++				ret = !!!(s->irr & mask);
+ 				s->irr |= mask;
+ 			}
+ 			s->last_irr |= mask;
+-- 
+2.7.4
 
-> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01-common.dtsi
-
-For anyone wondering:
-
-The som2d01 can come with an SSD201 (64MB DDR2 integrated) or SSD202D
-(128MB DDR3 integrated) and they need different fixed regulators for
-the DDR supply.
-So we have a common dtsi and then override the regulator in another
-layer of dtsi for the SSD202D version.
-
-Thinking about it now I think we can drop common from the file name.
-
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2021 thingy.jp.
-> + * Author: Daniel Palmer <daniel@thingy.jp>
-> + * Author: Romain Perier <romain.perier@gmail.com>
-> + */
-> +
-> +/ {
-> +
-
-Unneeded space.
-
-> +       reg_vcc_dram: regulator-vcc-dram {
-> +               compatible = "regulator-fixed";
-> +               regulator-name = "vcc_dram";
-> +               regulator-min-microvolt = <1800000>;
-> +               regulator-max-microvolt = <1800000>;
-> +               regulator-boot-on;
-> +       };
-> +};
-> +
-> +&pm_uart {
-> +       status = "okay";
-> +};
-> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
-> new file mode 100644
-> index 000000000000..20b40b711d4f
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2021 thingy.jp.
-> + * Author: Daniel Palmer <daniel@thingy.jp>
-> + * Author: Romain Perier <romain.perier@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +       model = "Wireless Tag IDO-SBC2D06-1VB-22W";
-> +       compatible = "wirelesstag,ido-sbc2d06-v1b-22w", "wirelesstag,ido-som2d01", "mstar,infinity2m";
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +               sys_led {
-> +                       gpios = <&gpio SSD20XD_GPIO_GPIO85 GPIO_ACTIVE_LOW>;
-> +                       linux,default-trigger = "heartbeat";
-> +               };
-> +       };
-> +};
-> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
-> new file mode 100644
-> index 000000000000..06567a5219c5
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2021 thingy.jp.
-> + * Author: Daniel Palmer <daniel@thingy.jp>
-> + * Author: Romain Perier <romain.perier@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "mstar-infinity2m-ssd202d.dtsi"
-> +#include "mstar-infinity2m-ssd201-som2d01-common.dtsi"
-> +
-> +/ {
-> +       model = "Wireless Tag IDO-SOM2D01 (SSD202D)";
-> +       compatible = "wirelesstag,ido-som2d01", "mstar,infinity2m";
-> +
-> +       aliases {
-> +               serial0 = &pm_uart;
-> +       };
-> +
-> +       chosen {
-> +               stdout-path = "serial0:115200n8";
-> +       };
-> +};
-> +
-> +&reg_vcc_dram {
-> +       regulator-min-microvolt = <1500000>;
-> +       regulator-max-microvolt = <1500000>;
-> +};
-> --
-> 2.33.0
->
-
-Cheers,
-
-Daniel
