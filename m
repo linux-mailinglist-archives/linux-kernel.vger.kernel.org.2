@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF124075F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BB0407603
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhIKJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:53:18 -0400
-Received: from mail-m17642.qiye.163.com ([59.111.176.42]:34804 "EHLO
-        mail-m17642.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235443AbhIKJxQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:53:16 -0400
-Received: from 2CD-RMPB.local (unknown [113.116.176.115])
-        by mail-m17642.qiye.163.com (Hmail) with ESMTPA id 1370B22012B;
-        Sat, 11 Sep 2021 17:52:02 +0800 (CST)
-Subject: Re: [PATCH 2/3] scsi: libiscsi: fix invalid pointer dereference in
- iscsi_eh_session_reset
-To:     Mike Christie <michael.christie@oracle.com>, lduncan@suse.com,
-        cleech@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210910010220.24073-1-dinghui@sangfor.com.cn>
- <20210910010220.24073-3-dinghui@sangfor.com.cn>
- <302af74d-5b72-5b2f-050a-33f0978e321f@oracle.com>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-Message-ID: <2863c857-7121-1e96-0c28-d7f697b99ef7@sangfor.com.cn>
-Date:   Sat, 11 Sep 2021 17:52:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S235584AbhIKKLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:11:44 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42550 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235443AbhIKKLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:11:41 -0400
+Received: from zn.tnic (p200300ec2f1e14001f3479bbc118498e.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:1400:1f34:79bb:c118:498e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0AD71EC0136;
+        Sat, 11 Sep 2021 12:10:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631355022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=HR27o8pZq+/+uFK0n68ub/mxfkE1ISiJNZUKmCms7j8=;
+        b=I197+52KgpqBBgLvuSMSrQpQNRo13IqV+FgdnGwdscix9JqjZo6kiEOakrW3iQQS6u0uVD
+        WzR3O2CXEOh8ZykdepQmAsy+NBoupC0qZ8IdrqxtxuX9zNND17uAXyBpIh83Qsid6C7Ugn
+        zY+/3Zj7u8+b/OQlEkEddX/RceOjyqA=
+Date:   Sat, 11 Sep 2021 12:10:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 3/8] x86/sev: Add an x86 version of cc_platform_has()
+Message-ID: <YTyAhmPf39Vqd7G9@zn.tnic>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <302af74d-5b72-5b2f-050a-33f0978e321f@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpMTUNWQ00ZGkJPHR0dTU
-        8ZVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PT46Qzo5DD4LAhxCGD48Ikg6
-        I0owFClVSlVKTUhKSE5IQklJTU1PVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkhVSkpNVUpMTVVKSk5ZV1kIAVlBSE1DTDcG
-X-HM-Tid: 0a7bd4456332d998kuws1370b22012b
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/11 12:38 上午, Mike Christie wrote:
-> On 9/9/21 8:02 PM, Ding Hui wrote:
->> like commit 5db6dd14b313 ("scsi: libiscsi: Fix NULL pointer dereference in
->> iscsi_eh_session_reset"), access conn->persistent_address here is not safe
->> too.
->>
->> The persistent_address is independent of conn refcount, so maybe
->> already freed by iscsi_conn_teardown(), also we put the refcount of conn
->> above, the conn pointer may be invalid.
-> 
-> This shouldn't happen like you describe above, because when we wake up
-> we will see the session->state is ISCSI_STATE_TERMINATE. We will then
-> not reference the conn in that code below.
-> 
-> However, it looks like we could hit an issue where if a user was resetting
-> the persistent_address or targetname via iscsi_set_param -> iscsi_switch_str_param
-> then we could be accessing freed memory. I think we need the frwd_lock when swapping
-> the strings in iscsi_switch_str_param.
-> 
+On Wed, Sep 08, 2021 at 05:58:34PM -0500, Tom Lendacky wrote:
+> diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
+> new file mode 100644
+> index 000000000000..3c9bacd3c3f3
+> --- /dev/null
+> +++ b/arch/x86/kernel/cc_platform.c
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Confidential Computing Platform Capability checks
+> + *
+> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
+> + */
+> +
+> +#include <linux/export.h>
+> +#include <linux/cc_platform.h>
+> +#include <linux/mem_encrypt.h>
+> +
+> +bool cc_platform_has(enum cc_attr attr)
+> +{
+> +	if (sme_me_mask)
 
-Thanks for your detailed explanation, I'll drop 2/3 and 3/3 in v2 patch.
-I expect that the persistent_address issue be fixed in your future patchset.
+Why are you still checking the sme_me_mask here? AFAIR, we said that
+we'll do that only when the KVM folks come with a valid use case...
 
-Sorry for my ignorance.
+> +		return amd_cc_platform_has(attr);
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL_GPL(cc_platform_has);
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index ff08dc463634..18fe19916bc3 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/virtio_config.h>
+> +#include <linux/cc_platform.h>
+>  
+>  #include <asm/tlbflush.h>
+>  #include <asm/fixmap.h>
+> @@ -389,6 +390,26 @@ bool noinstr sev_es_active(void)
+>  	return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+>  }
+>  
+> +bool amd_cc_platform_has(enum cc_attr attr)
+> +{
+> +	switch (attr) {
+> +	case CC_ATTR_MEM_ENCRYPT:
+> +		return sme_me_mask != 0;
 
-> 
->>
->> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
->> ---
->>   drivers/scsi/libiscsi.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
->> index 712a45368385..69b3b2148328 100644
->> --- a/drivers/scsi/libiscsi.c
->> +++ b/drivers/scsi/libiscsi.c
->> @@ -2531,8 +2531,8 @@ int iscsi_eh_session_reset(struct scsi_cmnd *sc)
->>   	spin_lock_bh(&session->frwd_lock);
->>   	if (session->state == ISCSI_STATE_LOGGED_IN) {
->>   		ISCSI_DBG_EH(session,
->> -			     "session reset succeeded for %s,%s\n",
->> -			     session->targetname, conn->persistent_address);
->> +			     "session reset succeeded for %s\n",
->> +			     session->targetname);
->>   	} else
->>   		goto failed;
->>   	spin_unlock_bh(&session->frwd_lock);
->>
-> 
-
+No need for the "!= 0"
 
 -- 
-Thanks,
--dinghui
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
