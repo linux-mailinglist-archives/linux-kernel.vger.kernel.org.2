@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A5240793C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB84407974
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 18:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhIKQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 12:00:34 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:42275 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhIKQAd (ORCPT
+        id S229699AbhIKQGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 12:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhIKQGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 12:00:33 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3C1F31BF208;
-        Sat, 11 Sep 2021 15:59:19 +0000 (UTC)
-Date:   Sat, 11 Sep 2021 17:59:18 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC changes for 5.15
-Message-ID: <YTzSVk5Scx/nRP7K@piout.net>
+        Sat, 11 Sep 2021 12:06:52 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C343CC061574;
+        Sat, 11 Sep 2021 09:05:39 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id i23so7374542wrb.2;
+        Sat, 11 Sep 2021 09:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zFN+kWQ8zZi7gQrxC+9TEC6NqA2P8LqFbiCzB4yXRIk=;
+        b=Q4YpBI9MrzcIsO1gXF09QBHwQ1msrFKTdO/BfjmQ0sY9BHlwUQVBlvYkJH/yzn6jcW
+         U92TDRFhOHaI0wJ0HGVo2b2IIES52GFh10Cp64rZ7pRBin/4H6ytzHio7aWxya7J9fPu
+         UruRkAM9BAUpThaL4jb4FJ7luNTphEXBpRhNSCCuO+v7uUEqCGbMKXuWDAvmziCu7Uq4
+         cyGbFndNo9uLfx8l9joJ8rPe0BhXUvu6N0az0p+44+U4dAvo2t2qYSvpSH8Sz3o0At1j
+         iC0HWY2mC7cLtgzYkhiJV4+rtdcM171KLWHbvkFil9t7PpvtHtW2qzboabi+TjvSVZRo
+         8sJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zFN+kWQ8zZi7gQrxC+9TEC6NqA2P8LqFbiCzB4yXRIk=;
+        b=E/WCfwXQ2lTypz8iVOyzsDyO7/g3N+DrttuF7ZhTH7FCOtS5qDOP4lC4lzKk3OH1dz
+         cvpjJrXxar9L9fHR3b3Vt3OPCiShZo2DRwki1RjJrdIntB+T/bAvxy0xDod1ikckx6zH
+         otFxp5hqeMWiQ6ahYvTIsW5XpshJBOaYNnTyMt+lC5i/kE+Qkj3Cott3coG98rsZCdj5
+         mRoCLF0EEfdw4ybanX28RN2RpbMsqSKcYGzL7cGgm2jI0GSq6GkOtXOu0CNHxuFJNdsN
+         El7OeL/GHC7aw6l94oMBGbl+iy25a4zJ1UxmAnxrm7lxn29nbo3yVsINQvXjuUh7xk+z
+         n7wg==
+X-Gm-Message-State: AOAM531sruooF5+IFD6D92Ob7oLVv/vANq5qGY5Pf+PfrwG6IvAqGedu
+        VMKitOqiivwk02MNO7OGTHd2YHRPS8hMFQ==
+X-Google-Smtp-Source: ABdhPJzS8kLQ/17qZ7RVEQ1eg8UJN+QVdEbQhSh+tTIn4zXyPnTG1Pxs4IjyN6qSM306XwiUJU0g7A==
+X-Received: by 2002:a05:6000:363:: with SMTP id f3mr3715913wrf.142.1631376338431;
+        Sat, 11 Sep 2021 09:05:38 -0700 (PDT)
+Received: from [192.168.1.4] (ip-89-176-112-137.net.upcbroadband.cz. [89.176.112.137])
+        by smtp.gmail.com with ESMTPSA id i9sm1956466wmi.44.2021.09.11.09.05.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Sep 2021 09:05:37 -0700 (PDT)
+From:   Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.14 12/32] PCI: rcar: Add L1 link state fix into
+ data abort hook
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-pci@vger.kernel.org
+References: <20210911131149.284397-1-sashal@kernel.org>
+ <20210911131149.284397-12-sashal@kernel.org>
+Message-ID: <6cbfadee-0d74-fa4c-9ef3-a1bce55632bb@gmail.com>
+Date:   Sat, 11 Sep 2021 18:05:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210911131149.284397-12-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 9/11/21 3:11 PM, Sasha Levin wrote:
+> From: Marek Vasut <marek.vasut+renesas@gmail.com>
+> 
+> [ Upstream commit a115b1bd3af0c2963e72f6e47143724c59251be6 ]
+> 
+> When the link is in L1, hardware should return it to L0
+> automatically whenever a transaction targets a component on the
+> other end of the link (PCIe r5.0, sec 5.2).
+> 
+> The R-Car PCIe controller doesn't handle this transition correctly.
+> If the link is not in L0, an MMIO transaction targeting a downstream
+> device fails, and the controller reports an ARM imprecise external
+> abort.
+> 
+> Work around this by hooking the abort handler so the driver can
+> detect this situation and help the hardware complete the link state
+> transition.
+> 
+> When the R-Car controller receives a PM_ENTER_L1 DLLP from the
+> downstream component, it sets PMEL1RX bit in PMSR register, but then
+> the controller enters some sort of in-between state.  A subsequent
+> MMIO transaction will fail, resulting in the external abort.  The
+> abort handler detects this condition and completes the link state
+> transition by setting the L1IATN bit in PMCTLR and waiting for the
+> link state transition to complete.
 
-Here is the RTC subsystem pull request for v5.15 which is very late.
-I'll try to not make that a habit. The broken down time conversion is
-similar to what is done in the time subsystem since v5.14. The rest is
-fairly straightforward.
-
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15
-
-for you to fetch changes up to 0c45d3e24ef3d3d87c5e0077b8f38d1372af7176:
-
-  rtc: rx8010: select REGMAP_I2C (2021-09-09 10:18:40 +0200)
-
-----------------------------------------------------------------
-RTC for 5.15
-
-Subsystem:
- - Switch to Neri and Schneider time conversion algorithm
-
-Drivers:
- - rx8025: add rx8035 support
- - s5m: modernize driver and set range
-
-----------------------------------------------------------------
-Alexandre Belloni (6):
-      rtc: s5m: switch to devm_rtc_allocate_device
-      rtc: s5m: signal the core when alarm are not available
-      rtc: s5m: enable wakeup only when available
-      rtc: s5m: set range
-      rtc: lib_test: add MODULE_LICENSE
-      rtc: move RTC_LIB_KUNIT_TEST to proper location
-
-Cassio Neri (1):
-      rtc: Improve performance of rtc_time64_to_tm(). Add tests.
-
-Dmitry Osipenko (1):
-      rtc: tps65910: Correct driver module alias
-
-Mateusz Jończyk (1):
-      rtc: cmos: remove stale REVISIT comments
-
-Mathew McBride (2):
-      rtc: rx8025: implement RX-8035 support
-      dt-bindings: rtc: add Epson RX-8025 and RX-8035
-
-Yu-Tung Chang (1):
-      rtc: rx8010: select REGMAP_I2C
-
- .../devicetree/bindings/rtc/trivial-rtc.yaml       |   3 +
- drivers/rtc/Kconfig                                |  10 ++
- drivers/rtc/Makefile                               |   2 +
- drivers/rtc/lib.c                                  | 107 +++++++++++++++------
- drivers/rtc/lib_test.c                             |  81 ++++++++++++++++
- drivers/rtc/rtc-cmos.c                             |   8 +-
- drivers/rtc/rtc-rx8025.c                           |  46 ++++++++-
- drivers/rtc/rtc-s5m.c                              |  48 ++++-----
- drivers/rtc/rtc-tps65910.c                         |   2 +-
- 9 files changed, 243 insertions(+), 64 deletions(-)
- create mode 100644 drivers/rtc/lib_test.c
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+You will also need the following patch, otherwise the build will fail on 
+configurations without COMMON_CLK (none where this driver is used, but 
+happened on one of the build bots). I'm waiting for PCIe maintainers to 
+pick it up:
+https://patchwork.kernel.org/project/linux-pci/patch/20210907144512.5238-1-marek.vasut@gmail.com/
