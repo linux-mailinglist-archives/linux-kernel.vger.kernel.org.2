@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDAE4079DE
+	by mail.lfdr.de (Postfix) with ESMTP id D8B7F4079DF
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 19:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhIKRbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 13:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49546 "EHLO mail.kernel.org"
+        id S233223AbhIKRbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 13:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232635AbhIKRbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232830AbhIKRbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 11 Sep 2021 13:31:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4E58E60FED;
-        Sat, 11 Sep 2021 17:30:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 078E261027;
+        Sat, 11 Sep 2021 17:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631381406;
-        bh=k1KRNJGuhUOQwxZ17K8TuiC2Lxquyc/jIHnaqoepqdM=;
+        s=k20201202; t=1631381407;
+        bh=oPy4srsl6gYyAlGzl+B4jySZyUjrtVIVHmlAgFV+sv0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=UB1Fyi0bdfOOOFvkAB1639k3rzPaZAyGY0KiB0fAZ/mb92VwPx1YwgOS0Tn3yWSSW
-         5xjsUYTZlOK6pEqtBv+7mnwWMHkJx0NIWJSENwT+bbGK/smJggMZNqRhnGJMDpJlFi
-         XPkD5CFfxpQ+9Tgs8Lf3mQMl4HFH2sfuC2g8beihFoxvJn2qiAAWKvJeJUGuZ6u9gx
-         0ImEroE1BdLBYRWpjUxGZCqo9vTFiRiMFUAmbUB+v5yD3pyspZuvweIKpbJgqHMOz5
-         DPdwU/Aqk9lDC3VLINMZD9jbEK5BE+UWArMgGRoToLMnOtp+C2z0feMtAn6tDoqcoD
-         8l3WIPnkf86DA==
+        b=kyKIdMnYZHxrmp1vQzlZRUfN6DqToSeHE9fBFhNUXfUFHsmL0WhZtdjXYMOja6WcC
+         XI1GSC+smI2SiPLv+ju5edZY0FxbGfQLOUghtrv6OWl+9ItBsfSA7j8gvriNxZee7t
+         Xq6Y5/CslW7pPSmn2FoL1Swk/14O2DcE4IftBJMeUXDPVEadxuptCiAhdC3VVqoDqp
+         ijEd7LNmB7RQfCdlv4asKMAIaR3LmO3AnMYY2HxWvpCETMTUCDo4ZW073LbOIvG8It
+         cP0M4cVDI1/dlwTz+zGl9dMBXvJDGXZDvPX2bkpAWWa5DYL1RqrTFgAUIhhmpkv0Hy
+         QnZdR3ylV3nww==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4985F600E8;
-        Sat, 11 Sep 2021 17:30:06 +0000 (UTC)
-Subject: Re: [GIT PULL] RTC changes for 5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0244F600E8;
+        Sat, 11 Sep 2021 17:30:07 +0000 (UTC)
+Subject: Re: [GIT PULL] pwm: Changes for v5.15-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YTzSVk5Scx/nRP7K@piout.net>
-References: <YTzSVk5Scx/nRP7K@piout.net>
-X-PR-Tracked-List-Id: <linux-rtc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YTzSVk5Scx/nRP7K@piout.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15
-X-PR-Tracked-Commit-Id: 0c45d3e24ef3d3d87c5e0077b8f38d1372af7176
+In-Reply-To: <20210909173420.3551559-1-thierry.reding@gmail.com>
+References: <20210909173420.3551559-1-thierry.reding@gmail.com>
+X-PR-Tracked-List-Id: <linux-pwm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210909173420.3551559-1-thierry.reding@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.15-rc1
+X-PR-Tracked-Commit-Id: 3f2b16734914fa7c53ef7f8a10a63828890dbd37
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 107ccc45bb25c7fdc7a744496caa4d8a52af4812
-Message-Id: <163138140629.31565.15345255369155701465.pr-tracker-bot@kernel.org>
-Date:   Sat, 11 Sep 2021 17:30:06 +0000
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+X-PR-Merge-Commit-Id: 6701e7e7d8ee4f80d0c450aeab101e4a2a2678fa
+Message-Id: <163138140700.31565.15244975679554617738.pr-tracker-bot@kernel.org>
+Date:   Sat, 11 Sep 2021 17:30:07 +0000
+To:     Thierry Reding <thierry.reding@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 11 Sep 2021 17:59:18 +0200:
+The pull request you sent on Thu,  9 Sep 2021 19:34:20 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15
+> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.15-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/107ccc45bb25c7fdc7a744496caa4d8a52af4812
+https://git.kernel.org/torvalds/c/6701e7e7d8ee4f80d0c450aeab101e4a2a2678fa
 
 Thank you!
 
