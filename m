@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204664075AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46EC4075B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235458AbhIKJCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:02:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9031 "EHLO
+        id S235478AbhIKJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 05:03:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19029 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhIKJCh (ORCPT
+        with ESMTP id S235334AbhIKJD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:02:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H66CH3Bt2zVq0B;
-        Sat, 11 Sep 2021 17:00:27 +0800 (CST)
+        Sat, 11 Sep 2021 05:03:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H669D3yYNzblpt;
+        Sat, 11 Sep 2021 16:58:40 +0800 (CST)
 Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 17:01:22 +0800
+ 15.1.2308.8; Sat, 11 Sep 2021 17:02:43 +0800
 Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
  (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
- 2021 17:01:22 +0800
+ 2021 17:02:43 +0800
 From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>
-CC:     <fujita.tomonori@lab.ntt.co.jp>, <axboe@kernel.dk>
-Subject: [PATCH -next] scsi: bsg: Fix memory leak in bsg_register_queue()
-Date:   Sat, 11 Sep 2021 16:57:26 +0800
-Message-ID: <20210911085726.34778-1-cuibixuan@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <io-uring@vger.kernel.org>
+CC:     <axboe@kernel.dk>, <asml.silence@gmail.com>
+Subject: [PATCH -next] io-wq: Remove duplicate code in io_workqueue_create()
+Date:   Sat, 11 Sep 2021 16:58:47 +0800
+Message-ID: <20210911085847.34849-1-cuibixuan@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemm500004.china.huawei.com (7.185.36.219)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kmemleak tool detected a memory leak.
+While task_work_add() in io_workqueue_create() is true,
+then duplicate code is executed:
 
-BUG: memory leak
-unreferenced object 0xffff8881170da100 (size 32):
-  comm "kworker/u4:4", pid 2996, jiffies 4294948956 (age 24.640s)
-  hex dump (first 32 bytes):
-    38 3a 30 3a 30 3a 31 00 00 00 00 00 00 00 00 00  8:0:0:1.........
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8147fc76>] kstrdup+0x36/0x70 mm/util.c:60
-    [<ffffffff8147fd03>] kstrdup_const+0x53/0x80 mm/util.c:83
-    [<ffffffff82293362>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
-    [<ffffffff8235545b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
-    [<ffffffff82652573>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
-    [<ffffffff822547d1>] bsg_register_queue+0xe1/0x1d0 block/bsg.c:201
-    [<ffffffff82730abf>] scsi_sysfs_add_sdev+0x13f/0x380 drivers/scsi/scsi_sysfs.c:1376
-    [<ffffffff8272e309>] scsi_sysfs_add_devices drivers/scsi/scsi_scan.c:1727 [inline]
-    [<ffffffff8272e309>] scsi_finish_async_scan drivers/scsi/scsi_scan.c:1812 [inline]
-    [<ffffffff8272e309>] do_scan_async+0x109/0x200 drivers/scsi/scsi_scan.c:1855
-    [<ffffffff812752a4>] async_run_entry_fn+0x24/0xf0 kernel/async.c:127
-    [<ffffffff81263d1f>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
-    [<ffffffff81264629>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
-    [<ffffffff8126db28>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+  -> clear_bit_unlock(0, &worker->create_state);
+  -> io_worker_release(worker);
+  -> atomic_dec(&acct->nr_running);
+  -> io_worker_ref_put(wq);
+  -> return false;
 
-The bsg_register_queue() use device_initialize() and dev_set_name() to
-registe device. That way if it fails, call put_device() to clean up
-correctly.
+  -> clear_bit_unlock(0, &worker->create_state); // back to io_workqueue_create()
+  -> io_worker_release(worker);
+  -> kfree(worker);
 
-Reported-by: syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com
+The io_worker_release() and clear_bit_unlock() are executed twice.
+
+Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
 Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 ---
- block/bsg.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/io-wq.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/block/bsg.c b/block/bsg.c
-index 351095193788..4d6803dad0b3 100644
---- a/block/bsg.c
-+++ b/block/bsg.c
-@@ -219,6 +219,7 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
- 	cdev_device_del(&bd->cdev, &bd->device);
- out_ida_remove:
- 	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
-+	put_device(&bd->device);
- out_kfree:
- 	kfree(bd);
- 	return ERR_PTR(ret);
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 6c55362c1f99..95d0eaed7c00 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -329,8 +329,10 @@ static bool io_queue_worker_create(struct io_worker *worker,
+ 
+ 	init_task_work(&worker->create_work, func);
+ 	worker->create_index = acct->index;
+-	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL)) {
++		clear_bit_unlock(0, &worker->create_state);
+ 		return true;
++	}
+ 	clear_bit_unlock(0, &worker->create_state);
+ fail_release:
+ 	io_worker_release(worker);
+@@ -723,11 +725,8 @@ static void io_workqueue_create(struct work_struct *work)
+ 	struct io_worker *worker = container_of(work, struct io_worker, work);
+ 	struct io_wqe_acct *acct = io_wqe_get_acct(worker);
+ 
+-	if (!io_queue_worker_create(worker, acct, create_worker_cont)) {
+-		clear_bit_unlock(0, &worker->create_state);
+-		io_worker_release(worker);
++	if (!io_queue_worker_create(worker, acct, create_worker_cont))
+ 		kfree(worker);
+-	}
+ }
+ 
+ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
 -- 
 2.17.1
 
