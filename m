@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED295407638
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7BF407642
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbhIKLK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 07:10:29 -0400
-Received: from ozlabs.org ([203.11.71.1]:46909 "EHLO ozlabs.org"
+        id S235712AbhIKL2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 07:28:03 -0400
+Received: from mout.gmx.net ([212.227.17.20]:57281 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230249AbhIKLK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 07:10:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1631358554;
-        bh=wCFs7QKhXMzS395kRZvRG47SpyWfFbs7z3zfl/ErxEA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=c7NELGpAh1HsCHqwY/uRPbVYXKqVYXvcpRQ7aAvLfrWo90t0t5JU4N5P5r1ljt3gd
-         PVbtiY8u7jdCKuRrfL5DQucozCtmh/F7bFuUTJ+i+bpd7CsdQdknWHzExu+DvVIKtB
-         uwLsrNPAELnlQpfGWJznYWBnjeSFXzWC1Cw3nK24plV5lEcWTFF1f42ZB5iMfSm/pa
-         kKTVmte0UiwKhq93/QjxY9h1DRoEpQGfDYwBWQbUWcvFlw7+FKl3M4FUaSgcoxozKZ
-         jSuPF+4DgNWfuChV3mQU6o/y5ZsSfBK4JQOfYjX0nTy3szz6t9mImirD8OXV4GtB7v
-         xNGxQdtKhjO+w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H693t161rz9sW5;
-        Sat, 11 Sep 2021 21:09:13 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/1] powerpc: Drop superfluous pci_dev_is_added() calls
-In-Reply-To: <20210910141940.2598035-2-schnelle@linux.ibm.com>
-References: <20210910141940.2598035-1-schnelle@linux.ibm.com>
- <20210910141940.2598035-2-schnelle@linux.ibm.com>
-Date:   Sat, 11 Sep 2021 21:09:13 +1000
-Message-ID: <87wnnnl67a.fsf@mpe.ellerman.id.au>
+        id S230249AbhIKL2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 07:28:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631359607;
+        bh=G8MUuBpNtnBNxQFmEG2ZlriHlD7R4/yuBbjO5Ngy/bk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=J7+O/q5h+I2kZg3xNyRxgirD/9jSmAllZs6+S9q5aabZCbMLWPbDy/1smQhpOOFa5
+         LMamsWd5C5hj9F6PdbGIzFK+0RkEyuCkpqIhX3ZhgEm3+YnCaXz45KHbdXa/9PtCA+
+         k4wdX/bSl48iiBmCa4vyAAi25ZS3ApiifahMAf9w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1My32F-1n8rk1313v-00zVbD; Sat, 11 Sep 2021 13:26:46 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        linux-usb@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: ohci: Prefer struct_size over open coded arithmetic
+Date:   Sat, 11 Sep 2021 13:26:31 +0200
+Message-Id: <20210911112631.10004-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SOgd2+Qv+9I1QBgs75UshmVAAaFWc90Wg57FZNwfUUC6f8n5T8f
+ HJw96UmmQebgnfQYnnxxmXbKH1HcO8USYLODFrtqDgXlMR0vo7F6Titc4F19OUwwSQPMeBG
+ dfHe718u1e2BtEmh0rIxyDCq8ihyGbm6nIxKQYaaO3zjNkmBLJaDVgt7Jq/BhWEIvmRLZnW
+ IGGqhk3VDeYtW3tXO2eNA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8h8+1ruWDmA=:554Ej/I6jXV1JUfMIWrw5J
+ ake8jIw9w82IDeMl5cfWTP/XtoPS/DNg6V/FfRMlO/T87lQ1sbmSlPdXqCHzseAXJdJqOK1Wk
+ 1nWtgh7ZScL+XUy8ePANoIx2YFoaRTVvy02zEgvutD8e191gWOqC+tf2ShBvgGUxwjYonOio8
+ wKhdqLdmHrPgMoC6ILHH9GeUcJyagc7+jTWjJq6f7zXNhNTCvoq5Mg4FXQeNBwjDEPwXrWvJV
+ ynu6nAWULXw4+IUbwB9UuIpWWtukRCCiAx3x/YFHqta5GYvff3eAO37hEAHzqY06Hfk2LKmL7
+ lahEv5Jhf4MCAfhO5WhD2L6W6lsVSuAMYzUb0H7QKwMciskhNVuUMTUuFckvzbnkO1F+dNVzO
+ L6eP2aowal7nkAJFb/M3Cp9gbNNOG2kzLZVT8Fc+Ezj1C+A9lGklfWJEE2IsLAH45+vTdoNWM
+ MeXaWDLWBwYqxhrGWKc1L52tHsrDWdTcGQbHIUPeQ8k2T9o+iNGYXynEF+fK6GoaZ0WPwdV32
+ uavPGGoxnbAkyMYt52CLXbDPY0HWZXXj/+6s4weE54QrRvk33GPGj8kSvp2BMPVSFv9ZvIpoJ
+ 5nRO64TS4brSQuqZvoguBKbH6LbniTZDGt94A29iSEqINR4mTNxnUPJhWVvecsvpwuQ1f5RvP
+ FkstAC/yBkuJxS731Y7U0oWRMOYRhdUUc5B8BU4SH+Wh+qhHOzgynqLMu4sMDV5ZCQhTkgy36
+ z64Wyh1h9JXu6+eH/OXVAYyaWKesEUvTNG7p00B5qz9q90a/c/e0hQXFM8cBEzxqzNKidisAt
+ 1Mz2bo4OgEnJvtqTPNBLHiGSbMWk7QoV1fUk75ALnfjX8Wlb+S+/OaejTAafFiqEkI4htq+iR
+ FPEaJHYvCVUQVVLnE19KGftux1zL7XHxE+I0iAziMPs49BoeOSm461ysNhiPjWo3U4RwtTM0X
+ Km3oeuJ3tl1POnBt3fmq8/s1TWmkTu520VEGooSYAoarrXQ3hsBarkj2b7KnnWl8Y9X8nxU2K
+ Ieqz1ew2T8uFO/rZLUn2CYMmQflqpxMoimpHo682UKYm1M1U7TQZ1HML9DA8lgSZgKANy5ZRM
+ a7VcIcymeOjO20=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Niklas Schnelle <schnelle@linux.ibm.com> writes:
-> On powerpc, pci_dev_is_added() is called as part of SR-IOV fixups
-> that are done under pcibios_add_device() which in turn is only called in
-> pci_device_add() whih is called when a PCI device is scanned.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Thanks for cleaning this up for us.
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() function.
 
-> Now pci_dev_assign_added() is called in pci_bus_add_device() which is
-> only called after scanning the device. Thus pci_dev_is_added() is always
-> false and can be dropped.
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
 
-My only query is whether we can pin down when that changed.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/usb/host/ohci-hcd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Oliver said:
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index 1f5e69314a17..666b1c665188 100644
+=2D-- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -191,8 +191,7 @@ static int ohci_urb_enqueue (
+ 	}
 
-  The use of pci_dev_is_added() in arch/powerpc was because in the past
-  pci_bus_add_device() could be called before pci_device_add(). That was
-  fixed a while ago so It should be safe to remove those calls now.
+ 	/* allocate the private part of the URB */
+-	urb_priv =3D kzalloc (sizeof (urb_priv_t) + size * sizeof (struct td *),
+-			mem_flags);
++	urb_priv =3D kzalloc(struct_size(urb_priv, td, size), mem_flags);
+ 	if (!urb_priv)
+ 		return -ENOMEM;
+ 	INIT_LIST_HEAD (&urb_priv->pending);
+=2D-
+2.25.1
 
-I trawled back through the history a bit but I can't remember/find which
-commit changed that, Oliver can you remember?
-
-cheers
-
-> diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-> index 28aac933a439..deddbb233fde 100644
-> --- a/arch/powerpc/platforms/powernv/pci-sriov.c
-> +++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-> @@ -9,9 +9,6 @@
->  
->  #include "pci.h"
->  
-> -/* for pci_dev_is_added() */
-> -#include "../../../../drivers/pci/pci.h"
-> -
->  /*
->   * The majority of the complexity in supporting SR-IOV on PowerNV comes from
->   * the need to put the MMIO space for each VF into a separate PE. Internally
-> @@ -228,9 +225,6 @@ static void pnv_pci_ioda_fixup_iov_resources(struct pci_dev *pdev)
->  
->  void pnv_pci_ioda_fixup_iov(struct pci_dev *pdev)
->  {
-> -	if (WARN_ON(pci_dev_is_added(pdev)))
-> -		return;
-> -
->  	if (pdev->is_virtfn) {
->  		struct pnv_ioda_pe *pe = pnv_ioda_get_pe(pdev);
->  
-> diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-> index f79126f16258..2188054470c1 100644
-> --- a/arch/powerpc/platforms/pseries/setup.c
-> +++ b/arch/powerpc/platforms/pseries/setup.c
-> @@ -74,7 +74,6 @@
->  #include <asm/hvconsole.h>
->  
->  #include "pseries.h"
-> -#include "../../../../drivers/pci/pci.h"
->  
->  DEFINE_STATIC_KEY_FALSE(shared_processor);
->  EXPORT_SYMBOL(shared_processor);
-> @@ -750,7 +749,7 @@ static void pseries_pci_fixup_iov_resources(struct pci_dev *pdev)
->  	const int *indexes;
->  	struct device_node *dn = pci_device_to_OF_node(pdev);
->  
-> -	if (!pdev->is_physfn || pci_dev_is_added(pdev))
-> +	if (!pdev->is_physfn)
->  		return;
->  	/*Firmware must support open sriov otherwise dont configure*/
->  	indexes = of_get_property(dn, "ibm,open-sriov-vf-bar-info", NULL);
-> -- 
-> 2.25.1
