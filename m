@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F75407AF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 01:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E0F407AFA
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 01:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhIKXwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 19:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhIKXwn (ORCPT
+        id S234697AbhIKX4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 19:56:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48057 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234577AbhIKXz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 19:52:43 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0A0C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 16:51:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id j13so8211810edv.13
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 16:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=leRkWwyCkV+yLUurqNTXB1nL9C8rNgcr6OELrhx3Jh8=;
-        b=gL9zMnhkSMLvxK+1ORTO87nJ6ziEdxePIUddJb9MU/H/b15xiTMoLElusVn7wTRzxO
-         HR9q+RVjGgJhMDSHwRkGwxZpWDIvbOLOTV54AJB9YvTfv70yaulz+Sjga4pY8KhfT7/G
-         Po3KHsveH9GZZXTT8mQ0uJ3JV+KIXYNzetPi92eNXuhrIVruJhpQEyQEIUCuNJJQPQzs
-         0AkFPYOgOfgkSfQlg0ZEvbaxqUoTvlgwvGtS55NpX/yVPVygP12toyz4lbG87EnH9pxE
-         T3ZNd8cFflsjP5dbJ6qEqY4PMcDpEA/yGA9lKIY0vibJhsnbMt5f1mhX3GQxoU43j5gK
-         GnGA==
+        Sat, 11 Sep 2021 19:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631404485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XhzTiX0DZYV1X5ckSDoJZp4U7aZCZRTdTtc5atz14SI=;
+        b=HIYOtFgY4HxMNyU0nzLti5A8vG2pVu6p4v3N2hqr9VCqnSjvaEgH03c0xLylchB2XX6JhZ
+        MZja69E6+/mBnkFFoaH07qfH2BNOXewJXF/fF6FcQeepTpcoGIs0L1KGN//6havxYew7HX
+        7hUkBeY6or6zno1I58JXf2KSUB2lf60=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-kQg2PjqQNSOxsxPY2L0QTw-1; Sat, 11 Sep 2021 19:54:44 -0400
+X-MC-Unique: kQg2PjqQNSOxsxPY2L0QTw-1
+Received: by mail-ej1-f71.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso2258036eja.18
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 16:54:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=leRkWwyCkV+yLUurqNTXB1nL9C8rNgcr6OELrhx3Jh8=;
-        b=BqZZqa/oU07YeUsGPp7pZh2rkAyq9+vOfIQlpng1aYRjFkRoInWx0ejT+LawjPP7Dr
-         Sf+q8Uo6Ju7Edgvo4538e7EChnBGifCMKuodKQl4pkto18wRl73XGI3oZXamgmJsdwW/
-         MGTYRrmiNKAtwFn/fSgXQOzgfRNQmIYayBdhucY/tmWIKplsZQEmKK9c68op+oKQWr5d
-         +qk7CIBuI25f3CRjukxMQWKHteuaIIHe6x1d47ABk+qZhqU0XMkhK7pnzxt2D6Gw9n+g
-         E+CRP06QyYBTVrEAahV0NDHBhK9kWBEwCk/JpyyT9XHNeB57H8no4G6gatKCBeNTw9+A
-         Li9Q==
-X-Gm-Message-State: AOAM533BD2ikEoiMexq5E9AzYy5bQSiYpSCb/k0lzq7gESBbqlHxkrjA
-        dLQZmUn8WHcvn21r12uRTTtjL4iskfvirbPt+TRD
-X-Google-Smtp-Source: ABdhPJzK/CRmdCFffCTwQY+B+wt6+tYYUxEXqrspDHfHmPcttKC/M87U7T1G1dYXYhzDLPuaD2Zd8iaLrA9S+FXso0k=
-X-Received: by 2002:a05:6402:6cf:: with SMTP id n15mr5371170edy.85.1631404288117;
- Sat, 11 Sep 2021 16:51:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210909095608-mutt-send-email-mst@kernel.org> <CAHk-=wgcXzshPVvVgGDqa9Y9Sde6RsUvj9jvx0htBqPuaTGX4Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wgcXzshPVvVgGDqa9Y9Sde6RsUvj9jvx0htBqPuaTGX4Q@mail.gmail.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Sun, 12 Sep 2021 07:51:17 +0800
-Message-ID: <CACycT3ter3tB=hcTWFLboXdSsn-ZBVb8iHZCn4tv3NsnsS3TjQ@mail.gmail.com>
-Subject: Re: [GIT PULL] virtio,vdpa,vhost: features, fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        KVM list <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XhzTiX0DZYV1X5ckSDoJZp4U7aZCZRTdTtc5atz14SI=;
+        b=rwmQI8EwCOgSlQbnxyEKYN6vh4TDyUfptJcT/nCEG1+JvNXdTztmdL6eM7bgVdMSl3
+         dJDhnDE7vGQdxlNVxc6cKQl4FJhny5/EIw8OqHzUGbC80xVSdgXDK2F81XuO7ko/3NQc
+         e8FbV5mGLcGJS0wRdXOQtEIo1Xl/AfIX7HpIRYPPrZZbS+xUwPFN+NL2W3bkeEea96l4
+         EXqcsIdw9lrqV81qMcDBDTmGdqpTCJOcz8ORJBaJ47I4YbnLVP31qXdJDQOLI9AZ+mx7
+         Pnd8W0vJ8tnCqX9ONQtT/0zk2I6VTFWbEtjcypDONOBnUjUM752bm6f5je1XTuhOyRv/
+         9NJQ==
+X-Gm-Message-State: AOAM5309JUyy2fdxE0MPmBmE24TrTsh2ncQuxSNmssog3cGSl4nQUdxM
+        N6i/+N3aFFU9j5BphF08AekiuPEqQIpytTT1RO1/byWRxiZ/0RhwX//TxVqP20BxGlvcpUY//IK
+        uUn3iRpAciF03gVJR9NpF4lJX
+X-Received: by 2002:a17:906:5855:: with SMTP id h21mr4944811ejs.230.1631404482988;
+        Sat, 11 Sep 2021 16:54:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUJ/Dz7qpoDYQNg7a7mY8Cl7pe7fwOabdq++HQzqfzjVSc2KbxoH+7byBLBBXMvIdUmNqg2Q==
+X-Received: by 2002:a17:906:5855:: with SMTP id h21mr4944788ejs.230.1631404482774;
+        Sat, 11 Sep 2021 16:54:42 -0700 (PDT)
+Received: from redhat.com ([2.55.27.174])
+        by smtp.gmail.com with ESMTPSA id n13sm1309780ejk.97.2021.09.11.16.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Sep 2021 16:54:41 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 19:54:36 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arseny.krasnov@kaspersky.com, caihuoqing@baidu.com,
-        Eli Cohen <elic@nvidia.com>, Jason Wang <jasowang@redhat.com>,
-        "Zhu, Lingshan" <lingshan.zhu@intel.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Will Deacon <will@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        xianting.tian@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <20210911195006-mutt-send-email-mst@kernel.org>
+References: <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+ <20210829181635-mutt-send-email-mst@kernel.org>
+ <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+ <20210830163723-mutt-send-email-mst@kernel.org>
+ <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
+ <20210910054044-mutt-send-email-mst@kernel.org>
+ <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 5:56 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Sep 9, 2021 at 6:56 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > NB: when merging this with
-> > b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
-> > from Linus' tree, replace eventfd_signal_count with
-> > eventfd_signal_allowed, and drop the export of eventfd_wake_count from
-> > ("eventfd: Export eventfd_wake_count to modules").
->
-> What? No. That can't be right.
->
-> Do you mean "replace eventfd_signal_count with !eventfd_signal_allowed()"?
->
-> Because if I read the logic correctly, the issue is that
-> 'vduse_vq_kick()' will call eventfd_signal().
->
-> Which it must not do it eventfd_signal_allowed() returns false.
->
-> So if eventfd_signal_allowed() is _not_ set, the code needs to defer
-> it to the workqueue.
->
-> No?
->
+On Fri, Sep 10, 2021 at 09:34:45AM -0700, Andi Kleen wrote:
+> > > that's why
+> > > an extra level of defense of ioremap opt-in is useful.
+> > OK even assuming this, why is pci_iomap opt-in useful?
+> > That never happens before probe - there's simply no pci_device then.
+> 
+> 
+> Hmm, yes that's true. I guess we can make it default to opt-in for
+> pci_iomap.
+> 
+> It only really matters for device less ioremaps.
 
-Yes, that's my fault. I just check how the eventfd_signal_allowed()
-works in fs/aio.c (also needs a fix) when I see the fix for the merge
-conflicts. Sorry for that.
+OK. And same thing for other things with device, such as
+devm_platform_ioremap_resource.
+If we agree on all that, this will basically remove virtio
+changes from the picture ;)
 
-Thanks,
-Yongji
+-- 
+MST
+
