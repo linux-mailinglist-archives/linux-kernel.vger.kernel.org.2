@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883A84075CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C234075E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbhIKJb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235407AbhIKJbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:31:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 196DF61216;
-        Sat, 11 Sep 2021 09:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631352606;
-        bh=qdaWEUd1KSrLpISbbqbmAzB80NVLQS21cH6iG8/ZBZw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qOSkB35zTtfCVAWtwAb3pw6H2aNP5lAUirDjwRVqDTrazC9HEv4Ju62gbnExW1BC/
-         YjRCV8lsADelggta77QGJoX7YEyUyxF+rulizSM5UDtD/7nGNc2Oq+zVDGILg55CVg
-         AbyM64GBagjFr4WDwLcbrk9QSfnjyXq7o2Bb28IxAjKhbdQKg+10Qa8CYMesFey5Rl
-         hV4ahWodfytLxb+KCYaw9n+jRUZfqFfQf0AZT2gfwsaG04lMHzPDiqSct41wEUVPMR
-         BXmL9045/w/JPgMcSKMqzmyFYk9IUX7mOeC7Vy6C0ThWHg+Lvk+exrQDd3bXbeq1sQ
-         ArfZTUHZQgt9A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0DA7C609ED;
-        Sat, 11 Sep 2021 09:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235561AbhIKJiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 05:38:20 -0400
+Received: from mail-m17642.qiye.163.com ([59.111.176.42]:22156 "EHLO
+        mail-m17642.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235513AbhIKJiT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 05:38:19 -0400
+Received: from 2CD-RMPB.local (unknown [113.116.176.115])
+        by mail-m17642.qiye.163.com (Hmail) with ESMTPA id E3024220121;
+        Sat, 11 Sep 2021 17:37:04 +0800 (CST)
+Subject: Re: [PATCH 1/3] scsi: libiscsi: move init ehwait to
+ iscsi_session_setup()
+To:     Mike Christie <michael.christie@oracle.com>, lduncan@suse.com,
+        cleech@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210910010220.24073-1-dinghui@sangfor.com.cn>
+ <20210910010220.24073-2-dinghui@sangfor.com.cn>
+ <03817f8e-8fed-6e7a-e76f-8608f8cfd979@oracle.com>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <486018fb-edf9-1f58-d911-ca7c5e9451e2@sangfor.com.cn>
+Date:   Sat, 11 Sep 2021 17:37:04 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <03817f8e-8fed-6e7a-e76f-8608f8cfd979@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: stmmac: allow CSR clock of 300MHz
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163135260605.6855.16868234164937660969.git-patchwork-notify@kernel.org>
-Date:   Sat, 11 Sep 2021 09:30:06 +0000
-References: <20210910195535.12533-1-jesper.nilsson@axis.com>
-In-Reply-To: <20210910195535.12533-1-jesper.nilsson@axis.com>
-To:     Jesper Nilsson <jesper.nilsson@axis.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, kernel@axis.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpOTU1WTENJSE8ZSx1KTR
+        ofVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Myo6Kio*DT4TOBw6GU0*Dxo#
+        ETowFDpVSlVKTUhKSE5IS0lOTktCVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkhVSkpNVUpMTVVKSk5ZV1kIAVlBSE1PSTcG
+X-HM-Tid: 0a7bd437b28fd998kuwse3024220121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Fri, 10 Sep 2021 21:55:34 +0200 you wrote:
-> The Synopsys Ethernet IP uses the CSR clock as a base clock for MDC.
-> The divisor used is set in the MAC_MDIO_Address register field CR
-> (Clock Rate)
+On 2021/9/11 12:25 上午, Mike Christie wrote:
+> On 9/9/21 8:02 PM, Ding Hui wrote:
+>> commit ec29d0ac29be ("scsi: iscsi: Fix conn use after free during
+>> resets") move member ehwait from conn to session, but left init ehwait
+>> in iscsi_conn_setup().
+>>
+>> Due to one session can be binded by multi conns, the conn after the
 > 
-> The divisor is there to change the CSR clock into a clock that falls
-> below the IEEE 802.3 specified max frequency of 2.5MHz.
+> A session can only have 1 conn. There is some code that makes it look
+> like we can do multiple conns or swap the single conn, but it was never
+> fully implemented/supported upstream.
 > 
-> [...]
+> However, I like the patch. The init should be done in iscsi_session_setup,
+> so could you fix up the commit, so it's correct?
+> 
 
-Here is the summary with links:
-  - net: stmmac: allow CSR clock of 300MHz
-    https://git.kernel.org/netdev/net/c/08dad2f4d541
+Thanks，I'll update the commit log and send v2 1/3.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>> first will reinit the session->ehwait, move init ehwait to
+>> iscsi_session_setup() to fix it.
+>>
+>> Fixes: ec29d0ac29be ("scsi: iscsi: Fix conn use after free during resets")
+>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+>> ---
+>>   drivers/scsi/libiscsi.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+>> index 4683c183e9d4..712a45368385 100644
+>> --- a/drivers/scsi/libiscsi.c
+>> +++ b/drivers/scsi/libiscsi.c
+>> @@ -2947,6 +2947,7 @@ iscsi_session_setup(struct iscsi_transport *iscsit, struct Scsi_Host *shost,
+>>   	session->tmf_state = TMF_INITIAL;
+>>   	timer_setup(&session->tmf_timer, iscsi_tmf_timedout, 0);
+>>   	mutex_init(&session->eh_mutex);
+>> +	init_waitqueue_head(&session->ehwait);
+>>   
+>>   	spin_lock_init(&session->frwd_lock);
+>>   	spin_lock_init(&session->back_lock);
+>> @@ -3074,8 +3075,6 @@ iscsi_conn_setup(struct iscsi_cls_session *cls_session, int dd_size,
+>>   		goto login_task_data_alloc_fail;
+>>   	conn->login_task->data = conn->data = data;
+>>   
+>> -	init_waitqueue_head(&session->ehwait);
+>> -
+>>   	return cls_conn;
+>>   
+>>   login_task_data_alloc_fail:
+>>
+> 
 
 
+-- 
+Thanks,
+-dinghui
