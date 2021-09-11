@@ -2,492 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC58407A35
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 21:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E549407A37
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 21:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhIKTKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 15:10:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233563AbhIKTKG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 15:10:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631387333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EjhexfgwdvzSPrJhVv2ceyZds8AfTQDcf2jh+ib5d8I=;
-        b=A13EdvlViPY2FkQhk8CbcX0PCfj8ME0sJnXWUM7Lt3vVH+PXUfchvFcQKxfaFyCM64AQN5
-        XKQ1pNtbUgRbm8LQOvy631CDxbT7T7Trcf0npdodfWeqW0j1EdAiTHIMXETBw533adVvUz
-        MK/RcT45Lrdsm/SXkGKFMo3deT2N6r8=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-8ZZEZiMXO1G6JasFBHn1pw-1; Sat, 11 Sep 2021 15:08:51 -0400
-X-MC-Unique: 8ZZEZiMXO1G6JasFBHn1pw-1
-Received: by mail-qv1-f69.google.com with SMTP id a11-20020a0ca98b000000b0037855a1171fso50319273qvb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 12:08:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EjhexfgwdvzSPrJhVv2ceyZds8AfTQDcf2jh+ib5d8I=;
-        b=o6bMhrmW1nPjkT+TcSPnj9UPkkwGcmDCJm85XId3Il8T/bVHNaHxQnviZZZl+A8QAq
-         BBTKSXSEG7/lJoysVYQQqsTvHJr3sNt4bZvT0NkOpLx//LzpNRigtN7pFfdX0QKtZKpv
-         UsK7GhOR2isbuI1Liu50fnSL/sMYWbSElBbyTEEBcXfuE3JtJ+20UsxGAqCFr2AsszVU
-         w1T5GjxfYc7bPut7eFwcR5EqyuxrQAoAdcV/ufkYebzNOwFY31tkj23SusXubXp2X1rw
-         f8z3sVujjkc6FnvWzJBpUj5GsTy4E12EU12n4aUjoeOIP5b8h6CJKhvOjKnNmOhKT3oy
-         3wvA==
-X-Gm-Message-State: AOAM531V9rFsNJ6Hc5mCJrUIgD8/oxwbD1RbikIw68cAaO12ccJgwmT6
-        8TR5xup+SvraBotP803RXHnN/G99jjthjPEG3JqYJiISKX9FSyLGETwAuZ/G+bUQDv3W7hWw9Ri
-        b9caZOtXCyQ/T7ToXfzHn+PT1
-X-Received: by 2002:a0c:f047:: with SMTP id b7mr3283695qvl.15.1631387331216;
-        Sat, 11 Sep 2021 12:08:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOHV/dHNqB1NsKWOhnbJ+sFaXJMjAvR4+tdoAt+onUBUDfRvzYUvsZZDvuR9dpc6Btx0tuyw==
-X-Received: by 2002:a0c:f047:: with SMTP id b7mr3283688qvl.15.1631387331013;
-        Sat, 11 Sep 2021 12:08:51 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id n18sm1761646qkn.63.2021.09.11.12.08.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Sep 2021 12:08:50 -0700 (PDT)
-Subject: Re: [PATCH v14 4/4] fpga: m10bmc-sec: add max10 secure update
- functions
-To:     Russ Weight <russell.h.weight@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20210909233304.5650-1-russell.h.weight@intel.com>
- <20210909233304.5650-5-russell.h.weight@intel.com>
- <20210910153347.GC757507@yilunxu-OptiPlex-7050>
- <c5bc9aae-63f7-7fc2-1e41-6945e11c3f53@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <0633f0a3-2df3-d02f-a8ed-cf85bdcfa2a6@redhat.com>
-Date:   Sat, 11 Sep 2021 12:08:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233718AbhIKTLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 15:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233412AbhIKTLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 15:11:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88DA6610A3;
+        Sat, 11 Sep 2021 19:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631387422;
+        bh=3aQ1dPvmq5e4fEjLwL0tUxMhP5eHt4VNnDk2o9/eMow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q5GNEu3AFDSs3c2PvEuxQmOEJK28pu5uaien+PGu4O76tbWBa5JnTLc8BxPdisz5C
+         c9804CAOsYA+aAfda5tXkIZhsMlnqk+ZFqyxJ1gydvcDSpPUg0MhZOwfS+wNrWIofK
+         ga7KyrB4Zwvf2InzffeFGUi5izdWuVFtDDFMpZ1oE/mEQZ3ubzIXR6nwxmaoEERLBH
+         tTAFDuDSg1iIc2aR2DgJnRy/7e+aoI3gkb5UlwcovkcFiw2wV7F50tJwb+zjq/bALL
+         i8m4sV6F4L8x/gIBnNJh6ih7zhrQFNACWnJ2C8zFP+illWwzT+N5FAeF9hv3qCnDjJ
+         tuRFNrPeofvwg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 096904038F; Sat, 11 Sep 2021 16:10:20 -0300 (-03)
+Date:   Sat, 11 Sep 2021 16:10:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 25/37] perf evsel: move event open in
+ evsel__open_cpu to separate function
+Message-ID: <YTz/HBuosvqOkvYE@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
+ <YS6JBBW3d4pmcy/U@kernel.org>
+ <9506b14fe2965e4145c034715eb10e02f2137f7b.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c5bc9aae-63f7-7fc2-1e41-6945e11c3f53@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9506b14fe2965e4145c034715eb10e02f2137f7b.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Sep 03, 2021 at 11:52:18PM +0200, Riccardo Mancini escreveu:
+> Hi Arnaldo,
+> 
+> thanks for your review and your suggestions, and also for the PRIu64 patch.
+> 
+> On Tue, 2021-08-31 at 16:54 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Sat, Aug 21, 2021 at 11:19:31AM +0200, Riccardo Mancini escreveu:
+> > > This is the final patch splitting evsel__open_cpu.
+> > > This patch moves the entire loop code to a separate function, to be
+> > > reused for the multithreaded code.
+> > 
+> > Are you going to use that 'enum perf_event_open_err' somewhere else?
+> > I.e. is there a need to expose it in evsel.h?
+> 
+> Yes, in the next patch (26/37). It's being used to expose a function that just
+> does the perf_event_open calls for an evsel. It needs to return such structure
+> to provide information about the error (which return code, at which thread).
+> 
+> > 
+> > I'm stopping at this patch to give the ones I merged so far some
+> > testing, will now push it to tmp.perf/core.
+> 
+> I checked tmp.perf/core and it looks good to me.
+> I also did some additional tests to check that fallback mechanisms where
+> working:
+> 
+> check missing pid being ignored (rerun until warning is shown)
+> $ sudo ./perf bench internals evlist-open-close -i10 -u $UID
+> 
+> check that weak group fallback is working
+> $ sudo ./perf record -e '{cycles,cache-misses,cache-
+> references,cpu_clk_unhalted.thread,cycles,cycles,cycles}:W' 
+> 
+> check that precision_ip fallback is working:
+> edited perf-sys.h to make sys_perf_event_open fail if precision_ip > 2
+> $ sudo ./perf record -e '{cycles,cs}:P'
+> 
+> 
+> I've also run perf-test on my machine and it's passing too.
+> I'm encounteirng one fail on the "BPF filter" test (42), which is present also
+> in perf/core, so it should not be related to this patch.
 
-On 9/10/21 1:40 PM, Russ Weight wrote:
->
-> On 9/10/21 8:33 AM, Xu Yilun wrote:
->> On Thu, Sep 09, 2021 at 04:33:04PM -0700, Russ Weight wrote:
->>> Invoke an instance of the FPGA Image Load driver and extend the MAX10
->>> BMC Secure Update driver to include the functions that enable secure
->>> updates of BMC images, FPGA images, etc.
->>>
->>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->>> ---
->>> v14:
->>>    - Changed symbol names to reflect the renaming of the Security Manager
->>>      Class driver to FPGA Image Load.
->>> v13:
->>>    - No change
->>> v12:
->>>    - Updated Date and KernelVersion fields in ABI documentation
->>>    - Removed size parameter from the write_blk() op. m10bmc_sec_write_blk()
->>>      no longer has a size parameter, and the block size is determined
->>>      in this (the lower-level) driver.
->>> v11:
->>>    - No change
->>> v10:
->>>    - No change
->>> v9:
->>>    - No change
->>> v8:
->>>    - Previously patch 5/6, otherwise no change
->>> v7:
->>>    - No change
->>> v6:
->>>    - Changed (size / stride) calculation to ((size + stride - 1) / stride)
->>>      to ensure that the proper count is passed to regmap_bulk_write().
->>>    - Removed unnecessary call to rsu_check_complete() in
->>>      m10bmc_sec_poll_complete() and changed while loop to
->>>      do/while loop.
->>> v5:
->>>    - No change
->>> v4:
->>>    - No change
->>> v3:
->>>    - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->>>    - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
->>>      driver"
->>>    - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
->>>      underlying functions are now called directly.
->>>    - Changed calling functions of functions that return "enum fpga_sec_err"
->>>      to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
->>> v2:
->>>    - Reworked the rsu_start_done() function to make it more readable
->>>    - Reworked while-loop condition/content in rsu_prog_ready()
->>>    - Minor code cleanup per review comments
->>>    - Added a comment to the m10bmc_sec_poll_complete() function to
->>>      explain the context (could take 30+ minutes to complete).
->>>    - Added m10bmc_ prefix to functions in m10bmc_iops structure
->>>    - Moved MAX10 BMC address and function definitions to a separate
->>>      patch.
->>> ---
->>>   drivers/fpga/intel-m10-bmc-secure.c | 310 +++++++++++++++++++++++++++-
->>>   1 file changed, 309 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
->>> index ae1383d13bfc..025655684d00 100644
->>> --- a/drivers/fpga/intel-m10-bmc-secure.c
->>> +++ b/drivers/fpga/intel-m10-bmc-secure.c
->>> @@ -181,7 +181,315 @@ static const struct attribute_group *m10bmc_sec_attr_groups[] = {
->>>   	NULL,
->>>   };
->>>   
->>> -static const struct fpga_image_load_ops m10bmc_lops = { };
->>> +static void log_error_regs(struct m10bmc_sec *sec, u32 doorbell)
->>> +{
->>> +	u32 auth_result;
->>> +
->>> +	dev_err(sec->dev, "RSU error status: 0x%08x\n", doorbell);
->>> +
->>> +	if (!m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result))
->>> +		dev_err(sec->dev, "RSU auth result: 0x%08x\n", auth_result);
->>> +}
->>> +
->>> +static enum fpga_image_err rsu_check_idle(struct m10bmc_sec *sec)
->>> +{
->>> +	u32 doorbell;
->>> +	int ret;
->>> +
->>> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	if (rsu_prog(doorbell) != RSU_PROG_IDLE &&
->>> +	    rsu_prog(doorbell) != RSU_PROG_RSU_DONE) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_BUSY;
->>> +	}
->>> +
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static inline bool rsu_start_done(u32 doorbell)
->>> +{
->>> +	u32 status, progress;
->>> +
->>> +	if (doorbell & DRBL_RSU_REQUEST)
->>> +		return false;
->>> +
->>> +	status = rsu_stat(doorbell);
->>> +	if (status == RSU_STAT_ERASE_FAIL || status == RSU_STAT_WEAROUT)
->>> +		return true;
->>> +
->>> +	progress = rsu_prog(doorbell);
->>> +	if (progress != RSU_PROG_IDLE && progress != RSU_PROG_RSU_DONE)
->>> +		return true;
->>> +
->>> +	return false;
->>> +}
->>> +
->>> +static enum fpga_image_err rsu_update_init(struct m10bmc_sec *sec)
->>> +{
->>> +	u32 doorbell, status;
->>> +	int ret;
->>> +
->>> +	ret = regmap_update_bits(sec->m10bmc->regmap,
->>> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
->>> +				 DRBL_RSU_REQUEST | DRBL_HOST_STATUS,
->>> +				 DRBL_RSU_REQUEST |
->>> +				 FIELD_PREP(DRBL_HOST_STATUS,
->>> +					    HOST_STATUS_IDLE));
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
->>> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
->>> +				       doorbell,
->>> +				       rsu_start_done(doorbell),
->>> +				       NIOS_HANDSHAKE_INTERVAL_US,
->>> +				       NIOS_HANDSHAKE_TIMEOUT_US);
->>> +
->>> +	if (ret == -ETIMEDOUT) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_TIMEOUT;
->>> +	} else if (ret) {
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +	}
->>> +
->>> +	status = rsu_stat(doorbell);
->>> +	if (status == RSU_STAT_WEAROUT) {
->>> +		dev_warn(sec->dev, "Excessive flash update count detected\n");
->>> +		return FPGA_IMAGE_ERR_WEAROUT;
->>> +	} else if (status == RSU_STAT_ERASE_FAIL) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_HW_ERROR;
->>> +	}
->>> +
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static enum fpga_image_err rsu_prog_ready(struct m10bmc_sec *sec)
->>> +{
->>> +	unsigned long poll_timeout;
->>> +	u32 doorbell, progress;
->>> +	int ret;
->>> +
->>> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_PREP_TIMEOUT_MS);
->>> +	while (rsu_prog(doorbell) == RSU_PROG_PREPARE) {
->>> +		msleep(RSU_PREP_INTERVAL_MS);
->>> +		if (time_after(jiffies, poll_timeout))
->>> +			break;
->>> +
->>> +		ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
->>> +		if (ret)
->>> +			return FPGA_IMAGE_ERR_RW_ERROR;
->>> +	}
->>> +
->>> +	progress = rsu_prog(doorbell);
->>> +	if (progress == RSU_PROG_PREPARE) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_TIMEOUT;
->>> +	} else if (progress != RSU_PROG_READY) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_HW_ERROR;
->>> +	}
->>> +
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static enum fpga_image_err rsu_send_data(struct m10bmc_sec *sec)
->>> +{
->>> +	u32 doorbell;
->>> +	int ret;
->>> +
->>> +	ret = regmap_update_bits(sec->m10bmc->regmap,
->>> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
->>> +				 DRBL_HOST_STATUS,
->>> +				 FIELD_PREP(DRBL_HOST_STATUS,
->>> +					    HOST_STATUS_WRITE_DONE));
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
->>> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
->>> +				       doorbell,
->>> +				       rsu_prog(doorbell) != RSU_PROG_READY,
->>> +				       NIOS_HANDSHAKE_INTERVAL_US,
->>> +				       NIOS_HANDSHAKE_TIMEOUT_US);
->>> +
->>> +	if (ret == -ETIMEDOUT) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_TIMEOUT;
->>> +	} else if (ret) {
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +	}
->>> +
->>> +	switch (rsu_stat(doorbell)) {
->>> +	case RSU_STAT_NORMAL:
->>> +	case RSU_STAT_NIOS_OK:
->>> +	case RSU_STAT_USER_OK:
->>> +	case RSU_STAT_FACTORY_OK:
->>> +		break;
->>> +	default:
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_HW_ERROR;
->>> +	}
->>> +
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static int rsu_check_complete(struct m10bmc_sec *sec, u32 *doorbell)
->>> +{
->>> +	if (m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, doorbell))
->>> +		return -EIO;
->>> +
->>> +	switch (rsu_stat(*doorbell)) {
->>> +	case RSU_STAT_NORMAL:
->>> +	case RSU_STAT_NIOS_OK:
->>> +	case RSU_STAT_USER_OK:
->>> +	case RSU_STAT_FACTORY_OK:
->>> +		break;
->>> +	default:
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	switch (rsu_prog(*doorbell)) {
->>> +	case RSU_PROG_IDLE:
->>> +	case RSU_PROG_RSU_DONE:
->>> +		return 0;
->>> +	case RSU_PROG_AUTHENTICATING:
->>> +	case RSU_PROG_COPYING:
->>> +	case RSU_PROG_UPDATE_CANCEL:
->>> +	case RSU_PROG_PROGRAM_KEY_HASH:
->>> +		return -EAGAIN;
->>> +	default:
->>> +		return -EINVAL;
->>> +	}
->>> +}
->>> +
->>> +static enum fpga_image_err m10bmc_sec_prepare(struct fpga_image_load *imgld)
->>> +{
->>> +	struct m10bmc_sec *sec = imgld->priv;
->>> +	enum fpga_image_err ret;
->>> +
->>> +	if (imgld->remaining_size > M10BMC_STAGING_SIZE)
->>> +		return FPGA_IMAGE_ERR_INVALID_SIZE;
->>> +
->>> +	ret = rsu_check_idle(sec);
->>> +	if (ret != FPGA_IMAGE_ERR_NONE)
->>> +		return ret;
->>> +
->>> +	ret = rsu_update_init(sec);
->>> +	if (ret != FPGA_IMAGE_ERR_NONE)
->>> +		return ret;
->>> +
->>> +	return rsu_prog_ready(sec);
->>> +}
->>> +
->>> +#define WRITE_BLOCK_SIZE 0x4000 /* Update remaining_size every 0x4000 bytes */
->>> +
->>> +static enum fpga_image_err
->>> +m10bmc_sec_write_blk(struct fpga_image_load *imgld, u32 offset)
->>> +{
->>> +	struct m10bmc_sec *sec = imgld->priv;
->>> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
->>> +	u32 doorbell, blk_size;
->>> +	int ret;
->>> +
->>> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
->>> +	if (ret) {
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +	} else if (rsu_prog(doorbell) != RSU_PROG_READY) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_HW_ERROR;
->>> +	}
->>> +
->>> +	blk_size = min_t(u32, imgld->remaining_size, WRITE_BLOCK_SIZE);
->>> +	ret = regmap_bulk_write(sec->m10bmc->regmap,
->>> +				M10BMC_STAGING_BASE + offset,
->>> +				(void *)imgld->data + offset,
->>> +				(blk_size + stride - 1) / stride);
->>> +
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	imgld->remaining_size -= blk_size;
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +/*
->>> + * m10bmc_sec_poll_complete() is called after handing things off to
->>> + * the BMC firmware. Depending on the type of update, it could be
->>> + * 30+ minutes before the BMC firmware completes the update. The
->>> + * imgld->driver_unload check allows the driver to be unloaded,
->>> + * but the BMC firmware will continue the update and no further
->>> + * secure updates can be started for this device until the update
->>> + * is complete.
->>> + */
->>> +static enum fpga_image_err m10bmc_sec_poll_complete(struct fpga_image_load *imgld)
->>> +{
->>> +	struct m10bmc_sec *sec = imgld->priv;
->>> +	unsigned long poll_timeout;
->>> +	enum fpga_image_err result;
->>> +	u32 doorbell;
->>> +	int ret;
->>> +
->>> +	result = rsu_send_data(sec);
->>> +	if (result != FPGA_IMAGE_ERR_NONE)
->>> +		return result;
->>> +
->>> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_COMPLETE_TIMEOUT_MS);
->>> +	do {
->>> +		msleep(RSU_COMPLETE_INTERVAL_MS);
->>> +		ret = rsu_check_complete(sec, &doorbell);
->>> +		if (imgld->driver_unload)
->>> +			return FPGA_IMAGE_ERR_CANCELED;
->> Why we return CANCELED error code to user when driver unload is
->> requested?
->>
->> Users may think the update is failed and the old image is kept,
->> but in fact, the update continues and finally the old image is
->> replaced by the new one.
-> I could return FPGA_IMAGE_ERR_NONE, and then userspace code would
-> think that the update completed without error, even though the
-> update is still in progress.
->
-> Or I could create a new FPGA_IMAGE_ERR_EXIT code to indicate that
-> the driver has exited while the update is still progressing.
->
-> I like the FPGA_IMAGE_ERR_EXIT option best of those two options.
-> Any other suggestions?
+Thanks! I'll try to resume work on it as soon as I have the plumbers
+talk ready :-)
 
-No device so, -ENODEV
-
-Tom
-
->
+- Arnaldo
+ 
 > Thanks,
-> - Russ
->
->
->> Thanks,
->> Yilun
->>
->>> +	} while (ret == -EAGAIN && !time_after(jiffies, poll_timeout));
->>> +
->>> +	if (ret == -EAGAIN) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_TIMEOUT;
->>> +	} else if (ret == -EIO) {
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +	} else if (ret) {
->>> +		log_error_regs(sec, doorbell);
->>> +		return FPGA_IMAGE_ERR_HW_ERROR;
->>> +	}
->>> +
->>> +	return FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static enum fpga_image_err m10bmc_sec_cancel(struct fpga_image_load *imgld)
->>> +{
->>> +	struct m10bmc_sec *sec = imgld->priv;
->>> +	u32 doorbell;
->>> +	int ret;
->>> +
->>> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
->>> +	if (ret)
->>> +		return FPGA_IMAGE_ERR_RW_ERROR;
->>> +
->>> +	if (rsu_prog(doorbell) != RSU_PROG_READY)
->>> +		return FPGA_IMAGE_ERR_BUSY;
->>> +
->>> +	ret = regmap_update_bits(sec->m10bmc->regmap,
->>> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
->>> +				 DRBL_HOST_STATUS,
->>> +				 FIELD_PREP(DRBL_HOST_STATUS,
->>> +					    HOST_STATUS_ABORT_RSU));
->>> +
->>> +	return ret ? FPGA_IMAGE_ERR_RW_ERROR : FPGA_IMAGE_ERR_NONE;
->>> +}
->>> +
->>> +static const struct fpga_image_load_ops m10bmc_lops = {
->>> +	.prepare = m10bmc_sec_prepare,
->>> +	.write_blk = m10bmc_sec_write_blk,
->>> +	.poll_complete = m10bmc_sec_poll_complete,
->>> +	.cancel = m10bmc_sec_cancel,
->>> +};
->>>   
->>>   static int m10bmc_secure_probe(struct platform_device *pdev)
->>>   {
->>> -- 
->>> 2.25.1
+> Riccardo
+> 
+> > 
+> > - Arnaldo
+> >  
+> > > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > > ---
+> > >  tools/perf/util/evsel.c | 142 ++++++++++++++++++++++++----------------
+> > >  tools/perf/util/evsel.h |  12 ++++
+> > >  2 files changed, 99 insertions(+), 55 deletions(-)
+> > > 
+> > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > > index 2e95416b8320c6b9..e41f55a7a70ea630 100644
+> > > --- a/tools/perf/util/evsel.c
+> > > +++ b/tools/perf/util/evsel.c
+> > > @@ -1945,6 +1945,82 @@ bool evsel__increase_rlimit(enum rlimit_action
+> > > *set_rlimit)
+> > >         return false;
+> > >  }
+> > >  
+> > > +static struct perf_event_open_result perf_event_open(struct evsel *evsel,
+> > > +                                       pid_t pid, int cpu, int thread,
+> > > +                                       struct perf_cpu_map *cpus,
+> > > +                                       struct perf_thread_map *threads)
+> > > +{
+> > > +       int fd, group_fd, rc;
+> > > +       struct perf_event_open_result res;
+> > > +
+> > > +       if (!evsel->cgrp && !evsel->core.system_wide)
+> > > +               pid = perf_thread_map__pid(threads, thread);
+> > > +
+> > > +       group_fd = get_group_fd(evsel, cpu, thread);
+> > > +
+> > > +       test_attr__ready();
+> > > +
+> > > +       pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags
+> > > %#lx",
+> > > +                       pid, cpus->map[cpu], group_fd, evsel->open_flags);
+> > > +
+> > > +       fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
+> > > +                               group_fd, evsel->open_flags);
+> > > +
+> > > +       FD(evsel, cpu, thread) = fd;
+> > > +       res.fd = fd;
+> > > +
+> > > +       if (fd < 0) {
+> > > +               rc = -errno;
+> > > +
+> > > +               pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
+> > > +                               rc);
+> > > +               res.rc = rc;
+> > > +               res.err = PEO_FALLBACK;
+> > > +               return res;
+> > > +       }
+> > > +
+> > > +       bpf_counter__install_pe(evsel, cpu, fd);
+> > > +
+> > > +       if (unlikely(test_attr__enabled)) {
+> > > +               test_attr__open(&evsel->core.attr, pid,
+> > > +                       cpus->map[cpu], fd,
+> > > +                       group_fd, evsel->open_flags);
+> > > +       }
+> > > +
+> > > +       pr_debug2_peo(" = %d\n", fd);
+> > > +
+> > > +       if (evsel->bpf_fd >= 0) {
+> > > +               int evt_fd = fd;
+> > > +               int bpf_fd = evsel->bpf_fd;
+> > > +
+> > > +               rc = ioctl(evt_fd,
+> > > +                               PERF_EVENT_IOC_SET_BPF,
+> > > +                               bpf_fd);
+> > > +               if (rc && errno != EEXIST) {
+> > > +                       pr_err("failed to attach bpf fd %d: %s\n",
+> > > +                               bpf_fd, strerror(errno));
+> > > +                       res.rc = -EINVAL;
+> > > +                       res.err = PEO_ERROR;
+> > > +                       return res;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       /*
+> > > +        * If we succeeded but had to kill clockid, fail and
+> > > +        * have evsel__open_strerror() print us a nice error.
+> > > +        */
+> > > +       if (perf_missing_features.clockid ||
+> > > +               perf_missing_features.clockid_wrong) {
+> > > +               res.rc = -EINVAL;
+> > > +               res.err = PEO_ERROR;
+> > > +               return res;
+> > > +       }
+> > > +
+> > > +       res.rc = 0;
+> > > +       res.err = PEO_SUCCESS;
+> > > +       return res;
+> > > +}
+> > > +
+> > >  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+> > >                 struct perf_thread_map *threads,
+> > >                 int start_cpu, int end_cpu)
+> > > @@ -1952,6 +2028,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct
+> > > perf_cpu_map *cpus,
+> > >         int cpu, thread, nthreads;
+> > >         int pid = -1, err, old_errno;
+> > >         enum rlimit_action set_rlimit = NO_CHANGE;
+> > > +       struct perf_event_open_result peo_res;
+> > >  
+> > >         err = __evsel__prepare_open(evsel, cpus, threads);
+> > >         if (err)
+> > > @@ -1979,67 +2056,22 @@ static int evsel__open_cpu(struct evsel *evsel, struct
+> > > perf_cpu_map *cpus,
+> > >         for (cpu = start_cpu; cpu < end_cpu; cpu++) {
+> > >  
+> > >                 for (thread = 0; thread < nthreads; thread++) {
+> > > -                       int fd, group_fd;
+> > >  retry_open:
+> > >                         if (thread >= nthreads)
+> > >                                 break;
+> > >  
+> > > -                       if (!evsel->cgrp && !evsel->core.system_wide)
+> > > -                               pid = perf_thread_map__pid(threads, thread);
+> > > -
+> > > -                       group_fd = get_group_fd(evsel, cpu, thread);
+> > > -
+> > > -                       test_attr__ready();
+> > > -
+> > > -                       pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d 
+> > > group_fd %d  flags %#lx",
+> > > -                               pid, cpus->map[cpu], group_fd, evsel-
+> > > >open_flags);
+> > > +                       peo_res = perf_event_open(evsel, pid, cpu, thread,
+> > > cpus,
+> > > +                                               threads);
+> > >  
+> > > -                       fd = sys_perf_event_open(&evsel->core.attr, pid, cpus-
+> > > >map[cpu],
+> > > -                                               group_fd, evsel->open_flags);
+> > > -
+> > > -                       FD(evsel, cpu, thread) = fd;
+> > > -
+> > > -                       if (fd < 0) {
+> > > -                               err = -errno;
+> > > -
+> > > -                               pr_debug2_peo("\nsys_perf_event_open failed,
+> > > error %d\n",
+> > > -                                         err);
+> > > +                       err = peo_res.rc;
+> > > +                       switch (peo_res.err) {
+> > > +                       case PEO_SUCCESS:
+> > > +                               set_rlimit = NO_CHANGE;
+> > > +                               continue;
+> > > +                       case PEO_FALLBACK:
+> > >                                 goto try_fallback;
+> > > -                       }
+> > > -
+> > > -                       bpf_counter__install_pe(evsel, cpu, fd);
+> > > -
+> > > -                       if (unlikely(test_attr__enabled)) {
+> > > -                               test_attr__open(&evsel->core.attr, pid, cpus-
+> > > >map[cpu],
+> > > -                                               fd, group_fd, evsel-
+> > > >open_flags);
+> > > -                       }
+> > > -
+> > > -                       pr_debug2_peo(" = %d\n", fd);
+> > > -
+> > > -                       if (evsel->bpf_fd >= 0) {
+> > > -                               int evt_fd = fd;
+> > > -                               int bpf_fd = evsel->bpf_fd;
+> > > -
+> > > -                               err = ioctl(evt_fd,
+> > > -                                           PERF_EVENT_IOC_SET_BPF,
+> > > -                                           bpf_fd);
+> > > -                               if (err && errno != EEXIST) {
+> > > -                                       pr_err("failed to attach bpf fd %d:
+> > > %s\n",
+> > > -                                              bpf_fd, strerror(errno));
+> > > -                                       err = -EINVAL;
+> > > -                                       goto out_close;
+> > > -                               }
+> > > -                       }
+> > > -
+> > > -                       set_rlimit = NO_CHANGE;
+> > > -
+> > > -                       /*
+> > > -                        * If we succeeded but had to kill clockid, fail and
+> > > -                        * have evsel__open_strerror() print us a nice error.
+> > > -                        */
+> > > -                       if (perf_missing_features.clockid ||
+> > > -                           perf_missing_features.clockid_wrong) {
+> > > -                               err = -EINVAL;
+> > > +                       default:
+> > > +                       case PEO_ERROR:
+> > >                                 goto out_close;
+> > >                         }
+> > >                 }
+> > > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > > index 0a245afab2d87d74..8c9827a93ac001a7 100644
+> > > --- a/tools/perf/util/evsel.h
+> > > +++ b/tools/perf/util/evsel.h
+> > > @@ -282,6 +282,18 @@ int evsel__enable(struct evsel *evsel);
+> > >  int evsel__disable(struct evsel *evsel);
+> > >  int evsel__disable_cpu(struct evsel *evsel, int cpu);
+> > >  
+> > > +enum perf_event_open_err {
+> > > +       PEO_SUCCESS,
+> > > +       PEO_FALLBACK,
+> > > +       PEO_ERROR
+> > > +};
+> > > +
+> > > +struct perf_event_open_result {
+> > > +       enum perf_event_open_err err;
+> > > +       int rc;
+> > > +       int fd;
+> > > +};
+> > > +
+> > >  int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int
+> > > cpu);
+> > >  int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map
+> > > *threads);
+> > >  int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+> > > -- 
+> > > 2.31.1
+> > 
+> 
 
+-- 
+
+- Arnaldo
