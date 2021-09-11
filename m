@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B0F407559
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 08:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CFB40755C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 09:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbhIKHAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 03:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhIKHAL (ORCPT
+        id S235326AbhIKHHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 03:07:08 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:42119
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S231552AbhIKHHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 03:00:11 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E94CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 23:58:59 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id j16so3963112pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 23:58:59 -0700 (PDT)
+        Sat, 11 Sep 2021 03:07:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DUBJU7imupbVf409oJ+vjv9zLbluzIoKndW7p7g+EnU=;
-        b=MbK84QsJwW//DlP3+v3lRq0qG4g0GE1ZnU9HNVD7uNBzLvDZ/JZ3Jf4cfpw7sfvM0c
-         gJPRBHldojjHF6we5SEvlwPVkwgjhIaD4VsHi0Ykz6vQv61ZIAL6EagWAN6F3x3Gq9vl
-         tRn5392NySWjypP0WtmVzdY3QApDfymZp0+5cC3WB422QN5OxVWJvbhIg5hiQ0ClFKw4
-         by0r7iCaibKLqWpakny1FubsFicb/u4foXtEitU7J51KlRj0D+fDZaQdqfUjF3ZEBzmi
-         pkjVFRAH+bluenKLbafEkDdxawLfUAZDlvYShJ1rSoOKATYKQT1StsRJ4oHDrQfeqpHo
-         rcWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=DUBJU7imupbVf409oJ+vjv9zLbluzIoKndW7p7g+EnU=;
-        b=DlcsHWcztLlNKrJsvTvme+jajhzudxazpAkRkTKy//qCKDNGDDo2ds/t/tVC1wLHDd
-         /1aiAzrsZN8tDT7rbHJdlM9mZ7LTejGxGR5bUhV/pybp/REAPBuzQEMhC0v8W4IZ3Bab
-         X4piZzQcC8wz0cEtaYklNgNR7gy3Ned0eAMql2HKnZ9AU7pvIEB0vbm+IXmZQMkzByGk
-         K6iypCD9NQrjWlWg/lNEX1ryZA7ly/JmKAj5WozrQmz20WXImja+SMLOhRtIYJgMxB8i
-         zxzsYFRFXrC5N7sv/Cfz6CUFI+TLYbcPiUDyY2EjqvFYs0je/PFdhra/lkC85wg/whKh
-         Cq7Q==
-X-Gm-Message-State: AOAM5313hTihYdayA/WQf8gzI4gs47qgMB2G+MTYxGVuUra/ZeX6j12O
-        1SYJQ0wKQPbEspS5tWE2ZLcW/Q==
-X-Google-Smtp-Source: ABdhPJxDzR74LXT6W1FUf1DQWX4/HmJi4yZuHAQtz6Joa2Qqpkd3SW5/ySOVrU/7dVZXOeiXpUaVQg==
-X-Received: by 2002:a63:215c:: with SMTP id s28mr1353795pgm.99.1631343538528;
-        Fri, 10 Sep 2021 23:58:58 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id n14sm942402pjm.5.2021.09.10.23.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 23:58:57 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 23:58:57 -0700 (PDT)
-X-Google-Original-Date: Fri, 10 Sep 2021 23:58:55 PDT (-0700)
-Subject:     Re: [PATCH v2] riscv: dts: microchip: mpfs-icicle: Fix serial console
-In-Reply-To: <01b0aaeb50a960e36077669449a854e5d4c18a83.1629983839.git.geert@linux-m68k.org>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        Atish Patra <Atish.Patra@wdc.com>, bin.meng@windriver.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        geert@linux-m68k.org, bmeng.cn@gmail.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     geert@linux-m68k.org
-Message-ID: <mhng-66e34f73-6c8f-47fd-9839-8672fc1df75d@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=xcFDCKQo00
+        tgnBI8uRJMu7ZJQkbd5ZBb6anV9AP3qvs=; b=AnVTgSp9cG4qwJTOBPFqjsYtxX
+        bqnU3/naz2Ml3xB4DGRKiisuVl0xwJD/WMxoysscet/9R65cVcH4vF7c5TggShpY
+        ag1Ux8RLQoEMvVHnbX8kyd7H5wF6mYgMGWa0M2rGNcPfre5ygqhjTyjm41yDYxNM
+        VuU0274eYjC5nKCFA=
+Received: from localhost.localdomain (unknown [223.104.213.26])
+        by app2 (Coremail) with SMTP id XQUFCgB3f88_VTxhRrRZAA--.24021S4;
+        Sat, 11 Sep 2021 15:05:42 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] drivers/dma: fix reference count leaks in mmp_pdma_probe
+Date:   Sat, 11 Sep 2021 15:05:33 +0800
+Message-Id: <20210911070533.3114-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: XQUFCgB3f88_VTxhRrRZAA--.24021S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4xZFyDuw1UZrykuw1DGFg_yoWDtrb_Cr
+        y0vr97uw1kCFnxWr1jkry3ZrySyFyvgr4agwn8Ka4fXa45XrZ7Wr4UuF1kZr17urWIyryU
+        C3yvgrWxuF17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
+        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjCJPtUUUUU==
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiARABEFKp4zYKHQAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Aug 2021 06:19:39 PDT (-0700), geert@linux-m68k.org wrote:
-> Currently, nothing is output on the serial console, unless
-> "console=ttyS0,115200n8" or "earlycon" are appended to the kernel
-> command line.  Enable automatic console selection using
-> chosen/stdout-path by adding a proper alias, and configure the expected
-> serial rate.
->
-> While at it, add aliases for the other three serial ports, which are
-> provided on the same micro-USB connector as the first one.
->
-> Fixes: 0fa6107eca4186ad ("RISC-V: Initial DTS for Microchip ICICLE board")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> ---
-> v2:
->   - Add Reviewed-by,
->   - Rebase on top of 417166ddec020c4e ("riscv: dts: microchip: Add
->     ethernet0 to the aliases node"), as requested by Bin.
-> ---
->  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> index baea7d204639a185..b254c60589a1cc8b 100644
-> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> @@ -16,10 +16,14 @@ / {
->
->  	aliases {
->  		ethernet0 = &emac1;
-> +		serial0 = &serial0;
-> +		serial1 = &serial1;
-> +		serial2 = &serial2;
-> +		serial3 = &serial3;
->  	};
->
->  	chosen {
-> -		stdout-path = &serial0;
-> +		stdout-path = "serial0:115200n8";
->  	};
->
->  	cpus {
+The issue happens in an error handling path. If
+of_dma_controller_register() fails, the function simply prints error
+messages and returns error code, without decrementing the reference
+count of pdev->device incremented earlier by
+dma_async_device_register(), which may result in refcount leaks.
 
-Thanks, this is on for-next (there's no fixes right now, it's still 5.15 
-for me).
+Fix it by invoking dma_async_device_unregister() before returning the
+error code.
+
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/dma/mmp_pdma.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/dma/mmp_pdma.c b/drivers/dma/mmp_pdma.c
+index 89f1814ff..a23563cd1 100644
+--- a/drivers/dma/mmp_pdma.c
++++ b/drivers/dma/mmp_pdma.c
+@@ -1123,6 +1123,7 @@ static int mmp_pdma_probe(struct platform_device *op)
+ 						 mmp_pdma_dma_xlate, pdev);
+ 		if (ret < 0) {
+ 			dev_err(&op->dev, "of_dma_controller_register failed\n");
++			dma_async_device_unregister(&pdev->device);
+ 			return ret;
+ 		}
+ 	}
+-- 
+2.25.1
+
