@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E4407928
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1E6407926
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhIKPpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 11:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhIKPpc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 11:45:32 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF68C061574;
-        Sat, 11 Sep 2021 08:44:19 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 9so7123135edx.11;
-        Sat, 11 Sep 2021 08:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xg2CvYZ+tH6t/k0xORBUUQI7HI+xjB9Z/g9ovNiV0Qw=;
-        b=TenGP48rHBDJrR0xS3S+ahxytocH0V4V7qoCjcbu/24SOy3ZBsY05yLvUxOujTVhW/
-         ZtcMmsMbZjUhxqGePjJm8Cs0i5bJPP7q0/5m7W2gmnzq6GsN+MxQuOBt9JR6DgIYXH6L
-         ke7QJ0n1fK9oswgI7Udi+oABdrZYeJRJqCvv0KHfudRdg64m5OqJrSP+ZXcasVPbZVLN
-         82i5eXIc/cwba/RbVt2iXonAISlrQmJB1UrcjZir+oG09LLsIU4oL1V3HVd4fX5IY/ZM
-         Xya+s3pxNEGN+WodRrsI9AtiV0wGSwJFVjjX6lFV2fVkGs9nUtIFRqyDKKdos+76wp6h
-         wQpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xg2CvYZ+tH6t/k0xORBUUQI7HI+xjB9Z/g9ovNiV0Qw=;
-        b=NJhBYOOGoq8Wo6nMXBAUXZYc8yVAt/shEne2NthRtLjrWPORK6SvHWsTyg0Z+jQhUy
-         Z7b129Wqvn1bppgaQ4euqI3DB6vfA1Kzl72a1+dFHIk8Fvf+VWBuej6OEIT5EVWphUV8
-         L5CDNTWqf6dMnQufP+YQqgM8uCJ+oxyZqc9SJ3gqbomS1hvNrhZkfy4Yn8M1gijCbY+4
-         yLx4TSyIRVsK5/vKw41M3bNeXfhlQNhxDNPa/wtiDmyqh42leGgwlp/V47BoYK2mf4zP
-         29yuQh1HHwsFMzJP1w3sgpb7wc5h7AnlAWmx740yP7h2D+spdN9HV+DhYU7wLd8PzF45
-         tVsA==
-X-Gm-Message-State: AOAM532/4DTE+gKucx3zG19cwmUkmX7ykxmQ6/M/dF2qw+y36I1ITrle
-        ifpJGkyPzFYaqGM81YXlDhI=
-X-Google-Smtp-Source: ABdhPJzy/bDkt/BRQSU+GcDgV3rqR4GhxWZ311zC1P1BWIGRbAhJXPFc4TiD7JXPG18T7SuEMfwFuw==
-X-Received: by 2002:a05:6402:10d6:: with SMTP id p22mr3816620edu.168.1631375058276;
-        Sat, 11 Sep 2021 08:44:18 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (host-87-21-249-69.retail.telecomitalia.it. [87.21.249.69])
-        by smtp.gmail.com with ESMTPSA id z97sm1088745ede.72.2021.09.11.08.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 08:44:17 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 17:44:14 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: qca8k: fix kernel panic with legacy mdio
- mapping
-Message-ID: <YTzOzhmnwpbtdO8D@Ansuel-xps.localdomain>
-References: <20210911150731.16586-1-ansuelsmth@gmail.com>
- <5ec1a416-45e5-4679-9aa4-aa96b7f738b0@gmail.com>
- <YTzNCGutVkKZJz3t@Ansuel-xps.localdomain>
- <20210911154055.rzlresshnug6rshh@skbuf>
+        id S232772AbhIKPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 11:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232450AbhIKPmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 11:42:13 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1D8161205;
+        Sat, 11 Sep 2021 15:40:56 +0000 (UTC)
+Date:   Sat, 11 Sep 2021 16:44:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Olivier Moysan <olivier.moysan@foss.st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH 0/7] add internal channels support
+Message-ID: <20210911164428.023953c4@jic23-huawei>
+In-Reply-To: <20210908155452.25458-1-olivier.moysan@foss.st.com>
+References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911154055.rzlresshnug6rshh@skbuf>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 06:40:55PM +0300, Vladimir Oltean wrote:
-> On Sat, Sep 11, 2021 at 05:36:40PM +0200, Ansuel Smith wrote:
-> > > > +static int
-> > > > +qca8k_internal_mdio_write(struct mii_bus *salve_bus, int phy, int regnum, u16 data)
-> > > > +{
-> > > > +	struct qca8k_priv *priv = salve_bus->priv;
-> > > 
-> > > You are only moving code here but while at it, mind fixing that typo?
-> > >
-> > 
-> > I think I didn't understand what you mean here.
-> > Sure I will fix the typo and sorry about it.
-> > Aside from that anything wrong with the 2 new function or there is a
-> > better fix that I can't think of.
-> 
-> "salve" is "hello" in Italian, and even though that is a greeting,
-> surely that is not what was meant, but rather "slave". So even though
-> that is less positive, it is at least a technical term with a clear
-> meaning, so I think Florian's request was to replace "salve" with
-> "slave" while you are moving the code anyway.
+On Wed, 8 Sep 2021 17:54:45 +0200
+Olivier Moysan <olivier.moysan@foss.st.com> wrote:
 
-Ok this is embarrassing... Typo by vscode autocorrection... Fixing that
-and sending v2. Again sorry.
+> This patchset adds support of ADC2 internal channels VDDCORE, VREFINT and VBAT
+> on STM32MP15x SoCs. The generic IIO channel bindings is also introduced here
+> to provide this feature. The legacy channel binding is kept for backward compatibility.
+
+Before I actually look at the patch, general naming comment.
+Please make sure that the driver / device name appears in the cover letter title
+and all the patches.  It makes it much easier for people to find the code relevant
+to them.
+
+Thank,
+
+Jonathan
+
+> 
+> Olivier Moysan (7):
+>   dt-bindings: iio: adc: add generic channel binding
+>   dt-bindings: iio: adc: add nvmem support for vrefint internal channel
+>   iio: adc stm32-adc: split channel init into several routines
+>   iio: adc: stm32-adc: add support of generic channels binding
+>   iio: adc: stm32-adc: add support of internal channels
+>   iio: adc: stm32-adc: add vrefint calibration support
+>   iio: adc: stm32-adc: use generic binding for sample-time
+> 
+>  .../bindings/iio/adc/st,stm32-adc.yaml        | 108 ++++-
+>  drivers/iio/adc/stm32-adc-core.h              |   8 +
+>  drivers/iio/adc/stm32-adc.c                   | 418 ++++++++++++++++--
+>  3 files changed, 482 insertions(+), 52 deletions(-)
+> 
 
