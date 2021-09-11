@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3951A40760F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB97407612
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbhIKKZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 06:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235443AbhIKKZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 06:25:24 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC3AC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 03:24:12 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id b6so6367296wrh.10
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 03:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=YqGDZZMJKPugLbHU1Z+KSXD5nBkqoBERs7vHAT2/hzo=;
-        b=Q3l5j9tTDRzH0acAC7NMkA87vTfP4ro0ABYJMQakGilztDnr3CkxusgQKX7HvQNAXT
-         DVza84wZe+jYqKzSiq0mU+89Q0RbjbmGKF5Y5iOtRqMeJ0KeGimOUI3oZb0JKyNWa1Q2
-         rMWintNWJy243GdKTPUdn5PykLQqmvGqB3RgP5ar0wqlqTm9iLH0wa8D3uE0227MTDdj
-         DGvDGamsp+WH9QzV7HweU+X3u+K1hk6yRX4S42LExH3rnE6qvs5k23wZJRlp7q4/YsNq
-         Es6YtM0pc/0s20yv5ITHqCFwZ08O79zHLaDlWVueM/s8YN+jaQ1d9wP4f3hvtIMgiem5
-         PqaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=YqGDZZMJKPugLbHU1Z+KSXD5nBkqoBERs7vHAT2/hzo=;
-        b=Egcos64J7fJkwVWeKhcs8HGDPouPvuZwVu28Z3E1Db4X+CRj47bxJ8PTNU+kY++HLt
-         6iasGQ6owScksSp5Hix5br6+J6ao4kRsDcKdhao4AH4LqiLCXWDke8kYiVAoWAiWvIWB
-         +Tov+C+VisAkhFv1I0UxPy1GWdF3HrEgV1fRolilES3rqNW0cIGU0FJhHKJVygrkTrFo
-         SO0D4RYSuPY4qZvC723VRXKzwo4TklmZHn7m3RfIY0Cq8FknPiju3lLXGW4arYbdrI9n
-         CCvLkVZxlwfyinQVbuSe+GhPeOf0apEAn34JtVFGxqEYq7HBL3s7EaxzVfio73K6To7H
-         de4A==
-X-Gm-Message-State: AOAM5338p3wUabRQE3dr6i7g40N2RjwoRLDi5okV2nWb0thMddrnj4er
-        WcQnmxaUVNV6goOY7FSL26UuEBliBFlBNw==
-X-Google-Smtp-Source: ABdhPJyWawzrPoeggbJueCiuR65y3mZN0kFClQFojNFf0Y5ecIXX1lCT5YBC2k4SQ3hHh7qDvMGKPQ==
-X-Received: by 2002:adf:ee49:: with SMTP id w9mr2476358wro.158.1631355850945;
-        Sat, 11 Sep 2021 03:24:10 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id u2sm1213238wmj.29.2021.09.11.03.24.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Sep 2021 03:24:10 -0700 (PDT)
-Message-ID: <296aa357-1bba-4136-c651-a18d04c8d32a@gmail.com>
-Date:   Sat, 11 Sep 2021 12:24:09 +0200
+        id S235634AbhIKKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:30:08 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39781 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235443AbhIKKaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:30:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631356120;
+        bh=kW2/XFCgLeQJ8pAdiZHbaLLR//IPNQFMApFkxDIZUaU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=WBtsBZQz4G7/paKCTF08Zb5U1QgauCNKCCBvanb6wH1x9zXRmsbI68y2CmpVblb5/
+         DCnuY6avzo55meTZwHv0/vgqPtrkqRNlAJueAHSe7z0z6mkbUrN8Tc0pa0mzBN+uOi
+         +zB3F/2TIfN6gn2kHWDi6e/S20kgBRV0pNu75rko=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M1Hdq-1mNMcU11P0-002rAx; Sat, 11 Sep 2021 12:28:40 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH] net: mana: Prefer struct_size over open coded arithmetic
+Date:   Sat, 11 Sep 2021 12:28:18 +0200
+Message-Id: <20210911102818.3804-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 0/7] remove pointers from struct hal_ops
-Content-Language: en-US
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210910205033.3778-1-straube.linux@gmail.com>
- <1858319.rr7sHpn3up@localhost.localdomain>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <1858319.rr7sHpn3up@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dfVEWPwUfXk7WIDTAbTGVLjgPLhUDRc24p6xewK3GBqzbU6DrcU
+ ykjnc9cNedQlmlg2HsTJDh+pa11ahYb6Y+2sPn51SUs8CNYG+ggGvmOsFmGmQQ77r9/a55S
+ 635XjyqZv/kz30sj90ZoUxbIdPhLVdwaip4p8XoRizgjtM4u7JfPsXt8t4JOwK4SDCTUtrm
+ 5Pzh+wyuAZy8g7EzyPK9w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aaZQKqUHAsA=:5UH7+Vp9zv9Ebwsos2eXEL
+ B9iNcka0v4OG7PMubbF6LdznXb4ErFlO61hZEhq9oGgckm3FJ5cKWQ6bC5ipCTI2+MA4SK92W
+ caQsjELrtMbv2QGtFTKiDEXjhOrnNwJuRtMXY7SnPFkDvfQzrhvrnXPE4k8Dl6wZDlpOssnnB
+ 7Md6XCXwhXb8UkN+julAy9NVlC1bD2ntsojt+gzru8JEvgQKl+FEgmFC4rMiabvgWEFdpk6YT
+ vSLGf110Znb6tr18K7NJuNP0gYe3Xf0QSIUt3X3dmhQ5Z28f1APyaDisfGrvg5McuOpxiriox
+ oNr5gWttuw+wWB0KBjT6gy09FhBv8Wa2Snh1pHG2PKdqU6mYe0C5Lxk4TzHaDqVxye1tL6Pg7
+ dO28z09KUC+EIgw6S8XgCQBVx7dm6oRNWqciRZxWO/7JgTCbaueHrnYtvOhaAhWIFpqM829r0
+ 9v8XeeePZO7B4DYIylStJa4mfNvq6jmLF5djc5DCcvi/gaTaiYD3vNk9/dXpq+TkKy/g+aEfA
+ Z6A473KvK+Vk/6cFyb+9UUEWfvN82lv0L3ds3h/Al3c+OODzmxfT9D9a1G0PleRnBt6JqNAtW
+ SlGpWhwEbBo57JGu09iPWi96i2Unng+YUswRioMXwko49w3MoRSAYVeTpADhUhm9OMqiD+gt1
+ P+zM/eLcG2vo5UJ9FHqsJrek28qAXjmH4bp/2yHajA97YalRzcXzUvcXMYhWTAIjPP5LyDbO8
+ Bm2/KgO8boMYnKYDBfPQczPSGkgDm6UD+aj6shCY9KfHj6iBLr98XGbnZYH715DHm8uN507bJ
+ dnIZUXqBE9qkNQqSXlyiWymtlJinnByOgJeOwuaYYmUlnh9CRyb/k/plz86cTGBiEHUd+XDUr
+ IZXEg0c18VaopPD1wCJHhpN1xg+lIsALJ+Mbg2hf5JutDHfznaK7mqEzMJkQYY+KejZyp6QZ9
+ w0e5Nmfb7xkg3Al2NYG9jcEpuQFRTQP6OWFcEP5lAySuU5Y2cRE5He88sy4DYYaRprCEbEmCo
+ 4/aUvhJqiRUfnu8/v+kmZp/aNk2DG+fTaQnpzNkRq+yWLhCvmmS/gbJGYPrimhWlGMUk7KF3y
+ 4tVhgpYCBw4awQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/21 11:38, Fabio M. De Francesco wrote:
-> On Friday, September 10, 2021 10:50:26 PM CEST Michael Straube wrote:
->> This series removes some more pointers from struct hal_ops and
->> removes the function rtl8188e_set_hal_ops() that is empty after
->> the removals.
->>
->> Michael Straube (7):
->>    staging: r8188eu: remove mgnt_xmit from struct hal_ops
->>    staging: r8188eu: remove hal_xmit from struct hal_ops
->>    staging: r8188eu: remove read_bbreg from struct hal_ops
->>    staging: r8188eu: remove write_bbreg from struct hal_ops
->>    staging: r8188eu: remove read_rfreg from struct hal_ops
->>    staging: r8188eu: remove write_rfreg from struct hal_ops
->>    staging: r8188eu: remove rtl8188e_set_hal_ops()
->>
-> 
-> Hi Michael,
-> 
-> This series is good.
-> 
-> Furthermore, I compiled the whole series with gcc version 11.2.1 2020816
-> [revision 056e324ce46a7924b5cf10f61010cf9dd2ca10e9] (SUSE Linux) one
-> patch at a time. There are no errors or warnings at any time in any of the
-> seven builds.
-> 
-> But, unfortunately, I have no time to test. So the whole series is...
-> 
-> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> 
-> Thanks,
-> 
-> Fabio
-> 
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Hi Fabio,
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() function.
 
-thank you for the review. I have tested it on x86_64 with
-Inter-Tech DMG-02 connected to a CCMP network without any
-issues.
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
 
-Perhaps I should have mentioned that in the cover letter. ;)
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/net/ethernet/microsoft/mana/hw_channel.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/ne=
+t/ethernet/microsoft/mana/hw_channel.c
+index 1a923fd99990..0efdc6c3c32a 100644
+=2D-- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -398,9 +398,7 @@ static int mana_hwc_alloc_dma_buf(struct hw_channel_co=
+ntext *hwc, u16 q_depth,
+ 	int err;
+ 	u16 i;
 
-Michael
+-	dma_buf =3D kzalloc(sizeof(*dma_buf) +
+-			  q_depth * sizeof(struct hwc_work_request),
+-			  GFP_KERNEL);
++	dma_buf =3D kzalloc(struct_size(dma_buf, reqs, q_depth), GFP_KERNEL);
+ 	if (!dma_buf)
+ 		return -ENOMEM;
+
+=2D-
+2.25.1
 
