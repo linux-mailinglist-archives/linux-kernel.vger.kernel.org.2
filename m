@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE0740761D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FBA40761F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbhIKKnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 06:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhIKKnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 06:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A40360FDC;
-        Sat, 11 Sep 2021 10:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631356925;
-        bh=N0wtIK96dx3XM0eOaHSs5E3Sn4Ns8OuBLM3E1H39muY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=onyAAi7dUBGSiTnnPh8mufeQY8AAEFVpCA0jOYCXoMm7kumxMcywMfH7IaFy7q2UJ
-         qPEI2Op+nqQ4/GG2zzIrR53BSu+hr8hem37s1baTQZpD/0OE7NHlt6/m2gUaAq00Cp
-         oH9nRVaGC547VNNR93Ww1zWREdNsj7BCWyZMtS4AVAKTOADUHZxg1XRB2R0U1LRhcO
-         xceqB6GzfRD5olyYpJAgj5vJR5Vkz1rULOSXrTNa7JTZvzcR+sMn2bwEEHhCTslFqu
-         D00fslv/1muHou+eA/OGGS9m5sYcinfFSABIFTU0zuLhpf1Nk6HUk461rQdA2WVAdl
-         Z73E+63cowxTQ==
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-References: <20210902172404.3517626-1-daeho43@gmail.com>
- <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
- <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
- <8f8e4695-4062-60c4-0f91-2a1f6a5b0a11@kernel.org>
- <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
- <f64cb941-2bb7-eed2-732d-c9537f46f67c@kernel.org>
- <CACOAw_zxq=SX0OdXV77HyFytJc6aCMbYuS6KZAR_JoQeGZ26Sw@mail.gmail.com>
- <a59d23b9-961f-4129-7491-59f88923366a@kernel.org>
- <CACOAw_z+yfNN3p3U3Ji0vLe7xDP4vkVy11RdzwwcRwwnSTjsFg@mail.gmail.com>
- <CACOAw_y24AdH2Mpx4uhYbhmHnVRtUU2_4USUmi0Q61HGtE95RA@mail.gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <3108fdfa-34c4-7e57-1674-c71ab08b4a1e@kernel.org>
-Date:   Sat, 11 Sep 2021 18:42:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235663AbhIKKoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235443AbhIKKoL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:44:11 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565FFC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 03:42:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631356975;
+        bh=ExdD//zcgrodB2nrIV/KTQK4Gb50UScEXZVTgad6v/4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ioe1x8uO/2B8IYF6K1rTcBPWXLQBlAeM9QmH6xaRSjWXuHJQ2DySUrfS7WiBwOLOM
+         Pgz7y5Ss8RX/px06Dy2CLLVcmX7NjXjpXeJBYYddxUboKFvCghkZkKJ3eIpyq+vaIU
+         2XfBmZ7yBjbD487jA+hS9gky4w1awB5BTo7BsQutZ2ychG4BJSVqliQQ9Pistc43od
+         6zajpCy1cuHtXZWS9uBxpBLiCfu560IbMlB1AT7rj0ISwliUtIkHnYA2/t2+gV4IDZ
+         Rrdya6r05/L+NpaUAcyDHwSr0e6zqAePE4Nyvc0m7t8MrI9TXg+5NkZSAALDRCwKbM
+         WVMQVQlPdiDww==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H68TT0mbkz9sVq;
+        Sat, 11 Sep 2021 20:42:52 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/10] raise minimum GCC version to 5.1
+In-Reply-To: <202109101917.5BA95B87E0@keescook>
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <202109101917.5BA95B87E0@keescook>
+Date:   Sat, 11 Sep 2021 20:42:49 +1000
+Message-ID: <8735qbmlzq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_y24AdH2Mpx4uhYbhmHnVRtUU2_4USUmi0Q61HGtE95RA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/10 23:24, Daeho Jeong wrote:
-> On Fri, Sep 10, 2021 at 7:34 AM Daeho Jeong <daeho43@gmail.com> wrote:
->>
->> On Thu, Sep 9, 2021 at 4:50 PM Chao Yu <chao@kernel.org> wrote:
->>>
->>> On 2021/9/8 2:12, Daeho Jeong wrote:
->>>> On Fri, Sep 3, 2021 at 11:45 PM Chao Yu <chao@kernel.org> wrote:
->>>>>
->>>>> On 2021/9/4 12:40, Daeho Jeong wrote:
->>>>>>> As a per curseg field.
->>>>>>>
->>>>>>>> Maybe, we run into the same race condition issue you told before for
->>>>>>>> fragment_remained_chunk.
->>>>>>>> Could you clarify this more?
->>>>>>>
->>>>>>> e.g.
->>>>>>>
->>>>>>> F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK
->>>>>>> fragment_chunk_size = 384
->>>>>>> fragment_hole_size = 384
->>>>>>>
->>>>>>> When creating hole:
->>>>>>>
->>>>>>> - f2fs_allocate_data_block
->>>>>>>      - __refresh_next_blkoff
->>>>>>>        chunk locates in [0, 383] of current segment
->>>>>>>        seg->next_blkoff = 384
->>>>>>>        sbi->fragment_remained_chunk = 0
->>>>>>>        then we will reset sbi->fragment_remained_chunk to 384
->>>>>>>        and move seg->next_blkoff forward to 768 (384 + 384)
->>>>>>>      - __has_curseg_space() returns false
->>>>>>>      - allocate_segment() allocates new current segment
->>>>>>>
->>>>>>> So, for such case that hole may cross two segments, hole size may be truncated
->>>>>>> to left size of previous segment.
->>>>>>
->>>>>> First, sbi->fragment_remained_chunk should be seg->fragment_remained_chunk.
->>>>>
->>>>> Oh, correct.
->>>>>
->>>>>> I understand what you mean, so you mean we need to take the leftover
->>>>>> "hole" size over to the next segment?
->>>>>> In the example, the leftover hole size will be (384 - (512-384)). Do
->>>>>> you want to take this over to the next segment?
->>>>>
->>>>> Yes, the left 256 block-sized hole should be created before next chunk
->>>>> in next opened segment.
->>>>>
->>>>
->>>> Chao,
->>>>
->>>> Do you have any decent idea to pass the left hole size to the next
->>>> segment which will be allocated?
->>>
->>> Daeho,
->>>
->>> I guess we can record left hole size in seg->fragment_remained_hole.
->>>
->>
->> I understand we need a new fragment_remained_hole variable in segment structure.
->> But, I mean.. How can we pass over the left hole size from the
->> previous segment to the next segment?
->>
-> 
-> I mean we don't know which segment will be the next segment, do we?
+Kees Cook <keescook@chromium.org> writes:
+> On Fri, Sep 10, 2021 at 04:40:37PM -0700, Nick Desaulniers wrote:
+>> commit fad7cd3310db ("nbd: add the check to prevent overflow in
+>> __nbd_ioctl()")
+>>=20
+>> raised an issue from the fallback helpers added in
+>>=20
+>> commit f0907827a8a9 ("compiler.h: enable builtin overflow checkers and a=
+dd fallback code")
+>>=20
+>> Specifically, the helpers for checking whether the results of a
+>> multiplication overflowed (__unsigned_mul_overflow,
+>> __signed_add_overflow) use the division operator when
+>> !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW. This is problematic for 64b
+>> operands on 32b hosts.
+>>=20
+>> Also, because the macro is type agnostic, it is very difficult to write
+>> a similarly type generic macro that dispatches to one of:
+>> * div64_s64
+>> * div64_u64
+>> * div_s64
+>> * div_u64
+>
+> Given that it's all compile-time type-aware goo, this isn't so bad. The
+> gist[1] you linked off the bug report is pretty close. Needs some
+> bikeshedding. ;)
+>
+>> Raising the minimum supported versions allows us to remove all of the
+>> fallback helpers for !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW, instead
+>> dispatching the compiler builtins.
+>>=20
+>> arm64 has already raised the minimum supported GCC version to 5.1, do
+>> this for all targets now. See the link below for the previous
+>> discussion.
+>
+> That said, I'd much prefer raising the minimum GCC -- no one appears
+> to actually be building on 4.9 -- there are close to 200 errors (ne=C3=A9
+> warnings) on x86_64 allmodconfig there currently.
 
-Yeah, that's why I prefer to let __get_next_segno() return zero in fixed_block
-fragment mode, then log header may have chance to allocate hole in contiguous
-segments.
+I still do 4.9 builds on kisskb, but I agree there are a lot of
+warnings, and no one ever has time to fix any.
 
-Thanks,
-
-> 
->> Thanks,
->>
->>> Thanks,
->>>
->>>>
->>>> Thanks,
->>>>
->>>>> Thanks,
->>>>>
->>>>>>
+cheers
