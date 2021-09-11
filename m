@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3D8407A03
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 19:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD97C407A06
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 19:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhIKRoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 13:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhIKRog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 13:44:36 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEB2960FBF;
-        Sat, 11 Sep 2021 17:43:21 +0000 (UTC)
-Date:   Sat, 11 Sep 2021 18:46:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     <alexandru.tachici@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] iio: adc: ad7793: Fix IRQ flag
-Message-ID: <20210911184652.249bcbd8@jic23-huawei>
-In-Reply-To: <20210906065630.16325-4-alexandru.tachici@analog.com>
-References: <20210906065630.16325-1-alexandru.tachici@analog.com>
-        <20210906065630.16325-4-alexandru.tachici@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S233055AbhIKRuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 13:50:52 -0400
+Received: from smtprelay05.ispgateway.de ([80.67.31.93]:1815 "EHLO
+        smtprelay05.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhIKRuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 13:50:51 -0400
+Received: from [87.92.210.171] (helo=lumip-notebook.fritz.box)
+        by smtprelay05.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <lumip@lumip.de>)
+        id 1mP77v-0002eN-O0; Sat, 11 Sep 2021 19:49:19 +0200
+From:   Lukas Prediger <lumip@lumip.de>
+To:     phil@philpotter.co.uk
+Cc:     axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH v3] drivers/cdrom: improved ioctl for media change detection
+Date:   Sat, 11 Sep 2021 20:48:17 +0300
+Message-Id: <20210911174816.55538-1-lumip@lumip.de>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAA=Fs0mEprM0hErRY-kw7bOVqEw3o6X=--OixQ=_fNXdV_-QGQ@mail.gmail.com>
+References: <CAA=Fs0mEprM0hErRY-kw7bOVqEw3o6X=--OixQ=_fNXdV_-QGQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sep 2021 09:56:30 +0300
-<alexandru.tachici@analog.com> wrote:
+Hi Randy, Hi Phil,
 
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> In Sigma-Delta devices the SDO line is also used as an interrupt.
-> Leaving IRQ on level instead of falling might trigger a sample read
-> when the IRQ is enabled, as the SDO line is already low. Not sure
-> if SDO line will always imediately go high in ad_sd_buffer_postenable
-> before the IRQ is enabled.
-> 
-> Also the datasheet seem to explicitly say the falling edge of the SDO
-> should be used as an interrupt:
-> From the AD7793 datasheet: " The DOUT/RDY falling edge can be
-> used as an interrupt to a processor"
-> 
-> Fixes: da4d3d6bb9f6 ("iio: adc: ad-sigma-delta: Allow custom IRQ flags")
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+>>
+>> Hi Lukas,
+>>
+>> Just a minor nit:
+>>
+>> On 9/10/21 2:16 PM, Lukas Prediger wrote:
+>> > +#define MEDIA_CHANGED_FLAG   0x1     /* Last detected media change was more \
+>> > +                                      * recent than last_media_change set by\
+>> > +                                      * caller.                             \
+>> > +                                      */
+>>
+>> Drop the "continuation" backslashes.
+>> They are not needed.
+>>
+>> thanks.
+>> --
+>> ~Randy
+>>
 
-Thanks,
+Hm, my IDE was complaining about these but I just tested building without and
+that worked fine. No idea what that was about then..
 
-Jonathan
+>
+> Dear Lukas,
+>
+> Happy to take these out for you and save you resubmitting.
+> I'm very happy with patch anyway. Once I hear back from
+> you I'll send onto Jens with my approval after one final test :-)
+>
 
-> ---
->  drivers/iio/adc/ad7793.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/ad7793.c b/drivers/iio/adc/ad7793.c
-> index ef3e2d3ecb0c..0e7ab3fb072a 100644
-> --- a/drivers/iio/adc/ad7793.c
-> +++ b/drivers/iio/adc/ad7793.c
-> @@ -206,7 +206,7 @@ static const struct ad_sigma_delta_info ad7793_sigma_delta_info = {
->  	.has_registers = true,
->  	.addr_shift = 3,
->  	.read_mask = BIT(6),
-> -	.irq_flags = IRQF_TRIGGER_LOW,
-> +	.irq_flags = IRQF_TRIGGER_FALLING,
->  };
->  
->  static const struct ad_sd_calib_data ad7793_calib_arr[6] = {
+That would be very nice of you!
 
+>
+> Thanks again for the code.
+>
+
+My pleasure, and thanks for the helpful feedback!
+
+>
+> Regards,
+> Phil
+
+Best regards,
+Lukas
