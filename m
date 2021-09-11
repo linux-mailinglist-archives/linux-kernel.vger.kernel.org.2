@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DE94075C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B73E4075C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235497AbhIKJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:23:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42564 "EHLO mail.kernel.org"
+        id S235567AbhIKJXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 05:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235539AbhIKJXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:23:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E10A61214;
-        Sat, 11 Sep 2021 09:22:15 +0000 (UTC)
+        id S235514AbhIKJXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 05:23:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D4AC61208;
+        Sat, 11 Sep 2021 09:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631352140;
-        bh=3VCxxqXbTa0UBxOLuOi/PMP0R3acXRdfAijemphVwnY=;
+        s=k20201202; t=1631352144;
+        bh=LjAKkpiCnirsB4Y6pdvnBZ3V6hPR2NG4vhp7kebZdOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MqVdVjcImN/2xd+K6RJYF+BcgXSPA/KdI/oUvPiRQMNqwTfbPeJXxQ4J2EufALOsV
-         T/78RlnGAzwLlNHn2Qsw6GJgwA9Uc05GpuxIeR7CL6ecGvZn/g51y9GUDvql0IvRFk
-         lGSl5DkvUOFTavimKc/9rnMDanN5XqYQmF+CZiA3VcmdRe+YJg8LHMsiFtDkrDvnXS
-         Be2zrtRKE4hzk0kfj6sEMqSSW6yagHi3i1reRFVAIc+QCa/AQ14Q2/7LQMqrzevZZV
-         jJA9WIHvwlrUQp8Agrgrb6JDUyf15bt87kWBVMKl+3Sr3HxYWoAOeM1BRNj8Fq+6q0
-         beWk8xw2RzLfA==
+        b=rQseqkLEQnMLI8Sfk0Mox519Abj3QiSjmQtZCJBU3ctwqKIF9DUwIeLfDghYCSWpx
+         mUxS7MpliI+o/ilhDblwmTRXEooaTbRWLTgl7ij5aX0/3id0uf6OMv7I/2ETs7sfkA
+         Jd/ifC2HV04/a6vF7E8W/GQZFtl5AHIGXN9EQ8VmieGx636gOhSfffplrqcD7tnk5H
+         Z4MRewQbeAwzjH/alNr0O2dRTcNX/yERk66Tsu+bUnIlEUAB/o5kWsPSNN7DFpTX8y
+         ZzUF7tYHCc443tCBF0WvHv4g5XhJNjusSMZu97o0bvhUuNzQONwgtw4gVQQQ+FlX5w
+         S+1MPZqBE3qIg==
 From:   guoren@kernel.org
 To:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
         guoren@kernel.org, christoph.muellner@vrull.eu,
@@ -30,10 +30,11 @@ To:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
         wefu@redhat.com, lazyparser@gmail.com, drew@beagleboard.org
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com
-Subject: [RFC PATCH V4 4/6] RISC-V: Implement arch_sync_dma* functions
-Date:   Sat, 11 Sep 2021 17:21:37 +0800
-Message-Id: <20210911092139.79607-5-guoren@kernel.org>
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [RFC PATCH V4 5/6] riscv: errata: Support T-HEAD custom dcache ops
+Date:   Sat, 11 Sep 2021 17:21:38 +0800
+Message-Id: <20210911092139.79607-6-guoren@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210911092139.79607-1-guoren@kernel.org>
 References: <20210911092139.79607-1-guoren@kernel.org>
@@ -43,158 +44,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atish Patra <atish.patra@wdc.com>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-To facilitate streaming DMA APIs, this patch introduces a set of generic
-cache operations related dma sync. Any platform can use the generic ops
-to provide platform specific cache management operations. Once the
-standard RISC-V CMO extension is available, it can be built on top of it.
+Here are the DMA sync ops needed by Allwinner D1. RISC-V CMO
+extension is still in progress, and D1 is using custom CMO
+instructions:
 
-Below Added by Guo Ren:
-1. Fixup arch_sync_dma_for_cpu with "add DMA_TO_DEVICE force" by Guo Ren and
-follow the tips by Christoph:
-/*
- * Cache operations depending on function and direction argument, inspired by
- * https://lkml.org/lkml/2018/5/18/979
- * "dma_sync_*_for_cpu and direction=TO_DEVICE (was Re: [PATCH 02/20]
- * dma-mapping: provide a generic dma-noncoherent implementation)"
- *
- *          |   map          ==  for_device     |   unmap     ==  for_cpu
- *          |----------------------------------------------------------------
- * TO_DEV   |   writeback        writeback      |   none          none
- * FROM_DEV |   invalidate       invalidate     |   invalidate*   invalidate*
- * BIDIR    |   writeback+inv    writeback+inv  |   invalidate    invalidate
- *
- *     [*] needed for CPU speculative prefetches
- *
- * NOTE: we don't check the validity of direction argument as it is done in
- * upper layer functions (in include/linux/dma-mapping.h)
- */
+ dcache.ipa rs1 (invalidate)
+ | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+   0000001    01010      rs1       000      00000  0001011
 
-2. Christoph:
-As told a bunch of times before: doing indirect calls here is a
-performance nightmare.  Use something that actually does perform
-horribly like alternatives.  Or even delay implementing that until
-              ^^^^^^^^^^^^ Agree, and TODO in Atish next path?
-we need it and do a plain direct call for now.
+ dcache.cpa rs1 (clean)
+ | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+   0000001    01001      rs1       000      00000  0001011
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Guo Ren <guoren@kernel.org>
+ dcache.cipa rs1 (clean then invalidate)
+ | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+   0000001    01011      rs1       000      00000  0001011
+
+ sync.s (completion barrier)
+ | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+   0000000    11001     00000      000      00000  0001011
+
+TODO:
+ - Using alternative patch_text based on Atish's patch.
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+Signed-off-by: Wei Fu <wefu@redhat.com>
+Cc: Atish Patra <atish.patra@wdc.com>
 Cc: Christoph Hellwig <hch@lst.de>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Anup Patel <anup.patel@wdc.com>
 ---
- arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
- arch/riscv/mm/Makefile                   |  1 +
- arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
- 3 files changed, 86 insertions(+)
- create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
- create mode 100644 arch/riscv/mm/dma-noncoherent.c
+ arch/riscv/errata/alternative.c      |  5 +++
+ arch/riscv/errata/thead/errata.c     | 61 ++++++++++++++++++++++++++++
+ arch/riscv/include/asm/alternative.h |  2 +
+ 3 files changed, 68 insertions(+)
 
-diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
-new file mode 100644
-index 000000000000..5bdb03c9c427
---- /dev/null
-+++ b/arch/riscv/include/asm/dma-noncoherent.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-+ */
-+
-+#ifndef __ASM_RISCV_DMA_NON_COHERENT_H
-+#define __ASM_RISCV_DMA_NON_COHERENT_H
+diff --git a/arch/riscv/errata/alternative.c b/arch/riscv/errata/alternative.c
+index b879aa546bc5..396aab1b62c2 100644
+--- a/arch/riscv/errata/alternative.c
++++ b/arch/riscv/errata/alternative.c
+@@ -46,6 +46,11 @@ static void __init init_alternative(void)
+ 	case SIFIVE_VENDOR_ID:
+ 		vendor_patch_func = sifive_errata_patch_func;
+ 		break;
++#endif
++#ifdef CONFIG_ERRATA_THEAD
++	case THEAD_VENDOR_ID:
++		vendor_patch_func = thead_errata_patch_func;
++		break;
+ #endif
+ 	default:
+ 		vendor_patch_func = NULL;
+diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
+index 1f5c0f82bc23..9c0bf9b25be3 100644
+--- a/arch/riscv/errata/thead/errata.c
++++ b/arch/riscv/errata/thead/errata.c
+@@ -5,6 +5,7 @@
+ #include <linux/bug.h>
+ #include <asm/patch.h>
+ #include <asm/alternative.h>
++#include <asm/dma-noncoherent.h>
+ #include <asm/vendorid_list.h>
+ #include <asm/errata_list.h>
+ #include <asm/pgtable-bits.h>
+@@ -45,3 +46,63 @@ void __init thead_errata_setup_vm(unsigned long archid, unsigned long impid)
+ 	__riscv_pbmt.mt[MT_IO]	= _PAGE_MT_IO;
+ #endif
+ }
 +
 +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
-+struct riscv_dma_cache_sync {
-+	void (*cache_invalidate)(phys_addr_t paddr, size_t size);
-+	void (*cache_clean)(phys_addr_t paddr, size_t size);
-+	void (*cache_flush)(phys_addr_t paddr, size_t size);
-+};
-+
-+void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops);
-+#endif
-+
-+#endif
-diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-index 7ebaef10ea1b..959bef49098b 100644
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -27,3 +27,4 @@ KASAN_SANITIZE_init.o := n
- endif
- 
- obj-$(CONFIG_DEBUG_VIRTUAL) += physaddr.o
-+obj-$(CONFIG_RISCV_DMA_NONCOHERENT) += dma-noncoherent.o
-diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
-new file mode 100644
-index 000000000000..63134d57016c
---- /dev/null
-+++ b/arch/riscv/mm/dma-noncoherent.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * RISC-V specific functions to support DMA for non-coherent devices
++ * dcache.ipa rs1 (invalidate)
++ * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
++ *   0000001    01010      rs1       000      00000  0001011
 + *
-+ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ * dcache.cpa rs1 (clean)
++ * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
++ *   0000001    01001      rs1       000      00000  0001011
++ *
++ * dcache.cipa rs1 (clean then invalidate)
++ * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
++ *   0000001    01011      rs1       000      00000  0001011
++ *
++ * sync.s
++ * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
++ *   0000000    11001     00000      000      00000  0001011
 + */
++#define DCACHE_IPA_A0	".long 0x02a5000b"
++#define DCACHE_CPA_A0	".long 0x0295000b"
++#define DCACHE_CIPA_A0	".long 0x02b5000b"
 +
-+#include <linux/dma-direct.h>
-+#include <linux/dma-map-ops.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/libfdt.h>
-+#include <linux/mm.h>
-+#include <linux/of.h>
-+#include <linux/of_fdt.h>
-+#include <asm/dma-noncoherent.h>
++#define SYNC_S		".long 0x0190000b"
 +
-+static struct riscv_dma_cache_sync *dma_cache_sync;
-+unsigned long riscv_dma_uc_offset;
++#define CACHE_OP_RANGE(OP, start, size) \
++	register unsigned long i asm("a0") = start & ~(L1_CACHE_BYTES - 1); \
++	for (; i < ALIGN(start + size, L1_CACHE_BYTES); i += L1_CACHE_BYTES) \
++		__asm__ __volatile__(OP); \
++	 __asm__ __volatile__(SYNC_S);
 +
-+static void __dma_sync(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++static void c900_cache_invalidate(phys_addr_t start, size_t size)
 +{
-+	if ((dir == DMA_FROM_DEVICE) && (dma_cache_sync->cache_invalidate))
-+		dma_cache_sync->cache_invalidate(paddr, size);
-+	else if ((dir == DMA_TO_DEVICE) && (dma_cache_sync->cache_clean))
-+		dma_cache_sync->cache_clean(paddr, size);
-+	else if ((dir == DMA_BIDIRECTIONAL) && dma_cache_sync->cache_flush)
-+		dma_cache_sync->cache_flush(paddr, size);
++	CACHE_OP_RANGE(DCACHE_IPA_A0, start, size);
 +}
 +
-+void arch_sync_dma_for_device(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++static void c900_cache_clean(phys_addr_t start, size_t size)
 +{
-+	if (!dma_cache_sync)
-+		return;
-+
-+	__dma_sync(paddr, size, dir);
++	CACHE_OP_RANGE(DCACHE_CPA_A0, start, size);
 +}
 +
-+void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++static void c900_cache_flush(phys_addr_t start, size_t size)
 +{
-+	if (!dma_cache_sync || dir == DMA_TO_DEVICE)
-+		return;
-+
-+	__dma_sync(paddr, size, DMA_FROM_DEVICE);
++	CACHE_OP_RANGE(DCACHE_CIPA_A0, start, size);
 +}
 +
-+void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
-+		const struct iommu_ops *iommu, bool coherent)
-+{
-+	/* If a specific device is dma-coherent, set it here */
-+	dev->dma_coherent = coherent;
-+}
++static struct riscv_dma_cache_sync c900_dma_cache_sync = {
++	.cache_invalidate = c900_cache_invalidate,
++	.cache_clean = c900_cache_clean,
++	.cache_flush = c900_cache_flush,
++};
++#endif
 +
-+void arch_dma_prep_coherent(struct page *page, size_t size)
++void __init thead_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
++				     unsigned long archid, unsigned long impid)
 +{
-+	void *flush_addr = page_address(page);
-+
-+	memset(flush_addr, 0, size);
-+	if (dma_cache_sync && dma_cache_sync->cache_flush)
-+		dma_cache_sync->cache_flush(__pa(flush_addr), size);
++#ifdef CONFIG_RISCV_DMA_NONCOHERENT
++	riscv_dma_cache_sync_set(&c900_dma_cache_sync);
++#endif
 +}
-+
-+void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops)
-+{
-+	dma_cache_sync = ops;
-+}
+diff --git a/arch/riscv/include/asm/alternative.h b/arch/riscv/include/asm/alternative.h
+index 3605894081a8..a519671fa7d1 100644
+--- a/arch/riscv/include/asm/alternative.h
++++ b/arch/riscv/include/asm/alternative.h
+@@ -35,6 +35,8 @@ struct errata_checkfunc_id {
+ 
+ void sifive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+ 			      unsigned long archid, unsigned long impid);
++void thead_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
++			      unsigned long archid, unsigned long impid);
+ 
+ void thead_errata_setup_vm(unsigned long archid, unsigned long impid);
+ #endif
 -- 
 2.25.1
 
