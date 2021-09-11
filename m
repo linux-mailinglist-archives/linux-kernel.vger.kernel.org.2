@@ -2,170 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F2A407A79
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 23:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A5B407A7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 23:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbhIKVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 17:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhIKVOw (ORCPT
+        id S233946AbhIKVUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 17:20:31 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:49089 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhIKVU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 17:14:52 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5E3C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:13:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m21-20020a17090a859500b00197688449c4so3845921pjn.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x7fpDGw7GwVxQp66PXDuzsoBUpylAYb3JWyjRp5J7bA=;
-        b=j8MhOril6UuQD8Rm7ZcorSAYsn9MIcMd3B0rm8iUvCP8l4U+W9XBsqnhER/jZHKX1M
-         FNkVhTMGe4zkY0UYA/paa7vXwI8lTo96zVDQlbCjhT1WnHN6bmMrz68UyGR5+Bizk1c8
-         PYWJA/zUgVdetjZ+K02dqvhxCkH6//z+SLFf8=
+        Sat, 11 Sep 2021 17:20:29 -0400
+Received: by mail-io1-f70.google.com with SMTP id z26-20020a05660200da00b005b86e36a1f4so11523106ioe.15
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:19:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x7fpDGw7GwVxQp66PXDuzsoBUpylAYb3JWyjRp5J7bA=;
-        b=Kb1MvJVrLSGq/FObw6JmD8Cam9L0zctB2BZhkU4FWMfXW5aw9nVjgnILeam/C+7Zqn
-         /Qp0r5rlrMEIEmvdCAohjZsJ/8kMdL5N++66XjdLClCtcb4Sl8ZdREjB2DyZrWeklt0c
-         XjkfnhYWs1m52GTfzoX6pSk1pKW61pRqWYvjqHPYXwJrq4TZUFnw7z0RWQccOM91YsSK
-         Ir7wOFFkTaqZ7vVN0lOaw8I2xu2BzLydERelSWhFv8csSZFA21DqcUjmaw7xqKbWLOi/
-         zxS3C8lC4tvnt+uCDgcUJs1qxh5muIg/RP4SQiJdR0FdohRnVLQpGk36zYSCtmU8jK2o
-         H04Q==
-X-Gm-Message-State: AOAM531OLVHcx3ZmchT0j8GFZwNVWc4gTPQhoSUzt4Ut4iZ6RPc8pNUh
-        0zWi/iy5iUSNuTJFVgFWBeLo5g==
-X-Google-Smtp-Source: ABdhPJwqImrX1GBKXDqZhHLxGt/0ugV0SZHAIErQAwWMWTIL/Y3tVutkA62Bs1Cvl2xun+/qiQ/XKA==
-X-Received: by 2002:a17:902:bcc6:b0:12d:bd30:bc4d with SMTP id o6-20020a170902bcc600b0012dbd30bc4dmr3737613pls.18.1631394818207;
-        Sat, 11 Sep 2021 14:13:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d20sm2641047pfu.36.2021.09.11.14.13.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 14:13:37 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 14:13:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 1/1] x86: deduplicate the spectre_v2_user documentation
-Message-ID: <202109111413.D988175207@keescook>
-References: <20201104234047.GA18850@redhat.com>
- <20201105001406.13005-1-aarcange@redhat.com>
- <20201105001406.13005-2-aarcange@redhat.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Jmi3yBWyM3sCdQcNUG7hYrR527zmNHaostTgpyWLE4g=;
+        b=T26Drfl1PHbFTQhJHshs24nO5BgBKqAYUf3/CBA3enKjsWZaU6TiymVgt8lOYrbw/0
+         8Xrmp+2VGytJshNQMW98kbn0zlrVio//u0aWzyz57xx2/2C+IJDqo7zou8f/MYJDcjSC
+         fzHqqnMRbBWBWtCjZKbeOaueTi64a89Di5n5+aYjKYC6JWR//lV+cWT9bKydNVkygHZw
+         6m8tTy2vLcNmPkPl9RRFEkyX1v2PsgwBuKUce4bTwQKr/A0uEQbQU/L5S9lYvj0VDQt9
+         Jc7ciES/DB3Ga5h6Bb5Q7dRlmGnE4iIvemx90WkxvVsUa/Gm4NRpJvZQjjSwGz85YBT9
+         8gpg==
+X-Gm-Message-State: AOAM532lzZJSs/OncLq/h+j4H0b3ZDMi7+zL5OyQQ2dTdcC5bSmoJfPS
+        QeUbh6h/oNiR7093ApxjG5BggqatlbJcr0g4B1C5lcHsOVF/
+X-Google-Smtp-Source: ABdhPJw/wl4HsYKJ/UzPjAAqOxVZVC5DXtimWwIUaaY3Vyc+6GHMU1aF05QQWQLEMf8bn3QU3fpznvpVfWUS70bysyXwRprS2A6h
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105001406.13005-2-aarcange@redhat.com>
+X-Received: by 2002:a6b:7b4b:: with SMTP id m11mr3067729iop.165.1631395156119;
+ Sat, 11 Sep 2021 14:19:16 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 14:19:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c4d45205cbbec87f@google.com>
+Subject: [syzbot] riscv/fixes test error: BUG: unable to handle kernel paging
+ request in corrupted
+From:   syzbot <syzbot+fd2f89c6e52024e6118d@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:14:06PM -0500, Andrea Arcangeli wrote:
-> This would need updating to make prctl be the new default, but it's
-> simpler to delete it and refer to the dup.
-> 
-> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Hello,
 
-I'll take this too.
+syzbot found the following issue on:
 
--Kees
+HEAD commit:    7d2a07b76933 Linux 5.14
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=1153e67d300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd2f89c6e52024e6118d
+compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: riscv64
 
-> ---
->  Documentation/admin-guide/hw-vuln/spectre.rst | 51 +------------------
->  1 file changed, 2 insertions(+), 49 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-> index 19b897cb1d45..ab7d402c1677 100644
-> --- a/Documentation/admin-guide/hw-vuln/spectre.rst
-> +++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-> @@ -593,61 +593,14 @@ kernel command line.
->  		Not specifying this option is equivalent to
->  		spectre_v2=auto.
->  
-> -For user space mitigation:
-> -
-> -        spectre_v2_user=
-> -
-> -		[X86] Control mitigation of Spectre variant 2
-> -		(indirect branch speculation) vulnerability between
-> -		user space tasks
-> -
-> -		on
-> -			Unconditionally enable mitigations. Is
-> -			enforced by spectre_v2=on
-> -
-> -		off
-> -			Unconditionally disable mitigations. Is
-> -			enforced by spectre_v2=off
-> -
-> -		prctl
-> -			Indirect branch speculation is enabled,
-> -			but mitigation can be enabled via prctl
-> -			per thread. The mitigation control state
-> -			is inherited on fork.
-> -
-> -		prctl,ibpb
-> -			Like "prctl" above, but only STIBP is
-> -			controlled per thread. IBPB is issued
-> -			always when switching between different user
-> -			space processes.
-> -
-> -		seccomp
-> -			Same as "prctl" above, but all seccomp
-> -			threads will enable the mitigation unless
-> -			they explicitly opt out.
-> -
-> -		seccomp,ibpb
-> -			Like "seccomp" above, but only STIBP is
-> -			controlled per thread. IBPB is issued
-> -			always when switching between different
-> -			user space processes.
-> -
-> -		auto
-> -			Kernel selects the mitigation depending on
-> -			the available CPU features and vulnerability.
-> -
-> -		Default mitigation:
-> -		If CONFIG_SECCOMP=y then "seccomp", otherwise "prctl"
-> -
-> -		Not specifying this option is equivalent to
-> -		spectre_v2_user=auto.
-> -
->  		In general the kernel by default selects
->  		reasonable mitigations for the current CPU. To
->  		disable Spectre variant 2 mitigations, boot with
->  		spectre_v2=off. Spectre variant 1 mitigations
->  		cannot be disabled.
->  
-> +For spectre_v2_user see :doc:`/admin-guide/kernel-parameters`.
-> +
->  Mitigation selection guide
->  --------------------------
->  
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fd2f89c6e52024e6118d@syzkaller.appspotmail.com
 
--- 
-Kees Cook
+Unable to handle kernel paging request at virtual address 1ffffffff07aa547
+Oops [#1]
+Modules linked in:
+CPU: 0 PID: 3309 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Workqueue: events nsim_dev_trap_report_work
+epc : slab_alloc_node mm/slub.c:2884 [inline]
+epc : __kmalloc_node_track_caller+0xb0/0x3d2 mm/slub.c:4653
+ ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
+ ra : slab_alloc_node mm/slub.c:2880 [inline]
+ ra : __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
+epc : ffffffff803e2a20 ra : ffffffff803e29e0 sp : ffffffe0095c3b20
+ gp : ffffffff83f967d8 tp : ffffffe00ba397c0 t0 : ffffffe008b544a8
+ t1 : 0000000000000001 t2 : ffffffffeddd472a s0 : ffffffe0095c3bc0
+ s1 : ffffffe005602140 a0 : 0000000000000000 a1 : 0000000000000007
+ a2 : 1ffffffff07aa51f a3 : ffffffff80a9711a a4 : 0000000004000000
+ a5 : 0000000000000000 a6 : 0000000000f00000 a7 : 78e919c5cf7e2f00
+ s2 : ffffffff83f96adc s3 : 0000000000082a20 s4 : 0000000000001000
+ s5 : ffffffffffffffff s6 : ffffffff81538164 s7 : ffffffff83f9a0d0
+ s8 : 0000000000000000 s9 : 0000000000082a20 s10: 0000000000000000
+ s11: ffffffe008b545c8 t3 : 78e919c5cf7e2f00 t4 : ffffffc40116a8bb
+ t5 : ffffffc40116a8bc t6 : ffffffe00eede026
+status: 0000000000000120 badaddr: 1ffffffff07aa547 cause: 000000000000000f
+[<ffffffff803e2a20>] slab_alloc_node mm/slub.c:2884 [inline]
+[<ffffffff803e2a20>] __kmalloc_node_track_caller+0xb0/0x3d2 mm/slub.c:4653
+[<ffffffff821a8952>] kmalloc_reserve net/core/skbuff.c:355 [inline]
+[<ffffffff821a8952>] __alloc_skb+0xee/0x2e2 net/core/skbuff.c:426
+[<ffffffff81538164>] alloc_skb include/linux/skbuff.h:1112 [inline]
+[<ffffffff81538164>] nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:664 [inline]
+[<ffffffff81538164>] nsim_dev_trap_report drivers/net/netdevsim/dev.c:721 [inline]
+[<ffffffff81538164>] nsim_dev_trap_report_work+0x1cc/0x5e6 drivers/net/netdevsim/dev.c:762
+[<ffffffff80063b62>] process_one_work+0x5e0/0xf82 kernel/workqueue.c:2276
+[<ffffffff8006485a>] worker_thread+0x356/0x8e6 kernel/workqueue.c:2422
+[<ffffffff80076554>] kthread+0x25c/0x2c6 kernel/kthread.c:319
+[<ffffffff8000515e>] ret_from_exception+0x0/0x14
+---[ end trace fa569262b4bfae4f ]---
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
