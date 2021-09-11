@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F74C407858
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444D440785C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236042AbhIKNbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:31:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11562 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235906AbhIKNbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 09:31:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="208536828"
-X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
-   d="scan'208";a="208536828"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2021 06:30:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
-   d="scan'208";a="550274601"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2021 06:30:27 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf script: Fix ip display when type != attr->type
-Date:   Sat, 11 Sep 2021 16:30:53 +0300
-Message-Id: <20210911133053.15682-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S236447AbhIKNdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236448AbhIKNdu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 09:33:50 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A953C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:32:38 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d6so6851038wrc.11
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=oIzPjX/18gjtmjPtMT0Q5tMQbXEiRiTEAyoWi1fuT58=;
+        b=FJ/zuTIRyMBgsWzpgu2Pmsrn8+j4yi0UKfWW+M+oaS4Zm8Jtummv7cvU/a0PxEI08O
+         jnegvDSfBo3EpVrvugbbvFxeQxRGTq1bVEz04olod+/7NTdPq1yCrYn82FIMSjS0ixXn
+         lNBu2UQbwiFvLoZEnBjZQ2aNPn0Ua6uB/QPMstDdbd9z+77/UsnxNqald/gp0K61Y8Fe
+         PTYgfABtFhumF6W2GXpg+9dTGxdcXRwz3I0QZKxI+HIAPR1Uno24PWGSW4sg+PmhS1mG
+         i8BWi7UuVUVp3IW9Pb69G4yL0clpwyOo5DtTaag7reYEBAG09NBxRvDIF+wye4ZJCl9W
+         9uBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oIzPjX/18gjtmjPtMT0Q5tMQbXEiRiTEAyoWi1fuT58=;
+        b=jjrfmW88VeRBpnaqRDVT6dAiNcbQoHxYvHbT6bc4ZmNbmkjEkAoBdBIma3sI5zYjuD
+         eJxHAHWCNUxD5Wkn1jtLGohxncFKVjc/0VI85hzepyJBBzQ7oL7yRzpgrqqBikGZEuDd
+         220tjVuZLrzPxGOzuPfFomwC8APFtEOfsK8sTna/eWaQKx87ePNHx65QBGhnebrvWpdw
+         DRxmXcB15LKLntmFyhwCllfFf0A8pMPibDK50X6PUJ//tL1gEOybp+h1ceflkPLoaWV/
+         ZBwAOiQ5Ogpn8Yqek4vOqlntpoxwliJChoVK73VVokvjsxQT94OtDmzh4MdMjAjf+r5D
+         TVVQ==
+X-Gm-Message-State: AOAM533n+8Wm8+O6YTyZT2tvTNAOaLsGSGdQh8uafwrq4E5QQtjO+Zf/
+        TDTIO+qDJmlfFtULKedT9WJArqHBRSEJfw==
+X-Google-Smtp-Source: ABdhPJz1/YTdbTgNvwRulv9+DRG3D/K2pPQt/4BI5LAdTCIfus0mhOAimpnEeZw8lLynhoOx4cfTKA==
+X-Received: by 2002:adf:e4c5:: with SMTP id v5mr3111332wrm.1.1631367156840;
+        Sat, 11 Sep 2021 06:32:36 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::ae40? ([2a02:8108:96c0:3b88::ae40])
+        by smtp.gmail.com with ESMTPSA id q201sm1717160wme.2.2021.09.11.06.32.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Sep 2021 06:32:36 -0700 (PDT)
+Message-ID: <58796c32-5105-b3a3-fdeb-bf38e97ecd6b@gmail.com>
+Date:   Sat, 11 Sep 2021 15:32:35 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH] staging: r8188eu: remove write-only variable
+ bLCKInProgress
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210911132338.1415-1-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20210911132338.1415-1-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_print_ip_opts() was not being called when type != attr->type
-because there is not a one-to-one relationship between output types
-and attr->type. That resulted in ip not printing.
+On 9/11/21 15:23, Martin Kaiser wrote:
+> bLCKInProgress in struct odm_rf_cal is never read. Remove it.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/HalPhyRf_8188e.c | 4 ----
+>   drivers/staging/r8188eu/include/odm.h        | 1 -
+>   2 files changed, 5 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> index 6e0abaf58791..d9693c8014ce 100644
+> --- a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> +++ b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> @@ -1212,16 +1212,12 @@ void PHY_LCCalibrate_8188E(struct adapter *adapt)
+>   		timecount += 50;
+>   	}
+>   
+> -	dm_odm->RFCalibrateInfo.bLCKInProgress = true;
+> -
+>   	if (dm_odm->RFType == ODM_2T2R) {
+>   		phy_LCCalibrate_8188E(adapt, true);
+>   	} else {
+>   		/*  For 88C 1T1R */
+>   		phy_LCCalibrate_8188E(adapt, false);
+>   	}
+> -
+> -	dm_odm->RFCalibrateInfo.bLCKInProgress = false;
+>   }
+>   
+>   static void phy_setrfpathswitch_8188e(struct adapter *adapt, bool main, bool is2t)
+> diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
+> index 7c8f082930dd..cda8b3ffe0be 100644
+> --- a/drivers/staging/r8188eu/include/odm.h
+> +++ b/drivers/staging/r8188eu/include/odm.h
+> @@ -679,7 +679,6 @@ struct odm_rf_cal {
+>   	u32	Reg864;
+>   
+>   	bool	bIQKInitialized;
+> -	bool	bLCKInProgress;
+>   	bool	bAntennaDetected;
+>   	u32	ADDA_backup[IQK_ADDA_REG_NUM];
+>   	u32	IQK_MAC_backup[IQK_MAC_REG_NUM];
+> 
 
-The attr_type() function is removed, and the match of attr->type to
-output type is corrected.
+Compiles and looks good to me, thanks.
 
-Example on ADL using taskset to select an atom cpu:
-
- # perf record -e cpu_atom/cpu-cycles/ taskset 0x1000 uname
- Linux
- [ perf record: Woken up 1 times to write data ]
- [ perf record: Captured and wrote 0.003 MB perf.data (7 samples) ]
-
- Before:
-
-  # perf script | head
-         taskset   428 [-01] 10394.179041:          1 cpu_atom/cpu-cycles/:
-         taskset   428 [-01] 10394.179043:          1 cpu_atom/cpu-cycles/:
-         taskset   428 [-01] 10394.179044:         11 cpu_atom/cpu-cycles/:
-         taskset   428 [-01] 10394.179045:        407 cpu_atom/cpu-cycles/:
-         taskset   428 [-01] 10394.179046:      16789 cpu_atom/cpu-cycles/:
-         taskset   428 [-01] 10394.179052:     676300 cpu_atom/cpu-cycles/:
-           uname   428 [-01] 10394.179278:    4079859 cpu_atom/cpu-cycles/:
-
- After:
-
-  # perf script | head
-         taskset   428 10394.179041:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-         taskset   428 10394.179043:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-         taskset   428 10394.179044:         11 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-         taskset   428 10394.179045:        407 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-         taskset   428 10394.179046:      16789 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-         taskset   428 10394.179052:     676300 cpu_atom/cpu-cycles/:      7f829ef73800 cfree+0x0 (/lib/libc-2.32.so)
-           uname   428 10394.179278:    4079859 cpu_atom/cpu-cycles/:  ffffffff95bae912 vma_interval_tree_remove+0x1f2 ([kernel.kallsyms])
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/builtin-script.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 0e824f7d8b19..6211d0b84b7a 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -368,16 +368,6 @@ static inline int output_type(unsigned int type)
- 	return OUTPUT_TYPE_OTHER;
- }
- 
--static inline unsigned int attr_type(unsigned int type)
--{
--	switch (type) {
--	case OUTPUT_TYPE_SYNTH:
--		return PERF_TYPE_SYNTH;
--	default:
--		return type;
--	}
--}
--
- static bool output_set_by_user(void)
- {
- 	int j;
-@@ -556,6 +546,18 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
- 		output[type].print_ip_opts |= EVSEL__PRINT_SRCLINE;
- }
- 
-+static struct evsel *find_first_output_type(struct evlist *evlist,
-+					    unsigned int type)
-+{
-+	struct evsel *evsel;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (output_type(evsel->core.attr.type) == (int)type)
-+			return evsel;
-+	}
-+	return NULL;
-+}
-+
- /*
-  * verify all user requested events exist and the samples
-  * have the expected data
-@@ -567,7 +569,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
- 	struct evsel *evsel;
- 
- 	for (j = 0; j < OUTPUT_TYPE_MAX; ++j) {
--		evsel = perf_session__find_first_evtype(session, attr_type(j));
-+		evsel = find_first_output_type(session->evlist, j);
- 
- 		/*
- 		 * even if fields is set to 0 (ie., show nothing) event must
--- 
-2.17.1
-
+Acked-by: Michael Straube <straube.linux@gmail.com>
