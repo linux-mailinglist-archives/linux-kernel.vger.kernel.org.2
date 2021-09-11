@@ -2,136 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDAE407654
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA56E407657
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbhIKL5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 07:57:10 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:39171 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230249AbhIKL5J (ORCPT
+        id S235593AbhIKL6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 07:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhIKL6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 07:57:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Unzk85B_1631361353;
-Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0Unzk85B_1631361353)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 11 Sep 2021 19:55:54 +0800
-Subject: Re: [PATCH] [RFC] kbuild: add CLANG_TRIPLE to prevent clang from
- compiling with wrong --target
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net, nathan@kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Alistair Delva <adelva@google.com>
-References: <1631173363-40160-1-git-send-email-ashimida@linux.alibaba.com>
- <CAKwvOdnuiV3mHxxCpWbMaZn9vggL4B+PPrMtuX=QOO-yUQj2mA@mail.gmail.com>
-From:   ashimida <ashimida@linux.alibaba.com>
-Message-ID: <2e10c444-50e2-0f86-f86e-ffb982059c88@linux.alibaba.com>
-Date:   Sat, 11 Sep 2021 19:55:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        Sat, 11 Sep 2021 07:58:46 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEC3C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 04:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v6WPdxMCjSoLNlI5VNVmU79AfLZr9gl0E6xtIsMqPH0=; b=muouqXBopCp5uPyywT21UwZaoK
+        Mx9DWao1sL6BR8XN1JCCVLwoj9aKBeRD38jYEjN+VKbl7Ppg713gOLdxDBBr4FAcoRX9rPyOGmmy8
+        apywXuA4oS9B3X9FdKQch0N7rgMqHJDp4ap0J7zG4Y3Ytg2tm7FOhyj9SZ8uZEr2T/DEizL2K/lXD
+        HzGu/EhF2hr6cZ3K57PI/z4Q0OJ8Vr3ll3EVKkT+h6pXtIxJGZJWYvI8X6Wz9qj8DlCaUZBSSXQf5
+        z9MQtmJKDAZcQFfBZlSlg2mxa51rHkPIJIiznSTaipQHpUYTMYz5hDWCbmaZKwpw6a1/GvIJJT6aj
+        1ruiYw6g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mP1dL-002MqN-IM; Sat, 11 Sep 2021 11:57:24 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CA8FE9862C9; Sat, 11 Sep 2021 13:57:21 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 13:57:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH peterz-queue:sched/core] sched: fix build warning with W=1
+Message-ID: <20210911115721.GV4323@worktop.programming.kicks-ass.net>
+References: <20210911082505.115758-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdnuiV3mHxxCpWbMaZn9vggL4B+PPrMtuX=QOO-yUQj2mA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911082505.115758-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Desaulniers,
+On Sat, Sep 11, 2021 at 08:25:05AM +0000, Yafang Shao wrote:
+> kernel test robot reported some build warnings with W=1 as below,
+> 
+> kernel/sched/fair.c:892:34: warning: variable 'stats' set but not used
+> kernel/sched/core.c:10238:42: warning: variable 'stats' set but not used
+> kernel/sched/fair.c:893:29: warning: variable 'p' set but not used
+> kernel/sched/rt.c:1292:29: warning: variable 'p' set but not used
+> kernel/sched/deadline.c:1486:34: warning: variable 'stats' set but not used
+> arch/nds32/include/asm/current.h:10:13: warning: variable '$r25' set but not used
 
-I now understand the meaning here, the command works fine for me.
+Yeah, I got the mails... :-)
 
-Thank you very much for the reply!
-
-On 9/10/21 1:19 AM, Nick Desaulniers wrote:
- > On Thu, Sep 9, 2021 at 12:42 AM ashimida <ashimida@linux.alibaba.com> 
-wrote:
- >>
- >> Kernel compiled with tool chain CROSS_COMPILE=aarch64-linux-android-
- >> will panic during the startup phase.
- >>
- >> Clang's --target option comes from $(CROSS_COMPILE). At the time
- >> -fstack-protector-strong is enabled, and compiled with command:
- >> make CC=clang HOSTCC=clang ARCH=arm64 
-CROSS_COMPILE=aarch64-linux-android-
- >>
- >> clang will insert code like:
- >>     mrs     x8, TPIDR_EL0        //default value is zero
- >>     str     x8, [sp]
- >>     ldr     x8, [x8, #40]        //access addr 0x40
- >>
- >> instead of the code that accesses __stack_chk_guard to get the
- >> canary, which will cause the kernel to crash due to 0x40
- >> address access.
- >>
- >> This patch (from android) is used to remind the user that current
- >> tool chain cannot be used as the "--target" of clang, the user
- >> should specify an additional "--target" through CLANG_TRIPLE.
- >
- > Hi Ashimida,
- > Thanks for sending this patch; I recognize it from Android, which we
- > had to carry for years due to:
- > 1. reliance on GNU `as` ie. "GAS"
- > 2. not distributing binary prefixes of GNU binutils with a target
- > triple that clang recognized. (ie. Android's binutils were prefixed
- > aarch64-linux-android- while Clang expected something more like
- > aarch64-linux-gnu for --target=)
- >
- > We solved this by working out the issues in clang's assembler.  With
- > LLVM=1 LLVM_IAS=1, we no longer rely on GNU binutils, and no longer
- > need such patch.  You'll find it's been dropped from Android Common
- > Kernels now.  With mainline, LLVM_IAS=1 is now the default when
- > building with LLVM=1, and CROSS_COMPILE is now inferred from ARCH for
- > LLVM=1 as well.
- >
- > So all you should need is:
- > $ ARCH=arm64 make LLVM=1 -j$(nproc)
- >
- > Is there a reason why the above doesn't work for you?  I do not wish
- > to see this patch upstream (or downstream; it should be unnecessary).
- >
- >>
- >> Signed-off-by: ashimida <ashimida@linux.alibaba.com>
- >> ---
- >>   Makefile                 | 6 +++++-
- >>   scripts/clang-android.sh | 4 ++++
- >>   2 files changed, 9 insertions(+), 1 deletion(-)
- >>   create mode 100755 scripts/clang-android.sh
- >>
- >> diff --git a/Makefile b/Makefile
- >> index 61741e9..09bb314 100644
- >> --- a/Makefile
- >> +++ b/Makefile
- >> @@ -586,7 +586,11 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell 
-$(CC) --version 2>/dev/null | head -
- >>
- >>   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
- >>   ifneq ($(CROSS_COMPILE),)
- >> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
- >> +CLANG_TRIPLE    ?= $(CROSS_COMPILE)
- >> +CLANG_FLAGS     += --target=$(notdir $(CLANG_TRIPLE:%-=%))
- >> +ifeq ($(shell $(srctree)/scripts/clang-android.sh $(CC) 
-$(CLANG_FLAGS)), y)
- >> +$(error "Clang with Android --target detected. Did you specify 
-CLANG_TRIPLE?")
- >> +endif
- >>   endif
- >>   ifeq ($(LLVM_IAS),1)
- >>   CLANG_FLAGS    += -integrated-as
- >> diff --git a/scripts/clang-android.sh b/scripts/clang-android.sh
- >> new file mode 100755
- >> index 0000000..9186c4f
- >> --- /dev/null
- >> +++ b/scripts/clang-android.sh
- >> @@ -0,0 +1,4 @@
- >> +#!/bin/sh
- >> +# SPDX-License-Identifier: GPL-2.0
- >> +
- >> +$* -dM -E - </dev/null 2>&1 | grep -q __ANDROID__ && echo "y"
- >> --
- >> 2.7.4
- >>
- >
- >
+I'll need it per patch tho, so that I can fix the individual commits.
+Let me go do that. Thanks for looking at this.
