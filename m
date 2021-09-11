@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEED407907
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4675740790E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhIKPZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 11:25:43 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:37512 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhIKPZm (ORCPT
+        id S232374AbhIKP3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 11:29:49 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:34018 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230472AbhIKP3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 11:25:42 -0400
-Received: by mail-wr1-f43.google.com with SMTP id t8so2225096wrq.4;
-        Sat, 11 Sep 2021 08:24:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CAiPuDJAAVYjx3qqXgXVw9eLdaUeuisrPgsvTgrXXpg=;
-        b=keAV9UTFqGKutiCY04kAlxKXLQoFNI+FMXnwRlKGao7WUcZHj7H6zb9eKWTecig5ZO
-         /vHzdjhgV9bXcc4xO/ZoqK/auLI3i2h2dnhJECNGiktavV805aRYBgYLE9Owru5kR8aS
-         KgebCaJGGNiKTjHmmGNx53YN4H8tBqQ1c9+3mIEeVPWSSZXgjBODoqJBnm76Lpx6r5fc
-         49A61RRV6gBv/bdIaWoPJU9r0XuPxXtyxdkvUFu3nkd9g6SwmybDb7YSQT/wT74hBIKa
-         kmon5Jppz8jK2avBnqf4ssQtiytEpvPBvsG3FOnCH8Lpo6Hk83gRRdU9I32MgucWRtIj
-         6U7Q==
-X-Gm-Message-State: AOAM5314pJ99Nb6LZCZzDCc0SCOYnDnNcwvBVU6psuH20tvhFl6+p3gQ
-        kwgq9qewZoxYLbprajeTFb0gkfAEjK8=
-X-Google-Smtp-Source: ABdhPJyrxF8X1ATjpv4AqR4FS8TolIyCBzN6ZGe4sEA5BO4XFqlkB5sD2qhFDtkkkpfAheFzVHPS6A==
-X-Received: by 2002:a5d:404b:: with SMTP id w11mr3555259wrp.437.1631373868609;
-        Sat, 11 Sep 2021 08:24:28 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id y1sm1897003wmq.43.2021.09.11.08.24.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 08:24:28 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 15:24:26 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] x86/hyperv: remove on-stack cpumask from
- hv_send_ipi_mask_allbutself
-Message-ID: <20210911152426.gq34cigqteqvzms2@liuwe-devbox-debian-v2>
-References: <20210910185714.299411-1-wei.liu@kernel.org>
- <20210910185714.299411-3-wei.liu@kernel.org>
- <MWHPR21MB1593DE9DE0A474E2539FFD1BD7D79@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Sat, 11 Sep 2021 11:29:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Uo.7xZj_1631374113;
+Received: from 30.30.120.103(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0Uo.7xZj_1631374113)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 11 Sep 2021 23:28:33 +0800
+Message-ID: <de1bbbc9-3d66-a3dd-550f-509032be20ba@linux.alibaba.com>
+Date:   Sat, 11 Sep 2021 23:28:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593DE9DE0A474E2539FFD1BD7D79@MWHPR21MB1593.namprd21.prod.outlook.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.0
+Subject: Re: [PATCH 2/2] scripts: ftrace - move the nop-processing in
+ ftrace_init to compile time
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mark-pk.tsai@mediatek.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210911135043.16014-1-yinan@linux.alibaba.com>
+ <20210911135043.16014-3-yinan@linux.alibaba.com>
+ <20210911101247.4a37ec51@rorschach.local.home>
+From:   Yinan Liu <yinan@linux.alibaba.com>
+In-Reply-To: <20210911101247.4a37ec51@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 03:09:50PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Friday, September 10, 2021 11:57 AM
-[...]
-> > -static bool __send_ipi_mask(const struct cpumask *mask, int vector)
-> > +static bool __send_ipi_mask(const struct cpumask *mask, int vector,
-> > +		bool exclude_self)
-> >  {
-> > -	int cur_cpu, vcpu;
-> > +	int cur_cpu, vcpu, this_cpu = smp_processor_id();
-> >  	struct hv_send_ipi ipi_arg;
-> >  	u64 status;
-> > +	unsigned int weight;
-> > 
-> >  	trace_hyperv_send_ipi_mask(mask, vector);
-> > 
-> > -	if (cpumask_empty(mask))
-> > +	weight = cpumask_weight(mask);
-> > +
-> > +	/*
-> > +	 * Do nothing if
-> > +	 *   1. the mask is empty
-> > +	 *   2. the mask only contains self when exclude_self is true
-> > +	 */
-> > +	if (weight == 0 ||
-> > +	    (exclude_self && weight == 1 && cpumask_first(mask) == this_cpu))
-> 
-> Nit:  cpumask_test_cpu(this_cpu, mask) would seem to be a better fit for this
-> use case than cpumask_first().  But either works.
+This is my GCC version: GCC version 4.8.5 20150623 (red hat 4.8.5-44) 
+(GCC) .
 
-I will adjust the code when I commit this patch.
+In fact, I see the make_nop processing in recordmcount. I'm still 
+confused why this part can be directly replaced?
 
-Wei.
+
+在 2021/9/11 下午10:12, Steven Rostedt 写道:
+> On Sat, 11 Sep 2021 21:50:43 +0800
+> Yinan Liu <yinan@linux.alibaba.com> wrote:
+>
+>> When ftrace is enabled, ftrace_init will consume a period of
+>> time, usually around 15~20ms. Approximately 60% of the time is
+>> consumed by nop-processing. Moving the nop-processing to the
+>> compile time can speed up the kernel boot process.
+>>
+>> performance test:
+>>          env:    Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz
+>>          method: before and after patching, compare the
+>>                  total time of ftrace_init(), and verify
+>>                  the functionality of ftrace.
+>>
+>>          avg_time of ftrace_init:
+>>                  with patch: 7.114ms
+>>                  without patch: 15.763ms
+> What compiler are you using? Because by default, gcc should already do
+> this for you. In fact, recordmcount isn't even called with the latest
+> gcc, as gcc creates mcount_loc and inserts nops.
+>
+> This was implemented before, but because we use to have "ideal nops"
+> that was determined at run time, because the different CPUs had
+> different efficiency on what nop was used, we had to do it at run time.
+> But that is no longer the case today, so we can revisit this.
+>
+>> Signed-off-by: Yinan Liu <yinan@linux.alibaba.com>
+>> ---
+>>   kernel/trace/ftrace.c  |  4 ++++
+>>   scripts/recordmcount.h | 14 ++++++++++++++
+>>   2 files changed, 18 insertions(+)
+>>
+>> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+>> index c236da868990..ae3fba331179 100644
+>> --- a/kernel/trace/ftrace.c
+>> +++ b/kernel/trace/ftrace.c
+>> @@ -6261,6 +6261,10 @@ static int ftrace_process_locs(struct module *mod,
+>>   	 * until we are finished with it, and there's no
+>>   	 * reason to cause large interrupt latencies while we do it.
+>>   	 */
+>> +#if defined CONFIG_X86 || defined CONFIG_X86_64 || defined CONFIG_ARM || defined CONFIG_ARM64
+> We don't list archs in generic files. The above needs to be something like:
+>
+> #ifdef ARCH_HAS_MCOUNT_NOP
+>
+> or some name like that, and then that macro gets defined by the arch
+> header (include/asm/ftrace.h)
+>
+>
+>
+>> +	ret = 0;
+>> +	goto out;
+>> +#endif
+> space should be here.
+>
+>>   	if (!mod)
+>>   		local_irq_save(flags);
+>>   	ftrace_update_code(mod, start_pg);
+> -- Steve
