@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407AB4074F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35DA4074F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbhIKDuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 23:50:11 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35773 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235326AbhIKDth (ORCPT
+        id S235432AbhIKDug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235539AbhIKDuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 23:49:37 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id B87FE5C0178;
-        Fri, 10 Sep 2021 23:48:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 10 Sep 2021 23:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=NH5HGQ0wFtmZ6
-        SSZLSPDfXj0zUk85slBKvwDXIdMM4U=; b=Vn/KHzqC53fTdOkNG/PrGKEMB+Co/
-        tGdcvr4GnbjpoHVYHya+E9c7dpD79gNx2cTygqwXOuiYovPCDpgG5sgiwV0YWZxj
-        VOARSKzV6YqdOdprb5tMYlEmoUg0efp95nr2CRjxY3WrD3Hp7G9FzTtmG02TMZcE
-        1CXi07t2+/cHALk1mzV7prgIEzc498QTezySR8neuvu5XfxUQiaBaniuCltuv7aA
-        xv1gRb3xVP5H0M40bxfptUZKEN/mxk97UHx00O/CS752CHSCBFMB7ZeL9SLjdQAQ
-        Yn2JMU44AHW2LKrhRI3GCMKBTkhVfKEcqaGCKCwNr7UU0Q7s+qfT0b9ZA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=NH5HGQ0wFtmZ6SSZLSPDfXj0zUk85slBKvwDXIdMM4U=; b=RivrVkVC
-        fEGcSLSIzB5YPciPybnYd5P+O93rt3qTTinINyIvKBYyCGSH+yizMsB9x/KKRF8d
-        GwxQdeXgDJGCBtYseuAJxII7PVkyYDt8T5SM/xJmjjoBm240i9w4yFRN3Zrsj5jb
-        3IBPhVzoWJuHnXjHmmUsBgsLHUqDHSASEFh8bvmIn69DQYXcxRc01R9/bgnp5BFK
-        IbmnFs/KTyHh7/N/y2cBPcIqI1pg5i5xS4rs8QoWMHw1q+kWJX1yJLwXczAXW4mD
-        zqMJOtWPMbz1nuraKJXpjr75RZ/VgN3ThRQ27DD2/GKSMvjJb/GMVslttCJFLl54
-        Z5MRihi9oE1e/g==
-X-ME-Sender: <xms:CCc8YfWm2EfPlP9lHHCo_NHbD4mStKrKAv7wR6BXpiIsbwQ9vTqQdQ>
-    <xme:CCc8YXlQEeUXoio2CYlLue6HFC-OPez3R0yWO1HQwpn1AdAO-h7ztNpTfhsJXqcgC
-    upIgqqCk8X4d3ehRrA>
-X-ME-Received: <xmr:CCc8YbZRmCv9Ya12NKpeDN8oOZmO6L0TuvbeIHWIh0YkLPQbmhvaFp8aw7-1FMKroLAXXQyyp3OfQtJVnPOmFrp8runfnCA12CyKuYjj4dVaCmpcXkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegvddgjeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeetlhgvgigv
-    ihcunfhoiihovhhskhihuceomhgvsehilhgrmhhmhidrnhgvtheqnecuggftrfgrthhtvg
-    hrnhepteeujeehkeejueevieehgfeuheelleeggfehfefffeekjeduueejjeeugfetueek
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepmhgvse
-    hilhgrmhhmhidrnhgvth
-X-ME-Proxy: <xmx:CCc8YaW679VTw3nFpZbYZRnk-BiQ7U9EfktmYUurNZ2yfSzpnJ-VMA>
-    <xmx:CCc8YZl6Itt0cZB5N80jkg4urd4q09_7cEonRnRv7PGD4NffA-eZ4A>
-    <xmx:CCc8YXdFxntIlDk5H90cqEi-qT9wluX1oJrImAfEDc3b65Xxy7_HCw>
-    <xmx:CCc8YfhCj_I6zyw1ETpNJWEZLH6b99UNpOvHo0HnNS4kdT-IYCAoZg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Sep 2021 23:48:23 -0400 (EDT)
-From:   Alexei Lozovsky <me@ilammy.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 7/7] docs: proc.rst: stat: Note the interrupt counter wrap-around
-Date:   Sat, 11 Sep 2021 12:48:08 +0900
-Message-Id: <20210911034808.24252-8-me@ilammy.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210911034808.24252-1-me@ilammy.net>
-References: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
- <20210911034808.24252-1-me@ilammy.net>
-MIME-Version: 1.0
+        Fri, 10 Sep 2021 23:50:21 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9842C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:03 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id m21-20020a17090a859500b00197688449c4so2808574pjn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QuPF5nusJlsscFj3tnGPAk3mJ/xRENxHHvXDknweP7I=;
+        b=xngk7xBTC3m78+CY9I+y4G9EDAP5+nxGEUr6zZjFicXSGgU5GX6GXnR3sFk6Ks6QBc
+         1i17oG2CKO9UFB8RlY6CvORkr0z9lPI8KyUdfAcvbg0zpRgts3AjsuAgG+fmkJ9EvktC
+         Mou3eFHI2zD0VbL5vGN7a6hrZA2+3uzkehA6S08/qzoP9P1IKng0wtwAJyN63Z+d53u6
+         HhgD8q9URo6DIxmxLyJTaRGBGRLPTr6faChRlmrpIpH0aenlQSRf+IXyHDArqy/QdGfl
+         jlub+/o3S+p99NEmXPXbFMGbyUJk/RYp4Ohoov1n0j7R7Jkubun0acdhaNL/U4+0L89b
+         OAMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=QuPF5nusJlsscFj3tnGPAk3mJ/xRENxHHvXDknweP7I=;
+        b=VXysFzmiSSl5zinXxm3MwNheyyfFLzCrUt0hLreJ+YLtcYUh6haRK0khO07CKqmabJ
+         TurhVlKc/1uVnyAL8MxSskeLIPGMQvsrUywHLE+9TlR6/aJeaZ23z4LYwSrLujSylf0p
+         9+no34o1yDoa0srMkwbMUYiPQdyxSTIv3wqFyGB60DOuyZAhbstPBgWgpi5LAgRoXlWX
+         ruNKTOAECzM8pemssm9o/jcvO4WmzxrXxPCAOLKbeVmNT4+tWa5fUbC2Cy+yLL8E/AdG
+         KE7XPnFoQhRpXSXzxG5U+G3phMoiQ3Q5ebSHYtP1NX+0+6D596C1HXk1KVl8iIPd23Xv
+         hlFA==
+X-Gm-Message-State: AOAM532emfF9u7MSkN2HZXqbVOpozEfpazMksKMNr5Fecgjn2sOkbUWo
+        nniAVORrHIR7F7o0xismvMWM4Q==
+X-Google-Smtp-Source: ABdhPJwQaHKrcbkiR37heGOncNK7+R+ciRsCRoCbE/k/9aYTyGD/xAi2Fb7OtqtVU9rDTpHSXnMcxg==
+X-Received: by 2002:a17:90a:fe0b:: with SMTP id ck11mr1099866pjb.10.1631332143174;
+        Fri, 10 Sep 2021 20:49:03 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w24sm304055pjh.30.2021.09.10.20.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 20:49:02 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 20:49:02 -0700 (PDT)
+X-Google-Original-Date: Fri, 10 Sep 2021 20:23:04 PDT (-0700)
+Subject:     Re: [PATCH] riscv: use the generic string routines
+In-Reply-To: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
+        kernel@esmil.dk, akira.tsukamoto@gmail.com, drew@beagleboard.org,
+        bmeng.cn@gmail.com, David.Laight@aculab.com, guoren@kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mcroce@linux.microsoft.com
+Message-ID: <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's make wrap-around documented behavior so that userspace has no
-excuses for not handling it properly if they want accurate values.
+On Thu, 05 Aug 2021 03:31:04 PDT (-0700), mcroce@linux.microsoft.com wrote:
+> On Wed, Aug 4, 2021 at 10:40 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>
+>> On Tue, 03 Aug 2021 09:54:34 PDT (-0700), mcroce@linux.microsoft.com wrote:
+>> > On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>> >>
+>> >> From: Matteo Croce <mcroce@microsoft.com>
+>> >>
+>> >> Use the generic routines which handle alignment properly.
+>> >>
+>> >> These are the performances measured on a BeagleV machine for a
+>> >> 32 mbyte buffer:
+>> >>
+>> >> memcpy:
+>> >> original aligned:        75 Mb/s
+>> >> original unaligned:      75 Mb/s
+>> >> new aligned:            114 Mb/s
+>> >> new unaligned:          107 Mb/s
+>> >>
+>> >> memset:
+>> >> original aligned:       140 Mb/s
+>> >> original unaligned:     140 Mb/s
+>> >> new aligned:            241 Mb/s
+>> >> new unaligned:          241 Mb/s
+>> >>
+>> >> TCP throughput with iperf3 gives a similar improvement as well.
+>> >>
+>> >> This is the binary size increase according to bloat-o-meter:
+>> >>
+>> >> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
+>> >> Function                                     old     new   delta
+>> >> memcpy                                        36     324    +288
+>> >> memset                                        32     148    +116
+>> >> strlcpy                                      116     132     +16
+>> >> strscpy_pad                                   84      96     +12
+>> >> strlcat                                      176     164     -12
+>> >> memmove                                       76      52     -24
+>> >> Total: Before=1225371, After=1225767, chg +0.03%
+>> >>
+>> >> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+>> >> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+>> >> ---
+>> >
+>> > Hi,
+>> >
+>> > can someone have a look at this change and share opinions?
+>>
+>> This LGTM.  How are the generic string routines landing?  I'm happy to
+>> take this into my for-next, but IIUC we need the optimized generic
+>> versions first so we don't have a performance regression falling back to
+>> the trivial ones for a bit.  Is there a shared tag I can pull in?
+>
+> Hi,
+>
+> I see them only in linux-next by now.
 
-Both "intr" and "softirq" counters (as well as many others, actually)
-can and will wrap-around, given enough time since boot.
-
-Signed-off-by: Alexei Lozovsky <me@ilammy.net>
----
- Documentation/filesystems/proc.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 042c418f4090..06a0e3aa2e0e 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1513,6 +1513,13 @@ interrupts serviced  including  unnumbered  architecture specific  interrupts;
- each  subsequent column is the  total for that particular numbered interrupt.
- Unnumbered interrupts are not shown, only summed into the total.
- 
-+.. note::
-+
-+   Interrupt counters on most platforms are 32-bit, including the total count.
-+   Depending on the system load, ths values will sooner or later wrap around.
-+   If you want accurate accouting of the rate and *real* number of interrupts
-+   serviced, you should monitor the value closely and handle wrap-arounds.
-+
- The "ctxt" line gives the total number of context switches across all CPUs.
- 
- The "btime" line gives  the time at which the  system booted, in seconds since
--- 
-2.25.1
-
+These ended up getting rejected by Linus, so I'm going to hold off on 
+this for now.  If they're really out of lib/ then I'll take the C 
+routines in arch/riscv, but either way it's an issue for the next 
+release.
