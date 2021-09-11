@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09BC4074C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B684074C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbhIKC56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 22:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhIKC55 (ORCPT
+        id S235222AbhIKDA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:00:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9416 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIKDAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 22:57:57 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FEFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:56:45 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id bk29so4261500qkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=89y7dtYjpW2V9bTWN6kb0LJfhttVbVV+nnJbuimMLgY=;
-        b=CA/aZXFeGkPuzg/ckeBhtNY8HYbXRlOYOhmLKCI2KF0rZ/NZcqyTRuwEd1PgrerdSC
-         iGWWHM3lXyXIi0IWv0+n9JbNCwV+tCPZWA1HIZvPRSaJ3BI0+uTCum3FolNyCMFrOuKR
-         4VWhE5avruEnXE9qopY1Q0NlrT81Pze+kDVNc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=89y7dtYjpW2V9bTWN6kb0LJfhttVbVV+nnJbuimMLgY=;
-        b=AfLTwUa8qQTBH+ebiwOH8DJJoEPOVe5QP3xO/R9ks7o5U5GBexAgWM6aDg7YH+YLOK
-         OHyLAeIZ9jS8IIJHUJc4Zo32u86zZjJGR7qaeXtS67P7+CVJFGdwopQt1wjFfJ2CqF3R
-         3dGFoN8C5XC2U1ro4T+KSjLj5JN8ZeBhQL/PCcEuc+7y86dJIyM/cvC+u+5CvEmjLdqI
-         A3fmXW3Xn/0wUdtO1aHwFOmG4JDtQnbCkC4jWnZPFxb1XBjhZLqIWWO2cZgG6wStpIuN
-         db5As+bB94ycshtYhYLxogg24w6ri60rGw1ifDIzYrufv79CfAVyg/CcfQSJW5jNDVOQ
-         pJmw==
-X-Gm-Message-State: AOAM532LYCPRSfv9iGPUZumNXWmo8qlRm/iYtXmlZVDoTulUq988/dZS
-        3wejGsjT+KoPb/aftrYUh5p9Yr3OUwJi2eS12g9wVQ==
-X-Google-Smtp-Source: ABdhPJxyPNstiWLJG53wPOjDbgm6Dv1LCOTIxLjonS9hoQA3Pq9DmrgpkpAr3oJe8ZeISaPvJyLJTY5o5JC47ysONNM=
-X-Received: by 2002:a05:620a:4495:: with SMTP id x21mr498697qkp.378.1631329004367;
- Fri, 10 Sep 2021 19:56:44 -0700 (PDT)
+        Fri, 10 Sep 2021 23:00:25 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H5y5P1MyHz8yLQ;
+        Sat, 11 Sep 2021 10:54:49 +0800 (CST)
+Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Sat, 11 Sep 2021 10:59:12 +0800
+Received: from [10.67.102.197] (10.67.102.197) by
+ dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sat, 11 Sep 2021 10:59:11 +0800
+Subject: Re: [patch V5 34/72] locking/rwlock: Provide RT variant
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+References: <20210815203225.710392609@linutronix.de>
+ <20210815211303.882793524@linutronix.de>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <d456062c-d5d4-be8a-d960-1a1d43f63456@huawei.com>
+Date:   Sat, 11 Sep 2021 10:59:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-References: <20210910190322.27058-1-romain.perier@gmail.com> <20210910190322.27058-5-romain.perier@gmail.com>
-In-Reply-To: <20210910190322.27058-5-romain.perier@gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sat, 11 Sep 2021 11:56:33 +0900
-Message-ID: <CAFr9PXnLZC1zfs4e1GqZU4UU3knU-BwREe0-abrWNq7akrTntw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] MAINTAINERS: Add myself as MStar/Sigmastar Armv7 SoC maintainers
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210815211303.882793524@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema774-chm.china.huawei.com (10.1.198.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
-
-On Sat, 11 Sept 2021 at 04:03, Romain Perier <romain.perier@gmail.com> wrote:
->
-> As proposed by Daniel, I am going to help him to maintain the platform,
-> so add myself as co-maintainer.
->
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+On 2021/8/16 5:28, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Similar to rw_semaphores on RT the rwlock substitution is not writer fair
+> because it's not feasible to have a writer inherit it's priority to
+> multiple readers. Readers blocked on a writer follow the normal rules of
+> priority inheritance. Like RT spinlocks RT rwlocks are state preserving
+> across the slow lock operations (contended case).
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3a9a7cbf9456..ad1a0e5a5425 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2231,6 +2231,7 @@ F:        arch/arm/mach-pxa/mioa701.c
->
->  ARM/MStar/Sigmastar Armv7 SoC support
->  M:     Daniel Palmer <daniel@thingy.jp>
-> +M:     Romain Perier <romain.perier@gmail.com>
->  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:     Maintained
->  W:     http://linux-chenxing.org/
-> --
-> 2.33.0
->
+> V5: Add missing might_sleep() and fix lockdep init (Sebastian)
+> ---
+>   include/linux/rwlock_rt.h       |  140 ++++++++++++++++++++++++++++++++++++++++
+>   include/linux/rwlock_types.h    |   49 ++++++++++----
+>   include/linux/spinlock_rt.h     |    2
+>   kernel/Kconfig.locks            |    2
+>   kernel/locking/spinlock.c       |    7 ++
+>   kernel/locking/spinlock_debug.c |    5 +
+>   kernel/locking/spinlock_rt.c    |  131 +++++++++++++++++++++++++++++++++++++
+>   7 files changed, 323 insertions(+), 13 deletions(-)
+>   create mode 100644 include/linux/rwlock_rt.h
+> ---
+.....
+> +
+> +int __sched rt_rwlock_is_contended(rwlock_t *rwlock)
+> +{
+> +	return rw_base_is_contended(&rwlock->rwbase);
+> +}
+> +EXPORT_SYMBOL(rt_rwlock_is_contended);
+> +
 
-Acked-by: Daniel Palmer <daniel@thingy.jp>
+rt_rwlock_is_conted() exported but not declared in the header file?
+Is this a special design or a mistake?
 
-For everyone else: For MStar/SigmaStar I have a ~350 commit backlog
-that makes almost everything work on these machines.
-It's impossible for me to finish up working out the hardware and clean
-up and push patches without the whole process taking years.
-Romain stepped up to help out and has been pulling out patches,
-cleaning them up and pushing them. He deserves to be listed as a
-maintainer.
+Thanks
+Xiaoming Ni
 
-Cheers,
-
-Daniel
