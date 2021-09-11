@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C24B407845
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BACB407843
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237972AbhIKNaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        id S237292AbhIKN35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238600AbhIKN3T (ORCPT
+        with ESMTP id S238604AbhIKN3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 11 Sep 2021 09:29:19 -0400
 Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33F0C0617AD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:14 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id u15so806169wru.6
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10EEC0617AE
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:15 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id g16so6887128wrb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cYeMGLf/paO1aMrb4LJnUFnTTu3xI65XWSWcy7ds8yI=;
-        b=q4eL2IrB4POMj+LK/sURlezK8xxh+rT/RkWo2MSbF9zadn+PeRCqu5d5SlDwVTLLca
-         5M1rx2t+usicWFM0amxn01pNCQQ0WZxAgpj+tnXCA3PCjqsqCH35xdTS5+OxyvBLcqtd
-         bBtbBsJJgjtiQwNVMHdmmI3qhkVH9H2vSNYbidr6xNI400BCB2HyIST4gqLEjVWSi3OS
-         s8WKFaknVSqlBavTNLLojt2hTTnQQbavbT6kc/Pq4rB4gSs+7JEYBFncD3QhXkETwgAT
-         H3XOIpim+jmHDgpIkxXJwaqj8gWKiCbfHBNTaEZgFCoDZ+a7xc0ZiH5Cxr68vfQDWxBJ
-         LdZA==
+        bh=4m9mJssrqG/NmF5Cx2Pbp99k9OyrxMssGnUz8bhdveI=;
+        b=WCnt1qn9wskR8EOztENndhkcglJYRe7uLUq9hUof2Mo2K4lS56EVCI6cDPvbv+ign/
+         bji5JxC4liRkZINJv9O0rpY5Zikaz2dnNM/flhf86aW26zzQDSG/3HP05xV76n1m/Fow
+         KC1DvMI5plGBKaMkjzPAFnE6XeuNqksorFU4iBdcxg7uskY0Q3reZUtUU5lmyan2cxlN
+         yI7F6GFIt4ZH+fbJcyP/bJLjGT6sqcLyA0mb2/n1IL1t8OgmigS8Yj7iv3+w/xaaWfg5
+         c/jEOvTrGmTRQpm93/QizY5D6/sFae+qkuNdx74SQ8YmuNVjAJRF4pq08c4Zkj3qd6VP
+         PMyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cYeMGLf/paO1aMrb4LJnUFnTTu3xI65XWSWcy7ds8yI=;
-        b=XrhqiXoncHsiBH7xVix6RtvSFvNsq5LqvBnkRJMkgZbyi8WkZakwxgl9lODXJ9TICF
-         kTBl4WXzqfmAMAgk6B9yt6hWEPOeOTUE1GkhxrObbnh/GDd89cHwxwedOhfQF10SkxmD
-         ENI9GwpPQI6iP3NrWj8mk3kZ4g/1vgGOaMyeZ2NK78kZMUrCOLIo591EKrGthU3HbRLh
-         1m9oa56KG5CBKj7Bsq8vnChz2dA3J5GM6VZWMP4vqUHJjQa0p2rbnmePGotiMHV1LNoA
-         Vq/A1bdQbEIrxinkxSsP6oNnshgV+HuyRrhuzqT+nVMJtHkAjHEu17QJt/qM+iNKMO1+
-         CCrA==
-X-Gm-Message-State: AOAM533vl8KUE483z0w7VMiCMPnRSYf76/WOyIKzauG0gyDVLKJjmErW
-        9iEPpPRgGbHfuod21H1ZWAQ=
-X-Google-Smtp-Source: ABdhPJwLPE27AEY9hVhH4pXrc08jCKY7oTPMCKm1X+48YTcBcJnsDgkZzi+Rn2WrPOosKcEoKJEZmw==
-X-Received: by 2002:a5d:4b42:: with SMTP id w2mr3010285wrs.273.1631366833597;
-        Sat, 11 Sep 2021 06:27:13 -0700 (PDT)
+        bh=4m9mJssrqG/NmF5Cx2Pbp99k9OyrxMssGnUz8bhdveI=;
+        b=auGAthlG+H/o1MFeJfZ9BfeinTVLAi0qWTgifwkr0PAxeuhYYubPv4JK0e64vX2fcu
+         bk3XTmpJ7eAqvLu9oIVbHib7kOt6in7IKVqbuqbxeEwybCCXIMLdlNqHsd2OqR2ArkiP
+         kV46f582MeJiLx9h4oh+bN9lXBsssD/ZoBo2JNFt8p0t/hyDFyxYPCqb+uzkWlfZZhUV
+         viN8VYa5PQjE1fpR9uc3XVRy+wW1yOsBu9K4dqMP/Gp459p46j9h5bOcymuzd2vbG4iM
+         eQDwY5S6G4mZuR87WMsqo7lxB0pXijwBwPeLDAzQHs4GZKCLlPOk+uwnhy0OgxvYVmbm
+         WRQg==
+X-Gm-Message-State: AOAM5320rUPnFtvNbOXn+Lqx5BsWz/ITR0NfnVgKROi1fCgGsDPdTYYo
+        ZI/1wWCQ04bkC3LXRi0/jus=
+X-Google-Smtp-Source: ABdhPJz4sAOXzIUG8W2l6DQEIIm89WHkk67pZt+8g035DPlKfyob82o1XlV4PM3uW7S3KBBXqkmYaw==
+X-Received: by 2002:a5d:4a08:: with SMTP id m8mr3112111wrq.263.1631366834406;
+        Sat, 11 Sep 2021 06:27:14 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id 48sm1770253wrc.14.2021.09.11.06.27.12
+        by smtp.gmail.com with ESMTPSA id 48sm1770253wrc.14.2021.09.11.06.27.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 06:27:13 -0700 (PDT)
+        Sat, 11 Sep 2021 06:27:14 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 10/18] staging: r8188eu: remove unused ODM_ScheduleWorkItem()
-Date:   Sat, 11 Sep 2021 15:26:27 +0200
-Message-Id: <20210911132635.30369-11-straube.linux@gmail.com>
+Subject: [PATCH 11/18] staging: r8188eu: remove unused ODM_IsWorkItemScheduled()
+Date:   Sat, 11 Sep 2021 15:26:28 +0200
+Message-Id: <20210911132635.30369-12-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210911132635.30369-1-straube.linux@gmail.com>
 References: <20210911132635.30369-1-straube.linux@gmail.com>
@@ -66,42 +66,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function ODM_ScheduleWorkItem() is unused and empty, remove it.
+Function ODM_IsWorkItemScheduled() is unused and empty, remove it.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm_interface.c     | 4 ----
- drivers/staging/r8188eu/include/odm_interface.h | 2 --
- 2 files changed, 6 deletions(-)
+ drivers/staging/r8188eu/hal/odm_interface.c     | 5 -----
+ drivers/staging/r8188eu/include/odm_interface.h | 3 ---
+ 2 files changed, 8 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/odm_interface.c b/drivers/staging/r8188eu/hal/odm_interface.c
-index f3b6fb886550..c4ab858db29b 100644
+index c4ab858db29b..7fd450575eb4 100644
 --- a/drivers/staging/r8188eu/hal/odm_interface.c
 +++ b/drivers/staging/r8188eu/hal/odm_interface.c
-@@ -94,10 +94,6 @@ s32 ODM_CompareMemory(struct odm_dm_struct *pDM_Odm, void *pBuf1, void *pBuf2, u
+@@ -93,11 +93,6 @@ s32 ODM_CompareMemory(struct odm_dm_struct *pDM_Odm, void *pBuf1, void *pBuf2, u
+ 	return !memcmp(pBuf1, pBuf2, length);
  }
  
- /*  Work item relative API. FOr MP driver only~! */
--void ODM_ScheduleWorkItem(void *pRtWorkItem)
+-/*  Work item relative API. FOr MP driver only~! */
+-void ODM_IsWorkItemScheduled(void *pRtWorkItem)
 -{
 -}
 -
- void ODM_IsWorkItemScheduled(void *pRtWorkItem)
+ /*  ODM Timer relative API. */
+ void ODM_StallExecution(u32 usDelay)
  {
- }
 diff --git a/drivers/staging/r8188eu/include/odm_interface.h b/drivers/staging/r8188eu/include/odm_interface.h
-index dd14f465e4d8..65749c213cb9 100644
+index 65749c213cb9..f6c23fd9b31b 100644
 --- a/drivers/staging/r8188eu/include/odm_interface.h
 +++ b/drivers/staging/r8188eu/include/odm_interface.h
-@@ -96,8 +96,6 @@ s32 ODM_CompareMemory(struct odm_dm_struct *pDM_Odm, void *pBuf1, void *pBuf2,
+@@ -95,9 +95,6 @@ void ODM_FreeMemory(struct odm_dm_struct *pDM_Odm, void *pPtr, u32 length);
+ s32 ODM_CompareMemory(struct odm_dm_struct *pDM_Odm, void *pBuf1, void *pBuf2,
  		      u32 length);
  
- /*  ODM MISC-workitem relative API. */
--void ODM_ScheduleWorkItem(void *pRtWorkItem);
+-/*  ODM MISC-workitem relative API. */
+-void ODM_IsWorkItemScheduled(void *pRtWorkItem);
 -
- void ODM_IsWorkItemScheduled(void *pRtWorkItem);
- 
  /*  ODM Timer relative API. */
+ void ODM_StallExecution(u32 usDelay);
+ 
 -- 
 2.33.0
 
