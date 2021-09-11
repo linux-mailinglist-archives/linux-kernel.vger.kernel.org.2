@@ -2,21 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF12407689
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71C2407683
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhIKMQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 08:16:17 -0400
-Received: from m-r2.th.seeweb.it ([5.144.164.171]:35945 "EHLO
-        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235809AbhIKMPP (ORCPT
+        id S233493AbhIKMP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 08:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235850AbhIKMPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 08:15:15 -0400
+        Sat, 11 Sep 2021 08:15:16 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51E2C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 05:14:03 -0700 (PDT)
 Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 12B523F43B;
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D5BE13F46F;
         Sat, 11 Sep 2021 14:14:01 +0200 (CEST)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
 To:     phone-devel@vger.kernel.org
@@ -35,9 +38,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Taniya Das <tdas@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] clk: qcom: gpucc-msm8998: Remove unnecessary fallbacks to global clocks
-Date:   Sat, 11 Sep 2021 14:13:39 +0200
-Message-Id: <20210911121340.261920-8-marijn.suijten@somainline.org>
+Subject: [PATCH 8/8] clk: qcom: mmcc-msm8998: Remove unnecessary fallbacks to global clocks
+Date:   Sat, 11 Sep 2021 14:13:40 +0200
+Message-Id: <20210911121340.261920-9-marijn.suijten@somainline.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210911121340.261920-1-marijn.suijten@somainline.org>
 References: <20210911121340.261920-1-marijn.suijten@somainline.org>
@@ -49,38 +52,300 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 A previous patch removes the "xo" clock from the global namespace making
 it impossible to acquire by that ".name".  The device-tree for msm8998
-already provides the "xo" and "gpll0" clock since the addition of the
-gpucc node making it unnecessary to have this fallback at all.
+currently does not include an mmcc node but the dt-bindings for this
+compatible already require all these clocks, and the patch introducing
+this node [1] also includes them.
+
+[1]: https://patchwork.kernel.org/project/linux-arm-msm/patch/20210901183123.1087392-1-angelogioacchino.delregno@somainline.org/
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- drivers/clk/qcom/gpucc-msm8998.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/clk/qcom/mmcc-msm8998.c | 105 +++++++++++++++-----------------
+ 1 file changed, 48 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/clk/qcom/gpucc-msm8998.c b/drivers/clk/qcom/gpucc-msm8998.c
-index 3ac6fbfbd414..a925ac90018d 100644
---- a/drivers/clk/qcom/gpucc-msm8998.c
-+++ b/drivers/clk/qcom/gpucc-msm8998.c
-@@ -40,8 +40,7 @@ static struct clk_branch gpucc_cxo_clk = {
+diff --git a/drivers/clk/qcom/mmcc-msm8998.c b/drivers/clk/qcom/mmcc-msm8998.c
+index a5ab6abe62bf..c421b1291651 100644
+--- a/drivers/clk/qcom/mmcc-msm8998.c
++++ b/drivers/clk/qcom/mmcc-msm8998.c
+@@ -53,8 +53,7 @@ static struct clk_fixed_factor gpll0_div = {
+ 	.hw.init = &(struct clk_init_data){
+ 		.name = "mmss_gpll0_div",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "gpll0",
+-			.name = "gpll0"
++			.fw_name = "gpll0"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_fixed_factor_ops,
+@@ -78,8 +77,7 @@ static struct clk_alpha_pll mmpll0 = {
  		.hw.init = &(struct clk_init_data){
- 			.name = "gpucc_cxo_clk",
+ 			.name = "mmpll0",
  			.parent_data = &(const struct clk_parent_data){
 -				.fw_name = "xo",
 -				.name = "xo"
 +				.fw_name = "xo"
  			},
  			.num_parents = 1,
- 			.ops = &clk_branch2_ops,
-@@ -99,7 +98,7 @@ static const struct parent_map gpu_xo_gpll0_map[] = {
- 
- static const struct clk_parent_data gpu_xo_gpll0[] = {
- 	{ .hw = &gpucc_cxo_clk.clkr.hw },
--	{ .fw_name = "gpll0", .name = "gpll0" },
-+	{ .fw_name = "gpll0" },
+ 			.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -111,8 +109,7 @@ static struct clk_alpha_pll mmpll1 = {
+ 		.hw.init = &(struct clk_init_data){
+ 			.name = "mmpll1",
+ 			.parent_data = &(const struct clk_parent_data){
+-				.fw_name = "xo",
+-				.name = "xo"
++				.fw_name = "xo"
+ 			},
+ 			.num_parents = 1,
+ 			.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -141,8 +138,7 @@ static struct clk_alpha_pll mmpll3 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll3",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -170,8 +166,7 @@ static struct clk_alpha_pll mmpll4 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll4",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -199,8 +194,7 @@ static struct clk_alpha_pll mmpll5 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll5",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -228,8 +222,7 @@ static struct clk_alpha_pll mmpll6 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll6",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -257,8 +250,7 @@ static struct clk_alpha_pll mmpll7 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll7",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -286,8 +278,7 @@ static struct clk_alpha_pll mmpll10 = {
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "mmpll10",
+ 		.parent_data = &(const struct clk_parent_data){
+-			.fw_name = "xo",
+-			.name = "xo"
++			.fw_name = "xo"
+ 		},
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_fixed_fabia_ops,
+@@ -316,9 +307,9 @@ static const struct parent_map mmss_xo_hdmi_map[] = {
  };
  
- static const struct parent_map gpu_xo_gpupll0_map[] = {
+ static const struct clk_parent_data mmss_xo_hdmi[] = {
+-	{ .fw_name = "xo", .name = "xo" },
+-	{ .fw_name = "hdmipll", .name = "hdmipll" },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "xo" },
++	{ .fw_name = "hdmipll" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_dsi0pll_dsi1pll_map[] = {
+@@ -329,10 +320,10 @@ static const struct parent_map mmss_xo_dsi0pll_dsi1pll_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_dsi0pll_dsi1pll[] = {
+-	{ .fw_name = "xo", .name = "xo" },
+-	{ .fw_name = "dsi0dsi", .name = "dsi0dsi" },
+-	{ .fw_name = "dsi1dsi", .name = "dsi1dsi" },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "xo" },
++	{ .fw_name = "dsi0dsi" },
++	{ .fw_name = "dsi1dsi" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_dsibyte_map[] = {
+@@ -343,10 +334,10 @@ static const struct parent_map mmss_xo_dsibyte_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_dsibyte[] = {
+-	{ .fw_name = "xo", .name = "xo" },
+-	{ .fw_name = "dsi0byte", .name = "dsi0byte" },
+-	{ .fw_name = "dsi1byte", .name = "dsi1byte" },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "xo" },
++	{ .fw_name = "dsi0byte" },
++	{ .fw_name = "dsi1byte" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_dp_map[] = {
+@@ -357,10 +348,10 @@ static const struct parent_map mmss_xo_dp_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_dp[] = {
+-	{ .fw_name = "xo", .name = "xo" },
+-	{ .fw_name = "dplink", .name = "dplink" },
+-	{ .fw_name = "dpvco", .name = "dpvco" },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "xo" },
++	{ .fw_name = "dplink" },
++	{ .fw_name = "dpvco" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_gpll0_gpll0_div_map[] = {
+@@ -371,10 +362,10 @@ static const struct parent_map mmss_xo_gpll0_gpll0_div_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "xo" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_gpll0_gpll0_div_map[] = {
+@@ -386,11 +377,11 @@ static const struct parent_map mmss_xo_mmpll0_gpll0_gpll0_div_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_mmpll1_gpll0_gpll0_div_map[] = {
+@@ -403,12 +394,12 @@ static const struct parent_map mmss_xo_mmpll0_mmpll1_gpll0_gpll0_div_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_mmpll1_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+ 	{ .hw = &mmpll1_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_mmpll5_gpll0_gpll0_div_map[] = {
+@@ -421,12 +412,12 @@ static const struct parent_map mmss_xo_mmpll0_mmpll5_gpll0_gpll0_div_map[] = {
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_mmpll5_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+ 	{ .hw = &mmpll5_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_mmpll3_mmpll6_gpll0_gpll0_div_map[] = {
+@@ -440,13 +431,13 @@ static const struct parent_map mmss_xo_mmpll0_mmpll3_mmpll6_gpll0_gpll0_div_map[
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_mmpll3_mmpll6_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+ 	{ .hw = &mmpll3_out_even.clkr.hw },
+ 	{ .hw = &mmpll6_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll4_mmpll7_mmpll10_gpll0_gpll0_div_map[] = {
+@@ -460,13 +451,13 @@ static const struct parent_map mmss_xo_mmpll4_mmpll7_mmpll10_gpll0_gpll0_div_map
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll4_mmpll7_mmpll10_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll4_out_even.clkr.hw },
+ 	{ .hw = &mmpll7_out_even.clkr.hw },
+ 	{ .hw = &mmpll10_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_mmpll7_mmpll10_gpll0_gpll0_div_map[] = {
+@@ -480,13 +471,13 @@ static const struct parent_map mmss_xo_mmpll0_mmpll7_mmpll10_gpll0_gpll0_div_map
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_mmpll7_mmpll10_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+ 	{ .hw = &mmpll7_out_even.clkr.hw },
+ 	{ .hw = &mmpll10_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static const struct parent_map mmss_xo_mmpll0_mmpll4_mmpll7_mmpll10_gpll0_gpll0_div_map[] = {
+@@ -501,14 +492,14 @@ static const struct parent_map mmss_xo_mmpll0_mmpll4_mmpll7_mmpll10_gpll0_gpll0_
+ };
+ 
+ static const struct clk_parent_data mmss_xo_mmpll0_mmpll4_mmpll7_mmpll10_gpll0_gpll0_div[] = {
+-	{ .fw_name = "xo", .name = "xo" },
++	{ .fw_name = "xo" },
+ 	{ .hw = &mmpll0_out_even.clkr.hw },
+ 	{ .hw = &mmpll4_out_even.clkr.hw },
+ 	{ .hw = &mmpll7_out_even.clkr.hw },
+ 	{ .hw = &mmpll10_out_even.clkr.hw },
+-	{ .fw_name = "gpll0", .name = "gpll0" },
++	{ .fw_name = "gpll0" },
+ 	{ .hw = &gpll0_div.hw },
+-	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
++	{ .fw_name = "core_bi_pll_test_se" },
+ };
+ 
+ static struct clk_rcg2 byte0_clk_src = {
 -- 
 2.33.0
 
