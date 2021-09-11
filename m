@@ -2,201 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029D3407583
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 09:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ECF407574
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 09:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbhIKHwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 03:52:21 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9029 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235331AbhIKHwU (ORCPT
+        id S235375AbhIKHlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 03:41:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9417 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233040AbhIKHlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 03:52:20 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H64f70NvDzVqd6;
-        Sat, 11 Sep 2021 15:50:07 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Sat, 11 Sep 2021 03:41:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H64K90RnGz8xZP;
+        Sat, 11 Sep 2021 15:35:25 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 15:51:02 +0800
-Received: from huawei.com (10.67.175.23) by dggpeml500018.china.huawei.com
- (7.185.36.186) with Microsoft SMTP Server (version=TLS1_2,
+ 15.1.2308.8; Sat, 11 Sep 2021 15:39:48 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
- 2021 15:51:02 +0800
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <tj@kernel.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
-CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>
-Subject: [PATCH v2] kernel/sched: Fix sched_fork() access an invalid sched_task_group
-Date:   Sat, 11 Sep 2021 15:50:54 +0800
-Message-ID: <20210911075054.6358-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 2021 15:39:47 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <colyli@suse.de>, <kent.overstreet@gmail.com>
+CC:     <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] bcache: Fix memory leak when cache_alloc() return failed
+Date:   Sat, 11 Sep 2021 16:08:54 +0800
+Message-ID: <1631347734-9950-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.23]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500018.china.huawei.com (7.185.36.186)
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a small race between copy_process() and sched_fork()
-where child->sched_task_group point to an already freed pointer.
+From: Wu Bo <wubo40@huawei.com>
 
-parent doing fork()      | someone moving the parent
-				to another cgroup
--------------------------------+-------------------------------
-copy_process()
-    + dup_task_struct()<1>
-				parent move to another cgroup,
-				and free the old cgroup. <2>
-    + sched_fork()
-      + __set_task_cpu()<3>
-      + task_fork_fair()
-        + sched_slice()<4>
+If cache_alloc() get error when register a cache device,
+the ca->kobj is not initialized, the bch_cache_release() no chance 
+to be called. So "ca" object will not be released.
 
-In the worst case, this bug can lead to "use-after-free" and
-cause panic as shown above,
-(1)parent copy its sched_task_group to child at <1>;
-(2)someone move the parent to another cgroup and free the old
-   cgroup at <2>;
-(3)the sched_task_group and cfs_rq that belong to the old cgroup
-   will be accessed at <3> and <4>, which cause a panic:
+In addition, if register_cache_set() return failed 
+when register a cache device, kobject_put(&ca->kobj) will be called 
+and "ca" objects will be released in bch_cache_release() function. 
+But pr_notice() called after kobject_put(&ca->kobj),
+the "ca->cache_dev_name" access memory that has been freed.
 
-[89249.732198] BUG: unable to handle kernel NULL pointer
-dereference at 0000000000000000
-[89249.732701] PGD 8000001fa0a86067 P4D 8000001fa0a86067 PUD
-2029955067 PMD 0
-[89249.733005] Oops: 0000 [#1] SMP PTI
-[89249.733288] CPU: 7 PID: 648398 Comm: ebizzy Kdump: loaded
-Tainted: G           OE    --------- -  - 4.18.0.x86_64+ #1
-[89249.734318] RIP: 0010:sched_slice+0x84/0xc0
- ....
-[89249.737910] Call Trace:
-[89249.738181]  task_fork_fair+0x81/0x120
-[89249.738457]  sched_fork+0x132/0x240
-[89249.738732]  copy_process.part.5+0x675/0x20e0
-[89249.739010]  ? __handle_mm_fault+0x63f/0x690
-[89249.739286]  _do_fork+0xcd/0x3b0
-[89249.739558]  do_syscall_64+0x5d/0x1d0
-[89249.739830]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[89249.740107] RIP: 0033:0x7f04418cd7e1
-
-Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
-membership is fixed and thus sched_task_group can't change. So
-call sched_fork() after cgroup_can_fork() and update the child's
-sched_task_group before it is used.
-
-Fixes: 8323f26ce342 ("sched: Fix race in task_group")
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 ---
-Changes since v1:
- - revert changes of sched_post_fork()
- - call sched_fork() after cgroup_can_fork()
----
- include/linux/sched/task.h |  3 ++-
- kernel/fork.c              | 17 +++++++++--------
- kernel/sched/core.c        |  9 ++++++++-
- 3 files changed, 19 insertions(+), 10 deletions(-)
+ drivers/md/bcache/super.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index ef02be869cf2..57eb217f1a86 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -53,7 +53,8 @@ extern int lockdep_tasklist_lock_is_held(void);
- extern asmlinkage void schedule_tail(struct task_struct *prev);
- extern void init_idle(struct task_struct *idle, int cpu);
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index f2874c7..30569f4 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2366,13 +2366,17 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+ 		 * explicitly call blkdev_put() here.
+ 		 */
+ 		blkdev_put(bdev, FMODE_READ|FMODE_WRITE|FMODE_EXCL);
++		if (ca->sb_disk)
++			put_page(virt_to_page(ca->sb_disk));
+ 		if (ret == -ENOMEM)
+ 			err = "cache_alloc(): -ENOMEM";
+ 		else if (ret == -EPERM)
+ 			err = "cache_alloc(): cache device is too small";
+ 		else
+ 			err = "cache_alloc(): unknown error";
+-		goto err;
++		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
++		kfree(ca);
++		return ret;
+ 	}
  
--extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
-+extern int sched_fork(unsigned long clone_flags, struct task_struct *p,
-+		      struct kernel_clone_args *kargs);
- extern void sched_post_fork(struct task_struct *p);
- extern void sched_dead(struct task_struct *p);
+ 	if (kobject_add(&ca->kobj, bdev_kobj(bdev), "bcache")) {
+@@ -2393,11 +2397,9 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+ 	pr_info("registered cache device %s\n", ca->cache_dev_name);
  
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 38681ad44c76..1874fe754a56 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2160,11 +2160,6 @@ static __latent_entropy struct task_struct *copy_process(
- 	p->bpf_ctx = NULL;
- #endif
- 
--	/* Perform scheduler related setup. Assign this task to a CPU. */
--	retval = sched_fork(clone_flags, p);
--	if (retval)
--		goto bad_fork_cleanup_policy;
+ out:
+-	kobject_put(&ca->kobj);
 -
- 	retval = perf_event_init_task(p, clone_flags);
- 	if (retval)
- 		goto bad_fork_cleanup_policy;
-@@ -2295,6 +2290,11 @@ static __latent_entropy struct task_struct *copy_process(
- 	if (retval)
- 		goto bad_fork_put_pidfd;
+-err:
+ 	if (err)
+ 		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
++	kobject_put(&ca->kobj);
  
-+	/* Perform scheduler related setup. Assign this task to a CPU. */
-+	retval = sched_fork(clone_flags, p, args);
-+	if (retval)
-+		goto bad_fork_cancel_cgroup;
-+
- 	/*
- 	 * From this point on we must avoid any synchronous user-space
- 	 * communication until we take the tasklist-lock. In particular, we do
-@@ -2343,13 +2343,13 @@ static __latent_entropy struct task_struct *copy_process(
- 	/* Don't start children in a dying pid namespace */
- 	if (unlikely(!(ns_of_pid(pid)->pid_allocated & PIDNS_ADDING))) {
- 		retval = -ENOMEM;
--		goto bad_fork_cancel_cgroup;
-+		goto bad_fork_clean_sched;
- 	}
- 
- 	/* Let kill terminate clone/fork in the middle */
- 	if (fatal_signal_pending(current)) {
- 		retval = -EINTR;
--		goto bad_fork_cancel_cgroup;
-+		goto bad_fork_clean_sched;
- 	}
- 
- 	/* past the last point of failure */
-@@ -2416,10 +2416,11 @@ static __latent_entropy struct task_struct *copy_process(
- 
- 	return p;
- 
--bad_fork_cancel_cgroup:
-+bad_fork_clean_sched:
- 	sched_core_free(p);
- 	spin_unlock(&current->sighand->siglock);
- 	write_unlock_irq(&tasklist_lock);
-+bad_fork_cancel_cgroup:
- 	cgroup_cancel_fork(p, args);
- bad_fork_put_pidfd:
- 	if (clone_flags & CLONE_PIDFD) {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c4462c454ab9..acb30e418c4d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4326,10 +4326,17 @@ int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
- /*
-  * fork()/clone()-time setup:
-  */
--int sched_fork(unsigned long clone_flags, struct task_struct *p)
-+int sched_fork(unsigned long clone_flags, struct task_struct *p,
-+		struct kernel_clone_args *kargs)
- {
- 	unsigned long flags;
-+#ifdef CONFIG_CGROUP_SCHED
-+	struct task_group *tg;
- 
-+	tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
-+			  struct task_group, css);
-+	p->sched_task_group = autogroup_task_group(p, tg);
-+#endif
- 	__sched_fork(clone_flags, p);
- 	/*
- 	 * We mark the process as NEW here. This guarantees that
+ 	return ret;
+ }
 -- 
-2.25.1
+1.8.3.1
 
