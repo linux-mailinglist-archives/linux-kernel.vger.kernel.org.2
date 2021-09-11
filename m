@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46EC4075B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A171240759E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 10:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235478AbhIKJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:03:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19029 "EHLO
+        id S235457AbhIKIwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 04:52:15 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9030 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhIKJD5 (ORCPT
+        with ESMTP id S235334AbhIKIwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:03:57 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H669D3yYNzblpt;
-        Sat, 11 Sep 2021 16:58:40 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 17:02:43 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
- 2021 17:02:43 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <io-uring@vger.kernel.org>
-CC:     <axboe@kernel.dk>, <asml.silence@gmail.com>
-Subject: [PATCH -next] io-wq: Remove duplicate code in io_workqueue_create()
-Date:   Sat, 11 Sep 2021 16:58:47 +0800
-Message-ID: <20210911085847.34849-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 11 Sep 2021 04:52:14 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H65zJ5kSFzVnw6;
+        Sat, 11 Sep 2021 16:50:04 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Sat, 11
+ Sep 2021 16:50:59 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v2 0/6] Fix some issues about mmp
+Date:   Sat, 11 Sep 2021 17:00:53 +0800
+Message-ID: <20210911090059.1876456-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500004.china.huawei.com (7.185.36.219)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While task_work_add() in io_workqueue_create() is true,
-then duplicate code is executed:
+I test mmp function as follow steps:
+1. Inject delay 5s in ext4_multi_mount_protect function after
+"skip:" label.
+2. Share HostA block device(sda) with HostB(nbd0) by NBD.
+3. Enable mmp feature when mkfs.ext4 sda.
+4. Mount sda and nbd0 at the same time.
 
-  -> clear_bit_unlock(0, &worker->create_state);
-  -> io_worker_release(worker);
-  -> atomic_dec(&acct->nr_running);
-  -> io_worker_ref_put(wq);
-  -> return false;
+I found kmmpd never trigger detect multi-mount. Reason is as follow:
+1. Kmmpd init seq with 0, if two host have same nodename, will lead to
+detect confliction very slow, even never detect confliction.
+2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
+so we compare data with itself.
+3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
+'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
+about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
+normaly.
 
-  -> clear_bit_unlock(0, &worker->create_state); // back to io_workqueue_create()
-  -> io_worker_release(worker);
-  -> kfree(worker);
+And i also found that 'check_interval' value store in disk  is not sure
+after umount.
 
-The io_worker_release() and clear_bit_unlock() are executed twice.
+v1->v2:
+Fix 'last_check_time' not initialized before checking.
 
-Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- fs/io-wq.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Ye Bin (6):
+  ext4: init seq with random value in kmmpd
+  ext4: introduce last_check_time record previous check time
+  ext4: compare to local seq and nodename when check conflict
+  ext4: avoid to re-read mmp check data get from page cache
+  ext4: avoid to double free s_mmp_bh
+  ext4: fix possible store wrong check interval value in disk when
+    umount
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 6c55362c1f99..95d0eaed7c00 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -329,8 +329,10 @@ static bool io_queue_worker_create(struct io_worker *worker,
- 
- 	init_task_work(&worker->create_work, func);
- 	worker->create_index = acct->index;
--	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
-+	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL)) {
-+		clear_bit_unlock(0, &worker->create_state);
- 		return true;
-+	}
- 	clear_bit_unlock(0, &worker->create_state);
- fail_release:
- 	io_worker_release(worker);
-@@ -723,11 +725,8 @@ static void io_workqueue_create(struct work_struct *work)
- 	struct io_worker *worker = container_of(work, struct io_worker, work);
- 	struct io_wqe_acct *acct = io_wqe_get_acct(worker);
- 
--	if (!io_queue_worker_create(worker, acct, create_worker_cont)) {
--		clear_bit_unlock(0, &worker->create_state);
--		io_worker_release(worker);
-+	if (!io_queue_worker_create(worker, acct, create_worker_cont))
- 		kfree(worker);
--	}
- }
- 
- static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
+ fs/ext4/mmp.c | 77 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 43 insertions(+), 34 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
