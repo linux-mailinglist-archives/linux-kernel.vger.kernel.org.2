@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA88D4074C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09BC4074C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhIKCzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 22:55:22 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:39497 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhIKCzV (ORCPT
+        id S235216AbhIKC56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 22:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIKC55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 22:55:21 -0400
-Received: by mail-lf1-f43.google.com with SMTP id i25so4060745lfg.6;
-        Fri, 10 Sep 2021 19:54:08 -0700 (PDT)
+        Fri, 10 Sep 2021 22:57:57 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FEFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:56:45 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bk29so4261500qkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=89y7dtYjpW2V9bTWN6kb0LJfhttVbVV+nnJbuimMLgY=;
+        b=CA/aZXFeGkPuzg/ckeBhtNY8HYbXRlOYOhmLKCI2KF0rZ/NZcqyTRuwEd1PgrerdSC
+         iGWWHM3lXyXIi0IWv0+n9JbNCwV+tCPZWA1HIZvPRSaJ3BI0+uTCum3FolNyCMFrOuKR
+         4VWhE5avruEnXE9qopY1Q0NlrT81Pze+kDVNc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=HrzUj2kOKfp3nelOA5Rh3JYBH3kW210KP3kKzozo3hQ=;
-        b=kgm4E0OyVEQndM7D0SAxVtMvYCKl3CHDQ7rpkWckfK22kHk7v7+4tnKTsVR+tPWZP2
-         KlONujkQc9kEGaoWfjtSKq4BEM8Ov3hhgOphWEjaarAH1oQI7NbkSMkLve2Q0dwggrhu
-         twD3qfF6dhQp/Brk8MELjBKKg8jKsCGNZC3hEcfib12dIjajxQX90GG+Q9y/c8TLcXnU
-         uscfFwZky2GtEgNMiKyiWW5dmp1FfHJhp/sMBhd8yGLeyBRrFP0kQEpJPyeEFmW6vf0M
-         r4T3lAaumoMQIVcs1fwaXXuUQdWWSp//+JZ5JMZG9PsTB/jOw7VcpjU/S+AlElcTWbj9
-         e8EQ==
-X-Gm-Message-State: AOAM532huNCmXfLUgFuB64t7XySLZNABobOpnxKv8BX5+UIURc1VKLNO
-        0pbJfba4S0VEK+J9OrQ4hP0MdrY2/c3PFQ==
-X-Google-Smtp-Source: ABdhPJznoZHw/vwCHNuPc4k4BJNc28bbs1F15FpEepcfJrowI2o6C4Yzr+WbvxxpNh7xII40KyMj8g==
-X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr564262lff.184.1631328847818;
-        Fri, 10 Sep 2021 19:54:07 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id b28sm44043ljf.101.2021.09.10.19.54.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 19:54:07 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id s10so7999726lfr.11;
-        Fri, 10 Sep 2021 19:54:07 -0700 (PDT)
-X-Received: by 2002:ac2:482d:: with SMTP id 13mr583877lft.120.1631328846840;
- Fri, 10 Sep 2021 19:54:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=89y7dtYjpW2V9bTWN6kb0LJfhttVbVV+nnJbuimMLgY=;
+        b=AfLTwUa8qQTBH+ebiwOH8DJJoEPOVe5QP3xO/R9ks7o5U5GBexAgWM6aDg7YH+YLOK
+         OHyLAeIZ9jS8IIJHUJc4Zo32u86zZjJGR7qaeXtS67P7+CVJFGdwopQt1wjFfJ2CqF3R
+         3dGFoN8C5XC2U1ro4T+KSjLj5JN8ZeBhQL/PCcEuc+7y86dJIyM/cvC+u+5CvEmjLdqI
+         A3fmXW3Xn/0wUdtO1aHwFOmG4JDtQnbCkC4jWnZPFxb1XBjhZLqIWWO2cZgG6wStpIuN
+         db5As+bB94ycshtYhYLxogg24w6ri60rGw1ifDIzYrufv79CfAVyg/CcfQSJW5jNDVOQ
+         pJmw==
+X-Gm-Message-State: AOAM532LYCPRSfv9iGPUZumNXWmo8qlRm/iYtXmlZVDoTulUq988/dZS
+        3wejGsjT+KoPb/aftrYUh5p9Yr3OUwJi2eS12g9wVQ==
+X-Google-Smtp-Source: ABdhPJxyPNstiWLJG53wPOjDbgm6Dv1LCOTIxLjonS9hoQA3Pq9DmrgpkpAr3oJe8ZeISaPvJyLJTY5o5JC47ysONNM=
+X-Received: by 2002:a05:620a:4495:: with SMTP id x21mr498697qkp.378.1631329004367;
+ Fri, 10 Sep 2021 19:56:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com> <20210910184147.336618-14-paul.kocialkowski@bootlin.com>
-In-Reply-To: <20210910184147.336618-14-paul.kocialkowski@bootlin.com>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Sat, 11 Sep 2021 10:53:55 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66OHJREEg1Djkk=VyY0yUr5JE8Fp+xsb40wCk6E56bH8A@mail.gmail.com>
-Message-ID: <CAGb2v66OHJREEg1Djkk=VyY0yUr5JE8Fp+xsb40wCk6E56bH8A@mail.gmail.com>
-Subject: Re: [PATCH NOT FOR MERGE 13/22] ARM: dts: sun8i: a83t: Add MIPI CSI-2
- controller node
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
+References: <20210910190322.27058-1-romain.perier@gmail.com> <20210910190322.27058-5-romain.perier@gmail.com>
+In-Reply-To: <20210910190322.27058-5-romain.perier@gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sat, 11 Sep 2021 11:56:33 +0900
+Message-ID: <CAFr9PXnLZC1zfs4e1GqZU4UU3knU-BwREe0-abrWNq7akrTntw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] MAINTAINERS: Add myself as MStar/Sigmastar Armv7 SoC maintainers
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Romain,
 
-On Sat, Sep 11, 2021 at 2:42 AM Paul Kocialkowski
-<paul.kocialkowski@bootlin.com> wrote:
+On Sat, 11 Sept 2021 at 04:03, Romain Perier <romain.perier@gmail.com> wrote:
 >
-> MIPI CSI-2 is supported on the A83T with a dedicated controller that
-> covers both the protocol and D-PHY. It can be connected to the CSI
-> interface as a V4L2 subdev through the fwnode graph.
+> As proposed by Daniel, I am going to help him to maintain the platform,
+> so add myself as co-maintainer.
 >
-> This is not done by default since connecting the bridge without a
-> subdev attached to it will cause a failure on the CSI driver.
->
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-
-I believe you tagged the wrong patch to not be merged? AFAICT it
-should be the next patch that hooks up OV8865, not this one.
-
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
 > ---
->  arch/arm/boot/dts/sun8i-a83t.dtsi | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8i-a83t.dtsi
-> index ac97eac91349..1fa51f7ef063 100644
-> --- a/arch/arm/boot/dts/sun8i-a83t.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
-> @@ -1064,6 +1064,32 @@ csi: camera@1cb0000 {
->                         status = "disabled";
->                 };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3a9a7cbf9456..ad1a0e5a5425 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2231,6 +2231,7 @@ F:        arch/arm/mach-pxa/mioa701.c
 >
-> +               mipi_csi2: csi@1cb1000 {
-> +                       compatible = "allwinner,sun8i-a83t-mipi-csi2";
-> +                       reg = <0x01cb1000 0x1000>;
-> +                       interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&ccu CLK_BUS_CSI>,
-> +                                <&ccu CLK_CSI_SCLK>,
-> +                                <&ccu CLK_MIPI_CSI>,
-> +                                <&ccu CLK_CSI_MISC>;
-> +                       clock-names = "bus", "mod", "mipi", "misc";
-> +                       resets = <&ccu RST_BUS_CSI>;
-> +                       status = "disabled";
-> +
-> +                       ports {
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +
-> +                               mipi_csi2_in: port@0 {
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               mipi_csi2_out: port@1 {
-> +                                       reg = <1>;
-> +                               };
-> +                       };
-> +               };
-> +
->                 hdmi: hdmi@1ee0000 {
->                         compatible = "allwinner,sun8i-a83t-dw-hdmi";
->                         reg = <0x01ee0000 0x10000>;
+>  ARM/MStar/Sigmastar Armv7 SoC support
+>  M:     Daniel Palmer <daniel@thingy.jp>
+> +M:     Romain Perier <romain.perier@gmail.com>
+>  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:     Maintained
+>  W:     http://linux-chenxing.org/
 > --
-> 2.32.0
+> 2.33.0
 >
->
+
+Acked-by: Daniel Palmer <daniel@thingy.jp>
+
+For everyone else: For MStar/SigmaStar I have a ~350 commit backlog
+that makes almost everything work on these machines.
+It's impossible for me to finish up working out the hardware and clean
+up and push patches without the whole process taking years.
+Romain stepped up to help out and has been pulling out patches,
+cleaning them up and pushing them. He deserves to be listed as a
+maintainer.
+
+Cheers,
+
+Daniel
