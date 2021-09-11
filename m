@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B6E407A1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 20:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91287407A1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 20:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhIKSij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 14:38:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233411AbhIKSii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 14:38:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEF26101D;
-        Sat, 11 Sep 2021 18:37:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631385445;
-        bh=JUWQT8jXHeh8jLJClq6TyJR4fQGGpG7+TwtAbHqofrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1qKBeiao77uQINYlZ7dISjjjkySJjF6XRdOHhTTmmyZDR0OtlDhMMIXcIhV47h6u
-         OPYnW37IipHwEQxO3Q/Cmn2yw3dnNCEKz5XHJSLUpv9/FT7QKyEIiQhz2aUYmvrbAQ
-         GgZSdBVmxgvEEqCs0Jo3+I4VVMvenPgpLpr0qfrnl+5gW2iDvghKLjV0QR3SJsJmf9
-         osewv7r4dJ99053rggqsMkDu2E/7/DN0mwM31JpjWTpnEZnRpspsw2s5XZ6UHgnLpO
-         C6w/zpuM7fBKx0chY8+2CObUymTjMaRkbUNlkkiu6UyZUdG7gy6fKZIP6VplVNLNg+
-         H6vvX5JgPnOeg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9927D4038F; Sat, 11 Sep 2021 15:37:20 -0300 (-03)
-Date:   Sat, 11 Sep 2021 15:37:20 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] perf tools: Ignore Documentation dependency file
-Message-ID: <YTz3YFXpJ0UT3R7z@kernel.org>
-References: <20210910232249.739661-1-irogers@google.com>
+        id S233654AbhIKSj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 14:39:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233438AbhIKSj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 14:39:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631385523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=naPfW9D7sOQ+tlBxCtCw2BjX9ch4IOhbQQrh/TDUAYw=;
+        b=TUNGv7p/vamzNUAqD+WFrRt1fDSCYKXM82WtD+IdzGgLUk+ereNkkgxdozDXSgqFNxxfMc
+        TZ5XzmNcmrpmpVDE+yUDclvALxKnj0hstQnu9CDQMjuL4O2YW+jmxCDXUr/WKCVEeITai+
+        VN/HXWUXAO74ljQpLuS07FNQQ8Rh7WY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-EpSKLqmqN0OCj76jSlPcRA-1; Sat, 11 Sep 2021 14:38:39 -0400
+X-MC-Unique: EpSKLqmqN0OCj76jSlPcRA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4921A8145E5;
+        Sat, 11 Sep 2021 18:38:38 +0000 (UTC)
+Received: from lclaudio.dyndns.org (unknown [10.22.32.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C78010013C1;
+        Sat, 11 Sep 2021 18:38:37 +0000 (UTC)
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id BC4093C0205; Sat, 11 Sep 2021 15:38:35 -0300 (-03)
+Date:   Sat, 11 Sep 2021 15:38:35 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.14.246-rt122
+Message-ID: <YTz3q4lJBNvlElks@uudg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="loAnJJOzTgswuIq4"
 Content-Disposition: inline
-In-Reply-To: <20210910232249.739661-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Sep 10, 2021 at 04:22:49PM -0700, Ian Rogers escreveu:
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Fixes: a81df63a5df3 ("perf doc: Fix doc.dep")
-> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Thanks for the patch, but you forgot to mention _why_ we should ignore
-that file, I'll try to figure out.
+--loAnJJOzTgswuIq4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Arnaldo
+Hello RT-list!
 
-> ---
->  tools/perf/.gitignore | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-> index e555e9729758..8e0163b7ef01 100644
-> --- a/tools/perf/.gitignore
-> +++ b/tools/perf/.gitignore
-> @@ -39,3 +39,4 @@ pmu-events/jevents
->  feature/
->  fixdep
->  libtraceevent-dynamic-list
-> +Documentation/doc.dep
-> -- 
-> 2.33.0.309.g3052b89438-goog
+I'm pleased to announce the 4.14.246-rt122 stable release.
 
--- 
+This release is just an update to the new stable 4.14.246 version and
+no RT specific changes have been made.
 
-- Arnaldo
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.14-rt
+  Head SHA1: 8e08e266e7c78bf94eadbb72e2683deb4a651904
+
+Or to build 4.14.246-rt122 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.246.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.246-rt122.patch.xz
+
+
+Enjoy!
+Luis
+
+
+--loAnJJOzTgswuIq4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEk1QGSZlyjTHUZNFA85SkI/jmfCYFAmE896sACgkQ85SkI/jm
+fCbHXw//YvifQLWLIxKKR+ZcNROIAr3YMVwcdKAMEwxkUlOtYm80tVm7MuVMldQu
+bxApPzexr97n/VVp+4z6tRy9lO46yiUIECFelhiqqcn+TExZUilSAbLooDEt7l0f
+UN7NZxmSJmamRHDoY8CPScARPDKvRBHilC8Eplr4M7uO3jG1obAX6rfMJ2Vo1tMV
+wHjcsKiOumlbynX3CDix1SYEz+KMV9RmWOHUAyCtmnPkYLIpTWlLl295Ms77Ftgn
+8x9zGYubeUTH8b6QWmKTI+WckAvuwcsxyuDhhAbIiAQEEpi/3p6Dm0LU4TJ6xxaL
+ohyIOY7s0A8JeUabtzSIoPQvomrJivabj4c+pMFfR1yXcfEPVElEChcZktx7ugfC
+Aaa5tnECXqZj8/LEVQ0HkjL8Jg6rKe5TYCOjbaDX2SGlrh/PlsxsyBkCVj/nE7Pb
+wLrw2MYn10vmGvVi9hM5Q54ebD8FePmPfWtc5xopqn5Awn/9mjT10m0K75dBOSsf
+fcvH3N6Df3fSfT+TlV+Lgpzo3cpUdBPC2Yj/4ik0FcgqKpZmCaN4M+TsfC+ivHbm
+ixgM//mB2yqyN325qK8V8T5cDNgJWh04PPuoD8RQHILeSNnPwrAYbXN4kZ2CbFfl
+sRGO9BefRswsR0T+F5FltPJe9Hgxy90mjtN6Y/Wih5WO4UlBY4k=
+=rb4j
+-----END PGP SIGNATURE-----
+
+--loAnJJOzTgswuIq4--
+
