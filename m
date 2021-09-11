@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B7340793A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A5240793C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 17:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbhIKQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 12:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhIKQAC (ORCPT
+        id S232854AbhIKQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 12:00:34 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:42275 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232333AbhIKQAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 12:00:02 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2C4C061574;
-        Sat, 11 Sep 2021 08:58:49 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id g16so7379015wrb.3;
-        Sat, 11 Sep 2021 08:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gGpuh0qMHufQCawQIsga8S4zve1lMSOF8KPrtZBPitw=;
-        b=mzfy4+aaNTZ3WiEaJfZZCkModRRMMdhm2Mfuz57noPBXRGOwMiUbD0rYejBWLkA+ST
-         qkAMLPHYqAw/zDHecVVoeHgkGYSorQEtSO5fmzxjh2sNrkk1Rtw22oAxmK/IygDMC5aH
-         2lh9HxkOuraLhdVwYaJTnVsCcRrc8cQpefmBmLrLp/sLOsv/TQirp4FuP2qBlIVDaUxa
-         h/4f9yVoJuekrkmeEYU7XOjekybuqKzclWlV2x9ghiCrv/dGQSUJTQEKle/QN2PoHZ+8
-         uXWUwRRenH+B+QkbsMDp3bWWaima8Jv8l6Z/JN3dIxHdtgr67bW1b3cT5jfWagGvhB95
-         lE6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gGpuh0qMHufQCawQIsga8S4zve1lMSOF8KPrtZBPitw=;
-        b=02eiRY8NH3RyrqIEJlvcQNsKHN3EZg/8fBosYCzQZ5p4ZJcq9VsZI1qO0FSc77n1Qx
-         qK7g+6BzScgVnU03NDj3BLaOxI0u+IRJmOoanE1U1KwsTpBHlxvd0h/XRiYheSVRlQl3
-         4Ns0Rk2rtcy65QrPO1moHqGZDUuLLSVEzY8shiE4EklHTk7h+UZCNctc87TYjNSGttp+
-         zxORb6MrM/Byhsbm5Sc+CByw3HwQm4TR2WYmRoqUMKE7+r3kQhEfeNxZurOtxMOFLx05
-         dJNQsM6V19B8Tihr3ir5g9hKDWCCnawbO0EkdUiue8UccshBy/qdeGCKSKHmMpVeI0HV
-         ehHw==
-X-Gm-Message-State: AOAM533BzqajtIN918qH2e0azEAYL788FDg+T78qgiKR6ctnIAfHWEbQ
-        f332oDOQALCSG3n1dA6o4RE=
-X-Google-Smtp-Source: ABdhPJxEq5+ypEsRLzrYNViuVb5bl7Mtpnms6ATCNn571fx1xSgaMowZQrSJGBD2AUbDqTrCDs1CEQ==
-X-Received: by 2002:a5d:49c6:: with SMTP id t6mr2544053wrs.201.1631375928358;
-        Sat, 11 Sep 2021 08:58:48 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id f1sm1944736wri.43.2021.09.11.08.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 08:58:48 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 16:58:46 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/37] 5.4.145-rc1 review
-Message-ID: <YTzSNsAPDEikruYC@debian>
-References: <20210910122917.149278545@linuxfoundation.org>
+        Sat, 11 Sep 2021 12:00:33 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3C1F31BF208;
+        Sat, 11 Sep 2021 15:59:19 +0000 (UTC)
+Date:   Sat, 11 Sep 2021 17:59:18 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] RTC changes for 5.15
+Message-ID: <YTzSVk5Scx/nRP7K@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210910122917.149278545@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hello Linus,
 
-On Fri, Sep 10, 2021 at 02:30:03PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.145 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
-> Anything received after that time might be too late.
+Here is the RTC subsystem pull request for v5.15 which is very late.
+I'll try to not make that a habit. The broken down time conversion is
+similar to what is done in the time subsystem since v5.14. The rest is
+fairly straightforward.
 
-Build test:
-mips (gcc version 11.1.1 20210816): 65 configs -> no new failure
-arm (gcc version 11.1.1 20210816): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-[1]. https://openqa.qa.codethink.co.uk/tests/118
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+for you to fetch changes up to 0c45d3e24ef3d3d87c5e0077b8f38d1372af7176:
 
---
-Regards
-Sudip
+  rtc: rx8010: select REGMAP_I2C (2021-09-09 10:18:40 +0200)
 
+----------------------------------------------------------------
+RTC for 5.15
+
+Subsystem:
+ - Switch to Neri and Schneider time conversion algorithm
+
+Drivers:
+ - rx8025: add rx8035 support
+ - s5m: modernize driver and set range
+
+----------------------------------------------------------------
+Alexandre Belloni (6):
+      rtc: s5m: switch to devm_rtc_allocate_device
+      rtc: s5m: signal the core when alarm are not available
+      rtc: s5m: enable wakeup only when available
+      rtc: s5m: set range
+      rtc: lib_test: add MODULE_LICENSE
+      rtc: move RTC_LIB_KUNIT_TEST to proper location
+
+Cassio Neri (1):
+      rtc: Improve performance of rtc_time64_to_tm(). Add tests.
+
+Dmitry Osipenko (1):
+      rtc: tps65910: Correct driver module alias
+
+Mateusz Jończyk (1):
+      rtc: cmos: remove stale REVISIT comments
+
+Mathew McBride (2):
+      rtc: rx8025: implement RX-8035 support
+      dt-bindings: rtc: add Epson RX-8025 and RX-8035
+
+Yu-Tung Chang (1):
+      rtc: rx8010: select REGMAP_I2C
+
+ .../devicetree/bindings/rtc/trivial-rtc.yaml       |   3 +
+ drivers/rtc/Kconfig                                |  10 ++
+ drivers/rtc/Makefile                               |   2 +
+ drivers/rtc/lib.c                                  | 107 +++++++++++++++------
+ drivers/rtc/lib_test.c                             |  81 ++++++++++++++++
+ drivers/rtc/rtc-cmos.c                             |   8 +-
+ drivers/rtc/rtc-rx8025.c                           |  46 ++++++++-
+ drivers/rtc/rtc-s5m.c                              |  48 ++++-----
+ drivers/rtc/rtc-tps65910.c                         |   2 +-
+ 9 files changed, 243 insertions(+), 64 deletions(-)
+ create mode 100644 drivers/rtc/lib_test.c
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
