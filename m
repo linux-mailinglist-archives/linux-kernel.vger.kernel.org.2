@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFF240782B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C27407833
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237131AbhIKNXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:23:43 -0400
-Received: from relay04.th.seeweb.it ([5.144.164.165]:57071 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237244AbhIKNUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 09:20:46 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 1218E1F50A;
-        Sat, 11 Sep 2021 15:19:31 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: [PATCH v3 2/2] clk: qcom: gcc-sdm660: Remove transient global "xo" clock
-Date:   Sat, 11 Sep 2021 15:19:21 +0200
-Message-Id: <20210911131922.387964-3-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210911131922.387964-1-marijn.suijten@somainline.org>
-References: <20210911131922.387964-1-marijn.suijten@somainline.org>
+        id S237160AbhIKNYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:24:11 -0400
+Received: from mout.gmx.net ([212.227.17.20]:35509 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237507AbhIKNVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 09:21:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631366392;
+        bh=l59PM1Fs/cmKt8wqLqgWL72Gp/GHOpUwGSncn3oSEoI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=DbfOkvwS3dekgjP8N2b55KrobJfb9Wtz0XuFCJ0wvmVQGokNhYim4sRlDwnHf77LC
+         g97myHz+QKVoaoJaTyK2Iy2ng7XFXPWLUmTST16Fxg+UhGRsq5tIeziMfXJpQtHvC4
+         +9aHVkh4ntkozBjXWKbzZY4lN3S6sOWpQxWTx81s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MZTqg-1mSwdd49xe-00WTYB; Sat, 11 Sep 2021 15:19:52 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Tom Rix <trix@redhat.com>, linux-hardening@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] memstick: jmb38x_ms: Prefer struct_size over open coded arithmetic
+Date:   Sat, 11 Sep 2021 15:19:33 +0200
+Message-Id: <20210911131933.2089-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:c6Ig4Obe3Q3j3moUxcfS+LciEA5uOCXmbpNQ8tM6qr3ju/cJ2W9
+ QIOASDqowAyl+AetKcDTc3JOINMJkkUpBM9J1A5SYl5bXG9+P6nIWCtLkl/HY+C3XTvlgtt
+ UAzLQI5lfOjt9S/pA4DixRbsIdzZ6zfirD8i7fiRgF/xYmVYhex4k+90eKsfi01mtg37P+F
+ uBayeLNE/hFg+D1h50gTA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rfH7G68vj+E=:8NkfttQKabHCymCsDppJ5q
+ LpnweXmrTNuhOjN3P6qEadw0eQNs4XWOvtmEGY5SmbZivKA6KzGAk0hP+4XnM9Mluh8U14hLX
+ 98/zOEOsZD1OOm3OhkN/mdPeVIn+wqst1TQp0xZ2fa51yHsRqV+lXlnu03TNqnWE9osdPsKmX
+ DVeaX5wFt9XhGAyLwvjTIPMCihgK2sIAMnW5WnN5Gl1zZAzziQiNtBEFFv1WWoQU+IhPgxfZg
+ C7dJASxOxf8m8MJ99Judu2Iur8p7jRP9Xzm/WWTn97ZiCxjBqN+NHtqsXbXQDhHUCtX1YHSPw
+ HL0kHh7PGhlncIlfE9NMDUapRB95T/Tj/Nuv09y5WW5/BvSpZaGYWCf2b1aVmRBbGV3u6SD4h
+ I3w8yoThdyxb2OaSWTx//FKid/qkTlD8qv28HlG6th4Q0dTHMx6jf/9bDf44ihcv6WN1Ov/Ae
+ HkBlOnDV7X1si9+LIlh7+cNR1RIA8A0R8r70if7jcYdOoSDRc+eNhKNb4uOW0n4Sr8nNgVw6y
+ 11zSnNt2skpEVANmdGmRhUXrt7aoI8YmvjjArvsY/Gg5v9viHfItVGqvcWauY1GPiUFNC6GIO
+ V/F8SQRwXO8MZcaev7ctUdDcOFADBROhT2rr4oUip98M1NIP0NDw0wrQIhDak56JGQiPiffG8
+ ZVckQsCbHAH8ksswXYChsCyRNmBzwGptpd5mOh+ZGxUxhakwNrNwoLys+q41Q2n8V/Pu0Z06p
+ VGiNvvbyeTRlYCA44luOoDjBCuA/yXuZTtWBkH1/sISu33QkL8cV1lEPM9yvLKngcr2iIKFBN
+ lELm+KuV1U2rC2Rhia8fDLzxz6nA53HhozcFCK5ig+N0GSym1Im/d85EO5NRY9m0kXnRnKC0z
+ tYg3ZOWa057N99J2EqqfCRFCbYXLbTwLmNSiprov0XeiJBgJ88Exr7IegGKanDKGwqFBrSydN
+ U+oFOnVhkNrbbVpLwyAjK6Wzo7FTVzlRo5kfkiG1Qtsxrb8c6p3APxt8gjsnOTld2NSiVhKxg
+ zyNhrkFVtOS3lUNTtokFx33ZJzxWoj5yxV0YnECevhuuBlfnJyxLAb/cdlUbXduriT6DMLxEX
+ mV+Hty3Ya5mo7g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DSI PHY/PLL was relying on a global "xo" clock to be found, but the
-real clock is named "xo_board" in the DT.  The standard nowadays is to
-never use global clock names anymore but require the firmware (DT) to
-provide every clock binding explicitly with .fw_name.  The DSI PLLs have
-since been converted to this mechanism (specifically 14nm for SDM660)
-and this transient clock can now be removed.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-This issue was originally discovered in:
-https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org/
-and prevented the removal of "xo" at that time.
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() function.
 
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/qcom/gcc-sdm660.c | 14 --------------
- 1 file changed, 14 deletions(-)
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
 
-diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
-index 7fb5adf7fa01..429d12193146 100644
---- a/drivers/clk/qcom/gcc-sdm660.c
-+++ b/drivers/clk/qcom/gcc-sdm660.c
-@@ -37,19 +37,6 @@ enum {
- 	P_GPLL1_EARLY_DIV,
- };
- 
--static struct clk_fixed_factor xo = {
--	.mult = 1,
--	.div = 1,
--	.hw.init = &(struct clk_init_data){
--		.name = "xo",
--		.parent_data = &(const struct clk_parent_data) {
--			.fw_name = "xo"
--		},
--		.num_parents = 1,
--		.ops = &clk_fixed_factor_ops,
--	},
--};
--
- static struct clk_alpha_pll gpll0_early = {
- 	.offset = 0x0,
- 	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-@@ -2280,7 +2267,6 @@ static struct gdsc pcie_0_gdsc = {
- };
- 
- static struct clk_hw *gcc_sdm660_hws[] = {
--	&xo.hw,
- 	&gpll0_early_div.hw,
- 	&gpll1_early_div.hw,
- };
--- 
-2.33.0
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/memstick/host/jmb38x_ms.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb=
+38x_ms.c
+index f9a93b0565e1..a7a0f0caea15 100644
+=2D-- a/drivers/memstick/host/jmb38x_ms.c
++++ b/drivers/memstick/host/jmb38x_ms.c
+@@ -927,8 +927,7 @@ static int jmb38x_ms_probe(struct pci_dev *pdev,
+ 		goto err_out_int;
+ 	}
+
+-	jm =3D kzalloc(sizeof(struct jmb38x_ms)
+-		     + cnt * sizeof(struct memstick_host *), GFP_KERNEL);
++	jm =3D kzalloc(struct_size(jm, hosts, cnt), GFP_KERNEL);
+ 	if (!jm) {
+ 		rc =3D -ENOMEM;
+ 		goto err_out_int;
+=2D-
+2.25.1
 
