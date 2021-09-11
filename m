@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943714078C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272E54078C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhIKORt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 10:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
+        id S236028AbhIKOVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 10:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236304AbhIKORZ (ORCPT
+        with ESMTP id S235788AbhIKOVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 10:17:25 -0400
+        Sat, 11 Sep 2021 10:21:36 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF92C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 07:16:13 -0700 (PDT)
-Received: from dslb-084-059-243-091.084.059.pools.vodafone-ip.de ([84.59.243.91] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mP3nd-0006bt-3B; Sat, 11 Sep 2021 16:16:09 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 12/12] staging: r8188eu: remove unused variable b_hw_radio_off
-Date:   Sat, 11 Sep 2021 16:15:21 +0200
-Message-Id: <20210911141521.24901-13-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210911141521.24901-1-martin@kaiser.cx>
-References: <20210911141521.24901-1-martin@kaiser.cx>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B69C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 07:20:24 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mP3rg-0006kU-3D; Sat, 11 Sep 2021 16:20:20 +0200
+Date:   Sat, 11 Sep 2021 16:20:20 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/18] staging: r8188eu: remove unused functions from
+ odm_interface.c
+Message-ID: <20210911142020.zdau6mvkopv6iaiw@viti.kaiser.cx>
+References: <20210911132635.30369-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911132635.30369-1-straube.linux@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-b_hw_radio_off in struct pwrctrl_priv is not used. Remove it.
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/r8188eu/include/rtw_pwrctrl.h | 1 -
- 1 file changed, 1 deletion(-)
+> This series removes unused and/or empty functions from the file
+> hal/odm_interface.c.
 
-diff --git a/drivers/staging/r8188eu/include/rtw_pwrctrl.h b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-index db049fdd1bdb..69ea7925feef 100644
---- a/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-+++ b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-@@ -70,7 +70,6 @@ struct pwrctrl_priv {
- 	struct work_struct cpwm_event;
- 	u8	bpower_saving;
- 
--	u8	b_hw_radio_off;
- 	u8	reg_rfoff;
- 	u8	reg_pdnmode; /* powerdown mode */
- 	u32	rfoff_reason;
--- 
-2.20.1
+> Tested on x86_64 with Inter-Tech DMG-02.
 
+> Michael Straube (18):
+>   staging: r8188eu: remove empty ODM_ReleaseTimer()
+>   staging: r8188eu: remove unused ODM_AcquireSpinLock()
+>   staging: r8188eu: remove unused ODM_ReleaseSpinLock()
+>   staging: r8188eu: remove unused ODM_FillH2CCmd()
+>   staging: r8188eu: remove unused ODM_sleep_us()
+>   staging: r8188eu: remove unused ODM_InitializeWorkItem()
+>   staging: r8188eu: remove unused ODM_StartWorkItem()
+>   staging: r8188eu: remove unused ODM_StopWorkItem()
+>   staging: r8188eu: remove unused ODM_FreeWorkItem()
+>   staging: r8188eu: remove unused ODM_ScheduleWorkItem()
+>   staging: r8188eu: remove unused ODM_IsWorkItemScheduled()
+>   staging: r8188eu: remove unused ODM_SetTimer()
+>   staging: r8188eu: remove unused ODM_Read2Byte()
+>   staging: r8188eu: remove unused ODM_FreeMemory()
+>   staging: r8188eu: remove unused ODM_AllocateMemory()
+>   staging: r8188eu: remove unused prototype ODM_InitializeTimer()
+>   staging: r8188eu: remove unused ODM_CancelAllTimers()
+>   staging: r8188eu: remove unused ODM_InitAllTimers()
+
+>  drivers/staging/r8188eu/hal/odm.c             | 17 ----
+>  drivers/staging/r8188eu/hal/odm_interface.c   | 80 -------------------
+>  drivers/staging/r8188eu/include/odm.h         |  6 --
+>  .../staging/r8188eu/include/odm_interface.h   | 45 -----------
+>  4 files changed, 148 deletions(-)
+
+
+Looks good to me.
+
+Acked-by: Martin Kaiser <martin@kaiser.cx>
+
+for all patches.
+
+Thanks,
+Martin
