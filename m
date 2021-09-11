@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC074074AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316734074B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhIKCiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 22:38:10 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40805 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231864AbhIKCiJ (ORCPT
+        id S235186AbhIKCkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 22:40:52 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60718 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235061AbhIKCkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 22:38:09 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A282B580D33;
-        Fri, 10 Sep 2021 22:36:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 10 Sep 2021 22:36:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=M
-        ZwiB4t7cgLqvScVDIZR9A1Mim4fiTt+M7GI7d73zms=; b=H+LiH3zHq89scv+vN
-        aIu0hc/isLfU5jfa+wOyLj6+jVyHhqfJex9qqP7MH6RG5fNK67JTj+kTPIJ8rVxT
-        T1bV3pU6M2GBvAlyuugBwmAcrzQM88BnjsARCPwEfUB7GJDbnZsPbN/L0hozartO
-        /PW3VExwPTn3SK16C1ji+OWrBrXOk9mlwOHhBkc5qh6mIr2kVsUNxi6C/vBISVuY
-        tvnbOmByEQPBjsT2jOThZL6HxbVKnsIo44GLENjuKeWOg9F/7M5YsCQojR03dA37
-        grnQ98ctpMennqgG40d9fxCWhcA8oROqpKTYgdmDQe7oLXyZkkU9gydTSMqBnPIK
-        AMybA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=MZwiB4t7cgLqvScVDIZR9A1Mim4fiTt+M7GI7d73z
-        ms=; b=YXpDWxOIL/8VZ5yfptuuZalKkr1XSXs1Ypl4qX+K5Zkau7Cw3lH2epp+J
-        /Uf8/czE9XuucaN9l/YiKt6iLgve29+SAyOQ2XyFiBlc/LzwhJqMu1ami5F/AWsS
-        zmuv0clVpDsq7LZngC5vy4J7jYoWKdQb/IWo61/y58SYFCcWXnDyqhXRREdgubGk
-        DVH5jWstr0URoSracLG8scY5xoKoMpA37qLPtHwKW2I+yNVbxK04ksXjTrTdMxf4
-        FO1XDBpA8MqEiHOvKQziKqzYYP2rJtHzIhS9UQ44jMSB5DBvUOk/e2iaB70k/2bQ
-        RkzC10gHm7oyEABsyR2VHqMx6glUQ==
-X-ME-Sender: <xms:PxY8YRkCQ7DagY8flMijoDh0kUEacLL8-g-XKlZTnynF7w27LzgPuA>
-    <xme:PxY8Yc12bCUDxNlESx3VPqZBgMcim5ec5mb-2TwFxFXtrY6n47KuYhcTziKgFXSrF
-    X84qANXbrFG1Dp1yA>
-X-ME-Received: <xmr:PxY8YXobR6QHdlmHycSQ_Ct8ec7r1H00G5LB8_TmmIzx9aLgpBRRqGE5f-91-Lied0XH5OHfdMdHyvFncdgXqJTzsSXJDCKB2RNiJPJkWpbMSxiUz1X63SffkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegvddgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:PxY8YRm7UToxuHcOCZJF75VSYqkqUiw3BkiEkjlsdthsC7HzDhZHCg>
-    <xmx:PxY8Yf3jNKjkn_NjdHFFEyOex0ONUpP9E4QCgVzvZLbbIeZ22KhPTg>
-    <xmx:PxY8YQv9fDerYHtCaDWaujYoO-8AbcyE7xEPDU9WyYqKjFU-xoqgIw>
-    <xmx:QhY8YU6gs5pimeqB1fWChGZG99tFP0P6cI2KunVIcCdsMwaIVhlvKw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Sep 2021 22:36:47 -0400 (EDT)
-Subject: Re: [PATCH 19/22] soc: sunxi: mbus: Add A31 ISP compatibles to the
- list
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-20-paul.kocialkowski@bootlin.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <208239ba-01b1-451e-6030-894bd25770c3@sholland.org>
-Date:   Fri, 10 Sep 2021 21:36:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 10 Sep 2021 22:40:51 -0400
+Received: from fsav312.sakura.ne.jp (fsav312.sakura.ne.jp [153.120.85.143])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18B2db11057752;
+        Sat, 11 Sep 2021 11:39:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav312.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp);
+ Sat, 11 Sep 2021 11:39:37 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18B2dash057749
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 11 Sep 2021 11:39:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
+ addresses as unhashed
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+References: <20210214161348.369023-1-timur@kernel.org>
+ <20210214161348.369023-4-timur@kernel.org>
+ <467a3c3c-8a52-9a74-c77f-bcb51b03d603@huawei.com>
+Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5f622c8a-0ada-b516-692c-85414cdc8384@i-love.sakura.ne.jp>
+Date:   Sat, 11 Sep 2021 11:39:36 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20210910184147.336618-20-paul.kocialkowski@bootlin.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <467a3c3c-8a52-9a74-c77f-bcb51b03d603@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 1:41 PM, Paul Kocialkowski wrote:
-> The A31 ISP sits on the mbus and requires the usual bus address
-> adaptation. Add its compatibles to the list.
+On 2021/09/11 11:25, Xiaoming Ni wrote:
+> Why do we need to export the no_hash_pointers variable and
+> not declare it in any header file?
 
-My understanding is that this driver only exists to work around old DT
-bindings where the interconnects/interconnect-names = "dma-mem"
-properties are not required (and so they are historically missing from
-the device trees).
+Because lib/test_printf.c wants to use no_hash_pointers for testing
+purpose, and lib/test_printf.c might be built as a loadable kernel module.
+That is, no_hash_pointers is not meant for general use.
 
-For new bindings, it would be better to use those properties and not add
-to this list.
+  config TEST_PRINTF
+  	tristate "Test printf() family of functions at runtime"
 
-Regards,
-Samuel
-
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  drivers/soc/sunxi/sunxi_mbus.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/soc/sunxi/sunxi_mbus.c b/drivers/soc/sunxi/sunxi_mbus.c
-> index d90e4a264b6f..7f0079ea30b1 100644
-> --- a/drivers/soc/sunxi/sunxi_mbus.c
-> +++ b/drivers/soc/sunxi/sunxi_mbus.c
-> @@ -37,6 +37,7 @@ static const char * const sunxi_mbus_devices[] = {
->  	"allwinner,sun5i-a13-video-engine",
->  	"allwinner,sun6i-a31-csi",
->  	"allwinner,sun6i-a31-display-backend",
-> +	"allwinner,sun6i-a31-isp",
->  	"allwinner,sun7i-a20-csi0",
->  	"allwinner,sun7i-a20-display-backend",
->  	"allwinner,sun7i-a20-display-frontend",
-> @@ -50,6 +51,7 @@ static const char * const sunxi_mbus_devices[] = {
->  	"allwinner,sun8i-h3-csi",
->  	"allwinner,sun8i-h3-video-engine",
->  	"allwinner,sun8i-v3s-csi",
-> +	"allwinner,sun8i-v3s-isp",
->  	"allwinner,sun9i-a80-display-backend",
->  	"allwinner,sun50i-a64-csi",
->  	"allwinner,sun50i-a64-video-engine",
-> 
+  obj-$(CONFIG_TEST_PRINTF) += test_printf.o
 
