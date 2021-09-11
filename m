@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A5B407A7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 23:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AA7407A80
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 23:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhIKVUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 17:20:31 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:49089 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhIKVU3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 17:20:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id z26-20020a05660200da00b005b86e36a1f4so11523106ioe.15
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:19:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Jmi3yBWyM3sCdQcNUG7hYrR527zmNHaostTgpyWLE4g=;
-        b=T26Drfl1PHbFTQhJHshs24nO5BgBKqAYUf3/CBA3enKjsWZaU6TiymVgt8lOYrbw/0
-         8Xrmp+2VGytJshNQMW98kbn0zlrVio//u0aWzyz57xx2/2C+IJDqo7zou8f/MYJDcjSC
-         fzHqqnMRbBWBWtCjZKbeOaueTi64a89Di5n5+aYjKYC6JWR//lV+cWT9bKydNVkygHZw
-         6m8tTy2vLcNmPkPl9RRFEkyX1v2PsgwBuKUce4bTwQKr/A0uEQbQU/L5S9lYvj0VDQt9
-         Jc7ciES/DB3Ga5h6Bb5Q7dRlmGnE4iIvemx90WkxvVsUa/Gm4NRpJvZQjjSwGz85YBT9
-         8gpg==
-X-Gm-Message-State: AOAM532lzZJSs/OncLq/h+j4H0b3ZDMi7+zL5OyQQ2dTdcC5bSmoJfPS
-        QeUbh6h/oNiR7093ApxjG5BggqatlbJcr0g4B1C5lcHsOVF/
-X-Google-Smtp-Source: ABdhPJw/wl4HsYKJ/UzPjAAqOxVZVC5DXtimWwIUaaY3Vyc+6GHMU1aF05QQWQLEMf8bn3QU3fpznvpVfWUS70bysyXwRprS2A6h
+        id S234262AbhIKVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 17:23:51 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45283 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229977AbhIKVXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 17:23:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631395349;
+        bh=/X5pSMBX8NUtstDu7Hfg+6MKEl4gDMTVjTjXfKitkT0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Ugc+ie613MTdAg7cRCCNuRmZg+LmP3XvQDgT6p2uDS/q14RzRhCpB8sbY5ogCGPw5
+         KkYRbh+W685FGQD8ea9HFpWWVuhEj+D1D9yI5/F+0LzAAkzc2t4uU11F3I7suEBqkp
+         3cij6Cy+3Putcm4ZxaD3ZCiB7QFwen+jSo0m0fiw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.48] ([91.43.37.105]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0G1n-1nAvLe0V1T-00xHQ4; Sat, 11
+ Sep 2021 23:22:29 +0200
+Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+References: <YTsioP7hPOP47cfn@ls3530>
+ <CAHk-=wjtcSUFiXn4E22SrQBVE0giWZ=m4owA6MmS74C9jW1=dQ@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <09369fe4-7946-2048-7799-6ddb34ce2a91@gmx.de>
+Date:   Sat, 11 Sep 2021 23:20:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7b4b:: with SMTP id m11mr3067729iop.165.1631395156119;
- Sat, 11 Sep 2021 14:19:16 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 14:19:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c4d45205cbbec87f@google.com>
-Subject: [syzbot] riscv/fixes test error: BUG: unable to handle kernel paging
- request in corrupted
-From:   syzbot <syzbot+fd2f89c6e52024e6118d@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wjtcSUFiXn4E22SrQBVE0giWZ=m4owA6MmS74C9jW1=dQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/PkfXx1zp6f+0nKNlF3NQEON5ouWprW0Tkjw/VpknMUybcLtW8J
+ rJD1YwibB5p9iRC7E9YrsRrRoS41rLKtpKdRY4um0dnxuGql0HucYLoqaY9tU0eS3/4hB2I
+ dyTrf3pxd5zeSC0O6gFX/gA2UB0V53zQaBM0/KiqarCu3VdljcrM+Nc9Lg6espFW2dZDcCG
+ WASpfI1lCRgyJuAFqeQWw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:H36gsV98dE8=:UniUoyRtRJAAsyHk5ASdUs
+ 6CCWAZIGkmLv5+sEPzzYmRc604iUve8dBURYo2Y+6DXlx3gIp6qdMwx2ESLjW8nclP99plQ/Y
+ xuthY6hg/+ykewXH/M4WnSMkf6BE3VdQPpyZaHQYRhWfnAKOlcuqU72xVtyBVPzHohNeyaUTS
+ 7nLrogucIWg0ZWSQ3FTLO6MlNmi58ljJJ4mzmPlDVi+2zLvQlOxuG9spFEBMaaDtflsPwGo67
+ yGMxMtvPUxlP/ah+iMu9E0Ol5SYNVqNyZaDNkRSjGasoKiXdbVgVO1gX6VI7skBpHzET+FZ5Z
+ ftmMF2tJPHQnvAvQh5YiG0w9J6kxEgNj5xUZmwIfmCQ+cEZPWpbMHTW/ITfVX8sGX2NrMCL7y
+ JHpTjgSpR3LIgMqoXW3CNp0/SEXFaUqqUpmZIupGwgy5GiBKblh6ZFYTXrF9lLb2pB9uPooCX
+ JD49raU4a4LgDVzXCWxAyUidFVF1N78JXfIww1TVdQweerG0KFn3tn4vmqI8FCUeIXvcSxwxA
+ LyBAeJLlgZ9vYiNYA7vKurN8gKNQhtqmF0N0jggcCFWS/CeKLqxjiSm3FFGa0fEnPu5SdGAqt
+ roFmEcs1lmflZGYo1hwqxuQDtzZS+XTTDVz40nlBUyBJVV2P0S56aYJBxKs7M5yPT+Gc26e3M
+ eBaPeR60QLdpR4hgYAn477pXmDYVoUPKPq8/HlxqaU87P5ou7uF3IoYZ5krCjn5u1WTYHZG3z
+ +XuGw5so/pmN4U+xDliRo1AmR0T0DoEkuAlxI93NHo70jmu9PHDSFzjX3RGOdoANNwSBe3pEy
+ Q57HUxq1vXqdZtINEZSpES1+vcnb8cCHBCpcATW141OhB/I4yWIiHdPYfnopk5aNtYJotMnhG
+ IUhJcXNwTEz/S7yq/Xv0Z8Rf11IZNKhd76r+Iyu9az9CNMoLXhcIHRYO+3F2m1wWXcz2NjSpp
+ emYnaQdc4P5t0Rfp44jHB7VbfKLSsUjB8OYkjUoiqwWDl84x/813N3rz4BEZ0E6lIVzpbYidd
+ 5NiIik5jmI8Nvw/EFrHVIxEYpBbUv7FY4wtGZ1AuQi6e9rM0IxZRm831sJTtjCr1AP1UkLBzA
+ ooeNHzj5YHeqEE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/10/21 8:57 PM, Linus Torvalds wrote:
+> On Fri, Sep 10, 2021 at 2:19 AM Helge Deller <deller@gmx.de> wrote:
+>>
+>> please pull some more parisc architecture fixes for kernel 5.15-rc1 fro=
+m:
+>>
+>>    http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.g=
+it tags/for-5.15/parisc-3
+>
+> Well that doesn't work at all.
+>
+> The *branch* name that you have a few lines lower down in the actual
+> pull request part ('parisc-5.15-3') does work, but I didn't get the
+> tag. I suspect you used the branch name because you couldn't get the
+> wrong tag name to work, and didn't look at why it didn't work.
+>
+> Because looking closer using 'git ls-remote', it's because your tag
+> name was bogus. You actually named it 'for-5.13/parisc-3'.
+>
+> I fixed it up and edited the wrong name after-the-fact, but please be
+> more careful.
 
-syzbot found the following issue on:
+Linus, thanks for fixing it up!
+It was actually a copy'n'paste mistake on my side. I used an old
+git-tag line from my bash history and missed that it was named
+"for-5.13" instead of "for-5.15".
+Sorry for that.
 
-HEAD commit:    7d2a07b76933 Linux 5.14
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=1153e67d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd2f89c6e52024e6118d
-compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: riscv64
+>> * Remove CONFIG_SET_FS incl. KERNEL_DS and USER_DS from parisc and
+>>    switch to __get/put_kernel_nofault()
+>
+> Lovely. Several architectures to go (alpha, arc, csky, h8300, hexagon,
+> ia64, m68k, microblaze, nds32, nios2, openrisc, sh, sparc, um, and
+> xtensa) but it's slowly shrinking..
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fd2f89c6e52024e6118d@syzkaller.appspotmail.com
+That's still quite many... :-)
 
-Unable to handle kernel paging request at virtual address 1ffffffff07aa547
-Oops [#1]
-Modules linked in:
-CPU: 0 PID: 3309 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
-Hardware name: riscv-virtio,qemu (DT)
-Workqueue: events nsim_dev_trap_report_work
-epc : slab_alloc_node mm/slub.c:2884 [inline]
-epc : __kmalloc_node_track_caller+0xb0/0x3d2 mm/slub.c:4653
- ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
- ra : slab_alloc_node mm/slub.c:2880 [inline]
- ra : __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
-epc : ffffffff803e2a20 ra : ffffffff803e29e0 sp : ffffffe0095c3b20
- gp : ffffffff83f967d8 tp : ffffffe00ba397c0 t0 : ffffffe008b544a8
- t1 : 0000000000000001 t2 : ffffffffeddd472a s0 : ffffffe0095c3bc0
- s1 : ffffffe005602140 a0 : 0000000000000000 a1 : 0000000000000007
- a2 : 1ffffffff07aa51f a3 : ffffffff80a9711a a4 : 0000000004000000
- a5 : 0000000000000000 a6 : 0000000000f00000 a7 : 78e919c5cf7e2f00
- s2 : ffffffff83f96adc s3 : 0000000000082a20 s4 : 0000000000001000
- s5 : ffffffffffffffff s6 : ffffffff81538164 s7 : ffffffff83f9a0d0
- s8 : 0000000000000000 s9 : 0000000000082a20 s10: 0000000000000000
- s11: ffffffe008b545c8 t3 : 78e919c5cf7e2f00 t4 : ffffffc40116a8bb
- t5 : ffffffc40116a8bc t6 : ffffffe00eede026
-status: 0000000000000120 badaddr: 1ffffffff07aa547 cause: 000000000000000f
-[<ffffffff803e2a20>] slab_alloc_node mm/slub.c:2884 [inline]
-[<ffffffff803e2a20>] __kmalloc_node_track_caller+0xb0/0x3d2 mm/slub.c:4653
-[<ffffffff821a8952>] kmalloc_reserve net/core/skbuff.c:355 [inline]
-[<ffffffff821a8952>] __alloc_skb+0xee/0x2e2 net/core/skbuff.c:426
-[<ffffffff81538164>] alloc_skb include/linux/skbuff.h:1112 [inline]
-[<ffffffff81538164>] nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:664 [inline]
-[<ffffffff81538164>] nsim_dev_trap_report drivers/net/netdevsim/dev.c:721 [inline]
-[<ffffffff81538164>] nsim_dev_trap_report_work+0x1cc/0x5e6 drivers/net/netdevsim/dev.c:762
-[<ffffffff80063b62>] process_one_work+0x5e0/0xf82 kernel/workqueue.c:2276
-[<ffffffff8006485a>] worker_thread+0x356/0x8e6 kernel/workqueue.c:2422
-[<ffffffff80076554>] kthread+0x25c/0x2c6 kernel/kthread.c:319
-[<ffffffff8000515e>] ret_from_exception+0x0/0x14
----[ end trace fa569262b4bfae4f ]---
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Helge
