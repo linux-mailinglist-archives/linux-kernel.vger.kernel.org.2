@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0170E4075F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF124075F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 11:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhIKJkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 05:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235473AbhIKJkN (ORCPT
+        id S235539AbhIKJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 05:53:18 -0400
+Received: from mail-m17642.qiye.163.com ([59.111.176.42]:34804 "EHLO
+        mail-m17642.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235443AbhIKJxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 05:40:13 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F3BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 02:39:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id m9so6294318wrb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 02:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BzfT+8mL4lnIIztKWMb14N98BJQF3dCybA3fCPHp1cA=;
-        b=GRi0/295tLKKHZERq1UUtuATtq1NANk8QB3E7eoQhEGkmqpdMOVzq29PGKefr6Yz77
-         94cq5nrm0Li3BgK3DWODFJB+ybgOtNgqpVXx9IBOqJPF03D6mrE82XR4i1JaZ3a/Y7Hq
-         PBPmKmVOEJTiB4D9bxKvd8Nm6LNmMsRfGV8bOzZHK7NsvQSJVvPJ4WHkzda0bKQXd+0e
-         Ir9DcsTJo6odp49jWRgqaflCUMQst6ynQIEU5DzfVoGPt1l4jPI3kyJCkvpOtYEbAP1r
-         OOQMtUpCuaGRzu+3khcBhykNxqVNGBJdLtkFX40H/Gi8qbaOFNYgDvuqtU9ZRHqdwGRb
-         s0uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BzfT+8mL4lnIIztKWMb14N98BJQF3dCybA3fCPHp1cA=;
-        b=XGaUMfwWSev3mgLiNReRDsz+V6s0VOtEJqB6LvEWxixVYf25tpJu/t0qumUtS0+ypN
-         T9kLvBotit+IAIviRo55Lp43xW/u1SJFAv8w/fYabpeEserVp1M6KZUz8Fl6jR2pPgef
-         C+kpZUa/0sWhR9AnkXzppo/6QyVpvR+bFzAIj7ecbRzGpuQ4Ag478udc2vv+kKn8Hd+n
-         tzeiqn3XUUnLEnMiPXF/fUqSQnFMHpxbH1nqR8YV/kKumeFd/mFyrE5YvBsLvg0P8NA8
-         Rx/acjkEni20BmKNSICJvlWMAUj04sgEMcVI5UbPzhEvWp64s1XTMdX2eGFy8ZJBlYbP
-         yeBw==
-X-Gm-Message-State: AOAM530Do+NfcFzsQj4s/qK9osX7kftXsZXppn2ojVcWMnmwqnSy6UV7
-        nRW4colj7gkPrei02m356p0=
-X-Google-Smtp-Source: ABdhPJwrQAMC22waHM9G7/C6yt2NkNgHcg9+tAxqYf1Qw1czq8VoYwnRAlFkG5E9HWP8dABbUPjyLQ==
-X-Received: by 2002:adf:cf05:: with SMTP id o5mr2261763wrj.270.1631353139351;
-        Sat, 11 Sep 2021 02:38:59 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
-        by smtp.gmail.com with ESMTPSA id j20sm1231871wrb.5.2021.09.11.02.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 02:38:58 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org,
-        Michael Straube <straube.linux@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: Re: [PATCH 0/7] remove pointers from struct hal_ops
-Date:   Sat, 11 Sep 2021 11:38:57 +0200
-Message-ID: <1858319.rr7sHpn3up@localhost.localdomain>
-In-Reply-To: <20210910205033.3778-1-straube.linux@gmail.com>
-References: <20210910205033.3778-1-straube.linux@gmail.com>
+        Sat, 11 Sep 2021 05:53:16 -0400
+Received: from 2CD-RMPB.local (unknown [113.116.176.115])
+        by mail-m17642.qiye.163.com (Hmail) with ESMTPA id 1370B22012B;
+        Sat, 11 Sep 2021 17:52:02 +0800 (CST)
+Subject: Re: [PATCH 2/3] scsi: libiscsi: fix invalid pointer dereference in
+ iscsi_eh_session_reset
+To:     Mike Christie <michael.christie@oracle.com>, lduncan@suse.com,
+        cleech@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210910010220.24073-1-dinghui@sangfor.com.cn>
+ <20210910010220.24073-3-dinghui@sangfor.com.cn>
+ <302af74d-5b72-5b2f-050a-33f0978e321f@oracle.com>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <2863c857-7121-1e96-0c28-d7f697b99ef7@sangfor.com.cn>
+Date:   Sat, 11 Sep 2021 17:52:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <302af74d-5b72-5b2f-050a-33f0978e321f@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpMTUNWQ00ZGkJPHR0dTU
+        8ZVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PT46Qzo5DD4LAhxCGD48Ikg6
+        I0owFClVSlVKTUhKSE5IQklJTU1PVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkhVSkpNVUpMTVVKSk5ZV1kIAVlBSE1DTDcG
+X-HM-Tid: 0a7bd4456332d998kuws1370b22012b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, September 10, 2021 10:50:26 PM CEST Michael Straube wrote:
-> This series removes some more pointers from struct hal_ops and
-> removes the function rtl8188e_set_hal_ops() that is empty after
-> the removals.
+On 2021/9/11 12:38 上午, Mike Christie wrote:
+> On 9/9/21 8:02 PM, Ding Hui wrote:
+>> like commit 5db6dd14b313 ("scsi: libiscsi: Fix NULL pointer dereference in
+>> iscsi_eh_session_reset"), access conn->persistent_address here is not safe
+>> too.
+>>
+>> The persistent_address is independent of conn refcount, so maybe
+>> already freed by iscsi_conn_teardown(), also we put the refcount of conn
+>> above, the conn pointer may be invalid.
 > 
-> Michael Straube (7):
->   staging: r8188eu: remove mgnt_xmit from struct hal_ops
->   staging: r8188eu: remove hal_xmit from struct hal_ops
->   staging: r8188eu: remove read_bbreg from struct hal_ops
->   staging: r8188eu: remove write_bbreg from struct hal_ops
->   staging: r8188eu: remove read_rfreg from struct hal_ops
->   staging: r8188eu: remove write_rfreg from struct hal_ops
->   staging: r8188eu: remove rtl8188e_set_hal_ops()
+> This shouldn't happen like you describe above, because when we wake up
+> we will see the session->state is ISCSI_STATE_TERMINATE. We will then
+> not reference the conn in that code below.
+> 
+> However, it looks like we could hit an issue where if a user was resetting
+> the persistent_address or targetname via iscsi_set_param -> iscsi_switch_str_param
+> then we could be accessing freed memory. I think we need the frwd_lock when swapping
+> the strings in iscsi_switch_str_param.
 > 
 
-Hi Michael,
+Thanks for your detailed explanation, I'll drop 2/3 and 3/3 in v2 patch.
+I expect that the persistent_address issue be fixed in your future patchset.
 
-This series is good.
+Sorry for my ignorance.
 
-Furthermore, I compiled the whole series with gcc version 11.2.1 2020816 
-[revision 056e324ce46a7924b5cf10f61010cf9dd2ca10e9] (SUSE Linux) one 
-patch at a time. There are no errors or warnings at any time in any of the 
-seven builds.
+> 
+>>
+>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+>> ---
+>>   drivers/scsi/libiscsi.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+>> index 712a45368385..69b3b2148328 100644
+>> --- a/drivers/scsi/libiscsi.c
+>> +++ b/drivers/scsi/libiscsi.c
+>> @@ -2531,8 +2531,8 @@ int iscsi_eh_session_reset(struct scsi_cmnd *sc)
+>>   	spin_lock_bh(&session->frwd_lock);
+>>   	if (session->state == ISCSI_STATE_LOGGED_IN) {
+>>   		ISCSI_DBG_EH(session,
+>> -			     "session reset succeeded for %s,%s\n",
+>> -			     session->targetname, conn->persistent_address);
+>> +			     "session reset succeeded for %s\n",
+>> +			     session->targetname);
+>>   	} else
+>>   		goto failed;
+>>   	spin_unlock_bh(&session->frwd_lock);
+>>
+> 
 
-But, unfortunately, I have no time to test. So the whole series is...
 
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
+-- 
 Thanks,
-
-Fabio
-
-
-
-
-
+-dinghui
