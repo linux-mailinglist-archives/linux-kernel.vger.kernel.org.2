@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316734074B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5004074BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhIKCkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 22:40:52 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:60718 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235061AbhIKCkv (ORCPT
+        id S235208AbhIKCuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 22:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIKCup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 22:40:51 -0400
-Received: from fsav312.sakura.ne.jp (fsav312.sakura.ne.jp [153.120.85.143])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18B2db11057752;
-        Sat, 11 Sep 2021 11:39:37 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav312.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp);
- Sat, 11 Sep 2021 11:39:37 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18B2dash057749
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 11 Sep 2021 11:39:37 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
- addresses as unhashed
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-References: <20210214161348.369023-1-timur@kernel.org>
- <20210214161348.369023-4-timur@kernel.org>
- <467a3c3c-8a52-9a74-c77f-bcb51b03d603@huawei.com>
-Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <5f622c8a-0ada-b516-692c-85414cdc8384@i-love.sakura.ne.jp>
-Date:   Sat, 11 Sep 2021 11:39:36 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 10 Sep 2021 22:50:45 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DE4C061574;
+        Fri, 10 Sep 2021 19:49:33 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id r3so6346996ljc.4;
+        Fri, 10 Sep 2021 19:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jUnTFTRMGBYjF/mbT5UWmnePXXWLexnSKuOC4l7N77Y=;
+        b=ifWsTlUp5NvP7Zk+Hk0YnROYSPPE9lwSXm+tiEaNNi54+FGC5NJXZhQFUpU1nHuCZm
+         Xexp5BII09ScUf/o1qilGAxRjCO9hivw5UvyrZIYUMg00jB6IUHCW+fN/BRoYjUaPJfJ
+         XqfjxgQMut41FUxX0URvUPYMI1Tb3dhnxurY2KzpKK6jkgvtXfG0+Of9F2uaoQZIzUMJ
+         RYsSHypcLvvJ9g75hz8mKX1iGeS9kyQB0WAq0/ufT3PQOx+FX8q72pjY7b3EH6wdTslM
+         Vj1ly8NqrKsv8EhwpQ2k7ys5F029yU3AaImxwBO+7DATvE4CH6cqqz1pwGiJnOCcU3ZN
+         rn0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jUnTFTRMGBYjF/mbT5UWmnePXXWLexnSKuOC4l7N77Y=;
+        b=TKGGQFMn4eVG3fv/CdDEuzywGwyaBMQpYzFsjkKvR4kjMWESqqXkpVPAE57djZ9M8r
+         eRmfChaFM9Nw0Tk74Dg1s8yKihF0HBbPx5MCbk3BWbI461rgl7SrJx9EBXlgRq4BBXQA
+         5t6SFKBO+w2h8THkU76Wwb3uYZB2aTxUPFUqOcmzCRoLAB9FzKXJ/QyhKqV6RMVzvmWA
+         XSmflAzeFZK0oqLrXfH3eVg9qmPy1ab2Hi6VJF8IfTdciQ26e8jYfaK0ZQoiaaOp2g9+
+         JhTsAT4aZG248mSM3Sz4aUwl2YMFYDdk5ogdaAWdAFBmCUXCnmvdluG1UJ+jyU4hjpQi
+         UTAA==
+X-Gm-Message-State: AOAM5333c3bOkHYBqJFsCl8On+PFRNQAXUq7CZJ4CZrblCPANrfPo3f+
+        X/2iYGQG1u49rydkfp3xAgAmYWUaOXaczgExkw4=
+X-Google-Smtp-Source: ABdhPJy+5BpUT6N7sD4/MBdEKUUrw0IIZJf8dJ1I+3L2hlGnpn1BRMxMcNliyh7E53qZqbHedHRUh96wIys447yxgS4=
+X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr582513ljc.375.1631328571880;
+ Fri, 10 Sep 2021 19:49:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <467a3c3c-8a52-9a74-c77f-bcb51b03d603@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
+ <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+ <875yv8d91b.wl-maz@kernel.org> <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
+From:   Magnus Damm <magnus.damm@gmail.com>
+Date:   Sat, 11 Sep 2021 11:49:20 +0900
+Message-ID: <CANqRtoTqV8sOpL=hdxeZ03tqr+5oeMcfwz+9ERqXv+hze_6Fsw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/11 11:25, Xiaoming Ni wrote:
-> Why do we need to export the no_hash_pointers variable and
-> not declare it in any header file?
+Hi Geert, Mark, RMK, everyone,
 
-Because lib/test_printf.c wants to use no_hash_pointers for testing
-purpose, and lib/test_printf.c might be built as a loadable kernel module.
-That is, no_hash_pointers is not meant for general use.
+Thanks for your efforts. Let me just chime in with a few details and a question.
 
-  config TEST_PRINTF
-  	tristate "Test printf() family of functions at runtime"
+On Fri, Sep 10, 2021 at 10:19 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Fri, Sep 10, 2021 at 12:23 PM Marc Zyngier <maz@kernel.org> wrote:
+> > On Thu, 09 Sep 2021 16:22:01 +0100,
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>     GIC: enabling workaround for broken byte access
 
-  obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+Indeed, byte access is unsupported according to the EMEV2 documentation.
 
+The EMEV2 documentation R19UH0036EJ0600 Chapter 7 Interrupt Control on
+page 97 says:
+"Interrupt registers can be accessed via the APB bus, in 32-bit units"
+"For details about register functions, see ARM Generic Interrupt
+Controller Architecture Specification Architecture version 1.0"
+The file  "R19UH0036EJ0600_1Chip.pdf" is the 6th edition version
+published in 2010 and is not marked as confidential.
+
+From my basic research, "ARM Generic Interrupt Controller Architecture
+Specification Architecture version 1.0" is documented in ARM IHI 0048A
+from 2008 (Non-Confidential) which contains:
+"All GIC registers are 32-bit wide." and "All registers support 32-bit
+word access..."
+"In addition, the following registers support byte accesses:"
+"ICDIPR"
+"ICDIPTR"
+
+So the GICv1 documentation says byte access is partially supported
+however EMEV2 documentation says 32-bit access is required.
+
+> > +               .compatible     = "arm,pl390",
+> > +               .init           = gic_enable_rmw_access,
+> > +       },
+
+May I ask about a clarification about the EMEV2 DTS and DT binding
+documentation in:
+arch/arm/boot/dts/emev2.dts
+Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+
+On EMEV2 the DT compatible string currently seems to be the rather
+generic "arm,pl390". In the DT binding documentation GICv1 is listed
+in an example as "arm,cortex-a9-gic". Is there any reason for not
+using the GICv1 compatible string (and 32-bit access) for EMEV2? Just
+curious.
+
+Cheers,
+
+/ magnus
