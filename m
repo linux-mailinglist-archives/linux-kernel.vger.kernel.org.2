@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEC94074D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA804074F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbhIKDe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 23:34:56 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:60279 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235273AbhIKDez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 23:34:55 -0400
-Received: from [IPv6:::1] ([IPv6:2601:646:8600:3c71:7167:9908:f516:fd1e])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 18B3X7IF606345
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 10 Sep 2021 20:33:08 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 18B3X7IF606345
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021083001; t=1631331189;
-        bh=pdG5k43GvDzLKaCCViG8ja7JUnRV8sFeNGROkrEoC1A=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=ESofSvHpJC4jgq28qaFW8Ax9x+zFVvbQrTMPXRHlZlMZVtivH9YoZ4pPnkiZg7IYi
-         msMg9V3ro7FB9t1QFkBF24jqV2n9Mhch+HnJxShweF9bTVmGOwy94B6t14J948N6F1
-         4kl98nkxyCjlV8tIpPqMwxsVaE1NeTFamuLDGr8JTewvQgCcbfVnyghaemCZv53vm9
-         bpUJyx0HJm5H8KXhN4Og7ahEOu7EmfSaD4TXElg3e27W8/2ZAKsKYeZ27uThd8fzuR
-         nGwgxspghHXSX1ZO800ZgfUFCYhPwttOIJJlBnXeyn1/qJiJTZO2HkFK3P8YjDjBBD
-         awxwjn8hUW4Vw==
-Date:   Fri, 10 Sep 2021 20:32:59 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     18341265598@163.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-CC:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhaoge Zhang <18341265598@163.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_kvm=3A_x86=3A_i8259=3A_Converts?= =?US-ASCII?Q?_mask_values_to_logical_binary_values=2E?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <1631330841-3507-1-git-send-email-18341265598@163.com>
-References: <1631330841-3507-1-git-send-email-18341265598@163.com>
-Message-ID: <7CE1178D-729E-400A-A8D5-C8A9CD1BEE26@zytor.com>
+        id S235356AbhIKDuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235390AbhIKDuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 23:50:23 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AB0C0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:05 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d18so2375751pll.11
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=DzaIdSdfFubKopkCOrptYgOiLd7HKVfZtJyuoqzoNt8=;
+        b=C8UBBiko8kEn/wSOUZVcwwN7OH6XGDrT1X48dR7/CZ7kTBkVKWQu5rR/jHct9gqFnU
+         h/gmZWSW2MGUKMqlW7/AA/WhBbDPTc3n1mKjHYCPYj2+0f8ffubhgbjvujGkWobH/uAl
+         ATnCNhGYlbPR0TLuymKV1KyJIfIN5aJ8Ry+iBkaO7AtYTR6hnZTJ4Dbi0Rf83N62Y+bi
+         eEemDpRXY2M7PQaHc1HZ17clcosVJFGZg76MRO/QeF0F+z2L2QqOo9aQB/qkJn5ctKC9
+         plth2//1t4vWhVWIdxFprrxCz92FN+zRf4bNKfPudl2oeQSiLHus29sp6gNmLY7+7jNz
+         lJHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=DzaIdSdfFubKopkCOrptYgOiLd7HKVfZtJyuoqzoNt8=;
+        b=vlgn9LYEF1Qr1lgv1rnhIIyqyxaLHiBgdzBolNKR2wSBf48go1JKD98bEKRYjn+Qdv
+         sFkmEZ+OI+PC55NcfOAi3Au5t+SG60ngn+MMzFfyz4W/PL7M5JjSJ4EkHguO9o9RjbrC
+         Gqk3jp9vETkatk0HkLFxwVMzCcZVnOycgy4PJm7EeBUsKD/cihT3NddvbuEV6zdrR17J
+         n0ds2GNULDgUUEqUuIbkyykGctNLmQXZ2ckjFVMPtB/UTyoE9ee1d7C0/MqlNJHIGcZ3
+         6rX1Ms0cWnJxC6jrN9G/5sAuSnrZ7E5CLpyOweUHqnEPHcwrymz+snbbVKYY81CivHvX
+         cZkA==
+X-Gm-Message-State: AOAM530KyOhAv/HEzR+PHFEImh9s1gbuTpXSFumEDaXoLf1qstovK0vT
+        /3MKEn7yxalOMlCQRqQstK6ZMw==
+X-Google-Smtp-Source: ABdhPJwvLN8bfHfGluy9Iw3pbtnJt2AuK5+jLiz6yCRmD84GF/OziqDW9kPdqQEWqXQfc8FHYONa2g==
+X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr1051170pjv.89.1631332144742;
+        Fri, 10 Sep 2021 20:49:04 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id n1sm301315pfv.209.2021.09.10.20.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 20:49:04 -0700 (PDT)
+Subject: [PATCH v2] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
+Date:   Fri, 10 Sep 2021 20:43:18 -0700
+Message-Id: <20210911034317.1719619-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     hjc@rock-chips.com, heiko@sntech.de, Arnd Bergmann <arnd@arndb.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-! is already booleanizing=2E There is no need to use !!!=2E
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-On September 10, 2021 8:27:21 PM PDT, 18341265598@163=2Ecom wrote:
->From: Zhaoge Zhang <18341265598@163=2Ecom>
->
->Signed-off-by: Zhaoge Zhang <18341265598@163=2Ecom>
->---
-> arch/x86/kvm/i8259=2Ec | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
->diff --git a/arch/x86/kvm/i8259=2Ec b/arch/x86/kvm/i8259=2Ec
->index 0b80263=2E=2Ea8f1d60 100644
->--- a/arch/x86/kvm/i8259=2Ec
->+++ b/arch/x86/kvm/i8259=2Ec
->@@ -92,7 +92,7 @@ static inline int pic_set_irq1(struct kvm_kpic_state *s=
-, int irq, int level)
-> 	mask =3D 1 << irq;
-> 	if (s->elcr & mask)	/* level triggered */
-> 		if (level) {
->-			ret =3D !(s->irr & mask);
->+			ret =3D !!!(s->irr & mask);
-> 			s->irr |=3D mask;
-> 			s->last_irr |=3D mask;
-> 		} else {
->@@ -102,7 +102,7 @@ static inline int pic_set_irq1(struct kvm_kpic_state =
-*s, int irq, int level)
-> 	else	/* edge triggered */
-> 		if (level) {
-> 			if ((s->last_irr & mask) =3D=3D 0) {
->-				ret =3D !(s->irr & mask);
->+				ret =3D !!!(s->irr & mask);
-> 				s->irr |=3D mask;
-> 			}
-> 			s->last_irr |=3D mask;
+cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
+unused function warning is triggered undner !PM_SLEEP.  This marks the
+function as possibly unused, to avoid triggering compiler warnings.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+This is breaking my builds and looks like it'll land after -rc1, so I've put it
+on a shared tag for-rockchip-cdn_dp_resume-v2 which will let me pull it in to
+my fixes.  LMK if you guys want me to send this up on my own, but I'm assuming
+that the drm/rockchip folks will handle it.
+---
+ drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+index 8ab3247dbc4a..13c6b857158f 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+@@ -1123,7 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int cdn_dp_resume(struct device *dev)
++static __maybe_unused int cdn_dp_resume(struct device *dev)
+ {
+ 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
+ 
+-- 
+2.33.0.309.g3052b89438-goog
+
