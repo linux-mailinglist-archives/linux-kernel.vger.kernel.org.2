@@ -2,110 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB97407612
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28459407619
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235634AbhIKKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 06:30:08 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39781 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhIKKaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 06:30:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631356120;
-        bh=kW2/XFCgLeQJ8pAdiZHbaLLR//IPNQFMApFkxDIZUaU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=WBtsBZQz4G7/paKCTF08Zb5U1QgauCNKCCBvanb6wH1x9zXRmsbI68y2CmpVblb5/
-         DCnuY6avzo55meTZwHv0/vgqPtrkqRNlAJueAHSe7z0z6mkbUrN8Tc0pa0mzBN+uOi
-         +zB3F/2TIfN6gn2kHWDi6e/S20kgBRV0pNu75rko=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1M1Hdq-1mNMcU11P0-002rAx; Sat, 11 Sep 2021 12:28:40 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH] net: mana: Prefer struct_size over open coded arithmetic
-Date:   Sat, 11 Sep 2021 12:28:18 +0200
-Message-Id: <20210911102818.3804-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S235608AbhIKKi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235443AbhIKKi1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:38:27 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130C0C061574;
+        Sat, 11 Sep 2021 03:37:15 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id h16so9595976lfk.10;
+        Sat, 11 Sep 2021 03:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=zYH/PMRuODI2BTz4xaOUGZa1cagj47MpPzQ9hxDQv5U=;
+        b=fVgWrEcvTendfUOiqPPY303Llvrpc6t7y0/vi2GrZPObvaI7qM1jzFfZDs5VhIkIg/
+         8qZ6aMOQD76UYEhMnEfVnANl6YPLvZlqC9EMMzGfUm7FMuGX7at2m6ILzzMcdNuVM1zT
+         RCD6vAaJ9+Ki4x1H+jWzSfeaFb9AbTmNHuAmC8KnPMpTtw2nEbu9Xy6f6Ro/O1Paam7I
+         pDA0UF4gnnw3svwrQE/FuBNwF8qwQOuL4E92wk8u2nxfPRfbytqBSgGzZnB0Pas50+6z
+         gtUtM6/faxmwGPe7Mv4Caux1YyCN5IoB1ZmO3rDLHMoBCgyQm+FgewlQ8F3qqk/ef3W1
+         gpKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=zYH/PMRuODI2BTz4xaOUGZa1cagj47MpPzQ9hxDQv5U=;
+        b=oawaNM+NoKIw+kuQXgy/2e6PLyAdJgQLSs/AkHPY4xar49x8D6RsnnVtxQ7AKW1NAW
+         l19ImsJqc/r3UzLRR+L80ydTwoxHtxxcAunk/w5xdm2EDULaQSOtnyb0VgDidF4IC5bU
+         wI8RFKjoHF9MXz5wZYxwNaIkXFw7lONpctQA/iZ40LZ775bsRhgIbB8uVTJYb0Nwpitx
+         cOrCF63/UrqJSW0n9jT2SlO7dB0fmwphHRX/E01tKjDm9+NmLMd4VP1Q9c71lZHm46rp
+         Hl5rOTx5+DI4Dq/oG5upAKVzAdsc769dJlFvWOBLDJgxBrNvc71e4D/yAb6Ghncuq3xe
+         lsEQ==
+X-Gm-Message-State: AOAM530Yp0z5sk1fp5kvwUkGR6ZsfMOT1AG6T+M76mxVQVZfJf8zNN/M
+        dWpWLULJiC3ayHUnx8F6i3FohWBQEmGTiQ==
+X-Google-Smtp-Source: ABdhPJzJkb3GBKYArpyzPh1vyExzN4QgXwAT+lYMdfUeMKgOmI0mmPZR6SAeMkaD9pAAtnniE0Q0/w==
+X-Received: by 2002:ac2:5456:: with SMTP id d22mr1601265lfn.139.1631356632929;
+        Sat, 11 Sep 2021 03:37:12 -0700 (PDT)
+Received: from [192.168.0.150] (0855025014.static.corbina.ru. [89.179.245.198])
+        by smtp.gmail.com with ESMTPSA id r3sm162666lfc.169.2021.09.11.03.37.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Sep 2021 03:37:12 -0700 (PDT)
+To:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        THOBY Simon <Simon.THOBY@viveris.fr>,
+        J Freyensee <why2jjj.linux@gmail.com>,
+        linux-kernel@vger.kernel.org
+From:   Igor Zhbanov <izh1979@gmail.com>
+Subject: [PATCH v6 0/1] NAX (No Anonymous Execution) LSM
+Message-ID: <cb5276ea-d345-54ae-4ba4-646403789388@gmail.com>
+Date:   Sat, 11 Sep 2021 13:37:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dfVEWPwUfXk7WIDTAbTGVLjgPLhUDRc24p6xewK3GBqzbU6DrcU
- ykjnc9cNedQlmlg2HsTJDh+pa11ahYb6Y+2sPn51SUs8CNYG+ggGvmOsFmGmQQ77r9/a55S
- 635XjyqZv/kz30sj90ZoUxbIdPhLVdwaip4p8XoRizgjtM4u7JfPsXt8t4JOwK4SDCTUtrm
- 5Pzh+wyuAZy8g7EzyPK9w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aaZQKqUHAsA=:5UH7+Vp9zv9Ebwsos2eXEL
- B9iNcka0v4OG7PMubbF6LdznXb4ErFlO61hZEhq9oGgckm3FJ5cKWQ6bC5ipCTI2+MA4SK92W
- caQsjELrtMbv2QGtFTKiDEXjhOrnNwJuRtMXY7SnPFkDvfQzrhvrnXPE4k8Dl6wZDlpOssnnB
- 7Md6XCXwhXb8UkN+julAy9NVlC1bD2ntsojt+gzru8JEvgQKl+FEgmFC4rMiabvgWEFdpk6YT
- vSLGf110Znb6tr18K7NJuNP0gYe3Xf0QSIUt3X3dmhQ5Z28f1APyaDisfGrvg5McuOpxiriox
- oNr5gWttuw+wWB0KBjT6gy09FhBv8Wa2Snh1pHG2PKdqU6mYe0C5Lxk4TzHaDqVxye1tL6Pg7
- dO28z09KUC+EIgw6S8XgCQBVx7dm6oRNWqciRZxWO/7JgTCbaueHrnYtvOhaAhWIFpqM829r0
- 9v8XeeePZO7B4DYIylStJa4mfNvq6jmLF5djc5DCcvi/gaTaiYD3vNk9/dXpq+TkKy/g+aEfA
- Z6A473KvK+Vk/6cFyb+9UUEWfvN82lv0L3ds3h/Al3c+OODzmxfT9D9a1G0PleRnBt6JqNAtW
- SlGpWhwEbBo57JGu09iPWi96i2Unng+YUswRioMXwko49w3MoRSAYVeTpADhUhm9OMqiD+gt1
- P+zM/eLcG2vo5UJ9FHqsJrek28qAXjmH4bp/2yHajA97YalRzcXzUvcXMYhWTAIjPP5LyDbO8
- Bm2/KgO8boMYnKYDBfPQczPSGkgDm6UD+aj6shCY9KfHj6iBLr98XGbnZYH715DHm8uN507bJ
- dnIZUXqBE9qkNQqSXlyiWymtlJinnByOgJeOwuaYYmUlnh9CRyb/k/plz86cTGBiEHUd+XDUr
- IZXEg0c18VaopPD1wCJHhpN1xg+lIsALJ+Mbg2hf5JutDHfznaK7mqEzMJkQYY+KejZyp6QZ9
- w0e5Nmfb7xkg3Al2NYG9jcEpuQFRTQP6OWFcEP5lAySuU5Y2cRE5He88sy4DYYaRprCEbEmCo
- 4/aUvhJqiRUfnu8/v+kmZp/aNk2DG+fTaQnpzNkRq+yWLhCvmmS/gbJGYPrimhWlGMUk7KF3y
- 4tVhgpYCBw4awQ=
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+[Overview]
 
-So, use the struct_size() helper to do the arithmetic instead of the
-argument "size + count * size" in the kzalloc() function.
+Fileless malware attacks are becoming more and more popular, and even
+ready-to-use frameworks are available [1], [2], [3]. They are based on
+running of the malware code from anonymous executable memory pages (which
+are not backed by an executable file or a library on a filesystem.) This
+allows effectively hiding malware presence in a system, making filesystem
+integrity checking tools unable to detect the intrusion.
 
-[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
-ed-arithmetic-in-allocator-arguments
+Typically, the malware first needs to intercept the execution flow (e.g.,
+by the means of ROP-based exploit). Then it needs to download the main
+part (in the form of normal executable or library) from its server,
+because it is hard to implement the entire exploit in ROP-based form.
+There are a number of security mechanisms that can ensure the integrity
+of the file-system, but we need to ensure the integrity of the code in
+memory too, to be sure, that only authorized code is running in the
+system.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/net/ethernet/microsoft/mana/hw_channel.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+The proposed LSM is preventing the creation of anonymous executable pages
+for the processes. The LSM intercepts mmap() and mprotect() system calls
+and handles it similarly to SELinux handlers.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/ne=
-t/ethernet/microsoft/mana/hw_channel.c
-index 1a923fd99990..0efdc6c3c32a 100644
-=2D-- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -398,9 +398,7 @@ static int mana_hwc_alloc_dma_buf(struct hw_channel_co=
-ntext *hwc, u16 q_depth,
- 	int err;
- 	u16 i;
+The module allows to block the violating system call or to kill the
+violating process, depending on the settings, along with rate-limited
+logging.
 
--	dma_buf =3D kzalloc(sizeof(*dma_buf) +
--			  q_depth * sizeof(struct hwc_work_request),
--			  GFP_KERNEL);
-+	dma_buf =3D kzalloc(struct_size(dma_buf, reqs, q_depth), GFP_KERNEL);
- 	if (!dma_buf)
- 		return -ENOMEM;
+Currently, the module restricts ether all processes or only the
+privileged processes, depending on the settings. The privileged process
+is a process for which any of the following is true:
++ uid   == 0 && !issecure(SECURE_NOROOT)
++ euid  == 0 && !issecure(SECURE_NOROOT)
++ suid  == 0 && !issecure(SECURE_NOROOT)
++ cap_effective has any capability except of kernel.nax.allowed_caps
++ cap_permitted has any capability except of kernel.nax.allowed_caps
 
-=2D-
-2.25.1
+Checking of uid/euid/suid is important because a process may call
+seteuid(0) to gain privileges (if SECURE_NO_SETUID_FIXUP secure bit
+is not set).
+
+The sysctl parameter kernel.nax.allowed_caps allows to define safe
+capabilities set for the privileged processes.
+
+[JIT]
+
+Because of blocked anonymous code execution, JIT-compiled code, some
+interpreters (which are using JIT) and libffi-based projects can be
+broken.
+
+Our observation shows that such processes are typically running by a
+user, so they will not be privileged, so they will be allowed to use
+anonymous executable pages.
+
+But for small embedded set-ups it could be possible to get rid of such
+processes at all, so the module could be enabled without further
+restrictions to protect both privileged and non-privileged processes.
+
+In addition, libffi can be modified not to use anonymous executable
+pages.
+
+[Similar implementations]
+
+Although SELinux could be used to enable similar functionality, this LSM
+is simpler. It could be used in set-ups, where SELinux would be overkill.
+
+There is also SARA LSM module, which solves similar task, but it is more
+complex.
+
+[Cooperation with other security mechanisms]
+
+NAX LSM is more useful in conjunction with IMA. IMA would be responsible
+for integrity checking of file-based executables and libraries, and
+NAX LSM would be responsible for preventing of anonymous code execution.
+
+Alternatively, NAX LSM can be used with read-only root file system,
+protected by dm-verity/fs-verity.
+
+[TODO]
+- Implement xattrs support for marking privileged binaries on a per-file
+  basis and protect them with EVM.
+- Store NAX attributes in the per-task LSM blob to implement special
+  launchers for the privileged processes, so all of the children processes
+  of such a launcher would be allowed to have anonymous executable pages
+  (but not to grandchildren).
+- Add /proc/self/mem writing ptrace protection.
+
+[Links]
+
+[1] https://blog.fbkcs.ru/elf-in-memory-execution/
+[2] https://magisterquis.github.io/2018/03/31/in-memory-only-elf-execution.html
+[3] https://www.prodefence.org/fireelf-fileless-linux-malware-framework/
+
+[Credits]
+
+Thanks to Mimi Zohar for consulting and to Simon Thoby and Randy Dunlap for
+thorough review.
+
+[Changelog]
+
+V6
+- Allow to set command-line options in arbitrary order.
+- Replace strlen() with strnlen() in command-line parameter parsing.
+
+V5
+- Move max_mode out of #ifdef scope to fix build.
+
+V4
+- Fix indentation issues and typos in Kconfig.
+
+V3
+- Fix memory leak in allowed_caps assigning code.
+- Protect allowed_caps updating with a spinlock.
+- Fix Kconfig options description.
+- Add example for allowed_caps value.
+- Fix typo in documentation.
+
+V2
+- Fixed typo in Kconfig.
+- Fixed "cap_effective" and "cap_permitted" parameters description in NAX.rst.
+- Added "nax_allowed_caps" setup parameter. Factored out capabilities parsing
+  logic.
+- Added parameter for checking all processes (not only privileged).
+- Added Kconfig parameter for setting allowed capabilities.
+- Updated nax_file_mprotect() to avoid calling of nax_mmap_file() to avoid
+  duplicated checks.
+- Protect allowed_caps with RCU.
+- Fixed all errors and most warning found by checkpatch.pl.
+- Updated the module documentation. Added description of the boot parameters to
+  kernel-parameters.
+- Updated commit message.
+
+V1:
+- Initial implementation.
+
+Igor Zhbanov (1):
+  NAX LSM: Add initial support
+
+ Documentation/admin-guide/LSM/NAX.rst         |  69 +++
+ Documentation/admin-guide/LSM/index.rst       |   1 +
+ .../admin-guide/kernel-parameters.rst         |   1 +
+ .../admin-guide/kernel-parameters.txt         |  32 ++
+ security/Kconfig                              |  11 +-
+ security/Makefile                             |   1 +
+ security/nax/Kconfig                          | 113 +++++
+ security/nax/Makefile                         |   4 +
+ security/nax/nax-lsm.c                        | 469 ++++++++++++++++++
+ 9 files changed, 696 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/admin-guide/LSM/NAX.rst
+ create mode 100644 security/nax/Kconfig
+ create mode 100644 security/nax/Makefile
+ create mode 100644 security/nax/nax-lsm.c
+
+
+base-commit: a3fa7a101dcff93791d1b1bdb3affcad1410c8c1
+-- 
+2.26.2
 
