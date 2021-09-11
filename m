@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8C3407855
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F74C407858
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238755AbhIKNai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238626AbhIKN3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 09:29:20 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B8EC0613A9
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:21 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so3254853wms.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 06:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=K81N07aeMQ4yN5JOc3ofjhpo4aDsEShDa2X3/T0mFkw=;
-        b=mJVud1bpL5+mCNsNgUMdSY6AQkJfEV5lf4D+kCmTB9c5l5t+RZUurqUYqMwILOK5Sx
-         DyozchwAnLCOGPxPPLIt+Z20G+yuypJRtpVHHF5YDmCYGLY+K3GGRT+FgZq5I7hFckij
-         7e1Z3FQ0yy/+7uyicW6hUAlgwl2rOveiMrU0mGoLz5NLnge/fSt1ePjC1dxvZIYgfFaR
-         mIICwaNiMLlfZoplsrzaxL2hUtOjJ240r9tNFWC8gRxwb5biWgwhmgG02xeAFBSgFb5/
-         C8k09UgyaUGNbR02KE1hXvUpm6vGWzfmP2CtOIeFvXyEUjilfBiiAeV94hDiO15qWk+w
-         Df4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K81N07aeMQ4yN5JOc3ofjhpo4aDsEShDa2X3/T0mFkw=;
-        b=dDiVnp/Fns08S2cj3nWEEOlepO+ATSmTh662azZUW+DlETz37tGyE56f31WXg3KyRX
-         gELc94eER//oOgx3+Q39nRRljqFpv2sByXA8efwQ/TdJOT34Jg4EaRc7yMS/p7xrDuxo
-         DqiMq5UJQUH6Hbe/yqoR0UiNFKBeyWOJ1siWw+nK7PSR/yYo5rA+UT81XVX0DN0JZgU5
-         9N4a/LVBhrMk2X6rDCGB7yRAIGvkwz3RUewll1hej1LnF6uaS4edFEkou4no/UGs8xwl
-         cc8OMbQMoSYxgP0otb9JbVY3MxDTe++eN5xr+xv4AMrIg2RxE4YJH0I28FSHzUixa4+H
-         EGYQ==
-X-Gm-Message-State: AOAM531NcHDpKQXSFUvcmR20vUctfXj9+OBU3nZzwqVAgaTN711jKujM
-        he1Hl7zEO/079EOPwQyDZrA=
-X-Google-Smtp-Source: ABdhPJyR9cl3+3PlylS609rU04lnnhCWGdcA2gbtBWPnjdHks33G0PKp+/6hh+9DQk358tK//QBeuw==
-X-Received: by 2002:a1c:7ec9:: with SMTP id z192mr2773844wmc.152.1631366840602;
-        Sat, 11 Sep 2021 06:27:20 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id 48sm1770253wrc.14.2021.09.11.06.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 06:27:20 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 18/18] staging: r8188eu: remove unused ODM_InitAllTimers()
-Date:   Sat, 11 Sep 2021 15:26:35 +0200
-Message-Id: <20210911132635.30369-19-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210911132635.30369-1-straube.linux@gmail.com>
-References: <20210911132635.30369-1-straube.linux@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236042AbhIKNbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:31:43 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11562 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235906AbhIKNbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 09:31:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="208536828"
+X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
+   d="scan'208";a="208536828"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2021 06:30:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
+   d="scan'208";a="550274601"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2021 06:30:27 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf script: Fix ip display when type != attr->type
+Date:   Sat, 11 Sep 2021 16:30:53 +0300
+Message-Id: <20210911133053.15682-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function ODM_InitAllTimers() is unused, remove it.
+set_print_ip_opts() was not being called when type != attr->type
+because there is not a one-to-one relationship between output types
+and attr->type. That resulted in ip not printing.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+The attr_type() function is removed, and the match of attr->type to
+output type is corrected.
+
+Example on ADL using taskset to select an atom cpu:
+
+ # perf record -e cpu_atom/cpu-cycles/ taskset 0x1000 uname
+ Linux
+ [ perf record: Woken up 1 times to write data ]
+ [ perf record: Captured and wrote 0.003 MB perf.data (7 samples) ]
+
+ Before:
+
+  # perf script | head
+         taskset   428 [-01] 10394.179041:          1 cpu_atom/cpu-cycles/:
+         taskset   428 [-01] 10394.179043:          1 cpu_atom/cpu-cycles/:
+         taskset   428 [-01] 10394.179044:         11 cpu_atom/cpu-cycles/:
+         taskset   428 [-01] 10394.179045:        407 cpu_atom/cpu-cycles/:
+         taskset   428 [-01] 10394.179046:      16789 cpu_atom/cpu-cycles/:
+         taskset   428 [-01] 10394.179052:     676300 cpu_atom/cpu-cycles/:
+           uname   428 [-01] 10394.179278:    4079859 cpu_atom/cpu-cycles/:
+
+ After:
+
+  # perf script | head
+         taskset   428 10394.179041:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
+         taskset   428 10394.179043:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
+         taskset   428 10394.179044:         11 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
+         taskset   428 10394.179045:        407 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
+         taskset   428 10394.179046:      16789 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
+         taskset   428 10394.179052:     676300 cpu_atom/cpu-cycles/:      7f829ef73800 cfree+0x0 (/lib/libc-2.32.so)
+           uname   428 10394.179278:    4079859 cpu_atom/cpu-cycles/:  ffffffff95bae912 vma_interval_tree_remove+0x1f2 ([kernel.kallsyms])
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/staging/r8188eu/hal/odm.c     | 5 -----
- drivers/staging/r8188eu/include/odm.h | 2 --
- 2 files changed, 7 deletions(-)
+ tools/perf/builtin-script.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 0e5b14051ffd..d23e9296a10e 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -1404,11 +1404,6 @@ void odm_RSSIMonitorCheckAP(struct odm_dm_struct *pDM_Odm)
- {
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 0e824f7d8b19..6211d0b84b7a 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -368,16 +368,6 @@ static inline int output_type(unsigned int type)
+ 	return OUTPUT_TYPE_OTHER;
  }
  
--void ODM_InitAllTimers(struct odm_dm_struct *pDM_Odm)
+-static inline unsigned int attr_type(unsigned int type)
 -{
--	timer_setup(&pDM_Odm->DM_SWAT_Table.SwAntennaSwitchTimer, odm_SwAntDivChkAntSwitchCallback, 0);
+-	switch (type) {
+-	case OUTPUT_TYPE_SYNTH:
+-		return PERF_TYPE_SYNTH;
+-	default:
+-		return type;
+-	}
 -}
 -
- /* 3============================================================ */
- /* 3 Tx Power Tracking */
- /* 3============================================================ */
-diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-index 4a5a7c754008..dd0681c138a8 100644
---- a/drivers/staging/r8188eu/include/odm.h
-+++ b/drivers/staging/r8188eu/include/odm.h
-@@ -1135,8 +1135,6 @@ void ODM_CmnInfoPtrArrayHook(struct odm_dm_struct *pDM_Odm,
+ static bool output_set_by_user(void)
+ {
+ 	int j;
+@@ -556,6 +546,18 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
+ 		output[type].print_ip_opts |= EVSEL__PRINT_SRCLINE;
+ }
  
- void ODM_CmnInfoUpdate(struct odm_dm_struct *pDM_Odm, u32 CmnInfo, u64 Value);
++static struct evsel *find_first_output_type(struct evlist *evlist,
++					    unsigned int type)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (output_type(evsel->core.attr.type) == (int)type)
++			return evsel;
++	}
++	return NULL;
++}
++
+ /*
+  * verify all user requested events exist and the samples
+  * have the expected data
+@@ -567,7 +569,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
+ 	struct evsel *evsel;
  
--void ODM_InitAllTimers(struct odm_dm_struct *pDM_Odm);
--
- void ODM_AntselStatistics_88C(struct odm_dm_struct *pDM_Odm, u8 MacId,
- 			      u32 PWDBAll, bool isCCKrate);
+ 	for (j = 0; j < OUTPUT_TYPE_MAX; ++j) {
+-		evsel = perf_session__find_first_evtype(session, attr_type(j));
++		evsel = find_first_output_type(session->evlist, j);
  
+ 		/*
+ 		 * even if fields is set to 0 (ie., show nothing) event must
 -- 
-2.33.0
+2.17.1
 
