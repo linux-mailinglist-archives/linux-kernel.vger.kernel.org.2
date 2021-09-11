@@ -2,78 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDC3407830
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7315F4077D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236836AbhIKNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 09:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237035AbhIKNVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 09:21:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B0561245;
-        Sat, 11 Sep 2021 13:14:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631366072;
-        bh=Hk6/lm38Mo/E7s7d+TYfx7X+xQAAR/8dc+MEWNECQQA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hd90TZHFsaQ438vX7IBAf/qITDQEi7TfXfJyR1+R3iw3bx1hhssdkP9uKxUBgL7O7
-         VCpJtimunka/ABZxaEDvp48kirjooa0hTiKn69rQ22kVbzEK9Cr7Pmu7ac/t3zDZjQ
-         ruE8uK21QlYbG0LCF1vEQ+cCrrGF9n747VS8aa0LEnSaTSEy1Sb98LZkEz49jU+HIT
-         aBmdZwDQIGnm0BO/XAoSIidiYrX7z07f9f/PyR/AF9UqTuY33CyZ1BYsnUWOvcl4NY
-         2rx7ncq3VEaXGVr6MOiILxCdh9FtU3KXCMP+Nk9O6Qz1Q4GGMZCvrLGJmAjog2BP/t
-         TRm0pJWnWJ8uA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 2/2] ethtool: Fix an error code in cxgb2.c
-Date:   Sat, 11 Sep 2021 09:14:29 -0400
-Message-Id: <20210911131429.286330-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210911131429.286330-1-sashal@kernel.org>
-References: <20210911131429.286330-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S236872AbhIKNUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 09:20:51 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:65488 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236519AbhIKNRm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 09:17:42 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 56793741;
+        Sat, 11 Sep 2021 15:16:19 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 15:16:19 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     jassisinghbrar@gmail.com, sven@svenpeter.dev, robh+dt@kernel.org,
+        marcan@marcan.st, alyssa@rosenzweig.io,
+        mohamed.mediouni@caramail.com, stan@corellium.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210907145501.69161-3-sven@svenpeter.dev> (message from Sven
+        Peter on Tue, 7 Sep 2021 16:55:00 +0200)
+Subject: Re: [PATCH 2/3] dt-bindings: mailbox: Add Apple mailbox bindings
+References: <20210907145501.69161-1-sven@svenpeter.dev> <20210907145501.69161-3-sven@svenpeter.dev>
+Message-ID: <5614518fc7343342@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+> From: Sven Peter <sven@svenpeter.dev>
+> Date: Tue,  7 Sep 2021 16:55:00 +0200
+> 
+> Apple mailbox controller are found on the M1 and are used for
+> communication with various co-processors.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  .../bindings/mailbox/apple,mailbox.yaml       | 81 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
 
-[ Upstream commit 7db8263a12155c7ae4ad97e850f1e499c73765fc ]
-
-When adapter->registered_device_map is NULL, the value of err is
-uncertain, we set err to -EINVAL to avoid ambiguity.
-
-Clean up smatch warning:
-drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
-error code 'err'
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-index f5f1b0b51ebd..79eb2257a30e 100644
---- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-@@ -1133,6 +1133,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (!adapter->registered_device_map) {
- 		pr_err("%s: could not register any net devices\n",
- 		       pci_name(pdev));
-+		err = -EINVAL;
- 		goto out_release_adapter_res;
- 	}
- 
--- 
-2.30.2
-
+Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
