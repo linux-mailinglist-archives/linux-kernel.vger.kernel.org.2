@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2262840762F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAC5407634
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbhIKLBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 07:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        id S233265AbhIKLJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 07:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233746AbhIKLBu (ORCPT
+        with ESMTP id S230249AbhIKLJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 07:01:50 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA94C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 04:00:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so3191326pji.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 04:00:38 -0700 (PDT)
+        Sat, 11 Sep 2021 07:09:19 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C466C061574;
+        Sat, 11 Sep 2021 04:08:07 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id r2so4341424pgl.10;
+        Sat, 11 Sep 2021 04:08:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LMOWBn/u3aVqbnWmF8p6o8arazc7UvhFXaE3d67u6n4=;
-        b=QN7SJrTyCSMIyBHAc17ieT6dplKOZbkE5rooPK1SQ14X4xBKVqgd3AWSEfSLXX0lIJ
-         hz8ASHsktLblp54wrq+oizyk4nxhAd6Syku/hay86bw7DywlNeZ1gbjfZtVvuIf30Cn4
-         Ez3PXcTQNbYW8k7YDERRrLNGyberXh8uZatjwIwNGUw6yPc/iWZJyLdcYt82Y7/p2aO7
-         K8Np2VFafUo8P01L5Gtq8jVR587gQ33yVvkGAPU/9ba78gTYgBdhg1dyHNxc5lplsWN0
-         4hSaLhfiCqpT8kECOa3ix5k2WOrBeEb+/AotOtTsJZwjFKBsLCxzCa0vID2ZSiZaCbbi
-         nwlQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4es3kUrpxlo/ai9htg725cFtyTD4npguzIjRNqpnOo=;
+        b=o+uEAr2oRiDOkAyc1jJ2bzoRuCcI2PDjMAKgqcWA96V3LJeMbCsTaKxdb8prnGIsid
+         HbrtfwQnXHKOwIm+ys544iny6W+FnQX4URYzdl+3mG07y4ekaJYDVrgo4dkyKkIeJNJT
+         Aa5Irzpdfmf+MNB51mgC7p4tFTASgZc5yPuUlFXlRWRx6AwrEEOD5/EAZtn5PIiBpE//
+         7vcunVeWLPthLvWWh+yuEIDs2IIdLV4u9d/aVbCuRoq8e2FTFLR61nb5ULOlOAVIa6gf
+         WxGywjWfJ8+HNjmecaO3Ee36ermJP0fYCAhGPfiEI8gX9ifAJWU7Bp7yIeCvfV5/E8Om
+         EsfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LMOWBn/u3aVqbnWmF8p6o8arazc7UvhFXaE3d67u6n4=;
-        b=omcBYt6DedlNeyny0aJwgvXCOlAVXpkLUBL5d2tSyfQBkLqO0HKotljLRBBa8Uq1AZ
-         hCeqDRtxmDgfKDa95knS2dGgg14+7sHaAdK+y3st8lXvbtNzJGtINhRLSsCxWAQSG6TC
-         1qoDlXBRzpUAs7/+PyhlIrWqB2sKyXRiLUNDQKOCjKd0ntZ8BWX1BXgT9ZU7MF4BU2aY
-         81s99uzJR4CjbSrLNwBSN8YQBwc97ry71hqIOBDNvz8i8afBpuMtijR7Yq200X6Yod/+
-         JwgcIBXiMoo16aTMdLbv2cngJisLByB/KNK1/PzTqfRyYNDbV8D5DTYZTt4sI9+euTXa
-         3+Yg==
-X-Gm-Message-State: AOAM533QYtXhFL/f29+wtYt+gdfkMyVxNH7wrFK9nHsfJDftEFfZ02Qb
-        qFiWsuE41sLdfsTJFFf3wpDno1kFbNs43WxAMcVhKg==
-X-Google-Smtp-Source: ABdhPJy5cGNaclwU+Wu7lP6BWkQDF5adMjybClEbKDSLZmxMjfP4ZCWLYauxivTUNLyUwHfncbGeD7NsKBTRJr1L2ns=
-X-Received: by 2002:a17:902:e846:b0:13a:479:33e5 with SMTP id
- t6-20020a170902e84600b0013a047933e5mr1986123plg.25.1631358037720; Sat, 11 Sep
- 2021 04:00:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4es3kUrpxlo/ai9htg725cFtyTD4npguzIjRNqpnOo=;
+        b=JaaY4XHpgoQkOPt2AsmpXtFMqrvNZhhc3/30Kvfl5HoamaJFC00ldbsb8pj4ifJE9T
+         GW1+ZkFIN3c+0RWCDpzRgzYbBjsNRmIEheuGMLZfaMuBICT5TogkBaBkumurnJBBUDsd
+         XewizmhN2fC2PeAa46kGkCmtq4m81GaFk9U75eHLWS/xN7UTAjfi3X6hiDVIztOW18YR
+         ohiTLhv5ZUy1qsHdcZjp4vNHfJGEJkJv624/fvTyxHrPlMOvj02fZnvJTAuqDJvR9q3x
+         65XwYRxykMlzq8msxDFNnFtQvAtamoAjETD17QuGCrR/GlEN556R4n/kf5K13WMnyrB8
+         otzQ==
+X-Gm-Message-State: AOAM532PTtDeH0ESiOYq7pr4JwkYnwSXtW8EMjygPSYU1FYfbWETZ/kB
+        7fkLomaZWbqY2h0C23/bn1I=
+X-Google-Smtp-Source: ABdhPJwhBd31PovJLTa8a4R4C95M3f3fFQwbD7fw46AVnlLzsshCZuRCf1GJmDC3LKQsm0yrCaC/hw==
+X-Received: by 2002:a63:5f08:: with SMTP id t8mr2043564pgb.353.1631358486984;
+        Sat, 11 Sep 2021 04:08:06 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6f15:d26f:133e:cd11:90dd])
+        by smtp.googlemail.com with ESMTPSA id d4sm1558839pjo.12.2021.09.11.04.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Sep 2021 04:08:06 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] crypto: x86/aes-ni - check walk.nbytes instead of err
+Date:   Sat, 11 Sep 2021 16:37:59 +0530
+Message-Id: <20210911110759.40911-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210910211600.5663-1-lumip@lumip.de> <e3efb5ea-0884-c02a-cb81-408ec421463d@infradead.org>
-In-Reply-To: <e3efb5ea-0884-c02a-cb81-408ec421463d@infradead.org>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 11 Sep 2021 12:00:27 +0100
-Message-ID: <CAA=Fs0mEprM0hErRY-kw7bOVqEw3o6X=--OixQ=_fNXdV_-QGQ@mail.gmail.com>
-Subject: Re: [PATCH v3] drivers/cdrom: improved ioctl for media change detection
-To:     Lukas Prediger <lumip@lumip.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sept 2021 at 22:41, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Hi Lukas,
->
-> Just a minor nit:
->
-> On 9/10/21 2:16 PM, Lukas Prediger wrote:
-> > +#define MEDIA_CHANGED_FLAG   0x1     /* Last detected media change was more \
-> > +                                      * recent than last_media_change set by\
-> > +                                      * caller.                             \
-> > +                                      */
->
-> Drop the "continuation" backslashes.
-> They are not needed.
->
-> thanks.
-> --
-> ~Randy
->
+In the code for xts_crypt(), we check for the err value returned by
+skcipher_walk_virt() and return from the function if it is non zero.
+However, skcipher_walk_virt() can set walk.nbytes to 0, which would cause
+us to call kernel_fpu_begin(), and then skip the kernel_fpu_end() call.
 
-Dear Lukas,
+This patch checks for the walk.nbytes value instead, and returns if
+walk.nbytes is 0. This prevents us from calling kernel_fpu_begin() in
+the first place and also covers the case of having a non zero err value
+returned from skcipher_walk_virt().
 
-Happy to take these out for you and save you resubmitting.
-I'm very happy with patch anyway. Once I hear back from
-you I'll send onto Jens with my approval after one final test :-)
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+---
+ arch/x86/crypto/aesni-intel_glue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks again for the code.
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index 0fc961bef299..e09f4672dd38 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -866,7 +866,7 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+ 		req = &subreq;
+ 
+ 		err = skcipher_walk_virt(&walk, req, false);
+-		if (err)
++		if (!walk.nbytes)
+ 			return err;
+ 	} else {
+ 		tail = 0;
+-- 
+2.31.1
 
-Regards,
-Phil
