@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFCC407692
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9A5407694
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhIKMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 08:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S235794AbhIKMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 08:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhIKMXe (ORCPT
+        with ESMTP id S230249AbhIKMZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 08:23:34 -0400
+        Sat, 11 Sep 2021 08:25:39 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3523EC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 05:22:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42153C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 05:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GUNcEutT0mEBhENHiF0F3UXb+JNzNoJHfhcJSMtDZCI=; b=NzESvma6fyq52V87bsGMq4yXgV
-        4ILtCo6/hbS+L2UPQ2Oxvg/qmIANgVtKvy0jIpPJEm79aSN7XAk2GsODoqwL8ppkSfc4iXdGXfd8s
-        Uz22cpOKOX11A0BluXHUeCacvTLWUHlQda28fxtwRVgJcaLXmWEI1Zc1AAhhQH/WclAvOvL2Tgxpc
-        BcU71TNP3vM13VyTHbAQ+gOr2ZGl5QEdOllhtz7MRoY4ftXHZW4kYfur4LQMGp6Iexni+Xl8RJqze
-        uZU2NvNNZ6zz/w86XU8N/9BSyoZ6BzbyketHm19qSGQ8h+LgjzKV0MqHqOKwH6MiBIRtXzETEKF3C
-        2wDrdwUQ==;
+        bh=oe2/Kltpm9QvzVcCViYPsuS3iZQ1CLBgukRDQOqq9mo=; b=c3D7KRumRC6Ixcoump3FpxjikM
+        XYiRb24ZWO9FvlWNhZFJBnH8ZtXGCGbsvX9QXSQjG+op/ve7Fwtr5iWxFHIIZXeRMrYH68q2c7BOv
+        cG1DsdaXiPdorRmBLpAx+yS87nC3t2NM6p+y3du6lYofqR7LkWakatiFNWF0eIi3NBB2Tp210luGg
+        lLi9YVPieOwF6j750CV9WmaQwVp5gxsOdH4NOuvU66BBw+NZzRKSsRkxZSiQkgamnTkbQwVYzMLvG
+        tuGKDoozsRuiGa4TZ9rUTPz7GHPMiRHgRqJZPagwGBVOCNmRdXT9UrX8EWqGXnzOU7R6DAn4fLOhi
+        xfOB/7Fw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mP21R-002N6d-2y; Sat, 11 Sep 2021 12:22:17 +0000
+        id 1mP23P-002N7z-Fo; Sat, 11 Sep 2021 12:24:19 +0000
 Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A7D379862C9; Sat, 11 Sep 2021 14:22:16 +0200 (CEST)
-Date:   Sat, 11 Sep 2021 14:22:16 +0200
+        id 163129862C9; Sat, 11 Sep 2021 14:24:19 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 14:24:19 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH peterz-queue:sched/core] sched: fix build warning with W=1
-Message-ID: <20210911122216.GX4323@worktop.programming.kicks-ass.net>
-References: <20210911082505.115758-1-laoar.shao@gmail.com>
+To:     "Chen, Rong A" <rong.a.chen@intel.com>
+Cc:     kernel test robot <lkp@intel.com>, Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <Valentin.Schneider@arm.com>
+Subject: Re: [kbuild-all] Re: [peterz-queue:sched/core 8/11]
+ include/linux/sched.h:1722:57: warning: unused parameter 'dst'
+Message-ID: <20210911122419.GY4323@worktop.programming.kicks-ass.net>
+References: <202108210940.aD3d42zA-lkp@intel.com>
+ <YSNkCAyMU0tJoedT@hirez.programming.kicks-ass.net>
+ <428f3e9a-a8d3-51ca-5e2e-caa50b8da3eb@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210911082505.115758-1-laoar.shao@gmail.com>
+In-Reply-To: <428f3e9a-a8d3-51ca-5e2e-caa50b8da3eb@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 08:25:05AM +0000, Yafang Shao wrote:
-> kernel test robot reported some build warnings with W=1 as below,
+On Mon, Aug 23, 2021 at 05:16:05PM +0800, Chen, Rong A wrote:
 > 
-> kernel/sched/fair.c:892:34: warning: variable 'stats' set but not used
-> kernel/sched/core.c:10238:42: warning: variable 'stats' set but not used
-> kernel/sched/fair.c:893:29: warning: variable 'p' set but not used
-> kernel/sched/rt.c:1292:29: warning: variable 'p' set but not used
-> kernel/sched/deadline.c:1486:34: warning: variable 'stats' set but not used
-> arch/nds32/include/asm/current.h:10:13: warning: variable '$r25' set but not used
 > 
-> These warnings happen when CONFIG_SCHEDSTATS is not set, in which
-> case the schedstat_* functions will be none. We should add
-> '__maybe_unused' to fix it
+> On 8/23/2021 5:02 PM, Peter Zijlstra wrote:
+> > On Sat, Aug 21, 2021 at 09:20:50AM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
+> > > head:   234b8ab6476c5edd5262e2ff563de9498d60044a
+> > > commit: b90ca8badbd11488e5f762346b028666808164e7 [8/11] sched: Introduce task_struct::user_cpus_ptr to track requested affinity
+> > > config: i386-randconfig-a016-20210820 (attached as .config)
+> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d9c5613e856cf2addfbf892fc4c1ce9ef9feceaa)
+> > > reproduce (this is a W=1 build):
+> > 
+> > Dear 0day folks; could you please blacklist me for all W=1 build output?
+> > I'm 100% not interested in random compiler generated garbage.
+> 
+> Hi Peterz,
+> 
+> Got it, we'll do that for you asap.
 
-I really hate all of this, I think the compiler is just being unhelpful
-in the extreme. Also, I spupose the warning is in W=1 for a reason,
-let's just completely ignore all of this.
+Rong, I seem to still be getting W=1 build warnings spam. Could you
+pleaes have a look?
