@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1648F40797C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 18:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A277B40797E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 18:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhIKQMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 12:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
+        id S230392AbhIKQMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 12:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhIKQLt (ORCPT
+        with ESMTP id S231742AbhIKQMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 12:11:49 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB3AC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 09:10:36 -0700 (PDT)
-Received: from dslb-084-059-243-091.084.059.pools.vodafone-ip.de ([84.59.243.91] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mP5aK-0007nr-Sf; Sat, 11 Sep 2021 18:10:32 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
+        Sat, 11 Sep 2021 12:12:15 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43492C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 09:11:02 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso6782993otr.13
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 09:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JeOY6OGjn/eCHWQcvdDN/uyKi3xPhTxfrZDn+x65Ofk=;
+        b=BoG63izfsejWDEZe6Gen5UfqRKLzV4Aw2qs3WKXUv/BkEp154EG+8q/0kfQzcWtwJt
+         9CSe/OAdwW+ASnP6eVhvv1Q/8IBR3ozhaCqXWO361LI+4nEsvwjHpyl/LIcaHLu8Rbv7
+         7Pqdaea5u3mN6Av9ElSWjHVj99s5L0u9b7rss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JeOY6OGjn/eCHWQcvdDN/uyKi3xPhTxfrZDn+x65Ofk=;
+        b=GwMD3KasyJUaSObOVcP+mAbLwQx2QtExW9+oiYOtaIX0bhwbsQGR5/p3jipK7UGZEg
+         8eNcce9TwHLeEwjWop9bBOaIoLmFOtfjW2PEIW252eMLQ6Xm9Ghe/6qxCFFHLmW0d9qB
+         zAGZCr7mWx6zgdwH2PWrPGkTi4gglHfJeFHgW+e1i5H9OqyhvvUuudIVanHE27rxEKxN
+         JrbHcjeCzVhnisnrDVCBEv22Sq6AcC99bi/ybRyQjjFzf8xGrg7gOlyQuSZO6Hg6ubPc
+         eL0wvQvzg8PmbIR4VIjfQ8x2R6GkLADHQKxMDhfuW3O8/+8FSpnBDtZOQWexa3ogMS75
+         D+KA==
+X-Gm-Message-State: AOAM531OpIFnVRIU/pCzcjJkRiTxQucQT2LyVbvdlxHt1MHMeeG3J6t/
+        VHTAenoS7AmnYD4fk0jvSoU3vw==
+X-Google-Smtp-Source: ABdhPJxB3tsT5fkryMTD4UstDeapS7GwSkr2t71A+b3BuXojuxVq8A8dU0rAWZRIIO1OkrRVMQWeog==
+X-Received: by 2002:a9d:724a:: with SMTP id a10mr2806096otk.323.1631376661498;
+        Sat, 11 Sep 2021 09:11:01 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id m24sm482595oie.50.2021.09.11.09.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Sep 2021 09:11:01 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 11:10:59 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 4/4] staging: r8188eu: remove rtw_hw_resume
-Date:   Sat, 11 Sep 2021 18:10:19 +0200
-Message-Id: <20210911161019.26881-5-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210911161019.26881-1-martin@kaiser.cx>
-References: <20210911161019.26881-1-martin@kaiser.cx>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 00/23] 5.14.3-rc1 review
+Message-ID: <YTzVE7/P6EpmvKVm@fedora64.linuxtx.org>
+References: <20210910122916.022815161@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910122916.022815161@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bHWPwrPindetect cleanup removed the only call to rtw_hw_resume.
+On Fri, Sep 10, 2021 at 02:29:50PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.3 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 12 Sep 2021 12:29:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/r8188eu/include/osdep_intf.h |  1 -
- drivers/staging/r8188eu/os_dep/usb_intf.c    | 39 --------------------
- 2 files changed, 40 deletions(-)
+Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
-index 5a2c7a98f023..da36770852f8 100644
---- a/drivers/staging/r8188eu/include/osdep_intf.h
-+++ b/drivers/staging/r8188eu/include/osdep_intf.h
-@@ -58,6 +58,5 @@ void rtw_ips_dev_unload(struct adapter *padapter);
- 
- int rtw_ips_pwr_up(struct adapter *padapter);
- void rtw_ips_pwr_down(struct adapter *padapter);
--int rtw_hw_resume(struct adapter *padapter);
- 
- #endif	/* _OSDEP_INTF_H_ */
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index f532dab0254c..da381f42f3f6 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -278,45 +278,6 @@ static void process_spec_devid(const struct usb_device_id *pdid)
- 	}
- }
- 
--int rtw_hw_resume(struct adapter *padapter)
--{
--	struct pwrctrl_priv *pwrpriv;
--	struct net_device *pnetdev = padapter->pnetdev;
--
--	if (!padapter)
--		goto error_exit;
--	pwrpriv = &padapter->pwrctrlpriv;
--	DBG_88E("==> rtw_hw_resume\n");
--	_enter_pwrlock(&pwrpriv->lock);
--	pwrpriv->bips_processing = true;
--	rtw_reset_drv_sw(padapter);
--
--	if (pm_netdev_open(pnetdev, false) != 0) {
--		_exit_pwrlock(&pwrpriv->lock);
--		goto error_exit;
--	}
--
--	netif_device_attach(pnetdev);
--	netif_carrier_on(pnetdev);
--
--	if (!netif_queue_stopped(pnetdev))
--		netif_start_queue(pnetdev);
--	else
--		netif_wake_queue(pnetdev);
--
--	pwrpriv->bkeepfwalive = false;
--
--	pwrpriv->rf_pwrstate = rf_on;
--	pwrpriv->bips_processing = false;
--
--	_exit_pwrlock(&pwrpriv->lock);
--
--	return 0;
--error_exit:
--	DBG_88E("%s, Open net dev failed\n", __func__);
--	return -1;
--}
--
- static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
- {
- 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
--- 
-2.20.1
-
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
