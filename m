@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C9240760B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3951A40760F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhIKKPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 06:15:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:45396 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhIKKPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 06:15:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8D351FB;
-        Sat, 11 Sep 2021 03:14:25 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D71D3F5A1;
-        Sat, 11 Sep 2021 03:14:23 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 11:14:18 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210911101418.GA32028@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
- <20210910143223.6705-1-justin.he@arm.com>
- <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
+        id S235568AbhIKKZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235443AbhIKKZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:25:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC3AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 03:24:12 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id b6so6367296wrh.10
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 03:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YqGDZZMJKPugLbHU1Z+KSXD5nBkqoBERs7vHAT2/hzo=;
+        b=Q3l5j9tTDRzH0acAC7NMkA87vTfP4ro0ABYJMQakGilztDnr3CkxusgQKX7HvQNAXT
+         DVza84wZe+jYqKzSiq0mU+89Q0RbjbmGKF5Y5iOtRqMeJ0KeGimOUI3oZb0JKyNWa1Q2
+         rMWintNWJy243GdKTPUdn5PykLQqmvGqB3RgP5ar0wqlqTm9iLH0wa8D3uE0227MTDdj
+         DGvDGamsp+WH9QzV7HweU+X3u+K1hk6yRX4S42LExH3rnE6qvs5k23wZJRlp7q4/YsNq
+         Es6YtM0pc/0s20yv5ITHqCFwZ08O79zHLaDlWVueM/s8YN+jaQ1d9wP4f3hvtIMgiem5
+         PqaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YqGDZZMJKPugLbHU1Z+KSXD5nBkqoBERs7vHAT2/hzo=;
+        b=Egcos64J7fJkwVWeKhcs8HGDPouPvuZwVu28Z3E1Db4X+CRj47bxJ8PTNU+kY++HLt
+         6iasGQ6owScksSp5Hix5br6+J6ao4kRsDcKdhao4AH4LqiLCXWDke8kYiVAoWAiWvIWB
+         +Tov+C+VisAkhFv1I0UxPy1GWdF3HrEgV1fRolilES3rqNW0cIGU0FJhHKJVygrkTrFo
+         SO0D4RYSuPY4qZvC723VRXKzwo4TklmZHn7m3RfIY0Cq8FknPiju3lLXGW4arYbdrI9n
+         CCvLkVZxlwfyinQVbuSe+GhPeOf0apEAn34JtVFGxqEYq7HBL3s7EaxzVfio73K6To7H
+         de4A==
+X-Gm-Message-State: AOAM5338p3wUabRQE3dr6i7g40N2RjwoRLDi5okV2nWb0thMddrnj4er
+        WcQnmxaUVNV6goOY7FSL26UuEBliBFlBNw==
+X-Google-Smtp-Source: ABdhPJyWawzrPoeggbJueCiuR65y3mZN0kFClQFojNFf0Y5ecIXX1lCT5YBC2k4SQ3hHh7qDvMGKPQ==
+X-Received: by 2002:adf:ee49:: with SMTP id w9mr2476358wro.158.1631355850945;
+        Sat, 11 Sep 2021 03:24:10 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
+        by smtp.gmail.com with ESMTPSA id u2sm1213238wmj.29.2021.09.11.03.24.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Sep 2021 03:24:10 -0700 (PDT)
+Message-ID: <296aa357-1bba-4136-c651-a18d04c8d32a@gmail.com>
+Date:   Sat, 11 Sep 2021 12:24:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 0/7] remove pointers from struct hal_ops
+Content-Language: en-US
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210910205033.3778-1-straube.linux@gmail.com>
+ <1858319.rr7sHpn3up@localhost.localdomain>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <1858319.rr7sHpn3up@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
-> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
-> >
-> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> >
-> > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > with call trace as follows:
-> >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> >  Modules linked in:
-> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > [...snip...]
-> >  Call trace:
-> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> >   acpi_ex_access_region+0x114/0x268
-> >   acpi_ex_field_datum_io+0x128/0x1b8
-> >   acpi_ex_extract_from_field+0x14c/0x2ac
-> >   acpi_ex_read_data_from_field+0x190/0x1b8
-> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> >   acpi_ex_resolve_to_value+0x250/0x274
-> >   acpi_ds_evaluate_name_path+0xac/0x124
-> >   acpi_ds_exec_end_op+0x90/0x410
-> >   acpi_ps_parse_loop+0x4ac/0x5d8
-> >   acpi_ps_parse_aml+0xe0/0x2c8
-> >   acpi_ps_execute_method+0x19c/0x1ac
-> >   acpi_ns_evaluate+0x1f8/0x26c
-> >   acpi_ns_init_one_device+0x104/0x140
-> >   acpi_ns_walk_namespace+0x158/0x1d0
-> >   acpi_ns_initialize_devices+0x194/0x218
-> >   acpi_initialize_objects+0x48/0x50
-> >   acpi_init+0xe0/0x498
-> >
-> > As mentioned by Lorenzo:
-> >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> >   eMAG does not like at all and I'd need to understand why. It looks
-> >   like the issue happen in SystemMemory Opregion handler."
-> >
-> > Hence just revert it before everything is clear.
-> >
+On 9/11/21 11:38, Fabio M. De Francesco wrote:
+> On Friday, September 10, 2021 10:50:26 PM CEST Michael Straube wrote:
+>> This series removes some more pointers from struct hal_ops and
+>> removes the function rtl8188e_set_hal_ops() that is empty after
+>> the removals.
+>>
+>> Michael Straube (7):
+>>    staging: r8188eu: remove mgnt_xmit from struct hal_ops
+>>    staging: r8188eu: remove hal_xmit from struct hal_ops
+>>    staging: r8188eu: remove read_bbreg from struct hal_ops
+>>    staging: r8188eu: remove write_bbreg from struct hal_ops
+>>    staging: r8188eu: remove read_rfreg from struct hal_ops
+>>    staging: r8188eu: remove write_rfreg from struct hal_ops
+>>    staging: r8188eu: remove rtl8188e_set_hal_ops()
+>>
 > 
-> Can we try to find the root cause first? -rc1 is not even out yet, and
-> reverting it now means we can not resubmit it until the next merge
-> window.
+> Hi Michael,
+> 
+> This series is good.
+> 
+> Furthermore, I compiled the whole series with gcc version 11.2.1 2020816
+> [revision 056e324ce46a7924b5cf10f61010cf9dd2ca10e9] (SUSE Linux) one
+> patch at a time. There are no errors or warnings at any time in any of the
+> seven builds.
+> 
+> But, unfortunately, I have no time to test. So the whole series is...
+> 
+> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> 
+> Thanks,
+> 
+> Fabio
+> 
 
-Yes, absolutely. We need to understand where the problem is, because it
-looks like we can't map SystemMemory Opregion with NORMAL_NC if the PA
-is not in the EFI map, that's a problem (ie how can we determine the
-right memory attributes for SystemMemory Operation regions then) but
-let's not speculate and find what the issue is first.
+Hi Fabio,
 
-Lorenzo
+thank you for the review. I have tested it on x86_64 with
+Inter-Tech DMG-02 connected to a CCMP network without any
+issues.
+
+Perhaps I should have mentioned that in the cover letter. ;)
+
+Thanks,
+
+Michael
+
