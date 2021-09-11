@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272E54078C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FA04078CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236028AbhIKOVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 10:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        id S236134AbhIKO2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 10:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235788AbhIKOVg (ORCPT
+        with ESMTP id S235788AbhIKO2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 10:21:36 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B69C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 07:20:24 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mP3rg-0006kU-3D; Sat, 11 Sep 2021 16:20:20 +0200
-Date:   Sat, 11 Sep 2021 16:20:20 +0200
-From:   Martin Kaiser <lists@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/18] staging: r8188eu: remove unused functions from
- odm_interface.c
-Message-ID: <20210911142020.zdau6mvkopv6iaiw@viti.kaiser.cx>
-References: <20210911132635.30369-1-straube.linux@gmail.com>
+        Sat, 11 Sep 2021 10:28:03 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D56FC061574;
+        Sat, 11 Sep 2021 07:26:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id y6so8318234lje.2;
+        Sat, 11 Sep 2021 07:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
+        b=DXVHx9Ch4GQl3SqaD9yGddqbiM7H1G2aMzd62ek8lJkaN5JBIUQ85tfzz7gmG0D1xj
+         OD698JWAnE2we7+ltmGMMuBgwLqZ22p9NzAsEBdlVkvyBkVJO1kp3Y7QSzT+6nX2KP4T
+         /S9cU9VYkU93GrWJgp1VtFhyy0n5RwvxDLBW3qrLfpb8aRpR+vZsa9/XyixlHHE7fwR6
+         Ro+Y49acX+sAf5SM1ghQtklZ5jylOHbr2Zcv1vc6Wy3y4VSoMEkAtuE1proAus/RV93O
+         k0FpjNCLfTbmuX0Mt/j3848XiERpBvJowUXf6t6UDSs/YR0k/yNcsLsxJrkU1ErAvKrY
+         Oj/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
+        b=3jE7ykOnNdHjY0r+9vAwZcJxyWKETAPK9dzg+8C00tMlOoIGUBQ67gcSOADk1iPYSq
+         rzSg+6tDd3TMqfpsVbAggDvSC2mcRl64+jzyOuYTfKHQIYzDnk7PU2iTxRrHcJAyVtQ3
+         9AK/UP2b2XhQtKfIVszJeV6aLE+QGQLUmdditSbDZ0AO0gJINm88ZoISxlxKCbNPCAWz
+         tXLBT6JvUFIoaKSJFRoHrVGOhgzExsmneCp701vA+EJGd4Z+vUOwF5Jb7zDXlouX1bhk
+         OuBX4IbP89pXo13wJSuuMVYznjIVnSKGiMPjSdBlB2vj3F1tnst+UAThobco/HY6SisN
+         hNaA==
+X-Gm-Message-State: AOAM531Lasbx5eons6w1MDPcFLjvtRKqf+B0l3IxJC/8P/3ZF/SgxexA
+        TSMhLMDo1Pj12ill7xzLdho=
+X-Google-Smtp-Source: ABdhPJwu1a7QK+Cej5JPCogd0/gmbdv2NXDIOQTD4QJ/R/z9s9TAFMjY/sfPiYgtOF7ImaEKRSMnjQ==
+X-Received: by 2002:a2e:2406:: with SMTP id k6mr2443781ljk.258.1631370408900;
+        Sat, 11 Sep 2021 07:26:48 -0700 (PDT)
+Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
+        by smtp.gmail.com with ESMTPSA id u17sm210522ljk.124.2021.09.11.07.26.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Sep 2021 07:26:48 -0700 (PDT)
+From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+Subject: [PATCH] HID: plantronics: Fix bare use of 'unsigned'
+Date:   Sat, 11 Sep 2021 17:26:43 +0300
+Message-Id: <20210911142643.201-1-aldas60@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911132635.30369-1-straube.linux@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
+Fix checkpatch warning: Prefer 'unsigned int' to bare use of 'unsigned'
 
-> This series removes unused and/or empty functions from the file
-> hal/odm_interface.c.
+Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
+---
+ drivers/hid/hid-plantronics.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Tested on x86_64 with Inter-Tech DMG-02.
+diff --git a/drivers/hid/hid-plantronics.c b/drivers/hid/hid-plantronics.c
+index e81b7cec2d12..4aae7569e353 100644
+--- a/drivers/hid/hid-plantronics.c
++++ b/drivers/hid/hid-plantronics.c
+@@ -143,7 +143,7 @@ static int plantronics_event(struct hid_device *hdev, struct hid_field *field,
+ 
+ static unsigned long plantronics_device_type(struct hid_device *hdev)
+ {
+-	unsigned i, col_page;
++	unsigned int i, col_page;
+ 	unsigned long plt_type = hdev->product;
+ 
+ 	/* multi-HID interfaces? - plt_type is PID */
+-- 
+2.33.0
 
-> Michael Straube (18):
->   staging: r8188eu: remove empty ODM_ReleaseTimer()
->   staging: r8188eu: remove unused ODM_AcquireSpinLock()
->   staging: r8188eu: remove unused ODM_ReleaseSpinLock()
->   staging: r8188eu: remove unused ODM_FillH2CCmd()
->   staging: r8188eu: remove unused ODM_sleep_us()
->   staging: r8188eu: remove unused ODM_InitializeWorkItem()
->   staging: r8188eu: remove unused ODM_StartWorkItem()
->   staging: r8188eu: remove unused ODM_StopWorkItem()
->   staging: r8188eu: remove unused ODM_FreeWorkItem()
->   staging: r8188eu: remove unused ODM_ScheduleWorkItem()
->   staging: r8188eu: remove unused ODM_IsWorkItemScheduled()
->   staging: r8188eu: remove unused ODM_SetTimer()
->   staging: r8188eu: remove unused ODM_Read2Byte()
->   staging: r8188eu: remove unused ODM_FreeMemory()
->   staging: r8188eu: remove unused ODM_AllocateMemory()
->   staging: r8188eu: remove unused prototype ODM_InitializeTimer()
->   staging: r8188eu: remove unused ODM_CancelAllTimers()
->   staging: r8188eu: remove unused ODM_InitAllTimers()
-
->  drivers/staging/r8188eu/hal/odm.c             | 17 ----
->  drivers/staging/r8188eu/hal/odm_interface.c   | 80 -------------------
->  drivers/staging/r8188eu/include/odm.h         |  6 --
->  .../staging/r8188eu/include/odm_interface.h   | 45 -----------
->  4 files changed, 148 deletions(-)
-
-
-Looks good to me.
-
-Acked-by: Martin Kaiser <martin@kaiser.cx>
-
-for all patches.
-
-Thanks,
-Martin
