@@ -2,400 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B62A407489
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 03:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5259A40748C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 03:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbhIKB56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 21:57:58 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:55902 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231864AbhIKB55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 21:57:57 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxJeWxDDxhOA4EAA--.13143S2;
-        Sat, 11 Sep 2021 09:56:02 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
-        davem@davemloft.net,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Chaignon <paul@cilium.io>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: [PATCH bpf-next v2] bpf: Change value of MAX_TAIL_CALL_CNT from 32 to 33
-Date:   Sat, 11 Sep 2021 09:56:01 +0800
-Message-Id: <1631325361-9851-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxJeWxDDxhOA4EAA--.13143S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3tFy3XF15Cw17Gw47GryfWFg_yoWkKr17pr
-        18twnakrWvqw1rAa4xta1UXw4UKF4v9F47KFs5CrWSy3ZFvr9rWF13Kw15ZFZ0vrW8Jw1r
-        XFZ0kry3C3WkXwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07b0GQgUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S235158AbhIKCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 22:00:52 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19026 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIKCAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 22:00:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H5wn33HHtzbmBD;
+        Sat, 11 Sep 2021 09:55:35 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 11 Sep 2021 09:59:38 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
+ 2021 09:59:37 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Ian Kent <raven@themaw.net>,
+        Miklos Szeredi <mszeredi@redhat.com>
+CC:     <viro@ZenIV.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <houtao1@huawei.com>
+Subject: [PATCH] kernfs: fix the race in the creation of negative dentry
+Date:   Sat, 11 Sep 2021 10:13:42 +0800
+Message-ID: <20210911021342.3280687-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current code, the actual max tail call count is 33 which is greater
-than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consistent
-with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need to
-spend some time to think about the reason at the first glance.
+When doing stress test for module insertion and removal,
+the following phenomenon was found:
 
-We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
-bpf programs to tail-call other bpf programs") and commit f9dabe016b63
-("bpf: Undo off-by-one in interpreter tail call count limit").
+  $ lsmod
+  Module                  Size  Used by
+  libkmod: kmod_module_get_holders: could not open \
+           '/sys/module/nbd/holders': No such file or directory
+  nbd                       -2  -2
+  $ cat /proc/modules
+  nbd 110592 0 - Live 0xffffffffc0298000
+  $ ls -1 /sys/module |grep nbd
+  ls: cannot access 'nbd': No such file or directory
+  nbd
 
-In order to avoid changing existing behavior, the actual limit is 33 now,
-this is reasonable.
+It seems the kernfs node of module has been activated and is returned to
+ls command through kernfs_fop_readdir(), but the sysfs dentry is negative.
+Further investigation found that there is race between kernfs dir creation
+and dentry lookup as shown below:
 
-After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we can
-see there exists failed testcase.
+CPU 0                          CPU 1
 
-On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
- # echo 0 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf
- # dmesg | grep -w FAIL
- Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+                        kernfs_add_one
 
-On some archs:
- # echo 1 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf
- # dmesg | grep -w FAIL
- Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+                        down_write(&kernfs_rwsem)
+                        // insert nbd into rbtree
+                        // update the parent's revision
+                        kernfs_link_sibling()
+                        up_write(&kernfs_rwsem)
 
-So it is necessary to change the value of MAX_TAIL_CALL_CNT from 32 to 33,
-then do some small changes of the related code.
+kernfs_iop_lookup
 
-With this patch, it does not change the current limit 33, MAX_TAIL_CALL_CNT
-can reflect the actual max tail call count, the tailcall selftests can work
-well, and also the above failed testcase in test_bpf can be fixed for the
-interpreter (all archs) and the JIT (all archs except for x86).
+down_read(&kernfs_rwsem)
+// find nbd in rbtree, but it is deactivated
+kn = kernfs_find_ns()
+  // return false
+  kernfs_active()
+  // a negative is created
+  d_splice_alias(NULL, dentry)
+up_read(&kernfs_rwsem)
 
- # uname -m
- x86_64
- # echo 1 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf
- # dmesg | grep -w FAIL
- Tail call error path, max count reached jited:1 ret 33 != 34 FAIL
+                        // activate after negative dentry is created
+                        kernfs_activate()
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+// return 0 because parent's
+// revision is stable now
+kernfs_dop_revalidate()
+
+The race will create a negative dentry for a kernfs node which
+is newly-added and activated. To fix it, there are two cases
+to be handled:
+
+(1) kernfs root without KERNFS_ROOT_CREATE_DEACTIVATED
+kernfs_rwsem can be always hold during kernfs_link_sibling()
+and kernfs_activate() in kernfs_add_one(), so kernfs_iop_lookup()
+will find an active kernfs node.
+
+(2) kernfs root with KERNFS_ROOT_CREATE_DEACTIVATED
+kernfs_activate() is called separatedly, and we can invalidate
+the dentry subtree with kn as root by increasing the revision of
+its parent. But we can invalidate in a finer granularity by
+only invalidating the negative dentry of the newly-activated
+kn node.
+
+So factor out a helper kernfs_activate_locked() to activate
+kernfs subtree lockless and invalidate the negative dentries
+if requested. Creation under kernfs root with CREATED_DEACTIVATED
+doesn't need invalidation because kernfs_rwsem is always hold,
+and kernfs root w/o CREATED_DEACTIVATED needs to invalidate
+the maybe-created negative dentries.
+
+kernfs_inc_rev() in kernfs_link_sibling() is kept because
+kernfs_rename_ns() needs it to invalidate the negative dentry
+of the target kernfs which is newly created by rename.
+
+Fixes: c7e7c04274b1 ("kernfs: use VFS negative dentry caching")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
+ fs/kernfs/dir.c | 52 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 42 insertions(+), 10 deletions(-)
 
-v2:
-  -- fix the typos in the commit message and update the commit message.
-  -- fix the failed tailcall selftests for x86 jit.
-     I am not quite sure the change on x86 is proper, with this change,
-     tailcall selftests passed, but tailcall limit test in test_bpf.ko
-     failed, I do not know the reason now, I think this is another issue,
-     maybe someone more versed in x86 jit could take a look.
-
- arch/arm/net/bpf_jit_32.c         | 11 ++++++-----
- arch/arm64/net/bpf_jit_comp.c     |  7 ++++---
- arch/mips/net/ebpf_jit.c          |  4 ++--
- arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
- arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++------
- arch/riscv/net/bpf_jit_comp32.c   |  4 ++--
- arch/riscv/net/bpf_jit_comp64.c   |  4 ++--
- arch/sparc/net/bpf_jit_comp_64.c  |  8 ++++----
- arch/x86/net/bpf_jit_comp.c       | 10 +++++-----
- include/linux/bpf.h               |  2 +-
- kernel/bpf/core.c                 |  4 ++--
- 11 files changed, 36 insertions(+), 34 deletions(-)
-
-diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-index a951276..39d9ae9 100644
---- a/arch/arm/net/bpf_jit_32.c
-+++ b/arch/arm/net/bpf_jit_32.c
-@@ -1180,18 +1180,19 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index ba581429bf7b..2f1ab8bad575 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -17,6 +17,8 @@
  
- 	/* tmp2[0] = array, tmp2[1] = index */
+ #include "kernfs-internal.h"
  
--	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
--	 *	goto out;
-+	/*
- 	 * tail_call_cnt++;
-+	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 *	goto out;
- 	 */
-+	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
-+	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
-+	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
- 	lo = (u32)MAX_TAIL_CALL_CNT;
- 	hi = (u32)((u64)MAX_TAIL_CALL_CNT >> 32);
--	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
- 	emit(ARM_CMP_I(tc[0], hi), ctx);
- 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
- 	_emit(ARM_COND_HI, ARM_B(jmp_offset), ctx);
--	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
--	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
- 	arm_bpf_put_reg64(tcc, tmp, ctx);
- 
- 	/* prog = array->ptrs[index]
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 41c23f4..5d6c843 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -286,14 +286,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	emit(A64_CMP(0, r3, tmp), ctx);
- 	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
- 
--	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
--	 *     goto out;
-+	/*
- 	 * tail_call_cnt++;
-+	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 *     goto out;
- 	 */
-+	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
- 	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
- 	emit(A64_CMP(1, tcc, tmp), ctx);
- 	emit(A64_B_(A64_COND_HI, jmp_offset), ctx);
--	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
- 
- 	/* prog = array->ptrs[index];
- 	 * if (prog == NULL)
-diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
-index 3a73e93..029fc34 100644
---- a/arch/mips/net/ebpf_jit.c
-+++ b/arch/mips/net/ebpf_jit.c
-@@ -617,14 +617,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
- 	b_off = b_imm(this_idx + 1, ctx);
- 	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
- 	/*
--	 * if (TCC-- < 0)
-+	 * if (--TCC < 0)
- 	 *     goto out;
- 	 */
- 	/* Delay slot */
- 	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
- 	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
- 	b_off = b_imm(this_idx + 1, ctx);
--	emit_instr(ctx, bltz, tcc_reg, b_off);
-+	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
- 	/*
- 	 * prog = array->ptrs[index];
- 	 * if (prog == NULL)
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index beb12cb..b5585ad 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -221,12 +221,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
- 	PPC_BCC(COND_GE, out);
- 
- 	/*
-+	 * tail_call_cnt++;
- 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
- 	 *   goto out;
- 	 */
--	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
--	/* tail_call_cnt++; */
- 	EMIT(PPC_RAW_ADDIC(_R0, _R0, 1));
-+	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
- 	PPC_BCC(COND_GT, out);
- 
- 	/* prog = array->ptrs[index]; */
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index b87a63d..bb15cc4 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -227,6 +227,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
- 	PPC_BCC(COND_GE, out);
- 
- 	/*
-+	 * tail_call_cnt++;
-+	 */
-+	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
-+	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
++static void kernfs_activate_locked(struct kernfs_node *kn, bool invalidate);
 +
-+	/*
- 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
- 	 *   goto out;
- 	 */
-@@ -234,12 +240,6 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
- 	EMIT(PPC_RAW_CMPLWI(b2p[TMP_REG_1], MAX_TAIL_CALL_CNT));
- 	PPC_BCC(COND_GT, out);
- 
--	/*
--	 * tail_call_cnt++;
--	 */
--	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
--	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
--
- 	/* prog = array->ptrs[index]; */
- 	EMIT(PPC_RAW_MULI(b2p[TMP_REG_1], b2p_index, 8));
- 	EMIT(PPC_RAW_ADD(b2p[TMP_REG_1], b2p[TMP_REG_1], b2p_bpf_array));
-diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
-index e649742..1608d94 100644
---- a/arch/riscv/net/bpf_jit_comp32.c
-+++ b/arch/riscv/net/bpf_jit_comp32.c
-@@ -800,12 +800,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 
- 	/*
- 	 * temp_tcc = tcc - 1;
--	 * if (tcc < 0)
-+	 * if (temp_tcc < 0)
- 	 *   goto out;
- 	 */
- 	emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
--	emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
-+	emit_bcc(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
- 
- 	/*
- 	 * prog = array->ptrs[index];
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 3af4131..6e9ba83 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -311,12 +311,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
- 	emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
- 
--	/* if (TCC-- < 0)
-+	/* if (--TCC < 0)
- 	 *     goto out;
- 	 */
- 	emit_addi(RV_REG_T1, tcc, -1, ctx);
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
--	emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
-+	emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
- 
- 	/* prog = array->ptrs[index];
- 	 * if (!prog)
-diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index 9a2f20c..50d914c 100644
---- a/arch/sparc/net/bpf_jit_comp_64.c
-+++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -863,6 +863,10 @@ static void emit_tail_call(struct jit_ctx *ctx)
- 	emit_branch(BGEU, ctx->idx, ctx->idx + OFFSET1, ctx);
- 	emit_nop(ctx);
- 
-+	emit_alu_K(ADD, tmp, 1, ctx);
-+	off = BPF_TAILCALL_CNT_SP_OFF;
-+	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
-+
- 	off = BPF_TAILCALL_CNT_SP_OFF;
- 	emit(LD32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
- 	emit_cmpi(tmp, MAX_TAIL_CALL_CNT, ctx);
-@@ -870,10 +874,6 @@ static void emit_tail_call(struct jit_ctx *ctx)
- 	emit_branch(BGU, ctx->idx, ctx->idx + OFFSET2, ctx);
- 	emit_nop(ctx);
- 
--	emit_alu_K(ADD, tmp, 1, ctx);
--	off = BPF_TAILCALL_CNT_SP_OFF;
--	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
--
- 	emit_alu3_K(SLL, bpf_index, 3, tmp, ctx);
- 	emit_alu(ADD, bpf_array, tmp, ctx);
- 	off = offsetof(struct bpf_array, ptrs);
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 0fe6aac..74a9e61 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -402,7 +402,7 @@ static int get_pop_bytes(bool *callee_regs_used)
-  * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
-  *   if (index >= array->map.max_entries)
-  *     goto out;
-- *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
-+ *   if (tail_call_cnt++ == MAX_TAIL_CALL_CNT)
-  *     goto out;
-  *   prog = array->ptrs[index];
-  *   if (prog == NULL)
-@@ -452,13 +452,13 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
- 	EMIT2(X86_JBE, OFFSET1);                  /* jbe out */
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt++ == MAX_TAIL_CALL_CNT)
- 	 *	goto out;
- 	 */
- 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
- #define OFFSET2 (off2 + RETPOLINE_RCX_BPF_JIT_SIZE)
--	EMIT2(X86_JA, OFFSET2);                   /* ja out */
-+	EMIT2(X86_JE, OFFSET2);                   /* je out */
- 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
- 
-@@ -530,12 +530,12 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ DECLARE_RWSEM(kernfs_rwsem);
+ static DEFINE_SPINLOCK(kernfs_rename_lock);	/* kn->parent and ->name */
+ static char kernfs_pr_cont_buf[PATH_MAX];	/* protected by rename_lock */
+@@ -753,8 +755,6 @@ int kernfs_add_one(struct kernfs_node *kn)
+ 		ps_iattr->ia_mtime = ps_iattr->ia_ctime;
  	}
  
+-	up_write(&kernfs_rwsem);
+-
  	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt++ == MAX_TAIL_CALL_CNT)
- 	 *	goto out;
+ 	 * Activate the new node unless CREATE_DEACTIVATED is requested.
+ 	 * If not activated here, the kernfs user is responsible for
+@@ -763,8 +763,7 @@ int kernfs_add_one(struct kernfs_node *kn)
+ 	 * trigger deactivation.
  	 */
- 	EMIT2_off32(0x8B, 0x85, tcc_off);             /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);         /* cmp eax, MAX_TAIL_CALL_CNT */
--	EMIT2(X86_JA, off1);                          /* ja out */
-+	EMIT2(X86_JE, off1);                          /* je out */
- 	EMIT3(0x83, 0xC0, 0x01);                      /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);             /* mov dword ptr [rbp - tcc_off], eax */
+ 	if (!(kernfs_root(kn)->flags & KERNFS_ROOT_CREATE_DEACTIVATED))
+-		kernfs_activate(kn);
+-	return 0;
++		kernfs_activate_locked(kn, false);
  
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f4c16f1..224cc7e 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1046,7 +1046,7 @@ struct bpf_array {
- };
+ out_unlock:
+ 	up_write(&kernfs_rwsem);
+@@ -942,8 +941,11 @@ struct kernfs_root *kernfs_create_root(struct kernfs_syscall_ops *scops,
+ 	root->kn = kn;
+ 	init_waitqueue_head(&root->deactivate_waitq);
  
- #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
--#define MAX_TAIL_CALL_CNT 32
-+#define MAX_TAIL_CALL_CNT 33
+-	if (!(root->flags & KERNFS_ROOT_CREATE_DEACTIVATED))
+-		kernfs_activate(kn);
++	if (!(root->flags & KERNFS_ROOT_CREATE_DEACTIVATED)) {
++		down_write(&kernfs_rwsem);
++		kernfs_activate_locked(kn, false);
++		up_write(&kernfs_rwsem);
++	}
  
- #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
- 				 BPF_F_RDONLY_PROG |	\
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 9f4636d..8edb1c3 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1564,10 +1564,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 	return root;
+ }
+@@ -1262,8 +1264,11 @@ static struct kernfs_node *kernfs_next_descendant_post(struct kernfs_node *pos,
+ }
  
- 		if (unlikely(index >= array->map.max_entries))
- 			goto out;
--		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
--			goto out;
+ /**
+- * kernfs_activate - activate a node which started deactivated
++ * kernfs_activate_locked - activate a node which started deactivated
+  * @kn: kernfs_node whose subtree is to be activated
++ * @invalidate: whether or not to increase the revision of parent node
++ *              for each newly-activated child node. The increase will
++ *              invalidate negative dentries created under the parent node.
+  *
+  * If the root has KERNFS_ROOT_CREATE_DEACTIVATED set, a newly created node
+  * needs to be explicitly activated.  A node which hasn't been activated
+@@ -1271,15 +1276,15 @@ static struct kernfs_node *kernfs_next_descendant_post(struct kernfs_node *pos,
+  * removal.  This is useful to construct atomic init sequences where
+  * creation of multiple nodes should either succeed or fail atomically.
+  *
++ * The caller must have acquired kernfs_rwsem.
++ *
+  * The caller is responsible for ensuring that this function is not called
+  * after kernfs_remove*() is invoked on @kn.
+  */
+-void kernfs_activate(struct kernfs_node *kn)
++static void kernfs_activate_locked(struct kernfs_node *kn, bool invalidate)
+ {
+ 	struct kernfs_node *pos;
  
- 		tail_call_cnt++;
-+		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-+			goto out;
+-	down_write(&kernfs_rwsem);
+-
+ 	pos = NULL;
+ 	while ((pos = kernfs_next_descendant_post(pos, kn))) {
+ 		if (pos->flags & KERNFS_ACTIVATED)
+@@ -1290,8 +1295,35 @@ void kernfs_activate(struct kernfs_node *kn)
  
- 		prog = READ_ONCE(array->ptrs[index]);
- 		if (!prog)
+ 		atomic_sub(KN_DEACTIVATED_BIAS, &pos->active);
+ 		pos->flags |= KERNFS_ACTIVATED;
++
++		/*
++		 * Invalidate the negative dentry created after pos is
++		 * inserted into sibling rbtree but before it is
++		 * activated.
++		 */
++		if (invalidate && pos->parent)
++			kernfs_inc_rev(pos->parent);
+ 	}
++}
+ 
++/**
++ * kernfs_activate - activate a node which started deactivated
++ * @kn: kernfs_node whose subtree is to be activated
++ *
++ * Currently it is only used by kernfs root which has
++ * FS_ROOT_CREATE_DEACTIVATED set. Because the addition and the activation
++ * of children nodes are not atomic (not always hold kernfs_rwsem),
++ * negative dentry may be created for one child node after its addition
++ * but before its activation, so passing invalidate as true to
++ * @kernfs_activate_locked() to invalidate these negative dentries.
++ *
++ * The caller is responsible for ensuring that this function is not called
++ * after kernfs_remove*() is invoked on @kn.
++ */
++void kernfs_activate(struct kernfs_node *kn)
++{
++	down_write(&kernfs_rwsem);
++	kernfs_activate_locked(kn, true);
+ 	up_write(&kernfs_rwsem);
+ }
+ 
 -- 
-2.1.0
+2.29.2
 
