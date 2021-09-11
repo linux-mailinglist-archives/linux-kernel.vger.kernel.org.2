@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FA04078CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768D04078CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 16:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhIKO2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 10:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
+        id S236190AbhIKOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 10:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235788AbhIKO2D (ORCPT
+        with ESMTP id S235788AbhIKOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 10:28:03 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D56FC061574;
-        Sat, 11 Sep 2021 07:26:50 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id y6so8318234lje.2;
-        Sat, 11 Sep 2021 07:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
-        b=DXVHx9Ch4GQl3SqaD9yGddqbiM7H1G2aMzd62ek8lJkaN5JBIUQ85tfzz7gmG0D1xj
-         OD698JWAnE2we7+ltmGMMuBgwLqZ22p9NzAsEBdlVkvyBkVJO1kp3Y7QSzT+6nX2KP4T
-         /S9cU9VYkU93GrWJgp1VtFhyy0n5RwvxDLBW3qrLfpb8aRpR+vZsa9/XyixlHHE7fwR6
-         Ro+Y49acX+sAf5SM1ghQtklZ5jylOHbr2Zcv1vc6Wy3y4VSoMEkAtuE1proAus/RV93O
-         k0FpjNCLfTbmuX0Mt/j3848XiERpBvJowUXf6t6UDSs/YR0k/yNcsLsxJrkU1ErAvKrY
-         Oj/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
-        b=3jE7ykOnNdHjY0r+9vAwZcJxyWKETAPK9dzg+8C00tMlOoIGUBQ67gcSOADk1iPYSq
-         rzSg+6tDd3TMqfpsVbAggDvSC2mcRl64+jzyOuYTfKHQIYzDnk7PU2iTxRrHcJAyVtQ3
-         9AK/UP2b2XhQtKfIVszJeV6aLE+QGQLUmdditSbDZ0AO0gJINm88ZoISxlxKCbNPCAWz
-         tXLBT6JvUFIoaKSJFRoHrVGOhgzExsmneCp701vA+EJGd4Z+vUOwF5Jb7zDXlouX1bhk
-         OuBX4IbP89pXo13wJSuuMVYznjIVnSKGiMPjSdBlB2vj3F1tnst+UAThobco/HY6SisN
-         hNaA==
-X-Gm-Message-State: AOAM531Lasbx5eons6w1MDPcFLjvtRKqf+B0l3IxJC/8P/3ZF/SgxexA
-        TSMhLMDo1Pj12ill7xzLdho=
-X-Google-Smtp-Source: ABdhPJwu1a7QK+Cej5JPCogd0/gmbdv2NXDIOQTD4QJ/R/z9s9TAFMjY/sfPiYgtOF7ImaEKRSMnjQ==
-X-Received: by 2002:a2e:2406:: with SMTP id k6mr2443781ljk.258.1631370408900;
-        Sat, 11 Sep 2021 07:26:48 -0700 (PDT)
-Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
-        by smtp.gmail.com with ESMTPSA id u17sm210522ljk.124.2021.09.11.07.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 07:26:48 -0700 (PDT)
-From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
-Subject: [PATCH] HID: plantronics: Fix bare use of 'unsigned'
-Date:   Sat, 11 Sep 2021 17:26:43 +0300
-Message-Id: <20210911142643.201-1-aldas60@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Sat, 11 Sep 2021 10:30:24 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C75C061574;
+        Sat, 11 Sep 2021 07:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=GEqRQ9y9a9MIz3wuwpdSf+YO6+ZP1yLEjSzwiERQLUE=; b=bQxDj5+rnE36snGRjDajJqf702
+        Z/ThVOWXP8sAy/mxc8S7d11dASUIcJBUH/RZsc9LuNBWPy7jVTRpIUKTUUHkV+Wvddewz6jC8bdOm
+        AAaHwGiDHO0LSG9DGs3ksvKPw9cJ29ni/DeCf6m26D135Tw57yDh5NnqUz0iF7NRAcXxSfW86xbU1
+        3VflL6UBzeTc5DBrje7LICjquuUnqUDo9X+erTBQh0QXS3lr6sz42SWxhoGBFjP+T3xlhRdx6qFM6
+        YVtvWy/k3z/6HcoBloGBtjh9xgSLb6DUA++mlK7KNwbZxTE0+qETwNQ12s8ViEBAj/RfvHGT32b44
+        2fJYgYjg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mP40B-002OZ9-1G; Sat, 11 Sep 2021 14:29:07 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6604E9862C9; Sat, 11 Sep 2021 16:29:05 +0200 (CEST)
+Date:   Sat, 11 Sep 2021 16:29:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     masahiroy@kernel.org
+Cc:     linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, x86@kernel.org,
+        linux-toolchains@vger.kernel.org
+Subject: [PATCH] Makefile: 'Promote' -Wunused-but-set-variable to W=3
+Message-ID: <20210911142905.GZ4323@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch warning: Prefer 'unsigned int' to bare use of 'unsigned'
 
-Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
+Upgrade -Wunused-but-set-variable to W=3 to avoid the build robots
+sending endless spam for this garbage warning.
+
+By promoting it to W=3 the robots will no longer report it and people
+will no longer attempt to fix them by making the code worse.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/hid/hid-plantronics.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hid/hid-plantronics.c b/drivers/hid/hid-plantronics.c
-index e81b7cec2d12..4aae7569e353 100644
---- a/drivers/hid/hid-plantronics.c
-+++ b/drivers/hid/hid-plantronics.c
-@@ -143,7 +143,7 @@ static int plantronics_event(struct hid_device *hdev, struct hid_field *field,
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index d53825503874..6686cc587d3b 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -28,7 +28,6 @@ KBUILD_CFLAGS += -Wmissing-format-attribute
+ KBUILD_CFLAGS += -Wmissing-prototypes
+ KBUILD_CFLAGS += -Wold-style-definition
+ KBUILD_CFLAGS += -Wmissing-include-dirs
+-KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
+ KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
+@@ -88,6 +87,7 @@ KBUILD_CFLAGS += -Wredundant-decls
+ KBUILD_CFLAGS += -Wsign-compare
+ KBUILD_CFLAGS += -Wswitch-default
+ KBUILD_CFLAGS += $(call cc-option, -Wpacked-bitfield-compat)
++KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
  
- static unsigned long plantronics_device_type(struct hid_device *hdev)
- {
--	unsigned i, col_page;
-+	unsigned int i, col_page;
- 	unsigned long plt_type = hdev->product;
+ KBUILD_CPPFLAGS += -DKBUILD_EXTRA_WARN3
  
- 	/* multi-HID interfaces? - plt_type is PID */
--- 
-2.33.0
-
