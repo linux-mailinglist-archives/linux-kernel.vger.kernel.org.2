@@ -2,109 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB59407442
+	by mail.lfdr.de (Postfix) with ESMTP id 65DB7407443
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 02:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhIKAtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 20:49:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41802 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhIKAte (ORCPT
+        id S235014AbhIKAto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 20:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234978AbhIKAti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 20:49:34 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631321302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0IYNNDoYrQdJehVACszdRvSXw+0VPS/H7Qz0Y3AX3k=;
-        b=oQ5MJIAsJSQ3vcpMRXNKp/8YCTT+yNZ5DRThi+EAwg9PeX5nfLeM3WpMnWUkNJCQrkfkiJ
-        j8hUWYPHEjQ+umrZb/u7GU735ScWd/ovRmqxWPxvCBexWKSDNjVQwybhv0umjgWrzz3+cq
-        WV6AsrCfCpi5F2y5ZqeTd3j/TwNax0FGvfrIuoZA1cA9veoCyatftaWkN8McAaSeL7nNYO
-        n4fwunH2mm9FjHxj2/NBYir+utAaSouF7GnbVdTSvHua/ZP+W9L8qp5TbyYQqjItuya57w
-        9+U1cKBi4CVe+yZ8t7Ffchioba0JcFN9+Nra0HLyqkelfGbSQHwoLHr5/ucstQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631321302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0IYNNDoYrQdJehVACszdRvSXw+0VPS/H7Qz0Y3AX3k=;
-        b=lQQwT6UPHZqnqL3LGWaMSvEnvi9aiBB5L0o/soOp51X2ue8Hr1rpHmKSrS57H/sMJmTFr6
-        dWiU2bHEGbttX2Ag==
-To:     OPENSOURCE Lukas Hannen 
-        <lukas.hannen@opensource.tttech-industrial.com>,
-        John Stultz <john.stultz@linaro.org>,
-        "EMC: linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH] time: changed timespec64_to_ns to avoid underrun
-In-Reply-To: <AM0PR01MB54100B19D6ED5FDE764FA516EED69@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
-References: <AM0PR01MB54100B19D6ED5FDE764FA516EED69@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
-Date:   Sat, 11 Sep 2021 02:48:21 +0200
-Message-ID: <87fsucc4yy.ffs@tglx>
+        Fri, 10 Sep 2021 20:49:38 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35935C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 17:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MiKD/3VblObUlCghGk2DElY4TP2D0ZiLYLEamH4ybBQ=; b=w98jPBYpmugVA+Sm4g8tTo3/dq
+        UyBLuCxHre20NV4EK+0EBSID+3Q8zb0pQHhPQZESXhf4zHESgUf60sELSaSM5MWwU/IEWJBZylGpN
+        j9y4HXdQ9iJdgeBls8Xn9TELg+t7ODMOxzvSvIZxmqU3pUIM3I67Z5Id6uAHHOHloHPak6qnSf1yA
+        D/TavWc2rWL+IPEHTvZbHepuITLBC8VxE5D1Aqqzo5BQnuF7DE7fH2dMRbJA6yyR5R+nSIKg6Wl5m
+        E1sAxP277oZy08Bu3S5OW6HGSA3SYox+8wlGb2/jfAKHK41qqBe7zjb63D/m9gRwZ0HO4Z54nLyhW
+        PtcaMwnA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOrBv-00E5K2-Gg; Sat, 11 Sep 2021 00:48:23 +0000
+Date:   Fri, 10 Sep 2021 17:48:23 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+Message-ID: <YTv817Srt8hoySP5@bombadil.infradead.org>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109101524.pjY4q0Dy-lkp@intel.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukas,
+On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+> head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+> commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+> config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+>         git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+>         git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+>         git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+>    bool firmware_is_builtin(const struct firmware *fw)
 
-On Fri, Sep 10 2021 at 13:50, OPENSOURCE Lukas Hannen wrote:
+This is a lie though its defined on drivers/base/firmware_loader/firmware.h
 
-> This patch fixes a small oversight in timespec64_to_ns() that has resulted
-...
+>         ^
+>    drivers/base/firmware_loader/builtin/main.c:36:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    bool firmware_is_builtin(const struct firmware *fw)
+>    ^
+>    static 
+>    1 error generated.
 
-why you are resending this patch?
+I get these odd errors:
 
-1) The only change you did is adding a prefix to the subject line
+Compiler will be installed in /home/mcgrof/0day
+cd: received redirection to
+`https://download.01.org/0day-ci/cross-package/'
+lftpget -c
+https://download.01.org/0day-ci/cross-package/./clang_hexagon/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+tar Jxf
+clang_hexagon/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+-C /home/mcgrof/0day                                                    
+make --keep-going
+HOSTCC=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang
+CC=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang
+LD=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/ld.lld
+HOSTLD=/home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/ld.lld
+AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJDUMP=llvm-objdump
+OBJSIZE=llvm-size READELF=llvm-readelf HOSTCXX=clang++ HOSTAR=llvm-ar
+LLVM_IAS=1 CROSS_COMPILE=hexagon-unknown-linux-musl- --jobs=24
+ARCH=hexagon
+  SYNC    include/config/auto.conf.cmd
+    HOSTCC  scripts/basic/fixdep
+    /home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang:
+    error while loading shared libraries: libtinfo.so.5: cannot open
+    shared object file: No such file or directory
+    make[2]: *** [scripts/Makefile.host:95: scripts/basic/fixdep] Error
+    127
+    make[2]: Target '__build' not remade because of errors.
+    make[1]: *** [Makefile:594: scripts_basic] Error 2
+    make[1]: Target 'syncconfig' not remade because of errors.
+    make: *** [Makefile:771: include/config/auto.conf.cmd] Error 2
+    make: Failed to remake makefile 'include/config/auto.conf.cmd'.
+    make: Failed to remake makefile 'include/config/auto.conf'.
+      HOSTCC  scripts/basic/fixdep
+      /home/mcgrof/0day/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang:
+      error while loading shared libraries: libtinfo.so.5: cannot open
+      shared object file: No such file or directory
+      make[1]: *** [scripts/Makefile.host:95: scripts/basic/fixdep]
+      Error 127
 
-   which in fact disqualifies it from the RESEND tag because RESEND
-   means it's unmodified or just forward ported.
 
-   Changed patches even if the change is just in the subject line or the
-   changelog want a version number.
+I have a feeling these issues are not correct...
 
-   But what's worse:
-
-2) You ignored any other review comment I gave here:
-
-   https://lore.kernel.org/r/87y2876pg0.ffs@tglx
-
-   IOW, you stopped reading at line 12 of my reply
-
-3) Due to that you failed to notice that I said in that reply:
-
-   "I fixed it up for you this time."
-
-4) Of course you also ignored the fact that I actually fixed the
-   identified issues and the fact that the fixed up patch is already
-   applied to my tree.
-
-   You got notfied about that:
-
-   https://lore.kernel.org/r/163111620295.25758.18154572095175068828.tip-bot2@tip-bot2
-
-So what exactly are you trying to achieve by "resending" a patch which
-still does not apply and still has a non-sensical subject line and
-changelog?
-
-> CONFIDENTIALITY: The contents of this e-mail are confidential and
-> intended only for the above addressee(s). If you are not the intended
-> recipient, or the person responsible for delivering it to the intended
-> recipient, copying or delivering it to anyone else or using it in any
-> unauthorized manner is prohibited and may be unlawful. If you receive
-> this e-mail by mistake, please notify the sender and the systems
-> administrator at straymail@tttech.com immediately.
-
-Please get rid of this nonsensical disclaimer.
-
- When posting to public mailing lists the boilerplate confidentiality
- disclaimers are not only meaningless, they are absolutely wrong for
- obvious reasons.
-
- See https://people.kernel.org/tglx/notes-about-netiquette for further
- information.
-
-Thanks,
-
-        tglx
+  Luis
