@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F4B407650
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D015F40764E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 13:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235741AbhIKLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 07:50:23 -0400
-Received: from einhorn.in-berlin.de ([192.109.42.8]:34469 "EHLO
-        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230249AbhIKLuU (ORCPT
+        id S235745AbhIKLpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 07:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhIKLpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 07:50:20 -0400
-X-Greylist: delayed 352 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Sep 2021 07:50:19 EDT
-X-Envelope-From: stefanr@s5r6.in-berlin.de
-Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 18BBge3X031428
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sat, 11 Sep 2021 13:43:00 +0200
-Date:   Sat, 11 Sep 2021 13:42:36 +0200
-From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net
-Subject: [git pull] FireWire (IEEE 1394) update post v5.14
-Message-ID: <20210911134236.58da0be9@kant>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sat, 11 Sep 2021 07:45:46 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC165C061574;
+        Sat, 11 Sep 2021 04:44:33 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id i21so9869315ejd.2;
+        Sat, 11 Sep 2021 04:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2VF7BSxil8ySiiRZzPeUc3n5QfyIdcKimzYCRdR6uxg=;
+        b=fgCH9oC1cx3EMTWHtJESgMvm6Bzc/H8YmCEo5yFK5sNM8hjzZ48e3nc9KNw2Zs1Og/
+         iPzvi9W1cT3pS1Z9sb2f2PU+s7/VRds2Z84qmd/x4XkwciFpaVIgmEaKh2Gly26TrO2n
+         9QGjWQTBx/CUaQBYB3qc1ZMInDKq8a+w6ET72JUtfK7b6MKKAgsnoViqWH1B5NyfaMv1
+         NiD7XZmWbV8nDJ62HkSNMv7KEP0iNsSBgt91JpdTqu05rHo4vAbxSAgcOTk2RsYJL0Vo
+         bur2uazzr+uu6ddpKyAvWgdQF90oqvM2TUy7cHVp5Gnu78GwBLY+rEsXOQVGb2QgPWNO
+         ZYRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2VF7BSxil8ySiiRZzPeUc3n5QfyIdcKimzYCRdR6uxg=;
+        b=prFjCv3xfpbmhuiUjn7AV3WI5INcoT6Lia8aEU/sWWSSGyXPphWKtuWdBUlgSU2eSK
+         QvUYdOHG2JHAysbbtKlMa8+Y/F4PSOrrsu4OqAafwFbKDvoCZXLSWtMu86Ax9K3Ooiy1
+         WizMUcPMBkZf7kzKAykMWX9oQjJWSft4WnA1vOfNnEn4OwLr0jwMdVkPgTzZ8fnFLgxT
+         kSXAXMldg8+1pcMyC1tTmeCqB5I0P4BYf9dPovhhcwI9I7mPhht7iKDBdiXjAeVECAfp
+         jGWe1LxH6rz0fyB7IkgdN0JLa02ysWoIDSi8aLt0IpBz294s4+t0BgXMQkiwQdBqvsx8
+         Czog==
+X-Gm-Message-State: AOAM5313zhSlJIrtcmi1jy40njWH+2YpdQROmdj2G+Evy0bJSy6sDC1U
+        10ZjHSmfpJVqs1UwWCMDZX8=
+X-Google-Smtp-Source: ABdhPJxiShNiV9iwq0EFWikNNtSkQWobiLzhdGJ9x6MbyX+W+TPXgMHMq5r4h3RU6HWoAb9brwz7Mw==
+X-Received: by 2002:a17:906:912:: with SMTP id i18mr1471958ejd.257.1631360672314;
+        Sat, 11 Sep 2021 04:44:32 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id o12sm812610edv.19.2021.09.11.04.44.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Sep 2021 04:44:31 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 14:44:30 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+Message-ID: <20210911114430.rvlee7cyes2xhzws@skbuf>
+References: <20210909125606.giiqvil56jse4bjk@skbuf>
+ <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
+ <20210909154734.ujfnzu6omcjuch2a@skbuf>
+ <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
+ <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
+ <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
+ <20210909225457.figd5e5o3yw76mcs@skbuf>
+ <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com>
+ <YTtG3NbYjUbu4jJE@lunn.ch>
+ <20210910145852.4te2zjkchnajb3qw@skbuf>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qIXG0B.=9T1GyME9K.JO/Ba";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910145852.4te2zjkchnajb3qw@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qIXG0B.=9T1GyME9K.JO/Ba
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 10, 2021 at 05:58:52PM +0300, Vladimir Oltean wrote:
+> On Fri, Sep 10, 2021 at 01:51:56PM +0200, Andrew Lunn wrote:
+> > > It does not really scale but we also don't have that many DSA masters to
+> > > support, I believe I can name them all: bcmgenet, stmmac, bcmsysport, enetc,
+> > > mv643xx_eth, cpsw, macb.
+> > 
+> > fec, mvneta, mvpp2, i210/igb.
+> 
+> I can probably double that list only with Freescale/NXP Ethernet
+> drivers, some of which are not even submitted to mainline. To name some
+> mainline drivers: gianfar, dpaa-eth, dpaa2-eth, dpaa2-switch, ucc_geth.
+> Also consider that DSA/switchdev drivers can also be DSA masters of
+> their own, we have boards doing that too.
+> 
+> Anyway, I've decided to at least try and accept the fact that DSA
+> masters will unregister their net_device on shutdown, and attempt to do
+> something sane for all DSA switches in that case.
+> 
+> Attached are two patches (they are fairly big so I won't paste them
+> inline, and I would like initial feedback before posting them to the
+> list).
+> 
+> As mentioned in those patches, the shutdown ordering guarantee is still
+> very important, I still have no clue what goes on there, what we need to
+> do, etc.
 
-Linus,
+So to answer my own question, there is a comment above device_link_add:
 
-please pull from the tag "firewire-update" at
+ * A side effect of the link creation is re-ordering of dpm_list and the
+ * devices_kset list by moving the consumer device and all devices depending
+ * on it to the ends of these lists (that does not happen to devices that have
+ * not been registered when this function is called).
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git
-    firewire-update
+so the fact that DSA uses device_link_add towards its master is not
+exactly for nothing. device_shutdown() walks devices_kset from the back,
+so this is our guarantee that DSA's shutdown happens before the master's
+shutdown.
 
-to receive the following FireWire (IEEE 1394) subsystem updates:
-
-  - Migrate the bus snooper driver 'nosy' from PCI to DMA API.
-
-  - Small janitorial cleanup in the IPv4/v6-over-1394 driver.
-
-Christophe JAILLET (1):
-      firewire: nosy: switch from 'pci_' to 'dma_' API
-
-Pu Lehui (1):
-      firewire: net: remove unused variable 'guid'
-
- drivers/firewire/net.c  |  4 ----
- drivers/firewire/nosy.c | 43 ++++++++++++++++++++++++-------------------
- 2 files changed, 24 insertions(+), 23 deletions(-)
-
-Thank you,
---=20
-Stefan Richter
--=3D=3D=3D=3D=3D=3D--=3D-=3D =3D--=3D -=3D-=3D=3D
-http://arcgraph.de/sr/
-
---Sig_/qIXG0B.=9T1GyME9K.JO/Ba
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElVwAmOXEbvmhUkgUefNvslRdedAFAmE8li0ACgkQefNvslRd
-edBfqxAAgOhfHtfVPC44m/8hZHUqVeRNCwdFmsDd3teqbunXsrD3lagSgzLhysZD
-b/KciVbe8vRDreNxtH3KaGTWOhMeGL7BcrKJhQPlizwW3NrQketEzkh6OXLfJmQw
-bwT/+fPUFNrXEWKN0iPLEDwkN15JbRX1oQqsA/OK+gOToASNznjEG6cyUwZjz5Yo
-n9QBa4pCtZd9WPzklvbYRbYHlhDxoaqyGVVu+2bVqfhtSCmhfHHweuAN+O4zXgMm
-mgkdEACXhZITTPd/KTyOP53OyR6N+uugTAgdIDcorKET8oqOcjbP4WnqiVpgTwxj
-2PSzqYsIisuYWEqQkWWvSE+V8YIGqkvuDbXJ7DP8GQnOnZMUXAdE6nDKArL51/BD
-eer7uHF88kk7H66rkejrg0Q0oJS2F6ZsUjfxF4YdorILQ1+0HOJW0chfg0ZvvsNu
-OakWaVfohqkICoLrbWBBZlUQDYg7iU6UqrZ1IAtZxb0Y7olN4VpCNRZZZ+5rHDMR
-hwqjNf5wZHjl8L6N3fMFsopVETx62jRwV53Td4bS+RcincH/CDZM67Wf1Cx50NTA
-+I7kouSI7nrEbIuFcbmVVxX2zx3YMvB9YVgdlJ30kBzf64ExuqIWo34jvizDx+y3
-YeiTULOvTXRi0nFSTqzcubMn27pyB80YJctpROtFmNFXtzNCkTY=
-=Ak0q
------END PGP SIGNATURE-----
-
---Sig_/qIXG0B.=9T1GyME9K.JO/Ba--
+So these patches should be okay. Any other comments? If not, I will
+formally submit them tomorrow towards the net tree.
