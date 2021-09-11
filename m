@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDA040765C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA9C407661
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 14:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235721AbhIKMCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 08:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhIKMCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 08:02:19 -0400
-Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA5C061574;
-        Sat, 11 Sep 2021 05:01:06 -0700 (PDT)
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id CD7403E8BC;
-        Sat, 11 Sep 2021 14:01:02 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: DT: qcom: msm8998: Provide missing "xo" and "sleep_clk" to GCC
-Date:   Sat, 11 Sep 2021 14:01:01 +0200
-Message-Id: <20210911120101.248476-1-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235735AbhIKMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 08:06:39 -0400
+Received: from mga03.intel.com ([134.134.136.65]:50250 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230249AbhIKMGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 08:06:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="221342731"
+X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
+   d="scan'208";a="221342731"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2021 05:05:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,285,1624345200"; 
+   d="scan'208";a="649742301"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2021 05:05:24 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf tools: Fix perf_event_attr__fprintf()  missing/dupl. fields
+Date:   Sat, 11 Sep 2021 15:05:50 +0300
+Message-Id: <20210911120550.12203-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future patch the GCC driver will stop requesting this xo clock by
-its global "xo" name, in favour of of having an explicit phandle here in
-the DT.  Aside from that this clock in addition to the mandatory
-"sleep_clk" were never passed despite being required by the relevant
-dt-bindings.
+Some fields are missing and text_poke is duplicated. Fix that up.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/arm64/boot/dts/qcom/msm8998.dtsi | 5 ++++-
+ tools/perf/util/perf_event_attr_fprintf.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index e9d3ce29937c..05ac5172fcba 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -117,7 +117,7 @@ xo: xo-board {
- 			clock-output-names = "xo_board";
- 		};
+diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
+index 30481825515b..47b7531f51da 100644
+--- a/tools/perf/util/perf_event_attr_fprintf.c
++++ b/tools/perf/util/perf_event_attr_fprintf.c
+@@ -137,6 +137,9 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
+ 	PRINT_ATTRf(cgroup, p_unsigned);
+ 	PRINT_ATTRf(text_poke, p_unsigned);
+ 	PRINT_ATTRf(build_id, p_unsigned);
++	PRINT_ATTRf(inherit_thread, p_unsigned);
++	PRINT_ATTRf(remove_on_exec, p_unsigned);
++	PRINT_ATTRf(sigtrap, p_unsigned);
  
--		sleep_clk {
-+		sleep_clk: sleep-clk {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
- 			clock-frequency = <32764>;
-@@ -855,6 +855,9 @@ gcc: clock-controller@100000 {
- 			#reset-cells = <1>;
- 			#power-domain-cells = <1>;
- 			reg = <0x00100000 0xb0000>;
-+
-+			clock-names = "xo", "sleep_clk";
-+			clocks = <&xo>, <&sleep_clk>;
- 		};
+ 	PRINT_ATTRn("{ wakeup_events, wakeup_watermark }", wakeup_events, p_unsigned);
+ 	PRINT_ATTRf(bp_type, p_unsigned);
+@@ -150,7 +153,7 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
+ 	PRINT_ATTRf(aux_watermark, p_unsigned);
+ 	PRINT_ATTRf(sample_max_stack, p_unsigned);
+ 	PRINT_ATTRf(aux_sample_size, p_unsigned);
+-	PRINT_ATTRf(text_poke, p_unsigned);
++	PRINT_ATTRf(sig_data, p_unsigned);
  
- 		rpm_msg_ram: memory@778000 {
+ 	return ret;
+ }
 -- 
-2.33.0
+2.17.1
 
