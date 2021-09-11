@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B684074C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B6C4074C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 04:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbhIKDA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 23:00:26 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9416 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhIKDAZ (ORCPT
+        id S235240AbhIKDAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIKDAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 23:00:25 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H5y5P1MyHz8yLQ;
-        Sat, 11 Sep 2021 10:54:49 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 10:59:12 +0800
-Received: from [10.67.102.197] (10.67.102.197) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 11 Sep 2021 10:59:11 +0800
-Subject: Re: [patch V5 34/72] locking/rwlock: Provide RT variant
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-References: <20210815203225.710392609@linutronix.de>
- <20210815211303.882793524@linutronix.de>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <d456062c-d5d4-be8a-d960-1a1d43f63456@huawei.com>
-Date:   Sat, 11 Sep 2021 10:59:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Fri, 10 Sep 2021 23:00:44 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BBAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:59:32 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 62so2571211qvb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 19:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QLsl1b3NpV63ZgEOzfho19a1Y601LOSFY9by5dYQ2vk=;
+        b=ZuJTyoJ2Az9c1Is3XTu1LV5/RcY65XnXmK9vMWCubV36heqTW7cF4yLUQU9PtDVMM0
+         fnXovV3tnPfgC5oaX9jyX6JtQEEgHRvOt6pnEvvrOlUiNsbD9Vv3TJZrvF+S0kZyHHFS
+         E98OaS1d0Tpyt77mNYlHPOHMmTywNyO4wZQ+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QLsl1b3NpV63ZgEOzfho19a1Y601LOSFY9by5dYQ2vk=;
+        b=A6pNRZhrbcXusoTaSbkNK6x3YN3+T/G+iKocbu3j/ZbsLOSjhyiPWeNPqvz3Danfej
+         atoju+sPzKUuaYK7ZOC9zfmthpFQaouQsLegfsEWQGNlZpKtHYq5KFPe9rNbuuENHLpS
+         92DDLqMM7bqWJLFaFQVVD5rls9i+Ufc4f6AHgdtn1XZjfrWC97dkuLfMZhfeV8ilgRXk
+         Ariwz9/o5mfabAWmMNj/hGPYd1gk/bsWbxI+DheQAjP9u6pR1pttqYyQg6hT6uYOtGk7
+         Of2I7tLHbFw4DMb4czdypc0117unkKygSZz6vBe5noZenb0KxLmKLoWGzh153r1MQQAJ
+         V60A==
+X-Gm-Message-State: AOAM530/3A+ygLH5pcuUA8iE9zLq9c2OGVi5rRQJX2lbEPIJibvNrrSi
+        ryeB3koNvZNKMUBEJuCH2dE+dVUmBGyvnIlyWB+3nw==
+X-Google-Smtp-Source: ABdhPJxlXs7FidNs06MWxVYHLmOrbib25biafBKZ0BHrdEoITRWXuaidDQ8sY+mPr9EqtO+a/mftg06B0puO2QvO5HU=
+X-Received: by 2002:a0c:aac5:: with SMTP id g5mr666903qvb.23.1631329171737;
+ Fri, 10 Sep 2021 19:59:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210815211303.882793524@linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema774-chm.china.huawei.com (10.1.198.216)
-X-CFilter-Loop: Reflected
+References: <20210910190322.27058-1-romain.perier@gmail.com> <20210910190322.27058-4-romain.perier@gmail.com>
+In-Reply-To: <20210910190322.27058-4-romain.perier@gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sat, 11 Sep 2021 11:59:21 +0900
+Message-ID: <CAFr9PXmwRDfXmDR9UOGoQ2+_LDaSGgmg7n=Ek4RtBdiC2kfuLA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: add vendor prefix for Wireless Tag
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/16 5:28, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Similar to rw_semaphores on RT the rwlock substitution is not writer fair
-> because it's not feasible to have a writer inherit it's priority to
-> multiple readers. Readers blocked on a writer follow the normal rules of
-> priority inheritance. Like RT spinlocks RT rwlocks are state preserving
-> across the slow lock operations (contended case).
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V5: Add missing might_sleep() and fix lockdep init (Sebastian)
-> ---
->   include/linux/rwlock_rt.h       |  140 ++++++++++++++++++++++++++++++++++++++++
->   include/linux/rwlock_types.h    |   49 ++++++++++----
->   include/linux/spinlock_rt.h     |    2
->   kernel/Kconfig.locks            |    2
->   kernel/locking/spinlock.c       |    7 ++
->   kernel/locking/spinlock_debug.c |    5 +
->   kernel/locking/spinlock_rt.c    |  131 +++++++++++++++++++++++++++++++++++++
->   7 files changed, 323 insertions(+), 13 deletions(-)
->   create mode 100644 include/linux/rwlock_rt.h
-> ---
-.....
-> +
-> +int __sched rt_rwlock_is_contended(rwlock_t *rwlock)
-> +{
-> +	return rw_base_is_contended(&rwlock->rwbase);
-> +}
-> +EXPORT_SYMBOL(rt_rwlock_is_contended);
-> +
+Hi Romain,
+Sorry for sending this again. Gmail decided to switch to html email so
+the first version bounced from the mailing lists.
 
-rt_rwlock_is_conted() exported but not declared in the header file?
-Is this a special design or a mistake?
+On Sat, 11 Sept 2021 at 04:03, Romain Perier <romain.perier@gmail.com> wrote:
+>
+> This adds a vendor prefix for wireless tag boards and SOMs.
+>
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index a867f7102c35..b50d62dde7c5 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -517,6 +517,8 @@ patternProperties:
+>      description: International Business Machines (IBM)
+>    "^icplus,.*":
+>      description: IC Plus Corp.
+> +  "^wirelesstag,.*":
+> +    description: Wireless Tag (qiming yunduan)
+>    "^idt,.*":
+>      description: Integrated Device Technologies, Inc.
+>    "^ifi,.*":
+> --
+> 2.33.0
+>
 
-Thanks
-Xiaoming Ni
+This should be in alphabetical order.
+Also, this commit should be before adding the DT for the board I think.
+The prefix should be in before something that uses it.
 
+Thanks,
+
+Daniel
