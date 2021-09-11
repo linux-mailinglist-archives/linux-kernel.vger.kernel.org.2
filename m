@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA804074F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274154074E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 05:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhIKDuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 23:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235390AbhIKDuX (ORCPT
+        id S235285AbhIKDt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 23:49:29 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45725 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230442AbhIKDtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 23:50:23 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AB0C0613EE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:05 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d18so2375751pll.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Sep 2021 20:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=DzaIdSdfFubKopkCOrptYgOiLd7HKVfZtJyuoqzoNt8=;
-        b=C8UBBiko8kEn/wSOUZVcwwN7OH6XGDrT1X48dR7/CZ7kTBkVKWQu5rR/jHct9gqFnU
-         h/gmZWSW2MGUKMqlW7/AA/WhBbDPTc3n1mKjHYCPYj2+0f8ffubhgbjvujGkWobH/uAl
-         ATnCNhGYlbPR0TLuymKV1KyJIfIN5aJ8Ry+iBkaO7AtYTR6hnZTJ4Dbi0Rf83N62Y+bi
-         eEemDpRXY2M7PQaHc1HZ17clcosVJFGZg76MRO/QeF0F+z2L2QqOo9aQB/qkJn5ctKC9
-         plth2//1t4vWhVWIdxFprrxCz92FN+zRf4bNKfPudl2oeQSiLHus29sp6gNmLY7+7jNz
-         lJHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=DzaIdSdfFubKopkCOrptYgOiLd7HKVfZtJyuoqzoNt8=;
-        b=vlgn9LYEF1Qr1lgv1rnhIIyqyxaLHiBgdzBolNKR2wSBf48go1JKD98bEKRYjn+Qdv
-         sFkmEZ+OI+PC55NcfOAi3Au5t+SG60ngn+MMzFfyz4W/PL7M5JjSJ4EkHguO9o9RjbrC
-         Gqk3jp9vETkatk0HkLFxwVMzCcZVnOycgy4PJm7EeBUsKD/cihT3NddvbuEV6zdrR17J
-         n0ds2GNULDgUUEqUuIbkyykGctNLmQXZ2ckjFVMPtB/UTyoE9ee1d7C0/MqlNJHIGcZ3
-         6rX1Ms0cWnJxC6jrN9G/5sAuSnrZ7E5CLpyOweUHqnEPHcwrymz+snbbVKYY81CivHvX
-         cZkA==
-X-Gm-Message-State: AOAM530KyOhAv/HEzR+PHFEImh9s1gbuTpXSFumEDaXoLf1qstovK0vT
-        /3MKEn7yxalOMlCQRqQstK6ZMw==
-X-Google-Smtp-Source: ABdhPJwvLN8bfHfGluy9Iw3pbtnJt2AuK5+jLiz6yCRmD84GF/OziqDW9kPdqQEWqXQfc8FHYONa2g==
-X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr1051170pjv.89.1631332144742;
-        Fri, 10 Sep 2021 20:49:04 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id n1sm301315pfv.209.2021.09.10.20.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 20:49:04 -0700 (PDT)
-Subject: [PATCH v2] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
-Date:   Fri, 10 Sep 2021 20:43:18 -0700
-Message-Id: <20210911034317.1719619-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+        Fri, 10 Sep 2021 23:49:24 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4E3BC5C0178;
+        Fri, 10 Sep 2021 23:48:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 10 Sep 2021 23:48:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=8hUfaqG2iqGw/
+        zAQdkcBvqhTyxx4oaltsi3KSY1CXU8=; b=Ua+F6S9yCbNpg5/Sog7Hovd1Xj/CX
+        VL9JZbKDx9UiCQcmBmZwgSC7JZAzStS1O9UFfAO85rObZH8ZbZxI0bulTojoTLDa
+        TLNJT8Ono/AyYo0DykesRnDW5/reFYIkpS2Ltp2g3gDyYBgbVtL3tWFsHk4XT0e4
+        ezismw0S4SQij/U3gfEBkJvafAGg+gRgWoH1YGLnNAbsue7TgEnqA1R5y655+JkS
+        wniU925xXWR4Vc2y1RzVfvFqvrEjUUYl4L1iFAwj+NpMa4OPMNDImhrHx+Z2WSda
+        O3yrNdAveUBXfVKUvy/Hqkr69BnYO5x3qvvRke+NxP4t48D2cAHRAlSbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=8hUfaqG2iqGw/zAQdkcBvqhTyxx4oaltsi3KSY1CXU8=; b=O9qEa6MQ
+        h/VH421hkcjpZRoJiaynZwlgj6EcLgdNIU85qhzlPOxBs6nC2cCiEMlLpxj/eV+a
+        6WHABSN0QMdeT9L0SP37TzD6Xk7vzx7d//e9rxDLUHPAyeFnU1ScJAhs0lPGesO4
+        Ml1/6dCx7iCbMq6tRmIwpUlVcAb5kc208CQ1Fs4Pi706ehb+a8vjSw06D09AiG+h
+        to+TlC/BdM5zpgbPvwFYZq3NJxz9ZyKfY36TwfmHexUqDEIxnToNouZcglOE3Ls2
+        lNF5m5kRHgJpelAGNYkyrTJmjAGejASklGEzrjSPBkznUwJcI1cua6Jh4WjbeWXG
+        +9py6WccnFLnZQ==
+X-ME-Sender: <xms:-yY8YbRG59BFLPtXQFpEfTtsRdkS5DlZ4e5Ss7ULKrxD3wiPKc_vCA>
+    <xme:-yY8Yczu5EmP6AjSHov41bSV9CA7K7OZ7YrZgw7BKAejrmaN8RiNVv9LGfxgYw3BN
+    AJvPL3uIFae5ulXrwM>
+X-ME-Received: <xmr:-yY8YQ1NdSiihTsWtbMgd_1XIKK0b09nuXK_eJXWTxTKkdnkblCi8cLq7SM2jwq_627HF5lebrR_XtE7ClR6uTErGBWJK4SbQVT17q1kIGQN0JV5fl4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegvddgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeetlhgvgigv
+    ihcunfhoiihovhhskhihuceomhgvsehilhgrmhhmhidrnhgvtheqnecuggftrfgrthhtvg
+    hrnhepteeujeehkeejueevieehgfeuheelleeggfehfefffeekjeduueejjeeugfetueek
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvse
+    hilhgrmhhmhidrnhgvth
+X-ME-Proxy: <xmx:-yY8YbDoCjCsb3oqvrhvVOQASXnUdBitxxDh3Qufl6HbvcZIdPxRrg>
+    <xmx:-yY8YUj3NqDMxtS8pbnzvjP0dJVxMm4arl4MK3WMiYtbgdZg75Peyg>
+    <xmx:-yY8YfqV2IDA-N6ZVZKz3KEQZ8Nt_JqZpqFyQjuzbJ0cmSPd6CnggA>
+    <xmx:_CY8YdsA3PmwOGWl-73jhEZGH_nWW3-Gx7_7oTky0bLmQBRx44zrKw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Sep 2021 23:48:10 -0400 (EDT)
+From:   Alexei Lozovsky <me@ilammy.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/7] proc/stat: Maintain monotonicity of "intr" and "softirq"
+Date:   Sat, 11 Sep 2021 12:48:01 +0900
+Message-Id: <20210911034808.24252-1-me@ilammy.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
+References: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     hjc@rock-chips.com, heiko@sntech.de, Arnd Bergmann <arnd@arndb.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+Here's a patch set that makes /proc/stat report total interrupt counts
+as monotonically increasing values, just like individual counters for
+interrupt types and CPUs are.
 
-cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
-unused function warning is triggered undner !PM_SLEEP.  This marks the
-function as possibly unused, to avoid triggering compiler warnings.
+This is as if the sum was a shared counter that all CPUs increment
+atomically together with their individual counters, with the sum
+correctly and expectedly wrapping around to zero once it reaches
+UINT_MAX.
 
-Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
-This is breaking my builds and looks like it'll land after -rc1, so I've put it
-on a shared tag for-rockchip-cdn_dp_resume-v2 which will let me pull it in to
-my fixes.  LMK if you guys want me to send this up on my own, but I'm assuming
-that the drm/rockchip folks will handle it.
----
- drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've also added some documentation bits to codify this behavior and make
+it explicit that wrap-arounds must be expected and handled if userspace
+wants to maintain accurate total interrupt count for whatever reasons.
 
-diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-index 8ab3247dbc4a..13c6b857158f 100644
---- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-+++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-@@ -1123,7 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
- 	return ret;
- }
- 
--static int cdn_dp_resume(struct device *dev)
-+static __maybe_unused int cdn_dp_resume(struct device *dev)
- {
- 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
- 
+Alexei Lozovsky (7):
+  genirq: Use unsigned int for irqs_sum
+  powerpc/irq: arch_irq_stat_cpu() returns unsigned int
+  x86/irq: arch_irq_stat_cpu() returns unsigned int
+  x86/irq: arch_irq_stat() returns unsigned int
+  proc/stat: Use unsigned int for "intr" sum
+  proc/stat: Use unsigned int for "softirq" sum
+  docs: proc.rst: stat: Note the interrupt counter wrap-around
+
+ Documentation/filesystems/proc.rst | 7 +++++++
+ arch/powerpc/include/asm/hardirq.h | 2 +-
+ arch/powerpc/kernel/irq.c          | 4 ++--
+ arch/x86/include/asm/hardirq.h     | 4 ++--
+ arch/x86/kernel/irq.c              | 8 ++++----
+ fs/proc/stat.c                     | 8 ++++----
+ include/linux/kernel_stat.h        | 2 +-
+ 7 files changed, 21 insertions(+), 14 deletions(-)
+
 -- 
-2.33.0.309.g3052b89438-goog
+2.25.1
 
