@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BB0407603
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C9240760B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 12:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbhIKKLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 06:11:44 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42550 "EHLO mail.skyhub.de"
+        id S235595AbhIKKPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 06:15:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:45396 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhIKKLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 06:11:41 -0400
-Received: from zn.tnic (p200300ec2f1e14001f3479bbc118498e.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:1400:1f34:79bb:c118:498e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0AD71EC0136;
-        Sat, 11 Sep 2021 12:10:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631355022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=HR27o8pZq+/+uFK0n68ub/mxfkE1ISiJNZUKmCms7j8=;
-        b=I197+52KgpqBBgLvuSMSrQpQNRo13IqV+FgdnGwdscix9JqjZo6kiEOakrW3iQQS6u0uVD
-        WzR3O2CXEOh8ZykdepQmAsy+NBoupC0qZ8IdrqxtxuX9zNND17uAXyBpIh83Qsid6C7Ugn
-        zY+/3Zj7u8+b/OQlEkEddX/RceOjyqA=
-Date:   Sat, 11 Sep 2021 12:10:14 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v3 3/8] x86/sev: Add an x86 version of cc_platform_has()
-Message-ID: <YTyAhmPf39Vqd7G9@zn.tnic>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com>
+        id S235443AbhIKKPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 06:15:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8D351FB;
+        Sat, 11 Sep 2021 03:14:25 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D71D3F5A1;
+        Sat, 11 Sep 2021 03:14:23 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 11:14:18 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
+Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Message-ID: <20210911101418.GA32028@lpieralisi>
+References: <20210910122820.26886-1-justin.he@arm.com>
+ <20210910143223.6705-1-justin.he@arm.com>
+ <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com>
+In-Reply-To: <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 05:58:34PM -0500, Tom Lendacky wrote:
-> diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
-> new file mode 100644
-> index 000000000000..3c9bacd3c3f3
-> --- /dev/null
-> +++ b/arch/x86/kernel/cc_platform.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Confidential Computing Platform Capability checks
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
-> + */
-> +
-> +#include <linux/export.h>
-> +#include <linux/cc_platform.h>
-> +#include <linux/mem_encrypt.h>
-> +
-> +bool cc_platform_has(enum cc_attr attr)
-> +{
-> +	if (sme_me_mask)
+On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
+> >
+> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> >
+> > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > with call trace as follows:
+> >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [...snip...]
+> >  Call trace:
+> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> >   acpi_ex_access_region+0x114/0x268
+> >   acpi_ex_field_datum_io+0x128/0x1b8
+> >   acpi_ex_extract_from_field+0x14c/0x2ac
+> >   acpi_ex_read_data_from_field+0x190/0x1b8
+> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> >   acpi_ex_resolve_to_value+0x250/0x274
+> >   acpi_ds_evaluate_name_path+0xac/0x124
+> >   acpi_ds_exec_end_op+0x90/0x410
+> >   acpi_ps_parse_loop+0x4ac/0x5d8
+> >   acpi_ps_parse_aml+0xe0/0x2c8
+> >   acpi_ps_execute_method+0x19c/0x1ac
+> >   acpi_ns_evaluate+0x1f8/0x26c
+> >   acpi_ns_init_one_device+0x104/0x140
+> >   acpi_ns_walk_namespace+0x158/0x1d0
+> >   acpi_ns_initialize_devices+0x194/0x218
+> >   acpi_initialize_objects+0x48/0x50
+> >   acpi_init+0xe0/0x498
+> >
+> > As mentioned by Lorenzo:
+> >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> >   eMAG does not like at all and I'd need to understand why. It looks
+> >   like the issue happen in SystemMemory Opregion handler."
+> >
+> > Hence just revert it before everything is clear.
+> >
+> 
+> Can we try to find the root cause first? -rc1 is not even out yet, and
+> reverting it now means we can not resubmit it until the next merge
+> window.
 
-Why are you still checking the sme_me_mask here? AFAIR, we said that
-we'll do that only when the KVM folks come with a valid use case...
+Yes, absolutely. We need to understand where the problem is, because it
+looks like we can't map SystemMemory Opregion with NORMAL_NC if the PA
+is not in the EFI map, that's a problem (ie how can we determine the
+right memory attributes for SystemMemory Operation regions then) but
+let's not speculate and find what the issue is first.
 
-> +		return amd_cc_platform_has(attr);
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL_GPL(cc_platform_has);
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index ff08dc463634..18fe19916bc3 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -20,6 +20,7 @@
->  #include <linux/bitops.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/virtio_config.h>
-> +#include <linux/cc_platform.h>
->  
->  #include <asm/tlbflush.h>
->  #include <asm/fixmap.h>
-> @@ -389,6 +390,26 @@ bool noinstr sev_es_active(void)
->  	return sev_status & MSR_AMD64_SEV_ES_ENABLED;
->  }
->  
-> +bool amd_cc_platform_has(enum cc_attr attr)
-> +{
-> +	switch (attr) {
-> +	case CC_ATTR_MEM_ENCRYPT:
-> +		return sme_me_mask != 0;
-
-No need for the "!= 0"
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lorenzo
