@@ -2,360 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFE64079D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 19:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143E44079D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 19:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhIKRZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 13:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhIKRZU (ORCPT
+        id S232860AbhIKR1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 13:27:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44156 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230018AbhIKR1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 13:25:20 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC39C061574;
-        Sat, 11 Sep 2021 10:24:07 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h1so8812172ljl.9;
-        Sat, 11 Sep 2021 10:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=6xpGk4Gbf6iEiJncDeOfs3mRIeJ5ZCtSjHdlk5wXhVw=;
-        b=jvh2Ud8nL9BOf4JcBTQqCVjHTcoHz8B6b2a14o9WsgIE2ROqsrXbq9UaG5qEzM138H
-         E/wAKPhDZep6JuYErrJgaFKqD9vuG1NtD9Ktv89tcodJfb48dnFmp2WQZbjuB4us0U+I
-         vPNsWE/HFAAUqAHKQ6oLwhtPkyV/6IbyqhSZAV5rX9qPyiRo/rKiBaPYKPoV3Yw4fg6j
-         r48KcW/Kh2G7tuCpi/bi1PFF2d6Qx4ZnGxIRx8Sk31SHk+NPbtEdYGef+1VEzOXU5jZT
-         4UHGOfctdGl2gFoRt2EsZmBuEJlWAZkbFqLlWjW+3dXhAnGAu/fZv4kXgtVhiU9IJZdf
-         uXWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=6xpGk4Gbf6iEiJncDeOfs3mRIeJ5ZCtSjHdlk5wXhVw=;
-        b=3yo1B6yLtC8XDtSL0JzhhdFXCD/+dJjJ65EU4eQgGEGs3tfCdHhTfOz02ZwW3FJ9aX
-         5BlKLjKfcS9AzbZwictbTXoGynK+nDWJMQlwGAQQ9CiyeGTOhu1AYkbFgm+2rwAShXKX
-         VqgkD4Z2dEX+7Xx0pS3GG9A75uE+1dGv5v8u56WHxmqm5vOKa5F/IgsyNzOuYrsu1uZQ
-         VisqqTYgNlkvFfk1f084Bm9pj3Z+owaUzI572adlHTucR78PsAbGTnH4sz4wEn+ATgk7
-         lVsnI1fUbclznMKVrF6O/TcpZ97fbBPMPviFWu2QQ3zl0phOehh8mFs2T3oFdRuRoSsX
-         WnBw==
-X-Gm-Message-State: AOAM5325KwrLPYoNhYuQK8O8FLK7z1JP7yO2S+yeA6/EA1MoNaoIy6rj
-        Flz0NLv7lYLPqEau/Jfwv8qLb9WQaiPjxZd0KxhVqJhK81I=
-X-Google-Smtp-Source: ABdhPJwx7LhhYBFzaZWTJJ5sZZCfE3gEQ8RhYRRGHsAWuBZrvPj98FzDN5PCr6ubWpV24njitXHMJEZLt9IQXoVlGa0=
-X-Received: by 2002:a05:651c:33b:: with SMTP id b27mr2927218ljp.314.1631381044935;
- Sat, 11 Sep 2021 10:24:04 -0700 (PDT)
+        Sat, 11 Sep 2021 13:27:32 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-87-4qc9EUa1M6qeRLmgOwokUA-1; Sat, 11 Sep 2021 18:26:13 +0100
+X-MC-Unique: 4qc9EUa1M6qeRLmgOwokUA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Sat, 11 Sep 2021 18:26:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Sat, 11 Sep 2021 18:26:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>
+CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "akira.tsukamoto@gmail.com" <akira.tsukamoto@gmail.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "bmeng.cn@gmail.com" <bmeng.cn@gmail.com>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        "Christoph Hellwig" <hch@infradead.org>
+Subject: RE: [PATCH] riscv: use the generic string routines
+Thread-Topic: [PATCH] riscv: use the generic string routines
+Thread-Index: AQHXpr/5qgNlr7pPJkaLpUnMWph5s6ufDaMA
+Date:   Sat, 11 Sep 2021 17:26:12 +0000
+Message-ID: <241c29b27c4c4acbbf893516bfa6f5aa@AcuMS.aculab.com>
+References: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
+ <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 11 Sep 2021 12:23:54 -0500
-Message-ID: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-9c849ce86e0fa93a218614eac562ace44053d7ce:
+Li4NCj4gVGhlc2UgZW5kZWQgdXAgZ2V0dGluZyByZWplY3RlZCBieSBMaW51cywgc28gSSdtIGdv
+aW5nIHRvIGhvbGQgb2ZmIG9uDQo+IHRoaXMgZm9yIG5vdy4gIElmIHRoZXkncmUgcmVhbGx5IG91
+dCBvZiBsaWIvIHRoZW4gSSdsbCB0YWtlIHRoZSBDDQo+IHJvdXRpbmVzIGluIGFyY2gvcmlzY3Ys
+IGJ1dCBlaXRoZXIgd2F5IGl0J3MgYW4gaXNzdWUgZm9yIHRoZSBuZXh0DQo+IHJlbGVhc2UuDQoN
+CkkndmUgYmVlbiBoYWxmIGZvbGxvd2luZyB0aGlzLg0KSSd2ZSBub3Qgc2VlbiBhbnkgY29tcGFy
+aXNvbnMgYmV0d2VlbiB0aGUgQyBmdW5jdGlvbnMgcHJvcG9zZWQNCmhlcmUgYW5kIHRoZSByaXNj
+diBhc20gb25lcyB0aGF0IGhhZCB0aGUgZml4IGZvciBtaXNhbGlnbmVkDQp0cmFuc2ZlcnMgYXBw
+bGllZC4NCg0KSUlSQyB0aGVyZSBpcyBhIGNvbW1lbnQgaW4gdGhlIGFzbSBvbmVzIHRoYXQgdGhl
+IHVucm9sbGVkDQoncmVhZCBsb3RzJyAtICd3cml0ZSBsb3RzJyBsb29wIGlzIGZhc3RlciB0aGFu
+IHRoZSBvbGRlcg0KKGFzbSkgcmVhZC13cml0ZSBsb29wLg0KDQpCdXQgSSd2ZSBub3Qgc2VlbiBh
+bnkgYXJjaGljdHVyYWwgZGlzY3Vzc2lvbnMgYXQgYWxsLg0KDQpBIHNpbXBsZSBpbi1vcmRlciBz
+aW5nbGUtaXNzdWUgY3B1IHdpbGwgZXhlY3V0ZSB0aGUNCnVucm9sbGVkIGxvb3AgZmFzdGVyIGp1
+c3QgYmVjYXVzZSBpdCBoYXMgZmV3ZXIgaW5zdHJ1Y3Rpb25zLg0KVGhlIHJlYWQtbG90cyAtIHdy
+aXRlLWxvdHMgYWxtb3N0IGNlcnRhaW5seSBoZWxwcw0KYXZvaWQgcmVhZC1sYXRlbmN5IGRlbGF5
+aW5nIHRoaW5ncyBpZiBtdWx0aXBsZSByZWFkcw0KY2FuIGJlIHBpcGVsaW5lZC4NClRoZSB3cml0
+ZXMgYXJlIGFsbW9zdCBjZXJ0YWlubHkgJ3Bvc3RlZCcgYW5kIHBpcGVsaW5lZCwNCkJ1dCBhIHNp
+bXBsZSBjcHUgY291bGQgZWFzaWx5IHJlcXVpcmUgYWxsIHdyaXRlcyBmaW5pc2gNCmJlZm9yZSBk
+b2luZyBhIHJlYWQuDQoNCkEgc3VwZXItc2NhbGVyIChtdWx0aS1pc3N1ZSkgY3B1IGdpdmVzIHlv
+dSB0aGUgYWJpbGl0eQ0KdG8gZ2V0IHRoZSBsb29wIGNvbnRyb2wgaW5zdHJ1Y3Rpb25zICdmb3Ig
+ZnJlZScgd2l0aA0KY2FyZWZ1bGx5IHdyaXR0ZW4gYXNzZW1ibGVyLg0KQXQgd2hpY2ggcG9pbnQg
+YSBjb3B5IGZvciAnbGlmZSBjYWNoZScgZGF0YSBzaG91bGQgYmUNCmxpbWl0ZWQgb25seSBieSB0
+aGUgY3B1J3MgY2FjaGUgbWVtb3J5IGJhbmR3aWR0aC4NCg0KSWYgcmVhZHMgYW5kIHdyaXRlcyBj
+YW4gaW50ZXJsZWF2ZSB0aGVuIGEgbG9vcCB0aGF0DQphbHRlcm5hdGVzIHJlYWRzIGFuZCB3cml0
+ZXMgKHJlYWQgZWFjaCByZWdpc3Rlcg0KanVzdCBhZnRlciB3cml0aW5nIGl0KSBtYXkgbWVhbiB0
+aGF0IHlvdSBhbHdheXMNCmtlZXAgdGhlIGNwdS1jYWNoZSBpbnRlcmZhY2UgYnVzeS4NClRoaXMg
+d291bGQgYmUgZXNwZWNpYWxseSB0cnVlIGlmIHRoZSBjcHUgY2FuIGV4ZWN1dGUNCmJvdGggYSBj
+YWNoZSByZWFkIGFuZCB3cml0ZSBpbiB0aGUgc2FtZSBjeWNsZS4NCihXaGljaCBtYW55IG1vZGVy
+YXRlIHBlcmZvcm1hbmNlIGNwdSBjYW4uKQ0KDQpOb25lIG9mIHRoZSByZXF1aXJlcyBvdXQtb2Yt
+b3JkZXIgZXhlY3V0aW9uLCBqdXN0DQpleGVjdXRpb24gdG8gY29udGludWUgd2hpbGUgYSByZWFk
+IGlzIGluIHByb2dyZXNzLg0KDQpJJ20gYWxzbyBndWVzc2luZyB0aGF0IGFueSBwZXJmb3JtYW5j
+ZSB0ZXN0aW5nIGhhcyBiZWVuDQpkb25lIHdpdGggdGhlIChyZWxhdGl2ZWx5KSBjaGVhcCBib2Fy
+ZHMgdGhhdCBhcmUgcmVhZGlseQ0KYXZhaWxhYmxlLg0KDQpCdXQgSSd2ZSBhbHNvIHNlZW4gcmVm
+ZXJlbmNlcyBpbiB0aGUgcHJlc3MgdG8gbXVjaCBmYXN0ZXINCnJpc2N2IGNwdSB0aGF0IGFyZSBk
+ZWZpbml0ZWx5IG11bHRpLWlzc3VlIGFuZCBtYXkgaGF2ZQ0Kc29tZSBzaW1wbGUgb3V0LW9mLW9y
+ZGVyIGV4ZWN1dGlvbi4NCkFueSBjaGFuZ2VzIG91Z2h0IHRvIGJlIHRlc3RlZCBvbiB0aGVzZSBm
+YXN0ZXIgc3lzdGVtcy4NCg0KSSBhbHNvIHJlY2FsbCB0aGF0IHNvbWUgb2YgdGhlIHBlcmZvcm1h
+bmNlIG1lYXN1cmVtZW50cw0Kd2VyZSBtYWRlIHdpdGggbG9uZyBidWZmZXJzIC0gdGhleSB3aWxs
+IGJlIGRvbWluYXRlZCBieSB0aGUNCmNhY2hlIHRvIERSQU0gKGFuZCBtYXliZSBUTEIgbG9va3Vw
+KSB0aW1pbmdzLCBub3QgdGhlIGNvcHkNCmxvb3AuDQoNCkZvciBhIHNpbXBsZSBjcHUgeW91IG91
+Z2h0IHRvIGJlIGFibGUgdG8gbWVhc3VyZSB0aGUNCm51bWJlciBvZiBjcHUgY3ljbGVzIHVzZWQg
+Zm9yIGEgY29weSAtIGFuZCBhY2NvdW50IGZvcg0KYWxsIG9mIHRoZW0uDQpGb3Igc29tZXRoaW5n
+IGxpa2UgeDg2IHlvdSBjYW4gc2hvdyB0aGF0IHRoZSBjb3B5IGlzDQpiZWluZyBsaW1pdGVkIGJ5
+IHRoZSBjcHUtY2FjaGUgYmFuZHdpZHRoLg0KKEZXSVcgbWVhc3VyZW1lbnRzIG9mIHRoZSBpbmV0
+IGNoZWNrc3VtIGNvZGUgb24geDg2DQpzaG93IGl0IHJ1bnMgYXQgaGFsZiB0aGUgZXhwZWN0ZWQg
+c3BlZWQgb24gYSBsb3Qgb2YNCkludGVsIGNwdSAtIG5vIG9uZSBldmVyIG1lYXN1cmVkIGl0LikN
+Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
+LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
+OiAxMzk3Mzg2IChXYWxlcykNCg==
 
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes:
-- one for DFS reconnect
-- one to begin creating common headers for server and client
-- the other two to rename the cifs_common directory to smbfs_common to
-be more consistent ie change use of the name cifs to smb (smb3 or
-smbfs is more accurate, as theThe following changes since commit
-9c849ce86e0fa93a218614eac562ace44053d7ce:
-
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes, one for DFS reconnect, and one to begin creating
-common headers for server and client and the other two to rename the
-cifs_common directory to smbfs_common to be more consistent ie change
-use of the name cifs to smb which is more accurate
-
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-The following changes since commit 9c849ce86e0fa93a218614eac562ace44053d7ce:
-
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes, one for DFS reconnect, and one to begin creating
-common headers for server and client and the other two to rename the
-cifs_common directory to smbfs_common to be more consistent ie change
-use of the name cifs to smb which is more accurate
-
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-The following changes since commit 9c849ce86e0fa93a218614eac562ace44053d7ce:
-
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes, one for DFS reconnect, and one to begin creating
-common headers for server and client and the other two to rename the
-cifs_common directory to smbfs_common to be more consistent ie change
-use of the name cifs to smb which is more accurate
-
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/The following changes since
-commit 9c849ce86e0fa93a218614eac562ace44053d7ce:
-
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes, one for DFS reconnect, and one to begin creating
-common headers for server and client and the other two to rename the
-cifs_common directory to smbfs_common to be more consistent ie change
-use of the name cifs to smb which is more accurate
-
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-The following changes since commit 9c849ce86e0fa93a218614eac562ace44053d7ce:
-
-  Merge tag '5.15-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-08-31 09:22:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
-
-for you to fetch changes up to 9351590f51cdda49d0265932a37f099950998504:
-
-  cifs: properly invalidate cached root handle when closing it
-(2021-09-09 17:34:38 -0500)
-
-----------------------------------------------------------------
-4 cifs/smb3 fixes, one for DFS reconnect, and one to begin creating
-common headers for server and client and the other two to rename the
-cifs_common directory to smbfs_common to be more consistent ie change
-use of the name cifs to smb which is more accurate
-
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-very old cifs dialect has long been superseded by smb3 dialects).
-
-In the future we can rename the fs/cifs directory to fs/smbfs.
-
-This pull request does not include the set of multichannel fixes nor
-the two deferred close fixes (they are still being reviewed and
-tested).
-----------------------------------------------------------------
-Enzo Matsumiya (1):
-      cifs: properly invalidate cached root handle when closing it
-
-Steve French (3):
-      cifs: update FSCTL definitions
-      cifs: rename cifs_common to smbfs_common
-      cifs: move SMB FSCTL definitions to common code
-
- fs/Kconfig                                   |  2 +-
- fs/Makefile                                  |  2 +-
- fs/cifs/cifsencrypt.c                        |  2 +-
- fs/cifs/cifspdu.h                            |  2 +-
- fs/cifs/smb2ops.c                            | 20 +++++++++++++-------
- fs/cifs/smbencrypt.c                         |  2 +-
- fs/{cifs_common => smbfs_common}/Makefile    |  4 ++--
- fs/{cifs_common => smbfs_common}/arc4.h      |  0
- fs/{cifs_common => smbfs_common}/cifs_arc4.c |  8 ++++----
- fs/{cifs_common => smbfs_common}/cifs_md4.c  |  0
- fs/{cifs_common => smbfs_common}/md4.h       |  0
- fs/{cifs => smbfs_common}/smbfsctl.h         | 16 +++++++++++++---
- 12 files changed, 37 insertions(+), 21 deletions(-)
- rename fs/{cifs_common => smbfs_common}/Makefile (59%)
- rename fs/{cifs_common => smbfs_common}/arc4.h (100%)
- rename fs/{cifs_common => smbfs_common}/cifs_arc4.c (91%)
- rename fs/{cifs_common => smbfs_common}/cifs_md4.c (100%)
- rename fs/{cifs_common => smbfs_common}/md4.h (100%)
- rename fs/{cifs => smbfs_common}/smbfsctl.h (92%)
-
-
--- 
-Thanks,
-
-Steve
