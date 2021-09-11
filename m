@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB99407A6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 22:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA342407A71
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 23:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhIKUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 16:53:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231605AbhIKUx6 (ORCPT
+        id S232326AbhIKVD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 17:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhIKVD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 16:53:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631393564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=GXO6YsIAMbLq0VJ5Vdvx1z0f/QMqeuA6CKdPl6ykaVw=;
-        b=aCRatXdcthkt0tFDWlzOvqW02dzspA2R9/7QQe02sTEgxqwIBcGdGNinK2THuu/3SZamYP
-        L0SIb/iJ5BhnGQYOoV1ruV1hFaL+3/sr5ugVz87fwF4i9nH19Es+qVkZkaTVo/9JgkYJ55
-        naGIWjpW42UGd6CvtNFhLnG3l7FMuQQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-TFpHr7NTPiCdEcTU6NKW0g-1; Sat, 11 Sep 2021 16:52:43 -0400
-X-MC-Unique: TFpHr7NTPiCdEcTU6NKW0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85B108015C7;
-        Sat, 11 Sep 2021 20:52:41 +0000 (UTC)
-Received: from lclaudio.dyndns.org (unknown [10.22.32.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E4425D9D5;
-        Sat, 11 Sep 2021 20:52:40 +0000 (UTC)
-Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
-        id 4ACF63C0205; Sat, 11 Sep 2021 17:52:39 -0300 (-03)
-Date:   Sat, 11 Sep 2021 17:52:39 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.9.282-rt187
-Message-ID: <YT0XF3yghXjRKISP@uudg.org>
+        Sat, 11 Sep 2021 17:03:28 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144D8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:02:15 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id k69so1943051vkk.9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 14:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=HDZrxQjAYmgGXAAY2UX8Fz3tITRbXcITXcF9JsOmohM=;
+        b=EBjjWxuRZdsikaUFKCK/MgEslL6cJffepTGClp4Qe22yfafnSxar4h7nmL4KJtJlpx
+         9W/9L0NI87S49r74ZRLzRh4zKyodyy7t9QYLtvVMwQ52DDw56OUhzc6cPP82nC6+vyn5
+         98q7JjuQWZcajco2Cs/xbug0yQG1qdJeZLfoA7VMXb66EGUJ6kIT/i15+26i8rQDaq7d
+         shIVofoMAvbj5Cnqwe03/OsF7pt/+PklhDbYEH9lOTmAU8skVvbldOUyJAfF2Pv0quHT
+         F1tz8qNeCkvCpECrtec27d26xSF7n+J+57d7eG5wdyrd7/p6HZqnbWxs8QePlwKdmagl
+         pPsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=HDZrxQjAYmgGXAAY2UX8Fz3tITRbXcITXcF9JsOmohM=;
+        b=tMtQMhsQWc2udN83FgN8cheopYv9CkX6jAal84Z28F+zpaGFwo2yzf/JGBZ6+PTWbu
+         UFnDv1ZtN6IAkP/eDf2oVK4RsKN3/WCtLvOYUbIROFha7aN1MaB/1RzIQruDzAHhs7ER
+         sygyxz+dDKu19oCWOkt6V4Yvm3+5Wt1aGMIsG1FJU3GA8s6CHu+vQ9u4dh49nvucskuP
+         lG+kpdurAbKTA3BJlzIgAEqo5iub2rV0kWDe8GwdsOJYatbrBayWqKUEXh0rPDBa+8Cy
+         WEpEfYa+VAoD8zohhowpyN1Nmg+ISyG9fweBPTg5AyQoit8Likd8/yTm5Sv6FZNi3XwA
+         O5Gw==
+X-Gm-Message-State: AOAM533G3VEuYvO8P4uhFY3vSAy7gVTNqayf4WFDqq9JnAxRBdIuIu0s
+        83nYsG06uMmIVvUj+zE/lUzTPkIUMzIHYeJA78I=
+X-Google-Smtp-Source: ABdhPJzip8GJbc250vuIDncK+dzC41q5W/hgO4psvNW24H1eXv+dpePt+4Y9WdMRdxXXTr4FsO5sfuoOHCVWPCfUX90=
+X-Received: by 2002:a1f:acca:: with SMTP id v193mr1517630vke.8.1631394134069;
+ Sat, 11 Sep 2021 14:02:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Sender: hseterann612@gmail.com
+Received: by 2002:a59:9308:0:b0:220:a788:a134 with HTTP; Sat, 11 Sep 2021
+ 14:02:13 -0700 (PDT)
+From:   Kayla Manthey <sgtkaylamanthey612@gmail.com>
+Date:   Sat, 11 Sep 2021 22:02:13 +0100
+X-Google-Sender-Auth: BiKc_MpxY7kIopgw41BBaElqwxA
+Message-ID: <CAP0Rbr31cyXwnb64FiOYArjd=hfxphCzO7Vs8XqZmvrPHRGqdw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
-
-I'm pleased to announce the 4.9.282-rt187 stable release.
-
-This release is just an update to the new stable 4.9.282 version and
-no RT specific changes have been made.
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.9-rt
-  Head SHA1: e56d0ebcd94b189a63e6852d14fcc94f997854ce
-
-Or to build 4.9.282-rt187 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.282.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.282-rt187.patch.xz
-
-
-Enjoy!
-Luis
-
+Hallo, heb je mijn twee vorige e-mails ontvangen? controleer en antwoord mij.
