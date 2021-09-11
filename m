@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED2140744D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 02:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DFC407456
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Sep 2021 03:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhIKBBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Sep 2021 21:01:08 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16186 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhIKBBH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Sep 2021 21:01:07 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H5vWk5BsDz1DGp2;
-        Sat, 11 Sep 2021 08:58:58 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 11 Sep 2021 08:59:53 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
- 2021 08:59:53 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
-Subject: [PATCH -next v2] bpf: Add oversize check before call kvcalloc()
-Date:   Sat, 11 Sep 2021 08:55:57 +0800
-Message-ID: <20210911005557.45518-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S235047AbhIKBQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Sep 2021 21:16:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:55831 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234989AbhIKBQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Sep 2021 21:16:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10103"; a="219349208"
+X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
+   d="scan'208";a="219349208"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 18:15:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,284,1624345200"; 
+   d="scan'208";a="467538684"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Sep 2021 18:15:20 -0700
+Date:   Fri, 10 Sep 2021 18:14:59 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Marcus =?iso-8859-1?Q?R=FCckert?= <mrueckert@suse.com>
+Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
+Message-ID: <20210911011459.GA11980@ranerica-svr.sc.intel.com>
+References: <20210907200454.30458-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210907200454.30458-1-bp@alien8.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
-oversize check. When the allocation is larger than what kmalloc() supports,
-the following warning triggered:
+On Tue, Sep 07, 2021 at 10:04:54PM +0200, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> And add the first control option
+> 
+>   umip=warnings_off
+> 
+> which disables warnings resulting from emulating UMIP-enabled insns.
+> 
+> The actual use case is for users playing games in wine, games like
+> Overwatch, for example, which go nuts with SIDT:
+> 
+>   [Di Sep  7 00:24:05 2021] umip_printk: 1345 callbacks suppressed
+>   [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: SIDT instruction cannot be used by applications.
+>   [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: For now, expensive software emulation returns the result.
+>   ...
+>   [Di Sep  7 00:26:06 2021] umip_printk: 2227 callbacks suppressed
+>   [Di Sep  7 00:26:06 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b940: SIDT instruction cannot be used by applications.
+> 
+> filling up the kernel log unnecessarily with the same info over and over
+> again which doesn't mean a whit to the users - they just wanna play.
+> 
+> So add a boot-time control switch for those warning messages.
+> 
+> Reported-by: Marcus Rückert <mrueckert@suse.com>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  5 +++
+>  arch/x86/kernel/umip.c                        | 33 +++++++++++++++++--
+>  2 files changed, 35 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 828d11441ebf..815d022c3e87 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5887,6 +5887,11 @@
+>  	unknown_nmi_panic
+>  			[X86] Cause panic on unknown NMI.
+>  
+> +	umip=warnings_off
+> +			[X86]
+> +			* warnings_off - do not issue warnings when emulating
+> +			  UMIP-enabled instructions.
+> +
+>  	usbcore.authorized_default=
+>  			[USB] Default USB device authorization:
+>  			(default -1 = authorized except for wireless USB,
+> diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+> index 576b47e7523d..1d37dc626011 100644
+> --- a/arch/x86/kernel/umip.c
+> +++ b/arch/x86/kernel/umip.c
+> @@ -90,10 +90,19 @@ static const char * const umip_insns[5] = {
+>  	[UMIP_INST_STR] = "STR",
+>  };
+>  
+> -#define umip_pr_err(regs, fmt, ...) \
+> +static struct umip_config {
+> +	__u64 warnings_off	: 1,
+> +	      __reserved	: 63;
+> +} umip_cfg;
+> +
+> +#define umip_pr_err(regs, fmt, ...)				\
+>  	umip_printk(regs, KERN_ERR, fmt, ##__VA_ARGS__)
+> -#define umip_pr_warn(regs, fmt, ...) \
+> -	umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__)
+> +
+> +#define umip_pr_warn(regs, fmt, ...)					\
+> +({									\
+> +	if (!umip_cfg.warnings_off)					\
+> +		umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__);	\
 
-WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
-Modules linked in:
-CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
-Call Trace:
- kvmalloc include/linux/mm.h:806 [inline]
- kvmalloc_array include/linux/mm.h:824 [inline]
- kvcalloc include/linux/mm.h:829 [inline]
- check_btf_line kernel/bpf/verifier.c:9925 [inline]
- check_btf_info kernel/bpf/verifier.c:10049 [inline]
- bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
- bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
- __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+If it is printing the same information again and again, wouldn't it be
+simpler to have a umip_pr_warn_once()?
 
-Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
-Chang in v2:
-* Change 'if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)' to
-  'if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))'.
-
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a0dd972d5b41..de006552be8a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
- 	nr_linfo = attr->line_info_cnt;
- 	if (!nr_linfo)
- 		return 0;
-+	if (nr_linfo > INT_MAX / sizeof(struct bpf_line_info))
-+		return -EINVAL;
- 
- 	rec_size = attr->line_info_rec_size;
- 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
--- 
-2.17.1
-
+Thanks and BR,
+Ricardo
