@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64060407BF5
+	by mail.lfdr.de (Postfix) with ESMTP id AF5F1407BF6
 	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 07:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhILFST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 01:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhILFSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 01:18:18 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE96C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 22:17:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r7so8914372edd.6
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 22:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=joknhrwptzMt0Qa8G/pJkdX8paSHxbwa4QtgcIWTarA=;
-        b=a/limXqWwOtfT5eciR3wVVu7qSk3b/KCwoUyr21lcWQ6/FQsC5w9A58MMDTjOeXgoG
-         mt0hE7ukUAgFSdaitxxarPudvvWnja0laQVIb/3sg9gkf0PExFi05PXnGackA7SeJiqa
-         /dYis26NVQYPcmCgl4hQf01QjPeRROhADs7/dLHe5qw28U/uCXY5QqH0QpQZxvJmyG/+
-         +rqCr3KcEEnB+olXKl/Ccyl63+vJWO7NBRdaqkzpThdpVv4bi8K3Ft6cvjkr3qmqqB0y
-         QwURHCvbU6bOD0E1UA7XrwBbh+MpandHiXM5HrXVWvoWwf2B9HVBOpwpvGXdZKJZi3dd
-         ijKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=joknhrwptzMt0Qa8G/pJkdX8paSHxbwa4QtgcIWTarA=;
-        b=kOk+wjfoF0UgDUYhHjcF7KiXFL/f+LCCgXxfsXbUH9/u/NR+DXMGj0p+e8DZ8UythO
-         b/w5P1Ucn29MDVLUXOxDHppY4SuA7UzH+3PiUnNtOuGmfnqXBqa6HARSe8bl/NrMH93V
-         3PHQwbIiDEF82/Afstuj3GVfY/TLIjNM3zH8pnn7Ogv9WnYMrA7UUM3AOCzPV8HFhgIy
-         +T4pJsbtriS5YgWJRwgPqiQuEEjQqe8Le1Y933y6EY0PjRSogCOFw13cmblecjROsY+i
-         J3K0B+aJirI9SP35FJxkZRzOqibEgv2xjSmkfEDRIU8erSeecMeIsWbXTtD0s9M5dvbt
-         QiiQ==
-X-Gm-Message-State: AOAM531PtbpKE8bHRu1pgNkt61/tlbk68jZ3GFCcg+HuJ7pZit9r3zqx
-        tkiNDSXCWYl8AQx4aDoWwnvytj+xYKt19BdfJus=
-X-Google-Smtp-Source: ABdhPJzjfQMIojU+ogiBMRMLY6W8jotdYEoZevd9RyrHq7fICBUbH7Dvnc4Um3KT4W5q3nl6xU/he+SC5g068In4728=
-X-Received: by 2002:aa7:d592:: with SMTP id r18mr6422418edq.172.1631423823089;
- Sat, 11 Sep 2021 22:17:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210912025235.3514761-1-linux@roeck-us.net> <CAMo8BfJ8f+4AmBD1B7J9vOp0xQbB=zRW-NyGZP6gTPTA-74OPQ@mail.gmail.com>
- <49f8f332-a964-5b98-64c6-9fa5d028731a@roeck-us.net>
-In-Reply-To: <49f8f332-a964-5b98-64c6-9fa5d028731a@roeck-us.net>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Sat, 11 Sep 2021 22:16:51 -0700
-Message-ID: <CAMo8BfK0+G01bw9UQ=fgGy3fNV+69NwUcpAO3msX0+FU4zKttQ@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: Increase size of gcc stack frame check
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>
-Content-Type: text/plain; charset="UTF-8"
+        id S233076AbhILF2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 01:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhILF2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 01:28:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D9B6108F;
+        Sun, 12 Sep 2021 05:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631424409;
+        bh=zZM8N+PyamLo9wvpBuigp1XpiOZx1+li5iz1+vjv3Pw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DaXL/Ev8Tv+fuq6tFE+an+fT0vy1xgj+LlzKrkbw3f452xLYYdkm676ZGcKIvbHVj
+         0J3E721TrlkW8Ed28zUERrlPadBa6sqqt2ZAi3JtFV2k3QovxOafAmiamn0QnUCm5A
+         76fSz3bYGa/0RUr3GZmyzMLfJu+rsuJAiXL8U9+BZ0cY3OzmJUOuCg1OPFUQAN7NJP
+         laMPx9g9op2Z2C/VYmsYOSjOa2pULgjKaT/V+tiBk2b2J9if/988ADeUAgLgYIxz3s
+         cn5b3SwolGOstXG0HEsGBcHrhi+mCpE3OIZsjtpoI3m0cjgF06eoqip7nkfaNd9vgu
+         Unhw2nkNfqMPg==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/2] habanalabs: add debugfs node for configuring CS timeout
+Date:   Sun, 12 Sep 2021 08:26:44 +0300
+Message-Id: <20210912052645.104082-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 9:02 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 9/11/21 8:05 PM, Max Filippov wrote:
-> > On Sat, Sep 11, 2021 at 7:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>
-> >> xtensa frame size is larger than the frame size for almost all other
-> >> architectures. This results in more than 50 "the frame size of <n> is
-> >> larger than 1024 bytes" errors when trying to build xtensa:allmodconfig.
-> >>
-> >> Increase frame size for xtensa to 1536 bytes to avoid compile errors
-> >> due to frame size limits.
-> >>
-> >> Cc: Chris Zankel <chris@zankel.net>
-> >> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> >> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> >> ---
-> >>   lib/Kconfig.debug | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> >> index ed4a31e34098..afad11e57d6b 100644
-> >> --- a/lib/Kconfig.debug
-> >> +++ b/lib/Kconfig.debug
-> >> @@ -346,7 +346,7 @@ config FRAME_WARN
-> >>          int "Warn for stack frames larger than"
-> >>          range 0 8192
-> >>          default 2048 if GCC_PLUGIN_LATENT_ENTROPY
-> >> -       default 1536 if (!64BIT && PARISC)
-> >> +       default 1536 if (!64BIT && (PARISC || XTENSA))
-> >>          default 1024 if (!64BIT && !PARISC)
-> >
-> > Shouldn't that line also be changed to
-> >    default 1024 if (!64BIT && !(PARISC || XTENSA))
-> > ?
->
-> I could do that, but I tested it and it looks like the evaluation
-> is top-down, so it didn't seem necessary or useful. For example,
-> the default value is 2048 for 32-bit systems (such as arm, riscv32,
-> or i386) if GCC_PLUGIN_LATENT_ENTROPY is enabled, even though the
-> line with the default of 1024 matches as well.
+From: Ofir Bitton <obitton@habana.ai>
 
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+Command submission timeout is currently determined during driver
+loading time. As some environments requires this timeout to be
+modified in runtime, we introduce a new debugfs node that controls
+the timeout value without the need to reload the driver.
 
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../ABI/testing/debugfs-driver-habanalabs     |  6 +++
+ drivers/misc/habanalabs/common/debugfs.c      | 51 +++++++++++++++++++
+ 2 files changed, 57 insertions(+)
+
+diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
+index 284e2dfa61cd..63c46d9d538f 100644
+--- a/Documentation/ABI/testing/debugfs-driver-habanalabs
++++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
+@@ -226,6 +226,12 @@ Description:    Gets the state dump occurring on a CS timeout or failure.
+                 Writing an integer X discards X state dumps, so that the
+                 next read would return X+1-st newest state dump.
+ 
++What:           /sys/kernel/debug/habanalabs/hl<n>/timeout_locked
++Date:           Sep 2021
++KernelVersion:  5.16
++Contact:        obitton@habana.ai
++Description:    Sets the command submission timeout value in seconds.
++
+ What:           /sys/kernel/debug/habanalabs/hl<n>/stop_on_err
+ Date:           Mar 2020
+ KernelVersion:  5.6
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index 985f1f3dbd20..1f2a3dc6c4e2 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -1167,6 +1167,45 @@ static ssize_t hl_state_dump_write(struct file *f, const char __user *buf,
+ 	return count;
+ }
+ 
++static ssize_t hl_timeout_locked_read(struct file *f, char __user *buf,
++					size_t count, loff_t *ppos)
++{
++	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
++	struct hl_device *hdev = entry->hdev;
++	char tmp_buf[200];
++	ssize_t rc;
++
++	if (*ppos)
++		return 0;
++
++	sprintf(tmp_buf, "%d\n",
++		jiffies_to_msecs(hdev->timeout_jiffies) / 1000);
++	rc = simple_read_from_buffer(buf, strlen(tmp_buf) + 1, ppos, tmp_buf,
++			strlen(tmp_buf) + 1);
++
++	return rc;
++}
++
++static ssize_t hl_timeout_locked_write(struct file *f, const char __user *buf,
++				     size_t count, loff_t *ppos)
++{
++	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
++	struct hl_device *hdev = entry->hdev;
++	u32 value;
++	ssize_t rc;
++
++	rc = kstrtouint_from_user(buf, count, 10, &value);
++	if (rc)
++		return rc;
++
++	if (value)
++		hdev->timeout_jiffies = msecs_to_jiffies(value * 1000);
++	else
++		hdev->timeout_jiffies = MAX_SCHEDULE_TIMEOUT;
++
++	return count;
++}
++
+ static const struct file_operations hl_data32b_fops = {
+ 	.owner = THIS_MODULE,
+ 	.read = hl_data_read32,
+@@ -1240,6 +1279,12 @@ static const struct file_operations hl_state_dump_fops = {
+ 	.write = hl_state_dump_write
+ };
+ 
++static const struct file_operations hl_timeout_locked_fops = {
++	.owner = THIS_MODULE,
++	.read = hl_timeout_locked_read,
++	.write = hl_timeout_locked_write
++};
++
+ static const struct hl_info_list hl_debugfs_list[] = {
+ 	{"command_buffers", command_buffers_show, NULL},
+ 	{"command_submission", command_submission_show, NULL},
+@@ -1421,6 +1466,12 @@ void hl_debugfs_add_device(struct hl_device *hdev)
+ 				dev_entry,
+ 				&hl_state_dump_fops);
+ 
++	debugfs_create_file("timeout_locked",
++				0644,
++				dev_entry->root,
++				dev_entry,
++				&hl_timeout_locked_fops);
++
+ 	for (i = 0, entry = dev_entry->entry_arr ; i < count ; i++, entry++) {
+ 		debugfs_create_file(hl_debugfs_list[i].name,
+ 					0444,
 -- 
-Thanks.
--- Max
+2.17.1
+
