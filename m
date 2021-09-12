@@ -2,265 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ECE407FB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B8D407FBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236007AbhILTeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 15:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235824AbhILTd7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 15:33:59 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6578DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:32:44 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h17so876940edj.6
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5SVsnoLNZz98KC5XdHanLaZg9ljygI/W7sX9Y5UNjvQ=;
-        b=U+1Wp8ZvqNL6vpeuhOuS+73PxgokTdSOFDmVgJlAK14kDT1Dim2x+NJk1nhmQS17SO
-         R6ovsreL8MwYEAOM1lR5t0XH0oHV1RU30m8qKfi9zBU2Mz4aaXEp47J7kMYCSoS8jztj
-         XlZ1m6LGxfvkXKmV5TUzhvM4xJiOSV7XryhOG/9w2yIF7v3rzmpBZLHimQF+p41HIDvJ
-         EIUsV90ljyXyRgCgNHjW/6jufoocG0d8B22cnIOmjHAO4+jTeZpyW0yuGmwMat5LoUEB
-         ge0hpGXfYRysNBgN+6iTKFLRX/nCDINhGHRHiqKOsa9xBWvyNXytnPxMC3h26JwsBgfP
-         Db4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5SVsnoLNZz98KC5XdHanLaZg9ljygI/W7sX9Y5UNjvQ=;
-        b=EtFlQKLaI0dtCehPS28JoKBB0WqWkQkPiwXLlc9D+78Q1D4ccd/O94zw6z3eXJEJ+q
-         50gx8z93pz9Hq7gwwxIqv8VDGUsvS2rx4XsZ4iSzBtSt7MU1paPlyEinhmPuDh7XTGNl
-         7UypX9mD1H0wme+LRANltJHIZ6pHSo7/+rQhDsRxzrx2kZ51byZCKKwjrvtyRd3EJ5li
-         RJxn4tFL+u9AjOiByl1ZtkLzwn6QaoglRbM1n104mlKoPmhsh+NEaGDgbBrZ2LKliwww
-         4h2hPGlwANHEEfCCtnhkFMMqtYqzOJkyiR9+a1wppF2112u/OyAp1mFx5qtS3joH6Uf8
-         rV4g==
-X-Gm-Message-State: AOAM530xFkuFqWRYTe1zHvUWgk4a+G5VxFT/yfqWwiJoLqcqfqtbNLZD
-        UL1xTKti7QheijG3o8l/un4ODgnuBYSiZKZqTmU=
-X-Google-Smtp-Source: ABdhPJz92+WCf0rq8WfEwxOyHA1ET5ArCTRSZ5HOJ0qMCWcDUKije+b/axBIJkW+/aTJDwj5ZeDmg194bRb2LLfWYQA=
-X-Received: by 2002:a50:cc08:: with SMTP id m8mr9371648edi.60.1631475162758;
- Sun, 12 Sep 2021 12:32:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com>
- <YTsQJ753sm701R/n@kroah.com> <CAKMK7uFLBmdHphtnEa1nyAGUHdcP1KgmaK+vtV_GOU6wZZAOxg@mail.gmail.com>
- <CAKMK7uFj-m4y+N-q8uoNasJuksgDj-oRK3K=SjoyKMQL=QCENw@mail.gmail.com> <YT4GxO7ab+s0nbze@kroah.com>
-In-Reply-To: <YT4GxO7ab+s0nbze@kroah.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Mon, 13 Sep 2021 05:32:31 +1000
-Message-ID: <CAPM=9tx2xyFGHBAfMT_D88JDbCJ4V6Ni2tiYx0=VNj5SmtdJxA@mail.gmail.com>
-Subject: Re: Accelerator drivers going forward (was Re: Habanalabs Open-Source
- TPC LLVM compiler and SynapseAI Core library)
+        id S236054AbhILTiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 15:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235824AbhILTiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 15:38:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1429260F9F;
+        Sun, 12 Sep 2021 19:37:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631475422;
+        bh=5Oj0NSfpZ3/a5BiVCRkTLja88kcQ3+G9pSVroB0MEWU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=i7XU30tegn0rDciJwS1LrQZDYIwLxBH4cjhPaFApUW7PtU69DLwcvDFpuPULBITqp
+         o6qaVfYORJ8d91+W4kwQMV9ntvHIDo3sapmeeLoh90IQy+oLBsXl3l6aOuSsTruMSv
+         ZUEZ41+Vm5qpeNJ+reeiqevxigEfCo0b5kikVipO6GQs0lraEzXMyqV8jXPKj7zzST
+         asRlC3aIypMEnIxUA1SY4W6vTnSxF8e7DmxKVQUbLtJXou4AuhGfLduywAby0ozO1h
+         xRbs5WOELYHkBdoLeS1eY3bZGyiv1u6Y24BAV7N18AOcJ1VRi/m1U6HVluVJBx1z2J
+         7VvMY1RDChaXQ==
+Message-ID: <3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org>
+Subject: Re: [PATCH v4 1/3] x86/sgx: Report SGX memory in
+ /sys/devices/system/node/node*/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Oded Gabbay <ogabbay@kernel.org>, mzuckerman@habana.ai,
-        dsinger@habana.ai, Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 12 Sep 2021 22:37:00 +0300
+In-Reply-To: <YTt1h/JUmOFRAUxp@kroah.com>
+References: <20210910001726.811497-1-jarkko@kernel.org>
+         <YTsAjCZQ6AaWDjD1@kroah.com>
+         <783594b187e1d4dbeaafe9f186f9a1de8bbf15e4.camel@kernel.org>
+         <YTtmJAgOllgtsIDh@kroah.com>
+         <100c9d193641f2d18b1a5a15d25b9a36f5edb6bc.camel@kernel.org>
+         <YTt1h/JUmOFRAUxp@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Sept 2021 at 23:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Sep 10, 2021 at 06:10:27PM +0200, Daniel Vetter wrote:
-> > Forgot to add dri-devel.
-> >
-> > On Fri, Sep 10, 2021 at 6:09 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > >
-> > > On Fri, Sep 10, 2021 at 9:58 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Fri, Sep 10, 2021 at 10:26:56AM +0300, Oded Gabbay wrote:
-> > > > > Hi Greg,
-> > > > >
-> > > > > Following our conversations a couple of months ago, I'm happy to tell you that
-> > > > > Habanalabs has open-sourced its TPC (Tensor Processing Core) LLVM compiler,
-> > > > > which is a fork of the LLVM open-source project.
-> > > > >
-> > > > > The project can be found on Habanalabs GitHub website at:
-> > > > > https://github.com/HabanaAI/tpc_llvm
-> > > > >
-> > > > > There is a companion guide on how to write TPC kernels at:
-> > > > > https://docs.habana.ai/en/latest/TPC_User_Guide/TPC_User_Guide.html
-> > > >
-> > > > That's great news, thanks for pushing for this and releasing it all!
-> > >
-> > > Yeah this is neat.
-> > >
-> > > There's still the problem that we spent the past 2.5 years pissing off
-> > > a lot of people for an imo questionable political project, bypassing
-> > > all the technical review and expertise. Now that the political
-> > > nonsense is resolved I think we need to look at at least the technical
-> > > cleanup. The angered people are much harder to fix, so let's maybe
-> > > ignore that (or perhaps a ks topic, no idea, I'm honestly not super
-> > > motivated to rehash this entire story again). Here's what I think we
-> > > should do:
-> > >
-> > > - move drivers/misc/habanalabs under drivers/gpu/habanalabs and
-> > > review/discussions on dri-devel
->
-> Wait, why move into gpu?  Are we going to do that for all hardware
-> accelerators that we currently have in the kernel tree?
->
+On Fri, 2021-09-10 at 17:11 +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 10, 2021 at 06:02:59PM +0300, Jarkko Sakkinen wrote:
+> > On Fri, 2021-09-10 at 16:05 +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Sep 10, 2021 at 04:17:44PM +0300, Jarkko Sakkinen wrote:
+> > > > On Fri, 2021-09-10 at 08:51 +0200, Greg Kroah-Hartman wrote:
+> > > > > On Fri, Sep 10, 2021 at 03:17:24AM +0300, Jarkko Sakkinen wrote:
+> > > > > > The amount of SGX memory on the system is determined by the BIO=
+S and it
+> > > > > > varies wildly between systems.  It can be from dozens of MB's o=
+n desktops
+> > > > > > or VM's, up to many GB's on servers.  Just like for regular mem=
+ory, it is
+> > > > > > sometimes useful to know the amount of usable SGX memory in the=
+ system.
+> > > > > >=20
+> > > > > > Add SGX_MemTotal field to /sys/devices/system/node/node*/meminf=
+o,
+> > > > > > showing the total SGX memory in each NUMA node. The total memor=
+y for
+> > > > > > each NUMA node is calculated by adding the sizes of contained E=
+PC
+> > > > > > sections together.
+> > > > > >=20
+> > > > > > Introduce arch_node_read_meminfo(), which can optionally be rew=
+ritten by
+> > > > > > the arch code, and rewrite it for x86 so it prints SGX_MemTotal=
+.
+> > > > > >=20
+> > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > ---
+> > > > > > v4:
+> > > > > > * A new patch.
+> > > > > >  arch/x86/kernel/cpu/sgx/main.c | 14 ++++++++++++++
+> > > > > >  arch/x86/kernel/cpu/sgx/sgx.h  |  6 ++++++
+> > > > > >  drivers/base/node.c            | 10 +++++++++-
+> > > > > >  3 files changed, 29 insertions(+), 1 deletion(-)
+> > > > >=20
+> > > > > Where is the Documentation/ABI/ update for this new sysfs file?
+> > > >=20
+> > > > It's has been existed for a long time, e.g.
+> > > >=20
+> > > >  cat /sys/devices/system/node/node0/meminfo
+> > > > Node 0 MemTotal:       32706792 kB
+> > > > Node 0 MemFree:         5382988 kB
+> > > > Node 0 MemUsed:        27323804 kB
+> > > > Node 0 SwapCached:            8 kB
+> > > > Node 0 Active:          3640612 kB
+> > > > Node 0 Inactive:       21757684 kB
+> > > > Node 0 Active(anon):    2833772 kB
+> > > > Node 0 Inactive(anon):    14392 kB
+> > > > Node 0 Active(file):     806840 kB
+> > > > Node 0 Inactive(file): 21743292 kB
+> > > > Node 0 Unevictable:       80640 kB
+> > > > Node 0 Mlocked:           80640 kB
+> > > > Node 0 Dirty:                36 kB
+> > > > Node 0 Writeback:             0 kB
+> > > > Node 0 FilePages:      22833124 kB
+> > > > Node 0 Mapped:          1112832 kB
+> > > > Node 0 AnonPages:       2645812 kB
+> > > > Node 0 Shmem:            282984 kB
+> > > > Node 0 KernelStack:       18544 kB
+> > > > Node 0 PageTables:        46704 kB
+> > > > Node 0 NFS_Unstable:          0 kB
+> > > > Node 0 Bounce:                0 kB
+> > > > Node 0 WritebackTmp:          0 kB
+> > > > Node 0 KReclaimable:    1311812 kB
+> > > > Node 0 Slab:            1542220 kB
+> > > > Node 0 SReclaimable:    1311812 kB
+> > > > Node 0 SUnreclaim:       230408 kB
+> > > > Node 0 AnonHugePages:         0 kB
+> > > > Node 0 ShmemHugePages:        0 kB
+> > > > Node 0 ShmemPmdMapped:        0 kB
+> > > > Node 0 FileHugePages:        0 kB
+> > > > Node 0 FilePmdMapped:        0 kB
+> > > > Node 0 HugePages_Total:     0
+> > > > Node 0 HugePages_Free:      0
+> > > > Node 0 HugePages_Surp:      0
+> >=20
+> > This was something also spinned my head a bit, i.e. why hugepages field=
+s
+> > are not aligned correctly.
+> >=20
+> > > > This file is undocumented but the fields seem to reflect what is in
+> > > > /proc/meminfo, so I added additional patch for documentation:
+> > > >=20
+> > > > https://lore.kernel.org/linux-sgx/20210910001726.811497-3-jarkko@ke=
+rnel.org/
+> > > >=20
+> > > > I have no idea why things are how they are. I'm just merely trying =
+to follow
+> > > > the existing patterns. I'm also fully aware of the defacto sysfs pa=
+ttern, i.e.
+> > > > one value per file.
+> > >=20
+> > > Then please do not add anything else to this nightmare of a mess.
+> >=20
+> > There is already /sys/devices/system/node/node0/hugepages/.
+> >=20
+> > It has alike data to the contents of meminfo:
+> >=20
+> > /sys/devices/system/node/node0/hugepages/hugepages-2048kB:
+> > surplus_hugepages
+> > nr_hugepages
+> > free_hugepages
+> >=20
+> > /sys/devices/system/node/node0/hugepages/hugepages-1048576kB:
+> > surplus_hugepages
+> > nr_hugepages
+> > free_hugepages
+> >=20
+> > [I'm wondering tho, how the fields in meminfo are supposed to be interp=
+reted,
+> >  given that there are two types of huge pages, but let's just ignore th=
+at
+> >  for the moment.]
+> >=20
+> > Following this pattern, I'd perhaps go and create (and document):
+> >=20
+> > /sys/devices/system/node/node0/sgx/memory_size
+> >=20
+> > which would have the size in bytes.
+>=20
+> If it is one-value-per-file, that's fine with me.
 
-We could just mv drivers/gpu drivers/accel if that helps your mental model here.
+And if it's represented like this to user space, I think that /proc/meminfo
+change is unnecessary: it's less involving (e.g. in scripting) to parse the=
+se
+files in a loop and sum then, than grep the appropriate line from /proc/mem=
+info.
+Would no make much common sense to maintain it.
 
-> These things are not GPUs in the sense of them being "do some work and
-> write out to a screen", which is what I would associate with a GPU (G
-> does stand for "Graphical", right?)
+For me the only open here is: would it make more sense to add x86
+subdirectory to each node? With this approach the path would be
+something like:
 
-Neither are a lot of the gpu drivers, it's almost like we evolved the
-subsystem in 20 years,
-and the name got away from us.
+* /sys/devices/system/node/node0/x86/sgx_memory_size
 
-As an example:
-etnaviv, panfrost, lima and vgem drivers have no display interfaces at
-all. Nada, they do nothing except accelerate and use dma-buf to talk
-to other drivers.
+I guess huge pages is different in the sense that it's not just one arch th=
+ing,
+whereas SGX is directly arch related, so I think that this would be a more
+civilized way to deal with SGX. This way things won't bloat, if or when som=
+ething
+else ought to need a NUMA node specific attribute.
 
+> thanks,
+>=20
+> greg k-h
 
-> Yes, GPUs can do things that some accelerators can do, but they can do
-> things that accelerators can not do, and the other way around as well.
-> I doubt you want all of the existing gpu drivers to be only treated as
-> an "accelerator driver" now, as where would the logic that has to happen
-> to get the bits out to a screen live?
+/Jarkko
 
-Don't care, totally doesn't matter if a driver is accelerator +
-display, you could write in-driver buses if you wanted to abstract
-this more, since internally most GPUs are just SoCs, the display and
-accelerator pieces talk to power management, irqs and dma-buf like
-functionality internally in the driver, the thing is for most GPUs
-there is a single PCI device to bind to, so historically nobody has
-seen the value in splitting them more or adding an in-driver bus for
-one set of devices.
-
-> And since we have a long history of accepting accelerator drivers (I see
-> some in our tree since 2018 at the least), and there is no common
-> userspace collation trying to make a common userspace api, why do they
-> have to live in the same place?  What makes them common except for the
-> fact that they use the kernel as a semi-dumb pipe to send work to and
-> from a different processor?
->
-> Look at drivers/misc/cxl/ and drivers/misc/ocxl and drivers/misc/uacce/
-> and drivers/misc/sgi-gru and drivers/misc/bcm-vk/ even drivers/misc/mei/
-> as that is an off-load engine we talk to, right?
->
-> What about the drivers/fpga/ api we have, it handles accelerators as
-> well.  I'm sure we have many other examples in the kernel tree as well,
-> I just did a quick look and found these.
->
-> All the above accelerators do things in different ways because their
-> hardware is different, so they need different user/kernel apis, right?
-> How are we going to unify them?  Who is going to unify them?
->
-> So drivers/accel/ perhaps?  I would be able to get rid of loads of
-> drivers/misc/ code that way :)
->
-> Who is going to be the new maintainer of this subsystem?
-
-We already said if we could get agreement on having things follow the
-rules, then they can be merged under drm trees or we'd start a new
-accel tree.
-
-The problem is the free-for-all merge with no barriers approach that
-you and I believe Olof are campaigning for, doesn't seem to create
-communities, it may create consulting or training opportunities for
-the Linux Foundation, but thus far I don't see any communities.
-
-Graphics accelerator community exists because of and has itself
-refined the rules over time. I don't think our rules will necessarily
-work for other groups immediately but I think other groups need to
-construct acceptable merge criteria beyond the kernel, and kernel
-maintainers have to take more responsibility for saying no if they
-don't have time for community building.
-
-
-> So far they have all been going into drivers/misc/ because no one else
-> stepped up to do the review of them except me.  I would _LOVE_ the help
-> here as I end up reviewing a new one every kernel release at the least,
-> but companies do not seem to be willing to fund developers to be
-> maintainers these days :(
->
-> And yes, I have been reviewing the fpga code as well, even though they
-> do have a good maintainer, as those patches flow through my tree due to
-> historical reasons.  I know the fpga developers would have loved some
-> help with review of those patches.
-
-Lack of reviewing isn't the problem here, lack of responsibility for
-creating a long term mess is. You are creating long term dumping
-grounds for badly thought out stuff. Saying people keeping adding more
-trash to my dump and it's overloading me is just the effect of having
-created the dump with no rules to follow in the first place.
-
->
-> > > - review the dma-buf stuff on dri-devel and then land it through
-> > > standard flows, not the gregk-misc bypass
->
-> Are dma-bufs somehow required to be reviewed on dri-devel?  As others
-> have asked in the past, they are already being used in other subsystems
-> (like IB) today, did those authors also get review there?
-
-Yes any use of dma-buf has to be cc'ed to dri-devel and linux-media
-per MAINTAINERS
-
->
-> If so, great, if not, that feels odd to me, as I am seeing lots of
-> out-of-tree drivers start to use these structures, which is why the api
-> was created (to stop the roll-your-own-implementations.)  Does dri-devel
-> want me to have those vendors cc: you all when those get submitted?
-
-Yes. MAINTAINERS has matching for this, are you not advising people to
-use the proper submission techniques and thus bypassing that file?
-
-The reason is dma-buf and later by extension dma-fence can create
-really bad problems for the kernel around memory management.
-
-https://dri.freedesktop.org/docs/drm/driver-api/dma-buf.html#indefinite-dma-fences
-
-When a driver is self contained and doesn't interact with other kernel
-drivers nobody really has to care. However once a driver starts
-interacting with other drivers in the kernel, a responsible maintainer
-has to check that these new drivers aren't going to crap all over the
-existing drivers and destabilise the kernel. Someone has to review the
-hardware design to see if page faulting works or if preemption works
-or a bunch of other gotchas. Someone has to review the userspace to
-make sure it isn't doing knowingly bad things or making assumptions
-based on the kernel driver doing bad things.
-
-The thing is we've had code merged into our in-tree i915 driver that
-broke a bunch of these assumptions, and have had to spend a year
-cleaning it out, now this happened post-merge and diligence had
-lessened, having the expertise to spot this in new dma-buf/fence users
-is why we insist on having access to way more than just the 1000 line
-kernel driver submission.
-
-
-> I will be glad to not accept any more, but as I say above, what are the
-> new requirements going to be so that those companies that do want to
-> submit their code know what to do?
-
-I'm proposing a patch for documentation that maintainers can sign up
-for (it's mentioned in the ksummit thread).
-
-> And what exactly are we using as a definition of an accelerator?  We
-> have networking cards that are "accelerators" as well as crypto
-> "accelerators" :)
->
-> > > I expect we'll have a proper discussion what the stack should look
-> > > like with the next submission (from a different vendor maybe), that
-> > > ship kinda sailed with habanalabs.
->
-> Who is going to define this stack?  As there is no industry standard,
-> why would we define this?
-
-Because someone has to help, saying yes isn't helping, it's enabling
-back behaviour. Parenting and maintaining both involve saying No for
-the future prosperity of the ecosystem.
-
-Dave.
