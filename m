@@ -2,123 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E0F407AFA
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 01:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DC3407B07
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 02:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhIKX4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 19:56:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48057 "EHLO
+        id S234453AbhILAG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 20:06:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44276 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234577AbhIKXz7 (ORCPT
+        by vger.kernel.org with ESMTP id S232515AbhILAGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 19:55:59 -0400
+        Sat, 11 Sep 2021 20:06:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631404485;
+        s=mimecast20190719; t=1631405112;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XhzTiX0DZYV1X5ckSDoJZp4U7aZCZRTdTtc5atz14SI=;
-        b=HIYOtFgY4HxMNyU0nzLti5A8vG2pVu6p4v3N2hqr9VCqnSjvaEgH03c0xLylchB2XX6JhZ
-        MZja69E6+/mBnkFFoaH07qfH2BNOXewJXF/fF6FcQeepTpcoGIs0L1KGN//6havxYew7HX
-        7hUkBeY6or6zno1I58JXf2KSUB2lf60=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-466-kQg2PjqQNSOxsxPY2L0QTw-1; Sat, 11 Sep 2021 19:54:44 -0400
-X-MC-Unique: kQg2PjqQNSOxsxPY2L0QTw-1
-Received: by mail-ej1-f71.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso2258036eja.18
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 16:54:43 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=IT3HnjaxFEROeN2QLWVUnViJA5HfWYlX8v34IjIoBJ4=;
+        b=iwOxFI3O1eMizoFlzRjGVGhvTbFUTC1dCT7O1XJUOqIxVefC3dzYEzIpOSEVi0q/RyVkNL
+        c1Stv973Eq6RZteOWsGd0QXpiH983R2sfdgGkMb67flmv8BmrUpo27C6l992+dxorsSQxC
+        1TSBdV8qXd4WFzwHklHZ1rmlo23KKJw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-Zq3Xg34pMsWULz6EZIy1sw-1; Sat, 11 Sep 2021 20:05:10 -0400
+X-MC-Unique: Zq3Xg34pMsWULz6EZIy1sw-1
+Received: by mail-wm1-f70.google.com with SMTP id z18-20020a1c7e120000b02902e69f6fa2e0so2872092wmc.9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:05:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XhzTiX0DZYV1X5ckSDoJZp4U7aZCZRTdTtc5atz14SI=;
-        b=rwmQI8EwCOgSlQbnxyEKYN6vh4TDyUfptJcT/nCEG1+JvNXdTztmdL6eM7bgVdMSl3
-         dJDhnDE7vGQdxlNVxc6cKQl4FJhny5/EIw8OqHzUGbC80xVSdgXDK2F81XuO7ko/3NQc
-         e8FbV5mGLcGJS0wRdXOQtEIo1Xl/AfIX7HpIRYPPrZZbS+xUwPFN+NL2W3bkeEea96l4
-         EXqcsIdw9lrqV81qMcDBDTmGdqpTCJOcz8ORJBaJ47I4YbnLVP31qXdJDQOLI9AZ+mx7
-         Pnd8W0vJ8tnCqX9ONQtT/0zk2I6VTFWbEtjcypDONOBnUjUM752bm6f5je1XTuhOyRv/
-         9NJQ==
-X-Gm-Message-State: AOAM5309JUyy2fdxE0MPmBmE24TrTsh2ncQuxSNmssog3cGSl4nQUdxM
-        N6i/+N3aFFU9j5BphF08AekiuPEqQIpytTT1RO1/byWRxiZ/0RhwX//TxVqP20BxGlvcpUY//IK
-        uUn3iRpAciF03gVJR9NpF4lJX
-X-Received: by 2002:a17:906:5855:: with SMTP id h21mr4944811ejs.230.1631404482988;
-        Sat, 11 Sep 2021 16:54:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUJ/Dz7qpoDYQNg7a7mY8Cl7pe7fwOabdq++HQzqfzjVSc2KbxoH+7byBLBBXMvIdUmNqg2Q==
-X-Received: by 2002:a17:906:5855:: with SMTP id h21mr4944788ejs.230.1631404482774;
-        Sat, 11 Sep 2021 16:54:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=IT3HnjaxFEROeN2QLWVUnViJA5HfWYlX8v34IjIoBJ4=;
+        b=ofNTULWFv+Hi2osaTWQcXEOZT14VjCX9avPLnsBRcKpIRHKFmDL3aNvNA+IEuBZpv6
+         vktE1PDyy9l/QOCPgXVlRzFF3kf44Fnl9rBzUwzagrHAwGI7VVR4T20r+vLBH/+9Nan1
+         f7RlMVkSA/23rR5Sc49iss8VN9T9p2XHt02VXNiq4bto+YW+ygCsgQgBn2fANitf0S+T
+         GzMUCbK5Me0BBIXrHwHjNMNDbGZQUYvb/5MoCNR8L0NQKsHwxXUm//QmKOLKWcvJ3H29
+         3itDBihdp5kir8tG4tM1iOqPxGuqdjZ+Bl2DDem1hBoqys9/dU9BfSwG+40gpCy/dpUN
+         3JwA==
+X-Gm-Message-State: AOAM532dpF/G9n7O4ts+AMZMqfqmwDDycpPsLZZtF1NbLe54DKGYRBli
+        27Av9Q+dWoVkcCa2g4VoDZ3jBdySREc5XoNFFwm60n87++HYBtu7CR5/pmLumJJ0xIhVO93y0Xy
+        0fHY2tvb0av+L7QTrHvjEC477
+X-Received: by 2002:a7b:cb45:: with SMTP id v5mr4300627wmj.184.1631405109598;
+        Sat, 11 Sep 2021 17:05:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJxDHhrbMVL4dF3568IhBCMK63Z2YRX3A33U25nv3obGFgziyRVxdJ4k5PO4+KjiDxM/Zjgg==
+X-Received: by 2002:a7b:cb45:: with SMTP id v5mr4300606wmj.184.1631405109371;
+        Sat, 11 Sep 2021 17:05:09 -0700 (PDT)
 Received: from redhat.com ([2.55.27.174])
-        by smtp.gmail.com with ESMTPSA id n13sm1309780ejk.97.2021.09.11.16.54.38
+        by smtp.gmail.com with ESMTPSA id t18sm2841775wrp.97.2021.09.11.17.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 16:54:41 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 19:54:36 -0400
+        Sat, 11 Sep 2021 17:05:08 -0700 (PDT)
+Date:   Sat, 11 Sep 2021 20:05:04 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-Message-ID: <20210911195006-mutt-send-email-mst@kernel.org>
-References: <20210824053830-mutt-send-email-mst@kernel.org>
- <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
- <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
- <20210830163723-mutt-send-email-mst@kernel.org>
- <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
- <20210910054044-mutt-send-email-mst@kernel.org>
- <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arseny.krasnov@kaspersky.com, caihuoqing@baidu.com,
+        elic@nvidia.com, jasowang@redhat.com, lingshan.zhu@intel.com,
+        mgurtovoy@nvidia.com, mst@redhat.com, viresh.kumar@linaro.org,
+        wsa@kernel.org, xianting.tian@linux.alibaba.com,
+        xieyongji@bytedance.com
+Subject: [GIT PULL V2] virtio,vdpa,vhost: features, fixes
+Message-ID: <20210911200504-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 09:34:45AM -0700, Andi Kleen wrote:
-> > > that's why
-> > > an extra level of defense of ioremap opt-in is useful.
-> > OK even assuming this, why is pci_iomap opt-in useful?
-> > That never happens before probe - there's simply no pci_device then.
-> 
-> 
-> Hmm, yes that's true. I guess we can make it default to opt-in for
-> pci_iomap.
-> 
-> It only really matters for device less ioremaps.
+Changes from v1:
+	dropped vdpa bits until we are sure how they are
+	supposed to interact with recent upstream changes
 
-OK. And same thing for other things with device, such as
-devm_platform_ioremap_resource.
-If we agree on all that, this will basically remove virtio
-changes from the picture ;)
+The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
 
--- 
-MST
+  Linux 5.14 (2021-08-29 15:04:50 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus_v2
+
+for you to fetch changes up to 6105d1fe6f4c24ce8c13e2e6568b16b76e04983d:
+
+  virtio-blk: remove unneeded "likely" statements (2021-09-06 07:20:56 -0400)
+
+----------------------------------------------------------------
+virtio,vdpa,vhost: features, fixes
+
+virtio-vsock support for end of record with SEQPACKET
+vdpa: mac and mq support for ifcvf and mlx5
+vdpa: management netlink for ifcvf
+virtio-i2c, gpio dt bindings
+
+misc fixes, cleanups
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Arseny Krasnov (6):
+      virtio/vsock: rename 'EOR' to 'EOM' bit.
+      virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
+      vhost/vsock: support MSG_EOR bit processing
+      virtio/vsock: support MSG_EOR bit processing
+      af_vsock: rename variables in receive loop
+      vsock_test: update message bounds test for MSG_EOR
+
+Cai Huoqing (2):
+      vhost scsi: Convert to SPDX identifier
+      vdpa: Make use of PFN_PHYS/PFN_UP/PFN_DOWN helper macro
+
+Eli Cohen (6):
+      vdpa/mlx5: Remove redundant header file inclusion
+      vdpa/mlx5: function prototype modifications in preparation to control VQ
+      vdpa/mlx5: Decouple virtqueue callback from struct mlx5_vdpa_virtqueue
+      vdpa/mlx5: Ensure valid indices are provided
+      vdpa/mlx5: Add support for control VQ and MAC setting
+      vdpa/mlx5: Add multiqueue support
+
+Max Gurtovoy (1):
+      virtio-blk: remove unneeded "likely" statements
+
+Viresh Kumar (5):
+      dt-bindings: virtio: Add binding for virtio devices
+      dt-bindings: i2c: Add bindings for i2c-virtio
+      dt-bindings: gpio: Add bindings for gpio-virtio
+      uapi: virtio_ids: Sync ids with specification
+      virtio: Bind virtio device to device-tree node
+
+Xianting Tian (1):
+      virtio-balloon: Use virtio_find_vqs() helper
+
+Xie Yongji (1):
+      vdpa_sim: Use iova_shift() for the size passed to alloc_iova()
+
+Zhu Lingshan (4):
+      vDPA/ifcvf: introduce get_dev_type() which returns virtio dev id
+      vDPA/ifcvf: implement management netlink framework for ifcvf
+      vDPA/ifcvf: detect and use the onboard number of queues directly
+      vDPA/ifcvf: enable multiqueue and control vq
+
+ .../devicetree/bindings/gpio/gpio-virtio.yaml      |  59 +++
+ .../devicetree/bindings/i2c/i2c-virtio.yaml        |  51 ++
+ Documentation/devicetree/bindings/virtio/mmio.yaml |   3 +-
+ .../devicetree/bindings/virtio/virtio-device.yaml  |  41 ++
+ drivers/block/virtio_blk.c                         |   4 +-
+ drivers/vdpa/Kconfig                               |   1 +
+ drivers/vdpa/ifcvf/ifcvf_base.c                    |   8 +-
+ drivers/vdpa/ifcvf/ifcvf_base.h                    |  25 +-
+ drivers/vdpa/ifcvf/ifcvf_main.c                    | 224 ++++++---
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h                 |  26 +-
+ drivers/vdpa/mlx5/core/mr.c                        |  81 +++-
+ drivers/vdpa/mlx5/core/resources.c                 |  35 ++
+ drivers/vdpa/mlx5/net/mlx5_vnet.c                  | 517 ++++++++++++++++++---
+ drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   3 +-
+ drivers/vhost/scsi.c                               |  14 +-
+ drivers/vhost/vdpa.c                               |  24 +-
+ drivers/vhost/vsock.c                              |  28 +-
+ drivers/virtio/virtio.c                            |  57 ++-
+ drivers/virtio/virtio_balloon.c                    |   4 +-
+ include/uapi/linux/virtio_ids.h                    |  12 +
+ include/uapi/linux/virtio_vsock.h                  |   3 +-
+ net/vmw_vsock/af_vsock.c                           |  10 +-
+ net/vmw_vsock/virtio_transport_common.c            |  23 +-
+ tools/testing/vsock/vsock_test.c                   |   8 +-
+ 24 files changed, 1030 insertions(+), 231 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
 
