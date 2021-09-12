@@ -2,173 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E15407E9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915FC407EA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhILQeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:34:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhILQeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:34:17 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58701608FB;
-        Sun, 12 Sep 2021 16:32:55 +0000 (UTC)
-Date:   Sun, 12 Sep 2021 17:36:27 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v16 00/14] Introduce the Counter character device
- interface
-Message-ID: <20210912173627.0a09144b@jic23-huawei>
-In-Reply-To: <20210830181706.74e45cb8@jic23-huawei>
-References: <cover.1630031207.git.vilhelm.gray@gmail.com>
-        <20210830181706.74e45cb8@jic23-huawei>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231804AbhILQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 12:39:06 -0400
+Received: from mail-4317.protonmail.ch ([185.70.43.17]:49223 "EHLO
+        mail-4317.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhILQjC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 12:39:02 -0400
+Date:   Sun, 12 Sep 2021 16:37:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail; t=1631464666;
+        bh=iWrsRXODT54fDjqbomuMW+tTamZc86GMmNWS6hNNFB8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=O/hynjvK8++aD+Cgq1/CvOwTKI0hr91VGbBx3avDCjd84t91P9UnNaqQIPOoAEICM
+         xFi7eNm13Vh6aCSM2JrhLTZ50PjBjI96AFC8BAf4CvxvPKNaUdYg7PTrM/JC7+iZ3D
+         DqRzpSD1x31vPa0Y9o8DUlm6OzfLc+pVTwE4R4KpS0uEWzhN4oyLeeEJps5qqgru2v
+         6PsH9HVq9BhVzkVoPKjBsTG9Nt5tkDApBLnSYFQk2cwVdwtFOFNQ8Tkfq3GQUkcECl
+         flMewAJ1ylCoutOibTmhIqjHaLo7ZN8CsMfQDxf8gMONlkdDs6XgSAvtMOOzaT89f9
+         PKLsK17qLfbGg==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Oded Gabbay <ogabbay@kernel.org>, mzuckerman@habana.ai,
+        dsinger@habana.ai, Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: Accelerator drivers going forward (was Re: Habanalabs Open-Source TPC LLVM compiler and SynapseAI Core library)
+Message-ID: <acTm3IX-o1RL5nSrZMIEFg_B0T1ENN1Q7iAom58GH0pfJpVTNbghLwqKrLPDzyCjFKVsLmqmDy1PXrytJrXROTKs_ssjbf17oByM0UKVzIE=@emersion.fr>
+In-Reply-To: <YT4GxO7ab+s0nbze@kroah.com>
+References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com> <YTsQJ753sm701R/n@kroah.com> <CAKMK7uFLBmdHphtnEa1nyAGUHdcP1KgmaK+vtV_GOU6wZZAOxg@mail.gmail.com> <CAKMK7uFj-m4y+N-q8uoNasJuksgDj-oRK3K=SjoyKMQL=QCENw@mail.gmail.com> <YT4GxO7ab+s0nbze@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 18:17:06 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+> > > - move drivers/misc/habanalabs under drivers/gpu/habanalabs and
+> > > review/discussions on dri-devel
+>
+> Wait, why move into gpu?  Are we going to do that for all hardware
+> accelerators that we currently have in the kernel tree?
+>
+> These things are not GPUs in the sense of them being "do some work and
+> write out to a screen", which is what I would associate with a GPU (G
+> does stand for "Graphical", right?)
+>
+> Yes, GPUs can do things that some accelerators can do, but they can do
+> things that accelerators can not do, and the other way around as well.
+> I doubt you want all of the existing gpu drivers to be only treated as
+> an "accelerator driver" now, as where would the logic that has to happen
+> to get the bits out to a screen live?
 
-> On Fri, 27 Aug 2021 12:47:44 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> 
-> > Changes in v16:
-> >  - Define magic numbers for stm32-lptimer-cnt clock polarities
-> >  - Define magic numbers for stm32-timer-cnt encoder modes
-> >  - Bump KernelVersion to 5.16 in sysfs-bus-counter ABI documentation
-> >  - Fix typos in driver API generic-counter.rst documentation file
-> > 
-> > For convenience, this patchset is also available on my personal git
-> > repo: https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v16
-> > 
-> > The patches preceding "counter: Internalize sysfs interface code" are
-> > primarily cleanup and fixes that can be picked up and applied now to the
-> > IIO tree if so desired. The "counter: Internalize sysfs interface code"
-> > patch as well may be considered for pickup because it is relatively safe
-> > and makes no changes to the userspace interface.
-> > 
-> > To summarize the main points of this patchset: there are no changes to
-> > the existing Counter sysfs userspace interface; a Counter character
-> > device interface is introduced that allows Counter events and associated
-> > data to be read() by userspace; the events_configure() and
-> > watch_validate() driver callbacks are introduced to support Counter
-> > events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
-> > example of how to support the new Counter events functionality.  
-> 
-> Hi William,
-> 
-> I'll aim to pick up the first part in a week (too tired today after a lot
-> of reviewing to even manage the basic sanity check on the changes).
-> 
-> For the rest...
-> 
-> What I'd really like to know is if anyone other than William and I is planning
-> to review them in depth? (particularly 7 and 8 which are the new interface
-> patch and docs)
-> 
-> So if anyone reading this is in that category please let me know.  We can wait,
-> but conversely if no one is going to get time / inclination to do it then I
-> don't want to hold these up any longer and maximum time in linux-next may
-> be more useful than sitting unloved on the mailing list.
-
-Ah well, looks like it's just the two of us for the chrdev core patches :)
-
-Anyhow, I found time for a more thorough review.  I'm not 100% convinced on
-the model for the chrdev but you know a lot more about this sort of hardware than
-I do and it definitely seems reasonable - if anything it might be more flexible
-than it needs to be.
-
-I've highlighted a few small things in the patches.  With those fixed I'm happy
-to apply the remainder of this series unless someone shouts in the meantime.
-
-There has been plenty of time for review, so fingers crossed that anyone
-who hasn't commented, but cares, is happy with how you have done it.
-
-So, lucky v17!  Persistence pays off in the end.
-
-Thanks,
-
-Jonathan
-
-> 
-> Jonathan
-> 
-> > 
-> > William Breathitt Gray (14):
-> >   counter: stm32-lptimer-cnt: Provide defines for clock polarities
-> >   counter: stm32-timer-cnt: Provide defines for slave mode selection
-> >   counter: Internalize sysfs interface code
-> >   counter: Update counter.h comments to reflect sysfs internalization
-> >   docs: counter: Update to reflect sysfs internalization
-> >   counter: Move counter enums to uapi header
-> >   counter: Add character device interface
-> >   docs: counter: Document character device interface
-> >   tools/counter: Create Counter tools
-> >   counter: Implement signalZ_action_component_id sysfs attribute
-> >   counter: Implement *_component_id sysfs attributes
-> >   counter: Implement events_queue_size sysfs attribute
-> >   counter: 104-quad-8: Replace mutex with spinlock
-> >   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> > 
-> >  Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
-> >  Documentation/driver-api/generic-counter.rst  |  358 +++-
-> >  .../userspace-api/ioctl/ioctl-number.rst      |    1 +
-> >  MAINTAINERS                                   |    3 +-
-> >  drivers/counter/104-quad-8.c                  |  699 ++++----
-> >  drivers/counter/Kconfig                       |    6 +-
-> >  drivers/counter/Makefile                      |    1 +
-> >  drivers/counter/counter-chrdev.c              |  553 ++++++
-> >  drivers/counter/counter-chrdev.h              |   14 +
-> >  drivers/counter/counter-core.c                |  191 +++
-> >  drivers/counter/counter-sysfs.c               |  960 +++++++++++
-> >  drivers/counter/counter-sysfs.h               |   13 +
-> >  drivers/counter/counter.c                     | 1496 -----------------
-> >  drivers/counter/ftm-quaddec.c                 |   60 +-
-> >  drivers/counter/intel-qep.c                   |  144 +-
-> >  drivers/counter/interrupt-cnt.c               |   62 +-
-> >  drivers/counter/microchip-tcb-capture.c       |   91 +-
-> >  drivers/counter/stm32-lptimer-cnt.c           |  212 ++-
-> >  drivers/counter/stm32-timer-cnt.c             |  195 +--
-> >  drivers/counter/ti-eqep.c                     |  180 +-
-> >  include/linux/counter.h                       |  715 ++++----
-> >  include/linux/counter_enum.h                  |   45 -
-> >  include/linux/mfd/stm32-lptimer.h             |    5 +
-> >  include/linux/mfd/stm32-timers.h              |    4 +
-> >  include/uapi/linux/counter.h                  |  154 ++
-> >  tools/Makefile                                |   13 +-
-> >  tools/counter/Build                           |    1 +
-> >  tools/counter/Makefile                        |   53 +
-> >  tools/counter/counter_example.c               |   93 +
-> >  29 files changed, 3569 insertions(+), 2791 deletions(-)
-> >  create mode 100644 drivers/counter/counter-chrdev.c
-> >  create mode 100644 drivers/counter/counter-chrdev.h
-> >  create mode 100644 drivers/counter/counter-core.c
-> >  create mode 100644 drivers/counter/counter-sysfs.c
-> >  create mode 100644 drivers/counter/counter-sysfs.h
-> >  delete mode 100644 drivers/counter/counter.c
-> >  delete mode 100644 include/linux/counter_enum.h
-> >  create mode 100644 include/uapi/linux/counter.h
-> >  create mode 100644 tools/counter/Build
-> >  create mode 100644 tools/counter/Makefile
-> >  create mode 100644 tools/counter/counter_example.c
-> > 
-> > 
-> > base-commit: 5ffeb17c0d3dd44704b4aee83e297ec07666e4d6  
-> 
-
+This seems like a description of the "display" part of the drivers, driven
+by KMS. There are many chips which can't do the "display" part, only the
+"render" part. Their drivers are living in drivers/gpu/ as well.
