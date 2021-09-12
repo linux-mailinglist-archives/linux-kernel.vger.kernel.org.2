@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1057407E3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69274407E30
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhILQAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:00:41 -0400
-Received: from exmail.andestech.com ([60.248.187.195]:33700 "EHLO
-        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235850AbhILQAk (ORCPT
+        id S232832AbhILP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 11:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhILP5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:00:40 -0400
-Received: from ATCSQR.andestech.com (localhost [127.0.0.2] (may be forged))
-        by ATCSQR.andestech.com with ESMTP id 18CFrdfQ066177;
-        Sun, 12 Sep 2021 23:53:39 +0800 (GMT-8)
-        (envelope-from ycliang@andestech.com)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by ATCSQR.andestech.com with ESMTP id 18CFrNvJ066155;
-        Sun, 12 Sep 2021 23:53:23 +0800 (GMT-8)
-        (envelope-from ycliang@andestech.com)
-Received: from ubuntu01.andestech.com (192.168.21.16) by
- ATCPCS16.andestech.com (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
- Sun, 12 Sep 2021 23:53:24 +0800
-From:   Leo Yu-Chi Liang <ycliang@andestech.com>
-To:     <corbet@lwn.net>, <src.res@email.cn>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-doc-tw-discuss@lists.sourceforge.net>
-CC:     <ycliang@cs.nctu.edu.tw>, <ycliang@andestech.com>
-Subject: [PATCH 2/2] docs/zh_TW: Add translation for riscv/vm-layout
-Date:   Sun, 12 Sep 2021 15:53:19 +0000
-Message-ID: <20210912155319.130461-1-ycliang@andestech.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 12 Sep 2021 11:57:08 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E150C061574;
+        Sun, 12 Sep 2021 08:55:54 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i3-20020a056830210300b0051af5666070so9863510otc.4;
+        Sun, 12 Sep 2021 08:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gkFfv9CT7s4mw1MdJMwa+I2vDXO1SHGa8wxdgOd7jr4=;
+        b=lQo8XSTR1G4SyEkWhYczm/pSxyknMAgPLMA7paj4a+TPnjGGtIb8WwZmj6VuZczKND
+         rk/0sTiLfARQ0I6raeGfR/HRVTANACWNL7oVeBvyVKrg0934/tNHvQ1WHC7/O0k+VrUR
+         OCM7ahRyvSUeWTmLHdMUcqjpfKa+6hWfSpjptom2S9EbAlzjYYmnOLKoTyAlBZbQMPjo
+         wVUCydRNiEHtVqJXajo0oHmuWOvuUKBpBadzT7bdspsj/R5F6wd1QOZ0zW4nbpSRly5v
+         KX6n9KDENqQIAjpRAMBxr8NiW8GX+8ODEmVK+RjgoBNY8YO4PflXjqEPFXXy2Aw0xRfV
+         VqJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gkFfv9CT7s4mw1MdJMwa+I2vDXO1SHGa8wxdgOd7jr4=;
+        b=iu1Y8K9Dr6eZgnVGGjsQSWmomllLvQCr+8wVDQc5NGGMhpuewgkWaTFZcaA4eANAuj
+         SSlmKAbq/wEHjR6H0WdNN8hGizKX5qX8URi+vrpEptt9harMCbKhjS3f39aeZJ11BT5N
+         Hr18wuOzMFbhb8PhpUP8kRK3RnPIm006OzzR8zV14EpS/ZkRbjO6GsB4Z2TZwBRj5BZT
+         bq89meuKP6mdlwszW5PegYt86+9+a3nH4gzuy5E9DwDUY7tvgnMfvQ4256d+x0HR70kL
+         m4FN+TVY4rJ1VDMdCWanS1Eb7oW3tH4vFmWj/cAmdgYzT+aPtD5udBErLWJXmuxK7jl4
+         ZV+A==
+X-Gm-Message-State: AOAM530QqbtKlZ0onuW35jM2HfkKvC7ztKQrlolHaMpuMNH5A8Dzf2LS
+        Aq+Z7gKrURnRfSPE7yihM4k=
+X-Google-Smtp-Source: ABdhPJy6oPJJSPa1/JijRz9TJmBp5EseRGileTXbcWAd3fHu4uWJxdVJutTEC5/ViBnLbh/P9ogwcw==
+X-Received: by 2002:a05:6830:1184:: with SMTP id u4mr6536947otq.55.1631462153806;
+        Sun, 12 Sep 2021 08:55:53 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k1sm1238724otr.43.2021.09.12.08.55.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 08:55:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 2/2] scsi: ufs: Add temperature notification exception
+ handling
+To:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>
+References: <20210912131919.12962-1-avri.altman@wdc.com>
+ <20210912131919.12962-3-avri.altman@wdc.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <3dddb2a8-a599-2061-08e6-b4c5ca865cb9@roeck-us.net>
+Date:   Sun, 12 Sep 2021 08:55:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210912131919.12962-3-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.21.16]
-X-DNSRBL: 
-X-MAIL: ATCSQR.andestech.com 18CFrdfQ066177
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yu-Chi Liang <ycliang@cs.nctu.edu.tw>
+On 9/12/21 6:19 AM, Avri Altman wrote:
+> The device may notify the host of an extreme temperature by using the
+> exception event mechanism. The exception can be raised when the device’s
+> Tcase temperature is either too high or too low.
+> 
+> It is essentially up to the platform to decide what further actions need
+> to be taken. leave a placeholder for a designated vop for that.
+> 
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>   drivers/scsi/ufs/ufs-hwmon.c | 14 ++++++++++++++
+>   drivers/scsi/ufs/ufs.h       |  2 ++
+>   drivers/scsi/ufs/ufshcd.c    | 21 +++++++++++++++++++++
+>   drivers/scsi/ufs/ufshcd.h    |  2 ++
+>   4 files changed, 39 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-hwmon.c b/drivers/scsi/ufs/ufs-hwmon.c
+> index a50e83f645f4..b466b4649c21 100644
+> --- a/drivers/scsi/ufs/ufs-hwmon.c
+> +++ b/drivers/scsi/ufs/ufs-hwmon.c
+> @@ -177,3 +177,17 @@ void ufs_hwmon_remove(struct ufs_hba *hba)
+>   	hba->hwmon_device = NULL;
+>   	kfree(data);
+>   }
+> +
+> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask)
+> +{
+> +	if (!hba->hwmon_device)
+> +		return;
+> +
+> +	if (ee_mask & MASK_EE_TOO_HIGH_TEMP)
+> +		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
+> +				   hwmon_temp_max_alarm, 0);
+> +
+> +	if (ee_mask & MASK_EE_TOO_LOW_TEMP)
+> +		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
+> +				   hwmon_temp_min_alarm, 0);
+> +}
+> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+> index 171b27be7b1d..d9bc048c2a71 100644
+> --- a/drivers/scsi/ufs/ufs.h
+> +++ b/drivers/scsi/ufs/ufs.h
+> @@ -377,6 +377,8 @@ enum {
+>   	MASK_EE_PERFORMANCE_THROTTLING	= BIT(6),
+>   };
+>   
+> +#define MASK_EE_URGENT_TEMP (MASK_EE_TOO_HIGH_TEMP | MASK_EE_TOO_LOW_TEMP)
+> +
+>   /* Background operation status */
+>   enum bkops_status {
+>   	BKOPS_STATUS_NO_OP               = 0x0,
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 90c2e9677435..3f4c7124b74b 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5642,6 +5642,24 @@ static void ufshcd_bkops_exception_event_handler(struct ufs_hba *hba)
+>   				__func__, err);
+>   }
+>   
+> +static void ufshcd_temp_exception_event_handler(struct ufs_hba *hba, u16 status)
+> +{
+> +	u32 value;
+> +
+> +	if (ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+> +				QUERY_ATTR_IDN_CASE_ROUGH_TEMP, 0, 0, &value))
+> +		return;
+> +
+> +	dev_info(hba->dev, "exception Tcase %d\n", value - 80);
+> +
+> +	ufs_hwmon_notify_event(hba, status & MASK_EE_URGENT_TEMP);
+> +
+> +	/*
+> +	 * A placeholder for the platform vendors to add whatever additional
+> +	 * steps required
+> +	 */
+> +}
+> +
+>   static int __ufshcd_wb_toggle(struct ufs_hba *hba, bool set, enum flag_idn idn)
+>   {
+>   	u8 index;
+> @@ -5821,6 +5839,9 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
+>   	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
+>   		ufshcd_bkops_exception_event_handler(hba);
+>   
+> +	if (status & hba->ee_drv_mask & MASK_EE_URGENT_TEMP)
+> +		ufshcd_temp_exception_event_handler(hba, status);
+> +
+>   	ufs_debugfs_exception_event(hba, status);
+>   out:
+>   	ufshcd_scsi_unblock_requests(hba);
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 798a408d71e5..e6abce9a8b00 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -1063,9 +1063,11 @@ static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
+>   #ifdef CONFIG_SCSI_UFS_HWMON
+>   void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask);
+>   void ufs_hwmon_remove(struct ufs_hba *hba);
+> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask);
+>   #else
+>   static inline void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask) {}
+>   static inline void ufs_hwmon_remove(struct ufs_hba *hba) {}
+> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask) {}
 
-Add Traditional Chinese for Documentation/riscv/vm-layout.rst
+static
 
-Signed-off-by: Leo Yu-Chi Liang <ycliang@cs.nctu.edu.tw>
----
- .../translations/zh_TW/riscv/vm-layout.rst    | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100644 Documentation/translations/zh_TW/riscv/vm-layout.rst
-
-diff --git a/Documentation/translations/zh_TW/riscv/vm-layout.rst b/Documentation/translations/zh_TW/riscv/vm-layout.rst
-new file mode 100644
-index 000000000000..628bba3f139d
---- /dev/null
-+++ b/Documentation/translations/zh_TW/riscv/vm-layout.rst
-@@ -0,0 +1,67 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_TW.rst
-+
-+:Original: Documentation/riscv/patch-acceptance.rst
-+
-+:譯者:
-+
-+  梁育齊 Liang YuChi <ycliang@cs.nctu.edu.tw>
-+
-+=============================
-+RISC-V Linux 的虛擬記憶體佈局
-+=============================
-+
-+:Author: Alexandre Ghiti <alex@ghiti.fr>
-+:Date: 12 February 2021
-+
-+這份文件描述 RISC-V Linux 核心的虛擬記憶體佈局。
-+
-+32 位元 RISC-V Linux 核心
-+=========================
-+
-+32 位元 RISC-V Linux 核心
-+------------------------
-+
-+待完成
-+
-+64 位元 RISC-V Linux 核心
-+=========================
-+RISC-V 的特權架構文件描述 64 位元長度的位址
-+"必須讓第 63-48 位都等於第 47 位，否則會發生分頁錯誤中斷。"
-+而這表示有一個巨大的記憶體"孔洞"將虛擬記憶體空間分成兩半，
-+下半部是使用者空間所在的位址，上半部則是 RISC-V Linux 核心所使用的位址。
-+
-+RISC-V Linux Kernel SV39
-+------------------------
-+
-+::
-+
-+  ========================================================================================================================
-+       起始位址     |   偏移量   |     終端位址     |  大小   | 虛擬記憶體區塊的描述
-+  ========================================================================================================================
-+                    |            |                  |         |
-+   0000000000000000 |    0       | 0000003fffffffff |  256 GB | 使用者空間的虛擬記憶體，每個 mm 有各自的虛擬記憶體
-+  __________________|____________|__________________|_________|___________________________________________________________
-+                    |            |                  |         |
-+   0000004000000000 | +256    GB | ffffffbfffffffff | ~16M TB | ... 非常大，大約是 64 位元寬的一塊非標準化的虛擬記憶體孔洞
-+                    |            |                  |         |     ，從核心起始記憶體位址對映 -256 GB 偏移量的位址。
-+  __________________|____________|__________________|_________|___________________________________________________________
-+                                                              |
-+                                                              | 核心空間的虛擬記憶體，被所有的程序所共享：
-+  ____________________________________________________________|___________________________________________________________
-+                    |            |                  |         |
-+   ffffffc000000000 | -256    GB | ffffffc7ffffffff |   32 GB | kasan
-+   ffffffcefee00000 | -196    GB | ffffffcefeffffff |    2 MB | fixmap
-+   ffffffceff000000 | -196    GB | ffffffceffffffff |   16 MB | PCI io
-+   ffffffcf00000000 | -196    GB | ffffffcfffffffff |    4 GB | vmemmap
-+   ffffffd000000000 | -192    GB | ffffffdfffffffff |   64 GB | vmalloc/ioremap space
-+   ffffffe000000000 | -128    GB | fffffffeffffffff |  124 GB | 所有實體記憶體的直接映射
-+  __________________|____________|__________________|_________|____________________________________________________________
-+                                                              |
-+                                                              |
-+  ____________________________________________________________|____________________________________________________________
-+                    |            |                  |         |
-+   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | 核心模組，BPF
-+   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | 核心
-+  __________________|____________|__________________|_________|____________________________________________________________
--- 
-2.25.1
+>   #endif
+>   
+>   #ifdef CONFIG_PM
+> 
 
